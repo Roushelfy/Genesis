@@ -1,0 +1,29 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+[38;5;226m[Genesis] [06:48:37] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [06:48:37] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;226m[Genesis] [06:48:43] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [06:48:43] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [06:48:47] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (6, 11), (7, 11), (14, 21), (15, 20), (16, 23), (17, 22). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/practical-native-application-v1/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/practical-native-application-v1/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[W 10/16/26 06:50:22.058 1952135] QuadrantsWarning
+While compiling `kernel_inputs_c970_0`, File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/practical-native-application-v1/examples/rigid/egg_stress_controller.py", line 107, in kernel_inputs:
+        grip[i_b] = 0.04 if value < 0.15 or value > 0.9 else 0.018
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/16/26 06:50:22.058 1952135] QuadrantsWarning
+While compiling `kernel_inputs_c970_0`, File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/practical-native-application-v1/examples/rigid/egg_stress_controller.py", line 108, in kernel_inputs:
+        limit[i_b] = 0.055 if value >= 0.7 and value < 0.76 else 4.0
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+{"repetition": 0, "raw_peak_Pa": [279170.48710245336, 233821.13186416394, 229861.5363499471, 246369.26910938986, 228931.9458841043, 256046.8917240599, 221320.4089233771, 256089.79566411095, 253067.9210359148, 311897.7992110655, 247432.28825519455, 157211.76328872627, 280579.5258858931, 292951.3097833132, 261118.89618182209, 267643.13749991637], "resets": 16}
+{"repetition": 1, "raw_peak_Pa": [279170.48710244824, 233821.131864164, 229861.5363499382, 246369.26910939085, 228931.94588410563, 256046.89172404914, 221320.40892338398, 256089.79566410798, 253067.92103591803, 311897.799211066, 247432.28825519705, 157211.76328872523, 280579.5258858945, 292951.30978331604, 261118.89618181775, 267643.1374999191], "resets": 16}
+{"repetition": 2, "raw_peak_Pa": [279170.48710244015, 233821.13186416405, 229861.53634993694, 246369.26910939327, 228931.94588410447, 256046.89172406113, 221320.40892338118, 256089.7956641109, 253067.9210359165, 311897.7992110607, 247432.28825519493, 157211.7632887304, 280579.5258858931, 292951.3097833209, 261118.89618181135, 267643.1374999135], "resets": 16}

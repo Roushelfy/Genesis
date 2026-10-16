@@ -1,0 +1,2335 @@
+{
+  "scope": "Audit compact application evidence, paired costs and reward traces; export unsmoothed maps.",
+  "reconstruction_rows": 32,
+  "physical_checks": [
+    {
+      "case": "step00011-r3000-pressure",
+      "compensated_force_error_N": 1.3877787807814876e-17,
+      "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+      "compensated_moment_error_Nm": 3.4301813608466885e-21,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.7663049401067055e-12,
+      "maximum_local_coulomb_violation_Pa": 5405.813399985727,
+      "global_net_force_N": [
+        1.5465700151237853e-08,
+        -2.9993013782896938e-09,
+        0.05887683133688807
+      ],
+      "sum_individual_force_norms_N": 0.05887683133689018,
+      "native_reported_force_errors_N": [
+        1.387778780781535e-17
+      ],
+      "native_reported_moment_errors_Nm": [
+        4.925370951958024e-21
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 1.3877787807814876e-17,
+          "moment_about_actual_contact_point_error_Nm": 3.097385680356247e-21,
+          "force_budget_N": 5.887683133689018e-10,
+          "moment_budget_Nm": 1.7663049401067055e-12
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00011-r3000-componentwise",
+      "compensated_force_error_N": 2.592402177722741e-14,
+      "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+      "compensated_moment_error_Nm": 7.003190611299572e-16,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.7663049401067055e-12,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        1.5465700151237853e-08,
+        -2.9993013782896938e-09,
+        0.05887683133688807
+      ],
+      "sum_individual_force_norms_N": 0.05887683133689018,
+      "native_reported_force_errors_N": [
+        2.5924234435274893e-14
+      ],
+      "native_reported_moment_errors_Nm": [
+        3.4973133377652736e-17
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 2.592402177722741e-14,
+          "moment_about_actual_contact_point_error_Nm": 3.497169927203744e-17,
+          "force_budget_N": 5.887683133689018e-10,
+          "moment_budget_Nm": 1.7663049401067055e-12
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00011-r3000-pair_union",
+      "compensated_force_error_N": 2.851103156647841e-14,
+      "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+      "compensated_moment_error_Nm": 7.003257793596867e-16,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.7663049401067055e-12,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        1.5465700151237853e-08,
+        -2.9993013782896938e-09,
+        0.05887683133688807
+      ],
+      "sum_individual_force_norms_N": 0.05887683133689018,
+      "native_reported_force_errors_N": [
+        2.8508137728818194e-14
+      ],
+      "native_reported_moment_errors_Nm": [
+        3.513970548422464e-17
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 2.851103156647841e-14,
+          "moment_about_actual_contact_point_error_Nm": 3.513822888629565e-17,
+          "force_budget_N": 5.887683133689018e-10,
+          "moment_budget_Nm": 1.7663049401067055e-12
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00011-r3000-body_source_prior",
+      "compensated_force_error_N": 2.7176910932790845e-14,
+      "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+      "compensated_moment_error_Nm": 7.003196539414851e-16,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.7663049401067055e-12,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        1.5465700151237853e-08,
+        -2.9993013782896938e-09,
+        0.05887683133688807
+      ],
+      "sum_individual_force_norms_N": 0.05887683133689018,
+      "native_reported_force_errors_N": [
+        2.7176910929636035e-14
+      ],
+      "native_reported_moment_errors_Nm": [
+        3.496847116014924e-17
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 2.7176910932790845e-14,
+          "moment_about_actual_contact_point_error_Nm": 3.4967456668428785e-17,
+          "force_budget_N": 5.887683133689018e-10,
+          "moment_budget_Nm": 1.7663049401067055e-12
+        }
+      ],
+      "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00011-r6000-pressure",
+      "compensated_force_error_N": 0.0,
+      "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+      "compensated_moment_error_Nm": 1.799671199489345e-21,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 3.532609880213411e-12,
+      "maximum_local_coulomb_violation_Pa": 1394.1849288022104,
+      "global_net_force_N": [
+        1.5465700151237853e-08,
+        -2.9993013782896938e-09,
+        0.05887683133688807
+      ],
+      "sum_individual_force_norms_N": 0.05887683133689018,
+      "native_reported_force_errors_N": [
+        0.0
+      ],
+      "native_reported_moment_errors_Nm": [
+        1.694065894508649e-21
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 0.0,
+          "moment_about_actual_contact_point_error_Nm": 1.4245112376744388e-21,
+          "force_budget_N": 5.887683133689018e-10,
+          "moment_budget_Nm": 3.532609880213411e-12
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00011-r6000-componentwise",
+      "compensated_force_error_N": 1.3434679731352877e-14,
+      "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+      "compensated_moment_error_Nm": 3.2294656785405377e-16,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 3.532609880213411e-12,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        1.5465700151237853e-08,
+        -2.9993013782896938e-09,
+        0.05887683133688807
+      ],
+      "sum_individual_force_norms_N": 0.05887683133689018,
+      "native_reported_force_errors_N": [
+        1.3434679731351818e-14
+      ],
+      "native_reported_moment_errors_Nm": [
+        2.96750782317071e-17
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 1.3434679731352877e-14,
+          "moment_about_actual_contact_point_error_Nm": 2.9674034263637274e-17,
+          "force_budget_N": 5.887683133689018e-10,
+          "moment_budget_Nm": 3.532609880213411e-12
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00011-r6000-pair_union",
+      "compensated_force_error_N": 1.2540006222060441e-14,
+      "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+      "compensated_moment_error_Nm": 2.4174140271958594e-16,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 3.532609880213411e-12,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        1.5465700151237853e-08,
+        -2.9993013782896938e-09,
+        0.05887683133688807
+      ],
+      "sum_individual_force_norms_N": 0.05887683133689018,
+      "native_reported_force_errors_N": [
+        1.2540006218782529e-14
+      ],
+      "native_reported_moment_errors_Nm": [
+        1.1101088548371539e-16
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 1.2540006222060441e-14,
+          "moment_about_actual_contact_point_error_Nm": 1.1100731453729717e-16,
+          "force_budget_N": 5.887683133689018e-10,
+          "moment_budget_Nm": 3.532609880213411e-12
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00011-r6000-body_source_prior",
+      "compensated_force_error_N": 1.2532569262625874e-14,
+      "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+      "compensated_moment_error_Nm": 3.2297081211079393e-16,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 3.532609880213411e-12,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        1.5465700151237853e-08,
+        -2.9993013782896938e-09,
+        0.05887683133688807
+      ],
+      "sum_individual_force_norms_N": 0.05887683133689018,
+      "native_reported_force_errors_N": [
+        1.253256926262474e-14
+      ],
+      "native_reported_moment_errors_Nm": [
+        2.9789854744962127e-17
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 1.2532569262625874e-14,
+          "moment_about_actual_contact_point_error_Nm": 2.9789984555280875e-17,
+          "force_budget_N": 5.887683133689018e-10,
+          "moment_budget_Nm": 3.532609880213411e-12
+        }
+      ],
+      "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00866-r3000-pressure",
+      "compensated_force_error_N": 9.437920065329442e-16,
+      "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+      "compensated_moment_error_Nm": 1.7537313466407506e-18,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 5.8064137577812765e-12,
+      "maximum_local_coulomb_violation_Pa": 240982.25314250746,
+      "global_net_force_N": [
+        -0.005571709151027433,
+        -0.18232998734779127,
+        0.06469328765072285
+      ],
+      "sum_individual_force_norms_N": 5.317003616567743,
+      "native_reported_force_errors_N": [
+        4.441435357498229e-16,
+        4.4414362838271e-16
+      ],
+      "native_reported_moment_errors_Nm": [
+        2.713892274211705e-19,
+        4.639668876693533e-19
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 4.441028151083704e-16,
+          "moment_about_actual_contact_point_error_Nm": 3.816435561342103e-20,
+          "force_budget_N": 2.566650719672859e-08,
+          "moment_budget_Nm": 7.699952159018577e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 4.443068439896872e-16,
+          "moment_about_actual_contact_point_error_Nm": 3.716188754060249e-19,
+          "force_budget_N": 2.7503528968948846e-08,
+          "moment_budget_Nm": 8.251058690684654e-11
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00866-r3000-componentwise",
+      "compensated_force_error_N": 2.0643421506256064e-09,
+      "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+      "compensated_moment_error_Nm": 3.140020910283965e-11,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 5.8064137577812765e-12,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        -0.005571709151027433,
+        -0.18232998734779127,
+        0.06469328765072285
+      ],
+      "sum_individual_force_norms_N": 5.317003616567743,
+      "native_reported_force_errors_N": [
+        1.3846019327998284e-09,
+        7.744191061146523e-10
+      ],
+      "native_reported_moment_errors_Nm": [
+        4.952916859602719e-12,
+        5.881986662083669e-12
+      ],
+      "global_net_scaled_force_gate": false,
+      "global_net_scaled_moment_gate": false,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 1.384601929524339e-09,
+          "moment_about_actual_contact_point_error_Nm": 4.952916841029219e-12,
+          "force_budget_N": 2.566650719672859e-08,
+          "moment_budget_Nm": 7.699952159018577e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 7.744194688080789e-10,
+          "moment_about_actual_contact_point_error_Nm": 5.881986753450475e-12,
+          "force_budget_N": 2.7503528968948846e-08,
+          "moment_budget_Nm": 8.251058690684654e-11
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00866-r3000-pair_union",
+      "compensated_force_error_N": 2.6206914522663794e-09,
+      "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+      "compensated_moment_error_Nm": 1.4734414000399427e-11,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 5.8064137577812765e-12,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        -0.005571709151027433,
+        -0.18232998734779127,
+        0.06469328765072285
+      ],
+      "sum_individual_force_norms_N": 5.317003616567743,
+      "native_reported_force_errors_N": [
+        7.765932738931483e-10,
+        3.1202119713769093e-09
+      ],
+      "native_reported_moment_errors_Nm": [
+        1.9698635761082753e-12,
+        6.033564888424995e-12
+      ],
+      "global_net_scaled_force_gate": false,
+      "global_net_scaled_moment_gate": false,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 7.765932738891338e-10,
+          "moment_about_actual_contact_point_error_Nm": 1.9698636246817862e-12,
+          "force_budget_N": 2.566650719672859e-08,
+          "moment_budget_Nm": 7.699952159018577e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 3.1202119713755697e-09,
+          "moment_about_actual_contact_point_error_Nm": 6.033564966392937e-12,
+          "force_budget_N": 2.7503528968948846e-08,
+          "moment_budget_Nm": 8.251058690684654e-11
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00866-r3000-body_source_prior",
+      "compensated_force_error_N": 1.0604374852095475e-10,
+      "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+      "compensated_moment_error_Nm": 6.343904415316153e-13,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 5.8064137577812765e-12,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        -0.005571709151027433,
+        -0.18232998734779127,
+        0.06469328765072285
+      ],
+      "sum_individual_force_norms_N": 5.317003616567743,
+      "native_reported_force_errors_N": [
+        1.060437623045064e-10,
+        1.060437623045064e-10
+      ],
+      "native_reported_moment_errors_Nm": [
+        1.7146703510802656e-12,
+        1.7146703510802656e-12
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 0.0009368418696495081,
+          "moment_about_actual_contact_point_error_Nm": 5.7574351474319024e-05,
+          "force_budget_N": 2.566650719672859e-08,
+          "moment_budget_Nm": 7.699952159018577e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 0.0009368419756931427,
+          "moment_about_actual_contact_point_error_Nm": 9.877252719239884e-05,
+          "force_budget_N": 2.7503528968948846e-08,
+          "moment_budget_Nm": 8.251058690684654e-11
+        }
+      ],
+      "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00866-r6000-pressure",
+      "compensated_force_error_N": 4.720496233257556e-16,
+      "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+      "compensated_moment_error_Nm": 1.337861659559481e-18,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.1612827515562553e-11,
+      "maximum_local_coulomb_violation_Pa": 63755.74259579815,
+      "global_net_force_N": [
+        -0.005571709151027433,
+        -0.18232998734779127,
+        0.06469328765072285
+      ],
+      "sum_individual_force_norms_N": 5.317003616567743,
+      "native_reported_force_errors_N": [
+        1.734723475976807e-18,
+        6.664595604691186e-16
+      ],
+      "native_reported_moment_errors_Nm": [
+        1.5819945404007047e-19,
+        1.8498327402172032e-19
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 0.0,
+          "moment_about_actual_contact_point_error_Nm": 1.799497583965351e-19,
+          "force_budget_N": 2.566650719672859e-08,
+          "moment_budget_Nm": 1.5399904318037155e-10
+        },
+        {
+          "packet": 1,
+          "force_error_N": 4.443068439896872e-16,
+          "moment_about_actual_contact_point_error_Nm": 1.8944645434383243e-19,
+          "force_budget_N": 2.7503528968948846e-08,
+          "moment_budget_Nm": 1.6502117381369308e-10
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00866-r6000-componentwise",
+      "compensated_force_error_N": 4.5391405541624906e-09,
+      "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+      "compensated_moment_error_Nm": 5.019781358489856e-12,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.1612827515562553e-11,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        -0.005571709151027433,
+        -0.18232998734779127,
+        0.06469328765072285
+      ],
+      "sum_individual_force_norms_N": 5.317003616567743,
+      "native_reported_force_errors_N": [
+        2.8765819939138654e-09,
+        1.8430817617908566e-09
+      ],
+      "native_reported_moment_errors_Nm": [
+        1.474245885085237e-12,
+        1.2814422428572346e-11
+      ],
+      "global_net_scaled_force_gate": false,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 2.876582214813894e-09,
+          "moment_about_actual_contact_point_error_Nm": 1.4742459067973114e-12,
+          "force_budget_N": 2.566650719672859e-08,
+          "moment_budget_Nm": 1.5399904318037155e-10
+        },
+        {
+          "packet": 1,
+          "force_error_N": 1.8430817617908566e-09,
+          "moment_about_actual_contact_point_error_Nm": 1.2814422587974207e-11,
+          "force_budget_N": 2.7503528968948846e-08,
+          "moment_budget_Nm": 1.6502117381369308e-10
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00866-r6000-pair_union",
+      "compensated_force_error_N": 3.813491245032675e-09,
+      "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+      "compensated_moment_error_Nm": 1.7211588402454442e-11,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.1612827515562553e-11,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        -0.005571709151027433,
+        -0.18232998734779127,
+        0.06469328765072285
+      ],
+      "sum_individual_force_norms_N": 5.317003616567743,
+      "native_reported_force_errors_N": [
+        2.0967534466756187e-09,
+        1.9433083599053566e-09
+      ],
+      "native_reported_moment_errors_Nm": [
+        3.0951828502624757e-12,
+        8.53312932414914e-12
+      ],
+      "global_net_scaled_force_gate": false,
+      "global_net_scaled_moment_gate": false,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 2.0967534433306335e-09,
+          "moment_about_actual_contact_point_error_Nm": 3.0951828401596423e-12,
+          "force_budget_N": 2.566650719672859e-08,
+          "moment_budget_Nm": 1.5399904318037155e-10
+        },
+        {
+          "packet": 1,
+          "force_error_N": 1.9433087194280067e-09,
+          "moment_about_actual_contact_point_error_Nm": 8.533129353184526e-12,
+          "force_budget_N": 2.7503528968948846e-08,
+          "moment_budget_Nm": 1.6502117381369308e-10
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00866-r6000-body_source_prior",
+      "compensated_force_error_N": 1.68606045553289e-10,
+      "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+      "compensated_moment_error_Nm": 1.033147057965451e-11,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.1612827515562553e-11,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        -0.005571709151027433,
+        -0.18232998734779127,
+        0.06469328765072285
+      ],
+      "sum_individual_force_norms_N": 5.317003616567743,
+      "native_reported_force_errors_N": [
+        1.6860604771303119e-10,
+        1.6860604771303119e-10
+      ],
+      "native_reported_moment_errors_Nm": [
+        6.617929445095738e-12,
+        6.617929445095738e-12
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 0.001980012449289033,
+          "moment_about_actual_contact_point_error_Nm": 0.00014834920145108052,
+          "force_budget_N": 2.566650719672859e-08,
+          "moment_budget_Nm": 1.5399904318037155e-10
+        },
+        {
+          "packet": 1,
+          "force_error_N": 0.001980012280719671,
+          "moment_about_actual_contact_point_error_Nm": 0.0002354461743359036,
+          "force_budget_N": 2.7503528968948846e-08,
+          "moment_budget_Nm": 1.6502117381369308e-10
+        }
+      ],
+      "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00869-r3000-pressure",
+      "compensated_force_error_N": 7.047314121155779e-18,
+      "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+      "compensated_moment_error_Nm": 8.004515293175879e-20,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.928015851844441e-12,
+      "maximum_local_coulomb_violation_Pa": 29274.198867837913,
+      "global_net_force_N": [
+        -0.00018057175209643076,
+        -0.0008297943966552972,
+        0.06426158413992078
+      ],
+      "sum_individual_force_norms_N": 0.7194045691978652,
+      "native_reported_force_errors_N": [
+        2.7809732887839817e-17,
+        2.7809732887839817e-17,
+        6.938893903907228e-18
+      ],
+      "native_reported_moment_errors_Nm": [
+        4.8188377345600057e-20,
+        2.061028896647419e-20,
+        1.3585574089200292e-20
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 0.0,
+          "moment_about_actual_contact_point_error_Nm": 8.118641952340177e-21,
+          "force_budget_N": 3.347585002172861e-09,
+          "moment_budget_Nm": 1.0042755006518583e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 1.734723475976807e-18,
+          "moment_about_actual_contact_point_error_Nm": 3.182073286533389e-20,
+          "force_budget_N": 3.0591414951219243e-09,
+          "moment_budget_Nm": 9.177424485365773e-12
+        },
+        {
+          "packet": 2,
+          "force_error_N": 0.0,
+          "moment_about_actual_contact_point_error_Nm": 1.2176674581154047e-20,
+          "force_budget_N": 7.873191946838663e-10,
+          "moment_budget_Nm": 2.361957584051599e-12
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00869-r3000-componentwise",
+      "compensated_force_error_N": 5.522784387040603e-10,
+      "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+      "compensated_moment_error_Nm": 1.046624082967785e-11,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.928015851844441e-12,
+      "maximum_local_coulomb_violation_Pa": 2.7284841053187847e-12,
+      "global_net_force_N": [
+        -0.00018057175209643076,
+        -0.0008297943966552972,
+        0.06426158413992078
+      ],
+      "sum_individual_force_norms_N": 0.7194045691978652,
+      "native_reported_force_errors_N": [
+        8.789197335523825e-12,
+        5.368071862444242e-10,
+        1.0168299431103501e-11
+      ],
+      "native_reported_moment_errors_Nm": [
+        3.841971293404074e-14,
+        6.466576593697228e-13,
+        4.574750468335293e-15
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": false,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 8.789197335523825e-12,
+          "moment_about_actual_contact_point_error_Nm": 3.8419703637153075e-14,
+          "force_budget_N": 3.347585002172861e-09,
+          "moment_budget_Nm": 1.0042755006518583e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 5.368071877487126e-10,
+          "moment_about_actual_contact_point_error_Nm": 6.466576653664268e-13,
+          "force_budget_N": 3.0591414951219243e-09,
+          "moment_budget_Nm": 9.177424485365773e-12
+        },
+        {
+          "packet": 2,
+          "force_error_N": 1.016829943072955e-11,
+          "moment_about_actual_contact_point_error_Nm": 4.574751762641145e-15,
+          "force_budget_N": 7.873191946838663e-10,
+          "moment_budget_Nm": 2.361957584051599e-12
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00869-r3000-pair_union",
+      "compensated_force_error_N": 1.8892680653427965e-10,
+      "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+      "compensated_moment_error_Nm": 2.1805947568834667e-12,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.928015851844441e-12,
+      "maximum_local_coulomb_violation_Pa": 3.637978807091713e-12,
+      "global_net_force_N": [
+        -0.00018057175209643076,
+        -0.0008297943966552972,
+        0.06426158413992078
+      ],
+      "sum_individual_force_norms_N": 0.7194045691978652,
+      "native_reported_force_errors_N": [
+        2.2578491681786274e-11,
+        1.7131435574831648e-10,
+        1.0164249975765853e-11
+      ],
+      "native_reported_moment_errors_Nm": [
+        3.9215442963549965e-14,
+        6.566188322857815e-13,
+        4.553051688582765e-15
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": false,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 2.2578493020315663e-11,
+          "moment_about_actual_contact_point_error_Nm": 3.921543430580797e-14,
+          "force_budget_N": 3.347585002172861e-09,
+          "moment_budget_Nm": 1.0042755006518583e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 1.7131435574831648e-10,
+          "moment_about_actual_contact_point_error_Nm": 6.566188228243026e-13,
+          "force_budget_N": 3.0591414951219243e-09,
+          "moment_budget_Nm": 9.177424485365773e-12
+        },
+        {
+          "packet": 2,
+          "force_error_N": 1.016424997493517e-11,
+          "moment_about_actual_contact_point_error_Nm": 4.5530536028496064e-15,
+          "force_budget_N": 7.873191946838663e-10,
+          "moment_budget_Nm": 2.361957584051599e-12
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00869-r3000-body_source_prior",
+      "compensated_force_error_N": 8.199146297269909e-16,
+      "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+      "compensated_moment_error_Nm": 3.430466789794414e-17,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.928015851844441e-12,
+      "maximum_local_coulomb_violation_Pa": 3.637978807091713e-12,
+      "global_net_force_N": [
+        -0.00018057175209643076,
+        -0.0008297943966552972,
+        0.06426158413992078
+      ],
+      "sum_individual_force_norms_N": 0.7194045691978652,
+      "native_reported_force_errors_N": [
+        8.229151846152648e-16,
+        8.229151846152648e-16,
+        8.229151846152648e-16
+      ],
+      "native_reported_moment_errors_Nm": [
+        1.6277598737962556e-17,
+        1.6277598737962556e-17,
+        1.6277598737962556e-17
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 0.0020279185012960447,
+          "moment_about_actual_contact_point_error_Nm": 1.5452451437546968e-06,
+          "force_budget_N": 3.347585002172861e-09,
+          "moment_budget_Nm": 1.0042755006518583e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 0.002759482350901085,
+          "moment_about_actual_contact_point_error_Nm": 1.2117731141720168e-05,
+          "force_budget_N": 3.0591414951219243e-09,
+          "moment_budget_Nm": 9.177424485365773e-12
+        },
+        {
+          "packet": 2,
+          "force_error_N": 0.002973556723939636,
+          "moment_about_actual_contact_point_error_Nm": 9.802373604264782e-06,
+          "force_budget_N": 7.873191946838663e-10,
+          "moment_budget_Nm": 2.361957584051599e-12
+        }
+      ],
+      "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00869-r6000-pressure",
+      "compensated_force_error_N": 2.3852463195275167e-17,
+      "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+      "compensated_moment_error_Nm": 2.3257286651535417e-19,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 3.856031703688882e-12,
+      "maximum_local_coulomb_violation_Pa": 7638.674315280421,
+      "global_net_force_N": [
+        -0.00018057175209643076,
+        -0.0008297943966552972,
+        0.06426158413992078
+      ],
+      "sum_individual_force_norms_N": 0.7194045691978652,
+      "native_reported_force_errors_N": [
+        5.553825132490826e-17,
+        5.561946742681909e-17,
+        6.938893903907228e-18
+      ],
+      "native_reported_moment_errors_Nm": [
+        7.503224035101767e-20,
+        9.004706232836872e-21,
+        2.2485357202528996e-20
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 5.561946742681909e-17,
+          "moment_about_actual_contact_point_error_Nm": 2.4845653611975095e-20,
+          "force_budget_N": 3.347585002172861e-09,
+          "moment_budget_Nm": 2.0085510013037166e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 5.561946742681909e-17,
+          "moment_about_actual_contact_point_error_Nm": 2.327632490859059e-20,
+          "force_budget_N": 3.0591414951219243e-09,
+          "moment_budget_Nm": 1.8354848970731546e-11
+        },
+        {
+          "packet": 2,
+          "force_error_N": 0.0,
+          "moment_about_actual_contact_point_error_Nm": 2.046657551609027e-20,
+          "force_budget_N": 7.873191946838663e-10,
+          "moment_budget_Nm": 4.723915168103198e-12
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00869-r6000-componentwise",
+      "compensated_force_error_N": 1.4554132304298885e-10,
+      "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+      "compensated_moment_error_Nm": 6.136203242998761e-13,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 3.856031703688882e-12,
+      "maximum_local_coulomb_violation_Pa": 9.094947017729282e-13,
+      "global_net_force_N": [
+        -0.00018057175209643076,
+        -0.0008297943966552972,
+        0.06426158413992078
+      ],
+      "sum_individual_force_norms_N": 0.7194045691978652,
+      "native_reported_force_errors_N": [
+        5.062471322925348e-11,
+        1.3168336743006026e-10,
+        2.0542671150907307e-11
+      ],
+      "native_reported_moment_errors_Nm": [
+        3.1509821806245466e-13,
+        1.897109688961192e-12,
+        2.865842710658942e-14
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 5.062471073472441e-11,
+          "moment_about_actual_contact_point_error_Nm": 3.150982204993581e-13,
+          "force_budget_N": 3.347585002172861e-09,
+          "moment_budget_Nm": 2.0085510013037166e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 1.3168336743006026e-10,
+          "moment_about_actual_contact_point_error_Nm": 1.897109683401532e-12,
+          "force_budget_N": 3.0591414951219243e-09,
+          "moment_budget_Nm": 1.8354848970731546e-11
+        },
+        {
+          "packet": 2,
+          "force_error_N": 2.0542668261291088e-11,
+          "moment_about_actual_contact_point_error_Nm": 2.8658427696651844e-14,
+          "force_budget_N": 7.873191946838663e-10,
+          "moment_budget_Nm": 4.723915168103198e-12
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00869-r6000-pair_union",
+      "compensated_force_error_N": 6.554137954171999e-11,
+      "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+      "compensated_moment_error_Nm": 1.841662428166884e-12,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 3.856031703688882e-12,
+      "maximum_local_coulomb_violation_Pa": 9.094947017729282e-13,
+      "global_net_force_N": [
+        -0.00018057175209643076,
+        -0.0008297943966552972,
+        0.06426158413992078
+      ],
+      "sum_individual_force_norms_N": 0.7194045691978652,
+      "native_reported_force_errors_N": [
+        6.222024848711683e-11,
+        9.774821655546405e-11,
+        2.0563264180969888e-11
+      ],
+      "native_reported_moment_errors_Nm": [
+        2.5098536831580765e-13,
+        1.8363564895202445e-12,
+        2.871104283521456e-14
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 6.222024848711683e-11,
+          "moment_about_actual_contact_point_error_Nm": 2.509853848436004e-13,
+          "force_budget_N": 3.347585002172861e-09,
+          "moment_budget_Nm": 2.0085510013037166e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 9.774821486244247e-11,
+          "moment_about_actual_contact_point_error_Nm": 1.836356497577193e-12,
+          "force_budget_N": 3.0591414951219243e-09,
+          "moment_budget_Nm": 1.8354848970731546e-11
+        },
+        {
+          "packet": 2,
+          "force_error_N": 2.0563269913141453e-11,
+          "moment_about_actual_contact_point_error_Nm": 2.871104429786862e-14,
+          "force_budget_N": 7.873191946838663e-10,
+          "moment_budget_Nm": 4.723915168103198e-12
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step00869-r6000-body_source_prior",
+      "compensated_force_error_N": 2.5894810055153377e-16,
+      "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+      "compensated_moment_error_Nm": 1.0866081721668098e-17,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 3.856031703688882e-12,
+      "maximum_local_coulomb_violation_Pa": 9.094947017729282e-13,
+      "global_net_force_N": [
+        -0.00018057175209643076,
+        -0.0008297943966552972,
+        0.06426158413992078
+      ],
+      "sum_individual_force_norms_N": 0.7194045691978652,
+      "native_reported_force_errors_N": [
+        2.50476997353276e-16,
+        2.50476997353276e-16,
+        2.50476997353276e-16
+      ],
+      "native_reported_moment_errors_Nm": [
+        1.389574813387544e-17,
+        1.389574813387544e-17,
+        1.389574813387544e-17
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 0.002011106705061929,
+          "moment_about_actual_contact_point_error_Nm": 6.997989015342302e-06,
+          "force_budget_N": 3.347585002172861e-09,
+          "moment_budget_Nm": 2.0085510013037166e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 0.0027400546491462047,
+          "moment_about_actual_contact_point_error_Nm": 2.8448051002625106e-05,
+          "force_budget_N": 3.0591414951219243e-09,
+          "moment_budget_Nm": 1.8354848970731546e-11
+        },
+        {
+          "packet": 2,
+          "force_error_N": 0.002954594111290935,
+          "moment_about_actual_contact_point_error_Nm": 2.0566299813880858e-05,
+          "force_budget_N": 7.873191946838663e-10,
+          "moment_budget_Nm": 4.723915168103198e-12
+        }
+      ],
+      "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step02640-r3000-pressure",
+      "compensated_force_error_N": 4.391018798566293e-17,
+      "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+      "compensated_moment_error_Nm": 2.5203802426391923e-19,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.918082818790927e-12,
+      "maximum_local_coulomb_violation_Pa": 35080.296403829205,
+      "global_net_force_N": [
+        -0.0007217807661754265,
+        -0.0008029498183140249,
+        0.06392697720789028
+      ],
+      "sum_individual_force_norms_N": 0.8026079260393497,
+      "native_reported_force_errors_N": [
+        5.551117770103112e-17,
+        2.7755575615628914e-17
+      ],
+      "native_reported_moment_errors_Nm": [
+        6.988021814847978e-21,
+        6.108188272820204e-20
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 5.594317740676816e-17,
+          "moment_about_actual_contact_point_error_Nm": 2.156421230761888e-20,
+          "force_budget_N": 4.009061357998585e-09,
+          "moment_budget_Nm": 1.2027184073995756e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 0.0,
+          "moment_about_actual_contact_point_error_Nm": 1.8979401838684987e-19,
+          "force_budget_N": 4.0170179023949125e-09,
+          "moment_budget_Nm": 1.2051053707184738e-11
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step02640-r3000-componentwise",
+      "compensated_force_error_N": 6.769807520890038e-10,
+      "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+      "compensated_moment_error_Nm": 1.5796944254668076e-11,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.918082818790927e-12,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        -0.0007217807661754265,
+        -0.0008029498183140249,
+        0.06392697720789028
+      ],
+      "sum_individual_force_norms_N": 0.8026079260393497,
+      "native_reported_force_errors_N": [
+        2.346062689313742e-10,
+        6.400844074396694e-10
+      ],
+      "native_reported_moment_errors_Nm": [
+        9.240811017870174e-13,
+        5.245163223394755e-13
+      ],
+      "global_net_scaled_force_gate": false,
+      "global_net_scaled_moment_gate": false,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 2.3460626893139634e-10,
+          "moment_about_actual_contact_point_error_Nm": 9.240811024784727e-13,
+          "force_budget_N": 4.009061357998585e-09,
+          "moment_budget_Nm": 1.2027184073995756e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 6.400844074396694e-10,
+          "moment_about_actual_contact_point_error_Nm": 5.245163277767109e-13,
+          "force_budget_N": 4.0170179023949125e-09,
+          "moment_budget_Nm": 1.2051053707184738e-11
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step02640-r3000-pair_union",
+      "compensated_force_error_N": 8.383270727427531e-10,
+      "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+      "compensated_moment_error_Nm": 1.405080231452706e-11,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.918082818790927e-12,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        -0.0007217807661754265,
+        -0.0008029498183140249,
+        0.06392697720789028
+      ],
+      "sum_individual_force_norms_N": 0.8026079260393497,
+      "native_reported_force_errors_N": [
+        7.780897664845971e-10,
+        6.107997410329027e-11
+      ],
+      "native_reported_moment_errors_Nm": [
+        1.1122212217007392e-12,
+        1.745996895526135e-12
+      ],
+      "global_net_scaled_force_gate": false,
+      "global_net_scaled_moment_gate": false,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 7.780897824391778e-10,
+          "moment_about_actual_contact_point_error_Nm": 1.1122212156812409e-12,
+          "force_budget_N": 4.009061357998585e-09,
+          "moment_budget_Nm": 1.2027184073995756e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 6.107997410344211e-11,
+          "moment_about_actual_contact_point_error_Nm": 1.745996908584639e-12,
+          "force_budget_N": 4.0170179023949125e-09,
+          "moment_budget_Nm": 1.2051053707184738e-11
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step02640-r3000-body_source_prior",
+      "compensated_force_error_N": 6.62273784651611e-14,
+      "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+      "compensated_moment_error_Nm": 7.994337873408331e-15,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 1.918082818790927e-12,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        -0.0007217807661754265,
+        -0.0008029498183140249,
+        0.06392697720789028
+      ],
+      "sum_individual_force_norms_N": 0.8026079260393497,
+      "native_reported_force_errors_N": [
+        6.622740469508852e-14,
+        6.622740469508852e-14
+      ],
+      "native_reported_moment_errors_Nm": [
+        8.271888911553677e-15,
+        8.271888911553677e-15
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 5.674340975700452e-08,
+          "moment_about_actual_contact_point_error_Nm": 2.0338187834633688e-05,
+          "force_budget_N": 4.009061357998585e-09,
+          "moment_budget_Nm": 1.2027184073995756e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 5.674347386910321e-08,
+          "moment_about_actual_contact_point_error_Nm": 2.0340684469689787e-05,
+          "force_budget_N": 4.0170179023949125e-09,
+          "moment_budget_Nm": 1.2051053707184738e-11
+        }
+      ],
+      "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step02640-r6000-pressure",
+      "compensated_force_error_N": 1.5281482511011672e-17,
+      "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+      "compensated_moment_error_Nm": 4.0299152256882777e-19,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 3.836165637581854e-12,
+      "maximum_local_coulomb_violation_Pa": 9348.47325314384,
+      "global_net_force_N": [
+        -0.0007217807661754265,
+        -0.0008029498183140249,
+        0.06392697720789028
+      ],
+      "sum_individual_force_norms_N": 0.8026079260393497,
+      "native_reported_force_errors_N": [
+        5.594315770774142e-17,
+        5.561949219390514e-17
+      ],
+      "native_reported_moment_errors_Nm": [
+        6.865548536292401e-20,
+        1.0536489861543552e-19
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 5.594317740676816e-17,
+          "moment_about_actual_contact_point_error_Nm": 4.236117468075829e-20,
+          "force_budget_N": 4.009061357998585e-09,
+          "moment_budget_Nm": 2.4054368147991512e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 5.594317740676816e-17,
+          "moment_about_actual_contact_point_error_Nm": 1.9605873374884132e-19,
+          "force_budget_N": 4.0170179023949125e-09,
+          "moment_budget_Nm": 2.4102107414369476e-11
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step02640-r6000-componentwise",
+      "compensated_force_error_N": 9.914575777140566e-10,
+      "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+      "compensated_moment_error_Nm": 2.426534716878422e-11,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 3.836165637581854e-12,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        -0.0007217807661754265,
+        -0.0008029498183140249,
+        0.06392697720789028
+      ],
+      "sum_individual_force_norms_N": 0.8026079260393497,
+      "native_reported_force_errors_N": [
+        1.2192419908702052e-10,
+        1.112022488259605e-09
+      ],
+      "native_reported_moment_errors_Nm": [
+        2.1113242718448084e-12,
+        1.2377585099556055e-12
+      ],
+      "global_net_scaled_force_gate": false,
+      "global_net_scaled_moment_gate": false,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 1.2192419286610152e-10,
+          "moment_about_actual_contact_point_error_Nm": 2.111324267977525e-12,
+          "force_budget_N": 4.009061357998585e-09,
+          "moment_budget_Nm": 2.4054368147991512e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 1.112022488259605e-09,
+          "moment_about_actual_contact_point_error_Nm": 1.2377585078011033e-12,
+          "force_budget_N": 4.0170179023949125e-09,
+          "moment_budget_Nm": 2.4102107414369476e-11
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step02640-r6000-pair_union",
+      "compensated_force_error_N": 7.840678628856275e-10,
+      "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+      "compensated_moment_error_Nm": 6.557678186736118e-12,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 3.836165637581854e-12,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        -0.0007217807661754265,
+        -0.0008029498183140249,
+        0.06392697720789028
+      ],
+      "sum_individual_force_norms_N": 0.8026079260393497,
+      "native_reported_force_errors_N": [
+        1.781178466850718e-10,
+        6.059541719992126e-10
+      ],
+      "native_reported_moment_errors_Nm": [
+        2.056372283169638e-12,
+        1.7516517950580308e-12
+      ],
+      "global_net_scaled_force_gate": false,
+      "global_net_scaled_moment_gate": false,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 1.781178862803298e-10,
+          "moment_about_actual_contact_point_error_Nm": 2.056372248397137e-12,
+          "force_budget_N": 4.009061357998585e-09,
+          "moment_budget_Nm": 2.4054368147991512e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 6.059541719992126e-10,
+          "moment_about_actual_contact_point_error_Nm": 1.7516517885194907e-12,
+          "force_budget_N": 4.0170179023949125e-09,
+          "moment_budget_Nm": 2.4102107414369476e-11
+        }
+      ],
+      "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+      "native_contract_passed": true
+    },
+    {
+      "case": "step02640-r6000-body_source_prior",
+      "compensated_force_error_N": 1.0955937555848079e-13,
+      "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+      "compensated_moment_error_Nm": 8.139636993923953e-15,
+      "global_net_scaled_diagnostic_moment_budget_Nm": 3.836165637581854e-12,
+      "maximum_local_coulomb_violation_Pa": 0.0,
+      "global_net_force_N": [
+        -0.0007217807661754265,
+        -0.0008029498183140249,
+        0.06392697720789028
+      ],
+      "sum_individual_force_norms_N": 0.8026079260393497,
+      "native_reported_force_errors_N": [
+        1.0955947187635085e-13,
+        1.0955947187635085e-13
+      ],
+      "native_reported_moment_errors_Nm": [
+        5.732212273170398e-15,
+        5.732212273170398e-15
+      ],
+      "global_net_scaled_force_gate": true,
+      "global_net_scaled_moment_gate": true,
+      "packet_checks": [
+        {
+          "packet": 0,
+          "force_error_N": 3.4158851507418176e-07,
+          "moment_about_actual_contact_point_error_Nm": 4.610850154161521e-05,
+          "force_budget_N": 4.009061357998585e-09,
+          "moment_budget_Nm": 2.4054368147991512e-11
+        },
+        {
+          "packet": 1,
+          "force_error_N": 3.415885190976803e-07,
+          "moment_about_actual_contact_point_error_Nm": 4.612352440758049e-05,
+          "force_budget_N": 4.0170179023949125e-09,
+          "moment_budget_Nm": 2.4102107414369476e-11
+        }
+      ],
+      "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+      "native_contract_passed": true
+    }
+  ],
+  "costs": [
+    {
+      "model": "pressure",
+      "scope": "rigid",
+      "median_valid_envsteps_per_s": 11108.947686945141,
+      "min_valid_envsteps_per_s": 11106.843933083548,
+      "max_valid_envsteps_per_s": 11188.551762405612,
+      "median_batch_step_seconds": 0.00288056086874955,
+      "native_buffer_bytes": 0,
+      "torch_peak_allocated_bytes": 1286144,
+      "gpu_uuid": "GPU-7e607143-660e-ae9f-b941-5c2e8046d87f",
+      "resets_per_repeat": [
+        96,
+        96,
+        96
+      ]
+    },
+    {
+      "model": "pressure",
+      "scope": "live",
+      "median_valid_envsteps_per_s": 5840.703792815451,
+      "min_valid_envsteps_per_s": 5772.280470703841,
+      "max_valid_envsteps_per_s": 5860.924375921696,
+      "median_batch_step_seconds": 0.005478791792071813,
+      "native_buffer_bytes": 83036438,
+      "torch_peak_allocated_bytes": 1286144,
+      "gpu_uuid": "GPU-7e607143-660e-ae9f-b941-5c2e8046d87f",
+      "resets_per_repeat": [
+        96,
+        96,
+        96
+      ],
+      "incremental_scripted_seconds_per_batch_step": 0.002598230923322263
+    },
+    {
+      "model": "pressure",
+      "scope": "policy-rigid",
+      "median_valid_envsteps_per_s": 9709.66561560967,
+      "min_valid_envsteps_per_s": 9686.89281252666,
+      "max_valid_envsteps_per_s": 9709.885480157753,
+      "median_batch_step_seconds": 0.0032956850695821534,
+      "native_buffer_bytes": 0,
+      "torch_peak_allocated_bytes": 10207232,
+      "gpu_uuid": "GPU-7e607143-660e-ae9f-b941-5c2e8046d87f",
+      "resets_per_repeat": [
+        96,
+        96,
+        96
+      ]
+    },
+    {
+      "model": "pressure",
+      "scope": "policy",
+      "median_valid_envsteps_per_s": 5437.82678388327,
+      "min_valid_envsteps_per_s": 5419.044951241242,
+      "max_valid_envsteps_per_s": 5441.52404828042,
+      "median_batch_step_seconds": 0.005884703811243525,
+      "native_buffer_bytes": 83036438,
+      "torch_peak_allocated_bytes": 10207232,
+      "gpu_uuid": "GPU-7e607143-660e-ae9f-b941-5c2e8046d87f",
+      "resets_per_repeat": [
+        96,
+        96,
+        96
+      ]
+    },
+    {
+      "model": "body_source_prior",
+      "scope": "rigid",
+      "median_valid_envsteps_per_s": 11287.237484607183,
+      "min_valid_envsteps_per_s": 11261.234412045647,
+      "max_valid_envsteps_per_s": 11288.565031051037,
+      "median_batch_step_seconds": 0.002835060398404797,
+      "native_buffer_bytes": 0,
+      "torch_peak_allocated_bytes": 1286144,
+      "gpu_uuid": "GPU-106c6f51-8e25-6350-e770-ddd9d664c0f7",
+      "resets_per_repeat": [
+        96,
+        96,
+        96
+      ]
+    },
+    {
+      "model": "body_source_prior",
+      "scope": "live",
+      "median_valid_envsteps_per_s": 2623.0945949141087,
+      "min_valid_envsteps_per_s": 2617.225116462107,
+      "max_valid_envsteps_per_s": 2624.020802880095,
+      "median_batch_step_seconds": 0.01219933130205997,
+      "native_buffer_bytes": 119964854,
+      "torch_peak_allocated_bytes": 1286144,
+      "gpu_uuid": "GPU-106c6f51-8e25-6350-e770-ddd9d664c0f7",
+      "resets_per_repeat": [
+        96,
+        96,
+        96
+      ],
+      "incremental_scripted_seconds_per_batch_step": 0.009364270903655172
+    },
+    {
+      "model": "body_source_prior",
+      "scope": "policy-rigid",
+      "median_valid_envsteps_per_s": 9776.501783392738,
+      "min_valid_envsteps_per_s": 9744.449898173183,
+      "max_valid_envsteps_per_s": 9812.887494399098,
+      "median_batch_step_seconds": 0.0032731544174991237,
+      "native_buffer_bytes": 0,
+      "torch_peak_allocated_bytes": 10207232,
+      "gpu_uuid": "GPU-106c6f51-8e25-6350-e770-ddd9d664c0f7",
+      "resets_per_repeat": [
+        96,
+        96,
+        96
+      ]
+    },
+    {
+      "model": "body_source_prior",
+      "scope": "policy",
+      "median_valid_envsteps_per_s": 2487.4054115169956,
+      "min_valid_envsteps_per_s": 2434.598098684905,
+      "max_valid_envsteps_per_s": 2511.880970826006,
+      "median_batch_step_seconds": 0.012864810799170906,
+      "native_buffer_bytes": 119946422,
+      "torch_peak_allocated_bytes": 10207232,
+      "gpu_uuid": "GPU-106c6f51-8e25-6350-e770-ddd9d664c0f7",
+      "resets_per_repeat": [
+        96,
+        96,
+        96
+      ]
+    }
+  ],
+  "sampled_scripted_auxiliary_invariance": [
+    {
+      "model": "pressure",
+      "scripted_warmup_maximum_height_difference_m": 6.269552493484709e-08,
+      "scripted_final_maximum_coordinate_difference_m": 5.3660916821129945e-09,
+      "policy_scope_has_stress_dependent_actions": true,
+      "limits": "Sampled warmup and final states, not every timed substep. Scripted control does not read stress; policy inference does."
+    },
+    {
+      "model": "body_source_prior",
+      "scripted_warmup_maximum_height_difference_m": 6.269552493484709e-08,
+      "scripted_final_maximum_coordinate_difference_m": 5.3660916821129945e-09,
+      "policy_scope_has_stress_dependent_actions": true,
+      "limits": "Sampled warmup and final states, not every timed substep. Scripted control does not read stress; policy inference does."
+    }
+  ],
+  "reward_proxy": [
+    {
+      "model": "pressure",
+      "report": {
+        "scope": "Measure raw-stress reward repeatability and paired 1N/4N grasp discrimination.\n\nEach of eight frozen conditions is duplicated with only the commanded strong\ngrip force limit changed. The original approach/lift/slide/weak/release schedule,\narm targets, radii, friction and resets are retained. Intrusive observations\nmake this a behavioral experiment, never a throughput benchmark.\n",
+        "model": "pressure",
+        "condition_bank": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-native-eight-env-diagnostic-v2/results/conditions.npz",
+        "condition_bank_sha256": "1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa",
+        "envs": 16,
+        "warmup": 900,
+        "steps_per_repetition": 1200,
+        "repetitions": 3,
+        "observed_environment_steps": 57600,
+        "invalid_stress_steps": 0,
+        "partial_resets_per_repetition": [
+          16,
+          16,
+          16
+        ],
+        "lift_window_phase": [
+          0.3,
+          0.6
+        ],
+        "lift_window_peak_relative_span": [
+          5.669061950684719e-15,
+          5.726493281078496e-14,
+          7.865700197078792e-14,
+          1.0532326085386683e-14,
+          6.230757341160624e-15,
+          1.4733145255974529e-13,
+          9.763128654993992e-15,
+          1.3025668994538103e-13,
+          4.377895781705055e-14,
+          7.460748710828594e-14,
+          9.101146512068686e-14,
+          2.4563253318215783e-13,
+          1.3868471471750324e-14,
+          1.0680483197381948e-13,
+          1.3874103128250062e-14,
+          1.440219518280817e-13
+        ],
+        "paired_choices": [
+          {
+            "condition": 0,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              57755.25042528562,
+              57755.250425285354,
+              57755.250425285296
+            ],
+            "lift_window_peak_4N_Pa": [
+              58169.159156465415,
+              58169.159156465,
+              58169.15915646287
+            ],
+            "4N_over_1N": [
+              1.0071665991945657,
+              1.0071665991945633,
+              1.0071665991945273
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": true,
+            "minimum_separation_Pa": 413.9087311775729,
+            "maximum_lift_height_1N_m": [
+              0.14938851186371432,
+              0.14938851186371432,
+              0.14938851186371432
+            ],
+            "maximum_lift_height_4N_m": [
+              0.14939242935557387,
+              0.14939242935557387,
+              0.14939242935557387
+            ]
+          },
+          {
+            "condition": 1,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              65434.778098587725,
+              65434.77809859147,
+              65434.778098587725
+            ],
+            "lift_window_peak_4N_Pa": [
+              65438.03776731811,
+              65438.037767322654,
+              65438.03776732299
+            ],
+            "4N_over_1N": [
+              1.000049815538848,
+              1.0000498155388602,
+              1.0000498155389226
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": true,
+            "minimum_separation_Pa": 3.259668730381236,
+            "maximum_lift_height_1N_m": [
+              0.14944022230641943,
+              0.14944022230641943,
+              0.14944022230641943
+            ],
+            "maximum_lift_height_4N_m": [
+              0.1494399614539652,
+              0.1494399614539652,
+              0.1494399614539652
+            ]
+          },
+          {
+            "condition": 2,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              56611.43888415674,
+              56611.43888415229,
+              56611.43888415298
+            ],
+            "lift_window_peak_4N_Pa": [
+              56601.41811815487,
+              56601.41811815165,
+              56601.41811814972
+            ],
+            "4N_over_1N": [
+              0.999822990437986,
+              0.9998229904380076,
+              0.9998229904379614
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": false,
+            "minimum_separation_Pa": -10.020766003261087,
+            "maximum_lift_height_1N_m": [
+              0.14953672536727503,
+              0.14953672536727503,
+              0.14953672536727503
+            ],
+            "maximum_lift_height_4N_m": [
+              0.14953668514758245,
+              0.14953668514758245,
+              0.14953668514758245
+            ]
+          },
+          {
+            "condition": 3,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              64246.40223187778,
+              64246.402231878455,
+              64246.40223187813
+            ],
+            "lift_window_peak_4N_Pa": [
+              57554.2069334702,
+              57554.20693346068,
+              57554.206933456066
+            ],
+            "4N_over_1N": [
+              0.8958354854758381,
+              0.8958354854756805,
+              0.8958354854756132
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": false,
+            "minimum_separation_Pa": -6692.1952984220625,
+            "maximum_lift_height_1N_m": [
+              0.14962720981289152,
+              0.14962720981289152,
+              0.14962720981289152
+            ],
+            "maximum_lift_height_4N_m": [
+              0.1495322847966834,
+              0.1495322847966834,
+              0.1495322847966834
+            ]
+          },
+          {
+            "condition": 4,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              61890.67113948742,
+              61890.6711394878,
+              61890.671139487415
+            ],
+            "lift_window_peak_4N_Pa": [
+              61907.54332389841,
+              61907.543323899,
+              61907.54332389927
+            ],
+            "4N_over_1N": [
+              1.0002726127233774,
+              1.0002726127233807,
+              1.0002726127233914
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": true,
+            "minimum_separation_Pa": 16.872184410989576,
+            "maximum_lift_height_1N_m": [
+              0.14964302181562034,
+              0.14964302181562034,
+              0.14964302181562034
+            ],
+            "maximum_lift_height_4N_m": [
+              0.14964409142811036,
+              0.14964409142811036,
+              0.14964409142811036
+            ]
+          },
+          {
+            "condition": 5,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              65533.83942308344,
+              65533.839423088015,
+              65533.83942309309
+            ],
+            "lift_window_peak_4N_Pa": [
+              65535.15506264418,
+              65535.155062642225,
+              65535.155062649224
+            ],
+            "4N_over_1N": [
+              1.000020075728392,
+              1.0000200757282922,
+              1.0000200757283215
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": true,
+            "minimum_separation_Pa": 1.3156395542100654,
+            "maximum_lift_height_1N_m": [
+              0.14954904651363354,
+              0.14954904651363354,
+              0.14954904651363354
+            ],
+            "maximum_lift_height_4N_m": [
+              0.1495494573499206,
+              0.1495494573499206,
+              0.1495494573499206
+            ]
+          },
+          {
+            "condition": 6,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              56638.89089437337,
+              56638.89089437392,
+              56638.89089437345
+            ],
+            "lift_window_peak_4N_Pa": [
+              56638.14194459741,
+              56638.141944596624,
+              56638.14194459678
+            ],
+            "4N_over_1N": [
+              0.9999867767577343,
+              0.9999867767577106,
+              0.9999867767577216
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": false,
+            "minimum_separation_Pa": -0.7489497772985487,
+            "maximum_lift_height_1N_m": [
+              0.1494901487569251,
+              0.1494901487569251,
+              0.1494901487569251
+            ],
+            "maximum_lift_height_4N_m": [
+              0.14948988718346712,
+              0.14948988718346712,
+              0.14948988718346712
+            ]
+          },
+          {
+            "condition": 7,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              68706.09002268837,
+              68706.09002268601,
+              68706.09002269496
+            ],
+            "lift_window_peak_4N_Pa": [
+              68706.9035635684,
+              68706.90356356237,
+              68706.90356357227
+            ],
+            "4N_over_1N": [
+              1.0000118408845529,
+              1.0000118408844993,
+              1.0000118408845131
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": true,
+            "minimum_separation_Pa": 0.813540876362822,
+            "maximum_lift_height_1N_m": [
+              0.14949466896972333,
+              0.14949466896972333,
+              0.14949466896972333
+            ],
+            "maximum_lift_height_4N_m": [
+              0.1494945612166463,
+              0.1494945612166463,
+              0.1494945612166463
+            ]
+          }
+        ],
+        "reset_and_unselected_peak_checks_passed": true,
+        "goal_completion": false,
+        "limitations": "Raw stress and exposure are uncalibrated reward proxies for two explicitly controlled grip choices. This is numerical repeatability and useful discrimination conditional on the chosen480-tet mesh, actual rigid contact and model/radius assumptions. It does not certify a fracture threshold, physical stress accuracy or complete RL training. Different models can change stress rankings without changing rigid motion. All values and any rejected input remain; intrusive observer timing is excluded from throughput."
+      }
+    },
+    {
+      "model": "body_source_prior",
+      "report": {
+        "scope": "Measure raw-stress reward repeatability and paired 1N/4N grasp discrimination.\n\nEach of eight frozen conditions is duplicated with only the commanded strong\ngrip force limit changed. The original approach/lift/slide/weak/release schedule,\narm targets, radii, friction and resets are retained. Intrusive observations\nmake this a behavioral experiment, never a throughput benchmark.\n",
+        "model": "body_source_prior",
+        "condition_bank": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-native-eight-env-diagnostic-v2/results/conditions.npz",
+        "condition_bank_sha256": "1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa",
+        "envs": 16,
+        "warmup": 900,
+        "steps_per_repetition": 1200,
+        "repetitions": 3,
+        "observed_environment_steps": 57600,
+        "invalid_stress_steps": 0,
+        "partial_resets_per_repetition": [
+          16,
+          16,
+          16
+        ],
+        "lift_window_phase": [
+          0.3,
+          0.6
+        ],
+        "lift_window_peak_relative_span": [
+          1.095236350406358e-12,
+          1.6764902252511367e-12,
+          1.6912817728525728e-13,
+          1.6599500468411397e-12,
+          9.877649147855253e-13,
+          3.4633153461022623e-13,
+          1.724834769661606e-12,
+          7.86621177963031e-14,
+          9.61414263447696e-13,
+          1.6284131461373054e-12,
+          1.335736899646301e-13,
+          1.1539190730242418e-12,
+          9.130090667526917e-13,
+          1.450411516169616e-12,
+          7.696748714720637e-12,
+          9.710729339461555e-14
+        ],
+        "paired_choices": [
+          {
+            "condition": 0,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              57650.351134216005,
+              57650.351134205426,
+              57650.351134152865
+            ],
+            "lift_window_peak_4N_Pa": [
+              58061.49226020099,
+              58061.49226015975,
+              58061.49226014517
+            ],
+            "4N_over_1N": [
+              1.0071316326422333,
+              1.0071316326417028,
+              1.007131632642368
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": true,
+            "minimum_separation_Pa": 411.1411259543238,
+            "maximum_lift_height_1N_m": [
+              0.14938851186371432,
+              0.14938851186371432,
+              0.14938851186371432
+            ],
+            "maximum_lift_height_4N_m": [
+              0.14939242935557387,
+              0.14939242935557387,
+              0.14939242935557387
+            ]
+          },
+          {
+            "condition": 1,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              65186.710735915134,
+              65186.7107358528,
+              65186.71073580585
+            ],
+            "lift_window_peak_4N_Pa": [
+              65189.98071383786,
+              65189.98071389019,
+              65189.98071378403
+            ],
+            "4N_over_1N": [
+              1.0000501632600542,
+              1.0000501632618133,
+              1.0000501632609051
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": true,
+            "minimum_separation_Pa": 3.269977922725957,
+            "maximum_lift_height_1N_m": [
+              0.14944022230641943,
+              0.14944022230641943,
+              0.14944022230641943
+            ],
+            "maximum_lift_height_4N_m": [
+              0.1494399614539652,
+              0.1494399614539652,
+              0.1494399614539652
+            ]
+          },
+          {
+            "condition": 2,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              56442.732033387554,
+              56442.7320333971,
+              56442.73203339478
+            ],
+            "lift_window_peak_4N_Pa": [
+              56432.46129001873,
+              56432.46129001931,
+              56432.46129001177
+            ],
+            "4N_over_1N": [
+              0.9998180324906535,
+              0.9998180324904947,
+              0.9998180324904022
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": false,
+            "minimum_separation_Pa": -10.270743383007357,
+            "maximum_lift_height_1N_m": [
+              0.14953672536727503,
+              0.14953672536727503,
+              0.14953672536727503
+            ],
+            "maximum_lift_height_4N_m": [
+              0.14953668514758245,
+              0.14953668514758245,
+              0.14953668514758245
+            ]
+          },
+          {
+            "condition": 3,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              64069.8029731257,
+              64069.80297315404,
+              64069.80297323205
+            ],
+            "lift_window_peak_4N_Pa": [
+              57442.48051248381,
+              57442.48051244579,
+              57442.48051251208
+            ],
+            "4N_over_1N": [
+              0.8965609046211405,
+              0.8965609046201505,
+              0.8965609046200934
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": false,
+            "minimum_separation_Pa": -6627.322460719974,
+            "maximum_lift_height_1N_m": [
+              0.14962720981289152,
+              0.14962720981289152,
+              0.14962720981289152
+            ],
+            "maximum_lift_height_4N_m": [
+              0.1495322847966834,
+              0.1495322847966834,
+              0.1495322847966834
+            ]
+          },
+          {
+            "condition": 4,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              62191.83250691713,
+              62191.83250690572,
+              62191.8325068557
+            ],
+            "lift_window_peak_4N_Pa": [
+              62207.62444156412,
+              62207.6244415876,
+              62207.6244415308
+            ],
+            "4N_over_1N": [
+              1.0002539229672196,
+              1.000253922967781,
+              1.000253922967672
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": true,
+            "minimum_separation_Pa": 15.791934646986192,
+            "maximum_lift_height_1N_m": [
+              0.14964302181562034,
+              0.14964302181562034,
+              0.14964302181562034
+            ],
+            "maximum_lift_height_4N_m": [
+              0.14964409142811036,
+              0.14964409142811036,
+              0.14964409142811036
+            ]
+          },
+          {
+            "condition": 5,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              66639.43431591966,
+              66639.43431589658,
+              66639.43431590758
+            ],
+            "lift_window_peak_4N_Pa": [
+              66638.89514749014,
+              66638.89514754074,
+              66638.89514744408
+            ],
+            "4N_over_1N": [
+              0.9999919091685718,
+              0.9999919091696774,
+              0.9999919091680619
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": false,
+            "minimum_separation_Pa": -0.5391684634960257,
+            "maximum_lift_height_1N_m": [
+              0.14954904651363354,
+              0.14954904651363354,
+              0.14954904651363354
+            ],
+            "maximum_lift_height_4N_m": [
+              0.1495494573499206,
+              0.1495494573499206,
+              0.1495494573499206
+            ]
+          },
+          {
+            "condition": 6,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              56644.010523011384,
+              56644.01052296419,
+              56644.010523061894
+            ],
+            "lift_window_peak_4N_Pa": [
+              56644.09692948375,
+              56644.09692984362,
+              56644.096929919724
+            ],
+            "4N_over_1N": [
+              1.0000015254299892,
+              1.0000015254371755,
+              1.0000015254367944
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": true,
+            "minimum_separation_Pa": 0.08640647236461518,
+            "maximum_lift_height_1N_m": [
+              0.1494901487569251,
+              0.1494901487569251,
+              0.1494901487569251
+            ],
+            "maximum_lift_height_4N_m": [
+              0.14948988718346712,
+              0.14948988718346712,
+              0.14948988718346712
+            ]
+          },
+          {
+            "condition": 7,
+            "strong_limit_N": [
+              1,
+              4
+            ],
+            "lift_window_peak_1N_Pa": [
+              68632.28070853777,
+              68632.28070853984,
+              68632.28070853444
+            ],
+            "lift_window_peak_4N_Pa": [
+              68633.1267365024,
+              68633.1267365027,
+              68633.12673650906
+            ],
+            "4N_over_1N": [
+              1.0000123269685328,
+              1.000012326968507,
+              1.0000123269686785
+            ],
+            "4N_peak_exceeds_1N_in_all_repetitions": true,
+            "minimum_separation_Pa": 0.8460279628634453,
+            "maximum_lift_height_1N_m": [
+              0.14949466896972333,
+              0.14949466896972333,
+              0.14949466896972333
+            ],
+            "maximum_lift_height_4N_m": [
+              0.1494945612166463,
+              0.1494945612166463,
+              0.1494945612166463
+            ]
+          }
+        ],
+        "reset_and_unselected_peak_checks_passed": true,
+        "goal_completion": false,
+        "limitations": "Raw stress and exposure are uncalibrated reward proxies for two explicitly controlled grip choices. This is numerical repeatability and useful discrimination conditional on the chosen480-tet mesh, actual rigid contact and model/radius assumptions. It does not certify a fracture threshold, physical stress accuracy or complete RL training. Different models can change stress rankings without changing rigid motion. All values and any rejected input remain; intrusive observer timing is excluded from throughput."
+      }
+    }
+  ],
+  "reward_discrimination": [
+    {
+      "condition": 0,
+      "paired_4N_minus_1N_peak_range_Pa": [
+        411.1411259543238,
+        413.9087311797921
+      ],
+      "lower_peak_choice": "1N",
+      "minimum_absolute_paired_separation_Pa": 411.1411259543238,
+      "maximum_repeat_span_Pa": 6.314076017588377e-08,
+      "maximum_cross_model_peak_difference_Pa": 107.66689631769987,
+      "discrimination_exceeds_observed_repeat_and_model_difference": true
+    },
+    {
+      "condition": 1,
+      "paired_4N_minus_1N_peak_range_Pa": [
+        3.259668730381236,
+        3.269978037387773
+      ],
+      "lower_peak_choice": "1N",
+      "minimum_absolute_paired_separation_Pa": 3.259668730381236,
+      "maximum_repeat_span_Pa": 1.0928488336503506e-07,
+      "maximum_cross_model_peak_difference_Pa": 248.067362781876,
+      "discrimination_exceeds_observed_repeat_and_model_difference": false
+    },
+    {
+      "condition": 2,
+      "paired_4N_minus_1N_peak_range_Pa": [
+        -10.270743383007357,
+        -10.020766000641743
+      ],
+      "lower_peak_choice": "4N",
+      "minimum_absolute_paired_separation_Pa": 10.020766000641743,
+      "maximum_repeat_span_Pa": 9.546056389808655e-09,
+      "maximum_cross_model_peak_difference_Pa": 168.956828137947,
+      "discrimination_exceeds_observed_repeat_and_model_difference": false
+    },
+    {
+      "condition": 3,
+      "paired_4N_minus_1N_peak_range_Pa": [
+        -6692.1952984220625,
+        -6627.322460641888
+      ],
+      "lower_peak_choice": "4N",
+      "minimum_absolute_paired_separation_Pa": 6627.322460641888,
+      "maximum_repeat_span_Pa": 1.0635267244651914e-07,
+      "maximum_cross_model_peak_difference_Pa": 176.59925875208137,
+      "discrimination_exceeds_observed_repeat_and_model_difference": true
+    },
+    {
+      "condition": 4,
+      "paired_4N_minus_1N_peak_range_Pa": [
+        15.791934646986192,
+        16.872184411855415
+      ],
+      "lower_peak_choice": "1N",
+      "minimum_absolute_paired_separation_Pa": 15.791934646986192,
+      "maximum_repeat_span_Pa": 6.143091013655066e-08,
+      "maximum_cross_model_peak_difference_Pa": 301.1613674297114,
+      "discrimination_exceeds_observed_repeat_and_model_difference": false
+    },
+    {
+      "condition": 5,
+      "paired_4N_minus_1N_peak_range_Pa": [
+        -0.5391684634960257,
+        1.3156395607438753
+      ],
+      "lower_peak_choice": "unresolved",
+      "minimum_absolute_paired_separation_Pa": 0.5391683558409568,
+      "maximum_repeat_span_Pa": 9.665382094681263e-08,
+      "maximum_cross_model_peak_difference_Pa": 1105.5948928362195,
+      "discrimination_exceeds_observed_repeat_and_model_difference": false
+    },
+    {
+      "condition": 6,
+      "paired_4N_minus_1N_peak_range_Pa": [
+        -0.7489497772985487,
+        0.08640687942533987
+      ],
+      "lower_peak_choice": "unresolved",
+      "minimum_absolute_paired_separation_Pa": 0.08640647236461518,
+      "maximum_repeat_span_Pa": 4.359753802418709e-07,
+      "maximum_cross_model_peak_difference_Pa": 5.954985322947323,
+      "discrimination_exceeds_observed_repeat_and_model_difference": false
+    },
+    {
+      "condition": 7,
+      "paired_4N_minus_1N_peak_range_Pa": [
+        0.813540876362822,
+        0.8460279746213928
+      ],
+      "lower_peak_choice": "1N",
+      "minimum_absolute_paired_separation_Pa": 0.813540876362822,
+      "maximum_repeat_span_Pa": 9.89530235528946e-09,
+      "maximum_cross_model_peak_difference_Pa": 73.80931416052044,
+      "discrimination_exceeds_observed_repeat_and_model_difference": false
+    }
+  ],
+  "cross_model_maximum_height_difference_m": 0.0,
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/source.sha256": "d1cd6579690fc73dde74c7896978292da839533a688c35f790157005ee44c6b4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/source-after.sha256": "d1cd6579690fc73dde74c7896978292da839533a688c35f790157005ee44c6b4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/native-snapshot-before.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/native-snapshot-after.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/summary.json": "de03cf96456822417b84406cfb5a8c826dead517457fc97620eff9d79d1aff8d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/summary.json": "8d24187c956eb1a3673e52690cef660548799bcaddb8c3732bb828ef7669a4cb",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r3000-pressure.npz": "85c5d50b4dd53477f59e4975bf87e0ba5dba7b5ad0f1f39e5b4ee617cf917d02",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/step00011-packets.json": "085c8909ac9d8076f85caf943c6218b9be89f7ff19f79d59fb980955e0d7889e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r3000-componentwise.npz": "27d87bf27aee35c3f8b306f375c916c4f43e991afa18dd91e24cb60f8c89889c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r3000-pair_union.npz": "9d7ce8aa8ae425196b9c873bd3390dde7cf1556d2d208a3c3c03609d4405e69d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r3000-body_source_prior.npz": "04a59e9b569485c0839de67eccd443c7a563e34c4b8e93d82c4066d8c6ab20f9",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r6000-pressure.npz": "3f780c0bf6779ee2f841baf18e9244699db134b9d73126ab363abc335c05deec",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r6000-componentwise.npz": "99f74a7086a882144900fcddd1c7bcb9f30ab75eda4b39eebf94f84bc5551812",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r6000-pair_union.npz": "197cea46a535c4db00d83370174aae56eacfc341e8a1a681a4c2a04c3c51e358",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r6000-body_source_prior.npz": "fe8f3cf6290907a1b9819cbd763793d9b7d8d090cde5a061cff875928eda0ffb",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r3000-pressure.npz": "29dcbe8bd79b57fcd91092ded78abe877dfcc05ce69c4a154c33149202890198",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/step00866-packets.json": "1897ffc39bc834b4a03520340c6b550c625b8f91f805d49f9a9a45c639844ec3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r3000-componentwise.npz": "1d0ca3faa24eb18c40277516b98983b9bfdee2f4e6404a41f592a38291f47feb",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r3000-pair_union.npz": "840668c68deabbda0b14a32931ca669c76327c4021c31f2794f1e0bf29b22679",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r3000-body_source_prior.npz": "50c0145705748584dcd716eed130185f452fcaf7c08b732d8cea4fe5912878ec",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r6000-pressure.npz": "340d9960ab128ed1e60576591fc288084f19e5855c292adcb582ad572437ac7e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r6000-componentwise.npz": "c919bbed98d0f06b9009a213881b7cffbbc96e0a0487f618b1d855eea56c09bc",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r6000-pair_union.npz": "bff89bb78b242f9175c9a857b184fdfc0c622cb0a968b1877aab23dd7d9195d7",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r6000-body_source_prior.npz": "06c45c8857273988196c2837a20de0e0664c6be8aada63ca280da3c44914e18f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r3000-pressure.npz": "be3113633ebc3ba8d8d17cfc537aaaf27b4882b8ad2745c13e7d48318505a991",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/step00869-packets.json": "79dae97531c94f42e0b6f8fe956cde2e814566943cac4a8a4efd287acf476cbe",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r3000-componentwise.npz": "8129cdd69fc71fb9b1b86d1a420255df3723bc232acc80329d90b1ccbb978333",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r3000-pair_union.npz": "f5353754cde4ea4fa082a1b2d0098d2943e9c9c881ffbc90c7db16067c82c1db",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r3000-body_source_prior.npz": "068594aeefcbb45aac68e2b712242eccc9acb8d7139639a60d3c57fdded80098",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r6000-pressure.npz": "a05c79d12629e64f74e52045f942b0efcdf858186f4fb0d167d3475143a0e478",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r6000-componentwise.npz": "70d78a73ccb7f5d9b6492c5a26c939204bd5302d13e2afe9a9be55e16f46c5d3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r6000-pair_union.npz": "8ab26f03d6a6a23eb7b7a58660d21b691f6b3d563b167b9460a0d90d8c86f616",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r6000-body_source_prior.npz": "f56c77c82c8beaf6ba38db9bfc8e9cd14feb6b33fd6c10e03a10e11d8404fc66",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r3000-pressure.npz": "fe2360c9e9d6745cad7d7c1307c6f11bee30248a0b9c1617336d9696272bb52b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/step02640-packets.json": "0cb27379be65a8967b8975369aa26a3b9fa31b1a441184639d13fd17ad51b346",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r3000-componentwise.npz": "c61dca9204ed9c16ca23673e4a652fa4c8deaf6e3a942cd3363d5982a330085c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r3000-pair_union.npz": "f4ff0209d358f375683b3c7bdd62ac3de2484fb93539014e5487a60020e0a3e2",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r3000-body_source_prior.npz": "e3bcd68d895c900f1d5c0b7b9f9e877487c12c16e3817302f976ce9ad1382674",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r6000-pressure.npz": "5f626a0bd8e7937d5eefc6d0231cb97fe2ea32422584a610e2e1b5b7ce02a93d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r6000-componentwise.npz": "cc3888457bfe565b3f53e9837300fe336d459a84bc3f584cc6e209a209dfe755",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r6000-pair_union.npz": "73f9bb1b83d3f01679685e48d77f8807c27c6a9cd2eee10322c9826e3a69258c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r6000-body_source_prior.npz": "e5a3d7321974fbd8bf048ed3d55e927adb86a3fb486490b9da5059d3658c6dab",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/rigid/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/rigid/results/benchmark.json": "5dedf077d2c0fcad387b05ad0e064750a2ebb722c0487afd19a94e922f2254cc",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/live/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/live/results/benchmark.json": "a4b692e31b34a2558dd778365f5982e93e8bae1cbac51724970da12de4c41ffd",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/policy-rigid/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/policy-rigid/results/benchmark.json": "e76db17c3674f3481446644822e06e8069c1605616893417600b7335f8798fc4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/policy/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/policy/results/benchmark.json": "310c360d9d7c0a2d71f0105fb06e8d85638d1d3c702a16a755b66265571d9902",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/rigid/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/rigid/results/benchmark.json": "d7ad59f5741af04ba4ccc353c8f49908c5712f555d70f36fb5b90f1cb4f89ddd",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/live/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/live/results/benchmark.json": "b0da733aa2634ee3e353770dcb3fd3f97533f04d7aa76fafc114bb53f6891ee6",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/policy-rigid/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/policy-rigid/results/benchmark.json": "957bbaa3f6455017d4e041a966723f8aca166c78310cc18f40a7333f483b2115",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/policy/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/policy/results/benchmark.json": "92dd86376d7efada7be43246d64183f98bb4081341060b884971083aab45eac0",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1/source.sha256": "c9e658987ef7d95b109d13e5ae867c6a57bbd64ee2285f505bab2a80b7ab22c4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1/source-after.sha256": "c9e658987ef7d95b109d13e5ae867c6a57bbd64ee2285f505bab2a80b7ab22c4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1/native-snapshot-before.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1/native-snapshot-after.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1/results/summary.json": "2d524d12aa6eedda88425bc71aa4052adeb8669a712907bc67f34c6867bc7ebe",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1/results/raw_trace.npz": "aba7788af3f6d5103c2dda833d98916fb41637ef519724a1eb7ac820936b5251",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/source.sha256": "c9e658987ef7d95b109d13e5ae867c6a57bbd64ee2285f505bab2a80b7ab22c4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/source-after.sha256": "c9e658987ef7d95b109d13e5ae867c6a57bbd64ee2285f505bab2a80b7ab22c4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/native-snapshot-before.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/native-snapshot-after.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/results/summary.json": "f01bc84d86e5f423cf313fa4b4fe1c6a34fe98c2962b2fab8995470bbf5cbaa9",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/results/raw_trace.npz": "a40f60f58b289f73bb7365cc31029aafa84d4b17c3851b5014777b9b080b9b2d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/body_mesh.npz": "29dd6b736d75a4d0f9a68e49052c361498be8a03278d6d725b82ba1119a68bcf",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/step00866.npz": "8f072ae5611ffed926cfec1aeb676b74b0033016a0731cd93e6e6f27adddf98e"
+  },
+  "figure_contract": {
+    "claim_anchor": "franka-footprint-assumptions-change-stress",
+    "material_passport": {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "status": "32 numerically accepted conditional snapshots; not continuum truth"
+    },
+    "section": "Material x=0, independently intersect each affine tetrahedron. Exact tensor interpolation to section vertices, then Gouraud display of their von Mises values. No cell merging or smoothing; raw global maxima are retained separately. Shared full section scale, no percentile clipping.",
+    "traction": "All native positive-area samples, material y/z projection, actual normal traction and physical source marker identities. Projection can overlap opposite-side samples; not a continuum island segmentation.",
+    "size_mm": [
+      183,
+      66
+    ],
+    "exports": [
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v2/results/franka-stress-section.svg",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v2/results/franka-stress-section.pdf",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v2/results/franka-stress-section.png",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v2/results/franka-traction-projection.svg",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v2/results/franka-traction-projection.pdf",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v2/results/franka-traction-projection.png"
+    ],
+    "preview_visually_inspected": false,
+    "remaining_QA": "Inspect both rendered previews before calling figures final."
+  },
+  "goal_completion": false
+}

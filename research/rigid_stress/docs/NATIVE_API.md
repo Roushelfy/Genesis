@@ -6,6 +6,15 @@ assembly, contact mapping, factor/inverse construction, recovery, residuals
 and peak reduction run in Quadrants. NumPy handles mesh topology at build time;
 the SciPy/Numba research implementation is an independent test oracle.
 
+The [practical application report](PRACTICAL_APPLICATION_RESULTS_20261016.md)
+gives measured settings, costs and operating limits. Prefer the intrinsic
+source-prior configuration below when requiring local friction-admissible
+tractions. Its aggregate constraint permits measured local load redistribution.
+The faster pressure law has diagnosed local-cone violations in the actual egg
+reference and is only a declared simplified proxy there. A point wrench does
+not identify the physical footprint, and neither option calibrates a fracture
+threshold. Keep native load rejections explicit.
+
 ## Usage
 
 Configure a link before `scene.build()`:

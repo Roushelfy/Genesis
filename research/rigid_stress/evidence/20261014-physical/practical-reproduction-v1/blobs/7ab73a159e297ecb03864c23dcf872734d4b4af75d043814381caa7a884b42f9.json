@@ -1,0 +1,22 @@
+{
+  "utc": "2026-10-16T06:59:04.366600+00:00",
+  "argv": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=rtx-mid",
+    "--gres=gpu:1",
+    "--cpus-per-task=8",
+    "--mem=32G",
+    "--time=00:30:00",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-published-packet-reproduction-v1-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/reconstruct_franka_packets.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-published-packet-reproduction-v1 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/practical-native-application-v1 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/reproduction-checks/restored-four-contact-packets-v1 --radii 0.006 --models body_source_prior'"
+  ],
+  "stdout": "720758\n",
+  "stderr": "",
+  "returncode": 0,
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-published-packet-reproduction-v1",
+  "scope": "Execute the runnable reconstruction handoff against actually restored compact published packet bytes. Four already-qualified states, existing robust6mm model only. This verifies artifact restoration and reproduction commands, not a new physics campaign or continuum accuracy. Preserve original source/residual/raw-peak gates.",
+  "restorer_source_sha256": "4a9afa96c70d6c1c40ed5dbeb184d61415844bbdd888b62a32d9655036c7b69f",
+  "goal_completion": false
+}

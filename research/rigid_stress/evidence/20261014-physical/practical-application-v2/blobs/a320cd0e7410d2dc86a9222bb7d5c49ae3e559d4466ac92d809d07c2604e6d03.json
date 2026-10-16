@@ -1,0 +1,32 @@
+{
+  "utc": "2026-10-16T05:49:34.421000+00:00",
+  "argv": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=rtx-mid",
+    "--gres=gpu:1",
+    "--cpus-per-task=8",
+    "--mem=32G",
+    "--time=00:45:00",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-native-eight-env-diagnostic-v2-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 /usr/bin/env CUDA_CACHE_PATH=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/cache/cuda/practical-franka-eight-env-v2 bash /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/practical-native-application-v1/research/rigid_stress/scripts/run_practical_native_benchmark.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-native-eight-env-diagnostic-v2 --scope live --envs 8 --level 1 --warmup 900 --steps 1200 --repetitions 1 --minimum-seconds 0 --varied --seed 623016 --contact-model pressure --history 4 --output-mode max --egg-geometry mesh64 --trajectory-metrics --save-conditions /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-native-eight-env-diagnostic-v2/results/conditions.npz --source-revision c8333ea3898953e4105f2cc4a5fa6e5205c39e84'"
+  ],
+  "stdout": "720434\n",
+  "stderr": "",
+  "returncode": 0,
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-native-eight-env-diagnostic-v2",
+  "snapshot": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/practical-native-application-v1",
+  "snapshot_manifest_sha256": "2da41428d67e99c88fb85561ba7112a7a2e7ac5ae44892ed65229a8ca6970b5a",
+  "active_user_direction_revision": "96ada437e50aeeb9f5dc76d865fd05e72e9d7b63",
+  "scope": "Small existing native full hollow egg/Franka application with8 varied environments, actual contact mapping/rigid stepping/recovery/history/reset and trajectory metrics,900 warmup plus1200 fixed scripted steps. Validate current application behavior and preserve a condition bank before choosing paired warmed-cost experiments. Intrusive metrics timings are diagnostic only, not physically qualified rates or a fracture threshold. No new independent-FEM assembly campaign.",
+  "goal_completion": false,
+  "old_pending_job_cancelled_before_cache_configuration_change": {
+    "job": 720429,
+    "state_precondition": "JobId=720429 ArrayJobId=720429 ArrayTaskId=0 JobName=wrap\n   UserId=zhaofeng(2157) GroupId=zhaofeng(2157) MCS_label=N/A\n   Priority=1 Nice=0 Account=root QOS=normal\n   JobState=PENDING Reason=Resources Dependency=(null)\n   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0\n   RunTime=00:00:00 TimeLimit=02:00:00 TimeMin=N/A\n   SubmitTime=2026-10-16T05:47:55 EligibleTime=2026-10-16T05:47:55\n   AccrueTime=2026-10-16T05:47:55\n   StartTime=2026-10-16T06:07:35 EndTime=2026-10-16T08:07:35 Deadline=N/A\n   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-16T05:49:14 Scheduler=Main\n   Partition=rtx-mid AllocNode:Sid=cpu-207-159:4148503\n   ReqNodeList=(null) ExcNodeList=(null)\n   NodeList= SchedNodeList=rtx-209-235\n   NumNodes=1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:*\n   ReqTRES=cpu=8,mem=64G,node=1,billing=8,gres/gpu=1\n   AllocTRES=(null)\n   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*\n   MinCPUsNode=8 MinMemoryNode=64G MinTmpDiskNode=0\n   Features=(null) DelayBoot=00:00:00\n   OverSubscribe=OK Contiguous=0 Licenses=(null) LicensesAlloc=(null) Network=(null)\n   Command=(null)\n   WorkDir=/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery\n   StdErr=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-native-eight-env-diagnostic-v1-720429_0.log\n   StdIn=/dev/null\n   StdOut=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-native-eight-env-diagnostic-v1-720429_0.log\n   TresPerNode=gres/gpu:1\n   TresPerTask=cpu=8\n   \n\n",
+    "cancellation_returncode": 0
+  },
+  "explicit_CUDA_driver_cache_path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/cache/cuda/practical-franka-eight-env-v2",
+  "numerical_and_application_sources_unchanged": true,
+  "reason_for_replacement": "Set the relevant CUDA driver cache explicitly on the data mount before execution; tighten small diagnostic resource reservation. The same immutable source snapshot and physical application arguments remain."
+}

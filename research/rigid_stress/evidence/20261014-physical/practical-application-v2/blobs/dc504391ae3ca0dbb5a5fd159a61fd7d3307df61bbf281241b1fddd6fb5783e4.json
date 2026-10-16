@@ -1,0 +1,1479 @@
+{
+  "scope": "Publish closed compact application evidence, preserving failures and original bytes.",
+  "closed_jobs": [
+    {
+      "run": "practical-franka-native-eight-env-diagnostic-v2",
+      "job": 720434,
+      "kind": "native_benchmark",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-intrinsic-eight-env-diagnostic-v1",
+      "job": 720500,
+      "kind": "native_benchmark",
+      "state": "FAILED",
+      "returncode": 1
+    },
+    {
+      "run": "practical-franka-source-prior-eight-env-diagnostic-v1",
+      "job": 720547,
+      "kind": "native_benchmark",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-four-contact-packets-v1",
+      "job": 720559,
+      "kind": "reference",
+      "state": "FAILED",
+      "returncode": 1
+    },
+    {
+      "run": "practical-franka-four-contact-packets-v2",
+      "job": 720562,
+      "kind": "reference",
+      "state": "FAILED",
+      "returncode": 1
+    },
+    {
+      "run": "practical-franka-four-contact-packets-v3",
+      "job": 720564,
+      "kind": "reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-four-snapshot-reconstruction-v1",
+      "job": 720570,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-pressure-four-scopes-b32-v1",
+      "job": 720548,
+      "kind": "cost_group",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-source-prior-four-scopes-b32-v1",
+      "job": 720565,
+      "kind": "cost_group",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-application-analysis-v1",
+      "job": 720638,
+      "kind": "reference",
+      "state": "FAILED",
+      "returncode": 1
+    },
+    {
+      "run": "practical-franka-wrench-diagnostics-v1",
+      "job": 720653,
+      "kind": "reference",
+      "state": "FAILED",
+      "returncode": 1
+    },
+    {
+      "run": "practical-franka-wrench-diagnostics-v2",
+      "job": 720668,
+      "kind": "reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-application-analysis-v2",
+      "job": 720686,
+      "kind": "reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-reward-radius-analysis-v1",
+      "job": 720696,
+      "kind": "reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-low-force-radius-analysis-v1",
+      "job": 720713,
+      "kind": "reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-grip-choice-pressure-v1",
+      "job": 720612,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-grip-choice-body_source_prior-v1",
+      "job": 720613,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-grip-choice-pressure-half-radius-v1",
+      "job": 720664,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-grip-choice-body_source_prior-half-radius-v1",
+      "job": 720665,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-low-force-choice-pressure-v1",
+      "job": 720699,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-low-force-choice-body_source_prior-v1",
+      "job": 720701,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-low-force-choice-pressure-half-radius-v1",
+      "job": 720700,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-low-force-choice-body_source_prior-half-radius-v1",
+      "job": 720702,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    }
+  ],
+  "source_identities": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "genesis/assets/xml/franka_emika_panda/panda.xml",
+      "sha256": "e502e07fcef6219024be02dfb9cd65d5c194b4767adf381ca51f10172ff8a32d"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/articulated_franka_contact.py",
+      "sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/audit_franka_reference.py",
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/captured_reference_motion.py",
+      "sha256": "773c72e3d2175d97076d4ffd966add157e6ace1a849d6ccf67b7883fc3f6c9aa"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/compare_original_contact_feedback.py",
+      "sha256": "32da9e0eae55eb598e8c1ae06b46fcb3e40b9b196686c98f7c012b431bf73e1f"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/contact_reference.py",
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/extract_franka_contact_packets.py",
+      "sha256": "acf343310c061e60d806c28171aa344045044994e38888359dd41c8206ebfa14"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/franka_contact_reference.py",
+      "sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/franka_mujoco_reference.py",
+      "sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/interrupted_source_verification.py",
+      "sha256": "a6ad7fb7fa059238d3102d76078e2c6ec1f260473208006cafa6389998647dac"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/original_franka_ground.py",
+      "sha256": "2dda5f6c7338eae00d928ff67b617e4175d644cd0e8df35ba9ddf2f31b9d1b27"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/precise_panda_kinematics.py",
+      "sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/predicted_wide_franka.py",
+      "sha256": "77cfc40d358606acf2382626e6b59d5d3ed75c90e4dd694c17de5aa52b725328"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/recover_lagged_rigid_contact.py",
+      "sha256": "aa596770a714486ccf58fcc3465a561cda3d16faa235a8f94ee666063f4a1c57"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/recover_original_rigid_step.py",
+      "sha256": "31940252f525ee84c01110c291892c9ef34f67cc1d46dd6a665da311552627b8"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/reference_motion_audit.py",
+      "sha256": "3c390890ee670a472da2135e19a1b90e8ca057ae039e70c13b52b93d68bd31a2"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/rigid_egg_articulated_contact.py",
+      "sha256": "4fb3fcff875f6d46a01889e7d3ff1340ab700c6fe0eecd42bceba26e1bb6a76b"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/run_articulated_franka.py",
+      "sha256": "1d37dae790eae702f6020505317a5b5dd24b20dfcc07a0bbda2d62dcf4c4f358"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/run_original_rigid_franka.py",
+      "sha256": "af91586ffcf453b6b2db7c2b5fa1f420696ecf23b07ce2daf0178887a11738af"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/run_rigid_egg_franka.py",
+      "sha256": "e0e1171256531bcc9a9f790e90a2d93217099db45c8c2b343ba325d5948e1d65"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/scripts/compare_original_contact_feedback.sh",
+      "sha256": "12cd3b905307a424222006b7ff2c97cb1000645c851ff47e6062b3785b89efbf"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/scripts/extract_franka_contact_packets.sh",
+      "sha256": "f1b502bebdf38310950288c14e4ec6d56595b8c4bba914b9a3e26e841cf1d517"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/stable_neohookean_reference.py",
+      "sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+      "source": "research/rigid_stress/wide_coordinate_franka.py",
+      "sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "genesis/assets/xml/franka_emika_panda/panda.xml",
+      "sha256": "e502e07fcef6219024be02dfb9cd65d5c194b4767adf381ca51f10172ff8a32d"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/articulated_franka_contact.py",
+      "sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/audit_franka_reference.py",
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/captured_reference_motion.py",
+      "sha256": "773c72e3d2175d97076d4ffd966add157e6ace1a849d6ccf67b7883fc3f6c9aa"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/compare_original_contact_feedback.py",
+      "sha256": "32da9e0eae55eb598e8c1ae06b46fcb3e40b9b196686c98f7c012b431bf73e1f"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/contact_reference.py",
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/extract_franka_contact_packets.py",
+      "sha256": "69b6deb8a8d310175dd2fc2ab02ab4653d3ea17fed3ff4ac4b8cd55dcd4d8ec1"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/franka_contact_reference.py",
+      "sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/franka_mujoco_reference.py",
+      "sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/interrupted_source_verification.py",
+      "sha256": "a6ad7fb7fa059238d3102d76078e2c6ec1f260473208006cafa6389998647dac"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/original_franka_ground.py",
+      "sha256": "2dda5f6c7338eae00d928ff67b617e4175d644cd0e8df35ba9ddf2f31b9d1b27"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/precise_panda_kinematics.py",
+      "sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/predicted_wide_franka.py",
+      "sha256": "77cfc40d358606acf2382626e6b59d5d3ed75c90e4dd694c17de5aa52b725328"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/recover_lagged_rigid_contact.py",
+      "sha256": "aa596770a714486ccf58fcc3465a561cda3d16faa235a8f94ee666063f4a1c57"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/recover_original_rigid_step.py",
+      "sha256": "31940252f525ee84c01110c291892c9ef34f67cc1d46dd6a665da311552627b8"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/reference_motion_audit.py",
+      "sha256": "3c390890ee670a472da2135e19a1b90e8ca057ae039e70c13b52b93d68bd31a2"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/rigid_egg_articulated_contact.py",
+      "sha256": "4fb3fcff875f6d46a01889e7d3ff1340ab700c6fe0eecd42bceba26e1bb6a76b"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/run_articulated_franka.py",
+      "sha256": "1d37dae790eae702f6020505317a5b5dd24b20dfcc07a0bbda2d62dcf4c4f358"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/run_original_rigid_franka.py",
+      "sha256": "af91586ffcf453b6b2db7c2b5fa1f420696ecf23b07ce2daf0178887a11738af"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/run_rigid_egg_franka.py",
+      "sha256": "e0e1171256531bcc9a9f790e90a2d93217099db45c8c2b343ba325d5948e1d65"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/scripts/compare_original_contact_feedback.sh",
+      "sha256": "12cd3b905307a424222006b7ff2c97cb1000645c851ff47e6062b3785b89efbf"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/scripts/extract_franka_contact_packets.sh",
+      "sha256": "f1b502bebdf38310950288c14e4ec6d56595b8c4bba914b9a3e26e841cf1d517"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/stable_neohookean_reference.py",
+      "sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v2",
+      "source": "research/rigid_stress/wide_coordinate_franka.py",
+      "sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "genesis/assets/xml/franka_emika_panda/panda.xml",
+      "sha256": "e502e07fcef6219024be02dfb9cd65d5c194b4767adf381ca51f10172ff8a32d"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/articulated_franka_contact.py",
+      "sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/audit_franka_reference.py",
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/captured_reference_motion.py",
+      "sha256": "773c72e3d2175d97076d4ffd966add157e6ace1a849d6ccf67b7883fc3f6c9aa"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/compare_original_contact_feedback.py",
+      "sha256": "32da9e0eae55eb598e8c1ae06b46fcb3e40b9b196686c98f7c012b431bf73e1f"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/contact_reference.py",
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/extract_franka_contact_packets.py",
+      "sha256": "5ceee514f7476e959526ca49ca04e59f5dbd84e8238585bec3b528ab3ddfd2da"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/franka_contact_reference.py",
+      "sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/franka_mujoco_reference.py",
+      "sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/interrupted_source_verification.py",
+      "sha256": "a6ad7fb7fa059238d3102d76078e2c6ec1f260473208006cafa6389998647dac"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/original_franka_ground.py",
+      "sha256": "2dda5f6c7338eae00d928ff67b617e4175d644cd0e8df35ba9ddf2f31b9d1b27"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/precise_panda_kinematics.py",
+      "sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/predicted_wide_franka.py",
+      "sha256": "77cfc40d358606acf2382626e6b59d5d3ed75c90e4dd694c17de5aa52b725328"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/recover_lagged_rigid_contact.py",
+      "sha256": "aa596770a714486ccf58fcc3465a561cda3d16faa235a8f94ee666063f4a1c57"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/recover_original_rigid_step.py",
+      "sha256": "31940252f525ee84c01110c291892c9ef34f67cc1d46dd6a665da311552627b8"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/reference_motion_audit.py",
+      "sha256": "3c390890ee670a472da2135e19a1b90e8ca057ae039e70c13b52b93d68bd31a2"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/rigid_egg_articulated_contact.py",
+      "sha256": "4fb3fcff875f6d46a01889e7d3ff1340ab700c6fe0eecd42bceba26e1bb6a76b"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/run_articulated_franka.py",
+      "sha256": "1d37dae790eae702f6020505317a5b5dd24b20dfcc07a0bbda2d62dcf4c4f358"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/run_original_rigid_franka.py",
+      "sha256": "af91586ffcf453b6b2db7c2b5fa1f420696ecf23b07ce2daf0178887a11738af"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/run_rigid_egg_franka.py",
+      "sha256": "e0e1171256531bcc9a9f790e90a2d93217099db45c8c2b343ba325d5948e1d65"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/scripts/compare_original_contact_feedback.sh",
+      "sha256": "12cd3b905307a424222006b7ff2c97cb1000645c851ff47e6062b3785b89efbf"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/scripts/extract_franka_contact_packets.sh",
+      "sha256": "f1b502bebdf38310950288c14e4ec6d56595b8c4bba914b9a3e26e841cf1d517"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/stable_neohookean_reference.py",
+      "sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3",
+      "source": "research/rigid_stress/wide_coordinate_franka.py",
+      "sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "genesis/assets/xml/franka_emika_panda/panda.xml",
+      "sha256": "e502e07fcef6219024be02dfb9cd65d5c194b4767adf381ca51f10172ff8a32d"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/articulated_franka_contact.py",
+      "sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/audit_franka_reference.py",
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/captured_reference_motion.py",
+      "sha256": "773c72e3d2175d97076d4ffd966add157e6ace1a849d6ccf67b7883fc3f6c9aa"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/compare_original_contact_feedback.py",
+      "sha256": "32da9e0eae55eb598e8c1ae06b46fcb3e40b9b196686c98f7c012b431bf73e1f"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/contact_reference.py",
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/extract_franka_contact_packets.py",
+      "sha256": "5ceee514f7476e959526ca49ca04e59f5dbd84e8238585bec3b528ab3ddfd2da"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/finite_traction_reference.py",
+      "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/franka_contact_reference.py",
+      "sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/franka_mujoco_reference.py",
+      "sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/interrupted_source_verification.py",
+      "sha256": "a6ad7fb7fa059238d3102d76078e2c6ec1f260473208006cafa6389998647dac"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/load_model_validation.py",
+      "sha256": "f577ce72a06b3aa7699fc869530c995b5f30cef4d2ea46b38cf842361713277e"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/native_load_samples.py",
+      "sha256": "5414f18f054b0b39e4b05b3b3459bd41f4684cbda175ca42d39a692be8b0df69"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/native_physical_sequence.py",
+      "sha256": "e8c11b9d792d646867bda5edaf8c53cd4c72ccd48839ae3264175383963f8b55"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/original_franka_ground.py",
+      "sha256": "2dda5f6c7338eae00d928ff67b617e4175d644cd0e8df35ba9ddf2f31b9d1b27"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/precise_panda_kinematics.py",
+      "sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/predicted_wide_franka.py",
+      "sha256": "77cfc40d358606acf2382626e6b59d5d3ed75c90e4dd694c17de5aa52b725328"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/profile_reference_sensitivity.py",
+      "sha256": "50164ae13d4ea96ee2db3287d11c0414949af14ae9ea593c90da13f120f71aa5"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/qualify_reference_scaling.py",
+      "sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/reconstruct_franka_packets.py",
+      "sha256": "5e3be22027db4e0d30102cf6c7930783a4717ca237bebc4174e392c06c897593"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/recover_lagged_rigid_contact.py",
+      "sha256": "aa596770a714486ccf58fcc3465a561cda3d16faa235a8f94ee666063f4a1c57"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/recover_original_rigid_step.py",
+      "sha256": "31940252f525ee84c01110c291892c9ef34f67cc1d46dd6a665da311552627b8"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/reference_motion_audit.py",
+      "sha256": "3c390890ee670a472da2135e19a1b90e8ca057ae039e70c13b52b93d68bd31a2"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/rigid_egg_articulated_contact.py",
+      "sha256": "4fb3fcff875f6d46a01889e7d3ff1340ab700c6fe0eecd42bceba26e1bb6a76b"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/run_articulated_franka.py",
+      "sha256": "1d37dae790eae702f6020505317a5b5dd24b20dfcc07a0bbda2d62dcf4c4f358"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/run_original_rigid_franka.py",
+      "sha256": "af91586ffcf453b6b2db7c2b5fa1f420696ecf23b07ce2daf0178887a11738af"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/run_rigid_egg_franka.py",
+      "sha256": "e0e1171256531bcc9a9f790e90a2d93217099db45c8c2b343ba325d5948e1d65"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/scripts/compare_original_contact_feedback.sh",
+      "sha256": "12cd3b905307a424222006b7ff2c97cb1000645c851ff47e6062b3785b89efbf"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/scripts/extract_franka_contact_packets.sh",
+      "sha256": "f1b502bebdf38310950288c14e4ec6d56595b8c4bba914b9a3e26e841cf1d517"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/scripts/reconstruct_franka_packets.sh",
+      "sha256": "73d8b5a798aa7b29c7f4c1b7aef22844bcd5828efed963ba8aedff541670f93e"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/spherical_shell_validation.py",
+      "sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/stable_neohookean_reference.py",
+      "sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/validation_meshes.py",
+      "sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1",
+      "source": "research/rigid_stress/wide_coordinate_franka.py",
+      "sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v1",
+      "source": "research/rigid_stress/analyse_practical_application.py",
+      "sha256": "fb703624c8609f668a5115f81b7b8477e8a71e9c9163db2187940452b7d59036"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v1",
+      "source": "research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v1",
+      "source": "research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v1",
+      "source": "research/rigid_stress/scripts/analyse_practical_application.sh",
+      "sha256": "a01f09480700b5f7c53776aa3bece6150aa88c95520cdc4821cd1dc9cbb26437"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v1",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v1",
+      "source": "nature_mpl_style.py",
+      "sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v1",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v1",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v1",
+      "source": "research/rigid_stress/analyse_practical_application.py",
+      "sha256": "108dd429de98493cb387ab8f0f45c93453e8f76b3806a192b8878967210e1021"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v1",
+      "source": "research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v1",
+      "source": "research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v1",
+      "source": "research/rigid_stress/scripts/analyse_practical_application.sh",
+      "sha256": "a01f09480700b5f7c53776aa3bece6150aa88c95520cdc4821cd1dc9cbb26437"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v1",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v1",
+      "source": "nature_mpl_style.py",
+      "sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v1",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v1",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v2",
+      "source": "research/rigid_stress/analyse_practical_application.py",
+      "sha256": "418e7f5a36337aed0543de7312e3d08e46eb9abcbee61e59a892e5bc76402b52"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v2",
+      "source": "research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v2",
+      "source": "research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v2",
+      "source": "research/rigid_stress/scripts/analyse_practical_application.sh",
+      "sha256": "a01f09480700b5f7c53776aa3bece6150aa88c95520cdc4821cd1dc9cbb26437"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v2",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v2",
+      "source": "nature_mpl_style.py",
+      "sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v2",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-wrench-diagnostics-v2",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v2",
+      "source": "research/rigid_stress/analyse_practical_application.py",
+      "sha256": "e985c8f058debee71120afba2442c56ad505c072ab4abeafdec0aa5811549cd6"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v2",
+      "source": "research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v2",
+      "source": "research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v2",
+      "source": "research/rigid_stress/scripts/analyse_practical_application.sh",
+      "sha256": "a01f09480700b5f7c53776aa3bece6150aa88c95520cdc4821cd1dc9cbb26437"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v2",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v2",
+      "source": "nature_mpl_style.py",
+      "sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v2",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v2",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-reward-radius-analysis-v1",
+      "source": "research/rigid_stress/analyse_practical_application.py",
+      "sha256": "4019014d8adb814f9fc09b57bf5db26ff4626f212317147aebbc007f299b6131"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-reward-radius-analysis-v1",
+      "source": "research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-reward-radius-analysis-v1",
+      "source": "research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-reward-radius-analysis-v1",
+      "source": "research/rigid_stress/scripts/analyse_practical_application.sh",
+      "sha256": "a01f09480700b5f7c53776aa3bece6150aa88c95520cdc4821cd1dc9cbb26437"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-reward-radius-analysis-v1",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-reward-radius-analysis-v1",
+      "source": "nature_mpl_style.py",
+      "sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-reward-radius-analysis-v1",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-reward-radius-analysis-v1",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-radius-analysis-v1",
+      "source": "research/rigid_stress/analyse_practical_application.py",
+      "sha256": "9f884c8ea677d4019b02bde70934b5ab347552574421270123fbf68ded526be4"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-radius-analysis-v1",
+      "source": "research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-radius-analysis-v1",
+      "source": "research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-radius-analysis-v1",
+      "source": "research/rigid_stress/scripts/analyse_practical_application.sh",
+      "sha256": "a01f09480700b5f7c53776aa3bece6150aa88c95520cdc4821cd1dc9cbb26437"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-radius-analysis-v1",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-radius-analysis-v1",
+      "source": "nature_mpl_style.py",
+      "sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-radius-analysis-v1",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-radius-analysis-v1",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1",
+      "source": "research/rigid_stress/practical_reward_proxy.py",
+      "sha256": "f9485b32cb79682f4a8629806836ccc336b9338156b1eac58b81cd50c78627ea"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1",
+      "source": "research/rigid_stress/scripts/run_practical_reward_proxy.sh",
+      "sha256": "d86f0adf05e1b02a00dc5cf3474f0e1d31e6da8086d7f034a8453630f5d64ec7"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1",
+      "source": "research/rigid_stress/practical_reward_proxy.py",
+      "sha256": "f9485b32cb79682f4a8629806836ccc336b9338156b1eac58b81cd50c78627ea"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1",
+      "source": "research/rigid_stress/scripts/run_practical_reward_proxy.sh",
+      "sha256": "d86f0adf05e1b02a00dc5cf3474f0e1d31e6da8086d7f034a8453630f5d64ec7"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-half-radius-v1",
+      "source": "research/rigid_stress/practical_reward_proxy.py",
+      "sha256": "7b1191d6d685ee5a576164d3c883f00544ad60f26db5403fc926de77f41ebe15"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-half-radius-v1",
+      "source": "research/rigid_stress/scripts/run_practical_reward_proxy.sh",
+      "sha256": "d86f0adf05e1b02a00dc5cf3474f0e1d31e6da8086d7f034a8453630f5d64ec7"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-half-radius-v1",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-half-radius-v1",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-half-radius-v1",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-half-radius-v1",
+      "source": "research/rigid_stress/practical_reward_proxy.py",
+      "sha256": "7b1191d6d685ee5a576164d3c883f00544ad60f26db5403fc926de77f41ebe15"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-half-radius-v1",
+      "source": "research/rigid_stress/scripts/run_practical_reward_proxy.sh",
+      "sha256": "d86f0adf05e1b02a00dc5cf3474f0e1d31e6da8086d7f034a8453630f5d64ec7"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-half-radius-v1",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-half-radius-v1",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-half-radius-v1",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-v1",
+      "source": "research/rigid_stress/practical_reward_proxy.py",
+      "sha256": "7b01838e4b084fa033ec6eddd530790d9a04a7ca817f95467789a98ece427e1a"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-v1",
+      "source": "research/rigid_stress/scripts/run_practical_reward_proxy.sh",
+      "sha256": "d86f0adf05e1b02a00dc5cf3474f0e1d31e6da8086d7f034a8453630f5d64ec7"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-v1",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-v1",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-v1",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-v1",
+      "source": "research/rigid_stress/practical_reward_proxy.py",
+      "sha256": "7b01838e4b084fa033ec6eddd530790d9a04a7ca817f95467789a98ece427e1a"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-v1",
+      "source": "research/rigid_stress/scripts/run_practical_reward_proxy.sh",
+      "sha256": "d86f0adf05e1b02a00dc5cf3474f0e1d31e6da8086d7f034a8453630f5d64ec7"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-v1",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-v1",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-v1",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-half-radius-v1",
+      "source": "research/rigid_stress/practical_reward_proxy.py",
+      "sha256": "7b01838e4b084fa033ec6eddd530790d9a04a7ca817f95467789a98ece427e1a"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-half-radius-v1",
+      "source": "research/rigid_stress/scripts/run_practical_reward_proxy.sh",
+      "sha256": "d86f0adf05e1b02a00dc5cf3474f0e1d31e6da8086d7f034a8453630f5d64ec7"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-half-radius-v1",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-half-radius-v1",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-half-radius-v1",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-half-radius-v1",
+      "source": "research/rigid_stress/practical_reward_proxy.py",
+      "sha256": "7b01838e4b084fa033ec6eddd530790d9a04a7ca817f95467789a98ece427e1a"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-half-radius-v1",
+      "source": "research/rigid_stress/scripts/run_practical_reward_proxy.sh",
+      "sha256": "d86f0adf05e1b02a00dc5cf3474f0e1d31e6da8086d7f034a8453630f5d64ec7"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-half-radius-v1",
+      "source": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-half-radius-v1",
+      "source": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-half-radius-v1",
+      "source": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "native_source_checkpoint": "cd42aed09a36c1bb71eb00bc702e76da41967ac0",
+  "native_snapshot_sha256": "2da41428d67e99c88fb85561ba7112a7a2e7ac5ae44892ed65229a8ca6970b5a",
+  "native_source_files": 899,
+  "native_source_assets_reconstruct_from_git": true,
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/configuration.json": "d20e30d357255104629653fb3da4a3ef9fc940cd5bfc08aa78117c1ca985e148",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-fields-v1/results/summary.json": "39a74a7b42911a7c79594173f52d5e1a7848f714d3a95c107702b757ce51715c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-rigid-deformable-feedback-v2/results/summary.json": "d284cf570ae9a815b0ec8936c8c81d864cddf441fbbd9a015c404706e568ee67",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/source/genesis/assets/xml/franka_emika_panda/panda.xml": "e502e07fcef6219024be02dfb9cd65d5c194b4767adf381ca51f10172ff8a32d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step00011.npz": "ede80dae14c401ae54aca86853da2ff10c1249eabb5e668d00fd5027785a9ccc",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step00010.npz": "eae1cb1dcdfbae532e08e66f0b8c970db5af23fc116e709384c89ce71712ee48",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-fields-v1/results/step00011.npz": "79778c0234f35003123310c4dbfac31503b7074046ea1a0a8f278eeedc615ec6",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step00866.npz": "489674c34c93cbe4654511f9967009586600e206abe55653c9b0c9dd424e1a61",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step00865.npz": "a6ce86575a1db97855a4bc0c28093ba802382cddb33309feaa692d8a8f50bf6b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-fields-v1/results/step00866.npz": "06ffdb51516ddcd290a3bdee894238b735d2e71e8f264e85b68c078560743b7b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step00869.npz": "9409df3db0e400ed7781c91af6aa1e40be298bca9c7d143d7eaa62ce6c75be04",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step00868.npz": "3fbb4e447e332a43a2a7721a542d2cae2b59deb81863bff0c33f487b447baf79",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-fields-v1/results/step00869.npz": "8605371dba585a7c5a279a141339041278304498c9e48ea057bf0c46f4ca6e1f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step02640.npz": "90dd6e2b4db6f44ee7a6ee59bce691e4167babfaccfa26586e749f2fedb3c51b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step02639.npz": "0b927df28b345f64b2af2f79b8e65d34e671a59f303002762e0e2b1c2ac1490f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-fields-v1/results/step02640.npz": "88d69d44e70bac52c348a2fa29ea7ce63c6d43779de4ff675faaab00572f4edc",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/summary.json": "8d24187c956eb1a3673e52690cef660548799bcaddb8c3732bb828ef7669a4cb",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/body_mesh.npz": "29dd6b736d75a4d0f9a68e49052c361498be8a03278d6d725b82ba1119a68bcf",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/step00011-packets.json": "085c8909ac9d8076f85caf943c6218b9be89f7ff19f79d59fb980955e0d7889e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/step00011.npz": "ea0cc503c1ee8ba02fe01f15bbb7b9e1323e81a3e28c2eb061eba51f6e3c40d3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/step00866-packets.json": "1897ffc39bc834b4a03520340c6b550c625b8f91f805d49f9a9a45c639844ec3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/step00866.npz": "8f072ae5611ffed926cfec1aeb676b74b0033016a0731cd93e6e6f27adddf98e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/step00869-packets.json": "79dae97531c94f42e0b6f8fe956cde2e814566943cac4a8a4efd287acf476cbe",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/step00869.npz": "24760b9db0f8bfa5ec7e032437d38e4bebc4b4e432d95700fb5a25a0721289cb",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/step02640-packets.json": "0cb27379be65a8967b8975369aa26a3b9fa31b1a441184639d13fd17ad51b346",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v3/results/step02640.npz": "ff183aafce9a875ff8120b3169226b5590ca3fca72c8d4dcb773bce924de5b56",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/source.sha256": "d1cd6579690fc73dde74c7896978292da839533a688c35f790157005ee44c6b4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/source-after.sha256": "d1cd6579690fc73dde74c7896978292da839533a688c35f790157005ee44c6b4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/native-snapshot-before.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/native-snapshot-after.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/summary.json": "de03cf96456822417b84406cfb5a8c826dead517457fc97620eff9d79d1aff8d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r3000-pressure.npz": "85c5d50b4dd53477f59e4975bf87e0ba5dba7b5ad0f1f39e5b4ee617cf917d02",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r3000-componentwise.npz": "27d87bf27aee35c3f8b306f375c916c4f43e991afa18dd91e24cb60f8c89889c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r3000-pair_union.npz": "9d7ce8aa8ae425196b9c873bd3390dde7cf1556d2d208a3c3c03609d4405e69d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r3000-body_source_prior.npz": "04a59e9b569485c0839de67eccd443c7a563e34c4b8e93d82c4066d8c6ab20f9",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r6000-pressure.npz": "3f780c0bf6779ee2f841baf18e9244699db134b9d73126ab363abc335c05deec",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r6000-componentwise.npz": "99f74a7086a882144900fcddd1c7bcb9f30ab75eda4b39eebf94f84bc5551812",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r6000-pair_union.npz": "197cea46a535c4db00d83370174aae56eacfc341e8a1a681a4c2a04c3c51e358",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r6000-body_source_prior.npz": "fe8f3cf6290907a1b9819cbd763793d9b7d8d090cde5a061cff875928eda0ffb",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r3000-pressure.npz": "29dcbe8bd79b57fcd91092ded78abe877dfcc05ce69c4a154c33149202890198",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r3000-componentwise.npz": "1d0ca3faa24eb18c40277516b98983b9bfdee2f4e6404a41f592a38291f47feb",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r3000-pair_union.npz": "840668c68deabbda0b14a32931ca669c76327c4021c31f2794f1e0bf29b22679",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r3000-body_source_prior.npz": "50c0145705748584dcd716eed130185f452fcaf7c08b732d8cea4fe5912878ec",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r6000-pressure.npz": "340d9960ab128ed1e60576591fc288084f19e5855c292adcb582ad572437ac7e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r6000-componentwise.npz": "c919bbed98d0f06b9009a213881b7cffbbc96e0a0487f618b1d855eea56c09bc",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r6000-pair_union.npz": "bff89bb78b242f9175c9a857b184fdfc0c622cb0a968b1877aab23dd7d9195d7",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r6000-body_source_prior.npz": "06c45c8857273988196c2837a20de0e0664c6be8aada63ca280da3c44914e18f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r3000-pressure.npz": "be3113633ebc3ba8d8d17cfc537aaaf27b4882b8ad2745c13e7d48318505a991",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r3000-componentwise.npz": "8129cdd69fc71fb9b1b86d1a420255df3723bc232acc80329d90b1ccbb978333",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r3000-pair_union.npz": "f5353754cde4ea4fa082a1b2d0098d2943e9c9c881ffbc90c7db16067c82c1db",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r3000-body_source_prior.npz": "068594aeefcbb45aac68e2b712242eccc9acb8d7139639a60d3c57fdded80098",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r6000-pressure.npz": "a05c79d12629e64f74e52045f942b0efcdf858186f4fb0d167d3475143a0e478",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r6000-componentwise.npz": "70d78a73ccb7f5d9b6492c5a26c939204bd5302d13e2afe9a9be55e16f46c5d3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r6000-pair_union.npz": "8ab26f03d6a6a23eb7b7a58660d21b691f6b3d563b167b9460a0d90d8c86f616",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r6000-body_source_prior.npz": "f56c77c82c8beaf6ba38db9bfc8e9cd14feb6b33fd6c10e03a10e11d8404fc66",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r3000-pressure.npz": "fe2360c9e9d6745cad7d7c1307c6f11bee30248a0b9c1617336d9696272bb52b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r3000-componentwise.npz": "c61dca9204ed9c16ca23673e4a652fa4c8deaf6e3a942cd3363d5982a330085c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r3000-pair_union.npz": "f4ff0209d358f375683b3c7bdd62ac3de2484fb93539014e5487a60020e0a3e2",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r3000-body_source_prior.npz": "e3bcd68d895c900f1d5c0b7b9f9e877487c12c16e3817302f976ce9ad1382674",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r6000-pressure.npz": "5f626a0bd8e7937d5eefc6d0231cb97fe2ea32422584a610e2e1b5b7ce02a93d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r6000-componentwise.npz": "cc3888457bfe565b3f53e9837300fe336d459a84bc3f584cc6e209a209dfe755",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r6000-pair_union.npz": "73f9bb1b83d3f01679685e48d77f8807c27c6a9cd2eee10322c9826e3a69258c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r6000-body_source_prior.npz": "e5a3d7321974fbd8bf048ed3d55e927adb86a3fb486490b9da5059d3658c6dab",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/rigid/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/rigid/results/benchmark.json": "5dedf077d2c0fcad387b05ad0e064750a2ebb722c0487afd19a94e922f2254cc",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/live/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/live/results/benchmark.json": "a4b692e31b34a2558dd778365f5982e93e8bae1cbac51724970da12de4c41ffd",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/policy-rigid/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/policy-rigid/results/benchmark.json": "e76db17c3674f3481446644822e06e8069c1605616893417600b7335f8798fc4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/policy/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1/policy/results/benchmark.json": "310c360d9d7c0a2d71f0105fb06e8d85638d1d3c702a16a755b66265571d9902",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/rigid/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/rigid/results/benchmark.json": "d7ad59f5741af04ba4ccc353c8f49908c5712f555d70f36fb5b90f1cb4f89ddd",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/live/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/live/results/benchmark.json": "b0da733aa2634ee3e353770dcb3fd3f97533f04d7aa76fafc114bb53f6891ee6",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/policy-rigid/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/policy-rigid/results/benchmark.json": "957bbaa3f6455017d4e041a966723f8aca166c78310cc18f40a7333f483b2115",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/policy/snapshot-inventory-after.json": "b47314bacbb5f840824209089589a8fbff87cf3ec00805deebacfad579e3bc46",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1/policy/results/benchmark.json": "92dd86376d7efada7be43246d64183f98bb4081341060b884971083aab45eac0",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1/source.sha256": "c9e658987ef7d95b109d13e5ae867c6a57bbd64ee2285f505bab2a80b7ab22c4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1/source-after.sha256": "c9e658987ef7d95b109d13e5ae867c6a57bbd64ee2285f505bab2a80b7ab22c4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1/native-snapshot-before.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1/native-snapshot-after.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1/results/summary.json": "2d524d12aa6eedda88425bc71aa4052adeb8669a712907bc67f34c6867bc7ebe",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1/results/raw_trace.npz": "aba7788af3f6d5103c2dda833d98916fb41637ef519724a1eb7ac820936b5251",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/source.sha256": "c9e658987ef7d95b109d13e5ae867c6a57bbd64ee2285f505bab2a80b7ab22c4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/source-after.sha256": "c9e658987ef7d95b109d13e5ae867c6a57bbd64ee2285f505bab2a80b7ab22c4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/native-snapshot-before.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/native-snapshot-after.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/results/summary.json": "f01bc84d86e5f423cf313fa4b4fe1c6a34fe98c2962b2fab8995470bbf5cbaa9",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/results/raw_trace.npz": "a40f60f58b289f73bb7365cc31029aafa84d4b17c3851b5014777b9b080b9b2d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-half-radius-v1/source.sha256": "b908cd1326fbaa6a8e5366727c0555b582033b7e3a52d1bed3cda1b68b24486c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-half-radius-v1/source-after.sha256": "b908cd1326fbaa6a8e5366727c0555b582033b7e3a52d1bed3cda1b68b24486c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-half-radius-v1/native-snapshot-before.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-half-radius-v1/native-snapshot-after.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-half-radius-v1/results/summary.json": "756accb3b264a1b954dbf50a97e82610db63811a02c2b65ffbe9a750aeb03a4f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-half-radius-v1/results/raw_trace.npz": "bfdddda7deaf4d828a8032f4298d7747715c1cf2bfc84a381b350093701b3e6d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-half-radius-v1/source.sha256": "b908cd1326fbaa6a8e5366727c0555b582033b7e3a52d1bed3cda1b68b24486c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-half-radius-v1/source-after.sha256": "b908cd1326fbaa6a8e5366727c0555b582033b7e3a52d1bed3cda1b68b24486c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-half-radius-v1/native-snapshot-before.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-half-radius-v1/native-snapshot-after.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-half-radius-v1/results/summary.json": "8cfe491c41666d9b664d56a7439115109b779d6dc8aae329150db54cded39531",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-half-radius-v1/results/raw_trace.npz": "7d6c9faa73ed2e2ddb149d387024c007ed413d70457c04a834aaa61728422cd1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-v1/source.sha256": "651b5443d9f098f92362391a4bdd340f8d0c1eb153a7b2d2ea7f432fcd089d0c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-v1/source-after.sha256": "651b5443d9f098f92362391a4bdd340f8d0c1eb153a7b2d2ea7f432fcd089d0c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-v1/native-snapshot-before.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-v1/native-snapshot-after.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-v1/results/summary.json": "0c4b6789c868fbee6d667940c1960604205bba6532c75f6f4e2d7f6a3b52fb40",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-v1/results/raw_trace.npz": "7ba6fb275ac460ef5ce476fb8c51feab154c38c58daf4569ca28fee373502cc4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-v1/source.sha256": "651b5443d9f098f92362391a4bdd340f8d0c1eb153a7b2d2ea7f432fcd089d0c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-v1/source-after.sha256": "651b5443d9f098f92362391a4bdd340f8d0c1eb153a7b2d2ea7f432fcd089d0c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-v1/native-snapshot-before.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-v1/native-snapshot-after.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-v1/results/summary.json": "96590519ce15944079857b16c4b8e4f96e2d25a27faecc0c4419e2e13f795d3f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-v1/results/raw_trace.npz": "d15eafca11a41688d0e4218b214f55772dcf8cdcf4d710c6efae9733cbf010a5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-half-radius-v1/source.sha256": "651b5443d9f098f92362391a4bdd340f8d0c1eb153a7b2d2ea7f432fcd089d0c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-half-radius-v1/source-after.sha256": "651b5443d9f098f92362391a4bdd340f8d0c1eb153a7b2d2ea7f432fcd089d0c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-half-radius-v1/native-snapshot-before.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-half-radius-v1/native-snapshot-after.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-half-radius-v1/results/summary.json": "a37c893b27e454c69c8cfe41498b34679ab73b8f7dd6d8f3120a1c2903fe7f86",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-half-radius-v1/results/raw_trace.npz": "2b068ad11b51779db09a4c006e6e3758a64bf541161a5cec3ef63cb8cf6ef830",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-half-radius-v1/source.sha256": "651b5443d9f098f92362391a4bdd340f8d0c1eb153a7b2d2ea7f432fcd089d0c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-half-radius-v1/source-after.sha256": "651b5443d9f098f92362391a4bdd340f8d0c1eb153a7b2d2ea7f432fcd089d0c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-half-radius-v1/native-snapshot-before.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-half-radius-v1/native-snapshot-after.txt": "048dfa590e2d3dbae10df7d2cad0964aa9abceea78ceed48c9d0e460199246b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-half-radius-v1/results/summary.json": "c6f25af4b46500c2c021b3a9a59e6bf0057a8b07f5c04a6ffdadb67eb3d75cb5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-half-radius-v1/results/raw_trace.npz": "651391f7354744ce52a7b3d2f1aec18fd60ff498c65c040b9a5c81d449eba6d4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/application-first-priority-job-cancellations-v1.json": "295531063d8ab60bf04fbb3db8eae6f2800d69b08c6eed8288fdfe1f88f40ba8",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/application-first-source-and-setup-handoff-v2-remote-verification-v1.json": "8fbd2d40b79e0935266eed6b112021845c7b9838ce43207ede3ab46a650dc4f3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/application-first-source-handoff-whitespace-check-v1.json": "9e76380400a47ae8851c1b472769f654335ce5ca0968ab1907b3ac767bc1c69a",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/matched-fixed-complete-archive-git-closure-v2.json": "33cb80dcd027c2a164244384b28b51bb1b1c87405a0c8594249889224877dd48",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/matched-fixed-fields-part10-remote-verification-v2.json": "88c6793083b44e17c2224b8c3c7b28df92dd01ee46dbe85af95befb59c933e8f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-application-analysis-v1-command.json": "d91bbe1e82ddcdf3d7c332dbb736c52e4f8aa070f9ae8ed4533eb0f66d61b2dc",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-application-analysis-v2-command.json": "db5563fd5180ff03b390c647bb80f074f35ee3b1a59cb38e89d568fa8be200b8",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-four-contact-packets-v1-command.json": "1c0c1538679ed63d9d4d1b95b1ace21d0bbd3e4b85417e14a8c819cc8196c1d1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-four-contact-packets-v2-command.json": "5436f545e16acbf5edc20b455f92c27d8587ebc654fb0b3ea2f6ec5791996e0a",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-four-contact-packets-v3-command.json": "8c519fd293f1f27ecf224992cf5e5ebc0e0182f41529f32c07ef3763e5502242",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-four-snapshot-reconstruction-v1-command.json": "38100abaf892a018159d716e68801cb8d66b7fc3f8a147eaf21682b75807d423",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-grip-choice-body_source_prior-half-radius-v1-command.json": "a402ed8cdaee7e88a16ec032c590e504d770b8634610216f6314ea47177e42cf",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-grip-choice-body_source_prior-v1-command.json": "03ab371ae0ecf713cd03c61eb63ce583c50c15d9d994dc8bb31dd0d9e5b84e37",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-grip-choice-pressure-half-radius-v1-command.json": "1d3e0c39fcd7342499939828138c8dbd8ff7da17e3b61106468e4b40a00c4a41",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-grip-choice-pressure-v1-command.json": "f6739a28689b6e6b607622d5ebbe6f391d37b6e37992541a4720c35de3c2c098",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-intrinsic-eight-env-diagnostic-command-v1.json": "66b1b8c4757095a6aa24a404fe92545032c75a6dd803bc16831fca2981c3ce78",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-low-force-choice-body_source_prior-half-radius-v1-command.json": "e8b528fd419e66f3da49688a3da195242b1d925731a976df530911efc8d566df",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-low-force-choice-body_source_prior-v1-command.json": "51a6797788464c8e24378867a970ac8988d47a9460394b914135a879cbc31287",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-low-force-choice-pressure-half-radius-v1-command.json": "c64f4149eb81b09e0ec85fc0841cf6f24df9411b80889f4ddf952f484177010b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-low-force-choice-pressure-v1-command.json": "25fad56fba5a12acaff28b861e0875d1b219a6de5f1ae862d27d5d64c15496ed",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-low-force-radius-analysis-v1-command.json": "730e1c3c3e6dc5da4cfe148ae7776c32022100100415f83039c575d517723679",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-map-visual-qa-v1.json": "2aef4a87c4718431fbb721030fb70b411239031ea3f15961c1e3afa51b2d139c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-native-eight-env-diagnostic-command-v1.json": "81f9e1e9ecfa6570d59f684cef23609df39e7971b4cc7ae9760816b267f6f9c3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-native-eight-env-diagnostic-command-v2.json": "a320cd0e7410d2dc86a9222bb7d5c49ae3e559d4466ac92d809d07c2604e6d03",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-pressure-four-scopes-b32-v1-command.json": "75fc9da59163c485dcbcef7886e2c9c708a62bbf72e2f88e2fb1597c4a9e59d2",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-pressure-four-scopes-b32-v1.sh": "96fc20673112b33856650cb46ae61d10a4c862fcf27e1564cd7ebe8e5acc87b8",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-reward-radius-analysis-v1-command.json": "8fd57126176b697fb88170e5de88a49cef4cb98f0d2e65dcfe5e2d1cd74059cd",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-source-prior-eight-env-diagnostic-v1-command.json": "fbe793142c72d3f35c768bf912b86d6667c0af61aa748c1682d10b50e8014f3b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-source-prior-four-scopes-b32-v1-command.json": "1b96da3768c06527559be44587ae34e3e75ce7dc74551e8d0906b70a82d9681e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-source-prior-four-scopes-b32-v1.sh": "6034af3f2b12e2258b09e9e3dfcf625fa8cf8958a151947c63a80ff6476c8521",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-wrench-diagnostics-v1-command.json": "e131f5f8c65426780281ca3c83e8bff35ccc40bbaef4828653127e841718903d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-wrench-diagnostics-v2-command.json": "fd6111457a05024b5c8f3056eb16c5fb519f4241b855d3f4748966ae280efee4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-native-snapshot-git-reconstruction-v1.json": "88a61e1099f0bed3c6455bc8d94696c93aacf10b2d4f2a472b547d6b3da896fa",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/remote-practical-direction-merge-v1/GOAL.md": "db5986b10408f556bb9896a05fbf4f171b4237e0ae8dfed11d56d6eab21a6fd1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/remote-practical-direction-merge-v1/PHYSICAL_ACCEPTANCE_LEDGER.md": "6088a7c036012caa5a07125c329ec89f8bdd425daa7f2da5e400a469da542d8e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/remote-practical-direction-merge-v1/apply-local-progress.log": "c21bada4333b604a76672570446ddc75373b87fd539187b395bf16cbd49bc37b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/remote-practical-direction-merge-v1/commit.log": "b9b2b0d5757a1142ccb9d41a51491a26403ba2e2b405ef78ebe168d4614fe756",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/remote-practical-direction-merge-v1/local-historical-progress.patch": "a24925afe263aef2b4ce003c8788a249768b25a60b9abfeda188b20b4e352e8b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/remote-practical-direction-merge-v1/local-verification.json": "39a4b340e68047b0610390e7396520beb3e4c9aa77b22a5c08f991e560df347d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/remote-practical-direction-merge-v1/merge.log": "96bb6a194a796153cbd0c640642866371219451832063763d544b942a8d97c4e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/remote-practical-direction-merge-v1/push.log": "981bb4ce82dcb4876a008c1776ba7b190efa0aa9d4bee8deaab7e04c363230c1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/remote-practical-direction-merge-v1/remote-verification.json": "a084298ec53ba48363be5ff91524874fd0e5fd8ad4591a6f71007abcc536ba3a",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/remote-practical-direction-merge-v1/scientific-source-before.json": "b032cd2cd7a8c5038b40509c8fae890d85fc3194cea889c3c4fb3926c993fa00",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-application-publication-attempt-v1.json": "24878cc07e1a18a63dbb906e3231ec1d38ec67f8757e1307c85b9343a5adbf74",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-application-v1-publication-plan.json": "69f1f68b7749969c7841b46494c0b7aa54c05ed30721b9928ba6dabff74b29ee",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-application-v1-publication.log": "f6dc9b62126af50292db38e169f3c74e44cc663535e2f8eea07df9f70a0015bb"
+  },
+  "engineering_scope": "Conditional native stress/reward observation,32 numerical R/L/M snapshot variants, actual sampled feedback, nonconvex/convex controls reused from prior evidence, measured32-env four-scope cost, raw repeated controlled grasp traces and physical radius/model limitations. Existing discrete verification is accepted within scope.",
+  "goal_completion": false
+}

@@ -1,0 +1,400 @@
+{
+  "scope": "Aggregate already-computed whole-episode peak scalars from immutable native logs.\n\nThis is stdlib artifact/JSON aggregation, with no simulation, array analysis or\nscientific backend. Keep lift-window and whole-episode decisions distinct.\n",
+  "manifest_sha256": "bab8578d1fa989dc818db6a3e49db87dde9614133ae4bc70cf83a268a1a50268",
+  "families": [
+    {
+      "low_limit_N": 1,
+      "high_limit_N": 4,
+      "rows": [
+        {
+          "condition": 0,
+          "whole_episode_low_limit_peak_range_Pa": [
+            278718.90688733617,
+            377851.0546033259
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            253067.92103581125,
+            335276.1550538042
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            -42574.89954996022,
+            -24207.20528040809
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "4N",
+          "whole_episode_minimum_absolute_separation_Pa": 24207.20528040809,
+          "whole_episode_absolute_model_radius_band_Pa": 99132.14771598973,
+          "whole_episode_separation_exceeds_observed_band": false,
+          "lift_window_lower_peak_choice": "1N",
+          "lift_window_separation_exceeds_observed_band": false,
+          "lower_peak_choice_changes_with_phase_scope": true
+        },
+        {
+          "condition": 1,
+          "whole_episode_low_limit_peak_range_Pa": [
+            311889.212073924,
+            390818.4026515389
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            311897.79920905776,
+            390830.9321248573
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            4.09363077848684,
+            13.726475979725365
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "1N",
+          "whole_episode_minimum_absolute_separation_Pa": 4.09363077848684,
+          "whole_episode_absolute_model_radius_band_Pa": 78933.13291579956,
+          "whole_episode_separation_exceeds_observed_band": false,
+          "lift_window_lower_peak_choice": "1N",
+          "lift_window_separation_exceeds_observed_band": false,
+          "lower_peak_choice_changes_with_phase_scope": false
+        },
+        {
+          "condition": 2,
+          "whole_episode_low_limit_peak_range_Pa": [
+            247442.76493003624,
+            311196.6108492493
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            247432.28825614936,
+            311183.1952132087
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            -13.415636040619574,
+            -10.47667388356058
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "4N",
+          "whole_episode_minimum_absolute_separation_Pa": 10.47667388356058,
+          "whole_episode_absolute_model_radius_band_Pa": 63753.845919213054,
+          "whole_episode_separation_exceeds_observed_band": false,
+          "lift_window_lower_peak_choice": "4N",
+          "lift_window_separation_exceeds_observed_band": false,
+          "lower_peak_choice_changes_with_phase_scope": false
+        },
+        {
+          "condition": 3,
+          "whole_episode_low_limit_peak_range_Pa": [
+            239782.02728309188,
+            313116.3214522362
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            157211.76328882674,
+            202590.25021856843
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            -110526.07123370955,
+            -82570.26399426154
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "4N",
+          "whole_episode_minimum_absolute_separation_Pa": 82570.26399426154,
+          "whole_episode_absolute_model_radius_band_Pa": 73334.29416914433,
+          "whole_episode_separation_exceeds_observed_band": true,
+          "lift_window_lower_peak_choice": "4N",
+          "lift_window_separation_exceeds_observed_band": true,
+          "lower_peak_choice_changes_with_phase_scope": false
+        },
+        {
+          "condition": 4,
+          "whole_episode_low_limit_peak_range_Pa": [
+            280489.92632871034,
+            369301.9578580723
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            280579.5258868291,
+            369493.84497214743
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            20.4805905483081,
+            191.88711415260332
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "1N",
+          "whole_episode_minimum_absolute_separation_Pa": 20.4805905483081,
+          "whole_episode_absolute_model_radius_band_Pa": 88914.3190853183,
+          "whole_episode_separation_exceeds_observed_band": false,
+          "lift_window_lower_peak_choice": "1N",
+          "lift_window_separation_exceeds_observed_band": false,
+          "lower_peak_choice_changes_with_phase_scope": false
+        },
+        {
+          "condition": 5,
+          "whole_episode_low_limit_peak_range_Pa": [
+            297038.0787120342,
+            368077.61813999945
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            292951.3097834304,
+            363853.82409652945
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            -5523.336263673962,
+            -2871.5554984196206
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "4N",
+          "whole_episode_minimum_absolute_separation_Pa": 2871.5554984196206,
+          "whole_episode_absolute_model_radius_band_Pa": 71039.53942796524,
+          "whole_episode_separation_exceeds_observed_band": false,
+          "lift_window_lower_peak_choice": "unresolved",
+          "lift_window_separation_exceeds_observed_band": false,
+          "lower_peak_choice_changes_with_phase_scope": null
+        },
+        {
+          "condition": 6,
+          "whole_episode_low_limit_peak_range_Pa": [
+            242318.44571041508,
+            318443.2700687332
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            261118.8961820678,
+            340194.1294830089
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            6736.326202734257,
+            46674.82215153103
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "1N",
+          "whole_episode_minimum_absolute_separation_Pa": 6736.326202734257,
+          "whole_episode_absolute_model_radius_band_Pa": 79075.23330094106,
+          "whole_episode_separation_exceeds_observed_band": false,
+          "lift_window_lower_peak_choice": "unresolved",
+          "lift_window_separation_exceeds_observed_band": false,
+          "lower_peak_choice_changes_with_phase_scope": null
+        },
+        {
+          "condition": 7,
+          "whole_episode_low_limit_peak_range_Pa": [
+            267647.17477133824,
+            336710.31422245945
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            267643.1374998514,
+            336708.4206836079
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            -5.42034807917662,
+            -0.548388930154033
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "4N",
+          "whole_episode_minimum_absolute_separation_Pa": 0.548388930154033,
+          "whole_episode_absolute_model_radius_band_Pa": 69065.28318375652,
+          "whole_episode_separation_exceeds_observed_band": false,
+          "lift_window_lower_peak_choice": "1N",
+          "lift_window_separation_exceeds_observed_band": false,
+          "lower_peak_choice_changes_with_phase_scope": true
+        }
+      ]
+    },
+    {
+      "low_limit_N": 0.2,
+      "high_limit_N": 4,
+      "rows": [
+        {
+          "condition": 0,
+          "whole_episode_low_limit_peak_range_Pa": [
+            279170.48710244015,
+            377264.1581279297
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            253067.9210359148,
+            335276.15505453356
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            -41988.00307339616,
+            -26102.566066523665
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "4N",
+          "whole_episode_minimum_absolute_separation_Pa": 26102.566066523665,
+          "whole_episode_absolute_model_radius_band_Pa": 98093.67102548957,
+          "whole_episode_separation_exceeds_observed_band": false,
+          "lift_window_lower_peak_choice": "0.2N",
+          "lift_window_separation_exceeds_observed_band": true,
+          "lower_peak_choice_changes_with_phase_scope": true
+        },
+        {
+          "condition": 1,
+          "whole_episode_low_limit_peak_range_Pa": [
+            233821.13186416394,
+            296413.960716514
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            311897.7992110607,
+            390830.93212683225
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            78076.66734689663,
+            94416.97179204744
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "0.2N",
+          "whole_episode_minimum_absolute_separation_Pa": 78076.66734689663,
+          "whole_episode_absolute_model_radius_band_Pa": 78933.13291577157,
+          "whole_episode_separation_exceeds_observed_band": false,
+          "lift_window_lower_peak_choice": "0.2N",
+          "lift_window_separation_exceeds_observed_band": false,
+          "lower_peak_choice_changes_with_phase_scope": false
+        },
+        {
+          "condition": 2,
+          "whole_episode_low_limit_peak_range_Pa": [
+            229861.53634993694,
+            288487.44393717666
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            247432.28825519455,
+            311183.19521375373
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            17570.751905247453,
+            22695.751276622468
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "0.2N",
+          "whole_episode_minimum_absolute_separation_Pa": 17570.751905247453,
+          "whole_episode_absolute_model_radius_band_Pa": 63750.90695855918,
+          "whole_episode_separation_exceeds_observed_band": false,
+          "lift_window_lower_peak_choice": "0.2N",
+          "lift_window_separation_exceeds_observed_band": true,
+          "lower_peak_choice_changes_with_phase_scope": false
+        },
+        {
+          "condition": 3,
+          "whole_episode_low_limit_peak_range_Pa": [
+            246369.26910938986,
+            325599.3427927802
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            157211.76328872523,
+            202590.25021886558
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            -123009.09257404623,
+            -89157.50582066286
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "4N",
+          "whole_episode_minimum_absolute_separation_Pa": 89157.50582066286,
+          "whole_episode_absolute_model_radius_band_Pa": 79230.07368339034,
+          "whole_episode_separation_exceeds_observed_band": true,
+          "lift_window_lower_peak_choice": "0.2N",
+          "lift_window_separation_exceeds_observed_band": true,
+          "lower_peak_choice_changes_with_phase_scope": true
+        },
+        {
+          "condition": 4,
+          "whole_episode_low_limit_peak_range_Pa": [
+            228931.9458841043,
+            294827.9962685599
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            280579.5258858931,
+            369493.84497262456
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            51647.58000178862,
+            74665.84870408586
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "0.2N",
+          "whole_episode_minimum_absolute_separation_Pa": 51647.58000178862,
+          "whole_episode_absolute_model_radius_band_Pa": 88914.31908673147,
+          "whole_episode_separation_exceeds_observed_band": false,
+          "lift_window_lower_peak_choice": "0.2N",
+          "lift_window_separation_exceeds_observed_band": true,
+          "lower_peak_choice_changes_with_phase_scope": false
+        },
+        {
+          "condition": 5,
+          "whole_episode_low_limit_peak_range_Pa": [
+            256046.89172404914,
+            311574.4607491896
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            292951.3097833132,
+            363853.8240966076
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            36904.41805925328,
+            52279.36334742955
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "0.2N",
+          "whole_episode_minimum_absolute_separation_Pa": 36904.41805925328,
+          "whole_episode_absolute_model_radius_band_Pa": 70902.51431329444,
+          "whole_episode_separation_exceeds_observed_band": false,
+          "lift_window_lower_peak_choice": "0.2N",
+          "lift_window_separation_exceeds_observed_band": true,
+          "lower_peak_choice_changes_with_phase_scope": false
+        },
+        {
+          "condition": 6,
+          "whole_episode_low_limit_peak_range_Pa": [
+            221320.4089233771,
+            287481.69674263254
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            261118.89618181135,
+            340194.1294836305
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            33655.03275761928,
+            70956.9681298511
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "0.2N",
+          "whole_episode_minimum_absolute_separation_Pa": 33655.03275761928,
+          "whole_episode_absolute_model_radius_band_Pa": 79075.23330181913,
+          "whole_episode_separation_exceeds_observed_band": false,
+          "lift_window_lower_peak_choice": "0.2N",
+          "lift_window_separation_exceeds_observed_band": true,
+          "lower_peak_choice_changes_with_phase_scope": false
+        },
+        {
+          "condition": 7,
+          "whole_episode_low_limit_peak_range_Pa": [
+            256089.79566410798,
+            322017.039749583
+          ],
+          "whole_episode_high_limit_peak_range_Pa": [
+            267643.1374999135,
+            336708.42068416515
+          ],
+          "whole_episode_high_minus_low_range_Pa": [
+            11553.341835802625,
+            14691.380934635585
+          ],
+          "whole_episode_rank_stable": true,
+          "whole_episode_lower_peak_choice": "0.2N",
+          "whole_episode_minimum_absolute_separation_Pa": 11553.341835802625,
+          "whole_episode_absolute_model_radius_band_Pa": 69065.28318425163,
+          "whole_episode_separation_exceeds_observed_band": false,
+          "lift_window_lower_peak_choice": "0.2N",
+          "lift_window_separation_exceeds_observed_band": true,
+          "lower_peak_choice_changes_with_phase_scope": false
+        }
+      ]
+    }
+  ],
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/practical-application-v2/20261014-physical-validation/practical-franka-grip-choice-pressure-v1/reward-proxy.log": "1df03bf5fba37a64fc9df82583437e2f33dc613abbd307a73ebc8c6ade7eaddc",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/practical-application-v2/20261014-physical-validation/practical-franka-grip-choice-pressure-half-radius-v1/reward-proxy.log": "ba04429a0b5f6189885aadab6a55ad33ace85802b40baec81f29757d4d0de27f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/practical-application-v2/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/reward-proxy.log": "00a9643823caff88f5e0a5d2690334bf989c5dee983d37722fef25a2eb030aad",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/practical-application-v2/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-half-radius-v1/reward-proxy.log": "f570cac23ab57c44a084c199c7f053e4dd6fea4d9219615a629aeb8fde6d0ba9",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/practical-application-v2/20261014-physical-validation/practical-franka-reward-radius-analysis-v1/results/summary.json": "c65997403c6f6f8f4d0405aff70dbf345e1eb78e30a5a315a00ddc640cf4f375",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/practical-application-v2/20261014-physical-validation/practical-franka-low-force-choice-pressure-v1/reward-proxy.log": "f059391be66195310a5d6a383db49628cf28ea47b11de69c9309459d411125bf",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/practical-application-v2/20261014-physical-validation/practical-franka-low-force-choice-pressure-half-radius-v1/reward-proxy.log": "1bd17eac2d10b93fdf5234a3d1e8f02e463c478f6f531236c9af1167cac97ea5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/practical-application-v2/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-v1/reward-proxy.log": "c269019be4b75a80c02238a5e31f7abda8c45186d60aed3c6dd94e7ed964073a",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/practical-application-v2/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-half-radius-v1/reward-proxy.log": "775f56b8567519f32016e5e7fab8536cf0f5bc955c200fd285c49e2d1ab8e008",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/practical-application-v2/20261014-physical-validation/practical-franka-low-force-radius-analysis-v1/results/summary.json": "0c2ad47488579f509d23c7ec2d05956e65f8f1b21b6894015694c2abc45de499"
+  },
+  "limitations": "Whole-episode peak scalars were already computed from every raw global step observation in the actual native jobs. Lift-window discrimination does not establish lower whole-episode peak or safe termination. Unresolved bands and observed phase-dependent reversals remain; no physical fracture accuracy or statistical confidence bound is claimed.",
+  "goal_completion": false
+}

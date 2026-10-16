@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-16T06:46:02.578641+00:00",
+  "argv": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=cpu",
+    "--exclude=cpu-207-115",
+    "--cpus-per-task=8",
+    "--mem=16G",
+    "--time=00:20:00",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-reward-radius-analysis-v1-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/analyse_practical_application.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-reward-radius-analysis-v1 /mnt/home/zhaofeng/.codex/skills/academic-figure-workflow/scripts/nature_mpl_style.py --reconstruction /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1 --pressure-cost /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1 --source-prior-cost /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1 --pressure-reward /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1 --source-prior-reward /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1 --reward-radii-only --pressure-reward-half-radius /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-half-radius-v1 --source-prior-reward-half-radius /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-half-radius-v1'"
+  ],
+  "stdout": "720696\n",
+  "stderr": "",
+  "returncode": 0,
+  "scope": "Compare completed raw paired reward traces across both declared radius schedules and both production models. Keep rank reversals, nearly identical choices, conservative absolute uncertainty-band failures and all raw outcomes; no tuning of inputs or acceptance criteria to force useful discrimination.",
+  "goal_completion": false
+}

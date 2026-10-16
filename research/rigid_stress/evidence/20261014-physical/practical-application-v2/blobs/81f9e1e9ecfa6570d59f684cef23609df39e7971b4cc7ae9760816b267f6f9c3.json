@@ -1,0 +1,24 @@
+{
+  "utc": "2026-10-16T05:47:55.845799+00:00",
+  "argv": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=rtx-mid",
+    "--gres=gpu:1",
+    "--cpus-per-task=8",
+    "--mem=64G",
+    "--time=02:00:00",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-native-eight-env-diagnostic-v1-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/practical-native-application-v1/research/rigid_stress/scripts/run_practical_native_benchmark.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-native-eight-env-diagnostic-v1 --scope live --envs 8 --level 1 --warmup 900 --steps 1200 --repetitions 1 --minimum-seconds 0 --varied --seed 623016 --contact-model pressure --history 4 --output-mode max --egg-geometry mesh64 --trajectory-metrics --save-conditions /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-native-eight-env-diagnostic-v1/results/conditions.npz --source-revision c8333ea3898953e4105f2cc4a5fa6e5205c39e84'"
+  ],
+  "stdout": "720429\n",
+  "stderr": "",
+  "returncode": 0,
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-native-eight-env-diagnostic-v1",
+  "snapshot": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/practical-native-application-v1",
+  "snapshot_manifest_sha256": "2da41428d67e99c88fb85561ba7112a7a2e7ac5ae44892ed65229a8ca6970b5a",
+  "active_user_direction_revision": "96ada437e50aeeb9f5dc76d865fd05e72e9d7b63",
+  "scope": "Small existing native full hollow egg/Franka application with8 varied environments, actual contact mapping/rigid stepping/recovery/history/reset and trajectory metrics,900 warmup plus1200 fixed scripted steps. Validate current application behavior and preserve a condition bank before choosing paired warmed-cost experiments. Intrusive metrics timings are diagnostic only, not physically qualified rates or a fracture threshold. No new independent-FEM assembly campaign.",
+  "goal_completion": false
+}

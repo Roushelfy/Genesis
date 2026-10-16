@@ -13,17 +13,29 @@ Bound further convergence work by its application value. Report remaining peak
 uncertainty and unsupported cases honestly; no historical result is reclassified
 as physically accurate merely because the delivery scope has changed.
 
+### Delivered application evidence
+
+See [the application report](PRACTICAL_APPLICATION_RESULTS_20261016.md),
+[runnable commands](RUNNING_PRACTICAL_APPLICATION.md) and
+[completion audit](PRACTICAL_COMPLETION_AUDIT_20261016.md). Native32-field R/L/M,
+matched feedback, two four-scope cost allocations, eight controlled reward traces
+and actual restored-packet reproduction close within their declared scope.
+Unsupported pressure/local-cone/moment cases, near-zero aggregate limits and
+unresolved physical tails remain explicit. The conditional engineering handoff
+does not assert absolute stress or fracture accuracy.
+
 ### Delivery summary to maintain
 
 | Track | Current disposition |
 |---|---|
 | Discrete implementation | Independent-FEM agreement is accepted for already-qualified cases; preserve numerical budgets and targeted regressions after changes. |
-| Application load model | Prioritize resolved contact, resolved-load replay and reconstructed-load replay; separately quantify rigid/deformable feedback. Existing prescribed-traction evidence is partial qualification. |
-| Practical configuration | Recommend mesh/model settings with observable-specific uncertainty and warmed native throughput/memory. No universal 3% or all-shape convergence gate. |
+| Application load model |32 compact R/L/M variants, exact original source packets and separate matched rigid/deformable feedback now close. Physical reference uncertainty and unsupported inputs remain explicit. |
+| Practical configuration | Recommended conditional settings, two warmed four-scope allocations, memory, repeated controlled reward/radius traces and actual restored-input reproduction are delivered. No universal3% or all-shape convergence gate. |
 | Remaining physical research | Keep unresolved tails and extra axes below visible as limitations/follow-ups; they block only claims or operating cases they materially invalidate. |
 
-The new summary is a change of priorities, not a claim that the remaining
-application comparisons or performance measurements have already completed.
+The priority change itself did not establish acceptance. The delivery evidence
+above records the subsequently completed application comparisons and measured
+costs. Unresolved physical research below has not been reclassified as passed.
 Live jobs still count only as scheduled work.
 
 The active execution checklist is [PRACTICAL_VALIDATION_STATUS.md](PRACTICAL_VALIDATION_STATUS.md).

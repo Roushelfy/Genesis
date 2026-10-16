@@ -1,0 +1,1346 @@
+[
+  {
+    "case": "step00011-r3000-pressure",
+    "compensated_force_error_N": 1.3877787807814876e-17,
+    "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+    "compensated_moment_error_Nm": 3.4301813608466885e-21,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.7663049401067055e-12,
+    "maximum_local_coulomb_violation_Pa": 5405.813399985727,
+    "global_net_force_N": [
+      1.5465700151237853e-08,
+      -2.9993013782896938e-09,
+      0.05887683133688807
+    ],
+    "sum_individual_force_norms_N": 0.05887683133689018,
+    "native_reported_force_errors_N": [
+      1.387778780781535e-17
+    ],
+    "native_reported_moment_errors_Nm": [
+      4.925370951958024e-21
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 1.3877787807814876e-17,
+        "moment_about_actual_contact_point_error_Nm": 3.097385680356247e-21,
+        "force_budget_N": 5.887683133689018e-10,
+        "moment_budget_Nm": 1.7663049401067055e-12
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00011-r3000-componentwise",
+    "compensated_force_error_N": 2.592402177722741e-14,
+    "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+    "compensated_moment_error_Nm": 7.003190611299572e-16,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.7663049401067055e-12,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      1.5465700151237853e-08,
+      -2.9993013782896938e-09,
+      0.05887683133688807
+    ],
+    "sum_individual_force_norms_N": 0.05887683133689018,
+    "native_reported_force_errors_N": [
+      2.5924234435274893e-14
+    ],
+    "native_reported_moment_errors_Nm": [
+      3.4973133377652736e-17
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 2.592402177722741e-14,
+        "moment_about_actual_contact_point_error_Nm": 3.497169927203744e-17,
+        "force_budget_N": 5.887683133689018e-10,
+        "moment_budget_Nm": 1.7663049401067055e-12
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00011-r3000-pair_union",
+    "compensated_force_error_N": 2.851103156647841e-14,
+    "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+    "compensated_moment_error_Nm": 7.003257793596867e-16,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.7663049401067055e-12,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      1.5465700151237853e-08,
+      -2.9993013782896938e-09,
+      0.05887683133688807
+    ],
+    "sum_individual_force_norms_N": 0.05887683133689018,
+    "native_reported_force_errors_N": [
+      2.8508137728818194e-14
+    ],
+    "native_reported_moment_errors_Nm": [
+      3.513970548422464e-17
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 2.851103156647841e-14,
+        "moment_about_actual_contact_point_error_Nm": 3.513822888629565e-17,
+        "force_budget_N": 5.887683133689018e-10,
+        "moment_budget_Nm": 1.7663049401067055e-12
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00011-r3000-body_source_prior",
+    "compensated_force_error_N": 2.7176910932790845e-14,
+    "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+    "compensated_moment_error_Nm": 7.003196539414851e-16,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.7663049401067055e-12,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      1.5465700151237853e-08,
+      -2.9993013782896938e-09,
+      0.05887683133688807
+    ],
+    "sum_individual_force_norms_N": 0.05887683133689018,
+    "native_reported_force_errors_N": [
+      2.7176910929636035e-14
+    ],
+    "native_reported_moment_errors_Nm": [
+      3.496847116014924e-17
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 2.7176910932790845e-14,
+        "moment_about_actual_contact_point_error_Nm": 3.4967456668428785e-17,
+        "force_budget_N": 5.887683133689018e-10,
+        "moment_budget_Nm": 1.7663049401067055e-12
+      }
+    ],
+    "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00011-r6000-pressure",
+    "compensated_force_error_N": 0.0,
+    "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+    "compensated_moment_error_Nm": 1.799671199489345e-21,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 3.532609880213411e-12,
+    "maximum_local_coulomb_violation_Pa": 1394.1849288022104,
+    "global_net_force_N": [
+      1.5465700151237853e-08,
+      -2.9993013782896938e-09,
+      0.05887683133688807
+    ],
+    "sum_individual_force_norms_N": 0.05887683133689018,
+    "native_reported_force_errors_N": [
+      0.0
+    ],
+    "native_reported_moment_errors_Nm": [
+      1.694065894508649e-21
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 0.0,
+        "moment_about_actual_contact_point_error_Nm": 1.4245112376744388e-21,
+        "force_budget_N": 5.887683133689018e-10,
+        "moment_budget_Nm": 3.532609880213411e-12
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00011-r6000-componentwise",
+    "compensated_force_error_N": 1.3434679731352877e-14,
+    "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+    "compensated_moment_error_Nm": 3.2294656785405377e-16,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 3.532609880213411e-12,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      1.5465700151237853e-08,
+      -2.9993013782896938e-09,
+      0.05887683133688807
+    ],
+    "sum_individual_force_norms_N": 0.05887683133689018,
+    "native_reported_force_errors_N": [
+      1.3434679731351818e-14
+    ],
+    "native_reported_moment_errors_Nm": [
+      2.96750782317071e-17
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 1.3434679731352877e-14,
+        "moment_about_actual_contact_point_error_Nm": 2.9674034263637274e-17,
+        "force_budget_N": 5.887683133689018e-10,
+        "moment_budget_Nm": 3.532609880213411e-12
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00011-r6000-pair_union",
+    "compensated_force_error_N": 1.2540006222060441e-14,
+    "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+    "compensated_moment_error_Nm": 2.4174140271958594e-16,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 3.532609880213411e-12,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      1.5465700151237853e-08,
+      -2.9993013782896938e-09,
+      0.05887683133688807
+    ],
+    "sum_individual_force_norms_N": 0.05887683133689018,
+    "native_reported_force_errors_N": [
+      1.2540006218782529e-14
+    ],
+    "native_reported_moment_errors_Nm": [
+      1.1101088548371539e-16
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 1.2540006222060441e-14,
+        "moment_about_actual_contact_point_error_Nm": 1.1100731453729717e-16,
+        "force_budget_N": 5.887683133689018e-10,
+        "moment_budget_Nm": 3.532609880213411e-12
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00011-r6000-body_source_prior",
+    "compensated_force_error_N": 1.2532569262625874e-14,
+    "global_net_scaled_diagnostic_force_budget_N": 5.887683133689018e-10,
+    "compensated_moment_error_Nm": 3.2297081211079393e-16,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 3.532609880213411e-12,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      1.5465700151237853e-08,
+      -2.9993013782896938e-09,
+      0.05887683133688807
+    ],
+    "sum_individual_force_norms_N": 0.05887683133689018,
+    "native_reported_force_errors_N": [
+      1.253256926262474e-14
+    ],
+    "native_reported_moment_errors_Nm": [
+      2.9789854744962127e-17
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 1.2532569262625874e-14,
+        "moment_about_actual_contact_point_error_Nm": 2.9789984555280875e-17,
+        "force_budget_N": 5.887683133689018e-10,
+        "moment_budget_Nm": 3.532609880213411e-12
+      }
+    ],
+    "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00866-r3000-pressure",
+    "compensated_force_error_N": 9.437920065329442e-16,
+    "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+    "compensated_moment_error_Nm": 1.7537313466407506e-18,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 5.8064137577812765e-12,
+    "maximum_local_coulomb_violation_Pa": 240982.25314250746,
+    "global_net_force_N": [
+      -0.005571709151027433,
+      -0.18232998734779127,
+      0.06469328765072285
+    ],
+    "sum_individual_force_norms_N": 5.317003616567743,
+    "native_reported_force_errors_N": [
+      4.441435357498229e-16,
+      4.4414362838271e-16
+    ],
+    "native_reported_moment_errors_Nm": [
+      2.713892274211705e-19,
+      4.639668876693533e-19
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 4.441028151083704e-16,
+        "moment_about_actual_contact_point_error_Nm": 3.816435561342103e-20,
+        "force_budget_N": 2.566650719672859e-08,
+        "moment_budget_Nm": 7.699952159018577e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 4.443068439896872e-16,
+        "moment_about_actual_contact_point_error_Nm": 3.716188754060249e-19,
+        "force_budget_N": 2.7503528968948846e-08,
+        "moment_budget_Nm": 8.251058690684654e-11
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00866-r3000-componentwise",
+    "compensated_force_error_N": 2.0643421506256064e-09,
+    "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+    "compensated_moment_error_Nm": 3.140020910283965e-11,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 5.8064137577812765e-12,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      -0.005571709151027433,
+      -0.18232998734779127,
+      0.06469328765072285
+    ],
+    "sum_individual_force_norms_N": 5.317003616567743,
+    "native_reported_force_errors_N": [
+      1.3846019327998284e-09,
+      7.744191061146523e-10
+    ],
+    "native_reported_moment_errors_Nm": [
+      4.952916859602719e-12,
+      5.881986662083669e-12
+    ],
+    "global_net_scaled_force_gate": false,
+    "global_net_scaled_moment_gate": false,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 1.384601929524339e-09,
+        "moment_about_actual_contact_point_error_Nm": 4.952916841029219e-12,
+        "force_budget_N": 2.566650719672859e-08,
+        "moment_budget_Nm": 7.699952159018577e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 7.744194688080789e-10,
+        "moment_about_actual_contact_point_error_Nm": 5.881986753450475e-12,
+        "force_budget_N": 2.7503528968948846e-08,
+        "moment_budget_Nm": 8.251058690684654e-11
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00866-r3000-pair_union",
+    "compensated_force_error_N": 2.6206914522663794e-09,
+    "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+    "compensated_moment_error_Nm": 1.4734414000399427e-11,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 5.8064137577812765e-12,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      -0.005571709151027433,
+      -0.18232998734779127,
+      0.06469328765072285
+    ],
+    "sum_individual_force_norms_N": 5.317003616567743,
+    "native_reported_force_errors_N": [
+      7.765932738931483e-10,
+      3.1202119713769093e-09
+    ],
+    "native_reported_moment_errors_Nm": [
+      1.9698635761082753e-12,
+      6.033564888424995e-12
+    ],
+    "global_net_scaled_force_gate": false,
+    "global_net_scaled_moment_gate": false,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 7.765932738891338e-10,
+        "moment_about_actual_contact_point_error_Nm": 1.9698636246817862e-12,
+        "force_budget_N": 2.566650719672859e-08,
+        "moment_budget_Nm": 7.699952159018577e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 3.1202119713755697e-09,
+        "moment_about_actual_contact_point_error_Nm": 6.033564966392937e-12,
+        "force_budget_N": 2.7503528968948846e-08,
+        "moment_budget_Nm": 8.251058690684654e-11
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00866-r3000-body_source_prior",
+    "compensated_force_error_N": 1.0604374852095475e-10,
+    "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+    "compensated_moment_error_Nm": 6.343904415316153e-13,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 5.8064137577812765e-12,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      -0.005571709151027433,
+      -0.18232998734779127,
+      0.06469328765072285
+    ],
+    "sum_individual_force_norms_N": 5.317003616567743,
+    "native_reported_force_errors_N": [
+      1.060437623045064e-10,
+      1.060437623045064e-10
+    ],
+    "native_reported_moment_errors_Nm": [
+      1.7146703510802656e-12,
+      1.7146703510802656e-12
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 0.0009368418696495081,
+        "moment_about_actual_contact_point_error_Nm": 5.7574351474319024e-05,
+        "force_budget_N": 2.566650719672859e-08,
+        "moment_budget_Nm": 7.699952159018577e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 0.0009368419756931427,
+        "moment_about_actual_contact_point_error_Nm": 9.877252719239884e-05,
+        "force_budget_N": 2.7503528968948846e-08,
+        "moment_budget_Nm": 8.251058690684654e-11
+      }
+    ],
+    "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00866-r6000-pressure",
+    "compensated_force_error_N": 4.720496233257556e-16,
+    "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+    "compensated_moment_error_Nm": 1.337861659559481e-18,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.1612827515562553e-11,
+    "maximum_local_coulomb_violation_Pa": 63755.74259579815,
+    "global_net_force_N": [
+      -0.005571709151027433,
+      -0.18232998734779127,
+      0.06469328765072285
+    ],
+    "sum_individual_force_norms_N": 5.317003616567743,
+    "native_reported_force_errors_N": [
+      1.734723475976807e-18,
+      6.664595604691186e-16
+    ],
+    "native_reported_moment_errors_Nm": [
+      1.5819945404007047e-19,
+      1.8498327402172032e-19
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 0.0,
+        "moment_about_actual_contact_point_error_Nm": 1.799497583965351e-19,
+        "force_budget_N": 2.566650719672859e-08,
+        "moment_budget_Nm": 1.5399904318037155e-10
+      },
+      {
+        "packet": 1,
+        "force_error_N": 4.443068439896872e-16,
+        "moment_about_actual_contact_point_error_Nm": 1.8944645434383243e-19,
+        "force_budget_N": 2.7503528968948846e-08,
+        "moment_budget_Nm": 1.6502117381369308e-10
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00866-r6000-componentwise",
+    "compensated_force_error_N": 4.5391405541624906e-09,
+    "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+    "compensated_moment_error_Nm": 5.019781358489856e-12,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.1612827515562553e-11,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      -0.005571709151027433,
+      -0.18232998734779127,
+      0.06469328765072285
+    ],
+    "sum_individual_force_norms_N": 5.317003616567743,
+    "native_reported_force_errors_N": [
+      2.8765819939138654e-09,
+      1.8430817617908566e-09
+    ],
+    "native_reported_moment_errors_Nm": [
+      1.474245885085237e-12,
+      1.2814422428572346e-11
+    ],
+    "global_net_scaled_force_gate": false,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 2.876582214813894e-09,
+        "moment_about_actual_contact_point_error_Nm": 1.4742459067973114e-12,
+        "force_budget_N": 2.566650719672859e-08,
+        "moment_budget_Nm": 1.5399904318037155e-10
+      },
+      {
+        "packet": 1,
+        "force_error_N": 1.8430817617908566e-09,
+        "moment_about_actual_contact_point_error_Nm": 1.2814422587974207e-11,
+        "force_budget_N": 2.7503528968948846e-08,
+        "moment_budget_Nm": 1.6502117381369308e-10
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00866-r6000-pair_union",
+    "compensated_force_error_N": 3.813491245032675e-09,
+    "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+    "compensated_moment_error_Nm": 1.7211588402454442e-11,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.1612827515562553e-11,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      -0.005571709151027433,
+      -0.18232998734779127,
+      0.06469328765072285
+    ],
+    "sum_individual_force_norms_N": 5.317003616567743,
+    "native_reported_force_errors_N": [
+      2.0967534466756187e-09,
+      1.9433083599053566e-09
+    ],
+    "native_reported_moment_errors_Nm": [
+      3.0951828502624757e-12,
+      8.53312932414914e-12
+    ],
+    "global_net_scaled_force_gate": false,
+    "global_net_scaled_moment_gate": false,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 2.0967534433306335e-09,
+        "moment_about_actual_contact_point_error_Nm": 3.0951828401596423e-12,
+        "force_budget_N": 2.566650719672859e-08,
+        "moment_budget_Nm": 1.5399904318037155e-10
+      },
+      {
+        "packet": 1,
+        "force_error_N": 1.9433087194280067e-09,
+        "moment_about_actual_contact_point_error_Nm": 8.533129353184526e-12,
+        "force_budget_N": 2.7503528968948846e-08,
+        "moment_budget_Nm": 1.6502117381369308e-10
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00866-r6000-body_source_prior",
+    "compensated_force_error_N": 1.68606045553289e-10,
+    "global_net_scaled_diagnostic_force_budget_N": 1.935471252593759e-09,
+    "compensated_moment_error_Nm": 1.033147057965451e-11,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.1612827515562553e-11,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      -0.005571709151027433,
+      -0.18232998734779127,
+      0.06469328765072285
+    ],
+    "sum_individual_force_norms_N": 5.317003616567743,
+    "native_reported_force_errors_N": [
+      1.6860604771303119e-10,
+      1.6860604771303119e-10
+    ],
+    "native_reported_moment_errors_Nm": [
+      6.617929445095738e-12,
+      6.617929445095738e-12
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 0.001980012449289033,
+        "moment_about_actual_contact_point_error_Nm": 0.00014834920145108052,
+        "force_budget_N": 2.566650719672859e-08,
+        "moment_budget_Nm": 1.5399904318037155e-10
+      },
+      {
+        "packet": 1,
+        "force_error_N": 0.001980012280719671,
+        "moment_about_actual_contact_point_error_Nm": 0.0002354461743359036,
+        "force_budget_N": 2.7503528968948846e-08,
+        "moment_budget_Nm": 1.6502117381369308e-10
+      }
+    ],
+    "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00869-r3000-pressure",
+    "compensated_force_error_N": 7.047314121155779e-18,
+    "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+    "compensated_moment_error_Nm": 8.004515293175879e-20,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.928015851844441e-12,
+    "maximum_local_coulomb_violation_Pa": 29274.198867837913,
+    "global_net_force_N": [
+      -0.00018057175209643076,
+      -0.0008297943966552972,
+      0.06426158413992078
+    ],
+    "sum_individual_force_norms_N": 0.7194045691978652,
+    "native_reported_force_errors_N": [
+      2.7809732887839817e-17,
+      2.7809732887839817e-17,
+      6.938893903907228e-18
+    ],
+    "native_reported_moment_errors_Nm": [
+      4.8188377345600057e-20,
+      2.061028896647419e-20,
+      1.3585574089200292e-20
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 0.0,
+        "moment_about_actual_contact_point_error_Nm": 8.118641952340177e-21,
+        "force_budget_N": 3.347585002172861e-09,
+        "moment_budget_Nm": 1.0042755006518583e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 1.734723475976807e-18,
+        "moment_about_actual_contact_point_error_Nm": 3.182073286533389e-20,
+        "force_budget_N": 3.0591414951219243e-09,
+        "moment_budget_Nm": 9.177424485365773e-12
+      },
+      {
+        "packet": 2,
+        "force_error_N": 0.0,
+        "moment_about_actual_contact_point_error_Nm": 1.2176674581154047e-20,
+        "force_budget_N": 7.873191946838663e-10,
+        "moment_budget_Nm": 2.361957584051599e-12
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00869-r3000-componentwise",
+    "compensated_force_error_N": 5.522784387040603e-10,
+    "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+    "compensated_moment_error_Nm": 1.046624082967785e-11,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.928015851844441e-12,
+    "maximum_local_coulomb_violation_Pa": 2.7284841053187847e-12,
+    "global_net_force_N": [
+      -0.00018057175209643076,
+      -0.0008297943966552972,
+      0.06426158413992078
+    ],
+    "sum_individual_force_norms_N": 0.7194045691978652,
+    "native_reported_force_errors_N": [
+      8.789197335523825e-12,
+      5.368071862444242e-10,
+      1.0168299431103501e-11
+    ],
+    "native_reported_moment_errors_Nm": [
+      3.841971293404074e-14,
+      6.466576593697228e-13,
+      4.574750468335293e-15
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": false,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 8.789197335523825e-12,
+        "moment_about_actual_contact_point_error_Nm": 3.8419703637153075e-14,
+        "force_budget_N": 3.347585002172861e-09,
+        "moment_budget_Nm": 1.0042755006518583e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 5.368071877487126e-10,
+        "moment_about_actual_contact_point_error_Nm": 6.466576653664268e-13,
+        "force_budget_N": 3.0591414951219243e-09,
+        "moment_budget_Nm": 9.177424485365773e-12
+      },
+      {
+        "packet": 2,
+        "force_error_N": 1.016829943072955e-11,
+        "moment_about_actual_contact_point_error_Nm": 4.574751762641145e-15,
+        "force_budget_N": 7.873191946838663e-10,
+        "moment_budget_Nm": 2.361957584051599e-12
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00869-r3000-pair_union",
+    "compensated_force_error_N": 1.8892680653427965e-10,
+    "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+    "compensated_moment_error_Nm": 2.1805947568834667e-12,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.928015851844441e-12,
+    "maximum_local_coulomb_violation_Pa": 3.637978807091713e-12,
+    "global_net_force_N": [
+      -0.00018057175209643076,
+      -0.0008297943966552972,
+      0.06426158413992078
+    ],
+    "sum_individual_force_norms_N": 0.7194045691978652,
+    "native_reported_force_errors_N": [
+      2.2578491681786274e-11,
+      1.7131435574831648e-10,
+      1.0164249975765853e-11
+    ],
+    "native_reported_moment_errors_Nm": [
+      3.9215442963549965e-14,
+      6.566188322857815e-13,
+      4.553051688582765e-15
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": false,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 2.2578493020315663e-11,
+        "moment_about_actual_contact_point_error_Nm": 3.921543430580797e-14,
+        "force_budget_N": 3.347585002172861e-09,
+        "moment_budget_Nm": 1.0042755006518583e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 1.7131435574831648e-10,
+        "moment_about_actual_contact_point_error_Nm": 6.566188228243026e-13,
+        "force_budget_N": 3.0591414951219243e-09,
+        "moment_budget_Nm": 9.177424485365773e-12
+      },
+      {
+        "packet": 2,
+        "force_error_N": 1.016424997493517e-11,
+        "moment_about_actual_contact_point_error_Nm": 4.5530536028496064e-15,
+        "force_budget_N": 7.873191946838663e-10,
+        "moment_budget_Nm": 2.361957584051599e-12
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00869-r3000-body_source_prior",
+    "compensated_force_error_N": 8.199146297269909e-16,
+    "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+    "compensated_moment_error_Nm": 3.430466789794414e-17,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.928015851844441e-12,
+    "maximum_local_coulomb_violation_Pa": 3.637978807091713e-12,
+    "global_net_force_N": [
+      -0.00018057175209643076,
+      -0.0008297943966552972,
+      0.06426158413992078
+    ],
+    "sum_individual_force_norms_N": 0.7194045691978652,
+    "native_reported_force_errors_N": [
+      8.229151846152648e-16,
+      8.229151846152648e-16,
+      8.229151846152648e-16
+    ],
+    "native_reported_moment_errors_Nm": [
+      1.6277598737962556e-17,
+      1.6277598737962556e-17,
+      1.6277598737962556e-17
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 0.0020279185012960447,
+        "moment_about_actual_contact_point_error_Nm": 1.5452451437546968e-06,
+        "force_budget_N": 3.347585002172861e-09,
+        "moment_budget_Nm": 1.0042755006518583e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 0.002759482350901085,
+        "moment_about_actual_contact_point_error_Nm": 1.2117731141720168e-05,
+        "force_budget_N": 3.0591414951219243e-09,
+        "moment_budget_Nm": 9.177424485365773e-12
+      },
+      {
+        "packet": 2,
+        "force_error_N": 0.002973556723939636,
+        "moment_about_actual_contact_point_error_Nm": 9.802373604264782e-06,
+        "force_budget_N": 7.873191946838663e-10,
+        "moment_budget_Nm": 2.361957584051599e-12
+      }
+    ],
+    "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00869-r6000-pressure",
+    "compensated_force_error_N": 2.3852463195275167e-17,
+    "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+    "compensated_moment_error_Nm": 2.3257286651535417e-19,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 3.856031703688882e-12,
+    "maximum_local_coulomb_violation_Pa": 7638.674315280421,
+    "global_net_force_N": [
+      -0.00018057175209643076,
+      -0.0008297943966552972,
+      0.06426158413992078
+    ],
+    "sum_individual_force_norms_N": 0.7194045691978652,
+    "native_reported_force_errors_N": [
+      5.553825132490826e-17,
+      5.561946742681909e-17,
+      6.938893903907228e-18
+    ],
+    "native_reported_moment_errors_Nm": [
+      7.503224035101767e-20,
+      9.004706232836872e-21,
+      2.2485357202528996e-20
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 5.561946742681909e-17,
+        "moment_about_actual_contact_point_error_Nm": 2.4845653611975095e-20,
+        "force_budget_N": 3.347585002172861e-09,
+        "moment_budget_Nm": 2.0085510013037166e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 5.561946742681909e-17,
+        "moment_about_actual_contact_point_error_Nm": 2.327632490859059e-20,
+        "force_budget_N": 3.0591414951219243e-09,
+        "moment_budget_Nm": 1.8354848970731546e-11
+      },
+      {
+        "packet": 2,
+        "force_error_N": 0.0,
+        "moment_about_actual_contact_point_error_Nm": 2.046657551609027e-20,
+        "force_budget_N": 7.873191946838663e-10,
+        "moment_budget_Nm": 4.723915168103198e-12
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00869-r6000-componentwise",
+    "compensated_force_error_N": 1.4554132304298885e-10,
+    "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+    "compensated_moment_error_Nm": 6.136203242998761e-13,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 3.856031703688882e-12,
+    "maximum_local_coulomb_violation_Pa": 9.094947017729282e-13,
+    "global_net_force_N": [
+      -0.00018057175209643076,
+      -0.0008297943966552972,
+      0.06426158413992078
+    ],
+    "sum_individual_force_norms_N": 0.7194045691978652,
+    "native_reported_force_errors_N": [
+      5.062471322925348e-11,
+      1.3168336743006026e-10,
+      2.0542671150907307e-11
+    ],
+    "native_reported_moment_errors_Nm": [
+      3.1509821806245466e-13,
+      1.897109688961192e-12,
+      2.865842710658942e-14
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 5.062471073472441e-11,
+        "moment_about_actual_contact_point_error_Nm": 3.150982204993581e-13,
+        "force_budget_N": 3.347585002172861e-09,
+        "moment_budget_Nm": 2.0085510013037166e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 1.3168336743006026e-10,
+        "moment_about_actual_contact_point_error_Nm": 1.897109683401532e-12,
+        "force_budget_N": 3.0591414951219243e-09,
+        "moment_budget_Nm": 1.8354848970731546e-11
+      },
+      {
+        "packet": 2,
+        "force_error_N": 2.0542668261291088e-11,
+        "moment_about_actual_contact_point_error_Nm": 2.8658427696651844e-14,
+        "force_budget_N": 7.873191946838663e-10,
+        "moment_budget_Nm": 4.723915168103198e-12
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00869-r6000-pair_union",
+    "compensated_force_error_N": 6.554137954171999e-11,
+    "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+    "compensated_moment_error_Nm": 1.841662428166884e-12,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 3.856031703688882e-12,
+    "maximum_local_coulomb_violation_Pa": 9.094947017729282e-13,
+    "global_net_force_N": [
+      -0.00018057175209643076,
+      -0.0008297943966552972,
+      0.06426158413992078
+    ],
+    "sum_individual_force_norms_N": 0.7194045691978652,
+    "native_reported_force_errors_N": [
+      6.222024848711683e-11,
+      9.774821655546405e-11,
+      2.0563264180969888e-11
+    ],
+    "native_reported_moment_errors_Nm": [
+      2.5098536831580765e-13,
+      1.8363564895202445e-12,
+      2.871104283521456e-14
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 6.222024848711683e-11,
+        "moment_about_actual_contact_point_error_Nm": 2.509853848436004e-13,
+        "force_budget_N": 3.347585002172861e-09,
+        "moment_budget_Nm": 2.0085510013037166e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 9.774821486244247e-11,
+        "moment_about_actual_contact_point_error_Nm": 1.836356497577193e-12,
+        "force_budget_N": 3.0591414951219243e-09,
+        "moment_budget_Nm": 1.8354848970731546e-11
+      },
+      {
+        "packet": 2,
+        "force_error_N": 2.0563269913141453e-11,
+        "moment_about_actual_contact_point_error_Nm": 2.871104429786862e-14,
+        "force_budget_N": 7.873191946838663e-10,
+        "moment_budget_Nm": 4.723915168103198e-12
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step00869-r6000-body_source_prior",
+    "compensated_force_error_N": 2.5894810055153377e-16,
+    "global_net_scaled_diagnostic_force_budget_N": 6.426719506148136e-10,
+    "compensated_moment_error_Nm": 1.0866081721668098e-17,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 3.856031703688882e-12,
+    "maximum_local_coulomb_violation_Pa": 9.094947017729282e-13,
+    "global_net_force_N": [
+      -0.00018057175209643076,
+      -0.0008297943966552972,
+      0.06426158413992078
+    ],
+    "sum_individual_force_norms_N": 0.7194045691978652,
+    "native_reported_force_errors_N": [
+      2.50476997353276e-16,
+      2.50476997353276e-16,
+      2.50476997353276e-16
+    ],
+    "native_reported_moment_errors_Nm": [
+      1.389574813387544e-17,
+      1.389574813387544e-17,
+      1.389574813387544e-17
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 0.002011106705061929,
+        "moment_about_actual_contact_point_error_Nm": 6.997989015342302e-06,
+        "force_budget_N": 3.347585002172861e-09,
+        "moment_budget_Nm": 2.0085510013037166e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 0.0027400546491462047,
+        "moment_about_actual_contact_point_error_Nm": 2.8448051002625106e-05,
+        "force_budget_N": 3.0591414951219243e-09,
+        "moment_budget_Nm": 1.8354848970731546e-11
+      },
+      {
+        "packet": 2,
+        "force_error_N": 0.002954594111290935,
+        "moment_about_actual_contact_point_error_Nm": 2.0566299813880858e-05,
+        "force_budget_N": 7.873191946838663e-10,
+        "moment_budget_Nm": 4.723915168103198e-12
+      }
+    ],
+    "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step02640-r3000-pressure",
+    "compensated_force_error_N": 4.391018798566293e-17,
+    "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+    "compensated_moment_error_Nm": 2.5203802426391923e-19,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.918082818790927e-12,
+    "maximum_local_coulomb_violation_Pa": 35080.296403829205,
+    "global_net_force_N": [
+      -0.0007217807661754265,
+      -0.0008029498183140249,
+      0.06392697720789028
+    ],
+    "sum_individual_force_norms_N": 0.8026079260393497,
+    "native_reported_force_errors_N": [
+      5.551117770103112e-17,
+      2.7755575615628914e-17
+    ],
+    "native_reported_moment_errors_Nm": [
+      6.988021814847978e-21,
+      6.108188272820204e-20
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 5.594317740676816e-17,
+        "moment_about_actual_contact_point_error_Nm": 2.156421230761888e-20,
+        "force_budget_N": 4.009061357998585e-09,
+        "moment_budget_Nm": 1.2027184073995756e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 0.0,
+        "moment_about_actual_contact_point_error_Nm": 1.8979401838684987e-19,
+        "force_budget_N": 4.0170179023949125e-09,
+        "moment_budget_Nm": 1.2051053707184738e-11
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step02640-r3000-componentwise",
+    "compensated_force_error_N": 6.769807520890038e-10,
+    "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+    "compensated_moment_error_Nm": 1.5796944254668076e-11,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.918082818790927e-12,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      -0.0007217807661754265,
+      -0.0008029498183140249,
+      0.06392697720789028
+    ],
+    "sum_individual_force_norms_N": 0.8026079260393497,
+    "native_reported_force_errors_N": [
+      2.346062689313742e-10,
+      6.400844074396694e-10
+    ],
+    "native_reported_moment_errors_Nm": [
+      9.240811017870174e-13,
+      5.245163223394755e-13
+    ],
+    "global_net_scaled_force_gate": false,
+    "global_net_scaled_moment_gate": false,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 2.3460626893139634e-10,
+        "moment_about_actual_contact_point_error_Nm": 9.240811024784727e-13,
+        "force_budget_N": 4.009061357998585e-09,
+        "moment_budget_Nm": 1.2027184073995756e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 6.400844074396694e-10,
+        "moment_about_actual_contact_point_error_Nm": 5.245163277767109e-13,
+        "force_budget_N": 4.0170179023949125e-09,
+        "moment_budget_Nm": 1.2051053707184738e-11
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step02640-r3000-pair_union",
+    "compensated_force_error_N": 8.383270727427531e-10,
+    "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+    "compensated_moment_error_Nm": 1.405080231452706e-11,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.918082818790927e-12,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      -0.0007217807661754265,
+      -0.0008029498183140249,
+      0.06392697720789028
+    ],
+    "sum_individual_force_norms_N": 0.8026079260393497,
+    "native_reported_force_errors_N": [
+      7.780897664845971e-10,
+      6.107997410329027e-11
+    ],
+    "native_reported_moment_errors_Nm": [
+      1.1122212217007392e-12,
+      1.745996895526135e-12
+    ],
+    "global_net_scaled_force_gate": false,
+    "global_net_scaled_moment_gate": false,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 7.780897824391778e-10,
+        "moment_about_actual_contact_point_error_Nm": 1.1122212156812409e-12,
+        "force_budget_N": 4.009061357998585e-09,
+        "moment_budget_Nm": 1.2027184073995756e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 6.107997410344211e-11,
+        "moment_about_actual_contact_point_error_Nm": 1.745996908584639e-12,
+        "force_budget_N": 4.0170179023949125e-09,
+        "moment_budget_Nm": 1.2051053707184738e-11
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step02640-r3000-body_source_prior",
+    "compensated_force_error_N": 6.62273784651611e-14,
+    "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+    "compensated_moment_error_Nm": 7.994337873408331e-15,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 1.918082818790927e-12,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      -0.0007217807661754265,
+      -0.0008029498183140249,
+      0.06392697720789028
+    ],
+    "sum_individual_force_norms_N": 0.8026079260393497,
+    "native_reported_force_errors_N": [
+      6.622740469508852e-14,
+      6.622740469508852e-14
+    ],
+    "native_reported_moment_errors_Nm": [
+      8.271888911553677e-15,
+      8.271888911553677e-15
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 5.674340975700452e-08,
+        "moment_about_actual_contact_point_error_Nm": 2.0338187834633688e-05,
+        "force_budget_N": 4.009061357998585e-09,
+        "moment_budget_Nm": 1.2027184073995756e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 5.674347386910321e-08,
+        "moment_about_actual_contact_point_error_Nm": 2.0340684469689787e-05,
+        "force_budget_N": 4.0170179023949125e-09,
+        "moment_budget_Nm": 1.2051053707184738e-11
+      }
+    ],
+    "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step02640-r6000-pressure",
+    "compensated_force_error_N": 1.5281482511011672e-17,
+    "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+    "compensated_moment_error_Nm": 4.0299152256882777e-19,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 3.836165637581854e-12,
+    "maximum_local_coulomb_violation_Pa": 9348.47325314384,
+    "global_net_force_N": [
+      -0.0007217807661754265,
+      -0.0008029498183140249,
+      0.06392697720789028
+    ],
+    "sum_individual_force_norms_N": 0.8026079260393497,
+    "native_reported_force_errors_N": [
+      5.594315770774142e-17,
+      5.561949219390514e-17
+    ],
+    "native_reported_moment_errors_Nm": [
+      6.865548536292401e-20,
+      1.0536489861543552e-19
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 5.594317740676816e-17,
+        "moment_about_actual_contact_point_error_Nm": 4.236117468075829e-20,
+        "force_budget_N": 4.009061357998585e-09,
+        "moment_budget_Nm": 2.4054368147991512e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 5.594317740676816e-17,
+        "moment_about_actual_contact_point_error_Nm": 1.9605873374884132e-19,
+        "force_budget_N": 4.0170179023949125e-09,
+        "moment_budget_Nm": 2.4102107414369476e-11
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step02640-r6000-componentwise",
+    "compensated_force_error_N": 9.914575777140566e-10,
+    "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+    "compensated_moment_error_Nm": 2.426534716878422e-11,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 3.836165637581854e-12,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      -0.0007217807661754265,
+      -0.0008029498183140249,
+      0.06392697720789028
+    ],
+    "sum_individual_force_norms_N": 0.8026079260393497,
+    "native_reported_force_errors_N": [
+      1.2192419908702052e-10,
+      1.112022488259605e-09
+    ],
+    "native_reported_moment_errors_Nm": [
+      2.1113242718448084e-12,
+      1.2377585099556055e-12
+    ],
+    "global_net_scaled_force_gate": false,
+    "global_net_scaled_moment_gate": false,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 1.2192419286610152e-10,
+        "moment_about_actual_contact_point_error_Nm": 2.111324267977525e-12,
+        "force_budget_N": 4.009061357998585e-09,
+        "moment_budget_Nm": 2.4054368147991512e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 1.112022488259605e-09,
+        "moment_about_actual_contact_point_error_Nm": 1.2377585078011033e-12,
+        "force_budget_N": 4.0170179023949125e-09,
+        "moment_budget_Nm": 2.4102107414369476e-11
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step02640-r6000-pair_union",
+    "compensated_force_error_N": 7.840678628856275e-10,
+    "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+    "compensated_moment_error_Nm": 6.557678186736118e-12,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 3.836165637581854e-12,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      -0.0007217807661754265,
+      -0.0008029498183140249,
+      0.06392697720789028
+    ],
+    "sum_individual_force_norms_N": 0.8026079260393497,
+    "native_reported_force_errors_N": [
+      1.781178466850718e-10,
+      6.059541719992126e-10
+    ],
+    "native_reported_moment_errors_Nm": [
+      2.056372283169638e-12,
+      1.7516517950580308e-12
+    ],
+    "global_net_scaled_force_gate": false,
+    "global_net_scaled_moment_gate": false,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 1.781178862803298e-10,
+        "moment_about_actual_contact_point_error_Nm": 2.056372248397137e-12,
+        "force_budget_N": 4.009061357998585e-09,
+        "moment_budget_Nm": 2.4054368147991512e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 6.059541719992126e-10,
+        "moment_about_actual_contact_point_error_Nm": 1.7516517885194907e-12,
+        "force_budget_N": 4.0170179023949125e-09,
+        "moment_budget_Nm": 2.4102107414369476e-11
+      }
+    ],
+    "native_contract": "each packet wrench,1e-8 of its own force scale and physical radius",
+    "native_contract_passed": true
+  },
+  {
+    "case": "step02640-r6000-body_source_prior",
+    "compensated_force_error_N": 1.0955937555848079e-13,
+    "global_net_scaled_diagnostic_force_budget_N": 6.393609395969757e-10,
+    "compensated_moment_error_Nm": 8.139636993923953e-15,
+    "global_net_scaled_diagnostic_moment_budget_Nm": 3.836165637581854e-12,
+    "maximum_local_coulomb_violation_Pa": 0.0,
+    "global_net_force_N": [
+      -0.0007217807661754265,
+      -0.0008029498183140249,
+      0.06392697720789028
+    ],
+    "sum_individual_force_norms_N": 0.8026079260393497,
+    "native_reported_force_errors_N": [
+      1.0955947187635085e-13,
+      1.0955947187635085e-13
+    ],
+    "native_reported_moment_errors_Nm": [
+      5.732212273170398e-15,
+      5.732212273170398e-15
+    ],
+    "global_net_scaled_force_gate": true,
+    "global_net_scaled_moment_gate": true,
+    "packet_checks": [
+      {
+        "packet": 0,
+        "force_error_N": 3.4158851507418176e-07,
+        "moment_about_actual_contact_point_error_Nm": 4.610850154161521e-05,
+        "force_budget_N": 4.009061357998585e-09,
+        "moment_budget_Nm": 2.4054368147991512e-11
+      },
+      {
+        "packet": 1,
+        "force_error_N": 3.415885190976803e-07,
+        "moment_about_actual_contact_point_error_Nm": 4.612352440758049e-05,
+        "force_budget_N": 4.0170179023949125e-09,
+        "moment_budget_Nm": 2.4102107414369476e-11
+      }
+    ],
+    "native_contract": "body aggregate wrench,1e-8 of aggregate force scale; packet redistribution is measured",
+    "native_contract_passed": true
+  }
+]
