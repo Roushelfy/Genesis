@@ -252,6 +252,16 @@ def main():
             probes["supplemental_probes"] == 576
             and probes["supplemental_probes_within25um_of_baseline_normal_samples"] > 0
         )
+        matched = summaries["covered-cad-fixed-distance-depth-probes-v1"]
+        assert matched["qualified_baseline_final_probe_tensor_reproduced"]
+        assert matched["exact_original576_probe_coordinates_and_depths_retained"]
+        assert len(matched["rows"]) == 15 and len(matched["adjacent_depth_changes"]) == 180
+        figure = p / plan["accepted_figure_run"] / "results/contact_depth_distance.svg"
+        root = element_tree.parse(figure).getroot()
+        assert len(root.findall(".//{http://www.w3.org/2000/svg}text")) > 20
+        assert not root.findall(".//{http://www.w3.org/2000/svg}image")
+        export_qa = json.loads((p / plan["export_qa"]).read_text())
+        assert export_qa["passed"] and export_qa["editable_svg_sha256"] == digest(figure)[0]
         scientific_checks = {
             "fixed_mesh_distance_full_dynamic_fields": 15,
             "original_dynamic_source_states": 15,
@@ -296,6 +306,8 @@ def main():
         }
     else:
         audit = summaries["egg-frozen-traction-local-bulk-quadrature-audit-v2"]
+        qualification = summaries["nested-bulk-observable-qualification-v1"]
+        assert qualification["qualification_passed"]
         assert len(audit["rows"]) == 15 and len(audit["adjacent_changes"]) == 10
         assert audit["every_field_full_quadrature_directly_reconstructed"]
         assert all(

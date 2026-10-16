@@ -40,9 +40,13 @@ the declared original probe/peak criteria. Several original probe differences
 increase and some raw peaks are nonmonotone, despite changes below the initial
 3% diagnostic; the physical tail is not accepted.
 
-The independent large-array audit publication is a separate step from this
-producer-data packet. Its actual successful runtime results are recorded above;
-neither a producer residual nor publication of a mesh alone substitutes for
+The [independent large-array audit publication](../evidence/20261014-physical/frozen-traction-volume-audit-v1/manifest.json)
+retains both original and explicit-quadrature audit outputs, the manufactured
+6/12-tet control, closed sources and commands. All 20 complete old/new large
+files reconstruct from exact bounded chunks; identical arrays share stored
+bytes without removing either original identity. Manifest SHA256 is
+`8e57b63ded4a0aaca49cf37656446518b82e00c75dd76ee889ac1523144b8c9f`.
+Neither a producer residual nor publication of a mesh alone substitutes for
 that independent scope. The 653088-tet fourth local level, with the original
 three meshes byte-preserved, remains under producer 719476 and subsequent
 20-field audit 719477. Their pending states count as scheduled work only.
