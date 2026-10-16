@@ -1,0 +1,239 @@
+{
+  "scope": "Qualify unchanged original finite-load fields, then extend their CAD/volume family without importing production numerics.",
+  "qualify_only": false,
+  "geometry": "capsule",
+  "mesh_sha256": "840f4aad3a0fa85f658d87a47f14c053e341a59aa2eb5ae63a6fa418a5483c0e",
+  "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-matrix-mesh-capsule-v1/meshes/h0.0004375.npz",
+  "mesh_metadata": {
+    "geometry": {
+      "name": "capsule",
+      "description": "Radius8mm cylinder, axial length24mm, hemispherical caps",
+      "thickness_m": null,
+      "gap_m": null,
+      "minimum_rounding_m": null
+    },
+    "gmsh_version": "4.14.1",
+    "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+    "mesh_size": 0.0004375,
+    "mesh_size_units": "m",
+    "shell_layers": null,
+    "nodes": 61185,
+    "tetrahedra": 326676,
+    "boundary_triangles": 24900,
+    "dimensions_m": [
+      0.016,
+      0.015999083372570888,
+      0.04
+    ],
+    "minimum_volume_m3": 4.38382476546924e-12,
+    "total_volume_m3": 6.966024279274873e-06,
+    "scaled_jacobian_percentiles": [
+      0.25174428349187344,
+      0.4026458755590344,
+      0.6264870311135737,
+      0.8803366284788242,
+      0.9969885416744139
+    ],
+    "mesh_sha256": "840f4aad3a0fa85f658d87a47f14c053e341a59aa2eb5ae63a6fa418a5483c0e"
+  },
+  "tetrahedra": 326676,
+  "qualification": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-finite-capsule-original-qualification-v1",
+  "rows": [
+    {
+      "case": "opposing",
+      "raw_global_peak_Pa": 5524.829168294439,
+      "raw_global_peak_position_m": [
+        0.007442060419769405,
+        0.00028574242061419876,
+        0.00023099406238500815
+      ],
+      "energy_J": 6.188799760099652e-11,
+      "amg_cg_iterations": 53,
+      "original_probe_count": 45,
+      "outside_probe_indices": [],
+      "complete_residual_N": 3.8284957859185494e-15,
+      "original_budget_N": 5.060342599205905e-11,
+      "original_budget_fraction": 7.565684952871247e-05,
+      "all_quadrature_tensor_components_checked": 32340924,
+      "quadrature_vs_corner_maximum_error_Pa": 1.0095391189679503e-10,
+      "comparison_with_original_finest_probes": {
+        "common": 45,
+        "excluded_indices": [],
+        "tensor_Pa": {
+          "relative_change": 0.014751442085851904,
+          "absolute_change": 30.547710429728795
+        },
+        "vm_Pa": {
+          "relative_change": 0.005444531078725664,
+          "absolute_change": 12.752019305063166
+        },
+        "displacement_m": {
+          "relative_change": 0.0007063961609884794,
+          "absolute_change": 4.585612145552069e-13
+        }
+      }
+    },
+    {
+      "case": "bending",
+      "raw_global_peak_Pa": 5921.40487601913,
+      "raw_global_peak_position_m": [
+        -0.007597283442784383,
+        0.00015508211441069055,
+        0.0002132618906890345
+      ],
+      "energy_J": 6.376889272770685e-11,
+      "amg_cg_iterations": 53,
+      "original_probe_count": 45,
+      "outside_probe_indices": [],
+      "complete_residual_N": 3.675802314277304e-15,
+      "original_budget_N": 5.0604796114753456e-11,
+      "original_budget_fraction": 7.263742958161333e-05,
+      "all_quadrature_tensor_components_checked": 32340924,
+      "quadrature_vs_corner_maximum_error_Pa": 8.913048077374697e-11,
+      "comparison_with_original_finest_probes": {
+        "common": 45,
+        "excluded_indices": [],
+        "tensor_Pa": {
+          "relative_change": 0.016260786316288765,
+          "absolute_change": 32.679573366242785
+        },
+        "vm_Pa": {
+          "relative_change": 0.005205576255711461,
+          "absolute_change": 11.845783834875995
+        },
+        "displacement_m": {
+          "relative_change": 0.0008185599565835334,
+          "absolute_change": 5.245911160049097e-13
+        }
+      }
+    },
+    {
+      "case": "asymmetric",
+      "raw_global_peak_Pa": 8713.796479971097,
+      "raw_global_peak_position_m": [
+        0.007442060419769405,
+        0.00028574242061419876,
+        0.00023099406238500815
+      ],
+      "energy_J": 1.1164010248725408e-10,
+      "amg_cg_iterations": 53,
+      "original_probe_count": 45,
+      "outside_probe_indices": [],
+      "complete_residual_N": 5.705161485961424e-15,
+      "original_budget_N": 6.734560542403918e-11,
+      "original_budget_fraction": 8.471468108481733e-05,
+      "all_quadrature_tensor_components_checked": 32340924,
+      "quadrature_vs_corner_maximum_error_Pa": 2.000888343900442e-10,
+      "comparison_with_original_finest_probes": {
+        "common": 45,
+        "excluded_indices": [],
+        "tensor_Pa": {
+          "relative_change": 0.014643603125906122,
+          "absolute_change": 40.11301022810967
+        },
+        "vm_Pa": {
+          "relative_change": 0.006814804093753571,
+          "absolute_change": 21.071159288265118
+        },
+        "displacement_m": {
+          "relative_change": 0.0011509432593947676,
+          "absolute_change": 1.3712978847942456e-12
+        }
+      }
+    },
+    {
+      "case": "near_slip",
+      "raw_global_peak_Pa": 11617.84088338672,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.00021818181818180314
+      ],
+      "energy_J": 1.0837680147382774e-10,
+      "amg_cg_iterations": 53,
+      "original_probe_count": 45,
+      "outside_probe_indices": [],
+      "complete_residual_N": 5.2634934374665756e-15,
+      "original_budget_N": 6.357002580123979e-11,
+      "original_budget_fraction": 8.279835301504507e-05,
+      "all_quadrature_tensor_components_checked": 32340924,
+      "quadrature_vs_corner_maximum_error_Pa": 9.731593308970332e-11,
+      "comparison_with_original_finest_probes": {
+        "common": 45,
+        "excluded_indices": [],
+        "tensor_Pa": {
+          "relative_change": 0.01861564986715377,
+          "absolute_change": 40.50811239678808
+        },
+        "vm_Pa": {
+          "relative_change": 0.006659689803575068,
+          "absolute_change": 16.268056780392715
+        },
+        "displacement_m": {
+          "relative_change": 0.0008228911250776523,
+          "absolute_change": 5.73142193551116e-13
+        }
+      }
+    },
+    {
+      "case": "multiple",
+      "raw_global_peak_Pa": 5540.004852551665,
+      "raw_global_peak_position_m": [
+        0.007442060419769405,
+        0.00028574242061419876,
+        0.00023099406238500815
+      ],
+      "energy_J": 6.754640114324433e-11,
+      "amg_cg_iterations": 53,
+      "original_probe_count": 45,
+      "outside_probe_indices": [],
+      "complete_residual_N": 4.019865399568621e-15,
+      "original_budget_N": 5.261224318915225e-11,
+      "original_budget_fraction": 7.640551240357394e-05,
+      "all_quadrature_tensor_components_checked": 32340924,
+      "quadrature_vs_corner_maximum_error_Pa": 1.1095835361629725e-10,
+      "comparison_with_original_finest_probes": {
+        "common": 45,
+        "excluded_indices": [],
+        "tensor_Pa": {
+          "relative_change": 0.01446786389898582,
+          "absolute_change": 31.68412698477615
+        },
+        "vm_Pa": {
+          "relative_change": 0.005317418306443047,
+          "absolute_change": 13.142176773212222
+        },
+        "displacement_m": {
+          "relative_change": 0.0008083918156339178,
+          "absolute_change": 5.966733196027144e-13
+        }
+      }
+    }
+  ],
+  "new_equilibrium_states_solved": 5,
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-matrix-mesh-capsule-v1/meshes/h0.0004375.npz": "840f4aad3a0fa85f658d87a47f14c053e341a59aa2eb5ae63a6fa418a5483c0e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-matrix-mesh-capsule-v1/meshes/h0.000875.npz": "c3881d41e76b4b32a9bc1ffe0e5207a84fa6faf80d4782129a882379759c3af1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1/source/research/rigid_stress/finite_traction_reference.py": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1/source/research/rigid_stress/skfem_reference.py": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-finite-capsule-original-qualification-v1/results/summary.json": "3cec8c287fb849c231826ad1e4471e6fc76c536dbf9913c14ecd49b88650117c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1/results/opposing/reference_field.npz": "15075c9287f36b3699b2093ac8d2085edad581e0353a10bd769798c8bb708540",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1/results/opposing/snapshot.json": "6e3706b0a4345c63e269ad75df7bd66ad6722cf2e91c4e1eba42fafcccbfa3af",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1-probes/results/opposing/reference_field.npz": "849aa5bceadd1597b22440b3fd61ec4a1935f0a52e389fbab11f52be68683bf3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1/results/bending/reference_field.npz": "127e8cf898e23ae17ba770689e5a68715ccdf273d5c1ea2c225785499a7f6d8e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1/results/bending/snapshot.json": "71e000e9a8cae802bc2701fd03717ece4a66b8d3654067718796eb4758c4e179",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1-probes/results/bending/reference_field.npz": "7f7126576d862e25be201a52edd451ef6a17c5e9d8ffcbe8ad887e3aae9a9630",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1/results/asymmetric/reference_field.npz": "a0ae44ad35fd45d0e0efb0515ac429b8f3aa4e74f4e0ff54f56ce927c73b2aac",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1/results/asymmetric/snapshot.json": "c462ea68b83672f40dff3d7be117b47b907a4551d0b460982aadb8e55507f676",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1-probes/results/asymmetric/reference_field.npz": "582ca70acdff49c9ba5a4a8e1a155c5b5d4373eb2b6a18a157c2928f253591a3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1/results/near_slip/reference_field.npz": "bd712d8746f7f84c654c17ecd99e60c4091fe3878238fa6e60b114798851976a",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1/results/near_slip/snapshot.json": "516b91d6b5ca9a10361dc884290003196b331ebce5bc4e680b1f077748ced8a7",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1-probes/results/near_slip/reference_field.npz": "0a4a4dc4f85d4f10dde074783024212a094f454505251b69c4e8e3f4280c9a27",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1/results/multiple/reference_field.npz": "7ec96c6eb7648e6442acce2ad179397445a5af24d906ffac2de81ce510aa7417",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1/results/multiple/snapshot.json": "85cd31a4c758e46b66246fd6e8c6a77260a3a4e959c8f4c0f705e7e3eec6a9af",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-ref-capsule-l2-v1-probes/results/multiple/reference_field.npz": "6674885a64c6c809007f2bf89300e8170c347b3c4a66708ee943800138dd4038",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-matrix-mesh-capsule-v1/meshes/h0.0004375.json": "8776847241883bf0249543b9269a601ff177a8d54ae810471ce87f65062a696f"
+  },
+  "goal_completion": false,
+  "limitations": "Every original physical center,3mm radius/profile/strength, friction, material/density and omega remains unchanged. These independently generated CAD/volume meshes change represented geometry and volume together; separate fixed-domain and integration axes remain required. All original physical probes, outside indices, complete corner fields, raw global peaks and original force budgets remain. New fields require a separately closed fresh auditor before physical interpretation; this producer alone does not establish a converged tail, native model comparison, resolved-contact or warmed accuracy/cost acceptance."
+}
