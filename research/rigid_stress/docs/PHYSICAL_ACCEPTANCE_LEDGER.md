@@ -1,9 +1,32 @@
-# Active physical-validation acceptance ledger
+# Physical-validation evidence ledger
 
-This ledger follows [LOAD_MODEL_PHYSICAL_VALIDATION.md](LOAD_MODEL_PHYSICAL_VALIDATION.md)
-without narrowing its scope. Historical native performance completion does not
-establish the new physical stage. Dated reports preserve their observations;
-running or pending jobs count as scheduled work only.
+## Active acceptance policy, 2026-10-16
+
+Follow [PRACTICAL_VALIDATION_GOAL.md](PRACTICAL_VALIDATION_GOAL.md).
+This ledger preserves the broader historical research matrix; its unresolved
+entries and "every original gate remains" statements are not all prerequisites
+for engineering delivery under the user's latest direction.
+Accept qualified independent-FEM implementation checks within their scope.
+Prioritize representative load-reconstruction/feedback comparisons and measured
+accuracy/cost settings for the egg/Franka and a nonconvex interior-hotspot case.
+Bound further convergence work by its application value. Report remaining peak
+uncertainty and unsupported cases honestly; no historical result is reclassified
+as physically accurate merely because the delivery scope has changed.
+
+### Delivery summary to maintain
+
+| Track | Current disposition |
+|---|---|
+| Discrete implementation | Independent-FEM agreement is accepted for already-qualified cases; preserve numerical budgets and targeted regressions after changes. |
+| Application load model | Prioritize resolved contact, resolved-load replay and reconstructed-load replay; separately quantify rigid/deformable feedback. Existing prescribed-traction evidence is partial qualification. |
+| Practical configuration | Recommend mesh/model settings with observable-specific uncertainty and warmed native throughput/memory. No universal 3% or all-shape convergence gate. |
+| Remaining physical research | Keep unresolved tails and extra axes below visible as limitations/follow-ups; they block only claims or operating cases they materially invalidate. |
+
+The new summary is a change of priorities, not a claim that the remaining
+application comparisons or performance measurements have already completed.
+Live jobs still count only as scheduled work.
+
+## Historical physical-validation status and evidence
 
 Current status, 2026-10-16: the full physical-validation goal remains open.
 The [eight-level finite-load references](PHYSICAL_EIGHT_LEVEL_REFERENCES_20261016.md)

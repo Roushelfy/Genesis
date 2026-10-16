@@ -1,6 +1,24 @@
 # Agent goal: native Quadrants rigid stress recovery
 
-## Active next stage: load-model accuracy and physical convergence, 2026-10-14
+## Active goal: application-first qualification and delivery, 2026-10-16
+
+Follow [docs/PRACTICAL_VALIDATION_GOAL.md](docs/PRACTICAL_VALIDATION_GOAL.md).
+Prioritize a useful Franka/full hollow egg stress observation for damage-aware
+grasping and RL, plus a representative nonconvex interior-hotspot case.
+Accept existing independent-FEM verification within its demonstrated scope.
+Focus the remaining work on resolved-contact / resolved-load replay /
+reconstructed-load replay comparisons, omitted feedback and a practical
+accuracy/cost choice. Preserve the native Quadrants implementation and throughput.
+
+The complete historical physical-convergence matrix is no longer a delivery
+prerequisite. Use bounded refinements where they affect an application decision;
+report unresolved raw peaks as limitations and distinguish engineering delivery
+from physical-model qualification and experimental fracture calibration.
+The new goal takes precedence over all older "every original gate remains"
+statements below and in linked reports. Preserve historical evidence and
+numerical tolerances; do not count unresolved accuracy questions as passed.
+
+## Historical stage: load-model accuracy and physical convergence, 2026-10-14
 
 Follow [docs/LOAD_MODEL_PHYSICAL_VALIDATION.md](docs/LOAD_MODEL_PHYSICAL_VALIDATION.md).
 Quantify how the pressure, componentwise and aggregate-source load models affect
