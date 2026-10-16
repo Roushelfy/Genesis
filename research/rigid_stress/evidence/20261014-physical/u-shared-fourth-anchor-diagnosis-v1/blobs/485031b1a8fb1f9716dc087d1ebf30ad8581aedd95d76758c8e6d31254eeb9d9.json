@@ -1,0 +1,34 @@
+[
+  {
+    "utc": "2026-10-16T05:06:44.163390+00:00",
+    "job": 720290,
+    "pending_precondition": "JobId=720290 ArrayJobId=720290 ArrayTaskId=0 JobName=wrap\n   UserId=zhaofeng(2157) GroupId=zhaofeng(2157) MCS_label=N/A\n   Priority=1 Nice=0 Account=root QOS=normal\n   JobState=PENDING Reason=DependencyNeverSatisfied Dependency=afterok:720289_*(failed)\n   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0\n   RunTime=00:00:00 TimeLimit=06:00:00 TimeMin=N/A\n   SubmitTime=2026-10-16T05:01:36 EligibleTime=Unknown\n   AccrueTime=Unknown\n   StartTime=Unknown EndTime=Unknown Deadline=N/A\n   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-16T05:01:36 Scheduler=Main\n   Partition=cpu AllocNode:Sid=cpu-207-159:4103412\n   ReqNodeList=(null) ExcNodeList=cpu-207-115\n   NodeList=\n   NumNodes=1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:*\n   ReqTRES=cpu=8,mem=128G,node=1,billing=8\n   AllocTRES=(null)\n   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*\n   MinCPUsNode=8 MinMemoryNode=128G MinTmpDiskNode=0\n   Features=(null) DelayBoot=00:00:00\n   OverSubscribe=OK Contiguous=0 Licenses=(null) LicensesAlloc=(null) Network=(null)\n   Command=(null)\n   WorkDir=/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery\n   StdErr=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-fourth-history-audit-v1-720290_0.log\n   StdIn=/dev/null\n   StdOut=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-fourth-history-audit-v1-720290_0.log\n   TresPerTask=cpu=8\n   \n\n",
+    "argv": [
+      "scancel",
+      "720290_0"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "",
+    "failed_parent_state": "720289_0|FAILED|1:0\n",
+    "producer_source_and_input_source_closed": true,
+    "physical_stages_accepted": 0,
+    "reason": "Original physical initialization points are not all P2 nodes on the remeshed body; original1e-12m check refuses the two30.5356744um nearest-node mismatches. Do not move anchors or loosen tolerance. Preserve failed run and investigate exact physical-coordinate interpolation/geometry before a new reference."
+  },
+  {
+    "utc": "2026-10-16T05:06:44.203040+00:00",
+    "job": 720291,
+    "pending_precondition": "JobId=720291 ArrayJobId=720291 ArrayTaskId=0 JobName=wrap\n   UserId=zhaofeng(2157) GroupId=zhaofeng(2157) MCS_label=N/A\n   Priority=1 Nice=0 Account=root QOS=normal\n   JobState=PENDING Reason=Dependency Dependency=afterok:720290_*(unfulfilled)\n   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0\n   RunTime=00:00:00 TimeLimit=03:00:00 TimeMin=N/A\n   SubmitTime=2026-10-16T05:01:36 EligibleTime=Unknown\n   AccrueTime=Unknown\n   StartTime=Unknown EndTime=Unknown Deadline=N/A\n   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-16T05:01:36 Scheduler=Main\n   Partition=cpu AllocNode:Sid=cpu-207-159:4103412\n   ReqNodeList=(null) ExcNodeList=cpu-207-115\n   NodeList=\n   NumNodes=1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:*\n   ReqTRES=cpu=8,mem=128G,node=1,billing=8\n   AllocTRES=(null)\n   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*\n   MinCPUsNode=8 MinMemoryNode=128G MinTmpDiskNode=0\n   Features=(null) DelayBoot=00:00:00\n   OverSubscribe=OK Contiguous=0 Licenses=(null) LicensesAlloc=(null) Network=(null)\n   Command=(null)\n   WorkDir=/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery\n   StdErr=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-four-level-body-tail-v1-720291_0.log\n   StdIn=/dev/null\n   StdOut=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-four-level-body-tail-v1-720291_0.log\n   TresPerTask=cpu=8\n   \n\n",
+    "argv": [
+      "scancel",
+      "720291_0"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "",
+    "failed_parent_state": "720289_0|FAILED|1:0\n",
+    "producer_source_and_input_source_closed": true,
+    "physical_stages_accepted": 0,
+    "reason": "Original physical initialization points are not all P2 nodes on the remeshed body; original1e-12m check refuses the two30.5356744um nearest-node mismatches. Do not move anchors or loosen tolerance. Preserve failed run and investigate exact physical-coordinate interpolation/geometry before a new reference."
+  }
+]

@@ -1,0 +1,47 @@
+{
+  "kind": "local_finite_setup",
+  "label": "fixed-polyhedron-local-hotspot-setup-v1",
+  "closed_jobs": {
+    "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1": {
+      "job": "720218_0",
+      "returncode": 0
+    },
+    "fixed-polyhedron-ellipsoid-local-original-qualification-v1": {
+      "job": "720236_0",
+      "returncode": 0
+    },
+    "fixed-polyhedron-capsule-local-hotspot-meshes-v1": {
+      "job": "720219_0",
+      "returncode": 0
+    },
+    "fixed-polyhedron-capsule-local-original-qualification-v1": {
+      "job": "720240_0",
+      "returncode": 0
+    }
+  },
+  "parent_manifests": [
+    {
+      "label": "fixed-polyhedron-ellipsoid-fields-v1",
+      "sha256": "03faaca3f06bf9ce8af7cf0d00729f9cfc91e14fa4d9afc1a64fe6d37d11c06e"
+    },
+    {
+      "label": "fixed-polyhedron-capsule-fields-v1",
+      "sha256": "18b4a44edd673718ae288569f5f04d9d974e6e6700c4232e9f0b131865977d27"
+    },
+    {
+      "label": "fixed-polyhedron-peak-cells-v1",
+      "sha256": "3eff81a2ce6d5cf21b4272da460baf20f9e8952b17158770316115fdef450431"
+    }
+  ],
+  "extra_files": [
+    "meta/fixed-polyhedron-local-hotspot-meshes-commands-v1.json",
+    "meta/fixed-polyhedron-local-hotspot-field-commands-v1.json",
+    "meta/commit-verified-physical-packet-v2.py"
+  ],
+  "pending_work": [
+    "All original local fine equilibria and separate15-field auditors are live or dependency pending, not accepted by this setup archive.",
+    "Every original physical/model/island/contact/egg-Franka/interior-hotspot/history/feedback/verified-warmed-cost requirement remains."
+  ],
+  "limitations": "Six full locally refined meshes preserve original geometry, seed vertices, each parent volume, total volume/area/COM and all original loads. Ten original million-cell fields freshly requalify before any local solve using unchanged full force/corner/quadrature/probe gates. Only original probe filename selection is added; no numerical algorithm, tolerance or physical input changes. Local marking uses all original maxima and load anchors. Volume/surface basis and boundary quadrature still couple. Mesh setup and original requalification solve zero new equilibria; live fine solves/auditors are excluded.",
+  "goal_completion": false
+}

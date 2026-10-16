@@ -1,0 +1,137 @@
+Warning : Union - BOPAlgo_AlertUnableToOrientTheShape BOPAlgo_AlertUnableToOrientTheShape BOPAlgo_AlertUnableToOrientTheShape BOPAlgo_AlertUnableToOrientTheShape BOPAlgo_AlertUnableToOrientTheShape BOPAlgo_AlertUnableToOrientTheShape BOPAlgo_AlertUnableToOrientTheShape BOPAlgo_AlertUnableToOrientTheShape 
+Warning : Fragments - BOPAlgo_AlertUnableToOrientTheShape 
+Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Circle)
+Info    : [ 10%] Meshing curve 2 (Circle)
+Info    : [ 20%] Meshing curve 3 (Circle)
+Info    : [ 20%] Meshing curve 4 (Circle)
+Info    : [ 30%] Meshing curve 5 (Circle)
+Info    : [ 30%] Meshing curve 6 (Circle)
+Info    : [ 40%] Meshing curve 7 (Line)
+Info    : [ 40%] Meshing curve 8 (Circle)
+Info    : [ 50%] Meshing curve 9 (Circle)
+Info    : [ 60%] Meshing curve 10 (Circle)
+Info    : [ 60%] Meshing curve 11 (Line)
+Info    : [ 70%] Meshing curve 12 (Circle)
+Info    : [ 70%] Meshing curve 13 (Circle)
+Info    : [ 80%] Meshing curve 14 (Circle)
+Info    : Done meshing 1D (Wall 0.0163533s, CPU 0.000431s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Torus, Frontal-Delaunay)
+Info    : [ 30%] Meshing surface 2 (Cylinder, Frontal-Delaunay)
+Info    : [ 50%] Meshing surface 3 (Cylinder, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 4 (Sphere, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 5 (Sphere, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.112977s, CPU 0.105364s)
+Info    : Meshing 3D...
+Info    : 3D Meshing 1 volume with 1 connected component
+Info    : Tetrahedrizing 2557 nodes...
+Info    : Done tetrahedrizing 2565 nodes (Wall 0.0349392s, CPU 0.030935s)
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.0800739s, CPU 0.073325s)
+Info    : Found volume 1
+Info    : It. 0 - 0 nodes created - worst tet radius 4.05695 (nodes removed 0 0)
+Info    : It. 500 - 500 nodes created - worst tet radius 1.36382 (nodes removed 0 0)
+Info    : It. 1000 - 1000 nodes created - worst tet radius 1.14571 (nodes removed 0 0)
+Info    : It. 1500 - 1499 nodes created - worst tet radius 1.02698 (nodes removed 0 1)
+Info    : 3D refinement terminated (4192 nodes total):
+Info    :  - 4 Delaunay cavities modified for star shapeness
+Info    :  - 1 nodes could not be inserted
+Info    :  - 17838 tetrahedra created in 0.0661019 sec. (269856 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.238826s, CPU 0.228934s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 2.15796e-06) with worst = 0.0127364 / average = 0.764686:
+Info    : 0.00 < quality < 0.10 :        51 elements
+Info    : 0.10 < quality < 0.20 :       135 elements
+Info    : 0.20 < quality < 0.30 :       230 elements
+Info    : 0.30 < quality < 0.40 :       362 elements
+Info    : 0.40 < quality < 0.50 :       524 elements
+Info    : 0.50 < quality < 0.60 :       815 elements
+Info    : 0.60 < quality < 0.70 :      2211 elements
+Info    : 0.70 < quality < 0.80 :      4544 elements
+Info    : 0.80 < quality < 0.90 :      6181 elements
+Info    : 0.90 < quality < 1.00 :      2785 elements
+Info    : 412 edge swaps, 15 node relocations (volume = 2.15796e-06): worst = 0.116756 / average = 0.779331 (Wall 0.00500358s, CPU 0.005004s)
+Info    : 417 edge swaps, 18 node relocations (volume = 2.15796e-06): worst = 0.300416 / average = 0.779528 (Wall 0.00615831s, CPU 0.006158s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :       365 elements
+Info    : 0.40 < quality < 0.50 :       491 elements
+Info    : 0.50 < quality < 0.60 :       771 elements
+Info    : 0.60 < quality < 0.70 :      2248 elements
+Info    : 0.70 < quality < 0.80 :      4523 elements
+Info    : 0.80 < quality < 0.90 :      6270 elements
+Info    : 0.90 < quality < 1.00 :      2792 elements
+Info    : Done optimizing mesh (Wall 0.0184176s, CPU 0.018417s)
+Info    : 4192 nodes 22769 elements
+Info    : Optimizing mesh (Netgen)...
+Info    : Optimizing volume 1
+Info    : CalcLocalH: 4192 Points 17460 Elements 5110 Surface Elements 
+Info    : Remove Illegal Elements 
+Info    : 0 illegal tets 
+Info    : Volume Optimization 
+Info    : CombineImprove 
+Info    : 47 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 24182.1 
+Info    : Total badness = 23231.3 
+Info    : SplitImprove 
+Info    : badmax = 12.0242 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 23231.3 
+Info    : Total badness = 23056.2 
+Info    : SwapImprove  
+Info    : 1078 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 21190.2 
+Info    : Total badness = 20790.2 
+Info    : CombineImprove 
+Info    : 13 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 20664 
+Info    : Total badness = 20630.2 
+Info    : SplitImprove 
+Info    : badmax = 6.85892 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 20630.2 
+Info    : Total badness = 20626.3 
+Info    : SwapImprove  
+Info    : 170 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 20481.7 
+Info    : Total badness = 20401.9 
+Info    : CombineImprove 
+Info    : 6 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 20346 
+Info    : Total badness = 20336.5 
+Info    : SplitImprove 
+Info    : badmax = 6.10627 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 20336.5 
+Info    : Total badness = 20335.6 
+Info    : SwapImprove  
+Info    : 60 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 20310.2 
+Info    : Total badness = 20280.9 
+Info    : Done optimizing mesh (Wall 1.2866s, CPU 1.27793s)
+Info    : Writing '/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-anchor-conforming-mesh-v1/results/mesh.msh'...
+Info    : Done writing '/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-anchor-conforming-mesh-v1/results/mesh.msh'
+{"scope": "Mesh the unchanged U CAD body with every original physical initialization anchor as a used vertex.", "rows": [{"geometry": {"name": "u", "description": "Rounded U tube, bend radius8mm, tube radius3mm, arms24mm", "thickness_m": null, "gap_m": 0.01, "minimum_rounding_m": null}, "gmsh_version": "4.14.1", "mesh_size": 0.000875, "mesh_size_units": "m", "tetrahedra": 16329, "nodes": 4126, "boundary_triangles": 5110, "mesh_sha256": "0e4e1ca82362a8283094084dc757382e95890d5bed24e7000e4a0d1bfae428ad", "minimum_volume_m3": 2.8816508429945477e-11, "total_volume_m3": 2.157955506779733e-06, "same_U_CAD_constructor": true, "CAD_volume_before_m3": 2.180876878758457e-06, "CAD_volume_after_m3": 2.180876878758457e-06, "CAD_COM_before_m": [1.896440419470012e-19, 0.0070527766981196855, 2.2964708204519677e-19], "CAD_COM_after_m": [3.792880838940024e-19, 0.007052776698119683, 2.340918642783296e-19], "original_anchor_sha256": "7c603c14b86fa434173ccc86b2a2c1453bf53cf042ed0243d6affc545cafd5b4", "original_anchor_positions_m": [[1.5178830414797062e-17, -0.011, 2.0818995585505005e-18], [0.011, 0.024, 9.540979117872439e-18], [-0.011, 0.024, -1.3877787807814457e-17], [1.5178830414797062e-17, -0.011, 2.0818995585505005e-18], [-0.008, 0.024000000000000004, 0.0030000000000000005], [0.011, 0.0, 7.347880794884119e-19]], "original_anchor_components": [2, 2, 2, 0, 0, 1], "original_anchor_used_mesh_vertex_distances_m": [0.0, 0.0, 0.0, 0.0, 0.0, 8.998558695971146e-35], "original_anchor_selected_vertex_ids": [2, 4, 0, 2, 1, 3], "original_anchor_CAD_surface_distances_m": [3.0814879110195774e-33, 4.336808689942018e-19, 1.5196605090707812e-17, 1.1504275515878506e-19, 1.5407439555097887e-33], "new_equilibrium_states_solved": 0, "goal_completion": false, "limitations": "OpenCASCADE point fragmentation constrains the new mesh to original physical initialization coordinates while preserving the original CAD volume/COM at the declared checks. Physical geometry/material/forces/anchors/tolerances are unchanged; polyhedral approximation and tetrahedral/contact trace discretization differ and require complete new history/field audits. Actual used volume-mesh vertices must meet the original1e-12m anchor check. Mesh generation is not a new contact equilibrium or convergence result. Documentation: https://www.gmsh.info/doc/texinfo/gmsh.html and https://gmsh.info/doc/cookbook/geometry/embed-point.html"}], "input_sha256": {"/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-initialization-constraint-geometry-v2/results/common_initialization_anchors.npz": "7c603c14b86fa434173ccc86b2a2c1453bf53cf042ed0243d6affc545cafd5b4", "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-common-initialization-coarse-v1/solution/initialization_anchors.json": "e97f49bd5f3881991fa491ec9e2f2d777d125af33e737e7bd9e7c1ee1ce3847e"}, "new_equilibrium_states_solved": 0, "goal_completion": false}

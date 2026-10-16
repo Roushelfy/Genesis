@@ -69,7 +69,7 @@ def main():
             field_path = run / f"results/{case}/reference_field.npz"
             snapshot_path = run / f"results/{case}/snapshot.json"
             probe_path = (
-                baseline_probes / f"results/{case}/reference_field.npz"
+                baseline_probes / f"results/{case}/{config.get('baseline_probe_filename', 'reference_field.npz')}"
                 if level == 0
                 else run / f"results/{case}/probe_field.npz"
             )

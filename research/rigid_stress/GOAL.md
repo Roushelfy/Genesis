@@ -36,7 +36,15 @@ the qualified native feature, and report load-model error separately from
 elastic numerical error. Commit and push reproducible progress and findings.
 The previous completion records do not establish this stage's acceptance.
 
-### Immediate evidence gates
+### Historical evidence gates
+
+Execution update after the application-first direction: new broad local
+convex jobs720237/720238/720241/720242 and pending auditors720239/720243,
+and shared-U fourth-level jobs720325/720326/720327, were cancelled to prioritize
+application decisions. All completed and partial outputs remain; these stops
+are not physical passes. The dated text below preserves the former research
+plan. Follow [the current delivery checklist](docs/PRACTICAL_VALIDATION_STATUS.md)
+for the active scope.
 
 Current status, 2026-10-16: the complete physical-validation goal remains open.
 The [acceptance ledger](docs/PHYSICAL_ACCEPTANCE_LEDGER.md) tracks each original

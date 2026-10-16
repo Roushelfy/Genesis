@@ -1,0 +1,76 @@
+[
+  {
+    "utc": "2026-10-16T05:17:08.307830+00:00",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0",
+      "--partition=cpu",
+      "--exclude=cpu-207-115",
+      "--cpus-per-task=8",
+      "--mem=128G",
+      "--time=24:00:00",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-fourth-v2-%A_%a.log",
+      "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/run_common_initialized_contact.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-recorded-history-audit-v2 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-fourth-v2 --mesh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-anchor-conforming-mesh-v1/results/mesh.npz --geometry u --pad-resolution 5 --gravity 0 -9.81 0 --body-rigid-coordinates --updated-friction --reuse-empty-factor --centre-gauge --pad-material neo_hookean --body-material neo_hookean --contact-initialization-steps 604 --initialization-anchors /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-initialization-constraint-geometry-v2/results/common_initialization_anchors.npz'"
+    ],
+    "stdout": "720325\n",
+    "stderr": "",
+    "returncode": 0,
+    "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-fourth-v2",
+    "mesh_sha256": "0e4e1ca82362a8283094084dc757382e95890d5bed24e7000e4a0d1bfae428ad",
+    "body_tetrahedra": 16329,
+    "physical_anchor_sha256": "7c603c14b86fa434173ccc86b2a2c1453bf53cf042ed0243d6affc545cafd5b4",
+    "scope": "Same original U CAD constructor/physical parameters/pad5/six physical initialization coordinates and744-stage12/604/64/64 history. Mesh alone conforms to original anchors without moving them or changing original1e-12m or1e-9N gates. New contact/bulk reference and independent all-stage field/source audit precede comparison retaining every original four-level row and75 probes. Original source-closed anchor-node failure and import failure remain retained. No physical convergence acceptance from asset generation/submission.",
+    "goal_completion": false
+  },
+  {
+    "utc": "2026-10-16T05:17:08.341226+00:00",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0",
+      "--partition=cpu",
+      "--exclude=cpu-207-115",
+      "--cpus-per-task=8",
+      "--mem=128G",
+      "--time=06:00:00",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-fourth-history-audit-v2-%A_%a.log",
+      "--dependency=afterok:720325",
+      "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/audit_shared_initialization_history.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-fourth-history-audit-v2 --run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-fourth-v2 --qualified-common-audit /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-common-initialization-coarse-audit-v1'"
+    ],
+    "stdout": "720326\n",
+    "stderr": "",
+    "returncode": 0,
+    "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-fourth-history-audit-v2",
+    "mesh_sha256": "0e4e1ca82362a8283094084dc757382e95890d5bed24e7000e4a0d1bfae428ad",
+    "body_tetrahedra": 16329,
+    "physical_anchor_sha256": "7c603c14b86fa434173ccc86b2a2c1453bf53cf042ed0243d6affc545cafd5b4",
+    "scope": "Same original U CAD constructor/physical parameters/pad5/six physical initialization coordinates and744-stage12/604/64/64 history. Mesh alone conforms to original anchors without moving them or changing original1e-12m or1e-9N gates. New contact/bulk reference and independent all-stage field/source audit precede comparison retaining every original four-level row and75 probes. Original source-closed anchor-node failure and import failure remain retained. No physical convergence acceptance from asset generation/submission.",
+    "goal_completion": false
+  },
+  {
+    "utc": "2026-10-16T05:17:08.371998+00:00",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0",
+      "--partition=cpu",
+      "--exclude=cpu-207-115",
+      "--cpus-per-task=8",
+      "--mem=128G",
+      "--time=03:00:00",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-four-level-body-tail-v2-%A_%a.log",
+      "--dependency=afterok:720326",
+      "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/compare_shared_four_initialization_tail.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-four-level-body-tail-v2 --run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-common-initialization-coarse-v1 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-medium-v1 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-fine-v1 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-fourth-v2 --history-audit /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-coarse-history-audit-v1 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-medium-history-audit-v1 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-fine-history-audit-v1 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-fourth-history-audit-v2 --axis body_at_fixed_pad'"
+    ],
+    "stdout": "720327\n",
+    "stderr": "",
+    "returncode": 0,
+    "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-four-level-body-tail-v2",
+    "mesh_sha256": "0e4e1ca82362a8283094084dc757382e95890d5bed24e7000e4a0d1bfae428ad",
+    "body_tetrahedra": 16329,
+    "physical_anchor_sha256": "7c603c14b86fa434173ccc86b2a2c1453bf53cf042ed0243d6affc545cafd5b4",
+    "scope": "Same original U CAD constructor/physical parameters/pad5/six physical initialization coordinates and744-stage12/604/64/64 history. Mesh alone conforms to original anchors without moving them or changing original1e-12m or1e-9N gates. New contact/bulk reference and independent all-stage field/source audit precede comparison retaining every original four-level row and75 probes. Original source-closed anchor-node failure and import failure remain retained. No physical convergence acceptance from asset generation/submission.",
+    "goal_completion": false
+  }
+]

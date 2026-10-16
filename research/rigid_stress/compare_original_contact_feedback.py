@@ -15,7 +15,7 @@ from .reference_motion_audit import motion_moments
 from .summarize_fine_references import closed_source
 
 
-def source_wrenches(static, displacement, previous, saved_force, centre, dt):
+def source_wrenches(static, displacement, previous, saved_force, centre, dt, stencil_records=None):
     normal, positions = static.normal_collisions(displacement)
     tangential = ipctk.TangentialCollisions()
     tangential.build(static.mesh, positions, normal, static.barrier, static.friction)
@@ -51,6 +51,17 @@ def source_wrenches(static, displacement, previous, saved_force, centre, dt):
                 ).reshape(-1, 3)
             np.add.at(reconstructed, nodes, force)
             body = groups == 0
+            if stencil_records is not None:
+                stencil_records.append(
+                    {
+                        "kind": kind,
+                        "source": max(group),
+                        "full_vertex_ids": ids[nodes].tolist(),
+                        "body_vertex_ids": ids[nodes[body]].tolist(),
+                        "body_positions_m": positions[nodes[body]].tolist(),
+                        "body_forces_N": force[body].tolist(),
+                    }
+                )
             record[kind + "_force_on_body_N"] += force[body].sum(axis=0)
             record["moment_on_body_about_current_com_Nm"] += np.cross(positions[nodes[body]] - centre, force[body]).sum(
                 axis=0

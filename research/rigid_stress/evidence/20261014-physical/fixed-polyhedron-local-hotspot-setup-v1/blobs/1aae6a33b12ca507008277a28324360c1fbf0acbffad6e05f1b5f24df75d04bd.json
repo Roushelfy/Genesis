@@ -1,0 +1,88 @@
+{
+  "scope": "Qualify unchanged original finite-load fields, then refine their declared geometry family using independent FEM.",
+  "qualify_only": true,
+  "geometry": "ellipsoid",
+  "mesh_sha256": "474293e8381624dc245334dca5741ab024ae41dacccd64fe15209a5e6783f0ed",
+  "tetrahedra": 954624,
+  "all_original_five_loads_full_fields_and_probes_qualified": true,
+  "rows": [
+    {
+      "case": "opposing",
+      "original_full_nodal_force_maximum_difference_N": 0.0,
+      "all_original_probe_coordinates_and_validity_retained": true,
+      "outside_probe_indices": [],
+      "complete_residual_N": 3.73282528124263e-15,
+      "original_budget_N": 3.6064436358354757e-11,
+      "original_budget_fraction": 0.00010350432886712443,
+      "all_quadrature_tensor_components_checked": 94507776,
+      "quadrature_vs_corner_maximum_error_Pa": 2.1373125491663814e-10
+    },
+    {
+      "case": "bending",
+      "original_full_nodal_force_maximum_difference_N": 0.0,
+      "all_original_probe_coordinates_and_validity_retained": true,
+      "outside_probe_indices": [],
+      "complete_residual_N": 2.573897632578905e-15,
+      "original_budget_N": 3.606811472012596e-11,
+      "original_budget_fraction": 7.136213391110996e-05,
+      "all_quadrature_tensor_components_checked": 94507776,
+      "quadrature_vs_corner_maximum_error_Pa": 2.2282620193436742e-10
+    },
+    {
+      "case": "asymmetric",
+      "original_full_nodal_force_maximum_difference_N": 0.0,
+      "all_original_probe_coordinates_and_validity_retained": true,
+      "outside_probe_indices": [],
+      "complete_residual_N": 3.6562558807433846e-15,
+      "original_budget_N": 4.8244494962605475e-11,
+      "original_budget_fraction": 7.578597068074533e-05,
+      "all_quadrature_tensor_components_checked": 94507776,
+      "quadrature_vs_corner_maximum_error_Pa": 2.546585164964199e-10
+    },
+    {
+      "case": "near_slip",
+      "original_full_nodal_force_maximum_difference_N": 0.0,
+      "all_original_probe_coordinates_and_validity_retained": true,
+      "outside_probe_indices": [],
+      "complete_residual_N": 4.88788314649879e-15,
+      "original_budget_N": 4.52959092699581e-11,
+      "original_budget_fraction": 0.00010791003481942712,
+      "all_quadrature_tensor_components_checked": 94507776,
+      "quadrature_vs_corner_maximum_error_Pa": 2.7284841053187847e-10
+    },
+    {
+      "case": "multiple",
+      "original_full_nodal_force_maximum_difference_N": 0.0,
+      "all_original_probe_coordinates_and_validity_retained": true,
+      "outside_probe_indices": [],
+      "complete_residual_N": 2.6480430082336365e-15,
+      "original_budget_N": 3.7461291784085686e-11,
+      "original_budget_fraction": 7.068744514994484e-05,
+      "all_quadrature_tensor_components_checked": 94507776,
+      "quadrature_vs_corner_maximum_error_Pa": 1.9463186617940664e-10
+    }
+  ],
+  "new_equilibrium_states_solved": 0,
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-three-meshes-v1/meshes/level2.npz": "474293e8381624dc245334dca5741ab024ae41dacccd64fe15209a5e6783f0ed",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/source/research/rigid_stress/finite_traction_reference.py": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/source/research/rigid_stress/skfem_reference.py": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/opposing/reference_field.npz": "ba8ae75ceaadd2a9b40ab23fbbaa697aec80851bbb847c78d231575846b9fc52",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/opposing/snapshot.json": "f6ff3f97af639380fd4d0bf2b1b58e16130c31496b14e39da7a533addba397ea",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/opposing/probe_field.npz": "70e06150808b14f0dd58ef0e56f9faec8b2eabf4caa5312012933a36c2df4c58",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/bending/reference_field.npz": "f7598bc2577bfe960a1c1c1a6138cb120a38e0e594faf0c0e2a404d03dbe6d2f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/bending/snapshot.json": "e36580e5e761e7c5d74274827de0fbf0fd8e2287d7448cb51d1c87b3efb919ce",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/bending/probe_field.npz": "e3ca531723ff34c3bb9c185894837ab765d6817c08fc15f6367a864f75c0aeb4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/asymmetric/reference_field.npz": "37891f43b2d25b502ea0ceb5f5238c9668b463aa25d78026f41306da14eb1e62",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/asymmetric/snapshot.json": "6bffb6ec02dd453c8576f0d89e88ac4498b5b71cea3d887ae36055ffe62ab6b4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/asymmetric/probe_field.npz": "9104e52a8676f84ddef84e5dca78d9b0960f1534fa7ca6e8f0f37e12f247d300",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/near_slip/reference_field.npz": "8487dc56fc077e7088719698f655e4e2a084a92255d8a64f130a239c3b1ec9e1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/near_slip/snapshot.json": "248948dba3dfa4eb25e2e9763f9215564f0722910f0ee8fe71d8818dc4bbb9ee",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/near_slip/probe_field.npz": "fc3993981274e250b45c4116acc2b78c272ef9889bcd84d3898471374750799c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/multiple/reference_field.npz": "00c192aed75096388b5065cde2386c7a9e550afe56a0d2dd036a306b55822d86",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/multiple/snapshot.json": "a01aa352ad53277fd0fcdac0a8adc3bbfa2e0b928b0f872750cf920d8ff5cf22",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/multiple/probe_field.npz": "7d78590c4a6fa7c2a9403a687c4efb8b675b7d605bc7855797210db360bf4522"
+  },
+  "goal_completion": false,
+  "limitations": "Fresh stiffness/mass/RHS, all original complete-force budgets, original continuous traction vectors, every corner/quadrature tensor and every original physical probe are rechecked without a new solve. This qualifies the isolated pure-FEM reference path on the existing mesh, not a physical tail or native model/cost accuracy."
+}

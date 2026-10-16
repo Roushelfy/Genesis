@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-fourth-anchor-transfer-qualification-v1/source/research/rigid_stress/qualify_shared_u_anchor_transfer.py", line 13, in <module>
+    from .sample_load_fields import locate_probes
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-shared-initialization-fourth-anchor-transfer-qualification-v1/source/research/rigid_stress/sample_load_fields.py", line 12, in <module>
+    from .validation_meshes import transform_shell
+ModuleNotFoundError: No module named 'research.rigid_stress.validation_meshes'

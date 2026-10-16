@@ -1,0 +1,28 @@
+{
+  "utc": "2026-10-16T04:40:00.246687+00:00",
+  "argv": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=cpu",
+    "--exclude=cpu-207-115",
+    "--cpus-per-task=8",
+    "--mem=128G",
+    "--time=02:00:00",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-convex-matched-numerical-axes-comparison-v1-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/compare_native_finite_axes.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-convex-matched-numerical-axes-comparison-v1 --runtime-root /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation'"
+  ],
+  "stdout": "720212\n",
+  "stderr": "",
+  "returncode": 0,
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-convex-matched-numerical-axes-comparison-v1",
+  "pre_submission_parent_states": "720132_0|COMPLETED|0:0\n720133_0|COMPLETED|0:0\n720134_0|COMPLETED|0:0\n720135_0|COMPLETED|0:0\n720136_0|COMPLETED|0:0\n720137_0|COMPLETED|0:0\n720138_0|COMPLETED|0:0\n720139_0|COMPLETED|0:0\n720140_0|COMPLETED|0:0\n720141_0|COMPLETED|0:0\n720142_0|COMPLETED|0:0\n720143_0|COMPLETED|0:0\n720144_0|COMPLETED|0:0\n720145_0|COMPLETED|0:0\n720146_0|COMPLETED|0:0\n720147_0|COMPLETED|0:0\n",
+  "live_auditor_dependencies": [],
+  "completed_parent_dependencies_omitted_after_natural_success_confirmation": true,
+  "source_sha256": {
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/compare_native_finite_axes.py": "b11f2a92984b3440c9c96f5ccea8ce7a7e3746bd671810c058d24a3ec9a40d83",
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/compare_native_finite_axes.sh": "82fb6ee8bb220e515d87aac0d6e57a9f3fd718117d6d9ece12981a8c5e92a19f"
+  },
+  "scope": "Compare actual raw native fields at fixed-mesh ports4/8/16 and quadrature10/14 with identical frozen input bytes, all original audits, exact volume-integrated symmetric-tensor L2 manufactured control and every unsupported row. Three spatial-level native model biases use separately audited finite-traction reference fields; no spatial/physical convergence claim.",
+  "goal_completion": false
+}

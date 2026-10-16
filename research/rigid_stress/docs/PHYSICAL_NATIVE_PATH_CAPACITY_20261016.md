@@ -104,9 +104,11 @@ All four five-load/four-model native jobs719912/914/916/918 and separate
 auditors719913/915/917/919 now naturally complete. They retain original8-port
 resolution,10-point native quadrature, physical inputs and numerical budgets.
 The [fine-field report](PHYSICAL_FINE_NATIVE_MODELS_20261016.md) records76
-accepted fields, four unsupported pressure rows and1634920056 checked quadrature
-components. Complete first-level arrays are published; finest-level publication
-remains required. These are actual field checks, without physical convergence
+accepted fine fields, four unsupported pressure rows and1634920056 checked quadrature
+components. Both complete fine levels' arrays are now published. The
+[matched-axis follow-up](PHYSICAL_MATCHED_NATIVE_AXES_20261016.md) adds the third
+spatial level and same-mesh distance/integration controls, bringing the scoped
+native evidence to228 accepted fields and12 unsupported rows. These are actual field checks, without physical convergence
 acceptance.
 
 Additional pair-union and self-balanced source-prior regressions719945/719946

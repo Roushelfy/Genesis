@@ -1,0 +1,9 @@
+--- a/research/rigid_stress/grasp_contact_reference.py
++++ b/research/rigid_stress/grasp_contact_reference.py
+@@ -165,6 +165,7 @@
+             approach_fraction * values,
+             12,
++            initial_displacement=(approach_fraction * rigid_target).reshape(-1),
+             phase="collision_free_approach",
+             failure_path=args.output / "approach_failure.npz",
+         )

@@ -95,13 +95,26 @@ full-snapshot verification. Each adds19 accepted fields and one unsupported
 pressure row. Their fresh audits check593353926 and614477556 quadrature
 components. Across all four fine runs,76 fields and1634920056 quadrature
 components pass the original gates, with all four unsupported rows retained.
-Finest-level full-array publication remains required; the conditional comparison
-table above still describes only the published first added level.
+Both finest-level full-array archives are now verified and pushed in five
+bounded Git packets per geometry. Each retains1619 manifest entries from1479
+actual runtime originals and39 exactly reconstructed large original files.
+Their manifest hashes are:
+
+| Finest full-array archive | Manifest SHA256 |
+|---|---|
+| [Ellipsoid](../evidence/20261014-physical/extended-native-ellipsoid-level2-fields-v1/manifest.json) | `4eb8d590dff3e333aeeff254141228b03bf762a8161e81e37a7bd5e197f8c7da` |
+| [Capsule](../evidence/20261014-physical/extended-native-capsule-level2-fields-v1/manifest.json) | `6e2d543c11788f678315e8183140c1ad18bd033128913d8e92cf70c7afa1f6fe` |
+
+The conditional comparison table above still describes only the first added
+level and its original unweighted statistic.
 
 Matched old-finest spatial runs and same-mesh ports4/8/16, quadrature10/14
-controls are scheduled with separate auditors. Exact commands remain in
+controls now complete with separate auditors. The
+[matched-axis report](PHYSICAL_MATCHED_NATIVE_AXES_20261016.md) records all228
+accepted native fields across twelve runs, plus every unsupported input and
+new exact volume-norm comparisons. Exact commands remain in
 `meta/native-convex-matched-distance-quadrature-commands-v1.json`. They supply no
-accepted evidence while pending. Original CAD opposing raw-peak changes remain
+physical convergence by themselves. Original CAD opposing raw-peak changes remain
 16.75%/14.10%, so these model comparisons do not establish a physical operating
 range. [Fixed-polyhedron controls](PHYSICAL_FINITE_PEAK_LOCATION_20261016.md)
 preserve the original five-case qualification. Volume/geometry/trace/quadrature

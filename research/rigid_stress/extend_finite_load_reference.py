@@ -1,4 +1,4 @@
-"""Qualify unchanged original finite-load fields, then extend their CAD/volume family without importing production numerics."""
+"""Qualify unchanged original finite-load fields, then refine their declared geometry family using independent FEM."""
 
 import argparse
 import hashlib
@@ -51,6 +51,9 @@ def main():
     parser.add_argument("--baseline-run", type=Path, required=True)
     parser.add_argument("--baseline-mesh", type=Path, required=True)
     parser.add_argument("--baseline-probes", type=Path, required=True)
+    parser.add_argument(
+        "--baseline-probe-filename", choices=["reference_field.npz", "probe_field.npz"], default="reference_field.npz"
+    )
     parser.add_argument("--qualify-only", action="store_true")
     parser.add_argument("--qualification", type=Path)
     parser.add_argument("--output", type=Path, required=True)
@@ -83,7 +86,7 @@ def main():
         for case in CASES:
             field_path = args.baseline_run / f"results/{case}/reference_field.npz"
             snapshot_path = args.baseline_run / f"results/{case}/snapshot.json"
-            probe_path = args.baseline_probes / f"results/{case}/reference_field.npz"
+            probe_path = args.baseline_probes / f"results/{case}/{args.baseline_probe_filename}"
             for path in [field_path, snapshot_path, probe_path]:
                 retain(path)
             snapshot = json.loads(snapshot_path.read_text())

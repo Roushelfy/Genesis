@@ -1,0 +1,59 @@
+{
+  "kind": "native_matched_axes_summary",
+  "label": "native-convex-matched-axes-summary-v1",
+  "closed_jobs": {
+    "native-convex-matched-numerical-axes-comparison-v1": {
+      "job": "720212_0",
+      "returncode": 0
+    }
+  },
+  "parent_manifests": [
+    {
+      "label": "native-ellipsoid-matched-axes-fields-v1",
+      "sha256": "2b13d27905511733f300c9dbba0c4da46160f76be39082f44a1c41799efc8bd7"
+    },
+    {
+      "label": "native-capsule-matched-axes-fields-v1",
+      "sha256": "58c612d0c65ef2ce614bdadc687198d81f510976703278b1fdb1f48cd406a582"
+    },
+    {
+      "label": "extended-native-ellipsoid-level1-fields-v1",
+      "sha256": "165de9fca80d696f6db55a7650dc55f3f8bc82c99a0672ece38e0c97d0026e08"
+    },
+    {
+      "label": "extended-native-ellipsoid-level2-fields-v1",
+      "sha256": "4eb8d590dff3e333aeeff254141228b03bf762a8161e81e37a7bd5e197f8c7da"
+    },
+    {
+      "label": "extended-native-capsule-level1-fields-v1",
+      "sha256": "39468b14331a49cb35092e7d9bbc5a9e08dc341ea9227d32a296eb0ea5e8a1bf"
+    },
+    {
+      "label": "extended-native-capsule-level2-fields-v1",
+      "sha256": "6e2d543c11788f678315e8183140c1ad18bd033128913d8e92cf70c7afa1f6fe"
+    },
+    {
+      "label": "extended-finite-ellipsoid-fields-v1",
+      "sha256": "aeb012371abac7bf30b28ff11b0e782563fd25c5e7219bcd3ae0242fe652a506"
+    },
+    {
+      "label": "extended-finite-capsule-fields-v1",
+      "sha256": "8c915c55c14f422ad4a3db588cb82a194429f140034ab648fd8c0e5e638234b5"
+    },
+    {
+      "label": "extended-six-shape-qualification-v1",
+      "sha256": "5244fc67f41f9ce8de36181019d697f4d3d079d9cc4bc91b7fb0aec74079a58b"
+    }
+  ],
+  "extra_files": [
+    "meta/native-convex-matched-numerical-axes-comparison-command-v1.json",
+    "meta/native-convex-matched-distance-quadrature-commands-v1.json",
+    "meta/publish-matched-fixed-followup-v1.py",
+    "meta/fixed-native-followup-publication-orchestration-setup-failure-v1.json"
+  ],
+  "limitations": "Complete120 same-mesh numerical-control rows and120 model-bias rows retain all original unsupported inputs. Exact volume-integrated raw symmetric-tensor L2 norms pass independent degree-two four-point and constant-tensor controls. All228 accepted native fields have separate original audits. Every numerical control has byte-identical frozen inputs; every prescribed-traction reference is separately full-field audited. Model bias across three spatial levels is conditional against each mesh reference, not cross-mesh field convergence or resolved contact truth. Original unweighted statistics/raw peaks remain. No continuum error bound, causal error subtraction, physical operating range or warmed cost is accepted.",
+  "pending_work": [
+    "Every original physical convergence/model/island/contact/egg-Franka/interior-hotspot/history/feedback/verified-warmed-cost requirement remains."
+  ],
+  "goal_completion": false
+}

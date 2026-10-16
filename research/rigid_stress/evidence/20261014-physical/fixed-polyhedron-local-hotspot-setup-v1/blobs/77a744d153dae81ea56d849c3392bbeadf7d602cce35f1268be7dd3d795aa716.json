@@ -1,0 +1,1618 @@
+{
+  "scope": "Archive closed physical-reference fields, qualifications and diagnostics without accepting physical convergence.",
+  "kind": "local_finite_setup",
+  "closed_runs": [
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1",
+      "job": "720218_0",
+      "scheduler_state": "COMPLETED",
+      "actual_wrapper_code": 0
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "job": "720236_0",
+      "scheduler_state": "COMPLETED",
+      "actual_wrapper_code": 0
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-hotspot-meshes-v1",
+      "job": "720219_0",
+      "scheduler_state": "COMPLETED",
+      "actual_wrapper_code": 0
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "job": "720240_0",
+      "scheduler_state": "COMPLETED",
+      "actual_wrapper_code": 0
+    }
+  ],
+  "parents": [
+    {
+      "label": "fixed-polyhedron-ellipsoid-fields-v1",
+      "sha256": "03faaca3f06bf9ce8af7cf0d00729f9cfc91e14fa4d9afc1a64fe6d37d11c06e",
+      "manifest": "research/rigid_stress/evidence/20261014-physical/fixed-polyhedron-ellipsoid-fields-v1/manifest.json",
+      "complete_archive_reverification": {
+        "manifest": "research/rigid_stress/evidence/20261014-physical/fixed-polyhedron-ellipsoid-fields-v1/manifest.json",
+        "manifest_sha256": "03faaca3f06bf9ce8af7cf0d00729f9cfc91e14fa4d9afc1a64fe6d37d11c06e",
+        "verified_entries": 273,
+        "verified_originals": 273,
+        "verified_original_prefixes": 0,
+        "appended_allocation_logs": [],
+        "reconstructed_complete_files": 5,
+        "restored_missing_artifacts": [],
+        "passed": true
+      }
+    },
+    {
+      "label": "fixed-polyhedron-capsule-fields-v1",
+      "sha256": "18b4a44edd673718ae288569f5f04d9d974e6e6700c4232e9f0b131865977d27",
+      "manifest": "research/rigid_stress/evidence/20261014-physical/fixed-polyhedron-capsule-fields-v1/manifest.json",
+      "complete_archive_reverification": {
+        "manifest": "research/rigid_stress/evidence/20261014-physical/fixed-polyhedron-capsule-fields-v1/manifest.json",
+        "manifest_sha256": "18b4a44edd673718ae288569f5f04d9d974e6e6700c4232e9f0b131865977d27",
+        "verified_entries": 273,
+        "verified_originals": 273,
+        "verified_original_prefixes": 0,
+        "appended_allocation_logs": [],
+        "reconstructed_complete_files": 5,
+        "restored_missing_artifacts": [],
+        "passed": true
+      }
+    },
+    {
+      "label": "fixed-polyhedron-peak-cells-v1",
+      "sha256": "3eff81a2ce6d5cf21b4272da460baf20f9e8952b17158770316115fdef450431",
+      "manifest": "research/rigid_stress/evidence/20261014-physical/fixed-polyhedron-peak-cells-v1/manifest.json",
+      "complete_archive_reverification": {
+        "manifest": "research/rigid_stress/evidence/20261014-physical/fixed-polyhedron-peak-cells-v1/manifest.json",
+        "manifest_sha256": "3eff81a2ce6d5cf21b4272da460baf20f9e8952b17158770316115fdef450431",
+        "verified_entries": 90,
+        "verified_originals": 90,
+        "verified_original_prefixes": 0,
+        "appended_allocation_logs": [],
+        "reconstructed_complete_files": 0,
+        "restored_missing_artifacts": [],
+        "passed": true
+      }
+    }
+  ],
+  "source_identity_records": [
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1/source/research/rigid_stress/refine_finite_hotspots.py",
+      "sha256": "ea7d45ed355df4ae27c0a08715c33b392fdaf9ddd977f251718bda00b8b0bfda"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1/source/research/rigid_stress/refine_thickness_tail_regions.py",
+      "sha256": "e249217064215c6cd60bd4a7e0844addb137c7680d2194d19fb20247c64d91b4"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1/source/research/rigid_stress/refine_fixed_geometry.py",
+      "sha256": "400658e808accbdfb066ce3262d86ed8fe96094b2314a9225fa7cd515f132f80"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1/source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1/source/research/rigid_stress/scripts/refine_finite_hotspots.sh",
+      "sha256": "6de64ce3ee4e81a8a24b25bb2f37d5fed86808caf1edf2a22e523583fe7aeab6"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1/source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1/source/research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1/source/research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1/input-source/research/rigid_stress/refine_finite_hotspots.py",
+      "sha256": "ea7d45ed355df4ae27c0a08715c33b392fdaf9ddd977f251718bda00b8b0bfda"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1/input-source/research/rigid_stress/refine_thickness_tail_regions.py",
+      "sha256": "e249217064215c6cd60bd4a7e0844addb137c7680d2194d19fb20247c64d91b4"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1/input-source/research/rigid_stress/refine_fixed_geometry.py",
+      "sha256": "400658e808accbdfb066ce3262d86ed8fe96094b2314a9225fa7cd515f132f80"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1/input-source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1/input-source/research/rigid_stress/scripts/refine_finite_hotspots.sh",
+      "sha256": "6de64ce3ee4e81a8a24b25bb2f37d5fed86808caf1edf2a22e523583fe7aeab6"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1/input-source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/qualify_reference_scaling.py",
+      "sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/spherical_shell_validation.py",
+      "sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/finite_traction_reference.py",
+      "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/extend_finite_load_reference.py",
+      "sha256": "fd65901b2ee96821a34d002f2e9d34d6ef58b86e410bbada42de53e4531102a7"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/solve_continuous_traction_axis.py",
+      "sha256": "ed97e39cf19cc802be7c5c94c1be5525ae703f80206082174150329d01c237f0"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/audit_continuous_traction_load_axis.py",
+      "sha256": "d9e6935662f9fe47df7d5b420e76699d232eff624501d426ed1bffda97f1ff8c"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/contact_reference.py",
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/qualify_articulated_precision.py",
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/sample_load_fields.py",
+      "sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/validation_meshes.py",
+      "sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/scripts/extend_finite_load_reference.sh",
+      "sha256": "886385547a9fdaecb748935f650a148ea7f77777e9b4d6dd3dc3da1b7505c1a1"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/scripts/solve_continuous_traction_axis.sh",
+      "sha256": "8b6fab1c6d3971711e0c5d65a8f64abcc5ce8e4df112abefcdaff5bf9d5033cd"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/scripts/audit_continuous_traction_load_axis.sh",
+      "sha256": "b4ad60e31c3310b144966095cee21d16679a8c70318acf7b25b43bc5c0649367"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/source/research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/qualify_reference_scaling.py",
+      "sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/spherical_shell_validation.py",
+      "sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/finite_traction_reference.py",
+      "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/extend_finite_load_reference.py",
+      "sha256": "fd65901b2ee96821a34d002f2e9d34d6ef58b86e410bbada42de53e4531102a7"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/solve_continuous_traction_axis.py",
+      "sha256": "ed97e39cf19cc802be7c5c94c1be5525ae703f80206082174150329d01c237f0"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/audit_continuous_traction_load_axis.py",
+      "sha256": "d9e6935662f9fe47df7d5b420e76699d232eff624501d426ed1bffda97f1ff8c"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/contact_reference.py",
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/qualify_articulated_precision.py",
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/sample_load_fields.py",
+      "sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/validation_meshes.py",
+      "sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/scripts/extend_finite_load_reference.sh",
+      "sha256": "886385547a9fdaecb748935f650a148ea7f77777e9b4d6dd3dc3da1b7505c1a1"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/scripts/solve_continuous_traction_axis.sh",
+      "sha256": "8b6fab1c6d3971711e0c5d65a8f64abcc5ce8e4df112abefcdaff5bf9d5033cd"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/scripts/audit_continuous_traction_load_axis.sh",
+      "sha256": "b4ad60e31c3310b144966095cee21d16679a8c70318acf7b25b43bc5c0649367"
+    },
+    {
+      "run": "fixed-polyhedron-ellipsoid-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-local-original-qualification-v1/input-source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-hotspot-meshes-v1/source/research/rigid_stress/refine_finite_hotspots.py",
+      "sha256": "ea7d45ed355df4ae27c0a08715c33b392fdaf9ddd977f251718bda00b8b0bfda"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-hotspot-meshes-v1/source/research/rigid_stress/refine_thickness_tail_regions.py",
+      "sha256": "e249217064215c6cd60bd4a7e0844addb137c7680d2194d19fb20247c64d91b4"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-hotspot-meshes-v1/source/research/rigid_stress/refine_fixed_geometry.py",
+      "sha256": "400658e808accbdfb066ce3262d86ed8fe96094b2314a9225fa7cd515f132f80"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-hotspot-meshes-v1/source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-hotspot-meshes-v1/source/research/rigid_stress/scripts/refine_finite_hotspots.sh",
+      "sha256": "6de64ce3ee4e81a8a24b25bb2f37d5fed86808caf1edf2a22e523583fe7aeab6"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-hotspot-meshes-v1/source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-hotspot-meshes-v1/source/research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-hotspot-meshes-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-hotspot-meshes-v1/source/research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-hotspot-meshes-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-hotspot-meshes-v1/input-source/research/rigid_stress/refine_finite_hotspots.py",
+      "sha256": "ea7d45ed355df4ae27c0a08715c33b392fdaf9ddd977f251718bda00b8b0bfda"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-hotspot-meshes-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-hotspot-meshes-v1/input-source/research/rigid_stress/refine_thickness_tail_regions.py",
+      "sha256": "e249217064215c6cd60bd4a7e0844addb137c7680d2194d19fb20247c64d91b4"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-hotspot-meshes-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-hotspot-meshes-v1/input-source/research/rigid_stress/refine_fixed_geometry.py",
+      "sha256": "400658e808accbdfb066ce3262d86ed8fe96094b2314a9225fa7cd515f132f80"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-hotspot-meshes-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-hotspot-meshes-v1/input-source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-hotspot-meshes-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-hotspot-meshes-v1/input-source/research/rigid_stress/scripts/refine_finite_hotspots.sh",
+      "sha256": "6de64ce3ee4e81a8a24b25bb2f37d5fed86808caf1edf2a22e523583fe7aeab6"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-hotspot-meshes-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-hotspot-meshes-v1/input-source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/qualify_reference_scaling.py",
+      "sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/spherical_shell_validation.py",
+      "sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/finite_traction_reference.py",
+      "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/extend_finite_load_reference.py",
+      "sha256": "fd65901b2ee96821a34d002f2e9d34d6ef58b86e410bbada42de53e4531102a7"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/solve_continuous_traction_axis.py",
+      "sha256": "ed97e39cf19cc802be7c5c94c1be5525ae703f80206082174150329d01c237f0"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/audit_continuous_traction_load_axis.py",
+      "sha256": "d9e6935662f9fe47df7d5b420e76699d232eff624501d426ed1bffda97f1ff8c"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/contact_reference.py",
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/qualify_articulated_precision.py",
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/sample_load_fields.py",
+      "sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/validation_meshes.py",
+      "sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/scripts/extend_finite_load_reference.sh",
+      "sha256": "886385547a9fdaecb748935f650a148ea7f77777e9b4d6dd3dc3da1b7505c1a1"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/scripts/solve_continuous_traction_axis.sh",
+      "sha256": "8b6fab1c6d3971711e0c5d65a8f64abcc5ce8e4df112abefcdaff5bf9d5033cd"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/scripts/audit_continuous_traction_load_axis.sh",
+      "sha256": "b4ad60e31c3310b144966095cee21d16679a8c70318acf7b25b43bc5c0649367"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/source/research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/qualify_reference_scaling.py",
+      "sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/spherical_shell_validation.py",
+      "sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/finite_traction_reference.py",
+      "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/extend_finite_load_reference.py",
+      "sha256": "fd65901b2ee96821a34d002f2e9d34d6ef58b86e410bbada42de53e4531102a7"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/solve_continuous_traction_axis.py",
+      "sha256": "ed97e39cf19cc802be7c5c94c1be5525ae703f80206082174150329d01c237f0"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/audit_continuous_traction_load_axis.py",
+      "sha256": "d9e6935662f9fe47df7d5b420e76699d232eff624501d426ed1bffda97f1ff8c"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/contact_reference.py",
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/qualify_articulated_precision.py",
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/sample_load_fields.py",
+      "sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/validation_meshes.py",
+      "sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/scripts/extend_finite_load_reference.sh",
+      "sha256": "886385547a9fdaecb748935f650a148ea7f77777e9b4d6dd3dc3da1b7505c1a1"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/scripts/solve_continuous_traction_axis.sh",
+      "sha256": "8b6fab1c6d3971711e0c5d65a8f64abcc5ce8e4df112abefcdaff5bf9d5033cd"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/scripts/audit_continuous_traction_load_axis.sh",
+      "sha256": "b4ad60e31c3310b144966095cee21d16679a8c70318acf7b25b43bc5c0649367"
+    },
+    {
+      "run": "fixed-polyhedron-capsule-local-original-qualification-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-local-original-qualification-v1/input-source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    }
+  ],
+  "actual_inputs_reverified": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-raw-peak-cell-diagnosis-v1/results/summary.json": {
+      "sha256": "4335b80009fef4a0c645e3624ed6b6224402af4302bdb355ab5c44354c090631",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-three-meshes-v1/meshes/level2.npz": {
+      "sha256": "474293e8381624dc245334dca5741ab024ae41dacccd64fe15209a5e6783f0ed",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/opposing/snapshot.json": {
+      "sha256": "f6ff3f97af639380fd4d0bf2b1b58e16130c31496b14e39da7a533addba397ea",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/bending/snapshot.json": {
+      "sha256": "e36580e5e761e7c5d74274827de0fbf0fd8e2287d7448cb51d1c87b3efb919ce",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/asymmetric/snapshot.json": {
+      "sha256": "6bffb6ec02dd453c8576f0d89e88ac4498b5b71cea3d887ae36055ffe62ab6b4",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/near_slip/snapshot.json": {
+      "sha256": "248948dba3dfa4eb25e2e9763f9215564f0722910f0ee8fe71d8818dc4bbb9ee",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/multiple/snapshot.json": {
+      "sha256": "a01aa352ad53277fd0fcdac0a8adc3bbfa2e0b928b0f872750cf920d8ff5cf22",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-three-meshes-v1/meshes/level2.json": {
+      "sha256": "888ab85ce49fcc8bba875126e54c489fa9fbe42f9a40b2ba42de83f26ef18b7a",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/source/research/rigid_stress/finite_traction_reference.py": {
+      "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/source/research/rigid_stress/skfem_reference.py": {
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/opposing/reference_field.npz": {
+      "sha256": "ba8ae75ceaadd2a9b40ab23fbbaa697aec80851bbb847c78d231575846b9fc52",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/opposing/probe_field.npz": {
+      "sha256": "70e06150808b14f0dd58ef0e56f9faec8b2eabf4caa5312012933a36c2df4c58",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/bending/reference_field.npz": {
+      "sha256": "f7598bc2577bfe960a1c1c1a6138cb120a38e0e594faf0c0e2a404d03dbe6d2f",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/bending/probe_field.npz": {
+      "sha256": "e3ca531723ff34c3bb9c185894837ab765d6817c08fc15f6367a864f75c0aeb4",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/asymmetric/reference_field.npz": {
+      "sha256": "37891f43b2d25b502ea0ceb5f5238c9668b463aa25d78026f41306da14eb1e62",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/asymmetric/probe_field.npz": {
+      "sha256": "9104e52a8676f84ddef84e5dca78d9b0960f1534fa7ca6e8f0f37e12f247d300",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/near_slip/reference_field.npz": {
+      "sha256": "8487dc56fc077e7088719698f655e4e2a084a92255d8a64f130a239c3b1ec9e1",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/near_slip/probe_field.npz": {
+      "sha256": "fc3993981274e250b45c4116acc2b78c272ef9889bcd84d3898471374750799c",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/multiple/reference_field.npz": {
+      "sha256": "00c192aed75096388b5065cde2386c7a9e550afe56a0d2dd036a306b55822d86",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/multiple/probe_field.npz": {
+      "sha256": "7d78590c4a6fa7c2a9403a687c4efb8b675b7d605bc7855797210db360bf4522",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-three-meshes-v1/meshes/level2.npz": {
+      "sha256": "44b349ed273c4ad6e5868a03637202e0a74fcc9022075b6c7d04f4a4c53f950e",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/opposing/snapshot.json": {
+      "sha256": "5b9c865ec854725818d74b086421dc996e62c1c7a42ad710d0ce6aec4b5e49dc",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/bending/snapshot.json": {
+      "sha256": "009e28b60306751ee299ffe33685a2ae1b33468d88f6f1b666daa9794ea5a828",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/asymmetric/snapshot.json": {
+      "sha256": "9ca0ecb09ae96b4fc55eecc970b3a584cda124845b6e4e39cb1a3758f3cbf332",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/near_slip/snapshot.json": {
+      "sha256": "5bddd659814b81ccd911faa78d54f7aee84c73fab8b21bd5804b0cb6366621f6",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/multiple/snapshot.json": {
+      "sha256": "cb19110bf832a550c46fc9b4c117463de330d3ef63fbf1ce8f4ea9509af3942f",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-three-meshes-v1/meshes/level2.json": {
+      "sha256": "dd91d1af927bc108f5b581e005b0585347d159ce7c7980a7acd727370dc68ac4",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/source/research/rigid_stress/finite_traction_reference.py": {
+      "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/source/research/rigid_stress/skfem_reference.py": {
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/opposing/reference_field.npz": {
+      "sha256": "535b751bee3e8f31ecadd3a4ba685718c0f47292b739fe06a45d92d2e0e873b0",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/opposing/probe_field.npz": {
+      "sha256": "cfd939667bbf48e496c5d2dcf0b39f4a44ac04286d68877c36687ed2d75a64a9",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/bending/reference_field.npz": {
+      "sha256": "36270db8daeb115bbc2750d7d71cdf8bea1e1018b21d7d74c5225ca00d1ba839",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/bending/probe_field.npz": {
+      "sha256": "c0a704a36db5935e8357de856e8a683d569d3692f1e6486fb0d6ccaf5a59e6c8",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/asymmetric/reference_field.npz": {
+      "sha256": "27c4d3bb55d0d3bf557a8d40f20c9b599c9ad6e235fc9b10dd06f0549b2f3508",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/asymmetric/probe_field.npz": {
+      "sha256": "41a1c7a34ba01b070d63bd65ce5230ff5923e4034c287eff92f65a503a517ba5",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/near_slip/reference_field.npz": {
+      "sha256": "751078b8b0d1b31373490cddc98e68aabf4be4bb8075c0483def5c0f90470020",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/near_slip/probe_field.npz": {
+      "sha256": "e66242e9de8cb7becb13deb95c3c72f551c84eb743b063721a26ab3bdce40839",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/multiple/reference_field.npz": {
+      "sha256": "eb677cb554ac7803a5bcfa388938422c7155041819d7be3cdb3438415f7ca5c0",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/multiple/probe_field.npz": {
+      "sha256": "fd3661be68aadf8058dd7b340a37247666565a95f9a5a3e70c292625677ea68f",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/fixed-polyhedron-local-hotspot-meshes-commands-v1.json": {
+      "sha256": "92fbce83fd639f925a17608693e94c8f5cf8953a5f03b4e3cf1139ace6af554d",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/fixed-polyhedron-local-hotspot-field-commands-v1.json": {
+      "sha256": "13972ee76f8af6216b4ad38a73683e4f44a881ed508c3ee5dd04f188e151fb76",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/commit-verified-physical-packet-v2.py": {
+      "sha256": "57f7ec4cc966ab96ebd21e6be757c1a4fed21c3b0fc230830791badc7dddd45c",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/fixed-polyhedron-local-hotspot-setup-v1-publication-plan-v1.json": {
+      "sha256": "c3f06dfa97aea83d45c48df9ce0425233fb6f304d945077259fd5a484417ce48",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/publish_covered_cad_checkpoint.py": {
+      "sha256": "ad9ccfd51df7f4c5f9a0e3e87576f25e6760e62499296bfd6c52e2bb89e65208",
+      "covered_by_reverified_parent": false,
+      "archived_external_copy": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-local-hotspot-setup-v1-publication/external-inputs/ad9ccfd51df7f4c5f9a0e3e87576f25e6760e62499296bfd6c52e2bb89e65208.py"
+    }
+  },
+  "scientific_checks": {
+    "full_local_meshes_with_original_domain_and_parent_partitions": 6,
+    "original_million_cell_fields_freshly_requalified": 10,
+    "original_nodal_loads_exact_and_full_force_corner_quadrature_probe_budgets_retained": true,
+    "new_finer_equilibria_accepted_in_this_archive": 0,
+    "physical_convergence_accepted": false
+  },
+  "closed_run_summaries": {
+    "fixed-polyhedron-ellipsoid-local-hotspot-meshes-v1": {
+      "scope": "Refine audited finite-load hotspots without changing their seed polyhedral domain or physical loads.",
+      "geometry": "ellipsoid",
+      "rows": [
+        {
+          "geometry": {
+            "name": "ellipsoid",
+            "description": "Solid ellipsoid, semiaxes12/15/9mm",
+            "thickness_m": null,
+            "gap_m": null,
+            "minimum_rounding_m": null
+          },
+          "geometry_mode": "Frozen seed polyhedron; local longest-edge bisection, no CAD projection",
+          "seed_sha256": "474293e8381624dc245334dca5741ab024ae41dacccd64fe15209a5e6783f0ed",
+          "mesh_sha256": "474293e8381624dc245334dca5741ab024ae41dacccd64fe15209a5e6783f0ed",
+          "local_refinement_level": 0,
+          "passes_per_level": 2,
+          "numerical_marking_radius_m": 0.003,
+          "unchanged_physical_load_radius_m": 0.003,
+          "audited_raw_peak_marking_anchors_m": [
+            [
+              -0.011453634151823894,
+              -4.6784436398206815e-05,
+              -0.00021451988680460318
+            ],
+            [
+              0.011352830298564348,
+              -0.00018281562181368107,
+              0.0004243728977915139
+            ],
+            [
+              0.011650126225258368,
+              4.3430403489957235e-05,
+              -0.0003070883176410847
+            ],
+            [
+              0.011972120051887681,
+              -3.665404625138023e-18,
+              4.933119884809045e-18
+            ]
+          ],
+          "all_original_load_marking_anchors_m": [
+            [
+              -0.012,
+              0.0,
+              0.0
+            ],
+            [
+              -0.007542472332656505,
+              0.0,
+              0.007
+            ],
+            [
+              0.012,
+              0.0,
+              0.0
+            ],
+            [
+              0.012,
+              0.0,
+              0.0005
+            ]
+          ],
+          "tetrahedra": 954624,
+          "nodes": 170915,
+          "surface_triangles": 46304,
+          "volume_m3": 6.757719289630898e-06,
+          "surface_area_m2": 0.0017910036572503045,
+          "com_m": [
+            -2.2256159742924784e-07,
+            7.692616847078962e-08,
+            6.46490454209283e-08
+          ],
+          "minimum_tetrahedron_volume_m3": 1.5536720092849601e-12,
+          "parent_partition_records": [],
+          "new_equilibrium_states_solved": 0,
+          "goal_completion": false
+        },
+        {
+          "geometry": {
+            "name": "ellipsoid",
+            "description": "Solid ellipsoid, semiaxes12/15/9mm",
+            "thickness_m": null,
+            "gap_m": null,
+            "minimum_rounding_m": null
+          },
+          "geometry_mode": "Frozen seed polyhedron; local longest-edge bisection, no CAD projection",
+          "seed_sha256": "474293e8381624dc245334dca5741ab024ae41dacccd64fe15209a5e6783f0ed",
+          "mesh_sha256": "a479b703200d0c1d42394597f3d12763a45de3487a966569766be8ac5f0c9856",
+          "local_refinement_level": 1,
+          "passes_per_level": 2,
+          "numerical_marking_radius_m": 0.003,
+          "unchanged_physical_load_radius_m": 0.003,
+          "audited_raw_peak_marking_anchors_m": [
+            [
+              -0.011453634151823894,
+              -4.6784436398206815e-05,
+              -0.00021451988680460318
+            ],
+            [
+              0.011352830298564348,
+              -0.00018281562181368107,
+              0.0004243728977915139
+            ],
+            [
+              0.011650126225258368,
+              4.3430403489957235e-05,
+              -0.0003070883176410847
+            ],
+            [
+              0.011972120051887681,
+              -3.665404625138023e-18,
+              4.933119884809045e-18
+            ]
+          ],
+          "all_original_load_marking_anchors_m": [
+            [
+              -0.012,
+              0.0,
+              0.0
+            ],
+            [
+              -0.007542472332656505,
+              0.0,
+              0.007
+            ],
+            [
+              0.012,
+              0.0,
+              0.0
+            ],
+            [
+              0.012,
+              0.0,
+              0.0005
+            ]
+          ],
+          "tetrahedra": 1243613,
+          "nodes": 224171,
+          "surface_triangles": 51834,
+          "volume_m3": 6.757719289630902e-06,
+          "surface_area_m2": 0.0017910036572503045,
+          "com_m": [
+            -2.225615974304291e-07,
+            7.692616847073543e-08,
+            6.46490454197814e-08
+          ],
+          "minimum_tetrahedron_volume_m3": 5.20119292799329e-14,
+          "parent_partition_records": [
+            {
+              "all_child_tetrahedra_contained_in_declared_parent": true,
+              "each_parent_volume_preserved": true,
+              "maximum_parent_volume_relative_difference": 1.5187893659815438e-14,
+              "parent_tetrahedra": 954624,
+              "child_tetrahedra": 1026493,
+              "marked_parent_tetrahedra": 31283,
+              "parent_ids_file": "level1-pass0.parents.npz"
+            },
+            {
+              "all_child_tetrahedra_contained_in_declared_parent": true,
+              "each_parent_volume_preserved": true,
+              "maximum_parent_volume_relative_difference": 2.3738586578590644e-14,
+              "parent_tetrahedra": 1026493,
+              "child_tetrahedra": 1243613,
+              "marked_parent_tetrahedra": 96207,
+              "parent_ids_file": "level1-pass1.parents.npz"
+            }
+          ],
+          "new_equilibrium_states_solved": 0,
+          "goal_completion": false
+        },
+        {
+          "geometry": {
+            "name": "ellipsoid",
+            "description": "Solid ellipsoid, semiaxes12/15/9mm",
+            "thickness_m": null,
+            "gap_m": null,
+            "minimum_rounding_m": null
+          },
+          "geometry_mode": "Frozen seed polyhedron; local longest-edge bisection, no CAD projection",
+          "seed_sha256": "474293e8381624dc245334dca5741ab024ae41dacccd64fe15209a5e6783f0ed",
+          "mesh_sha256": "cf199156db07d40ef739abc2ce485c5df6ae5c2bf4ea8edd12090832bdabeec5",
+          "local_refinement_level": 2,
+          "passes_per_level": 2,
+          "numerical_marking_radius_m": 0.003,
+          "unchanged_physical_load_radius_m": 0.003,
+          "audited_raw_peak_marking_anchors_m": [
+            [
+              -0.011453634151823894,
+              -4.6784436398206815e-05,
+              -0.00021451988680460318
+            ],
+            [
+              0.011352830298564348,
+              -0.00018281562181368107,
+              0.0004243728977915139
+            ],
+            [
+              0.011650126225258368,
+              4.3430403489957235e-05,
+              -0.0003070883176410847
+            ],
+            [
+              0.011972120051887681,
+              -3.665404625138023e-18,
+              4.933119884809045e-18
+            ]
+          ],
+          "all_original_load_marking_anchors_m": [
+            [
+              -0.012,
+              0.0,
+              0.0
+            ],
+            [
+              -0.007542472332656505,
+              0.0,
+              0.007
+            ],
+            [
+              0.012,
+              0.0,
+              0.0
+            ],
+            [
+              0.012,
+              0.0,
+              0.0005
+            ]
+          ],
+          "tetrahedra": 3799085,
+          "nodes": 691189,
+          "surface_triangles": 76580,
+          "volume_m3": 6.75771928963089e-06,
+          "surface_area_m2": 0.0017910036572503045,
+          "com_m": [
+            -2.2256159742790357e-07,
+            7.692616847079605e-08,
+            6.464904542489924e-08
+          ],
+          "minimum_tetrahedron_volume_m3": 2.5672651610853433e-15,
+          "parent_partition_records": [
+            {
+              "all_child_tetrahedra_contained_in_declared_parent": true,
+              "each_parent_volume_preserved": true,
+              "maximum_parent_volume_relative_difference": 4.933581511659791e-14,
+              "parent_tetrahedra": 1243613,
+              "child_tetrahedra": 1901469,
+              "marked_parent_tetrahedra": 284839,
+              "parent_ids_file": "level2-pass0.parents.npz"
+            },
+            {
+              "all_child_tetrahedra_contained_in_declared_parent": true,
+              "each_parent_volume_preserved": true,
+              "maximum_parent_volume_relative_difference": 6.666660145242754e-14,
+              "parent_tetrahedra": 1901469,
+              "child_tetrahedra": 3799085,
+              "marked_parent_tetrahedra": 883457,
+              "parent_ids_file": "level2-pass1.parents.npz"
+            }
+          ],
+          "new_equilibrium_states_solved": 0,
+          "goal_completion": false
+        }
+      ],
+      "input_sha256": {
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-raw-peak-cell-diagnosis-v1/results/summary.json": "4335b80009fef4a0c645e3624ed6b6224402af4302bdb355ab5c44354c090631",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-three-meshes-v1/meshes/level2.npz": "474293e8381624dc245334dca5741ab024ae41dacccd64fe15209a5e6783f0ed",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/opposing/snapshot.json": "f6ff3f97af639380fd4d0bf2b1b58e16130c31496b14e39da7a533addba397ea",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/bending/snapshot.json": "e36580e5e761e7c5d74274827de0fbf0fd8e2287d7448cb51d1c87b3efb919ce",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/asymmetric/snapshot.json": "6bffb6ec02dd453c8576f0d89e88ac4498b5b71cea3d887ae36055ffe62ab6b4",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/near_slip/snapshot.json": "248948dba3dfa4eb25e2e9763f9215564f0722910f0ee8fe71d8818dc4bbb9ee",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/multiple/snapshot.json": "a01aa352ad53277fd0fcdac0a8adc3bbfa2e0b928b0f872750cf920d8ff5cf22",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-three-meshes-v1/meshes/level2.json": "888ab85ce49fcc8bba875126e54c489fa9fbe42f9a40b2ba42de83f26ef18b7a"
+      },
+      "new_equilibrium_states_solved": 0,
+      "goal_completion": false,
+      "limitations": "Numerical marking uses all five audited seed raw maxima and every original physical load anchor, with a declared fixed physical-space marking radius. No original load/material/footprint, seed boundary geometry or original convergence probe is changed. Every child tetrahedron is contained in a parent and every parent volume is checked, alongside total volume/area/COM. Volume and surface-basis refinement and boundary quadrature still couple. Marking uses measured seed hotspots and cannot establish a universal error estimator or exclude another global peak. All original field budgets, probes and unaveraged global maxima must be retained in subsequent solves and independent audits. Asset generation solves zero new equilibria."
+    },
+    "fixed-polyhedron-ellipsoid-local-original-qualification-v1": {
+      "scope": "Qualify unchanged original finite-load fields, then refine their declared geometry family using independent FEM.",
+      "qualify_only": true,
+      "geometry": "ellipsoid",
+      "mesh_sha256": "474293e8381624dc245334dca5741ab024ae41dacccd64fe15209a5e6783f0ed",
+      "tetrahedra": 954624,
+      "all_original_five_loads_full_fields_and_probes_qualified": true,
+      "rows": [
+        {
+          "case": "opposing",
+          "original_full_nodal_force_maximum_difference_N": 0.0,
+          "all_original_probe_coordinates_and_validity_retained": true,
+          "outside_probe_indices": [],
+          "complete_residual_N": 3.73282528124263e-15,
+          "original_budget_N": 3.6064436358354757e-11,
+          "original_budget_fraction": 0.00010350432886712443,
+          "all_quadrature_tensor_components_checked": 94507776,
+          "quadrature_vs_corner_maximum_error_Pa": 2.1373125491663814e-10
+        },
+        {
+          "case": "bending",
+          "original_full_nodal_force_maximum_difference_N": 0.0,
+          "all_original_probe_coordinates_and_validity_retained": true,
+          "outside_probe_indices": [],
+          "complete_residual_N": 2.573897632578905e-15,
+          "original_budget_N": 3.606811472012596e-11,
+          "original_budget_fraction": 7.136213391110996e-05,
+          "all_quadrature_tensor_components_checked": 94507776,
+          "quadrature_vs_corner_maximum_error_Pa": 2.2282620193436742e-10
+        },
+        {
+          "case": "asymmetric",
+          "original_full_nodal_force_maximum_difference_N": 0.0,
+          "all_original_probe_coordinates_and_validity_retained": true,
+          "outside_probe_indices": [],
+          "complete_residual_N": 3.6562558807433846e-15,
+          "original_budget_N": 4.8244494962605475e-11,
+          "original_budget_fraction": 7.578597068074533e-05,
+          "all_quadrature_tensor_components_checked": 94507776,
+          "quadrature_vs_corner_maximum_error_Pa": 2.546585164964199e-10
+        },
+        {
+          "case": "near_slip",
+          "original_full_nodal_force_maximum_difference_N": 0.0,
+          "all_original_probe_coordinates_and_validity_retained": true,
+          "outside_probe_indices": [],
+          "complete_residual_N": 4.88788314649879e-15,
+          "original_budget_N": 4.52959092699581e-11,
+          "original_budget_fraction": 0.00010791003481942712,
+          "all_quadrature_tensor_components_checked": 94507776,
+          "quadrature_vs_corner_maximum_error_Pa": 2.7284841053187847e-10
+        },
+        {
+          "case": "multiple",
+          "original_full_nodal_force_maximum_difference_N": 0.0,
+          "all_original_probe_coordinates_and_validity_retained": true,
+          "outside_probe_indices": [],
+          "complete_residual_N": 2.6480430082336365e-15,
+          "original_budget_N": 3.7461291784085686e-11,
+          "original_budget_fraction": 7.068744514994484e-05,
+          "all_quadrature_tensor_components_checked": 94507776,
+          "quadrature_vs_corner_maximum_error_Pa": 1.9463186617940664e-10
+        }
+      ],
+      "new_equilibrium_states_solved": 0,
+      "input_sha256": {
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-three-meshes-v1/meshes/level2.npz": "474293e8381624dc245334dca5741ab024ae41dacccd64fe15209a5e6783f0ed",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/source/research/rigid_stress/finite_traction_reference.py": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/source/research/rigid_stress/skfem_reference.py": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/opposing/reference_field.npz": "ba8ae75ceaadd2a9b40ab23fbbaa697aec80851bbb847c78d231575846b9fc52",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/opposing/snapshot.json": "f6ff3f97af639380fd4d0bf2b1b58e16130c31496b14e39da7a533addba397ea",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/opposing/probe_field.npz": "70e06150808b14f0dd58ef0e56f9faec8b2eabf4caa5312012933a36c2df4c58",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/bending/reference_field.npz": "f7598bc2577bfe960a1c1c1a6138cb120a38e0e594faf0c0e2a404d03dbe6d2f",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/bending/snapshot.json": "e36580e5e761e7c5d74274827de0fbf0fd8e2287d7448cb51d1c87b3efb919ce",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/bending/probe_field.npz": "e3ca531723ff34c3bb9c185894837ab765d6817c08fc15f6367a864f75c0aeb4",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/asymmetric/reference_field.npz": "37891f43b2d25b502ea0ceb5f5238c9668b463aa25d78026f41306da14eb1e62",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/asymmetric/snapshot.json": "6bffb6ec02dd453c8576f0d89e88ac4498b5b71cea3d887ae36055ffe62ab6b4",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/asymmetric/probe_field.npz": "9104e52a8676f84ddef84e5dca78d9b0960f1534fa7ca6e8f0f37e12f247d300",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/near_slip/reference_field.npz": "8487dc56fc077e7088719698f655e4e2a084a92255d8a64f130a239c3b1ec9e1",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/near_slip/snapshot.json": "248948dba3dfa4eb25e2e9763f9215564f0722910f0ee8fe71d8818dc4bbb9ee",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/near_slip/probe_field.npz": "fc3993981274e250b45c4116acc2b78c272ef9889bcd84d3898471374750799c",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/multiple/reference_field.npz": "00c192aed75096388b5065cde2386c7a9e550afe56a0d2dd036a306b55822d86",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/multiple/snapshot.json": "a01aa352ad53277fd0fcdac0a8adc3bbfa2e0b928b0f872750cf920d8ff5cf22",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-ellipsoid-level2-v1/results/multiple/probe_field.npz": "7d78590c4a6fa7c2a9403a687c4efb8b675b7d605bc7855797210db360bf4522"
+      },
+      "goal_completion": false,
+      "limitations": "Fresh stiffness/mass/RHS, all original complete-force budgets, original continuous traction vectors, every corner/quadrature tensor and every original physical probe are rechecked without a new solve. This qualifies the isolated pure-FEM reference path on the existing mesh, not a physical tail or native model/cost accuracy."
+    },
+    "fixed-polyhedron-capsule-local-hotspot-meshes-v1": {
+      "scope": "Refine audited finite-load hotspots without changing their seed polyhedral domain or physical loads.",
+      "geometry": "capsule",
+      "rows": [
+        {
+          "geometry": {
+            "name": "capsule",
+            "description": "Radius8mm cylinder, axial length24mm, hemispherical caps",
+            "thickness_m": null,
+            "gap_m": null,
+            "minimum_rounding_m": null
+          },
+          "geometry_mode": "Frozen seed polyhedron; local longest-edge bisection, no CAD projection",
+          "seed_sha256": "44b349ed273c4ad6e5868a03637202e0a74fcc9022075b6c7d04f4a4c53f950e",
+          "mesh_sha256": "44b349ed273c4ad6e5868a03637202e0a74fcc9022075b6c7d04f4a4c53f950e",
+          "local_refinement_level": 0,
+          "passes_per_level": 2,
+          "numerical_marking_radius_m": 0.003,
+          "unchanged_physical_load_radius_m": 0.003,
+          "audited_raw_peak_marking_anchors_m": [
+            [
+              0.007335370670685036,
+              -7.858715726097602e-06,
+              -0.00011774521547851599
+            ],
+            [
+              0.007370808236010236,
+              0.00011150386397765632,
+              0.00032874336319872125
+            ],
+            [
+              0.008,
+              -1.959434878635765e-18,
+              -1.734723475976807e-17
+            ]
+          ],
+          "all_original_load_marking_anchors_m": [
+            [
+              -0.008,
+              0.0,
+              0.0
+            ],
+            [
+              -0.008,
+              0.0,
+              0.008
+            ],
+            [
+              0.008,
+              0.0,
+              0.0
+            ],
+            [
+              0.008,
+              0.0,
+              0.0005
+            ]
+          ],
+          "tetrahedra": 1022656,
+          "nodes": 183953,
+          "surface_triangles": 52960,
+          "volume_m3": 6.938803462816451e-06,
+          "surface_area_m2": 0.002006183650635823,
+          "com_m": [
+            3.5543580211916835e-07,
+            1.0828300479532096e-07,
+            1.0431154046367988e-07
+          ],
+          "minimum_tetrahedron_volume_m3": 1.6020149680355233e-12,
+          "parent_partition_records": [],
+          "new_equilibrium_states_solved": 0,
+          "goal_completion": false
+        },
+        {
+          "geometry": {
+            "name": "capsule",
+            "description": "Radius8mm cylinder, axial length24mm, hemispherical caps",
+            "thickness_m": null,
+            "gap_m": null,
+            "minimum_rounding_m": null
+          },
+          "geometry_mode": "Frozen seed polyhedron; local longest-edge bisection, no CAD projection",
+          "seed_sha256": "44b349ed273c4ad6e5868a03637202e0a74fcc9022075b6c7d04f4a4c53f950e",
+          "mesh_sha256": "aaf5a21e2b728f695c890367a339fea53fca1e18f3e458a7259b659930363322",
+          "local_refinement_level": 1,
+          "passes_per_level": 2,
+          "numerical_marking_radius_m": 0.003,
+          "unchanged_physical_load_radius_m": 0.003,
+          "audited_raw_peak_marking_anchors_m": [
+            [
+              0.007335370670685036,
+              -7.858715726097602e-06,
+              -0.00011774521547851599
+            ],
+            [
+              0.007370808236010236,
+              0.00011150386397765632,
+              0.00032874336319872125
+            ],
+            [
+              0.008,
+              -1.959434878635765e-18,
+              -1.734723475976807e-17
+            ]
+          ],
+          "all_original_load_marking_anchors_m": [
+            [
+              -0.008,
+              0.0,
+              0.0
+            ],
+            [
+              -0.008,
+              0.0,
+              0.008
+            ],
+            [
+              0.008,
+              0.0,
+              0.0
+            ],
+            [
+              0.008,
+              0.0,
+              0.0005
+            ]
+          ],
+          "tetrahedra": 1315018,
+          "nodes": 237794,
+          "surface_triangles": 58644,
+          "volume_m3": 6.938803462816455e-06,
+          "surface_area_m2": 0.0020061836506358225,
+          "com_m": [
+            3.554358021192713e-07,
+            1.0828300479536061e-07,
+            1.0431154046250373e-07
+          ],
+          "minimum_tetrahedron_volume_m3": 6.51918005034899e-14,
+          "parent_partition_records": [
+            {
+              "all_child_tetrahedra_contained_in_declared_parent": true,
+              "each_parent_volume_preserved": true,
+              "maximum_parent_volume_relative_difference": 1.5417214248372113e-14,
+              "parent_tetrahedra": 1022656,
+              "child_tetrahedra": 1094647,
+              "marked_parent_tetrahedra": 31604,
+              "parent_ids_file": "level1-pass0.parents.npz"
+            },
+            {
+              "all_child_tetrahedra_contained_in_declared_parent": true,
+              "each_parent_volume_preserved": true,
+              "maximum_parent_volume_relative_difference": 2.242911827561656e-14,
+              "parent_tetrahedra": 1094647,
+              "child_tetrahedra": 1315018,
+              "marked_parent_tetrahedra": 96455,
+              "parent_ids_file": "level1-pass1.parents.npz"
+            }
+          ],
+          "new_equilibrium_states_solved": 0,
+          "goal_completion": false
+        },
+        {
+          "geometry": {
+            "name": "capsule",
+            "description": "Radius8mm cylinder, axial length24mm, hemispherical caps",
+            "thickness_m": null,
+            "gap_m": null,
+            "minimum_rounding_m": null
+          },
+          "geometry_mode": "Frozen seed polyhedron; local longest-edge bisection, no CAD projection",
+          "seed_sha256": "44b349ed273c4ad6e5868a03637202e0a74fcc9022075b6c7d04f4a4c53f950e",
+          "mesh_sha256": "cb0b3c5d41fba1e648649c5853331c92b02a5c5d63ad55fdec9b5f9c150b36f4",
+          "local_refinement_level": 2,
+          "passes_per_level": 2,
+          "numerical_marking_radius_m": 0.003,
+          "unchanged_physical_load_radius_m": 0.003,
+          "audited_raw_peak_marking_anchors_m": [
+            [
+              0.007335370670685036,
+              -7.858715726097602e-06,
+              -0.00011774521547851599
+            ],
+            [
+              0.007370808236010236,
+              0.00011150386397765632,
+              0.00032874336319872125
+            ],
+            [
+              0.008,
+              -1.959434878635765e-18,
+              -1.734723475976807e-17
+            ]
+          ],
+          "all_original_load_marking_anchors_m": [
+            [
+              -0.008,
+              0.0,
+              0.0
+            ],
+            [
+              -0.008,
+              0.0,
+              0.008
+            ],
+            [
+              0.008,
+              0.0,
+              0.0
+            ],
+            [
+              0.008,
+              0.0,
+              0.0005
+            ]
+          ],
+          "tetrahedra": 3909062,
+          "nodes": 711486,
+          "surface_triangles": 83174,
+          "volume_m3": 6.938803462816455e-06,
+          "surface_area_m2": 0.0020061836506358225,
+          "com_m": [
+            3.5543580212348595e-07,
+            1.0828300479531541e-07,
+            1.04311540466605e-07
+          ],
+          "minimum_tetrahedron_volume_m3": 2.2451903282073775e-15,
+          "parent_partition_records": [
+            {
+              "all_child_tetrahedra_contained_in_declared_parent": true,
+              "each_parent_volume_preserved": true,
+              "maximum_parent_volume_relative_difference": 3.0740896024512325e-14,
+              "parent_tetrahedra": 1315018,
+              "child_tetrahedra": 1975895,
+              "marked_parent_tetrahedra": 288479,
+              "parent_ids_file": "level2-pass0.parents.npz"
+            },
+            {
+              "all_child_tetrahedra_contained_in_declared_parent": true,
+              "each_parent_volume_preserved": true,
+              "maximum_parent_volume_relative_difference": 4.681690246924954e-14,
+              "parent_tetrahedra": 1975895,
+              "child_tetrahedra": 3909062,
+              "marked_parent_tetrahedra": 892795,
+              "parent_ids_file": "level2-pass1.parents.npz"
+            }
+          ],
+          "new_equilibrium_states_solved": 0,
+          "goal_completion": false
+        }
+      ],
+      "input_sha256": {
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-raw-peak-cell-diagnosis-v1/results/summary.json": "4335b80009fef4a0c645e3624ed6b6224402af4302bdb355ab5c44354c090631",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-three-meshes-v1/meshes/level2.npz": "44b349ed273c4ad6e5868a03637202e0a74fcc9022075b6c7d04f4a4c53f950e",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/opposing/snapshot.json": "5b9c865ec854725818d74b086421dc996e62c1c7a42ad710d0ce6aec4b5e49dc",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/bending/snapshot.json": "009e28b60306751ee299ffe33685a2ae1b33468d88f6f1b666daa9794ea5a828",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/asymmetric/snapshot.json": "9ca0ecb09ae96b4fc55eecc970b3a584cda124845b6e4e39cb1a3758f3cbf332",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/near_slip/snapshot.json": "5bddd659814b81ccd911faa78d54f7aee84c73fab8b21bd5804b0cb6366621f6",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/multiple/snapshot.json": "cb19110bf832a550c46fc9b4c117463de330d3ef63fbf1ce8f4ea9509af3942f",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-three-meshes-v1/meshes/level2.json": "dd91d1af927bc108f5b581e005b0585347d159ce7c7980a7acd727370dc68ac4"
+      },
+      "new_equilibrium_states_solved": 0,
+      "goal_completion": false,
+      "limitations": "Numerical marking uses all five audited seed raw maxima and every original physical load anchor, with a declared fixed physical-space marking radius. No original load/material/footprint, seed boundary geometry or original convergence probe is changed. Every child tetrahedron is contained in a parent and every parent volume is checked, alongside total volume/area/COM. Volume and surface-basis refinement and boundary quadrature still couple. Marking uses measured seed hotspots and cannot establish a universal error estimator or exclude another global peak. All original field budgets, probes and unaveraged global maxima must be retained in subsequent solves and independent audits. Asset generation solves zero new equilibria."
+    },
+    "fixed-polyhedron-capsule-local-original-qualification-v1": {
+      "scope": "Qualify unchanged original finite-load fields, then refine their declared geometry family using independent FEM.",
+      "qualify_only": true,
+      "geometry": "capsule",
+      "mesh_sha256": "44b349ed273c4ad6e5868a03637202e0a74fcc9022075b6c7d04f4a4c53f950e",
+      "tetrahedra": 1022656,
+      "all_original_five_loads_full_fields_and_probes_qualified": true,
+      "rows": [
+        {
+          "case": "opposing",
+          "original_full_nodal_force_maximum_difference_N": 0.0,
+          "all_original_probe_coordinates_and_validity_retained": true,
+          "outside_probe_indices": [],
+          "complete_residual_N": 3.0962627942870467e-15,
+          "original_budget_N": 3.534103311998205e-11,
+          "original_budget_fraction": 8.761098702958968e-05,
+          "all_quadrature_tensor_components_checked": 101242944,
+          "quadrature_vs_corner_maximum_error_Pa": 1.6825651982799172e-10
+        },
+        {
+          "case": "bending",
+          "original_full_nodal_force_maximum_difference_N": 0.0,
+          "all_original_probe_coordinates_and_validity_retained": true,
+          "outside_probe_indices": [],
+          "complete_residual_N": 4.404180031607234e-15,
+          "original_budget_N": 3.5341692346476185e-11,
+          "original_budget_fraction": 0.0001246171232670572,
+          "all_quadrature_tensor_components_checked": 101242944,
+          "quadrature_vs_corner_maximum_error_Pa": 1.6643753042444587e-10
+        },
+        {
+          "case": "asymmetric",
+          "original_full_nodal_force_maximum_difference_N": 0.0,
+          "all_original_probe_coordinates_and_validity_retained": true,
+          "outside_probe_indices": [],
+          "complete_residual_N": 4.74381621793184e-15,
+          "original_budget_N": 4.7096345643586694e-11,
+          "original_budget_fraction": 0.00010072578144028093,
+          "all_quadrature_tensor_components_checked": 101242944,
+          "quadrature_vs_corner_maximum_error_Pa": 2.801243681460619e-10
+        },
+        {
+          "case": "near_slip",
+          "original_full_nodal_force_maximum_difference_N": 0.0,
+          "all_original_probe_coordinates_and_validity_retained": true,
+          "outside_probe_indices": [],
+          "complete_residual_N": 7.836511104044988e-15,
+          "original_budget_N": 4.4390838370069776e-11,
+          "original_budget_fraction": 0.00017653442448450587,
+          "all_quadrature_tensor_components_checked": 101242944,
+          "quadrature_vs_corner_maximum_error_Pa": 2.1100277081131935e-10
+        },
+        {
+          "case": "multiple",
+          "original_full_nodal_force_maximum_difference_N": 0.0,
+          "all_original_probe_coordinates_and_validity_retained": true,
+          "outside_probe_indices": [],
+          "complete_residual_N": 3.3844167259217075e-15,
+          "original_budget_N": 3.6712062064032384e-11,
+          "original_budget_fraction": 9.218814023627116e-05,
+          "all_quadrature_tensor_components_checked": 101242944,
+          "quadrature_vs_corner_maximum_error_Pa": 2.601154847070575e-10
+        }
+      ],
+      "new_equilibrium_states_solved": 0,
+      "input_sha256": {
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-three-meshes-v1/meshes/level2.npz": "44b349ed273c4ad6e5868a03637202e0a74fcc9022075b6c7d04f4a4c53f950e",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/source/research/rigid_stress/finite_traction_reference.py": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/source/research/rigid_stress/skfem_reference.py": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/opposing/reference_field.npz": "535b751bee3e8f31ecadd3a4ba685718c0f47292b739fe06a45d92d2e0e873b0",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/opposing/snapshot.json": "5b9c865ec854725818d74b086421dc996e62c1c7a42ad710d0ce6aec4b5e49dc",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/opposing/probe_field.npz": "cfd939667bbf48e496c5d2dcf0b39f4a44ac04286d68877c36687ed2d75a64a9",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/bending/reference_field.npz": "36270db8daeb115bbc2750d7d71cdf8bea1e1018b21d7d74c5225ca00d1ba839",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/bending/snapshot.json": "009e28b60306751ee299ffe33685a2ae1b33468d88f6f1b666daa9794ea5a828",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/bending/probe_field.npz": "c0a704a36db5935e8357de856e8a683d569d3692f1e6486fb0d6ccaf5a59e6c8",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/asymmetric/reference_field.npz": "27c4d3bb55d0d3bf557a8d40f20c9b599c9ad6e235fc9b10dd06f0549b2f3508",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/asymmetric/snapshot.json": "9ca0ecb09ae96b4fc55eecc970b3a584cda124845b6e4e39cb1a3758f3cbf332",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/asymmetric/probe_field.npz": "41a1c7a34ba01b070d63bd65ce5230ff5923e4034c287eff92f65a503a517ba5",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/near_slip/reference_field.npz": "751078b8b0d1b31373490cddc98e68aabf4be4bb8075c0483def5c0f90470020",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/near_slip/snapshot.json": "5bddd659814b81ccd911faa78d54f7aee84c73fab8b21bd5804b0cb6366621f6",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/near_slip/probe_field.npz": "e66242e9de8cb7becb13deb95c3c72f551c84eb743b063721a26ab3bdce40839",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/multiple/reference_field.npz": "eb677cb554ac7803a5bcfa388938422c7155041819d7be3cdb3438415f7ca5c0",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/multiple/snapshot.json": "cb19110bf832a550c46fc9b4c117463de330d3ef63fbf1ce8f4ea9509af3942f",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-polyhedron-capsule-level2-v1/results/multiple/probe_field.npz": "fd3661be68aadf8058dd7b340a37247666565a95f9a5a3e70c292625677ea68f"
+      },
+      "goal_completion": false,
+      "limitations": "Fresh stiffness/mass/RHS, all original complete-force budgets, original continuous traction vectors, every corner/quadrature tensor and every original physical probe are rechecked without a new solve. This qualifies the isolated pure-FEM reference path on the existing mesh, not a physical tail or native model/cost accuracy."
+    }
+  },
+  "pending_work_excluded_from_successful_evidence": [
+    "All original local fine equilibria and separate15-field auditors are live or dependency pending, not accepted by this setup archive.",
+    "Every original physical/model/island/contact/egg-Franka/interior-hotspot/history/feedback/verified-warmed-cost requirement remains."
+  ],
+  "goal_completion": false
+}

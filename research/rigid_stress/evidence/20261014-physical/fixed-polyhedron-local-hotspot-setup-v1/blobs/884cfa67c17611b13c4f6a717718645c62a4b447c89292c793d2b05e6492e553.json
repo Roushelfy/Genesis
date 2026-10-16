@@ -1,0 +1,93 @@
+{
+  "geometry": {
+    "name": "ellipsoid",
+    "description": "Solid ellipsoid, semiaxes12/15/9mm",
+    "thickness_m": null,
+    "gap_m": null,
+    "minimum_rounding_m": null
+  },
+  "geometry_mode": "Frozen seed polyhedron; local longest-edge bisection, no CAD projection",
+  "seed_sha256": "474293e8381624dc245334dca5741ab024ae41dacccd64fe15209a5e6783f0ed",
+  "mesh_sha256": "cf199156db07d40ef739abc2ce485c5df6ae5c2bf4ea8edd12090832bdabeec5",
+  "local_refinement_level": 2,
+  "passes_per_level": 2,
+  "numerical_marking_radius_m": 0.003,
+  "unchanged_physical_load_radius_m": 0.003,
+  "audited_raw_peak_marking_anchors_m": [
+    [
+      -0.011453634151823894,
+      -4.6784436398206815e-05,
+      -0.00021451988680460318
+    ],
+    [
+      0.011352830298564348,
+      -0.00018281562181368107,
+      0.0004243728977915139
+    ],
+    [
+      0.011650126225258368,
+      4.3430403489957235e-05,
+      -0.0003070883176410847
+    ],
+    [
+      0.011972120051887681,
+      -3.665404625138023e-18,
+      4.933119884809045e-18
+    ]
+  ],
+  "all_original_load_marking_anchors_m": [
+    [
+      -0.012,
+      0.0,
+      0.0
+    ],
+    [
+      -0.007542472332656505,
+      0.0,
+      0.007
+    ],
+    [
+      0.012,
+      0.0,
+      0.0
+    ],
+    [
+      0.012,
+      0.0,
+      0.0005
+    ]
+  ],
+  "tetrahedra": 3799085,
+  "nodes": 691189,
+  "surface_triangles": 76580,
+  "volume_m3": 6.75771928963089e-06,
+  "surface_area_m2": 0.0017910036572503045,
+  "com_m": [
+    -2.2256159742790357e-07,
+    7.692616847079605e-08,
+    6.464904542489924e-08
+  ],
+  "minimum_tetrahedron_volume_m3": 2.5672651610853433e-15,
+  "parent_partition_records": [
+    {
+      "all_child_tetrahedra_contained_in_declared_parent": true,
+      "each_parent_volume_preserved": true,
+      "maximum_parent_volume_relative_difference": 4.933581511659791e-14,
+      "parent_tetrahedra": 1243613,
+      "child_tetrahedra": 1901469,
+      "marked_parent_tetrahedra": 284839,
+      "parent_ids_file": "level2-pass0.parents.npz"
+    },
+    {
+      "all_child_tetrahedra_contained_in_declared_parent": true,
+      "each_parent_volume_preserved": true,
+      "maximum_parent_volume_relative_difference": 6.666660145242754e-14,
+      "parent_tetrahedra": 1901469,
+      "child_tetrahedra": 3799085,
+      "marked_parent_tetrahedra": 883457,
+      "parent_ids_file": "level2-pass1.parents.npz"
+    }
+  ],
+  "new_equilibrium_states_solved": 0,
+  "goal_completion": false
+}

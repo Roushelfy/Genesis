@@ -1,0 +1,98 @@
+{
+  "geometry": {
+    "name": "u",
+    "description": "Rounded U tube, bend radius8mm, tube radius3mm, arms24mm",
+    "thickness_m": null,
+    "gap_m": 0.01,
+    "minimum_rounding_m": null
+  },
+  "gmsh_version": "4.14.1",
+  "mesh_size": 0.000875,
+  "mesh_size_units": "m",
+  "tetrahedra": 16329,
+  "nodes": 4126,
+  "boundary_triangles": 5110,
+  "mesh_sha256": "0e4e1ca82362a8283094084dc757382e95890d5bed24e7000e4a0d1bfae428ad",
+  "minimum_volume_m3": 2.8816508429945477e-11,
+  "total_volume_m3": 2.157955506779733e-06,
+  "same_U_CAD_constructor": true,
+  "CAD_volume_before_m3": 2.180876878758457e-06,
+  "CAD_volume_after_m3": 2.180876878758457e-06,
+  "CAD_COM_before_m": [
+    1.896440419470012e-19,
+    0.0070527766981196855,
+    2.2964708204519677e-19
+  ],
+  "CAD_COM_after_m": [
+    3.792880838940024e-19,
+    0.007052776698119683,
+    2.340918642783296e-19
+  ],
+  "original_anchor_sha256": "7c603c14b86fa434173ccc86b2a2c1453bf53cf042ed0243d6affc545cafd5b4",
+  "original_anchor_positions_m": [
+    [
+      1.5178830414797062e-17,
+      -0.011,
+      2.0818995585505005e-18
+    ],
+    [
+      0.011,
+      0.024,
+      9.540979117872439e-18
+    ],
+    [
+      -0.011,
+      0.024,
+      -1.3877787807814457e-17
+    ],
+    [
+      1.5178830414797062e-17,
+      -0.011,
+      2.0818995585505005e-18
+    ],
+    [
+      -0.008,
+      0.024000000000000004,
+      0.0030000000000000005
+    ],
+    [
+      0.011,
+      0.0,
+      7.347880794884119e-19
+    ]
+  ],
+  "original_anchor_components": [
+    2,
+    2,
+    2,
+    0,
+    0,
+    1
+  ],
+  "original_anchor_used_mesh_vertex_distances_m": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    8.998558695971146e-35
+  ],
+  "original_anchor_selected_vertex_ids": [
+    2,
+    4,
+    0,
+    2,
+    1,
+    3
+  ],
+  "original_anchor_CAD_surface_distances_m": [
+    3.0814879110195774e-33,
+    4.336808689942018e-19,
+    1.5196605090707812e-17,
+    1.1504275515878506e-19,
+    1.5407439555097887e-33
+  ],
+  "new_equilibrium_states_solved": 0,
+  "goal_completion": false,
+  "limitations": "OpenCASCADE point fragmentation constrains the new mesh to original physical initialization coordinates while preserving the original CAD volume/COM at the declared checks. Physical geometry/material/forces/anchors/tolerances are unchanged; polyhedral approximation and tetrahedral/contact trace discretization differ and require complete new history/field audits. Actual used volume-mesh vertices must meet the original1e-12m anchor check. Mesh generation is not a new contact equilibrium or convergence result. Documentation: https://www.gmsh.info/doc/texinfo/gmsh.html and https://gmsh.info/doc/cookbook/geometry/embed-point.html"
+}
