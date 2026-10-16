@@ -59,7 +59,7 @@ from CAD/contact-trace approximation and inspect the raw hotspot locations.
 Neither more agreement on the same assembled matrix nor discarding the raw
 maximum answers that question.
 
-## Actual native follow-up failure
+## Original native follow-up failure and repair
 
 Original native jobs719781–719784 attempted all five loads and four declared
 models on the two added ellipsoid/capsule levels, at unchanged8 edge subdivisions
@@ -69,10 +69,10 @@ illegal-address failures, after warnings that index ranges exceed32-bit support.
 Their scheduler exits are1/6/6/6, while saved program exits are1/134/134/134.
 Every before/after source closure matches. All failures remain retained.
 
-The production path constructs a dense `n_ports` by `n_ports` distance table,
+The original production path constructed a dense `n_ports` by `n_ports` distance table,
 plus visited storage. A boundary with more than100000 ports requires more than
 80GB for the float64 table alone and exceeds the supported index range. A native
-per-contact search on the unchanged graph is being qualified. Port resolution,
+per-contact search on the unchanged graph is now qualified. Port resolution,
 physical radius, model constraints and original acceptance budgets remain fixed.
 Four impossible, unstarted dependent auditors719823–719826 were cancelled with
 a preserved scheduler-state journal. Successful reference jobs remain intact.
@@ -112,10 +112,39 @@ mesh/qualification/reference arrays remain in reverified parent archives.
 | [cavity](../evidence/20261014-physical/extended-finite-cavity-fields-v1/manifest.json) | `85cbe666065489aa9e1ea66e02564c14c894564e4036a5f144773480b9ef2f66` |
 | [Eight-level summary](../evidence/20261014-physical/extended-eight-level-summary-v1/manifest.json) | `14f8af8b163409aae2ab07a4f32d3872732ffed48e044b2a8ad99cbf4358aaa8` |
 
-Updated eight-level figures remain required. The
-[native path-capacity checkpoint](PHYSICAL_NATIVE_PATH_CAPACITY_20261016.md)
+## Accepted eight-level figures
+
+The [complete figure archive](../evidence/20261014-physical/extended-eight-level-figures-v1/manifest.json)
+retains all112 entries, exact source/data/command records, full240-row raw CSV,
+210 supplemental worst-case observable rows, captions and alt descriptions,
+inspected colour/monochrome previews, editable SVG, font-embedded vector PDF
+and true1000dpi PNG. Its manifest SHA256 is
+`085e1f0d324accb5d407027b507c781a2eaa054253429f9b4d71b1909e87bc08`.
+The initial failed automatic text-QA run remains retained. The accepted rerun
+uses common tetrahedron-count limits for all panels. Exact SVG and preview
+hashes gate subsequent exports; both PDFs retain embedded TrueType fonts and
+zero raster images. Each full-size PNG is7204 by6692 pixels.
+
+- Raw global maxima for every original case and level:
+  [preview](../evidence/20261014-physical/extended-eight-level-figures-v1/blobs/0873bde8a6e15f7a42fdd574782a59487de2637f5584237e72b3cc2438c64606.png),
+  [editable SVG](../evidence/20261014-physical/extended-eight-level-figures-v1/blobs/0e4fcc0ebb9db4550b97416e41c959c42583edf5991fe39ddd06c2ddaa82b84a.svg),
+  [vector PDF](../evidence/20261014-physical/extended-eight-level-figures-v1/blobs/08bd0d660363632e313ed2f65ed950db9eb4d570b3854fe6d92c1fec315f01c3.pdf).
+- Largest adjacent change among the five declared cases, for each original
+  observable:
+  [preview](../evidence/20261014-physical/extended-eight-level-figures-v1/blobs/98ed1569e03477ff73043949797dfe2d949e425375dcec5bc3db37e4bbd9dab3.png),
+  [editable SVG](../evidence/20261014-physical/extended-eight-level-figures-v1/blobs/8aafd7dbdd3f20d69f810752eb4fb0f33a8eb064a667f14b69aa69c0d62709d4.svg),
+  [vector PDF](../evidence/20261014-physical/extended-eight-level-figures-v1/blobs/9a5a9e1000279aa1a0ee19c890b932652ddd694038b188cd06fe85f42845e01f.pdf).
+
+The worst-case curves are deterministic maxima over declared cases, not
+confidence intervals. Their symlog scale preserves zero through a0.1% linear
+core; the3% line remains only the original diagnostic. Original outside masks
+and valid common-probe intersections are retained. None of the figure design
+choices supplies an error bound or removes the CAD/mesh coupling.
+
+The [native path-capacity checkpoint](PHYSICAL_NATIVE_PATH_CAPACITY_20261016.md)
 preserves original failures and qualifies the bounded search at its stated
-numerical scope. Native model/scatter/elastic replays still require fresh
-independent audits. Separated geometry/volume/contact/distance axes, patch and
-island diagnostics, resolved egg/Franka and interior-hotspot comparisons,
-replay versus feedback, and physically qualified warmed costs remain required.
+numerical scope. [Actual fine native replays and separate auditors](PHYSICAL_FINE_NATIVE_MODELS_20261016.md)
+now close76 accepted fields, with all unsupported rows retained. Separated
+geometry/volume/contact/distance axes, remaining patch/island diagnostics,
+resolved egg/Franka and interior-hotspot comparisons, replay versus feedback,
+and physically qualified warmed costs remain required.
