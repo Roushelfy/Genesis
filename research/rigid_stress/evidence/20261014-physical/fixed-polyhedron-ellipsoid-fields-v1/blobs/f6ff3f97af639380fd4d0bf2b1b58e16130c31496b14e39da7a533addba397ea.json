@@ -1,0 +1,174 @@
+{
+  "geometry": "ellipsoid",
+  "case": "opposing",
+  "mesh_sha256": "474293e8381624dc245334dca5741ab024ae41dacccd64fe15209a5e6783f0ed",
+  "tetrahedra": 954624,
+  "material": {
+    "young_Pa": 10000000000.0,
+    "poisson": 0.3,
+    "density_kg_m3": 2000
+  },
+  "mass_kg": 0.013515438579261786,
+  "com_m": [
+    -2.2256159742923527e-07,
+    7.692616847076805e-08,
+    6.464904542088903e-08
+  ],
+  "pose": {
+    "position_m": [
+      0,
+      0,
+      0
+    ],
+    "quaternion_wxyz": [
+      1,
+      0,
+      0,
+      0
+    ]
+  },
+  "omega_rad_s": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "patch_radius_m": 0.003,
+  "reference_quadrature_level": 3,
+  "reference_peak_Pa": 5168.202931434354,
+  "reference_peak_position_m": [
+    -0.011453634151823894,
+    -4.6784436398206815e-05,
+    -0.00021451988680460318
+  ],
+  "reference_energy_J": 6.633077985894153e-11,
+  "reference_complete_budget_fraction": 0.00010350432886712443,
+  "patches": [
+    {
+      "name": "pad0",
+      "physical_anchor_m": [
+        -0.012,
+        0.0,
+        0.0
+      ],
+      "force_N": [
+        0.05,
+        0.0,
+        0.0
+      ],
+      "witness_m": [
+        -0.011988174554129429,
+        1.3161820395412396e-07,
+        7.602736328283536e-07
+      ],
+      "point_m": [
+        -0.011902365141218615,
+        -3.7870463313662984e-08,
+        -1.538212277156409e-08
+      ],
+      "free_moment_Nm": [
+        0.0,
+        2.489085145884771e-20,
+        -3.5989854535458e-20
+      ],
+      "normal": [
+        0.9978781456706539,
+        0.011106467420826186,
+        0.06415491231641775
+      ],
+      "friction": 2.0,
+      "profile_integral_m2": 5.612285624328978e-06,
+      "integrated_force_N": [
+        0.05000000000000126,
+        0.0,
+        0.0
+      ],
+      "integrated_moment_about_COM_Nm": [
+        0.0,
+        -4.0015584095947945e-09,
+        5.739831589290256e-09
+      ],
+      "specification": {
+        "name": "pad0",
+        "centre_m": [
+          -0.012,
+          0.0,
+          0.0
+        ],
+        "direction": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "strength_n": 0.05,
+        "radius_m": 0.003,
+        "friction": 2.0,
+        "shear_fraction": 0.0,
+        "is_local_normal_profile": false
+      }
+    },
+    {
+      "name": "pad1",
+      "physical_anchor_m": [
+        0.012,
+        0.0,
+        0.0
+      ],
+      "force_N": [
+        -0.05,
+        0.0,
+        0.0
+      ],
+      "witness_m": [
+        0.011972120064616003,
+        1.8837854798844964e-08,
+        -8.271806125530277e-25
+      ],
+      "point_m": [
+        0.011900920468561829,
+        1.1388207211993077e-07,
+        -1.7425822392524087e-08
+      ],
+      "free_moment_Nm": [
+        0.0,
+        8.310235949956052e-21,
+        9.462532397050395e-20
+      ],
+      "normal": [
+        -0.9999997717297997,
+        0.0006756776957788869,
+        -0.0
+      ],
+      "friction": 2.0,
+      "profile_integral_m2": 5.611560664452012e-06,
+      "integrated_force_N": [
+        -0.050000000000001016,
+        0.0,
+        0.0
+      ],
+      "integrated_moment_about_COM_Nm": [
+        0.0,
+        4.103743390644493e-09,
+        1.847795182405459e-09
+      ],
+      "specification": {
+        "name": "pad1",
+        "centre_m": [
+          0.012,
+          0.0,
+          0.0
+        ],
+        "direction": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "strength_n": 0.05,
+        "radius_m": 0.003,
+        "friction": 2.0,
+        "shear_fraction": 0.0,
+        "is_local_normal_profile": false
+      }
+    }
+  ],
+  "models": []
+}
