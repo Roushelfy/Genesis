@@ -1,0 +1,60 @@
+{
+  "geometry": {
+    "name": "egg",
+    "description": "Full normal-offset hollow egg,22/22/30mm semiaxes, taper0.18",
+    "thickness_m": 0.0005,
+    "gap_m": null,
+    "minimum_rounding_m": null
+  },
+  "geometry_mode": "Fixed seed polyhedral domain; longest-edge bisection without CAD projection",
+  "seed_sha256": "8a8ecb0779b2a93350561d33e67fa5046bd8464db4f51409216d47ea90775b59",
+  "mesh_sha256": "4cf0568793f1707eeafc8095f61ee924a265a19e42365fd69cb8a76ee417ec7f",
+  "diagnosis_sha256": "7e37f10d7a600d2930078178270d139e0f7d8e975d909402f727fc1d3c046214",
+  "local_refinement_level": 3,
+  "marking_radius_m": 0.003,
+  "marking_anchors_m": [
+    [
+      -0.02175214994496229,
+      0.0,
+      -3.2716207264977516e-05
+    ],
+    [
+      0.02015795948627368,
+      0.008028546616392277,
+      0.00036333798353201075
+    ],
+    [
+      0.021188560131184555,
+      -0.004135771368598278,
+      0.001090866415328662
+    ],
+    [
+      0.021552705869439952,
+      0.0030145631531861903,
+      -0.00011176285112000827
+    ],
+    [
+      0.02175214994496229,
+      0.0,
+      -3.2716207264977516e-05
+    ]
+  ],
+  "tetrahedra": 653088,
+  "nodes": 129133,
+  "surface_triangles": 72040,
+  "volume_m3": 3.7424638563292797e-06,
+  "surface_area_m2": 0.014973144006272036,
+  "com_m": [
+    -7.350523999809319e-09,
+    9.942163102361713e-09,
+    -0.001963367099900015
+  ],
+  "minimum_tetrahedron_volume_m3": 2.4414030713516573e-14,
+  "parent_partition": {
+    "all_child_tetrahedra_contained_in_declared_parent": true,
+    "each_parent_volume_preserved": true,
+    "maximum_parent_volume_relative_difference": 1.4398232936724235e-13
+  },
+  "goal_completion": false,
+  "limitations": "Adaptive marking changes numerical bulk/trace resolution while retaining the seed's polyhedral physical domain, material and mass. Boundary triangle subdivisions change; no boundary quadrature identity or solved FEM/stress convergence is inferred. All original36 convergence probes remain required. The marking radius is numerical and does not change the physical load footprint."
+}

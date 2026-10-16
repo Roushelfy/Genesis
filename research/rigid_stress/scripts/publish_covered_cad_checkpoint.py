@@ -19,7 +19,7 @@ def main():
     parser.add_argument("--plan", type=Path, required=True)
     args = parser.parse_args()
     plan = json.loads(args.plan.read_text())
-    assert plan["kind"] in ["fields", "sources"] and plan["goal_completion"] is False
+    assert plan["kind"] in ["fields", "sources", "native_followup"] and plan["goal_completion"] is False
     p = args.runtime_root / "20261014-physical-validation"
     label = plan["label"]
     meta = p / f"{label}-publication"
@@ -137,7 +137,7 @@ def main():
             "all_original_common_probes": 158340,
             "three_covered_mesh_fields_and_independent_linearizations": True,
         }
-    else:
+    elif plan["kind"] == "sources":
         source = summaries["covered-cad-three-level-sources-v1"]
         assert source["selector_mesh_reconstruction_qualified"] and len(source["rows"]) == 15
         assert all(
@@ -181,6 +181,35 @@ def main():
             "actual_native_meshes_two_load_modes_each": len(native),
             "figure_editable_text_nodes": len(text),
             "figure_embedded_raster_images": 0,
+        }
+    else:
+        native = summaries["egg-covered-cad-native-linearization-level3-v1"]
+        assert native["all_existing_gates_passed"] and len(native["rows"]) == 2
+        assert {row["mode"] for row in native["rows"]} == {"full_inertia", "rigid_relief"}
+        assert all(
+            row["tetrahedra"] == 171228
+            and row["all_existing_gates_passed"]
+            and row["independent_complete_budget_fraction"] <= 1
+            and row["cached_corner_stress_max_existing_budget_fraction"] <= 1
+            for row in native["rows"]
+        )
+        meshes = summaries["egg-thickness-local-bulk-four-level-meshes-v1"]
+        assert [row["tetrahedra"] for row in meshes["rows"]] == [502230, 516287, 554574, 653088]
+        assert all(
+            row["parent_partition"]["all_child_tetrahedra_contained_in_declared_parent"]
+            and row["parent_partition"]["each_parent_volume_preserved"]
+            for row in meshes["rows"][1:]
+        )
+        proof = json.loads((p / "meta/frozen-traction-fourth-local-bulk-mesh-qualification-v1.json").read_text())
+        assert proof["source_closure_matched"] and len(proof["original_three_meshes_byte_identical"]) == 3
+        for row in proof["original_three_meshes_byte_identical"]:
+            retain(Path(row["original"]), row["sha256"])
+            retain(Path(row["new"]), row["sha256"])
+        scientific_checks = {
+            "actual_finest_native_original_load_modes_passed": 2,
+            "fourth_local_mesh_preserves_original_three_meshes_exactly": True,
+            "fourth_mesh_tetrahedra": 653088,
+            "fourth_mesh_equilibrium_fields_included": False,
         }
 
     # Keep the physical capture and fixed geometry assets explicit, regardless
