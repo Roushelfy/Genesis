@@ -1,5 +1,21 @@
 # Load-model validation and physical convergence
 
+## Updated priority, 2026-10-16
+
+The user's [application-first goal](PRACTICAL_VALIDATION_GOAL.md) is now the
+active brief and takes precedence over the completion gates below.
+Existing independent-FEM agreement can close discrete-implementation
+verification within its tested scope. Prescribed-traction checks are partial
+load-model evidence; prioritize representative resolved-contact / resolved-load /
+reconstructed-load comparisons and separate omitted feedback.
+Use bounded convergence studies to select practical settings, retain unresolved
+peak sensitivity as an explicit limitation, and measure native warmed cost.
+Universal convergence across every shape/model is no longer required before
+engineering delivery. The earlier plan below remains a diagnostic resource,
+not a requirement to repeat all completed audits or finish every sweep.
+
+## Original validation plan, 2026-10-14
+
 User direction, 2026-10-14. This is the active next stage for
 `Roushelfy/Genesis:rigid-stress-recovery`, following the completed low-mesh
 [nonconvex performance milestone](NATIVE_NONCONVEX_RESULTS_20261014.md).
