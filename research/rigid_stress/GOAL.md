@@ -1,6 +1,24 @@
 # Agent goal: native Quadrants rigid stress recovery
 
-## Active next stage: load-model accuracy and physical convergence, 2026-10-14
+## Active goal: application-first qualification and delivery, 2026-10-16
+
+Follow [docs/PRACTICAL_VALIDATION_GOAL.md](docs/PRACTICAL_VALIDATION_GOAL.md).
+Prioritize a useful Franka/full hollow egg stress observation for damage-aware
+grasping and RL, plus a representative nonconvex interior-hotspot case.
+Accept existing independent-FEM verification within its demonstrated scope.
+Focus the remaining work on resolved-contact / resolved-load replay /
+reconstructed-load replay comparisons, omitted feedback and a practical
+accuracy/cost choice. Preserve the native Quadrants implementation and throughput.
+
+The complete historical physical-convergence matrix is no longer a delivery
+prerequisite. Use bounded refinements where they affect an application decision;
+report unresolved raw peaks as limitations and distinguish engineering delivery
+from physical-model qualification and experimental fracture calibration.
+The new goal takes precedence over all older "every original gate remains"
+statements below and in linked reports. Preserve historical evidence and
+numerical tolerances; do not count unresolved accuracy questions as passed.
+
+## Historical stage: load-model accuracy and physical convergence, 2026-10-14
 
 Follow [docs/LOAD_MODEL_PHYSICAL_VALIDATION.md](docs/LOAD_MODEL_PHYSICAL_VALIDATION.md).
 Quantify how the pressure, componentwise and aggregate-source load models affect
@@ -32,21 +50,33 @@ requirement; the dated checkpoint paragraphs below retain historical states.
    The [90-peak location diagnosis](docs/PHYSICAL_FINITE_PEAK_LOCATION_20261016.md)
    finds those finest opposing peaks below the surface, so a direct boundary
    corner explanation does not resolve the discrepancy. Compare the separately
-   qualified fixed-polyhedron family while keeping its volume/surface-basis
-   and boundary-quadrature coupling explicit.
+   [audited fixed-polyhedron family](docs/PHYSICAL_FIXED_POLYHEDRON_TAIL_20261016.md):
+   all30 fields pass original gates, but raw peaks still change up to14.01%.
+   Keep volume/surface-basis and boundary-quadrature coupling explicit. The
+   qualified local meshes reach3.80/3.91 million tetrahedra; original five-field
+   requalification, fine solves and separate audits are scheduled.
 2. Complete matched model and numerical-axis comparisons. The
    [native capacity repair](docs/PHYSICAL_NATIVE_PATH_CAPACITY_20261016.md)
    passes40 selected CPU/CUDA cases plus5656950 actual large-graph entries per
    backend. [Four fine native producers and separate auditors](docs/PHYSICAL_FINE_NATIVE_MODELS_20261016.md)
-   now close76 accepted fields and retain four unsupported pressure rows.
-   The first added level's complete arrays are published; finest-level arrays
-   still need publication. Same-mesh ports4/8/16 and quadrature10/14 controls,
-   plus a third matched spatial level, are scheduled and count as no accepted
-   new evidence until their original gates and separate audits close.
+   close76 fine fields. [Matched third-level and distance/integration controls](docs/PHYSICAL_MATCHED_NATIVE_AXES_20261016.md)
+   now bring the complete scoped evidence to228 accepted native fields and12
+   unsupported pressure rows. Each original case's numerical budgets remain unchanged.
+   Same-mesh quadrature10/14 changes the exact volume tensor norm by at most
+   0.01346%; ports8/16 still change it by up to0.88726%. These are numerical
+   controls, not physical error bounds. Both fine native levels' full arrays
+   are pushed; matched-control/fixed-domain archives are being pushed in bounded
+   packets. Full field maps and the remaining model/island sensitivities stay.
 3. Complete the original coupled-contact/application and accuracy/cost gates.
    Shared-initialization U audits cover all744 stages at each body level, but
    final tensor changes44.86%/12.31% remain unresolved. Publish the full histories
-   and accepted figures. Separated contact/volume/geometry/history controls,
+   and accepted figures. The [shared-coordinate follow-up](docs/PHYSICAL_SHARED_U_ANCHORS_20261016.md)
+   retains the source-closed original-node failure and qualifies a16329-tet mesh
+   conforming to every original anchor on the unchanged CAD body. Original
+   three-level records reproduce exactly. The new shared-pad5 fourth744-stage
+   reference and its independent full-history/four-level audits remain live or
+   scheduled, without moving anchors or relaxing any tolerance.
+   Separated contact/volume/geometry/history controls,
    converged full egg/Franka and interior-hotspot references, actual patch/island
    redistribution, native resolved-load replay versus omitted feedback and
    physically qualified warmed costs remain required. Preserve every original

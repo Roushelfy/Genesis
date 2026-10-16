@@ -10,7 +10,24 @@ Read docs/NONCONVEX_CONTACT_REQUIREMENTS.md for the completed 2026-10-11
 extension and its declared contact law. That numerical/performance milestone
 is the baseline for the new physical-validation stage below.
 
-## Active physical-validation stage, 2026-10-14
+## Active application-first direction, 2026-10-16
+
+Read [docs/PRACTICAL_VALIDATION_GOAL.md](docs/PRACTICAL_VALIDATION_GOAL.md)
+before using the older physical-validation plan or acceptance ledger.
+The user's latest direction prioritizes actual grasping/RL usefulness.
+Accept existing independent-FEM verification within scope, then concentrate on
+representative load-reconstruction/feedback comparisons and practical settings
+with measured accuracy/cost. Preserve the native Quadrants feature and its
+arbitrary-contact, friction, output and reset contracts.
+
+The entire historical convergence matrix is no longer a delivery gate.
+Use targeted refinements to answer consequential questions; disclose unresolved
+raw-peak uncertainty without masking it or declaring absolute accuracy.
+Engineering delivery, physical qualification and fracture calibration are
+separate. This direction supersedes older universal-completion wording.
+Already-qualified unchanged code does not require repeated expensive audits.
+
+## Historical physical-validation stage, 2026-10-14
 
 Read `docs/LOAD_MODEL_PHYSICAL_VALIDATION.md` after `GOAL.md`.
 The low-mesh performance milestone has closed. The user now authorizes and

@@ -6,7 +6,18 @@ native CUDA-library recommendations, mandatory GPU direct-backend choice and
 convergence-first acceptance sequence. Earlier code and evidence remain useful
 for mathematics, numerical comparisons and bottleneck diagnosis.
 
-## Active next stage, 2026-10-14
+## Active application-first goal, 2026-10-16
+
+Follow [PRACTICAL_VALIDATION_GOAL.md](PRACTICAL_VALIDATION_GOAL.md) and
+[../GOAL.md](../GOAL.md). Accept existing independent-FEM verification within
+its demonstrated scope; focus on representative load-reconstruction/feedback
+effects and practical accuracy/cost for the egg/Franka and an interior-hotspot
+case. Preserve all production numerics in Quadrants.
+The complete historical physical-convergence matrix is no longer a delivery
+prerequisite. Retain unexplained raw-peak uncertainty as a limitation and use
+targeted refinements when they affect the application decision.
+
+## Historical next stage, 2026-10-14
 
 The user now requests [load-model validation and physical convergence](LOAD_MODEL_PHYSICAL_VALIDATION.md).
 The completed performance milestone is the baseline. Its restrictions on
