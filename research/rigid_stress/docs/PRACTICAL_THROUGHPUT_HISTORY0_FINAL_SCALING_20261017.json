@@ -1,0 +1,78 @@
+{
+  "generated_utc": "2026-10-17T12:11:25.293841+00:00",
+  "scope": "Verify raw metadata and source closures; no scientific execution.",
+  "snapshot_manifest_sha256": "b0f2f9cdaac8b90cfffe6a691c1f2ef1cdb0c6eeb4d356e2632e72f7a072ec10",
+  "all_899_actual_source_hashes_rechecked": true,
+  "metadata_source_sha256": "ed91ff87ce335c586e158544e1d370e5ca754e1f23947a033db180a8c6626c05",
+  "closure_source_sha256": "0ea15f19b0c52707e2ae9ce8d395e5be0e28e763c6e6126c311e7d3a9179156b",
+  "records": [
+    {
+      "name": "history0-four-scopes-b32768-v1",
+      "job": "725251",
+      "width": 32768,
+      "history": 0,
+      "intrusive": false,
+      "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725251_0|COMPLETED|0:0|01:40:03|rtx-209-115\n725251_0.batch|COMPLETED|0:0|01:40:03|rtx-209-115\n725251_0.0|COMPLETED|0:0|01:40:03|rtx-209-115\n",
+      "scopes": [
+        {
+          "scope": "rigid",
+          "benchmark_sha256": "b5c475c4393203355b59eb627bc801e6751b11c9a68b219ec637e6fb228cde2b",
+          "rates": [
+            998352.3297028525,
+            997973.2500576597,
+            998087.8838374391
+          ],
+          "median": 998087.8838374391,
+          "latency_ms": 32.83077625791217,
+          "native_buffer_bytes": null,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        },
+        {
+          "scope": "live",
+          "benchmark_sha256": "0314094063660673a47f93c2855cb276f0c7baabda5f6317fd9be7f8dc794868",
+          "rates": [
+            118908.720326206,
+            118929.29576292857,
+            118990.36831283166
+          ],
+          "median": 118929.29576292857,
+          "latency_ms": 275.5250486416662,
+          "native_buffer_bytes": 33581178478,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        },
+        {
+          "scope": "policy-rigid",
+          "benchmark_sha256": "b37be9bbbab626c2831bf568049881826eb1959f40e5847ebca1de255f5d1333",
+          "rates": [
+            991811.9576890753,
+            991588.670050103,
+            991613.9641483123
+          ],
+          "median": 991613.9641483123,
+          "latency_ms": 33.045117540417166,
+          "native_buffer_bytes": null,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        },
+        {
+          "scope": "policy",
+          "benchmark_sha256": "5a1125e43e51c147843ffb9ae0c5a9b12355820d0517129c127e77015765022a",
+          "rates": [
+            118579.16291737862,
+            118578.56285495624,
+            118583.60203850816
+          ],
+          "median": 118579.16291737862,
+          "latency_ms": 276.33860109833523,
+          "native_buffer_bytes": 33566498414,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        }
+      ],
+      "gpu_uuid": "GPU-eec6c32a-fe0b-5322-8219-698fede93860"
+    }
+  ],
+  "goal_completion": false
+}
