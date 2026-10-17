@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-10-17T09:35:17.122812+00:00",
+  "generated_utc": "2026-10-17T09:48:43.932415+00:00",
   "scope": "Candidate targeted arithmetic qualification; performance and large-batch application checks remain separate.",
   "snapshot": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/source-snapshots/packed-history-surface-v2",
   "snapshot_manifest_sha256": "b0f2f9cdaac8b90cfffe6a691c1f2ef1cdb0c6eeb4d356e2632e72f7a072ec10",
@@ -106,12 +106,31 @@
     }
   ],
   "cancelled_known_bad_diagnostic": "725189 was verified pending and cancelled before execution; cancellation journal retained.",
-  "pending": {
+  "goal_completion": false,
+  "additional_fresh_sparse_column_test": {
+    "job": "725223",
+    "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725223_0|COMPLETED|0:0|00:01:49|rtx-209-115\n725223_0.batch|COMPLETED|0:0|00:01:49|rtx-209-115\n725223_0.0|COMPLETED|0:0|00:01:48|rtx-209-115\n",
+    "program_exit": 0,
+    "wrapper_exit": 0,
+    "engine_files": 899,
+    "test_files": 436,
+    "test_manifest_sha256": "48fe3070d60daead9db10e62cf9f69349bb117f6ff33f1b94a5ef45a524a4adb",
+    "canonical_test_matches_executed": true,
+    "junit_sha256": "a730ee55f93fd0080e83554ae9ec870fd71c9dd21350d4cf2542becc67ccbdd4",
+    "cases": [
+      "test_native_surface_inverse_preserves_history_hits[False-0]",
+      "test_native_surface_inverse_preserves_history_hits[True-0]",
+      "test_native_surface_inverse_preserves_history_hits[True-512]"
+    ],
+    "purpose": "Dense reference plus cleared packed columns requires masked packing to rebuild failed environments; hit columns remain unchanged. Three strengthened GPU reruns of existing cases.",
+    "passed": true
+  },
+  "initial_followup_jobs": {
     "725192": "B8192 clean diagnostic",
     "725194": "0.2/4N complete grasp",
     "725195": "1/4N complete grasp",
     "725196": "four frozen R/L/M fields",
     "725197": "B16384 full lifecycle"
   },
-  "goal_completion": false
+  "initial_followup_jobs_note": "These jobs were pending at the original targeted-test closure. Application, lifecycle and diagnostic closures are now in separate linked records."
 }

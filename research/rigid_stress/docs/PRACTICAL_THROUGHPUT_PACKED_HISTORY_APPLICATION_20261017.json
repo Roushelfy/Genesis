@@ -1,0 +1,1283 @@
+{
+  "generated_utc": "2026-10-17T09:40:59.593465+00:00",
+  "scope": "New masked surface-history candidate: complete original field and grasp comparisons; B16384 lifecycle/timing remain separate.",
+  "snapshot_manifest_sha256": "b0f2f9cdaac8b90cfffe6a691c1f2ef1cdb0c6eeb4d356e2632e72f7a072ec10",
+  "application_jobs": [
+    {
+      "name": "packed-history-complete-grasp-low02-v2",
+      "job": "725194",
+      "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725194_0|COMPLETED|0:0|00:04:11|rtx-209-191\n725194_0.batch|COMPLETED|0:0|00:04:11|rtx-209-191\n725194_0.0|COMPLETED|0:0|00:04:10|rtx-209-191\n",
+      "program_exit": 0,
+      "wrapper_exit": 0,
+      "engine_hashes_closed": 899,
+      "executed_driver_unchanged": true,
+      "summary_sha256": "60d93d99825ec5de55ce330128ab68a47d681f5c13118160c65a849ce88d739f"
+    },
+    {
+      "name": "packed-history-complete-grasp-low1-v2",
+      "job": "725195",
+      "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725195_0|COMPLETED|0:0|00:04:18|rtx-209-191\n725195_0.batch|COMPLETED|0:0|00:04:18|rtx-209-191\n725195_0.0|COMPLETED|0:0|00:04:17|rtx-209-191\n",
+      "program_exit": 0,
+      "wrapper_exit": 0,
+      "engine_hashes_closed": 899,
+      "executed_driver_unchanged": true,
+      "summary_sha256": "93dafa2ec2eb40ee3af5ae6364a4b3470d78f56fee554368bcab7eec27d1cdc2"
+    },
+    {
+      "name": "packed-history-four-state-fields-v2",
+      "job": "725196",
+      "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725196_0|COMPLETED|0:0|00:02:35|rtx-209-191\n725196_0.batch|COMPLETED|0:0|00:02:35|rtx-209-191\n725196_0.0|COMPLETED|0:0|00:02:34|rtx-209-191\n",
+      "program_exit": 0,
+      "wrapper_exit": 0,
+      "engine_hashes_closed": 899,
+      "executed_driver_unchanged": true,
+      "summary_sha256": "30f475b7fe36123d66d947b54d5a0417bc2023674c1ef49d273797e810fe63e2"
+    }
+  ],
+  "engine_inventory_after_application_jobs": {
+    "extra_files": [],
+    "missing_files": [],
+    "passed": true,
+    "note": "Other jobs may read this shared immutable engine; no source writer or cache sidecar is present."
+  },
+  "comparison_job": "725204",
+  "comparison_scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725204_0|COMPLETED|0:0|00:00:38|cpu-206-205\n725204_0.batch|COMPLETED|0:0|00:00:38|cpu-206-205\n725204_0.0|COMPLETED|0:0|00:00:37|cpu-206-205\n",
+  "comparison_source_unchanged": true,
+  "comparison_sha256": "d682950c22803d1c9beb3bc48649cb002835bb6f7505057ffb0b667161cd76a6",
+  "comparison": {
+    "scope": "Compare a candidate's bounded fields and complete-grasp traces with frozen inputs.\n\nRun under Slurm. Field/stress bounds retain the existing source-prior checks;\nthe recorded model/radius bands remain reference uncertainty, not tolerances.\n",
+    "field_checks": [
+      {
+        "step": 11,
+        "complete_budget_fraction": 0.014768840465938862,
+        "fields": {
+          "native_tensor_Pa": {
+            "maximum_absolute_difference": 1.5440838296854054e-07,
+            "relative_L2_difference": 1.9711870584432732e-11
+          },
+          "displacement_m": {
+            "maximum_absolute_difference": 5.749897873978606e-20,
+            "relative_L2_difference": 6.905939946591576e-12
+          },
+          "mapped_contact_force_N": {
+            "maximum_absolute_difference": 1.6984171219492362e-14,
+            "relative_L2_difference": 5.103781093174603e-13
+          },
+          "full_inertia_rhs_N": {
+            "maximum_absolute_difference": 1.6984171226109807e-14,
+            "relative_L2_difference": 5.086113040874197e-13
+          },
+          "corner_tensor_Pa": {
+            "maximum_absolute_difference": 1.5440400602528825e-07,
+            "relative_L2_difference": 1.800073264530392e-11
+          },
+          "corner_vm_Pa": {
+            "maximum_absolute_difference": 6.818220299464883e-08,
+            "relative_L2_difference": 4.882747629827785e-12
+          },
+          "quadrature_tensor_Pa": {
+            "maximum_absolute_difference": 1.1235684382882027e-07,
+            "relative_L2_difference": 1.45942659395126e-11
+          },
+          "traction_positions_m": {
+            "maximum_absolute_difference": 0.0,
+            "relative_L2_difference": 0.0
+          },
+          "traction_normals": {
+            "maximum_absolute_difference": 0.0,
+            "relative_L2_difference": 0.0
+          },
+          "traction_forces_N": {
+            "maximum_absolute_difference": 7.491837011874836e-16,
+            "relative_L2_difference": 6.388067788824801e-13
+          },
+          "traction_areas_m2": {
+            "maximum_absolute_difference": 0.0,
+            "relative_L2_difference": 0.0
+          }
+        },
+        "sample_matching": {
+          "samples": 860,
+          "bijection_by_packet_source_face_position": true,
+          "rows_reordered": true
+        }
+      },
+      {
+        "step": 866,
+        "complete_budget_fraction": 0.03827363812114318,
+        "fields": {
+          "native_tensor_Pa": {
+            "maximum_absolute_difference": 5.9183279518038034e-05,
+            "relative_L2_difference": 4.6832773133597107e-11
+          },
+          "displacement_m": {
+            "maximum_absolute_difference": 8.589724060414417e-17,
+            "relative_L2_difference": 3.7888830489536525e-11
+          },
+          "mapped_contact_force_N": {
+            "maximum_absolute_difference": 2.2924772496990542e-10,
+            "relative_L2_difference": 1.1369712223765738e-10
+          },
+          "full_inertia_rhs_N": {
+            "maximum_absolute_difference": 2.2924773190879932e-10,
+            "relative_L2_difference": 1.1369618447637391e-10
+          },
+          "corner_tensor_Pa": {
+            "maximum_absolute_difference": 5.9164827689528465e-05,
+            "relative_L2_difference": 4.7301499311468275e-11
+          },
+          "corner_vm_Pa": {
+            "maximum_absolute_difference": 4.954042378813028e-05,
+            "relative_L2_difference": 3.063854759974526e-11
+          },
+          "quadrature_tensor_Pa": {
+            "maximum_absolute_difference": 4.634592914953828e-05,
+            "relative_L2_difference": 4.916743212151857e-11
+          },
+          "traction_positions_m": {
+            "maximum_absolute_difference": 0.0,
+            "relative_L2_difference": 0.0
+          },
+          "traction_normals": {
+            "maximum_absolute_difference": 0.0,
+            "relative_L2_difference": 0.0
+          },
+          "traction_forces_N": {
+            "maximum_absolute_difference": 8.15485070963795e-12,
+            "relative_L2_difference": 1.1357999134664426e-10
+          },
+          "traction_areas_m2": {
+            "maximum_absolute_difference": 0.0,
+            "relative_L2_difference": 0.0
+          }
+        },
+        "sample_matching": {
+          "samples": 1572,
+          "bijection_by_packet_source_face_position": true,
+          "rows_reordered": true
+        }
+      },
+      {
+        "step": 869,
+        "complete_budget_fraction": 0.036921389478718564,
+        "fields": {
+          "native_tensor_Pa": {
+            "maximum_absolute_difference": 1.6541271179448813e-06,
+            "relative_L2_difference": 2.6939447374551404e-11
+          },
+          "displacement_m": {
+            "maximum_absolute_difference": 1.3040866316368005e-18,
+            "relative_L2_difference": 6.240732299842522e-12
+          },
+          "mapped_contact_force_N": {
+            "maximum_absolute_difference": 1.6653345369377348e-16,
+            "relative_L2_difference": 6.221080303537365e-16
+          },
+          "full_inertia_rhs_N": {
+            "maximum_absolute_difference": 1.1102230246251565e-16,
+            "relative_L2_difference": 4.4405274062698673e-16
+          },
+          "corner_tensor_Pa": {
+            "maximum_absolute_difference": 1.660404450376518e-06,
+            "relative_L2_difference": 2.6171408810875403e-11
+          },
+          "corner_vm_Pa": {
+            "maximum_absolute_difference": 8.940533007262275e-07,
+            "relative_L2_difference": 1.0291003696463785e-11
+          },
+          "quadrature_tensor_Pa": {
+            "maximum_absolute_difference": 1.0899457265622914e-06,
+            "relative_L2_difference": 2.1043535508932715e-11
+          },
+          "traction_positions_m": {
+            "maximum_absolute_difference": 0.0,
+            "relative_L2_difference": 0.0
+          },
+          "traction_normals": {
+            "maximum_absolute_difference": 0.0,
+            "relative_L2_difference": 0.0
+          },
+          "traction_forces_N": {
+            "maximum_absolute_difference": 3.469446951953614e-18,
+            "relative_L2_difference": 3.6866267662508193e-16
+          },
+          "traction_areas_m2": {
+            "maximum_absolute_difference": 0.0,
+            "relative_L2_difference": 0.0
+          }
+        },
+        "sample_matching": {
+          "samples": 2345,
+          "bijection_by_packet_source_face_position": true,
+          "rows_reordered": true
+        }
+      },
+      {
+        "step": 2640,
+        "complete_budget_fraction": 0.02625061161780408,
+        "fields": {
+          "native_tensor_Pa": {
+            "maximum_absolute_difference": 2.046885128947906e-06,
+            "relative_L2_difference": 3.753374699322527e-11
+          },
+          "displacement_m": {
+            "maximum_absolute_difference": 1.6244106694867353e-18,
+            "relative_L2_difference": 1.1176168044072784e-11
+          },
+          "mapped_contact_force_N": {
+            "maximum_absolute_difference": 1.4039531798411276e-13,
+            "relative_L2_difference": 5.259009011436678e-13
+          },
+          "full_inertia_rhs_N": {
+            "maximum_absolute_difference": 1.403953992992757e-13,
+            "relative_L2_difference": 5.258792525445689e-13
+          },
+          "corner_tensor_Pa": {
+            "maximum_absolute_difference": 2.046845111181028e-06,
+            "relative_L2_difference": 3.802225755750185e-11
+          },
+          "corner_vm_Pa": {
+            "maximum_absolute_difference": 2.1969553927192464e-06,
+            "relative_L2_difference": 1.728592398445518e-11
+          },
+          "quadrature_tensor_Pa": {
+            "maximum_absolute_difference": 1.730000803945586e-06,
+            "relative_L2_difference": 3.046470142200747e-11
+          },
+          "traction_positions_m": {
+            "maximum_absolute_difference": 0.0,
+            "relative_L2_difference": 0.0
+          },
+          "traction_normals": {
+            "maximum_absolute_difference": 0.0,
+            "relative_L2_difference": 0.0
+          },
+          "traction_forces_N": {
+            "maximum_absolute_difference": 4.8717269367920535e-15,
+            "relative_L2_difference": 5.249879217434165e-13
+          },
+          "traction_areas_m2": {
+            "maximum_absolute_difference": 0.0,
+            "relative_L2_difference": 0.0
+          }
+        },
+        "sample_matching": {
+          "samples": 1572,
+          "bijection_by_packet_source_face_position": true,
+          "rows_reordered": true
+        }
+      }
+    ],
+    "reward_checks": [
+      {
+        "low_limit_N": 0.2,
+        "observed_environment_steps": 57600,
+        "raw_stress_difference": {
+          "maximum_absolute_difference": 0.0006360207044053823,
+          "relative_L2_difference": 2.105159454099433e-10
+        },
+        "height_difference_m": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        },
+        "rows": [
+          {
+            "condition": 0,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  289846.1003104773,
+                  254454.09865098077
+                ],
+                [
+                  289846.1003104975,
+                  254454.09907080125
+                ],
+                [
+                  289846.1003105011,
+                  254454.09888171
+                ]
+              ],
+              "reference_model_radius_band_Pa": 98093.67102548957,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "4N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  45084.00017000262,
+                  58061.49226038566
+                ],
+                [
+                  45084.00016999027,
+                  58061.492260395105
+                ],
+                [
+                  45084.00016998729,
+                  58061.4922603966
+                ]
+              ],
+              "reference_model_radius_band_Pa": 8053.187657513983,
+              "exceeds_reference_band": true,
+              "lower_peak_choice": "0.2N"
+            }
+          },
+          {
+            "condition": 1,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  234230.12828495892,
+                  321551.0242523871
+                ],
+                [
+                  234230.12842318442,
+                  321551.02425238024
+                ],
+                [
+                  234230.12847708524,
+                  321551.02425238106
+                ]
+              ],
+              "reference_model_radius_band_Pa": 78933.13291577157,
+              "exceeds_reference_band": true,
+              "lower_peak_choice": "0.2N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  47471.260067538184,
+                  65189.9807137574
+                ],
+                [
+                  47471.26006756434,
+                  65189.980713768724
+                ],
+                [
+                  47471.26006755392,
+                  65189.980713720404
+                ]
+              ],
+              "reference_model_radius_band_Pa": 17801.87823222029,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "0.2N"
+            }
+          },
+          {
+            "condition": 2,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  230851.288621463,
+                  248994.68084701442
+                ],
+                [
+                  230851.28862145555,
+                  248994.68084699125
+                ],
+                [
+                  230851.28862147458,
+                  248994.68084699512
+                ]
+              ],
+              "reference_model_radius_band_Pa": 63750.90695855918,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "0.2N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  42884.557204645214,
+                  56432.46128982092
+                ],
+                [
+                  42884.55720464821,
+                  56432.46128981763
+                ],
+                [
+                  42884.55720464294,
+                  56432.4612898132
+                ]
+              ],
+              "reference_model_radius_band_Pa": 6939.3371313323805,
+              "exceeds_reference_band": true,
+              "lower_peak_choice": "0.2N"
+            }
+          },
+          {
+            "condition": 3,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  255790.5475542809,
+                  157284.65138351035
+                ],
+                [
+                  255790.54755429956,
+                  157284.6513835114
+                ],
+                [
+                  255790.54755428256,
+                  157284.65138349822
+                ]
+              ],
+              "reference_model_radius_band_Pa": 79230.07368339034,
+              "exceeds_reference_band": true,
+              "lower_peak_choice": "4N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  43913.216174929985,
+                  57442.48051252645
+                ],
+                [
+                  43913.21617493039,
+                  57442.480512558875
+                ],
+                [
+                  43913.21617493604,
+                  57442.48051255261
+                ]
+              ],
+              "reference_model_radius_band_Pa": 4758.783495739379,
+              "exceeds_reference_band": true,
+              "lower_peak_choice": "0.2N"
+            }
+          },
+          {
+            "condition": 4,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  229422.42420495788,
+                  295940.8679176946
+                ],
+                [
+                  229422.4242049613,
+                  295940.86791767634
+                ],
+                [
+                  229422.4242049645,
+                  295940.8679176976
+                ]
+              ],
+              "reference_model_radius_band_Pa": 88914.31908673147,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "0.2N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  47306.01748873634,
+                  62207.62444191298
+                ],
+                [
+                  47306.01748876498,
+                  62207.62444192337
+                ],
+                [
+                  47306.017488744146,
+                  62207.62444194376
+                ]
+              ],
+              "reference_model_radius_band_Pa": 8482.325945744706,
+              "exceeds_reference_band": true,
+              "lower_peak_choice": "0.2N"
+            }
+          },
+          {
+            "condition": 5,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  256705.42706951682,
+                  301069.15029175824
+                ],
+                [
+                  256705.42706949014,
+                  301069.15029196045
+                ],
+                [
+                  256705.4270696264,
+                  301069.1502917385
+                ]
+              ],
+              "reference_model_radius_band_Pa": 70902.51431329444,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "0.2N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  49192.292130968424,
+                  66638.8951477392
+                ],
+                [
+                  49192.29213038662,
+                  66638.89514772552
+                ],
+                [
+                  49192.29213049478,
+                  66638.89514769669
+                ]
+              ],
+              "reference_model_radius_band_Pa": 11137.63698942704,
+              "exceeds_reference_band": true,
+              "lower_peak_choice": "0.2N"
+            }
+          },
+          {
+            "condition": 6,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  221935.27350505267,
+                  292892.241635486
+                ],
+                [
+                  221935.2735050689,
+                  292892.24163550616
+                ],
+                [
+                  221935.27350502196,
+                  292892.2416354775
+                ]
+              ],
+              "reference_model_radius_band_Pa": 79075.23330181913,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "0.2N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  42683.24842703084,
+                  56644.09692921052
+                ],
+                [
+                  42683.24842703679,
+                  56644.096929281666
+                ],
+                [
+                  42683.24842701001,
+                  56644.09692931384
+                ]
+              ],
+              "reference_model_radius_band_Pa": 8568.157210822843,
+              "exceeds_reference_band": true,
+              "lower_peak_choice": "0.2N"
+            }
+          },
+          {
+            "condition": 7,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  257563.9861611091,
+                  269402.6386761191
+                ],
+                [
+                  257563.9861611085,
+                  269402.63867600565
+                ],
+                [
+                  257563.98616110184,
+                  269402.6386758753
+                ]
+              ],
+              "reference_model_radius_band_Pa": 69065.28318425163,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "0.2N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  50985.61823543552,
+                  68633.12673616777
+                ],
+                [
+                  50985.61823543693,
+                  68633.1267361687
+                ],
+                [
+                  50985.61823543446,
+                  68633.12673616644
+                ]
+              ],
+              "reference_model_radius_band_Pa": 17433.60110187353,
+              "exceeds_reference_band": true,
+              "lower_peak_choice": "0.2N"
+            }
+          }
+        ]
+      },
+      {
+        "low_limit_N": 1,
+        "observed_environment_steps": 57600,
+        "raw_stress_difference": {
+          "maximum_absolute_difference": 0.000521294743521139,
+          "relative_L2_difference": 1.8083424774342016e-10
+        },
+        "height_difference_m": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        },
+        "rows": [
+          {
+            "condition": 0,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  294547.91440837434,
+                  254454.09886110364
+                ],
+                [
+                  294547.91440719605,
+                  254454.09857586038
+                ],
+                [
+                  294547.9144072183,
+                  254454.09862979216
+                ]
+              ],
+              "reference_model_radius_band_Pa": 99132.14771598973,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "4N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  57650.35113428015,
+                  58061.49226029462
+                ],
+                [
+                  57650.3511342822,
+                  58061.492260285864
+                ],
+                [
+                  57650.35113428358,
+                  58061.492260289306
+                ]
+              ],
+              "reference_model_radius_band_Pa": 8053.187658014678,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "1N"
+            }
+          },
+          {
+            "condition": 1,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  321546.9306219407,
+                  321551.02425283124
+                ],
+                [
+                  321546.9306219448,
+                  321551.02425284823
+                ],
+                [
+                  321546.93062193133,
+                  321551.02425283205
+                ]
+              ],
+              "reference_model_radius_band_Pa": 78933.13291579956,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "1N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  65186.71073560198,
+                  65189.98071372174
+                ],
+                [
+                  65186.7107356448,
+                  65189.98071377393
+                ],
+                [
+                  65186.71073567718,
+                  65189.980713760735
+                ]
+              ],
+              "reference_model_radius_band_Pa": 17801.878233157877,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "1N"
+            }
+          },
+          {
+            "condition": 2,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  249005.48924368352,
+                  248994.68084355045
+                ],
+                [
+                  249005.48924368256,
+                  248994.6808435371
+                ],
+                [
+                  249005.4892436737,
+                  248994.6808435422
+                ]
+              ],
+              "reference_model_radius_band_Pa": 63753.845919213054,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "4N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  56442.732033199856,
+                  56432.461289810206
+                ],
+                [
+                  56442.73203319291,
+                  56432.46128981182
+                ],
+                [
+                  56442.73203320347,
+                  56432.461289815685
+                ]
+              ],
+              "reference_model_radius_band_Pa": 6861.2917775059905,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "4N"
+            }
+          },
+          {
+            "condition": 3,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  243583.47253630726,
+                  157284.6513843718
+                ],
+                [
+                  243583.47253628573,
+                  157284.65138436249
+                ],
+                [
+                  243583.47253631023,
+                  157284.65138436615
+                ]
+              ],
+              "reference_model_radius_band_Pa": 73334.29416914433,
+              "exceeds_reference_band": true,
+              "lower_peak_choice": "4N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  64069.802973695296,
+                  57442.480513014605
+                ],
+                [
+                  64069.80297365808,
+                  57442.4805129964
+                ],
+                [
+                  64069.802973633785,
+                  57442.480513024406
+                ]
+              ],
+              "reference_model_radius_band_Pa": 6423.511279197162,
+              "exceeds_reference_band": true,
+              "lower_peak_choice": "4N"
+            }
+          },
+          {
+            "condition": 4,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  295920.38732304046,
+                  295940.86791359086
+                ],
+                [
+                  295920.38732307026,
+                  295940.867913521
+                ],
+                [
+                  295920.38732303627,
+                  295940.86791363935
+                ]
+              ],
+              "reference_model_radius_band_Pa": 88914.3190853183,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "1N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  62191.83250755212,
+                  62207.62444180782
+                ],
+                [
+                  62191.83250750083,
+                  62207.62444178943
+                ],
+                [
+                  62191.83250747099,
+                  62207.624441808155
+                ]
+              ],
+              "reference_model_radius_band_Pa": 8482.325945218457,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "1N"
+            }
+          },
+          {
+            "condition": 5,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  303940.7057918639,
+                  301069.1502928113
+                ],
+                [
+                  303940.70579161495,
+                  301069.15029276675
+                ],
+                [
+                  303940.7057918349,
+                  301069.15029319073
+                ]
+              ],
+              "reference_model_radius_band_Pa": 71039.53942796524,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "4N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  66639.43431608737,
+                  66638.89514763179
+                ],
+                [
+                  66639.43431608159,
+                  66638.89514763025
+                ],
+                [
+                  66639.4343161078,
+                  66638.89514764625
+                ]
+              ],
+              "reference_model_radius_band_Pa": 7532.9007876440155,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "4N"
+            }
+          },
+          {
+            "condition": 6,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  246217.41947806353,
+                  292892.241636674
+                ],
+                [
+                  246217.41948041154,
+                  292892.2416367939
+                ],
+                [
+                  246217.41948538506,
+                  292892.24163695954
+                ]
+              ],
+              "reference_model_radius_band_Pa": 79075.23330094106,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "1N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  56644.010522773235,
+                  56644.096929401836
+                ],
+                [
+                  56644.01052277104,
+                  56644.096929339576
+                ],
+                [
+                  56644.01052278325,
+                  56644.09692934784
+                ]
+              ],
+              "reference_model_radius_band_Pa": 7166.983245274343,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "1N"
+            }
+          },
+          {
+            "condition": 7,
+            "whole_episode": {
+              "raw_peak_Pa": [
+                [
+                  269403.1870643066,
+                  269402.6386755013
+                ],
+                [
+                  269403.1870643819,
+                  269402.6386755983
+                ],
+                [
+                  269403.1870644073,
+                  269402.6386755493
+                ]
+              ],
+              "reference_model_radius_band_Pa": 69065.28318375652,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "4N"
+            },
+            "lift_window": {
+              "raw_peak_Pa": [
+                [
+                  68632.2807086241,
+                  68633.12673662601
+                ],
+                [
+                  68632.28070862126,
+                  68633.12673662999
+                ],
+                [
+                  68632.28070862644,
+                  68633.12673662593
+                ]
+              ],
+              "reference_model_radius_band_Pa": 17433.601101062828,
+              "exceeds_reference_band": false,
+              "lower_peak_choice": "1N"
+            }
+          }
+        ]
+      }
+    ],
+    "reference_ensembles_with_nominal_candidate": [
+      {
+        "low_limit_N": 0.2,
+        "rows": [
+          {
+            "condition": 0,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 26102.566066523665,
+              "observed_model_radius_band_Pa": 98093.67102548957,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "4N"
+            },
+            "lift_window": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 12977.492090383043,
+              "observed_model_radius_band_Pa": 8053.187657800612,
+              "exceeds_observed_band": true,
+              "lower_peak_choice": "0.2N"
+            }
+          },
+          {
+            "condition": 1,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 78076.66734689663,
+              "observed_model_radius_band_Pa": 78933.13291577157,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "0.2N"
+            },
+            "lift_window": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 17718.720646166483,
+              "observed_model_radius_band_Pa": 17801.87823152011,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "0.2N"
+            }
+          },
+          {
+            "condition": 2,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 17570.751905247453,
+              "observed_model_radius_band_Pa": 63750.90695855918,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "0.2N"
+            },
+            "lift_window": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 13355.106794670151,
+              "observed_model_radius_band_Pa": 6939.337131083041,
+              "exceeds_observed_band": true,
+              "lower_peak_choice": "0.2N"
+            }
+          },
+          {
+            "condition": 3,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 89157.50582066286,
+              "observed_model_radius_band_Pa": 79230.07368339034,
+              "exceeds_observed_band": true,
+              "lower_peak_choice": "4N"
+            },
+            "lift_window": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 13529.264337596462,
+              "observed_model_radius_band_Pa": 4758.783495122429,
+              "exceeds_observed_band": true,
+              "lower_peak_choice": "0.2N"
+            }
+          },
+          {
+            "condition": 4,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 51647.58000178862,
+              "observed_model_radius_band_Pa": 88914.31908673147,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "0.2N"
+            },
+            "lift_window": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 14850.992234315876,
+              "observed_model_radius_band_Pa": 8482.325945744706,
+              "exceeds_observed_band": true,
+              "lower_peak_choice": "0.2N"
+            }
+          },
+          {
+            "condition": 5,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 36904.41805925328,
+              "observed_model_radius_band_Pa": 70902.51431329444,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "0.2N"
+            },
+            "lift_window": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 12738.126731865836,
+              "observed_model_radius_band_Pa": 11137.63698837279,
+              "exceeds_observed_band": true,
+              "lower_peak_choice": "0.2N"
+            }
+          },
+          {
+            "condition": 6,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 33655.03275761928,
+              "observed_model_radius_band_Pa": 79075.23330181913,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "0.2N"
+            },
+            "lift_window": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 12568.090171039374,
+              "observed_model_radius_band_Pa": 8568.157210822843,
+              "exceeds_observed_band": true,
+              "lower_peak_choice": "0.2N"
+            }
+          },
+          {
+            "condition": 7,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 11553.341835802625,
+              "observed_model_radius_band_Pa": 69065.28318425163,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "0.2N"
+            },
+            "lift_window": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 17647.508500731776,
+              "observed_model_radius_band_Pa": 17433.60110237838,
+              "exceeds_observed_band": true,
+              "lower_peak_choice": "0.2N"
+            }
+          }
+        ],
+        "scope": "Retained four-model/radius reference ensemble with only nominal source-prior traces replaced by the candidate. This is not qualification of all four alternatives on candidate code."
+      },
+      {
+        "low_limit_N": 1,
+        "rows": [
+          {
+            "condition": 0,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 24207.20528040809,
+              "observed_model_radius_band_Pa": 99132.14771598973,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "4N"
+            },
+            "lift_window": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 411.14112600366207,
+              "observed_model_radius_band_Pa": 8053.187657873983,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "1N"
+            }
+          },
+          {
+            "condition": 1,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 4.093630890536588,
+              "observed_model_radius_band_Pa": 78933.13291579956,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "1N"
+            },
+            "lift_window": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 3.259668730381236,
+              "observed_model_radius_band_Pa": 17801.878233220166,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "1N"
+            }
+          },
+          {
+            "condition": 2,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 10.47667388356058,
+              "observed_model_radius_band_Pa": 63753.845919213054,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "4N"
+            },
+            "lift_window": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 4.254525078766164,
+              "observed_model_radius_band_Pa": 6861.291777707556,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "4N"
+            }
+          },
+          {
+            "condition": 3,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 82570.26399426154,
+              "observed_model_radius_band_Pa": 73334.29416914433,
+              "exceeds_observed_band": true,
+              "lower_peak_choice": "4N"
+            },
+            "lift_window": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 6627.322460609379,
+              "observed_model_radius_band_Pa": 6423.511278689075,
+              "exceeds_observed_band": true,
+              "lower_peak_choice": "4N"
+            }
+          },
+          {
+            "condition": 4,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 20.48059045075206,
+              "observed_model_radius_band_Pa": 88914.3190853183,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "1N"
+            },
+            "lift_window": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 15.791934255699744,
+              "observed_model_radius_band_Pa": 8482.325945218457,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "1N"
+            }
+          },
+          {
+            "condition": 5,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 2871.5554986441857,
+              "observed_model_radius_band_Pa": 71039.53942796524,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "4N"
+            },
+            "lift_window": {
+              "rank_stable": false,
+              "minimum_absolute_separation_Pa": 0.5391684513451764,
+              "observed_model_radius_band_Pa": 7532.9007876440155,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "unresolved"
+            }
+          },
+          {
+            "condition": 6,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 6736.326202734257,
+              "observed_model_radius_band_Pa": 79075.23330094106,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "1N"
+            },
+            "lift_window": {
+              "rank_stable": false,
+              "minimum_absolute_separation_Pa": 0.0864065645946539,
+              "observed_model_radius_band_Pa": 7166.983245274343,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "unresolved"
+            }
+          },
+          {
+            "condition": 7,
+            "whole_episode": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 0.5483887835871428,
+              "observed_model_radius_band_Pa": 69065.28318375652,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "4N"
+            },
+            "lift_window": {
+              "rank_stable": true,
+              "minimum_absolute_separation_Pa": 0.813540876362822,
+              "observed_model_radius_band_Pa": 17433.601100939297,
+              "exceeds_observed_band": false,
+              "lower_peak_choice": "1N"
+            }
+          }
+        ],
+        "scope": "Retained four-model/radius reference ensemble with only nominal source-prior traces replaced by the candidate. This is not qualification of all four alternatives on candidate code."
+      }
+    ],
+    "input_sha256": {
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-four-state-fields-v2/results/summary.json": "30f475b7fe36123d66d947b54d5a0417bc2023674c1ef49d273797e810fe63e2",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/summary.json": "de03cf96456822417b84406cfb5a8c826dead517457fc97620eff9d79d1aff8d",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-four-state-fields-v2/results/step00011-r6000-body_source_prior.npz": "662fac03aaf2980f4a9671726e91b350faa0f38676a945915c09fe64ad396051",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00011-r6000-body_source_prior.npz": "fe8f3cf6290907a1b9819cbd763793d9b7d8d090cde5a061cff875928eda0ffb",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-four-state-fields-v2/results/step00866-r6000-body_source_prior.npz": "1d4336e6ec2ad967452ae9930df7d98c8a479692d845f1fa8fb78de1d794bf17",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00866-r6000-body_source_prior.npz": "06c45c8857273988196c2837a20de0e0664c6be8aada63ca280da3c44914e18f",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-four-state-fields-v2/results/step00869-r6000-body_source_prior.npz": "ca4328d29056458d2558cdc62d0d57b2a2340be9b94caf17272318b84bd80ecd",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step00869-r6000-body_source_prior.npz": "f56c77c82c8beaf6ba38db9bfc8e9cd14feb6b33fd6c10e03a10e11d8404fc66",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-four-state-fields-v2/results/step02640-r6000-body_source_prior.npz": "8f23f2dcd5a526543c14bedcf7059a1692c7f8cd249477a0cb831e388c3dc3ae",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1/results/step02640-r6000-body_source_prior.npz": "e5a3d7321974fbd8bf048ed3d55e927adb86a3fb486490b9da5059d3658c6dab",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/analysis-source/packed-history-regression-comparison-v2/phase-audit.json": "2819bf249613a6470170b692063e743bcbcb18e99d2b3d10e391447e85f634ad",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-complete-grasp-low02-v2/results/summary.json": "60d93d99825ec5de55ce330128ab68a47d681f5c13118160c65a849ce88d739f",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-v1/results/summary.json": "96590519ce15944079857b16c4b8e4f96e2d25a27faecc0c4419e2e13f795d3f",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-complete-grasp-low02-v2/results/raw_trace.npz": "78a13e90fc424176650704c10002865355aeda50f40498dd756cc0b6fd3dec05",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-v1/results/raw_trace.npz": "d15eafca11a41688d0e4218b214f55772dcf8cdcf4d710c6efae9733cbf010a5",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-radius-analysis-v1/results/summary.json": "0c2ad47488579f509d23c7ec2d05956e65f8f1b21b6894015694c2abc45de499",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-v1/results/raw_trace.npz": "7ba6fb275ac460ef5ce476fb8c51feab154c38c58daf4569ca28fee373502cc4",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-pressure-half-radius-v1/results/raw_trace.npz": "2b068ad11b51779db09a4c006e6e3758a64bf541161a5cec3ef63cb8cf6ef830",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-low-force-choice-body_source_prior-half-radius-v1/results/raw_trace.npz": "651391f7354744ce52a7b3d2f1aec18fd60ff498c65c040b9a5c81d449eba6d4",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-complete-grasp-low1-v2/results/summary.json": "93dafa2ec2eb40ee3af5ae6364a4b3470d78f56fee554368bcab7eec27d1cdc2",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/results/summary.json": "f01bc84d86e5f423cf313fa4b4fe1c6a34fe98c2962b2fab8995470bbf5cbaa9",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/source/research/rigid_stress/practical_reward_proxy.py": "f9485b32cb79682f4a8629806836ccc336b9338156b1eac58b81cd50c78627ea",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-complete-grasp-low1-v2/results/raw_trace.npz": "f16b6a455fb3150571eb64bdc87f6a5aeeaa0c24eefcf20df0f4c9585bdeb16b",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1/results/raw_trace.npz": "a40f60f58b289f73bb7365cc31029aafa84d4b17c3851b5014777b9b080b9b2d",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-reward-radius-analysis-v1/results/summary.json": "c65997403c6f6f8f4d0405aff70dbf345e1eb78e30a5a315a00ddc640cf4f375",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1/results/raw_trace.npz": "aba7788af3f6d5103c2dda833d98916fb41637ef519724a1eb7ac820936b5251",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-half-radius-v1/results/raw_trace.npz": "bfdddda7deaf4d828a8032f4298d7747715c1cf2bfc84a381b350093701b3e6d",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-half-radius-v1/results/raw_trace.npz": "7d6c9faa73ed2e2ddb149d387024c007ed413d70457c04a834aaa61728422cd1"
+    },
+    "stress_comparison_bounds": {
+      "rtol": 0.0001,
+      "atol_Pa": 0.001,
+      "source": "Existing test_stress_source_priors full-field/peak checks."
+    },
+    "limitations": "The candidate repeats the nominal-radius source-prior cases. Bands are preserved observations from the prior model/radius campaign, not newly calibrated uncertainty or fracture thresholds. Whole-episode and lift decisions remain separate; this is not throughput evidence or full RL training.",
+    "passed": true,
+    "goal_completion": false
+  },
+  "goal_completion": false
+}

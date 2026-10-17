@@ -355,7 +355,7 @@ and [terminal states](PRACTICAL_THROUGHPUT_LEADER_FIT_SCHEDULER_20261017.txt)
 preserve both attempts. The old source, cache sidecars and failure remain;
 no live source was cleaned or changed.
 
-The retained code is the cache-only implementation. Its matched sweep
+The retained geometry change is the cache implementation. Its matched sweep
 uses B8192/B16384/B32768 with four normal scopes and separate four-scope process
 memory passes (725125/725152/725051 and725126/725153/725150). The B16384 point
 matches the already observed original-code throughput shoulder. B8192 closes
@@ -378,23 +378,55 @@ and5.315ms complete residuals. CPU step annotations average159.717ms. These
 overlapping categories are not additive wall-time components. The frozen
 history-hit profile is not representative of this moving recovery cost.
 
-Code inspection finds that history misses bypass the existing surface-load
+Code inspection found that history misses bypassed the existing surface-load
 inverse and use the full dense inverse. The fixed shell has810 P2 nodes;
 its surface response has162 source nodes and is already available within the
 same immutable-operator budget. A candidate now routes history misses through
 that response, preserving accepted predictions and all original full residual,
 correction and factor-fallback gates. Original history4 and all physical settings
-remain fixed. This is a new measured-bottleneck hypothesis, not a demonstrated
-speedup or final selection. The
+remain fixed. The production arithmetic is frozen in899-file snapshot
+`b0f2f9cdaac8b90cfffe6a691c1f2ef1cdb0c6eeb4d356e2632e72f7a072ec10`.
+The
 [targeted qualification](PRACTICAL_THROUGHPUT_PACKED_HISTORY_TESTS_20261017.json)
 now closes12 CPU and12 GPU cases (725190/725191), including independent full
 tensors/peaks, all-row equilibrium, six pinned gauges, mixed history hits,
 partial resets, release and original correction/fallback behavior. All899 engine
-and436 test source hashes and both inventories close. B8192 timing and B16384
-application lifecycle checks remain live, alongside the original bounded
-complete-grasp/four-state checks. The initial candidate's import tests
+and436 test source hashes and both inventories close. Three additional GPU
+cases725223 require fresh sparse columns after clearing the packed counts and
+compare directly against the dense response, preventing factor fallback from
+hiding a bad packing path. The initial candidate's import tests
 failed because Quadrants kernels prohibit default arguments; that failed source
-and its exits remain preserved, and a corrected fresh snapshot is being tested.
+and its exits remain preserved; the corrected fresh snapshot closes the checks above.
+
+The [application comparison](PRACTICAL_THROUGHPUT_PACKED_HISTORY_APPLICATION_20261017.json)
+closes GPU producers725194–725196 and independent CPU comparison725204.
+All four original fixed load states retain full tensor relative-L2 differences
+at most4.684e-11 and complete-residual budget fractions at most0.038274.
+Both unchanged force-choice families retain three complete1200-step episodes;
+the largest raw per-step stress difference is0.000636021Pa at the original
+1e-4 relative/1e-3Pa absolute bounds, and all heights match exactly. The retained
+cross-model/radius comparison still has7/8 above-band lift decisions versus
+1/8 whole-episode decisions for0.2/4N; original limitations remain.
+
+The [B16384 lifecycle check](PRACTICAL_THROUGHPUT_PACKED_HISTORY_LIFECYCLE_20261017.json)
+also closes0:0 (725197): all16384 native complete-residual checks, checkpoint,
+partial-reset isolation and following physical step, seven full-field snapshots
+of17 representative environments, the additional full controller period and
+frozen complete release/recontact pass. Its largest sampled complete-residual
+budget fraction is0.962709 and live invalid steps are zero. Frozen replay's
+normalized force/moment errors are5.579e-10/1.196e-9 against the unchanged1e-8
+limits, and peak difference is9.175e-9Pa. Source hashes, inventory and actual
+program/wrapper/scheduler exits close.
+
+The [first B8192 diagnostic](PRACTICAL_THROUGHPUT_PACKED_HISTORY_DIAGNOSTIC_20261017.json)
+completes0:0 (725192), with78526.92 valid env-step/s over one2400-step pass after
+900 warmup steps, zero per-environment failures and zero scatter overflows.
+This is a single diagnostic on a comparable GPU, not a repeated headline
+speedup. Same-GPU original-baseline/candidate B8192 A/B/B/A job725203 uses three
+2400-step repeats per trial. The new six-width four-scope sweep725211–725216,
+separate sampled memory725218–725222, moving profile725205 and existing
+workspace2 capacity boundaries725227/725228 remain pending closure. These use
+the same frozen candidate; no model, history or output frequency was changed.
 
 The [CPU/GPU overlap audit](PRACTICAL_THROUGHPUT_CPU_GPU_OVERLAP_20261017.json)
 also rereads the original600-step baseline trace using the updated stdlib

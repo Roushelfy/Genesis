@@ -1058,17 +1058,25 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, output_mod
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-def test_native_history_reuse_abrupt_load_and_reset(tmp_path):
+@pytest.mark.parametrize("surface_mode", ("volume", "dense_surface", "packed_surface"))
+def test_native_history_reuse_abrupt_load_and_reset(tmp_path, surface_mode):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
-    model = StressModel(RigidStressOptions(mesh=mesh))
-    state = model.create_state(3)
+    model = StressModel(
+        RigidStressOptions(mesh=mesh, packed_surface_loads=surface_mode == "packed_surface", packed_block_size=512)
+    )
+    state = model.create_state(3, "full")
     history = StressHistory(model.info.vertices.shape[0], 3)
     omega = V_VEC(3, dtype=gs.qd_float, shape=(3,))
     omega.fill(0)
     random = np.random.default_rng(9137)
     loads = random.normal(size=(5, model.info.vertices.shape[0], 3, 3)) * 0.01
+    surface_load = surface_mode != "volume"
+    if surface_load:
+        assert model.surface_inverse is not None
+        interior = np.setdiff1d(np.arange(loads.shape[1]), qd_to_numpy(model.surface_inverse.info.nodes))
+        loads[:, interior] = 0.0
     oracle = P2Shell(vertices, tetrahedra, faces, 1e10, 0.3, 2000.0, 2, factor_backend="none")
     free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))
     factor = splu(oracle.k[free][:, free].tocsc())
@@ -1076,21 +1084,79 @@ def test_native_history_reuse_abrupt_load_and_reset(tmp_path):
     sequence = [*loads[:4], 0.2 * loads[0] + 0.7 * loads[1] - 0.3 * loads[2] + 0.8 * loads[3], loads[4]]
     for tick, load in enumerate(sequence):
         state.force.from_numpy(load)
-        model.recover(omega, state, history=history)
+        model.recover(omega, state, history=history, surface_load=surface_load)
         history.append(state)
         rhs = qd_to_numpy(state.rhs, transpose=True).reshape((3, -1)).T
         displacement = np.zeros_like(rhs)
         displacement[free] = factor.solve(rhs[free])
         peak = np.array([scan(displacement[:, i_b])[0] for i_b in range(3)])
         np.testing.assert_allclose(qd_to_numpy(state.peak), peak, rtol=1e-4, atol=1e-3)
+        recovered = qd_to_numpy(state.displacement, transpose=True).reshape((3, -1)).T
+        residual = np.linalg.norm(oracle.k @ recovered - rhs, axis=0)
+        assert (
+            residual
+            <= np.maximum(model.options.absolute_tolerance, model.options.tolerance * np.linalg.norm(rhs, axis=0))
+        ).all()
+        np.testing.assert_array_equal(recovered[qd_to_numpy(model.info.pins)], 0.0)
+        tensor = qd_to_numpy(state.stress_tensor, transpose=True)
+        vm = qd_to_numpy(state.von_mises, transpose=True)[..., 0]
+        for i_b in range(3):
+            expected_tensor, expected_vm = stress_field(
+                oracle.glambda, oracle.elements, displacement[:, i_b], 1e10, 0.3
+            )
+            np.testing.assert_allclose(tensor[i_b], expected_tensor, rtol=1e-4, atol=1e-3)
+            np.testing.assert_allclose(vm[i_b], expected_vm, rtol=1e-4, atol=1e-3)
         assert qd_to_numpy(state.valid).all()
         np.testing.assert_array_equal(qd_to_numpy(history.state.hit), tick == 4)
     before = qd_to_numpy(history.state.count, copy=True)
     history.reset(np.array([1], dtype=gs.np_int))
     np.testing.assert_array_equal(qd_to_numpy(history.state.count)[[0, 2]], before[[0, 2]])
     state.force.from_numpy(loads[4])
-    model.recover(omega, state, history=history)
+    model.recover(omega, state, history=history, surface_load=surface_load)
     np.testing.assert_array_equal(qd_to_numpy(history.state.hit), [True, False, True])
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
+@pytest.mark.parametrize("packed,block_size", ((False, 0), (True, 0), (True, 512)))
+def test_native_surface_inverse_preserves_history_hits(tmp_path, packed, block_size):
+    vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
+    mesh = tmp_path / "shell.npz"
+    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
+    model = StressModel(RigidStressOptions(mesh=mesh))
+    assert model.surface_inverse is not None
+    state = model.create_state(3)
+    random = np.random.default_rng(9173)
+    omega = V_VEC(3, dtype=gs.qd_float, shape=(3,))
+    omega.from_numpy(random.normal(size=(3, 3)))
+    boundary = qd_to_numpy(model.surface_inverse.info.nodes)
+    force = np.zeros((model.info.vertices.shape[0], 3, 3))
+    force[boundary[:5]] = random.normal(size=(5, 3, 3)) * 0.01
+    for release in (False, True):
+        if release:
+            force.fill(0.0)
+            omega.fill(0.0)
+        state.force.from_numpy(force)
+        model.surface_inverse.apply(model.options.young, omega, state, packed=False)
+        expected = qd_to_numpy(state.displacement, copy=True)
+        changed = expected.copy()
+        changed[:, 0] = -3.0 * expected[:, 0] + 1.0
+        changed[:, 1:] = 0.0
+        state.displacement.from_numpy(changed)
+        state.valid.from_numpy(np.array([True, False, False]))
+        state.boundary_count.fill(0)
+        model.surface_inverse.apply(model.options.young, omega, state, packed, block_size, only_failed=True)
+        actual = qd_to_numpy(state.displacement)
+        np.testing.assert_array_equal(actual[:, 0], changed[:, 0])
+        np.testing.assert_array_equal(actual[:, 1:], expected[:, 1:])
+        np.testing.assert_array_equal(qd_to_numpy(state.active), [0, 1, 1])
+        assert qd_to_numpy(state.valid).all()
+        if packed and gs.backend == gs.cuda:
+            counts = qd_to_numpy(state.boundary_count)
+            assert counts[0] == 0
+            np.testing.assert_array_equal(
+                counts[1:], np.count_nonzero(np.any(force[boundary, 1:] != 0.0, axis=2), axis=0)
+            )
 
 
 import json

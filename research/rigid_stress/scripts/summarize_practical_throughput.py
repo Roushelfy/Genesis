@@ -177,7 +177,16 @@ def kernel_stage(name):
         ),
         ("inertia_relief", ("kernel_balance_impl_",)),
         ("history_prediction", ("kernel_predict_", "kernel_hits_", "kernel_append_")),
-        ("elastic_solve", ("kernel_apply_inverse_", "kernel_solve_cooperative_", "kernel_direct_init_")),
+        (
+            "elastic_solve",
+            (
+                "kernel_apply_inverse_",
+                "kernel_solve_",
+                "kernel_direct_init_",
+                "kernel_surface_pack_",
+                "kernel_surface_apply_",
+            ),
+        ),
         ("complete_residual", ("kernel_full_residual_",)),
         ("global_peak_and_full_output", ("kernel_peak_", "kernel_full_field_")),
         ("step_lifecycle", ("kernel_begin_step_", "kernel_accept_")),

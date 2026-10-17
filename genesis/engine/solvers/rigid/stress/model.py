@@ -260,10 +260,7 @@ class StressModel:
                     options.young, options.tolerance, options.absolute_tolerance, state, self.info, False, coalesced
                 )
                 history.mark_hits(state)
-                if self.inverse is not None:
-                    self.inverse.apply(options.young, state, only_failed=True)
-                else:
-                    self.factor.solve(options.young, state, self.info, options.cooperative_solve, only_failed=True)
+                self.solve(options, state, omega, surface_load, only_failed=True)
         else:
             kernel_pcg_init(options.young, state, self.info, block, options.warm_start)
             for _ in range((options.max_iterations + 15) // 16):
@@ -317,14 +314,17 @@ class StressModel:
         state: StressState,
         omega: qd.Tensor | None = None,
         surface_load: bool = False,
+        only_failed: bool = False,
     ) -> None:
         if surface_load and self.surface_inverse is not None:
             assert omega is not None
             block_size = options.packed_block_size
             if block_size is None:
                 block_size = 512 if state.active.shape[0] >= 8192 else 0
-            self.surface_inverse.apply(options.young, omega, state, options.packed_surface_loads, block_size)
+            self.surface_inverse.apply(
+                options.young, omega, state, options.packed_surface_loads, block_size, only_failed
+            )
         elif self.inverse is not None:
-            self.inverse.apply(options.young, state)
+            self.inverse.apply(options.young, state, only_failed=only_failed)
         else:
-            self.factor.solve(options.young, state, self.info, options.cooperative_solve)
+            self.factor.solve(options.young, state, self.info, options.cooperative_solve, only_failed=only_failed)
