@@ -28,7 +28,7 @@ def main():
     kernels = [event for event in timed if event.get("cat") == "kernel"]
     origin = min((event["ts"] for event in kernels), default=0)
     copies = [event for event in timed if event.get("cat") in ("gpu_memcpy", "gpu_memset")]
-    runtime = [event for event in timed if event.get("cat") == "cuda_runtime"]
+    runtime = [event for event in timed if event.get("cat") in ("cuda_runtime", "cuda_driver")]
     # GPU annotations mirror each CPU range on every participating stream;
     # count the original CPU ranges once rather than adding the mirrors.
     steps = [
@@ -37,6 +37,19 @@ def main():
         if event.get("name") == "rigid_stress_trace_step" and event.get("cat") == "user_annotation"
     ]
     counts = Counter(event["name"] for event in runtime)
+    runtime_totals = Counter()
+    for event in runtime:
+        runtime_totals[event["name"]] += event["dur"]
+    kernel_intervals = [(event["ts"] - origin, event["ts"] - origin + event["dur"]) for event in kernels]
+    kernel_union = interval_union_us(kernel_intervals)
+    memcpy = [event for event in runtime if event["name"] == "cudaMemcpyAsync"]
+    memcpy_intervals = [(event["ts"] - origin, event["ts"] - origin + event["dur"]) for event in memcpy]
+    memcpy_union = interval_union_us(memcpy_intervals)
+    # Inclusion/exclusion measures actual interval overlap, not a CPU cost model.
+    memcpy_overlap = math.fsum((kernel_union, memcpy_union, -interval_union_us(kernel_intervals + memcpy_intervals)))
+    step_intervals = [(event["ts"] - origin, event["ts"] - origin + event["dur"]) for event in steps]
+    step_union = interval_union_us(step_intervals)
+    step_overlap = math.fsum((kernel_union, step_union, -interval_union_us(kernel_intervals + step_intervals)))
     kernel_totals = Counter()
     for event in kernels:
         kernel_totals[event["name"]] += event["dur"]
@@ -49,16 +62,21 @@ def main():
         "step_wall_sum_ms": sum(event["dur"] for event in steps) / 1000,
         "kernel_count": len(kernels),
         "kernel_sum_ms": math.fsum(event["dur"] for event in kernels) / 1000,
-        "kernel_interval_union_ms": interval_union_us(
-            [(event["ts"] - origin, event["ts"] - origin + event["dur"]) for event in kernels]
-        )
-        / 1000,
+        "kernel_interval_union_ms": kernel_union / 1000,
         "copy_or_memset_count": len(copies),
         "copy_or_memset_sum_ms": sum(event["dur"] for event in copies) / 1000,
         "runtime_counts": dict(counts),
+        "runtime_duration_sum_ms": {name: value / 1000 for name, value in runtime_totals.items()},
+        "runtime_memcpy_interval_union_ms": memcpy_union / 1000,
+        "runtime_memcpy_gpu_kernel_intersection_ms": memcpy_overlap / 1000,
+        "runtime_memcpy_fraction_overlapping_gpu_kernels": memcpy_overlap / memcpy_union if memcpy_union else None,
+        "cpu_step_interval_union_ms": step_union / 1000,
+        "cpu_step_gpu_kernel_intersection_ms": step_overlap / 1000,
         "top_kernel_total_ms": [[name, value / 1000] for name, value in kernel_totals.most_common(30)],
         "note": "Intrusive trace includes controller, rigid, stress and scope-dependent policy/observation. "
         "Interval endpoints use a relative time origin to avoid rounding at large absolute timestamps. "
+        "API/kernel intersections describe timestamp overlap, not CPU waiting versus useful execution. "
+        "Do not add API durations to kernel durations or interpret their difference as CPU work. "
         "Interval union is trace occupancy, not unprofiled GPU utilization or training throughput.",
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)

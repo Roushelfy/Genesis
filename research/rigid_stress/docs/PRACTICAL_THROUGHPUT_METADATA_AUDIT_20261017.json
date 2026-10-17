@@ -1,14 +1,53 @@
 {
-  "generated_utc": "2026-10-17T08:05:07.235158+00:00",
-  "scope": "Independent stdlib re-read of recorded timing/configuration fields, not new scientific validation. Policy observed errors are checked against the unchanged1e-9rad budget; they are measurements, not configuration equality fields.",
-  "summary_sha256": "1a56dc604dae2aa788d01860bd235213ba8b81c7e7846290ba0f8adea079f826",
-  "eligible_points": 52,
+  "generated_utc": "2026-10-17T09:26:43.664906+00:00",
+  "scope": "Independently reread headline timing/configuration records using stdlib only.\n\nThis checks recorded rates and the frozen workload, not physical field accuracy.\nSource/scheduler/wrapper qualification and numerical evidence remain separate.\n",
+  "summary_sha256": "54aef15fd6feaaacfc14aa40faf5abff9f2ea5003e54395b9bb54c0b872e5d4a",
+  "contract_sha256": "ca1cd9a6a2d321a671b511524e2856209b76760826f4afaa2e76e6844a39b084",
+  "audit_source_sha256": "cfdc7f052c66b52f4edbec6c7d40a4d7f47ac0d94f00d6d05d6546c2b9e6699c",
+  "eligible_points": 68,
   "checks": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b8192-v1/live/results/benchmark.json",
+      "sha256": "5a0b95050799db92c94bd8a2ad4934709bfbf36db38942f110b848088aa72a25",
+      "scope": "live",
+      "width": 8192,
+      "recomputed_median_rate": 53218.966895771984,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b8192-v1/policy/results/benchmark.json",
+      "sha256": "5eb90623f94b012a9c4090d7c1f5ed80b0227430a5222557d050d801f31a032a",
+      "scope": "policy",
+      "width": 8192,
+      "recomputed_median_rate": 52958.87529731693,
+      "policy_warmup_reference_max_error_rad": 1.67470356887689e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b8192-v1/policy-rigid/results/benchmark.json",
+      "sha256": "1f5f59e7d338927b99b59c7c1a7b1a0686f4997425acfc07dd5089ab5d988a24",
+      "scope": "policy-rigid",
+      "width": 8192,
+      "recomputed_median_rate": 758745.624696449,
+      "policy_warmup_reference_max_error_rad": 1.5468342154378868e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b8192-v1/rigid/results/benchmark.json",
+      "sha256": "a3ffdd2843db2188ced421095494d34a3b8905fdf35636368ef9bc8c04920a85",
+      "scope": "rigid",
+      "width": 8192,
+      "recomputed_median_rate": 768635.2818950029,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-paired-live-b2048-v1/baseline-a1/results/benchmark.json",
       "sha256": "d803d1ddb4b833f48192ab75381f240be0998a52977f9b98c66ed5055a17493c",
       "scope": "live",
       "width": 2048,
+      "recomputed_median_rate": 45116.70699733924,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -17,6 +56,7 @@
       "sha256": "42d977abdcff2ebc775ddbeb4737a68386c63a9603322159c7d24e0abab4295f",
       "scope": "live",
       "width": 2048,
+      "recomputed_median_rate": 45157.672320026104,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -25,6 +65,7 @@
       "sha256": "4a4506ec7b52c85ded276d2ea20bf3e617365eae384a5330a52d4d67166be7aa",
       "scope": "live",
       "width": 2048,
+      "recomputed_median_rate": 45080.74463680039,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -33,6 +74,43 @@
       "sha256": "5d533b76eb68b9ece5db96cd64197095e63fdc55518c9eb6200181e0d0b6f319",
       "scope": "live",
       "width": 2048,
+      "recomputed_median_rate": 45098.796086960836,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b12288-v1/live/results/benchmark.json",
+      "sha256": "bfc697d68e81ab723e8b8f628465fbbd3253f84adb6a34eb57c7b47b38a5f7c1",
+      "scope": "live",
+      "width": 12288,
+      "recomputed_median_rate": 53262.029935154125,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b12288-v1/policy/results/benchmark.json",
+      "sha256": "ea8800fe3ddabe4a3d911eaaf80fad41c79aebd32e3364e314239838ad298a1f",
+      "scope": "policy",
+      "width": 12288,
+      "recomputed_median_rate": 52687.10552465633,
+      "policy_warmup_reference_max_error_rad": 1.1945500744126037e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b12288-v1/policy-rigid/results/benchmark.json",
+      "sha256": "da4d3d6ff3a902609edb8cea309cd4871ca6075a54c62a6782df01099dc63498",
+      "scope": "policy-rigid",
+      "width": 12288,
+      "recomputed_median_rate": 813312.7076206488,
+      "policy_warmup_reference_max_error_rad": 1.478715827563093e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b12288-v1/rigid/results/benchmark.json",
+      "sha256": "4f0b29559d48ef7c1cb630b31546beea9bc0d8e6e9f1103e962b3c7445082650",
+      "scope": "rigid",
+      "width": 12288,
+      "recomputed_median_rate": 825247.240632528,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -41,6 +119,7 @@
       "sha256": "4b26dec1e7abaf6a6016618bae33160be2b2e14be5d590381403f59364d16105",
       "scope": "live",
       "width": 16384,
+      "recomputed_median_rate": 53674.88497510413,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -49,6 +128,7 @@
       "sha256": "a66dce521c213b81586b1bcd044cc5e6c2d1b31259d0e3512a2c348e81ce71c5",
       "scope": "policy",
       "width": 16384,
+      "recomputed_median_rate": 53560.014638016815,
       "policy_warmup_reference_max_error_rad": 1.1945500746901595e-11,
       "passed": true
     },
@@ -57,6 +137,7 @@
       "sha256": "13a7c60017b41392aeda975030f8a9c16d73d574d3ce1becfcf1d2d7b60c9446",
       "scope": "policy-rigid",
       "width": 16384,
+      "recomputed_median_rate": 891844.2153597653,
       "policy_warmup_reference_max_error_rad": 1.478715827563093e-11,
       "passed": true
     },
@@ -65,6 +146,7 @@
       "sha256": "6cca3351eb484b9b6e90587970c417f9bc040162b62dc46c226ffb7b6d47f30a",
       "scope": "rigid",
       "width": 16384,
+      "recomputed_median_rate": 898658.327552738,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -73,6 +155,7 @@
       "sha256": "0d68682c7e111836dc747927149c9bbe2622c2bc2b84fcc0ea40e80fa9fae1b1",
       "scope": "live",
       "width": 2048,
+      "recomputed_median_rate": 45118.751065324235,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -81,6 +164,7 @@
       "sha256": "8fe966c649729f19530c4e616d1500fda07798c1d092f2abcc753368f40bf893",
       "scope": "policy",
       "width": 2048,
+      "recomputed_median_rate": 44814.509606438194,
       "policy_warmup_reference_max_error_rad": 1.1485417853590586e-11,
       "passed": true
     },
@@ -89,6 +173,7 @@
       "sha256": "1ea189ad4c94f93b378817f1b0d700de83be20fe9d76f2da588a54e40f716dea",
       "scope": "policy-rigid",
       "width": 2048,
+      "recomputed_median_rate": 398893.62755694776,
       "policy_warmup_reference_max_error_rad": 1.2020527284661853e-11,
       "passed": true
     },
@@ -97,6 +182,43 @@
       "sha256": "3a8b3a470302276b79c4f1be59880e7f65057ef990d61e5af2a49b986a8e3647",
       "scope": "rigid",
       "width": 2048,
+      "recomputed_median_rate": 434466.82847875374,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b24576-v1/live/results/benchmark.json",
+      "sha256": "d3c303343cff5eeb0013f9e579ee2f4f879d1d2bae974d3910f592a8db729c79",
+      "scope": "live",
+      "width": 24576,
+      "recomputed_median_rate": 52731.08929851716,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b24576-v1/policy/results/benchmark.json",
+      "sha256": "17229f61f87be99cb7f5207695ffd918f2bdeb35c723726341ef465e31415f2d",
+      "scope": "policy",
+      "width": 24576,
+      "recomputed_median_rate": 52678.81891505504,
+      "policy_warmup_reference_max_error_rad": 1.2276410144007599e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b24576-v1/policy-rigid/results/benchmark.json",
+      "sha256": "cf0821775346e6610ffb8e1f7cb9905e4bad7f9f0fd98e73392580bb5a8d404a",
+      "scope": "policy-rigid",
+      "width": 24576,
+      "recomputed_median_rate": 948838.5061236529,
+      "policy_warmup_reference_max_error_rad": 1.1275253225528915e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b24576-v1/rigid/results/benchmark.json",
+      "sha256": "ad6551da8134d1a7f2e853a15ce7c362312be10b6eb405b91ecefb22fc42f9a7",
+      "scope": "rigid",
+      "width": 24576,
+      "recomputed_median_rate": 952506.073682785,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -105,6 +227,7 @@
       "sha256": "8dcaead37dc867405aab70ce2a8042e532718174f7eaa3f2696d78c0ebfd7a42",
       "scope": "live",
       "width": 256,
+      "recomputed_median_rate": 16803.281227118394,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -113,6 +236,7 @@
       "sha256": "d1c056be0e40874d7f1e848ddc31d580021feee6a7fc381b6718ad2f77c72955",
       "scope": "policy",
       "width": 256,
+      "recomputed_median_rate": 16271.649527315929,
       "policy_warmup_reference_max_error_rad": 1.0582372514389427e-11,
       "passed": true
     },
@@ -121,6 +245,7 @@
       "sha256": "f5e32e8c046de9accf805d2964c1709fe6b7f4e3066366c4aae87040f16c54bc",
       "scope": "policy-rigid",
       "width": 256,
+      "recomputed_median_rate": 75216.97616789337,
       "policy_warmup_reference_max_error_rad": 8.133358606055019e-12,
       "passed": true
     },
@@ -129,6 +254,7 @@
       "sha256": "d52fff7c780b2397edfb35d4a563a6fad698aeb5f557e3bedd2f31e3383466a8",
       "scope": "rigid",
       "width": 256,
+      "recomputed_median_rate": 84845.51137786201,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -137,6 +263,7 @@
       "sha256": "4df1c69feccd59363ce7f1068ed4f585fce49cecac08fe1256ee481d5997e0da",
       "scope": "live",
       "width": 32,
+      "recomputed_median_rate": 2615.38867173413,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -145,6 +272,7 @@
       "sha256": "764e8909f90aef61bbef79e78ae57ce8b2fcff8920ad66e4fc84cb70a82e62c4",
       "scope": "policy",
       "width": 32,
+      "recomputed_median_rate": 2524.081908570331,
       "policy_warmup_reference_max_error_rad": 7.836250046078242e-12,
       "passed": true
     },
@@ -153,6 +281,7 @@
       "sha256": "cf11829f2498fdd59504c0e4b4da16e2daf4b372e904fa4eaa7c5d113a8644e8",
       "scope": "policy-rigid",
       "width": 32,
+      "recomputed_median_rate": 9821.797813584408,
       "policy_warmup_reference_max_error_rad": 8.4909721670412e-12,
       "passed": true
     },
@@ -161,6 +290,7 @@
       "sha256": "214fb4449aa83b191d4d5bab8ec8b5e9fbe1aae8d12fcfad102519625b2bd395",
       "scope": "rigid",
       "width": 32,
+      "recomputed_median_rate": 11293.873370542986,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -169,6 +299,7 @@
       "sha256": "694bcbfb476c61b4baa93c24f8c1766e03de4282726ae8e51bd512aba13ea6fc",
       "scope": "live",
       "width": 8192,
+      "recomputed_median_rate": 52658.161505376534,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -177,6 +308,7 @@
       "sha256": "9b3ea0d08febd9df9639786bf61aead2cab613e41dca1e38ef2010eaf3be7183",
       "scope": "policy",
       "width": 8192,
+      "recomputed_median_rate": 52509.983134759896,
       "policy_warmup_reference_max_error_rad": 1.674703558607327e-11,
       "passed": true
     },
@@ -185,6 +317,7 @@
       "sha256": "86292fe78cd0823f6813756d0d6168c53dfe48bf03f1aa4df4b87baf948da1a2",
       "scope": "policy-rigid",
       "width": 8192,
+      "recomputed_median_rate": 751745.5188318046,
       "policy_warmup_reference_max_error_rad": 1.5468342154378868e-11,
       "passed": true
     },
@@ -193,6 +326,7 @@
       "sha256": "7427487c2a473f625ca9035ba4b5f31c3573ea2669ebc0710b6b46b1de0e9020",
       "scope": "rigid",
       "width": 8192,
+      "recomputed_median_rate": 763819.5209111514,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -201,6 +335,7 @@
       "sha256": "280db3cd8a4a235053969da1649d773cf0049781b43e015f97ba809ffe6874cc",
       "scope": "live",
       "width": 2048,
+      "recomputed_median_rate": 46645.77307058186,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -209,6 +344,7 @@
       "sha256": "84f954ff2c1e4e6bc22b70c92aa860b651c1a29436171dcb0e72cc68e87a1316",
       "scope": "policy",
       "width": 2048,
+      "recomputed_median_rate": 46268.00515463453,
       "policy_warmup_reference_max_error_rad": 1.148541618617438e-11,
       "passed": true
     },
@@ -217,6 +353,7 @@
       "sha256": "fe7c3a407247a4c1f1261a0982a7603a61eb4ee97f1d62d7899b33ac4eabb556",
       "scope": "policy-rigid",
       "width": 2048,
+      "recomputed_median_rate": 396242.8685563133,
       "policy_warmup_reference_max_error_rad": 1.2020527284661853e-11,
       "passed": true
     },
@@ -225,6 +362,7 @@
       "sha256": "50f9e0ba98699128d004c6c6d44c092113a1c3ee3eee321cfa1b205485c571bd",
       "scope": "rigid",
       "width": 2048,
+      "recomputed_median_rate": 430182.1635534492,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -233,6 +371,7 @@
       "sha256": "90cf8a0313e3f0c92f595e60a84b27f5df877f6f8bf0d68f6b11a056a7da57c2",
       "scope": "live",
       "width": 256,
+      "recomputed_median_rate": 16781.943395472004,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -241,6 +380,7 @@
       "sha256": "6cb48a24a01a55ac1b833ebb661e7cbca1c3cdf86ffde3d56dfcfe84168b2379",
       "scope": "policy",
       "width": 256,
+      "recomputed_median_rate": 16302.227514663862,
       "policy_warmup_reference_max_error_rad": 1.0582372500511639e-11,
       "passed": true
     },
@@ -249,6 +389,7 @@
       "sha256": "d2004519b8b26ebfd1a08eed4371d1c44786145ca4141ff82747f674976bb230",
       "scope": "policy-rigid",
       "width": 256,
+      "recomputed_median_rate": 75105.28246977748,
       "policy_warmup_reference_max_error_rad": 8.133358606055019e-12,
       "passed": true
     },
@@ -257,6 +398,7 @@
       "sha256": "e5fe3b583f305cc04888b902be853ac5b0663c54967f58d04336da35d4ea3a4a",
       "scope": "rigid",
       "width": 256,
+      "recomputed_median_rate": 85767.42047283497,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -265,6 +407,7 @@
       "sha256": "2259a483eede363d71f12ae9fd9394b3749013d8628adb39eb4ed225754e4780",
       "scope": "live",
       "width": 32,
+      "recomputed_median_rate": 2621.8689231902845,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -273,6 +416,7 @@
       "sha256": "d59f26e9a7c895bec69e141f6439a85a64f72eccb48837aff76e23599727c5a4",
       "scope": "policy",
       "width": 32,
+      "recomputed_median_rate": 2522.3368435082502,
       "policy_warmup_reference_max_error_rad": 7.836227379487416e-12,
       "passed": true
     },
@@ -281,6 +425,7 @@
       "sha256": "c4a78121db3deeb2a7826b53965da86a7c1d8f74d11abb02beb735b7724ce29b",
       "scope": "policy-rigid",
       "width": 32,
+      "recomputed_median_rate": 9786.518189425151,
       "policy_warmup_reference_max_error_rad": 8.4909721670412e-12,
       "passed": true
     },
@@ -289,6 +434,7 @@
       "sha256": "0cbc9331b89a830797907e4c655f6ac6aa89ef75f0175eecbac40c4ca6b7fa2d",
       "scope": "rigid",
       "width": 32,
+      "recomputed_median_rate": 11257.44392259065,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -297,6 +443,7 @@
       "sha256": "8b7ea4cabeef843f6f3e939487db8b17d111d2f57d3a081e1aeb3ea24d2e50ee",
       "scope": "live",
       "width": 2048,
+      "recomputed_median_rate": 45657.11500309531,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -305,6 +452,7 @@
       "sha256": "4a29342a19036b1cc1c1008fe2e062540f37b10a8dfc6bdbc70281ecec20695c",
       "scope": "live",
       "width": 2048,
+      "recomputed_median_rate": 45714.0388381125,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -313,6 +461,7 @@
       "sha256": "a2d5fc627825df6da07812ab4a10f920d67d1b5714c61384fafe563d2cdd4b6a",
       "scope": "live",
       "width": 2048,
+      "recomputed_median_rate": 44090.55586603033,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -321,6 +470,7 @@
       "sha256": "27c35553679602897953e2e68e9a54843139991bddbdf4e4a18a3026a1bf5cb4",
       "scope": "live",
       "width": 2048,
+      "recomputed_median_rate": 44079.49482794249,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -329,6 +479,7 @@
       "sha256": "445eef30c54d9444a634c8ec18c81b4b624452f92b5872ed8eb103b178717ee8",
       "scope": "live",
       "width": 2048,
+      "recomputed_median_rate": 45250.45687819745,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -337,6 +488,7 @@
       "sha256": "9accea037edeb8348433cae547fb4a5e0ae38e2aeeb903550df35337c6322e7c",
       "scope": "policy",
       "width": 2048,
+      "recomputed_median_rate": 44871.16419004117,
       "policy_warmup_reference_max_error_rad": 1.1485415599143956e-11,
       "passed": true
     },
@@ -345,6 +497,7 @@
       "sha256": "d92cd03935e559150b5d15ffddc65abf919e4981dab6a1c8c2a425a911483f87",
       "scope": "policy-rigid",
       "width": 2048,
+      "recomputed_median_rate": 398857.1719563138,
       "policy_warmup_reference_max_error_rad": 1.2020527284661853e-11,
       "passed": true
     },
@@ -353,6 +506,7 @@
       "sha256": "4273e13330e7d1bd431c9800cf1c5b6a56f84b5a660aeecd36a03ffd471df90c",
       "scope": "rigid",
       "width": 2048,
+      "recomputed_median_rate": 432902.0544178435,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -361,6 +515,7 @@
       "sha256": "24dcf704a13fbb015a1d11af93d23deb8287c7434db4d694115043faaced67e0",
       "scope": "live",
       "width": 32,
+      "recomputed_median_rate": 2634.4014242483117,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -369,6 +524,7 @@
       "sha256": "9f299d75f8b0ccbe516cd9ce4399a2629c3f5230e44fb4d301dc0804d9916998",
       "scope": "policy",
       "width": 32,
+      "recomputed_median_rate": 2543.056623424828,
       "policy_warmup_reference_max_error_rad": 7.836305718211811e-12,
       "passed": true
     },
@@ -377,6 +533,7 @@
       "sha256": "ccb6e13b81fc8734872cf2984a9903a4f7dab2320abcda159671148c798518d6",
       "scope": "policy-rigid",
       "width": 32,
+      "recomputed_median_rate": 9845.221680383764,
       "policy_warmup_reference_max_error_rad": 8.4909721670412e-12,
       "passed": true
     },
@@ -385,6 +542,43 @@
       "sha256": "35d7c732827dcd7e9551fc6526bcbf1689f6019c3348b706e127836953724cbf",
       "scope": "rigid",
       "width": 32,
+      "recomputed_median_rate": 11332.738200475727,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/static-traction-direction-paired-live-b2048-v1/baseline-a1/results/benchmark.json",
+      "sha256": "c99586995c192bc02091fc7c6dc1f044d91662a7cdb17bfc02a089c1c12e9b4d",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 44858.00874555444,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/static-traction-direction-paired-live-b2048-v1/baseline-a2/results/benchmark.json",
+      "sha256": "fabfa2cff6fe704a798f87da4ab8c1a3d4a0effb5086c1813b10e35ceefa4776",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 44922.38882256223,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/static-traction-direction-paired-live-b2048-v1/candidate-b1/results/benchmark.json",
+      "sha256": "fa78555f54fbb4a64983722a5ce130d6d9f50cbe64d273670743d1cad9581d74",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 44882.06271009335,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/static-traction-direction-paired-live-b2048-v1/candidate-b2/results/benchmark.json",
+      "sha256": "fad119fd790bdbb67d83fedb8f3228018fa66669d0a4418cbcc94dd1666e5460",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 44908.23471565665,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -393,6 +587,7 @@
       "sha256": "84f6bae4d62bae7732dfd40d3710047b820118c29aff1a7412b221d9140a957c",
       "scope": "live",
       "width": 2048,
+      "recomputed_median_rate": 45051.49479802545,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -401,6 +596,7 @@
       "sha256": "ceabb4f9cd07bf81442afb6e336cb784cca7a1cc7422e3f137d7e47e2f68e6fa",
       "scope": "live",
       "width": 2048,
+      "recomputed_median_rate": 45054.12636854937,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -409,6 +605,7 @@
       "sha256": "e8b3835f2086f531db2d6c5684c51d9719fbd55139792a1b5cbf40b6236fb101",
       "scope": "live",
       "width": 2048,
+      "recomputed_median_rate": 45215.01008413931,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     },
@@ -417,6 +614,7 @@
       "sha256": "f5efeaaa67bd1d07fedccb822f68201d9f9266d0477975d1a0909d937d884694",
       "scope": "live",
       "width": 2048,
+      "recomputed_median_rate": 45200.0773530815,
       "policy_warmup_reference_max_error_rad": 0.0,
       "passed": true
     }

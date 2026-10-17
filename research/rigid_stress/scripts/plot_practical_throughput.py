@@ -56,15 +56,25 @@ def main():
         and row["job_and_wrapper_passed"]
         and row["source_closed"]
         and row["condition_pair_closed"]
+        and row["same_primary_physics_and_options"]
         and row["intrusive_diagnostic"]
         and row["sampled_process_memory"] is not None
     }
-    widths = sorted(
+    rate_widths = sorted(
         width
         for width in {key[0] for key in rates}
-        if all((width, scope) in rates and (width, scope) in memory for scope in scopes)
+        if all((width, scope) in rates for scope in scopes)
     )
-    assert len(widths) >= 2, "Need complete matched scopes and separate memory observations at multiple widths."
+    memory_widths = sorted(
+        width for width in {key[0] for key in memory} if all((width, scope) in memory for scope in scopes)
+    )
+    assert len(rate_widths) >= 2 and len(memory_widths) >= 2
+    identities = {
+        (row["snapshot_manifest_sha256"], row["gpu"], row["gpu_total_bytes"])
+        for row in (*rates.values(), *memory.values())
+    }
+    assert len(identities) == 1, "Each figure must use one source manifest and comparable GPU allocations."
+    widths = sorted(set(rate_widths) | set(memory_widths))
     # Keep every observation; sparse ticks leave the dense capacity end readable.
     tick_widths = [width for width in widths if width == widths[0] or width & (width - 1) == 0]
     if widths[-1] not in tick_widths:
@@ -74,34 +84,34 @@ def main():
     rows = []
     for width in widths:
         for scope in scopes:
-            rate, observed = rates[width, scope], memory[width, scope]
-            assert rate["snapshot_manifest_sha256"] == observed["snapshot_manifest_sha256"]
-            assert rate["gpu"] == observed["gpu"] and rate["gpu_total_bytes"] == observed["gpu_total_bytes"]
-            repeats = rate["repeat_rates_valid_env_steps_per_second"]
+            rate = rates.get((width, scope)) if width in rate_widths else None
+            observed = memory.get((width, scope)) if width in memory_widths else None
+            repeats = rate["repeat_rates_valid_env_steps_per_second"] if rate else [None, None, None]
             assert len(repeats) == 3
-            peak = observed["sampled_process_memory"]
-            assert peak["maximum_observed_compute_process_bytes"] is not None
+            peak = observed["sampled_process_memory"] if observed else {}
+            if observed:
+                assert peak["maximum_observed_compute_process_bytes"] is not None
             rows.append(
                 {
                     "width": width,
                     "scope": scope,
-                    "median_valid_env_steps_per_second": rate["median_rate"],
-                    "repeat_min": min(repeats),
-                    "repeat_max": max(repeats),
+                    "median_valid_env_steps_per_second": rate["median_rate"] if rate else None,
+                    "repeat_min": min(repeats) if rate else None,
+                    "repeat_max": max(repeats) if rate else None,
                     "repeat_1": repeats[0],
                     "repeat_2": repeats[1],
                     "repeat_3": repeats[2],
-                    "observed_peak_compute_process_bytes": peak["maximum_observed_compute_process_bytes"],
-                    "memory_sampling_interval_ms": peak["sampling_interval_ms"],
-                    "memory_samples_at_observed_maximum": peak["samples_at_observed_maximum"],
-                    "headline_native_buffer_bytes_at_end": rate["native_buffer_bytes_at_end"],
-                    "memory_pass_native_buffer_bytes_at_end": observed["native_buffer_bytes_at_end"],
-                    "rate_source": rate["path"],
-                    "rate_source_sha256": rate["sha256"],
-                    "memory_source": observed["path"],
-                    "memory_source_sha256": observed["sha256"],
-                    "memory_samples_sha256": peak["sha256"],
-                    "snapshot_manifest_sha256": rate["snapshot_manifest_sha256"],
+                    "observed_peak_compute_process_bytes": peak.get("maximum_observed_compute_process_bytes"),
+                    "memory_sampling_interval_ms": peak.get("sampling_interval_ms"),
+                    "memory_samples_at_observed_maximum": peak.get("samples_at_observed_maximum"),
+                    "headline_native_buffer_bytes_at_end": rate["native_buffer_bytes_at_end"] if rate else None,
+                    "memory_pass_native_buffer_bytes_at_end": observed["native_buffer_bytes_at_end"] if observed else None,
+                    "rate_source": rate["path"] if rate else None,
+                    "rate_source_sha256": rate["sha256"] if rate else None,
+                    "memory_source": observed["path"] if observed else None,
+                    "memory_source_sha256": observed["sha256"] if observed else None,
+                    "memory_samples_sha256": peak.get("sha256"),
+                    "snapshot_manifest_sha256": next(iter(identities))[0],
                 }
             )
     with (args.output / "source_data.csv").open("w", newline="") as stream:
@@ -111,7 +121,7 @@ def main():
     contract = {
         "claim_anchor": "practical_throughput_closed_scaling",
         "main_claim": "The closed robust workload scales sublinearly while observed process memory grows with batch width.",
-        "scope": "Only widths with all four successful headline scopes and separate successful memory passes are shown. Larger pending or failed widths are not silently assigned rates.",
+        "scope": "Each panel retains every width with all four closed scopes for that measurement. Missing observations are blank, not zero or interpolated. Both panels use one source manifest and comparable GPU allocations.",
         "material_passport": {
             "source": str(args.summary),
             "sha256": hashlib.sha256(source).hexdigest(),
@@ -140,6 +150,8 @@ def main():
             },
         ],
         "widths": widths,
+        "rate_widths": rate_widths,
+        "memory_widths": memory_widths,
         "tick_widths": tick_widths,
         "series_label": args.series_label,
         "size_mm": [183, 86],
@@ -160,13 +172,14 @@ def main():
         axis.set_xlabel("Environments")
     handles = []
     for scope, label, colour, marker, linestyle in zip(scopes, labels, colours, markers, linestyles):
-        selected = [row for row in rows if row["scope"] == scope]
+        selected = [row for row in rows if row["scope"] == scope and row["rate_source"] is not None]
+        observed = [row for row in rows if row["scope"] == scope and row["memory_source"] is not None]
         colour = style.WONG_PALETTE[colour]
         medians = [row["median_valid_env_steps_per_second"] for row in selected]
-        axes[0].plot(widths, medians, color=colour, linestyle=linestyle, label=label)
+        axes[0].plot(rate_widths, medians, color=colour, linestyle=linestyle, label=label)
         handles.append(Line2D([], [], color=colour, linestyle=linestyle, marker=marker, markersize=3))
         axes[0].errorbar(
-            widths,
+            rate_widths,
             medians,
             yerr=[
                 [median - row["repeat_min"] for median, row in zip(medians, selected)],
@@ -188,8 +201,8 @@ def main():
                 linewidths=0,
             )
         axes[1].plot(
-            widths,
-            [row["observed_peak_compute_process_bytes"] / 2**30 for row in selected],
+            memory_widths,
+            [row["observed_peak_compute_process_bytes"] / 2**30 for row in observed],
             color=colour,
             linestyle=linestyle,
             marker=marker,
@@ -236,7 +249,9 @@ def main():
         "and one 2400-step measurement pass per scope. These are sampled lower bounds, not native-buffer byte counts "
         "or confidence intervals. Policy scopes include inference and rollout. The same eight-condition bank, "
         "480-tet full shell, body_source_prior law and numerical budgets are retained. "
-        "Only closed matched widths are drawn; the rightmost point does not establish the final capacity limit."
+        "Each panel retains its own closed widths; missing observations are left blank. Separate process peaks "
+        "include allocator behavior and sampling, so differences do not isolate policy-memory costs. "
+        "The rightmost point does not establish the final capacity limit."
     )
     (args.output / "caption.md").write_text(
         caption + "\n\n"

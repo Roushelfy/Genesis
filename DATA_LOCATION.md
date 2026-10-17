@@ -33,7 +33,8 @@ test artifacts are explicitly placed under the data root. The scientific
 environment remains `/mnt/data/zhaofeng/venvs/rigid-stress-physical`.
 
 The compact baseline scaling figure packet is tracked under
-`research/rigid_stress/evidence/20261017-throughput/baseline-scaling-v1/`.
+`research/rigid_stress/evidence/20261017-throughput/baseline-scaling-v1/`
+and the expanded closed-width update `baseline-scaling-v2/` alongside it.
 It contains editable/exported figures, source CSV, exact plotting inputs/source
 and validation records. Full traces, raw candidate arrays, failed checker
 versions and long-running capacity experiments remain in the data-side run
