@@ -125,8 +125,8 @@ timed steps. Inside the same GPU allocation/container as the benchmark, start
 the sampler before the process and stop it after exit:
 
 ```bash
-task_memory_csv="$task_root/memory-live.csv"
-task_memory_stderr="$task_root/memory-live.stderr"
+task_memory_csv="$task_root/process-memory-live.csv"
+task_memory_stderr="$task_root/process-memory-live.stderr"
 nvidia-smi --query-compute-apps=timestamp,gpu_uuid,pid,used_gpu_memory \
   --format=csv --loop-ms=100 > "$task_memory_csv" 2> "$task_memory_stderr" &
 task_sampler_pid=$!
@@ -217,9 +217,15 @@ using terminal qualified producer runs and a fresh data-side output.
 
 For figures, use the exact renderer, input, SVG/PDF/PNG and QA in the
 [baseline figure packet](../evidence/20261017-throughput/baseline-scaling-v2/README.md).
-The main experiment report and machine-readable checkpoint retain which results
-are closed, intrusive, failed or still pending. No final speedup or capacity
-claim follows merely from a successful submission.
+Final selected [history4](../evidence/20261017-throughput/selected-history4-scaling-v1/README.md),
+[history0](../evidence/20261017-throughput/selected-history0-scaling-v1/README.md)
+and [direct comparison](../evidence/20261017-throughput/baseline-selected-comparison-v1/README.md)
+packets provide the exact executed sources, compressed inputs, independent raw
+audits and accepted exports. Decompress under data and use the archived renderer
+and style together; the runtime QA file predates the separate visual review.
+The final report and final metadata closure identify the closed headline and
+intrusive results; historical checkpoints preserve their dated pending states.
+No speedup or capacity claim follows merely from a successful submission.
 
 ## Reconstruct exact sources and inputs
 

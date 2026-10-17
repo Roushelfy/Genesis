@@ -1,6 +1,14 @@
 # Agent goal: native Quadrants rigid stress recovery
 
-## Active next goal: practical large-batch throughput, 2026-10-17
+## Completed goal: practical large-batch throughput, 2026-10-17
+
+The [final report](docs/PRACTICAL_THROUGHPUT_RESULTS_20261017.md) and
+[completion audit](docs/PRACTICAL_THROUGHPUT_COMPLETION_AUDIT_20261017.md)
+close this stage: matched50.845% history4 code gain, independently qualified
+history0 tuning, measured wide-batch shoulder/capacity, recommended B16384,
+numerical/lifecycle/application checks and inspected source-complete curves.
+The specification below remains the original throughput scope. Physical damage
+calibration and the superseded universal convergence campaign remain separate.
 
 Follow [docs/PRACTICAL_THROUGHPUT_GOAL.md](docs/PRACTICAL_THROUGHPUT_GOAL.md).
 The conditional application delivery below is the baseline, not completion of

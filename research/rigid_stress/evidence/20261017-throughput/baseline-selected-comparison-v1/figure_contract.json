@@ -1,0 +1,32 @@
+{
+  "claim_anchor": "practical_throughput_baseline_final_comparison",
+  "main_claim": "The optimized robust workload provides greater measured throughput; history0 is a separate qualified tuning with lower observed wide-batch process memory.",
+  "material_passport": [
+    {
+      "source": "input/history4.json",
+      "sha256": "7aa852a771c71de705831036b77ebdbb4515529d3e821be53409a5b00e7b0313",
+      "kind": "closed scheduler-backed metadata",
+      "reference_history": 4
+    },
+    {
+      "source": "input/history0.json",
+      "sha256": "5da8e860626d7005dbaf8c441a665fe2bcd19931fd361aa04770ac79928f56b2",
+      "kind": "closed scheduler-backed metadata",
+      "reference_history": 0
+    }
+  ],
+  "panels": {
+    "a": "Live rigid+stress throughput, three repeats and observed range.",
+    "b": "Policy+rigid+stress inference/rollout throughput, same repeated protocol.",
+    "c": "Live process memory, separate100ms NVML observations.",
+    "d": "Policy process memory, separate100ms NVML observations."
+  },
+  "scope": "One physical workload; same-history code comparison and explicitly separate history tuning. Different comparable allocations; same-GPU paired gains are reported separately. No extrapolation to unmeasured widths.",
+  "uncertainty": "Three raw timing repeats; ranges are not confidence intervals. Memory is a sampled lower-bound peak including setup/growth in a separate pass.",
+  "size_mm": [
+    183,
+    132
+  ],
+  "target_stage": "repository technical report supplement",
+  "open_decisions": "Visual review is required before PDF export."
+}

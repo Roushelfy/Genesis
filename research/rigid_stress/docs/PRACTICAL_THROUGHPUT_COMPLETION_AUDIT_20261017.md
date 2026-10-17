@@ -1,28 +1,31 @@
 # Practical throughput completion audit, 2026-10-17
 
-Status: **open**. This maps the complete
-[active goal](PRACTICAL_THROUGHPUT_GOAL.md) to current evidence. Successful
-diagnostics do not establish the final repeated operating point. The task is
-not complete while required measurements or the final recommendation are open.
+Status: **complete within the declared practical-throughput stage**. This maps
+the unchanged [goal](PRACTICAL_THROUGHPUT_GOAL.md) to inspected current evidence.
+All required measurements, numerical/lifecycle checks, recommendations and
+final source-complete figure exports are closed. Experimental fracture
+calibration and the historical universal convergence campaign remain outside
+this stage. The [final report](PRACTICAL_THROUGHPUT_RESULTS_20261017.md) states
+the operating point and its limitations.
 
 | Requirement | Authoritative evidence | Current disposition |
 | --- | --- | --- |
 | Frozen practical workload and paired baseline | `PRACTICAL_THROUGHPUT_BASELINE_20261017.json`; baseline899-file manifest `2da41428...`; original eight-condition bank | Closed. Full480-tet/2430-DOF shell, intrinsic body_source_prior, nominal6mm/Q10/ports8/history4/max, mesh64/MPR/patch-off and original physical/controller settings. |
 | Matched repeated four-scope baseline scaling | `PRACTICAL_THROUGHPUT_EXPERIMENTS_20261017.json` and its scheduler export; independent metadata auditor | Closed through B24576 with seven widths,900 warmup and three2400-step repeats. Zero invalid steps/overflows. Workspace2 B32768 is separate allocation tuning. |
-| Final code's repeated four-scope scaling, valid rates, latency and incremental stress cost | Frozen selected arithmetic `b0f2f9cd...`; history4 jobs725211–725216 and history0 jobs725247/725249/725251; `...PACKED_HISTORY_FINAL_SCALING_20261017.json` and `...HISTORY0_FINAL_SCALING_20261017.json` | Closed. History4 has six widths through B32768, with85841.03 live/85651.18 policy env-step/s at the widest. History0 has three widths through B32768, with118929.30 live/118579.16 policy at the widest. All program/wrapper exits,899 source hashes and inventories pass. Independent final aggregate audits are being assembled. |
+| Final code's repeated four-scope scaling, valid rates, latency and incremental stress cost | Frozen selected arithmetic `b0f2f9cd...`; final scaling closures and `PRACTICAL_THROUGHPUT_FINAL_METADATA_20261017.json` | Closed. History4 has six widths through B32768, with85841.03 live/85651.18 policy env-step/s at the widest. History0 has three widths through B32768, with118929.30 live/118579.16 policy at the widest. Independent raw audits pass115 history4 and13 history0 eligible records, with disjoint cohorts and no intrusive timings. Actual exits,899 hashes and inventories close. |
 | Matched before/after code gain and useful ablations | Same-GPU B8192 A/B/B/A725203 and B32 cache-only/new A/B/B/A725238; earlier ablations | Closed: fixed-history4 code gain50.845% at B8192, observed2.680% at B32. Actual sources/options, all repetitions, exits and inventories close. Negative/small experiments remain reported. |
 | Peak process memory and capacity | Baseline six-width100ms NVML evidence; final-source memory/capacity records, including `PRACTICAL_THROUGHPUT_HISTORY0_WIDE_20261017.json` | History4 five-width memory and B40960pass/B43008OOM bracket close. History0 three-width memory through B32768 and B47104pass/B49152OOM bracket close. B32768 live/policy sampled peaks78.7461/78.8984GiB. Native buffers and sampled process peaks are distinct. |
 | Practical plateau, width refinement and recommended settings | Complete final scaling/capacity records and current results report | Closed measurements and recommendation. History4 doubling B16384→B32768 gains2.70% live/2.88% policy; history0 gains1.73%/1.61%. Recommend history0/B16384 at98.30%/98.41% of the widest repeated rates and about half memory/latency. B32768 is the highest repeated tested aggregate point. Capacity brackets remain separate. |
 | Moving cost decomposition and remaining bottlenecks | Closed complete-period B256 baseline and B8192 cache profiles; API/kernel-overlap audits; new-source725205 | Closed profiles: elastic recovery58.768→5.281ms and CPU step159.717→108.024ms at B8192, with history still26.050ms. Repeated unprofiled rates and history tuning remain separate. GPU, CPU and API durations overlap. |
-| Active work, iterations, fallback, contact and history-hit fractions | Closed baseline B256/B8192 observers; new-source measurement-only derivative725230 | Closed. New-source hit fraction24.51865%; contact fractions match the baseline, with zero retries/corrections/fallbacks/invalid steps. Observers stay out of headline timings. |
+| Active work, iterations, fallback, contact and history-hit fractions | Closed baseline B256/B8192 observers; new-source measurement-only derivative725230; `PRACTICAL_THROUGHPUT_CONTACT_MIX_20261017.json` | Closed. New-source hit fraction24.51865%; contact fractions match the baseline, with zero retries/corrections/fallbacks/invalid steps. All16 original/selected normal live widths have identical normalized warmup contact-count distributions. Warmup and timed observations are distinct; observers stay out of headline timings. |
 | Cold preprocessing/JIT versus warmed runtime | Raw `setup_seconds`, `build_timings_including_JIT`, warmup and repeated timing metadata; current results report | Closed measurement scopes. Cold setup110.03s and nested build/JIT subsets are stated separately from warmed rates;900 warmup steps include physical work and compilation. Policy scopes measure inference/rollout, not full RL training. |
 | Material optimization with unchanged production physics | Geometry cache commit9e2facd89; sparse-history recovery6259c10fd; frozen source audits and targeted comparisons | Closed implementation and material code gain: capacity benefit and matched50.845% B8192 improvement. History0 tuning gives another34.494% in its separate paired comparison. No pressure substitution or tolerance relaxation. |
 | Independent complete equilibrium/gauge, full tensor/raw global peak and wrench/traction checks | `PRACTICAL_THROUGHPUT_PACKED_HISTORY_TESTS_20261017.json`, `...PACKED_HISTORY_APPLICATION_20261017.json` and `...QUALIFICATION_RECHECK_20261017.json` | Closed within the changed arithmetic's scope:12 CPU/12 GPU cases, three stronger GPU sparse-column cases, four independent fixed-load full fields and original numerical budgets. Current recheck closes15 scientific jobs,72 comparison-input hashes and841 current engine files against the qualified source. Unchanged physical/FEM evidence is reused. |
 | Large-batch environment independence, history invalidation, partial resets, fallback, release and full/max semantics | `PRACTICAL_THROUGHPUT_PACKED_HISTORY_LIFECYCLE_20261017.json`; correction/fallback tests | Closed at B16384: checkpoints, reset isolation and following live step, all-environment residual gates, selected full fields, complete frozen release/recontact and zero invalid live steps. |
 | Bounded complete-grasp usefulness and proxy limitations | `PRACTICAL_THROUGHPUT_PACKED_HISTORY_APPLICATION_20261017.json` | Closed for both original force-choice families and phase windows. Largest raw trace difference0.000636021Pa; heights identical. The retained0.2/4N ensemble has7/8 above-band lift comparisons and1/8 whole-episode comparisons. Absolute damage accuracy remains uncalibrated. |
 | Any additional recommended tuning | Same-source same-GPU history4/history0 job725232; history0 qualification725233–725236/725240; final four-scope/independent memory runs | Closed. Numerical/application qualification, matched78768.50→105939.20 env-step/s tuning, all three normal/memory widths through B32768 and the B47104pass/B49152OOM bracket support the explicitly separate history0 recommendation. |
-| Reproducible runnable commands, source/configuration and failed cases | `RUNNING_PRACTICAL_THROUGHPUT.md`, frozen manifests, submission journals, actual exits, compact figure packets | Available for closed work. Final commands/settings and source/measurement relationships must be checked against the selected final result. Failed import/OOM/checker cases remain retained. |
-| Final concise report, matched baseline/final curves and completion decision | Final report and updated baseline/final figure packets | Open. Baseline packetv2 is rendered, inspected and committed; final-source packet and final report are required before completion. |
+| Reproducible runnable commands, source/configuration and failed cases | `RUNNING_PRACTICAL_THROUGHPUT.md`; exact source-recipes-v1 with executed899-file baseline/selected reconstructions; archived execution/environment metadata and failures | Closed. Exact source/input recipes, explicit history/batch/workspace settings, Slurm/gs-srun commands and immutable source identities match the final result. Failed import/OOM/checker cases and the repaired prelaunch nounset failure remain retained. Large runtime data stays on data; publication packets stay compact. |
+| Final concise report, matched baseline/final curves and completion decision | `PRACTICAL_THROUGHPUT_RESULTS_20261017.md`; baseline-scaling-v2; selected-history4-scaling-v1; selected-history0-scaling-v1; baseline-selected-comparison-v1; `PRACTICAL_THROUGHPUT_FINAL_FIGURES_20261017.json` | Closed. Three final previews are inspected, all PDF previews are byte-identical, SVG text stays editable, PDFs embed TrueType without Type3, and450dpi PNG/CSV/source/compressed input/audits/manifests verify. Renderer jobs725302/725303/725307 close terminal0 with actual exits, source hashes and inventories. |
 
 Each new result must close the scientific program, wrapper, terminal scheduler
 state, source hashes and source inventory before changing a row to closed.
@@ -30,7 +33,11 @@ Field agreement does not prove physical-model calibration. Source closure does
 not prove numerical correctness. A completed measurement does not by itself
 prove a plateau or a material improvement.
 
-The final review must inspect the completed artifacts requirement by requirement,
-replace provisional states with actual conclusions, and retain any remaining
-limitations. Full RL training, experimental fracture calibration and a new
-universal high-mesh convergence campaign are outside this throughput stage.
+The final review inspected the artifacts requirement by requirement and replaced
+provisional measurement/figure states with the conclusions above. The selected
+code is the tested engine; the recommendation includes the highest repeated
+point and the measured shoulder rather than promising a universal FPS ceiling.
+Full RL training, experimental fracture calibration and a new universal
+high-mesh convergence campaign are outside this throughput stage. Historical
+checkpoints retain their original dates/statuses and are superseded here for
+current delivery status.

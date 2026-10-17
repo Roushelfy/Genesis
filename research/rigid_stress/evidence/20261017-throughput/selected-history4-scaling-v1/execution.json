@@ -1,0 +1,77 @@
+{
+  "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725302_0|COMPLETED|0:0|00:23:03|cpu-206-205\n725302_0.batch|COMPLETED|0:0|00:23:03|cpu-206-205\n725302_0.0|COMPLETED|0:0|00:23:02|cpu-206-205\n725303_0|COMPLETED|0:0|00:00:45|cpu-207-115\n725303_0.batch|COMPLETED|0:0|00:00:45|cpu-207-115\n725303_0.0|COMPLETED|0:0|00:00:44|cpu-207-115\n725307_0|COMPLETED|0:0|00:00:53|cpu-207-115\n725307_0.batch|COMPLETED|0:0|00:00:53|cpu-207-115\n725307_0.0|COMPLETED|0:0|00:00:52|cpu-207-115\n",
+  "preview_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/final-throughput-figure-preview-v2",
+  "comparison_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/final-throughput-comparison-preview-v3",
+  "pdf_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/final-throughput-pdf-v1",
+  "sources_and_inputs_unchanged": true,
+  "source_and_input_inventories": {
+    "final-throughput-figure-preview-v2": {
+      "file_count": 6,
+      "all_hashes_match": true,
+      "extra_files": [],
+      "missing_files": [],
+      "passed": true
+    },
+    "final-throughput-comparison-preview-v3": {
+      "file_count": 6,
+      "all_hashes_match": true,
+      "extra_files": [],
+      "missing_files": [],
+      "passed": true
+    },
+    "final-throughput-pdf-v1": {
+      "file_count": 10,
+      "all_hashes_match": true,
+      "extra_files": [],
+      "missing_files": [],
+      "passed": true
+    }
+  },
+  "actual_program_wrapper_batch_exits": 0,
+  "metadata_audit_histories": [
+    4
+  ],
+  "snapshot_manifest_sha256": "b0f2f9cdaac8b90cfffe6a691c1f2ef1cdb0c6eeb4d356e2632e72f7a072ec10",
+  "pdf_submission": {
+    "utc": "2026-10-17T12:37:10.286396+00:00",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0",
+      "--partition=cpu-mid",
+      "--cpus-per-task=4",
+      "--mem=16G",
+      "--time=00:20:00",
+      "--job-name=final-throughput-pdf-v1",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/final-throughput-pdf-v1-%A_%a.log",
+      "--wrap=bash /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/analysis-source/final-throughput-pdf-v1/batch.sh"
+    ],
+    "stdout": "725307\n",
+    "stderr": "",
+    "returncode": 0,
+    "sources": [
+      {
+        "path": "analysis.sh",
+        "sha256": "caaf15f46b29a264d33d6ea108e0d4d49d57fb30a4ab4f43a0605dd178737807"
+      },
+      {
+        "path": "batch.sh",
+        "sha256": "7a3f8ce9a8fc6e341bb273ded9cacbd87d8cc3c2970f542fd3f59932e1c3c05b"
+      },
+      {
+        "path": "comparison.py",
+        "sha256": "3a7109328002c39f81bde665327fe0e9421edf734cd7ececbb4357f21ad662d7"
+      },
+      {
+        "path": "scaling.py",
+        "sha256": "a4f130186192d5a8b6b7d82576c662fb07676f0f2feee74368ea28740c347421"
+      },
+      {
+        "path": "style.py",
+        "sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1"
+      }
+    ],
+    "scope": "PDF export after all three actual preview images were visually accepted. Byte-identical renderer/style/input data; sources and actual render exits must close. Scientific producers and numerical checks unchanged.",
+    "goal_completion": false
+  }
+}

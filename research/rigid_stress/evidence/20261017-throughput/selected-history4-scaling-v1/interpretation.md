@@ -1,0 +1,1 @@
+At B16384→B32768, live aggregate throughput increases by2.70% while batch latency and observed process memory grow. The measured shoulder supports the report's batch choice; the curve does not extrapolate an exact capacity limit. Rate and memory panels retain independently complete widths. Missing memory at a rate width remains blank in the CSV.

@@ -1,7 +1,6 @@
 # Practical native rigid stress throughput, 2026-10-17
 
-**Measurements and operating-point selection are closed; final figure exports
-and terminal completion audit remain open.** See the
+**The practical throughput stage is complete within its declared scope.** See the
 [completion audit](PRACTICAL_THROUGHPUT_COMPLETION_AUDIT_20261017.md).
 
 The selected robust workload gives a **50.845% same-GPU code improvement** at
@@ -80,8 +79,22 @@ Sources: [B8192](PRACTICAL_THROUGHPUT_HISTORY0_OPERATING_POINT_20261017.json),
 [B32768](PRACTICAL_THROUGHPUT_HISTORY0_FINAL_SCALING_20261017.json),
 [history4 wide points](PRACTICAL_THROUGHPUT_PACKED_HISTORY_FINAL_SCALING_20261017.json)
 and the [experiment ledger](PRACTICAL_THROUGHPUT_EXPERIMENTS_20261017.md).
-Final figure previews/exports and their independent complete metadata audits
-are being assembled; the stage remains open until these artifacts close.
+The [final metadata closure](PRACTICAL_THROUGHPUT_FINAL_METADATA_20261017.json)
+contains223 raw-record identities in each separate history reference;115
+history4 and13 history0 eligible records pass independent raw audits. Their
+headline paths are disjoint and intrusive timings are excluded.
+
+![Baseline and selected robust configurations](../evidence/20261017-throughput/baseline-selected-comparison-v1/comparison.png)
+
+The [direct comparison packet](../evidence/20261017-throughput/baseline-selected-comparison-v1/README.md)
+and selected [history4](../evidence/20261017-throughput/selected-history4-scaling-v1/README.md)
+and [history0](../evidence/20261017-throughput/selected-history0-scaling-v1/README.md)
+packets retain editable SVG, embedded-TrueType PDF,450dpi PNG, all raw repeats,
+independent sampled-memory widths, exact compressed plotting inputs/source and
+visual/source/scheduler QA. All three previews were inspected; PDF-run previews
+are byte-identical and no PDF contains Type3 fonts. The
+[figure closure](PRACTICAL_THROUGHPUT_FINAL_FIGURES_20261017.json) verifies every
+manifest entry and inventory. Together the three new packets use about2MB.
 
 ## What changed and the remaining bottlenecks
 
@@ -177,5 +190,6 @@ The [running guide](RUNNING_PRACTICAL_THROUGHPUT.md),
 [exact source/input recipes](../evidence/20261017-throughput/source-recipes-v1/README.md)
 and [baseline figure packet](../evidence/20261017-throughput/baseline-scaling-v2/README.md)
 provide commands, exact committed-source reconstruction and inspected baseline
-exports. Final-source figure packets and the terminal completion decision
-remain open.
+exports. Final-source packets and the requirement-by-requirement completion
+decision are linked above. Scope limits, failed cases and untouched historical
+checkpoints remain explicit.

@@ -6,6 +6,12 @@ This is the active next stage after the scoped
 The [application-first validation policy](PRACTICAL_VALIDATION_GOAL.md)
 continues to govern accuracy claims and bounded validation work.
 
+Delivery status, 2026-10-17: this stage is complete. The
+[final report](PRACTICAL_THROUGHPUT_RESULTS_20261017.md) and
+[requirement-by-requirement audit](PRACTICAL_THROUGHPUT_COMPLETION_AUDIT_20261017.md)
+record the measured operating points, verified source/numerics and inspected
+exports. The original requirements below are preserved.
+
 ## Outcome
 
 Make the recommended robust configuration fast for many parallel Franka/full

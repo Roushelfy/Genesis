@@ -1,6 +1,14 @@
 # Instructions for the native rigid stress feature
 
-## Active next stage, 2026-10-17
+## Latest throughput stage, completed 2026-10-17
+
+The [final report](docs/PRACTICAL_THROUGHPUT_RESULTS_20261017.md) and
+[completion audit](docs/PRACTICAL_THROUGHPUT_COMPLETION_AUDIT_20261017.md)
+close the declared practical-throughput goal. Exact source/input recipes,
+repeated scaling, separate memory/capacity, numerical/application qualification
+and final inspected SVG/PDF/PNG packets are delivered. The contracts below
+remain applicable to future changes; historical open research notes do not
+reopen this completed stage.
 
 Read [docs/PRACTICAL_THROUGHPUT_GOAL.md](docs/PRACTICAL_THROUGHPUT_GOAL.md)
 and GOAL.md first. Prioritize matched large-batch scaling, detailed profiling
