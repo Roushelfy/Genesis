@@ -48,8 +48,9 @@ the archived baseline's exact Git/source correspondence.
 
 The example below reproduces the fixed-history4 B8192 workload. Set the three
 variables before creating the script; use `task_history=0` for the independently
-qualified fast configuration, and `task_envs=16384` for its closed wider point.
-Final B32768 repeated measurements are still pending. Change only the batch
+qualified fast configuration, and `task_envs=16384` for the recommended balance.
+All three history0 widths B8192/B16384/B32768 are closed; B16384 reaches about98%
+of the widest point's throughput with about half its memory/latency. Change only the batch
 variable for a sweep, retaining eight-condition repetitions and all other
 arguments. Wider cases need appropriate CPU memory and wall time; inspect the
 measured capacity record instead of assuming an allocation will fit. Initial
@@ -91,7 +92,7 @@ done
 EOF
 cat > "$task_root/job.sh" <<EOF
 #!/usr/bin/env bash
-set -euo pipefail
+set -eo pipefail
 source /mnt/data/shared/config/env.sh
 GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 /usr/bin/env \
   CUDA_CACHE_PATH="$task_root/cache/cuda" bash "$task_root/workload.sh"
@@ -103,6 +104,9 @@ sbatch --parsable --array=0-0 --partition=rtx-mid --gres=gpu:1 \
 
 The wrapper places each scope's temporary files, caches, logs, actual import
 origins, hardware, source closures and benchmark JSON in that scope's directory.
+The outer launch script omits nounset because the shared `gs-srun` helper probes
+optional unset environment variables; the workload and benchmark wrappers keep
+their strict exit/source/input checks.
 Check terminal scheduler state, both actual exits, every snapshot hash and the
 post-run inventory before using a rate. The benchmark JSON must contain three
 2400-step rows,900 warmup steps and zero invalid steps/scatter overflows. Keep
