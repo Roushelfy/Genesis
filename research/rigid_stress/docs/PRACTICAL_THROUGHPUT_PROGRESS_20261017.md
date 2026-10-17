@@ -7,6 +7,10 @@ The [machine-readable checkpoint](PRACTICAL_THROUGHPUT_CHECKPOINT_20261017.json)
 [frozen contract](PRACTICAL_THROUGHPUT_BASELINE_20261017.json) and
 [scheduler export](PRACTICAL_THROUGHPUT_SCHEDULER_20261017.txt) retain the initial
 evidence; later submitted jobs below are explicitly still pending verification.
+The [subsequent experiment checkpoint](PRACTICAL_THROUGHPUT_EXPERIMENTS_20261017.md)
+closes B8192, expands moving profiling to a complete controller period and
+records the small or negative results of the initial optimization candidates.
+The merged-capacity candidate described below is now superseded.
 
 ## Frozen workload and provenance
 

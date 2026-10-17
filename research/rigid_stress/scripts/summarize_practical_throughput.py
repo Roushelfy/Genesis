@@ -63,26 +63,86 @@ def normalized_configuration(configuration):
     return [{key: value for key, value in row.items() if key != "mesh"} for row in configuration]
 
 
-def sampled_memory(run, gpu_uuid):
-    path = run / "process-memory-samples.csv"
+def sampled_memory(run, gpu_uuid, filename="process-memory-samples.csv"):
+    path = run / filename
     if not path.exists():
         return None
     samples = Counter()
     with path.open() as stream:
         for row in csv.DictReader(stream, skipinitialspace=True):
-            if row.get("gpu_uuid", "").strip() != gpu_uuid:
+            if (row.get("gpu_uuid") or "").strip() != gpu_uuid:
                 continue
-            value = row["used_gpu_memory [MiB]"].strip().removesuffix(" MiB").strip()
+            value = (row.get("used_gpu_memory [MiB]") or "").strip().removesuffix(" MiB").strip()
             if value.isdigit():
                 samples[row["timestamp"]] += int(value) * 1024**2
+    peak = max(samples.values(), default=None)
     return {
         "path": str(path),
         "sha256": digest(path),
         "sampling_interval_ms": 100,
         "samples_with_compute_processes": len(samples),
-        "maximum_observed_compute_process_bytes": max(samples.values(), default=None),
+        "maximum_observed_compute_process_bytes": peak,
+        "samples_at_observed_maximum": sum(value == peak for value in samples.values()),
         "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations.",
     }
+
+
+def kernel_stage(name):
+    for stage, prefixes in (
+        ("controller", ("kernel_inputs_",)),
+        ("rigid_dynamics", ("kernel_substep_dynamics_",)),
+        ("collision", ("kernel_substep_collision_",)),
+        ("rigid_constraint_solve", ("func_solve_init_", "_kernel_solve_graph_", "_qd_graph_do_while_cond")),
+        ("rigid_integration", ("kernel_step_2_",)),
+        ("reset", ("kernel_reset_", "kernel_forward_kinematics_links_geoms_")),
+        (
+            "contact_mapping",
+            (
+                "kernel_associate_",
+                "kernel_resolve_stress_contacts_",
+                "kernel_capture_rigid_sources_",
+                "kernel_pack_intrinsic_contacts_",
+                "kernel_load_intrinsic_contacts_",
+                "kernel_bind_source_vertices_",
+                "kernel_resolve_sources_",
+            ),
+        ),
+        ("path_queries", ("kernel_footprint_ports_",)),
+        ("surface_sampling", ("kernel_fan_frontier_", "kernel_surface_fan_profiles_")),
+        (
+            "source_priors",
+            ("kernel_bind_traction_support_", "kernel_snapshot_source_priors_", "kernel_partition_source_priors_"),
+        ),
+        ("traction_fit", ("kernel_fit_tractions_impl_",)),
+        (
+            "traction_refinement",
+            ("kernel_refine_failed_", "kernel_select_failed_fans_", "kernel_refresh_refined_source_priors_"),
+        ),
+        (
+            "wrench_acceptance",
+            ("kernel_search_wrench_certificate_", "kernel_certify_continuous_", "kernel_diagnose_wrenches_"),
+        ),
+        (
+            "load_assembly_and_diagnostics",
+            (
+                "kernel_scatter_cached_tractions_",
+                "kernel_scatter_tractions_",
+                "kernel_commit_intrinsic_contacts_",
+                "kernel_commit_body_partition_",
+                "kernel_capture_contact_failure_",
+            ),
+        ),
+        ("inertia_relief", ("kernel_balance_impl_",)),
+        ("history_prediction", ("kernel_predict_", "kernel_hits_", "kernel_append_")),
+        ("elastic_solve", ("kernel_apply_inverse_", "kernel_solve_cooperative_", "kernel_direct_init_")),
+        ("complete_residual", ("kernel_full_residual_",)),
+        ("global_peak_and_full_output", ("kernel_peak_", "kernel_full_field_")),
+        ("step_lifecycle", ("kernel_begin_step_", "kernel_accept_")),
+        ("torch_auxiliary", ("void at::",)),
+    ):
+        if name.startswith(prefixes):
+            return stage
+    return "unclassified"
 
 
 def trace_summary(path):
@@ -90,11 +150,20 @@ def trace_summary(path):
     timed = [event for event in events if event.get("ph") == "X" and "dur" in event]
     kernels = Counter()
     runtime_counts, runtime_us, copies = Counter(), Counter(), Counter()
+    stage_us, stage_counts, resources = Counter(), Counter(), {}
     step_count, step_wall_us = 0, 0.0
     for event in timed:
         category, name = event.get("cat"), event["name"]
         if category == "kernel":
             kernels[name] += event["dur"]
+            stage = kernel_stage(name)
+            stage_us[stage] += event["dur"]
+            stage_counts[stage] += 1
+            resources[name] = {
+                key: value
+                for key, value in event.get("args", {}).items()
+                if key in ("registers per thread", "shared memory", "grid", "block", "est. achieved occupancy %")
+            }
         elif category in ("cuda_runtime", "cuda_driver"):
             runtime_counts[name] += 1
             runtime_us[name] += event["dur"]
@@ -111,6 +180,10 @@ def trace_summary(path):
         "kernel_count": sum(event.get("cat") == "kernel" for event in timed),
         "kernel_duration_sum_ms": sum(kernels.values()) / 1000,
         "top_kernel_duration_sum_ms": [[name, duration / 1000] for name, duration in kernels.most_common(20)],
+        "top_kernel_resource_metadata": {name: resources[name] for name, _ in kernels.most_common(20)},
+        "kernel_stage_duration_sum_ms": {name: value / 1000 for name, value in stage_us.items()},
+        "kernel_stage_counts": dict(stage_counts),
+        "unclassified_kernel_names": [name for name in kernels if kernel_stage(name) == "unclassified"],
         "runtime_counts": dict(runtime_counts),
         "runtime_duration_sum_ms": {name: value / 1000 for name, value in runtime_us.items()},
         "copy_counts": dict(copies),
@@ -133,7 +206,7 @@ def main():
         values = line.split("|")
         if len(values) >= 5 and "." not in values[0]:
             scheduler[values[0].split("_")[0]] = dict(zip(("job_id", "state", "exit", "elapsed", "node"), values))
-    points, jobs, profiles = [], [], []
+    points, jobs, profiles, pending_reads = [], [], [], []
     for journal_path in sorted((args.root / "meta").glob("*-command.json")):
         journal = json.loads(journal_path.read_text())
         name = journal_path.name.removesuffix("-command.json")
@@ -153,7 +226,13 @@ def main():
         for path in candidates:
             if not path.exists():
                 continue
-            data = json.loads(path.read_text())
+            try:
+                data = json.loads(path.read_text())
+            except json.JSONDecodeError:
+                if scheduler_passed:
+                    raise
+                pending_reads.append({"path": str(path), "reason": "Nonterminal job has an incomplete JSON write."})
+                continue
             child = path.parent.parent
             closed = source_closure(child)
             passed = scheduler_passed and closed and exit_code(child / "returncode.txt") == 0
@@ -165,6 +244,7 @@ def main():
                 condition_pair_closed = before.exists() and after.exists() and before.read_bytes() == after.read_bytes()
             common = {
                 "name": name,
+                "trial": child.name,
                 "path": str(path),
                 "sha256": digest(path),
                 "scope": data["scope"],
@@ -240,12 +320,14 @@ def main():
                 "device_free_bytes_at_end": data["device_free_bytes"],
                 "effective_contact_block_size": data["effective_contact_block_size"],
                 "warmup": warmup_summary(data["warmup_quality"]),
-                "sampled_process_memory": sampled_memory(run, data["gpu_uuid"]),
+                "sampled_process_memory": sampled_memory(run, data["gpu_uuid"])
+                or sampled_memory(run, data["gpu_uuid"], f"process-memory-{child.name}.csv"),
             }
             if "trace" in data:
                 trace = path.with_suffix(".trace.json")
                 assert trace.exists(), trace
                 point["trace"] = trace_summary(trace)
+                point["trace_metadata"] = data.get("trace_metadata")
             points.append(point)
     comparisons = []
     for name in sorted({point["name"] for point in points}):
@@ -264,15 +346,48 @@ def main():
                     - group["policy-rigid"]["median_batch_latency_ms"],
                 }
             )
+    pairs = []
+    for name in sorted({point["name"] for point in points if "paired-live" in point["name"]}):
+        group = {point["trial"]: point for point in points if point["name"] == name}
+        trials = ("baseline-a1", "candidate-b1", "candidate-b2", "baseline-a2")
+        if all(trial in group for trial in trials):
+            baseline = [
+                value
+                for trial in ("baseline-a1", "baseline-a2")
+                for value in group[trial]["repeat_rates_valid_env_steps_per_second"]
+            ]
+            candidate = [
+                value
+                for trial in ("candidate-b1", "candidate-b2")
+                for value in group[trial]["repeat_rates_valid_env_steps_per_second"]
+            ]
+            same_gpu = len({group[trial]["gpu_uuid"] for trial in trials}) == 1
+            pairs.append(
+                {
+                    "name": name,
+                    "same_gpu": same_gpu,
+                    "all_trials_eligible": same_gpu
+                    and all(group[trial]["eligible_primary_headline"] for trial in trials),
+                    "baseline_repeat_rates": baseline,
+                    "candidate_repeat_rates": candidate,
+                    "candidate_median_rate_ratio": statistics.median(candidate) / statistics.median(baseline),
+                    "candidate_minimum_over_baseline_maximum": min(candidate) / max(baseline),
+                    "baseline_trial_median_drift_ratio": group["baseline-a2"]["median_rate"]
+                    / group["baseline-a1"]["median_rate"],
+                    "note": "Observed repeat range, not a statistical confidence interval. ABBA uses separate warmed processes on one GPU.",
+                }
+            )
     result = {
         "generated_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "aggregation_source_sha256": digest(Path(__file__)),
         "baseline_contract_sha256": digest(contract_path),
         "scheduler_export_sha256": digest(args.sacct),
         "jobs": jobs,
+        "pending_artifact_reads": pending_reads,
         "points": points,
         "frozen_profiles": profiles,
         "four_scope_comparisons": comparisons,
+        "same_gpu_paired_live_comparisons": pairs,
         "memory_note": "Native buffers and Torch allocator peaks cover different allocators. Neither the end-of-run free memory nor native byte count establishes peak process VRAM.",
         "goal_completion": False,
     }
