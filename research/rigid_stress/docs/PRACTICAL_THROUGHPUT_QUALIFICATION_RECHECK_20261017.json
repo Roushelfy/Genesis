@@ -1,0 +1,146 @@
+{
+  "generated_utc": "2026-10-17T11:42:29.347835+00:00",
+  "scope": "Recheck existing qualification metadata, byte hashes, and actual receipts.\n\nThis does not execute numerical code or replace the independent scientific tests.\n",
+  "engine_snapshot_manifest_sha256": "b0f2f9cdaac8b90cfffe6a691c1f2ef1cdb0c6eeb4d356e2632e72f7a072ec10",
+  "actual_source_hashes_and_inventory_rechecked": 899,
+  "current_canonical_engine_files_matching_snapshot": 841,
+  "current_canonical_test_files_byte_matching_latest_executed_overlay": 73,
+  "comment_only_test_source_differences": [
+    {
+      "path": "tests/rigid/test_stress_source_priors.py",
+      "executed_overlay_sha256": "a69c8878a571f3545f67e25a4cd47054be242716bbe92a156b6cacfd2731eece",
+      "current_sha256": "40d2895cf5b7427f975239968756efc9ebda0a7784b018e8edacc71f5fdad882",
+      "AST_equal": true,
+      "diff": "--- \n+++ \n@@ -552,8 +552,8 @@\n     assert_equal(qd_to_numpy(streamed.failure.status), 0)\n     assert_allclose(qd_to_numpy(state.peak), reference[3], rtol=1e-4, atol=1e-3)\n \n-    # A complete release must clear the old union even when its workspace is\n-    # reused without reading the packed count back from the device.\n+    # A complete release must clear the old union before its workspace is\n+    # reused on recontact.\n     raw.valid.fill(False)\n     errno.fill(0)\n     kernel_begin_step(state)\n"
+    }
+  ],
+  "comparison_input_hashes_rechecked": 72,
+  "checks": [
+    {
+      "kind": "actual JUnit and source/test closure",
+      "job": "725190",
+      "cases": 12,
+      "junit_sha256": "00a0e382baefb0fbbc2485d7fc26bbc2bb05dac1434323d6ecc9d0b99f1585d6",
+      "exit_evidence": "separate scientific-program and wrapper exit files",
+      "passed": true
+    },
+    {
+      "kind": "actual JUnit and source/test closure",
+      "job": "725191",
+      "cases": 12,
+      "junit_sha256": "fcc975514439475d85239e127a5521f00973acd1f9486a65bb58f1d60d65b72b",
+      "exit_evidence": "separate scientific-program and wrapper exit files",
+      "passed": true
+    },
+    {
+      "kind": "actual JUnit and source/test closure",
+      "job": "725223",
+      "cases": 3,
+      "junit_sha256": "a730ee55f93fd0080e83554ae9ec870fd71c9dd21350d4cf2542becc67ccbdd4",
+      "exit_evidence": "separate scientific-program and wrapper exit files",
+      "passed": true
+    },
+    {
+      "kind": "actual JUnit and source/test closure",
+      "job": "725271",
+      "cases": 3,
+      "junit_sha256": "90d914eb3368c8f850ccba97192e9eb7490b9148606b68235493a9987723b86b",
+      "exit_evidence": "separate scientific-program and wrapper exit files",
+      "passed": true
+    },
+    {
+      "kind": "actual JUnit and source/test closure",
+      "job": "725272",
+      "cases": 3,
+      "junit_sha256": "63ed7d6b1c1de7625e12f7c1e24ef2f701f044f52fbd5b11dee546752fb4d3f2",
+      "exit_evidence": "separate scientific-program and wrapper exit files",
+      "passed": true
+    },
+    {
+      "kind": "actual application/lifecycle producer",
+      "job": "725194",
+      "summary_sha256": "60d93d99825ec5de55ce330128ab68a47d681f5c13118160c65a849ce88d739f",
+      "exit_evidence": "separate scientific-program and wrapper exit files",
+      "passed": true
+    },
+    {
+      "kind": "actual application/lifecycle producer",
+      "job": "725195",
+      "summary_sha256": "93dafa2ec2eb40ee3af5ae6364a4b3470d78f56fee554368bcab7eec27d1cdc2",
+      "exit_evidence": "separate scientific-program and wrapper exit files",
+      "passed": true
+    },
+    {
+      "kind": "actual application/lifecycle producer",
+      "job": "725196",
+      "summary_sha256": "30f475b7fe36123d66d947b54d5a0417bc2023674c1ef49d273797e810fe63e2",
+      "exit_evidence": "separate scientific-program and wrapper exit files",
+      "passed": true
+    },
+    {
+      "kind": "actual application/lifecycle producer",
+      "job": "725233",
+      "summary_sha256": "f6203dbf16b28b7004b212dd7c70b66ce8494d3d8e85423ae2c153f19970d4c0",
+      "exit_evidence": "separate scientific-program and wrapper exit files",
+      "passed": true
+    },
+    {
+      "kind": "actual application/lifecycle producer",
+      "job": "725234",
+      "summary_sha256": "02ba5683588098978baa001f82d09e74f314428a5bda40d43738dd7aef8e9b7a",
+      "exit_evidence": "separate scientific-program and wrapper exit files",
+      "passed": true
+    },
+    {
+      "kind": "actual application/lifecycle producer",
+      "job": "725235",
+      "summary_sha256": "fe1e70132add7328b4cf0c1df7a38ac7f0d5855cbf497f9d80ae903dfc707a79",
+      "exit_evidence": "separate scientific-program and wrapper exit files",
+      "passed": true
+    },
+    {
+      "kind": "actual history4 large-batch lifecycle",
+      "job": "725197",
+      "summary_sha256": "87cbd1d4be6442cb07c67424419643c616d4ba880a62b20b5ccea42e620fb2d8",
+      "passed": true
+    },
+    {
+      "kind": "actual independent scientific comparison and its current input bytes",
+      "job": "725204",
+      "summary_sha256": "d682950c22803d1c9beb3bc48649cb002835bb6f7505057ffb0b667161cd76a6",
+      "input_hashes_rechecked": 28,
+      "exit_evidence": "Python is the final command under set -e; EXIT trap preserves its status and verifies unchanged source",
+      "passed": true
+    },
+    {
+      "kind": "actual independent scientific comparison and its current input bytes",
+      "job": "725236",
+      "summary_sha256": "0b53d5f97d22ab302e359ab2769a3443a72d7b242d33572c03413c591fe4c891",
+      "input_hashes_rechecked": 28,
+      "exit_evidence": "Python is the final command under set -e; EXIT trap preserves its status and verifies unchanged source",
+      "passed": true
+    },
+    {
+      "kind": "actual independent scientific comparison and its current input bytes",
+      "job": "725240",
+      "summary_sha256": "aaa4a725490147f0cd1f80f40601a1acd371705ad058a97102d255c11963f3a1",
+      "input_hashes_rechecked": 16,
+      "exit_evidence": "separate scientific-program and wrapper exit files",
+      "passed": true
+    }
+  ],
+  "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725190_0|COMPLETED|0:0|00:03:01|cpu-206-205\n725190_0.batch|COMPLETED|0:0|00:03:01|cpu-206-205\n725190_0.0|COMPLETED|0:0|00:03:00|cpu-206-205\n725191_0|COMPLETED|0:0|00:05:01|rtx-209-113\n725191_0.batch|COMPLETED|0:0|00:05:01|rtx-209-113\n725191_0.0|COMPLETED|0:0|00:05:01|rtx-209-113\n725194_0|COMPLETED|0:0|00:04:11|rtx-209-191\n725194_0.batch|COMPLETED|0:0|00:04:11|rtx-209-191\n725194_0.0|COMPLETED|0:0|00:04:10|rtx-209-191\n725195_0|COMPLETED|0:0|00:04:18|rtx-209-191\n725195_0.batch|COMPLETED|0:0|00:04:18|rtx-209-191\n725195_0.0|COMPLETED|0:0|00:04:17|rtx-209-191\n725196_0|COMPLETED|0:0|00:02:35|rtx-209-191\n725196_0.batch|COMPLETED|0:0|00:02:35|rtx-209-191\n725196_0.0|COMPLETED|0:0|00:02:34|rtx-209-191\n725197_0|COMPLETED|0:0|00:08:22|rtx-209-191\n725197_0.batch|COMPLETED|0:0|00:08:22|rtx-209-191\n725197_0.0|COMPLETED|0:0|00:08:20|rtx-209-191\n725204_0|COMPLETED|0:0|00:00:38|cpu-206-205\n725204_0.batch|COMPLETED|0:0|00:00:38|cpu-206-205\n725204_0.0|COMPLETED|0:0|00:00:37|cpu-206-205\n725223_0|COMPLETED|0:0|00:01:49|rtx-209-115\n725223_0.batch|COMPLETED|0:0|00:01:49|rtx-209-115\n725223_0.0|COMPLETED|0:0|00:01:48|rtx-209-115\n725233_0|COMPLETED|0:0|00:04:24|rtx-209-255\n725233_0.batch|COMPLETED|0:0|00:04:24|rtx-209-255\n725233_0.0|COMPLETED|0:0|00:04:24|rtx-209-255\n725234_0|COMPLETED|0:0|00:05:11|rtx-209-255\n725234_0.batch|COMPLETED|0:0|00:05:11|rtx-209-255\n725234_0.0|COMPLETED|0:0|00:05:11|rtx-209-255\n725235_0|COMPLETED|0:0|00:07:13|rtx-209-233\n725235_0.batch|COMPLETED|0:0|00:07:13|rtx-209-233\n725235_0.0|COMPLETED|0:0|00:07:13|rtx-209-233\n725236_0|COMPLETED|0:0|00:00:35|cpu-206-205\n725236_0.batch|COMPLETED|0:0|00:00:35|cpu-206-205\n725236_0.0|COMPLETED|0:0|00:00:34|cpu-206-205\n725240_0|COMPLETED|0:0|00:00:37|cpu-207-115\n725240_0.batch|COMPLETED|0:0|00:00:37|cpu-207-115\n725240_0.0|COMPLETED|0:0|00:00:36|cpu-207-115\n725271_0|COMPLETED|0:0|00:01:37|cpu-206-205\n725271_0.batch|COMPLETED|0:0|00:01:37|cpu-206-205\n725271_0.0|COMPLETED|0:0|00:01:36|cpu-206-205\n725272_0|COMPLETED|0:0|00:01:52|rtx-209-233\n725272_0.batch|COMPLETED|0:0|00:01:52|rtx-209-233\n725272_0.0|COMPLETED|0:0|00:01:52|rtx-209-233\n",
+  "source_sha256": "8778709a0e099e6e7c16e781f1bb1a485870f927bae731b6c1e292a1dd3190b2",
+  "passed": true,
+  "open_requirements": "Final B32768 normal rate closure, final metadata/figure artifacts, operating-point recommendation and full terminal completion audit.",
+  "goal_completion": false,
+  "retained_metadata_preflight_failure": {
+    "generated_utc": "2026-10-17T11:42:27.238100+00:00",
+    "attempt_source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/analysis-source/qualification-recheck-v1.py",
+    "attempt_source_sha256": "bd389f86eed0a8a782cc030b67b0aa044a142ce848ddb1d82c2cabd9dcfb9bc8",
+    "exit_code": 1,
+    "failure": "Preflight required byte equality for every historical test-overlay file. tests/rigid/test_stress_source_priors.py differs only in a two-line comment correcting the description of complete release. Full unified diff inspected and Python ASTs are equal. The newly executed native batch tests are byte-identical.",
+    "effect": "Metadata preflight assertion; no scientific job or numerical comparison failed or was restarted. V2 explicitly records this comment-only source difference without changing any numerical bounds.",
+    "goal_completion": false
+  }
+}

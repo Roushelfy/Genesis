@@ -10,7 +10,8 @@ training. Accuracy limits remain in the
 
 ## Freeze the source and condition bank
 
-From the selected task checkout, capture the actual source before scheduling:
+From the task checkout, reconstruct the exact selected benchmark source before
+scheduling. This includes the executed measurement files as well as the engine:
 
 ```bash
 set -euo pipefail
@@ -18,15 +19,24 @@ task_repo="$PWD"
 source research/rigid_stress/scripts/cluster_env.sh
 task_root="$RIGID_STRESS_DATA_ROOT/runs/throughput-reproduce-$(date -u +%Y%m%dT%H%M%SZ)"
 task_native="$task_root/native-source"
-task_bank="$task_repo/research/rigid_stress/evidence/20261014-physical/practical-application-v2/blobs/1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa.npz"
-task_revision=$(git rev-parse HEAD)
+task_recipe_packet="$task_repo/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1"
+task_bank="$task_recipe_packet/inputs/conditions.npz"
+task_revision="exact-selected-b0f2f9cdaac8"
 mkdir -p "$task_root/cache/cuda"
-python3 research/rigid_stress/scripts/snapshot_practical_native.py --output "$task_native"
+/usr/bin/python3 "$task_recipe_packet/rebuild_snapshot.py" \
+  --repository "$task_repo" --recipe "$task_recipe_packet/selected" \
+  --output "$task_native" --report "$task_root/rebuild-selected.json"
 sha256sum "$task_bank" "$task_native/snapshot-files.sha256" > "$task_root/input-identities.sha256"
 ```
 
 The bank SHA256 must be
 `1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa`.
+The selected manifest SHA256 must be
+`b0f2f9cdaac8b90cfffe6a691c1f2ef1cdb0c6eeb4d356e2632e72f7a072ec10`.
+For the original baseline, choose the `baseline` recipe and history4 instead;
+the recipe packet preserves its exact source identity. To measure new code,
+use `scripts/snapshot_practical_native.py --output "$task_native"` in place of
+the rebuild command with a fresh output, and record the actual Git revision.
 A new snapshot is a new source identity. Do not label it as the original
 `2da41428...` baseline or `4bc5a887...` candidate without an exact match.
 The original snapshots and submission commands remain under the established
@@ -36,23 +46,45 @@ the archived baseline's exact Git/source correspondence.
 
 ## Four scopes, fixed simulated duration
 
-The example below reproduces the published B8192 workload. Change only `--envs`
-for a batch sweep, retaining the eight-condition repetitions and all other
+The example below reproduces the fixed-history4 B8192 workload. Set the three
+variables before creating the script; use `task_history=0` for the independently
+qualified fast configuration, and `task_envs=16384` for its closed wider point.
+Final B32768 repeated measurements are still pending. Change only the batch
+variable for a sweep, retaining eight-condition repetitions and all other
 arguments. Wider cases need appropriate CPU memory and wall time; inspect the
-measured capacity record instead of assuming an allocation will fit.
+measured capacity record instead of assuming an allocation will fit. Initial
+workspace2 is separately labeled memory tuning with full contact growth.
 
 ```bash
+task_envs=8192
+task_history=4
+task_contact_block_size=16
 cat > "$task_root/workload.sh" <<EOF
 #!/usr/bin/env bash
 set -euo pipefail
+sha256sum "$task_bank" > "$task_root/conditions-before.sha256"
+task_finish() {
+  task_status=\$?
+  trap - EXIT
+  set +e
+  sha256sum "$task_bank" > "$task_root/conditions-after.sha256"
+  cmp "$task_root/conditions-before.sha256" "$task_root/conditions-after.sha256"
+  task_bank_status=\$?
+  if test "\$task_status" = 0; then
+    if test "\$task_bank_status" != 0; then task_status=\$task_bank_status; fi
+  fi
+  printf '%s\n' "\$task_status" > "$task_root/returncode.txt"
+  exit "\$task_status"
+}
+trap task_finish EXIT
 for task_scope in rigid live policy-rigid policy; do
   bash "$task_native/research/rigid_stress/scripts/run_practical_native_benchmark.sh" \
     "$task_root/\$task_scope" --scope "\$task_scope" \
-    --envs 8192 --level 1 --warmup 900 --steps 2400 --repetitions 3 \
+    --envs "$task_envs" --level 1 --warmup 900 --steps 2400 --repetitions 3 \
     --minimum-seconds 0 --varied --seed 623016 \
     --contact-model intrinsic --intrinsic-support contact \
-    --intrinsic-load-partition body_source_prior --contact-block-size 16 \
-    --history 4 --output-mode max --egg-geometry mesh64 \
+    --intrinsic-load-partition body_source_prior --contact-block-size "$task_contact_block_size" \
+    --history "$task_history" --output-mode max --egg-geometry mesh64 \
     --collision-method mpr --contact-patch off \
     --conditions "$task_bank" --source-revision "$task_revision" --compact-log
 done
