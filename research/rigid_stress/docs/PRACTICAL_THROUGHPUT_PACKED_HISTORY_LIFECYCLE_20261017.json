@@ -1,0 +1,103 @@
+{
+  "generated_utc": "2026-10-17T09:44:00.310651+00:00",
+  "scope": "Full B16384 lifecycle of the masked surface-history candidate; intrusive check, not headline timing.",
+  "job": "725197",
+  "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725197_0|COMPLETED|0:0|00:08:22|rtx-209-191\n725197_0.batch|COMPLETED|0:0|00:08:22|rtx-209-191\n725197_0.0|COMPLETED|0:0|00:08:20|rtx-209-191\n",
+  "program_exit": 0,
+  "wrapper_exit": 0,
+  "engine_hashes_closed": 899,
+  "snapshot_manifest_sha256": "b0f2f9cdaac8b90cfffe6a691c1f2ef1cdb0c6eeb4d356e2632e72f7a072ec10",
+  "executed_diagnostic_matches_canonical": true,
+  "diagnostic_source_sha256": "179889ae5ce14106e48dfe8afc472dad534bb747b3ff010e99e7a938a6ebfdba",
+  "source_before_after_sha256": "3ee2971a6ceb94678e514f781ebd29569aefeaad20ddfd593695c6e483a3eac3",
+  "orchestration_sha256": "8bb156ca173f5e31e83d5a20a6dc9a9b2571cb85ca6b076bc180b69b09424670",
+  "engine_inventory_after_this_job": {
+    "extra_files": [],
+    "missing_files": [],
+    "passed": true
+  },
+  "summary_sha256": "87cbd1d4be6442cb07c67424419643c616d4ba880a62b20b5ccea42e620fb2d8",
+  "summary": {
+    "scope": "Intrusive large-batch field, checkpoint, partial-reset and release checks.\n\nUse Slurm and an immutable engine snapshot. This is numerical/lifecycle evidence,\nnot throughput. The final zero-load/recontact stage is a frozen mapper check;\nthe live controller trajectory is complete before any raw contact is changed.\n",
+    "envs": 16384,
+    "initial_contact_block_size": 16,
+    "effective_contact_block_size": 16,
+    "output_mode": "full",
+    "conditions_sha256": "1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa",
+    "observed_envs": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8192,
+      16376,
+      16377,
+      16378,
+      16379,
+      16380,
+      16381,
+      16382,
+      16383
+    ],
+    "reset_envs": [
+      0,
+      1,
+      8192,
+      16383
+    ],
+    "warmup_steps": 900,
+    "following_live_steps": 600,
+    "observations": [
+      {
+        "tick": 902,
+        "maximum_complete_budget_fraction": 0.0066731616723987395
+      },
+      {
+        "tick": 1002,
+        "maximum_complete_budget_fraction": 0.33710078381873615
+      },
+      {
+        "tick": 1102,
+        "maximum_complete_budget_fraction": 0.667482102476583
+      },
+      {
+        "tick": 1202,
+        "maximum_complete_budget_fraction": 0.4314180643218508
+      },
+      {
+        "tick": 1302,
+        "maximum_complete_budget_fraction": 0.9627085208632536
+      },
+      {
+        "tick": 1402,
+        "maximum_complete_budget_fraction": 0.24887320551341177
+      },
+      {
+        "tick": 1502,
+        "maximum_complete_budget_fraction": 0.5048342563945935
+      }
+    ],
+    "frozen_replay": {
+      "wrench_conservation": "body_aggregate",
+      "nodal_force_max_difference_N": 4.0245584642661925e-16,
+      "peak_max_difference_Pa": 9.1749825514853e-09,
+      "original_point_max_difference_m": 0.0,
+      "normalized_force_error_max": 5.578485970841782e-10,
+      "normalized_moment_error_max": 1.195087251905225e-09,
+      "complete_residual_max_N": 1.9011595072330026e-10
+    },
+    "invalid_live_steps": 0,
+    "checkpoint_passed": true,
+    "partial_reset_and_unselected_following_step_passed": true,
+    "complete_frozen_release_and_recontact_passed": true,
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "gpu_uuid": "GPU-c09fdf1f-137f-346a-6ccb-6846034e475e",
+    "passed": true,
+    "goal_completion": false
+  },
+  "goal_completion": false
+}
