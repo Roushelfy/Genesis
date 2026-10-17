@@ -6,8 +6,8 @@ more than the verified elastic solve in the selected coarse reference. They
 also quantify the cost of the robust source-prior model. These results do not
 calibrate an absolute damage or fracture threshold.
 
-This report follows [the current practical goal](PRACTICAL_VALIDATION_GOAL.md).
-The [delivery checklist](PRACTICAL_VALIDATION_STATUS.md) records outstanding
+This report follows [the current practical goal](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PRACTICAL_VALIDATION_GOAL.md).
+The [delivery checklist](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PRACTICAL_VALIDATION_STATUS.md) records outstanding
 closeout items. Historical all-shape convergence studies remain separately
 scoped research; their failures and unresolved tails are preserved.
 
@@ -83,7 +83,7 @@ also redistributes local loads: at state869/6mm, one finger packet shifts about
 while the body aggregate remains constrained. Similar scalar peaks do not imply
 similar local loading.
 
-![Unsmoothed cell-wise stress sections](figures/practical-application/franka-stress-section-preview.png)
+![Unsmoothed cell-wise stress sections](../evidence/20261014-physical/practical-application-v2/blobs/490003ddd7427a5b764595a13fb84db44ba12f1de0929b3bf5b80b157bb3c931.png)
 
 At state866, the material x=0 sections share one full-range color scale. Each
 tetrahedron is intersected independently and its linear tensor is interpolated
@@ -91,7 +91,7 @@ to section vertices; Gouraud color interpolation is display only. No cells are
 merged or smoothed. The thin ring is the represented hollow shell, and the
 section does not replace the raw global extrema above.
 
-![Actual finite-traction samples](figures/practical-application/franka-traction-projection-preview.png)
+![Actual finite-traction samples](../evidence/20261014-physical/practical-application-v2/blobs/fd0176cb71aa4b568363b8c90ba9083b1aca6f8db4f4dbc6c0ff258a3921e351.png)
 
 Every positive-area native traction sample is retained in this material y/z
 projection. Marker shapes identify physical sources, not continuum islands.
@@ -100,7 +100,7 @@ and broader source-prior redistribution under identical original input wrenches.
 Editable SVG/PDF,1000dpi PNG, previews, plotting source and inspected QA accompany
 both figures.
 
-The [matched rigid/deformable history](PHYSICAL_COMPLETE_FEEDBACK_20261015.md)
+The [matched rigid/deformable history](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PHYSICAL_COMPLETE_FEEDBACK_20261015.md)
 independently measures omitted feedback: the largest tensor difference among
 seven sampled times is23.17% at state869, compared with0.003865% linear/nonlinear
 recovery there. It is not an all-time error bound. Both references retain the
@@ -111,7 +111,7 @@ for the resolved reference.
 
 ## Representative nonconvex and convex controls
 
-The [objective nonconvex U replay](PHYSICAL_NONLINEAR_U_SPATIAL_20261015.md)
+The [objective nonconvex U replay](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PHYSICAL_NONLINEAR_U_SPATIAL_20261015.md)
 already separates resolved-load linear recovery (0.002877% volume tensor
 difference from nonlinear R) from M/L differences around2.918% for componentwise/
 pair-union and2.945% for source-prior on2339 tetrahedra. Free-moment pressure
@@ -119,7 +119,7 @@ inputs remain unsupported. Its global hotspot lies in the inner bend, and
 the report retains stress maps and signed source-wrench redistribution.
 Unresolved spatial tails prevent an absolute accuracy claim.
 
-The [small smooth convex controls](PHYSICAL_MATCHED_NATIVE_AXES_20261016.md)
+The [small smooth convex controls](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PHYSICAL_MATCHED_NATIVE_AXES_20261016.md)
 retain228 accepted native fields,12 unsupported pressure rows and separate
 distance/integration axes. Quadrature10/14 volume changes are below0.01346%,
 while ports8/16 can still change the tensor norm by0.88726%. Existing14–17%

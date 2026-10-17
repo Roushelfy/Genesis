@@ -44,7 +44,7 @@ fixed2400-step repeats. No intrusive trajectory observer is enabled.
 ```bash
 cat > "$task_root/job.sh" <<EOF
 #!/usr/bin/env bash
-set -euo pipefail
+set -eo pipefail
 source /mnt/data/shared/config/env.sh
 for task_scope in rigid live policy-rigid policy; do
     GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 /usr/bin/env \

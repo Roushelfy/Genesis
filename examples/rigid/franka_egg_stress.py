@@ -281,6 +281,8 @@ def main() -> None:
     parser.add_argument("--envs", type=int, default=1)
     parser.add_argument("--level", type=int, choices=(1, 2), default=1)
     parser.add_argument("--steps", type=int, default=600)
+    parser.add_argument("--seed", type=int, default=510000)
+    parser.add_argument("--conditions", type=Path, help="Replay a saved benchmark condition bank.")
     parser.add_argument("--no-stress", action="store_true")
     parser.add_argument("--varied", action="store_true")
     parser.add_argument("--viewer", action="store_true")
@@ -309,8 +311,10 @@ def main() -> None:
         args.envs,
         args.level,
         not args.no_stress,
+        seed=args.seed,
         varied=args.varied,
         viewer=args.viewer,
+        conditions=args.conditions,
         output_mode=args.output_mode,
         saved_reset=not args.legacy_reset,
         native_controller=not args.torch_controller,

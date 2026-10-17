@@ -32,7 +32,7 @@ def main():
         "pyproject.toml",
         "research/rigid_stress/scripts/run_practical_native_benchmark.sh",
         "research/rigid_stress/scripts/cluster_env.sh",
-        "research/rigid_stress/docs/PRACTICAL_VALIDATION_GOAL.md",
+        "research/rigid_stress/docs/NATIVE_API.md",
     ]:
         files[relative] = root / relative
     patch = subprocess.check_output(["git", "diff", "HEAD", "--", "genesis", "examples"], cwd=root)

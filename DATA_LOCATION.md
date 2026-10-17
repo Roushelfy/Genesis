@@ -1,3 +1,21 @@
+# Current checkout and archived publications
+
+The 2026-10-17 branch cleanup retains seven canonical current evidence/source
+packets in the checkout. Historical publications and one-off research files
+listed below are recoverable at Git revision
+`1606ee3a9e9628a935ad5e446984f920af3adc66`; their former paths are historical
+provenance. See [the archive index](research/rigid_stress/archive/README.md)
+for exact retrieval and isolated sparse-worktree commands.
+Canonical retained packet bytes and SHA256 manifests were preserved.
+No runtime data, dependency environment, compatibility symlink or other
+worktree was migrated. Git history is retained without rewriting.
+
+Cleanup metadata and bounded verification outputs use
+`runs/20261017-repository-organization/` under the established data root below.
+New benchmark snapshots include the stable `NATIVE_API.md` contract in place
+of the superseded application-stage goal. Exact historical899-file recipes
+continue to restore their original files and identities unchanged.
+
 # Runtime data locations
 
 The unselected `research/rigid_stress/evidence/20261014-physical/five-level-thickness-v1`

@@ -144,7 +144,7 @@ A sampled fit failure triggers native local Q10 integration on the anchor
 face. A central triangle whose centroid is the anchor plus six surrounding
 triangles partitions that face. Parent-face shape functions transfer the new
 samples, replacing the original face samples. Retry and cumulative fit work
-are included in live timing. See [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
+are included in live timing. See [CONTACT_REPAIR_20261010.md](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/CONTACT_REPAIR_20261010.md).
 
 Inferred rigid acceleration relief removes resultant force and torque using
 consistent mass. Uniform gravity cancels under this model. Six fixed fields

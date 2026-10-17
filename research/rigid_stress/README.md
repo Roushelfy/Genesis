@@ -5,9 +5,10 @@ rigid; a shared linear-elastic model recovers a global raw maximum von Mises
 stress or the full stress field from normal and frictional contact loads.
 Production numerics use Quadrants and do not depend on the research prototype.
 
-The current task is [branch cleanup](GOAL.md).
-See [the archive index](archive/README.md) for superseded entrypoints; the broader
-research cleanup is the next stage, not completed by this documentation update.
+Start with [running the example and tests](docs/RUNNING.md), then use the
+[API](docs/NATIVE_API.md) and exact benchmark reproduction below.
+[Cleanup status](GOAL.md) and [the archive index](archive/README.md) explain the
+retained tools and how to recover historical source/evidence.
 
 ## Use and implementation
 

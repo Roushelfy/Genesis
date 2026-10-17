@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Validate the complete native stress feature from this worktree on an allocation.
 set -euo pipefail
+cd "$(dirname "${BASH_SOURCE[0]}")/../../.."
 
 task_backend=${1:?Backend required}
 task_run=${2:?New runtime directory required}
@@ -19,7 +20,7 @@ task_sources+=(tests/rigid/assets/*.npz
 sha256sum "${task_sources[@]}" > "$task_run/source.sha256"
 cp --parents "${task_sources[@]}" "$task_run/source"
 git rev-parse HEAD > "$task_run/base-revision.txt"
-git diff HEAD > "$task_run/source.patch"
+git diff HEAD -- "${task_sources[@]}" > "$task_run/source.patch"
 hostname > "$task_run/node.txt"
 "$RIGID_STRESS_ENV/bin/python" -c 'import genesis, sys; print(sys.version); print(genesis.__file__)' > "$task_run/import.txt"
 if [[ "$task_backend" == cuda ]]; then

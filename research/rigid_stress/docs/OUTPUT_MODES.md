@@ -18,7 +18,7 @@ Live positions and every per-environment rigid/grasp/contact/descent outcome
 match exactly. Policy trajectories evolve independently from stress
 observations, so these policy costs describe complete rollout. Same-state
 tensor/von Mises/peak accuracy uses the strict native tests and independent
-CPU field oracles. The [final report](NATIVE_NONCONVEX_RESULTS_20261014.md)
+CPU field oracles. The [final report](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/NATIVE_NONCONVEX_RESULTS_20261014.md)
 documents repeat controls, cross-process diagnostics and separate kernel
 traces. Full-mode storage remains107520 bytes/environment.
 

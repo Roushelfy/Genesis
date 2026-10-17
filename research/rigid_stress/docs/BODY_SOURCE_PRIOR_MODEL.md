@@ -90,7 +90,7 @@ is 0.005985.
 
 The full archive, original/failed attempts, source closures, JUnit numerical
 properties, independent oracle, policy logs and verifier are retained in
-[`native-source-priors-checkpoint-v1`](../evidence/20261011-nonconvex/native-source-priors-checkpoint-v1/manifest.json):
+[`native-source-priors-checkpoint-v1`](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/evidence/20261011-nonconvex/native-source-priors-checkpoint-v1/manifest.json):
 950 entries, 138 unique blobs, 3,154,183 bytes. Manifest SHA256:
 `b4ce87c709c5106b0c6dce7a9c628fc1cd713077437516599f0bde83b7868ae9`.
 
@@ -100,9 +100,9 @@ B4096/seed623103 env2174 has sampled-infeasible/continuous-unresolved status34,
 R=0.00408657883 m, mu=0.709940432. Both are single-contact groups. Neither
 run has a valid throughput result. Failure capture and independent CPU
 classification were required at that checkpoint. The
-[wrench/fan repair](NATIVE_WRENCH_FAN_REPAIR_20261012.md) and later refinement
+[wrench/fan repair](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/NATIVE_WRENCH_FAN_REPAIR_20261012.md) and later refinement
 resolve those contacts while preserving physical inputs and acceptance.
-The [2026-10-14 final report](NATIVE_NONCONVEX_RESULTS_20261014.md) now records
+The [2026-10-14 final report](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/NATIVE_NONCONVEX_RESULTS_20261014.md) now records
 current-source numerical/lifecycle coverage, six completed matched widths,
 grasp outcomes, full/max costs, scaling and the practical performance endpoint.
 The failed historical runs retain no accepted throughput result.

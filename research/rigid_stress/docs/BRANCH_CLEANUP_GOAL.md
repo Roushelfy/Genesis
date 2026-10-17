@@ -1,5 +1,8 @@
 # Goal: organize and archive the rigid stress branch
 
+Completed 2026-10-17: [implemented cleanup and verification](BRANCH_CLEANUP_RESULTS.md).
+The requirements below retain the accepted scope.
+
 User direction, 2026-10-17. This is the active next stage on
 `Roushelfy/Genesis:rigid-stress-recovery`.
 The practical throughput stage is complete; start from its accepted code and

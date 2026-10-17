@@ -1,9 +1,9 @@
 # Working on native rigid stress recovery
 
-Read [GOAL.md](GOAL.md) and
-[docs/BRANCH_CLEANUP_GOAL.md](docs/BRANCH_CLEANUP_GOAL.md) first.
-The active task is repository cleanup and archiving, not renewed physical
-convergence or throughput optimization. Historical plans do not override it.
+Read [GOAL.md](GOAL.md), [README.md](README.md) and
+[docs/RUNNING.md](docs/RUNNING.md) first. Branch cleanup and archiving are complete;
+[the result](docs/BRANCH_CLEANUP_RESULTS.md) records the layout and verification.
+Historical convergence and throughput plans do not create new active tasks.
 
 Follow root CLAUDE.md and CODING_GUIDELINES.md when editing engine code.
 The feature belongs to Genesis's existing rigid solver; all production numerical

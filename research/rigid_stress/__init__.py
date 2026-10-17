@@ -1,1 +1,1 @@
-"""Research handoff for fixed-shape rigid-link elastic stress recovery."""
+"""Independent references and validation tools for native rigid stress recovery."""
