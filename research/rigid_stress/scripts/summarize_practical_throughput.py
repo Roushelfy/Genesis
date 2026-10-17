@@ -63,6 +63,49 @@ def normalized_configuration(configuration):
     return [{key: value for key, value in row.items() if key != "mesh"} for row in configuration]
 
 
+def rollout_work(metrics, load_partition):
+    if metrics is None:
+        return None
+    rows = []
+    for repeat in metrics["repeats"]:
+        totals = repeat["totals"]
+        observed = totals["observed_steps"]
+        assert observed > 0
+        per_environment = repeat["per_environment"]
+        rows.append(
+            {
+                "observed_environment_steps": observed,
+                "valid_stress_contact_fraction": totals["loaded_steps"] / observed,
+                "two_finger_contact_fraction": totals["two_finger_contact_steps"] / observed,
+                "history_prediction_hit_fraction": (
+                    totals["history_prediction_hit_steps"] / observed
+                    if "history_prediction_hit_steps" in totals
+                    else None
+                ),
+                "recorded_fit_evaluations": totals["fit_evaluation_sum"],
+                "fit_evaluations_per_observed_environment_step": totals["fit_evaluation_sum"] / observed,
+                "maximum_fit_evaluations_in_one_step": max(per_environment["fit_evaluation_max"]),
+                "maximum_samples_per_source": max(per_environment["sample_count_max"]),
+                "maximum_nonzero_egg_contacts": max(per_environment["egg_contact_count_max"]),
+                "integration_retry_fraction": totals["integration_retry_frames"] / observed,
+                "elastic_corrections_per_environment_step": totals["elastic_corrections"] / observed,
+                "elastic_fallbacks_per_environment_step": totals["elastic_fallbacks"] / observed,
+                "invalid_stress_steps": totals["invalid_stress_steps"],
+                "work_percentiles": repeat["work_percentiles"],
+            }
+        )
+    return {
+        "repeats": rows,
+        "counter_contract": metrics["repeats"][0]["contract"],
+        "evaluation_interpretation": (
+            "The body-union leader carries cumulative dual evaluations. Inactive member constraints retain zero evaluations; only wrench errors/status propagate to members. The sum counts evaluations, not independent solves or GPU time."
+            if load_partition == "body_source_prior"
+            else "Evaluation counts sum the recorded active contact constraints; they are not GPU time."
+        ),
+        "contact_fraction_interpretation": "Any valid stress-contact witness, including a valid zero-force witness. Nonzero rigid contacts use the separately recorded threshold.",
+    }
+
+
 def sampled_memory(run, gpu_uuid, filename="process-memory-samples.csv"):
     path = run / filename
     if not path.exists():
@@ -320,6 +363,7 @@ def main():
                 "device_free_bytes_at_end": data["device_free_bytes"],
                 "effective_contact_block_size": data["effective_contact_block_size"],
                 "warmup": warmup_summary(data["warmup_quality"]),
+                "rollout_work": rollout_work(data["trajectory_metrics"], data["intrinsic_load_partition"]),
                 "sampled_process_memory": sampled_memory(run, data["gpu_uuid"])
                 or sampled_memory(run, data["gpu_uuid"], f"process-memory-{child.name}.csv"),
             }

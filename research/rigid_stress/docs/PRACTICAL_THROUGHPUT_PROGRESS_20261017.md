@@ -8,8 +8,10 @@ The [machine-readable checkpoint](PRACTICAL_THROUGHPUT_CHECKPOINT_20261017.json)
 [scheduler export](PRACTICAL_THROUGHPUT_SCHEDULER_20261017.txt) retain the initial
 evidence; later submitted jobs below are explicitly still pending verification.
 The [subsequent experiment checkpoint](PRACTICAL_THROUGHPUT_EXPERIMENTS_20261017.md)
-closes B8192, expands moving profiling to a complete controller period and
-records the small or negative results of the initial optimization candidates.
+closes B16384, supplies measured baseline scaling/memory curves, expands moving
+profiling to a complete controller period and records the small or negative
+results of the initial optimization candidates. Bounded candidate full-field
+and complete-grasp trace comparisons are also closed there.
 The merged-capacity candidate described below is now superseded.
 
 ## Frozen workload and provenance

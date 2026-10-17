@@ -1,151 +1,474 @@
 {
-  "scope": "Independent stdlib metadata re-read of every headline-eligible checkpoint-v4 row; original numerical gates are not replaced.",
-  "checked_points": [
+  "generated_utc": "2026-10-17T08:05:07.235158+00:00",
+  "scope": "Independent stdlib re-read of recorded timing/configuration fields, not new scientific validation. Policy observed errors are checked against the unchanged1e-9rad budget; they are measurements, not configuration equality fields.",
+  "summary_sha256": "1a56dc604dae2aa788d01860bd235213ba8b81c7e7846290ba0f8adea079f826",
+  "eligible_points": 52,
+  "checks": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-paired-live-b2048-v1/baseline-a1/results/benchmark.json",
+      "sha256": "d803d1ddb4b833f48192ab75381f240be0998a52977f9b98c66ed5055a17493c",
+      "scope": "live",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-paired-live-b2048-v1/baseline-a2/results/benchmark.json",
+      "sha256": "42d977abdcff2ebc775ddbeb4737a68386c63a9603322159c7d24e0abab4295f",
+      "scope": "live",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-paired-live-b2048-v1/candidate-b1/results/benchmark.json",
+      "sha256": "4a4506ec7b52c85ded276d2ea20bf3e617365eae384a5330a52d4d67166be7aa",
+      "scope": "live",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-paired-live-b2048-v1/candidate-b2/results/benchmark.json",
+      "sha256": "5d533b76eb68b9ece5db96cd64197095e63fdc55518c9eb6200181e0d0b6f319",
+      "scope": "live",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b16384-v1/live/results/benchmark.json",
+      "sha256": "4b26dec1e7abaf6a6016618bae33160be2b2e14be5d590381403f59364d16105",
+      "scope": "live",
+      "width": 16384,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b16384-v1/policy/results/benchmark.json",
+      "sha256": "a66dce521c213b81586b1bcd044cc5e6c2d1b31259d0e3512a2c348e81ce71c5",
+      "scope": "policy",
+      "width": 16384,
+      "policy_warmup_reference_max_error_rad": 1.1945500746901595e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b16384-v1/policy-rigid/results/benchmark.json",
+      "sha256": "13a7c60017b41392aeda975030f8a9c16d73d574d3ce1becfcf1d2d7b60c9446",
+      "scope": "policy-rigid",
+      "width": 16384,
+      "policy_warmup_reference_max_error_rad": 1.478715827563093e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b16384-v1/rigid/results/benchmark.json",
+      "sha256": "6cca3351eb484b9b6e90587970c417f9bc040162b62dc46c226ffb7b6d47f30a",
+      "scope": "rigid",
+      "width": 16384,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b2048-v1/live/results/benchmark.json",
-      "sha256": "0d68682c7e111836dc747927149c9bbe2622c2bc2b84fcc0ea40e80fa9fae1b1"
+      "sha256": "0d68682c7e111836dc747927149c9bbe2622c2bc2b84fcc0ea40e80fa9fae1b1",
+      "scope": "live",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b2048-v1/policy/results/benchmark.json",
-      "sha256": "8fe966c649729f19530c4e616d1500fda07798c1d092f2abcc753368f40bf893"
+      "sha256": "8fe966c649729f19530c4e616d1500fda07798c1d092f2abcc753368f40bf893",
+      "scope": "policy",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 1.1485417853590586e-11,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b2048-v1/policy-rigid/results/benchmark.json",
-      "sha256": "1ea189ad4c94f93b378817f1b0d700de83be20fe9d76f2da588a54e40f716dea"
+      "sha256": "1ea189ad4c94f93b378817f1b0d700de83be20fe9d76f2da588a54e40f716dea",
+      "scope": "policy-rigid",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 1.2020527284661853e-11,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b2048-v1/rigid/results/benchmark.json",
-      "sha256": "3a8b3a470302276b79c4f1be59880e7f65057ef990d61e5af2a49b986a8e3647"
+      "sha256": "3a8b3a470302276b79c4f1be59880e7f65057ef990d61e5af2a49b986a8e3647",
+      "scope": "rigid",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b256-v1/live/results/benchmark.json",
-      "sha256": "8dcaead37dc867405aab70ce2a8042e532718174f7eaa3f2696d78c0ebfd7a42"
+      "sha256": "8dcaead37dc867405aab70ce2a8042e532718174f7eaa3f2696d78c0ebfd7a42",
+      "scope": "live",
+      "width": 256,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b256-v1/policy/results/benchmark.json",
-      "sha256": "d1c056be0e40874d7f1e848ddc31d580021feee6a7fc381b6718ad2f77c72955"
+      "sha256": "d1c056be0e40874d7f1e848ddc31d580021feee6a7fc381b6718ad2f77c72955",
+      "scope": "policy",
+      "width": 256,
+      "policy_warmup_reference_max_error_rad": 1.0582372514389427e-11,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b256-v1/policy-rigid/results/benchmark.json",
-      "sha256": "f5e32e8c046de9accf805d2964c1709fe6b7f4e3066366c4aae87040f16c54bc"
+      "sha256": "f5e32e8c046de9accf805d2964c1709fe6b7f4e3066366c4aae87040f16c54bc",
+      "scope": "policy-rigid",
+      "width": 256,
+      "policy_warmup_reference_max_error_rad": 8.133358606055019e-12,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b256-v1/rigid/results/benchmark.json",
-      "sha256": "d52fff7c780b2397edfb35d4a563a6fad698aeb5f557e3bedd2f31e3383466a8"
+      "sha256": "d52fff7c780b2397edfb35d4a563a6fad698aeb5f557e3bedd2f31e3383466a8",
+      "scope": "rigid",
+      "width": 256,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b32-v1/live/results/benchmark.json",
-      "sha256": "4df1c69feccd59363ce7f1068ed4f585fce49cecac08fe1256ee481d5997e0da"
+      "sha256": "4df1c69feccd59363ce7f1068ed4f585fce49cecac08fe1256ee481d5997e0da",
+      "scope": "live",
+      "width": 32,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b32-v1/policy/results/benchmark.json",
-      "sha256": "764e8909f90aef61bbef79e78ae57ce8b2fcff8920ad66e4fc84cb70a82e62c4"
+      "sha256": "764e8909f90aef61bbef79e78ae57ce8b2fcff8920ad66e4fc84cb70a82e62c4",
+      "scope": "policy",
+      "width": 32,
+      "policy_warmup_reference_max_error_rad": 7.836250046078242e-12,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b32-v1/policy-rigid/results/benchmark.json",
-      "sha256": "cf11829f2498fdd59504c0e4b4da16e2daf4b372e904fa4eaa7c5d113a8644e8"
+      "sha256": "cf11829f2498fdd59504c0e4b4da16e2daf4b372e904fa4eaa7c5d113a8644e8",
+      "scope": "policy-rigid",
+      "width": 32,
+      "policy_warmup_reference_max_error_rad": 8.4909721670412e-12,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b32-v1/rigid/results/benchmark.json",
-      "sha256": "214fb4449aa83b191d4d5bab8ec8b5e9fbe1aae8d12fcfad102519625b2bd395"
+      "sha256": "214fb4449aa83b191d4d5bab8ec8b5e9fbe1aae8d12fcfad102519625b2bd395",
+      "scope": "rigid",
+      "width": 32,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b8192-v1/live/results/benchmark.json",
-      "sha256": "694bcbfb476c61b4baa93c24f8c1766e03de4282726ae8e51bd512aba13ea6fc"
+      "sha256": "694bcbfb476c61b4baa93c24f8c1766e03de4282726ae8e51bd512aba13ea6fc",
+      "scope": "live",
+      "width": 8192,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b8192-v1/policy/results/benchmark.json",
-      "sha256": "9b3ea0d08febd9df9639786bf61aead2cab613e41dca1e38ef2010eaf3be7183"
+      "sha256": "9b3ea0d08febd9df9639786bf61aead2cab613e41dca1e38ef2010eaf3be7183",
+      "scope": "policy",
+      "width": 8192,
+      "policy_warmup_reference_max_error_rad": 1.674703558607327e-11,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b8192-v1/policy-rigid/results/benchmark.json",
-      "sha256": "86292fe78cd0823f6813756d0d6168c53dfe48bf03f1aa4df4b87baf948da1a2"
+      "sha256": "86292fe78cd0823f6813756d0d6168c53dfe48bf03f1aa4df4b87baf948da1a2",
+      "scope": "policy-rigid",
+      "width": 8192,
+      "policy_warmup_reference_max_error_rad": 1.5468342154378868e-11,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b8192-v1/rigid/results/benchmark.json",
-      "sha256": "7427487c2a473f625ca9035ba4b5f31c3573ea2669ebc0710b6b46b1de0e9020"
+      "sha256": "7427487c2a473f625ca9035ba4b5f31c3573ea2669ebc0710b6b46b1de0e9020",
+      "scope": "rigid",
+      "width": 8192,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b2048-v1/live/results/benchmark.json",
-      "sha256": "280db3cd8a4a235053969da1649d773cf0049781b43e015f97ba809ffe6874cc"
+      "sha256": "280db3cd8a4a235053969da1649d773cf0049781b43e015f97ba809ffe6874cc",
+      "scope": "live",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b2048-v1/policy/results/benchmark.json",
-      "sha256": "84f954ff2c1e4e6bc22b70c92aa860b651c1a29436171dcb0e72cc68e87a1316"
+      "sha256": "84f954ff2c1e4e6bc22b70c92aa860b651c1a29436171dcb0e72cc68e87a1316",
+      "scope": "policy",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 1.148541618617438e-11,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b2048-v1/policy-rigid/results/benchmark.json",
-      "sha256": "fe7c3a407247a4c1f1261a0982a7603a61eb4ee97f1d62d7899b33ac4eabb556"
+      "sha256": "fe7c3a407247a4c1f1261a0982a7603a61eb4ee97f1d62d7899b33ac4eabb556",
+      "scope": "policy-rigid",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 1.2020527284661853e-11,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b2048-v1/rigid/results/benchmark.json",
-      "sha256": "50f9e0ba98699128d004c6c6d44c092113a1c3ee3eee321cfa1b205485c571bd"
+      "sha256": "50f9e0ba98699128d004c6c6d44c092113a1c3ee3eee321cfa1b205485c571bd",
+      "scope": "rigid",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b256-v1/live/results/benchmark.json",
-      "sha256": "90cf8a0313e3f0c92f595e60a84b27f5df877f6f8bf0d68f6b11a056a7da57c2"
+      "sha256": "90cf8a0313e3f0c92f595e60a84b27f5df877f6f8bf0d68f6b11a056a7da57c2",
+      "scope": "live",
+      "width": 256,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b256-v1/policy/results/benchmark.json",
-      "sha256": "6cb48a24a01a55ac1b833ebb661e7cbca1c3cdf86ffde3d56dfcfe84168b2379"
+      "sha256": "6cb48a24a01a55ac1b833ebb661e7cbca1c3cdf86ffde3d56dfcfe84168b2379",
+      "scope": "policy",
+      "width": 256,
+      "policy_warmup_reference_max_error_rad": 1.0582372500511639e-11,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b256-v1/policy-rigid/results/benchmark.json",
-      "sha256": "d2004519b8b26ebfd1a08eed4371d1c44786145ca4141ff82747f674976bb230"
+      "sha256": "d2004519b8b26ebfd1a08eed4371d1c44786145ca4141ff82747f674976bb230",
+      "scope": "policy-rigid",
+      "width": 256,
+      "policy_warmup_reference_max_error_rad": 8.133358606055019e-12,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b256-v1/rigid/results/benchmark.json",
-      "sha256": "e5fe3b583f305cc04888b902be853ac5b0663c54967f58d04336da35d4ea3a4a"
+      "sha256": "e5fe3b583f305cc04888b902be853ac5b0663c54967f58d04336da35d4ea3a4a",
+      "scope": "rigid",
+      "width": 256,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b32-v1/live/results/benchmark.json",
-      "sha256": "2259a483eede363d71f12ae9fd9394b3749013d8628adb39eb4ed225754e4780"
+      "sha256": "2259a483eede363d71f12ae9fd9394b3749013d8628adb39eb4ed225754e4780",
+      "scope": "live",
+      "width": 32,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b32-v1/policy/results/benchmark.json",
-      "sha256": "d59f26e9a7c895bec69e141f6439a85a64f72eccb48837aff76e23599727c5a4"
+      "sha256": "d59f26e9a7c895bec69e141f6439a85a64f72eccb48837aff76e23599727c5a4",
+      "scope": "policy",
+      "width": 32,
+      "policy_warmup_reference_max_error_rad": 7.836227379487416e-12,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b32-v1/policy-rigid/results/benchmark.json",
-      "sha256": "c4a78121db3deeb2a7826b53965da86a7c1d8f74d11abb02beb735b7724ce29b"
+      "sha256": "c4a78121db3deeb2a7826b53965da86a7c1d8f74d11abb02beb735b7724ce29b",
+      "scope": "policy-rigid",
+      "width": 32,
+      "policy_warmup_reference_max_error_rad": 8.4909721670412e-12,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b32-v1/rigid/results/benchmark.json",
-      "sha256": "0cbc9331b89a830797907e4c655f6ac6aa89ef75f0175eecbac40c4ca6b7fa2d"
+      "sha256": "0cbc9331b89a830797907e4c655f6ac6aa89ef75f0175eecbac40c4ca6b7fa2d",
+      "scope": "rigid",
+      "width": 32,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/lazy-hessian-paired-live-b2048-v1/baseline-a1/results/benchmark.json",
+      "sha256": "8b7ea4cabeef843f6f3e939487db8b17d111d2f57d3a081e1aeb3ea24d2e50ee",
+      "scope": "live",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/lazy-hessian-paired-live-b2048-v1/baseline-a2/results/benchmark.json",
+      "sha256": "4a29342a19036b1cc1c1008fe2e062540f37b10a8dfc6bdbc70281ecec20695c",
+      "scope": "live",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/lazy-hessian-paired-live-b2048-v1/candidate-b1/results/benchmark.json",
+      "sha256": "a2d5fc627825df6da07812ab4a10f920d67d1b5714c61384fafe563d2cdd4b6a",
+      "scope": "live",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/lazy-hessian-paired-live-b2048-v1/candidate-b2/results/benchmark.json",
+      "sha256": "27c35553679602897953e2e68e9a54843139991bddbdf4e4a18a3026a1bf5cb4",
+      "scope": "live",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b2048-v2/live/results/benchmark.json",
-      "sha256": "445eef30c54d9444a634c8ec18c81b4b624452f92b5872ed8eb103b178717ee8"
+      "sha256": "445eef30c54d9444a634c8ec18c81b4b624452f92b5872ed8eb103b178717ee8",
+      "scope": "live",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b2048-v2/policy/results/benchmark.json",
-      "sha256": "9accea037edeb8348433cae547fb4a5e0ae38e2aeeb903550df35337c6322e7c"
+      "sha256": "9accea037edeb8348433cae547fb4a5e0ae38e2aeeb903550df35337c6322e7c",
+      "scope": "policy",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 1.1485415599143956e-11,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b2048-v2/policy-rigid/results/benchmark.json",
-      "sha256": "d92cd03935e559150b5d15ffddc65abf919e4981dab6a1c8c2a425a911483f87"
+      "sha256": "d92cd03935e559150b5d15ffddc65abf919e4981dab6a1c8c2a425a911483f87",
+      "scope": "policy-rigid",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 1.2020527284661853e-11,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b2048-v2/rigid/results/benchmark.json",
-      "sha256": "4273e13330e7d1bd431c9800cf1c5b6a56f84b5a660aeecd36a03ffd471df90c"
+      "sha256": "4273e13330e7d1bd431c9800cf1c5b6a56f84b5a660aeecd36a03ffd471df90c",
+      "scope": "rigid",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b32-v2/live/results/benchmark.json",
-      "sha256": "24dcf704a13fbb015a1d11af93d23deb8287c7434db4d694115043faaced67e0"
+      "sha256": "24dcf704a13fbb015a1d11af93d23deb8287c7434db4d694115043faaced67e0",
+      "scope": "live",
+      "width": 32,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b32-v2/policy/results/benchmark.json",
-      "sha256": "9f299d75f8b0ccbe516cd9ce4399a2629c3f5230e44fb4d301dc0804d9916998"
+      "sha256": "9f299d75f8b0ccbe516cd9ce4399a2629c3f5230e44fb4d301dc0804d9916998",
+      "scope": "policy",
+      "width": 32,
+      "policy_warmup_reference_max_error_rad": 7.836305718211811e-12,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b32-v2/policy-rigid/results/benchmark.json",
-      "sha256": "ccb6e13b81fc8734872cf2984a9903a4f7dab2320abcda159671148c798518d6"
+      "sha256": "ccb6e13b81fc8734872cf2984a9903a4f7dab2320abcda159671148c798518d6",
+      "scope": "policy-rigid",
+      "width": 32,
+      "policy_warmup_reference_max_error_rad": 8.4909721670412e-12,
+      "passed": true
     },
     {
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b32-v2/rigid/results/benchmark.json",
-      "sha256": "35d7c732827dcd7e9551fc6526bcbf1689f6019c3348b706e127836953724cbf"
+      "sha256": "35d7c732827dcd7e9551fc6526bcbf1689f6019c3348b706e127836953724cbf",
+      "scope": "rigid",
+      "width": 32,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/traction-one-warp-block-paired-live-b2048-v1/baseline-a1/results/benchmark.json",
+      "sha256": "84f6bae4d62bae7732dfd40d3710047b820118c29aff1a7412b221d9140a957c",
+      "scope": "live",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/traction-one-warp-block-paired-live-b2048-v1/baseline-a2/results/benchmark.json",
+      "sha256": "ceabb4f9cd07bf81442afb6e336cb784cca7a1cc7422e3f137d7e47e2f68e6fa",
+      "scope": "live",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/traction-one-warp-block-paired-live-b2048-v1/candidate-b1/results/benchmark.json",
+      "sha256": "e8b3835f2086f531db2d6c5684c51d9719fbd55139792a1b5cbf40b6236fb101",
+      "scope": "live",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/traction-one-warp-block-paired-live-b2048-v1/candidate-b2/results/benchmark.json",
+      "sha256": "f5efeaaa67bd1d07fedccb822f68201d9f9266d0477975d1a0909d937d884694",
+      "scope": "live",
+      "width": 2048,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
     }
   ],
-  "row_lengths_duration_rates_geometry_controller_policy_and_precision_match": true,
+  "configuration": [
+    {
+      "output_mode": "max",
+      "young": 10000000000.0,
+      "poisson": 0.3,
+      "density": 2000.0,
+      "contact_radius": 0.006,
+      "contact_model": "intrinsic",
+      "intrinsic_integration": "surface_fan",
+      "intrinsic_support": "contact",
+      "intrinsic_load_partition": "body_source_prior",
+      "cooperative_tractions": true,
+      "surface_fan_frontier": true,
+      "warm_start_tractions": true,
+      "contact_block_size": 16,
+      "surface_edge_subdivisions": 8,
+      "source_projection_limit": 0.0001,
+      "source_geometry_tolerance": 1e-08,
+      "source_uncertainty": 0.0,
+      "quadrature": 10,
+      "tolerance": 1e-08,
+      "absolute_tolerance": 1e-11,
+      "max_iterations": 2000,
+      "warm_start": true,
+      "history_size": 4,
+      "method": "auto",
+      "cooperative_solve": true,
+      "cooperative_pressure": true,
+      "cooperative_scatter": true,
+      "cooperative_balance": true,
+      "contact_wrench_reuse": null,
+      "face_parallel_scatter": true,
+      "scatter_tasks_per_env": 32,
+      "contact_moment_reuse": null,
+      "inverse_max_bytes": 67108864,
+      "inverse_precision": "64",
+      "surface_inverse": true,
+      "packed_surface_loads": true,
+      "packed_block_size": null,
+      "coalesced_residual": null,
+      "fused_pipeline": true,
+      "fused_rigid_post": null,
+      "cached_peak": true,
+      "cached_face_bounds": true,
+      "inverse_corrections": 2,
+      "preconditioner": "block"
+    }
+  ],
+  "passed": true,
   "goal_completion": false
 }
