@@ -250,9 +250,13 @@ def main():
         "--sacct", type=Path, required=True, help="sacct --format=JobID,State,ExitCode,Elapsed,NodeList -P"
     )
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--history", type=int, choices=(0, 4), default=4, help="Exact reference history setting.")
     args = parser.parse_args()
     contract_path = args.root / "meta/baseline-contract-v1.json"
     contract = json.loads(contract_path.read_text())
+    expected_configuration = normalized_configuration(contract["prior_exact_stress_configuration"])
+    for configuration in expected_configuration:
+        configuration["history_size"] = args.history
     scheduler = {}
     for line in args.sacct.read_text().splitlines()[1:]:
         values = line.split("|")
@@ -342,14 +346,17 @@ def main():
                 bool(arguments["trace"])
                 or data["trajectory_metrics"] is not None
                 or journal.get("intrusive_memory_capacity_diagnostic", False)
+                or (run / "process-memory-samples.csv").exists()
+                or (run / f"process-memory-{data['scope']}.csv").exists()
             )
             same_physics = data["conditions_sha256"] == contract["conditions_sha256"]
             same_physics = same_physics and data["dt"] == 0.01 and data["substeps"] == 1
+            same_physics = same_physics and data["history"] == args.history
             if data["scope"] in ("live", "policy"):
                 same_physics = same_physics and data["tetrahedra"] == 480 and data["dofs"] == 2430
-                same_physics = same_physics and normalized_configuration(
-                    data["stress_configurations"]
-                ) == normalized_configuration(contract["prior_exact_stress_configuration"])
+                same_physics = (
+                    same_physics and normalized_configuration(data["stress_configurations"]) == expected_configuration
+                )
             point = {
                 **common,
                 "repeat_rates_valid_env_steps_per_second": rates,
@@ -434,6 +441,7 @@ def main():
         "generated_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "aggregation_source_sha256": digest(Path(__file__)),
         "baseline_contract_sha256": digest(contract_path),
+        "reference_history": args.history,
         "scheduler_export_sha256": digest(args.sacct),
         "jobs": jobs,
         "pending_artifact_reads": pending_reads,

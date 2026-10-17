@@ -1,0 +1,463 @@
+diff --git a/examples/speed_benchmark/rigid_stress.py b/examples/speed_benchmark/rigid_stress.py
+index 451828ff9..3342614a9 100644
+--- a/examples/speed_benchmark/rigid_stress.py
++++ b/examples/speed_benchmark/rigid_stress.py
+@@ -383,6 +383,7 @@ def main() -> None:
+     parser.add_argument("--host-reset-indices", action="store_true", help="Compare uncached reset index transfers.")
+     parser.add_argument("--rigid-post-fusion", choices=("auto", "on", "off"), default="auto")
+     parser.add_argument("--trace", action="store_true", help="Export a separate intrusive CUDA/CPU trace pass.")
++    parser.add_argument("--trace-steps", type=int, default=50, help="Moving steps in the separate intrusive trace.")
+     parser.add_argument(
+         "--trajectory-metrics", action="store_true", help="Time device-side grasp outcomes and per-environment work."
+     )
+@@ -391,6 +392,8 @@ def main() -> None:
+     )
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
++    if args.trace and args.trace_steps <= 0:
++        parser.error("Trace steps must be positive.")
+     if args.trajectory_metrics and args.scope in ("profile", "recovery"):
+         parser.error("Trajectory metrics require rigid, live, policy or policy-rigid scope.")
+     args.output.parent.mkdir(parents=True, exist_ok=True)
+@@ -807,10 +810,12 @@ def main() -> None:
+         result["reset_index_cache_at_end"] = workload.reset_indices.describe()
+         if args.trace:
+             qd.sync()
++            trace_start_tick, trace_start_resets = workload.tick, workload.reset_count
++            trace_invalid_before = qd_to_numpy(entry.state.invalid_steps, copy=True) if workload.stress else None
+             with torch.profiler.profile(
+                 activities=(torch.profiler.ProfilerActivity.CPU, torch.profiler.ProfilerActivity.CUDA)
+             ) as profiler:
+-                for _ in range(50):
++                for _ in range(args.trace_steps):
+                     with torch.profiler.record_function("rigid_stress_trace_step"):
+                         action = (
+                             policy(workload.observation().to(dtype=policy_dtype))
+@@ -822,6 +827,17 @@ def main() -> None:
+             trace_path = args.output.with_suffix(".trace.json")
+             profiler.export_chrome_trace(str(trace_path))
+             result["trace"] = trace_path.name
++            result["trace_metadata"] = {
++                "steps": args.trace_steps,
++                "start_tick": trace_start_tick,
++                "end_tick": workload.tick,
++                "resets": workload.reset_count - trace_start_resets,
++                "invalid_environment_steps": int((qd_to_numpy(entry.state.invalid_steps) - trace_invalid_before).sum())
++                if workload.stress
++                else 0,
++                "scope": "Intrusive moving steps after timing; excluded from headline rates and pre-trace memory accounting.",
++            }
++            workload.scene.rigid_solver.check_errno()
+     args.output.write_text(json.dumps(result, indent=2) + "\n")
+     if args.compact_log:
+         for key in ("warmup_quality", "egg_position_m", "maximum_stress_Pa"):
+diff --git a/genesis/engine/solvers/rigid/stress/fan_refinement.py b/genesis/engine/solvers/rigid/stress/fan_refinement.py
+index 7bc7b4032..329c5f0b6 100644
+--- a/genesis/engine/solvers/rigid/stress/fan_refinement.py
++++ b/genesis/engine/solvers/rigid/stress/fan_refinement.py
+@@ -84,9 +84,9 @@ def func_refine_source_sample(
+                     state.profile[slot, i_c, i_b] = profile
+                     if qd.static(len(state.sample_positions.shape) == 3):
+                         state.sample_positions[slot, i_c, i_b] = position
+-                    elif qd.static(len(state.sample_positions.shape) == 4):
+-                        for i_a in qd.static(range(3)):
+-                            state.sample_positions[slot, i_c, i_b, i_a] = position[i_a]
++                    if qd.static(len(state.sample_barycentric.shape) == 4):
++                        for i_a in qd.static(range(2)):
++                            state.sample_barycentric[slot, i_c, i_b, i_a] = bary[i_a + 1]
+                 footprints.samples[i_c, i_b] += 1
+                 qd.atomic_max(footprints.maximum_distance[i_c, i_b], distance)
+ 
+diff --git a/genesis/engine/solvers/rigid/stress/footprint.py b/genesis/engine/solvers/rigid/stress/footprint.py
+index 1fa73249a..533d974a7 100644
+--- a/genesis/engine/solvers/rigid/stress/footprint.py
++++ b/genesis/engine/solvers/rigid/stress/footprint.py
+@@ -445,6 +445,9 @@ def kernel_surface_fan_profiles_impl(
+                     i_slot = qd.atomic_add(traction_state.sample_count[i_c, i_b], 1)
+                     traction_state.sample_indices[i_slot, i_c, i_b] = i_sample
+                     traction_state.profile[i_slot, i_c, i_b] = profile
++                    if qd.static(len(traction_state.sample_barycentric.shape) == 4):
++                        for i_a in qd.static(range(2)):
++                            traction_state.sample_barycentric[i_slot, i_c, i_b, i_a] = bary[i_a + 1]
+                     qd.atomic_add(footprint_state.samples[i_c, i_b], 1)
+                     qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], distance)
+     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+@@ -589,6 +592,11 @@ def kernel_refine_failed_disks(
+                 traction_state.sample_positions[i_q, i_c, i_b] = (
+                     surface_info.face_origin[i_face] + bary[1] * edges[0, :] + bary[2] * edges[1, :]
+                 )
++            if qd.static(len(traction_state.sample_barycentric.shape) == 4):
++                i_sample = 3 * traction_info.positions.shape[0] + i_q
++                i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
++                for i_a in qd.static(range(2)):
++                    traction_state.sample_barycentric[i_q, i_c, i_b, i_a] = bary[i_a + 1]
+             qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], radius * distance)
+ 
+ 
+diff --git a/genesis/engine/solvers/rigid/stress/intrinsic.py b/genesis/engine/solvers/rigid/stress/intrinsic.py
+index 256a8a312..b1a47cedc 100644
+--- a/genesis/engine/solvers/rigid/stress/intrinsic.py
++++ b/genesis/engine/solvers/rigid/stress/intrinsic.py
+@@ -181,19 +181,20 @@ class IntrinsicContacts:
+             return False
+         n_contacts, n_envs = self.contacts.valid.shape
+         previous = self.tractions
+-        sample_layout = (2, 1, 0) if len(previous.sample_positions.shape) == 4 else None
++        sample_layout = (2, 1, 0) if len(previous.sample_barycentric.shape) == 4 else None
+         self.tractions = replace(
+             previous,
+             profile=V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs), layout=sample_layout),
+             sample_indices=V(dtype=gs.qd_int, shape=(n_samples, n_contacts, n_envs), layout=sample_layout),
+             sample_positions=(
+-                V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs, 3), layout=(2, 1, 0, 3))
+-                if len(previous.sample_positions.shape) == 4
+-                else (
+-                    V_VEC(3, dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs))
+-                    if len(previous.sample_positions.shape) == 3
+-                    else previous.sample_positions
+-                )
++                V_VEC(3, dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs))
++                if len(previous.sample_positions.shape) == 3
++                else previous.sample_positions
++            ),
++            sample_barycentric=(
++                V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs, 2), layout=(2, 1, 0, 3))
++                if len(previous.sample_barycentric.shape) == 4
++                else previous.sample_barycentric
+             ),
+         )
+         kernel_copy_profiles(previous, self.tractions)
+@@ -441,9 +442,9 @@ def kernel_copy_profiles(previous: StressTractionState, current: StressTractionS
+             current.sample_indices[i_q, i_c, i_b] = previous.sample_indices[i_q, i_c, i_b]
+             if qd.static(len(previous.sample_positions.shape) == 3):
+                 current.sample_positions[i_q, i_c, i_b] = previous.sample_positions[i_q, i_c, i_b]
+-            elif qd.static(len(previous.sample_positions.shape) == 4):
+-                for i_a in qd.static(range(3)):
+-                    current.sample_positions[i_q, i_c, i_b, i_a] = previous.sample_positions[i_q, i_c, i_b, i_a]
++            if qd.static(len(previous.sample_barycentric.shape) == 4):
++                for i_a in qd.static(range(2)):
++                    current.sample_barycentric[i_q, i_c, i_b, i_a] = previous.sample_barycentric[i_q, i_c, i_b, i_a]
+ 
+ 
+ @qd.func
+diff --git a/genesis/engine/solvers/rigid/stress/surface_frontier.py b/genesis/engine/solvers/rigid/stress/surface_frontier.py
+index 69033b2d1..84c583b9b 100644
+--- a/genesis/engine/solvers/rigid/stress/surface_frontier.py
++++ b/genesis/engine/solvers/rigid/stress/surface_frontier.py
+@@ -122,6 +122,7 @@ def kernel_fan_frontier_samples(
+         i_work = i_task // n_local
+         i_sample = gs.qd_int(0)
+         position = qd.Vector.zero(gs.qd_float, 3)
++        bary = qd.Vector.zero(gs.qd_float, 3)
+         profile = gs.qd_float(0.0)
+         distance = gs.qd_float(0.0)
+         is_counted = False
+@@ -207,9 +208,9 @@ def kernel_fan_frontier_samples(
+                 traction_state.profile[i_slot, i_c, i_b] = profile
+                 if qd.static(len(traction_state.sample_positions.shape) == 3):
+                     traction_state.sample_positions[i_slot, i_c, i_b] = position
+-                elif qd.static(len(traction_state.sample_positions.shape) == 4):
+-                    for i_a in qd.static(range(3)):
+-                        traction_state.sample_positions[i_slot, i_c, i_b, i_a] = position[i_a]
++                if qd.static(len(traction_state.sample_barycentric.shape) == 4):
++                    for i_a in qd.static(range(2)):
++                        traction_state.sample_barycentric[i_slot, i_c, i_b, i_a] = bary[i_a + 1]
+     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+         if qd.static(len(traction_state.capacity_maximum.shape) == 1):  # noqa: SIM102
+             if traction_state.sample_count[i_c, i_b] > traction_state.profile.shape[0]:
+@@ -222,7 +223,6 @@ def kernel_fan_frontier_samples(
+             footprint_state.status[i_c, i_b] = StressFootprintStatus.EMPTY_SUPPORT
+ 
+ 
+-
+ def kernel_surface_fan_profiles(contacts, footprints, tractions, model, surface, paths, info, epsilon):
+     frontier = tractions.frontier
+     kernel_fan_frontier(contacts, footprints, tractions, model, surface, paths, info, epsilon, frontier)
+diff --git a/genesis/engine/solvers/rigid/stress/traction.py b/genesis/engine/solvers/rigid/stress/traction.py
+index 784848516..5e55b684a 100644
+--- a/genesis/engine/solvers/rigid/stress/traction.py
++++ b/genesis/engine/solvers/rigid/stress/traction.py
+@@ -135,6 +135,7 @@ class StressTractionState:
+     certificate: qd.Tensor
+     certificate_margin: qd.Tensor
+     sample_positions: qd.Tensor
++    sample_barycentric: qd.Tensor
+     sample_normals: qd.Tensor
+     sample_faces: qd.Tensor
+     sample_shape: qd.Tensor
+@@ -193,10 +194,11 @@ def create_tractions(
+         evaluations=V(dtype=gs.qd_int, shape=shape),
+         certificate=V_VEC(6, dtype=gs.qd_float, shape=shape),
+         certificate_margin=V(dtype=gs.qd_float, shape=shape),
+-        sample_positions=(
+-            V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs, 3), layout=(2, 1, 0, 3))
++        sample_positions=V_VEC(3, dtype=gs.qd_float, shape=sample_shape),
++        sample_barycentric=(
++            V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs, 2), layout=(2, 1, 0, 3))
+             if cached_fan_positions
+-            else V_VEC(3, dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs) if cached_fan_positions else sample_shape)
++            else V(dtype=gs.qd_float, shape=())
+         ),
+         sample_normals=V_VEC(3, dtype=gs.qd_float, shape=sample_shape),
+         sample_faces=V(dtype=gs.qd_int, shape=face_shape),
+@@ -385,6 +387,25 @@ def func_traction_local_index(
+     return i_local
+ 
+ 
++@qd.func
++def func_traction_fan_bary(
++    i_q: int, i_c: int, i_b: int, traction_state: StressTractionState, traction_info: StressTractionInfo
++):
++    i_sample = func_traction_sample_index(i_q, i_c, i_b, traction_state)
++    i_face = gs.qd_int(0)
++    bary = qd.Vector.zero(gs.qd_float, 3)
++    if qd.static(len(traction_state.sample_barycentric.shape) == 4):
++        u = traction_state.sample_barycentric[i_q, i_c, i_b, 0]
++        v = traction_state.sample_barycentric[i_q, i_c, i_b, 1]
++        bary = qd.Vector([1.0 - u - v, u, v])
++        i_face = i_sample // (3 * traction_info.gauss.shape[0] ** 2)
++        if i_sample >= 3 * traction_info.positions.shape[0]:
++            i_face = traction_state.circle.face[i_c, i_b]
++    else:
++        i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
++    return i_face, bary
++
++
+ @qd.func
+ def func_traction_geometry(
+     i_q: int, i_c: int, i_b: int, traction_state: StressTractionState, traction_info: StressTractionInfo
+@@ -392,21 +413,9 @@ def func_traction_geometry(
+     position, normal = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
+     i_sample = func_traction_sample_index(i_q, i_c, i_b, traction_state)
+     if qd.static(len(traction_state.fan_barycentric.shape) == 3):
+-        i_face = gs.qd_int(0)
+-        if qd.static(len(traction_state.sample_positions.shape) in (3, 4)):
+-            if qd.static(len(traction_state.sample_positions.shape) == 4):
+-                for i_a in qd.static(range(3)):
+-                    position[i_a] = traction_state.sample_positions[i_q, i_c, i_b, i_a]
+-            else:
+-                position = traction_state.sample_positions[i_q, i_c, i_b]
+-            n_quadrature = traction_info.gauss.shape[0] ** 2
+-            i_face = i_sample // (3 * n_quadrature)
+-            if i_sample >= 3 * traction_info.positions.shape[0]:
+-                i_face = traction_state.circle.face[i_c, i_b]
+-        else:
+-            i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
+-            edges = traction_info.face_edges[i_face]
+-            position = traction_info.face_origin[i_face] + bary[1] * edges[0, :] + bary[2] * edges[1, :]
++        i_face, bary = func_traction_fan_bary(i_q, i_c, i_b, traction_state, traction_info)
++        edges = traction_info.face_edges[i_face]
++        position = traction_info.face_origin[i_face] + bary[1] * edges[0, :] + bary[2] * edges[1, :]
+         normal = traction_info.inward_normals[i_face * traction_info.gauss.shape[0] ** 2]
+     elif qd.static(len(traction_state.sample_faces.shape) == 2):
+         i_local = func_traction_local_index(i_sample, i_c, i_b, traction_state, traction_info)
+@@ -439,7 +448,7 @@ def func_traction_shape(
+     i_face = i_sample // n_quadrature
+     basis = qd.Vector.zero(gs.qd_float, 6)
+     if qd.static(len(traction_state.fan_barycentric.shape) == 3):
+-        i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
++        i_face, bary = func_traction_fan_bary(i_q, i_c, i_b, traction_state, traction_info)
+         basis = qd.Vector(
+             [
+                 bary[0] * (2.0 * bary[0] - 1.0),
+diff --git a/genesis/engine/solvers/rigid/stress/model.py b/genesis/engine/solvers/rigid/stress/model.py
+index 0e824e019..36a4c0d60 100644
+--- a/genesis/engine/solvers/rigid/stress/model.py
++++ b/genesis/engine/solvers/rigid/stress/model.py
+@@ -260,10 +260,7 @@ class StressModel:
+                     options.young, options.tolerance, options.absolute_tolerance, state, self.info, False, coalesced
+                 )
+                 history.mark_hits(state)
+-                if self.inverse is not None:
+-                    self.inverse.apply(options.young, state, only_failed=True)
+-                else:
+-                    self.factor.solve(options.young, state, self.info, options.cooperative_solve, only_failed=True)
++                self.solve(options, state, omega, surface_load, only_failed=True)
+         else:
+             kernel_pcg_init(options.young, state, self.info, block, options.warm_start)
+             for _ in range((options.max_iterations + 15) // 16):
+@@ -317,14 +314,17 @@ class StressModel:
+         state: StressState,
+         omega: qd.Tensor | None = None,
+         surface_load: bool = False,
++        only_failed: bool = False,
+     ) -> None:
+         if surface_load and self.surface_inverse is not None:
+             assert omega is not None
+             block_size = options.packed_block_size
+             if block_size is None:
+                 block_size = 512 if state.active.shape[0] >= 8192 else 0
+-            self.surface_inverse.apply(options.young, omega, state, options.packed_surface_loads, block_size)
++            self.surface_inverse.apply(
++                options.young, omega, state, options.packed_surface_loads, block_size, only_failed
++            )
+         elif self.inverse is not None:
+-            self.inverse.apply(options.young, state)
++            self.inverse.apply(options.young, state, only_failed=only_failed)
+         else:
+-            self.factor.solve(options.young, state, self.info, options.cooperative_solve)
++            self.factor.solve(options.young, state, self.info, options.cooperative_solve, only_failed=only_failed)
+diff --git a/genesis/engine/solvers/rigid/stress/surface_inverse.py b/genesis/engine/solvers/rigid/stress/surface_inverse.py
+index 18b530fa2..f74422142 100644
+--- a/genesis/engine/solvers/rigid/stress/surface_inverse.py
++++ b/genesis/engine/solvers/rigid/stress/surface_inverse.py
+@@ -45,41 +45,59 @@ class StressSurfaceInverse:
+         qd.sync()
+ 
+     def apply(
+-        self, young: float, omega: qd.Tensor, state: StressState, packed: bool = True, block_size: int = 0
++        self,
++        young: float,
++        omega: qd.Tensor,
++        state: StressState,
++        packed: bool = True,
++        block_size: int = 0,
++        only_failed: bool = False,
+     ) -> None:
+         if packed and gs.backend == gs.cuda:
+-            kernel_surface_pack(state, self.info)
++            kernel_surface_pack(state, self.info, only_failed)
+             if block_size:
+-                kernel_surface_apply_packed_block(young, omega, state, self.info, block_size)
++                kernel_surface_apply_packed_block(young, omega, state, self.info, block_size, only_failed)
+             else:
+-                kernel_surface_apply_packed(young, omega, state, self.info)
++                kernel_surface_apply_packed(young, omega, state, self.info, only_failed)
+         else:
+-            kernel_surface_apply(young, omega, state, self.info)
++            kernel_surface_apply(young, omega, state, self.info, only_failed)
+ 
+ 
+ @qd.kernel
+-def kernel_surface_pack(stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo):
+-    func_surface_pack(stress_state, surface_inverse_info)
++def kernel_surface_pack(
++    stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo, only_failed: qd.template()
++):
++    func_surface_pack(stress_state, surface_inverse_info, only_failed)
+ 
+ 
+ @qd.func
+-def func_surface_pack(stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo):
++def func_surface_pack(
++    stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo, only_failed: qd.template() = False
++):
+     for i_b in range(stress_state.active.shape[0]):
+-        count = 0
+-        for j in range(surface_inverse_info.nodes.shape[0]):
+-            node = surface_inverse_info.nodes[j]
+-            force = stress_state.force[node, i_b]
+-            if force[0] != 0.0 or force[1] != 0.0 or force[2] != 0.0:
+-                stress_state.boundary_columns[count, i_b] = j
+-                count += 1
+-        stress_state.boundary_count[i_b] = count
++        solve_env = True
++        if qd.static(only_failed):
++            solve_env = not stress_state.valid[i_b]
++        if solve_env:
++            count = 0
++            for j in range(surface_inverse_info.nodes.shape[0]):
++                node = surface_inverse_info.nodes[j]
++                force = stress_state.force[node, i_b]
++                if force[0] != 0.0 or force[1] != 0.0 or force[2] != 0.0:
++                    stress_state.boundary_columns[count, i_b] = j
++                    count += 1
++            stress_state.boundary_count[i_b] = count
+ 
+ 
+ @qd.kernel(graph=True)
+ def kernel_surface_apply_packed(
+-    young: float, omega: qd.Tensor, stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo
++    young: float,
++    omega: qd.Tensor,
++    stress_state: StressState,
++    surface_inverse_info: StressSurfaceInverseInfo,
++    only_failed: qd.template(),
+ ):
+-    func_surface_apply_packed(young, omega, stress_state, surface_inverse_info)
++    func_surface_apply_packed(young, omega, stress_state, surface_inverse_info, only_failed=only_failed)
+ 
+ 
+ @qd.func
+@@ -89,20 +107,27 @@ def func_surface_apply_packed(
+     stress_state: StressState,
+     surface_inverse_info: StressSurfaceInverseInfo,
+     block_size: qd.template() = 0,
++    only_failed: qd.template() = False,
+ ):
+     if qd.static(block_size):
+         qd.loop_config(block_dim=block_size)
+     for i_n, i_b in qd.ndrange(stress_state.rhs.shape[0], stress_state.active.shape[0]):
+-        w = omega[i_b]
+-        terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
+-        value = surface_inverse_info.centrifugal[i_n] @ terms
+-        for slot in range(stress_state.boundary_count[i_b]):
+-            j = stress_state.boundary_columns[slot, i_b]
+-            node = surface_inverse_info.nodes[j]
+-            value += surface_inverse_info.force_blocks[i_n, j] @ stress_state.force[node, i_b]
+-        stress_state.displacement[i_n, i_b] = value / young
++        solve_env = True
++        if qd.static(only_failed):
++            solve_env = not stress_state.valid[i_b]
++        if solve_env:
++            w = omega[i_b]
++            terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
++            value = surface_inverse_info.centrifugal[i_n] @ terms
++            for slot in range(stress_state.boundary_count[i_b]):
++                j = stress_state.boundary_columns[slot, i_b]
++                node = surface_inverse_info.nodes[j]
++                value += surface_inverse_info.force_blocks[i_n, j] @ stress_state.force[node, i_b]
++            stress_state.displacement[i_n, i_b] = value / young
+     for i_b in range(stress_state.active.shape[0]):
+         stress_state.active[i_b] = 1
++        if qd.static(only_failed):
++            stress_state.active[i_b] = gs.qd_int(not stress_state.valid[i_b])
+         stress_state.valid[i_b] = True
+ 
+ 
+@@ -113,8 +138,9 @@ def kernel_surface_apply_packed_block(
+     stress_state: StressState,
+     surface_inverse_info: StressSurfaceInverseInfo,
+     block_size: qd.template(),
++    only_failed: qd.template(),
+ ):
+-    func_surface_apply_packed(young, omega, stress_state, surface_inverse_info, block_size)
++    func_surface_apply_packed(young, omega, stress_state, surface_inverse_info, block_size, only_failed)
+ 
+ 
+ @qd.kernel(graph=True)
+@@ -158,16 +184,26 @@ def kernel_surface_store(stress_state: StressState, surface_inverse_info: Stress
+ 
+ @qd.kernel(graph=True)
+ def kernel_surface_apply(
+-    young: float, omega: qd.Tensor, stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo
++    young: float,
++    omega: qd.Tensor,
++    stress_state: StressState,
++    surface_inverse_info: StressSurfaceInverseInfo,
++    only_failed: qd.template(),
+ ):
+     for i_n, i_b in qd.ndrange(stress_state.rhs.shape[0], stress_state.active.shape[0]):
+-        w = omega[i_b]
+-        terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
+-        value = surface_inverse_info.centrifugal[i_n] @ terms
+-        for j in range(surface_inverse_info.nodes.shape[0]):
+-            j_n = surface_inverse_info.nodes[j]
+-            value += surface_inverse_info.force_blocks[i_n, j] @ stress_state.force[j_n, i_b]
+-        stress_state.displacement[i_n, i_b] = value / young
++        solve_env = True
++        if qd.static(only_failed):
++            solve_env = not stress_state.valid[i_b]
++        if solve_env:
++            w = omega[i_b]
++            terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
++            value = surface_inverse_info.centrifugal[i_n] @ terms
++            for j in range(surface_inverse_info.nodes.shape[0]):
++                j_n = surface_inverse_info.nodes[j]
++                value += surface_inverse_info.force_blocks[i_n, j] @ stress_state.force[j_n, i_b]
++            stress_state.displacement[i_n, i_b] = value / young
+     for i_b in range(stress_state.active.shape[0]):
+         stress_state.active[i_b] = 1
++        if qd.static(only_failed):
++            stress_state.active[i_b] = gs.qd_int(not stress_state.valid[i_b])
+         stress_state.valid[i_b] = True

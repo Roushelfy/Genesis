@@ -1,0 +1,475 @@
+{
+  "generated_utc": "2026-10-17T10:36:46.086998+00:00",
+  "scope": "Closed history0 B8192 complete-period moving profile. Separate configuration, intrusive and excluded from headline rates.",
+  "job": "725242",
+  "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725242_0|COMPLETED|0:0|00:08:59|rtx-209-233\n725242_0.batch|COMPLETED|0:0|00:08:59|rtx-209-233\n725242_0.0|COMPLETED|0:0|00:08:58|rtx-209-233\n",
+  "source_and_actual_exits_closed": true,
+  "snapshot_manifest_sha256": "b0f2f9cdaac8b90cfffe6a691c1f2ef1cdb0c6eeb4d356e2632e72f7a072ec10",
+  "benchmark_sha256": "95dc81fe16733b81ff277513ef3901b845befdfb68fcfbf94b1f9069c6deab08",
+  "history": 0,
+  "trace_metadata": {
+    "steps": 600,
+    "start_tick": 2400,
+    "end_tick": 3000,
+    "resets": 8192,
+    "invalid_environment_steps": 0,
+    "scope": "Intrusive moving steps after timing; excluded from headline rates and pre-trace memory accounting."
+  },
+  "trace": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-complete-cycle-trace-b8192-v1/results/benchmark.trace.json",
+    "sha256": "6d7171eb3d90d88a23c0071e7b4ab7239ebda77283978ee9e8e4ef3e1950b409",
+    "step_count": 600,
+    "step_wall_sum_ms": 46524.764837000046,
+    "kernel_count": 184608,
+    "kernel_duration_sum_ms": 42459.924957999974,
+    "top_kernel_duration_sum_ms": [
+      [
+        "kernel_fit_tractions_impl_c1044_0_kernel_1_range_for",
+        11624.89604200002
+      ],
+      [
+        "kernel_fan_frontier_samples_c1042_0_kernel_4_range_for",
+        10524.80580099999
+      ],
+      [
+        "kernel_scatter_cached_tractions_c1048_0_kernel_5_range_for",
+        4816.697423000004
+      ],
+      [
+        "kernel_surface_apply_packed_block_c874_0_kernel_1_range_for",
+        3004.4618510000023
+      ],
+      [
+        "kernel_footprint_ports_c764_0_kernel_3_range_for",
+        2049.2635199999986
+      ],
+      [
+        "kernel_full_residual_impl_c866_0_kernel_3_range_for",
+        1487.4548590000013
+      ],
+      [
+        "kernel_substep_collision_c898_0_kernel_10_range_for",
+        1268.3504610000011
+      ],
+      [
+        "kernel_resolve_sources_c746_0_kernel_1_range_for",
+        1189.2936619999998
+      ],
+      [
+        "kernel_substep_collision_c898_0_kernel_11_range_for",
+        1080.7434749999998
+      ],
+      [
+        "kernel_peak_impl_c868_0_kernel_3_range_for",
+        927.9388409999995
+      ],
+      [
+        "kernel_fan_frontier_c1040_0_kernel_4_range_for",
+        483.2454979999997
+      ],
+      [
+        "func_solve_init_c690_0_kernel_23_island_tiled_factor_solve_range_for",
+        480.18139300000064
+      ],
+      [
+        "kernel_balance_impl_c856_0_kernel_3_range_for",
+        283.53526199999993
+      ],
+      [
+        "kernel_step_2_c894_0_kernel_12_sweep_links_by_level_range_for",
+        259.97187699999984
+      ],
+      [
+        "kernel_balance_impl_c856_0_kernel_5_range_for",
+        182.89325100000002
+      ],
+      [
+        "kernel_snapshot_source_priors_c780_0_kernel_1_range_for",
+        163.6447689999998
+      ],
+      [
+        "kernel_refine_failed_disks_c768_0_kernel_4_range_for",
+        159.87395400000017
+      ],
+      [
+        "kernel_substep_collision_c898_0_kernel_25_add_collision_constraints_range_for",
+        158.8971109999999
+      ],
+      [
+        "kernel_pack_intrinsic_contacts_c796_0_kernel_7_range_for",
+        111.338422
+      ],
+      [
+        "_kernel_solve_graph_c696_0_kernel_15_island_tiled_factor_solve_range_for",
+        106.54484700000005
+      ]
+    ],
+    "top_kernel_resource_metadata": {
+      "kernel_fit_tractions_impl_c1044_0_kernel_1_range_for": {
+        "registers per thread": 242,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 17
+      },
+      "kernel_fan_frontier_samples_c1042_0_kernel_4_range_for": {
+        "registers per thread": 120,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 33
+      },
+      "kernel_scatter_cached_tractions_c1048_0_kernel_5_range_for": {
+        "registers per thread": 102,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 33
+      },
+      "kernel_surface_apply_packed_block_c874_0_kernel_1_range_for": {
+        "registers per thread": 64,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          512,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 67
+      },
+      "kernel_footprint_ports_c764_0_kernel_3_range_for": {
+        "registers per thread": 62,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 67
+      },
+      "kernel_full_residual_impl_c866_0_kernel_3_range_for": {
+        "registers per thread": 126,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 33
+      },
+      "kernel_substep_collision_c898_0_kernel_10_range_for": {
+        "registers per thread": 255,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 17
+      },
+      "kernel_resolve_sources_c746_0_kernel_1_range_for": {
+        "registers per thread": 151,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 25
+      },
+      "kernel_substep_collision_c898_0_kernel_11_range_for": {
+        "registers per thread": 255,
+        "shared memory": 0,
+        "grid": [
+          188,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 8
+      },
+      "kernel_peak_impl_c868_0_kernel_3_range_for": {
+        "registers per thread": 72,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 58
+      },
+      "kernel_fan_frontier_c1040_0_kernel_4_range_for": {
+        "registers per thread": 74,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 50
+      },
+      "func_solve_init_c690_0_kernel_23_island_tiled_factor_solve_range_for": {
+        "registers per thread": 162,
+        "shared memory": 4800,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          32,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 25
+      },
+      "kernel_balance_impl_c856_0_kernel_3_range_for": {
+        "registers per thread": 98,
+        "shared memory": 12288,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 33
+      },
+      "kernel_step_2_c894_0_kernel_12_sweep_links_by_level_range_for": {
+        "registers per thread": 98,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          32,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 33
+      },
+      "kernel_balance_impl_c856_0_kernel_5_range_for": {
+        "registers per thread": 56,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 75
+      },
+      "kernel_snapshot_source_priors_c780_0_kernel_1_range_for": {
+        "registers per thread": 88,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 42
+      },
+      "kernel_refine_failed_disks_c768_0_kernel_4_range_for": {
+        "registers per thread": 76,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 50
+      },
+      "kernel_substep_collision_c898_0_kernel_25_add_collision_constraints_range_for": {
+        "registers per thread": 126,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          32,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 33
+      },
+      "kernel_pack_intrinsic_contacts_c796_0_kernel_7_range_for": {
+        "registers per thread": 23,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 100
+      },
+      "_kernel_solve_graph_c696_0_kernel_15_island_tiled_factor_solve_range_for": {
+        "registers per thread": 162,
+        "shared memory": 4800,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          32,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 25
+      }
+    },
+    "kernel_stage_duration_sum_ms": {
+      "rigid_constraint_solve": 1100.8233000000857,
+      "torch_auxiliary": 39.44457299999983,
+      "contact_mapping": 1447.5808469999538,
+      "step_lifecycle": 22.35497699999976,
+      "path_queries": 2079.3557999999894,
+      "surface_sampling": 11060.73154699989,
+      "source_priors": 189.71973799999535,
+      "traction_fit": 11740.300846999711,
+      "traction_refinement": 216.52016099999096,
+      "wrench_acceptance": 33.224429000000605,
+      "load_assembly_and_diagnostics": 4877.686342000009,
+      "inertia_relief": 473.9509949999972,
+      "elastic_solve": 3194.6121840000565,
+      "complete_residual": 1598.9523240000003,
+      "global_peak_and_full_output": 939.8132730000082,
+      "rigid_integration": 394.83978399999313,
+      "controller": 6.829687000000037,
+      "rigid_dynamics": 276.1180459999941,
+      "collision": 2761.010298999953,
+      "reset": 6.055805000000001
+    },
+    "kernel_stage_counts": {
+      "rigid_constraint_solve": 31800,
+      "torch_auxiliary": 8768,
+      "contact_mapping": 16800,
+      "step_lifecycle": 3600,
+      "path_queries": 3000,
+      "surface_sampling": 7200,
+      "source_priors": 3600,
+      "traction_fit": 7200,
+      "traction_refinement": 11400,
+      "wrench_acceptance": 6000,
+      "load_assembly_and_diagnostics": 7200,
+      "inertia_relief": 3600,
+      "elastic_solve": 10800,
+      "complete_residual": 12000,
+      "global_peak_and_full_output": 3000,
+      "rigid_integration": 12000,
+      "controller": 1200,
+      "rigid_dynamics": 18000,
+      "collision": 17400,
+      "reset": 40
+    },
+    "unclassified_kernel_names": [],
+    "runtime_counts": {
+      "cuLaunchKernel": 93040,
+      "cudaLaunchKernel": 8768,
+      "cudaMemcpyAsync": 2535,
+      "cudaStreamSynchronize": 2535,
+      "cudaDeviceSynchronize": 1
+    },
+    "runtime_duration_sum_ms": {
+      "cuLaunchKernel": 362.2677769999988,
+      "cudaLaunchKernel": 60.735760000000205,
+      "cudaMemcpyAsync": 25775.49267200003,
+      "cudaStreamSynchronize": 47.44890200000001,
+      "cudaDeviceSynchronize": 0.033337000000000006
+    },
+    "copy_counts": {
+      "Memcpy HtoD (Pageable -> Device)": 33088,
+      "Memcpy DtoH (Device -> Pageable)": 2463
+    },
+    "scope": "Intrusive moving steps after the timed rollout; not the complete trajectory or headline timing. Nested CPU/runtime times overlap GPU work and must not be added to kernel sums."
+  },
+  "goal_completion": false
+}

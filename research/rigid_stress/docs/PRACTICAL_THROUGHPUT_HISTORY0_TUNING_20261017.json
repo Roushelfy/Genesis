@@ -1,0 +1,47 @@
+{
+  "generated_utc": "2026-10-17T10:27:50.984951+00:00",
+  "scope": "Same-source same-GPU explicit history4/history0 tuning. Three2400-step repeats after900warm per setting; only history setting differs. Separate from fixed-history4 code speedup.",
+  "job": "725232",
+  "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725232_0|COMPLETED|0:0|00:31:42|rtx-209-255\n725232_0.batch|COMPLETED|0:0|00:31:42|rtx-209-255\n725232_0.0|COMPLETED|0:0|00:31:41|rtx-209-255\n",
+  "snapshot_manifest_sha256": "b0f2f9cdaac8b90cfffe6a691c1f2ef1cdb0c6eeb4d356e2632e72f7a072ec10",
+  "source_and_all_exits_closed": true,
+  "other_physics_and_options_equal": true,
+  "records": [
+    {
+      "name": "history4-a",
+      "history": 4,
+      "benchmark_path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-disabled-tuning-paired-b8192-v2/history4-a/results/benchmark.json",
+      "benchmark_sha256": "9883901567f5925970e51540379c07513cb5c7c9f6e401672626bc9ffb03501a",
+      "gpu_uuid": "GPU-f30bd82d-756d-28ed-24af-a6dec8bbf9bc",
+      "repeat_rates": [
+        78723.28798840701,
+        78768.50237558271,
+        78805.8210207294
+      ],
+      "median": 78768.50237558271,
+      "native_buffer_bytes": 10998644334,
+      "source_closed": true,
+      "program_exit": 0,
+      "wrapper_exit": 0
+    },
+    {
+      "name": "history0-b",
+      "history": 0,
+      "benchmark_path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-disabled-tuning-paired-b8192-v2/history0-b/results/benchmark.json",
+      "benchmark_sha256": "34761b9c53f87750fff0ba01626d55920cc0d96e68f49dd1599c34d39ac3e4dc",
+      "gpu_uuid": "GPU-f30bd82d-756d-28ed-24af-a6dec8bbf9bc",
+      "repeat_rates": [
+        105822.6267301693,
+        105966.83997235226,
+        105939.20231237983
+      ],
+      "median": 105939.20231237983,
+      "native_buffer_bytes": 8450129518,
+      "source_closed": true,
+      "program_exit": 0,
+      "wrapper_exit": 0
+    }
+  ],
+  "history0_over_history4": 1.3449437162997238,
+  "goal_completion": false
+}

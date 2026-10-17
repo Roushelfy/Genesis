@@ -138,6 +138,12 @@ records with the stdlib-only metadata auditor from the checkout root:
 ```
 
 Use the frozen `meta/baseline-contract-v1.json` and a fresh data-side output.
+Both the summarizer and auditor accept `--history 4` (default) or `--history 0`.
+Pass the same explicit setting to each tool when analyzing the separate history0
+tuning. The output records its reference history; all other frozen physical,
+numerical and policy settings remain matched. Real NVML sampling files mark a
+run intrusive even if a submission journal omits that annotation, and the
+independent auditor rejects trace/observer/sampling artifacts in headline rows.
 This verifies all eligible raw repeat rates, exact physical/numerical settings,
 controller/policy/precision, per-environment failure counts and the unchanged
 policy budget. Source/scheduler closure and independent physical field/lifecycle
@@ -178,3 +184,13 @@ For figures, use the exact renderer, input, SVG/PDF/PNG and QA in the
 The main experiment report and machine-readable checkpoint retain which results
 are closed, intrusive, failed or still pending. No final speedup or capacity
 claim follows merely from a successful submission.
+
+## Reconstruct exact sources and inputs
+
+The [source recipe packet](../evidence/20261017-throughput/source-recipes-v1/README.md)
+rebuilds both the original baseline and selected899-file trees from committed
+Git objects and small exact overrides. Both recipes have been executed and
+pass every file size/SHA256 and inventory check. It includes the exact condition
+bank, original contract and executed environment metadata. The stdlib/Git rebuild
+may run on the host, with its fresh225MB output and report explicitly under data.
+The normal scientific benchmark wrapper then runs through Slurm/gs-srun.

@@ -1,0 +1,40 @@
+{
+  "generated_utc": "2026-10-17T11:03:39.779105+00:00",
+  "scope": "History0/workspace2 tested capacity bracket; full untruncated contact growth, intrusive100ms NVML one-pass observations. Not headline throughput or a universal capacity limit.",
+  "snapshot_manifest_sha256": "b0f2f9cdaac8b90cfffe6a691c1f2ef1cdb0c6eeb4d356e2632e72f7a072ec10",
+  "records": [
+    {
+      "width": 47104,
+      "job": "725253",
+      "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725253_0|COMPLETED|0:0|00:28:05|rtx-209-223\n725253_0.batch|COMPLETED|0:0|00:28:05|rtx-209-223\n725253_0.0|COMPLETED|0:0|00:28:04|rtx-209-223\n",
+      "source_closed": true,
+      "program_exit": 0,
+      "wrapper_exit": 0,
+      "benchmark_sha256": "34aede38331a019e7f156032f5ca2ff64d2236e9131c0a40c0203f38d0ce8c82",
+      "valid_environment_steps": 113049600,
+      "rate": 122936.43822290223,
+      "native_buffer_bytes": 34835865198,
+      "gpu_total_bytes": 101975851008,
+      "sampled_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-block2-memory-capacity-b47104-v1/process-memory-samples.csv",
+        "sha256": "b81997ab8dc8d42ab6daa9d1415f94e77e4b336f8557184afd343c075a1eadd6",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 15983,
+        "maximum_observed_compute_process_bytes": 98098479104,
+        "samples_at_observed_maximum": 1,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+      }
+    },
+    {
+      "width": 49152,
+      "job": "725254",
+      "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725254_0|FAILED|1:0|00:11:11|rtx-209-223\n725254_0.batch|FAILED|1:0|00:11:11|rtx-209-223\n725254_0.0|FAILED|1:0|00:11:11|rtx-209-223\n",
+      "source_closed": true,
+      "program_exit": 1,
+      "wrapper_exit": 1,
+      "failure": "Actual CUDA allocation OOM during full two-coordinate fan-profile growth; before timed measurement.",
+      "log_sha256": "9d2a3d28c1e496e1d516ecdb0e0dd37e5d41ac52217392ce909f655e24043895"
+    }
+  ],
+  "goal_completion": false
+}
