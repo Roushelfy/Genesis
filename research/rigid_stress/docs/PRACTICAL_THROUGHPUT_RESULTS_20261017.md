@@ -9,7 +9,8 @@ B8192 with its original history4 configuration. A separately qualified history0
 setting gives another34.494% in a same-source/same-GPU comparison. The complete
 history0 four-scope B8192 run measures109293.43 live and108062.87 policy valid
 env-step/s. B16384 now closes116912.11 live and116695.21 policy env-step/s;
-final B32768 operating measurements are still running.
+history4 B32768 now closes85841.03 live/85651.18 policy env-step/s. Only the
+history0 B32768 repeated measurement is still running.
 
 ## Workload and comparison scope
 
@@ -62,7 +63,11 @@ The [independent raw metadata audit](PRACTICAL_THROUGHPUT_HISTORY0_RAW_RATE_AUDI
 rereads all eight closed B8192/B16384 scope records and passes their raw rates,
 unchanged stress/controller/policy settings and per-environment failure counts.
 The frozen original has a throughput shoulder from B8192 through B24576;
-final-source shoulder/refinement and curves remain open.
+the [selected history4 B32768 point](PRACTICAL_THROUGHPUT_PACKED_HISTORY_FINAL_SCALING_20261017.json)
+completes its six-width curve at85841.03 live and85651.18 policy env-step/s.
+Its B16384 rates are83587.26 live and83251.21 policy; doubling that batch adds
+only2.70%/2.88% throughput and establishes the measured history4 shoulder.
+Final history0 shoulder/refinement and curve packaging remain open.
 
 ## What changed and what still costs time
 
