@@ -445,6 +445,9 @@ def kernel_surface_fan_profiles_impl(
                     i_slot = qd.atomic_add(traction_state.sample_count[i_c, i_b], 1)
                     traction_state.sample_indices[i_slot, i_c, i_b] = i_sample
                     traction_state.profile[i_slot, i_c, i_b] = profile
+                    if qd.static(len(traction_state.sample_barycentric.shape) == 4):
+                        for i_a in qd.static(range(2)):
+                            traction_state.sample_barycentric[i_slot, i_c, i_b, i_a] = bary[i_a + 1]
                     qd.atomic_add(footprint_state.samples[i_c, i_b], 1)
                     qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], distance)
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
@@ -589,6 +592,11 @@ def kernel_refine_failed_disks(
                 traction_state.sample_positions[i_q, i_c, i_b] = (
                     surface_info.face_origin[i_face] + bary[1] * edges[0, :] + bary[2] * edges[1, :]
                 )
+            if qd.static(len(traction_state.sample_barycentric.shape) == 4):
+                i_sample = 3 * traction_info.positions.shape[0] + i_q
+                i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
+                for i_a in qd.static(range(2)):
+                    traction_state.sample_barycentric[i_q, i_c, i_b, i_a] = bary[i_a + 1]
             qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], radius * distance)
 
 

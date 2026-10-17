@@ -39,7 +39,8 @@ from tests.utils.assertions import assert_allclose, assert_equal
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-def test_legal_finite_annular_torques_recover_both_signs_and_actual_mu_with_independent_cpu_fields():
+@pytest.mark.parametrize("is_geometry_cached", (False, True))
+def test_legal_finite_annular_torques_recover_both_signs_and_actual_mu_with_independent_cpu_fields(is_geometry_cached):
     mesh = Path(__file__).resolve().parents[2] / "examples/rigid/assets/hollow_egg/level1/elastic.npz"
     with np.load(mesh) as saved:
         vertices, tets, faces = (saved[key] for key in ("vertices", "tetrahedra", "surface_triangles"))
@@ -65,7 +66,11 @@ def test_legal_finite_annular_torques_recover_both_signs_and_actual_mu_with_inde
     surface, paths = StressSurface(10, model.info), StressSurfacePaths(model.info, 8)
     contacts, sources = create_contacts(1, n_envs, radius), create_sources(1, n_envs)
     footprints = create_footprints(paths.info.positions.shape[0], 1, n_envs)
-    tractions, info = create_surface_fan_tractions(surface.info, 1, n_envs), create_traction_info(surface.info)
+    tractions, info = (
+        create_surface_fan_tractions(surface.info, 1, n_envs, cached_fan_positions=is_geometry_cached),
+        create_traction_info(surface.info),
+    )
+    assert len(tractions.sample_barycentric.shape) == (4 if is_geometry_cached else 0)
     contacts.valid.fill(True)
     contacts.position.from_numpy(np.broadcast_to(anchor, (1, n_envs, 3)).copy())
     contacts.force.from_numpy(np.broadcast_to(normal, (1, n_envs, 3)).copy())

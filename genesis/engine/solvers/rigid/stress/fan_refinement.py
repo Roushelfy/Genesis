@@ -84,9 +84,9 @@ def func_refine_source_sample(
                     state.profile[slot, i_c, i_b] = profile
                     if qd.static(len(state.sample_positions.shape) == 3):
                         state.sample_positions[slot, i_c, i_b] = position
-                    elif qd.static(len(state.sample_positions.shape) == 4):
-                        for i_a in qd.static(range(3)):
-                            state.sample_positions[slot, i_c, i_b, i_a] = position[i_a]
+                    if qd.static(len(state.sample_barycentric.shape) == 4):
+                        for i_a in qd.static(range(2)):
+                            state.sample_barycentric[slot, i_c, i_b, i_a] = bary[i_a + 1]
                 footprints.samples[i_c, i_b] += 1
                 qd.atomic_max(footprints.maximum_distance[i_c, i_b], distance)
 
