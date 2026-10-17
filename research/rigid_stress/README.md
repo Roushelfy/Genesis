@@ -1,6 +1,16 @@
 # Fixed-shape rigid stress recovery
 
-## Current stage: application-first qualification and delivery
+## Current stage: practical large-batch throughput optimization
+
+The user's 2026-10-17 next goal is
+[practical throughput optimization](docs/PRACTICAL_THROUGHPUT_GOAL.md).
+Profile, scale and optimize the recommended robust egg/Franka configuration,
+preserving same-input numerical consistency and complete-grasp proxy limits.
+Find a measured large-batch operating point rather than extrapolating B32
+application rates or different-workload historical rates. Production remains
+inside Genesis's rigid solver and entirely Quadrants for numerical work.
+
+## Delivered stage: application-first qualification and delivery
 
 The engineering handoff is in the [application report](docs/PRACTICAL_APPLICATION_RESULTS_20261016.md),
 [runnable commands](docs/RUNNING_PRACTICAL_APPLICATION.md) and
