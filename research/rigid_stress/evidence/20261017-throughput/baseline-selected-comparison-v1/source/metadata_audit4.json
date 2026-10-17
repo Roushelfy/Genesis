@@ -1,0 +1,1096 @@
+{
+  "generated_utc": "2026-10-17T12:25:31.912771+00:00",
+  "scope": "Independently reread headline timing/configuration records using stdlib only.\n\nThis checks recorded rates and the frozen workload, not physical field accuracy.\nSource/scheduler/wrapper qualification and numerical evidence remain separate.\n",
+  "summary_sha256": "7aa852a771c71de705831036b77ebdbb4515529d3e821be53409a5b00e7b0313",
+  "contract_sha256": "ca1cd9a6a2d321a671b511524e2856209b76760826f4afaa2e76e6844a39b084",
+  "reference_history": 4,
+  "audit_source_sha256": "94225c5c2cce74105dedd2483cb9fca6c31fc9b56522a67834cdf914499b6421",
+  "eligible_points": 115,
+  "checks": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b16384-v1/live/results/benchmark.json",
+      "sha256": "861e836681b3265f298d5c22d23b181c61767f660189a0483555a125f927dc14",
+      "scope": "live",
+      "width": 16384,
+      "recomputed_median_rate": 53067.97992894181,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b16384-v1/policy/results/benchmark.json",
+      "sha256": "255dedb2637b6fde2463da175ebd0973b1826bfe59207c9d45882b6035143af0",
+      "scope": "policy",
+      "width": 16384,
+      "recomputed_median_rate": 52829.10781946355,
+      "policy_warmup_reference_max_error_rad": 1.1945500738574922e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b16384-v1/policy-rigid/results/benchmark.json",
+      "sha256": "ad5db32c022561365bd1d46d5b0d931e7384db403cf6bc76318d4fb55591b69f",
+      "scope": "policy-rigid",
+      "width": 16384,
+      "recomputed_median_rate": 880143.3763479105,
+      "policy_warmup_reference_max_error_rad": 1.478715827563093e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b16384-v1/rigid/results/benchmark.json",
+      "sha256": "c630e128f442387282a3db41c95d4a5265a7e5365f0221debe1a34b9b8477cb5",
+      "scope": "rigid",
+      "width": 16384,
+      "recomputed_median_rate": 887532.9725904635,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b32768-v1/live/results/benchmark.json",
+      "sha256": "8ab5b495d7bf9528285ce9f1d28673a65e661cd5a22fbc6baec82cd3562c50eb",
+      "scope": "live",
+      "width": 32768,
+      "recomputed_median_rate": 53839.67911268106,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b32768-v1/policy/results/benchmark.json",
+      "sha256": "9568c8966ccb6e7dbc1914c5e3706d883729a3fd24e496ef4005fcbe659e8a58",
+      "scope": "policy",
+      "width": 32768,
+      "recomputed_median_rate": 53723.53537834603,
+      "policy_warmup_reference_max_error_rad": 1.6747035996855788e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b32768-v1/policy-rigid/results/benchmark.json",
+      "sha256": "493be51eaca277612f63bb81f9e6c1526fed30300604fcbe821332a80cb1c348",
+      "scope": "policy-rigid",
+      "width": 32768,
+      "recomputed_median_rate": 979797.8144939627,
+      "policy_warmup_reference_max_error_rad": 1.5468342154378868e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b32768-v1/rigid/results/benchmark.json",
+      "sha256": "85abaa795c95795f4a458c2d07cdc6bdc3552566f3dce051a5be059cbcaab1dc",
+      "scope": "rigid",
+      "width": 32768,
+      "recomputed_median_rate": 1038931.5151317796,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b8192-v1/live/results/benchmark.json",
+      "sha256": "5a0b95050799db92c94bd8a2ad4934709bfbf36db38942f110b848088aa72a25",
+      "scope": "live",
+      "width": 8192,
+      "recomputed_median_rate": 53218.966895771984,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b8192-v1/policy/results/benchmark.json",
+      "sha256": "5eb90623f94b012a9c4090d7c1f5ed80b0227430a5222557d050d801f31a032a",
+      "scope": "policy",
+      "width": 8192,
+      "recomputed_median_rate": 52958.87529731693,
+      "policy_warmup_reference_max_error_rad": 1.67470356887689e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b8192-v1/policy-rigid/results/benchmark.json",
+      "sha256": "1f5f59e7d338927b99b59c7c1a7b1a0686f4997425acfc07dd5089ab5d988a24",
+      "scope": "policy-rigid",
+      "width": 8192,
+      "recomputed_median_rate": 758745.624696449,
+      "policy_warmup_reference_max_error_rad": 1.5468342154378868e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b8192-v1/rigid/results/benchmark.json",
+      "sha256": "a3ffdd2843db2188ced421095494d34a3b8905fdf35636368ef9bc8c04920a85",
+      "scope": "rigid",
+      "width": 8192,
+      "recomputed_median_rate": 768635.2818950029,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-paired-live-b2048-v1/baseline-a1/results/benchmark.json",
+      "sha256": "d803d1ddb4b833f48192ab75381f240be0998a52977f9b98c66ed5055a17493c",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 45116.70699733924,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-paired-live-b2048-v1/baseline-a2/results/benchmark.json",
+      "sha256": "42d977abdcff2ebc775ddbeb4737a68386c63a9603322159c7d24e0abab4295f",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 45157.672320026104,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-paired-live-b2048-v1/candidate-b1/results/benchmark.json",
+      "sha256": "4a4506ec7b52c85ded276d2ea20bf3e617365eae384a5330a52d4d67166be7aa",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 45080.74463680039,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-paired-live-b2048-v1/candidate-b2/results/benchmark.json",
+      "sha256": "5d533b76eb68b9ece5db96cd64197095e63fdc55518c9eb6200181e0d0b6f319",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 45098.796086960836,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b12288-v1/live/results/benchmark.json",
+      "sha256": "bfc697d68e81ab723e8b8f628465fbbd3253f84adb6a34eb57c7b47b38a5f7c1",
+      "scope": "live",
+      "width": 12288,
+      "recomputed_median_rate": 53262.029935154125,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b12288-v1/policy/results/benchmark.json",
+      "sha256": "ea8800fe3ddabe4a3d911eaaf80fad41c79aebd32e3364e314239838ad298a1f",
+      "scope": "policy",
+      "width": 12288,
+      "recomputed_median_rate": 52687.10552465633,
+      "policy_warmup_reference_max_error_rad": 1.1945500744126037e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b12288-v1/policy-rigid/results/benchmark.json",
+      "sha256": "da4d3d6ff3a902609edb8cea309cd4871ca6075a54c62a6782df01099dc63498",
+      "scope": "policy-rigid",
+      "width": 12288,
+      "recomputed_median_rate": 813312.7076206488,
+      "policy_warmup_reference_max_error_rad": 1.478715827563093e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b12288-v1/rigid/results/benchmark.json",
+      "sha256": "4f0b29559d48ef7c1cb630b31546beea9bc0d8e6e9f1103e962b3c7445082650",
+      "scope": "rigid",
+      "width": 12288,
+      "recomputed_median_rate": 825247.240632528,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b16384-v1/live/results/benchmark.json",
+      "sha256": "4b26dec1e7abaf6a6016618bae33160be2b2e14be5d590381403f59364d16105",
+      "scope": "live",
+      "width": 16384,
+      "recomputed_median_rate": 53674.88497510413,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b16384-v1/policy/results/benchmark.json",
+      "sha256": "a66dce521c213b81586b1bcd044cc5e6c2d1b31259d0e3512a2c348e81ce71c5",
+      "scope": "policy",
+      "width": 16384,
+      "recomputed_median_rate": 53560.014638016815,
+      "policy_warmup_reference_max_error_rad": 1.1945500746901595e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b16384-v1/policy-rigid/results/benchmark.json",
+      "sha256": "13a7c60017b41392aeda975030f8a9c16d73d574d3ce1becfcf1d2d7b60c9446",
+      "scope": "policy-rigid",
+      "width": 16384,
+      "recomputed_median_rate": 891844.2153597653,
+      "policy_warmup_reference_max_error_rad": 1.478715827563093e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b16384-v1/rigid/results/benchmark.json",
+      "sha256": "6cca3351eb484b9b6e90587970c417f9bc040162b62dc46c226ffb7b6d47f30a",
+      "scope": "rigid",
+      "width": 16384,
+      "recomputed_median_rate": 898658.327552738,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b2048-v1/live/results/benchmark.json",
+      "sha256": "0d68682c7e111836dc747927149c9bbe2622c2bc2b84fcc0ea40e80fa9fae1b1",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 45118.751065324235,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b2048-v1/policy/results/benchmark.json",
+      "sha256": "8fe966c649729f19530c4e616d1500fda07798c1d092f2abcc753368f40bf893",
+      "scope": "policy",
+      "width": 2048,
+      "recomputed_median_rate": 44814.509606438194,
+      "policy_warmup_reference_max_error_rad": 1.1485417853590586e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b2048-v1/policy-rigid/results/benchmark.json",
+      "sha256": "1ea189ad4c94f93b378817f1b0d700de83be20fe9d76f2da588a54e40f716dea",
+      "scope": "policy-rigid",
+      "width": 2048,
+      "recomputed_median_rate": 398893.62755694776,
+      "policy_warmup_reference_max_error_rad": 1.2020527284661853e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b2048-v1/rigid/results/benchmark.json",
+      "sha256": "3a8b3a470302276b79c4f1be59880e7f65057ef990d61e5af2a49b986a8e3647",
+      "scope": "rigid",
+      "width": 2048,
+      "recomputed_median_rate": 434466.82847875374,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b24576-v1/live/results/benchmark.json",
+      "sha256": "d3c303343cff5eeb0013f9e579ee2f4f879d1d2bae974d3910f592a8db729c79",
+      "scope": "live",
+      "width": 24576,
+      "recomputed_median_rate": 52731.08929851716,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b24576-v1/policy/results/benchmark.json",
+      "sha256": "17229f61f87be99cb7f5207695ffd918f2bdeb35c723726341ef465e31415f2d",
+      "scope": "policy",
+      "width": 24576,
+      "recomputed_median_rate": 52678.81891505504,
+      "policy_warmup_reference_max_error_rad": 1.2276410144007599e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b24576-v1/policy-rigid/results/benchmark.json",
+      "sha256": "cf0821775346e6610ffb8e1f7cb9905e4bad7f9f0fd98e73392580bb5a8d404a",
+      "scope": "policy-rigid",
+      "width": 24576,
+      "recomputed_median_rate": 948838.5061236529,
+      "policy_warmup_reference_max_error_rad": 1.1275253225528915e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b24576-v1/rigid/results/benchmark.json",
+      "sha256": "ad6551da8134d1a7f2e853a15ce7c362312be10b6eb405b91ecefb22fc42f9a7",
+      "scope": "rigid",
+      "width": 24576,
+      "recomputed_median_rate": 952506.073682785,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b256-v1/live/results/benchmark.json",
+      "sha256": "8dcaead37dc867405aab70ce2a8042e532718174f7eaa3f2696d78c0ebfd7a42",
+      "scope": "live",
+      "width": 256,
+      "recomputed_median_rate": 16803.281227118394,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b256-v1/policy/results/benchmark.json",
+      "sha256": "d1c056be0e40874d7f1e848ddc31d580021feee6a7fc381b6718ad2f77c72955",
+      "scope": "policy",
+      "width": 256,
+      "recomputed_median_rate": 16271.649527315929,
+      "policy_warmup_reference_max_error_rad": 1.0582372514389427e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b256-v1/policy-rigid/results/benchmark.json",
+      "sha256": "f5e32e8c046de9accf805d2964c1709fe6b7f4e3066366c4aae87040f16c54bc",
+      "scope": "policy-rigid",
+      "width": 256,
+      "recomputed_median_rate": 75216.97616789337,
+      "policy_warmup_reference_max_error_rad": 8.133358606055019e-12,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b256-v1/rigid/results/benchmark.json",
+      "sha256": "d52fff7c780b2397edfb35d4a563a6fad698aeb5f557e3bedd2f31e3383466a8",
+      "scope": "rigid",
+      "width": 256,
+      "recomputed_median_rate": 84845.51137786201,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b32-v1/live/results/benchmark.json",
+      "sha256": "4df1c69feccd59363ce7f1068ed4f585fce49cecac08fe1256ee481d5997e0da",
+      "scope": "live",
+      "width": 32,
+      "recomputed_median_rate": 2615.38867173413,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b32-v1/policy/results/benchmark.json",
+      "sha256": "764e8909f90aef61bbef79e78ae57ce8b2fcff8920ad66e4fc84cb70a82e62c4",
+      "scope": "policy",
+      "width": 32,
+      "recomputed_median_rate": 2524.081908570331,
+      "policy_warmup_reference_max_error_rad": 7.836250046078242e-12,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b32-v1/policy-rigid/results/benchmark.json",
+      "sha256": "cf11829f2498fdd59504c0e4b4da16e2daf4b372e904fa4eaa7c5d113a8644e8",
+      "scope": "policy-rigid",
+      "width": 32,
+      "recomputed_median_rate": 9821.797813584408,
+      "policy_warmup_reference_max_error_rad": 8.4909721670412e-12,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b32-v1/rigid/results/benchmark.json",
+      "sha256": "214fb4449aa83b191d4d5bab8ec8b5e9fbe1aae8d12fcfad102519625b2bd395",
+      "scope": "rigid",
+      "width": 32,
+      "recomputed_median_rate": 11293.873370542986,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b8192-v1/live/results/benchmark.json",
+      "sha256": "694bcbfb476c61b4baa93c24f8c1766e03de4282726ae8e51bd512aba13ea6fc",
+      "scope": "live",
+      "width": 8192,
+      "recomputed_median_rate": 52658.161505376534,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b8192-v1/policy/results/benchmark.json",
+      "sha256": "9b3ea0d08febd9df9639786bf61aead2cab613e41dca1e38ef2010eaf3be7183",
+      "scope": "policy",
+      "width": 8192,
+      "recomputed_median_rate": 52509.983134759896,
+      "policy_warmup_reference_max_error_rad": 1.674703558607327e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b8192-v1/policy-rigid/results/benchmark.json",
+      "sha256": "86292fe78cd0823f6813756d0d6168c53dfe48bf03f1aa4df4b87baf948da1a2",
+      "scope": "policy-rigid",
+      "width": 8192,
+      "recomputed_median_rate": 751745.5188318046,
+      "policy_warmup_reference_max_error_rad": 1.5468342154378868e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b8192-v1/rigid/results/benchmark.json",
+      "sha256": "7427487c2a473f625ca9035ba4b5f31c3573ea2669ebc0710b6b46b1de0e9020",
+      "scope": "rigid",
+      "width": 8192,
+      "recomputed_median_rate": 763819.5209111514,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b2048-v1/live/results/benchmark.json",
+      "sha256": "280db3cd8a4a235053969da1649d773cf0049781b43e015f97ba809ffe6874cc",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 46645.77307058186,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b2048-v1/policy/results/benchmark.json",
+      "sha256": "84f954ff2c1e4e6bc22b70c92aa860b651c1a29436171dcb0e72cc68e87a1316",
+      "scope": "policy",
+      "width": 2048,
+      "recomputed_median_rate": 46268.00515463453,
+      "policy_warmup_reference_max_error_rad": 1.148541618617438e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b2048-v1/policy-rigid/results/benchmark.json",
+      "sha256": "fe7c3a407247a4c1f1261a0982a7603a61eb4ee97f1d62d7899b33ac4eabb556",
+      "scope": "policy-rigid",
+      "width": 2048,
+      "recomputed_median_rate": 396242.8685563133,
+      "policy_warmup_reference_max_error_rad": 1.2020527284661853e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b2048-v1/rigid/results/benchmark.json",
+      "sha256": "50f9e0ba98699128d004c6c6d44c092113a1c3ee3eee321cfa1b205485c571bd",
+      "scope": "rigid",
+      "width": 2048,
+      "recomputed_median_rate": 430182.1635534492,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b256-v1/live/results/benchmark.json",
+      "sha256": "90cf8a0313e3f0c92f595e60a84b27f5df877f6f8bf0d68f6b11a056a7da57c2",
+      "scope": "live",
+      "width": 256,
+      "recomputed_median_rate": 16781.943395472004,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b256-v1/policy/results/benchmark.json",
+      "sha256": "6cb48a24a01a55ac1b833ebb661e7cbca1c3cdf86ffde3d56dfcfe84168b2379",
+      "scope": "policy",
+      "width": 256,
+      "recomputed_median_rate": 16302.227514663862,
+      "policy_warmup_reference_max_error_rad": 1.0582372500511639e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b256-v1/policy-rigid/results/benchmark.json",
+      "sha256": "d2004519b8b26ebfd1a08eed4371d1c44786145ca4141ff82747f674976bb230",
+      "scope": "policy-rigid",
+      "width": 256,
+      "recomputed_median_rate": 75105.28246977748,
+      "policy_warmup_reference_max_error_rad": 8.133358606055019e-12,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b256-v1/rigid/results/benchmark.json",
+      "sha256": "e5fe3b583f305cc04888b902be853ac5b0663c54967f58d04336da35d4ea3a4a",
+      "scope": "rigid",
+      "width": 256,
+      "recomputed_median_rate": 85767.42047283497,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b32-v1/live/results/benchmark.json",
+      "sha256": "2259a483eede363d71f12ae9fd9394b3749013d8628adb39eb4ed225754e4780",
+      "scope": "live",
+      "width": 32,
+      "recomputed_median_rate": 2621.8689231902845,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b32-v1/policy/results/benchmark.json",
+      "sha256": "d59f26e9a7c895bec69e141f6439a85a64f72eccb48837aff76e23599727c5a4",
+      "scope": "policy",
+      "width": 32,
+      "recomputed_median_rate": 2522.3368435082502,
+      "policy_warmup_reference_max_error_rad": 7.836227379487416e-12,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b32-v1/policy-rigid/results/benchmark.json",
+      "sha256": "c4a78121db3deeb2a7826b53965da86a7c1d8f74d11abb02beb735b7724ce29b",
+      "scope": "policy-rigid",
+      "width": 32,
+      "recomputed_median_rate": 9786.518189425151,
+      "policy_warmup_reference_max_error_rad": 8.4909721670412e-12,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b32-v1/rigid/results/benchmark.json",
+      "sha256": "0cbc9331b89a830797907e4c655f6ac6aa89ef75f0175eecbac40c4ca6b7fa2d",
+      "scope": "rigid",
+      "width": 32,
+      "recomputed_median_rate": 11257.44392259065,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/lazy-hessian-paired-live-b2048-v1/baseline-a1/results/benchmark.json",
+      "sha256": "8b7ea4cabeef843f6f3e939487db8b17d111d2f57d3a081e1aeb3ea24d2e50ee",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 45657.11500309531,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/lazy-hessian-paired-live-b2048-v1/baseline-a2/results/benchmark.json",
+      "sha256": "4a29342a19036b1cc1c1008fe2e062540f37b10a8dfc6bdbc70281ecec20695c",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 45714.0388381125,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/lazy-hessian-paired-live-b2048-v1/candidate-b1/results/benchmark.json",
+      "sha256": "a2d5fc627825df6da07812ab4a10f920d67d1b5714c61384fafe563d2cdd4b6a",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 44090.55586603033,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/lazy-hessian-paired-live-b2048-v1/candidate-b2/results/benchmark.json",
+      "sha256": "27c35553679602897953e2e68e9a54843139991bddbdf4e4a18a3026a1bf5cb4",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 44079.49482794249,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/lazy-hessian-reconstructed-fan-four-scopes-b32768-v2/live/results/benchmark.json",
+      "sha256": "61b32b479bb907216fa1740d3245e3b3214c02aa048e8f3a075146ae3469455a",
+      "scope": "live",
+      "width": 32768,
+      "recomputed_median_rate": 50542.50623437027,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/lazy-hessian-reconstructed-fan-four-scopes-b32768-v2/policy/results/benchmark.json",
+      "sha256": "47c44ea6440bcc85a5bb07c817ad1d4e801234744c0e0319b5910976ba33577a",
+      "scope": "policy",
+      "width": 32768,
+      "recomputed_median_rate": 50459.99705769134,
+      "policy_warmup_reference_max_error_rad": 1.6747035908037945e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/lazy-hessian-reconstructed-fan-four-scopes-b32768-v2/policy-rigid/results/benchmark.json",
+      "sha256": "82ff9aaab2ec3f5305b5bc29480dce06b729961d8b6830024679070dca3e9ebf",
+      "scope": "policy-rigid",
+      "width": 32768,
+      "recomputed_median_rate": 1014491.2270294717,
+      "policy_warmup_reference_max_error_rad": 1.5468342154378868e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/lazy-hessian-reconstructed-fan-four-scopes-b32768-v2/rigid/results/benchmark.json",
+      "sha256": "e2ea0fc190b0259969236d43fcdab4b07343ea1cd8326784578ac303ee730196",
+      "scope": "rigid",
+      "width": 32768,
+      "recomputed_median_rate": 1021636.9301020495,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b2048-v2/live/results/benchmark.json",
+      "sha256": "445eef30c54d9444a634c8ec18c81b4b624452f92b5872ed8eb103b178717ee8",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 45250.45687819745,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b2048-v2/policy/results/benchmark.json",
+      "sha256": "9accea037edeb8348433cae547fb4a5e0ae38e2aeeb903550df35337c6322e7c",
+      "scope": "policy",
+      "width": 2048,
+      "recomputed_median_rate": 44871.16419004117,
+      "policy_warmup_reference_max_error_rad": 1.1485415599143956e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b2048-v2/policy-rigid/results/benchmark.json",
+      "sha256": "d92cd03935e559150b5d15ffddc65abf919e4981dab6a1c8c2a425a911483f87",
+      "scope": "policy-rigid",
+      "width": 2048,
+      "recomputed_median_rate": 398857.1719563138,
+      "policy_warmup_reference_max_error_rad": 1.2020527284661853e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b2048-v2/rigid/results/benchmark.json",
+      "sha256": "4273e13330e7d1bd431c9800cf1c5b6a56f84b5a660aeecd36a03ffd471df90c",
+      "scope": "rigid",
+      "width": 2048,
+      "recomputed_median_rate": 432902.0544178435,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b32-v2/live/results/benchmark.json",
+      "sha256": "24dcf704a13fbb015a1d11af93d23deb8287c7434db4d694115043faaced67e0",
+      "scope": "live",
+      "width": 32,
+      "recomputed_median_rate": 2634.4014242483117,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b32-v2/policy/results/benchmark.json",
+      "sha256": "9f299d75f8b0ccbe516cd9ce4399a2629c3f5230e44fb4d301dc0804d9916998",
+      "scope": "policy",
+      "width": 32,
+      "recomputed_median_rate": 2543.056623424828,
+      "policy_warmup_reference_max_error_rad": 7.836305718211811e-12,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b32-v2/policy-rigid/results/benchmark.json",
+      "sha256": "ccb6e13b81fc8734872cf2984a9903a4f7dab2320abcda159671148c798518d6",
+      "scope": "policy-rigid",
+      "width": 32,
+      "recomputed_median_rate": 9845.221680383764,
+      "policy_warmup_reference_max_error_rad": 8.4909721670412e-12,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/merged-capacity-readback-four-scopes-b32-v2/rigid/results/benchmark.json",
+      "sha256": "35d7c732827dcd7e9551fc6526bcbf1689f6019c3348b706e127836953724cbf",
+      "scope": "rigid",
+      "width": 32,
+      "recomputed_median_rate": 11332.738200475727,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-disabled-tuning-paired-b8192-v2/history4-a/results/benchmark.json",
+      "sha256": "9883901567f5925970e51540379c07513cb5c7c9f6e401672626bc9ffb03501a",
+      "scope": "live",
+      "width": 8192,
+      "recomputed_median_rate": 78768.50237558271,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b16384-v2/live/results/benchmark.json",
+      "sha256": "51351069f3818f5bb5e50865414275c89c5377a8497e43969e6b5fc4feefed76",
+      "scope": "live",
+      "width": 16384,
+      "recomputed_median_rate": 83587.25679236457,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b16384-v2/policy/results/benchmark.json",
+      "sha256": "c194a7c659ef8f55318c7bbf521f618363f03feac1d5a12cae414a2ca9336246",
+      "scope": "policy",
+      "width": 16384,
+      "recomputed_median_rate": 83251.20738015618,
+      "policy_warmup_reference_max_error_rad": 1.1945500746901595e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b16384-v2/policy-rigid/results/benchmark.json",
+      "sha256": "d3f28ec92a5b351fcb188103f21f3cb86de24cf8fa17d6e50dfa2ccb49fb09f5",
+      "scope": "policy-rigid",
+      "width": 16384,
+      "recomputed_median_rate": 873865.1833083413,
+      "policy_warmup_reference_max_error_rad": 1.478715827563093e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b16384-v2/rigid/results/benchmark.json",
+      "sha256": "e16923578036f679bf8703f588c027442010533ad28f2c7f8dc3b7c56345ada4",
+      "scope": "rigid",
+      "width": 16384,
+      "recomputed_median_rate": 881035.1365078507,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b2048-v2/live/results/benchmark.json",
+      "sha256": "8c4a753b4e30c9c926e6c758f7192673097a0922d92fd3decd16dc54c220624f",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 61699.78017601391,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b2048-v2/policy/results/benchmark.json",
+      "sha256": "d6b0052d4a1a9285b1e74d3d2ea68adbc538c98dd014694e488ae05b929eabd8",
+      "scope": "policy",
+      "width": 2048,
+      "recomputed_median_rate": 60284.20745227242,
+      "policy_warmup_reference_max_error_rad": 1.1485417113210606e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b2048-v2/policy-rigid/results/benchmark.json",
+      "sha256": "415efcd6c192577f1ee4c630168492e7fa71efc4bb3f5e385eb184d93e735778",
+      "scope": "policy-rigid",
+      "width": 2048,
+      "recomputed_median_rate": 381414.8131578083,
+      "policy_warmup_reference_max_error_rad": 1.2020527284661853e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b2048-v2/rigid/results/benchmark.json",
+      "sha256": "7f4c260a7f1e5dab5b36cefc28a0c1ba18d91da03d30b67cdcb1eff77ee6f1a7",
+      "scope": "rigid",
+      "width": 2048,
+      "recomputed_median_rate": 429628.6834875271,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b256-v2/live/results/benchmark.json",
+      "sha256": "b555de70b8399f36a3c1646afd789d4770954daca7c29543e835748f6bca2f17",
+      "scope": "live",
+      "width": 256,
+      "recomputed_median_rate": 16777.402151718758,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b256-v2/policy/results/benchmark.json",
+      "sha256": "7fc9d82517d208889e26084ac99ffdc045d6980deb264b2a3672ef559dd8cb2b",
+      "scope": "policy",
+      "width": 256,
+      "recomputed_median_rate": 16076.93988562697,
+      "policy_warmup_reference_max_error_rad": 1.058337730508452e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b256-v2/policy-rigid/results/benchmark.json",
+      "sha256": "8cc8da9cdb425a21c20518935e1259f06a2076f0988c42f71e38e797df6d9441",
+      "scope": "policy-rigid",
+      "width": 256,
+      "recomputed_median_rate": 66471.31267150214,
+      "policy_warmup_reference_max_error_rad": 8.133358606055019e-12,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b256-v2/rigid/results/benchmark.json",
+      "sha256": "6c2755facb007f0121ee559be043584920bf3f26e9fe85aeb1556fbf6e54d6bb",
+      "scope": "rigid",
+      "width": 256,
+      "recomputed_median_rate": 80593.22199435055,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b32-v2/live/results/benchmark.json",
+      "sha256": "b5cb6b6a41d8714272bec05fbf1227b5fca99a8a4d95a8bd713558789197f7fe",
+      "scope": "live",
+      "width": 32,
+      "recomputed_median_rate": 2454.5753821902595,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b32-v2/policy/results/benchmark.json",
+      "sha256": "c6833476e7b06c4f89e06506064baec9f23623f1d3e5a210a1c13e5027aebb2e",
+      "scope": "policy",
+      "width": 32,
+      "recomputed_median_rate": 2350.5280399908283,
+      "policy_warmup_reference_max_error_rad": 7.836258789084561e-12,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b32-v2/policy-rigid/results/benchmark.json",
+      "sha256": "309ce4d7032b4af06e4b4f3ec3e6b29e49be73e67035ff84d342fb576fa6cddf",
+      "scope": "policy-rigid",
+      "width": 32,
+      "recomputed_median_rate": 9407.582084373844,
+      "policy_warmup_reference_max_error_rad": 8.4909721670412e-12,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b32-v2/rigid/results/benchmark.json",
+      "sha256": "9b2ec86b4ee94f448408bee28cb5c68b83be6eb705a4bc676117776532db1753",
+      "scope": "rigid",
+      "width": 32,
+      "recomputed_median_rate": 11112.595097473146,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b32768-v2/live/results/benchmark.json",
+      "sha256": "f127d9b0fc9785a725da861af599de032b769cace40bf0628b1257bc54c6007b",
+      "scope": "live",
+      "width": 32768,
+      "recomputed_median_rate": 85841.02762677197,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b32768-v2/policy/results/benchmark.json",
+      "sha256": "1a10f7d06a6b3abc8f08af3d40bf628a61a9085f9188a608e88cff847afcce5c",
+      "scope": "policy",
+      "width": 32768,
+      "recomputed_median_rate": 85651.17768769548,
+      "policy_warmup_reference_max_error_rad": 1.6747035996855788e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b32768-v2/policy-rigid/results/benchmark.json",
+      "sha256": "3af9c55fabc74d0aa63217f2b183faab44ac2a0e85b74b1f427ab5eddf2c1495",
+      "scope": "policy-rigid",
+      "width": 32768,
+      "recomputed_median_rate": 989113.133994957,
+      "policy_warmup_reference_max_error_rad": 1.5468342154378868e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b32768-v2/rigid/results/benchmark.json",
+      "sha256": "b522825aaaa0da79d930a1b462427f35796bfaf9d15d79591c1ff81d2e81cf7a",
+      "scope": "rigid",
+      "width": 32768,
+      "recomputed_median_rate": 995097.3158978283,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b8192-v2/live/results/benchmark.json",
+      "sha256": "e872aa89ee2e317d5c39e91502443b7ef1e0543769dbf2b65923daa2fa9be962",
+      "scope": "live",
+      "width": 8192,
+      "recomputed_median_rate": 78997.51552282312,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b8192-v2/policy/results/benchmark.json",
+      "sha256": "931c46c0781f84c588f21e10d6baaabfbcb066e5fa4e32ee58b703d87b3f698a",
+      "scope": "policy",
+      "width": 8192,
+      "recomputed_median_rate": 78691.05705668994,
+      "policy_warmup_reference_max_error_rad": 1.674703575260672e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b8192-v2/policy-rigid/results/benchmark.json",
+      "sha256": "b8311c02c4c98b8d05285c4097dd43a4da86419a0511619d30975a1d5ee6093f",
+      "scope": "policy-rigid",
+      "width": 8192,
+      "recomputed_median_rate": 721597.3379428678,
+      "policy_warmup_reference_max_error_rad": 1.5468342154378868e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b8192-v2/rigid/results/benchmark.json",
+      "sha256": "7070bd7ee7a2ffe139bf423094a24449e73350590202d9b1893c9c92fc4e490f",
+      "scope": "rigid",
+      "width": 8192,
+      "recomputed_median_rate": 763114.1404589812,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-paired-live-b32-v2/baseline-a1/results/benchmark.json",
+      "sha256": "96ceff7498e5e1bcd852d6219d511ca490c40246519080217fcb1587ced202f0",
+      "scope": "live",
+      "width": 32,
+      "recomputed_median_rate": 2265.3513975806427,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-paired-live-b32-v2/baseline-a2/results/benchmark.json",
+      "sha256": "dbf4737e63ca562adfde45b2dbc75c92f4100a5aa009048a22e5e11dd3434e05",
+      "scope": "live",
+      "width": 32,
+      "recomputed_median_rate": 2256.1294582851756,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-paired-live-b32-v2/candidate-b1/results/benchmark.json",
+      "sha256": "acfbd7122059616396cf37a6ec617a0fb5129eafaae3aa8f387987adfda89b57",
+      "scope": "live",
+      "width": 32,
+      "recomputed_median_rate": 2326.541984264929,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-paired-live-b32-v2/candidate-b2/results/benchmark.json",
+      "sha256": "0ede726e7f85c4843fef6723b47f1d1a8ee6464ab99ec53823209b47151c1e30",
+      "scope": "live",
+      "width": 32,
+      "recomputed_median_rate": 2304.436731111249,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-paired-live-b8192-v2/baseline-a1/results/benchmark.json",
+      "sha256": "728453c4798c062146da879ead063a2e64aea7b8815dc2bdb4036255a81d2d67",
+      "scope": "live",
+      "width": 8192,
+      "recomputed_median_rate": 52711.041671405634,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-paired-live-b8192-v2/baseline-a2/results/benchmark.json",
+      "sha256": "a302948bd5a460ecbcfb032d07922ab00316cfde3326d9d74f55bdcf582ff64d",
+      "scope": "live",
+      "width": 8192,
+      "recomputed_median_rate": 52724.73382934704,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-paired-live-b8192-v2/candidate-b1/results/benchmark.json",
+      "sha256": "5f2d817cc602f744369fb3a037bbe4767cf11dd80b07daaa6ce6185d5d1a8cb0",
+      "scope": "live",
+      "width": 8192,
+      "recomputed_median_rate": 79496.1383393664,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-paired-live-b8192-v2/candidate-b2/results/benchmark.json",
+      "sha256": "f5a6dea8cdc6bb51db005442d10d137fcbecab8497e22459396c23b932735ef2",
+      "scope": "live",
+      "width": 8192,
+      "recomputed_median_rate": 79549.18135176215,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/static-traction-direction-paired-live-b2048-v1/baseline-a1/results/benchmark.json",
+      "sha256": "c99586995c192bc02091fc7c6dc1f044d91662a7cdb17bfc02a089c1c12e9b4d",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 44858.00874555444,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/static-traction-direction-paired-live-b2048-v1/baseline-a2/results/benchmark.json",
+      "sha256": "fabfa2cff6fe704a798f87da4ab8c1a3d4a0effb5086c1813b10e35ceefa4776",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 44922.38882256223,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/static-traction-direction-paired-live-b2048-v1/candidate-b1/results/benchmark.json",
+      "sha256": "fa78555f54fbb4a64983722a5ce130d6d9f50cbe64d273670743d1cad9581d74",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 44882.06271009335,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/static-traction-direction-paired-live-b2048-v1/candidate-b2/results/benchmark.json",
+      "sha256": "fad119fd790bdbb67d83fedb8f3228018fa66669d0a4418cbcc94dd1666e5460",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 44908.23471565665,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/traction-one-warp-block-paired-live-b2048-v1/baseline-a1/results/benchmark.json",
+      "sha256": "84f6bae4d62bae7732dfd40d3710047b820118c29aff1a7412b221d9140a957c",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 45051.49479802545,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/traction-one-warp-block-paired-live-b2048-v1/baseline-a2/results/benchmark.json",
+      "sha256": "ceabb4f9cd07bf81442afb6e336cb784cca7a1cc7422e3f137d7e47e2f68e6fa",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 45054.12636854937,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/traction-one-warp-block-paired-live-b2048-v1/candidate-b1/results/benchmark.json",
+      "sha256": "e8b3835f2086f531db2d6c5684c51d9719fbd55139792a1b5cbf40b6236fb101",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 45215.01008413931,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/traction-one-warp-block-paired-live-b2048-v1/candidate-b2/results/benchmark.json",
+      "sha256": "f5efeaaa67bd1d07fedccb822f68201d9f9266d0477975d1a0909d937d884694",
+      "scope": "live",
+      "width": 2048,
+      "recomputed_median_rate": 45200.0773530815,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/workspace-contact-block2-four-scopes-b32768-v1/policy-rigid/results/benchmark.json",
+      "sha256": "3b315e6e4ac0ae943f505e5f8bd1c5b5e53a7d05491629539590f6c242d28ca8",
+      "scope": "policy-rigid",
+      "width": 32768,
+      "recomputed_median_rate": 991922.075964257,
+      "policy_warmup_reference_max_error_rad": 1.5468342154378868e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/workspace-contact-block2-four-scopes-b32768-v1/rigid/results/benchmark.json",
+      "sha256": "b6e534c1b0520e8f98cb4c9ea615b19db881aee96623fe8180a7debb96c1c6d6",
+      "scope": "rigid",
+      "width": 32768,
+      "recomputed_median_rate": 998616.4371873577,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    }
+  ],
+  "configuration": [
+    {
+      "output_mode": "max",
+      "young": 10000000000.0,
+      "poisson": 0.3,
+      "density": 2000.0,
+      "contact_radius": 0.006,
+      "contact_model": "intrinsic",
+      "intrinsic_integration": "surface_fan",
+      "intrinsic_support": "contact",
+      "intrinsic_load_partition": "body_source_prior",
+      "cooperative_tractions": true,
+      "surface_fan_frontier": true,
+      "warm_start_tractions": true,
+      "contact_block_size": 16,
+      "surface_edge_subdivisions": 8,
+      "source_projection_limit": 0.0001,
+      "source_geometry_tolerance": 1e-08,
+      "source_uncertainty": 0.0,
+      "quadrature": 10,
+      "tolerance": 1e-08,
+      "absolute_tolerance": 1e-11,
+      "max_iterations": 2000,
+      "warm_start": true,
+      "history_size": 4,
+      "method": "auto",
+      "cooperative_solve": true,
+      "cooperative_pressure": true,
+      "cooperative_scatter": true,
+      "cooperative_balance": true,
+      "contact_wrench_reuse": null,
+      "face_parallel_scatter": true,
+      "scatter_tasks_per_env": 32,
+      "contact_moment_reuse": null,
+      "inverse_max_bytes": 67108864,
+      "inverse_precision": "64",
+      "surface_inverse": true,
+      "packed_surface_loads": true,
+      "packed_block_size": null,
+      "coalesced_residual": null,
+      "fused_pipeline": true,
+      "fused_rigid_post": null,
+      "cached_peak": true,
+      "cached_face_bounds": true,
+      "inverse_corrections": 2,
+      "preconditioner": "block"
+    }
+  ],
+  "passed": true,
+  "goal_completion": false
+}

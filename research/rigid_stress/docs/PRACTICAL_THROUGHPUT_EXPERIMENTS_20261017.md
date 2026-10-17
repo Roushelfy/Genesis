@@ -1,15 +1,25 @@
 # Practical throughput experiments, 2026-10-17
 
-The [throughput goal](PRACTICAL_THROUGHPUT_GOAL.md) remains **open**. This follows
-the [initial baseline checkpoint](PRACTICAL_THROUGHPUT_PROGRESS_20261017.md).
-The [recorded summary](PRACTICAL_THROUGHPUT_EXPERIMENTS_20261017.json) preserves
+The [throughput goal](PRACTICAL_THROUGHPUT_GOAL.md) is **complete within its
+declared stage**. The [final report](PRACTICAL_THROUGHPUT_RESULTS_20261017.md),
+[final metadata closure](PRACTICAL_THROUGHPUT_FINAL_METADATA_20261017.json)
+and [completion audit](PRACTICAL_THROUGHPUT_COMPLETION_AUDIT_20261017.md)
+supersede the delivery statuses in dated checkpoints below. Both final history
+cohorts retain223 raw-record identities; independent audits pass115 history4
+and13 history0 eligible records. The three final inspected source/figure packets
+are linked in the final report.
+
+The remaining text preserves the chronological investigation after the
+[initial baseline checkpoint](PRACTICAL_THROUGHPUT_PROGRESS_20261017.md).
+The earlier [recorded summary](PRACTICAL_THROUGHPUT_EXPERIMENTS_20261017.json) preserves
 129 observed scope results and68 performance-eligible points, including
 superseded candidates. The [scheduler export](PRACTICAL_THROUGHPUT_EXPERIMENT_SCHEDULER_20261017.txt)
 is frozen separately. Performance eligibility checks the recorded numerical
 gates, source, exits and timing protocol; it does not replace independent
 field/lifecycle qualification or establish final recommendation/completion.
 The [requirement-by-requirement audit](PRACTICAL_THROUGHPUT_COMPLETION_AUDIT_20261017.md)
-records the remaining final-source measurements and delivery gates.
+now records their final dispositions; historical pending statements below
+retain their original observation time.
 An [independent metadata re-read](PRACTICAL_THROUGHPUT_METADATA_AUDIT_20261017.json)
 checks all68 eligible points' actual three2400-step rows, rates, geometry,
 controller, policy and precision. Observed policy reference errors remain below

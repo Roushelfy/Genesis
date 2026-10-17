@@ -40,6 +40,17 @@ and validation records. Full traces, raw candidate arrays, failed checker
 versions and long-running capacity experiments remain in the data-side run
 root above. No runtime output or dependency cache was moved into the checkout.
 
+The final selected figure packets `selected-history4-scaling-v1`,
+`selected-history0-scaling-v1` and `baseline-selected-comparison-v1` live beside
+the baseline packets. Together their payloads are about2MB, including exact
+compressed metadata inputs, executed source/style/orchestration, CSV, editable
+SVG/PDF/PNG and accepted visual/source QA. Original final rendering and small
+publication staging remain under the same data-side run root in
+`final-throughput-figure-preview-v2`, `final-throughput-comparison-preview-v3`,
+`final-throughput-pdf-v1` and `publication-final-figures-v1`. Large raw benchmark
+JSON, traces, arrays, caches and failed launch/source versions remain on data.
+No active directory was migrated and compatibility links were preserved.
+
 Small source, configuration, documentation and selected published evidence
 remain in this worktree. No existing runtime directories were migrated or
 replaced, and compatibility symlinks remain in place. Raw run directories are

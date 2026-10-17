@@ -1,0 +1,178 @@
+{
+  "generated_utc": "2026-10-17T12:35:23.938416+00:00",
+  "scope": "Independently reread headline timing/configuration records using stdlib only.\n\nThis checks recorded rates and the frozen workload, not physical field accuracy.\nSource/scheduler/wrapper qualification and numerical evidence remain separate.\n",
+  "summary_sha256": "5da8e860626d7005dbaf8c441a665fe2bcd19931fd361aa04770ac79928f56b2",
+  "contract_sha256": "ca1cd9a6a2d321a671b511524e2856209b76760826f4afaa2e76e6844a39b084",
+  "reference_history": 0,
+  "audit_source_sha256": "94225c5c2cce74105dedd2483cb9fca6c31fc9b56522a67834cdf914499b6421",
+  "eligible_points": 13,
+  "checks": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-four-scopes-b16384-v1/live/results/benchmark.json",
+      "sha256": "67962926b0eb3a5a21a6a7e4c7154bc6c1c1a02e33cddd0504e3693fb5f90f31",
+      "scope": "live",
+      "width": 16384,
+      "recomputed_median_rate": 116912.11023373387,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-four-scopes-b16384-v1/policy/results/benchmark.json",
+      "sha256": "29a2ab4d606efea114cb98e53553e3bc2bca164885f956b2f07b47809a5b7d9a",
+      "scope": "policy",
+      "width": 16384,
+      "recomputed_median_rate": 116695.21298875459,
+      "policy_warmup_reference_max_error_rad": 1.1945501238175283e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-four-scopes-b16384-v1/policy-rigid/results/benchmark.json",
+      "sha256": "afade3b84a9f2266a83e65fc035139ad591a0da0ea7fe8a1f648506f72301bc4",
+      "scope": "policy-rigid",
+      "width": 16384,
+      "recomputed_median_rate": 899990.351250826,
+      "policy_warmup_reference_max_error_rad": 1.478715827563093e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-four-scopes-b16384-v1/rigid/results/benchmark.json",
+      "sha256": "7cd94ade8fff761c87208abb515372f19bc4bb25631ac6bae641aae8fff2f433",
+      "scope": "rigid",
+      "width": 16384,
+      "recomputed_median_rate": 907392.8164706553,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-four-scopes-b32768-v1/live/results/benchmark.json",
+      "sha256": "0314094063660673a47f93c2855cb276f0c7baabda5f6317fd9be7f8dc794868",
+      "scope": "live",
+      "width": 32768,
+      "recomputed_median_rate": 118929.29576292857,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-four-scopes-b32768-v1/policy/results/benchmark.json",
+      "sha256": "5a1125e43e51c147843ffb9ae0c5a9b12355820d0517129c127e77015765022a",
+      "scope": "policy",
+      "width": 32768,
+      "recomputed_median_rate": 118579.16291737862,
+      "policy_warmup_reference_max_error_rad": 1.6747035827546777e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-four-scopes-b32768-v1/policy-rigid/results/benchmark.json",
+      "sha256": "b37be9bbbab626c2831bf568049881826eb1959f40e5847ebca1de255f5d1333",
+      "scope": "policy-rigid",
+      "width": 32768,
+      "recomputed_median_rate": 991613.9641483123,
+      "policy_warmup_reference_max_error_rad": 1.5468342154378868e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-four-scopes-b32768-v1/rigid/results/benchmark.json",
+      "sha256": "b5c475c4393203355b59eb627bc801e6751b11c9a68b219ec637e6fb228cde2b",
+      "scope": "rigid",
+      "width": 32768,
+      "recomputed_median_rate": 998087.8838374391,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-four-scopes-b8192-v1/live/results/benchmark.json",
+      "sha256": "5dd26bc752308150e324f5b54982c6749aad0507355e967f6b1655fcf27293dd",
+      "scope": "live",
+      "width": 8192,
+      "recomputed_median_rate": 109293.42805565672,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-four-scopes-b8192-v1/policy/results/benchmark.json",
+      "sha256": "fe7b0076a7695b6a56c673dbcb519477ca8e3859aab37898ecd2a38f9bac7d63",
+      "scope": "policy",
+      "width": 8192,
+      "recomputed_median_rate": 108062.8695728448,
+      "policy_warmup_reference_max_error_rad": 1.674703621890039e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-four-scopes-b8192-v1/policy-rigid/results/benchmark.json",
+      "sha256": "737b539bc2a0e31a3149437f2be82ed8fbc6468d39f43a540f0110c9a172c070",
+      "scope": "policy-rigid",
+      "width": 8192,
+      "recomputed_median_rate": 730858.5744456413,
+      "policy_warmup_reference_max_error_rad": 1.5468342154378868e-11,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-four-scopes-b8192-v1/rigid/results/benchmark.json",
+      "sha256": "4f3eef1e2dfaddc673da9e2e7bea2dd8f76107fca6065effd1a09259cdbbf999",
+      "scope": "rigid",
+      "width": 8192,
+      "recomputed_median_rate": 773385.4900098603,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-disabled-tuning-paired-b8192-v2/history0-b/results/benchmark.json",
+      "sha256": "34761b9c53f87750fff0ba01626d55920cc0d96e68f49dd1599c34d39ac3e4dc",
+      "scope": "live",
+      "width": 8192,
+      "recomputed_median_rate": 105939.20231237983,
+      "policy_warmup_reference_max_error_rad": 0.0,
+      "passed": true
+    }
+  ],
+  "configuration": [
+    {
+      "output_mode": "max",
+      "young": 10000000000.0,
+      "poisson": 0.3,
+      "density": 2000.0,
+      "contact_radius": 0.006,
+      "contact_model": "intrinsic",
+      "intrinsic_integration": "surface_fan",
+      "intrinsic_support": "contact",
+      "intrinsic_load_partition": "body_source_prior",
+      "cooperative_tractions": true,
+      "surface_fan_frontier": true,
+      "warm_start_tractions": true,
+      "contact_block_size": 16,
+      "surface_edge_subdivisions": 8,
+      "source_projection_limit": 0.0001,
+      "source_geometry_tolerance": 1e-08,
+      "source_uncertainty": 0.0,
+      "quadrature": 10,
+      "tolerance": 1e-08,
+      "absolute_tolerance": 1e-11,
+      "max_iterations": 2000,
+      "warm_start": true,
+      "history_size": 0,
+      "method": "auto",
+      "cooperative_solve": true,
+      "cooperative_pressure": true,
+      "cooperative_scatter": true,
+      "cooperative_balance": true,
+      "contact_wrench_reuse": null,
+      "face_parallel_scatter": true,
+      "scatter_tasks_per_env": 32,
+      "contact_moment_reuse": null,
+      "inverse_max_bytes": 67108864,
+      "inverse_precision": "64",
+      "surface_inverse": true,
+      "packed_surface_loads": true,
+      "packed_block_size": null,
+      "coalesced_residual": null,
+      "fused_pipeline": true,
+      "fused_rigid_post": null,
+      "cached_peak": true,
+      "cached_face_bounds": true,
+      "inverse_corrections": 2,
+      "preconditioner": "block"
+    }
+  ],
+  "passed": true,
+  "goal_completion": false
+}

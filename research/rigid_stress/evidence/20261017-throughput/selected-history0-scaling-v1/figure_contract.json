@@ -1,0 +1,59 @@
+{
+  "claim_anchor": "practical_throughput_closed_scaling",
+  "main_claim": "The closed robust workload scales sublinearly while observed process memory grows with batch width.",
+  "scope": "Each panel retains every width with all four closed scopes for that measurement. Missing observations are blank, not zero or interpolated. Both panels use one source manifest and comparable GPU allocations.",
+  "material_passport": {
+    "source": "input/history0.json",
+    "sha256": "5da8e860626d7005dbaf8c441a665fe2bcd19931fd361aa04770ac79928f56b2",
+    "kind": "recorded measurements",
+    "analysis_status": "source/scheduler/wrapper closed",
+    "uncertainty": "Rates: three repeats, raw values and observed range. Memory: one separately sampled pass,100ms lower-bound peak; no confidence interval."
+  },
+  "panels": [
+    {
+      "panel": "a",
+      "claim": "Aggregate valid throughput gains diminish over the shown batch range.",
+      "data": "source_data.csv",
+      "plot_type": "log-log line with individual repeats and range",
+      "x": "width",
+      "y": "valid_env_steps_per_second",
+      "group": "scope"
+    },
+    {
+      "panel": "b",
+      "claim": "Observed process VRAM increases with width and enabled stress recovery.",
+      "data": "source_data.csv",
+      "plot_type": "line with observed points",
+      "x": "width",
+      "y": "observed_peak_compute_process_bytes / 2**30",
+      "group": "scope"
+    }
+  ],
+  "widths": [
+    8192,
+    16384,
+    32768
+  ],
+  "rate_widths": [
+    8192,
+    16384,
+    32768
+  ],
+  "memory_widths": [
+    8192,
+    16384,
+    32768
+  ],
+  "tick_widths": [
+    8192,
+    16384,
+    32768
+  ],
+  "series_label": "selected engine, history0",
+  "size_mm": [
+    183,
+    86
+  ],
+  "target_stage": "technical report draft",
+  "open_decisions": "Update with the final selected implementation and capacity observations before claiming a final plateau."
+}
