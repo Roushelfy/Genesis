@@ -1,9 +1,12 @@
 # Working on native rigid stress recovery
 
-Read [GOAL.md](GOAL.md), [README.md](README.md) and
-[docs/RUNNING.md](docs/RUNNING.md) first. Branch cleanup and archiving are complete;
-[the result](docs/BRANCH_CLEANUP_RESULTS.md) records the layout and verification.
-Historical convergence and throughput plans do not create new active tasks.
+Read [GOAL.md](GOAL.md), [docs/PRESSURE_MODEL_COMPARISON_GOAL.md](docs/PRESSURE_MODEL_COMPARISON_GOAL.md),
+[README.md](README.md) and [docs/RUNNING.md](docs/RUNNING.md) first.
+The active stage is current-source pressure/intrinsic comparison and useful
+configuration selection. Cleanup is complete; preserve the compact layout.
+Reuse earned verification, measure matched physical inputs and distinguish
+model error, numerical failure and unsupported inputs. Historical campaigns
+do not create additional active tasks.
 
 Follow root CLAUDE.md and CODING_GUIDELINES.md when editing engine code.
 The feature belongs to Genesis's existing rigid solver; all production numerical

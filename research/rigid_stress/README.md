@@ -7,8 +7,10 @@ Production numerics use Quadrants and do not depend on the research prototype.
 
 Start with [running the example and tests](docs/RUNNING.md), then use the
 [API](docs/NATIVE_API.md) and exact benchmark reproduction below.
-[Cleanup status](GOAL.md) and [the archive index](archive/README.md) explain the
-retained tools and how to recover historical source/evidence.
+The [active goal](GOAL.md) is to complete current pressure/intrinsic comparison
+data and an evidence-based configuration guide.
+[Cleanup results](docs/BRANCH_CLEANUP_RESULTS.md) and [the archive index](archive/README.md)
+explain the retained tools and historical source/evidence recovery.
 
 ## Use and implementation
 
