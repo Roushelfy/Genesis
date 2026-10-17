@@ -18,8 +18,10 @@ label was found incorrect in its retained original submission journal.
 
 All runtime paths below are relative to
 `runs/20261017-practical-throughput/` under the data root in `DATA_LOCATION.md`.
-Immutable snapshots and exact submission commands remain there. No production
-candidate has been accepted for final delivery at this checkpoint.
+Immutable snapshots and exact submission commands remain there. At the frozen
+main checkpoint no production candidate had been selected. Subsequent matched
+capacity closures below justify retaining the barycentric cache; final operating
+settings and the remaining large-batch checks are still open.
 
 ## Closed robust baseline through B16384
 
@@ -186,7 +188,8 @@ Its immutable manifest SHA256 is
 
 The B256 diagnostic has zero invalid steps,16693.37 env-step/s and414536046
 native bytes, versus baseline447926614 bytes. The7.45% buffer reduction is
-measured; a material speedup or usable capacity gain is not yet demonstrated.
+measured. A material steady-state speedup is not demonstrated; usable capacity
+gain is now closed by the allocation-matched experiment below.
 Four CPU checks724996 and24 GPU cases724997 now pass, as do four CPU and four
 GPU cached disk/refinement/torque cases725042/725043. Their original geometric,
 wrench, full-field and gauge bounds remain unchanged. The
@@ -194,9 +197,12 @@ wrench, full-field and gauge bounds remain unchanged. The
 retains actual JUnit counts and engine/test hash closures. Same-GPU B2048 ABBA
 trial724999 completes0:0 with ratio0.998857: the result is effectively flat.
 Candidate B32768 four-scope trial725051 remains open. B40960 workspace2
-memory/capacity trial725052 has since closed; its result and the remaining
-allocation-matched control are described below. Production edits remain
-provisional pending attribution and final configuration qualification.
+memory/capacity trial725052 has since closed; its result and allocation-matched
+control are described below. The retained
+[engine/test source audit](PRACTICAL_THROUGHPUT_CACHE_SOURCE_AUDIT_20261017.json)
+matches the five implementation files byte-for-byte to the tested snapshot
+and all three test ASTs to their qualified overlays. Final configuration
+qualification remains open.
 
 A final small scheduling ablation uses one warp per fit block instead of four,
 with the original arithmetic and fallback unchanged. Its B256 diagnostic
@@ -213,7 +219,11 @@ The fixed6x6 Cholesky/triangular-solve loop-unrolling ablation
 budgets. Eight CPU checks725067 and eight GPU checks725068 pass. Its B256
 diagnostic725069 measures16745.02 env-step/s against16643.53 for the original
 diagnostic, about0.61% higher. This single diagnostic does not establish a
-large-batch improvement; matched B2048 ABBA job725090 is still open. Its manifest
+large-batch improvement. The now-closed matched B2048 ABBA job725090 gives
+ratio1.000022, effectively flat. The
+[paired closure](PRACTICAL_THROUGHPUT_STATIC_FIT_20261017.json) checks all actual
+exits, four source closures, one GPU UUID and twelve unchanged-duration repeats.
+This unrolling is not retained. Its manifest
 is `c67f82341e5830117d15398d5b12f786d06534f8fd1aea2f3309ceb5ce8e0d6a`.
 
 ## Bounded application checks and endpoint refinement
@@ -281,13 +291,55 @@ substitute. Actual UUIDs, source/configuration, compact repeat records and
 scheduler states are in the [capacity record](PRACTICAL_THROUGHPUT_CAPACITY_20261017.json).
 
 This is a single-pass live capacity diagnostic, not a three-repeat four-scope
-headline. The combined settings demonstrably run wider than the original
-block16 baseline's failed B32768, but code and allocation effects are not yet
-separated. Original-engine workspace2 B40960 job725123 supplies that missing
-control. Candidate workspace2 B43008 job725124 refines the live capacity boundary
-by5%. Candidate code-only B8192 four-scope and separate memory jobs725125/725126
-complete the matched selected-candidate comparison. All four new jobs retain
-the original physical configuration and numerical budgets and are still open.
+headline. The combined settings demonstrably run wider than the original block16
+baseline's failed B32768. The allocation-matched original-engine workspace2
+B40960 job725123 now fails with CUDA OOM in `_grow_sample_profiles`, while the
+candidate completes that exact workload. Their recorded CLI files are byte
+identical; both contain every required physical/numerical setting. The original
+three-coordinate allocation fails where the candidate uses two coordinates.
+Candidate workspace2 B43008 job725124 also fails with CUDA OOM during growth.
+Both failures close899 source hashes/inventories and actual program/wrapper
+exits1; neither is assigned a valid rate. Their
+[boundary evidence](PRACTICAL_THROUGHPUT_CAPACITY_BOUNDARY_20261017.json) and
+[terminal states](PRACTICAL_THROUGHPUT_CAPACITY_SCHEDULER_20261017.txt) establish
+a tested live-capacity bracket of40960 successful and43008 failed for this
+protocol/allocation. They do not claim an exact maximum independent of allocator
+or workload. The code change therefore improves demonstrated usable capacity;
+the observed benefit is not solely initial workspace tuning.
+
+Candidate code-only B8192 four-scope and separate memory jobs725125/725126,
+and a second four-scope memory point at B32768 (725150), complete the remaining
+selected-candidate curve observations. They retain physical/numerical budgets
+and remain open. B16384 full-output lifecycle job725134 now completes0:0.
+Its [closed large-batch check](PRACTICAL_THROUGHPUT_LARGE_BATCH_CHECK_20261017.json)
+verifies a checkpoint roundtrip, all-environment peak/displacement/history
+isolation after resetting four environments, the following untouched physical
+step, a complete additional controller period and frozen zero-load/recontact.
+Seventeen representative environments retain seven full tensor/von-Mises
+snapshots. Native complete-residual checks cover all16384 environments; the
+largest sampled budget fraction is0.993147 without loosening the bound. Live
+invalid steps are zero. Frozen replay's normalized force/moment errors are at
+most5.576e-10/1.193e-9 against the unchanged1e-8 limits, and its largest raw-peak
+difference is9.226e-9Pa. Full reset fields are NaN by API contract, while peak
+resets to zero. The terminal source inventory,899 hashes, executed diagnostic
+source and actual exits all close. This intrusive full-output check is not
+throughput or new physical-model calibration. The
+[reproduction guide](RUNNING_PRACTICAL_THROUGHPUT.md) separates normal timings,
+intrusive memory/work/profile runs and numerical checks.
+
+A bounded final fit-scheduling experiment restricts the body-prior auxiliary
+fit grid to its one active constraint per environment, clearing inactive
+diagnostics in the existing support-binding pass. Every physical source remains
+in the support/fit integrations. It is isolated from the retained cache source,
+with899-file manifest
+`0705751f810b7a693b3776f3d64230f23255c95f481c674349320e6577bc568b`.
+CPU job725138 passes eight checks; GPU job725139 remains open. The first B256
+diagnostic725140 returns0 from the scientific program and preserves all899
+source hashes, but its wrapper correctly rejects three prelaunch Ruff cache
+sidecars in the source inventory. Its rate is ineligible. A fresh whitelist
+copy preserves identical manifest source bytes and reruns that diagnostic as
+725151. The old source, cache sidecars and failure are retained; no live source
+was cleaned or changed. This idea is not promoted without a useful closed result.
 
 ## Delivery still required
 
