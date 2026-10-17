@@ -22,6 +22,16 @@ environment is `/mnt/data/zhaofeng/venvs/rigid-stress-recovery`.
 Override `RIGID_STRESS_DATA_ROOT` and `RIGID_STRESS_ENV` for another machine.
 Dependencies reuse `/mnt/data/zhaofeng/pip_cache`.
 
+The practical large-batch throughput stage uses
+`runs/20261017-practical-throughput/` for immutable source snapshots, Slurm
+submission records, matched scope measurements, intrusive traces, targeted
+tests and metadata summaries. It reuses the eight-condition bank and the
+qualified native application snapshot under
+`runs/20261014-physical-validation/`; neither input is migrated or rewritten.
+Per-job stdout/stderr, temporary files, CUDA/Genesis/Quadrants/Numba caches and
+test artifacts are explicitly placed under the data root. The scientific
+environment remains `/mnt/data/zhaofeng/venvs/rigid-stress-physical`.
+
 Small source, configuration, documentation and selected published evidence
 remain in this worktree. No existing runtime directories were migrated or
 replaced, and compatibility symlinks remain in place. Raw run directories are
