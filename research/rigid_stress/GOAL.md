@@ -1,18 +1,16 @@
-# Active goal: organize the rigid stress branch
+# Completed goal: organize the rigid stress branch
 
-Follow [docs/BRANCH_CLEANUP_GOAL.md](docs/BRANCH_CLEANUP_GOAL.md).
+The [branch cleanup requirements](docs/BRANCH_CLEANUP_GOAL.md) are implemented.
+See [the cleanup result](docs/BRANCH_CLEANUP_RESULTS.md) for the retained layout,
+archive/recovery path, size change and verification.
 
-The user now prioritizes cleanup and archiving. Implement a smaller, coherent
-active tree and handoff: keep the native feature, useful tests/references,
-Franka/egg example, benchmark and current usage/results; archive obsolete
-experiments and redundant historical material with a restoration index.
-Fix dependencies and links, verify affected workflows, and commit the result.
+Start current work with [README.md](README.md), [the native API](docs/NATIVE_API.md)
+and [running the example/tests](docs/RUNNING.md). Exact accepted benchmark
+reproduction is in [the throughput guide](docs/RUNNING_PRACTICAL_THROUGHPUT.md).
+The native feature, all regression tests, current independent references and
+seven canonical evidence/source packets remain active.
 
-The practical-throughput stage is complete within its declared scope:
-[results](docs/PRACTICAL_THROUGHPUT_RESULTS_20261017.md) and
-[acceptance](docs/PRACTICAL_THROUGHPUT_COMPLETION_AUDIT_20261017.md).
-Preserve its production behavior and scientific limitations.
-Do not reopen old convergence or optimization tasks during cleanup.
-
-[Archive index](archive/README.md) records superseded entrypoint versions and
-will grow as the next-stage cleanup is implemented.
+[The archive index](archive/README.md) records superseded paths and fixed Git
+revisions. Historical convergence and throughput plans are records, not active
+goals. Preserve the accepted behavior and scientific limitations; this completed
+goal does not declare another optimization or physical-validation campaign.

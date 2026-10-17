@@ -1,7 +1,7 @@
 # Practical throughput completion audit, 2026-10-17
 
 Status: **complete within the declared practical-throughput stage**. This maps
-the unchanged [goal](PRACTICAL_THROUGHPUT_GOAL.md) to inspected current evidence.
+the unchanged [goal](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PRACTICAL_THROUGHPUT_GOAL.md) to inspected current evidence.
 All required measurements, numerical/lifecycle checks, recommendations and
 final source-complete figure exports are closed. Experimental fracture
 calibration and the historical universal convergence campaign remain outside

@@ -1,1 +1,0 @@
-714003|sbatch --job-name=stress-physical-contact --partition=cpu --cpus-per-task=16 --mem=128G --time=08:00:00 --array=0-3%3 --output=grasp-spatial-next-v1-%A_%a.log --error=grasp-spatial-next-v1-%A_%a.err grasp-spatial-next-v1.sbatch

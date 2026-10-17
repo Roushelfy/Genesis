@@ -1,9 +1,0 @@
-{
-  "job": "718948",
-  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-fixed-history-barrier-figure-v4",
-  "command": "sbatch --parsable --array=0-0 --partition=cpu --exclude=cpu-207-115 --cpus-per-task=4 --mem=16G --time=00:30:00 --output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-fixed-history-barrier-figure-v4-%A_%a.log '--wrap=bash -c '\"'\"'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/plot_u_barrier_histories.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-fixed-history-barrier-figure-v4 /mnt/home/zhaofeng/.codex/skills/academic-figure-workflow/scripts/nature_mpl_style.py --comparison /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-fixed-history-barrier-all-stage-comparison-v1 --accepted-source-qa /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/u-fixed-history-barrier-figure-source-acceptance-v1.json --export-pdf'\"'\"''",
-  "accepted_source_qa": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/u-fixed-history-barrier-figure-source-acceptance-v1.json",
-  "accepted_source_qa_sha256": "77722d27b6386d17a425da3b19c5983c59f8108a119a1f418e4b76eb6bab16bf",
-  "time_utc": "2026-10-15T21:02:12.060657+00:00",
-  "scope": "Export PDF and1000dpi PNG only after identical editable SVG bytes and immutable744-stage source hash match the visually checked RGB/grayscale source. Text/units/data/layout remain unchanged."
-}

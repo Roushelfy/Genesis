@@ -68,18 +68,18 @@ batch adds only2.70%/2.88%. For history0, B8192→B16384 adds6.97%/7.99%;
 B16384→B32768 adds only1.73%/1.61%. This establishes the measured practical
 shoulder and supports B16384 when memory/latency matter. B32768 supplies the
 highest repeated aggregate rates in the tested normal curve.
-The [warmup contact-mix check](PRACTICAL_THROUGHPUT_CONTACT_MIX_20261017.json)
+The [warmup contact-mix check](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PRACTICAL_THROUGHPUT_CONTACT_MIX_20261017.json)
 finds identical normalized contact-count distributions at all seven original,
 six selected history4 and three selected history0 normal widths (mean3.281944,
 maximum9). These every10-step warmup counts are separate from complete timed
 observer fractions; no batch-dependent contact-mix change is observed here.
 
-Sources: [B8192](PRACTICAL_THROUGHPUT_HISTORY0_OPERATING_POINT_20261017.json),
-[B16384 and final memory](PRACTICAL_THROUGHPUT_HISTORY0_WIDE_20261017.json),
-[B32768](PRACTICAL_THROUGHPUT_HISTORY0_FINAL_SCALING_20261017.json),
-[history4 wide points](PRACTICAL_THROUGHPUT_PACKED_HISTORY_FINAL_SCALING_20261017.json)
-and the [experiment ledger](PRACTICAL_THROUGHPUT_EXPERIMENTS_20261017.md).
-The [final metadata closure](PRACTICAL_THROUGHPUT_FINAL_METADATA_20261017.json)
+Sources: [B8192](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PRACTICAL_THROUGHPUT_HISTORY0_OPERATING_POINT_20261017.json),
+[B16384 and final memory](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PRACTICAL_THROUGHPUT_HISTORY0_WIDE_20261017.json),
+[B32768](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PRACTICAL_THROUGHPUT_HISTORY0_FINAL_SCALING_20261017.json),
+[history4 wide points](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PRACTICAL_THROUGHPUT_PACKED_HISTORY_FINAL_SCALING_20261017.json)
+and the [experiment ledger](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PRACTICAL_THROUGHPUT_EXPERIMENTS_20261017.md).
+The [final metadata closure](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PRACTICAL_THROUGHPUT_FINAL_METADATA_20261017.json)
 contains223 raw-record identities in each separate history reference;115
 history4 and13 history0 eligible records pass independent raw audits. Their
 headline paths are disjoint and intrusive timings are excluded.
@@ -93,7 +93,7 @@ packets retain editable SVG, embedded-TrueType PDF,450dpi PNG, all raw repeats,
 independent sampled-memory widths, exact compressed plotting inputs/source and
 visual/source/scheduler QA. All three previews were inspected; PDF-run previews
 are byte-identical and no PDF contains Type3 fonts. The
-[figure closure](PRACTICAL_THROUGHPUT_FINAL_FIGURES_20261017.json) verifies every
+[figure closure](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PRACTICAL_THROUGHPUT_FINAL_FIGURES_20261017.json) verifies every
 manifest entry and inventory. Together the three new packets use about2MB.
 
 ## What changed and the remaining bottlenecks
@@ -172,7 +172,7 @@ History0/history4 moving-field comparison passes all1370880 tensor components
 at the original1e-4/1e-3Pa bounds, with maximum difference0.000156370Pa.
 Both original force families retain three complete1200-step episodes.
 
-The [current qualification recheck](PRACTICAL_THROUGHPUT_QUALIFICATION_RECHECK_20261017.json)
+The [current qualification recheck](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PRACTICAL_THROUGHPUT_QUALIFICATION_RECHECK_20261017.json)
 closes15 original scientific jobs, their raw JUnit/comparison/lifecycle records,
 72 comparison-input hashes and all899 selected-source hashes/inventory.
 All841 current engine files match the qualified source. One historical test

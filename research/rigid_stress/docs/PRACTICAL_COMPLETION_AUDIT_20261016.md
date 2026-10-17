@@ -1,6 +1,6 @@
 # Application delivery acceptance audit
 
-Acceptance follows [PRACTICAL_VALIDATION_GOAL.md](PRACTICAL_VALIDATION_GOAL.md),
+Acceptance follows [PRACTICAL_VALIDATION_GOAL.md](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PRACTICAL_VALIDATION_GOAL.md),
 including its explicit separation of engineering delivery, physical qualification
 and experimental fracture calibration. The delivered scope is the conditional
 native stress/reward feature described in the [application report](PRACTICAL_APPLICATION_RESULTS_20261016.md),

@@ -1,9 +1,0 @@
-Traceback (most recent call last):
-  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-closeout/publication-verification/verifier.py", line 126, in <module>
-    main()
-  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-closeout/publication-verification/verifier.py", line 111, in main
-    result = verify_manifest(path, args.originals, cache)
-  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-closeout/publication-verification/verifier.py", line 43, in verify_manifest
-    assert entry["encoding"] in ("identity", "gzip"), entry
-KeyError: 'encoding'
-srun: error: cpu-207-115: task 0: Exited with exit code 1

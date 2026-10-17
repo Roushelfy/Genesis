@@ -1,2 +1,0 @@
-load_model_validation
---mesh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-matrix-mesh-capsule-v1/meshes/h0.000875.npz --geometry capsule --backend cuda --method pcg --native-max-iterations 100000 --reference-solver amg-cg --models pressure componentwise pair_union body_source_prior --ports 8 --native-quadrature 10

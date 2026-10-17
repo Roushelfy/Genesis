@@ -2,7 +2,7 @@
 
 Current native development retains this pad law and adds checked local
 contact integration after a sampled fit failure. See
-[CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md) for the exact face
+[CONTACT_REPAIR_20261010.md](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/CONTACT_REPAIR_20261010.md) for the exact face
 partition, model diagnosis and current validation status. The historical
 prototype and physical convergence results below precede that integration
 repair and define no new physical accuracy claim.

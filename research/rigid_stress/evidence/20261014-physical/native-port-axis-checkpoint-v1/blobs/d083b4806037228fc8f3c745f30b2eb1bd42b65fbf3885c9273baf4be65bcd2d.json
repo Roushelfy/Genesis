@@ -1,8 +1,0 @@
-{
-  "job_array": 713572,
-  "physical_execution_started": false,
-  "error": "Shared env.sh reads an unset SLURM_USER under caller nounset, before gs-srun or run wrapper starts",
-  "script_sha256": "b9c8747f31ec14f3d280806405167dfd745c869aa06333903a0a90ce3c2a85c7",
-  "all_run_directories_absent": true,
-  "correction": "Retain errexit/pipefail in outer launcher, load shared environment without nounset; independent numerical wrapper retains its own strict mode."
-}

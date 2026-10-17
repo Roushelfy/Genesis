@@ -1,6 +1,0 @@
-{
-  "job": "718528",
-  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-rigid-resolved-native-v2",
-  "command": "sbatch --parsable --array=0-0 --partition=rtx-mid --gres=gpu:1 --cpus-per-task=8 --mem=64G --time=02:00:00 --output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-rigid-native-v2-%A_%a.log --dependency=afterok:718527 '--wrap=bash -c '\"'\"'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/replay_original_history.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-rigid-resolved-native-v2 --audit-run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-rigid-deformable-feedback-v2'\"'\"''",
-  "scope": "Actual native resolved-load replay only after full2640-state rigid independent audit and complete same-law feedback postprocessing."
-}

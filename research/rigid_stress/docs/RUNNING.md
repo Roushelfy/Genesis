@@ -1,445 +1,110 @@
-# Reproducing the device implementation
+# Run native rigid stress recovery
 
-## Completed native nonconvex workflow, 2026-10-14
+Install Genesis and its normal dependencies using the repository README.
+The example and benchmark use the native rigid solver without a research
+backend. The [API](NATIVE_API.md) defines configuration, max/full observations,
+units, reset behavior and supported loads. The
+[source-prior model](BODY_SOURCE_PRIOR_MODEL.md) records footprint assumptions;
+[application results](PRACTICAL_APPLICATION_RESULTS_20261016.md) retain physical
+uncertainty and phase-dependent reward limitations.
 
-The [final report](NATIVE_NONCONVEX_RESULTS_20261014.md) and
-[closeout audit](NATIVE_NONCONVEX_CLOSEOUT_20261014.md) describe the current
-intrinsic/body-source-prior engine and verified source/results. On an allocated
-node/container, set `RIGID_STRESS_DATA_ROOT` and `RIGID_STRESS_ENV`, source
-`research/rigid_stress/scripts/cluster_env.sh` and run from this repository.
-Use an archived condition bank for exact workload reproduction.
+## Environment and outputs
 
-```bash
-BANK="$RIGID_STRESS_DATA_ROOT/runs/20261011-nonconvex/native-final-matched-scopes-v1/b8192-623104/conditions.npz"
-NEW_TEST_RUN="$RIGID_STRESS_DATA_ROOT/runs/reproduce/stress-cuda"
+Run from the repository root. Set `RIGID_STRESS_DATA_ROOT` to a writable data
+directory and `RIGID_STRESS_ENV` to the installed Python environment before
+sourcing `research/rigid_stress/scripts/cluster_env.sh`. The local scientific
+environment is `/mnt/data/zhaofeng/venvs/rigid-stress-physical`; wrappers also
+accept `PHYSICAL_VALIDATION_ENV`. Storage locations are documented in
+[DATA_LOCATION.md](../../../DATA_LOCATION.md).
 
-"$RIGID_STRESS_ENV/bin/python" examples/rigid/franka_egg_stress.py \
-    --envs 8 --steps 600 --varied --contact-model intrinsic \
-    --intrinsic-load-partition body_source_prior --egg-geometry mesh64 \
-    --collision-method gjk --contact-patch on --output-mode full
-
-"$RIGID_STRESS_ENV/bin/python" -m examples.speed_benchmark.rigid_stress \
-    --scope live --envs 8192 --seed 623104 --warmup 600 --steps 1280 \
-    --repetitions 3 --minimum-seconds 10 --varied --contact-model intrinsic \
-    --intrinsic-load-partition body_source_prior --contact-block-size 4 \
-    --egg-geometry mesh64 --collision-method gjk --contact-patch on \
-    --conditions "$BANK" --trajectory-metrics --compact-log \
-    --output "$RIGID_STRESS_DATA_ROOT/runs/reproduce/live8192.json"
-
-bash research/rigid_stress/scripts/check_nonconvex_final.sh cuda "$NEW_TEST_RUN"
-```
-
-Change `--scope` to `rigid`, `recovery` or `policy` for the other scopes.
-`measure_nonconvex_output_modes.sh <batch> <seed> <bank> <new-run-directory>`
-records max/full/max live/policy comparisons under the same bank.
-`verify_nonconvex_publication.py`
-checks manifests, originals, decompression and complete JSON reconstruction.
-The report documents its arguments and publication identity. The remaining
-commands below preserve the earlier pressure-law and research workflows.
-
-## Current native low-resolution workflow
-
-The normal example and benchmark use only the engine feature. From the
-repository root with Genesis and its regular dependencies installed:
+On this cluster, all scientific execution uses Slurm and
+`GENESIS_IMAGE_VER=1_26 gs-srun`. Create each job script and its stdout/stderr
+under a fresh data-side run. The outer script sourcing the shared container
+helper uses `set -eo pipefail`: that helper reads optional unset variables.
+Set per-job CUDA, Genesis, Quadrants, Numba and temporary paths explicitly.
+For example, inside an allocated GPU job:
 
 ```bash
-python examples/rigid/franka_egg_stress.py --envs 8 --steps 600
-python examples/rigid/franka_egg_stress.py --envs 8 --steps 600 --output-mode full
-python -m pytest tests/rigid/test_stress.py --backend gpu -q
-QD_KERNEL_PROFILER=1 python examples/speed_benchmark/rigid_stress.py \
-    --scope profile --envs 1024 --varied --steps 100 --warmup 900 \
-    --output "$RIGID_STRESS_DATA_ROOT/runs/native/profile.json"
-python examples/speed_benchmark/rigid_stress.py \
-    --scope live --envs 1024 --varied --warmup 900 \
-    --steps 1200 --repetitions 3 --minimum-seconds 10 \
-    --output "$RIGID_STRESS_DATA_ROOT/runs/native/live.json"
-```
-
-Set output and Genesis/Quadrants cache directories explicitly before running.
-Choose `rigid`, `recovery`, `live`, `policy-rigid` or `policy` in separate
-processes for their matched timing scopes. The current iteration mesh is
-full-shell level 1, 2,430 DOFs. These are numerical and
-performance-development meshes, without a physical convergence claim.
-Default throughput measurements use at least 1,200 steps, three repeats and
-ten seconds per repeat. Kernel profiling is a separate intrusive pass.
-
-`--output-mode full` additionally writes all tetrahedral corner tensors and
-von Mises values. `--rigid-post-fusion auto|on|off` compares the additional
-serial graph containing rigid contact-force postprocessing, full recovery
-and rigid integration. Both requested/effective selections are recorded.
-The normal example exposes `--unfused-rigid-post`. Default selection currently
-enables this graph below B=8192 for one eligible configured stress link;
-formal two-seed large-batch production comparisons give opposite-signed
-gains at B32768 and B61440, so the original large-batch route is retained.
-
-Full mode writes all tetrahedral corner tensors and
-von Mises values; the default `max` allocates no complete field. Both modes
-retain the same complete load and residual budgets. `--unfused-pipeline`
-compares separate native passes. The policy benchmark defaults to FP32
-inference, with identical seeded weights and a declared 1e-9 rad control
-error budget against an FP64 reference during warmup. `--policy-precision 64`
-supplies its matched ablation; all stress arithmetic remains Quadrants FP64.
-
-The `recovery` timing scope repeatedly processes a frozen actual snapshot;
-it is a kernel diagnostic and omits changing rigid trajectories. The benchmark
-explicitly primes the standalone recovery graph outside timing after restoring
-that snapshot, synchronizes and checks errno. It records this preparation
-count and JIT/capture wall time separately, since combined-post live warmup
-alone does not compile the standalone graph. Supplement snapshot timing with
-synchronized stress-stage costs on a complete changing trajectory:
-
-```bash
-python -m research.rigid_stress.native_recovery_trajectory_profile \
-    --envs 1024 --seed 510000 --warmup 900 --steps 2400 --repetitions 3 \
-    --output-mode max --output "$RIGID_STRESS_DATA_ROOT/runs/native/dynamic-recovery-max.json"
-python -m research.rigid_stress.native_trajectory_oracle \
-    --envs 32 --steps 2400 --seed 623001 --output-mode full \
-    --output "$RIGID_STRESS_DATA_ROOT/runs/native/full-field-oracle.json"
-```
-
-The dynamic profile includes native recovery, contact-radius writes and stress
-invalidation during partial resets. Its synchronizations are intrusive;
-actual aggregate rates come from ordinary `live`/`policy` timing, including
-controller, observation, all reset motion and contact parameter updates.
-
-The default `auto` method uses a memory-bounded shared inverse on this small
-mesh. Compare `--method direct --serial-solve`, `--method direct`, and
-`--method inverse --inverse-precision 32` at identical mesh/tolerances.
-`--history 4` enables the tested temporal variant; h=0 is selected because
-the full changing-contact measurement was faster and used less memory.
-`--serial-pressure` selects the native scalar pressure path for a matched
-pressure scheduling ablation. CUDA warp pressure is the selected default.
-`--full-inverse` disables the exact complete-exterior operator, and
-`--serial-scatter` disables face reduction. `--serial-balance` compares
-the original complete nodal rigid-mode reduction and projection.
-`--seed 623001` selects another
-independent varied workload; use the same seed for matched comparisons.
-`--contact-warp-scatter` compares the original cooperative contact scheduling
-against bounded face tasks. `--scatter-tasks-per-env 1` deliberately exercises
-the complete device-side overflow fallback while preserving the contact law,
-samples and final acceptance budgets. The ordinary timing includes that
-fallback, and each repeat records `scatter_overflow_calls`.
-`--uncached-peak` and `--uncached-face-bounds` disable the tested immutable
-geometry reuse variants. `--source-revision` records the declared checkout;
-the benchmark also records exact numerical source hashes and GPU UUID.
-The current adaptive-pad workload has actual combined contact friction
-between 0.42 and 0.84. It differs from the earlier fixed-friction benchmark.
-`--contact-wrench-reuse on|off`, `--contact-moment-reuse on|off`,
-`--packed-block-size 0|256|512` and `--coalesced-residual on|off` supply the
-large-batch scheduling ablations. Their automatic defaults keep the original
-routes below B=8192. `--torch-controller` compares the original scripted input
-dispatch with the Quadrants CUDA configuration pass. Its Panda controls use
-ordinary range selectors and basic target slices. `--host-reset-indices`
-disables the bounded resident index cache while retaining the same public
-Scene reset. The cache stores at most B int64 indices, uses an integer for
-one selected environment, and records hit/miss/eviction counts before and
-after timing. It caches only configuration selectors, never physical loads
-or contact histories. The benchmark records
-effective routes, controller buffers and exact production source hashes.
-See [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md) for checkpoint
-revisions, regression results and performance-development evidence.
-The measured candidate inventory is
-[OPTIMIZATION_COVERAGE_20261011.md](OPTIMIZATION_COVERAGE_20261011.md).
-`--trace` exports a separate 50-step Torch/CUPTI CPU/CUDA trace after timing;
-its overhead is excluded from the reported rates. The pressure microkernels
-repeat query/integration/small-solve work to diagnose the hotspot and are
-excluded from the additive pipeline table. Captured Quadrants graph kernels
-are omitted by its kernel profiler, so use wall stages and the optional trace.
-
-`recovery` repeats a frozen actual contact snapshot with its matching
-pre-integration frame; it is not changing-contact trajectory throughput.
-`live` includes the whole rigid trajectory, changing contacts/radii, slip,
-release and independently delayed resets. `policy` adds device observations
-and a fixed seeded FP32 26->128->128->7 tanh MLP by default; it measures inference and
-rollouts, not completed reinforcement-learning training.
-
-The MLP has tanh after the first two linear layers and a linear output.
-Use the same command with `--scope rigid`, `policy-rigid`, `recovery` and
-`policy`, changing the output name, to reproduce the five selected scopes.
-Use `--envs 8` for the serial-baseline comparison. The exact selected source
-for the earlier fixed-friction milestone is `dbfdf20d`; the evidence manifest records revisions and arguments for
-earlier ablations, including the normalized baseline patch.
-
-Every-step validity is checked separately from throughput:
-
-```bash
-python -m research.rigid_stress.native_validity_probe --scope live \
-    --envs 1024 --warmup 900 --steps 1200 \
-    --output "$RIGID_STRESS_DATA_ROOT/runs/native/validity-live.json"
-python -m research.rigid_stress.native_validity_probe --scope policy \
-    --envs 1024 --warmup 900 --steps 1200 \
-    --output "$RIGID_STRESS_DATA_ROOT/runs/native/validity-policy.json"
-python -m pytest tests/rigid/test_stress.py --backend cpu \
-    -n 0 -s -q
-```
-
-The audit keeps native failure counters across independent resets, reading
-them once at the end. It checks every one of the 2,150,400 environment steps
-per scope, including warmup, and publishes no throughput rate.
-The current suite passes 52 cases on GPU and 31 on CPU, with 21 CUDA-only
-CPU skips. GPU tests include actual rigid lifecycle checks. Do not run CPU
-numerical work on a login node on the cluster.
-
-Allocate the measured cluster hardware before sourcing the environment:
-
-```bash
+set -eo pipefail
 source /mnt/data/shared/config/env.sh
-GENESIS_IMAGE_VER=1_26 gs-srun --partition=rtx-mid --ntasks=1 --gpus=1 \
-    --cpus-per-task=8 --mem=64G --time=00:20:00 bash
-export RIGID_STRESS_DATA_ROOT=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery
-export RIGID_STRESS_ENV=/mnt/data/zhaofeng/venvs/rigid-stress-recovery
-source research/rigid_stress/scripts/cluster_env.sh
-mkdir -p "$RIGID_STRESS_DATA_ROOT/runs/native"
+GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash "$task_run/workload.sh"
 ```
 
-Run the commands from the repository root with the environment Python
-(`"$RIGID_STRESS_ENV/bin/python"`); place redirected stdout/stderr in that
-run directory. CPU tests use the same partition without `--gpus=1`.
+The workload script sources `cluster_env.sh` and sets its output/cache paths.
+See the [throughput guide](RUNNING_PRACTICAL_THROUGHPUT.md) for a complete
+submission script, exact source reconstruction and condition-bank identities.
 
-Warmup quality checks are outside steady-state timing. They record actual
-nonzero egg contacts, both finger contacts, tangential force, radii, friction,
-height, complete residual and correction/fallback counts. They do not certify
-stress discretization convergence. See [NATIVE_API.md](NATIVE_API.md) for the
-finite-footprint contract and current support boundaries.
+## Normal example and benchmark
 
-An independent untimed temporal-load probe is reproducible with:
+Inside that allocation/container, use the intrinsic source-prior configuration:
 
 ```bash
-python -m research.rigid_stress.native_history_probe --envs 8 --steps 1200 \
-    --output "$RIGID_STRESS_DATA_ROOT/runs/native/history.json"
+task_bank="$PWD/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz"
+python examples/rigid/franka_egg_stress.py \
+  --envs 8 --steps 600 --varied --seed 623016 --conditions "$task_bank" \
+  --contact-model intrinsic \
+  --intrinsic-load-partition body_source_prior --egg-geometry mesh64 \
+  --collision-method mpr --contact-patch off --output-mode max
+
+python -m examples.speed_benchmark.rigid_stress \
+  --scope live --envs 8 --warmup 900 --steps 16 --repetitions 1 \
+  --minimum-seconds 0 --varied --seed 623016 --conditions "$task_bank" \
+  --contact-model intrinsic \
+  --intrinsic-load-partition body_source_prior --history 0 \
+  --egg-geometry mesh64 --collision-method mpr --contact-patch off \
+  --output "$task_run/benchmark-smoke.json"
 ```
 
-It stores actual complete RHS arrays under the requested data path and checks
-optimistic h=0/1/4 load-subspace acceptance offline. It does not run production
-NumPy recovery or contribute a throughput rate.
+Both commands replay the accepted eight-condition bank. Randomly generated
+`--varied` cases can legitimately fail the finite-footprint load-admissibility
+checks; preserve those failures rather than interpreting every random draw as
+a qualified application. The second command is a bounded workflow smoke check.
+Accepted performance measurements use the frozen bank,900 warmup and three2400-step repeats in
+separate `rigid`, `live`, `policy-rigid` and `policy` processes. Recommended
+history0/B16384 and measured hardware, memory and capacity limits are in the
+[final results](PRACTICAL_THROUGHPUT_RESULTS_20261017.md). Use the complete
+[reproduction guide](RUNNING_PRACTICAL_THROUGHPUT.md) for those measurements.
+Policy scope measures inference rollout rather than RL training.
 
-## Repaired final measurement matrix
+`--output-mode full` enables complete corner tensors/von Mises observations;
+its storage and cost differ from max mode. `--viewer` enables the example
+viewer when a display is available. The example's historical CLI defaults
+select the simpler pressure law; pass the options above for the recommendation.
 
-The final randomized workload uses both seeds, the complete low shell and
-the repaired local pad integration. Run each case in its own benchmark
-process; the runner saves the literal command, result status, GPU UUID,
-whole-card memory samples and exact numerical source hashes:
+## Regression tests and independent references
+
+All stress tests and fixtures remain under `tests/rigid/`. They cover changing
+convex/nonconvex contacts, friction, global maxima/full fields, complete
+residuals, history invalidation, environment isolation and partial resets.
+The independent CPU and scikit-fem reference modules remain in
+`research/rigid_stress/` because those tests import them. Their optional
+dependencies are listed in [requirements-reference.txt](../requirements-reference.txt):
+it includes the CPU oracle dependencies, tested scikit-fem and ipctk versions
+for independent FEM/contact replay. Production use does not require these
+reference solvers. [requirements-checks.txt](../requirements-checks.txt) supplies
+the pytest tooling.
+
+Inside a Slurm allocation/container, a focused check is:
 
 ```bash
-"$RIGID_STRESS_ENV/bin/python" research/rigid_stress/scripts/measured_sweep.py \
-    --envs 1024 2048 32768 49152 61440 --seeds 510000 623001 \
-    --scopes rigid recovery live policy --warmup 900 --steps 2400 \
-    --repetitions 3 --output "$RIGID_STRESS_DATA_ROOT/runs/native/final-matrix"
+python -m pytest -n 0 --backend cpu -q \
+  -o cache_dir="$task_run/pytest-cache" --basetemp "$task_run/pytest-tmp" \
+  tests/rigid/test_stress.py::test_native_full_field_same_state_and_invalid_solve \
+  tests/rigid/test_stress_independent_fem.py \
+  tests/rigid/test_stress_intrinsic_lifecycle.py
 ```
 
-Use `--output-mode full` on the ordinary benchmark for same-GPU max/full
-pairs at B1024 and B32768, preserving scope, seed, timestep and all numerical
-budgets. Final evidence uses separate allocated GPUs per independent case;
-matched optimization and output-cost pairs retain one physical GPU. Exact
-launch scripts are preserved in the evidence manifest. The final standalone
-recovery setup fix is `1f22f6a2`; the numerical engine is `f3e92c62`.
-Earlier small-batch v9 cold-path recovery timings include standalone JIT
-and are preserved as invalid timings rather than mixed into final rates.
+Use `--backend cuda` in a GPU allocation for the corresponding device check.
+`scripts/check_nonconvex_final.sh` accepts an explicit test selection and
+captures source hashes, logs and JUnit results under its fresh run directory.
+Unchanged physics does not require repeating historical convergence campaigns.
 
-The measured B61440 is the largest convenient multiple of 512 below this
-Franka scene's original flattened-Jacobian i32 limit (B61497). B65536 is
-rejected by that guard. Independent scalar, Vec3 and explicit-i64 diagnostics
-do not justify removing it: packed allocation succeeds but boundary access
-raises CUDA illegal address. This is a backend addressing limit, not a
-measured physical-memory exhaustion.
+## Evidence and historical tools
 
-## Copied-condition native batch scaling
-
-To scale the batch without introducing new randomized contacts, first save
-the verified 1024-condition bank, including all three IK targets and reset
-delays. Subsequent scenes repeat every bank row modulo its row count. Every
-environment still runs independent rigid dynamics and complete stress recovery.
-
-```bash
-"$RIGID_STRESS_ENV/bin/python" research/rigid_stress/scripts/copied_condition_sweep.py \
-    --output "$RIGID_STRESS_DATA_ROOT/runs/copied-scaling/discovery" \
-    --envs 1024 2048 4096 8192 16384 32768 65536
-```
-
-The runner records commands, exit statuses, per-repeat rates and the bank
-SHA256 after each process. Discovery uses one full repeat per point. Repeat
-the best points with `--repetitions 3 --bank .../conditions1024.npz`, changing
-the output directory. Use `--scope policy`, `rigid` or `policy-rigid` with
-the identical bank for matched scopes. The underlying benchmark also accepts
-`--conditions bank.npz` and `--save-conditions bank.npz`; `--compact-log`
-keeps full diagnostics in JSON while shortening stdout.
-
-The separate every-step validity probe accepts `--conditions bank.npz`.
-Copies preserve declared inputs/control targets; floating-point trajectories
-must still be checked at each batch size. A copied batch is a scaling study,
-not additional coverage of randomized contact configurations.
-
-## Historical external-library prototype
-
-> Historical prototype commands, 2026-10-10. The new feature and workflow are
-> specified in [NATIVE_QUADRANTS_PLAN.md](NATIVE_QUADRANTS_PLAN.md) and `../GOAL.md`.
-> Use low-resolution numerical checks and detailed performance iteration first.
-> Do not run the fine-mesh replay, level-6 presets or physical convergence below
-> during this phase. These commands reproduce the older external-library path;
-> the native Quadrants feature should provide its own normal Genesis entrypoints.
-
-Run numerical work on allocated hardware. The measured cluster image is
-`genesis:1_26`, Python 3.10.12; the device is NVIDIA RTX PRO 6000 Blackwell
-Server Edition with 95 GiB VRAM. This is different from RTX 6000 Ada.
-Use the repository root as the working directory. Source, configuration and
-small publication artifacts stay in the worktree; runtime outputs and caches
-use the explicit data directory.
-
-## Setup and checks
-
-Within an allocated container, set paths before running any setup or workload:
-
-```bash
-export RIGID_STRESS_DATA_ROOT=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery
-export RIGID_STRESS_ENV=/mnt/data/zhaofeng/venvs/rigid-stress-recovery
-source research/rigid_stress/scripts/cluster_env.sh
-bash research/rigid_stress/scripts/cluster_setup.sh
-```
-
-The setup reuses the data-side environment and pip cache. It installs optional
-native cuDSS 0.8/CVXOPT dependencies in that environment. The reusable native
-binding also accepts `CUDSS_LIBRARY_PATH` for an explicitly installed library.
-It checks the public library version before creating a factor.
-
-One command checks CPU math, device math/mapping, independent history,
-native direct/graph recovery, one/four-substep observations and actual Panda
-nominal/32-seed trajectories:
-
-```bash
-"$RIGID_STRESS_ENV/bin/python" -m research.rigid_stress.acceptance_suite \
-    --gpu --native --grasp --output "$RIGID_STRESS_DATA_ROOT/runs/acceptance"
-```
-
-The suite stops at the first failed subprocess and records its exact command,
-return code, wall duration, JSON artifact and combined log. Its actual Panda
-checks use level 2 for integration and CPU comparisons; physical convergence
-is a separate expensive option. Add `--physical` to include the complete
-levels 4/5/6 and quadratures 6/10/16 for prescribed raw-point and force-line
-finite patches. Use at least 128 GiB host memory for that option. To run only
-the CPU mathematical checks, omit the GPU/native/grasp flags; those checks
-do not require Genesis, Torch, CuPy or cuDSS.
-
-The engine contact-normal regression has its own native pytest command:
-
-```bash
-"$RIGID_STRESS_ENV/bin/python" -m pytest -q tests/rigid/test_contact_normal.py --backend gpu
-```
-
-Use `--backend cpu` for its CPU counterpart. Neither test changes the friction
-cone or clips a contact force.
-
-## Real fine-shell visualization
-
-This records the ordinary rigid Panda and egg, with auxiliary complete FP64
-stress recovery. Setup/JIT, rendering and recording are outside throughput
-claims. The nominal scripted controller completes an actual lift and hold.
-
-```bash
-"$RIGID_STRESS_ENV/bin/python" -m research.rigid_stress.check_panda \
-    --level 6 --envs 1 --steps 600 --nominal --synchronous --record-only \
-    --factor-backend cudss --inertia quadratic --body-products fused \
-    --video "$RIGID_STRESS_DATA_ROOT/runs/demo/panda-egg.mp4" \
-    --output "$RIGID_STRESS_DATA_ROOT/runs/demo/rollout.json"
-```
-
-`--record-only` records actual loads and diagnostics without solving the CPU
-oracle every frame. The CPU validation commands below use a separate explicit
-CPU factor. The committed nominal video is in
-[`evidence/20261009-performance/visualization`](../evidence/20261009-performance/visualization/).
-
-## Timing and independent same-RHS validation
-
-Every timing command requires at least three ten-second repeats. Fine runs
-take much longer: the minimum includes complete independently delayed grasps
-and resets, with a full grasp warmup. Submit a sufficiently long allocation
-before starting. Setup/analysis/factor/JIT/graph capture are reported separately.
-
-The measured B=32 graph calibration example is runnable as one command:
-
-```bash
-"$RIGID_STRESS_ENV/bin/python" -m research.rigid_stress.benchmark_live \
-    --level 6 --envs 32 --cpu-factor none --factor-backend cudss \
-    --inertia quadratic --body-products fused --sparse-layout F --recovery-graph \
-    --scope live --seed 510000 \
-    --output "$RIGID_STRESS_DATA_ROOT/runs/calibration/live32.json"
-```
-
-Change `--scope` to `rigid`, `policy-rigid` or `policy` for the explicit live
-scopes. Rigid scopes retain the same scene/collision/solver settings. The
-fixed FP64 MLP is 26->64 tanh->64 tanh->7 tanh, with residual action amplitude
-1e-4 rad. Policy observations/actions remain on GPU. This measures inference
-and rollouts; it is not PPO training.
-
-The benchmark's `warmup_quality` audits the actual complete warmup trajectory
-and publishes contacts, radii/friction, tangential forces and the stated
-lift/hold success criterion. Its diagnostic work is excluded from steady-state
-timing. Every requested stress substep and all reset/policy/recovery work stay
-inside the timed scope. Contact quality counts use each scene step's final
-contact snapshot; stress observations retain the maximum over all substeps.
-
-For saved fine contacts, independently compare the complete device RHS with
-CPU mapping/body assembly and same-mesh FP64 CPU direct peaks:
-
-The committed actual fine held-out input is
-`research/rigid_stress/evidence/20261010-final/inputs/heldout32.contacts.npz`.
-Its companion `heldout32.json` contains the exact phase/reset records. The
-archive preserves 68,928 actual contacts from 1,200 frames and 32 independent
-seeds; its manifest hashes both files. Use this input directly or create a
-new actual rollout with `check_panda`.
-
-```bash
-"$RIGID_STRESS_ENV/bin/python" -m research.rigid_stress.benchmark_replay \
-    --level 6 --envs 32 --cpu-factor cholmod --factor-backend cudss \
-    --inertia quadratic --body-products fused --validation-only \
-    --verify-frames 60 --verify-stride 20 --verify-mapping \
-    --save-rhs "$RIGID_STRESS_DATA_ROOT/runs/oracle/rhs" \
-    --replay research/rigid_stress/evidence/20261010-final/inputs/heldout32.contacts.npz \
-    --output "$RIGID_STRESS_DATA_ROOT/runs/oracle/strict.json"
-```
-
-The complete NPZ RHS arrays are large and belong in the data directory. This
-is untimed validation; it does not claim CPU solves or transfers inside a
-GPU throughput loop. Sixty sampled frames are sixty CPU comparisons, not
-1,200 CPU comparisons. Graph replay warmup can separately compare every frame
-against eager FP64 direct recovery of the identical complete device RHS.
-The graph warmup invokes the ungraphed direct baseline with its existing
-immutable operators and shared factor. It releases each temporary eager
-displacement before the next mapped load. A second complete validation
-operator set would exceed memory at the measured B=256 live point; neither
-this sharing nor temporary release changes any timed recovery.
-The replay also releases its previous complete RHS before mapping the next
-frame, retaining the current RHS for same-input verification. This matches
-the live callback lifetime and avoids retaining an extra 5.03 GB at B=256.
-
-`benchmark_suite` reads a frozen JSON `benchmark_arguments` list and runs
-rigid, matched policy-rigid, stress replay, live and policy scopes. Each scope
-uses its own subprocess and artifact directory. `--scope` runs one scope in
-its own allocation; the default `all` runs them sequentially on one GPU.
-The command manifest records the configuration SHA256 and literal arguments.
-
-The checked-in selected full level-6 configuration is
-[`configs/blackwell_level6.json`](../configs/blackwell_level6.json): B=256,
-C layout, strict FP64 native graph recovery. Run each scope in a separate
-GPU allocation with eight CPUs, 128 GiB host memory and six hours, for example:
-
-```bash
-"$RIGID_STRESS_ENV/bin/python" -m research.rigid_stress.benchmark_suite \
-    --config research/rigid_stress/configs/blackwell_level6.json \
-    --scope live --seed 610000 \
-    --output "$RIGID_STRESS_DATA_ROOT/runs/final-reproduction"
-```
-
-Use `--scope rigid`, `policy-rigid`, or `policy` for the other live scopes.
-For `--scope stress`, also supply
-`--replay research/rigid_stress/evidence/20261010-final/inputs/heldout32.contacts.npz`.
-The default sequential `all` needs the sum of scope durations in its allocation.
-The final stress measurement adds `--stages` through the replay CLI, recording
-a separate full 1,200-frame stage pass and 100 CUDA-event samples; its exact
-literal command is retained in the final launch manifest.
-
-The fine model has 2,457,630 DOFs; exported CPU factors may exceed the public
-export API's limits. Fine GPU timings use native cuDSS and `--cpu-factor none`
-to skip an unused offline CPU factor. CPU oracle checks use `cholmod`, and
-reject requests for an absent factor. The original sparse-mass, dense body
-products, eager direct, exported SpSM and temporal paths remain selectable
-for their respective reproducible checks and ablations.
+Current application reproduction remains in
+[RUNNING_PRACTICAL_APPLICATION.md](RUNNING_PRACTICAL_APPLICATION.md).
+Its compact packets retain exact inputs, source closures and hashes.
+The [archive index](../archive/README.md) locates older reports, standalone
+backends, launchers, patches and evidence at a fixed Git revision, with exact
+retrieval commands. Restore historical code into an isolated data-side tree;
+historical instructions do not replace the current feature contract or goal.
