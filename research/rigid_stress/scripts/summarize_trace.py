@@ -3,17 +3,18 @@
 import argparse
 import hashlib
 import json
+import math
 from collections import Counter
 from pathlib import Path
 
 
 def interval_union_us(intervals):
     end = None
-    total = 0.0
+    lengths = []
     for start, finish in sorted(intervals):
-        total += max(0.0, finish - max(start, end if end is not None else start))
+        lengths.append(max(0.0, finish - max(start, end if end is not None else start)))
         end = max(finish, end if end is not None else finish)
-    return total
+    return math.fsum(lengths)
 
 
 def main():
@@ -25,6 +26,7 @@ def main():
     events = json.loads(raw)["traceEvents"]
     timed = [event for event in events if event.get("ph") == "X" and "dur" in event]
     kernels = [event for event in timed if event.get("cat") == "kernel"]
+    origin = min((event["ts"] for event in kernels), default=0)
     copies = [event for event in timed if event.get("cat") in ("gpu_memcpy", "gpu_memset")]
     runtime = [event for event in timed if event.get("cat") == "cuda_runtime"]
     # GPU annotations mirror each CPU range on every participating stream;
@@ -40,19 +42,23 @@ def main():
         kernel_totals[event["name"]] += event["dur"]
     result = {
         "trace_path": str(args.trace),
+        "aggregation_source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "trace_sha256": hashlib.sha256(raw).hexdigest(),
         "trace_bytes": len(raw),
         "step_count": len(steps),
         "step_wall_sum_ms": sum(event["dur"] for event in steps) / 1000,
         "kernel_count": len(kernels),
-        "kernel_sum_ms": sum(event["dur"] for event in kernels) / 1000,
-        "kernel_interval_union_ms": interval_union_us([(event["ts"], event["ts"] + event["dur"]) for event in kernels])
+        "kernel_sum_ms": math.fsum(event["dur"] for event in kernels) / 1000,
+        "kernel_interval_union_ms": interval_union_us(
+            [(event["ts"] - origin, event["ts"] - origin + event["dur"]) for event in kernels]
+        )
         / 1000,
         "copy_or_memset_count": len(copies),
         "copy_or_memset_sum_ms": sum(event["dur"] for event in copies) / 1000,
         "runtime_counts": dict(counts),
         "top_kernel_total_ms": [[name, value / 1000] for name, value in kernel_totals.most_common(30)],
         "note": "Intrusive trace includes controller, rigid, stress and scope-dependent policy/observation. "
+        "Interval endpoints use a relative time origin to avoid rounding at large absolute timestamps. "
         "Interval union is trace occupancy, not unprofiled GPU utilization or training throughput.",
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)

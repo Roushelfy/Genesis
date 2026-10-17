@@ -383,6 +383,7 @@ def main() -> None:
     parser.add_argument("--host-reset-indices", action="store_true", help="Compare uncached reset index transfers.")
     parser.add_argument("--rigid-post-fusion", choices=("auto", "on", "off"), default="auto")
     parser.add_argument("--trace", action="store_true", help="Export a separate intrusive CUDA/CPU trace pass.")
+    parser.add_argument("--trace-steps", type=int, default=50, help="Moving steps in the separate intrusive trace.")
     parser.add_argument(
         "--trajectory-metrics", action="store_true", help="Time device-side grasp outcomes and per-environment work."
     )
@@ -391,6 +392,8 @@ def main() -> None:
     )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    if args.trace and args.trace_steps <= 0:
+        parser.error("Trace steps must be positive.")
     if args.trajectory_metrics and args.scope in ("profile", "recovery"):
         parser.error("Trajectory metrics require rigid, live, policy or policy-rigid scope.")
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -807,10 +810,12 @@ def main() -> None:
         result["reset_index_cache_at_end"] = workload.reset_indices.describe()
         if args.trace:
             qd.sync()
+            trace_start_tick, trace_start_resets = workload.tick, workload.reset_count
+            trace_invalid_before = qd_to_numpy(entry.state.invalid_steps, copy=True) if workload.stress else None
             with torch.profiler.profile(
                 activities=(torch.profiler.ProfilerActivity.CPU, torch.profiler.ProfilerActivity.CUDA)
             ) as profiler:
-                for _ in range(50):
+                for _ in range(args.trace_steps):
                     with torch.profiler.record_function("rigid_stress_trace_step"):
                         action = (
                             policy(workload.observation().to(dtype=policy_dtype))
@@ -822,6 +827,17 @@ def main() -> None:
             trace_path = args.output.with_suffix(".trace.json")
             profiler.export_chrome_trace(str(trace_path))
             result["trace"] = trace_path.name
+            result["trace_metadata"] = {
+                "steps": args.trace_steps,
+                "start_tick": trace_start_tick,
+                "end_tick": workload.tick,
+                "resets": workload.reset_count - trace_start_resets,
+                "invalid_environment_steps": int((qd_to_numpy(entry.state.invalid_steps) - trace_invalid_before).sum())
+                if workload.stress
+                else 0,
+                "scope": "Intrusive moving steps after timing; excluded from headline rates and pre-trace memory accounting.",
+            }
+            workload.scene.rigid_solver.check_errno()
     args.output.write_text(json.dumps(result, indent=2) + "\n")
     if args.compact_log:
         for key in ("warmup_quality", "egg_position_m", "maximum_stress_Pa"):
