@@ -1,5 +1,15 @@
 # Practical application delivery checklist
 
+## Next stage, 2026-10-17
+
+The scoped application delivery below remains accepted. The active next work is
+[PRACTICAL_THROUGHPUT_GOAL.md](PRACTICAL_THROUGHPUT_GOAL.md): matched large-batch
+profiling and optimization of the recommended robust configuration, targeted
+numerical/lifecycle checks and bounded complete-grasp proxy assessment.
+Current B32 rates do not close that throughput goal. The complete-episode
+uncertainty and physical-model limitations remain; the next goal does not
+reopen universal convergence or experimental fracture calibration.
+
 This checklist implements [the user's active goal](PRACTICAL_VALIDATION_GOAL.md).
 The [application report](PRACTICAL_APPLICATION_RESULTS_20261016.md) and
 [runnable commands](RUNNING_PRACTICAL_APPLICATION.md) provide the delivery handoff.

@@ -1,6 +1,22 @@
 # Agent goal: native Quadrants rigid stress recovery
 
-## Active goal: application-first qualification and delivery, 2026-10-16
+## Active next goal: practical large-batch throughput, 2026-10-17
+
+Follow [docs/PRACTICAL_THROUGHPUT_GOAL.md](docs/PRACTICAL_THROUGHPUT_GOAL.md).
+The conditional application delivery below is the baseline, not completion of
+the recommended configuration's throughput optimization. Profile and optimize
+the practical body_source_prior egg/Franka workload across batch sizes, find its
+measured capacity/throughput plateau, and deliver matched numerical checks,
+reproducible settings and a clear bottleneck account. Preserve all production
+numerics in Quadrants and arbitrary normal/frictional convex/nonconvex contacts.
+Use low meshes and bounded complete-grasp checks; do not restart the universal
+convergence matrix. Keep complete-episode proxy limitations explicit.
+
+The 2026-10-16 application-first policy remains in force for accuracy claims.
+The earlier delivery is complete only within its documented conditional scope;
+its B32 rates do not establish a large-batch endpoint for the recommended law.
+
+## Prior goal: application-first qualification and delivery, 2026-10-16
 
 Follow [docs/PRACTICAL_VALIDATION_GOAL.md](docs/PRACTICAL_VALIDATION_GOAL.md).
 Prioritize a useful Franka/full hollow egg stress observation for damage-aware

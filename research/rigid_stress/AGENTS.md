@@ -1,5 +1,16 @@
 # Instructions for the native rigid stress feature
 
+## Active next stage, 2026-10-17
+
+Read [docs/PRACTICAL_THROUGHPUT_GOAL.md](docs/PRACTICAL_THROUGHPUT_GOAL.md)
+and GOAL.md first. Prioritize matched large-batch scaling, detailed profiling
+and optimization of the practical robust body_source_prior egg/Franka workload.
+Use the qualified low mesh and existing independent references; preserve all
+Quadrants production and numerical/lifecycle contracts. B32 application cost
+is a baseline, not a demonstrated maximum. Keep bounded complete-grasp proxy
+checks and original uncertainty visible; no universal convergence campaign is
+required. This next-stage priority takes precedence over older stage ordering.
+
 Read `GOAL.md` and `docs/NATIVE_QUADRANTS_PLAN.md` first. They record the user's
 2026-10-10 change of direction and supersede older implementation choices and
 validation ordering. Follow the root `CLAUDE.md` and `CODING_GUIDELINES.md` for
@@ -10,7 +21,7 @@ Read docs/NONCONVEX_CONTACT_REQUIREMENTS.md for the completed 2026-10-11
 extension and its declared contact law. That numerical/performance milestone
 is the baseline for the new physical-validation stage below.
 
-## Active application-first direction, 2026-10-16
+## Continuing application-first policy, 2026-10-16
 
 Read [docs/PRACTICAL_VALIDATION_GOAL.md](docs/PRACTICAL_VALIDATION_GOAL.md)
 before using the older physical-validation plan or acceptance ledger.
