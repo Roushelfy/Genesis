@@ -1,16 +1,18 @@
-# Completed goal: organize the rigid stress branch
+# Active goal: pressure evidence and configuration selection
 
-The [branch cleanup requirements](docs/BRANCH_CLEANUP_GOAL.md) are implemented.
-See [the cleanup result](docs/BRANCH_CLEANUP_RESULTS.md) for the retained layout,
-archive/recovery path, size change and verification.
+Follow [docs/PRESSURE_MODEL_COMPARISON_GOAL.md](docs/PRESSURE_MODEL_COMPARISON_GOAL.md).
 
-Start current work with [README.md](README.md), [the native API](docs/NATIVE_API.md)
-and [running the example/tests](docs/RUNNING.md). Exact accepted benchmark
-reproduction is in [the throughput guide](docs/RUNNING_PRACTICAL_THROUGHPUT.md).
-The native feature, all regression tests, current independent references and
-seven canonical evidence/source packets remain active.
+Measure the default pressure route and recommended intrinsic body_source_prior
+on the same current Franka/egg workload. Establish paired rigid/stress overhead,
+small-to-large batch scaling, memory, max/full costs and model/applicability
+differences. Deliver evidence-based default/tuned configuration guidance.
 
-[The archive index](archive/README.md) records superseded paths and fixed Git
-revisions. Historical convergence and throughput plans are records, not active
-goals. Preserve the accepted behavior and scientific limitations; this completed
-goal does not declare another optimization or physical-validation campaign.
+Reuse existing independent FEM and R/L/M evidence, preserve the completed
+cleanup and native Quadrants feature, and keep whole-episode proxy limits clear.
+This does not reopen universal convergence or fracture calibration.
+
+Start with [README.md](README.md), [API](docs/NATIVE_API.md) and
+[RUNNING.md](docs/RUNNING.md). Existing [throughput results](docs/PRACTICAL_THROUGHPUT_RESULTS_20261017.md)
+qualify the intrinsic workload; they do not establish current pressure costs.
+[Cleanup results](docs/BRANCH_CLEANUP_RESULTS.md) and
+[archive](archive/README.md) retain the prior stages and historical evidence.
