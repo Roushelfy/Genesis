@@ -87,6 +87,12 @@ has CPU step time77.541ms, traction fitting19.567ms, surface sampling18.435ms,
 load assembly8.129ms, elastic recovery5.324ms and residual checks2.665ms.
 These overlapping profile categories are not additive wall-time components.
 The retained traction/sample work is now the largest measured remaining cost.
+The bounded fit experiments remain useful negative evidence: one-warp fitting
+and fixed6x6 loop unrolling give paired ratios1.003437 and1.000022; lazy Hessian
+construction gives0.964993, and leader-only scheduling is effectively flat.
+The [experiment ledger](PRACTICAL_THROUGHPUT_EXPERIMENTS_20261017.md) retains
+their sources, qualification and failed cases. More efficient sampling/fitting
+remains an opportunity requiring the original footprint/friction/wrench gates.
 
 CUDA API spans overlap GPU execution:99.812% of memcpy API-span union overlaps
 kernels in the new history4 trace. API duration is not independent CPU overhead.
@@ -128,6 +134,12 @@ step, a complete controller period and frozen complete release/recontact.
 History0 and history4 saved moving fields pass all1370880 tensor components at
 the original1e-4/1e-3Pa comparison bounds, with maximum difference0.000156370Pa.
 Both original force-choice families retain their complete1200-step episodes.
+The [current qualification recheck](PRACTICAL_THROUGHPUT_QUALIFICATION_RECHECK_20261017.json)
+closes15 original scientific jobs, their raw JUnit/comparison/lifecycle records,
+all72 comparison-input hashes and all899 selected-source hashes/inventory.
+All841 current engine files match the qualified source. One historical test
+overlay has a corrected two-line comment; its AST is unchanged and the exact
+executed native recovery tests match the current tests.
 
 The retained0.2/4N model/radius ensemble has7/8 above-band lift comparisons and
 1/8 whole-episode comparisons. Load reconstruction bias and reference uncertainty
@@ -142,5 +154,8 @@ provide commands, exact committed-source reconstruction and inspected exports.
 Final-source curve packets and the terminal completion decision remain open.
 `scripts/plot_practical_comparison.py` prepares a direct baseline/history4,
 selected/history4 and selected/history0 comparison from the two independently
-audited final summaries. Its preview job725284 waits for summary/preview725282
+audited final summaries. Its preview job725287 waits for summary/preview725282
 and the remaining normal B32768 producers; no final plot is claimed yet.
+The earlier pending preview725284 was cancelled after static review found a
+pre-plot Y-limit bug. Its source is preserved; the replacement sets limits after
+plotting and checks that every measured value lies inside the axes.

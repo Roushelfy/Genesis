@@ -142,7 +142,6 @@ def main():
         axis.xaxis.set_major_formatter(FuncFormatter(lambda value, _position: f"{value:,.0f}"))
         axis.minorticks_off()
         axis.set_xlim(24, 45000)
-        axis.set_ylim(bottom=0)
     axes[0, 0].set_title("Rigid + stress", fontsize=8)
     axes[0, 1].set_title("Policy + rigid + stress", fontsize=8)
     axes[0, 0].set_ylabel("Valid throughput (env-step/s)")
@@ -182,6 +181,12 @@ def main():
                 marker=marker,
                 markersize=3,
             )
+    for axis in axes.flat:
+        axis.set_ylim(bottom=0)
+    rate_max = max(row[f"repeat_{i}"] for row in records if row["rate_source"] for i in (1, 2, 3))
+    memory_max = max(row["observed_peak_compute_process_bytes"] / 2**30 for row in records if row["memory_source"])
+    assert all(axis.get_ylim()[1] >= rate_max for axis in axes[0])
+    assert all(axis.get_ylim()[1] >= memory_max for axis in axes[1])
     figure.legend(
         handles,
         [group[0] for group in groups],
@@ -203,6 +208,7 @@ def main():
         "script_sha256": digest(Path(__file__)),
         "style_helper_sha256": digest(args.style_helper),
         "editable_svg_text": True,
+        "all_plotted_data_within_axes": True,
         "rendered_text_issues": issues,
         "visual_inspection_pending": True,
         "pdf_exported": args.export_pdf,
