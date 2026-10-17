@@ -32,6 +32,7 @@ def main():
     parser.add_argument("--conditions", type=Path, required=True)
     parser.add_argument("--envs", type=int, default=16384)
     parser.add_argument("--contact-block-size", type=int, default=16)
+    parser.add_argument("--history", type=int, choices=(0, 4), default=4)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     assert args.envs >= 16 and args.envs % 8 == 0
@@ -46,7 +47,7 @@ def main():
         varied=True,
         seed=623016,
         conditions=args.conditions,
-        history_size=4,
+        history_size=args.history,
         contact_model="intrinsic",
         intrinsic_support="contact",
         intrinsic_load_partition="body_source_prior",
@@ -58,6 +59,7 @@ def main():
     )
     solver = workload.scene.rigid_solver
     entry = solver.stress_recovery.links[0]
+    assert (entry.history is None) == (args.history == 0)
     reset_ids = np.array([0, 1, args.envs // 2, args.envs - 1])
     observed = np.unique(np.concatenate((np.arange(8), np.arange(args.envs - 8, args.envs), reset_ids)))
     untouched = np.ones(args.envs, dtype=bool)
@@ -88,7 +90,9 @@ def main():
         np.testing.assert_allclose(actual, expected, rtol=1e-4, atol=1e-3)
     peak_before = tensor_to_array(workload.link.get_max_stress())
     displacement_before = qd_to_numpy(entry.state.displacement, transpose=True, copy=True)
-    history_before = qd_to_numpy(entry.history.state.count, transpose=True, copy=True)
+    history_before = None
+    if entry.history is not None:
+        history_before = qd_to_numpy(entry.history.state.count, transpose=True, copy=True)
     tensor_before, vm_before, _ = fields(workload, observed)
     workload.reset(reset_ids)
     peak_after = tensor_to_array(workload.link.get_max_stress())
@@ -97,9 +101,10 @@ def main():
     displacement_after = qd_to_numpy(entry.state.displacement, transpose=True)
     np.testing.assert_array_equal(displacement_after[reset_ids], 0)
     np.testing.assert_array_equal(displacement_after[untouched], displacement_before[untouched])
-    history_after = qd_to_numpy(entry.history.state.count, transpose=True)
-    np.testing.assert_array_equal(history_after[reset_ids], 0)
-    np.testing.assert_array_equal(history_after[untouched], history_before[untouched])
+    if entry.history is not None:
+        history_after = qd_to_numpy(entry.history.state.count, transpose=True)
+        np.testing.assert_array_equal(history_after[reset_ids], 0)
+        np.testing.assert_array_equal(history_after[untouched], history_before[untouched])
     selected_reset = np.isin(observed, reset_ids)
     tensor_after, vm_after, _ = fields(workload, observed)
     for actual, expected in ((tensor_after, tensor_before), (vm_after, vm_before)):
@@ -209,6 +214,7 @@ def main():
         "initial_contact_block_size": args.contact_block_size,
         "effective_contact_block_size": entry.intrinsic.contacts.valid.shape[0],
         "output_mode": "full",
+        "history_size": args.history,
         "conditions_sha256": bank_hash,
         "observed_envs": observed.tolist(),
         "reset_envs": reset_ids.tolist(),
