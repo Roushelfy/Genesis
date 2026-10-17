@@ -333,13 +333,25 @@ diagnostics in the existing support-binding pass. Every physical source remains
 in the support/fit integrations. It is isolated from the retained cache source,
 with899-file manifest
 `0705751f810b7a693b3776f3d64230f23255c95f481c674349320e6577bc568b`.
-CPU job725138 passes eight checks; GPU job725139 remains open. The first B256
+CPU job725138 and GPU job725139 each pass eight checks. The first B256
 diagnostic725140 returns0 from the scientific program and preserves all899
 source hashes, but its wrapper correctly rejects three prelaunch Ruff cache
 sidecars in the source inventory. Its rate is ineligible. A fresh whitelist
 copy preserves identical manifest source bytes and reruns that diagnostic as
-725151. The old source, cache sidecars and failure are retained; no live source
-was cleaned or changed. This idea is not promoted without a useful closed result.
+725151. That clean diagnostic now completes0:0 with16651.46 env-step/s,
+against16643.53 in the original diagnostic. This is effectively flat; no material
+gain is demonstrated and this scheduling change is not retained. The
+[closed diagnostic/test record](PRACTICAL_THROUGHPUT_LEADER_FIT_20261017.json)
+and [terminal states](PRACTICAL_THROUGHPUT_LEADER_FIT_SCHEDULER_20261017.txt)
+preserve both attempts. The old source, cache sidecars and failure remain;
+no live source was cleaned or changed.
+
+The selected code is now the cache-only implementation. Its final matched sweep
+uses B8192/B16384/B32768 with four normal scopes and separate four-scope process
+memory passes (725125/725152/725051 and725126/725153/725150). The B16384 point
+matches the already observed original-code throughput shoulder. These pending
+measurements complete selection and curves; the rejected scheduling variants
+are not combined into the selected source.
 
 ## Delivery still required
 

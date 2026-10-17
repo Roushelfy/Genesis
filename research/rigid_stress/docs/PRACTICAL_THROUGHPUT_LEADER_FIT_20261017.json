@@ -1,0 +1,70 @@
+{
+  "utc": "2026-10-17T08:37:27.902022+00:00",
+  "name": "body-prior-leader-fit-live-trace-b256-v2",
+  "benchmark_sha256": "6a5cb24903080584f8eb75443ee8277152f6943b9bd65a0defa8cd88560efc6d",
+  "snapshot_manifest_sha256": "0705751f810b7a693b3776f3d64230f23255c95f481c674349320e6577bc568b",
+  "repeats": [
+    {
+      "steps": 2400,
+      "seconds": 36.897661599003186,
+      "transitions_per_second": 16651.4617288538,
+      "attempted_transitions_per_second": 16651.4617288538,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "batch_steps_per_second": 65.04477237833515,
+      "resets": 768
+    }
+  ],
+  "source_closed": true,
+  "checks": [
+    {
+      "name": "body-prior-leader-fit-tests-cpu-v1",
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "8",
+          "time": "303.567",
+          "timestamp": "2026-10-17T08:25:16.476865+00:00",
+          "hostname": "cpu-206-205"
+        }
+      ],
+      "junit_sha256": "cfd117d1584a8d2ce527be51741fac7d1a07084f9c7ad9edc9d4fecde41b965c"
+    },
+    {
+      "name": "body-prior-leader-fit-tests-gpu-v1",
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "8",
+          "time": "520.734",
+          "timestamp": "2026-10-17T08:25:05.561229+00:00",
+          "hostname": "rtx-209-223"
+        }
+      ],
+      "junit_sha256": "92821161feef2c171c7fc0e0c8edbc829f1733ed0915f4e5e55a3ef2d367f9bb"
+    }
+  ],
+  "earlier_wrapper_failure": {
+    "job": "725140",
+    "program_exit": 0,
+    "wrapper_exit": 1,
+    "inventory": {
+      "extra_files": [
+        ".ruff_cache/.gitignore",
+        ".ruff_cache/0.16.10/6502764383408168577",
+        ".ruff_cache/CACHEDIR.TAG"
+      ],
+      "missing_files": [],
+      "passed": false
+    },
+    "rate_eligible": false
+  },
+  "scope": "Bounded scheduling ablation, one intrusiveB256 diagnostic. No material gain demonstrated; not retained.",
+  "goal_completion": false
+}

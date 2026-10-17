@@ -26,6 +26,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--rate-family", default="baseline-four-scopes-b")
     parser.add_argument("--memory-family", default="baseline-memory-four-scopes-b")
+    parser.add_argument("--series-label", default="baseline", help="Source/configuration label for the caption.")
     parser.add_argument("--export-pdf", action="store_true", help="Use after the editable preview has passed review.")
     args = parser.parse_args()
     assert not args.output.exists(), args.output
@@ -64,6 +65,12 @@ def main():
         if all((width, scope) in rates and (width, scope) in memory for scope in scopes)
     )
     assert len(widths) >= 2, "Need complete matched scopes and separate memory observations at multiple widths."
+    # Keep every observation; sparse ticks leave the dense capacity end readable.
+    tick_widths = [width for width in widths if width == widths[0] or width & (width - 1) == 0]
+    if widths[-1] not in tick_widths:
+        if len(tick_widths) > 1 and widths[-1] / tick_widths[-1] < 2:
+            tick_widths.pop()
+        tick_widths.append(widths[-1])
     rows = []
     for width in widths:
         for scope in scopes:
@@ -133,6 +140,8 @@ def main():
             },
         ],
         "widths": widths,
+        "tick_widths": tick_widths,
+        "series_label": args.series_label,
         "size_mm": [183, 86],
         "target_stage": "technical report draft",
         "open_decisions": "Update with the final selected implementation and capacity observations before claiming a final plateau.",
@@ -144,7 +153,7 @@ def main():
         style.style_axes(axis)
         style.add_panel_label(axis, letter, x=-0.18, y=1.08)
         axis.set_xscale("log", base=2)
-        axis.xaxis.set_major_locator(FixedLocator(widths))
+        axis.xaxis.set_major_locator(FixedLocator(tick_widths))
         axis.xaxis.set_major_formatter(FuncFormatter(lambda value, _position: f"{value:,.0f}"))
         axis.minorticks_off()
         axis.set_xlim(widths[0] / 1.5, widths[-1] * 1.4)
@@ -220,7 +229,7 @@ def main():
     }
     (args.output / "qa.json").write_text(json.dumps(qa, indent=2) + "\n")
     caption = (
-        "Closed robust egg/Franka baseline on RTX PRO6000 Blackwell. "
+        f"Closed robust egg/Franka {args.series_label} on RTX PRO6000 Blackwell. "
         "(a) Aggregate valid environment transitions per second: lines show medians of three 2400-step repeats; "
         "points retain individual repeats and whiskers their observed range, after 900 warmup steps. "
         "(b) Maximum observed compute-process VRAM from separate 100 ms NVML observations, including setup/warmup "
