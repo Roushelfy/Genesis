@@ -32,6 +32,13 @@ Per-job stdout/stderr, temporary files, CUDA/Genesis/Quadrants/Numba caches and
 test artifacts are explicitly placed under the data root. The scientific
 environment remains `/mnt/data/zhaofeng/venvs/rigid-stress-physical`.
 
+The compact baseline scaling figure packet is tracked under
+`research/rigid_stress/evidence/20261017-throughput/baseline-scaling-v1/`.
+It contains editable/exported figures, source CSV, exact plotting inputs/source
+and validation records. Full traces, raw candidate arrays, failed checker
+versions and long-running capacity experiments remain in the data-side run
+root above. No runtime output or dependency cache was moved into the checkout.
+
 Small source, configuration, documentation and selected published evidence
 remain in this worktree. No existing runtime directories were migrated or
 replaced, and compatibility symlinks remain in place. Raw run directories are

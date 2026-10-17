@@ -32,6 +32,7 @@ COUNTERS = (
     "invalid_stress_steps",
     "two_finger_contact_steps",
     "egg_contact_count_max",
+    "history_prediction_hit_steps",
 )
 
 
@@ -104,9 +105,11 @@ def kernel_trajectory_metrics(
 
 @qd.kernel
 def kernel_recovery_work_metrics(
+    history_hit: qd.Tensor,
     metrics_state: RolloutMetricState,
     contact_state: StressContactState,
     stress_state: StressState,
+    has_history: qd.template(),
 ):
     for i_b in range(metrics_state.previous_phase.shape[0]):
         loaded, refined = False, False
@@ -126,6 +129,8 @@ def kernel_recovery_work_metrics(
         metrics_state.counters[15, i_b] += stress_state.corrections[i_b]
         metrics_state.counters[16, i_b] += stress_state.fallbacks[i_b]
         metrics_state.counters[17, i_b] += gs.qd_int(not stress_state.step_valid[i_b])
+        if qd.static(has_history):
+            metrics_state.counters[20, i_b] += gs.qd_int(history_hit[i_b])
 
 
 class RolloutMetrics:
@@ -174,7 +179,10 @@ class RolloutMetrics:
         )
         if self.workload.stress:
             entry = self.workload.scene.rigid_solver.stress_recovery.links[0]
-            kernel_recovery_work_metrics(self.state, entry.contacts, entry.state)
+            history_hit = entry.state.step_valid if entry.history is None else entry.history.state.hit
+            kernel_recovery_work_metrics(
+                history_hit, self.state, entry.contacts, entry.state, has_history=entry.history is not None
+            )
 
     def summary(self):
         counts = qd_to_numpy(self.state.counters, transpose=True)
@@ -186,6 +194,7 @@ class RolloutMetrics:
                 "lift_success": "Every observed phase in [0.52,0.60) has egg height >= initial height + 0.05 m and nonzero (>1e-12 N) contacts with both finger links, counted at crossing 0.60.",
                 "descent": "Height decreases by more than 0.001 m over one dt=0.01 step in the named controller window.",
                 "tail": "Per-environment recorded fit evaluations, sample counts, integration retries and elastic work. These are parallel work proxies, not individual GPU wall times.",
+                "history_prediction_hit": "The current load's history prediction passes the complete residual before recovery. Counted after the step, before the next controller reset; zero when history is disabled.",
                 "timing": "Both device collection kernels and the public position getter are inside each rollout step. Boundary exports are outside repeat timing.",
             },
             "totals": {

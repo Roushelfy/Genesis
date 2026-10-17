@@ -1,0 +1,44 @@
+{
+  "claim_anchor": "practical_throughput_closed_scaling",
+  "main_claim": "The closed robust workload scales sublinearly while observed process memory grows with batch width.",
+  "scope": "Only widths with all four successful headline scopes and separate successful memory passes are shown. Larger pending or failed widths are not silently assigned rates.",
+  "material_passport": {
+    "source": "source/summary.json",
+    "sha256": "700a2efdd50584a77b539070d39f546172f8f7e64436f0525d0e090e8babbe97",
+    "kind": "recorded measurements",
+    "analysis_status": "source/scheduler/wrapper closed",
+    "uncertainty": "Rates: three repeats, raw values and observed range. Memory: one separately sampled pass,100ms lower-bound peak; no confidence interval."
+  },
+  "panels": [
+    {
+      "panel": "a",
+      "claim": "Aggregate valid throughput gains diminish over the shown batch range.",
+      "data": "source_data.csv",
+      "plot_type": "log-log line with individual repeats and range",
+      "x": "width",
+      "y": "valid_env_steps_per_second",
+      "group": "scope"
+    },
+    {
+      "panel": "b",
+      "claim": "Observed process VRAM increases with width and enabled stress recovery.",
+      "data": "source_data.csv",
+      "plot_type": "line with observed points",
+      "x": "width",
+      "y": "observed_peak_compute_process_bytes / 2**30",
+      "group": "scope"
+    }
+  ],
+  "widths": [
+    32,
+    256,
+    2048,
+    8192
+  ],
+  "size_mm": [
+    183,
+    86
+  ],
+  "target_stage": "technical report draft",
+  "open_decisions": "Update with the final selected implementation and capacity observations before claiming a final plateau."
+}
