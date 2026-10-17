@@ -1,0 +1,155 @@
+{
+  "trace_path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-complete-cycle-trace-b8192-v2/results/benchmark.trace.json",
+  "aggregation_source_sha256": "0170434ea1fb132e3c675f96cf9d6c4de3905f039cb4010e796586326ae35bc8",
+  "trace_sha256": "a59c6787b1f44fc13cdfc436d716f71d84d1fae77668da0cd86961ffc635003b",
+  "trace_bytes": 212106939,
+  "step_count": 600,
+  "step_wall_sum_ms": 64814.503674,
+  "kernel_count": 220024,
+  "kernel_sum_ms": 61568.48374,
+  "kernel_interval_union_ms": 61565.76613150191,
+  "copy_or_memset_count": 37959,
+  "copy_or_memset_sum_ms": 21.479700999993867,
+  "runtime_counts": {
+    "cuLaunchKernel": 94256,
+    "cudaLaunchKernel": 8768,
+    "cudaMemcpyAsync": 2535,
+    "cudaStreamSynchronize": 2535,
+    "cudaDeviceSynchronize": 1
+  },
+  "runtime_duration_sum_ms": {
+    "cuLaunchKernel": 258.56032299999487,
+    "cudaLaunchKernel": 49.529069999999805,
+    "cudaMemcpyAsync": 27502.136770999987,
+    "cudaStreamSynchronize": 44.97510699999989,
+    "cudaDeviceSynchronize": 0.028307
+  },
+  "runtime_memcpy_interval_union_ms": 27502.13677100007,
+  "runtime_memcpy_gpu_kernel_intersection_ms": 27450.441367020143,
+  "runtime_memcpy_fraction_overlapping_gpu_kernels": 0.9981203131811038,
+  "cpu_step_interval_union_ms": 64814.503674,
+  "cpu_step_gpu_kernel_intersection_ms": 61555.907941458936,
+  "top_kernel_total_ms": [
+    [
+      "kernel_fit_tractions_impl_c1044_0_kernel_1_range_for",
+      12247.779991999983
+    ],
+    [
+      "kernel_fan_frontier_samples_c1042_0_kernel_4_range_for",
+      11071.588757000016
+    ],
+    [
+      "kernel_scatter_cached_tractions_c1048_0_kernel_5_range_for",
+      4853.411067999998
+    ],
+    [
+      "kernel_surface_apply_packed_block_c874_0_kernel_1_range_for",
+      2974.099790000001
+    ],
+    [
+      "kernel_footprint_ports_c764_0_kernel_3_range_for",
+      2178.261316
+    ],
+    [
+      "kernel_full_residual_impl_c866_1_kernel_3_range_for",
+      1654.9536470000091
+    ],
+    [
+      "kernel_full_residual_impl_c866_0_kernel_3_range_for",
+      1582.6875719999991
+    ],
+    [
+      "kernel_predict_c730_0_kernel_25_range_for",
+      1372.5818079999988
+    ],
+    [
+      "kernel_substep_collision_c898_0_kernel_10_range_for",
+      1356.6171609999992
+    ],
+    [
+      "kernel_predict_c730_0_kernel_14_range_for",
+      1282.8056040000004
+    ],
+    [
+      "kernel_resolve_sources_c746_0_kernel_1_range_for",
+      1261.5862089999987
+    ],
+    [
+      "kernel_append_c734_0_kernel_1_range_for",
+      1174.4637600000003
+    ],
+    [
+      "kernel_substep_collision_c898_0_kernel_11_range_for",
+      1147.7889090000008
+    ],
+    [
+      "kernel_predict_c730_0_kernel_36_range_for",
+      1116.5105910000004
+    ],
+    [
+      "kernel_predict_c730_0_kernel_3_range_for",
+      1080.7068300000005
+    ],
+    [
+      "kernel_peak_impl_c868_0_kernel_3_range_for",
+      990.470503
+    ],
+    [
+      "kernel_predict_c730_0_kernel_31_range_for",
+      825.0296030000001
+    ],
+    [
+      "kernel_predict_c730_0_kernel_28_range_for",
+      824.7250779999998
+    ],
+    [
+      "kernel_predict_c730_0_kernel_39_range_for",
+      735.0105609999997
+    ],
+    [
+      "kernel_predict_c730_0_kernel_42_range_for",
+      733.1911470000002
+    ],
+    [
+      "kernel_predict_c730_0_kernel_34_range_for",
+      693.8165870000003
+    ],
+    [
+      "kernel_predict_c730_0_kernel_23_range_for",
+      682.5428349999999
+    ],
+    [
+      "kernel_predict_c730_0_kernel_20_range_for",
+      674.8199500000006
+    ],
+    [
+      "kernel_predict_c730_0_kernel_17_range_for",
+      674.4526569999998
+    ],
+    [
+      "kernel_fan_frontier_c1040_0_kernel_4_range_for",
+      513.2158769999995
+    ],
+    [
+      "func_solve_init_c690_0_kernel_23_island_tiled_factor_solve_range_for",
+      511.7788699999993
+    ],
+    [
+      "kernel_predict_c730_0_kernel_45_range_for",
+      487.4943810000002
+    ],
+    [
+      "kernel_predict_c730_0_kernel_12_range_for",
+      470.31412700000004
+    ],
+    [
+      "kernel_predict_c730_0_kernel_47_range_for",
+      406.29164399999996
+    ],
+    [
+      "kernel_predict_c730_0_kernel_48_range_for",
+      348.8820980000003
+    ]
+  ],
+  "note": "Intrusive trace includes controller, rigid, stress and scope-dependent policy/observation. Interval endpoints use a relative time origin to avoid rounding at large absolute timestamps. API/kernel intersections describe timestamp overlap, not CPU waiting versus useful execution. Do not add API durations to kernel durations or interpret their difference as CPU work. Interval union is trace occupancy, not unprofiled GPU utilization or training throughput."
+}

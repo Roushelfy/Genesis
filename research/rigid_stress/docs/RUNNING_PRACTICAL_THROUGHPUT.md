@@ -163,6 +163,16 @@ fields, checkpoints, partial resets and the subsequent untouched environments,
 then exercises complete zero-load release/recontact on a frozen mapper input.
 This changes observation/reset work and is never throughput evidence.
 
+Both the large-batch checker and `research/rigid_stress/practical_reward_proxy.py`
+accept `--history 0` or `--history 4` (default4) and record the selected size.
+The checker verifies the corresponding storage state. Keep this configuration
+tuning separate from the fixed-history4 before/after code comparison.
+`scripts/compare_practical_large_batch.py --reference-run "$task_reference"`
+`--candidate-run "$task_candidate" --output "$task_comparison"` checks every
+saved tensor/von-Mises/peak component and selected phase/environment at original
+comparison bounds. Execute this numerical comparison through CPU Slurm/gs-srun
+using terminal qualified producer runs and a fresh data-side output.
+
 For figures, use the exact renderer, input, SVG/PDF/PNG and QA in the
 [baseline figure packet](../evidence/20261017-throughput/baseline-scaling-v2/README.md).
 The main experiment report and machine-readable checkpoint retain which results

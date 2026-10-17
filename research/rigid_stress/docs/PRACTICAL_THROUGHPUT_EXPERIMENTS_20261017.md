@@ -8,6 +8,8 @@ superseded candidates. The [scheduler export](PRACTICAL_THROUGHPUT_EXPERIMENT_SC
 is frozen separately. Performance eligibility checks the recorded numerical
 gates, source, exits and timing protocol; it does not replace independent
 field/lifecycle qualification or establish final recommendation/completion.
+The [requirement-by-requirement audit](PRACTICAL_THROUGHPUT_COMPLETION_AUDIT_20261017.md)
+records the remaining final-source measurements and delivery gates.
 An [independent metadata re-read](PRACTICAL_THROUGHPUT_METADATA_AUDIT_20261017.json)
 checks all68 eligible points' actual three2400-step rows, rates, geometry,
 controller, policy and precision. Observed policy reference errors remain below
@@ -46,8 +48,11 @@ are feature allocation counts, not peak process VRAM.
 
 Actual baseline B32768 and B49152 trials724962/724971 failed with CUDA OOM
 during profile-buffer growth; failed logs and exits remain. B65536 was cancelled
-while pending, not observed to fail or pass. Workspace-size2 B32768 trial724976
-remains unfinished at this checkpoint. Original stress-enabled throughput is
+while pending, not observed to fail or pass. The
+[workspace-size2 B32768 trial](PRACTICAL_THROUGHPUT_ORIGINAL_WORKSPACE2_20261017.json)
+724976 now closes0:0 with53386.89 live and53295.31 policy env-step/s. It grows
+to the complete9-contact union, retaining all contacts; this is separate
+allocation tuning rather than the original default16 curve. Original stress-enabled throughput is
 nearly flat from B8192 through B24576, while batch latency grows: live latency
 is155.57ms at B8192 and466.06ms at B24576. This establishes a practical baseline
 shoulder; B24576 is the largest closed original-options width, not an exact
@@ -424,9 +429,77 @@ completes0:0 (725192), with78526.92 valid env-step/s over one2400-step pass afte
 This is a single diagnostic on a comparable GPU, not a repeated headline
 speedup. Same-GPU original-baseline/candidate B8192 A/B/B/A job725203 uses three
 2400-step repeats per trial. The new six-width four-scope sweep725211–725216,
-separate sampled memory725218–725222, moving profile725205 and existing
+separate sampled memory725218–725222 and existing
 workspace2 capacity boundaries725227/725228 remain pending closure. These use
 the same frozen candidate; no model, history or output frequency was changed.
+
+The [new complete-period profile](PRACTICAL_THROUGHPUT_PACKED_HISTORY_PROFILE_20261017.json)
+now closes0:0 as725205, with600 moving steps, all899 source checks/inventory
+and220024 classified kernels. It retains all original gates and history4.
+Average GPU kernel-duration sums per observed step, milliseconds:
+
+| Stage | Geometry cache | Geometry cache + masked surface recovery |
+| --- | ---: | ---: |
+| Elastic solve, including surface packing |58.7678|5.2805|
+| History prediction/maintenance |26.0611|26.0495|
+| Traction fit |20.0909|20.6094|
+| Surface sampling |18.8859|19.3965|
+| Load assembly/diagnostics |8.1026|8.1927|
+| Complete residual |5.3149|5.4934|
+| CPU step annotation |159.7175|108.0242|
+
+These are separate intrusive traces on comparable GPUs, not matched headline
+timings. The recovered elastic cost falls sharply while all other stage kernel
+counts remain identical. The change adds1200 elastic kernels and1200 driver
+launch calls across600 steps; runtime cudaMemcpyAsync/stream-sync call counts
+remain2535 each. Extra launches therefore coexist with much less recovery work.
+The [new API/kernel overlap audit](PRACTICAL_THROUGHPUT_PACKED_HISTORY_OVERLAP_20261017.json)
+finds99.812% of cudaMemcpyAsync API-span union overlapping GPU kernels. Those
+API spans are not an independent CPU overhead to add to the table.
+
+Startup remains separate: the closed78526.92-env-step/s diagnostic records
+110.03s of scene setup/build before policy creation and900-step warmup. Its
+model build timings, including JIT, are0.311s topology,1.740s operators,
+14.114s factor,0.611s inverse and0.329s surface inverse. They are a subset of
+setup, not extra costs to add to it. Runtime kernels can still compile in
+warmup. None of this cold/setup work is included in the warmed2400-step rate.
+
+History remains the largest named stage after the recovery change. A separate
+same-source/same-GPU history4/history0 tuning job725232 now measures three
+2400-step repeats per setting. Its result cannot be counted as fixed-history4
+code speedup. The parameterized bounded drivers retain the original force
+choices, phase windows, residuals and full fields; history0 qualification
+725233–725236 is reported separately below. The new-source work observer725230
+uses only an updated measurement file and remains excluded from headline rates.
+
+That [new work observer](PRACTICAL_THROUGHPUT_PACKED_HISTORY_WORK_20261017.json)
+now closes0:0 (725230) over19660800 environment steps. Valid contact-witness
+and two-finger fractions remain0.9746354 and0.5629167. History prediction hits
+are24.51865%, versus24.34850% in the original large-batch observer: the0.17015
+percentage-point change is small beside the measured recovery-cost reduction.
+Recorded fit evaluations average2.260082 per environment step, with maximum13,
+maximum1019 samples per source and9 nonzero egg contacts. Integration retries,
+elastic corrections/fallbacks and invalid stress steps are zero. This supports
+the same physical work mix; fit counts are parallel work proxies, not GPU time.
+
+The [first closed new-source B32 point](PRACTICAL_THROUGHPUT_PACKED_HISTORY_B32_20261017.json)
+has2454.58 live and2350.53 policy env-step/s, below the original comparable-GPU
+baseline. Same-GPU cache-only/new-source B32 A/B/B/A725238 now checks this small
+batch behavior independently. Large-batch improvement does not imply a small
+batch improvement. The actual cache-only A source is4bc5a887..., as captured
+by its899 hashes and submission journal; a
+[source-label clarification](PRACTICAL_THROUGHPUT_SMALL_BATCH_SOURCE_LABEL_20261017.json)
+retains the copied CLI's earlier descriptive revision label.
+
+The [history0 qualification](PRACTICAL_THROUGHPUT_HISTORY0_QUALIFICATION_20261017.json)
+closes both complete-grasp producers725233/725234, B16384 lifecycle725235 and
+independent comparisons725236/725240. It reuses the unchanged fixed-state field
+evidence and compares every saved moving tensor, von-Mises field and raw peak
+at all seven snapshots. All1370880 saved tensor components pass the unchanged
+1e-4/1e-3Pa bounds; maximum tensor difference is0.000156370Pa and relative-L2
+difference1.328e-9. The new driver explicitly verifies that history storage is
+disabled. The history4/history0 performance comparison is still open, so this
+is configuration qualification rather than a final settings recommendation.
 
 The [CPU/GPU overlap audit](PRACTICAL_THROUGHPUT_CPU_GPU_OVERLAP_20261017.json)
 also rereads the original600-step baseline trace using the updated stdlib

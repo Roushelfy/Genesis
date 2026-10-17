@@ -1,0 +1,160 @@
+{
+  "generated_utc": "2026-10-17T10:02:01.725707+00:00",
+  "scope": "First closed final-source four-scope rate and independently sampled memory width. B32, full original protocol.",
+  "snapshot_manifest_sha256": "b0f2f9cdaac8b90cfffe6a691c1f2ef1cdb0c6eeb4d356e2632e72f7a072ec10",
+  "records": [
+    {
+      "name": "packed-history-surface-four-scopes-b32-v2",
+      "job": "725211",
+      "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725211_0|COMPLETED|0:0|00:15:41|rtx-209-223\n725211_0.batch|COMPLETED|0:0|00:15:41|rtx-209-223\n725211_0.0|COMPLETED|0:0|00:15:40|rtx-209-223\n",
+      "gpu_uuid": "GPU-106c6f51-8e25-6350-e770-ddd9d664c0f7",
+      "scopes": [
+        {
+          "scope": "rigid",
+          "benchmark_path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b32-v2/rigid/results/benchmark.json",
+          "benchmark_sha256": "9b2ec86b4ee94f448408bee28cb5c68b83be6eb705a4bc676117776532db1753",
+          "source_closed": true,
+          "actual_program_and_wrapper_exit": 0,
+          "rates": [
+            11116.103235051301,
+            11100.998713216497,
+            11112.595097473146
+          ],
+          "median_rate": 11112.595097473146,
+          "sampled_memory": null
+        },
+        {
+          "scope": "live",
+          "benchmark_path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b32-v2/live/results/benchmark.json",
+          "benchmark_sha256": "b5cb6b6a41d8714272bec05fbf1227b5fca99a8a4d95a8bd713558789197f7fe",
+          "source_closed": true,
+          "actual_program_and_wrapper_exit": 0,
+          "rates": [
+            2458.867292086381,
+            2454.5753821902595,
+            2453.423657011373
+          ],
+          "median_rate": 2454.5753821902595,
+          "sampled_memory": null
+        },
+        {
+          "scope": "policy-rigid",
+          "benchmark_path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b32-v2/policy-rigid/results/benchmark.json",
+          "benchmark_sha256": "309ce4d7032b4af06e4b4f3ec3e6b29e49be73e67035ff84d342fb576fa6cddf",
+          "source_closed": true,
+          "actual_program_and_wrapper_exit": 0,
+          "rates": [
+            9407.582084373844,
+            9378.92190059106,
+            9421.022122067987
+          ],
+          "median_rate": 9407.582084373844,
+          "sampled_memory": null
+        },
+        {
+          "scope": "policy",
+          "benchmark_path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-four-scopes-b32-v2/policy/results/benchmark.json",
+          "benchmark_sha256": "c6833476e7b06c4f89e06506064baec9f23623f1d3e5a210a1c13e5027aebb2e",
+          "source_closed": true,
+          "actual_program_and_wrapper_exit": 0,
+          "rates": [
+            2350.5280399908283,
+            2356.170355355722,
+            2348.583155066132
+          ],
+          "median_rate": 2350.5280399908283,
+          "sampled_memory": null
+        }
+      ]
+    },
+    {
+      "name": "packed-history-surface-memory-four-scopes-b32-v2",
+      "job": "725218",
+      "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725218_0|COMPLETED|0:0|00:12:21|rtx-209-233\n725218_0.batch|COMPLETED|0:0|00:12:21|rtx-209-233\n725218_0.0|COMPLETED|0:0|00:12:20|rtx-209-233\n",
+      "gpu_uuid": "GPU-198cd15c-a34f-a6ad-df2b-47169af599c5",
+      "scopes": [
+        {
+          "scope": "rigid",
+          "benchmark_path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-memory-four-scopes-b32-v2/rigid/results/benchmark.json",
+          "benchmark_sha256": "940bfc630ebd0ce1adc0878d24f86a862b2d9c47620822b728bfb01534803c14",
+          "source_closed": true,
+          "actual_program_and_wrapper_exit": 0,
+          "rates": [
+            11152.74282531391
+          ],
+          "median_rate": 11152.74282531391,
+          "sampled_memory": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-memory-four-scopes-b32-v2/process-memory-rigid.csv",
+            "sha256": "4c34fbbe23a12193fa70ebc0e38860de2ff235d921a97b265a76ae1d1dcb9468",
+            "sampling_interval_ms": 100,
+            "samples_with_compute_processes": 1175,
+            "maximum_observed_compute_process_bytes": 2340421632,
+            "samples_at_observed_maximum": 146,
+            "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+          }
+        },
+        {
+          "scope": "live",
+          "benchmark_path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-memory-four-scopes-b32-v2/live/results/benchmark.json",
+          "benchmark_sha256": "bf29bb3fe4cdc57abf88543b090454946183e95b004c85a8e5ad759a603cb9ad",
+          "source_closed": true,
+          "actual_program_and_wrapper_exit": 0,
+          "rates": [
+            2484.926779392945
+          ],
+          "median_rate": 2484.926779392945,
+          "sampled_memory": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-memory-four-scopes-b32-v2/process-memory-live.csv",
+            "sha256": "bf5a3d5cde890ccca0fa2636732aafe0084d5b56afa7b24435d230ef08e02725",
+            "sampling_interval_ms": 100,
+            "samples_with_compute_processes": 1926,
+            "maximum_observed_compute_process_bytes": 2533359616,
+            "samples_at_observed_maximum": 1,
+            "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+          }
+        },
+        {
+          "scope": "policy-rigid",
+          "benchmark_path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-memory-four-scopes-b32-v2/policy-rigid/results/benchmark.json",
+          "benchmark_sha256": "584ff33dbcef99e26d6ed7d5593554e562baa4e0d78c4f09678ec1d15d1fbb85",
+          "source_closed": true,
+          "actual_program_and_wrapper_exit": 0,
+          "rates": [
+            9547.025008177106
+          ],
+          "median_rate": 9547.025008177106,
+          "sampled_memory": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-memory-four-scopes-b32-v2/process-memory-policy-rigid.csv",
+            "sha256": "65a36e8f73fe4ea269691e9f61959cddf21ecee3aadfdc0dc721a10b6a53f34d",
+            "sampling_interval_ms": 100,
+            "samples_with_compute_processes": 1186,
+            "maximum_observed_compute_process_bytes": 2348810240,
+            "samples_at_observed_maximum": 162,
+            "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+          }
+        },
+        {
+          "scope": "policy",
+          "benchmark_path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-memory-four-scopes-b32-v2/policy/results/benchmark.json",
+          "benchmark_sha256": "509f269fcdd18146fa35802f841f909d7ed5ea05f66250af9a046842f26a5498",
+          "source_closed": true,
+          "actual_program_and_wrapper_exit": 0,
+          "rates": [
+            2364.0436654917685
+          ],
+          "median_rate": 2364.0436654917685,
+          "sampled_memory": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-surface-memory-four-scopes-b32-v2/process-memory-policy.csv",
+            "sha256": "5da80b6792e0858dc2ed63d5094dc71d88f30d84b65e499303672e37c7dece48",
+            "sampling_interval_ms": 100,
+            "samples_with_compute_processes": 1958,
+            "maximum_observed_compute_process_bytes": 2508193792,
+            "samples_at_observed_maximum": 517,
+            "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+          }
+        }
+      ]
+    }
+  ],
+  "goal_completion": false
+}

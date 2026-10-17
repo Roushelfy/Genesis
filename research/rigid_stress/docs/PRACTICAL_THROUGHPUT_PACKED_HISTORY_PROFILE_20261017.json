@@ -1,0 +1,479 @@
+{
+  "utc": "2026-10-17T09:56:12.020332+00:00",
+  "scope": "Closed complete-period moving B8192 profile after masked surface-history optimization. Intrusive, not headline throughput.",
+  "job": "725205",
+  "source_closed": true,
+  "program_exit": 0,
+  "wrapper_exit": 0,
+  "snapshot_manifest_sha256": "b0f2f9cdaac8b90cfffe6a691c1f2ef1cdb0c6eeb4d356e2632e72f7a072ec10",
+  "aggregation_source_sha256": "75b8968473a2b3e4ab7767e6c924b10c8aaed3333f285d5bc50fd7f599ebf584",
+  "benchmark_sha256": "7720c9201270e5b02ae6ee07be62d66a5eebe5ae17b3736b80738dffa13d9a9e",
+  "trace_metadata": {
+    "steps": 600,
+    "start_tick": 2400,
+    "end_tick": 3000,
+    "resets": 8192,
+    "invalid_environment_steps": 0,
+    "scope": "Intrusive moving steps after timing; excluded from headline rates and pre-trace memory accounting."
+  },
+  "trace": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/packed-history-complete-cycle-trace-b8192-v2/results/benchmark.trace.json",
+    "sha256": "a59c6787b1f44fc13cdfc436d716f71d84d1fae77668da0cd86961ffc635003b",
+    "step_count": 600,
+    "step_wall_sum_ms": 64814.503674,
+    "kernel_count": 220024,
+    "kernel_duration_sum_ms": 61568.48374000002,
+    "top_kernel_duration_sum_ms": [
+      [
+        "kernel_fit_tractions_impl_c1044_0_kernel_1_range_for",
+        12247.779991999983
+      ],
+      [
+        "kernel_fan_frontier_samples_c1042_0_kernel_4_range_for",
+        11071.588757000016
+      ],
+      [
+        "kernel_scatter_cached_tractions_c1048_0_kernel_5_range_for",
+        4853.411067999998
+      ],
+      [
+        "kernel_surface_apply_packed_block_c874_0_kernel_1_range_for",
+        2974.099790000001
+      ],
+      [
+        "kernel_footprint_ports_c764_0_kernel_3_range_for",
+        2178.261316
+      ],
+      [
+        "kernel_full_residual_impl_c866_1_kernel_3_range_for",
+        1654.9536470000091
+      ],
+      [
+        "kernel_full_residual_impl_c866_0_kernel_3_range_for",
+        1582.6875719999991
+      ],
+      [
+        "kernel_predict_c730_0_kernel_25_range_for",
+        1372.5818079999988
+      ],
+      [
+        "kernel_substep_collision_c898_0_kernel_10_range_for",
+        1356.6171609999992
+      ],
+      [
+        "kernel_predict_c730_0_kernel_14_range_for",
+        1282.8056040000004
+      ],
+      [
+        "kernel_resolve_sources_c746_0_kernel_1_range_for",
+        1261.5862089999987
+      ],
+      [
+        "kernel_append_c734_0_kernel_1_range_for",
+        1174.4637600000003
+      ],
+      [
+        "kernel_substep_collision_c898_0_kernel_11_range_for",
+        1147.7889090000008
+      ],
+      [
+        "kernel_predict_c730_0_kernel_36_range_for",
+        1116.5105910000004
+      ],
+      [
+        "kernel_predict_c730_0_kernel_3_range_for",
+        1080.7068300000005
+      ],
+      [
+        "kernel_peak_impl_c868_0_kernel_3_range_for",
+        990.470503
+      ],
+      [
+        "kernel_predict_c730_0_kernel_31_range_for",
+        825.0296030000001
+      ],
+      [
+        "kernel_predict_c730_0_kernel_28_range_for",
+        824.7250779999998
+      ],
+      [
+        "kernel_predict_c730_0_kernel_39_range_for",
+        735.0105609999997
+      ],
+      [
+        "kernel_predict_c730_0_kernel_42_range_for",
+        733.1911470000002
+      ]
+    ],
+    "top_kernel_resource_metadata": {
+      "kernel_fit_tractions_impl_c1044_0_kernel_1_range_for": {
+        "registers per thread": 242,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 17
+      },
+      "kernel_fan_frontier_samples_c1042_0_kernel_4_range_for": {
+        "registers per thread": 120,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 33
+      },
+      "kernel_scatter_cached_tractions_c1048_0_kernel_5_range_for": {
+        "registers per thread": 102,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 33
+      },
+      "kernel_surface_apply_packed_block_c874_0_kernel_1_range_for": {
+        "registers per thread": 64,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          512,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 67
+      },
+      "kernel_footprint_ports_c764_0_kernel_3_range_for": {
+        "registers per thread": 62,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 67
+      },
+      "kernel_full_residual_impl_c866_1_kernel_3_range_for": {
+        "registers per thread": 126,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 33
+      },
+      "kernel_full_residual_impl_c866_0_kernel_3_range_for": {
+        "registers per thread": 126,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          256,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 33
+      },
+      "kernel_predict_c730_0_kernel_25_range_for": {
+        "registers per thread": 33,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 100
+      },
+      "kernel_substep_collision_c898_0_kernel_10_range_for": {
+        "registers per thread": 255,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 17
+      },
+      "kernel_predict_c730_0_kernel_14_range_for": {
+        "registers per thread": 33,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 100
+      },
+      "kernel_resolve_sources_c746_0_kernel_1_range_for": {
+        "registers per thread": 151,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 25
+      },
+      "kernel_append_c734_0_kernel_1_range_for": {
+        "registers per thread": 29,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 100
+      },
+      "kernel_substep_collision_c898_0_kernel_11_range_for": {
+        "registers per thread": 255,
+        "shared memory": 0,
+        "grid": [
+          188,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 8
+      },
+      "kernel_predict_c730_0_kernel_36_range_for": {
+        "registers per thread": 33,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 100
+      },
+      "kernel_predict_c730_0_kernel_3_range_for": {
+        "registers per thread": 33,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 100
+      },
+      "kernel_peak_impl_c868_0_kernel_3_range_for": {
+        "registers per thread": 72,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 58
+      },
+      "kernel_predict_c730_0_kernel_31_range_for": {
+        "registers per thread": 54,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 75
+      },
+      "kernel_predict_c730_0_kernel_28_range_for": {
+        "registers per thread": 54,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 75
+      },
+      "kernel_predict_c730_0_kernel_39_range_for": {
+        "registers per thread": 68,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 58
+      },
+      "kernel_predict_c730_0_kernel_42_range_for": {
+        "registers per thread": 68,
+        "shared memory": 0,
+        "grid": [
+          9024,
+          1,
+          1
+        ],
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "est. achieved occupancy %": 58
+      }
+    },
+    "kernel_stage_duration_sum_ms": {
+      "traction_fit": 12365.635021999658,
+      "wrench_acceptance": 33.34692000000054,
+      "load_assembly_and_diagnostics": 4915.59902600001,
+      "inertia_relief": 487.9019130000041,
+      "elastic_solve": 3168.312807000038,
+      "history_prediction": 15629.715590999716,
+      "complete_residual": 3296.016399999966,
+      "global_peak_and_full_output": 1002.2008560000088,
+      "step_lifecycle": 22.43767899999982,
+      "rigid_integration": 417.84140100000127,
+      "torch_auxiliary": 41.18302399999997,
+      "controller": 7.196269000000024,
+      "rigid_dynamics": 289.7894630000015,
+      "collision": 2933.0750149999976,
+      "rigid_constraint_solve": 1162.228966000051,
+      "contact_mapping": 1523.4345529999925,
+      "path_queries": 2209.135067999999,
+      "surface_sampling": 11637.896057000036,
+      "source_priors": 192.81884499999785,
+      "traction_refinement": 226.46002999998962,
+      "reset": 6.2588349999999995
+    },
+    "kernel_stage_counts": {
+      "traction_fit": 7200,
+      "wrench_acceptance": 6000,
+      "load_assembly_and_diagnostics": 7200,
+      "inertia_relief": 3600,
+      "elastic_solve": 10800,
+      "history_prediction": 32400,
+      "complete_residual": 15000,
+      "global_peak_and_full_output": 3000,
+      "step_lifecycle": 3600,
+      "rigid_integration": 12000,
+      "torch_auxiliary": 8768,
+      "controller": 1200,
+      "rigid_dynamics": 18000,
+      "collision": 17400,
+      "rigid_constraint_solve": 31800,
+      "contact_mapping": 16800,
+      "path_queries": 3000,
+      "surface_sampling": 7200,
+      "source_priors": 3600,
+      "traction_refinement": 11400,
+      "reset": 56
+    },
+    "unclassified_kernel_names": [],
+    "runtime_counts": {
+      "cuLaunchKernel": 94256,
+      "cudaLaunchKernel": 8768,
+      "cudaMemcpyAsync": 2535,
+      "cudaStreamSynchronize": 2535,
+      "cudaDeviceSynchronize": 1
+    },
+    "runtime_duration_sum_ms": {
+      "cuLaunchKernel": 258.56032299999487,
+      "cudaLaunchKernel": 49.529069999999805,
+      "cudaMemcpyAsync": 27502.136770999987,
+      "cudaStreamSynchronize": 44.97510699999989,
+      "cudaDeviceSynchronize": 0.028307
+    },
+    "copy_counts": {
+      "Memcpy HtoD (Pageable -> Device)": 35496,
+      "Memcpy DtoH (Device -> Pageable)": 2463
+    },
+    "scope": "Intrusive moving steps after the timed rollout; not the complete trajectory or headline timing. Nested CPU/runtime times overlap GPU work and must not be added to kernel sums."
+  },
+  "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725205_0|COMPLETED|0:0|00:10:08|rtx-209-191\n725205_0.batch|COMPLETED|0:0|00:10:08|rtx-209-191\n725205_0.0|COMPLETED|0:0|00:10:07|rtx-209-191\n",
+  "goal_completion": false
+}

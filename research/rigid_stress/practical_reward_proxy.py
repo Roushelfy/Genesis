@@ -67,6 +67,7 @@ def main():
     parser.add_argument("--model", choices=["pressure", "body_source_prior"], required=True)
     parser.add_argument("--radius-scale", type=float, default=1.0)
     parser.add_argument("--low-limit", type=float, default=1.0)
+    parser.add_argument("--history", type=int, choices=(0, 4), default=4)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     assert args.radius_scale > 0
@@ -83,7 +84,7 @@ def main():
         True,
         varied=True,
         conditions=args.conditions,
-        history_size=4,
+        history_size=args.history,
         output_mode="max",
         contact_model="pressure" if args.model == "pressure" else "intrinsic",
         intrinsic_load_partition="body_source_prior",
@@ -92,6 +93,7 @@ def main():
         enable_contact_patch=False,
     )
     workload.base_radius.mul_(args.radius_scale)
+    assert (workload.scene.rigid_solver.stress_recovery.links[0].history is None) == (args.history == 0)
     strong_limits = torch.tensor(
         [args.low_limit] * count + [4.0] * count, dtype=torch.get_default_dtype(), device=gs.device
     )
@@ -161,6 +163,7 @@ def main():
                 "scope": __doc__,
                 "model": args.model,
                 "radius_scale": args.radius_scale,
+                "history_size": args.history,
                 "requested_strong_limits_N": [args.low_limit, 4],
                 "condition_bank": str(args.conditions),
                 "condition_bank_sha256": bank_hash,
