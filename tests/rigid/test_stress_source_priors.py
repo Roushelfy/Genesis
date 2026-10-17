@@ -306,8 +306,14 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, native_
         )
     ]
     counts = qd_to_numpy(tractions.sample_count, transpose=True)
-    if len(tractions.fan_barycentric.shape) == 3 and len(tractions.sample_positions.shape) in (3, 4):
-        direct = replace(tractions, sample_positions=V_VEC(3, dtype=gs.qd_float, shape=()))
+    if len(tractions.fan_barycentric.shape) == 3 and (
+        len(tractions.sample_positions.shape) == 3 or len(tractions.sample_barycentric.shape) == 4
+    ):
+        direct = replace(
+            tractions,
+            sample_positions=V_VEC(3, dtype=gs.qd_float, shape=()),
+            sample_barycentric=V(dtype=gs.qd_float, shape=()),
+        )
         direct_samples = create_traction_samples(direct)
         kernel_traction_samples(direct_samples, direct, surface.info, info)
         actual_positions = qd_to_numpy(samples.positions, transpose=True)
@@ -545,6 +551,33 @@ def test_body_source_prior_dynamic_workspace_release_reset_and_invalid_member():
     kernel_accept(state, raw, errno)
     assert_equal(qd_to_numpy(streamed.failure.status), 0)
     assert_allclose(qd_to_numpy(state.peak), reference[3], rtol=1e-4, atol=1e-3)
+
+    # A complete release must clear the old union before its workspace is
+    # reused on recontact.
+    raw.valid.fill(False)
+    errno.fill(0)
+    kernel_begin_step(state)
+    streamed.scatter(raw, state, model.info, surface.info, options, epsilon, errno)
+    model.recover(omega, state)
+    kernel_accept(state, raw, errno)
+    assert_equal(qd_to_numpy(errno), 0)
+    assert_equal(qd_to_numpy(streamed.packing.count), 0)
+    assert_equal(qd_to_numpy(raw.status, transpose=True), 0)
+    assert_equal(qd_to_numpy(streamed.failure.status), 0)
+    assert qd_to_numpy(state.step_valid).all()
+    for value in (state.force, state.stress_tensor, state.von_mises, state.peak):
+        assert_equal(qd_to_numpy(value, transpose=True), 0)
+    raw.valid.from_numpy(initial)
+    kernel_begin_step(state)
+    streamed.scatter(raw, state, model.info, surface.info, options, epsilon, errno)
+    model.recover(omega, state)
+    kernel_accept(state, raw, errno)
+    assert_equal(qd_to_numpy(errno), 0)
+    assert qd_to_numpy(state.step_valid).all()
+    for value, expected, atol in zip(
+        (state.force, state.stress_tensor, state.von_mises, state.peak), reference, (1e-10, 1e-3, 1e-3, 1e-3)
+    ):
+        assert_allclose(qd_to_numpy(value, transpose=True), expected, rtol=1e-4, atol=atol)
 
 
 @pytest.mark.required

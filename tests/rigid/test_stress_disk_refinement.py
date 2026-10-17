@@ -72,7 +72,8 @@ def cpu_disk_geometry(anchor, triangle, normal, radius, fraction, angle, refined
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-def test_legal_disk_cap_refinement_matches_cpu_through_release_restore_reset_and_physical_rejection():
+@pytest.mark.parametrize("is_geometry_cached", (False, True))
+def test_legal_disk_cap_refinement_matches_cpu_through_release_restore_reset_and_physical_rejection(is_geometry_cached):
     mesh = Path(__file__).resolve().parents[2] / "examples/rigid/assets/hollow_egg/level1/elastic.npz"
     with np.load(mesh) as saved:
         vertices, tets, faces = (saved[key] for key in ("vertices", "tetrahedra", "surface_triangles"))
@@ -104,9 +105,13 @@ def test_legal_disk_cap_refinement_matches_cpu_through_release_restore_reset_and
     surface, paths = StressSurface(10, model.info), StressSurfacePaths(model.info, 8)
     contacts, sources = create_contacts(1, n_envs, radius), create_sources(1, n_envs)
     footprints = create_footprints(paths.info.positions.shape[0], 1, n_envs)
-    tractions, info = create_surface_fan_tractions(surface.info, 1, n_envs), create_traction_info(surface.info)
+    tractions, info = (
+        create_surface_fan_tractions(surface.info, 1, n_envs, cached_fan_positions=is_geometry_cached),
+        create_traction_info(surface.info),
+    )
     assert any(item.name == "stress.tractions.circle.focus" for item in iter_data(tractions, "stress.tractions"))
     assert tractions.sample_positions.shape == ()
+    assert len(tractions.sample_barycentric.shape) == (4 if is_geometry_cached else 0)
     contacts.valid.fill(True)
     contacts.position.from_numpy(points[None])
     contacts.force.from_numpy(forces[None])

@@ -122,6 +122,7 @@ def kernel_fan_frontier_samples(
         i_work = i_task // n_local
         i_sample = gs.qd_int(0)
         position = qd.Vector.zero(gs.qd_float, 3)
+        bary = qd.Vector.zero(gs.qd_float, 3)
         profile = gs.qd_float(0.0)
         distance = gs.qd_float(0.0)
         is_counted = False
@@ -207,9 +208,9 @@ def kernel_fan_frontier_samples(
                 traction_state.profile[i_slot, i_c, i_b] = profile
                 if qd.static(len(traction_state.sample_positions.shape) == 3):
                     traction_state.sample_positions[i_slot, i_c, i_b] = position
-                elif qd.static(len(traction_state.sample_positions.shape) == 4):
-                    for i_a in qd.static(range(3)):
-                        traction_state.sample_positions[i_slot, i_c, i_b, i_a] = position[i_a]
+                if qd.static(len(traction_state.sample_barycentric.shape) == 4):
+                    for i_a in qd.static(range(2)):
+                        traction_state.sample_barycentric[i_slot, i_c, i_b, i_a] = bary[i_a + 1]
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         if qd.static(len(traction_state.capacity_maximum.shape) == 1):  # noqa: SIM102
             if traction_state.sample_count[i_c, i_b] > traction_state.profile.shape[0]:
@@ -220,7 +221,6 @@ def kernel_fan_frontier_samples(
             and (footprint_state.samples[i_c, i_b] == 0)
         ):
             footprint_state.status[i_c, i_b] = StressFootprintStatus.EMPTY_SUPPORT
-
 
 
 def kernel_surface_fan_profiles(contacts, footprints, tractions, model, surface, paths, info, epsilon):

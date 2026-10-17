@@ -135,6 +135,7 @@ class StressTractionState:
     certificate: qd.Tensor
     certificate_margin: qd.Tensor
     sample_positions: qd.Tensor
+    sample_barycentric: qd.Tensor
     sample_normals: qd.Tensor
     sample_faces: qd.Tensor
     sample_shape: qd.Tensor
@@ -193,10 +194,11 @@ def create_tractions(
         evaluations=V(dtype=gs.qd_int, shape=shape),
         certificate=V_VEC(6, dtype=gs.qd_float, shape=shape),
         certificate_margin=V(dtype=gs.qd_float, shape=shape),
-        sample_positions=(
-            V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs, 3), layout=(2, 1, 0, 3))
+        sample_positions=V_VEC(3, dtype=gs.qd_float, shape=sample_shape),
+        sample_barycentric=(
+            V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs, 2), layout=(2, 1, 0, 3))
             if cached_fan_positions
-            else V_VEC(3, dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs) if cached_fan_positions else sample_shape)
+            else V(dtype=gs.qd_float, shape=())
         ),
         sample_normals=V_VEC(3, dtype=gs.qd_float, shape=sample_shape),
         sample_faces=V(dtype=gs.qd_int, shape=face_shape),
@@ -386,27 +388,34 @@ def func_traction_local_index(
 
 
 @qd.func
+def func_traction_fan_bary(
+    i_q: int, i_c: int, i_b: int, traction_state: StressTractionState, traction_info: StressTractionInfo
+):
+    i_sample = func_traction_sample_index(i_q, i_c, i_b, traction_state)
+    i_face = gs.qd_int(0)
+    bary = qd.Vector.zero(gs.qd_float, 3)
+    if qd.static(len(traction_state.sample_barycentric.shape) == 4):
+        u = traction_state.sample_barycentric[i_q, i_c, i_b, 0]
+        v = traction_state.sample_barycentric[i_q, i_c, i_b, 1]
+        bary = qd.Vector([1.0 - u - v, u, v])
+        i_face = i_sample // (3 * traction_info.gauss.shape[0] ** 2)
+        if i_sample >= 3 * traction_info.positions.shape[0]:
+            i_face = traction_state.circle.face[i_c, i_b]
+    else:
+        i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
+    return i_face, bary
+
+
+@qd.func
 def func_traction_geometry(
     i_q: int, i_c: int, i_b: int, traction_state: StressTractionState, traction_info: StressTractionInfo
 ):
     position, normal = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
     i_sample = func_traction_sample_index(i_q, i_c, i_b, traction_state)
     if qd.static(len(traction_state.fan_barycentric.shape) == 3):
-        i_face = gs.qd_int(0)
-        if qd.static(len(traction_state.sample_positions.shape) in (3, 4)):
-            if qd.static(len(traction_state.sample_positions.shape) == 4):
-                for i_a in qd.static(range(3)):
-                    position[i_a] = traction_state.sample_positions[i_q, i_c, i_b, i_a]
-            else:
-                position = traction_state.sample_positions[i_q, i_c, i_b]
-            n_quadrature = traction_info.gauss.shape[0] ** 2
-            i_face = i_sample // (3 * n_quadrature)
-            if i_sample >= 3 * traction_info.positions.shape[0]:
-                i_face = traction_state.circle.face[i_c, i_b]
-        else:
-            i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
-            edges = traction_info.face_edges[i_face]
-            position = traction_info.face_origin[i_face] + bary[1] * edges[0, :] + bary[2] * edges[1, :]
+        i_face, bary = func_traction_fan_bary(i_q, i_c, i_b, traction_state, traction_info)
+        edges = traction_info.face_edges[i_face]
+        position = traction_info.face_origin[i_face] + bary[1] * edges[0, :] + bary[2] * edges[1, :]
         normal = traction_info.inward_normals[i_face * traction_info.gauss.shape[0] ** 2]
     elif qd.static(len(traction_state.sample_faces.shape) == 2):
         i_local = func_traction_local_index(i_sample, i_c, i_b, traction_state, traction_info)
@@ -439,7 +448,7 @@ def func_traction_shape(
     i_face = i_sample // n_quadrature
     basis = qd.Vector.zero(gs.qd_float, 6)
     if qd.static(len(traction_state.fan_barycentric.shape) == 3):
-        i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
+        i_face, bary = func_traction_fan_bary(i_q, i_c, i_b, traction_state, traction_info)
         basis = qd.Vector(
             [
                 bary[0] * (2.0 * bary[0] - 1.0),
