@@ -1,0 +1,169 @@
+{
+  "generated_utc": "2026-10-17T11:32:15.346870+00:00",
+  "scope": "Verify raw metadata and source closures; no scientific execution.",
+  "snapshot_manifest_sha256": "b0f2f9cdaac8b90cfffe6a691c1f2ef1cdb0c6eeb4d356e2632e72f7a072ec10",
+  "all_899_actual_source_hashes_rechecked": true,
+  "metadata_source_sha256": "ed91ff87ce335c586e158544e1d370e5ca754e1f23947a033db180a8c6626c05",
+  "closure_source_sha256": "0a8db0f3cf096e50b8495a85f7b0d6c4771ccdb9578662af922e2629f0258403",
+  "records": [
+    {
+      "name": "history0-four-scopes-b16384-v1",
+      "job": "725249",
+      "width": 16384,
+      "history": 0,
+      "intrusive": false,
+      "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725249_0|COMPLETED|0:0|00:55:57|rtx-209-115\n725249_0.batch|COMPLETED|0:0|00:55:57|rtx-209-115\n725249_0.0|COMPLETED|0:0|00:55:57|rtx-209-115\n",
+      "scopes": [
+        {
+          "scope": "rigid",
+          "benchmark_sha256": "7cd94ade8fff761c87208abb515372f19bc4bb25631ac6bae641aae8fff2f433",
+          "rates": [
+            907644.8427267841,
+            907316.5506510041,
+            907392.8164706553
+          ],
+          "median": 907392.8164706553,
+          "latency_ms": 18.056127073747728,
+          "native_buffer_bytes": null,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        },
+        {
+          "scope": "live",
+          "benchmark_sha256": "67962926b0eb3a5a21a6a7e4c7154bc6c1c1a02e33cddd0504e3693fb5f90f31",
+          "rates": [
+            116899.3785137464,
+            116912.11023373387,
+            117015.24784051077
+          ],
+          "median": 116912.11023373387,
+          "latency_ms": 140.1394600374988,
+          "native_buffer_bytes": 16827145838,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        },
+        {
+          "scope": "policy-rigid",
+          "benchmark_sha256": "afade3b84a9f2266a83e65fc035139ad591a0da0ea7fe8a1f648506f72301bc4",
+          "rates": [
+            900618.4391985185,
+            899874.0036751782,
+            899990.351250826
+          ],
+          "median": 899990.351250826,
+          "latency_ms": 18.204639613334923,
+          "native_buffer_bytes": null,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        },
+        {
+          "scope": "policy",
+          "benchmark_sha256": "29a2ab4d606efea114cb98e53553e3bc2bca164885f956b2f07b47809a5b7d9a",
+          "rates": [
+            116712.31929297041,
+            116695.21298875459,
+            116690.07183004532
+          ],
+          "median": 116695.21298875459,
+          "latency_ms": 140.39993227124796,
+          "native_buffer_bytes": 16819805806,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        }
+      ],
+      "gpu_uuid": "GPU-1cab8d77-cbae-8609-6ffb-46e684ef34dc"
+    },
+    {
+      "name": "history0-memory-four-scopes-b32768-v1",
+      "job": "725252",
+      "width": 32768,
+      "history": 0,
+      "intrusive": true,
+      "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725252_0|COMPLETED|0:0|00:53:16|rtx-209-223\n725252_0.batch|COMPLETED|0:0|00:53:16|rtx-209-223\n725252_0.0|COMPLETED|0:0|00:53:16|rtx-209-223\n",
+      "scopes": [
+        {
+          "scope": "rigid",
+          "benchmark_sha256": "3edb5cc3dde285339a2c5cfb151106c967379c558ef8c5c12590b0fba7e627f0",
+          "rates": [
+            996314.1100204915
+          ],
+          "median": 996314.1100204915,
+          "latency_ms": 32.88922606880078,
+          "native_buffer_bytes": null,
+          "sampled_memory": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-memory-four-scopes-b32768-v1/process-memory-rigid.csv",
+            "sha256": "9eed613d230f0755bed9956dd566b42d7daa623fc7d61b3b353a74897216bfaf",
+            "sampling_interval_ms": 100,
+            "samples_with_compute_processes": 3043,
+            "maximum_observed_compute_process_bytes": 32182894592,
+            "samples_at_observed_maximum": 1973,
+            "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+          },
+          "source_and_actual_exits_closed": true
+        },
+        {
+          "scope": "live",
+          "benchmark_sha256": "16843397eb0448ef4d001312f34d632eea7a0f3718c60e3d6b70eec60868d139",
+          "rates": [
+            118246.57557905767
+          ],
+          "median": 118246.57557905767,
+          "latency_ms": 277.11584745295113,
+          "native_buffer_bytes": 33581178478,
+          "sampled_memory": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-memory-four-scopes-b32768-v1/process-memory-live.csv",
+            "sha256": "b8ee91203ff3da318334957ad8ac12b0a2bb67731beda0ee7e15054bcf7696f4",
+            "sampling_interval_ms": 100,
+            "samples_with_compute_processes": 12078,
+            "maximum_observed_compute_process_bytes": 84552974336,
+            "samples_at_observed_maximum": 1,
+            "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+          },
+          "source_and_actual_exits_closed": true
+        },
+        {
+          "scope": "policy-rigid",
+          "benchmark_sha256": "bc413b2fd81a70cbb52a3c00745368bb5e41aa046aacf5a9ecd383b598b81833",
+          "rates": [
+            989724.069336903
+          ],
+          "median": 989724.069336903,
+          "latency_ms": 33.108217749977484,
+          "native_buffer_bytes": null,
+          "sampled_memory": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-memory-four-scopes-b32768-v1/process-memory-policy-rigid.csv",
+            "sha256": "df676a4ea58d3c4cba7075baa6607ad75f06e4fd1a9048a1578285958a385279",
+            "sampling_interval_ms": 100,
+            "samples_with_compute_processes": 3068,
+            "maximum_observed_compute_process_bytes": 32317112320,
+            "samples_at_observed_maximum": 909,
+            "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+          },
+          "source_and_actual_exits_closed": true
+        },
+        {
+          "scope": "policy",
+          "benchmark_sha256": "99fbf9b1882d5d4b54b4f8764cdeed6525d8bb7fcc938b4c01c4c6756414c86c",
+          "rates": [
+            117950.72756721133
+          ],
+          "median": 117950.72756721133,
+          "latency_ms": 277.8109188120773,
+          "native_buffer_bytes": 33566498414,
+          "sampled_memory": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/history0-memory-four-scopes-b32768-v1/process-memory-policy.csv",
+            "sha256": "956d5c3ea2a753b9ee45f48588e985802849bbadb7cb81b8d80757897c6aaff5",
+            "sampling_interval_ms": 100,
+            "samples_with_compute_processes": 12134,
+            "maximum_observed_compute_process_bytes": 84716552192,
+            "samples_at_observed_maximum": 1,
+            "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+          },
+          "source_and_actual_exits_closed": true
+        }
+      ],
+      "gpu_uuid": "GPU-8e4d594b-2f96-203d-69d3-3fcc7c758473"
+    }
+  ],
+  "goal_completion": false
+}

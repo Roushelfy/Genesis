@@ -8,7 +8,8 @@ The robust full-shell workload now has a closed50.845% code improvement at
 B8192 with its original history4 configuration. A separately qualified history0
 setting gives another34.494% in a same-source/same-GPU comparison. The complete
 history0 four-scope B8192 run measures109293.43 live and108062.87 policy valid
-env-step/s. Final B16384/B32768 operating measurements are still running.
+env-step/s. B16384 now closes116912.11 live and116695.21 policy env-step/s;
+final B32768 operating measurements are still running.
 
 ## Workload and comparison scope
 
@@ -52,6 +53,14 @@ has the following four scopes on one allocated GPU:
 
 The median incremental stress costs are64.3618ms/batch live and64.5990ms/batch
 with policy. The aggregate rate is not an individual environment's frame rate.
+The [closed B16384 measurement](PRACTICAL_THROUGHPUT_HISTORY0_WIDE_20261017.json)
+has907392.82 rigid,116912.11 live,899990.35 policy-rigid and116695.21 policy
+env-step/s. Doubling B8192 adds6.97% live and7.99% policy aggregate throughput;
+batch latency and memory increase. These are comparable allocations rather
+than a same-GPU paired batch-width experiment.
+The [independent raw metadata audit](PRACTICAL_THROUGHPUT_HISTORY0_RAW_RATE_AUDIT_20261017.json)
+rereads all eight closed B8192/B16384 scope records and passes their raw rates,
+unchanged stress/controller/policy settings and per-environment failure counts.
 The frozen original has a throughput shoulder from B8192 through B24576;
 final-source shoulder/refinement and curves remain open.
 
@@ -90,9 +99,11 @@ runtime compilation and physical steps; these costs are outside headline timing.
 
 On RTX PRO6000 Blackwell with101975851008 CUDA-visible device bytes, separate
 100ms sampled process peaks are19.0449/21.4180GiB live/policy at history0 B8192,
-and40.5273/40.5293GiB at B16384. These include setup/growth and are sampled
+and40.5273/40.5293GiB at B16384. The independent B32768 memory pass closes
+78.7461/78.8984GiB. These include setup/growth and are sampled
 lower bounds. Separate-process peaks include allocator/sampling effects and
-do not isolate the policy's memory cost. Final B32768 observations remain open.
+do not isolate the policy's memory cost. Its intrusive one-repeat rates remain
+excluded from headline timings; final B32768 repeated rates remain open.
 
 With initial workspace2 growing to all9 actual contacts, history4 passes B40960
 and OOMs at B43008; history0 passes B47104 and OOMs at B49152. The history0
@@ -102,7 +113,7 @@ excluded from repeated headline rates. The brackets describe these measured
 settings, not an exact universal limit.
 
 History0 is the qualified fast-setting candidate for this changing-contact
-low mesh. Final batch selection awaits the B16384/B32768 repeated measurements.
+low mesh. Final batch selection awaits the B32768 repeated measurement.
 History4 remains available for workloads with useful reuse; it preserves the
 same output semantics. Initial workspace2 is a separately labeled memory tuning,
 with full growth rather than a cap on physical contacts. Full output remains
@@ -129,3 +140,7 @@ The [running guide](RUNNING_PRACTICAL_THROUGHPUT.md),
 and [baseline figure packet](../evidence/20261017-throughput/baseline-scaling-v2/README.md)
 provide commands, exact committed-source reconstruction and inspected exports.
 Final-source curve packets and the terminal completion decision remain open.
+`scripts/plot_practical_comparison.py` prepares a direct baseline/history4,
+selected/history4 and selected/history0 comparison from the two independently
+audited final summaries. Its preview job725284 waits for summary/preview725282
+and the remaining normal B32768 producers; no final plot is claimed yet.
