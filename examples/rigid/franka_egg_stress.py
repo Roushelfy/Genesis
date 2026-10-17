@@ -55,6 +55,7 @@ class FrankaEgg:
         intrinsic_load_partition: str = "componentwise",
         cooperative_tractions: bool = True,
         warm_start_tractions: bool = True,
+        public_defaults: bool = False,
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -100,38 +101,42 @@ class FrankaEgg:
         )
         self.link = self.egg.base_link
         if stress:
-            self.link.configure_stress_recovery(
-                gs.options.RigidStressOptions(
-                    mesh=assets / "elastic.npz",
-                    contact_model=contact_model,
-                    contact_block_size=contact_block_size,
-                    intrinsic_support=intrinsic_support,
-                    surface_fan_frontier=surface_fan_frontier,
-                    intrinsic_load_partition=intrinsic_load_partition,
-                    cooperative_tractions=cooperative_tractions,
-                    warm_start_tractions=warm_start_tractions,
-                    cooperative_solve=cooperative_solve,
-                    method=method,
-                    inverse_precision=inverse_precision,
-                    history_size=history_size,
-                    cooperative_pressure=cooperative_pressure,
-                    surface_inverse=surface_inverse,
-                    packed_surface_loads=packed_surface_loads,
-                    fused_pipeline=fused_pipeline,
-                    output_mode=output_mode,
-                    cooperative_scatter=cooperative_scatter,
-                    cooperative_balance=cooperative_balance,
-                    contact_wrench_reuse=contact_wrench_reuse,
-                    packed_block_size=packed_block_size,
-                    coalesced_residual=coalesced_residual,
-                    contact_moment_reuse=contact_moment_reuse,
-                    fused_rigid_post=fused_rigid_post,
-                    face_parallel_scatter=face_parallel_scatter,
-                    scatter_tasks_per_env=scatter_tasks_per_env,
-                    cached_peak=cached_peak,
-                    cached_face_bounds=cached_face_bounds,
-                )
+            options = gs.options.RigidStressOptions(
+                mesh=assets / "elastic.npz",
+                contact_model=contact_model,
+                contact_block_size=contact_block_size,
+                intrinsic_support=intrinsic_support,
+                surface_fan_frontier=surface_fan_frontier,
+                intrinsic_load_partition=intrinsic_load_partition,
+                cooperative_tractions=cooperative_tractions,
+                warm_start_tractions=warm_start_tractions,
+                cooperative_solve=cooperative_solve,
+                method=method,
+                inverse_precision=inverse_precision,
+                history_size=history_size,
+                cooperative_pressure=cooperative_pressure,
+                surface_inverse=surface_inverse,
+                packed_surface_loads=packed_surface_loads,
+                fused_pipeline=fused_pipeline,
+                output_mode=output_mode,
+                cooperative_scatter=cooperative_scatter,
+                cooperative_balance=cooperative_balance,
+                contact_wrench_reuse=contact_wrench_reuse,
+                packed_block_size=packed_block_size,
+                coalesced_residual=coalesced_residual,
+                contact_moment_reuse=contact_moment_reuse,
+                fused_rigid_post=fused_rigid_post,
+                face_parallel_scatter=face_parallel_scatter,
+                scatter_tasks_per_env=scatter_tasks_per_env,
+                cached_peak=cached_peak,
+                cached_face_bounds=cached_face_bounds,
             )
+            if public_defaults:
+                defaults = gs.options.RigidStressOptions(mesh=assets / "elastic.npz")
+                if options != defaults:
+                    raise ValueError("Public-default stress requires all stress tuning options at their defaults.")
+                options = defaults
+            self.link.configure_stress_recovery(options)
         self.scene.build(n_envs=n_envs)
         self.robot.set_dofs_kp([4500, 4500, 3500, 3500, 2000, 2000, 2000], self.arm)
         self.robot.set_dofs_kv([450, 450, 350, 350, 200, 200, 200], self.arm)
@@ -283,6 +288,7 @@ def main() -> None:
     parser.add_argument("--steps", type=int, default=600)
     parser.add_argument("--seed", type=int, default=510000)
     parser.add_argument("--conditions", type=Path, help="Replay a saved benchmark condition bank.")
+    parser.add_argument("--public-default-stress", action="store_true")
     parser.add_argument("--no-stress", action="store_true")
     parser.add_argument("--varied", action="store_true")
     parser.add_argument("--viewer", action="store_true")
@@ -328,6 +334,7 @@ def main() -> None:
         intrinsic_support=args.intrinsic_support,
         surface_fan_frontier=not args.dense_surface_fan,
         intrinsic_load_partition=args.intrinsic_load_partition,
+        public_defaults=args.public_default_stress,
     )
     for _ in range(args.steps):
         workload.step()

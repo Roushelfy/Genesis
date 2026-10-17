@@ -332,6 +332,7 @@ def main() -> None:
     parser.add_argument("--minimum-seconds", type=float, default=10.0)
     parser.add_argument("--varied", action="store_true")
     parser.add_argument("--seed", type=int, default=510000)
+    parser.add_argument("--public-default-stress", action="store_true")
     parser.add_argument("--contact-model", choices=("pressure", "intrinsic"), default="pressure")
     parser.add_argument("--intrinsic-support", choices=("contact", "pair_union"), default="contact")
     parser.add_argument("--dense-surface-fan", action="store_true", help="Compare the full-face fan launch.")
@@ -439,6 +440,7 @@ def main() -> None:
         intrinsic_load_partition=args.intrinsic_load_partition,
         cooperative_tractions=not args.serial_tractions,
         warm_start_tractions=not args.cold_tractions,
+        public_defaults=args.public_default_stress,
     )
     solver = workload.scene.rigid_solver
     metrics = RolloutMetrics(workload) if args.trajectory_metrics else None
@@ -555,6 +557,7 @@ def main() -> None:
             if args.contact_model == "intrinsic"
             else "finite_pad_adaptive_q10",
             "contact_model": args.contact_model,
+            "public_default_stress": args.public_default_stress,
             "contact_block_size": args.contact_block_size,
             "intrinsic_support": args.intrinsic_support,
             "surface_fan_frontier": not args.dense_surface_fan,
