@@ -1,0 +1,145 @@
+{
+  "generated_utc": "2026-10-17T11:57:12.603119+00:00",
+  "scope": "Verify raw metadata and source closures; no scientific execution.",
+  "snapshot_manifest_sha256": "b0f2f9cdaac8b90cfffe6a691c1f2ef1cdb0c6eeb4d356e2632e72f7a072ec10",
+  "all_899_actual_source_hashes_rechecked": true,
+  "metadata_source_sha256": "ed91ff87ce335c586e158544e1d370e5ca754e1f23947a033db180a8c6626c05",
+  "closure_source_sha256": "3c02ece9bc2916836895e583d73d4184d12d6e340fd45520c53d21b3c5a44095",
+  "records": [
+    {
+      "name": "packed-history-surface-four-scopes-b16384-v2",
+      "job": "725215",
+      "width": 16384,
+      "history": 4,
+      "intrusive": false,
+      "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725215_0|COMPLETED|0:0|01:12:36|rtx-209-233\n725215_0.batch|COMPLETED|0:0|01:12:36|rtx-209-233\n725215_0.0|COMPLETED|0:0|01:12:35|rtx-209-233\n",
+      "scopes": [
+        {
+          "scope": "rigid",
+          "benchmark_sha256": "e16923578036f679bf8703f588c027442010533ad28f2c7f8dc3b7c56345ada4",
+          "rates": [
+            883427.3186467042,
+            880917.8047394537,
+            881035.1365078507
+          ],
+          "median": 881035.1365078507,
+          "latency_ms": 18.596307140417895,
+          "native_buffer_bytes": null,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        },
+        {
+          "scope": "live",
+          "benchmark_sha256": "51351069f3818f5bb5e50865414275c89c5377a8497e43969e6b5fc4feefed76",
+          "rates": [
+            83420.08045429828,
+            83587.25679236457,
+            83600.04243483454
+          ],
+          "median": 83587.25679236457,
+          "latency_ms": 196.01073930083354,
+          "native_buffer_bytes": 21924175470,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        },
+        {
+          "scope": "policy-rigid",
+          "benchmark_sha256": "d3f28ec92a5b351fcb188103f21f3cb86de24cf8fa17d6e50dfa2ccb49fb09f5",
+          "rates": [
+            874789.3425873797,
+            873865.1833083413,
+            871385.2249104282
+          ],
+          "median": 873865.1833083413,
+          "latency_ms": 18.748887486250773,
+          "native_buffer_bytes": null,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        },
+        {
+          "scope": "policy",
+          "benchmark_sha256": "c194a7c659ef8f55318c7bbf521f618363f03feac1d5a12cae414a2ca9336246",
+          "rates": [
+            83251.20738015618,
+            83217.03041561933,
+            83252.40029316171
+          ],
+          "median": 83251.20738015618,
+          "latency_ms": 196.8019505733355,
+          "native_buffer_bytes": 21916835438,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        }
+      ],
+      "gpu_uuid": "GPU-10687902-373e-affa-28fc-010e9cf7a3f2"
+    },
+    {
+      "name": "packed-history-surface-four-scopes-b32768-v2",
+      "job": "725216",
+      "width": 32768,
+      "history": 4,
+      "intrusive": false,
+      "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725216_0|COMPLETED|0:0|02:10:33|rtx-209-233\n725216_0.batch|COMPLETED|0:0|02:10:33|rtx-209-233\n725216_0.0|COMPLETED|0:0|02:10:32|rtx-209-233\n",
+      "scopes": [
+        {
+          "scope": "rigid",
+          "benchmark_sha256": "b522825aaaa0da79d930a1b462427f35796bfaf9d15d79591c1ff81d2e81cf7a",
+          "rates": [
+            993989.7942070705,
+            995097.3158978283,
+            995800.541158197
+          ],
+          "median": 995097.3158978283,
+          "latency_ms": 32.929442654998034,
+          "native_buffer_bytes": null,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        },
+        {
+          "scope": "live",
+          "benchmark_sha256": "f127d9b0fc9785a725da861af599de032b769cace40bf0628b1257bc54c6007b",
+          "rates": [
+            85764.54319312786,
+            85904.96521181226,
+            85841.02762677197
+          ],
+          "median": 85841.02762677197,
+          "latency_ms": 381.728887758333,
+          "native_buffer_bytes": 43775237742,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        },
+        {
+          "scope": "policy-rigid",
+          "benchmark_sha256": "3af9c55fabc74d0aa63217f2b183faab44ac2a0e85b74b1f427ab5eddf2c1495",
+          "rates": [
+            987696.4581354456,
+            989113.133994957,
+            989799.7920126821
+          ],
+          "median": 989113.133994957,
+          "latency_ms": 33.1286673625012,
+          "native_buffer_bytes": null,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        },
+        {
+          "scope": "policy",
+          "benchmark_sha256": "1a10f7d06a6b3abc8f08af3d40bf628a61a9085f9188a608e88cff847afcce5c",
+          "rates": [
+            85734.72684971933,
+            85651.17768769548,
+            85570.23093488709
+          ],
+          "median": 85651.17768769548,
+          "latency_ms": 382.5750081274995,
+          "native_buffer_bytes": 43760557678,
+          "sampled_memory": null,
+          "source_and_actual_exits_closed": true
+        }
+      ],
+      "gpu_uuid": "GPU-81f21c6b-40d5-aaa6-0c4e-06772eb42812"
+    }
+  ],
+  "goal_completion": false
+}
