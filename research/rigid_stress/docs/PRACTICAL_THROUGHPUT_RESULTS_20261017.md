@@ -69,6 +69,11 @@ batch adds only2.70%/2.88%. For history0, B8192→B16384 adds6.97%/7.99%;
 B16384→B32768 adds only1.73%/1.61%. This establishes the measured practical
 shoulder and supports B16384 when memory/latency matter. B32768 supplies the
 highest repeated aggregate rates in the tested normal curve.
+The [warmup contact-mix check](PRACTICAL_THROUGHPUT_CONTACT_MIX_20261017.json)
+finds identical normalized contact-count distributions at all seven original,
+six selected history4 and three selected history0 normal widths (mean3.281944,
+maximum9). These every10-step warmup counts are separate from complete timed
+observer fractions; no batch-dependent contact-mix change is observed here.
 
 Sources: [B8192](PRACTICAL_THROUGHPUT_HISTORY0_OPERATING_POINT_20261017.json),
 [B16384 and final memory](PRACTICAL_THROUGHPUT_HISTORY0_WIDE_20261017.json),
