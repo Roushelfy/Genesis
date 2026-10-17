@@ -1064,7 +1064,11 @@ def test_native_history_reuse_abrupt_load_and_reset(tmp_path, surface_mode):
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
     model = StressModel(
-        RigidStressOptions(mesh=mesh, packed_surface_loads=surface_mode == "packed_surface", packed_block_size=512)
+        RigidStressOptions(
+            mesh=mesh,
+            packed_surface_loads=surface_mode == "packed_surface",
+            packed_block_size=512,
+        )
     )
     state = model.create_state(3, "full")
     history = StressHistory(model.info.vertices.shape[0], 3)
@@ -1123,7 +1127,11 @@ def test_native_surface_inverse_preserves_history_hits(tmp_path, packed, block_s
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
-    model = StressModel(RigidStressOptions(mesh=mesh))
+    model = StressModel(
+        RigidStressOptions(
+            mesh=mesh,
+        )
+    )
     assert model.surface_inverse is not None
     state = model.create_state(3)
     random = np.random.default_rng(9173)
@@ -1138,21 +1146,21 @@ def test_native_surface_inverse_preserves_history_hits(tmp_path, packed, block_s
             omega.fill(0.0)
         state.force.from_numpy(force)
         model.surface_inverse.apply(model.options.young, omega, state, packed=False)
-        expected = qd_to_numpy(state.displacement, copy=True)
+        expected = qd_to_numpy(state.displacement, transpose=True, copy=True)
         changed = expected.copy()
-        changed[:, 0] = -3.0 * expected[:, 0] + 1.0
-        changed[:, 1:] = 0.0
-        state.displacement.from_numpy(changed)
+        changed[0] = -3.0 * expected[0] + 1.0
+        changed[1:] = 0.0
+        state.displacement.from_numpy(changed.transpose((1, 0, 2)).copy())
         state.valid.from_numpy(np.array([True, False, False]))
         state.boundary_count.fill(0)
         model.surface_inverse.apply(model.options.young, omega, state, packed, block_size, only_failed=True)
-        actual = qd_to_numpy(state.displacement)
-        np.testing.assert_array_equal(actual[:, 0], changed[:, 0])
-        np.testing.assert_array_equal(actual[:, 1:], expected[:, 1:])
-        np.testing.assert_array_equal(qd_to_numpy(state.active), [0, 1, 1])
-        assert qd_to_numpy(state.valid).all()
+        actual = qd_to_numpy(state.displacement, transpose=True)
+        np.testing.assert_array_equal(actual[0], changed[0])
+        np.testing.assert_array_equal(actual[1:], expected[1:])
+        np.testing.assert_array_equal(qd_to_numpy(state.active, transpose=True), [0, 1, 1])
+        assert qd_to_numpy(state.valid, transpose=True).all()
         if packed and gs.backend == gs.cuda:
-            counts = qd_to_numpy(state.boundary_count)
+            counts = qd_to_numpy(state.boundary_count, transpose=True)
             assert counts[0] == 0
             np.testing.assert_array_equal(
                 counts[1:], np.count_nonzero(np.any(force[boundary, 1:] != 0.0, axis=2), axis=0)

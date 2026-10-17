@@ -438,19 +438,19 @@ now closes0:0 as725205, with600 moving steps, all899 source checks/inventory
 and220024 classified kernels. It retains all original gates and history4.
 Average GPU kernel-duration sums per observed step, milliseconds:
 
-| Stage | Geometry cache | Geometry cache + masked surface recovery |
-| --- | ---: | ---: |
-| Elastic solve, including surface packing |58.7678|5.2805|
-| History prediction/maintenance |26.0611|26.0495|
-| Traction fit |20.0909|20.6094|
-| Surface sampling |18.8859|19.3965|
-| Load assembly/diagnostics |8.1026|8.1927|
-| Complete residual |5.3149|5.4934|
-| CPU step annotation |159.7175|108.0242|
+| Stage | Geometry cache, history4 | Masked surface recovery, history4 | Same engine, history0 |
+| --- | ---: | ---: | ---: |
+| Elastic solve, including surface packing |58.7678|5.2805|5.3244|
+| History prediction/maintenance |26.0611|26.0495|disabled|
+| Traction fit |20.0909|20.6094|19.5672|
+| Surface sampling |18.8859|19.3965|18.4346|
+| Load assembly/diagnostics |8.1026|8.1927|8.1295|
+| Complete residual |5.3149|5.4934|2.6649|
+| CPU step annotation |159.7175|108.0242|77.5413|
 
 These are separate intrusive traces on comparable GPUs, not matched headline
-timings. The recovered elastic cost falls sharply while all other stage kernel
-counts remain identical. The change adds1200 elastic kernels and1200 driver
+timings. Between the two history4 traces, recovered elastic cost falls sharply
+while all other stage kernel counts remain identical. The change adds1200 elastic kernels and1200 driver
 launch calls across600 steps; runtime cudaMemcpyAsync/stream-sync call counts
 remain2535 each. Extra launches therefore coexist with much less recovery work.
 The [new API/kernel overlap audit](PRACTICAL_THROUGHPUT_PACKED_HISTORY_OVERLAP_20261017.json)
@@ -465,7 +465,7 @@ setup, not extra costs to add to it. Runtime kernels can still compile in
 warmup. None of this cold/setup work is included in the warmed2400-step rate.
 
 History remains the largest named stage after the recovery change. A separate
-same-source/same-GPU history4/history0 tuning job725232 now measures three
+same-source/same-GPU history4/history0 tuning job725232 measured three
 2400-step repeats per setting. Its result cannot be counted as fixed-history4
 code speedup. The parameterized bounded drivers retain the original force
 choices, phase windows, residuals and full fields; history0 qualification
@@ -498,8 +498,41 @@ evidence and compares every saved moving tensor, von-Mises field and raw peak
 at all seven snapshots. All1370880 saved tensor components pass the unchanged
 1e-4/1e-3Pa bounds; maximum tensor difference is0.000156370Pa and relative-L2
 difference1.328e-9. The new driver explicitly verifies that history storage is
-disabled. The history4/history0 performance comparison is still open, so this
-is configuration qualification rather than a final settings recommendation.
+disabled.
+
+The [same-GPU history tuning](PRACTICAL_THROUGHPUT_HISTORY0_TUNING_20261017.json)
+now closes0:0 (725232). Three2400-step rates after900 warmup steps give medians
+78768.50 env-step/s with history4 and105939.20 with history0, a34.494% increase
+on the same frozen engine/GPU. Every per-environment failure count and overflow
+count is zero. All other physical/numerical/output options match. Native feature
+buffers fall from10998644334 to8450129518 bytes; process VRAM remains a separate
+measurement. This is configuration tuning, distinct from the fixed-history4
+code comparison.
+
+The [history0 moving profile](PRACTICAL_THROUGHPUT_HISTORY0_PROFILE_20261017.json)
+also closes0:0 (725242) with600 moving steps and unchanged output validity.
+Removing prediction removes its maintenance and preliminary residual check;
+accepted output still passes complete equilibrium/gauge checks at the original
+tolerance every step. The final column above explains the measured tuning gain.
+History0 four-scope operating-point jobs725247/725249/725251 and separate memory
+725248/725250/725252 cover B8192/B16384/B32768. Workspace2 boundary checks
+725253/725254 cover B47104/B49152 and are closed below. The three-width curves
+remain open before final recommendation.
+
+The [B32 same-GPU pairing](PRACTICAL_THROUGHPUT_SMALL_BATCH_PAIRED_20261017.json)
+now closes all four trials of725238: pooled six-repeat medians are2256.89 for
+the cache-only baseline and2317.37 for masked recovery, a2.680% observed increase.
+The earlier cross-allocation low B32 point does not recur as a paired slowdown.
+This small gain is not generalized to every workload or allocation.
+
+The new engine's history4/workspace2 capacity recheck also closes: [B40960 passes](PRACTICAL_THROUGHPUT_PACKED_HISTORY_CAPACITY_PASS_20261017.json)
+725227 with98304000 valid environment transitions,86857.10 env-step/s in its one
+intrusive pass, zero invalid steps/overflows,43044167278 native-buffer bytes and
+91.626953GiB maximum observed process VRAM. The [B43008 failure](PRACTICAL_THROUGHPUT_PACKED_HISTORY_CAPACITY_FAIL_20261017.json)
+725228 is an actual CUDA allocation OOM in complete two-coordinate fan growth,
+with program/wrapper/scheduler failure1 and all899 source checks/inventory closed.
+This is a tested history4/workspace2 capacity interval, not a history0 or universal
+capacity limit, and its single sampled timing is excluded from headline rates.
 
 The [CPU/GPU overlap audit](PRACTICAL_THROUGHPUT_CPU_GPU_OVERLAP_20261017.json)
 also rereads the original600-step baseline trace using the updated stdlib
@@ -508,6 +541,38 @@ summarizer. Of2747.294ms in the union of recorded cudaMemcpyAsync API spans,
 therefore not an independent CPU cost to add to kernel time, and this overlap
 alone does not identify waiting versus useful CPU execution. The reproducible
 metadata auditor and trace summarizer retain exact source/input hashes.
+
+## Closed matched gains and exact reproduction
+
+The [fixed-history4 code comparison](PRACTICAL_THROUGHPUT_MATCHED_CODE_GAIN_20261017.json)
+now closes all four original/new/new/original B8192 trials of725203. Each trial
+warms900 steps and measures three2400-step repeats on the same GPU, with every
+original stress option matched. Pooled six-repeat medians are52719.54 original
+and79524.92 new valid env-step/s: a50.845% observed code improvement. Every
+per-environment failure/overflow count is zero; actual program, wrapper,
+scheduler,899 source hashes and inventories close. The
+[timing-source audit](PRACTICAL_THROUGHPUT_TIMING_SOURCE_AUDIT_20261017.json)
+finds identical complete benchmark ASTs outside the explicitly excluded trace-only
+parser/validation/pass. Normal timing, control and output/check code is unchanged.
+
+The [history0 capacity bracket](PRACTICAL_THROUGHPUT_HISTORY0_CAPACITY_20261017.json)
+also closes. Workspace2 grows to all9 actual contacts. B47104 completes113049600
+valid transitions at122936.44 env-step/s in one sampled pass, with maximum observed
+process memory98098479104 bytes; B49152 fails with an actual CUDA allocation OOM
+during full fan-profile growth. Both source closures and actual terminal exits
+are retained. This is separate intrusive capacity evidence, not the repeated
+headline operating point or an exact universal limit.
+
+The [metadata reference audit](PRACTICAL_THROUGHPUT_REFERENCE_METADATA_20261017.json)
+independently verifies103 eligible history4 records and the one closed history0
+tuning record at frozen checkpointv11. Explicit reference settings keep their
+eligible sets disjoint. All16 closed sampled-memory rows in the new-source
+family are marked intrusive and excluded from headlines. Both exact
+[source recipes](../evidence/20261017-throughput/source-recipes-v1/README.md)
+rebuild899/899 files with no extra/missing files, using committed objects,
+small overrides and the archived original condition bank. Test-only bulk access
+alignment also passes threeCPU/threeGPU cases with the unchanged engine, with
+[executed source closure](PRACTICAL_THROUGHPUT_BATCH_ACCESS_TESTS_20261017.json).
 
 ## Delivery still required
 

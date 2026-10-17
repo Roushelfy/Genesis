@@ -18,19 +18,26 @@ def main():
     parser.add_argument("--summary", type=Path, required=True)
     parser.add_argument("--contract", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--history", type=int, choices=(0, 4), default=4, help="Exact reference history setting.")
     args = parser.parse_args()
     assert not args.output.exists()
     summary = json.loads(args.summary.read_text())
+    if "reference_history" in summary:
+        assert summary["reference_history"] == args.history
     contract = json.loads(args.contract.read_text())
     assert hashlib.sha256(args.contract.read_bytes()).hexdigest() == summary["baseline_contract_sha256"]
     points = [row for row in summary["points"] if row["eligible_primary_headline"]]
     assert points
-    reference = next(row for row in points if row["name"] == "baseline-four-scopes-b256-v1" and row["scope"] == "live")
+    reference = next(
+        row for row in summary["points"] if row["name"] == "baseline-four-scopes-b256-v1" and row["scope"] == "live"
+    )
     reference = json.loads(Path(reference["path"]).read_text())
     expected = [
         {key: value for key, value in row.items() if key != "mesh"}
         for row in contract["prior_exact_stress_configuration"]
     ]
+    for configuration in expected:
+        configuration["history_size"] = args.history
     policy = {key: value for key, value in reference["policy"].items() if key != "warmup_reference_max_error_rad"}
     assert policy["control_error_budget_rad"] == 1e-9
     checks = []
@@ -39,6 +46,10 @@ def main():
         content = path.read_bytes()
         assert hashlib.sha256(content).hexdigest() == point["sha256"], path
         row = json.loads(content)
+        assert not row["arguments"]["trace"] and row["trajectory_metrics"] is None, path
+        benchmark_run = path.parent.parent
+        assert not any(benchmark_run.glob("process-memory*.csv")), path
+        assert not any(benchmark_run.parent.glob("process-memory*.csv")), path
         assert row["envs"] == point["width"] and row["scope"] == point["scope"], path
         assert row["precision"] == "64" and row["dt"] == 0.01 and row["substeps"] == 1, path
         assert row["level"] == 1 and row["quadrature"] == 10, path
@@ -48,7 +59,7 @@ def main():
             path
         )
         assert row["native_controller"] and row["seed"] == 623016 and row["varied"], path
-        assert row["output_mode"] == "max" and row["history"] == 4, path
+        assert row["output_mode"] == "max" and row["history"] == args.history, path
         assert row["contact_model"] == "intrinsic" and row["intrinsic_load_partition"] == "body_source_prior", path
         assert row["gpu"] == reference["gpu"] and row["gpu_total_bytes"] == reference["gpu_total_bytes"], path
         assert row["quadrants"] == reference["quadrants"] and row["torch"] == reference["torch"], path
@@ -97,6 +108,7 @@ def main():
         "scope": __doc__,
         "summary_sha256": hashlib.sha256(args.summary.read_bytes()).hexdigest(),
         "contract_sha256": hashlib.sha256(args.contract.read_bytes()).hexdigest(),
+        "reference_history": args.history,
         "audit_source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "eligible_points": len(checks),
         "checks": checks,
