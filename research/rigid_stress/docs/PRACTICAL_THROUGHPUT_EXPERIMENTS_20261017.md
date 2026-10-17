@@ -193,9 +193,10 @@ wrench, full-field and gauge bounds remain unchanged. The
 [targeted check record](PRACTICAL_THROUGHPUT_TARGETED_CHECKS_20261017.json)
 retains actual JUnit counts and engine/test hash closures. Same-GPU B2048 ABBA
 trial724999 completes0:0 with ratio0.998857: the result is effectively flat.
-Candidate B32768 four-scope trial725051 and B40960 workspace2 memory/capacity
-trial725052 remain open. Production edits remain provisional pending useful
-capacity/throughput evidence and final configuration qualification.
+Candidate B32768 four-scope trial725051 remains open. B40960 workspace2
+memory/capacity trial725052 has since closed; its result and the remaining
+allocation-matched control are described below. Production edits remain
+provisional pending attribution and final configuration qualification.
 
 A final small scheduling ablation uses one warp per fit block instead of four,
 with the original arithmetic and fallback unchanged. Its B256 diagnostic
@@ -265,6 +266,28 @@ separate B12288/B16384 memory trials725088/725089 supply missing process peaks.
 Workspace2 B32768 and slower uncached B32768 trials724976/724988 remain open.
 Every live handle is retained; none was restarted because an observation timed
 out. Final settings are selected only from closed, qualified results.
+
+## Closed B40960 live capacity observation
+
+After the frozen main checkpoint, the candidate's workspace2 job725052 completes
+0:0 with all899 child hashes/inventory closed. The complete required workspace
+grows to9; no valid contacts are truncated. Its900-step warmup and one2400-step
+live pass observe98304000 environment transitions, zero invalid steps/overflows,
+53464.89 env-step/s and43044167278 native-buffer bytes (40.088GiB).
+The separate100ms sampler observes a98383691776-byte compute-process peak
+(91.627GiB), near the101975851008-byte CUDA device limit. This sampled peak
+includes setup/growth and is a lower bound; end-of-run free memory is not its
+substitute. Actual UUIDs, source/configuration, compact repeat records and
+scheduler states are in the [capacity record](PRACTICAL_THROUGHPUT_CAPACITY_20261017.json).
+
+This is a single-pass live capacity diagnostic, not a three-repeat four-scope
+headline. The combined settings demonstrably run wider than the original
+block16 baseline's failed B32768, but code and allocation effects are not yet
+separated. Original-engine workspace2 B40960 job725123 supplies that missing
+control. Candidate workspace2 B43008 job725124 refines the live capacity boundary
+by5%. Candidate code-only B8192 four-scope and separate memory jobs725125/725126
+complete the matched selected-candidate comparison. All four new jobs retain
+the original physical configuration and numerical budgets and are still open.
 
 ## Delivery still required
 

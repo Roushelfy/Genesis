@@ -1,0 +1,43 @@
+{
+  "utc": "2026-10-17T08:09:46.536532+00:00",
+  "job": "725052",
+  "scope": "Closed single-pass live capacity/memory diagnostic, not a three-repeat/four-scope headline.",
+  "source_closed": true,
+  "manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+  "benchmark_sha256": "dc4f1bcb342c3be1ed0f04342322d28e3badc393e118bfa09537fe9292c60b1a",
+  "sampled_process_memory": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-block2-memory-capacity-b40960-v1/process-memory-samples.csv",
+    "sha256": "be01ac962a8143a245ce0393017a4590af5586330975f12bbe88b7258b39c1c5",
+    "sampling_interval_ms": 100,
+    "samples_with_compute_processes": 27834,
+    "maximum_observed_compute_process_bytes": 98383691776,
+    "samples_at_observed_maximum": 1,
+    "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+  },
+  "envs": 40960,
+  "effective_contact_block_size": 9,
+  "native_buffer_bytes": 43044167278,
+  "repeats": [
+    {
+      "steps": 2400,
+      "seconds": 1838.6644607900016,
+      "transitions_per_second": 53464.8937293119,
+      "attempted_transitions_per_second": 53464.8937293119,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "batch_steps_per_second": 1.3052952570632788,
+      "resets": 122880,
+      "failed_step_count_entries": 40960,
+      "failed_step_sum": 0
+    }
+  ],
+  "goal_completion": false,
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "gpu_uuid": "GPU-5c0d0cca-f892-19d7-d4f3-b68ab73a520b",
+  "gpu_total_bytes": 101975851008,
+  "conditions_sha256": "1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa",
+  "initial_contact_block_size": 2,
+  "native_buffer_note": "Not peak process VRAM.",
+  "comparison_note": "The original code with the same initial workspace is not yet closed; do not attribute capacity gain to code alone.",
+  "scheduler": "JobID|State|ExitCode|Elapsed|NodeList\n725052_0|COMPLETED|0:0|00:47:31|rtx-210-029\n725052_0.batch|COMPLETED|0:0|00:47:31|rtx-210-029\n725052_0.0|COMPLETED|0:0|00:47:31|rtx-210-029\n725123_0|RUNNING|0:0|00:00:44|rtx-210-029\n725123_0.batch|RUNNING|0:0|00:00:44|rtx-210-029\n725123_0.0|RUNNING|0:0|00:00:43|rtx-210-029\n725124_0|RUNNING|0:0|00:00:43|rtx-209-233\n725124_0.batch|RUNNING|0:0|00:00:43|rtx-209-233\n725124_0.0|RUNNING|0:0|00:00:43|rtx-209-233\n725125_0|RUNNING|0:0|00:00:43|rtx-209-201\n725125_0.batch|RUNNING|0:0|00:00:43|rtx-209-201\n725125_0.0|RUNNING|0:0|00:00:43|rtx-209-201\n725126_0|RUNNING|0:0|00:00:43|rtx-209-223\n725126_0.batch|RUNNING|0:0|00:00:43|rtx-209-223\n725126_0.0|RUNNING|0:0|00:00:43|rtx-209-223\n"
+}
