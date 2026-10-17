@@ -124,6 +124,26 @@ Keep profiler timings separate and distinguish them from the frozen `profile`
 scope. One600-step window covers the scripted period; post-trace validity and
 reset counts must close. CPU annotations and GPU durations overlap.
 
+`scripts/summarize_trace.py --trace "$task_trace" --output "$task_overlap"`
+also reports the timestamp intersection of CPU API spans and GPU kernels.
+It uses stdlib metadata only and may run on the host. API duration is not pure
+CPU overhead or synchronization time; do not add it to GPU durations.
+
+After freezing a scheduler-backed summary, independently reread its original
+records with the stdlib-only metadata auditor from the checkout root:
+
+```bash
+/usr/bin/python3 research/rigid_stress/scripts/audit_practical_throughput_metadata.py \
+  --summary "$task_summary" --contract "$task_contract" --output "$task_audit"
+```
+
+Use the frozen `meta/baseline-contract-v1.json` and a fresh data-side output.
+This verifies all eligible raw repeat rates, exact physical/numerical settings,
+controller/policy/precision, per-environment failure counts and the unchanged
+policy budget. Source/scheduler closure and independent physical field/lifecycle
+checks remain separate evidence. The plotter retains independently complete
+four-scope rate and memory widths, leaving missing CSV values blank.
+
 ## Bounded numerical and lifecycle checks
 
 The candidate's full-field and complete-grasp comparison is reproducible with
@@ -144,7 +164,7 @@ then exercises complete zero-load release/recontact on a frozen mapper input.
 This changes observation/reset work and is never throughput evidence.
 
 For figures, use the exact renderer, input, SVG/PDF/PNG and QA in the
-[baseline figure packet](../evidence/20261017-throughput/baseline-scaling-v1/README.md).
+[baseline figure packet](../evidence/20261017-throughput/baseline-scaling-v2/README.md).
 The main experiment report and machine-readable checkpoint retain which results
 are closed, intrusive, failed or still pending. No final speedup or capacity
 claim follows merely from a successful submission.

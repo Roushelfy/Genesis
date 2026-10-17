@@ -1,20 +1,32 @@
 {
-  "generated_utc": "2026-10-17T08:03:02.854625+00:00",
+  "generated_utc": "2026-10-17T09:10:47.552829+00:00",
   "aggregation_source_sha256": "48293aa9b132b0256dc1be4368004498cc63a2a31af85988c1e412396f04f9e7",
   "baseline_contract_sha256": "ca1cd9a6a2d321a671b511524e2856209b76760826f4afaa2e76e6844a39b084",
-  "scheduler_export_sha256": "1cb5442b5c3dad84560780f0fcf98ee1c0277f7c07586923f40ecf82d085e361",
+  "scheduler_export_sha256": "8af467b672a291d4b5706b8f417e7ed8c57003b66049e2402a20159ed20f5bcc",
   "jobs": [
     {
       "name": "barycentric-block2-memory-capacity-b40960-v1",
       "submission_sha256": "7a3d2e824fccf71df69269db9d3f8955633a69e09d1b440610fe4f6ec31207d7",
       "scheduler": {
         "job_id": "725052_0",
-        "state": "RUNNING",
+        "state": "COMPLETED",
         "exit": "0:0",
-        "elapsed": "00:45:20",
+        "elapsed": "00:47:31",
         "node": "rtx-210-029"
       },
-      "wrapper_exit": null
+      "wrapper_exit": 0
+    },
+    {
+      "name": "barycentric-block2-memory-capacity-b43008-v1",
+      "submission_sha256": "52e84dc9a73e3025f4f30bfe4417fb4e65c082d10b3affb54dff52a9116de072",
+      "scheduler": {
+        "job_id": "725124_0",
+        "state": "FAILED",
+        "exit": "1:0",
+        "elapsed": "00:13:38",
+        "node": "rtx-209-233"
+      },
+      "wrapper_exit": 1
     },
     {
       "name": "barycentric-complete-grasp-low02-v1",
@@ -77,16 +89,40 @@
       "wrapper_exit": 0
     },
     {
+      "name": "barycentric-geometry-cache-four-scopes-b16384-v1",
+      "submission_sha256": "4c648789ebb841e86da131707d8c843df317ff7aa007f75e5535d6366ec952f6",
+      "scheduler": {
+        "job_id": "725152_0",
+        "state": "RUNNING",
+        "exit": "0:0",
+        "elapsed": "00:31:12",
+        "node": "rtx-209-223"
+      },
+      "wrapper_exit": null
+    },
+    {
       "name": "barycentric-geometry-cache-four-scopes-b32768-v1",
       "submission_sha256": "b9cccae364c544229e56687133cbad3071c17ffb68e8b57e3f472afc1fdb59c1",
       "scheduler": {
         "job_id": "725051_0",
         "state": "RUNNING",
         "exit": "0:0",
-        "elapsed": "00:45:21",
+        "elapsed": "01:51:19",
         "node": "rtx-209-233"
       },
       "wrapper_exit": null
+    },
+    {
+      "name": "barycentric-geometry-cache-four-scopes-b8192-v1",
+      "submission_sha256": "2cbd65b02750a06673438eec476d069bf3c0d37e9d48609be0f39544aeacf4bb",
+      "scheduler": {
+        "job_id": "725125_0",
+        "state": "COMPLETED",
+        "exit": "0:0",
+        "elapsed": "00:55:01",
+        "node": "rtx-209-201"
+      },
+      "wrapper_exit": 0
     },
     {
       "name": "barycentric-geometry-cache-live-trace-b256-v1",
@@ -97,6 +133,42 @@
         "exit": "0:0",
         "elapsed": "00:03:43",
         "node": "rtx-210-023"
+      },
+      "wrapper_exit": 0
+    },
+    {
+      "name": "barycentric-geometry-cache-memory-four-scopes-b16384-v1",
+      "submission_sha256": "05c8e1553eda90cbf2bc148ff4cae3d40d4a9d88785ebf21217c8b6413d13938",
+      "scheduler": {
+        "job_id": "725153_0",
+        "state": "RUNNING",
+        "exit": "0:0",
+        "elapsed": "00:31:11",
+        "node": "rtx-209-233"
+      },
+      "wrapper_exit": null
+    },
+    {
+      "name": "barycentric-geometry-cache-memory-four-scopes-b32768-v1",
+      "submission_sha256": "3f7ae0585d249d86eff4bf45412397e11cbab3c629843dc164da1b79bd680fcb",
+      "scheduler": {
+        "job_id": "725150_0",
+        "state": "RUNNING",
+        "exit": "0:0",
+        "elapsed": "00:38:57",
+        "node": "rtx-209-233"
+      },
+      "wrapper_exit": null
+    },
+    {
+      "name": "barycentric-geometry-cache-memory-four-scopes-b8192-v1",
+      "submission_sha256": "f10331dd346c664be494b66bc19f681593cf8f4ca325a76081ff90063fae19a0",
+      "scheduler": {
+        "job_id": "725126_0",
+        "state": "COMPLETED",
+        "exit": "0:0",
+        "elapsed": "00:28:48",
+        "node": "rtx-209-223"
       },
       "wrapper_exit": 0
     },
@@ -149,6 +221,18 @@
       "wrapper_exit": 0
     },
     {
+      "name": "barycentric-large-lifecycle-full-b16384-v1",
+      "submission_sha256": "ded6ed47b8467f7c188d7fc03686368af1117f9523b56d9676f678e6694c9eac",
+      "scheduler": {
+        "job_id": "725134_0",
+        "state": "COMPLETED",
+        "exit": "0:0",
+        "elapsed": "00:10:42",
+        "node": "rtx-209-201"
+      },
+      "wrapper_exit": 0
+    },
+    {
       "name": "barycentric-regression-comparison-v1",
       "submission_sha256": "0c691808ace88cc8940a5a264ca0113db0cf47a849f5fbe8c6b9575a1f1066c8",
       "scheduler": {
@@ -185,6 +269,42 @@
       "wrapper_exit": 1
     },
     {
+      "name": "barycentric-regression-comparison-v4",
+      "submission_sha256": "ab2dda5c10459c5e9f6532e18662030f0894e6d29d93fc0d7af2072efc4d015c",
+      "scheduler": {
+        "job_id": "725112_0",
+        "state": "COMPLETED",
+        "exit": "0:0",
+        "elapsed": "00:00:46",
+        "node": "cpu-207-115"
+      },
+      "wrapper_exit": 0
+    },
+    {
+      "name": "barycentric-regression-comparison-v5",
+      "submission_sha256": "f849a981f12d5662a1f953153087acf3e4d30dceafb676a5a06c5f51b2ed8cd4",
+      "scheduler": {
+        "job_id": "725121_0",
+        "state": "COMPLETED",
+        "exit": "0:0",
+        "elapsed": "00:00:44",
+        "node": "cpu-206-205"
+      },
+      "wrapper_exit": 0
+    },
+    {
+      "name": "baseline-block2-memory-capacity-b40960-v1",
+      "submission_sha256": "acbb45a9724fc6555ddaa894c77f321d1994fc4feee95c823644707cb17ae293",
+      "scheduler": {
+        "job_id": "725123_0",
+        "state": "FAILED",
+        "exit": "1:0",
+        "elapsed": "00:13:21",
+        "node": "rtx-210-029"
+      },
+      "wrapper_exit": 1
+    },
+    {
       "name": "baseline-complete-cycle-trace-b256-v1",
       "submission_sha256": "0f3036dfb74679c9746e3f7b10c2c8de8a0e642da5f62f96582cf3aee3595c7b",
       "scheduler": {
@@ -201,12 +321,12 @@
       "submission_sha256": "efb3a2b7887f8221a488f59d0a81296f9ec153a0987c227fbd8d419ba61ad9ad",
       "scheduler": {
         "job_id": "725087_0",
-        "state": "RUNNING",
+        "state": "COMPLETED",
         "exit": "0:0",
-        "elapsed": "00:15:03",
+        "elapsed": "01:18:24",
         "node": "rtx-209-201"
       },
-      "wrapper_exit": null
+      "wrapper_exit": 0
     },
     {
       "name": "baseline-four-scopes-b16384-v1",
@@ -237,12 +357,12 @@
       "submission_sha256": "48217c630645daef1925d8c0f577b0b47ecf0057db11476982ea0763a795edc5",
       "scheduler": {
         "job_id": "724975_0",
-        "state": "RUNNING",
+        "state": "COMPLETED",
         "exit": "0:0",
-        "elapsed": "01:43:56",
+        "elapsed": "02:26:53",
         "node": "rtx-209-255"
       },
-      "wrapper_exit": null
+      "wrapper_exit": 0
     },
     {
       "name": "baseline-four-scopes-b256-v1",
@@ -345,24 +465,24 @@
       "submission_sha256": "2aef160265e7b3835d1179ced9d9dff300d4ef1ba476649dec0c40e019d4264f",
       "scheduler": {
         "job_id": "725088_0",
-        "state": "RUNNING",
+        "state": "COMPLETED",
         "exit": "0:0",
-        "elapsed": "00:15:02",
+        "elapsed": "00:38:53",
         "node": "rtx-209-223"
       },
-      "wrapper_exit": null
+      "wrapper_exit": 0
     },
     {
       "name": "baseline-memory-four-scopes-b16384-v1",
       "submission_sha256": "ca3ad87b11aec5c94af533e324e374e0c851a026665a45c9e9ed5a6b115454a9",
       "scheduler": {
         "job_id": "725089_0",
-        "state": "RUNNING",
+        "state": "COMPLETED",
         "exit": "0:0",
-        "elapsed": "00:15:02",
+        "elapsed": "00:48:39",
         "node": "rtx-209-201"
       },
-      "wrapper_exit": null
+      "wrapper_exit": 0
     },
     {
       "name": "baseline-memory-four-scopes-b2048-v1",
@@ -509,6 +629,54 @@
       "wrapper_exit": 0
     },
     {
+      "name": "body-prior-leader-fit-live-trace-b256-v1",
+      "submission_sha256": "0f370e5838889789079f01042a10b1933c966d256a51820e32c8d192a2b7d3e2",
+      "scheduler": {
+        "job_id": "725140_0",
+        "state": "FAILED",
+        "exit": "1:0",
+        "elapsed": "00:03:52",
+        "node": "rtx-209-233"
+      },
+      "wrapper_exit": 1
+    },
+    {
+      "name": "body-prior-leader-fit-live-trace-b256-v2",
+      "submission_sha256": "5164e1768e06cf96b6a78e5278dc86c9b371d9074aebd0735334912a3351a424",
+      "scheduler": {
+        "job_id": "725151_0",
+        "state": "COMPLETED",
+        "exit": "0:0",
+        "elapsed": "00:03:55",
+        "node": "rtx-209-233"
+      },
+      "wrapper_exit": 0
+    },
+    {
+      "name": "body-prior-leader-fit-tests-cpu-v1",
+      "submission_sha256": "062eaeee7aefb3682e58e2abb765d88fecc5d45dea40f38a0d39840165cc60a1",
+      "scheduler": {
+        "job_id": "725138_0",
+        "state": "COMPLETED",
+        "exit": "0:0",
+        "elapsed": "00:06:03",
+        "node": "cpu-206-205"
+      },
+      "wrapper_exit": 0
+    },
+    {
+      "name": "body-prior-leader-fit-tests-gpu-v1",
+      "submission_sha256": "8fdb107643548b60ce6c4863a85873a239b917b34c968ec376a69def34715255",
+      "scheduler": {
+        "job_id": "725139_0",
+        "state": "COMPLETED",
+        "exit": "0:0",
+        "elapsed": "00:09:25",
+        "node": "rtx-209-223"
+      },
+      "wrapper_exit": 0
+    },
+    {
       "name": "complete-union-count-four-scopes-b2048-v1",
       "submission_sha256": "6ab0c7e9b6bb880031126d95aa28bc24465ce66c6e68534fc7a60266e84ee788",
       "scheduler": {
@@ -599,7 +767,7 @@
         "job_id": "724988_0",
         "state": "RUNNING",
         "exit": "0:0",
-        "elapsed": "01:35:47",
+        "elapsed": "02:41:45",
         "node": "rtx-209-115"
       },
       "wrapper_exit": null
@@ -737,6 +905,30 @@
       "wrapper_exit": 0
     },
     {
+      "name": "selected-cache-complete-cycle-trace-b8192-v1",
+      "submission_sha256": "68d1d5e72ca8a93e33ad58402db8e2c5ca10fca9b40c769020dee790402c0f4e",
+      "scheduler": {
+        "job_id": "725165_0",
+        "state": "COMPLETED",
+        "exit": "0:0",
+        "elapsed": "00:13:33",
+        "node": "rtx-209-223"
+      },
+      "wrapper_exit": 0
+    },
+    {
+      "name": "separate-closed-widths-figure-preview-v1",
+      "submission_sha256": "0262200e90c855bca03969f48f35d4f211c24d2d95a8cea7ec91c16d4bc80b52",
+      "scheduler": {
+        "job_id": "725163_0",
+        "state": "COMPLETED",
+        "exit": "0:0",
+        "elapsed": "00:00:53",
+        "node": "cpu-206-205"
+      },
+      "wrapper_exit": 0
+    },
+    {
       "name": "static-traction-direction-live-trace-b256-v1",
       "submission_sha256": "79c25829cf872ec6879c4ef9fcdc936ca53e2cd1722b6430c0fa29ce49dc0c44",
       "scheduler": {
@@ -753,12 +945,12 @@
       "submission_sha256": "fd81795a20a0e59578a494c1ffe799928b1ce438fc2ad0d03340658f582a25c6",
       "scheduler": {
         "job_id": "725090_0",
-        "state": "RUNNING",
+        "state": "COMPLETED",
         "exit": "0:0",
-        "elapsed": "00:15:02",
+        "elapsed": "00:35:18",
         "node": "rtx-209-223"
       },
-      "wrapper_exit": null
+      "wrapper_exit": 0
     },
     {
       "name": "static-traction-direction-tests-cpu-v1",
@@ -827,7 +1019,7 @@
         "job_id": "724976_0",
         "state": "RUNNING",
         "exit": "0:0",
-        "elapsed": "01:43:53",
+        "elapsed": "02:49:51",
         "node": "rtx-210-029"
       },
       "wrapper_exit": null
@@ -847,6 +1039,384 @@
   ],
   "pending_artifact_reads": [],
   "points": [
+    {
+      "name": "barycentric-block2-memory-capacity-b40960-v1",
+      "trial": "live",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-block2-memory-capacity-b40960-v1/live/results/benchmark.json",
+      "sha256": "dc4f1bcb342c3be1ed0f04342322d28e3badc393e118bfa09537fe9292c60b1a",
+      "scope": "live",
+      "width": 40960,
+      "job_id": "725052",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": false,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-5c0d0cca-f892-19d7-d4f3-b68ab73a520b",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        53464.8937293119
+      ],
+      "median_rate": 53464.8937293119,
+      "median_batch_latency_ms": 766.1101919958339,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": false,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": 43044167278,
+      "torch_peak_allocated_bytes": 141818368,
+      "device_free_bytes_at_end": 14004256768,
+      "effective_contact_block_size": 9,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 3686400,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 112640,
+            "1": 1694720,
+            "2": 87040,
+            "3": 107520,
+            "4": 409600,
+            "5": 209920,
+            "6": 568320,
+            "7": 271360,
+            "8": 117760,
+            "9": 107520
+          },
+          "mean": 3.2819444444444446
+        },
+        "contact_fit_iterations_max": {
+          "count": 3686400,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 117760,
+            "1": 1300480,
+            "2": 1134548,
+            "3": 872492,
+            "4": 148480,
+            "5": 61440,
+            "6": 10832,
+            "7": 19888,
+            "8": 10240,
+            "9": 5120,
+            "10": 5120
+          },
+          "mean": 2.0267957899305555
+        },
+        "corrections": {
+          "count": 3686400,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 3686400
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 3686400,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 3686400
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 3686400,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 3686400
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 3686400,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 2304153,
+            "true": 1382247
+          },
+          "mean": 0.37495849609375
+        },
+        "contact_wrench_force_error_N": 7.143314086187866e-10,
+        "contact_wrench_moment_error_Nm": 4.220405267068951e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-block2-memory-capacity-b40960-v1/process-memory-samples.csv",
+        "sha256": "be01ac962a8143a245ce0393017a4590af5586330975f12bbe88b7258b39c1c5",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 27834,
+        "maximum_observed_compute_process_bytes": 98383691776,
+        "samples_at_observed_maximum": 1,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+      }
+    },
+    {
+      "name": "barycentric-geometry-cache-four-scopes-b16384-v1",
+      "trial": "rigid",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b16384-v1/rigid/results/benchmark.json",
+      "sha256": "c630e128f442387282a3db41c95d4a5265a7e5365f0221debe1a34b9b8477cb5",
+      "scope": "rigid",
+      "width": 16384,
+      "job_id": "725152",
+      "source_closed": true,
+      "job_and_wrapper_passed": false,
+      "condition_pair_closed": false,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-8e4d594b-2f96-203d-69d3-3fcc7c758473",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        887269.6319612906,
+        887532.9725904635,
+        887933.1160868534
+      ],
+      "median_rate": 887532.9725904635,
+      "median_batch_latency_ms": 18.460159234624975,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": null,
+      "torch_peak_allocated_bytes": 60226048,
+      "device_free_bytes_at_end": 84600684544,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_fit_iterations_max": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "corrections": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "fallbacks": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_integration_retries": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "history_hits": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_wrench_force_error_N": null,
+        "contact_wrench_moment_error_Nm": null
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
+    {
+      "name": "barycentric-geometry-cache-four-scopes-b32768-v1",
+      "trial": "live",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b32768-v1/live/results/benchmark.json",
+      "sha256": "8ab5b495d7bf9528285ce9f1d28673a65e661cd5a22fbc6baec82cd3562c50eb",
+      "scope": "live",
+      "width": 32768,
+      "job_id": "725051",
+      "source_closed": true,
+      "job_and_wrapper_passed": false,
+      "condition_pair_closed": false,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-ca587c75-2242-ed79-9198-65921404d852",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        53851.25869064481,
+        53839.67911268106,
+        53836.61617708525
+      ],
+      "median_rate": 53839.67911268106,
+      "median_batch_latency_ms": 608.6217551820816,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": 43775237742,
+      "torch_peak_allocated_bytes": 116062720,
+      "device_free_bytes_at_end": 21996503040,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 2949120,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 90112,
+            "1": 1355776,
+            "2": 69632,
+            "3": 86016,
+            "4": 327680,
+            "5": 167936,
+            "6": 454656,
+            "7": 217088,
+            "8": 94208,
+            "9": 86016
+          },
+          "mean": 3.2819444444444446
+        },
+        "contact_fit_iterations_max": {
+          "count": 2949120,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 94208,
+            "1": 1040384,
+            "2": 907595,
+            "3": 698037,
+            "4": 118784,
+            "5": 49152,
+            "6": 8625,
+            "7": 15951,
+            "8": 8192,
+            "9": 4096,
+            "10": 4096
+          },
+          "mean": 2.0268242730034722
+        },
+        "corrections": {
+          "count": 2949120,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 2949120
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 2949120,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 2949120
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 2949120,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 2949120
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 2949120,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 1842018,
+            "true": 1107102
+          },
+          "mean": 0.37540079752604166
+        },
+        "contact_wrench_force_error_N": 6.967618146759336e-10,
+        "contact_wrench_moment_error_Nm": 4.223161485508337e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
+    {
+      "name": "barycentric-geometry-cache-four-scopes-b32768-v1",
+      "trial": "policy-rigid",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b32768-v1/policy-rigid/results/benchmark.json",
+      "sha256": "493be51eaca277612f63bb81f9e6c1526fed30300604fcbe821332a80cb1c348",
+      "scope": "policy-rigid",
+      "width": 32768,
+      "job_id": "725051",
+      "source_closed": true,
+      "job_and_wrapper_passed": false,
+      "condition_pair_closed": false,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-ca587c75-2242-ed79-9198-65921404d852",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        980417.1317274737,
+        979747.7423331216,
+        979797.8144939627
+      ],
+      "median_rate": 979797.8144939627,
+      "median_batch_latency_ms": 33.44363450833347,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": null,
+      "torch_peak_allocated_bytes": 192084480,
+      "device_free_bytes_at_end": 69534744576,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_fit_iterations_max": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "corrections": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "fallbacks": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_integration_retries": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "history_hits": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_wrench_force_error_N": null,
+        "contact_wrench_moment_error_Nm": null
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
     {
       "name": "barycentric-geometry-cache-four-scopes-b32768-v1",
       "trial": "rigid",
@@ -878,6 +1448,377 @@
       "native_buffer_bytes_at_end": null,
       "torch_peak_allocated_bytes": 116062720,
       "device_free_bytes_at_end": 69668962304,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_fit_iterations_max": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "corrections": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "fallbacks": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_integration_retries": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "history_hits": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_wrench_force_error_N": null,
+        "contact_wrench_moment_error_Nm": null
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
+    {
+      "name": "barycentric-geometry-cache-four-scopes-b8192-v1",
+      "trial": "live",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b8192-v1/live/results/benchmark.json",
+      "sha256": "5a0b95050799db92c94bd8a2ad4934709bfbf36db38942f110b848088aa72a25",
+      "scope": "live",
+      "width": 8192,
+      "job_id": "725125",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-7ae01237-7fcb-e02c-fc45-3c6c1e91f0cb",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        53267.51316047471,
+        53218.966895771984,
+        53139.76903189477
+      ],
+      "median_rate": 53218.966895771984,
+      "median_batch_latency_ms": 153.93008316083674,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": true,
+      "native_buffer_bytes_at_end": 10998644334,
+      "torch_peak_allocated_bytes": 29489664,
+      "device_free_bytes_at_end": 80060350464,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 22528,
+            "1": 338944,
+            "2": 17408,
+            "3": 21504,
+            "4": 81920,
+            "5": 41984,
+            "6": 113664,
+            "7": 54272,
+            "8": 23552,
+            "9": 21504
+          },
+          "mean": 3.2819444444444446
+        },
+        "contact_fit_iterations_max": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 23552,
+            "1": 260096,
+            "2": 226862,
+            "3": 174546,
+            "4": 29696,
+            "5": 12288,
+            "6": 2125,
+            "7": 4019,
+            "8": 2048,
+            "9": 1024,
+            "10": 1024
+          },
+          "mean": 2.02691650390625
+        },
+        "corrections": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 737280
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 737280
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 737280
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 461545,
+            "true": 275735
+          },
+          "mean": 0.3739895290798611
+        },
+        "contact_wrench_force_error_N": 7.143314820384681e-10,
+        "contact_wrench_moment_error_Nm": 4.2125026817581e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
+    {
+      "name": "barycentric-geometry-cache-four-scopes-b8192-v1",
+      "trial": "policy",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b8192-v1/policy/results/benchmark.json",
+      "sha256": "5eb90623f94b012a9c4090d7c1f5ed80b0227430a5222557d050d801f31a032a",
+      "scope": "policy",
+      "width": 8192,
+      "job_id": "725125",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-7ae01237-7fcb-e02c-fc45-3c6c1e91f0cb",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        52958.87529731693,
+        52948.23843647139,
+        52966.07571370741
+      ],
+      "median_rate": 52958.87529731693,
+      "median_batch_latency_ms": 154.6860644983341,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": true,
+      "native_buffer_bytes_at_end": 10994974318,
+      "torch_peak_allocated_bytes": 56392192,
+      "device_free_bytes_at_end": 79995338752,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 23552,
+            "1": 324608,
+            "2": 21504,
+            "3": 30720,
+            "4": 75776,
+            "5": 50176,
+            "6": 112640,
+            "7": 53248,
+            "8": 23552,
+            "9": 21504
+          },
+          "mean": 3.3152777777777778
+        },
+        "contact_fit_iterations_max": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 24576,
+            "1": 260096,
+            "2": 218035,
+            "3": 181325,
+            "4": 31744,
+            "5": 12288,
+            "6": 4096,
+            "7": 3072,
+            "8": 1024,
+            "9": 1024
+          },
+          "mean": 2.023715549045139
+        },
+        "corrections": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 737280
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 737280
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 737280
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 475648,
+            "true": 261632
+          },
+          "mean": 0.3548611111111111
+        },
+        "contact_wrench_force_error_N": 6.462819151803919e-10,
+        "contact_wrench_moment_error_Nm": 4.539549601167702e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
+    {
+      "name": "barycentric-geometry-cache-four-scopes-b8192-v1",
+      "trial": "policy-rigid",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b8192-v1/policy-rigid/results/benchmark.json",
+      "sha256": "1f5f59e7d338927b99b59c7c1a7b1a0686f4997425acfc07dd5089ab5d988a24",
+      "scope": "policy-rigid",
+      "width": 8192,
+      "job_id": "725125",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-7ae01237-7fcb-e02c-fc45-3c6c1e91f0cb",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        758555.0587184846,
+        759222.037618689,
+        758745.624696449
+      ],
+      "median_rate": 758745.624696449,
+      "median_batch_latency_ms": 10.796767366239996,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": true,
+      "native_buffer_bytes_at_end": null,
+      "torch_peak_allocated_bytes": 56392192,
+      "device_free_bytes_at_end": 92032991232,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_fit_iterations_max": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "corrections": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "fallbacks": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_integration_retries": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "history_hits": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_wrench_force_error_N": null,
+        "contact_wrench_moment_error_Nm": null
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
+    {
+      "name": "barycentric-geometry-cache-four-scopes-b8192-v1",
+      "trial": "rigid",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-four-scopes-b8192-v1/rigid/results/benchmark.json",
+      "sha256": "a3ffdd2843db2188ced421095494d34a3b8905fdf35636368ef9bc8c04920a85",
+      "scope": "rigid",
+      "width": 8192,
+      "job_id": "725125",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-7ae01237-7fcb-e02c-fc45-3c6c1e91f0cb",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        768635.2818950029,
+        768752.9328680012,
+        767169.8579641508
+      ],
+      "median_rate": 768635.2818950029,
+      "median_batch_latency_ms": 10.657850599576099,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": true,
+      "native_buffer_bytes_at_end": null,
+      "torch_peak_allocated_bytes": 29489664,
+      "device_free_bytes_at_end": 92064448512,
       "effective_contact_block_size": 16,
       "warmup": {
         "samples": 90,
@@ -1495,6 +2436,765 @@
         "resets": 64,
         "invalid_environment_steps": 0,
         "scope": "Intrusive moving steps after timing; excluded from headline rates and pre-trace memory accounting."
+      }
+    },
+    {
+      "name": "barycentric-geometry-cache-memory-four-scopes-b16384-v1",
+      "trial": "live",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b16384-v1/live/results/benchmark.json",
+      "sha256": "170151b662387e09526b41c6f47f3da11545b4a859772860006cc7bf8c5ce7c3",
+      "scope": "live",
+      "width": 16384,
+      "job_id": "725153",
+      "source_closed": true,
+      "job_and_wrapper_passed": false,
+      "condition_pair_closed": false,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-6c6e4672-6ff1-0c99-0c37-5af7cc6f45ed",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        54388.230802843194
+      ],
+      "median_rate": 54388.230802843194,
+      "median_batch_latency_ms": 301.24164287291933,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": 21924175470,
+      "torch_peak_allocated_bytes": 60226048,
+      "device_free_bytes_at_end": 60651208704,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 45056,
+            "1": 677888,
+            "2": 34816,
+            "3": 43008,
+            "4": 163840,
+            "5": 83968,
+            "6": 227328,
+            "7": 108544,
+            "8": 47104,
+            "9": 43008
+          },
+          "mean": 3.2819444444444446
+        },
+        "contact_fit_iterations_max": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 47104,
+            "1": 520192,
+            "2": 453661,
+            "3": 349155,
+            "4": 59392,
+            "5": 24576,
+            "6": 4297,
+            "7": 7991,
+            "8": 4096,
+            "9": 2048,
+            "10": 2048
+          },
+          "mean": 2.0269273546006943
+        },
+        "corrections": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1474560
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1474560
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1474560
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 926802,
+            "true": 547758
+          },
+          "mean": 0.37147216796875
+        },
+        "contact_wrench_force_error_N": 6.95564151107259e-10,
+        "contact_wrench_moment_error_Nm": 4.220091275362344e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b16384-v1/process-memory-live.csv",
+        "sha256": "7ef5f600388bf122aebc020be49e1bcfb9f07572dc43dbec3229b3606b5385bd",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 11737,
+        "maximum_observed_compute_process_bytes": 48649732096,
+        "samples_at_observed_maximum": 1,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+      }
+    },
+    {
+      "name": "barycentric-geometry-cache-memory-four-scopes-b16384-v1",
+      "trial": "policy-rigid",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b16384-v1/policy-rigid/results/benchmark.json",
+      "sha256": "8fc4894f3e2db9cfc25df460e037a4f30bc1aa36b1e05bb9b9fff80d6288b158",
+      "scope": "policy-rigid",
+      "width": 16384,
+      "job_id": "725153",
+      "source_closed": true,
+      "job_and_wrapper_passed": false,
+      "condition_pair_closed": false,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-6c6e4672-6ff1-0c99-0c37-5af7cc6f45ed",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        900119.5775607467
+      ],
+      "median_rate": 900119.5775607467,
+      "median_batch_latency_ms": 18.20202605124905,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": null,
+      "torch_peak_allocated_bytes": 103545344,
+      "device_free_bytes_at_end": 84531478528,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_fit_iterations_max": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "corrections": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "fallbacks": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_integration_retries": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "history_hits": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_wrench_force_error_N": null,
+        "contact_wrench_moment_error_Nm": null
+      },
+      "rollout_work": null,
+      "sampled_process_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b16384-v1/process-memory-policy-rigid.csv",
+        "sha256": "c99452ee0232adb7245ffa4dc50c20988b92936bcccfaa65639d19fc38bbaed9",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 1852,
+        "maximum_observed_compute_process_bytes": 17320378368,
+        "samples_at_observed_maximum": 1042,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+      }
+    },
+    {
+      "name": "barycentric-geometry-cache-memory-four-scopes-b16384-v1",
+      "trial": "rigid",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b16384-v1/rigid/results/benchmark.json",
+      "sha256": "3afd000a0348b2ffe9c5399a7cdaf95af233ede1c4097c23f8b6f350b4dd5d42",
+      "scope": "rigid",
+      "width": 16384,
+      "job_id": "725153",
+      "source_closed": true,
+      "job_and_wrapper_passed": false,
+      "condition_pair_closed": false,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-6c6e4672-6ff1-0c99-0c37-5af7cc6f45ed",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        907099.4612288584
+      ],
+      "median_rate": 907099.4612288584,
+      "median_batch_latency_ms": 18.06196641083261,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": null,
+      "torch_peak_allocated_bytes": 60226048,
+      "device_free_bytes_at_end": 84600684544,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_fit_iterations_max": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "corrections": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "fallbacks": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_integration_retries": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "history_hits": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_wrench_force_error_N": null,
+        "contact_wrench_moment_error_Nm": null
+      },
+      "rollout_work": null,
+      "sampled_process_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b16384-v1/process-memory-rigid.csv",
+        "sha256": "08cd2cfb8b97a33f5a55e3ea5bd2a6df1f832d8b114b3b4766593bceeebc0f38",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 1821,
+        "maximum_observed_compute_process_bytes": 17251172352,
+        "samples_at_observed_maximum": 1034,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+      }
+    },
+    {
+      "name": "barycentric-geometry-cache-memory-four-scopes-b32768-v1",
+      "trial": "rigid",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b32768-v1/rigid/results/benchmark.json",
+      "sha256": "14312e92a2424cad791260d2ab5802f92a66686f4c00ba6ddc3e58c5a1574bd8",
+      "scope": "rigid",
+      "width": 32768,
+      "job_id": "725150",
+      "source_closed": true,
+      "job_and_wrapper_passed": false,
+      "condition_pair_closed": false,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-c5149977-3a71-c618-10f1-af4d3886a3ff",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        1013496.4056582691
+      ],
+      "median_rate": 1013496.4056582691,
+      "median_batch_latency_ms": 32.33163908333457,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": null,
+      "torch_peak_allocated_bytes": 116062720,
+      "device_free_bytes_at_end": 69668962304,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_fit_iterations_max": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "corrections": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "fallbacks": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_integration_retries": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "history_hits": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_wrench_force_error_N": null,
+        "contact_wrench_moment_error_Nm": null
+      },
+      "rollout_work": null,
+      "sampled_process_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b32768-v1/process-memory-rigid.csv",
+        "sha256": "e1b1a7108ea30e82dd2bdf5d3ca7b69fae6cbd3ddceaaeeb8b1223ad7232daf7",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 2725,
+        "maximum_observed_compute_process_bytes": 32182894592,
+        "samples_at_observed_maximum": 1905,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+      }
+    },
+    {
+      "name": "barycentric-geometry-cache-memory-four-scopes-b8192-v1",
+      "trial": "live",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b8192-v1/live/results/benchmark.json",
+      "sha256": "a5cae5ce1fc47ceb655e60692ec0450ec964afdd576ffa23984238de27e8fa5b",
+      "scope": "live",
+      "width": 8192,
+      "job_id": "725126",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-e92a6c02-6a68-ee83-a852-4cb4742dee3e",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        52944.435294100695
+      ],
+      "median_rate": 52944.435294100695,
+      "median_batch_latency_ms": 154.72825339422948,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": 10998644334,
+      "torch_peak_allocated_bytes": 29489664,
+      "device_free_bytes_at_end": 80060350464,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 22528,
+            "1": 338944,
+            "2": 17408,
+            "3": 21504,
+            "4": 81920,
+            "5": 41984,
+            "6": 113664,
+            "7": 54272,
+            "8": 23552,
+            "9": 21504
+          },
+          "mean": 3.2819444444444446
+        },
+        "contact_fit_iterations_max": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 23552,
+            "1": 260096,
+            "2": 226878,
+            "3": 174530,
+            "4": 29696,
+            "5": 12288,
+            "6": 2119,
+            "7": 4025,
+            "8": 2048,
+            "9": 1024,
+            "10": 1024
+          },
+          "mean": 2.0269029405381946
+        },
+        "corrections": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 737280
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 737280
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 737280
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 466254,
+            "true": 271026
+          },
+          "mean": 0.3676025390625
+        },
+        "contact_wrench_force_error_N": 5.747225612084961e-10,
+        "contact_wrench_moment_error_Nm": 4.217537674929303e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b8192-v1/process-memory-live.csv",
+        "sha256": "090345975e7b277d9fab6eddf70cf7bd48e25b4d91e5634882710b64973d1aac",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 6604,
+        "maximum_observed_compute_process_bytes": 23368564736,
+        "samples_at_observed_maximum": 1,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+      }
+    },
+    {
+      "name": "barycentric-geometry-cache-memory-four-scopes-b8192-v1",
+      "trial": "policy",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b8192-v1/policy/results/benchmark.json",
+      "sha256": "709eee902709511a636585134942d1bf915ede0d8620a79f677d0bbdf545d046",
+      "scope": "policy",
+      "width": 8192,
+      "job_id": "725126",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-e92a6c02-6a68-ee83-a852-4cb4742dee3e",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        52842.02205277071
+      ],
+      "median_rate": 52842.02205277071,
+      "median_batch_latency_ms": 155.02813256879259,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": 10994974318,
+      "torch_peak_allocated_bytes": 56392192,
+      "device_free_bytes_at_end": 79995338752,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 23552,
+            "1": 324608,
+            "2": 21504,
+            "3": 30720,
+            "4": 75776,
+            "5": 50176,
+            "6": 112640,
+            "7": 53248,
+            "8": 23552,
+            "9": 21504
+          },
+          "mean": 3.3152777777777778
+        },
+        "contact_fit_iterations_max": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 24576,
+            "1": 260096,
+            "2": 217998,
+            "3": 181362,
+            "4": 31744,
+            "5": 12288,
+            "6": 4096,
+            "7": 3072,
+            "8": 1024,
+            "9": 1024
+          },
+          "mean": 2.0237657335069446
+        },
+        "corrections": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 737280
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 737280
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 737280
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 479733,
+            "true": 257547
+          },
+          "mean": 0.34932047526041665
+        },
+        "contact_wrench_force_error_N": 6.354263554614508e-10,
+        "contact_wrench_moment_error_Nm": 4.599472234437904e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b8192-v1/process-memory-policy.csv",
+        "sha256": "18ce76615ca7923c0fda3cdd358ee4955acadc0d6579160564b1da2966b5687e",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 6647,
+        "maximum_observed_compute_process_bytes": 25513951232,
+        "samples_at_observed_maximum": 1,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+      }
+    },
+    {
+      "name": "barycentric-geometry-cache-memory-four-scopes-b8192-v1",
+      "trial": "policy-rigid",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b8192-v1/policy-rigid/results/benchmark.json",
+      "sha256": "eecb236b40b90a85688d0a67d02ee4128a2561284433ec20a0034206b4f09702",
+      "scope": "policy-rigid",
+      "width": 8192,
+      "job_id": "725126",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-e92a6c02-6a68-ee83-a852-4cb4742dee3e",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        762177.3073410064
+      ],
+      "median_rate": 762177.3073410064,
+      "median_batch_latency_ms": 10.748155214144694,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": null,
+      "torch_peak_allocated_bytes": 56392192,
+      "device_free_bytes_at_end": 92032991232,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_fit_iterations_max": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "corrections": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "fallbacks": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_integration_retries": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "history_hits": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_wrench_force_error_N": null,
+        "contact_wrench_moment_error_Nm": null
+      },
+      "rollout_work": null,
+      "sampled_process_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b8192-v1/process-memory-policy-rigid.csv",
+        "sha256": "b9d7e7d1bb4df7b214bf72cf9717f91d0dbcc0202ac3618c2d573170f061527a",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 1397,
+        "maximum_observed_compute_process_bytes": 9818865664,
+        "samples_at_observed_maximum": 585,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+      }
+    },
+    {
+      "name": "barycentric-geometry-cache-memory-four-scopes-b8192-v1",
+      "trial": "rigid",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b8192-v1/rigid/results/benchmark.json",
+      "sha256": "97a7eddf9f60d34a8c0edefa2fdc62a5151bda74c0434d9700a983101e3b2bdb",
+      "scope": "rigid",
+      "width": 8192,
+      "job_id": "725126",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-e92a6c02-6a68-ee83-a852-4cb4742dee3e",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        771241.887982135
+      ],
+      "median_rate": 771241.887982135,
+      "median_batch_latency_ms": 10.621829710823175,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": null,
+      "torch_peak_allocated_bytes": 29489664,
+      "device_free_bytes_at_end": 92064448512,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_fit_iterations_max": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "corrections": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "fallbacks": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_integration_retries": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "history_hits": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_wrench_force_error_N": null,
+        "contact_wrench_moment_error_Nm": null
+      },
+      "rollout_work": null,
+      "sampled_process_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/barycentric-geometry-cache-memory-four-scopes-b8192-v1/process-memory-rigid.csv",
+        "sha256": "f82e26d0bb145df28e6a6df1b36e9a120bc00da64a7588f3e61bd7de11c54548",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 1394,
+        "maximum_observed_compute_process_bytes": 9787408384,
+        "samples_at_observed_maximum": 589,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
       }
     },
     {
@@ -2508,6 +4208,300 @@
     },
     {
       "name": "baseline-four-scopes-b12288-v1",
+      "trial": "live",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b12288-v1/live/results/benchmark.json",
+      "sha256": "bfc697d68e81ab723e8b8f628465fbbd3253f84adb6a34eb57c7b47b38a5f7c1",
+      "scope": "live",
+      "width": 12288,
+      "job_id": "725087",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-221a0c23-5646-a371-f3de-57b941cc013a",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "2da41428d67e99c88fb85561ba7112a7a2e7ac5ae44892ed65229a8ca6970b5a",
+      "repeat_rates_valid_env_steps_per_second": [
+        52955.35195170549,
+        53604.37930371047,
+        53262.029935154125
+      ],
+      "median_rate": 53262.029935154125,
+      "median_batch_latency_ms": 230.70844304958882,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": true,
+      "native_buffer_bytes_at_end": 18064158294,
+      "torch_peak_allocated_bytes": 43416064,
+      "device_free_bytes_at_end": 68769284096,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 33792,
+            "1": 508416,
+            "2": 26112,
+            "3": 32256,
+            "4": 122880,
+            "5": 62976,
+            "6": 170496,
+            "7": 81408,
+            "8": 35328,
+            "9": 32256
+          },
+          "mean": 3.2819444444444446
+        },
+        "contact_fit_iterations_max": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 35328,
+            "1": 390144,
+            "2": 340252,
+            "3": 261860,
+            "4": 44544,
+            "5": 18432,
+            "6": 3191,
+            "7": 6025,
+            "8": 3072,
+            "9": 1536,
+            "10": 1536
+          },
+          "mean": 2.026950412326389
+        },
+        "corrections": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1105920
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1105920
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1105920
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 692273,
+            "true": 413647
+          },
+          "mean": 0.3740297670717593
+        },
+        "contact_wrench_force_error_N": 5.752887050491872e-10,
+        "contact_wrench_moment_error_Nm": 4.211200271237274e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
+    {
+      "name": "baseline-four-scopes-b12288-v1",
+      "trial": "policy",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b12288-v1/policy/results/benchmark.json",
+      "sha256": "ea8800fe3ddabe4a3d911eaaf80fad41c79aebd32e3364e314239838ad298a1f",
+      "scope": "policy",
+      "width": 12288,
+      "job_id": "725087",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-221a0c23-5646-a371-f3de-57b941cc013a",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "2da41428d67e99c88fb85561ba7112a7a2e7ac5ae44892ed65229a8ca6970b5a",
+      "repeat_rates_valid_env_steps_per_second": [
+        52693.69258552238,
+        52687.10552465633,
+        52679.69563872282
+      ],
+      "median_rate": 52687.10552465633,
+      "median_batch_latency_ms": 233.2259454687543,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": true,
+      "native_buffer_bytes_at_end": 18057080406,
+      "torch_peak_allocated_bytes": 78952960,
+      "device_free_bytes_at_end": 68725243904,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 35328,
+            "1": 489984,
+            "2": 38400,
+            "3": 36864,
+            "4": 113664,
+            "5": 75264,
+            "6": 168960,
+            "7": 79872,
+            "8": 35328,
+            "9": 32256
+          },
+          "mean": 3.3041666666666667
+        },
+        "contact_fit_iterations_max": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 36864,
+            "1": 390144,
+            "2": 328595,
+            "3": 276589,
+            "4": 43008,
+            "5": 18432,
+            "6": 4608,
+            "7": 4608,
+            "8": 1536,
+            "9": 1536
+          },
+          "mean": 2.0139874493634258
+        },
+        "corrections": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1105920
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1105920
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1105920
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 709176,
+            "true": 396744
+          },
+          "mean": 0.3587456597222222
+        },
+        "contact_wrench_force_error_N": 6.966229609407282e-10,
+        "contact_wrench_moment_error_Nm": 4.5421082167365595e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
+    {
+      "name": "baseline-four-scopes-b12288-v1",
+      "trial": "policy-rigid",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b12288-v1/policy-rigid/results/benchmark.json",
+      "sha256": "da4d3d6ff3a902609edb8cea309cd4871ca6075a54c62a6782df01099dc63498",
+      "scope": "policy-rigid",
+      "width": 12288,
+      "job_id": "725087",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-221a0c23-5646-a371-f3de-57b941cc013a",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "2da41428d67e99c88fb85561ba7112a7a2e7ac5ae44892ed65229a8ca6970b5a",
+      "repeat_rates_valid_env_steps_per_second": [
+        817123.5190183835,
+        813074.6462315052,
+        813312.7076206488
+      ],
+      "median_rate": 813312.7076206488,
+      "median_batch_latency_ms": 15.10857986708288,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": true,
+      "native_buffer_bytes_at_end": null,
+      "torch_peak_allocated_bytes": 78952960,
+      "device_free_bytes_at_end": 88279089152,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_fit_iterations_max": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "corrections": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "fallbacks": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_integration_retries": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "history_hits": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_wrench_force_error_N": null,
+        "contact_wrench_moment_error_Nm": null
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
+    {
+      "name": "baseline-four-scopes-b12288-v1",
       "trial": "rigid",
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b12288-v1/rigid/results/benchmark.json",
       "sha256": "4f0b29559d48ef7c1cb630b31546beea9bc0d8e6e9f1103e962b3c7445082650",
@@ -2515,8 +4509,8 @@
       "width": 12288,
       "job_id": "725087",
       "source_closed": true,
-      "job_and_wrapper_passed": false,
-      "condition_pair_closed": false,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
       "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
       "gpu_uuid": "GPU-221a0c23-5646-a371-f3de-57b941cc013a",
       "gpu_total_bytes": 101975851008,
@@ -2533,7 +4527,7 @@
       "intrusive_diagnostic": false,
       "same_timing_protocol": true,
       "same_primary_physics_and_options": true,
-      "eligible_primary_headline": false,
+      "eligible_primary_headline": true,
       "native_buffer_bytes_at_end": null,
       "torch_peak_allocated_bytes": 43416064,
       "device_free_bytes_at_end": 88323129344,
@@ -3334,8 +5328,8 @@
       "width": 24576,
       "job_id": "724975",
       "source_closed": true,
-      "job_and_wrapper_passed": false,
-      "condition_pair_closed": false,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
       "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
       "gpu_uuid": "GPU-665e0d07-4281-3f8f-e77d-f55205a0bab4",
       "gpu_total_bytes": 101975851008,
@@ -3352,7 +5346,7 @@
       "intrusive_diagnostic": false,
       "same_timing_protocol": true,
       "same_primary_physics_and_options": true,
-      "eligible_primary_headline": false,
+      "eligible_primary_headline": true,
       "native_buffer_bytes_at_end": 36055203414,
       "torch_peak_allocated_bytes": 86571520,
       "device_free_bytes_at_end": 38127796224,
@@ -3436,6 +5430,114 @@
     },
     {
       "name": "baseline-four-scopes-b24576-v1",
+      "trial": "policy",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b24576-v1/policy/results/benchmark.json",
+      "sha256": "17229f61f87be99cb7f5207695ffd918f2bdeb35c723726341ef465e31415f2d",
+      "scope": "policy",
+      "width": 24576,
+      "job_id": "724975",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-665e0d07-4281-3f8f-e77d-f55205a0bab4",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "2da41428d67e99c88fb85561ba7112a7a2e7ac5ae44892ed65229a8ca6970b5a",
+      "repeat_rates_valid_env_steps_per_second": [
+        52686.332848658334,
+        52678.81891505504,
+        52666.8139244495
+      ],
+      "median_rate": 52678.81891505504,
+      "median_batch_latency_ms": 466.525265868792,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": true,
+      "native_buffer_bytes_at_end": 36041047638,
+      "torch_peak_allocated_bytes": 146504192,
+      "device_free_bytes_at_end": 38054395904,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 2211840,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 70656,
+            "1": 979968,
+            "2": 70656,
+            "3": 79872,
+            "4": 227328,
+            "5": 150528,
+            "6": 337920,
+            "7": 159744,
+            "8": 70656,
+            "9": 64512
+          },
+          "mean": 3.3069444444444445
+        },
+        "contact_fit_iterations_max": {
+          "count": 2211840,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 73728,
+            "1": 780288,
+            "2": 653920,
+            "3": 547232,
+            "4": 95232,
+            "5": 36864,
+            "6": 9216,
+            "7": 9216,
+            "8": 3072,
+            "9": 3072
+          },
+          "mean": 2.019632523148148
+        },
+        "corrections": {
+          "count": 2211840,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 2211840
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 2211840,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 2211840
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 2211840,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 2211840
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 2211840,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 1425870,
+            "true": 785970
+          },
+          "mean": 0.3553466796875
+        },
+        "contact_wrench_force_error_N": 6.354263887332248e-10,
+        "contact_wrench_moment_error_Nm": 4.606622971968084e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
+    {
+      "name": "baseline-four-scopes-b24576-v1",
       "trial": "policy-rigid",
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-four-scopes-b24576-v1/policy-rigid/results/benchmark.json",
       "sha256": "cf0821775346e6610ffb8e1f7cb9905e4bad7f9f0fd98e73392580bb5a8d404a",
@@ -3443,8 +5545,8 @@
       "width": 24576,
       "job_id": "724975",
       "source_closed": true,
-      "job_and_wrapper_passed": false,
-      "condition_pair_closed": false,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
       "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
       "gpu_uuid": "GPU-665e0d07-4281-3f8f-e77d-f55205a0bab4",
       "gpu_total_bytes": 101975851008,
@@ -3461,7 +5563,7 @@
       "intrusive_diagnostic": false,
       "same_timing_protocol": true,
       "same_primary_physics_and_options": true,
-      "eligible_primary_headline": false,
+      "eligible_primary_headline": true,
       "native_buffer_bytes_at_end": null,
       "torch_peak_allocated_bytes": 146504192,
       "device_free_bytes_at_end": 77036257280,
@@ -3520,8 +5622,8 @@
       "width": 24576,
       "job_id": "724975",
       "source_closed": true,
-      "job_and_wrapper_passed": false,
-      "condition_pair_closed": false,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
       "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
       "gpu_uuid": "GPU-665e0d07-4281-3f8f-e77d-f55205a0bab4",
       "gpu_total_bytes": 101975851008,
@@ -3538,7 +5640,7 @@
       "intrusive_diagnostic": false,
       "same_timing_protocol": true,
       "same_primary_physics_and_options": true,
-      "eligible_primary_headline": false,
+      "eligible_primary_headline": true,
       "native_buffer_bytes_at_end": null,
       "torch_peak_allocated_bytes": 86571520,
       "device_free_bytes_at_end": 77143212032,
@@ -5346,6 +7448,318 @@
     },
     {
       "name": "baseline-memory-four-scopes-b12288-v1",
+      "trial": "live",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-memory-four-scopes-b12288-v1/live/results/benchmark.json",
+      "sha256": "9c4167df4aecb7e6507004602d80cecf93c8bbb0b4ccde3ab81d70cf26b3440f",
+      "scope": "live",
+      "width": 12288,
+      "job_id": "725088",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-8e4d594b-2f96-203d-69d3-3fcc7c758473",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "2da41428d67e99c88fb85561ba7112a7a2e7ac5ae44892ed65229a8ca6970b5a",
+      "repeat_rates_valid_env_steps_per_second": [
+        52946.221703663155
+      ],
+      "median_rate": 52946.221703663155,
+      "median_batch_latency_ms": 232.0845492767209,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": 18064158294,
+      "torch_peak_allocated_bytes": 43416064,
+      "device_free_bytes_at_end": 68769284096,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 33792,
+            "1": 508416,
+            "2": 26112,
+            "3": 32256,
+            "4": 122880,
+            "5": 62976,
+            "6": 170496,
+            "7": 81408,
+            "8": 35328,
+            "9": 32256
+          },
+          "mean": 3.2819444444444446
+        },
+        "contact_fit_iterations_max": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 35328,
+            "1": 390144,
+            "2": 340231,
+            "3": 261881,
+            "4": 44544,
+            "5": 18432,
+            "6": 3183,
+            "7": 6033,
+            "8": 3072,
+            "9": 1536,
+            "10": 1536
+          },
+          "mean": 2.026976634837963
+        },
+        "corrections": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1105920
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1105920
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1105920
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 690556,
+            "true": 415364
+          },
+          "mean": 0.37558232060185187
+        },
+        "contact_wrench_force_error_N": 5.755716959941228e-10,
+        "contact_wrench_moment_error_Nm": 4.226579450509088e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-memory-four-scopes-b12288-v1/process-memory-live.csv",
+        "sha256": "648973de4b9b93cc8ef8ddd913c4f0141ba2396d9156f41a19fc1a04444bdc82",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 9362,
+        "maximum_observed_compute_process_bytes": 40263221248,
+        "samples_at_observed_maximum": 3,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+      }
+    },
+    {
+      "name": "baseline-memory-four-scopes-b12288-v1",
+      "trial": "policy",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-memory-four-scopes-b12288-v1/policy/results/benchmark.json",
+      "sha256": "7ca9e7edd7fbb29dd01b2c24132af8fe855189cba1c304cf96baac3bd304d45a",
+      "scope": "policy",
+      "width": 12288,
+      "job_id": "725088",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-8e4d594b-2f96-203d-69d3-3fcc7c758473",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "2da41428d67e99c88fb85561ba7112a7a2e7ac5ae44892ed65229a8ca6970b5a",
+      "repeat_rates_valid_env_steps_per_second": [
+        52801.19514370944
+      ],
+      "median_rate": 52801.19514370944,
+      "median_batch_latency_ms": 232.72200499544851,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": 18057080406,
+      "torch_peak_allocated_bytes": 78952960,
+      "device_free_bytes_at_end": 68725243904,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 35328,
+            "1": 489984,
+            "2": 38400,
+            "3": 36864,
+            "4": 113664,
+            "5": 75264,
+            "6": 168960,
+            "7": 79872,
+            "8": 35328,
+            "9": 32256
+          },
+          "mean": 3.3041666666666667
+        },
+        "contact_fit_iterations_max": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 36864,
+            "1": 390144,
+            "2": 328616,
+            "3": 276568,
+            "4": 43008,
+            "5": 18432,
+            "6": 4608,
+            "7": 4608,
+            "8": 1536,
+            "9": 1536
+          },
+          "mean": 2.0139684606481483
+        },
+        "corrections": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1105920
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1105920
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1105920
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 1105920,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 712421,
+            "true": 393499
+          },
+          "mean": 0.35581145109953705
+        },
+        "contact_wrench_force_error_N": 7.304609520117301e-10,
+        "contact_wrench_moment_error_Nm": 4.585381605304616e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-memory-four-scopes-b12288-v1/process-memory-policy.csv",
+        "sha256": "3dfb666a314d9f2c5dfdb0ac23d0c3231f158f6186592b8e1570f85469997ef8",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 9378,
+        "maximum_observed_compute_process_bytes": 40307261440,
+        "samples_at_observed_maximum": 1,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+      }
+    },
+    {
+      "name": "baseline-memory-four-scopes-b12288-v1",
+      "trial": "policy-rigid",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-memory-four-scopes-b12288-v1/policy-rigid/results/benchmark.json",
+      "sha256": "db313c7d7354c53abc909920e5b528a4efbbb15cbb786cbe27fb450797f9ebf8",
+      "scope": "policy-rigid",
+      "width": 12288,
+      "job_id": "725088",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-8e4d594b-2f96-203d-69d3-3fcc7c758473",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "2da41428d67e99c88fb85561ba7112a7a2e7ac5ae44892ed65229a8ca6970b5a",
+      "repeat_rates_valid_env_steps_per_second": [
+        819262.8453567502
+      ],
+      "median_rate": 819262.8453567502,
+      "median_batch_latency_ms": 14.998849355421651,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": null,
+      "torch_peak_allocated_bytes": 78952960,
+      "device_free_bytes_at_end": 88279089152,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_fit_iterations_max": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "corrections": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "fallbacks": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_integration_retries": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "history_hits": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_wrench_force_error_N": null,
+        "contact_wrench_moment_error_Nm": null
+      },
+      "rollout_work": null,
+      "sampled_process_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-memory-four-scopes-b12288-v1/process-memory-policy-rigid.csv",
+        "sha256": "7d9f3705bee126edac3593694a7e6a5018cafaaec24a61b65b8ad520848f37e8",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 1679,
+        "maximum_observed_compute_process_bytes": 13572767744,
+        "samples_at_observed_maximum": 864,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+      }
+    },
+    {
+      "name": "baseline-memory-four-scopes-b12288-v1",
       "trial": "rigid",
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-memory-four-scopes-b12288-v1/rigid/results/benchmark.json",
       "sha256": "ccf31525e15674fe231532b6d167dc6b3868ac509ee99b5a5e27e43831217984",
@@ -5353,8 +7767,8 @@
       "width": 12288,
       "job_id": "725088",
       "source_closed": true,
-      "job_and_wrapper_passed": false,
-      "condition_pair_closed": false,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
       "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
       "gpu_uuid": "GPU-8e4d594b-2f96-203d-69d3-3fcc7c758473",
       "gpu_total_bytes": 101975851008,
@@ -5429,6 +7843,318 @@
     },
     {
       "name": "baseline-memory-four-scopes-b16384-v1",
+      "trial": "live",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-memory-four-scopes-b16384-v1/live/results/benchmark.json",
+      "sha256": "c86dc4312de4c36b2d87cf6e67ad6e03769e0cba39c831667c52c21129a9a67c",
+      "scope": "live",
+      "width": 16384,
+      "job_id": "725089",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-1f358e22-aa62-f380-2ca6-348aca7ea23f",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "2da41428d67e99c88fb85561ba7112a7a2e7ac5ae44892ed65229a8ca6970b5a",
+      "repeat_rates_valid_env_steps_per_second": [
+        53232.14467903667
+      ],
+      "median_rate": 53232.14467903667,
+      "median_batch_latency_ms": 307.7839545783354,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": 24061173334,
+      "torch_peak_allocated_bytes": 60226048,
+      "device_free_bytes_at_end": 58537279488,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 45056,
+            "1": 677888,
+            "2": 34816,
+            "3": 43008,
+            "4": 163840,
+            "5": 83968,
+            "6": 227328,
+            "7": 108544,
+            "8": 47104,
+            "9": 43008
+          },
+          "mean": 3.2819444444444446
+        },
+        "contact_fit_iterations_max": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 47104,
+            "1": 520192,
+            "2": 453655,
+            "3": 349161,
+            "4": 59392,
+            "5": 24576,
+            "6": 4283,
+            "7": 8005,
+            "8": 4096,
+            "9": 2048,
+            "10": 2048
+          },
+          "mean": 2.02694091796875
+        },
+        "corrections": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1474560
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1474560
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1474560
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 923674,
+            "true": 550886
+          },
+          "mean": 0.3735934787326389
+        },
+        "contact_wrench_force_error_N": 7.025122890879493e-10,
+        "contact_wrench_moment_error_Nm": 4.217105678812081e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-memory-four-scopes-b16384-v1/process-memory-live.csv",
+        "sha256": "cda2d186567ee1de888a93eb4e38a5bfbd003403dd525cce3a03d7aebf8eef5c",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 12030,
+        "maximum_observed_compute_process_bytes": 52844036096,
+        "samples_at_observed_maximum": 1,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+      }
+    },
+    {
+      "name": "baseline-memory-four-scopes-b16384-v1",
+      "trial": "policy",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-memory-four-scopes-b16384-v1/policy/results/benchmark.json",
+      "sha256": "1967ad11203046c5e9fc64b229671801ab1e21470cdd76c3208dcf7225a99f47",
+      "scope": "policy",
+      "width": 16384,
+      "job_id": "725089",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-1f358e22-aa62-f380-2ca6-348aca7ea23f",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "2da41428d67e99c88fb85561ba7112a7a2e7ac5ae44892ed65229a8ca6970b5a",
+      "repeat_rates_valid_env_steps_per_second": [
+        53025.85645896058
+      ],
+      "median_rate": 53025.85645896058,
+      "median_batch_latency_ms": 308.9813365424925,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": 24051736150,
+      "torch_peak_allocated_bytes": 103545344,
+      "device_free_bytes_at_end": 58468073472,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 47104,
+            "1": 653312,
+            "2": 51200,
+            "3": 49152,
+            "4": 151552,
+            "5": 100352,
+            "6": 225280,
+            "7": 106496,
+            "8": 47104,
+            "9": 43008
+          },
+          "mean": 3.3041666666666667
+        },
+        "contact_fit_iterations_max": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 49152,
+            "1": 520192,
+            "2": 438082,
+            "3": 368830,
+            "4": 57344,
+            "5": 24576,
+            "6": 6144,
+            "7": 6144,
+            "8": 2048,
+            "9": 2048
+          },
+          "mean": 2.0140177408854165
+        },
+        "corrections": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1474560
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1474560
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 1474560
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 1474560,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 940916,
+            "true": 533644
+          },
+          "mean": 0.36190049913194444
+        },
+        "contact_wrench_force_error_N": 6.836720060266698e-10,
+        "contact_wrench_moment_error_Nm": 4.506864386005939e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-memory-four-scopes-b16384-v1/process-memory-policy.csv",
+        "sha256": "06a0a38f5558dd08df312bf57255e75384579a94799d1fc0b3ca65537f0f77ce",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 12065,
+        "maximum_observed_compute_process_bytes": 52980350976,
+        "samples_at_observed_maximum": 1,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+      }
+    },
+    {
+      "name": "baseline-memory-four-scopes-b16384-v1",
+      "trial": "policy-rigid",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-memory-four-scopes-b16384-v1/policy-rigid/results/benchmark.json",
+      "sha256": "a062048e2b3d44c7b99c1e174f120ae0d17ccee4febf7c105812ded6eb146932",
+      "scope": "policy-rigid",
+      "width": 16384,
+      "job_id": "725089",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-1f358e22-aa62-f380-2ca6-348aca7ea23f",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "2da41428d67e99c88fb85561ba7112a7a2e7ac5ae44892ed65229a8ca6970b5a",
+      "repeat_rates_valid_env_steps_per_second": [
+        864658.6244350119
+      ],
+      "median_rate": 864658.6244350119,
+      "median_batch_latency_ms": 18.948518567898038,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": null,
+      "torch_peak_allocated_bytes": 103545344,
+      "device_free_bytes_at_end": 84531478528,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_fit_iterations_max": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "corrections": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "fallbacks": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_integration_retries": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "history_hits": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_wrench_force_error_N": null,
+        "contact_wrench_moment_error_Nm": null
+      },
+      "rollout_work": null,
+      "sampled_process_memory": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-memory-four-scopes-b16384-v1/process-memory-policy-rigid.csv",
+        "sha256": "86c7ac3a2b4a1c4615d1851b4d7521cbc7911eebed966e214506fa35053b19e8",
+        "sampling_interval_ms": 100,
+        "samples_with_compute_processes": 1893,
+        "maximum_observed_compute_process_bytes": 17320378368,
+        "samples_at_observed_maximum": 1074,
+        "scope": "Sum of compute-process memory on the benchmark GPU UUID. A sampled lower bound on peak VRAM; includes process contexts and excludes graphics/driver allocations."
+      }
+    },
+    {
+      "name": "baseline-memory-four-scopes-b16384-v1",
       "trial": "rigid",
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-memory-four-scopes-b16384-v1/rigid/results/benchmark.json",
       "sha256": "951ed0f03a70ea37d880e81b1865f876756f31d52b950f9d89f93c83757b9dc5",
@@ -5436,8 +8162,8 @@
       "width": 16384,
       "job_id": "725089",
       "source_closed": true,
-      "job_and_wrapper_passed": false,
-      "condition_pair_closed": false,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
       "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
       "gpu_uuid": "GPU-1f358e22-aa62-f380-2ca6-348aca7ea23f",
       "gpu_total_bytes": 101975851008,
@@ -7829,6 +10555,1152 @@
       "sampled_process_memory": null
     },
     {
+      "name": "body-prior-leader-fit-live-trace-b256-v1",
+      "trial": "body-prior-leader-fit-live-trace-b256-v1",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/body-prior-leader-fit-live-trace-b256-v1/results/benchmark.json",
+      "sha256": "4d519713c914760d45517cb715be43b9edc1d5d1ad78e74f5552f84cdf1ed5b6",
+      "scope": "live",
+      "width": 256,
+      "job_id": "725140",
+      "source_closed": false,
+      "job_and_wrapper_passed": false,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-10687902-373e-affa-28fc-010e9cf7a3f2",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "0705751f810b7a693b3776f3d64230f23255c95f481c674349320e6577bc568b",
+      "repeat_rates_valid_env_steps_per_second": [
+        16550.325300155604
+      ],
+      "median_rate": 16550.325300155604,
+      "median_batch_latency_ms": 15.467973913334086,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": 447926614,
+      "torch_peak_allocated_bytes": 1394688,
+      "device_free_bytes_at_end": 98748071936,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 23040,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 704,
+            "1": 10592,
+            "2": 544,
+            "3": 672,
+            "4": 2560,
+            "5": 1312,
+            "6": 3552,
+            "7": 1696,
+            "8": 736,
+            "9": 672
+          },
+          "mean": 3.2819444444444446
+        },
+        "contact_fit_iterations_max": {
+          "count": 23040,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 736,
+            "1": 8128,
+            "2": 7090,
+            "3": 5454,
+            "4": 928,
+            "5": 384,
+            "6": 71,
+            "7": 121,
+            "8": 64,
+            "9": 32,
+            "10": 32
+          },
+          "mean": 2.0266927083333335
+        },
+        "corrections": {
+          "count": 23040,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 23040
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 23040,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 23040
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 23040,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 23040
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 23040,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 14482,
+            "true": 8558
+          },
+          "mean": 0.3714409722222222
+        },
+        "contact_wrench_force_error_N": 5.747224363084058e-10,
+        "contact_wrench_moment_error_Nm": 4.187705421026122e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null,
+      "trace": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/body-prior-leader-fit-live-trace-b256-v1/results/benchmark.trace.json",
+        "sha256": "350a74b0064fd98f3fade6af4a8d2d6ca3a505bce9dc1385db9104869ddd38a5",
+        "step_count": 50,
+        "step_wall_sum_ms": 726.914076,
+        "kernel_count": 18306,
+        "kernel_duration_sum_ms": 529.9932349999997,
+        "top_kernel_duration_sum_ms": [
+          [
+            "kernel_fit_tractions_impl_c1044_0_kernel_1_range_for",
+            103.75201000000004
+          ],
+          [
+            "kernel_apply_inverse_c832_0_kernel_1_range_for",
+            97.08762199999998
+          ],
+          [
+            "kernel_scatter_cached_tractions_c1048_0_kernel_5_range_for",
+            52.04645399999998
+          ],
+          [
+            "kernel_resolve_sources_c746_0_kernel_1_range_for",
+            37.119977000000006
+          ],
+          [
+            "kernel_substep_collision_c898_0_kernel_11_range_for",
+            30.543264999999998
+          ],
+          [
+            "kernel_fan_frontier_samples_c1042_0_kernel_4_range_for",
+            19.594356
+          ],
+          [
+            "kernel_substep_collision_c898_0_kernel_10_range_for",
+            12.781548999999998
+          ],
+          [
+            "kernel_step_2_c894_0_kernel_12_sweep_links_by_level_range_for",
+            8.787979000000002
+          ],
+          [
+            "kernel_full_residual_impl_c866_1_kernel_3_range_for",
+            5.843334999999997
+          ],
+          [
+            "kernel_peak_impl_c868_0_kernel_3_range_for",
+            5.156517999999999
+          ],
+          [
+            "kernel_footprint_ports_c764_0_kernel_3_range_for",
+            5.155363999999999
+          ],
+          [
+            "kernel_full_residual_impl_c866_0_kernel_3_range_for",
+            4.536709
+          ],
+          [
+            "func_solve_init_c690_0_kernel_23_island_tiled_factor_solve_range_for",
+            3.5863389999999997
+          ],
+          [
+            "_kernel_solve_graph_c696_0_kernel_15_island_tiled_factor_solve_range_for",
+            3.1741490000000003
+          ],
+          [
+            "kernel_predict_c730_0_kernel_47_range_for",
+            2.7029149999999995
+          ],
+          [
+            "kernel_predict_c730_0_kernel_3_range_for",
+            2.410626
+          ],
+          [
+            "kernel_snapshot_source_priors_c780_0_kernel_1_range_for",
+            2.0435519999999996
+          ],
+          [
+            "kernel_bind_source_vertices_c790_0_kernel_1_range_for",
+            2.017509
+          ],
+          [
+            "_kernel_solve_graph_c696_0_kernel_1_islands_linesearch_range_for",
+            1.937377
+          ],
+          [
+            "kernel_substep_collision_c898_0_kernel_25_add_collision_constraints_range_for",
+            1.7820179999999999
+          ]
+        ],
+        "top_kernel_resource_metadata": {
+          "kernel_fit_tractions_impl_c1044_0_kernel_1_range_for": {
+            "registers per thread": 242,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 17
+          },
+          "kernel_apply_inverse_c832_0_kernel_1_range_for": {
+            "registers per thread": 126,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "kernel_scatter_cached_tractions_c1048_0_kernel_5_range_for": {
+            "registers per thread": 108,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "kernel_resolve_sources_c746_0_kernel_1_range_for": {
+            "registers per thread": 151,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 25
+          },
+          "kernel_substep_collision_c898_0_kernel_11_range_for": {
+            "registers per thread": 255,
+            "shared memory": 0,
+            "grid": [
+              188,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 8
+          },
+          "kernel_fan_frontier_samples_c1042_0_kernel_4_range_for": {
+            "registers per thread": 116,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "kernel_substep_collision_c898_0_kernel_10_range_for": {
+            "registers per thread": 255,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 17
+          },
+          "kernel_step_2_c894_0_kernel_12_sweep_links_by_level_range_for": {
+            "registers per thread": 98,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              32,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "kernel_full_residual_impl_c866_1_kernel_3_range_for": {
+            "registers per thread": 128,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "kernel_peak_impl_c868_0_kernel_3_range_for": {
+            "registers per thread": 72,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 58
+          },
+          "kernel_footprint_ports_c764_0_kernel_3_range_for": {
+            "registers per thread": 62,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 67
+          },
+          "kernel_full_residual_impl_c866_0_kernel_3_range_for": {
+            "registers per thread": 126,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "func_solve_init_c690_0_kernel_23_island_tiled_factor_solve_range_for": {
+            "registers per thread": 162,
+            "shared memory": 4800,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              32,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 25
+          },
+          "_kernel_solve_graph_c696_0_kernel_15_island_tiled_factor_solve_range_for": {
+            "registers per thread": 162,
+            "shared memory": 4800,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              32,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 25
+          },
+          "kernel_predict_c730_0_kernel_47_range_for": {
+            "registers per thread": 34,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 100
+          },
+          "kernel_predict_c730_0_kernel_3_range_for": {
+            "registers per thread": 33,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 100
+          },
+          "kernel_snapshot_source_priors_c780_0_kernel_1_range_for": {
+            "registers per thread": 88,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 42
+          },
+          "kernel_bind_source_vertices_c790_0_kernel_1_range_for": {
+            "registers per thread": 48,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 83
+          },
+          "_kernel_solve_graph_c696_0_kernel_1_islands_linesearch_range_for": {
+            "registers per thread": 216,
+            "shared memory": 3840,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              32,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 17
+          },
+          "kernel_substep_collision_c898_0_kernel_25_add_collision_constraints_range_for": {
+            "registers per thread": 126,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              32,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          }
+        },
+        "kernel_stage_duration_sum_ms": {
+          "torch_auxiliary": 1.3086369999999965,
+          "reset": 0.8102419999999999,
+          "controller": 0.5687960000000002,
+          "rigid_dynamics": 11.106933000000012,
+          "collision": 53.90944399999991,
+          "rigid_constraint_solve": 21.73886699999995,
+          "contact_mapping": 46.30196899999999,
+          "step_lifecycle": 1.4197179999999967,
+          "path_queries": 7.091300000000009,
+          "surface_sampling": 23.988987999999967,
+          "source_priors": 3.6372059999999995,
+          "traction_fit": 106.38718000000006,
+          "traction_refinement": 4.45220000000001,
+          "wrench_acceptance": 2.4482559999999944,
+          "load_assembly_and_diagnostics": 54.59611599999992,
+          "inertia_relief": 2.691046000000002,
+          "elastic_solve": 101.93715000000007,
+          "history_prediction": 47.351702000000174,
+          "complete_residual": 15.215334000000027,
+          "global_peak_and_full_output": 6.118180999999989,
+          "rigid_integration": 16.913969999999953
+        },
+        "kernel_stage_counts": {
+          "torch_auxiliary": 792,
+          "reset": 14,
+          "controller": 100,
+          "rigid_dynamics": 1500,
+          "collision": 1450,
+          "rigid_constraint_solve": 2650,
+          "contact_mapping": 1400,
+          "step_lifecycle": 300,
+          "path_queries": 250,
+          "surface_sampling": 600,
+          "source_priors": 300,
+          "traction_fit": 600,
+          "traction_refinement": 950,
+          "wrench_acceptance": 500,
+          "load_assembly_and_diagnostics": 600,
+          "inertia_relief": 300,
+          "elastic_solve": 800,
+          "history_prediction": 2700,
+          "complete_residual": 1250,
+          "global_peak_and_full_output": 250,
+          "rigid_integration": 1000
+        },
+        "unclassified_kernel_names": [],
+        "runtime_counts": {
+          "cudaLaunchKernel": 792,
+          "cudaMemcpyAsync": 224,
+          "cudaStreamSynchronize": 224,
+          "cuLaunchKernel": 7764,
+          "cudaDeviceSynchronize": 1
+        },
+        "runtime_duration_sum_ms": {
+          "cudaLaunchKernel": 4.249141999999996,
+          "cudaMemcpyAsync": 137.731119,
+          "cudaStreamSynchronize": 1.683417,
+          "cuLaunchKernel": 20.193465000000064,
+          "cudaDeviceSynchronize": 0.020789000000000002
+        },
+        "copy_counts": {
+          "Memcpy HtoD (Pageable -> Device)": 2924,
+          "Memcpy DtoH (Device -> Pageable)": 206
+        },
+        "scope": "Intrusive moving steps after the timed rollout; not the complete trajectory or headline timing. Nested CPU/runtime times overlap GPU work and must not be added to kernel sums."
+      },
+      "trace_metadata": {
+        "steps": 50,
+        "start_tick": 2400,
+        "end_tick": 2450,
+        "resets": 64,
+        "invalid_environment_steps": 0,
+        "scope": "Intrusive moving steps after timing; excluded from headline rates and pre-trace memory accounting."
+      }
+    },
+    {
+      "name": "body-prior-leader-fit-live-trace-b256-v2",
+      "trial": "body-prior-leader-fit-live-trace-b256-v2",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/body-prior-leader-fit-live-trace-b256-v2/results/benchmark.json",
+      "sha256": "6a5cb24903080584f8eb75443ee8277152f6943b9bd65a0defa8cd88560efc6d",
+      "scope": "live",
+      "width": 256,
+      "job_id": "725151",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-10687902-373e-affa-28fc-010e9cf7a3f2",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "0705751f810b7a693b3776f3d64230f23255c95f481c674349320e6577bc568b",
+      "repeat_rates_valid_env_steps_per_second": [
+        16651.4617288538
+      ],
+      "median_rate": 16651.4617288538,
+      "median_batch_latency_ms": 15.374025666251327,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": 447926614,
+      "torch_peak_allocated_bytes": 1394688,
+      "device_free_bytes_at_end": 98748071936,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 23040,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 704,
+            "1": 10592,
+            "2": 544,
+            "3": 672,
+            "4": 2560,
+            "5": 1312,
+            "6": 3552,
+            "7": 1696,
+            "8": 736,
+            "9": 672
+          },
+          "mean": 3.2819444444444446
+        },
+        "contact_fit_iterations_max": {
+          "count": 23040,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 736,
+            "1": 8128,
+            "2": 7092,
+            "3": 5452,
+            "4": 928,
+            "5": 384,
+            "6": 67,
+            "7": 125,
+            "8": 64,
+            "9": 32,
+            "10": 32
+          },
+          "mean": 2.026779513888889
+        },
+        "corrections": {
+          "count": 23040,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 23040
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 23040,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 23040
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 23040,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 23040
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 23040,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 14390,
+            "true": 8650
+          },
+          "mean": 0.3754340277777778
+        },
+        "contact_wrench_force_error_N": 5.74722422430618e-10,
+        "contact_wrench_moment_error_Nm": 4.195236644660523e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null,
+      "trace": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/body-prior-leader-fit-live-trace-b256-v2/results/benchmark.trace.json",
+        "sha256": "f738355854fdbea6d22671363822a89201fe32e2dd2bf35e06a52c55a6fa0f5a",
+        "step_count": 50,
+        "step_wall_sum_ms": 720.282431,
+        "kernel_count": 18306,
+        "kernel_duration_sum_ms": 529.8403299999997,
+        "top_kernel_duration_sum_ms": [
+          [
+            "kernel_fit_tractions_impl_c1044_0_kernel_1_range_for",
+            103.79178999999999
+          ],
+          [
+            "kernel_apply_inverse_c832_0_kernel_1_range_for",
+            97.08439899999998
+          ],
+          [
+            "kernel_scatter_cached_tractions_c1048_0_kernel_5_range_for",
+            51.98837700000001
+          ],
+          [
+            "kernel_resolve_sources_c746_0_kernel_1_range_for",
+            37.110950999999986
+          ],
+          [
+            "kernel_substep_collision_c898_0_kernel_11_range_for",
+            30.447237000000005
+          ],
+          [
+            "kernel_fan_frontier_samples_c1042_0_kernel_4_range_for",
+            19.558419
+          ],
+          [
+            "kernel_substep_collision_c898_0_kernel_10_range_for",
+            12.785805000000003
+          ],
+          [
+            "kernel_step_2_c894_0_kernel_12_sweep_links_by_level_range_for",
+            8.781614000000001
+          ],
+          [
+            "kernel_full_residual_impl_c866_1_kernel_3_range_for",
+            5.850377999999996
+          ],
+          [
+            "kernel_footprint_ports_c764_0_kernel_3_range_for",
+            5.169059999999998
+          ],
+          [
+            "kernel_peak_impl_c868_0_kernel_3_range_for",
+            5.142024999999999
+          ],
+          [
+            "kernel_full_residual_impl_c866_0_kernel_3_range_for",
+            4.551077999999998
+          ],
+          [
+            "func_solve_init_c690_0_kernel_23_island_tiled_factor_solve_range_for",
+            3.5855099999999998
+          ],
+          [
+            "_kernel_solve_graph_c696_0_kernel_15_island_tiled_factor_solve_range_for",
+            3.174850000000001
+          ],
+          [
+            "kernel_predict_c730_0_kernel_47_range_for",
+            2.705218999999999
+          ],
+          [
+            "kernel_predict_c730_0_kernel_3_range_for",
+            2.3873300000000004
+          ],
+          [
+            "kernel_snapshot_source_priors_c780_0_kernel_1_range_for",
+            2.0378590000000005
+          ],
+          [
+            "kernel_bind_source_vertices_c790_0_kernel_1_range_for",
+            2.018021
+          ],
+          [
+            "_kernel_solve_graph_c696_0_kernel_1_islands_linesearch_range_for",
+            1.939425
+          ],
+          [
+            "kernel_substep_collision_c898_0_kernel_25_add_collision_constraints_range_for",
+            1.7836189999999992
+          ]
+        ],
+        "top_kernel_resource_metadata": {
+          "kernel_fit_tractions_impl_c1044_0_kernel_1_range_for": {
+            "registers per thread": 242,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 17
+          },
+          "kernel_apply_inverse_c832_0_kernel_1_range_for": {
+            "registers per thread": 126,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "kernel_scatter_cached_tractions_c1048_0_kernel_5_range_for": {
+            "registers per thread": 108,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "kernel_resolve_sources_c746_0_kernel_1_range_for": {
+            "registers per thread": 151,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 25
+          },
+          "kernel_substep_collision_c898_0_kernel_11_range_for": {
+            "registers per thread": 255,
+            "shared memory": 0,
+            "grid": [
+              188,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 8
+          },
+          "kernel_fan_frontier_samples_c1042_0_kernel_4_range_for": {
+            "registers per thread": 116,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "kernel_substep_collision_c898_0_kernel_10_range_for": {
+            "registers per thread": 255,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 17
+          },
+          "kernel_step_2_c894_0_kernel_12_sweep_links_by_level_range_for": {
+            "registers per thread": 98,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              32,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "kernel_full_residual_impl_c866_1_kernel_3_range_for": {
+            "registers per thread": 128,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "kernel_footprint_ports_c764_0_kernel_3_range_for": {
+            "registers per thread": 62,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 67
+          },
+          "kernel_peak_impl_c868_0_kernel_3_range_for": {
+            "registers per thread": 72,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 58
+          },
+          "kernel_full_residual_impl_c866_0_kernel_3_range_for": {
+            "registers per thread": 126,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "func_solve_init_c690_0_kernel_23_island_tiled_factor_solve_range_for": {
+            "registers per thread": 162,
+            "shared memory": 4800,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              32,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 25
+          },
+          "_kernel_solve_graph_c696_0_kernel_15_island_tiled_factor_solve_range_for": {
+            "registers per thread": 162,
+            "shared memory": 4800,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              32,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 25
+          },
+          "kernel_predict_c730_0_kernel_47_range_for": {
+            "registers per thread": 34,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 100
+          },
+          "kernel_predict_c730_0_kernel_3_range_for": {
+            "registers per thread": 33,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 100
+          },
+          "kernel_snapshot_source_priors_c780_0_kernel_1_range_for": {
+            "registers per thread": 88,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 42
+          },
+          "kernel_bind_source_vertices_c790_0_kernel_1_range_for": {
+            "registers per thread": 48,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 83
+          },
+          "_kernel_solve_graph_c696_0_kernel_1_islands_linesearch_range_for": {
+            "registers per thread": 216,
+            "shared memory": 3840,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              32,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 17
+          },
+          "kernel_substep_collision_c898_0_kernel_25_add_collision_constraints_range_for": {
+            "registers per thread": 126,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              32,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          }
+        },
+        "kernel_stage_duration_sum_ms": {
+          "torch_auxiliary": 1.3097009999999958,
+          "reset": 0.804291,
+          "controller": 0.573758,
+          "rigid_dynamics": 11.110268999999999,
+          "collision": 53.808266999999894,
+          "rigid_constraint_solve": 21.750352999999894,
+          "contact_mapping": 46.293714,
+          "step_lifecycle": 1.4205789999999985,
+          "path_queries": 7.103312000000014,
+          "surface_sampling": 23.962571999999955,
+          "source_priors": 3.6315559999999967,
+          "traction_fit": 106.42625399999996,
+          "traction_refinement": 4.452190000000012,
+          "wrench_acceptance": 2.4497879999999967,
+          "load_assembly_and_diagnostics": 54.5390459999999,
+          "inertia_relief": 2.692770000000002,
+          "elastic_solve": 101.93410099999993,
+          "history_prediction": 47.33157300000008,
+          "complete_residual": 15.235146000000054,
+          "global_peak_and_full_output": 6.103725999999989,
+          "rigid_integration": 16.907363999999976
+        },
+        "kernel_stage_counts": {
+          "torch_auxiliary": 792,
+          "reset": 14,
+          "controller": 100,
+          "rigid_dynamics": 1500,
+          "collision": 1450,
+          "rigid_constraint_solve": 2650,
+          "contact_mapping": 1400,
+          "step_lifecycle": 300,
+          "path_queries": 250,
+          "surface_sampling": 600,
+          "source_priors": 300,
+          "traction_fit": 600,
+          "traction_refinement": 950,
+          "wrench_acceptance": 500,
+          "load_assembly_and_diagnostics": 600,
+          "inertia_relief": 300,
+          "elastic_solve": 800,
+          "history_prediction": 2700,
+          "complete_residual": 1250,
+          "global_peak_and_full_output": 250,
+          "rigid_integration": 1000
+        },
+        "unclassified_kernel_names": [],
+        "runtime_counts": {
+          "cudaLaunchKernel": 792,
+          "cudaMemcpyAsync": 224,
+          "cudaStreamSynchronize": 224,
+          "cuLaunchKernel": 7764,
+          "cudaDeviceSynchronize": 1
+        },
+        "runtime_duration_sum_ms": {
+          "cudaLaunchKernel": 4.181593999999999,
+          "cudaMemcpyAsync": 139.61052700000002,
+          "cudaStreamSynchronize": 1.6381220000000003,
+          "cuLaunchKernel": 19.572641999999988,
+          "cudaDeviceSynchronize": 0.017735
+        },
+        "copy_counts": {
+          "Memcpy HtoD (Pageable -> Device)": 2924,
+          "Memcpy DtoH (Device -> Pageable)": 206
+        },
+        "scope": "Intrusive moving steps after the timed rollout; not the complete trajectory or headline timing. Nested CPU/runtime times overlap GPU work and must not be added to kernel sums."
+      },
+      "trace_metadata": {
+        "steps": 50,
+        "start_tick": 2400,
+        "end_tick": 2450,
+        "resets": 64,
+        "invalid_environment_steps": 0,
+        "scope": "Intrusive moving steps after timing; excluded from headline rates and pre-trace memory accounting."
+      }
+    },
+    {
       "name": "complete-union-count-four-scopes-b2048-v1",
       "trial": "live",
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/complete-union-count-four-scopes-b2048-v1/live/results/benchmark.json",
@@ -9939,6 +13811,192 @@
         },
         "contact_wrench_force_error_N": 6.955641168229944e-10,
         "contact_wrench_moment_error_Nm": 4.210862108204363e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
+    {
+      "name": "lazy-hessian-reconstructed-fan-four-scopes-b32768-v2",
+      "trial": "live",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/lazy-hessian-reconstructed-fan-four-scopes-b32768-v2/live/results/benchmark.json",
+      "sha256": "61b32b479bb907216fa1740d3245e3b3214c02aa048e8f3a075146ae3469455a",
+      "scope": "live",
+      "width": 32768,
+      "job_id": "724988",
+      "source_closed": true,
+      "job_and_wrapper_passed": false,
+      "condition_pair_closed": false,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-1cab8d77-cbae-8609-6ffb-46e684ef34dc",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "8e73f25984989190e23bcaaaa17bb04a0cdecddb284e2f3bb83acfe38d63f5ea",
+      "repeat_rates_valid_env_steps_per_second": [
+        50508.14243189392,
+        50557.294841561255,
+        50542.50623437027
+      ],
+      "median_rate": 50542.50623437027,
+      "median_batch_latency_ms": 648.3255865479198,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": 35227246190,
+      "torch_peak_allocated_bytes": 116062720,
+      "device_free_bytes_at_end": 30552883200,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 2949120,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 90112,
+            "1": 1355776,
+            "2": 69632,
+            "3": 86016,
+            "4": 327680,
+            "5": 167936,
+            "6": 454656,
+            "7": 217088,
+            "8": 94208,
+            "9": 86016
+          },
+          "mean": 3.2819444444444446
+        },
+        "contact_fit_iterations_max": {
+          "count": 2949120,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 94208,
+            "1": 1040384,
+            "2": 907620,
+            "3": 698012,
+            "4": 118784,
+            "5": 49152,
+            "6": 8658,
+            "7": 15918,
+            "8": 8192,
+            "9": 4096,
+            "10": 4096
+          },
+          "mean": 2.0268046061197915
+        },
+        "corrections": {
+          "count": 2949120,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 2949120
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 2949120,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 2949120
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 2949120,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 2949120
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 2949120,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 1854170,
+            "true": 1094950
+          },
+          "mean": 0.3712802463107639
+        },
+        "contact_wrench_force_error_N": 7.143314803896167e-10,
+        "contact_wrench_moment_error_Nm": 4.52644214495306e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
+    {
+      "name": "lazy-hessian-reconstructed-fan-four-scopes-b32768-v2",
+      "trial": "policy-rigid",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/lazy-hessian-reconstructed-fan-four-scopes-b32768-v2/policy-rigid/results/benchmark.json",
+      "sha256": "82ff9aaab2ec3f5305b5bc29480dce06b729961d8b6830024679070dca3e9ebf",
+      "scope": "policy-rigid",
+      "width": 32768,
+      "job_id": "724988",
+      "source_closed": true,
+      "job_and_wrapper_passed": false,
+      "condition_pair_closed": false,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-1cab8d77-cbae-8609-6ffb-46e684ef34dc",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "8e73f25984989190e23bcaaaa17bb04a0cdecddb284e2f3bb83acfe38d63f5ea",
+      "repeat_rates_valid_env_steps_per_second": [
+        1014422.2782741629,
+        1014580.5451785473,
+        1014491.2270294717
+      ],
+      "median_rate": 1014491.2270294717,
+      "median_batch_latency_ms": 32.299934318749976,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": null,
+      "torch_peak_allocated_bytes": 192084480,
+      "device_free_bytes_at_end": 69534744576,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_fit_iterations_max": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "corrections": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "fallbacks": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_integration_retries": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "history_hits": {
+          "count": 0,
+          "unobserved_sample_steps": 90,
+          "histogram": {},
+          "mean": null
+        },
+        "contact_wrench_force_error_N": null,
+        "contact_wrench_moment_error_Nm": null
       },
       "rollout_work": null,
       "sampled_process_memory": null
@@ -12465,6 +16523,579 @@
       "trace_metadata": null
     },
     {
+      "name": "selected-cache-complete-cycle-trace-b8192-v1",
+      "trial": "selected-cache-complete-cycle-trace-b8192-v1",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/selected-cache-complete-cycle-trace-b8192-v1/results/benchmark.json",
+      "sha256": "3103a18931a02d41b5ecc941106d3d43a2ee89d68aff441811a263032e37ee11",
+      "scope": "live",
+      "width": 8192,
+      "job_id": "725165",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-e92a6c02-6a68-ee83-a852-4cb4742dee3e",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "4bc5a8871d8968e36a6853409ab2d9dd45944285d0f5402f2dd3ff0538fb6c80",
+      "repeat_rates_valid_env_steps_per_second": [
+        52916.47236880715
+      ],
+      "median_rate": 52916.47236880715,
+      "median_batch_latency_ms": 154.81001724576345,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": true,
+      "same_timing_protocol": false,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": false,
+      "native_buffer_bytes_at_end": 10998644334,
+      "torch_peak_allocated_bytes": 29489664,
+      "device_free_bytes_at_end": 80060350464,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 22528,
+            "1": 338944,
+            "2": 17408,
+            "3": 21504,
+            "4": 81920,
+            "5": 41984,
+            "6": 113664,
+            "7": 54272,
+            "8": 23552,
+            "9": 21504
+          },
+          "mean": 3.2819444444444446
+        },
+        "contact_fit_iterations_max": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 23552,
+            "1": 260096,
+            "2": 226838,
+            "3": 174570,
+            "4": 29696,
+            "5": 12288,
+            "6": 2105,
+            "7": 4039,
+            "8": 2048,
+            "9": 1024,
+            "10": 1024
+          },
+          "mean": 2.0269761827256945
+        },
+        "corrections": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 737280
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 737280
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 737280
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 737280,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 460854,
+            "true": 276426
+          },
+          "mean": 0.3749267578125
+        },
+        "contact_wrench_force_error_N": 6.93633430836396e-10,
+        "contact_wrench_moment_error_Nm": 4.220446135103975e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null,
+      "trace": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/selected-cache-complete-cycle-trace-b8192-v1/results/benchmark.trace.json",
+        "sha256": "88a687ec49bad216040b03750f46ce0e8dfbc94008473f68b1b330e03be30ed3",
+        "step_count": 600,
+        "step_wall_sum_ms": 95830.47931800001,
+        "kernel_count": 218824,
+        "kernel_duration_sum_ms": 92564.90334799993,
+        "top_kernel_duration_sum_ms": [
+          [
+            "kernel_apply_inverse_c832_0_kernel_1_range_for",
+            35134.356358000005
+          ],
+          [
+            "kernel_fit_tractions_impl_c1044_0_kernel_1_range_for",
+            11937.451397
+          ],
+          [
+            "kernel_fan_frontier_samples_c1042_0_kernel_4_range_for",
+            10782.801103999995
+          ],
+          [
+            "kernel_scatter_cached_tractions_c1048_0_kernel_5_range_for",
+            4799.955940999997
+          ],
+          [
+            "kernel_footprint_ports_c764_0_kernel_3_range_for",
+            2114.012134
+          ],
+          [
+            "kernel_full_residual_impl_c866_1_kernel_3_range_for",
+            1592.7574310000048
+          ],
+          [
+            "kernel_full_residual_impl_c866_0_kernel_3_range_for",
+            1538.1406479999985
+          ],
+          [
+            "kernel_predict_c730_0_kernel_25_range_for",
+            1374.6554030000004
+          ],
+          [
+            "kernel_substep_collision_c898_0_kernel_10_range_for",
+            1301.5450780000008
+          ],
+          [
+            "kernel_predict_c730_0_kernel_14_range_for",
+            1284.5898789999994
+          ],
+          [
+            "kernel_resolve_sources_c746_0_kernel_1_range_for",
+            1223.945051999999
+          ],
+          [
+            "kernel_append_c734_0_kernel_1_range_for",
+            1177.9276680000005
+          ],
+          [
+            "kernel_predict_c730_0_kernel_36_range_for",
+            1117.7161820000006
+          ],
+          [
+            "kernel_substep_collision_c898_0_kernel_11_range_for",
+            1103.6908340000005
+          ],
+          [
+            "kernel_predict_c730_0_kernel_3_range_for",
+            1084.0018169999994
+          ],
+          [
+            "kernel_peak_impl_c868_0_kernel_3_range_for",
+            953.3605550000002
+          ],
+          [
+            "kernel_predict_c730_0_kernel_28_range_for",
+            825.0364469999993
+          ],
+          [
+            "kernel_predict_c730_0_kernel_31_range_for",
+            824.9920809999999
+          ],
+          [
+            "kernel_predict_c730_0_kernel_39_range_for",
+            733.9709579999997
+          ],
+          [
+            "kernel_predict_c730_0_kernel_42_range_for",
+            732.7573249999992
+          ]
+        ],
+        "top_kernel_resource_metadata": {
+          "kernel_apply_inverse_c832_0_kernel_1_range_for": {
+            "registers per thread": 126,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "kernel_fit_tractions_impl_c1044_0_kernel_1_range_for": {
+            "registers per thread": 242,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 17
+          },
+          "kernel_fan_frontier_samples_c1042_0_kernel_4_range_for": {
+            "registers per thread": 120,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "kernel_scatter_cached_tractions_c1048_0_kernel_5_range_for": {
+            "registers per thread": 102,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "kernel_footprint_ports_c764_0_kernel_3_range_for": {
+            "registers per thread": 62,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 67
+          },
+          "kernel_full_residual_impl_c866_1_kernel_3_range_for": {
+            "registers per thread": 126,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "kernel_full_residual_impl_c866_0_kernel_3_range_for": {
+            "registers per thread": 126,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 33
+          },
+          "kernel_predict_c730_0_kernel_25_range_for": {
+            "registers per thread": 33,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 100
+          },
+          "kernel_substep_collision_c898_0_kernel_10_range_for": {
+            "registers per thread": 255,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 17
+          },
+          "kernel_predict_c730_0_kernel_14_range_for": {
+            "registers per thread": 33,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 100
+          },
+          "kernel_resolve_sources_c746_0_kernel_1_range_for": {
+            "registers per thread": 151,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 25
+          },
+          "kernel_append_c734_0_kernel_1_range_for": {
+            "registers per thread": 29,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 100
+          },
+          "kernel_predict_c730_0_kernel_36_range_for": {
+            "registers per thread": 33,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 100
+          },
+          "kernel_substep_collision_c898_0_kernel_11_range_for": {
+            "registers per thread": 255,
+            "shared memory": 0,
+            "grid": [
+              188,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 8
+          },
+          "kernel_predict_c730_0_kernel_3_range_for": {
+            "registers per thread": 33,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 100
+          },
+          "kernel_peak_impl_c868_0_kernel_3_range_for": {
+            "registers per thread": 72,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 58
+          },
+          "kernel_predict_c730_0_kernel_28_range_for": {
+            "registers per thread": 54,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 75
+          },
+          "kernel_predict_c730_0_kernel_31_range_for": {
+            "registers per thread": 54,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 75
+          },
+          "kernel_predict_c730_0_kernel_39_range_for": {
+            "registers per thread": 68,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 58
+          },
+          "kernel_predict_c730_0_kernel_42_range_for": {
+            "registers per thread": 68,
+            "shared memory": 0,
+            "grid": [
+              9024,
+              1,
+              1
+            ],
+            "block": [
+              128,
+              1,
+              1
+            ],
+            "est. achieved occupancy %": 58
+          }
+        },
+        "kernel_stage_duration_sum_ms": {
+          "torch_auxiliary": 40.822345999999996,
+          "controller": 7.075051000000052,
+          "rigid_dynamics": 282.8973390000019,
+          "collision": 2823.5813170000156,
+          "rigid_constraint_solve": 1126.2618380000492,
+          "contact_mapping": 1482.7626420000197,
+          "step_lifecycle": 22.234308999999843,
+          "path_queries": 2144.170238999991,
+          "surface_sampling": 11331.515792999913,
+          "source_priors": 192.08157499999837,
+          "traction_fit": 12054.565314999922,
+          "traction_refinement": 221.53188799999282,
+          "wrench_acceptance": 32.990084000001,
+          "load_assembly_and_diagnostics": 4861.565110000024,
+          "inertia_relief": 479.53409200000226,
+          "elastic_solve": 35260.655984998964,
+          "history_prediction": 15636.680691999662,
+          "complete_residual": 3188.9415489998282,
+          "global_peak_and_full_output": 965.0144039999996,
+          "rigid_integration": 403.84143699999254,
+          "reset": 6.180343000000001
+        },
+        "kernel_stage_counts": {
+          "torch_auxiliary": 8768,
+          "controller": 1200,
+          "rigid_dynamics": 18000,
+          "collision": 17400,
+          "rigid_constraint_solve": 31800,
+          "contact_mapping": 16800,
+          "step_lifecycle": 3600,
+          "path_queries": 3000,
+          "surface_sampling": 7200,
+          "source_priors": 3600,
+          "traction_fit": 7200,
+          "traction_refinement": 11400,
+          "wrench_acceptance": 6000,
+          "load_assembly_and_diagnostics": 7200,
+          "inertia_relief": 3600,
+          "elastic_solve": 9600,
+          "history_prediction": 32400,
+          "complete_residual": 15000,
+          "global_peak_and_full_output": 3000,
+          "rigid_integration": 12000,
+          "reset": 56
+        },
+        "unclassified_kernel_names": [],
+        "runtime_counts": {
+          "cudaLaunchKernel": 8768,
+          "cuLaunchKernel": 93056,
+          "cudaMemcpyAsync": 2535,
+          "cudaStreamSynchronize": 2535,
+          "cudaDeviceSynchronize": 1
+        },
+        "runtime_duration_sum_ms": {
+          "cudaLaunchKernel": 49.510799999999925,
+          "cuLaunchKernel": 265.6175119999973,
+          "cudaMemcpyAsync": 26750.636315999993,
+          "cudaStreamSynchronize": 46.57018100000004,
+          "cudaDeviceSynchronize": 0.028152
+        },
+        "copy_counts": {
+          "Memcpy HtoD (Pageable -> Device)": 34896,
+          "Memcpy DtoH (Device -> Pageable)": 2463
+        },
+        "scope": "Intrusive moving steps after the timed rollout; not the complete trajectory or headline timing. Nested CPU/runtime times overlap GPU work and must not be added to kernel sums."
+      },
+      "trace_metadata": {
+        "steps": 600,
+        "start_tick": 2400,
+        "end_tick": 3000,
+        "resets": 8192,
+        "invalid_environment_steps": 0,
+        "scope": "Intrusive moving steps after timing; excluded from headline rates and pre-trace memory accounting."
+      }
+    },
+    {
       "name": "static-traction-direction-live-trace-b256-v1",
       "trial": "static-traction-direction-live-trace-b256-v1",
       "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/static-traction-direction-live-trace-b256-v1/results/benchmark.json",
@@ -13046,8 +17677,8 @@
       "width": 2048,
       "job_id": "725090",
       "source_closed": true,
-      "job_and_wrapper_passed": false,
-      "condition_pair_closed": false,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
       "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
       "gpu_uuid": "GPU-8deaeb06-aad9-fa20-4355-eff673c10ee9",
       "gpu_total_bytes": 101975851008,
@@ -13064,7 +17695,7 @@
       "intrusive_diagnostic": false,
       "same_timing_protocol": true,
       "same_primary_physics_and_options": true,
-      "eligible_primary_headline": false,
+      "eligible_primary_headline": true,
       "native_buffer_bytes_at_end": 3071620694,
       "torch_peak_allocated_bytes": 7485952,
       "device_free_bytes_at_end": 94312595456,
@@ -13142,6 +17773,333 @@
         },
         "contact_wrench_force_error_N": 5.747225612084961e-10,
         "contact_wrench_moment_error_Nm": 4.211630105340272e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
+    {
+      "name": "static-traction-direction-paired-live-b2048-v1",
+      "trial": "baseline-a2",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/static-traction-direction-paired-live-b2048-v1/baseline-a2/results/benchmark.json",
+      "sha256": "fabfa2cff6fe704a798f87da4ab8c1a3d4a0effb5086c1813b10e35ceefa4776",
+      "scope": "live",
+      "width": 2048,
+      "job_id": "725090",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-8deaeb06-aad9-fa20-4355-eff673c10ee9",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "2da41428d67e99c88fb85561ba7112a7a2e7ac5ae44892ed65229a8ca6970b5a",
+      "repeat_rates_valid_env_steps_per_second": [
+        44942.71575688239,
+        44922.38882256223,
+        44853.79763675299
+      ],
+      "median_rate": 44922.38882256223,
+      "median_batch_latency_ms": 45.58973940787837,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": true,
+      "native_buffer_bytes_at_end": 3071620694,
+      "torch_peak_allocated_bytes": 7485952,
+      "device_free_bytes_at_end": 94312595456,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 5632,
+            "1": 84736,
+            "2": 4352,
+            "3": 5376,
+            "4": 20480,
+            "5": 10496,
+            "6": 28416,
+            "7": 13568,
+            "8": 5888,
+            "9": 5376
+          },
+          "mean": 3.2819444444444446
+        },
+        "contact_fit_iterations_max": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 5888,
+            "1": 65024,
+            "2": 56735,
+            "3": 43617,
+            "4": 7424,
+            "5": 3072,
+            "6": 545,
+            "7": 991,
+            "8": 512,
+            "9": 256,
+            "10": 256
+          },
+          "mean": 2.026736111111111
+        },
+        "corrections": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 184320
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 184320
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 184320
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 115904,
+            "true": 68416
+          },
+          "mean": 0.37118055555555557
+        },
+        "contact_wrench_force_error_N": 6.955641427367885e-10,
+        "contact_wrench_moment_error_Nm": 4.208352645522059e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
+    {
+      "name": "static-traction-direction-paired-live-b2048-v1",
+      "trial": "candidate-b1",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/static-traction-direction-paired-live-b2048-v1/candidate-b1/results/benchmark.json",
+      "sha256": "fa78555f54fbb4a64983722a5ce130d6d9f50cbe64d273670743d1cad9581d74",
+      "scope": "live",
+      "width": 2048,
+      "job_id": "725090",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-8deaeb06-aad9-fa20-4355-eff673c10ee9",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "c67f82341e5830117d15398d5b12f786d06534f8fd1aea2f3309ceb5ce8e0d6a",
+      "repeat_rates_valid_env_steps_per_second": [
+        44881.70508198578,
+        44882.06271009335,
+        44900.32424064097
+      ],
+      "median_rate": 44882.06271009335,
+      "median_batch_latency_ms": 45.630701361224055,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": true,
+      "native_buffer_bytes_at_end": 3071620694,
+      "torch_peak_allocated_bytes": 7485952,
+      "device_free_bytes_at_end": 94312595456,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 5632,
+            "1": 84736,
+            "2": 4352,
+            "3": 5376,
+            "4": 20480,
+            "5": 10496,
+            "6": 28416,
+            "7": 13568,
+            "8": 5888,
+            "9": 5376
+          },
+          "mean": 3.2819444444444446
+        },
+        "contact_fit_iterations_max": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 5888,
+            "1": 65024,
+            "2": 56703,
+            "3": 43649,
+            "4": 7424,
+            "5": 3072,
+            "6": 543,
+            "7": 993,
+            "8": 512,
+            "9": 256,
+            "10": 256
+          },
+          "mean": 2.0269205729166666
+        },
+        "corrections": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 184320
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 184320
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 184320
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 115204,
+            "true": 69116
+          },
+          "mean": 0.3749782986111111
+        },
+        "contact_wrench_force_error_N": 5.747225612084961e-10,
+        "contact_wrench_moment_error_Nm": 4.20583979990546e-12
+      },
+      "rollout_work": null,
+      "sampled_process_memory": null
+    },
+    {
+      "name": "static-traction-direction-paired-live-b2048-v1",
+      "trial": "candidate-b2",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/static-traction-direction-paired-live-b2048-v1/candidate-b2/results/benchmark.json",
+      "sha256": "fad119fd790bdbb67d83fedb8f3228018fa66669d0a4418cbcc94dd1666e5460",
+      "scope": "live",
+      "width": 2048,
+      "job_id": "725090",
+      "source_closed": true,
+      "job_and_wrapper_passed": true,
+      "condition_pair_closed": true,
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-8deaeb06-aad9-fa20-4355-eff673c10ee9",
+      "gpu_total_bytes": 101975851008,
+      "snapshot_manifest_sha256": "c67f82341e5830117d15398d5b12f786d06534f8fd1aea2f3309ceb5ce8e0d6a",
+      "repeat_rates_valid_env_steps_per_second": [
+        44958.3980335249,
+        44908.23471565665,
+        44747.09388903597
+      ],
+      "median_rate": 44908.23471565665,
+      "median_batch_latency_ms": 45.60410831036279,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "intrusive_diagnostic": false,
+      "same_timing_protocol": true,
+      "same_primary_physics_and_options": true,
+      "eligible_primary_headline": true,
+      "native_buffer_bytes_at_end": 3071620694,
+      "torch_peak_allocated_bytes": 7485952,
+      "device_free_bytes_at_end": 94312595456,
+      "effective_contact_block_size": 16,
+      "warmup": {
+        "samples": 90,
+        "sampling_interval_steps": 10,
+        "contacts": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 5632,
+            "1": 84736,
+            "2": 4352,
+            "3": 5376,
+            "4": 20480,
+            "5": 10496,
+            "6": 28416,
+            "7": 13568,
+            "8": 5888,
+            "9": 5376
+          },
+          "mean": 3.2819444444444446
+        },
+        "contact_fit_iterations_max": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 5888,
+            "1": 65024,
+            "2": 56737,
+            "3": 43615,
+            "4": 7424,
+            "5": 3072,
+            "6": 552,
+            "7": 984,
+            "8": 512,
+            "9": 256,
+            "10": 256
+          },
+          "mean": 2.026687282986111
+        },
+        "corrections": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 184320
+          },
+          "mean": 0.0
+        },
+        "fallbacks": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 184320
+          },
+          "mean": 0.0
+        },
+        "contact_integration_retries": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "0": 184320
+          },
+          "mean": 0.0
+        },
+        "history_hits": {
+          "count": 184320,
+          "unobserved_sample_steps": 0,
+          "histogram": {
+            "false": 116024,
+            "true": 68296
+          },
+          "mean": 0.3705295138888889
+        },
+        "contact_wrench_force_error_N": 5.747225612084961e-10,
+        "contact_wrench_moment_error_Nm": 4.205097829007774e-12
       },
       "rollout_work": null,
       "sampled_process_memory": null
@@ -14569,6 +19527,18 @@
   ],
   "four_scope_comparisons": [
     {
+      "name": "barycentric-geometry-cache-four-scopes-b8192-v1",
+      "width": 8192,
+      "live_incremental_stress_ms": 143.27223256126064,
+      "policy_incremental_stress_ms": 143.8892971320941
+    },
+    {
+      "name": "baseline-four-scopes-b12288-v1",
+      "width": 12288,
+      "live_incremental_stress_ms": 215.8183599387606,
+      "policy_incremental_stress_ms": 218.11736560167142
+    },
+    {
       "name": "baseline-four-scopes-b16384-v1",
       "width": 16384,
       "live_incremental_stress_ms": 287.01355819917205,
@@ -14579,6 +19549,12 @@
       "width": 2048,
       "live_incremental_stress_ms": 40.67750374291488,
       "policy_incremental_stress_ms": 40.56528394125053
+    },
+    {
+      "name": "baseline-four-scopes-b24576-v1",
+      "width": 24576,
+      "live_incremental_stress_ms": 440.2614063051684,
+      "policy_incremental_stress_ms": 440.6241247985357
     },
     {
       "name": "baseline-four-scopes-b256-v1",
@@ -14678,6 +19654,31 @@
       "candidate_median_rate_ratio": 0.9649927279555598,
       "candidate_minimum_over_baseline_maximum": 0.9641034534923509,
       "baseline_trial_median_drift_ratio": 1.0012467681108046,
+      "note": "Observed repeat range, not a statistical confidence interval. ABBA uses separate warmed processes on one GPU."
+    },
+    {
+      "name": "static-traction-direction-paired-live-b2048-v1",
+      "same_gpu": true,
+      "all_trials_eligible": true,
+      "baseline_repeat_rates": [
+        44843.84483180339,
+        44858.00874555444,
+        44944.33919908479,
+        44942.71575688239,
+        44922.38882256223,
+        44853.79763675299
+      ],
+      "candidate_repeat_rates": [
+        44881.70508198578,
+        44882.06271009335,
+        44900.32424064097,
+        44958.3980335249,
+        44908.23471565665,
+        44747.09388903597
+      ],
+      "candidate_median_rate_ratio": 1.0000221583182025,
+      "candidate_minimum_over_baseline_maximum": 0.99561134252803,
+      "baseline_trial_median_drift_ratio": 1.0014351969427124,
       "note": "Observed repeat range, not a statistical confidence interval. ABBA uses separate warmed processes on one GPU."
     },
     {

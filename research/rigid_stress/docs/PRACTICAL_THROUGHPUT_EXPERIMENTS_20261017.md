@@ -3,13 +3,13 @@
 The [throughput goal](PRACTICAL_THROUGHPUT_GOAL.md) remains **open**. This follows
 the [initial baseline checkpoint](PRACTICAL_THROUGHPUT_PROGRESS_20261017.md).
 The [recorded summary](PRACTICAL_THROUGHPUT_EXPERIMENTS_20261017.json) preserves
-95 observed scope results and52 performance-eligible points, including
+129 observed scope results and68 performance-eligible points, including
 superseded candidates. The [scheduler export](PRACTICAL_THROUGHPUT_EXPERIMENT_SCHEDULER_20261017.txt)
 is frozen separately. Performance eligibility checks the recorded numerical
 gates, source, exits and timing protocol; it does not replace independent
 field/lifecycle qualification or establish final recommendation/completion.
 An [independent metadata re-read](PRACTICAL_THROUGHPUT_METADATA_AUDIT_20261017.json)
-checks all52 eligible points' actual three2400-step rows, rates, geometry,
+checks all68 eligible points' actual three2400-step rows, rates, geometry,
 controller, policy and precision. Observed policy reference errors remain below
 the unchanged1e-9rad budget; they are not configuration equality fields.
 A [source-label correction](PRACTICAL_THROUGHPUT_SOURCE_LABEL_20261017.json)
@@ -18,12 +18,11 @@ label was found incorrect in its retained original submission journal.
 
 All runtime paths below are relative to
 `runs/20261017-practical-throughput/` under the data root in `DATA_LOCATION.md`.
-Immutable snapshots and exact submission commands remain there. At the frozen
-main checkpoint no production candidate had been selected. Subsequent matched
+Immutable snapshots and exact submission commands remain there. Matched
 capacity closures below justify retaining the barycentric cache; final operating
-settings and the remaining large-batch checks are still open.
+settings, the new recovery hypothesis and remaining large-batch checks are open.
 
-## Closed robust baseline through B16384
+## Closed robust baseline through B24576
 
 The original matched configuration, condition bank and900 warmup/three2400-step
 repeats remain fixed. Median valid env-step/s on RTX PRO6000 Blackwell:
@@ -34,19 +33,25 @@ repeats remain fixed. Median valid env-step/s on RTX PRO6000 Blackwell:
 |256|84845.51|16803.28|75216.98|16271.65|
 |2048|434466.83|45118.75|398893.63|44814.51|
 |8192|763819.52|52658.16|751745.52|52509.98|
+|12288|825247.24|53262.03|813312.71|52687.11|
 |16384|898658.33|53674.88|891844.22|53560.01|
+|24576|952506.07|52731.09|948838.51|52678.82|
 
-Parents724933–724936 and724974 now completed0:0. Every repetition has zero
+Parents724933–724936,724974/724975 and725087 now completed0:0. Every repetition has zero
 invalid environment steps and zero scatter overflows, and every child closes
 all899 snapshot hashes and its file inventory. The live native-buffer counts
-are119964854,447926614,3071620694 and12067143254 bytes respectively. These
+at B32/256/2048/8192/12288/16384/24576 are119964854,447926614,3071620694,
+12067143254,18064158294,24061173334 and36055203414 bytes respectively. These
 are feature allocation counts, not peak process VRAM.
 
 Actual baseline B32768 and B49152 trials724962/724971 failed with CUDA OOM
 during profile-buffer growth; failed logs and exits remain. B65536 was cancelled
-while pending, not observed to fail or pass. B24576 trial724975
-and workspace-size2 B32768 trial724976 remain unfinished. B16384 is therefore
-the largest closed width so far, not a demonstrated plateau or final capacity.
+while pending, not observed to fail or pass. Workspace-size2 B32768 trial724976
+remains unfinished at this checkpoint. Original stress-enabled throughput is
+nearly flat from B8192 through B24576, while batch latency grows: live latency
+is155.57ms at B8192 and466.06ms at B24576. This establishes a practical baseline
+shoulder; B24576 is the largest closed original-options width, not an exact
+capacity limit.
 
 Separate100ms NVML memory samplers725021–725024 now complete0:0 for all four
 scopes at B32/B256/B2048/B8192. Their rates are excluded from headline timings.
@@ -58,20 +63,24 @@ Maximum observed compute-process VRAM, GiB:
 |256|2.3672|2.9219|2.3770|2.9316|
 |2048|3.9043|7.0840|3.9180|7.7520|
 |8192|9.1152|25.7949|9.1445|25.8242|
+|12288|12.5996|37.4980|12.6406|37.5391|
+|16384|16.0664|49.2148|16.1309|49.3418|
 
+The additional memory jobs725088/725089 also complete0:0 with all four scopes.
 These sampled peaks include setup,900 warmup steps and one2400-step pass per
 scope. They are lower bounds with GPU UUID, sampling resolution and peak
 sample count retained, not confidence intervals or native-buffer sizes. CUDA
 reports101975851008 total device bytes for these allocations. The B2048 policy
 peak is the actually observed value, not a smoothed or interpolated estimate.
 
-![Closed baseline throughput and sampled memory](../evidence/20261017-throughput/baseline-scaling-v1/scaling.png)
+![Closed baseline throughput and sampled memory](../evidence/20261017-throughput/baseline-scaling-v2/scaling.png)
 
-The [figure packet](../evidence/20261017-throughput/baseline-scaling-v1/README.md)
+The [updated figure packet](../evidence/20261017-throughput/baseline-scaling-v2/README.md)
 contains editable SVG, PDF,450dpi PNG, raw repeat/source CSV, exact renderer/style
 dependency, compressed input and visual/source/scheduler QA. Both panels use
-only complete matched widths. The stress-enabled throughput shoulder is visible;
-the four sparse widths do not establish final capacity. The current goal needs
+independently complete matched widths: seven for rates and six for memory.
+Missing B24576 memory observations remain blank. The stress-enabled baseline
+shoulder is visible; these widths do not establish final capacity. The current goal needs
 the final selected implementation's operating point and curves as well.
 
 ## Complete-period moving profile
@@ -346,12 +355,54 @@ and [terminal states](PRACTICAL_THROUGHPUT_LEADER_FIT_SCHEDULER_20261017.txt)
 preserve both attempts. The old source, cache sidecars and failure remain;
 no live source was cleaned or changed.
 
-The selected code is now the cache-only implementation. Its final matched sweep
+The retained code is the cache-only implementation. Its matched sweep
 uses B8192/B16384/B32768 with four normal scopes and separate four-scope process
 memory passes (725125/725152/725051 and725126/725153/725150). The B16384 point
-matches the already observed original-code throughput shoulder. These pending
-measurements complete selection and curves; the rejected scheduling variants
-are not combined into the selected source.
+matches the already observed original-code throughput shoulder. B8192 closes
+with53218.97 live and52958.88 policy env-step/s; its separate sampled peaks are
+21.7637GiB live and23.7617GiB policy. Those separate-process peaks include
+allocator behavior and100ms sampling, so their difference is not an isolated
+policy-memory cost. The remaining sweep observations refine the cache-only
+capacity/cost account; rejected scheduling variants are not combined with it.
+
+## Large moving recovery bottleneck and current hypothesis
+
+The [closed B8192 moving profile](PRACTICAL_THROUGHPUT_LARGE_MOVING_PROFILE_20261017.json)
+is job725165, completed0:0 with all899 source hashes and the terminal inventory
+closed. It uses the retained cache source,900 warmup steps, one2400-step pass
+and then600 moving steps covering a complete controller period. This intrusive
+trace is excluded from headline rates. Average GPU kernel duration sums per
+observed step are58.768ms elastic recovery,26.061ms history prediction,
+20.091ms traction fit,18.886ms surface sampling,8.103ms load assembly/diagnostics
+and5.315ms complete residuals. CPU step annotations average159.717ms. These
+overlapping categories are not additive wall-time components. The frozen
+history-hit profile is not representative of this moving recovery cost.
+
+Code inspection finds that history misses bypass the existing surface-load
+inverse and use the full dense inverse. The fixed shell has810 P2 nodes;
+its surface response has162 source nodes and is already available within the
+same immutable-operator budget. A candidate now routes history misses through
+that response, preserving accepted predictions and all original full residual,
+correction and factor-fallback gates. Original history4 and all physical settings
+remain fixed. This is a new measured-bottleneck hypothesis, not a demonstrated
+speedup or final selection. The
+[targeted qualification](PRACTICAL_THROUGHPUT_PACKED_HISTORY_TESTS_20261017.json)
+now closes12 CPU and12 GPU cases (725190/725191), including independent full
+tensors/peaks, all-row equilibrium, six pinned gauges, mixed history hits,
+partial resets, release and original correction/fallback behavior. All899 engine
+and436 test source hashes and both inventories close. B8192 timing and B16384
+application lifecycle checks remain live, alongside the original bounded
+complete-grasp/four-state checks. The initial candidate's import tests
+failed because Quadrants kernels prohibit default arguments; that failed source
+and its exits remain preserved, and a corrected fresh snapshot is being tested.
+
+The [CPU/GPU overlap audit](PRACTICAL_THROUGHPUT_CPU_GPU_OVERLAP_20261017.json)
+also rereads the original600-step baseline trace using the updated stdlib
+summarizer. Of2747.294ms in the union of recorded cudaMemcpyAsync API spans,
+2696.024ms (98.134%) overlaps GPU kernel activity. Recorded API duration is
+therefore not an independent CPU cost to add to kernel time, and this overlap
+alone does not identify waiting versus useful CPU execution. The reproducible
+metadata auditor and trace summarizer retain exact source/input hashes.
 
 ## Delivery still required
 

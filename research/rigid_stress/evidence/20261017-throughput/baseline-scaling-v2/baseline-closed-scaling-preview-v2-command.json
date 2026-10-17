@@ -1,0 +1,24 @@
+{
+  "utc": "2026-10-17T09:32:13.089535+00:00",
+  "argv": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=cpu-mid",
+    "--cpus-per-task=4",
+    "--mem=16G",
+    "--time=00:20:00",
+    "--job-name=baseline-closed-scaling-preview-v2",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-closed-scaling-preview-v2-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/meta/baseline-closed-scaling-preview-v2.sh'"
+  ],
+  "stdout": "725193\n",
+  "stderr": "",
+  "returncode": 0,
+  "renderer_sha256": "a4f130186192d5a8b6b7d82576c662fb07676f0f2feee74368ea28740c347421",
+  "style_sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1",
+  "summary_sha256": "54aef15fd6feaaacfc14aa40faf5abff9f2ea5003e54395b9bb54c0b872e5d4a",
+  "orchestration_sha256": "3499f4c3b47f2c8523ef122b890de2ad83c1993678a59932f9caede1ee2cbb51",
+  "scope": "All closed baseline rate widths through B24576 and independently closed memory widths through B16384, frozen checkpoint-v8.",
+  "goal_completion": false
+}

@@ -1,0 +1,22 @@
+{
+  "utc": "2026-10-17T09:34:10.032057+00:00",
+  "argv": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=cpu-mid",
+    "--cpus-per-task=4",
+    "--mem=16G",
+    "--time=00:20:00",
+    "--job-name=baseline-closed-scaling-pdf-v2",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/baseline-closed-scaling-pdf-v2-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-practical-throughput/meta/baseline-closed-scaling-pdf-v2.sh'"
+  ],
+  "stdout": "725201\n",
+  "stderr": "",
+  "returncode": 0,
+  "orchestration_sha256": "a6adaf5ca7861a966821f93a2542a1abb3999049a42b08413c8a263ef0b52f03",
+  "renderer_sha256": "a4f130186192d5a8b6b7d82576c662fb07676f0f2feee74368ea28740c347421",
+  "scope": "PDF export after direct visual inspection and editable SVG acceptance of identical frozen input/renderer preview.",
+  "goal_completion": false
+}
