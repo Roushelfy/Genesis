@@ -20,6 +20,7 @@ from .common import vars_json
 from .memory import ProcessMemory
 from .rollout import make_parser, profile_run, run
 from .observation import FullField
+from .wall_input import ShellWallInput
 
 
 class ShellEgg:
@@ -30,6 +31,7 @@ class ShellEgg:
         self.stress = False
         self.arm = np.arange(7)
         self.fingers = np.array([7, 8])
+        self.wall_input = None
         self.scene = gs.Scene(
             sim_options=gs.options.SimOptions(
                 dt=args.sim_dt,
@@ -98,7 +100,12 @@ class ShellEgg:
                     friction=0.6,
                 ),
             )
+        if args.wall_volume_input is not None:
+            assert args.model == "shell"
+            self.wall_input = ShellWallInput.bind(args.wall_volume_input, self.egg, np.array([0.65, 0, 0.031]))
         self.scene.build(n_envs=args.envs)
+        if self.wall_input is not None:
+            self.wall_input.apply_thickness(self.scene.sim.shell_solver)
         self.robot.set_dofs_kp([4500, 4500, 3500, 3500, 2000, 2000, 2000], self.arm)
         self.robot.set_dofs_kv([450, 450, 350, 350, 200, 200, 200], self.arm)
         self.robot.set_dofs_kp([100, 100], self.fingers)

@@ -124,3 +124,12 @@ class CappedServo:
     @property
     def effective_actuator_force(self):
         return self.clipped_force - self.kv * (self.velocity - self.frame_velocity)
+
+    @property
+    def equality_work(self):
+        if self.equality is None:
+            return self.q.new_zeros(())
+        paired, _ = self.equality.predictor_force(self.frame_q, self.frame_velocity, self.dt)
+        paired -= self.equality.inertia_coefficient / self.dt * (self.velocity[7] - self.velocity[8])
+        relative_increment = (self.q[7] - self.frame_q[7]) - (self.q[8] - self.frame_q[8])
+        return paired * relative_increment

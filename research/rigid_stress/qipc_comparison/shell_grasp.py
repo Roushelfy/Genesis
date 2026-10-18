@@ -8,7 +8,7 @@ import numpy as np
 import torch
 
 import genesis as gs
-from genesis.utils.misc import tensor_to_array
+from genesis.utils.misc import qd_to_numpy, tensor_to_array
 
 from ..shell_comparison import diagnostics
 from ..shell_comparison.application import ShellEgg
@@ -43,11 +43,16 @@ def main():
         assert args.sim_dt == 0.01
     torch.cuda.synchronize()
     faces = tensor_to_array(workload.egg.get_faces())[0]
+    face_mass = workload.egg.topology.faces_mass
+    vertex_mass = np.bincount(faces.reshape(-1), weights=np.repeat(face_mass / 3, 3), minlength=workload.egg.n_verts)
+    thickness = qd_to_numpy(workload.scene.sim.shell_solver.shell_state.faces_thickness, transpose=True)[0]
     np.savez_compressed(
         args.output / "rest.npz",
         world_initial_vertices_m=tensor_to_array(workload.initial_vertices)[0],
         faces=faces,
         vertices_m=workload.egg.init_verts - np.array([0.65, 0, 0.031]),
+        vertex_masses_kg=vertex_mass,
+        face_thickness_m=thickness,
     )
     write_json(
         args.output / "start.json",
@@ -76,7 +81,9 @@ def main():
             else "original PR22 plus full-field observer",
             "stress_frame": "world Cauchy observer, nominal bottom/middle/top fibers per face",
             "scope": "intrusive complete capped history, excluded from primary timing",
-            "nominal_thickness_mass_kg": workload.egg.topology.faces_mass.sum().item(),
+            "nominal_thickness_mass_kg": (workload.egg.topology.faces_rest_area.sum() * 2000 * 0.0005).item(),
+            "actual_face_mass_kg": face_mass.sum().item(),
+            "wall_input": workload.wall_input.description() if workload.wall_input is not None else None,
             "fracture_enabled": workload.scene.sim.shell_solver._static_config.has_fracture,
             "plasticity_enabled": workload.scene.sim.shell_solver._static_config.has_plasticity,
         },

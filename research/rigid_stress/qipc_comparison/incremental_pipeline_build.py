@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import shlex
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -23,6 +24,7 @@ def main():
     parser.add_argument("--base-source", type=Path, required=True)
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--ninja", type=Path, required=True)
+    parser.add_argument("--snapshot-project-includes", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -33,6 +35,47 @@ def main():
     compile_command = [str(args.source / relative) if item == original["file"] else item for item in compile_command]
     pipeline_object = args.output / "pipeline.cu.o"
     compile_command = output_at(compile_command, pipeline_object)
+    if args.snapshot_project_includes:
+        base_revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=args.base_source, text=True).strip()
+        variant_revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=args.source, text=True).strip()
+        assert base_revision == variant_revision
+        assert not subprocess.check_output(["git", "diff", "HEAD", "--", "qipc"], cwd=args.base_source)
+        headers = args.output / "headers"
+        headers.mkdir()
+        includes = []
+        for index, item in enumerate(compile_command):
+            prefix = (
+                "-I" if item.startswith("-I") else "" if index and compile_command[index - 1] == "-isystem" else None
+            )
+            if prefix is None:
+                continue
+            original_path = Path(item[len(prefix) :])
+            if not original_path.is_absolute() or not original_path.is_relative_to(args.base_source):
+                continue
+            destination = headers / f"include{len(includes)}"
+            shutil.copytree(
+                original_path,
+                destination,
+                symlinks=True,
+                ignore=shutil.ignore_patterns(".git", "*.so", "*.o", "*.a", "__pycache__"),
+            )
+            compile_command[index] = prefix + str(destination)
+            includes.append(
+                {
+                    "original": str(original_path),
+                    "snapshot": str(destination),
+                    "files": [
+                        file_id(path)
+                        for path in sorted(destination.rglob("*"))
+                        if path.is_file() and not path.is_symlink()
+                    ],
+                }
+            )
+        write_json(args.output / "project-includes.json", includes)
+        assert (
+            subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=args.base_source, text=True).strip()
+            == base_revision
+        )
     commands = subprocess.check_output(
         [str(args.ninja), "-C", str(args.base_build), "-t", "commands", "qipc_solver_ext"], text=True
     ).splitlines()
