@@ -80,6 +80,9 @@ def audit(folder):
         "minimum_det_F",
         "minimum_surface_height_m",
         "minimum_vertex_height_m",
+        "equality_inertia_coefficient_relative_difference",
+        "minimum_reported_gap_ratio",
+        "ccd_maximum_iterations",
     ):
         selected = [(row["time_s"], row[key]) for row in rows if key in row and row[key] is not None]
         if selected:

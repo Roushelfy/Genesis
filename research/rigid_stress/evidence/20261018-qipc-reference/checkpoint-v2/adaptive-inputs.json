@@ -1,0 +1,223 @@
+{
+  "kind": "conforming-fixed-domain-adaptive-contact-inputs",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726528",
+      "SLURM_ARRAY_JOB_ID": "726528",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-17819d06-c563-257f-30fe-100c9f111279, 00000000:20:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "base_properties": {
+    "mass_kg": 0.006529848210401324,
+    "com_m": [
+      5.097476507357909e-19,
+      1.0197486551747307e-19,
+      -0.0016360242166328666
+    ],
+    "exact_volume_inertia_kg_m2": [
+      [
+        2.5917620811263963e-06,
+        9.200364830735067e-23,
+        -1.2849258944446555e-23
+      ],
+      [
+        9.115708064919093e-23,
+        2.591791152352058e-06,
+        -1.6290372611010682e-24
+      ],
+      [
+        -2.1866860480660018e-23,
+        -2.275676011441594e-24,
+        1.9888415250706774e-06
+      ]
+    ],
+    "lumped_inertia_kg_m2": [
+      [
+        2.6081856456523765e-06,
+        1.7713307675103003e-12,
+        -2.3272920574575105e-12
+      ],
+      [
+        1.7713307675094732e-12,
+        2.608212966832596e-06,
+        -1.1474371491965808e-13
+      ],
+      [
+        -2.3272920574575105e-12,
+        -1.1474371491552218e-13,
+        2.000066058323343e-06
+      ]
+    ],
+    "lumped_inertia_relative_difference": 0.006185719227206308
+  },
+  "records": [
+    {
+      "target_edge_m": 0.0005,
+      "converged_resolution_mask": true,
+      "rounds": [
+        {
+          "round": 0,
+          "rays": 729,
+          "faces": 1454,
+          "split_edges": 87
+        },
+        {
+          "round": 1,
+          "rays": 883,
+          "faces": 1762,
+          "split_edges": 154
+        },
+        {
+          "round": 2,
+          "rays": 1197,
+          "faces": 2390,
+          "split_edges": 314
+        },
+        {
+          "round": 3,
+          "rays": 1752,
+          "faces": 3500,
+          "split_edges": 555
+        },
+        {
+          "round": 4,
+          "rays": 2768,
+          "faces": 5532,
+          "split_edges": 1016
+        },
+        {
+          "round": 5,
+          "rays": 4469,
+          "faces": 8934,
+          "split_edges": 1701
+        },
+        {
+          "round": 6,
+          "rays": 5876,
+          "faces": 11748,
+          "split_edges": 1407
+        },
+        {
+          "round": 7,
+          "rays": 6058,
+          "faces": 12112,
+          "split_edges": 182
+        }
+      ],
+      "mesh": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-input-v2/group0/inputs/adaptive-edge0.0005-wall4.npz",
+        "bytes": 2048232,
+        "sha256": "8bf8adba0a7d30e9b1396f941e072d1c338c74bd372d50fa420a3ab77ebb27e5"
+      },
+      "vertices": 30290,
+      "tetrahedra": 145344,
+      "properties": {
+        "mass_kg": 0.006529848210401324,
+        "com_m": [
+          2.7463541421351754e-19,
+          -4.1283985928129783e-19,
+          -0.0016360242166328514
+        ],
+        "exact_volume_inertia_kg_m2": [
+          [
+            2.5917620811263556e-06,
+            -3.141347623140834e-23,
+            -9.116760306003999e-23
+          ],
+          [
+            -3.3054912759443254e-23,
+            2.5917911523520315e-06,
+            -2.3844639377610915e-23
+          ],
+          [
+            -9.58907720459751e-23,
+            -3.476600840272511e-23,
+            1.988841525070702e-06
+          ]
+        ],
+        "lumped_inertia_kg_m2": [
+          [
+            2.606288520327301e-06,
+            -1.3206508968238507e-10,
+            2.2117646207144697e-11
+          ],
+          [
+            -1.3206508968239825e-10,
+            2.6060633013838216e-06,
+            5.429684890759548e-11
+          ],
+          [
+            2.2117646207143763e-11,
+            5.429684890758757e-11,
+            1.9989446229464627e-06
+          ]
+        ],
+        "lumped_inertia_relative_difference": 0.005451563951712551
+      }
+    },
+    {
+      "target_edge_m": 0.00025,
+      "converged_resolution_mask": false,
+      "rounds": [
+        {
+          "round": 0,
+          "rays": 729,
+          "faces": 1454,
+          "split_edges": 87
+        },
+        {
+          "round": 1,
+          "rays": 883,
+          "faces": 1762,
+          "split_edges": 154
+        },
+        {
+          "round": 2,
+          "rays": 1197,
+          "faces": 2390,
+          "split_edges": 314
+        },
+        {
+          "round": 3,
+          "rays": 1752,
+          "faces": 3500,
+          "split_edges": 555
+        },
+        {
+          "round": 4,
+          "rays": 2779,
+          "faces": 5554,
+          "split_edges": 1027
+        },
+        {
+          "round": 5,
+          "rays": 4771,
+          "faces": 9538,
+          "split_edges": 1992
+        },
+        {
+          "round": 6,
+          "rays": 8664,
+          "faces": 17324,
+          "split_edges": 3893
+        },
+        {
+          "round": 7,
+          "rays": 14501,
+          "faces": 28998,
+          "split_edges": 5837
+        }
+      ],
+      "failure": "Resolution target not reached within the declared face/round resource bounds; no solid reference mesh admitted"
+    }
+  ],
+  "split_pattern_area_orientation_controls_passed": true,
+  "reference_qualified": false
+}

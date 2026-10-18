@@ -1,0 +1,4533 @@
+{
+  "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/qipc-stress-reference-roundoff",
+  "revision": "fe252bd30acc6c717507b74add31512812f48761",
+  "patch_sha256": "c9ecba4791247396c4bad5cf2937a9bb23973e9182296cdcb4a94da0ee1c32ea",
+  "files": [
+    {
+      "path": "CMakeLists.txt",
+      "bytes": 23088,
+      "sha256": "65c9a4ea235597c05fde825490ff024cf243e5d4b900cb7be3a4a339fee2593b"
+    },
+    {
+      "path": "external/GKlib/CMakeLists.txt",
+      "bytes": 5756,
+      "sha256": "51edef60f5c8b0461240945dd68b76de48fcc0bfd8b84edfe09db10e35fbe9fc"
+    },
+    {
+      "path": "external/GKlib/LICENSE.txt",
+      "bytes": 638,
+      "sha256": "57b43fa9e8eb32b5c063e544d992a00a9442734cc18bd04dd55e02eca5fcbce6"
+    },
+    {
+      "path": "external/GKlib/cmake/GKlibSystem.cmake",
+      "bytes": 1383,
+      "sha256": "8a599923a2eb52162b0f6b1c87676ed7af87090b5c11a9662cc1f26f89f0bf65"
+    },
+    {
+      "path": "external/GKlib/include/GKlib.h",
+      "bytes": 1413,
+      "sha256": "d90a4f5712749875f054daa32e4c28043dc17759dbe8f4bb7946f99bc218a157"
+    },
+    {
+      "path": "external/GKlib/include/gk_arch.h",
+      "bytes": 1410,
+      "sha256": "405d248f2e7e086204ae4c92c73d275de0135defa0dd03e99d2b151969d50ebc"
+    },
+    {
+      "path": "external/GKlib/include/gk_defs.h",
+      "bytes": 1734,
+      "sha256": "6a2b17492c1cce6e50dbe4857b91193d2aba2cbfbe7144a359127cfcf354e00e"
+    },
+    {
+      "path": "external/GKlib/include/gk_externs.h",
+      "bytes": 679,
+      "sha256": "12971ed3446b67674ff2818917b3f134ae66ea148bf5bac8362285e063e3802a"
+    },
+    {
+      "path": "external/GKlib/include/gk_getopt.h",
+      "bytes": 2272,
+      "sha256": "436018005305e180c03204718955f1e6bd43b6d991418d379f76ca46f537e792"
+    },
+    {
+      "path": "external/GKlib/include/gk_macros.h",
+      "bytes": 9805,
+      "sha256": "0d9432a0d56abadc2eba071e150b860c3c76162c8a0472747418e0d74f433064"
+    },
+    {
+      "path": "external/GKlib/include/gk_mkblas.h",
+      "bytes": 16720,
+      "sha256": "9593c8d12d34dd7a69d484d4df2f0d73dffa760b7a62bc9dc89fc235a8278122"
+    },
+    {
+      "path": "external/GKlib/include/gk_mkmemory.h",
+      "bytes": 10900,
+      "sha256": "8f48d04de616ebf4881dfec2c70566522a1bad651376f5e3ee416df250bb6dd2"
+    },
+    {
+      "path": "external/GKlib/include/gk_mkpqueue.h",
+      "bytes": 36970,
+      "sha256": "1b9f5739b6a95011e3953671513b95719dd97deea26a638214c7ebde60956f62"
+    },
+    {
+      "path": "external/GKlib/include/gk_mkpqueue2.h",
+      "bytes": 17175,
+      "sha256": "c5a355cf1b0509eaef954c1e7d03d38c6f0763da745fd4bb1b331d3a28ebaa19"
+    },
+    {
+      "path": "external/GKlib/include/gk_mkrandom.h",
+      "bytes": 9011,
+      "sha256": "346000aa71a099f8866c7e5bbe8b69a215930a888415ccc0d622c6d5e1973c2d"
+    },
+    {
+      "path": "external/GKlib/include/gk_mksort.h",
+      "bytes": 18206,
+      "sha256": "fc993e20cd2b04708ef4434d12ff175228983c1d27c776bcdbbd61051baa4805"
+    },
+    {
+      "path": "external/GKlib/include/gk_mkutils.h",
+      "bytes": 1990,
+      "sha256": "0ee734743812092264852611a07ca72343ce7c3f2254f26ffdcabef81c289d53"
+    },
+    {
+      "path": "external/GKlib/include/gk_ms_inttypes.h",
+      "bytes": 7327,
+      "sha256": "9c9e762ed5c98c9b59bddc1ed25f4c833d147d85ec967b1fb23852553434de81"
+    },
+    {
+      "path": "external/GKlib/include/gk_ms_stat.h",
+      "bytes": 523,
+      "sha256": "76e2f24fbd9ddef18a055bbb2ebf791c688a19c0aa7b2b43d3214e7f2a194dbf"
+    },
+    {
+      "path": "external/GKlib/include/gk_ms_stdint.h",
+      "bytes": 6859,
+      "sha256": "e90c9e180d78bd694cd13899bd590385ad67b8e6699d8cad100a3b64b948f888"
+    },
+    {
+      "path": "external/GKlib/include/gk_proto.h",
+      "bytes": 16765,
+      "sha256": "eed2838d1427b65465a9c729ff3584003eb48bbb6c8eb28d7837960fa9c32399"
+    },
+    {
+      "path": "external/GKlib/include/gk_struct.h",
+      "bytes": 11421,
+      "sha256": "0fa04699424cde528482edcde6a460cde087ca138c67198dd3e87df9f5065cc4"
+    },
+    {
+      "path": "external/GKlib/include/gk_types.h",
+      "bytes": 1540,
+      "sha256": "196490e4f0d4f118e483106de6b990312a54386c4a571d6edb8de8b55606dc35"
+    },
+    {
+      "path": "external/GKlib/include/gkregex.h",
+      "bytes": 22917,
+      "sha256": "a8b6fd409aee7cf02a1ed2ae7e42edd957ed54db595ea4ac8a3321678d88409f"
+    },
+    {
+      "path": "external/GKlib/include/win32/adapt.h",
+      "bytes": 238,
+      "sha256": "8f3c1c2c5b350e62a8f08e17c65f9e2e6523e7841894dc362348ea84095e2c1f"
+    },
+    {
+      "path": "external/GKlib/src/b64.c",
+      "bytes": 3131,
+      "sha256": "9a46329f136baebe34957886def6ccab00fb5167dc6f14fe16d15b6419527428"
+    },
+    {
+      "path": "external/GKlib/src/blas.c",
+      "bytes": 1115,
+      "sha256": "360a071f1dcca2488b8750de9ed22a3bb4883c5a05d5181e9e839862d224870d"
+    },
+    {
+      "path": "external/GKlib/src/cache.c",
+      "bytes": 3550,
+      "sha256": "7e62837bed82c293ea0d0156a7b346b68961854a24ede6b748b8f20d48487e19"
+    },
+    {
+      "path": "external/GKlib/src/csr.c",
+      "bytes": 124209,
+      "sha256": "6cc6580f0ee2463d8116f35534fad7183f6ded362fb00a8cc993a0b5fc1090cb"
+    },
+    {
+      "path": "external/GKlib/src/error.c",
+      "bytes": 6037,
+      "sha256": "c6072907b4ab5f3f04917260b369db5b3a709572ef14be8a5fdbf68852a9e971"
+    },
+    {
+      "path": "external/GKlib/src/evaluate.c",
+      "bytes": 3289,
+      "sha256": "188186d1e04f77b04601a337668a2be804360589414cb98e532b1c4c7151a68e"
+    },
+    {
+      "path": "external/GKlib/src/fkvkselect.c",
+      "bytes": 4099,
+      "sha256": "19ac3cd14d7f7e61d572d4aab8c4b336779a5c75b3577fb2256acdfe57e6ee08"
+    },
+    {
+      "path": "external/GKlib/src/fs.c",
+      "bytes": 6875,
+      "sha256": "12c18f086a907ee2fad07e203da55f520a39d00effe8811229c7abd48c907ace"
+    },
+    {
+      "path": "external/GKlib/src/getopt.c",
+      "bytes": 35700,
+      "sha256": "3000771c0b13f6c4ba8eb79848bcafb8fc4f1aaee4c4ff4c5193cd5e673f0237"
+    },
+    {
+      "path": "external/GKlib/src/gk_util.c",
+      "bytes": 2892,
+      "sha256": "df4b36ba11851df5ef3442992c212492477788a5fd9d68614fce02adb5922854"
+    },
+    {
+      "path": "external/GKlib/src/gkregex.c",
+      "bytes": 374664,
+      "sha256": "767606d6c457937fe0cf5ba562b6fd71aa902267ffd4f60e30c1e88206459e44"
+    },
+    {
+      "path": "external/GKlib/src/graph.c",
+      "bytes": 74752,
+      "sha256": "cbf164204e206957756c0e585facce138ff4547e62019a30ddcb26a0d7fbda3f"
+    },
+    {
+      "path": "external/GKlib/src/htable.c",
+      "bytes": 7511,
+      "sha256": "7aa56c6af5c4c1a02aa33c6b24d5e200ed25e4084b67491a8287943b04b69c58"
+    },
+    {
+      "path": "external/GKlib/src/io.c",
+      "bytes": 19481,
+      "sha256": "75bd58ccd7de68c36b2c4d25322f84e3b2b1f75dc24864abb2992c0d88400a30"
+    },
+    {
+      "path": "external/GKlib/src/itemsets.c",
+      "bytes": 7627,
+      "sha256": "e60650841e065a374105381cbd69de993d6511e7833d73d6db52335071d0d9fb"
+    },
+    {
+      "path": "external/GKlib/src/mcore.c",
+      "bytes": 13134,
+      "sha256": "214b8f3f62304183475609ded8ad4eb29b0d10220d38a100d9daa537eb0b3690"
+    },
+    {
+      "path": "external/GKlib/src/memory.c",
+      "bytes": 9012,
+      "sha256": "a18f19f19ad53af82ee86f677bc56447e1ea60de2d56ca0d4992c54bf44a5d80"
+    },
+    {
+      "path": "external/GKlib/src/pqueue.c",
+      "bytes": 1100,
+      "sha256": "1ce65a3b68bbab5501828dab40c6c7353988ee5197d6a0a708709bdcbeee8508"
+    },
+    {
+      "path": "external/GKlib/src/random.c",
+      "bytes": 4254,
+      "sha256": "8bf5c2a2a2ab8240a4498788c132fb73c0b641c9c0cab9a64f7d829725adb69d"
+    },
+    {
+      "path": "external/GKlib/src/rw.c",
+      "bytes": 3369,
+      "sha256": "36c09ca912c390e8b78dee639783a4e3c43bfd79ac17ebc5fc6d32b0d4e74b77"
+    },
+    {
+      "path": "external/GKlib/src/seq.c",
+      "bytes": 4368,
+      "sha256": "02f75222262abc402cf5437e0793766700c41c68deefe60bf3000d585a014391"
+    },
+    {
+      "path": "external/GKlib/src/sort.c",
+      "bytes": 13904,
+      "sha256": "7ada7eb8c39cf67a7bda4078c7edd92b8d3ef4b636774439d2647b07948d139c"
+    },
+    {
+      "path": "external/GKlib/src/string.c",
+      "bytes": 18090,
+      "sha256": "59d871ca38d9b2a61bb7491a951407263dc28bfcf04d5a9a2d02673226c733a1"
+    },
+    {
+      "path": "external/GKlib/src/timers.c",
+      "bytes": 1197,
+      "sha256": "fb91ba4d9cffd782faa85a430ad8dbfe2d696eecc7c54f33a293e92dc241ca71"
+    },
+    {
+      "path": "external/GKlib/src/tokenizer.c",
+      "bytes": 2213,
+      "sha256": "6724c230632183d1d6c209a5f1686819e4dc8986988ed04f17c9a3d076954328"
+    },
+    {
+      "path": "external/GKlib/src/win32/adapt.c",
+      "bytes": 165,
+      "sha256": "1cc69cf6bace6d07a324ef510bbbe282b4bf711a4dcae5110a9133028fa3fe57"
+    },
+    {
+      "path": "external/METIS/CMakeLists.txt",
+      "bytes": 318,
+      "sha256": "38158e8160fb498b31d9521fb3536964093a3c75a279ef0964c9e497cb3d3e48"
+    },
+    {
+      "path": "external/METIS/LICENSE",
+      "bytes": 638,
+      "sha256": "bf0cdaee1f8ee03e65f6349d8ec21cb01afe17641ed02de8a0835019f3cf792c"
+    },
+    {
+      "path": "external/METIS/include/CMakeLists.txt",
+      "bytes": 71,
+      "sha256": "c9320dcc0007cde765baff8affc345f6a4d920d7c7c998e5833294faaf143e50"
+    },
+    {
+      "path": "external/METIS/include/metis.h",
+      "bytes": 11336,
+      "sha256": "94cb3e180f0aaa66f5f70866694ca8dae68c6fbb7e116e57afa9e711012837b6"
+    },
+    {
+      "path": "external/METIS/libmetis/CMakeLists.txt",
+      "bytes": 215,
+      "sha256": "0c6a9007efd633fdf3697c7989e222868e9b650648a6c7e06b6ed9a80249468c"
+    },
+    {
+      "path": "external/METIS/libmetis/auxapi.c",
+      "bytes": 1127,
+      "sha256": "da29358208c2f34cebe9c8c1a3b3944157986ada2f7e7499c427403d4008a055"
+    },
+    {
+      "path": "external/METIS/libmetis/balance.c",
+      "bytes": 19503,
+      "sha256": "b57f311fb1f3a1018c13bbfe048d706e1fb97e02d1269e6b60595fae97aca631"
+    },
+    {
+      "path": "external/METIS/libmetis/bucketsort.c",
+      "bytes": 1038,
+      "sha256": "5cbf1cfecda287670a26cc9738a6828fbae11bb9162f84c59b270d38d204614d"
+    },
+    {
+      "path": "external/METIS/libmetis/checkgraph.c",
+      "bytes": 9126,
+      "sha256": "d2d305fc828747c925506c4358e97fbd9b668b3d40dfae852d578858034aa4c6"
+    },
+    {
+      "path": "external/METIS/libmetis/coarsen.c",
+      "bytes": 42545,
+      "sha256": "eb01066aa34cf663761fa6fe796fa6b27dc78031aa03f3e8ac5f5e9005823164"
+    },
+    {
+      "path": "external/METIS/libmetis/compress.c",
+      "bytes": 7191,
+      "sha256": "e23058a54f79bac4ed10962f3adae70206d3dd6de5a39cd796819dd1df0317c9"
+    },
+    {
+      "path": "external/METIS/libmetis/contig.c",
+      "bytes": 25732,
+      "sha256": "22e0594bb7845dc8577fa70d82f4849d0012043b486b4bfec1c2d56b9d4aaad6"
+    },
+    {
+      "path": "external/METIS/libmetis/debug.c",
+      "bytes": 15274,
+      "sha256": "95f7b44bf92fb4a50a700150ca9ca6951af8b381115b21a13cc4b85dd0578c31"
+    },
+    {
+      "path": "external/METIS/libmetis/defs.h",
+      "bytes": 2096,
+      "sha256": "43a1e69d70a2f48977b3ec258cb07181f6ae22a84bcc16f192c9eff2580bae95"
+    },
+    {
+      "path": "external/METIS/libmetis/fm.c",
+      "bytes": 22637,
+      "sha256": "172e92396559868d8937d0f8be9908f97f72958b4b6e1083fe97d4a66d25a4b1"
+    },
+    {
+      "path": "external/METIS/libmetis/fortran.c",
+      "bytes": 3595,
+      "sha256": "9f306261c64b54fa88f56e5f1b5d7203efcb37195ad62aae1dbc23ed85afe4dc"
+    },
+    {
+      "path": "external/METIS/libmetis/frename.c",
+      "bytes": 5004,
+      "sha256": "8b5c53611dafadc5dc8902b9b8ca7cfb30850fc0a5a82505fe5edc15bbf06f5c"
+    },
+    {
+      "path": "external/METIS/libmetis/gklib.c",
+      "bytes": 3399,
+      "sha256": "62fceadc07706fe2f41518fce03b13c54d056416b13e1e468c54a100b3c87315"
+    },
+    {
+      "path": "external/METIS/libmetis/gklib_defs.h",
+      "bytes": 1619,
+      "sha256": "957d00a1671ed2d6208cdb1d0d56f9cc17f730ff711fb51e91a524f1c9707d11"
+    },
+    {
+      "path": "external/METIS/libmetis/gklib_rename.h",
+      "bytes": 4016,
+      "sha256": "374f1d6e640c431b67c618346b1c4480e672c652dd1e93f3c8d277b5bdf96900"
+    },
+    {
+      "path": "external/METIS/libmetis/graph.c",
+      "bytes": 13209,
+      "sha256": "ccd8926a4831ead9d47526d227799c30caf3a908358b5776ece2553831da24de"
+    },
+    {
+      "path": "external/METIS/libmetis/initpart.c",
+      "bytes": 20451,
+      "sha256": "ce0a2e7826106979e8bfca8fe68c7ab8a2bb56d23b5f2ba643d1f2aeb3a217b8"
+    },
+    {
+      "path": "external/METIS/libmetis/kmetis.c",
+      "bytes": 19771,
+      "sha256": "0cad92eed386ccfe159b75b9b7b53ce8ee5314bd21a63eccb6562b748c09b4ba"
+    },
+    {
+      "path": "external/METIS/libmetis/kwayfm.c",
+      "bytes": 94595,
+      "sha256": "17186a713ed22259ef6e4468d9dafb084d90dab5547b7c40b65d6a7017b9efe5"
+    },
+    {
+      "path": "external/METIS/libmetis/kwayrefine.c",
+      "bytes": 24910,
+      "sha256": "b0a87df23a822c74c18bbfa40ee61408c667237bae398466ba850a0c310acc24"
+    },
+    {
+      "path": "external/METIS/libmetis/macros.h",
+      "bytes": 21089,
+      "sha256": "1c42c626a381677e98ef189280af6cb1a610a76d8f8337c1a5df5afc8abb59ff"
+    },
+    {
+      "path": "external/METIS/libmetis/mcutil.c",
+      "bytes": 9619,
+      "sha256": "0664471ebccb729942ddfd186ed3c71bb71d04d6e11098efc75e12e595cdf1ab"
+    },
+    {
+      "path": "external/METIS/libmetis/mesh.c",
+      "bytes": 13664,
+      "sha256": "2df91bbc8a03e2dfba1b91948a9a65836e9d6b26898c04ea4f79084520c4c6f7"
+    },
+    {
+      "path": "external/METIS/libmetis/meshpart.c",
+      "bytes": 8966,
+      "sha256": "4625ea5fd1fc8a0706c076127199b4b52b8ea9002ec1030378ad60c220c050b4"
+    },
+    {
+      "path": "external/METIS/libmetis/metislib.h",
+      "bytes": 656,
+      "sha256": "9f7be6852f44d488d9dc5657038dc6591135fc13d0807b89a761ecbf9a3e00f3"
+    },
+    {
+      "path": "external/METIS/libmetis/minconn.c",
+      "bytes": 29018,
+      "sha256": "e60f068956228614876f442c392c632c885a87b3b2ee0a4d089dbf3e9ee4cbe2"
+    },
+    {
+      "path": "external/METIS/libmetis/mincover.c",
+      "bytes": 8370,
+      "sha256": "e4c66d7e1da9890c90b1353185fc17d69888d3ffe03998f640919ac5b2558084"
+    },
+    {
+      "path": "external/METIS/libmetis/mmd.c",
+      "bytes": 22357,
+      "sha256": "95bc685166341644b60e83026ce20af0aa12a8cd4e44208a4ea64df7719bcc95"
+    },
+    {
+      "path": "external/METIS/libmetis/ometis.c",
+      "bytes": 22794,
+      "sha256": "8e3bd496b38473b60d7d7d0419ed1b06876bb31f845fb0d63fddd93ddf4b1416"
+    },
+    {
+      "path": "external/METIS/libmetis/options.c",
+      "bytes": 22518,
+      "sha256": "ad986d7c8d910435b81dcbeb30fb6b3bdcadc406f4b65b11660d0cb0851e3dff"
+    },
+    {
+      "path": "external/METIS/libmetis/parmetis.c",
+      "bytes": 31765,
+      "sha256": "0c5967b707f21374ed95d3a7304901f933371e32b3505b2aeb4aa1f97dff66ff"
+    },
+    {
+      "path": "external/METIS/libmetis/pmetis.c",
+      "bytes": 13936,
+      "sha256": "83ae85081e424953f814cd39083c92c837f64020e4fdd3b60b6355bae1dd3a30"
+    },
+    {
+      "path": "external/METIS/libmetis/proto.h",
+      "bytes": 16117,
+      "sha256": "2f492c9d70eebdf8604857dce099683fd721385aad80b74439bdf4d70fb92dbe"
+    },
+    {
+      "path": "external/METIS/libmetis/refine.c",
+      "bytes": 6464,
+      "sha256": "a31dec8a767605f823da2f428fb91bf592558620f57fce01d68595e416df22f8"
+    },
+    {
+      "path": "external/METIS/libmetis/rename.h",
+      "bytes": 10290,
+      "sha256": "60a610eed41a1b482ef4dc450d54272448776d35d61626c344c00552e45c6a6c"
+    },
+    {
+      "path": "external/METIS/libmetis/separator.c",
+      "bytes": 6047,
+      "sha256": "b56e7c7ec408226f5a440871291c6c7dbeb4c8069cda71069cd218b39dadb39b"
+    },
+    {
+      "path": "external/METIS/libmetis/sfm.c",
+      "bytes": 25104,
+      "sha256": "9c01baee702bfe792f039fdb267540667eb56170ed7675693d5ae6924e079835"
+    },
+    {
+      "path": "external/METIS/libmetis/srefine.c",
+      "bytes": 5380,
+      "sha256": "aa5ec8bb878cefc441d75ead2e63a8a1fb780908e7ed8c22aab6ed494df5827d"
+    },
+    {
+      "path": "external/METIS/libmetis/stat.c",
+      "bytes": 6799,
+      "sha256": "633cbbc9814c7be8bb2a56df97e424ceb8bbac4c0a6885f68387e6c916f77ad8"
+    },
+    {
+      "path": "external/METIS/libmetis/stdheaders.h",
+      "bytes": 485,
+      "sha256": "e4e26153b81b71303c8534f9c69a735c8fd38ea8d2cde19fdc810b6187066160"
+    },
+    {
+      "path": "external/METIS/libmetis/struct.h",
+      "bytes": 9304,
+      "sha256": "4636275c00a1bc95d36543288abc31f47e2de62c55f8dfe4a720738e3cb5df4f"
+    },
+    {
+      "path": "external/METIS/libmetis/timing.c",
+      "bytes": 2413,
+      "sha256": "38a0afdf83ed4b70ee0d3f5810949d872f07e487ff04db4c096b9a8e8811adad"
+    },
+    {
+      "path": "external/METIS/libmetis/util.c",
+      "bytes": 3225,
+      "sha256": "eb3c9d7c9c9c39a8e94949a327b875483247a0f0cacb80016c2800b122c94fa7"
+    },
+    {
+      "path": "external/METIS/libmetis/wspace.c",
+      "bytes": 7998,
+      "sha256": "36433d1298b5115b34f9e98b81bf102d19e1fd006d588cec0b41999ac742abdf"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 7176,
+      "sha256": "95d410800c27eb06751655fd28d39de64e6645f9cbb06aced47900761510f0b4"
+    },
+    {
+      "path": "qipc/__init__.py",
+      "bytes": 2826,
+      "sha256": "db96d21f729aa3ab9260e50dafb68bbcd06c0320a852be2766dca21eb6759427"
+    },
+    {
+      "path": "qipc/_src/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "qipc/_src/codegen/__init__.py",
+      "bytes": 686,
+      "sha256": "14b5019d2b9c5717b4d66e2c7cc8aa5cf71ba76dd242dce270f368670254eee3"
+    },
+    {
+      "path": "qipc/_src/codegen/eigen_emitter.py",
+      "bytes": 11788,
+      "sha256": "f3fffaa5168274d25f00607ed85e097864d5938863b9541478f5d6f0b20bda79"
+    },
+    {
+      "path": "qipc/_src/codegen/eigen_printer.py",
+      "bytes": 3537,
+      "sha256": "fc58f6c1c970213fc06bbd2c6113ade604f82c72912d6dcd63a0836e4d39b356"
+    },
+    {
+      "path": "qipc/_src/codegen/rod_kappa.py",
+      "bytes": 1573,
+      "sha256": "7bd52d168db504d85066de8870543e4fdd96df68aaf5e0cb40c350dd09e2084c"
+    },
+    {
+      "path": "qipc/_src/codegen/sym.py",
+      "bytes": 4448,
+      "sha256": "132e2e1bd942175989f3ced6b2bbd8dea4026ccd6b52a4aa2e3f81c0e465e9e1"
+    },
+    {
+      "path": "qipc/_src/native/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "qipc/_src/native/atomic_utils.h",
+      "bytes": 2563,
+      "sha256": "f533879b8313e2dcb3885f47cbf311d33402452faf9723e90c4ba597f3d782ce"
+    },
+    {
+      "path": "qipc/_src/native/buffer.h",
+      "bytes": 3798,
+      "sha256": "335266f6b5006e20d23a387cab22e909477c898559b00312b67f1f292dbecebe"
+    },
+    {
+      "path": "qipc/_src/native/buffer_view.h",
+      "bytes": 24666,
+      "sha256": "2af196800a19368f293d026e4d8c8dded57f02c42b15cae5ff0a25b02ffb7a8b"
+    },
+    {
+      "path": "qipc/_src/native/common.h",
+      "bytes": 7372,
+      "sha256": "16f78abaadb52282d968eb6435a371f4bfd6c79cda120ec983fb9b5a03eb6f1d"
+    },
+    {
+      "path": "qipc/_src/native/cuda_allocator.cu",
+      "bytes": 5556,
+      "sha256": "70f2a53a6d79dccae2b3d9e072c7b3bd9d02c298d3ddc2e64d67ceeef801ba26"
+    },
+    {
+      "path": "qipc/_src/native/cuda_allocator.h",
+      "bytes": 2584,
+      "sha256": "6225e81a6357bd6227001e8c2f49aad886eda7d96a42a5c8eb75859adc455c5d"
+    },
+    {
+      "path": "qipc/_src/native/cuda_check.cpp",
+      "bytes": 798,
+      "sha256": "cee8082f0a02c8b47f2e3cb763d4704bc1674826db4bbf0eeb33ac25a5939fe4"
+    },
+    {
+      "path": "qipc/_src/native/cuda_check.h",
+      "bytes": 1377,
+      "sha256": "4ab828a8fac499929d319fdac84f474958290628228cb4dbc4c446fbd3fc872b"
+    },
+    {
+      "path": "qipc/_src/native/dr_info.h",
+      "bytes": 1614,
+      "sha256": "e5325697b2480d522c9db1794ad0079cce20b5171e927ad1553c95665486e423"
+    },
+    {
+      "path": "qipc/_src/native/eigen3/core.h",
+      "bytes": 757,
+      "sha256": "6bcdeae47dfb422ba1db63b375c59d96954656ae8a2cb74e3edbb523df740537"
+    },
+    {
+      "path": "qipc/_src/native/eigen3/evd.h",
+      "bytes": 3678,
+      "sha256": "9d1830f5c0f6e7be56976b31a6934265d5b56057c55a9ccb47030237b4aa5018"
+    },
+    {
+      "path": "qipc/_src/native/eigen3/inverse.h",
+      "bytes": 8638,
+      "sha256": "2f34cc1c1d80652fd3643052340759e9d868b85d369a0e7c5f13dc27ff84705d"
+    },
+    {
+      "path": "qipc/_src/native/eigen3/isotropic_svd_hessian.h",
+      "bytes": 5076,
+      "sha256": "33d5da3a69bc4d9c27a012ef7f8fec38a491b680977126b3babb240537b310a4"
+    },
+    {
+      "path": "qipc/_src/native/eigen3/make_spd.h",
+      "bytes": 665,
+      "sha256": "06aeb92ebdb380ac66279e2f61c8c693bd5889854209c77d1c584aab761852eb"
+    },
+    {
+      "path": "qipc/_src/native/eigen3/svd3x2.h",
+      "bytes": 2798,
+      "sha256": "4960379785da82ad04086b7346eb0da331e3c803d56402f66fd45f0955ab847b"
+    },
+    {
+      "path": "qipc/_src/native/eigen3/svd3x3.h",
+      "bytes": 2923,
+      "sha256": "fdea336bd4ff52f8108c8e994bfb00f00c4f6ce4d6d60f3ef65e39badff5cb4f"
+    },
+    {
+      "path": "qipc/_src/native/eigen3/svd3x3_jacobi.h",
+      "bytes": 4121,
+      "sha256": "b9ae17ca94043b0a823a7f5ddb3c79ef44b6eec0685488c45372d598d76c96a6"
+    },
+    {
+      "path": "qipc/_src/native/eigen3/sym.h",
+      "bytes": 287,
+      "sha256": "d2b30b1ad4bee80b61ea32d27f0dc6845df97b68855e5370622dd4e9a397a1e4"
+    },
+    {
+      "path": "qipc/_src/native/grid_stride_loop.h",
+      "bytes": 1245,
+      "sha256": "64b6cfbeb51cd82024a4c738fec0d5dd3d8e8e77949a9d6ef6b4a242339a4426"
+    },
+    {
+      "path": "qipc/_src/native/host_buffer.h",
+      "bytes": 2955,
+      "sha256": "a8607922af2dea74fc917494fc7a9d8b5104e18304a4f383abb4d724a9a9e27c"
+    },
+    {
+      "path": "qipc/_src/native/logger.cpp",
+      "bytes": 899,
+      "sha256": "10a416e069e8926d3b0b9702f5b88dc0121561a3fc5803c043f8813b8fe30268"
+    },
+    {
+      "path": "qipc/_src/native/logger.h",
+      "bytes": 410,
+      "sha256": "31ca2c0102be6183878fd2b3c8c1797f397e45a72666aadda1a94b7c9440746c"
+    },
+    {
+      "path": "qipc/_src/native/rtc/common.h",
+      "bytes": 3096,
+      "sha256": "55210e936248778740ee08d7bf51850784f8a8730cca3774d2c66030e43bb3ca"
+    },
+    {
+      "path": "qipc/_src/native/rtc/concepts",
+      "bytes": 137,
+      "sha256": "91c19873ca2f7fac4e6b695c19793f9eae669a18e930ec6a0fa6af490aa9e8a7"
+    },
+    {
+      "path": "qipc/_src/native/rtc/cstddef",
+      "bytes": 743,
+      "sha256": "ab0b6b225118289d9d9cab4f43176bd686cd91ba8d8fd833d99f203b50496cd5"
+    },
+    {
+      "path": "qipc/_src/native/rtc/cstdint",
+      "bytes": 1156,
+      "sha256": "82cbb7d297ca88c5657ac34d8c163dd56eae8c97c71c1826379b5fbb592c96b7"
+    },
+    {
+      "path": "qipc/_src/native/rtc/cstdio",
+      "bytes": 127,
+      "sha256": "68654bf265d9d521403f46ea6937c89e7737202bf2d886e9530df987be7a2f82"
+    },
+    {
+      "path": "qipc/_src/native/rtc/cstdlib",
+      "bytes": 36,
+      "sha256": "c4b439d1abbcce767af2c94ce051aac48e0787f95465b29658cbd210efe34767"
+    },
+    {
+      "path": "qipc/_src/native/rtc/cuda_check.h",
+      "bytes": 932,
+      "sha256": "74a4331dc82b962fdb763207833f9d861e1bf077ef7f90fbfe293e5f59a075c9"
+    },
+    {
+      "path": "qipc/_src/native/rtc/cuda_runtime.h",
+      "bytes": 815,
+      "sha256": "7f650e790a00e791ba6aa5cc98a8458bfbb5d0027c8855567102aa51cf3bed12"
+    },
+    {
+      "path": "qipc/_src/native/rtc/eigen3/core.h",
+      "bytes": 702,
+      "sha256": "99a1fe80d405efc020db9d36b52caccd422745e43dcf6f0af4c1ca4d9bdda238"
+    },
+    {
+      "path": "qipc/_src/native/rtc/source_location",
+      "bytes": 979,
+      "sha256": "5ee0701a0106e5eb19d02d10e2a6086eb4f08ce4ceade35d4252a40296381814"
+    },
+    {
+      "path": "qipc/_src/native/rtc/span",
+      "bytes": 411,
+      "sha256": "aa04cac2ca6c043c50e78d4f181f75a7964161588cbd7a09670e89a07e7fa28a"
+    },
+    {
+      "path": "qipc/_src/native/rtc/std_alias.h",
+      "bytes": 929,
+      "sha256": "2f4fafad43cf7a3f832299bde770834ab6f3d6f82b44134d5e8d50c1aa2ae10b"
+    },
+    {
+      "path": "qipc/_src/native/rtc/type_traits",
+      "bytes": 143,
+      "sha256": "2a5c2dee459805a82a4904381ec3f18f826a2eb694a84f34f8d3641a4ff92f9d"
+    },
+    {
+      "path": "qipc/_src/native/solver/__init__.py",
+      "bytes": 6861,
+      "sha256": "e917a54770727167071d322cd9e6877e8d493569235ee4636233d4fcd37e87fe"
+    },
+    {
+      "path": "qipc/_src/native/solver/_nvrtc.py",
+      "bytes": 4558,
+      "sha256": "c4cdff3fb20f666944eabf3e0824ba595e3e40589fe3a8f5761de43fd5ce042e"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_bdf1.cu",
+      "bytes": 11333,
+      "sha256": "818896221891413c1893ff7edc2507bbdd4bd90144b3129271309bf3811bc48d"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_bdf1.h",
+      "bytes": 3230,
+      "sha256": "257c5764f5819b9d306160f1b5f27fca47b773d5e690990bd93aba3ac408038b"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_constitution.cu",
+      "bytes": 304,
+      "sha256": "2a1a51f3c967999c15554e1d44a8b7c94a1e23311fe17317529e3b9f0d1a7c22"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_constitution.h",
+      "bytes": 4747,
+      "sha256": "14f537e479f23100f40382e864b142dfa080272476682f87e049ed678e9aa395"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_contact_assemble.cu",
+      "bytes": 7032,
+      "sha256": "a5771b1321f6ffc0fd28fb7a6ab433978d3e5822902edbf18f0f6e71f0c4a798"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_contact_assemble.h",
+      "bytes": 797,
+      "sha256": "d454a587e93f5d55a26e5ec8bfce9d436982d75d73e06602dacad2d2920c24ea"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_contact_kinematics.h",
+      "bytes": 715,
+      "sha256": "d9a6c917c19c97bab1a25e6b245b2ca160cc88678559ce7a9d486dd9bbcc1495"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_context.h",
+      "bytes": 9721,
+      "sha256": "bcaee3f758ba607555def1aec2c23db8408f15a94fb7a5044f936799abf7d77a"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_diag_preconditioner.cu",
+      "bytes": 3598,
+      "sha256": "71fcfbe8482fbdf9ca10030c5b51772a94e328773e30a2d30a635e6aa4127809"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_diag_preconditioner.h",
+      "bytes": 1293,
+      "sha256": "68c908c5a1f535daf630278d22d83f0c95303a3e59902a231d606003a3bb0e96"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_fem_coupling.cu",
+      "bytes": 4281,
+      "sha256": "dcc70dbf0f53066ab1a58030cc65109bd1c4c57e0d83c9d5b79b9c044664496d"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_fem_coupling.h",
+      "bytes": 746,
+      "sha256": "6e4e02b700f04f8586dae9a9502c5ef9cf5aee066e1414b8427ceba78bd7acaa"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_kernels.cu",
+      "bytes": 20095,
+      "sha256": "6c95ead32f21dbccc64c8feaf912a3b78760c1deaeb6255d56d2d5b1e8707c25"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_kernels.h",
+      "bytes": 5425,
+      "sha256": "be02c3321532b1c9ec8189b6ff6f94b1269d45b3d42aadafb9d79cce9c02a90b"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_ortho_analytic.h",
+      "bytes": 6494,
+      "sha256": "9198e8ed4d42a371462d078399dc56e68e6a571d72302e14d18cd81ef8b08e56"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_q_utils.h",
+      "bytes": 773,
+      "sha256": "bcf52be676ccaffda592edb79f28d1e355939219b82048a52ac485a875700e20"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_tree_preconditioner.cu",
+      "bytes": 11516,
+      "sha256": "71df2aacfe00fe63e4b1a099781572de0ae400e87c4a12051f112356c34ac6ce"
+    },
+    {
+      "path": "qipc/_src/native/solver/abd_tree_preconditioner.h",
+      "bytes": 3423,
+      "sha256": "38671a27bc2694eb41c3a4508f2f2b1810a3d11aec6661048ced2f80fc73193c"
+    },
+    {
+      "path": "qipc/_src/native/solver/adhesion_topo_event.cu",
+      "bytes": 10008,
+      "sha256": "34ec49eb5bc699e064e54660878701e37815844bfc789ca2c79b0531d859a873"
+    },
+    {
+      "path": "qipc/_src/native/solver/adhesion_topo_event.h",
+      "bytes": 3578,
+      "sha256": "e70854070d4784258d5e4a90c549c2a250116df8e8dd9e921b09d6532f3f1c70"
+    },
+    {
+      "path": "qipc/_src/native/solver/adhesive_ipc_contact.cu",
+      "bytes": 87560,
+      "sha256": "4a75e8018e292efe5c9bf45c6539d052b0cc791ea3bfdbc3ef96d31797042df5"
+    },
+    {
+      "path": "qipc/_src/native/solver/adhesive_ipc_contact.h",
+      "bytes": 12900,
+      "sha256": "60e11b80d56158e66fa69c68f86f82bf19489c54cbd2f72291df9b1afa40dd39"
+    },
+    {
+      "path": "qipc/_src/native/solver/affine_body_dynamics.cu",
+      "bytes": 15660,
+      "sha256": "45aee8f0b2bc7badc916262d8756b359148a0db9a5a0b0bfc15dad88a177099f"
+    },
+    {
+      "path": "qipc/_src/native/solver/affine_body_dynamics.h",
+      "bytes": 9471,
+      "sha256": "5aef3fc8ea9fe7d548eac511c592c3d1ce7366d24947edd747a9533963baafa7"
+    },
+    {
+      "path": "qipc/_src/native/solver/affine_body_external_force.cu",
+      "bytes": 1959,
+      "sha256": "79fa0a83c20cbdcdb4a324e0b082b7e1b55cf83ad66519177012b3b10e51fb10"
+    },
+    {
+      "path": "qipc/_src/native/solver/affine_body_external_force.h",
+      "bytes": 876,
+      "sha256": "d7577ee5a7bb0aa3847603a1a008fe75b3ec3262680f56af57f4b039056bf5a3"
+    },
+    {
+      "path": "qipc/_src/native/solver/affine_body_external_force_constraint.h",
+      "bytes": 634,
+      "sha256": "af9c579a6404f3294d8f251c85fa649d4c46a196ff8b31b9d5592d8a5374a14e"
+    },
+    {
+      "path": "qipc/_src/native/solver/affine_body_prismatic_damping.cu",
+      "bytes": 13987,
+      "sha256": "2f7856cd9cfe3768312e03af0281015585ef4260679e65735f2f4ec9c4311e58"
+    },
+    {
+      "path": "qipc/_src/native/solver/affine_body_prismatic_damping.h",
+      "bytes": 1370,
+      "sha256": "638d8b094dd1f1d390ff1650f02aed628a9aab757f501934270621eaf7c1e429"
+    },
+    {
+      "path": "qipc/_src/native/solver/affine_body_prismatic_joint.cu",
+      "bytes": 39238,
+      "sha256": "07ca34a27f9dc49bcddd5221b35a7d5547b60efaf5486b68c5935470b2abbe40"
+    },
+    {
+      "path": "qipc/_src/native/solver/affine_body_prismatic_joint.h",
+      "bytes": 4417,
+      "sha256": "7ae080f619f4da93de1a4c794ac533ec77e92f44c719302747f9e70c2bb28b22"
+    },
+    {
+      "path": "qipc/_src/native/solver/affine_body_revolute_damping.cu",
+      "bytes": 14817,
+      "sha256": "3c3f2f72e88063b173a6cf263d9b17d30f22032575a0565df1067b81246dfc85"
+    },
+    {
+      "path": "qipc/_src/native/solver/affine_body_revolute_damping.h",
+      "bytes": 1359,
+      "sha256": "71265626b994b138831641d9126b9f53e1d64eb6ca7d4ae870f6571b98421710"
+    },
+    {
+      "path": "qipc/_src/native/solver/affine_body_revolute_joint.cu",
+      "bytes": 61380,
+      "sha256": "83217f8865970c01b68d141127247659a961e48890d69b865d6441b5b0aa09f6"
+    },
+    {
+      "path": "qipc/_src/native/solver/affine_body_revolute_joint.h",
+      "bytes": 6638,
+      "sha256": "c98ef3cee1befaf6b71a76c6bc18c573992f2fef76dfb3c6c88e7eb90ecaf76a"
+    },
+    {
+      "path": "qipc/_src/native/solver/algebraic_coarsening.cu",
+      "bytes": 31688,
+      "sha256": "f70ca69de02dc35f7386e135ab7d8d7417b89dee486c2735d0fc118c24dbb031"
+    },
+    {
+      "path": "qipc/_src/native/solver/algebraic_coarsening.h",
+      "bytes": 14108,
+      "sha256": "4ba68248e1952c72f2799e0ac5418f2393cff52cbe64927ff5e4a6b9d989fee5"
+    },
+    {
+      "path": "qipc/_src/native/solver/bond_kernels.cu",
+      "bytes": 45359,
+      "sha256": "e8d3921aa3f896589b9fc4dda57b00bddf2357fc3323ae76189522331acadf90"
+    },
+    {
+      "path": "qipc/_src/native/solver/bond_kernels.h",
+      "bytes": 6116,
+      "sha256": "e3f6100c7971f358800f13fe7f7a5e404e9b07b9f31e7d9322385838eee82b7e"
+    },
+    {
+      "path": "qipc/_src/native/solver/bond_system.cu",
+      "bytes": 41344,
+      "sha256": "bf87901cb0d5c2133594b5c6a74e3ae95dd0d837b18ea3381592bdee5631b383"
+    },
+    {
+      "path": "qipc/_src/native/solver/bond_system.h",
+      "bytes": 17602,
+      "sha256": "0254e4ee1ef73b9fbe552969899232474d942a5f5cb9d62239721b7c2a051d79"
+    },
+    {
+      "path": "qipc/_src/native/solver/bond_topo_event.cu",
+      "bytes": 6562,
+      "sha256": "23b5814ee832e740ddff3010d3815c427d90ea58dd11c57c373e34c5b33370ef"
+    },
+    {
+      "path": "qipc/_src/native/solver/bond_topo_event.h",
+      "bytes": 1798,
+      "sha256": "ff4769caa61875f0036bca688b190596e79fc6e46b4930ed0b6dde729d619f00"
+    },
+    {
+      "path": "qipc/_src/native/solver/broad_phase_system.cu",
+      "bytes": 305,
+      "sha256": "10deb63b1ec56a11f523d25c0a61d71f4bd06085cb72909ebb94b9795c431195"
+    },
+    {
+      "path": "qipc/_src/native/solver/broad_phase_system.h",
+      "bytes": 4200,
+      "sha256": "89e594ae1daaaf5c93d34fcf9fa662ae38e04e157f191227fb03a7579bad4e92"
+    },
+    {
+      "path": "qipc/_src/native/solver/broken_twin_probe.cu",
+      "bytes": 8431,
+      "sha256": "838fafe26f2968443eadb2464ced3cd15a8635409db3a3a7b652db5a3e9c8061"
+    },
+    {
+      "path": "qipc/_src/native/solver/broken_twin_probe.h",
+      "bytes": 4010,
+      "sha256": "e3d52a6039e2d86d91397fc43b93fdb0b95ddec5a4c44af24cbb52be7f74fb9d"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_bdf1.cu",
+      "bytes": 6015,
+      "sha256": "f578a4b5fda3848177a1027a2e1e3c7ac00e2c1016cddc7e2a272d36a3c82c50"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_bdf1.h",
+      "bytes": 1107,
+      "sha256": "57fca314b915461910b9e475189d73aae8541d940498cca9700261a7d91cc4fa"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_bending.cu",
+      "bytes": 8690,
+      "sha256": "b9decdf41b1a58a5c1afba1ed6ebd3b691f3908ff2090fdd9b1fa28275faa84f"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_bending.h",
+      "bytes": 368,
+      "sha256": "a8bd5ef905010a7ab16b837b5faceac0c4e4639d3e240fe8178a52b08341821c"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_constitution.cu",
+      "bytes": 287,
+      "sha256": "fed98b7c3eb221af9f6a882f5b2f3cec822b4d37f0c52dc1ae5bb9b9bbf35b23"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_constitution.h",
+      "bytes": 2393,
+      "sha256": "415bcc41f9a87384b3ff9f38a7793b7c936841c105b426a3026dca9bf67660e2"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_contact_assemble.cu",
+      "bytes": 13889,
+      "sha256": "b328aed39017ac852ab2376690f019365ab37b68209fbcb7e9e6dc45c88f51f6"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_contact_assemble.h",
+      "bytes": 1991,
+      "sha256": "0d83864d0409bf056cbd6797eeea08111e5dd2233d9c6ff536c369e13e5c9124"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_contact_route.cu",
+      "bytes": 18607,
+      "sha256": "70041cc075e7f7e826fd25e2cdee6a238ca9212f6c5be3c70414b296310c8650"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_contact_route.h",
+      "bytes": 1953,
+      "sha256": "a7e05be6d19a2bff18d295695e27bd622c60886a682dca70f80e0ef33c934954"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_contact_route_context.h",
+      "bytes": 3345,
+      "sha256": "28106006b5ecf2d1d40dc79d119c5053c015dfbfdaed4ee764e58061553d24b5"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_context.h",
+      "bytes": 9701,
+      "sha256": "c3773776e25889654c86ffbc7967e4396764fddfd56ebfc4876ac8bd550ce710"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_diag_preconditioner.cu",
+      "bytes": 4311,
+      "sha256": "fb6a88074f123e48c36880ec49d65f69749ef21f8aea46014752f8ad8edeab5a"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_diag_preconditioner.h",
+      "bytes": 573,
+      "sha256": "014ccb09dc1b9b7ea63d558b2957d850b892f2be3d266dfcd3b182c2b77ad329"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_kinematic_map.h",
+      "bytes": 1034,
+      "sha256": "6150ea73140d598c8d65589a2060fa9a4d55104742de592a34bef6debbaacdca"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_membrane.cu",
+      "bytes": 15927,
+      "sha256": "dfc6328b2b5710191b8d580d5e921b12d4946a1dfe477d223eab2156886d6000"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_membrane.h",
+      "bytes": 369,
+      "sha256": "f814aa69c72b451076c45b03ac428b700ae0d696fbe9d060ebd2da3c250614a9"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_seam.cu",
+      "bytes": 7327,
+      "sha256": "a2015ce27a6503b8d92939f67aea34c47b784c8cef48e00e94a9cf71887ce24c"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_seam.h",
+      "bytes": 365,
+      "sha256": "ec49859dcb93ad60636f3efbb737d8998678f1f1c10997925dc7e32db2eee9e2"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_system.cu",
+      "bytes": 35222,
+      "sha256": "714738829f5ecf4a238819bd3648043a90a47737061a8c7bac73e6fe7e312bca"
+    },
+    {
+      "path": "qipc/_src/native/solver/bspline_system.h",
+      "bytes": 8001,
+      "sha256": "351cce4967507c9e455cfd2f357c907654247aff312d1d8cfffb3407ca358655"
+    },
+    {
+      "path": "qipc/_src/native/solver/bvh_bounds.cuh",
+      "bytes": 9982,
+      "sha256": "0e76de5a95f0c30f8ac25a38fb59bb7fa31c7ebb2da6a36f9b56bfd3127e4768"
+    },
+    {
+      "path": "qipc/_src/native/solver/bvh_types.cuh",
+      "bytes": 9072,
+      "sha256": "38c68575d270371a3668fee9594a95adb667c719a5b7966e723c52e65f3546f5"
+    },
+    {
+      "path": "qipc/_src/native/solver/ccd_component_partitioner.cu",
+      "bytes": 24648,
+      "sha256": "22a1c98e10e1ce882ec21925d11ec44c15c01e8c61516e14d59f2543bb27bbaf"
+    },
+    {
+      "path": "qipc/_src/native/solver/ccd_component_partitioner.h",
+      "bytes": 5854,
+      "sha256": "64f526897c75e32a28ca93279bae27a0a3bc59d40fc54ceaf474372e8eb79076"
+    },
+    {
+      "path": "qipc/_src/native/solver/ccd_component_partitioner_context.h",
+      "bytes": 3850,
+      "sha256": "44e0a31bd3789374ab1d40da7a59c0cfe28c0d0ad7bcb1912d5cb414b38b7046"
+    },
+    {
+      "path": "qipc/_src/native/solver/ccd_kernels.cu",
+      "bytes": 10477,
+      "sha256": "6fd8b3e81c3a9c5213411dcd46a5a66dff5e3921fc91dec400f0569374d68902"
+    },
+    {
+      "path": "qipc/_src/native/solver/ccd_kernels.h",
+      "bytes": 53869,
+      "sha256": "80eb0681cd2e8acb8f96384dc698f07d485a363aa5bb06e87feee608c6a063e2"
+    },
+    {
+      "path": "qipc/_src/native/solver/cipc_simplex_scatter.h",
+      "bytes": 9993,
+      "sha256": "58593fb9c5a3875083df394d4d27f654aafed249b47fbef60b8d403dfc90cd9e"
+    },
+    {
+      "path": "qipc/_src/native/solver/coarsening_context.h",
+      "bytes": 20330,
+      "sha256": "f612fe2888e757d330ae17b0b5939285816b57b332bdf013da6f81d0150a2f38"
+    },
+    {
+      "path": "qipc/_src/native/solver/coarsening_kernels.cu",
+      "bytes": 58475,
+      "sha256": "1187aebd2121958e8fffb4a0b5c792e41d1f25bd4e2abc915382c52528db027c"
+    },
+    {
+      "path": "qipc/_src/native/solver/coarsening_kernels.h",
+      "bytes": 11759,
+      "sha256": "535f6ac61ca4906f6802966bf54102974200c65171bb5bfccf11c94e9c7e22bc"
+    },
+    {
+      "path": "qipc/_src/native/solver/component_partition_device_functions.h",
+      "bytes": 1750,
+      "sha256": "f0d7064b7511a531a0587081f5eeac42278de648296a4517765e4d3b80c2980a"
+    },
+    {
+      "path": "qipc/_src/native/solver/component_partition_kernels.cu",
+      "bytes": 4644,
+      "sha256": "4948a3043a87a8cb5760048248f4f56091b71c0657ade6fffec0aeb8eabd4228"
+    },
+    {
+      "path": "qipc/_src/native/solver/component_partition_kernels.h",
+      "bytes": 1289,
+      "sha256": "049e577068d07d01aae2c6ca130436d2c9a3cbe0c2e7f8f31a64a153bd19bfc8"
+    },
+    {
+      "path": "qipc/_src/native/solver/component_partitioner.cu",
+      "bytes": 11463,
+      "sha256": "3f0ca577c44549f7eb90b758f8160a8139f2517b5d16c199ccb95702bc4f44de"
+    },
+    {
+      "path": "qipc/_src/native/solver/component_partitioner.h",
+      "bytes": 4213,
+      "sha256": "557328b705974040879b7ab9a2494d987a612f6c1136f6dddd46a0c472d6316b"
+    },
+    {
+      "path": "qipc/_src/native/solver/component_partitioner_context.h",
+      "bytes": 2922,
+      "sha256": "2e88064436d1cd6a4a0aae24a33c07b0bf2c4ac04bc854de540d3ca2a8747702"
+    },
+    {
+      "path": "qipc/_src/native/solver/consistent_ipc_contact.cu",
+      "bytes": 130760,
+      "sha256": "434688386b8d54d35c0daf9182a64bce73e0960951bd7f590027bf122e32b963"
+    },
+    {
+      "path": "qipc/_src/native/solver/consistent_ipc_contact.h",
+      "bytes": 8230,
+      "sha256": "f26ed3e08c589da2e1a1dd0e9fcae86c6d244dc06fe2b970fd4100fcc443e617"
+    },
+    {
+      "path": "qipc/_src/native/solver/constraint_topo_event.cu",
+      "bytes": 22117,
+      "sha256": "2ceb2ba49b9b4970d2b7c66d0dd8e6c697c9a2cc5bee2b82f3e7c9c9af5bb526"
+    },
+    {
+      "path": "qipc/_src/native/solver/constraint_topo_event.h",
+      "bytes": 11310,
+      "sha256": "7197cf0a6278afb44acecbd1add7801d34b465e068b2b77a6fb6e217065e61b1"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_assembly_routes.h",
+      "bytes": 3769,
+      "sha256": "f1e8ac55d92f23aab6959e47e95c73852a2f769eddd251bbd4d2ac1b64115e99"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_constitution.cu",
+      "bytes": 494,
+      "sha256": "7c795884b2fdfe4cb3f06b6d675b312164a0fa9da9968dd524ce7fd30819d7e3"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_constitution.h",
+      "bytes": 4137,
+      "sha256": "a6d26ec6a780527973b0b493561f13d315000ad8f1fdb33aec53b9e39d56171d"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_context.h",
+      "bytes": 78766,
+      "sha256": "bac08795b1ab9b3b70911ae45c94ae6fc5100419bada32f9010a281560bede3e"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_device_functions.h",
+      "bytes": 13161,
+      "sha256": "6c3142ae33b3d602d175dc55553763700b3ec71d795ab754d405d935745bd07a"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_export_context.h",
+      "bytes": 14067,
+      "sha256": "dbc9dce94908f01ce9e4474633123ba72d74eb6651b5f54d6537c50c45d9e2ef"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_export_system.cu",
+      "bytes": 65375,
+      "sha256": "6aec20cdc5f842e638a5e106258703e491e80dbacaf64f7e92f03b7b16b7550d"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_export_system.h",
+      "bytes": 12243,
+      "sha256": "3b0dd83320a9024c0bd4853ee47b2ffa86dd2c038b5634e4e0beda7668cebddf"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/adhesion.h",
+      "bytes": 7303,
+      "sha256": "a2bc010366a0e4b446110dd7469e88afd1b10bb4148d3c09aa1cc4e29a0ec95e"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/adhesion_context.h",
+      "bytes": 3432,
+      "sha256": "60c7d6756ff4577f89437ce9bc95a92a7b3bd04a63d9c53c47c9897c1d3120ac"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/adhesion_state.h",
+      "bytes": 6494,
+      "sha256": "cc02b69c456328c2c1f4eb4b2fd7cedf9d1eb32147158b28137b344e23d60cef"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/bond.h",
+      "bytes": 23403,
+      "sha256": "50681b1f8f636b99e8c7ae42b1bc0935be71339231edb011364436e1e6e0498c"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/bond_context.h",
+      "bytes": 17459,
+      "sha256": "e363331351a5390a7413f17fe7e2b2160d9747b3100d357901c1e9bc967d22e5"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/codim_thickness.h",
+      "bytes": 1914,
+      "sha256": "4ac5db124050e7b8f827c0f0d1477f6e25422952af6830da0a5461549d5886ee"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/contact_pair_key.h",
+      "bytes": 5054,
+      "sha256": "b5116fd474d4c074b269c6ce7635ddf569dc1ac3b8290dbc1690938ea934a44f"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/contact_table_query.h",
+      "bytes": 4076,
+      "sha256": "f9eb8d4dc6b0b6bcca94c854ee6a13831a9c3983b1a15d98d6b681b12eb2032f"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/details/distance_ee.inl",
+      "bytes": 25830,
+      "sha256": "a7cc32a79b0c1dca0b90d5f38d903e6cd5cd7f2b885a56d2e763e92bb0a9c750"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/details/distance_pe.inl",
+      "bytes": 12574,
+      "sha256": "4b33df1c094b111c6a44ee27776d9f10fac0d4ecccbb8db54040f609676c8681"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/details/distance_pp.inl",
+      "bytes": 1143,
+      "sha256": "b21768dc70774126bc6946f533c9a39d113cc8c994f65d02494a4f2efa62fc43"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/details/distance_pt.inl",
+      "bytes": 25959,
+      "sha256": "6912ef1f486e7c444310a5dffca983d18d2d706fdae007edced34d717da042ae"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/directional_ccd.h",
+      "bytes": 17015,
+      "sha256": "aa3ac6c58fbe234e81997e47ac70909bd01462ce11667a83218f8ae74bd42ed3"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/distance_flag.h",
+      "bytes": 23265,
+      "sha256": "02b24cd4a72ab5707a083e4a39c60273cb46283202f8abb8706d401153f28054"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/distance_primitives.h",
+      "bytes": 2940,
+      "sha256": "8bc32a987f6a2ae0094d8b807f187990dbc470532e39f17d6090dd7ce3b6cd1d"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/friction_contact_function.h",
+      "bytes": 23053,
+      "sha256": "85864dc0c363985921070928e803e31957c8ba082ebc4d338b71581395b19de8"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/friction_utils.h",
+      "bytes": 10911,
+      "sha256": "aa843b598ce9f862ac22bce5a3aa3b5aa40452ed60901c12bc644a1f48a340ae"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/gipc_accd.h",
+      "bytes": 14913,
+      "sha256": "274d6b70f6fe5afebad096310c2c34de08c10f81e8cb1ef2b9839006c2eb6dbe"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/gipc_barrier.h",
+      "bytes": 4119,
+      "sha256": "e15352c94f0336f2455b0302578ddb130c1acc8c5e767acef5a8c266f367cec9"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/gipc_barrier_gradient_hessian.h",
+      "bytes": 23271,
+      "sha256": "b689b84abc57ea08f89aaee4b06a632a84be6e9ebe8969931f8c3ecaa2081b1a"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/gipc_barrier_gradient_hessian_rank2.h",
+      "bytes": 19616,
+      "sha256": "679c7c07ed5e9117a853026b78a0803087fa9d7022c40674c42e38ee61da3d60"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/gipc_barrier_rank2.h",
+      "bytes": 4227,
+      "sha256": "e08fd78c35e961cbcd62171c8a2d27d5efd018058cf6809e3dc22a1447ce2fd1"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/gipc_distance.h",
+      "bytes": 2345,
+      "sha256": "ec49308fa5814046c21525bee70e0454bf5729c0f17d0072fde1ee85149d02e7"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/gipc_distance_type.h",
+      "bytes": 10935,
+      "sha256": "2fdd1c8e3c5ffccda0a7a56b0eb6b7e663a2bdc0255cbef745628f1be20a5716"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/gipc_make_pd.h",
+      "bytes": 818,
+      "sha256": "45a4066fec842c6268dcc49789b632fb01c10944edd3d5b4c841ece5a55816a8"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/gipc_pfpx.h",
+      "bytes": 22346,
+      "sha256": "3cdd1ad7e74782e4424f17015979653d44cbb586af3610a9fefa5f8b1fd0da48"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/halfplane_contact.h",
+      "bytes": 5347,
+      "sha256": "694a4d5ef803d111a8683ffd2b8419b97360fd8f116c3a90f1a07262c3431a01"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/occlusion.h",
+      "bytes": 5164,
+      "sha256": "130ed5965256f5f2b14133539c8be70e8efa8a6dfd9bc7874dab743c291b49a6"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/pair_d_hat.h",
+      "bytes": 2726,
+      "sha256": "8b8229b3a21aa6e6a9743b341b95b8ba4b01bbe87269e77ea4ebc369b7c2ee44"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/pairwise_ccd.h",
+      "bytes": 12939,
+      "sha256": "abf0fca0b95e872ec4d04a73988677c69840ce5ea240870f6aeb0e43429853f0"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/screw_ccd.h",
+      "bytes": 27638,
+      "sha256": "2e88c5a97b56de5f68d575523a1af5fc9a1a2716e0879f8f0572bbd804470a62"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/sticky_side.h",
+      "bytes": 8189,
+      "sha256": "89c4bf70afa22062fdaa517d75aaad8cf8f96f99416c34c8de5399e99e454834"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/test_contact_kernels.cu",
+      "bytes": 91735,
+      "sha256": "db63a747c2998f65b17acea4fb3543d0ce3b03b983f34c34070e44885bb2273c"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/test_contact_kernels.h",
+      "bytes": 19131,
+      "sha256": "5e99d3587e9a053cdf05a6aac4236a3ed72ea83180e3d66bea477cdad44a2312"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/twist_friction.h",
+      "bytes": 25338,
+      "sha256": "7138d1b47755e4eaa1b06c18fa599b07c542a79836a788dabfee326386399d5d"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/variational_adhesion.h",
+      "bytes": 23172,
+      "sha256": "38c7847ea72255317df7226ed70fd4dd4529e4e5635245cea6b060ca4069b8e4"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_function/variational_adhesion_context.h",
+      "bytes": 2133,
+      "sha256": "37df0b68e60a3c201196719480ac76320f25e91eafe4f408ccd21bb5fb710a98"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_kernels.cu",
+      "bytes": 28606,
+      "sha256": "0b3a2c6fcf5c7a78acbf01002a95e14d007d911b0d6b04762a34cdb271214c4b"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_kernels.h",
+      "bytes": 3331,
+      "sha256": "5cec246e0d750a581e3b27b0ccad97499be6eab51d21a2e3c0ff40f918b87eb6"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_sort_unique.cu",
+      "bytes": 145,
+      "sha256": "110e3ad95e56259ed8cd2be5abccd49a0751cd7b650eeb79024f1f610208a26b"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_sort_unique.h",
+      "bytes": 5786,
+      "sha256": "ca50649c56eee93b5aa07e244a14cccc147e39a14673073abf72d7a894205efe"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_system.cu",
+      "bytes": 114689,
+      "sha256": "4075ac8f567d623871b24e143eddbeaf0623e02fe5ec4c0af7c73d5087d9c9e3"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_system.h",
+      "bytes": 42199,
+      "sha256": "eb740a5f320db09cf61161f3b55d6abcc8814aac6225c57d3034b8dc47257d31"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_system_kernels.cu",
+      "bytes": 12335,
+      "sha256": "9692642d5fbd64df397981e9729fa5c5dc44577b067716a4f43c0eebb60bd0ad"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_system_kernels.h",
+      "bytes": 1703,
+      "sha256": "fbef15f5700c3c4811184964a86578f15bfa1976514f40fc07df6849dbb7e0c3"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_topo_event.cu",
+      "bytes": 9841,
+      "sha256": "4cccb4786d5e13f9426084bda58f31b0a749253fc10403c8935b18c05a6b8ac3"
+    },
+    {
+      "path": "qipc/_src/native/solver/contact_topo_event.h",
+      "bytes": 2138,
+      "sha256": "1a8d16a9c03d8ed7afd07843555025bc0afa762fb8a1168bbefdf86233900f74"
+    },
+    {
+      "path": "qipc/_src/native/solver/core/pipeline.h",
+      "bytes": 10746,
+      "sha256": "935e30869e706e9afa17420dac5f387c8fd0cd226d979c62c07eac4f035a8aa3"
+    },
+    {
+      "path": "qipc/_src/native/solver/core/pipeline_builder.cu",
+      "bytes": 13669,
+      "sha256": "5903ea465c39d257d742a57f8292ee03238aae813a1fb246e5339939346d0d79"
+    },
+    {
+      "path": "qipc/_src/native/solver/core/pipeline_builder.h",
+      "bytes": 57312,
+      "sha256": "5f621d73e5bebf727bfd66e3fa70d5f89dcb467ea797700e927efc63c6465e81"
+    },
+    {
+      "path": "qipc/_src/native/solver/core/pipeline_kernels.cu",
+      "bytes": 4063,
+      "sha256": "9fe675c5b84ea52652013520f67366f4a75920dd570674b463f873c7b9df6a83"
+    },
+    {
+      "path": "qipc/_src/native/solver/core/pipeline_kernels.h",
+      "bytes": 4834,
+      "sha256": "c138fd1e618d95fa4692e7199736594fe107d761157e27163faa7f25aa482cb2"
+    },
+    {
+      "path": "qipc/_src/native/solver/ctx.h",
+      "bytes": 4557,
+      "sha256": "da029263782142febd4e66d6db082ca5025a32b16c8b40a2c9d7986e9d7abb46"
+    },
+    {
+      "path": "qipc/_src/native/solver/cut_detection_context.h",
+      "bytes": 4409,
+      "sha256": "bdb74742fba68b8ff3d5ae3178a49a75f5e677c2fb8251fb3e31e20db9163606"
+    },
+    {
+      "path": "qipc/_src/native/solver/cut_detection_system.cu",
+      "bytes": 28502,
+      "sha256": "fc2c810bbef76bdddbda75dddc7328e3afc0d7bdc244e8a5ab5dbde493ea28ab"
+    },
+    {
+      "path": "qipc/_src/native/solver/cut_detection_system.h",
+      "bytes": 3586,
+      "sha256": "b8feb0d89f136f688efc2a0e46c285b0425891199478e313bad0b0b49cfe8a8c"
+    },
+    {
+      "path": "qipc/_src/native/solver/discrete_shell_bending.cu",
+      "bytes": 21494,
+      "sha256": "3958a1d1c418a2c986492c7cb71535b606d5f5e6677b6a53dc4152ba84f390d3"
+    },
+    {
+      "path": "qipc/_src/native/solver/discrete_shell_bending.h",
+      "bytes": 3809,
+      "sha256": "f7c092b11f36bc1d6c3909b293d70b575aa73462ec20fdda00713d65c58e279a"
+    },
+    {
+      "path": "qipc/_src/native/solver/discrete_shell_bending_context.h",
+      "bytes": 2319,
+      "sha256": "f951f78adda0264af0dd1933f727c3ad0373d43a43853645b5721b3e305af141"
+    },
+    {
+      "path": "qipc/_src/native/solver/discrete_shell_bending_wang.h",
+      "bytes": 17724,
+      "sha256": "7191eb1a038901c7908bcd809aeab9f8971228c0ef818e37cd3bf31aac077e90"
+    },
+    {
+      "path": "qipc/_src/native/solver/dump_diag.cu",
+      "bytes": 17262,
+      "sha256": "9b5b3958c79df48f1d39aabe1c19665d6308fb559817c5ee4218b772a72fde03"
+    },
+    {
+      "path": "qipc/_src/native/solver/dump_diag.h",
+      "bytes": 7031,
+      "sha256": "725e5adcfdae4d6de875fb14c0ff61793de05316a8d8e3948742088de9611638"
+    },
+    {
+      "path": "qipc/_src/native/solver/dump_diag_context.h",
+      "bytes": 8287,
+      "sha256": "a57fc6fdd26ef140526285e96ef274521f401001a03b40ead3b3df2bcec59cb3"
+    },
+    {
+      "path": "qipc/_src/native/solver/dynamic_sort_unique.cu",
+      "bytes": 20045,
+      "sha256": "be00ae7e43dbaf31a7a6d97e124ba7af68c8cd548cee299612654250fd7bab60"
+    },
+    {
+      "path": "qipc/_src/native/solver/dynamic_sort_unique.h",
+      "bytes": 787,
+      "sha256": "5d2a940707aaaa05ae9292ecc2d10bb7769c19c719a713a92d3a3b104dcb12c4"
+    },
+    {
+      "path": "qipc/_src/native/solver/eci_1d.h",
+      "bytes": 2912,
+      "sha256": "88a465863559ca4edf2a8c2d485980324df9d7a81da831ab10756f39ce66ebae"
+    },
+    {
+      "path": "qipc/_src/native/solver/eci_coupled_bend_twist.h",
+      "bytes": 10904,
+      "sha256": "0529f0ff20b31d7325054b525e7c559e6d453340e7742166ad2440dfac1dcb7d"
+    },
+    {
+      "path": "qipc/_src/native/solver/eci_visco_1d.h",
+      "bytes": 3572,
+      "sha256": "44a8ddaea5baa9b62c7242a0053632957a85c2967e6eb334d15dc1ae1f92878f"
+    },
+    {
+      "path": "qipc/_src/native/solver/edge_triangle_checker.cu",
+      "bytes": 9383,
+      "sha256": "98b09f072bbe43dd450c6e8339d2b1987003640141f273b0dbcedd99b295263d"
+    },
+    {
+      "path": "qipc/_src/native/solver/edge_triangle_checker.h",
+      "bytes": 4210,
+      "sha256": "9586a8544b8c38f76d5b0fc995cf2d26f738b462493c99ace55b63b008384cf0"
+    },
+    {
+      "path": "qipc/_src/native/solver/edge_triangle_intersect.h",
+      "bytes": 9640,
+      "sha256": "476c4201d719528b39d00b70828829f210eafb93d6ce1d47dc2fe57307a1f643"
+    },
+    {
+      "path": "qipc/_src/native/solver/edge_triangle_pierce.h",
+      "bytes": 3882,
+      "sha256": "c3ebdb364122bd66af59c14ccdf4c11890b7d59e050c10600b7b229d6c9eff13"
+    },
+    {
+      "path": "qipc/_src/native/solver/empty_1d.cu",
+      "bytes": 158,
+      "sha256": "25a015731581ed34188bbf7e08b96b1fd76d25e13f37b0027b56385b78ceb06c"
+    },
+    {
+      "path": "qipc/_src/native/solver/empty_1d.h",
+      "bytes": 1316,
+      "sha256": "c36710b8a9a0bab4f6eaae07909cec56b13b9943b2b86b9306fd474d59e90b4c"
+    },
+    {
+      "path": "qipc/_src/native/solver/empty_2d.cu",
+      "bytes": 155,
+      "sha256": "339e0e6e8475351e1976bd56d228fec8f7fd41e7ba42db938be4d61d40b1bcae"
+    },
+    {
+      "path": "qipc/_src/native/solver/empty_2d.h",
+      "bytes": 1311,
+      "sha256": "5b313b4630e046dc49372e4a8d1761e761b417340a590713bab4f274c11499c5"
+    },
+    {
+      "path": "qipc/_src/native/solver/empty_3d.cu",
+      "bytes": 155,
+      "sha256": "e33d46e4717ee0b89b632fe859432daf1b67b8496de545ff1d6b5c8b785303b3"
+    },
+    {
+      "path": "qipc/_src/native/solver/empty_3d.h",
+      "bytes": 1871,
+      "sha256": "2682668d1b66695bf8bdae86029e00647f2ff41c5bb52cf4e5d9df3468493f32"
+    },
+    {
+      "path": "qipc/_src/native/solver/energy_check.h",
+      "bytes": 1471,
+      "sha256": "5c97938b20655f7c84d2b947a43615de3e31e77dc1b893a30075a9b985641711"
+    },
+    {
+      "path": "qipc/_src/native/solver/et_check_context.h",
+      "bytes": 922,
+      "sha256": "a5c3691f2bbffd204c03605aa658533ef7ab5c986fced2847efe6a8fa787bf72"
+    },
+    {
+      "path": "qipc/_src/native/solver/extent_report.h",
+      "bytes": 1711,
+      "sha256": "b7676754a85cad08d8c82cfcb4000d8354c25509bf0406a1c1c428eb93031c42"
+    },
+    {
+      "path": "qipc/_src/native/solver/extra_contact_constitution.h",
+      "bytes": 1854,
+      "sha256": "99c6d4a52a971470e2316d039d626690860b551105f1dcba33dc192c99e4069f"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_bdf1.cu",
+      "bytes": 8450,
+      "sha256": "6bbd57e4afc61dc62205588bd9826a37476704dd916de65611162a88edbe7bef"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_bdf1.h",
+      "bytes": 3018,
+      "sha256": "6436826c2c8cadcae47bdeec2365b029353edf0b43d89261ce6361e60f4f2870"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_cluster_context.h",
+      "bytes": 11095,
+      "sha256": "0125b3fb2b61046fecb4ba09bff513db6c8d114eb82e8c3454e0fa01f23a0fe8"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_cluster_manager.cu",
+      "bytes": 137805,
+      "sha256": "cca1bddf06ddd592ae5d82a087f5b134c5f2be584879e806b576bba1475dc2e9"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_cluster_manager.h",
+      "bytes": 15482,
+      "sha256": "c863827e26ae48e9fd30774dc089e7e955c4629f51bbbf8bba952b85158b0c2c"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_cluster_partial_types.h",
+      "bytes": 692,
+      "sha256": "70d87f6e115c0a624f6279aa292c1936e70c28d3c1d851a49317c8a48fb5f5c7"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_cluster_topo_event.cu",
+      "bytes": 5529,
+      "sha256": "5b6f918f9968079bfa1e090fec2be4c579c334c403368bbd830993efda5f660b"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_cluster_topo_event.h",
+      "bytes": 1119,
+      "sha256": "3aaa9e4fc2c3157f71efc8e494f0ce9dd2d513c20cf55b027057dc8824dc1015"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_constitution.cu",
+      "bytes": 306,
+      "sha256": "1e56827a84bb40abb6166368472a9564c90d38abad255e1c1673ce07f2e28b3e"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_constitution.h",
+      "bytes": 9098,
+      "sha256": "385947f5188d4d166d8e2664b8be28058f25f304f676ceb3270a8d512fa44776"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_context.h",
+      "bytes": 14520,
+      "sha256": "e89c82ad32481534f0b99cca7a8792e727c8be12f87e8c756abca6f85947eb79"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_deformation_gradient.h",
+      "bytes": 3265,
+      "sha256": "7fff5a419d38ebe516b65b86954cafb4d7736eaf9d027b02cd70be1e5f553df6"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_diag_preconditioner.cu",
+      "bytes": 4008,
+      "sha256": "3f4eed78fb41dfce490cf435b9e383ebc56aa322478a98a410cc1acf6437dd36"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_diag_preconditioner.h",
+      "bytes": 1411,
+      "sha256": "ae31707fbc562ca12ba191a0ec7b28d5e5ff880903764aa3dfa2f16122877b32"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_kernels.cu",
+      "bytes": 16937,
+      "sha256": "facf14cb97f68b41db0035f37e38fe50d8fd6317d8e3472b71751d6a8969ec56"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_kernels.h",
+      "bytes": 4508,
+      "sha256": "29b259c8587cc2aaac10f3b8c86676e2ad1493a4687915a351197c62170bfbab"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_mas_preconditioner.cu",
+      "bytes": 9859,
+      "sha256": "6f2dbc0b55f735c9e8f4f902a44cba9ab46cf6db6486136851590fe210e7373d"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_mas_preconditioner.h",
+      "bytes": 5202,
+      "sha256": "d1ae41b68fbedbf7ac845b21585df6d5536a87b55ef7797ad346485e94b2eef0"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_topo_event.cu",
+      "bytes": 32714,
+      "sha256": "d966498147c6bbdc3c8375422a9e1b3d2003b2ada2d8405a7ddddded3c21d145"
+    },
+    {
+      "path": "qipc/_src/native/solver/fem_topo_event.h",
+      "bytes": 7935,
+      "sha256": "809204472ee4a2cf4c0eabd4ae6c67e1a4719a7f1d036effdf58b2bced8967cd"
+    },
+    {
+      "path": "qipc/_src/native/solver/finite_element_method.cu",
+      "bytes": 31037,
+      "sha256": "07c6204ee7fbabfce8091f1db375592bd6969541614e7afe6143449e3ca6a19e"
+    },
+    {
+      "path": "qipc/_src/native/solver/finite_element_method.h",
+      "bytes": 16716,
+      "sha256": "a9a9a6697440d256cd63c94a98ae872fea9d78bc1d33548bf49073d7c9993bdf"
+    },
+    {
+      "path": "qipc/_src/native/solver/fsr_reduce.h",
+      "bytes": 6699,
+      "sha256": "7e6193f5a27402b208c01e3abc79fa7e2e174d6b2196dbbb9c8955689350e0ff"
+    },
+    {
+      "path": "qipc/_src/native/solver/fused_filter_cooperative.h",
+      "bytes": 26954,
+      "sha256": "1e7f194e34d457b7c81320573f5cbed3703654161b3688d3823b150b4125fb0b"
+    },
+    {
+      "path": "qipc/_src/native/solver/generated/.clang-format",
+      "bytes": 40,
+      "sha256": "b31f421733899646b1bafbeb8ab3dda7391a50169ecac50f16ce7f6abd80409a"
+    },
+    {
+      "path": "qipc/_src/native/solver/generated/abd_ortho_analytic_eigsys.h",
+      "bytes": 1373,
+      "sha256": "1a235cafd75c74bf9f521a38f115d1443c0163261ba82938613b8370b1a32051"
+    },
+    {
+      "path": "qipc/_src/native/solver/generated/abd_shape_energy.h",
+      "bytes": 8267,
+      "sha256": "5e3354662c59130143aba62aed3c616cd96f1dea0930de8ec6038d34f71aa44a"
+    },
+    {
+      "path": "qipc/_src/native/solver/generated/discrete_shell_bending_2d.h",
+      "bytes": 51043,
+      "sha256": "d5b07c57506cdda3139474bf9346741056dabb1945d52eedaa468aac38b1b88a"
+    },
+    {
+      "path": "qipc/_src/native/solver/generated/gipc_abd_jacobian.h",
+      "bytes": 7413,
+      "sha256": "d4a4f04767b7982ac82805689a30d5651a8518c6a68b0225aa9859c2241bf1ba"
+    },
+    {
+      "path": "qipc/_src/native/solver/generated/hookean_spring_1d.h",
+      "bytes": 4811,
+      "sha256": "1e0afaea575c4636d79362a6c73f09da4d5775dd817dcd0886cb952aa02e9e51"
+    },
+    {
+      "path": "qipc/_src/native/solver/generated/prismatic_joint.h",
+      "bytes": 14788,
+      "sha256": "d64ba7d4f68c76a04080f4b9f75f6dea9f1c357610b85b73695b4f01be9461b1"
+    },
+    {
+      "path": "qipc/_src/native/solver/generated/revolute_damping.h",
+      "bytes": 6244,
+      "sha256": "dfd689ee05733c17a849ce67546b29c710c1ed3744c17444bb5defb48222675a"
+    },
+    {
+      "path": "qipc/_src/native/solver/generated/revolute_limit.h",
+      "bytes": 6799,
+      "sha256": "7191ed3c77dc8ec35fc54cba24ca08f2d9052ddf402fbbec74750d2a96dbede7"
+    },
+    {
+      "path": "qipc/_src/native/solver/generated/rod_bending_1d.h",
+      "bytes": 38457,
+      "sha256": "a753068f5ea501631a188633ee88a71aac1bfc307ccc0847217d2e950bab2440"
+    },
+    {
+      "path": "qipc/_src/native/solver/generated/rod_curved_bending_1d.h",
+      "bytes": 222960,
+      "sha256": "53b043d219757e1fed58c022193cb5727f2618ece318059a46c6f97e84cadd9c"
+    },
+    {
+      "path": "qipc/_src/native/solver/generated/rod_twisting_1d.h",
+      "bytes": 14292,
+      "sha256": "4eaf4855d1ee0000e400584f81888bde5e87757596b8fc3f91a3733426541f41"
+    },
+    {
+      "path": "qipc/_src/native/solver/generated/stable_neo_hookean.h",
+      "bytes": 10974,
+      "sha256": "58892b1873276be8473dfa1bff47718bd79f8f0cc1a96b7256bf0f8a5a6d3d62"
+    },
+    {
+      "path": "qipc/_src/native/solver/generated/stvk_shell_2d.h",
+      "bytes": 6111,
+      "sha256": "0ae78c45e03fdb08358ea151bf62e21ade62c5f1adbd8b66837f49f68395e647"
+    },
+    {
+      "path": "qipc/_src/native/solver/gipc_contact.cu",
+      "bytes": 98827,
+      "sha256": "44acf0a8dd850857619d73fea83180d76ab8329b3e8903d6de9e4e672dc1fb66"
+    },
+    {
+      "path": "qipc/_src/native/solver/gipc_contact.h",
+      "bytes": 2842,
+      "sha256": "789ce5e5b6a0071003242def5044cab37622861f5c49e8a7746a5d7a271a77bd"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_body_context.h",
+      "bytes": 2185,
+      "sha256": "10bcd3321adb77b9b3df3939a44524ea69aaf911875aaf242f031c724253431f"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_body_manager.cu",
+      "bytes": 5817,
+      "sha256": "4eb63ec8423837e719c2e489f160228a92652f63019effe453defa2eb8289b09"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_body_manager.h",
+      "bytes": 1604,
+      "sha256": "2846114fc4a8881ef4d5097a00e6d9ec88802c4d6ed4a378933a737dd88a64a9"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_joint_context.h",
+      "bytes": 611,
+      "sha256": "7457a808468887f90d9abb8aa5cc2f2fa630a3958059e3be4da8cf8d7cfcd0d2"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_joint_system.cu",
+      "bytes": 9022,
+      "sha256": "381242c402c149cfdec0f15cf2452af4edaf9560658dabb301e0012d253c0a7e"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_joint_system.h",
+      "bytes": 5868,
+      "sha256": "82a014d260d96de495144197e124a88b6d48c98e1fe0053a36bbe1498da9832d"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_linear_system.cu",
+      "bytes": 17789,
+      "sha256": "346026e2108db3bbf938a85508ea7ff207be7d867811334f2c14160be75074df"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_linear_system.h",
+      "bytes": 6036,
+      "sha256": "6ef1500b101af97f2968a2f76b6fae286367eda8c9a1cffe5bcf37001394db5a"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_linear_system_context.h",
+      "bytes": 9216,
+      "sha256": "8bde46080aea3706c9a363bed21fbac085dc0400c6dcece384d70705cf27f455"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_surface_context.h",
+      "bytes": 6715,
+      "sha256": "ffef16f7b17b2795b4bbfda8cce152661c7140795d377c1601d075077d08953c"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_surface_manager.cu",
+      "bytes": 39826,
+      "sha256": "be5c9acabde59fbb2afbd5c85869c29d65bca0955a5b5f1c48ffe2e5f5a11d55"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_surface_manager.h",
+      "bytes": 16189,
+      "sha256": "a4ecfd6c0ffb976115158f2ffe56df47b2583e24cd31553dda282c9128fe07f2"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_topo_context.h",
+      "bytes": 8034,
+      "sha256": "b31fa31effe822879f2e488afc91622a0b473ba9bb1ab2ffe83634b0b152f0d2"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_topo_manager.cu",
+      "bytes": 50320,
+      "sha256": "8f020f6791c8bace931d86f8defd329a76df7236387df3b1657552f21447c330"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_topo_manager.h",
+      "bytes": 12445,
+      "sha256": "ff4cb3ec5027bde8bb3bcbd40659d225934b8ade53ed34fdaf5bad15d8011105"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_vertex_context.h",
+      "bytes": 9049,
+      "sha256": "ee18ed294c714858ada9445d6c3509ec2883562a98e86e7f63d4fe0cb3f43380"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_vertex_manager.cu",
+      "bytes": 16381,
+      "sha256": "edb3e781b98841413b21055f0716af44e8d8329dfb51722da01c59d544ddc95b"
+    },
+    {
+      "path": "qipc/_src/native/solver/global_vertex_manager.h",
+      "bytes": 8557,
+      "sha256": "534978371a6f2526a18b80960f9e5d7a882329c9a8a43f04b6ba10550cddd054"
+    },
+    {
+      "path": "qipc/_src/native/solver/gpu_merge.h",
+      "bytes": 16197,
+      "sha256": "33c8e924e05a372a0fdae54eeccedcdd63f2297c6171194c72f5858a810dbe02"
+    },
+    {
+      "path": "qipc/_src/native/solver/gvm_topo_event.cu",
+      "bytes": 8780,
+      "sha256": "feefd49bd9d10715837c5b4cea021032335112b97a45b2614465162f750cf87e"
+    },
+    {
+      "path": "qipc/_src/native/solver/gvm_topo_event.h",
+      "bytes": 3146,
+      "sha256": "d37460cbfc739c2207225eba7636b05ca2d19a8ffe837a73844beaaa073abbd1"
+    },
+    {
+      "path": "qipc/_src/native/solver/halfplane_contact_kernels.cu",
+      "bytes": 29182,
+      "sha256": "0325d438c5a7a693dc734bab7d3bb3a0faa41bf874621c6859dba5f03ebfded1"
+    },
+    {
+      "path": "qipc/_src/native/solver/halfplane_contact_kernels.h",
+      "bytes": 3044,
+      "sha256": "0be82f2a0dd0d3c459884f6f9b75657d4102dab01abe55103239bb462e5bcc70"
+    },
+    {
+      "path": "qipc/_src/native/solver/hookean_spring_1d.cu",
+      "bytes": 29400,
+      "sha256": "329df8dd563746c0ff4ef82077a5664b3659307dc1dc33176412d77cf3f3b285"
+    },
+    {
+      "path": "qipc/_src/native/solver/hookean_spring_1d.h",
+      "bytes": 4779,
+      "sha256": "89d238d1e154f3367d93f728d7aaa7b5000800892a1fe66c8d98e9c5e6cc382c"
+    },
+    {
+      "path": "qipc/_src/native/solver/hookean_spring_context.h",
+      "bytes": 4772,
+      "sha256": "c2750915f3a246cfd080fb5c5cbc36d94d35745b64b4c2c7242d7c0b3d2cf619"
+    },
+    {
+      "path": "qipc/_src/native/solver/hookean_spring_topo_event.cu",
+      "bytes": 16093,
+      "sha256": "651393d2f3af514c9a19c76a3f9cedf86503d0b1056bba76b2e84b4163f66685"
+    },
+    {
+      "path": "qipc/_src/native/solver/hookean_spring_topo_event.h",
+      "bytes": 12141,
+      "sha256": "36a0f1b0e7825db67df9d17f477d09524d2b42a7882bc4ecd669c6d2efdd97bb"
+    },
+    {
+      "path": "qipc/_src/native/solver/host_ndarray.h",
+      "bytes": 1271,
+      "sha256": "8da985b3723c2cc6210232f91fefbe818383853cda60a56a4f28dfa7ef25183f"
+    },
+    {
+      "path": "qipc/_src/native/solver/index_table_remap_event.cu",
+      "bytes": 3009,
+      "sha256": "275b62f941dc7c9fb1ea3edb9212c02e236a2fab973c23a5cfde95654954578d"
+    },
+    {
+      "path": "qipc/_src/native/solver/index_table_remap_event.h",
+      "bytes": 2934,
+      "sha256": "f363b2f2bcb1e5196f4231456628e288fc91d2b9f517bcc0d3c66318e7e52a21"
+    },
+    {
+      "path": "qipc/_src/native/solver/info_stackless_broad_phase.cu",
+      "bytes": 4537,
+      "sha256": "011c3ac610bc298b7f907e585d1b9e0dc7535efa256b7c3f142ef47ecb10bbb4"
+    },
+    {
+      "path": "qipc/_src/native/solver/info_stackless_broad_phase.h",
+      "bytes": 3352,
+      "sha256": "c9d1b8a11f77c2a22f2b46e73baf56d6220687a47e27c6e34af76f9211a79c8a"
+    },
+    {
+      "path": "qipc/_src/native/solver/inter_abd_constitution.h",
+      "bytes": 237,
+      "sha256": "0435f177f42a781fb4e1cdbf5b8c647a8b16efbb4360f78a4e04eb4097121f6a"
+    },
+    {
+      "path": "qipc/_src/native/solver/inter_rigid_constitution.h",
+      "bytes": 238,
+      "sha256": "ccd24d9c36b34f0788c6018da9c26e0deda5d2a5e159734bd0a5f8fe11f68065"
+    },
+    {
+      "path": "qipc/_src/native/solver/inversion_toi.h",
+      "bytes": 3892,
+      "sha256": "5e1f57bd29ec7ba692998aaec10f5ec9ab0a735ff71e411cc140864f75dd1a75"
+    },
+    {
+      "path": "qipc/_src/native/solver/jit_kernel.cu",
+      "bytes": 15130,
+      "sha256": "8a47ddf23a279384d9089d0c3873fc8fbb042cba390f531f89bdc80716865371"
+    },
+    {
+      "path": "qipc/_src/native/solver/jit_kernel.h",
+      "bytes": 8843,
+      "sha256": "0929c53ab2c9330c2d8660620e84f7aecc4a26c25e14042ba1de7ad1653a2ba4"
+    },
+    {
+      "path": "qipc/_src/native/solver/joint_ccd_connection_reporter.cu",
+      "bytes": 955,
+      "sha256": "b62b1df7b6f001055d3bb0ac78b221f806900070adabf1f190e2f69631621ab4"
+    },
+    {
+      "path": "qipc/_src/native/solver/joint_ccd_connection_reporter.h",
+      "bytes": 587,
+      "sha256": "d9c2e40af17a86efef02f33f0e6264d01eaf01673bc71ee5ca799baac73508f4"
+    },
+    {
+      "path": "qipc/_src/native/solver/joint_constitution.h",
+      "bytes": 4002,
+      "sha256": "90ecaa449fad31d3b7ce39e4846e8592631d8c8f3b1c38c87e181ebdbf9bc01a"
+    },
+    {
+      "path": "qipc/_src/native/solver/kerf_fragment_system.cu",
+      "bytes": 61132,
+      "sha256": "ae3626a8c7eb57e547bbab71450af01579dd57fea1fd4af84ff146389b49972c"
+    },
+    {
+      "path": "qipc/_src/native/solver/kerf_fragment_system.h",
+      "bytes": 6300,
+      "sha256": "ad041b77ef21d3634d03c94f9ad75879f46edea9f08176059454c46c71927fe4"
+    },
+    {
+      "path": "qipc/_src/native/solver/kernel.h",
+      "bytes": 5914,
+      "sha256": "cc8c0ca6c3de93118a6bbe47e0d5845c07ec131daa5b717d5f7390bf68e3b0d4"
+    },
+    {
+      "path": "qipc/_src/native/solver/kirchhoff_rod_bending.cu",
+      "bytes": 39137,
+      "sha256": "6229907bd58972457964ab859229b2eac8ca5b96cef180273a4695400681c761"
+    },
+    {
+      "path": "qipc/_src/native/solver/kirchhoff_rod_bending.h",
+      "bytes": 5901,
+      "sha256": "99424b17d4b31f42d16c7c14da79e3d33d403068fec6060e8fcb65490cbd7684"
+    },
+    {
+      "path": "qipc/_src/native/solver/kirchhoff_rod_bending_context.h",
+      "bytes": 5660,
+      "sha256": "64b5db7b955c5ebaf26f5d9843d6d502e0a8647e9d3909050785129ffd222037"
+    },
+    {
+      "path": "qipc/_src/native/solver/kirchhoff_rod_twisting.cu",
+      "bytes": 109193,
+      "sha256": "5b9d5e311194e749e97bbf82d73d814d18966573b62a8da647362fe851c11258"
+    },
+    {
+      "path": "qipc/_src/native/solver/kirchhoff_rod_twisting.h",
+      "bytes": 14349,
+      "sha256": "72bb7dc918fc99a8c768da4ff282fb5a9c686238a6f760654a725eeb86aceb1f"
+    },
+    {
+      "path": "qipc/_src/native/solver/kirchhoff_rod_twisting_context.h",
+      "bytes": 18853,
+      "sha256": "3b0715fc7eeb8f9f20c25e92cdfab0c6b530e791f02620a5bc048c8dc31ad970"
+    },
+    {
+      "path": "qipc/_src/native/solver/lbvh_broad_phase.cu",
+      "bytes": 15378,
+      "sha256": "6496fb0137a2ae193607ac39576f14eb821337ae661ca9b310ff3076531627e8"
+    },
+    {
+      "path": "qipc/_src/native/solver/lbvh_broad_phase.h",
+      "bytes": 8164,
+      "sha256": "38c796aa54783168fdfbd78bbed7adfb35f674319ada045596e95b590cb37526"
+    },
+    {
+      "path": "qipc/_src/native/solver/lbvh_kernels.cu",
+      "bytes": 11226,
+      "sha256": "12043ab39b16eff0fa22735edaea95e0fafacc4a291fe419d710dfc896f72f63"
+    },
+    {
+      "path": "qipc/_src/native/solver/lbvh_kernels.h",
+      "bytes": 33250,
+      "sha256": "7e9387dfb4845bae7cb1c3088f82644a61928b3c80092e0a8b218c93d7ae72d4"
+    },
+    {
+      "path": "qipc/_src/native/solver/linear_system.cu",
+      "bytes": 11700,
+      "sha256": "c0576918179403b71f85f7e0137cd8689bd56ad456aac0ef5a0c3ef5fbc7006a"
+    },
+    {
+      "path": "qipc/_src/native/solver/linear_system.h",
+      "bytes": 2490,
+      "sha256": "a9ff5086829ecbb676c9425b696ec0de38e73b7e954fe86b92cb53c9d5e22f6e"
+    },
+    {
+      "path": "qipc/_src/native/solver/linear_system_pcg_accessor.h",
+      "bytes": 1368,
+      "sha256": "002ae85f80768442022f7e94a5654bdf48053530ec529a65a15ce967bc4a8dd4"
+    },
+    {
+      "path": "qipc/_src/native/solver/ls_stage.h",
+      "bytes": 1074,
+      "sha256": "753b8a0523297f08586a36bb63640034ad0cf257d13cc2961f4a89327966ae4d"
+    },
+    {
+      "path": "qipc/_src/native/solver/make_pd_lowrank_scalar.h",
+      "bytes": 5996,
+      "sha256": "1210a742bd31b68183a0af35099aaeacc77cf63c15947fc8018b539d4b204bb7"
+    },
+    {
+      "path": "qipc/_src/native/solver/mas_context.h",
+      "bytes": 16850,
+      "sha256": "dcb71ece0c9122e8b3be5e0a5cbc276b2c4b99aaeccfc901388cd6a7a90b4191"
+    },
+    {
+      "path": "qipc/_src/native/solver/mas_kernels.cu",
+      "bytes": 47436,
+      "sha256": "dee80fcde739ef424f18a7f270608d7e4cf59d95f4ca9ed2488f8a5f9a54170c"
+    },
+    {
+      "path": "qipc/_src/native/solver/mas_kernels.h",
+      "bytes": 7252,
+      "sha256": "4a3c69211e400273378765406b8998a9c9bfabaae304e91e2d475641d60f7266"
+    },
+    {
+      "path": "qipc/_src/native/solver/mas_preconditioner.cu",
+      "bytes": 24396,
+      "sha256": "a04bb0dc81a3821bd4e8662441a12b3e540bda594f207e68c666df953145726a"
+    },
+    {
+      "path": "qipc/_src/native/solver/mas_preconditioner.h",
+      "bytes": 6581,
+      "sha256": "0308747919dcbe17b5fe1a7a1624ec757c70955c5fa7d7b7dc5ea844a6bcce1a"
+    },
+    {
+      "path": "qipc/_src/native/solver/mas_topo_event.cu",
+      "bytes": 87865,
+      "sha256": "1b9c006e901c97c9fe5555a13b590dd1948349bbf56bdbafda17a6dc47e110ab"
+    },
+    {
+      "path": "qipc/_src/native/solver/mas_topo_event.h",
+      "bytes": 22244,
+      "sha256": "af4c11c3da545ddf00c093c880e05e80ac955cc694f78bfb64e1d4ff91ad91c3"
+    },
+    {
+      "path": "qipc/_src/native/solver/masked_pcg_solver.cu",
+      "bytes": 4610,
+      "sha256": "68b4bc15da618299de91de1990217e9c06083e2aea633ba31f806e3d18e3f26e"
+    },
+    {
+      "path": "qipc/_src/native/solver/masked_pcg_solver.h",
+      "bytes": 3137,
+      "sha256": "1501ae08a4771f440a183371f2b3ea7b58e6b5de6b13b932ffdb0df52928ae6c"
+    },
+    {
+      "path": "qipc/_src/native/solver/mpm_context.h",
+      "bytes": 27208,
+      "sha256": "336b9b4a2c3da92884f3f3a5ac665c68ac5ceb605fac7f48210bdd5b76ef9171"
+    },
+    {
+      "path": "qipc/_src/native/solver/mpm_kernels.cu",
+      "bytes": 23741,
+      "sha256": "c947b729b1aa9f318bb3de138dc118148a610f38acb169e23d2534d92ac18bd6"
+    },
+    {
+      "path": "qipc/_src/native/solver/mpm_kernels.h",
+      "bytes": 19832,
+      "sha256": "159812ccc1291380bdd4be68a8c96b7b16c3b3b6e7569b7015bbe78ebaa9a31c"
+    },
+    {
+      "path": "qipc/_src/native/solver/mpm_material.h",
+      "bytes": 5519,
+      "sha256": "7d191fbedc43220140c380d853169e2d744454f5b3428a0d3122b261dfbb1aa0"
+    },
+    {
+      "path": "qipc/_src/native/solver/mpm_newton_kernels.cu",
+      "bytes": 88426,
+      "sha256": "02a5a08d3fd154f2e48d516e34fc74e6f48ccc681b253981a935e06c30663885"
+    },
+    {
+      "path": "qipc/_src/native/solver/mpm_system.cu",
+      "bytes": 41146,
+      "sha256": "d9d49d1ac8ce55e4bda87c6bd84f172b7facdb4f9bff879b160e7b9285cb418d"
+    },
+    {
+      "path": "qipc/_src/native/solver/mpm_system.h",
+      "bytes": 16759,
+      "sha256": "e29ae01e11a0ba1fe9a7fd3769dc6ed1df87ca41e965a04c63b2687cbc8c1ecd"
+    },
+    {
+      "path": "qipc/_src/native/solver/nb_friend.h",
+      "bytes": 453,
+      "sha256": "22894b22055771e036eda9c9ca80fa83360de3e066a8f7cf595b91f718859889"
+    },
+    {
+      "path": "qipc/_src/native/solver/newton_aware_pcg_context.h",
+      "bytes": 5510,
+      "sha256": "0b874ecb022e05f56746658c19cd5c0f5b2f50c08c12abcdb634502693448f48"
+    },
+    {
+      "path": "qipc/_src/native/solver/newton_aware_pcg_gate.cu",
+      "bytes": 30261,
+      "sha256": "35abcabd842aa655bd0175248759cd5118222a73b301c9e83157d09da5d58f5a"
+    },
+    {
+      "path": "qipc/_src/native/solver/newton_aware_pcg_gate.h",
+      "bytes": 2041,
+      "sha256": "ab806b4b3e3bff9caf30898c95ee7ee458c176183a6e7a21de718df68b37baa2"
+    },
+    {
+      "path": "qipc/_src/native/solver/ortho_potential.cu",
+      "bytes": 9870,
+      "sha256": "299fde1191e50e0513f652346fb86247f5ea7f3fd8deb57e90d3486b8b2129cc"
+    },
+    {
+      "path": "qipc/_src/native/solver/ortho_potential.h",
+      "bytes": 1595,
+      "sha256": "ae704f6493b90b2e30979179536718c6a252267554f83b21a4e69267c04a3a6a"
+    },
+    {
+      "path": "qipc/_src/native/solver/ortho_potential_context.h",
+      "bytes": 1270,
+      "sha256": "8839f1c9cd902ebdbd97bee3b15d11782543fbba761494f48e7a8076b4d780bc"
+    },
+    {
+      "path": "qipc/_src/native/solver/particle_0d.cu",
+      "bytes": 176,
+      "sha256": "20f5a2518566646bc803d32dab6cd926905d679d12c69c5be81ad43cc70cadd4"
+    },
+    {
+      "path": "qipc/_src/native/solver/particle_0d.h",
+      "bytes": 1483,
+      "sha256": "360ced1c221f7bea337ccdf7f85695dc7fc9d55d083684a1ee6e8d7ef71a7bbb"
+    },
+    {
+      "path": "qipc/_src/native/solver/pcg_device_functions.h",
+      "bytes": 2834,
+      "sha256": "0709e267fc8eacb08bea38ebbb8da58031df3aca5ea8851f207966c1faf7696e"
+    },
+    {
+      "path": "qipc/_src/native/solver/picking_point.cu",
+      "bytes": 57596,
+      "sha256": "16c3976fc700e0002c9009c45e801d97e4604d465dedcb13a55f06ae790caa6d"
+    },
+    {
+      "path": "qipc/_src/native/solver/picking_point.h",
+      "bytes": 4970,
+      "sha256": "78acf1e7f654d4b96b5ba9a5a0e936ed367c913ce1fdb4c80ad13c62025d14f1"
+    },
+    {
+      "path": "qipc/_src/native/solver/picking_point_context.h",
+      "bytes": 11410,
+      "sha256": "2453f4604f7a9edd7e37f57f2c9d8937617fbca760c2c945830acf1d322bc656"
+    },
+    {
+      "path": "qipc/_src/native/solver/plastic_shell_bending.cu",
+      "bytes": 21578,
+      "sha256": "6ea74db6000c48119aa716f257231895e06cfccfd0e714452e3c3ca70a7394d8"
+    },
+    {
+      "path": "qipc/_src/native/solver/plastic_shell_bending.h",
+      "bytes": 4935,
+      "sha256": "bad69d05d4c86d14a5cd933fec99dc035d21339dd83bc7253fdaf59c37fdb17a"
+    },
+    {
+      "path": "qipc/_src/native/solver/plastic_shell_bending_context.h",
+      "bytes": 4000,
+      "sha256": "eac00de9247ce9d1f14104f527a74a4e4726c1cbb550c21ed6250e8eefd4e0f5"
+    },
+    {
+      "path": "qipc/_src/native/solver/position_dbc.cu",
+      "bytes": 15775,
+      "sha256": "6c7ecba7970daa33d48a5d41c09c9eb346d9d6dffd31ea4ce4fe51e5b935b3c5"
+    },
+    {
+      "path": "qipc/_src/native/solver/position_dbc.h",
+      "bytes": 4252,
+      "sha256": "d8f4462478156ce4b1655ee042d29bb47003668e0c4f5e60f9b9df2dda8ad30c"
+    },
+    {
+      "path": "qipc/_src/native/solver/position_dbc_context.h",
+      "bytes": 2296,
+      "sha256": "a53ef72bdc6afde4f4fe7f4892f74ade48c3d4f5b5d16b1da35edb6c7bca32e5"
+    },
+    {
+      "path": "qipc/_src/native/solver/prismatic_damping_context.h",
+      "bytes": 1000,
+      "sha256": "746da9d70d2b365898f9ec1c9c17a220f0b87b11d8d068643defd99d2cc9e233"
+    },
+    {
+      "path": "qipc/_src/native/solver/prismatic_joint_context.h",
+      "bytes": 4453,
+      "sha256": "f9d12185190828ad19fe688d22035ed8bbca4516ea0719c4673bcf5e72122b12"
+    },
+    {
+      "path": "qipc/_src/native/solver/prismatic_joint_external_force.cu",
+      "bytes": 7508,
+      "sha256": "25e6dff8138372fc72e840ecb59fb3ee65b0cc4d76525cfe505c505093923885"
+    },
+    {
+      "path": "qipc/_src/native/solver/prismatic_joint_external_force.h",
+      "bytes": 1220,
+      "sha256": "c94b6acbcbe458f469e115eb67090cd5e0963ed073522e2185521ac1038d854a"
+    },
+    {
+      "path": "qipc/_src/native/solver/prismatic_kinematics.h",
+      "bytes": 3339,
+      "sha256": "7c88e687f0805a60fe827fd3d32937819f15f850e6ea695840bb9a1f07fef0f8"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/affine_body.cpp",
+      "bytes": 17531,
+      "sha256": "d724531e030ca9884c3e7dfd8fea729ad8785588b254a59feab399c7af7bce1e"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/affine_body.h",
+      "bytes": 785,
+      "sha256": "329da56d57f14f850cc762396419e2c20250a376303d63ff268f55e885141a30"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/bending.cpp",
+      "bytes": 16251,
+      "sha256": "e1ad46bd74d1bdb41d28a0185408a254a3e8d1bf886931cddf090ed83b1726be"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/bending.h",
+      "bytes": 827,
+      "sha256": "7700ec485435741f09f88fd53d4d2715cf8d7ba3e001a17d2f7f3febb02e5f6b"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/bond_mpm.cpp",
+      "bytes": 13856,
+      "sha256": "38dcb365a93fbe9019f43ba0b359163261e8c1ff5a8d495f04d77efe33a76266"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/bond_mpm.h",
+      "bytes": 525,
+      "sha256": "b1912f8d3c837f82875ca2d849d95cac4faaf81fc336fc4551313b6806172038"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/bspline.cpp",
+      "bytes": 8043,
+      "sha256": "e6038c7c752474d83529dd1f4d69e4e7e6b78b9f862fbb0edb7a168c216bb54f"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/bspline.h",
+      "bytes": 850,
+      "sha256": "bddbf3e4a1ea44f8568d39bea56242c6e69510c50c95715885f58d196d7e7a42"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/constraint.cpp",
+      "bytes": 22896,
+      "sha256": "81cadafa08fbb0b26a977caa7070bfb85cb0ccb02c641af4a39f699f1d92dec2"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/constraint.h",
+      "bytes": 852,
+      "sha256": "8eaa32eb3b2a5323e6d10e70d8402fd855566b330319670a1872014d23f0738e"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/contact.cpp",
+      "bytes": 30538,
+      "sha256": "492756f662e9e7bcfca14899d517eb0f7da1d780f5fadd045f2b68b05279a8fc"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/contact.h",
+      "bytes": 1005,
+      "sha256": "6fb5abe347c58d0248831af8c80aa4f5c045dd5a910ba07253475c4573d70e91"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/core.cpp",
+      "bytes": 10169,
+      "sha256": "350e724f86b4dbbbe20ba68b83997423e0e93baed8703c2e2031c45976f7aea7"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/core.h",
+      "bytes": 790,
+      "sha256": "accca5812ded0535a82186ca2cd4f9d7405117d462612faa4506a664da5667f2"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/finite_element.cpp",
+      "bytes": 14489,
+      "sha256": "40beb03a53d47370e823c46b90725d1771ea1391be40b99b1fdb62aac2381880"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/finite_element.h",
+      "bytes": 1077,
+      "sha256": "f3cfd6e9f251b3d1cd11588eb6a2bdc786bae64ceca2e79fa59f492cd95611a7"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/global_managers.cpp",
+      "bytes": 13922,
+      "sha256": "f514cedef234fcc6e6531918fb7b555c96823947ae428dadd9f51382e19bcf23"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/global_managers.h",
+      "bytes": 1069,
+      "sha256": "c753e111971c3cb8c883bc37e2690dd16beeaf6dabd2e9aa9648184e078001d2"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/joint.cpp",
+      "bytes": 28902,
+      "sha256": "223ae2b49d6860213867c14c59886113323f038bb303d3db1846b757d6601dc8"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/joint.h",
+      "bytes": 2293,
+      "sha256": "cf14580555fd9ba838bc6a6115fc842b19f4d070b03de1074f1f0c37a450a80b"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/kerf.cpp",
+      "bytes": 3925,
+      "sha256": "24da0afac3635cb7a1c43c609d72ed4216d405f33af220d3632d975906408cec"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/kerf.h",
+      "bytes": 270,
+      "sha256": "228551590790ed0fc938cefa1a0c1e739c108c7f528671a59eca1db490ffe3f8"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/module.cpp",
+      "bytes": 6315,
+      "sha256": "0fdf16967cf6e58cad9910fd00896edac40bd409f674ccd2a4e37f44c35b9528"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/module.h",
+      "bytes": 441,
+      "sha256": "1fad1aaebc37a52578d294d555e532be14e97292e73f86576318c1593b17b9be"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/partition.cpp",
+      "bytes": 9333,
+      "sha256": "25e507f34fc4f714bcda161db5b47f813b0a816f2df491bae5856c82a9811953"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/partition.h",
+      "bytes": 1437,
+      "sha256": "48817b395b1ff734c561b97fd082c842c277f4471034280e9a55a2ee0f8416a6"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/preconditioner.cpp",
+      "bytes": 6663,
+      "sha256": "b97f33f68c9374159ae244df263ba57fad9f9b407b5fd8056b1a5b5c395f33f6"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/preconditioner.h",
+      "bytes": 947,
+      "sha256": "bbfab1c6cb9014074d2be5f44f10256f63f60b8dfafd38d5ff76055b79f413c3"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/pyqipc.h",
+      "bytes": 10516,
+      "sha256": "0e61291e8880225ed73a2fdbaefe3b8666d31d781b34aba1efa6e4d9479fbdd8"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/shell.cpp",
+      "bytes": 7597,
+      "sha256": "d75cd644b1e9a208248b405f0875619b74a457022d0a5cdbb206c6211d38f2db"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/shell.h",
+      "bytes": 720,
+      "sha256": "812866ee86b28d18ddb9551b763a569a2316b7fbb1bbbbcfe1731cf0e7b4fa82"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/sim_engine.cpp",
+      "bytes": 27858,
+      "sha256": "c69410e75ee2f3bae61e17e2fb9421738848765a8ff81754be47a1b02d1d67b6"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/sim_engine.h",
+      "bytes": 406,
+      "sha256": "e081b9052650b59bb8e45c97b4e55fc6a5a362ed57e7e424c91e3f7ba0f8e2ad"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/spatial_query.cpp",
+      "bytes": 4522,
+      "sha256": "0f14a48e7a238d7fe73d28e3c1a0a597289dc9b6ea9a256217f32e03d7988fda"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/spatial_query.h",
+      "bytes": 174,
+      "sha256": "da2925111e727dcdbd9699a2318287bdf8a3a893b04bbc69c2790435899641e9"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/test/contact.cu",
+      "bytes": 18529,
+      "sha256": "a0ddf63f9df9a2a64a78b02994d2dc90590947013f9c848a6db4c9950d4edafe"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/test/contact.h",
+      "bytes": 2445,
+      "sha256": "fdcb285677476f328457f0e5f6d222ba4a7983be452a0cd3b90c8e6a28fd5d1c"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/test/contact_function.cu",
+      "bytes": 37086,
+      "sha256": "51a929c6743a464cf2859104fa936c2bb324a78603da26a81544fa2146bc49a3"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/test/contact_function.h",
+      "bytes": 454,
+      "sha256": "a0b6c5ed19ef3944c719398ce4b72b100df654862645269b0d3c73e8fa5dc83b"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/test/core.cu",
+      "bytes": 20717,
+      "sha256": "2b53eebfa36b77b53a893ba41f6d28e7b0c6af25065a6abc22554d90158a0063"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/test/core.h",
+      "bytes": 1827,
+      "sha256": "4d34d56f34597c78c6ed795c77ea1b1208fd3f47de9959dfecd9faf4651a9da9"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/test/misc.cu",
+      "bytes": 5505,
+      "sha256": "7a65fd67a4bf9a79af130030e8adaaaea909e07fb62f00ced5ecec5f2179b595"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/test/misc.h",
+      "bytes": 811,
+      "sha256": "c4db311ed948c1eba833b436e47cc9b854db28e1a948618925108d67494312de"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/test/module.cu",
+      "bytes": 8777,
+      "sha256": "6f96c4b450aa365b97635cf6bf16f4be8a4f10a7af9a96d995bf17ade329a718"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/test/module.h",
+      "bytes": 365,
+      "sha256": "4b35ce09594d12e095a4526b22f12e344897c1f08254d2b0892fe7dfa006872c"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/test/sort.cu",
+      "bytes": 6074,
+      "sha256": "db4adb605da69c3151a1b498ab7a8f30f79249c13f441b89d8bd6c7273a1c143"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/test/sort.h",
+      "bytes": 1372,
+      "sha256": "d9938c86ee1bdf71690f579f45b5bbd8608f2f6e53a2562af0c02a69bd484fd9"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/topo_manager.cpp",
+      "bytes": 5912,
+      "sha256": "63bc5b267d6d9a7e27215f35b9872e069f4aaf5c4b64b0f28c216612dd1fd114"
+    },
+    {
+      "path": "qipc/_src/native/solver/pybind/topo_manager.h",
+      "bytes": 388,
+      "sha256": "9add133f15e7cd712a5d2486b0a35d3338a7871f2f34a73dbd8ade5a51ffc6cf"
+    },
+    {
+      "path": "qipc/_src/native/solver/qipc_solver_export.cu",
+      "bytes": 21129,
+      "sha256": "d738669b20820cdf49422562a84cbe572237e5f743838ad946aa194d6c80264a"
+    },
+    {
+      "path": "qipc/_src/native/solver/quadratic_bending.cu",
+      "bytes": 11388,
+      "sha256": "bf678d9a9708ee069e9864d2a164e6ba91ef6e069fb8c9e89d19cdd179fa8003"
+    },
+    {
+      "path": "qipc/_src/native/solver/quadratic_bending.h",
+      "bytes": 3105,
+      "sha256": "8331fb9e6757ac3e1cd809a4f42f717d2924d2edd957805e50ff5335c7daa150"
+    },
+    {
+      "path": "qipc/_src/native/solver/quadratic_bending_context.h",
+      "bytes": 2196,
+      "sha256": "113058fdbc253713f9b3f4854becf203fb66f2fee28caf919e5c1c0ffc85294e"
+    },
+    {
+      "path": "qipc/_src/native/solver/register_select.h",
+      "bytes": 1030,
+      "sha256": "4d06dd7314269dea55bd3962e5ed8ed74360a7fc444226420d069e0bb47c5fd7"
+    },
+    {
+      "path": "qipc/_src/native/solver/revolute_damping_context.h",
+      "bytes": 998,
+      "sha256": "91d3f262dda747afbc0e4eceba73e55388665b0a61e2117f21442ae418f8d9a5"
+    },
+    {
+      "path": "qipc/_src/native/solver/revolute_joint_context.h",
+      "bytes": 7210,
+      "sha256": "adcb6be52e9b3957678e914cc9959023db9e8389a4d461ec9198d2cd15050b2f"
+    },
+    {
+      "path": "qipc/_src/native/solver/revolute_joint_external_force.cu",
+      "bytes": 5841,
+      "sha256": "e81c574e132793c78a27d4447e10f3867f6f24629261e6bb4dd527cdc259f43f"
+    },
+    {
+      "path": "qipc/_src/native/solver/revolute_joint_external_force.h",
+      "bytes": 1105,
+      "sha256": "9f78860a2d4ce77922c1c828c25e337823ea2bdd74173345628a5da97fa2ce82"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_body_dynamics.cu",
+      "bytes": 15909,
+      "sha256": "4e68c1a0105820e722ef75628cd09b6809d8b0ef82458abda6404eebb409e596"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_body_dynamics.h",
+      "bytes": 8975,
+      "sha256": "8f2645882524675e917d26962546d5199a4e7db9f5a3600a8b9834e18e81df01"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_body_external_force.cu",
+      "bytes": 1891,
+      "sha256": "dcf181259506cca6bea0dd3b5d5417fe1b1ea480c056358425560fa9047693bf"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_body_external_force.h",
+      "bytes": 571,
+      "sha256": "b909b250e5f3042aaaf9f2669b94d05704e7d5aa405275d08e1ce622254355cb"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_body_external_force_constraint.h",
+      "bytes": 631,
+      "sha256": "4b0ef9f7c00497e8bfbaf9a33ece97a2cf60ac566aabf807d4b3c1d2a2b752d4"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_body_prismatic_joint.cu",
+      "bytes": 36838,
+      "sha256": "787abfe710eb49471a5c8f7e7ee6b1136732947429054a55f74e61cda92641a0"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_body_prismatic_joint.h",
+      "bytes": 4235,
+      "sha256": "4ff2d4aeaf7f4e7052059b2daa51d1e9bd680f30582549e7219bf2f8b84bf4a3"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_body_revolute_joint.cu",
+      "bytes": 30542,
+      "sha256": "db8099c0c94bb040c5eeddaaaec49171c68f39ceefe6bbceeef6a7e250df39b8"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_body_revolute_joint.h",
+      "bytes": 4182,
+      "sha256": "46f37419c7e7b6fb227b3374769d9db7ab5a7abf96c3b0be0287d00f951851db"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_contact_assemble.cu",
+      "bytes": 20999,
+      "sha256": "401f5e736deedc2fd517d6768442227538f6a5e5edd759e5c0b832d4579e5df2"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_contact_assemble.h",
+      "bytes": 2796,
+      "sha256": "d048780b2082e4ab71930064e369763af705d2f8cb4042ef274adc91010f2058"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_contact_kinematics.h",
+      "bytes": 771,
+      "sha256": "020c8e98de49b55ed63957450902637f0710945c99c908b83d5bbd477c65b136"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_context.h",
+      "bytes": 10665,
+      "sha256": "abd607b564fb07a6a3640b7eda905e3f4f75159f41c8dfde77d45b4bfa2d28d8"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_diag_preconditioner.cu",
+      "bytes": 3715,
+      "sha256": "e045a8648330259962d890f3a287170a27fab32405cd562ec3d49d0e4bd60441"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_diag_preconditioner.h",
+      "bytes": 1302,
+      "sha256": "834ba55f4e6c93cb436b5db9a84ddb44db198da313afeb89e090f176e458d326"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_joint_assembly.h",
+      "bytes": 2934,
+      "sha256": "e23cc9b5d2e5f5efade4bcef1d036158eaf0ff06b9165643a9a3096cac51230e"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_joint_damping.cu",
+      "bytes": 22602,
+      "sha256": "85a463b7509bbbdf91f6db8363a43da862ad4ab720cdcce5561aa1d909275813"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_joint_damping.h",
+      "bytes": 2035,
+      "sha256": "e21c2d631bdfdb01836c59a6e92a233ae8004e896c3538ec124e4845998c9e31"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_joint_damping_context.h",
+      "bytes": 794,
+      "sha256": "db2de149de1ec82ee03ccde3c41747d6f0f73d7a687ea9a4926012f61fcceac2"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_joint_drive_context.h",
+      "bytes": 2003,
+      "sha256": "c84965bdd4dc21f59737203517ec0a566e7d42b4c413a7f1388ad17891330ee5"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_joint_eval.h",
+      "bytes": 4543,
+      "sha256": "13d6709ca34975f1e6cf04b308fc35f29323dfae47f10995ee62a4ec95cc23e3"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_joint_external_force.cu",
+      "bytes": 11627,
+      "sha256": "2b083322f139daafa54acefe1ef82918910a1691f9b4d7b6ccfd8c946c4ec42a"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_joint_external_force.h",
+      "bytes": 1463,
+      "sha256": "1d2cb7275df6179e1ce5f24fc880b41a3516d00d6d7481fd51450bad509bbbf9"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_joint_kinematics.h",
+      "bytes": 6738,
+      "sha256": "b69c9039c83cc95c532b27e0a090dfeeb8feb4959abdb118fae03ccda42dfba2"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_kernels.cu",
+      "bytes": 26508,
+      "sha256": "678fbefddd414966c5fb7731cd1854c8181020dce3908d22ade7cf9d37e4ffa5"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_kernels.h",
+      "bytes": 3777,
+      "sha256": "ac042ba0a1525ca0544c5d5f49142121850a45870de863e4eb9981a11d696662"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_pose_dbc.cu",
+      "bytes": 17895,
+      "sha256": "125026e06fdd502f5a2e325969805b1908fd1cf0414b78b93d2f173dba158a9e"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_pose_dbc.h",
+      "bytes": 2673,
+      "sha256": "ee498f863de70f00afee17a59082adf0fa6ddc44dfb0405920c1d33da8d81678"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_pose_dbc_context.h",
+      "bytes": 2407,
+      "sha256": "f305026937e01eb274cfd5e63cc48446b712e127ce3c63721925ef4fcc7dd401"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_prismatic_joint_context.h",
+      "bytes": 3500,
+      "sha256": "7824746ac2bac51695d1a90696118c23f9d99c591b1dbaea0c9e6c5069fba1ce"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_quat_utils.h",
+      "bytes": 7835,
+      "sha256": "c5f2349855b889db53d87ed93d8a9b5aad23193d34549c881b02f8bff8580856"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_revolute_joint_context.h",
+      "bytes": 3477,
+      "sha256": "9a7a6f2c5911e83fe0c7fec82a0bdbbd4286a4600d5b3c87c4144d357447f956"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_tree_preconditioner.cu",
+      "bytes": 17248,
+      "sha256": "beaf22d407b0e83c0d28c4cf662c3687d5062786035327e2194731ada08c4787"
+    },
+    {
+      "path": "qipc/_src/native/solver/rigid_tree_preconditioner.h",
+      "bytes": 1950,
+      "sha256": "4047d74a67318d60080249d9b09e0b9e4a9c3dc69c6c9213e2227ac3cb997642"
+    },
+    {
+      "path": "qipc/_src/native/solver/rod_bending_topo_event.cu",
+      "bytes": 36626,
+      "sha256": "ac511e012395d7f223047c45a153ab7f8ccf3e9a8124b27030b577e3088974c2"
+    },
+    {
+      "path": "qipc/_src/native/solver/rod_bending_topo_event.h",
+      "bytes": 15913,
+      "sha256": "5b1a710b3c8f44c5dac5d6cfb8df3e37e70b00317ec95273a329f031c0423f8b"
+    },
+    {
+      "path": "qipc/_src/native/solver/sealed_volume_gas.cu",
+      "bytes": 28855,
+      "sha256": "5387377376cc808ba6887f9b44de95cf9424429612ae50452d648328f2e1e989"
+    },
+    {
+      "path": "qipc/_src/native/solver/sealed_volume_gas.h",
+      "bytes": 5893,
+      "sha256": "ecd4cecff352c37933dbb8ab6d9b74dbe7978cefb5fc3672551ec68678ec033d"
+    },
+    {
+      "path": "qipc/_src/native/solver/sealed_volume_gas_context.h",
+      "bytes": 6075,
+      "sha256": "64ea250f580ae67703e4c4fc28468809df292a090c0c647d626bd2393e580edf"
+    },
+    {
+      "path": "qipc/_src/native/solver/sewing_stitch.cu",
+      "bytes": 11956,
+      "sha256": "5a378dc46f4fba25ed30cb2980ff8b676f6589cf92815e8990005118f7f0644a"
+    },
+    {
+      "path": "qipc/_src/native/solver/sewing_stitch.h",
+      "bytes": 4953,
+      "sha256": "50ff85d957571eeb12930ab0d7377fb4e9c91ab0965e9ba2b18c5d272ab54888"
+    },
+    {
+      "path": "qipc/_src/native/solver/sewing_stitch_context.h",
+      "bytes": 3032,
+      "sha256": "e1fa2aa2e3ce3afcae660bf3d6ca677b3cdae10d6a429d7e85a33cbf0281ad29"
+    },
+    {
+      "path": "qipc/_src/native/solver/shell_bending_topo_event.cu",
+      "bytes": 32345,
+      "sha256": "3198c47b6f7e9e54f2fa9040848d186395d6bb67954160bf3d009847cedf1f7e"
+    },
+    {
+      "path": "qipc/_src/native/solver/shell_bending_topo_event.h",
+      "bytes": 11244,
+      "sha256": "47df358f55b6237856e5ac6e2cd32827cdcab58f18e1a7409650edf2e1a5f9fc"
+    },
+    {
+      "path": "qipc/_src/native/solver/shell_membrane_topo_event.cu",
+      "bytes": 17319,
+      "sha256": "6d71b6077d469453ced2528d9e585f2401cb56084df01b5d4d9095733001a196"
+    },
+    {
+      "path": "qipc/_src/native/solver/shell_membrane_topo_event.h",
+      "bytes": 10613,
+      "sha256": "515681cbdd0053db509571a5ac0fe7f5e6f7f5acda8d4c9b884aae8459476ad9"
+    },
+    {
+      "path": "qipc/_src/native/solver/sim_config.h",
+      "bytes": 753,
+      "sha256": "194443826b50a11316e095c794daa260803ed1f6381f86b9c409c94bcd9d1327"
+    },
+    {
+      "path": "qipc/_src/native/solver/sim_context.h",
+      "bytes": 12459,
+      "sha256": "bb37412bcf186a7dd4411b09946b21d12dd3729d9a052a57d32f297eb68f4153"
+    },
+    {
+      "path": "qipc/_src/native/solver/sim_engine.cu",
+      "bytes": 150826,
+      "sha256": "bf9aaf61c54336e87fc07609aa83fb733a47dce47a84df4e303780fc3f0a0644"
+    },
+    {
+      "path": "qipc/_src/native/solver/sim_engine.h",
+      "bytes": 49906,
+      "sha256": "b0377a6a6feded45d6bc15702fb99fc09e5c1233ea4ae675369ab5694c91c0f5"
+    },
+    {
+      "path": "qipc/_src/native/solver/sim_engine_pipeline.cu",
+      "bytes": 208142,
+      "sha256": "6eb1a24866a5ffee2b31b4b185ecf88a7ef279878749beba333e481d263f3716"
+    },
+    {
+      "path": "qipc/_src/native/solver/sim_event.h",
+      "bytes": 1861,
+      "sha256": "54053d887c2116e6803600144592bd8f6cf3d17929e6fb1d649ad0b4aef7b6e5"
+    },
+    {
+      "path": "qipc/_src/native/solver/sim_system.h",
+      "bytes": 5582,
+      "sha256": "a0dfecd6ec11201d3c6c889df7bbed3990177323e74870dd75dfa688beaa3834"
+    },
+    {
+      "path": "qipc/_src/native/solver/simplex_barrier_helpers.cu",
+      "bytes": 9395,
+      "sha256": "cfc638793e46e6eefe45756fbeeb3c420408147fd48179631c6d334d314dbd2f"
+    },
+    {
+      "path": "qipc/_src/native/solver/simplex_barrier_helpers.h",
+      "bytes": 5902,
+      "sha256": "8acb45f41de57dd746817c6592864d25375cee7bea53dcd1d1e4dbec7927b3f5"
+    },
+    {
+      "path": "qipc/_src/native/solver/snh_context.h",
+      "bytes": 1452,
+      "sha256": "76498dcdf3ee780c905433928c2d8151f6ae781b2be9a51565b498ab0bf4023c"
+    },
+    {
+      "path": "qipc/_src/native/solver/soft_stitch.cu",
+      "bytes": 9734,
+      "sha256": "3627fd66c35d01241cda71aa94ba14ca27d6190cd05813d9b878314a5c9ef255"
+    },
+    {
+      "path": "qipc/_src/native/solver/soft_stitch.h",
+      "bytes": 3226,
+      "sha256": "b9887d7d10f859188ed8788f9aaafe3bf1a1257a9a7bc28e5e251d13f7b79690"
+    },
+    {
+      "path": "qipc/_src/native/solver/solver_bvh_accessors.h",
+      "bytes": 27650,
+      "sha256": "a6877ff1a891de42785d2fdae3a1fe99752fb69d9bfeb0ae15a52e32811fb8f6"
+    },
+    {
+      "path": "qipc/_src/native/solver/solver_kernels.cu",
+      "bytes": 4058,
+      "sha256": "e475dfe8f9a05d8e1d4579620b87642e7ca3a13bb17cf585ac050c193882692e"
+    },
+    {
+      "path": "qipc/_src/native/solver/solver_kernels.h",
+      "bytes": 1094,
+      "sha256": "5e2c39355bd3ffcf55be458fcf60208b4efb7f96c0303e422aa9355a6e8ae568"
+    },
+    {
+      "path": "qipc/_src/native/solver/solver_sort_accessors.h",
+      "bytes": 5632,
+      "sha256": "f25422e82ddef92f992674fd6df4c20d76b620743b34782dca4216a251edd6b8"
+    },
+    {
+      "path": "qipc/_src/native/solver/sparse_view.h",
+      "bytes": 28316,
+      "sha256": "be8de22eb092d8f82e11ea72198a036871d57c12c855c8cfdb79ab89ae4b7d7e"
+    },
+    {
+      "path": "qipc/_src/native/solver/spatial_query.cu",
+      "bytes": 54253,
+      "sha256": "4f2057711ba56f527b2c11993cb5d6d685398aa0a58eacbfb3d092805641b3d1"
+    },
+    {
+      "path": "qipc/_src/native/solver/spatial_query.h",
+      "bytes": 5937,
+      "sha256": "680742e185276f0742f8a2fcc6e90c1e7682a2cffa0283aaf511a5c4ebc99f8c"
+    },
+    {
+      "path": "qipc/_src/native/solver/spatial_query_context.h",
+      "bytes": 6351,
+      "sha256": "67b64b0caaef06ae976c166edf0efdcd96f72a5102406e63dad7ee6833b25226"
+    },
+    {
+      "path": "qipc/_src/native/solver/stable_neo_hookean_3d.cu",
+      "bytes": 13678,
+      "sha256": "3ebe4977dd413d274f3f84763fb67b7869d9a6e01e81b0c5612f4a3c53750e88"
+    },
+    {
+      "path": "qipc/_src/native/solver/stable_neo_hookean_3d.h",
+      "bytes": 2411,
+      "sha256": "2a356973a2ee56dd70d65da34857e13bd0a30e41f506ed1f60064ced0a442282"
+    },
+    {
+      "path": "qipc/_src/native/solver/stackless_bvh_kernels.cu",
+      "bytes": 19391,
+      "sha256": "e4b7ee31512d3d87e2fa521dc4d546ec30243cd19811b60cfc9c1c88d360a959"
+    },
+    {
+      "path": "qipc/_src/native/solver/stackless_bvh_kernels.h",
+      "bytes": 12077,
+      "sha256": "c416892605f2dd2f18102d87839705a0069824d8b1518d8947e8d475ae890bb3"
+    },
+    {
+      "path": "qipc/_src/native/solver/standard_pcg_solver.cu",
+      "bytes": 2758,
+      "sha256": "2d90da12b385bbacdb37635dfb9157b40131c941c6d28dff0706d85d786692ee"
+    },
+    {
+      "path": "qipc/_src/native/solver/standard_pcg_solver.h",
+      "bytes": 2177,
+      "sha256": "23d037b008aeb3d3b00499c73dc1d11013f8123beaca81efc3abd6a3c5ba7d5c"
+    },
+    {
+      "path": "qipc/_src/native/solver/stitch_energy.h",
+      "bytes": 5149,
+      "sha256": "5b970a1931e6a5a889e59b3018ad5c70cf1528d0c87b2c4ebd61bbbc66c2dfd6"
+    },
+    {
+      "path": "qipc/_src/native/solver/strain_limit_baraff_witkin_shell_2d.cu",
+      "bytes": 13774,
+      "sha256": "5ef0b74e360a7ae6b95ed7dc950a05a19a9272cb225bdb4e0dc541f8319797c5"
+    },
+    {
+      "path": "qipc/_src/native/solver/strain_limit_baraff_witkin_shell_2d.h",
+      "bytes": 2474,
+      "sha256": "21b57369b686173ebd1c1931a521656b9ed841733bbd739f4a8bd3741e829d0b"
+    },
+    {
+      "path": "qipc/_src/native/solver/strain_limit_bws_context.h",
+      "bytes": 2024,
+      "sha256": "e34bb48cbaab94fc3e3bfd7b8937707f4eba55cb024ddf506196815d3d580dff"
+    },
+    {
+      "path": "qipc/_src/native/solver/strain_limit_bws_shell_2d.h",
+      "bytes": 10046,
+      "sha256": "05bfbeff638a24b928cf14c89471ec6d3d18add0b41ac81abd169b59115e4c05"
+    },
+    {
+      "path": "qipc/_src/native/solver/stvk_hencky_3d.cu",
+      "bytes": 23218,
+      "sha256": "ccf344c59a642d0e6910e4bb88b6aa0deb06b56b1d82d78f46f789fa8d929610"
+    },
+    {
+      "path": "qipc/_src/native/solver/stvk_hencky_3d.h",
+      "bytes": 3465,
+      "sha256": "2ba773e0b1905af16f3bfbb35b9c13c7c1a1cd9f3f3ef18a6aa43e50a4e28bff"
+    },
+    {
+      "path": "qipc/_src/native/solver/stvk_hencky_context.h",
+      "bytes": 4849,
+      "sha256": "b896d9415000c372195194227630403c73dbf2df692ab6718afb9b4e27e97457"
+    },
+    {
+      "path": "qipc/_src/native/solver/stvk_hencky_model.h",
+      "bytes": 4998,
+      "sha256": "e5179e21294d64847971695fc090b900f2f2d4b9e4583193f8e2b5fd95fde3ef"
+    },
+    {
+      "path": "qipc/_src/native/solver/stvk_hencky_shell.cu",
+      "bytes": 23188,
+      "sha256": "40aa8c4d7a011ab0516a7525c63a8ff1aaeeaf778e356a01c2489ccf4fd43f9a"
+    },
+    {
+      "path": "qipc/_src/native/solver/stvk_hencky_shell.h",
+      "bytes": 3215,
+      "sha256": "5cb0dcc9f4720b665e1af898c8ee8e28a6f011f6c1671aa4323937b137a75377"
+    },
+    {
+      "path": "qipc/_src/native/solver/stvk_hencky_shell_2d.h",
+      "bytes": 22459,
+      "sha256": "6363e15da75153e354769dd4499b506dfbc67a521c6233895f8e38e784e19bce"
+    },
+    {
+      "path": "qipc/_src/native/solver/stvk_hencky_shell_context.h",
+      "bytes": 5246,
+      "sha256": "706796fe6a6cace57745e3607b28a092f9c680be4a778f597ad344d98954ed12"
+    },
+    {
+      "path": "qipc/_src/native/solver/stvk_shell.cu",
+      "bytes": 13594,
+      "sha256": "98dc94c36ac04ca0bceb83dd7ad0c7ddd9e6ecee1a39a8d7c77f3e88ce2ef828"
+    },
+    {
+      "path": "qipc/_src/native/solver/stvk_shell.h",
+      "bytes": 2781,
+      "sha256": "78ac1c3afe747432b74dd0873882d1e985770938801a15705ce9983738d7a01c"
+    },
+    {
+      "path": "qipc/_src/native/solver/stvk_shell_2d.h",
+      "bytes": 6154,
+      "sha256": "f769a2d33e59618b8741687b54c4f89cd67c0cfc6e133623247b546d01ba4d87"
+    },
+    {
+      "path": "qipc/_src/native/solver/stvk_shell_context.h",
+      "bytes": 2151,
+      "sha256": "b8e9cacfc4b633a1c26341118cf8b4c973a8a3d9add30eb154ca405469813e92"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/abd_diag_preconditioner.h",
+      "bytes": 4613,
+      "sha256": "4a517a5144b58cd6766e722438011af7579409e55b63291fa281381f09bd9367"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/abd_tree_preconditioner.h",
+      "bytes": 4368,
+      "sha256": "414f6eb24c50db9c0777dac81b984bad6e59feb27e88b2622db3a6db7d2fd04e"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/bvh_accessor.h",
+      "bytes": 4628,
+      "sha256": "989d6ebfc896b29034348fe2d8f3e293e81bfee9258ed24531c88873ac5926bc"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/bvh_build.h",
+      "bytes": 30826,
+      "sha256": "1b0c2c1b82123f76ab568062c5ed5ebdf0a25b4f5fcd15b7ffe699878bda7ced"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/bvh_context.h",
+      "bytes": 16725,
+      "sha256": "d18c006dd918f07de3405960814587901368a3bfdab2868c093cbf0bc0aa666a"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/diag_3x3_preconditioner.h",
+      "bytes": 4627,
+      "sha256": "da172ae3abde3191bb6997399d8c7494d6280751dd7a3bffe1a2f0d853072342"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/dual_ee_query.h",
+      "bytes": 24335,
+      "sha256": "912943e7a710d65c52f26654c6fcf95450b9bbcfeb39a4dc7a9e054663b8bac1"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/dynamic_exclusive_sum.cu",
+      "bytes": 280,
+      "sha256": "5aaab507cdc7101f19748e45eb95a1051dd4010177452a0baed40f41cfbe882a"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/dynamic_exclusive_sum.h",
+      "bytes": 10049,
+      "sha256": "f6eef0b031a8760c680f3c8942f89f2b3fb402c7d4bf901fe24b504d8d513e9c"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/dynamic_radix_sort.cu",
+      "bytes": 327,
+      "sha256": "fd67de614623166ed40d30c1ab3452f08e136dbe82deed9d4cc82b6189810c30"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/dynamic_radix_sort.h",
+      "bytes": 17748,
+      "sha256": "90ead4df33934d2226321c30bb5ed919b7c8f496643c54c81ee28db5afc7f6ea"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/dynamic_radix_sort_a.cu",
+      "bytes": 337,
+      "sha256": "cb6971d9074565cd95cf6e21cb6053c8d0de5c0daf3e2901b899323e41374150"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/dynamic_radix_sort_a.h",
+      "bytes": 15334,
+      "sha256": "4ec7371e2e9d3c9bb781483e0d3a9a3d7305195d124c6378b6022193443bba91"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/fem_diag_preconditioner.h",
+      "bytes": 4225,
+      "sha256": "eedecac334f2e8451eb46ad6f10f80a0c5b0be960b8a2e8dd74c45666951c2a0"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/linear_pcg.h",
+      "bytes": 19619,
+      "sha256": "b65cce785716791efe529a08659b8c2d08a14ec40acc7446b4a08c6b2d99e3db"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/masked_linear_pcg.h",
+      "bytes": 20350,
+      "sha256": "e329bc9c67f676d5e3a8516ff5e759c4600b8b0b0c8a1658fe42483c3bda28d0"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/masked_pcg_context.h",
+      "bytes": 5336,
+      "sha256": "b7b10844ba0b3f6d1b57e9568c8cdfcc379a82bb4f78c235931778c0a8c61536"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/masked_pcg_kernels.cu",
+      "bytes": 15760,
+      "sha256": "fd1db04962d3ce655fdd7857dd44ae5a695e325586a4b6ad10b3149a7eece6f7"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/masked_pcg_kernels.h",
+      "bytes": 6407,
+      "sha256": "f1279371a4b4b57f5c6262087f680365067f09268187777425d21dea0221b3f9"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/pcg_accessor.h",
+      "bytes": 948,
+      "sha256": "492a682da50e9042622d12e6a0089532f00763ba40c5a89678130b77e18fff5f"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/pcg_context.h",
+      "bytes": 5443,
+      "sha256": "9494efb3ba2ea30c6621e1624944f9060a7a13e784544999b8a20e8eb8577fff"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/pcg_kernels.cu",
+      "bytes": 7912,
+      "sha256": "a83bd9071aea219c988503acc82d35b8a208a666996b275ab61c305393a1a437"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/pcg_kernels.h",
+      "bytes": 4102,
+      "sha256": "cb6755fa54bb5d5559ad9924abaedb13f26c24c1f46b0bb8270067ea82f992e7"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/pcg_matvec_context.h",
+      "bytes": 2106,
+      "sha256": "852c33f9e3b05a4f9b6c1750582ad32433a8b1033b62d975ec9c4faee58c85ee"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/pcg_solver_system.cu",
+      "bytes": 365,
+      "sha256": "2840f57e0371d8fbf30a14f6eb702465da719de778d18fa51c7f52c5ddb91641"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/pcg_solver_system.h",
+      "bytes": 3469,
+      "sha256": "69125875fe4f35758630e6bd63252d822d228d9eb7e96502e2a1eb8547144fe6"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/rigid_diag_preconditioner.h",
+      "bytes": 1729,
+      "sha256": "fec6cc4993005a55d8a808bbb597a9dc81bd524241f91ac36d8b3c94501aa7d0"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/shared_kernels.cu",
+      "bytes": 83,
+      "sha256": "f40d206befb568ecbe20a93318456691bc73d28ca0e3556a9c5b5d4bcd29f2bc"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/shared_kernels.h",
+      "bytes": 166,
+      "sha256": "91b47542ddd17dd308106434e3678fa2283b442f0fc99a2b29e6d74d9e493425"
+    },
+    {
+      "path": "qipc/_src/native/solver/subgraph/stackless_bvh_context.h",
+      "bytes": 14605,
+      "sha256": "2c58bb7b92ac7dda873be2e043a3e2e9bf9da4784c8bbad5867e4109722c8847"
+    },
+    {
+      "path": "qipc/_src/native/solver/svs_context.h",
+      "bytes": 2573,
+      "sha256": "2b4dff5e35876e6c6a9b9cf6612c71cd020d8610352e904e1353b223b9cd6c95"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_align_contact.cu",
+      "bytes": 31720,
+      "sha256": "1153baab23f161b500a57878b79d0ddc775ad348b862b0ca6cc725198ccab742"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_align_contact.h",
+      "bytes": 2956,
+      "sha256": "2201fa6c5d859cc5f1139230ef9d634268ed3425ac34ba894719f0acb370b1c4"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_analytic_eigsys.cu",
+      "bytes": 7906,
+      "sha256": "258b4f9a676cd86b117b1a0940c80874db31b34218866a73ab97a957aa0419c5"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_analytic_eigsys.h",
+      "bytes": 1087,
+      "sha256": "9d1c8e8d52084c5d817922e8301ebcbec69ac640fb4be5706a3d779369b6354b"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_broadphase_lab.cu",
+      "bytes": 29761,
+      "sha256": "7dec4699c9ed1b4b4e76f6b587f9e26a52f83a1300aae7a50937a1399e2ce1f3"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_broadphase_lab.h",
+      "bytes": 3945,
+      "sha256": "797df3825b7d09b0caaad0d2df6222566a41d90bd3fffb42972486d772405a12"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_bvh_ee_dual.cu",
+      "bytes": 81328,
+      "sha256": "0703faa0dbe1d882c66805aa79c849312e1eaf0007c31b690c0503851dd3bc52"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_bvh_ee_dual.h",
+      "bytes": 6789,
+      "sha256": "a078aeffc7340492a2834f5b3f497915a1f1e4c3ea3ca0604fa38a97bcfb9b20"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_bvh_filter.cu",
+      "bytes": 14343,
+      "sha256": "bfeb76467933ebdb5080f85d037e9b22940f929c7c5a36cdc358e1c7fdaea7b7"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_bvh_filter.h",
+      "bytes": 2601,
+      "sha256": "fe58d02a4ee1790bc97c0b52079facd7fad52aec332f6a3ae44f636a3398001b"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_bvh_filter_sort.cu",
+      "bytes": 27249,
+      "sha256": "ef8309d18f06667e9983ce02a3eb60fe1727c5849342494ce55aa307dca93ca7"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_bvh_filter_sort.h",
+      "bytes": 4219,
+      "sha256": "14474bf4bba0defc00a1b3e224d443142419c3cd1557ae14cdfe6ce4ef69b729"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_bvh_filter_sort_dynamic.cu",
+      "bytes": 25919,
+      "sha256": "29bbd7d286e7a7ee9cb6c743caaa40c9a9f5e6fba588738cb5885169527aa768"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_bvh_filter_sort_dynamic.h",
+      "bytes": 4304,
+      "sha256": "2e736f74af4518dce039ed63ed1b06b680e477f12163da44268067c86c3575ad"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_bvh_filter_sort_stream.cu",
+      "bytes": 22728,
+      "sha256": "fa3f7e606caf13fee8e5a8e3269c10635545a5cfd38ac80941895d032f5452bd"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_bvh_filter_sort_stream.h",
+      "bytes": 3736,
+      "sha256": "3624e4be146de170b3d25b542ce7d70b0d549db0de4b545d05427c728a3d2105"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_bvh_lab.cu",
+      "bytes": 46711,
+      "sha256": "c566824286162c7d47531eba94e18155c60a1d9f7cd027ac84a545d927e9886c"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_bvh_lab.h",
+      "bytes": 18940,
+      "sha256": "7fb5fd0bd75a2b763ef66b6721350ea152e2655e70a231d77d95fc405faea5a2"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_ccd_alpha.cu",
+      "bytes": 10231,
+      "sha256": "a92064de49edbdf18e13769906b15ce5387a2f548ddbd520b9ed5eafeb2db0df"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_ccd_alpha.h",
+      "bytes": 2814,
+      "sha256": "7bded6d7f073fd5e7a50c61a9ce99ac35e1582ac2f9364874b0bb1d78e14ba0a"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_coarsening.cu",
+      "bytes": 28884,
+      "sha256": "969f777da8aa550cbee4cfe765840b58b0be9a1931109d529cdee2e31bb83fde"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_coarsening.h",
+      "bytes": 6799,
+      "sha256": "a3226f5db64ba892efac41c7542e0975f131f25cac1d5a5253c449de01515f0a"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_condition_block.cu",
+      "bytes": 8837,
+      "sha256": "4b04115fb3ed762ce9832a6ecd6669ed89d3fe187c981e6b3369bf721172d715"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_condition_block.h",
+      "bytes": 1793,
+      "sha256": "777f457d606f1bfa45e656e9991f8a52022c46bbe5c56cc5110e68a99c4219fd"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_contact_energy.cu",
+      "bytes": 22677,
+      "sha256": "8b9e477dfbcef9dbe22d271a006fec3b4a54770de2285592e009a3d4ea05b0e7"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_contact_energy.h",
+      "bytes": 10434,
+      "sha256": "9bf4acfca6173bbd48e3001ace9c420909efada356bb236f1139a98c1b7b5cc7"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_contact_filter.cu",
+      "bytes": 9650,
+      "sha256": "f6ea80c88f7c1391e12cbfc28c2375c609c4e69f8566d89ba3e90100c5498e52"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_contact_filter.h",
+      "bytes": 2236,
+      "sha256": "d5a8a871b512ba0301a5a0aeefebe5f9524b70b9a0bff192a1d3291e717e9b68"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_contact_linear_system.cu",
+      "bytes": 24759,
+      "sha256": "e49b8c6d04dddeab1adfdfcd8d163360b9407d747c80821408d11e79d6f4b044"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_contact_linear_system.h",
+      "bytes": 4587,
+      "sha256": "272b8d5a197439b044393ebb184f0d3d273c5b29a19cad6cc3f43707b83c8c6d"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_contact_solve.cu",
+      "bytes": 60869,
+      "sha256": "a353d2ab3794f9cffb57abb79d307aa8a88bae8781a729a8b33daed4e7ae322e"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_contact_solve.h",
+      "bytes": 8724,
+      "sha256": "327a22ba1f62bc1fbe3d87e358d4ed7e748e53e9f7523981dd0d63c83ed833bf"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_cooperative_filter.cu",
+      "bytes": 22045,
+      "sha256": "f234a6200fa111418a51e70326285fe46ee0716805d407796cd3b36a5b16881c"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_cooperative_filter.h",
+      "bytes": 2044,
+      "sha256": "f5801dd6869d04817707e6e1230db78e803b305580633c68dbfd69af8c9426a8"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_directional_ccd.cu",
+      "bytes": 6746,
+      "sha256": "d46585ae5296b374ac70b00089739199b817e94d92594b6c13bb6121cce5b8bc"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_directional_ccd.h",
+      "bytes": 2733,
+      "sha256": "55f902948967a1067523fcada47e5a8f0366e0d6607bb497105e189996c2a557"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_dynamic_exclusive_sum.cu",
+      "bytes": 12667,
+      "sha256": "5b2613a3d7e09b25267b6bbbaf2020315426bcb22a1fc420952315ca7bac3b34"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_dynamic_radix_sort.cu",
+      "bytes": 20056,
+      "sha256": "a346d8e9389faa8799410ba5324e50623e0b132b467a590097c137159be99de0"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_dynamic_radix_sort_a.cu",
+      "bytes": 20321,
+      "sha256": "de09f22edb5c50252f58fbb4d7ac473fa35a64710cf5ec54c72cb7dab8c7e59b"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_dynamic_sort.cu",
+      "bytes": 58765,
+      "sha256": "0c7f4eebd7b1cc564fc185e89a23005d69d0c97eddd6027a8548f8f60ff2c0ea"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_dynamic_sort.h",
+      "bytes": 10624,
+      "sha256": "248caabfa84698a076875edb36882ee94bb891d47950343636071b55734b9c7e"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_init_pipeline.cu",
+      "bytes": 20751,
+      "sha256": "842f3e5fee61f1dc468780ac4a24125dc5f9fbca09865d07babb9d35cad6d73e"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_init_pipeline.h",
+      "bytes": 3437,
+      "sha256": "7dc03326c041469183369cb270ef233f1456eaa5786a8d03ec15dbb69fe1a693"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_lambda_kernel.cu",
+      "bytes": 2884,
+      "sha256": "c98de3c4b1c4aaaa0774856afdcb0b16b0a91f5b38482599e4384d39b9250224"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_lambda_kernel.h",
+      "bytes": 820,
+      "sha256": "3cae612b7b5aa3e9e071d12fe9c7c108033c17862ba65e9177873b574acac2d4"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_mas_align.cu",
+      "bytes": 10314,
+      "sha256": "ccfd7ec802e79bb02b94277000981e84f441e7bcc9eb42e2ddd8e6eac19a246f"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_mas_align.h",
+      "bytes": 3139,
+      "sha256": "3965ce9c9780bb6e3e1e44b79a00ffcd97647d9d67173bd949544821eb4f67ac"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_merge_sort.cu",
+      "bytes": 17838,
+      "sha256": "8390c63f6645befd79457147dd8486d69d5439c689be91adaf7470ba30c0798f"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_merge_sort.h",
+      "bytes": 6037,
+      "sha256": "689a044c82189917d5ce45c47fb5b939e2139e756dfcb9f040731e45215ad94c"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_nested_yield.cu",
+      "bytes": 10079,
+      "sha256": "f975f70fb5ce93886ba4e3de74d974c155bd0cb8fd4af81ccf4a1adea39c26e8"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_nested_yield.h",
+      "bytes": 1031,
+      "sha256": "e28728226c24527464527f34ea0767e357166ddb99a693cf538a4bf69f523e30"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_newton_dump.cu",
+      "bytes": 4076,
+      "sha256": "7f1fffe9d54b4493c3eae82a5de97e3b39698a92f9d756e11b623a777f753ccf"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_newton_dump.h",
+      "bytes": 912,
+      "sha256": "23d15964383da71032740dd444a4bbd69c93625fdc1c30b284a8cff1110ae3e6"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_nvrtc_spike.cu",
+      "bytes": 25308,
+      "sha256": "f39bbca66edc62b9e22104ec6c23265449028e73bb54c342bd3f919f6161dfb2"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_nvrtc_spike.h",
+      "bytes": 1860,
+      "sha256": "4b0afc7f21bfb489f3e281407693461202cf3dab54a284371911db974841d80f"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_pair_suppression.cu",
+      "bytes": 6503,
+      "sha256": "45b325fb268c015c6b71ae534d19cd9462af473a78008b31a4eb73759c302b7b"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_pair_suppression.h",
+      "bytes": 1819,
+      "sha256": "a5eebdcebaa741163bac2e29a876ad3d7896249e7343c28e73ab29f04c292ba4"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_resume_offset.cu",
+      "bytes": 20911,
+      "sha256": "69d5b3bc01abfd726dcc8fd9d9d8bed62d9415c8eb01fd7113c505a24b6f24e6"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_resume_offset.h",
+      "bytes": 1051,
+      "sha256": "98ec9bdbf0eeb400c37566d4dad047d49b5b8fa5fa56733cd8b86f92dd1e4a3e"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_scope_lock.cu",
+      "bytes": 2034,
+      "sha256": "3b06b5a8cfb7df26e291bc3bdc4261bbb2e1f128644c746449d970ffab963179"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_scope_lock.h",
+      "bytes": 470,
+      "sha256": "f4f975e448ee78a38527ea9b0de26fed08fc4ab415b92be89b88dc3edfff3f76"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_sim_event.h",
+      "bytes": 3549,
+      "sha256": "f0b9bff9cbd5c4ca5f2145c78bef07c2b6bd678b49e684fba9421cd422f98231"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_topo_ops.cu",
+      "bytes": 5890,
+      "sha256": "affcbc5e7a213e40fc4289557f5c695dbdc6909005cbcc45b08b65f10a8b4c7a"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_topo_ops.h",
+      "bytes": 1648,
+      "sha256": "2776b1c294287da03fb04cb4e29acedfa99608f100f31fea217ba2cc3b2a5b27"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_traverse_jit.cu",
+      "bytes": 12851,
+      "sha256": "ddf8a848631d70b8e85d52597145b65f8386b79d2ff8b24cf8a6c22d4b7c0970"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_traverse_jit.h",
+      "bytes": 1098,
+      "sha256": "8b10131c73cefe9ff3aa38c52740f70a7ad64faa4ae10a312d9943b108ecaed2"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_unit_area_weights.h",
+      "bytes": 1953,
+      "sha256": "8058dc6bbbe65349ba345b75bcc42863c1fabfe5e5561e23ccfcb23b297d562e"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_warp_inverse.cu",
+      "bytes": 14208,
+      "sha256": "8d3dc3766e5a995755c73690f7717c69eb870567b9d89ab45a9e2367c711bef0"
+    },
+    {
+      "path": "qipc/_src/native/solver/test_warp_inverse.h",
+      "bytes": 979,
+      "sha256": "41c46fd63314bd3362ba4039f85ebc7011304733dff3e176e13c49cfe9ab0f52"
+    },
+    {
+      "path": "qipc/_src/native/solver/tet_topo_event.h",
+      "bytes": 1650,
+      "sha256": "258366ff510fad3772e9914473b330d1b642d701a6e2f194f80056d07f4dfa31"
+    },
+    {
+      "path": "qipc/_src/native/solver/topo_event.h",
+      "bytes": 3049,
+      "sha256": "3df9193710a2422240fc84662d2312a958047ffe64acae5970c037bafca0874e"
+    },
+    {
+      "path": "qipc/_src/native/solver/topo_ops.h",
+      "bytes": 4460,
+      "sha256": "5806902bcf2c779d9883d34d92d21fb3a7fab00f11d9f8d8113591073134bb9c"
+    },
+    {
+      "path": "qipc/_src/native/solver/topo_types.h",
+      "bytes": 1173,
+      "sha256": "6b401c0f65b5aec4b38d1fa5447bd23b33fad6054fa70f3c90c8ee0ee8c6340a"
+    },
+    {
+      "path": "qipc/_src/native/solver/transform_dbc.cu",
+      "bytes": 18315,
+      "sha256": "2dbae0a66ebaf7fef14062ca980d81e9745ea96fd4df41851f7d94643bda7e39"
+    },
+    {
+      "path": "qipc/_src/native/solver/transform_dbc.h",
+      "bytes": 4034,
+      "sha256": "0d4341929f44d8d0c3501cd7bc7f1f1514b856be9003d1b118fd4e2cb13f3e06"
+    },
+    {
+      "path": "qipc/_src/native/solver/transform_dbc_context.h",
+      "bytes": 2650,
+      "sha256": "b97c93cea373abf4050d8a088de24e438a91291d1e95a61f6a8acf6a31ad86e4"
+    },
+    {
+      "path": "qipc/_src/native/solver/traverse/abd_diag_visit.cuh",
+      "bytes": 1683,
+      "sha256": "f0e154fc648d56b5781def96dfe5484a6797d7283fc391a48813f4acafaf277a"
+    },
+    {
+      "path": "qipc/_src/native/solver/traverse/bcoo_traverse_jit.cu",
+      "bytes": 2977,
+      "sha256": "f58e67494380a7469f14cc6f540141371029482389d4ec44dba6dbcb30034f70"
+    },
+    {
+      "path": "qipc/_src/native/solver/traverse/bcoo_traverse_jit.h",
+      "bytes": 3439,
+      "sha256": "1aad337798d3af00591a17e59d191f25365790376a2918dd3152349149cd5473"
+    },
+    {
+      "path": "qipc/_src/native/solver/traverse/bcoo_traverse_scan.cuh",
+      "bytes": 1524,
+      "sha256": "1de1f1c7ee6e24d034dbe41733b8b42edbc82f4e34eab05011ec2dfa3b60a6fd"
+    },
+    {
+      "path": "qipc/_src/native/solver/traverse/bspline_diag_visit.cuh",
+      "bytes": 1064,
+      "sha256": "9c88e60f040eec7a3b1883fce0dcbb66edd515483ff54d01fc4cf836bdc00d8a"
+    },
+    {
+      "path": "qipc/_src/native/solver/traverse/fem_diag_visit.cuh",
+      "bytes": 975,
+      "sha256": "c8a5f4f8d35b79b77aa513206c9039a6bb9b4cb004d9313255977f45323c3492"
+    },
+    {
+      "path": "qipc/_src/native/solver/traverse/mpm_diag_visit.cuh",
+      "bytes": 1260,
+      "sha256": "2c2b023997f62df5f84e0fc9fd00444d554db90d41444c93118348480a004036"
+    },
+    {
+      "path": "qipc/_src/native/solver/traverse/rigid_diag_visit.cuh",
+      "bytes": 1626,
+      "sha256": "eab2d1f6049d86dd7cbbb29c36eda3c58d02395120453695f48e0620e2b73193"
+    },
+    {
+      "path": "qipc/_src/native/solver/traverse/twist_diag_visit.cuh",
+      "bytes": 1136,
+      "sha256": "36fc172f331d3a2b3eaa4fa0249a6b93b5d11545569d2af1d9713e664f86c512"
+    },
+    {
+      "path": "qipc/_src/native/solver/tree_precond_context.h",
+      "bytes": 6253,
+      "sha256": "f3afe1798da6c06ba9e49a049cdb999b8388fcda18ed49b8a341291b2a86d93e"
+    },
+    {
+      "path": "qipc/_src/native/solver/tree_precond_kernels.cu",
+      "bytes": 16416,
+      "sha256": "58987b0ea6e56b56fa678d835dd023ff1f0e254e89eb75e0f8b152fcc1c43636"
+    },
+    {
+      "path": "qipc/_src/native/solver/tree_precond_kernels.h",
+      "bytes": 4346,
+      "sha256": "6416c4cf5f5e048c46aa6bd3d1a4e94ed8842691aee2390cd4a210a1b97aadf3"
+    },
+    {
+      "path": "qipc/_src/native/solver/twist_contact_distribute.cu",
+      "bytes": 10556,
+      "sha256": "dbede5f56ee75970c8a2e7fed3dfed2c2744240bb42b56af904ed250611a2f84"
+    },
+    {
+      "path": "qipc/_src/native/solver/twist_contact_distribute.h",
+      "bytes": 2813,
+      "sha256": "a3066519ee7620bd20db5701b6fa8177d60117c6c7916e99248d37144b1dd87f"
+    },
+    {
+      "path": "qipc/_src/native/solver/variational_adhesive_ipc_contact.cu",
+      "bytes": 140663,
+      "sha256": "3a28a528726fd9c02fbf636d46e2e40db6954691164691d5484e015f8e6cbba4"
+    },
+    {
+      "path": "qipc/_src/native/solver/variational_adhesive_ipc_contact.h",
+      "bytes": 14834,
+      "sha256": "e748f3384c1540bb53b73729b99946edc9be3bcdebe27280ad9735dbd8a8e54a"
+    },
+    {
+      "path": "qipc/_src/native/solver/vertex_kinematic_map.h",
+      "bytes": 910,
+      "sha256": "2398884f2c68538c81e851389c5bcbe579890ae04cebed8e6e171907de7f9f54"
+    },
+    {
+      "path": "qipc/_src/native/solver/visco_shell_bending.cu",
+      "bytes": 16792,
+      "sha256": "75c9dc1564d75c21606db91ededab591b49cb5ea59dce0c601ee7c01b710b01a"
+    },
+    {
+      "path": "qipc/_src/native/solver/visco_shell_bending.h",
+      "bytes": 3870,
+      "sha256": "c2c251d7498e956298885152640c887a1684e90edfe2497d5ffdc09a47ed8bf2"
+    },
+    {
+      "path": "qipc/_src/native/solver/visco_shell_bending_context.h",
+      "bytes": 3040,
+      "sha256": "55e5d71a3ed6dcda8e6f3eb8a44bf697d9f4a684f9fe510f1fee41091e8f4159"
+    },
+    {
+      "path": "qipc/_src/native/solver/von_mises_shell_2d.cu",
+      "bytes": 21567,
+      "sha256": "942b29360441a72cbf8e878cdd1ad40da4c41371e35517720c13bc8286a6a947"
+    },
+    {
+      "path": "qipc/_src/native/solver/von_mises_shell_2d.h",
+      "bytes": 4712,
+      "sha256": "6144048cf0ed39f25126ff9a5c1a9c6dae27a18c2fd388d6e73ffbd206cdaf24"
+    },
+    {
+      "path": "qipc/_src/native/solver/von_mises_stvk_hencky_3d.cu",
+      "bytes": 20276,
+      "sha256": "41bb4279167459dab8706b063682e04b1f47b4c19e6a40a7da0f6c89ef4bf74f"
+    },
+    {
+      "path": "qipc/_src/native/solver/von_mises_stvk_hencky_3d.h",
+      "bytes": 4375,
+      "sha256": "39f728f521506160f6898a28436d8c61be3f1b392575f4677eb6eb46ed9fc0fe"
+    },
+    {
+      "path": "qipc/_src/native/solver/warp_inverse.h",
+      "bytes": 10383,
+      "sha256": "85eb478023256971a79f951ca0e66cb5b383e9883ba9a008da6bc8214d91bd9c"
+    },
+    {
+      "path": "qipc/_src/native/solver/warp_jacobi_evd_9x9.h",
+      "bytes": 6666,
+      "sha256": "986f5d6d0bf34a202c63158a49ca1f7579c2c945548eb40f6a8ebedaf3063302"
+    },
+    {
+      "path": "qipc/_src/native/test_fwd.h",
+      "bytes": 88,
+      "sha256": "7daf25c5a83b5cb20c843cae03cb0ca042dd08a1709ad5636511a091dae5b377"
+    },
+    {
+      "path": "qipc/_src/native/toy/__init__.py",
+      "bytes": 58,
+      "sha256": "79c7c6148be16a542582cfb695b5c37fb00638b0fad946131ea09beeb54fe469"
+    },
+    {
+      "path": "qipc/_src/native/toy/abd_graph_builder.cu",
+      "bytes": 1115,
+      "sha256": "eb05fef7172386e80d9159538ed7f1f474a6b61ce4e770f411b3c52acdd9148b"
+    },
+    {
+      "path": "qipc/_src/native/toy/abd_graph_builder.h",
+      "bytes": 648,
+      "sha256": "3ffe8df213e0d604cf994ea7524406fb046a319c40b837f334759dbe062670c0"
+    },
+    {
+      "path": "qipc/_src/native/toy/bench_grid_stride.cu",
+      "bytes": 4668,
+      "sha256": "10e0ddfd9a844722f74506b9989ce5e1fc3839de2b7eb9a5213e7f6797b6cf7b"
+    },
+    {
+      "path": "qipc/_src/native/toy/bindings.cpp",
+      "bytes": 10419,
+      "sha256": "0b5daeb626cc9094ac2fde7bb3e0795910a3533373b3c4de38750491c8bd8779"
+    },
+    {
+      "path": "qipc/_src/native/toy/bindings_toy.cu",
+      "bytes": 23822,
+      "sha256": "96b846afbf7ebbb16e0c23ddecb54d161af9bfc1c0aa8bf2e1e2299c68aae305"
+    },
+    {
+      "path": "qipc/_src/native/toy/buffer_view_test.cu",
+      "bytes": 18265,
+      "sha256": "7a8cfd27fdecfa997da8b99440fec65b3c6adf41bf11951c144d4e53c57ec06e"
+    },
+    {
+      "path": "qipc/_src/native/toy/bvh_test_context.h",
+      "bytes": 31116,
+      "sha256": "4e2c9bfb245ca24280ffd9f012cfb39fe8de82595184a85a2fd122db8bef6f28"
+    },
+    {
+      "path": "qipc/_src/native/toy/common.cuh",
+      "bytes": 3417,
+      "sha256": "e36c5363401bc7063ef4318850a5f40c1ccef89edafd4ee826a4168c0eee9aa6"
+    },
+    {
+      "path": "qipc/_src/native/toy/contact_sort_legacy.cu",
+      "bytes": 6610,
+      "sha256": "69d9712d9ef0d44ca50d3690c2cc8902420a36e0b2382f33dcf4dc3d61e55f99"
+    },
+    {
+      "path": "qipc/_src/native/toy/contact_sort_legacy.h",
+      "bytes": 22592,
+      "sha256": "bd16fa972ab224b376e078ef07c14cdf7ce2631d77d02a17a11b5b190578e6db"
+    },
+    {
+      "path": "qipc/_src/native/toy/dynamic_parallel_primitives.h",
+      "bytes": 22179,
+      "sha256": "14d6418282e11ceaf1d4c70b20fc3e90f9f99e1e0e29909e9176c14f7c49e6af"
+    },
+    {
+      "path": "qipc/_src/native/toy/fast_sv.cuh",
+      "bytes": 9804,
+      "sha256": "9575d09aff7e5b5dcf38fdec420cbe183882b8032fcfbb801babdc61745274d0"
+    },
+    {
+      "path": "qipc/_src/native/toy/fast_sv_graph_while.cu",
+      "bytes": 1399,
+      "sha256": "5547c7ae118c28726e9b0c9c557f2ee2678e4e32ae7d27a26f6db2056545a9cc"
+    },
+    {
+      "path": "qipc/_src/native/toy/fast_sv_naive.cu",
+      "bytes": 4304,
+      "sha256": "00d0aa4914d290cae5ca06e3b485f06657917b55320e8a46eb50db20fb009efc"
+    },
+    {
+      "path": "qipc/_src/native/toy/fast_sv_subgraph.cu",
+      "bytes": 5502,
+      "sha256": "70f56a7dca73544771203dde03bcb25c93a25510ac1e63c742e15b5337c985ed"
+    },
+    {
+      "path": "qipc/_src/native/toy/fast_sv_subgraph.h",
+      "bytes": 1666,
+      "sha256": "496a8466a84ad3fb663efe9f76692a85e7a27ad56f0ecd1742dfa7e668e87e67"
+    },
+    {
+      "path": "qipc/_src/native/toy/kernels.cuh",
+      "bytes": 8875,
+      "sha256": "1c51bdc298573f11402b1dd146af99ad530216e784ce98c71baa5c131b7406a3"
+    },
+    {
+      "path": "qipc/_src/native/toy/lbvh.cu",
+      "bytes": 24414,
+      "sha256": "1ff152c7c99c9a5d3659b2bd8204008936959756e8afb1a46ba1f89a76649512"
+    },
+    {
+      "path": "qipc/_src/native/toy/lbvh.cuh",
+      "bytes": 6550,
+      "sha256": "bc67f16b1e5a7d76ec12fa78504afab96df6a6e5395f2d853c091cb4347d800a"
+    },
+    {
+      "path": "qipc/_src/native/toy/lbvh_builder.cu",
+      "bytes": 12454,
+      "sha256": "0a79b40cbdb28e54c195c2a72251d052192ec4f26a82ac6de35429d77dfdd0cc"
+    },
+    {
+      "path": "qipc/_src/native/toy/lbvh_builder.h",
+      "bytes": 564,
+      "sha256": "442c7e4ddbbe49f2268f56c8c4afa3ebb7410bd352532d7c8d1fca48274ec362"
+    },
+    {
+      "path": "qipc/_src/native/toy/lbvh_toy.h",
+      "bytes": 2594,
+      "sha256": "27a23cc45a837f7ffc4816b0105309eb6eb640ac25f2c04d95b4860ccbffb0a2"
+    },
+    {
+      "path": "qipc/_src/native/toy/masked_pcg.cuh",
+      "bytes": 17844,
+      "sha256": "4696c2f2ab19a8cd1a74e5d341babb70e76b6989cb12fa1e4a26c7d70ff8ea64"
+    },
+    {
+      "path": "qipc/_src/native/toy/masked_pcg_naive.cu",
+      "bytes": 7939,
+      "sha256": "e921720c98f169a11b0c4873c088a90a8e41c7b37b9ac110eaffcf4915737381"
+    },
+    {
+      "path": "qipc/_src/native/toy/masked_pcg_subgraph.cu",
+      "bytes": 10120,
+      "sha256": "80fcb476c8847aab98586faa4802e053772a41fcb506eee29779b88189d8a936"
+    },
+    {
+      "path": "qipc/_src/native/toy/masked_pcg_subgraph.h",
+      "bytes": 2044,
+      "sha256": "64e1d8d45fc00e1e380c54f4dbdbb6d5b5427735f2eaa5f8e02228b6a66f701b"
+    },
+    {
+      "path": "qipc/_src/native/toy/pcg_builder.h",
+      "bytes": 482,
+      "sha256": "e03618d78648fe180dc8986f18171acd31bdfce7fffe7dfd364739b5862a2377"
+    },
+    {
+      "path": "qipc/_src/native/toy/pcg_fused.cu",
+      "bytes": 5874,
+      "sha256": "3ee02916ee0e6f868ba04cc2c88e4a6d65db024c3673243a482e74532443c68d"
+    },
+    {
+      "path": "qipc/_src/native/toy/pcg_graph.cu",
+      "bytes": 7561,
+      "sha256": "62f30f3d8596b83ffc894acc1585d5ca90b9d1cd7a35af5fd9ee0338bb9a86de"
+    },
+    {
+      "path": "qipc/_src/native/toy/pcg_graph_update.cu",
+      "bytes": 8377,
+      "sha256": "481b8bbf259cb1f642f92698950ccd2a279ffbc2d906b90fe748905a18f51f9e"
+    },
+    {
+      "path": "qipc/_src/native/toy/pcg_graph_while.cu",
+      "bytes": 8495,
+      "sha256": "7b94424fc51f5feef52702f0bd9448aa59f9000252b2937448117a24414c7a73"
+    },
+    {
+      "path": "qipc/_src/native/toy/pcg_naive.cu",
+      "bytes": 5833,
+      "sha256": "ecc946a75ff129d017d4f78e971dfbcdea238abd10b52e4d99fcd1ddc82d0809"
+    },
+    {
+      "path": "qipc/_src/native/toy/pcg_solvers.h",
+      "bytes": 4368,
+      "sha256": "43330ed13a3484a7bbf487b2be1ce27a7e194a2d3f76a8ce32a607bcd53acdf6"
+    },
+    {
+      "path": "qipc/_src/native/toy/stackless_bvh.cu",
+      "bytes": 28056,
+      "sha256": "4c57a8e31d1734f2a93c84fc7b8a2e7d47f7a5d10ed011e7f6132989838dedbb"
+    },
+    {
+      "path": "qipc/_src/native/toy/stackless_bvh.cuh",
+      "bytes": 13,
+      "sha256": "b3adf106d95b8934f690943f2921308b90be5b766c4c8ba250c792de56400201"
+    },
+    {
+      "path": "qipc/_src/native/toy/stackless_bvh_builder.cu",
+      "bytes": 11875,
+      "sha256": "658bb7ad9ebb4c4e2055fa807cc22bf4746370adf583db5ed1e4331bba3a8153"
+    },
+    {
+      "path": "qipc/_src/native/toy/stackless_bvh_builder.h",
+      "bytes": 600,
+      "sha256": "8294d35d2970e576ce3962801f0e435c81a0d31781ebd18902672b59fadbd34b"
+    },
+    {
+      "path": "qipc/_src/native/toy/stackless_bvh_toy.h",
+      "bytes": 2434,
+      "sha256": "fbc5a7f22603a669e15483a86995808e87bc38e454487b58460bcdbfc2e512bf"
+    },
+    {
+      "path": "qipc/_src/native/toy/test_base.h",
+      "bytes": 218,
+      "sha256": "1b2b790c2956ab072a203388cca58abc9797fe83c7347964302172f73954c67f"
+    },
+    {
+      "path": "qipc/_src/native/toy/test_contact_constitution.h",
+      "bytes": 1912,
+      "sha256": "b4556d11add6458b603d359212275a1e59ee5bb0f6b79579975021bf0f98b2b4"
+    },
+    {
+      "path": "qipc/_src/native/toy/test_fast_sv_subgraph.cu",
+      "bytes": 7397,
+      "sha256": "d0564f812e549c68649238e709629277178e64946916fa6a9af6c638cbeda3b9"
+    },
+    {
+      "path": "qipc/_src/native/toy/test_fast_sv_subgraph.h",
+      "bytes": 3540,
+      "sha256": "9108f2b0ef67caedfb636baa30ed3bcb31b42b3a37848f79b077bfdeefe46eb6"
+    },
+    {
+      "path": "qipc/_src/native/toy/test_kernels.cu",
+      "bytes": 145307,
+      "sha256": "e92222a7a58fbdd8881cb881032204f5ecb98779881ed3e809ffd4946538a86a"
+    },
+    {
+      "path": "qipc/_src/native/toy/test_kernels.h",
+      "bytes": 25428,
+      "sha256": "ce47de524b985909dedaf2709171f296b1585c8538b9062cd9a215d78ca11e5d"
+    },
+    {
+      "path": "qipc/_src/native/toy/toy_pcg_context.h",
+      "bytes": 959,
+      "sha256": "eb26257b197b734156482f3c0f26d24aa17226e7d8b5f65983ad9a18ead6a0c7"
+    },
+    {
+      "path": "qipc/_src/native/tracer.h",
+      "bytes": 126,
+      "sha256": "25d5cffa590a3a796bb0226e0413765d6651bed0331dfc11a2eaa4f03052e12a"
+    },
+    {
+      "path": "qipc/_src/native/var.h",
+      "bytes": 1748,
+      "sha256": "9dbd7a1fb7045eac842894533649df2ed59a206149ac3fe65d4bcbab9b728ca7"
+    },
+    {
+      "path": "qipc/_src/native/viewer/__init__.py",
+      "bytes": 78,
+      "sha256": "719caf4065b214cb5cc71b282b54ecdc008bf3b8bc76b65128aab6e2a5c387e6"
+    },
+    {
+      "path": "qipc/_src/native/viewer/bindings_viewer.cu",
+      "bytes": 13364,
+      "sha256": "fb1089c9a895fb54b21b57e5f638b3c8fcf71fc22ab78a14a5204c876471faf5"
+    },
+    {
+      "path": "qipc/_src/native/viewer/glad.c",
+      "bytes": 52,
+      "sha256": "b7c7993a77b46d7f6029b9ce87bf80a8100182d41bddeb8afe8ee9b0a7b246da"
+    },
+    {
+      "path": "qipc/_src/native/viewer/interop.cu",
+      "bytes": 7999,
+      "sha256": "f08058d48dcd54c53b19b5129be60ccaedbdcc06b4c31d57a7f17d4081d23c54"
+    },
+    {
+      "path": "qipc/_src/native/viewer/interop.h",
+      "bytes": 2352,
+      "sha256": "17697cf835d7627872bd2152a7c5c8148a349ecd79b6647c14fb5ad104ac12e5"
+    },
+    {
+      "path": "qipc/_src/native/viewer/mesh_renderer.cu",
+      "bytes": 85743,
+      "sha256": "b1f490a0fbbd68c4e8c5ddd934557700ad019643ccf166d9ff445ce1de2d3ab0"
+    },
+    {
+      "path": "qipc/_src/native/viewer/mesh_renderer.h",
+      "bytes": 19160,
+      "sha256": "b9a941bb9981daefe44875d259bbd351e237973a487eb363ff0a44410af2fd0f"
+    },
+    {
+      "path": "qipc/_src/native/viewer/shaders.h",
+      "bytes": 42617,
+      "sha256": "65a7df86fe2a4db3b07e3775e52729f1a28c6d377ac76b63a7336a5ddcd5c342"
+    },
+    {
+      "path": "qipc/animation/__init__.py",
+      "bytes": 259,
+      "sha256": "f14a27ff2bb79837ac046579b321091c512be01786a2ecdf38250525035c097a"
+    },
+    {
+      "path": "qipc/animation/motion_sequence.py",
+      "bytes": 5801,
+      "sha256": "3a3064a5823f4699088ee6b5de450b10fa45edd24c7aa696bbd35a5add2cf776"
+    },
+    {
+      "path": "qipc/animation/moving_dbc.py",
+      "bytes": 17669,
+      "sha256": "5cf74b52cc86b90474bd99d7ee307bb9e8ea56b290e10a8859e94d8522ae6e24"
+    },
+    {
+      "path": "qipc/assets/__init__.py",
+      "bytes": 12051,
+      "sha256": "18b69d5de613aa678b055a14cb5530038ec952470f346d06cd0cc0821c837b02"
+    },
+    {
+      "path": "qipc/assets/garment.py",
+      "bytes": 2953,
+      "sha256": "7c7984b0f1c32a46336961340ee637a57a09fc1545df6e52bf27510c8a75a906"
+    },
+    {
+      "path": "qipc/assets/gears.py",
+      "bytes": 18828,
+      "sha256": "33e0045700cce919a3e56d95538b612105dd4593c22b7262b5a793811fe811cd"
+    },
+    {
+      "path": "qipc/assets/scenes.py",
+      "bytes": 16010,
+      "sha256": "a5493186871f61aa076539e8706811ed68808272f56d527719376f76b31a153a"
+    },
+    {
+      "path": "qipc/base.py",
+      "bytes": 2607,
+      "sha256": "bacac33861fa26a99d93ce0ce94c9e90a3a6223b2fcd5fdf91be6920387624b0"
+    },
+    {
+      "path": "qipc/codegen/__init__.py",
+      "bytes": 514,
+      "sha256": "9c10317a0996edd476b83431c1fcee2d16085157941a5855b416abbe53d1e285"
+    },
+    {
+      "path": "qipc/constitution.py",
+      "bytes": 420055,
+      "sha256": "72eab0319c96d6b1b1c1466992c6df48b9b140f361897c6a382f75799881b21e"
+    },
+    {
+      "path": "qipc/contact.py",
+      "bytes": 36764,
+      "sha256": "a329cf33e662619c628bb044614f631f0a803c2683f58f9e8001cabe6f27861a"
+    },
+    {
+      "path": "qipc/cuda_utils.py",
+      "bytes": 567,
+      "sha256": "11109ed8f8f1598aa26d7690efde59bb294faac03cc76a9e671919d54006dc6f"
+    },
+    {
+      "path": "qipc/cut_detection.py",
+      "bytes": 22213,
+      "sha256": "a7b9028d917a2de5231268d0a2de55e71f5389daaf9328a182d2c0bf39d6d804"
+    },
+    {
+      "path": "qipc/diag/__init__.py",
+      "bytes": 1542,
+      "sha256": "ff5402b58f72fe815f25599b0359fc1b0fb743820e0b489ed719689e97c87f77"
+    },
+    {
+      "path": "qipc/diag/curves.py",
+      "bytes": 3398,
+      "sha256": "adeed7d38e10b55c6d4ac28cbbcf7c7ed123c34d4475b94e654511fd7a0104a0"
+    },
+    {
+      "path": "qipc/diag/dof_map.py",
+      "bytes": 3478,
+      "sha256": "00e618f55dd565010e9a8038ecf2a66357672121dd4329139090ca3395575b72"
+    },
+    {
+      "path": "qipc/diag/dump_diag.py",
+      "bytes": 10123,
+      "sha256": "5df24e4024764f6018186577c12bff8e086ec0514fc22927d624f40a5be82ba6"
+    },
+    {
+      "path": "qipc/diag/line_search.py",
+      "bytes": 1760,
+      "sha256": "9a2e1ba89633aae718aa6f04d4572e9320fff792fa662b2593058f44a35fa7e8"
+    },
+    {
+      "path": "qipc/diag/ls_replay.py",
+      "bytes": 15500,
+      "sha256": "efe3d1524baed27a6b746a11b82f0055ad1e49e05a4282444375c5f5c3592954"
+    },
+    {
+      "path": "qipc/diag/ls_report.py",
+      "bytes": 50161,
+      "sha256": "b6dd2f052719ebbf6a519ca0c80c2e42f9f48f589b7da06f2971c03fa196661b"
+    },
+    {
+      "path": "qipc/diag/reference_pcg.py",
+      "bytes": 5824,
+      "sha256": "f27d76ab87725f769bbd4c1144486533d66182305037cf4280757dec9906425e"
+    },
+    {
+      "path": "qipc/export/__init__.py",
+      "bytes": 115,
+      "sha256": "9ea86dae68a9dde076dd71489b5bf8fa653c7c2196ae89d1c40eec90b6825a8e"
+    },
+    {
+      "path": "qipc/export/usd_stream.py",
+      "bytes": 22466,
+      "sha256": "1f5768e7a73932d71aff84bb880fd20425227c20972d0d97b68246e0a385173f"
+    },
+    {
+      "path": "qipc/geometry/__init__.py",
+      "bytes": 514,
+      "sha256": "ee564ae26b92cd1a1f775e1aaef714a1fe699571b2d650a77d53d48a0985285c"
+    },
+    {
+      "path": "qipc/geometry/attribute.py",
+      "bytes": 13920,
+      "sha256": "9757e6bfa997e24731aac8da699dd579654af87a78ed044f59df945db35f2698"
+    },
+    {
+      "path": "qipc/geometry/attribute_collection.py",
+      "bytes": 4396,
+      "sha256": "53a5252a8cc2bd85475dbf7b061e851b99d5dd452c5e0ffdccd302730bf17d5e"
+    },
+    {
+      "path": "qipc/geometry/attribute_desc.py",
+      "bytes": 5672,
+      "sha256": "84de9f6b3b0ddb9fbcfe68501cb15dcc40fcc30005112724500d89781ad8dbc2"
+    },
+    {
+      "path": "qipc/geometry/bspline.py",
+      "bytes": 31858,
+      "sha256": "5ad844b44196cc1c4493799738d2d64cb7820ee1269d0be1eff100ae75437fa3"
+    },
+    {
+      "path": "qipc/geometry/bspline_authoring.py",
+      "bytes": 15430,
+      "sha256": "98bdcde5317f3b541c8d3808417bba68080cd89aaaa1ca1df82dc6abaede55d5"
+    },
+    {
+      "path": "qipc/geometry/closure.py",
+      "bytes": 2424,
+      "sha256": "e41afcd2705392f2f742aecf7296ed556b86077bc81f2e89378d6f09c4cf8522"
+    },
+    {
+      "path": "qipc/geometry/factory.py",
+      "bytes": 10949,
+      "sha256": "5eff088c1597b0e984cc2384999c1fe4751af83fcb0064cdaede1876d8947497"
+    },
+    {
+      "path": "qipc/geometry/geometry.py",
+      "bytes": 5770,
+      "sha256": "cf79f25c4d9531c60fc8a707d5a62f8cbc9da994d0d383a18c577f8cd82906c4"
+    },
+    {
+      "path": "qipc/geometry/geometry_collection.py",
+      "bytes": 3421,
+      "sha256": "6dec445c2325d148884f70220dd8b3b61aa4b393594287ba5f53c534d72dd254"
+    },
+    {
+      "path": "qipc/geometry/geometry_slot.py",
+      "bytes": 1178,
+      "sha256": "9cc6a26052095959cf7fa0ea932889719ed9f327ccaafc4444368c4cad2a0b81"
+    },
+    {
+      "path": "qipc/geometry/obj.py",
+      "bytes": 8539,
+      "sha256": "348b7839b0c00cf2560069eb1ecbcba9d4fe62ad34725f6de3973b2075ee8f9b"
+    },
+    {
+      "path": "qipc/geometry/sharp_edges.py",
+      "bytes": 7939,
+      "sha256": "dd9f7cb717725b4d39cd3d7614c04a11643ca8b81c341bd102fb506f830893ca"
+    },
+    {
+      "path": "qipc/geometry/stitch.py",
+      "bytes": 4157,
+      "sha256": "655ffe528d0841f8b9f588a23e38b4955071158159588d983ba19e26bd46e187"
+    },
+    {
+      "path": "qipc/geometry/surface.py",
+      "bytes": 12772,
+      "sha256": "7f97cb4a9be30992a6ffc8abe3000235b407c4c35125b3594d4c74fdd92f0ca8"
+    },
+    {
+      "path": "qipc/implicit_geometry.py",
+      "bytes": 3645,
+      "sha256": "3a0acd39f4a5d722add653ad16507531a725678b04c7cadcc877f49c8523a8d7"
+    },
+    {
+      "path": "qipc/inflation/__init__.py",
+      "bytes": 596,
+      "sha256": "8d6e33225565090d58e648ae1024546fc1ff3e04ace3c90c2605dccc29c151ac"
+    },
+    {
+      "path": "qipc/inflation/authoring.py",
+      "bytes": 10090,
+      "sha256": "cfd9d65939110f184d186b994bd2000d7d051fbbe9981b6f379ba94f7c8370a1"
+    },
+    {
+      "path": "qipc/inflation/system.py",
+      "bytes": 4275,
+      "sha256": "70ab07543b6242bf9ca2f3b941f9cfc2a8ad666a84659161bd6f1606e42f5d6f"
+    },
+    {
+      "path": "qipc/kerf/__init__.py",
+      "bytes": 1476,
+      "sha256": "e3d9909e7057f809ebbae09644f38e10fa20f85a8581ee6a210f7c267ab1b053"
+    },
+    {
+      "path": "qipc/kerf/envelope.py",
+      "bytes": 7135,
+      "sha256": "9b65a8880ea0dddebab5bcddabcb06fa0a02c154d6682badfcc9164c310c47d9"
+    },
+    {
+      "path": "qipc/kerf/fragmenter.py",
+      "bytes": 76381,
+      "sha256": "2d956cba0530ff0cac39e24cc7328badd27e591a61bdc97f5aa21659a5acd7ab"
+    },
+    {
+      "path": "qipc/kerf/gpu.py",
+      "bytes": 15242,
+      "sha256": "ef55aa55d32bc6f3544485a3dbbda88ba6f7f87fd9c91779cfdad78148aae563"
+    },
+    {
+      "path": "qipc/kerf/system.py",
+      "bytes": 39306,
+      "sha256": "3fdc1412fb94aeb87f2b2a716caeb736e419f9f81e7fe088fa22cadfaa77ea51"
+    },
+    {
+      "path": "qipc/kerf/transform.py",
+      "bytes": 9723,
+      "sha256": "56ca3946db51e561fc1b460fdb76a621a87ed13d2282f54ec05630499a73e68e"
+    },
+    {
+      "path": "qipc/offline/__init__.py",
+      "bytes": 153,
+      "sha256": "12734e8a16bc5c6d2370b079ff5e5053d6baffee9bf90b2a30f130980be89690"
+    },
+    {
+      "path": "qipc/offline/contact.py",
+      "bytes": 2658,
+      "sha256": "9412db44760d6fdbcda8f2c40103d07ceed38f050e3d93db2b8aeb6583bb0a91"
+    },
+    {
+      "path": "qipc/planning/__init__.py",
+      "bytes": 372,
+      "sha256": "854ce0b3083a9aeacbf5af61dd02a3262ad0334a7f0058f038406d562cc39aa6"
+    },
+    {
+      "path": "qipc/planning/chain.py",
+      "bytes": 29174,
+      "sha256": "4fc158dfd76ebb77754e0c8c70c578110eb6104c2e574f9455a5c49df0a8154f"
+    },
+    {
+      "path": "qipc/planning/collision.py",
+      "bytes": 9174,
+      "sha256": "1bc2602046144c46ae7e9ec79980f696b6fa5bbc1f1abb9e34ce5ac47cf03fa0"
+    },
+    {
+      "path": "qipc/planning/ik.py",
+      "bytes": 25922,
+      "sha256": "5f87ea84f45ee74b9f9e3cad3818fcfdd6f856fd480c511fbef6134b7817d96e"
+    },
+    {
+      "path": "qipc/planning/rrt.py",
+      "bytes": 11807,
+      "sha256": "a653978bc01800b55fd49b6c5acc7e40de02e1e96c5a1dbaf7b3f61711092806"
+    },
+    {
+      "path": "qipc/profiler.py",
+      "bytes": 2671,
+      "sha256": "c3b9ac1dea8c956980dc05cfdf5faa5508bd0e76415612615da27a9066c79010"
+    },
+    {
+      "path": "qipc/scene/__init__.py",
+      "bytes": 373,
+      "sha256": "439f664e0c725789daf5e1c19c7dd2858327b029b995410a3aca75d54928cf3c"
+    },
+    {
+      "path": "qipc/scene/affine_cluster_collection.py",
+      "bytes": 18785,
+      "sha256": "f6c3abc74e16bdd493322d9d29268c22eab5058bbd568e067b2a1d3d1cd15a6b"
+    },
+    {
+      "path": "qipc/scene/animator.py",
+      "bytes": 1469,
+      "sha256": "d4671628c73260067e7f46bc9748a0505a0712b4ef9829af46be8cb84ddaa624"
+    },
+    {
+      "path": "qipc/scene/config.py",
+      "bytes": 39734,
+      "sha256": "e9087fe91b43fd55e9a64a38d3f038f2a0e40dd06c319da5b7c072409e237f1c"
+    },
+    {
+      "path": "qipc/scene/descriptor_collection.py",
+      "bytes": 1994,
+      "sha256": "92b4843b0f71f216a8373c7b248f17fe3975284387aa901399b989b7caf93fef"
+    },
+    {
+      "path": "qipc/scene/joint_collection.py",
+      "bytes": 29739,
+      "sha256": "e6631c74bfb9830b97e23478bfceaf225f1ee883c4b01a309975186fd7ca3304"
+    },
+    {
+      "path": "qipc/scene/mjcf_loader.py",
+      "bytes": 44672,
+      "sha256": "c4922b0b2a2e875ace958e33c656377d820e0f4759053d88689cd4a30139111a"
+    },
+    {
+      "path": "qipc/scene/picker_collection.py",
+      "bytes": 7506,
+      "sha256": "75afffc2a9151ca9a241f3366f67b09bb69f32d0aea9ceaf80cd2aa9176aa0e1"
+    },
+    {
+      "path": "qipc/scene/rigid_cluster_collection.py",
+      "bytes": 3963,
+      "sha256": "543be6866dc63567027d90fdbddb37e25c6ca034eda8717ac0af2609d8d8bf15"
+    },
+    {
+      "path": "qipc/scene/scene.py",
+      "bytes": 88747,
+      "sha256": "108f9c89bac21e599894f2fe67dfdd7aa22117d4c1ef48242f080a2517c4f94b"
+    },
+    {
+      "path": "qipc/scene/scene_hash.py",
+      "bytes": 3600,
+      "sha256": "0a39df917d2dbc418dee71720a2e815e4ec7950186e7f4d6998947dc6e565cc1"
+    },
+    {
+      "path": "qipc/scene/scene_io.py",
+      "bytes": 2594,
+      "sha256": "8411bc7b73b03befc7fbc650608f7ab62a6df81e85d9d62457aded271600f71d"
+    },
+    {
+      "path": "qipc/scene/scene_io_factories/__init__.py",
+      "bytes": 243,
+      "sha256": "ac7016a73edb0cc89385c6d10bd73a90ac0f2ad810a9adc40b86e9e1288ff526"
+    },
+    {
+      "path": "qipc/scene/scene_io_factories/common.py",
+      "bytes": 4525,
+      "sha256": "b844fa4476602786d1a463c095a8930e601fbbce2e6cc6514a6baa4b5e729e05"
+    },
+    {
+      "path": "qipc/scene/scene_io_factories/v2.py",
+      "bytes": 6881,
+      "sha256": "3077f9c2bfc35583c178a5f86b4c6da0d16df6d695f37bdfb73a04dfe96be913"
+    },
+    {
+      "path": "qipc/scene/scene_io_factories/v3.py",
+      "bytes": 5528,
+      "sha256": "854784f1ecb0fd7ec89f5b7966535615d52c02f9647e25fb4293d55bca2cab69"
+    },
+    {
+      "path": "qipc/scene/spatial_query.py",
+      "bytes": 8548,
+      "sha256": "e425a08c8ce2fe36b254476f7f91857de9069a4da7b096fef6600a48a7a43cb0"
+    },
+    {
+      "path": "qipc/scene/urdf_loader.py",
+      "bytes": 37896,
+      "sha256": "d8059984aa5f06b6710a1d74a7152ca73f6068fe0d53776bbfb7e30044f8f008"
+    },
+    {
+      "path": "qipc/sewing.py",
+      "bytes": 18866,
+      "sha256": "8c7af48d6baa58255c45d95fe387f5da8afdb7e1b03a80b74e5532d2eb0c1316"
+    },
+    {
+      "path": "qipc/solver/__init__.py",
+      "bytes": 60,
+      "sha256": "a616e63007dcb062130d1576f6dde77a261bd2e596a46af351fe708c82545ec8"
+    },
+    {
+      "path": "qipc/solver/affine_body.py",
+      "bytes": 34522,
+      "sha256": "9e46610f8ec421c7fc1f35485c33a18612a958713fb9497d4e17262f638b15f0"
+    },
+    {
+      "path": "qipc/solver/bspline.py",
+      "bytes": 20271,
+      "sha256": "155cf44c6866264f2310da166b5d2e007a58be1510886175c9a45b8cdad9685e"
+    },
+    {
+      "path": "qipc/solver/coarsening_topo.py",
+      "bytes": 2238,
+      "sha256": "28d9ec81364c7be6ca8535e6b71db428edc1daff6654b0c5d6afac521c381469"
+    },
+    {
+      "path": "qipc/solver/contact_export.py",
+      "bytes": 7147,
+      "sha256": "f97da2f7278f7b10ea52afbe021b37b9b4fbb36ef99540756ec93714801f634a"
+    },
+    {
+      "path": "qipc/solver/fem_cluster.py",
+      "bytes": 8301,
+      "sha256": "3d4f9e80643a4f449c3d179b68a6ef239e781c3fb80bef52898d1139b30d67d9"
+    },
+    {
+      "path": "qipc/solver/finite_element.py",
+      "bytes": 37337,
+      "sha256": "f3125fd0c6c2c6bd91e4eeb393628474d47c36d8cdcfc495d8da1cf60d39d9c9"
+    },
+    {
+      "path": "qipc/solver/joint_forest.py",
+      "bytes": 18912,
+      "sha256": "ab27b0c058db88e0c1a851433604d31516d7079dec2012522b56dcf1dd09ccb1"
+    },
+    {
+      "path": "qipc/solver/joint_system.py",
+      "bytes": 5949,
+      "sha256": "bb5e0ec28c1c0e277bbb6a7e2533e53f4450c85d70ea9adf4c1a8a385705d950"
+    },
+    {
+      "path": "qipc/solver/mas_partition.py",
+      "bytes": 20920,
+      "sha256": "465f0894f533afa058413be6d417d6375da72907c03e2226e09241a93f916a93"
+    },
+    {
+      "path": "qipc/solver/mpm.py",
+      "bytes": 1939,
+      "sha256": "877d47e0b09a3e6430107f9069bffc9261a5bf7b71a9b78ca7a40f61e82e6587"
+    },
+    {
+      "path": "qipc/solver/plasticity.py",
+      "bytes": 5394,
+      "sha256": "37386976c1b655f5371107b43608855d9978b41ebdb7b2f41b94410b23e3cc18"
+    },
+    {
+      "path": "qipc/solver/rigid_body.py",
+      "bytes": 16543,
+      "sha256": "f82752bb9c355faf5d805be400a149cf71cc67fc29af54c1b2d4977800fa98df"
+    },
+    {
+      "path": "qipc/solver/solver.py",
+      "bytes": 151252,
+      "sha256": "8d8081d9d64aca6f256ff7d68e0cf09c75c8a0334ded5426d8d4a3607f31ef56"
+    },
+    {
+      "path": "qipc/solver/surface_collector.py",
+      "bytes": 8670,
+      "sha256": "0346dd551d4804d91b7d25030bc6e5a84617803e26fa0cad6ed84c00bd88cc25"
+    },
+    {
+      "path": "qipc/tensor_types.py",
+      "bytes": 6049,
+      "sha256": "05f8e39971d5b9e7c6fbcc83fa08384e15161095d90e57d167b6fc8604be69d1"
+    },
+    {
+      "path": "qipc/topo.py",
+      "bytes": 10094,
+      "sha256": "5d6e10a26fcdbd0359be077b031f6b9039a03facbe070bb45ae047bb69991da6"
+    },
+    {
+      "path": "qipc/topo_ops.py",
+      "bytes": 48242,
+      "sha256": "2fc0e7746d38988b438f85186faa39741764fc78cd06e492228ca4a97c4b35cc"
+    },
+    {
+      "path": "qipc/topo_ops_parallel.py",
+      "bytes": 160078,
+      "sha256": "f7bd0f7b6e57fc4fd32a98b33a54b4c7d1eb42012b52beb58bf51b9e01f93a77"
+    },
+    {
+      "path": "qipc/topo_validate.py",
+      "bytes": 25562,
+      "sha256": "ee6db02082dd65911f3b78f08ca6f3b978ebe1076156a989c4dc6657e7765e4c"
+    },
+    {
+      "path": "qipc/toy/__init__.py",
+      "bytes": 535,
+      "sha256": "92d17e66d850d470750eeff64f5af337c59461f2e5c7d6dc8c9996afacc42ba6"
+    },
+    {
+      "path": "qipc/unit.py",
+      "bytes": 112,
+      "sha256": "54b3bf0f5722e6ac9abc4d8564eddaf2afa35e00a5ebbb0d31589d83b14b1662"
+    },
+    {
+      "path": "qipc/viewer/__init__.py",
+      "bytes": 23135,
+      "sha256": "0601b403a7ae12914cfe7f59bc81e0c11a6dac4f95c63696b80326ec168e9ea5"
+    },
+    {
+      "path": "qipc/viewer/camera.py",
+      "bytes": 11189,
+      "sha256": "bc3d3cc625a0aca177bab5d3e4b48f90f4d69c994cf41676cd316e49fcf95612"
+    },
+    {
+      "path": "qipc/viewer/geometry.py",
+      "bytes": 17373,
+      "sha256": "94b0db79f0d68fee61c403f3f3a921170c3f71b43b67cffa8a10fb1f7d1b7f71"
+    },
+    {
+      "path": "qipc/viewer/recorder.py",
+      "bytes": 11896,
+      "sha256": "57ddd41c90e5e0f9a6e0795d7775b0bfaa21050b6f96281a9a1deb1347b66c11"
+    },
+    {
+      "path": "qipc/viewer/recording.py",
+      "bytes": 38953,
+      "sha256": "7cd313cc7a3d76b7ba8211ed38d0a5ecf0ab9d7498870231101ada61e0f3361c"
+    },
+    {
+      "path": "qipc/viewer/scene_viewer.py",
+      "bytes": 268633,
+      "sha256": "ead51191236628ffc065c805e0925ea1e580abde890079add43b4d6a5682d9ad"
+    },
+    {
+      "path": "qipc/viewer/video.py",
+      "bytes": 6621,
+      "sha256": "585e1f269e028a6ab83beb608860fafedb5ddd6594630c53a3c987ef1fe4ae83"
+    }
+  ],
+  "submodule_status": "-cace39d503b34f8bd733b80aa727647af56b02da external/Stiff-GIPC\n-91b6b78e408a8b1c0b7146c9034a03156c082da2 external/cpptrace\n-3147391d946bb4b6c68edd901f2add6ac1f31f8c external/eigen\n-0acf106c52f5c7f068ce6313f2ca310c7d5e8b63 external/fmt\n-af53a9def68170f94d4cd3eda211bb41126a43e1 external/ipc-toolkit\n-1fd24fe19a1ea53a71597f2f3f6a16bacd87e694 external/libuipc\n-6b98c448c09710d405cb9201fc885343d05ccc32 external/libuipc-samples\n-59da72df6517cab8379865899bdffdbc96171301 external/polyscope\n-5483fd85edeae6e7832ce1943a949ad7dc0a33ab external/qipc\n-23b6ba6fbf8434056444ae106356fd2209136988 external/rigid-ipc\n-2e71fdf3c1e8d6299b8129e402ab705e6fb494ba external/spdlog\n"
+}

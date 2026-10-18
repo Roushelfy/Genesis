@@ -1,0 +1,5 @@
+{
+  "error": "Full replay task generation removed all arguments between --times and --outer-iterations. The volume --wall-input occurred in that interval, so full-replay-v1/group1/volume actually used nominal thickness, as its result.wall_input:null truthfully records.",
+  "classification": "Misnamed nominal duplicate, not an admitted volume ablation. Original tasks, result, raw fields and audit remain unchanged. Group0 nominal remains a valid measured nominal replay.",
+  "correction": "Fresh volume-only full-replay-v2 retains --wall-input; verify result.wall_input and rest thickness/mass before using it as the volume cohort."
+}

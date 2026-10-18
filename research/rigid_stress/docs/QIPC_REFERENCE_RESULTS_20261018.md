@@ -4,8 +4,9 @@
 actual common-reference field discrepancies for DPR, SCR and PR22 Shell.
 The reference fails the current spatial/timestep uncertainty targets, so those
 discrepancies remain diagnostic. Capped case7 completes9s, while representative
-case0 and its uncertainty controls remain incomplete. A confirmed shared-data
-storage outage prevents new durable runs. This report is a checkpoint, not the
+case0 and its uncertainty controls remain incomplete. The shared data mount is
+still unwritable; an explicitly documented bounded temporary output root now
+allows selected validation and coarse histories to proceed. This report is a checkpoint, not the
 goal closeout or an accuracy-qualified ranking.
 
 The [goal](QIPC_REFERENCE_COMPARISON_GOAL.md),
@@ -13,13 +14,19 @@ The [goal](QIPC_REFERENCE_COMPARISON_GOAL.md),
 [metric contract](QIPC_REFERENCE_METRICS.md),
 [execution record](QIPC_REFERENCE_PROGRESS.md) and
 [running guide](RUNNING_QIPC_REFERENCE.md) define the task and remaining work.
+The [bounded fallback execution record](QIPC_REFERENCE_FALLBACK_20261018.md)
+adds completed post-outage validation and current long-job identities.
 The [compact checkpoint](../evidence/20261018-qipc-reference/checkpoint-v1/README.md)
 preserves selected values from completed Slurm analyses and their source hashes.
 The [figure checkpoint](../evidence/20261018-qipc-reference/checkpoint-figures-v1/README.md)
 contains inspected editable exports, plotted arrays and their original renderer;
 its cost snapshot still omits some later-completed measurements.
-All runtime paths below are relative to the established data run
+The [validated checkpointv2](../evidence/20261018-qipc-reference/checkpoint-v2/README.md)
+adds the actual post-outage controls, consolidated costs, corrected Shell
+static replay, adaptive negative evidence and an inspected uncertainty figure.
+Original runtime paths below are relative to the established data run
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/`.
+New fallback campaigns are explicitly labeled with root `F` in the execution record.
 
 ## Methods and what their fields mean
 
@@ -142,6 +149,8 @@ one method or using the tiny DPR/SCR difference to choose a more accurate route.
 | Half timestep versus1ms | 0.229989 | 0.228355 | 0.356276 | Timestep-sensitive history |
 | Nonlinear1e-8 versus1e-9 | 8.791e-8 | 8.700e-8 | 9.606e-8 | This stopping contrast is small |
 | Hencky, different stopping/DBC | 0.003376 | 0.003080 | 0.007500 | Combined constitutive/numerical contrast |
+| Surface3 versus surface2, both wall2 | 0.411607 | 0.376924 | 0.713727 | Fixed-wall spatial contrast remains large |
+| Halved friction smoothing | 0.018816 | 0.018899 | 0.014541 | Complete smoothing contrast is smaller |
 
 The5% field target is not met by spatial or timestep contrasts. Same-deformation
 Hencky/SNH per-time discrepancies are at most0.676% over defined observations;
@@ -149,11 +158,24 @@ corotated linear/SNH at most0.167%. Maximum principal stretch departure is1.14%.
 These checks bound a particular constitutive difference on the sampled state;
 they do not repair contact/timestep uncertainty or calibrate damage.
 
-Surface3/wall2 completes6s, as does halved friction smoothing. Their final paired
-analyses remain pending. Surface2/wall8, surface3/wall4 and half contact band are
+Surface3/wall2 and halved friction smoothing complete6s and their paired analyses
+are now executed. The rebuilt surface2/wall4 metric gives three-way tangent
+discrepancies0.999381/0.999376/4.654631 for DPR/SCR/stock Shell, still diagnostic.
+Surface2/wall8, surface3/wall4 and half contact band are
 incomplete after the storage outage. The61440-tet observer's original cuSOLVER
 API failure is independently reproduced with finite analytic tensors; chunked
 recovery passes independent NumPy controls without changing physics.
+
+New conforming contact-indicated refinement preserves the exact faceted volume,
+mass and continuum inertia. An h0.5mm/wall4 mesh has145344 tets; an h0.25mm
+attempt exceeds its declared face budget and is not admitted. Its completed1.16s
+pilot retains every physical-step global peak but exhausts PCG696 times; maximum
+net force residual is606.5 egg weights. The raw VM reaches647.933MPa at1.13s.
+At that time finger force/moment differ57.62%/56.78% from surface2/wall4.
+Its14 sparse full frames cannot qualify a full6s history, and the separate
+field comparison stops at the material-column coverage assertion, with no
+admitted field score. Input construction and failed bounds
+are preserved in the [fallback record](QIPC_REFERENCE_FALLBACK_20261018.md).
 
 ## Loads, outcomes and state history
 
@@ -172,6 +194,27 @@ a small net egg wrench cannot certify individual finger loads. Accepted-state
 elastic/inertial closure, last-assembled contact gradients, solver caps, CCD and
 work/energy remain separate reference gates. Raw microstep journals retain the
 net residual vector as well as the nodal residual norm.
+
+Executed complete per-finger force/moment contrasts are0.339955/0.334382 for
+surface2/wall4,0.096648/0.109692 for half-dt and0.006826/0.006821 for halved
+friction smoothing. Maximum net force residual divided by egg weight is
+0.002208 coarse,0.006439 surface2/wall4 and0.000555 surface3/wall2; recorded
+PCG-cap counts are263/549/0 and Newton-cap counts zero. Small net residual does
+not cancel the opposing-finger uncertainty. Prescribed energy-minus-contact-work
+is negative in these audited histories; this signed numerical dissipation is
+not a complete conservation or physical-reference certificate.
+
+Shell resolved-load static replay now has a tested point-force/couple transfer
+that preserves undeformed source-point wrench and rigid virtual work. Actual
+nonlinear deformation changes the applied moment: valid nominal replay admits
+only114/600 statics, with maximum net contact-moment drift22.387Nm. Its all-finite
+tangent discrepancy11.1837 retains rejected statics and is not an accuracy score.
+A task-generation mistake made the first supposed volume task another nominal
+run; the original bytes and correction remain. Corrected volume job726545
+completes with113/600 admitted statics,19.1197Nm maximum net moment drift and
+diagnostic tangent discrepancy6.20259. Its actual mass/thickness are verified.
+This diagnostic cannot replace the complete contact/friction history
+or isolate pure constitutive error.
 
 The mass/hand-frame outcome audit reports first lift/hold maximum relative COM
 drift0.07351mm for the coarse candidate,2.823mm for DPR/SCR,12.54mm for stock
@@ -227,11 +270,20 @@ can be called the fastest within a qualified physical-reference error band.
 Separate process-memory sampling finds B8192 DPR/SCR fit at about12.6/22.2GiB;
 that is a tested feasible batch, not maximum capacity. Eight isolated cold-cache
 activation groups, all native/Shell primary timing groups, seven memory groups
-and six moving loaded profiler groups complete. Their final consolidated audit
-is pending. Kernel duration sums may overlap and are not complete-scene latency.
-Prepared Shell max-only code has not passed its same-state/nonfinite control
-and has no measured rate. It must observe actual physical-step maxima before
-the secondary timing table can be completed.
+and six moving loaded profiler groups complete. The refreshed audit contains112
+configuration records, eight cold activation receipts and six full kernel tables.
+Cold initialization/build/first-two-step totals atB1 are83.874s rigid baseline,
+116.418s DPR,111.870s tuned DPR,107.488s SCR,90.008s stock Shell and93.420s
+surface1 Shell. Imports precede these timers; fresh cache activation is separate
+from warmed throughput. Kernel duration sums may overlap and are not scene latency.
+Shell max-only now passes a loaded two-environment/200-physical-observation
+control with independent VM from full Cauchy, maximum difference2.98e-8Pa and
+selected-environment nonfinite isolation. Its matched stock B32 full/max pair
+measures358.142/356.189 diagnostic env-step/s; the fine pair completes at
+65.4668/65.3310. Their B32 full observer payloads are860544/13762944B for
+stock/fine, versus592B max-only. Smaller payload does not ensure faster execution.
+The max payload covers all physical substeps; full exports the last-substep
+field. Original primary rates keep their exact source/observer receipts.
 
 DPR remains the measured faster rigid stress proxy; SCR supplies a different
 surface-constrained load model, with its cost visible. Neither has qualified
@@ -247,7 +299,7 @@ independent write/fsync probe directly fail with errno122. Several long jobs
 exit1 near11:46UTC without terminal result/exception receipts; the exact worker
 exception cannot be inferred from their last finite accepted state alone.
 They are incomplete during a confirmed storage outage, not certified physical
-solver failures. No task GPU writer remains active. Only1,816,576,375 bytes of
+solver failures. At the outage audit no task GPU writer remained active. Only1,816,576,375 bytes of
 private regenerable caches from successful terminal groups were removed; all
 scientific artifacts and Genesis precomputations remain. Storage remains full.
 
@@ -260,11 +312,17 @@ not been implemented. Non-checkpointed trajectory frames cannot reconstruct
 native friction/contact history. Case7 does complete9s with one reset,0 invalid
 steps and24 recorded PCG-cap steps, but is not yet reference-qualified.
 
-The goal still requires complete capped case0/uncertainty histories, outstanding
-paired field/reaction/friction/energy/peak analyses, a meaningful QIPC-load Shell
-replay with explicit force/couple mapping, Shell max-only verification
-and timing, final error/cost/profile/uncertainty figures, full source closure,
-the requirement audit and final commit/push. Existing three diagnostic figures
-have inspected previews and export QA, but do not close these gates. New durable
-experiments require recovered space or another writable persistent data root;
-large runtime output has not been diverted into home.
+After explicit disclosure, a bounded temporary project output root in home
+and private compute-node caches allow selected work to continue. Original large
+data remain on the data mount. Eight validation groups finish; fresh9s coarse
+cases0/2 are running; final Shell paired timing completes. Resolved Shell dead-load
+replay preserves source wrenches in the fixed reference configuration;
+the complete nominal600-time replay rejects486 statics and retains deformed
+moment drift. Corrected volume replay also fails static admission. Exact paths and results are in the
+[fallback record](QIPC_REFERENCE_FALLBACK_20261018.md).
+
+The goal still requires complete capped/uncertainty histories, final physical
+qualification by quantity, full-replay/admission and peak/energy analyses,
+final error/cost/profile/uncertainty figures, full
+source closure and final audit/commit. Existing inspected diagnostic figures
+and bounded fallback results do not close these gates.

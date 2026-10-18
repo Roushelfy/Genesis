@@ -1,0 +1,100 @@
+{
+  "kind": "common-column-coverage-failure-diagnostic",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-255",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726564",
+      "SLURM_ARRAY_JOB_ID": "726564",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-4a7941c5-492a-28be-caba-7124cc629aa5, 00000000:20:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "sources": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-mesh-uncertainty-v1/group1/base1-surface2-wall4/rest.npz",
+      "bytes": 231955,
+      "sha256": "c873829019877e09a812d554103d5a12dc034832bc8998ed9b22fdd69ab053a7"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-pilot-v1/group0/adaptive-edge0.0005-wall4/rest.npz",
+      "bytes": 2451890,
+      "sha256": "0466061ea2ee82c2d35e379790fef59ca932e77af17353bd456e50137c81ade8"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz",
+      "bytes": 144512,
+      "sha256": "9d0d4f99c71578bd3f6bb039f9c72a5abbf2a8159f0209b4b891a3bda2647998"
+    }
+  ],
+  "failure": "A common material column has a gap in the FEM domain",
+  "first_failing_column_queries": [
+    {
+      "fraction": 0.9999999999942061,
+      "query_point_m": [
+        -0.017353491110989033,
+        -0.0008656788625946807,
+        0.013915820288914476
+      ],
+      "column_inner_outer_m": [
+        [
+          -0.016909458058827917,
+          -0.0008450068226726125,
+          0.013703591469889165
+        ],
+        [
+          -0.017353491110991607,
+          -0.0008656788625948005,
+          0.013915820288915706
+        ]
+      ],
+      "best_minimum_barycentric_tet": 5115,
+      "best_tet_vertices_m": [
+        [
+          -0.01740897657133606,
+          -0.0006492591469461004,
+          0.013886975639968595
+        ],
+        [
+          -0.017246738254968835,
+          -0.0009738887204191506,
+          0.014176679072195107
+        ],
+        [
+          -0.017325748380819385,
+          -0.0009738887204191506,
+          0.013930242613389264
+        ],
+        [
+          -0.017214917303414852,
+          -0.0009680747091910352,
+          0.013877141399788968
+        ]
+      ],
+      "inverse_barycentric": [
+        0.3333333333332862,
+        1.942890293094024e-16,
+        0.6666666666434902,
+        2.3223367673352868e-11
+      ],
+      "independent_solve_barycentric": [
+        0.3333333333332864,
+        2.525867167395754e-16,
+        0.6666666666434901,
+        2.3223307422791296e-11
+      ],
+      "decimal80_barycentric_exact_binary_input_coordinates": [
+        "0.33333333333328634945993060573375939055598112337366522347633001142323571417216628",
+        "3.1404067213676148229098875760051959409894665069044516212790611190425537372980882E-16",
+        "0.66666666664349003171506187653237406291060982290495918863242467769847909746527249",
+        "2.3223304784335380972384255544651453201781488944594620433123060456449326912941361E-11"
+      ],
+      "best_tet_selected_interval_bounds": []
+    }
+  ],
+  "scope": "Unchanged common-column admission. Independent float64 solve and80-digit Decimal Cramer solve inspect the nearest tetrahedron at the exact binary query coordinates. No tolerance relaxation, coordinate clipping, mesh repair or field score is applied. This diagnoses a geometric query, not solver/reference qualification."
+}

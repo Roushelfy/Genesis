@@ -519,8 +519,21 @@ unknown counters, process receipts and configured caps. New synthetic metadata
 controls cover those admission failures without claiming physical validation.
 The prepared Shell max control derives VM independently from complete Cauchy
 tensors after an actual loaded prefix and checks selected-environment nonfinite
-isolation. No such control has run. Exact fresh Slurm tasks and required checks
-are in [the pending validation record](QIPC_PENDING_VALIDATION_20261018.md).
+isolation. The [task contract](QIPC_PENDING_VALIDATION_20261018.md) is preserved.
+
+After a further12:31UTC probe fails122, an explicitly disclosed bounded temporary
+project output root and private node-local caches permit actual Slurm execution.
+Job726497 completes all eight groups/nine tasks. The12 metadata-admission controls
+and independent max-only200-observation control pass; full/max observer storage
+is53784/352B atB2, and maximum independent peak difference2.98e-8Pa. Rebuilt
+surface2 metric comparisons and per-finger histories still fail the reference
+uncertainty targets. Matched Shell timing726506 and fresh capped cases0/2 in
+726509 are running. Resolved Shell static-load pilots726513/726515 preserve
+source wrenches in the undeformed configuration, admitting3/7 at both6/24 outer
+iterations; deformed moment drift and full600-time replay remain explicit.
+The [fallback record](QIPC_REFERENCE_FALLBACK_20261018.md) contains exact paths,
+completed values, scope qualifications and subsequent job identities. The goal
+and all completion gates remain unchanged.
 
 ## Completion gates
 
@@ -538,3 +551,38 @@ are in [the pending validation record](QIPC_PENDING_VALIDATION_20261018.md).
 7. Complete requirement audit, focused checks, final commit/push.
 
 All gates remain required; they are not reduced to the inexpensive first checks.
+
+
+## Post-outage validated checkpoint, 2026-10-18
+
+The disclosed fallback retains original data/builds in place and uses private
+node-local caches. Its initial1GB persistent budget was explicitly revised to2GB
+before exceeding it; no environment or compatibility link was migrated.
+
+- Validation726497: all eight groups/nine tasks return0, including12 interrupted
+  evidence controls and independent loaded full-Cauchy/max-only/NaN isolation.
+- Shell paired726506: all groups return0; stock full/max358.142/356.189 and
+  volume-surface2 full/max65.4668/65.3310 diagnostic env-step/s. Cost audit726552
+  retains112 configurations, eight cold records and six full profile tables.
+- Full nominal Shell static replay726518 admits114/600. The supposed volume task
+  omitted its wall argument and is a preserved nominal duplicate. Corrected
+  volume726545 admits113/600; audit726554 uses only the valid two sources and
+  verifies actual mass/thickness. Large deformed moment drift and rejected
+  statics prevent pure material-error interpretation.
+- Adaptive construction726528 admits145344-tet h0.5mm/wall4, while h0.25mm exceeds
+  its face bound. Pilot726533 completes the requested1.16s, but696 PCG-cap steps
+  and606.5-weight maximum net residual reject numerical qualification. Its
+ 14-frame reaction audit726557 emits no full-history norm; field comparison
+  fails common-column coverage. Diagnostic726564 finds the first query inside
+  an actual tet by independent float64 and80-digit Decimal solves. Coverage
+  admission is unchanged; no field score or physical hole is inferred.
+- Expanded outcomes/friction726534 and diagnostic audit726532 complete. All
+  numerical/refinement/pose scopes and negative outcomes remain explicit.
+- Uncertainty figure726561 and export QA726562 pass; actual PNG and independent
+  PDF preview are inspected. Earlier clipped/overlapping drafts are retained.
+
+[Checkpointv2](../evidence/20261018-qipc-reference/checkpoint-v2/README.md)
+selects existing derived values, exact executed sources/receipts and the new
+figure. No scientific analysis runs on the login node. Fresh original-state
+9s capped cases0/2 in726509 are still running; neither is admitted as complete.
+The goal and unresolved qualification gates remain unchanged and active.

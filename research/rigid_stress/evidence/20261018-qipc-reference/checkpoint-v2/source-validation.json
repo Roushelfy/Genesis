@@ -1,0 +1,69 @@
+{
+  "checks": [
+    {
+      "source": "research/rigid_stress/qipc_comparison/audit_cost.py",
+      "executed_campaign": "cost-consolidated-v2",
+      "current_sha256": "78f5867334234e6141f0cae6422c6ed5614512d098915f31aa0b5140a86e927a",
+      "executed_sha256": "78f5867334234e6141f0cae6422c6ed5614512d098915f31aa0b5140a86e927a",
+      "AST_equal": true,
+      "exact_bytes_equal": true
+    },
+    {
+      "source": "research/rigid_stress/qipc_comparison/history_audit.py",
+      "executed_campaign": "reference-diagnostics-v2",
+      "current_sha256": "571978cea3360930f39623f72aad606d5354a9909a170ff6820d3ee65b1f4286",
+      "executed_sha256": "571978cea3360930f39623f72aad606d5354a9909a170ff6820d3ee65b1f4286",
+      "AST_equal": true,
+      "exact_bytes_equal": true
+    },
+    {
+      "source": "research/rigid_stress/qipc_comparison/prepare_adaptive.py",
+      "executed_campaign": "adaptive-input-v2",
+      "current_sha256": "d99a206b61ae990d756fe28127b7bf2222a5fd4b45538983dd8aed09e7b853c7",
+      "executed_sha256": "d99a206b61ae990d756fe28127b7bf2222a5fd4b45538983dd8aed09e7b853c7",
+      "AST_equal": true,
+      "exact_bytes_equal": true
+    },
+    {
+      "source": "research/rigid_stress/qipc_comparison/prescribed_reference.py",
+      "executed_campaign": "adaptive-prescribed-pilot-v1",
+      "current_sha256": "6fe41012718770ef7c3b09e0bf201bfde19723fd6e8d81feb2b798ecdc10e058",
+      "executed_sha256": "6fe41012718770ef7c3b09e0bf201bfde19723fd6e8d81feb2b798ecdc10e058",
+      "AST_equal": true,
+      "exact_bytes_equal": true
+    },
+    {
+      "source": "research/rigid_stress/qipc_comparison/shell_load_replay.py",
+      "executed_campaign": "shell-resolved-full-replay-v2",
+      "current_sha256": "cb8d39453426865c450cd35b88e45030ec5780a23e8c5085883cd730f5a29be1",
+      "executed_sha256": "cb8d39453426865c450cd35b88e45030ec5780a23e8c5085883cd730f5a29be1",
+      "AST_equal": true,
+      "exact_bytes_equal": true
+    },
+    {
+      "source": "research/rigid_stress/qipc_comparison/audit_shell_replay.py",
+      "executed_campaign": "shell-resolved-replay-audit-v2",
+      "current_sha256": "f47466e5edb218d3632719c9011d7ec29b7112836521736b05d4357580a93e88",
+      "executed_sha256": "f47466e5edb218d3632719c9011d7ec29b7112836521736b05d4357580a93e88",
+      "AST_equal": true,
+      "exact_bytes_equal": true
+    },
+    {
+      "source": "research/rigid_stress/qipc_comparison/metric_gap_diagnostic.py",
+      "executed_campaign": "adaptive-metric-gap-v1",
+      "current_sha256": "c27fe2a9a5cfcf79592570202cabb2e508cdb34a8f06345fbc59feae2cee138f",
+      "executed_sha256": "c27fe2a9a5cfcf79592570202cabb2e508cdb34a8f06345fbc59feae2cee138f",
+      "AST_equal": true,
+      "exact_bytes_equal": true
+    },
+    {
+      "source": "research/rigid_stress/qipc_comparison/qualification_figures.py",
+      "executed_campaign": "qualification-figure-v3",
+      "current_sha256": "5621d5157e4ec61a7b021a8e48509567d208ae5a51811e7f9a97dfd75fa2d440",
+      "executed_sha256": "a61eeca17bcea34d07e8e314adc1ea92ac0f93692cdf437eab954174eb9dd30a",
+      "AST_equal": true,
+      "exact_bytes_equal": false
+    }
+  ],
+  "scope": "Static source identity/AST check only. Formatting-only differences are explicit; scientific results remain the actual captured executions. No simulation or numerical analysis runs on the login node."
+}

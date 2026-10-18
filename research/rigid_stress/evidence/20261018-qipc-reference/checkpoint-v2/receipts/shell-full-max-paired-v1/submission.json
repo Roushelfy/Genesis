@@ -1,0 +1,17 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-1%2",
+    "--partition=rtx-mid",
+    "--gres=gpu:1",
+    "--cpus-per-task=8",
+    "--mem=64G",
+    "--time=100",
+    "--job-name=shell22-compare",
+    "--output=/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-full-max-paired-v1/logs/%A_%a.log",
+    "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-full-max-paired-v1/job.sh"
+  ],
+  "job": "726506",
+  "node_local_cache": true
+}

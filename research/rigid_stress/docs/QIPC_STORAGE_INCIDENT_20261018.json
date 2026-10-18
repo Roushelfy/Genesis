@@ -545,5 +545,26 @@
     "operation": "Exclusive-create/write/fsync probe; create failed; no probe file retained",
     "task_gpu_jobs_active": false,
     "state": "Storage remains unwritable. Task GPU jobs are terminal; sources and selected publication deliverables remain writable in their established source location."
+  },
+  "bounded_fallback_response": {
+    "recorded_at_utc": "2026-10-18T13:40:30.684449+00:00",
+    "root": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference",
+    "original_destination_state": "Still unwritable with errno122; old large inputs/results remain there",
+    "authorization_scope": "Explicitly disclosed bounded temporary response to unwritable preferred mount; no migration, shared environment change or symlink replacement",
+    "initial_persistent_output_budget_bytes": 1000000000,
+    "last_metadata_snapshot_bytes": 664926162,
+    "cache_policy": "Private compute-node /tmp via --node-local-cache; scoped EXIT cleanup; persistent receipts/results under fallback root",
+    "validation_job": 726497,
+    "validation_groups": 8,
+    "validation_tasks": 9,
+    "validation_all_returncodes_zero": true,
+    "fresh_capped_job": 726509,
+    "fresh_capped_state": "Running from original initial states, actual native/controller checkpoints every0.5s; no trajectory resume",
+    "details": "QIPC_REFERENCE_FALLBACK_20261018.md",
+    "budget_revision": {
+      "time_utc": "2026-10-18T13:42:21.318529+00:00",
+      "persistent_output_budget_bytes": 2000000000,
+      "reason": "Retain already selected coarse histories, sparse adaptive pilot and compact audit/figure outputs; disclosed before exceeding initial1GB; no new environment/cache in home"
+    }
   }
 }

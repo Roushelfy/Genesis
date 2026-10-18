@@ -1,0 +1,32 @@
+{
+  "recorded_at_utc": "2026-10-18T13:55:26.237628+00:00",
+  "preview_inspected": true,
+  "pdf_preview_inspected": true,
+  "visual_qa_passed": true,
+  "sources": [
+    {
+      "path": "research/rigid_stress/evidence/20261018-qipc-reference/checkpoint-v2/figure/reference-qualification_preview.png",
+      "bytes": 96023,
+      "sha256": "a031caeaf703d8a5fc2b1943c9d5f1ebb7af84175a9ce878976da687a9e6b267"
+    },
+    {
+      "path": "research/rigid_stress/evidence/20261018-qipc-reference/checkpoint-v2/figure/export-qa/reference-qualification-pdf-preview.png",
+      "bytes": 81109,
+      "sha256": "f7a7e77e64ff763772f6fe08c3f8fde3871154cd519eb602f269f5d98966420e"
+    }
+  ],
+  "observed": "All labels, ticks, Greek/subscript notation and panel order are readable at the183mm target. Legend is outside the raw curves. Comparable axes/units and full-history ranges are retained. Both independent previews were actually viewed.",
+  "drafts_retained": [
+    {
+      "campaign": "qualification-figure-v1",
+      "finding": "Two long category labels clipped at the figure boundary."
+    },
+    {
+      "campaign": "qualification-figure-v2",
+      "finding": "Text bounds pass but the raw-peak legend overlaps a curve."
+    }
+  ],
+  "accepted_campaign": "qualification-figure-v3",
+  "export_qa": "figure/export-qa/result.json",
+  "limits": "Reference is unqualified. No continuum peaks, physical ranking, local slip classification or complete energy certificate follows. Figure contract and caption retain denominator differences."
+}

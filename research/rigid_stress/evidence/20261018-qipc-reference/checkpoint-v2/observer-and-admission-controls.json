@@ -1,0 +1,995 @@
+{
+  "journal-controls": {
+    "kind": "interrupted-history-evidence-admission-controls",
+    "identity": {
+      "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+      "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+      "hostname": "rtx-209-067",
+      "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+      "environment": {
+        "SLURM_JOB_ID": "726498",
+        "SLURM_ARRAY_JOB_ID": "726497",
+        "SLURM_ARRAY_TASK_ID": "0",
+        "CUDA_VISIBLE_DEVICES": "0",
+        "GENESIS_IMAGE_VER": "1_26"
+      },
+      "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-17819d06-c563-257f-30fe-100c9f111279, 00000000:20:00.0, 595.71.05, 97887 MiB\n"
+    },
+    "cases": [
+      {
+        "case": "complete-success",
+        "audit": {
+          "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/complete-success/history",
+          "receipt": {
+            "completed_requested_history": true,
+            "executed_steps": 2,
+            "config": {
+              "max_newton": 8,
+              "max_pcg": 16
+            }
+          },
+          "receipt_read_error": null,
+          "receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/complete-success/history/result.json",
+            "bytes": 123,
+            "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+          },
+          "input_receipt_read_error": null,
+          "input_receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/complete-success/history/inputs.json",
+            "bytes": 61,
+            "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+          },
+          "journal_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/complete-success/history/steps.jsonl",
+            "bytes": 144,
+            "sha256": "4fc3fee220740f3705c645845d85e2a3d101d80fe60bbee3a276ba7efb239bd1"
+          },
+          "journal_read": {
+            "valid_prefix_rows": 2,
+            "first_unreadable_row": null,
+            "unparsed_tail_bytes": 0,
+            "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+          },
+          "task_returncode": null,
+          "group_returncode": 0,
+          "completed_history_reported": true,
+          "complete_history_established": true,
+          "last_recorded_time_s": 0.002,
+          "recorded_rows": 2,
+          "nonfinite_recorded_rows": 0,
+          "finite_flag_observations": 2,
+          "newton_cap_recorded_rows": 0,
+          "newton_cap_observations": 2,
+          "pcg_cap_recorded_rows": 0,
+          "pcg_cap_observations": 2,
+          "shell_cap_exhausted_physical_substeps": null,
+          "shell_cap_observations": 0,
+          "statistics": {
+            "newton": {
+              "maximum_absolute_value": 2,
+              "value_at_maximum_absolute": 2,
+              "time_at_maximum_absolute_s": 0.002,
+              "p99_absolute": 1.99,
+              "samples": 2,
+              "minimum_value": 1,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 2,
+              "time_at_maximum_s": 0.002
+            },
+            "pcg_max": {
+              "maximum_absolute_value": 5,
+              "value_at_maximum_absolute": 5,
+              "time_at_maximum_absolute_s": 0.002,
+              "p99_absolute": 4.99,
+              "samples": 2,
+              "minimum_value": 4,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 5,
+              "time_at_maximum_s": 0.002
+            }
+          },
+          "reference_qualified": false
+        }
+      },
+      {
+        "case": "missing-result",
+        "audit": {
+          "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/missing-result/history",
+          "receipt": null,
+          "receipt_read_error": "[Errno 2] No such file or directory: '/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/missing-result/history/result.json'",
+          "receipt_identity": null,
+          "input_receipt_read_error": null,
+          "input_receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/missing-result/history/inputs.json",
+            "bytes": 61,
+            "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+          },
+          "journal_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/missing-result/history/steps.jsonl",
+            "bytes": 144,
+            "sha256": "4fc3fee220740f3705c645845d85e2a3d101d80fe60bbee3a276ba7efb239bd1"
+          },
+          "journal_read": {
+            "valid_prefix_rows": 2,
+            "first_unreadable_row": null,
+            "unparsed_tail_bytes": 0,
+            "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+          },
+          "task_returncode": null,
+          "group_returncode": null,
+          "completed_history_reported": null,
+          "complete_history_established": false,
+          "last_recorded_time_s": 0.002,
+          "recorded_rows": 2,
+          "nonfinite_recorded_rows": 0,
+          "finite_flag_observations": 2,
+          "newton_cap_recorded_rows": 0,
+          "newton_cap_observations": 2,
+          "pcg_cap_recorded_rows": 0,
+          "pcg_cap_observations": 2,
+          "shell_cap_exhausted_physical_substeps": null,
+          "shell_cap_observations": 0,
+          "statistics": {
+            "newton": {
+              "maximum_absolute_value": 2,
+              "value_at_maximum_absolute": 2,
+              "time_at_maximum_absolute_s": 0.002,
+              "p99_absolute": 1.99,
+              "samples": 2,
+              "minimum_value": 1,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 2,
+              "time_at_maximum_s": 0.002
+            },
+            "pcg_max": {
+              "maximum_absolute_value": 5,
+              "value_at_maximum_absolute": 5,
+              "time_at_maximum_absolute_s": 0.002,
+              "p99_absolute": 4.99,
+              "samples": 2,
+              "minimum_value": 4,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 5,
+              "time_at_maximum_s": 0.002
+            }
+          },
+          "reference_qualified": false
+        }
+      },
+      {
+        "case": "truncated-tail",
+        "audit": {
+          "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/truncated-tail/history",
+          "receipt": {
+            "completed_requested_history": true,
+            "executed_steps": 2,
+            "config": {
+              "max_newton": 8,
+              "max_pcg": 16
+            }
+          },
+          "receipt_read_error": null,
+          "receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/truncated-tail/history/result.json",
+            "bytes": 123,
+            "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+          },
+          "input_receipt_read_error": null,
+          "input_receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/truncated-tail/history/inputs.json",
+            "bytes": 61,
+            "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+          },
+          "journal_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/truncated-tail/history/steps.jsonl",
+            "bytes": 82,
+            "sha256": "36b651ab5e4167232e52d4d6766ab686bee8c9c16146bf7e71a9d0930849c126"
+          },
+          "journal_read": {
+            "valid_prefix_rows": 1,
+            "first_unreadable_row": {
+              "line": 2,
+              "byte_offset": 72,
+              "error": "Expecting value: line 1 column 11 (char 10)"
+            },
+            "unparsed_tail_bytes": 10,
+            "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+          },
+          "task_returncode": null,
+          "group_returncode": 0,
+          "completed_history_reported": true,
+          "complete_history_established": false,
+          "last_recorded_time_s": 0.001,
+          "recorded_rows": 1,
+          "nonfinite_recorded_rows": 0,
+          "finite_flag_observations": 1,
+          "newton_cap_recorded_rows": 0,
+          "newton_cap_observations": 1,
+          "pcg_cap_recorded_rows": 0,
+          "pcg_cap_observations": 1,
+          "shell_cap_exhausted_physical_substeps": null,
+          "shell_cap_observations": 0,
+          "statistics": {
+            "newton": {
+              "maximum_absolute_value": 1,
+              "value_at_maximum_absolute": 1,
+              "time_at_maximum_absolute_s": 0.001,
+              "p99_absolute": 1.0,
+              "samples": 1,
+              "minimum_value": 1,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 1,
+              "time_at_maximum_s": 0.001
+            },
+            "pcg_max": {
+              "maximum_absolute_value": 4,
+              "value_at_maximum_absolute": 4,
+              "time_at_maximum_absolute_s": 0.001,
+              "p99_absolute": 4.0,
+              "samples": 1,
+              "minimum_value": 4,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 4,
+              "time_at_maximum_s": 0.001
+            }
+          },
+          "reference_qualified": false
+        }
+      },
+      {
+        "case": "middle-corruption",
+        "audit": {
+          "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/middle-corruption/history",
+          "receipt": {
+            "completed_requested_history": true,
+            "executed_steps": 2,
+            "config": {
+              "max_newton": 8,
+              "max_pcg": 16
+            }
+          },
+          "receipt_read_error": null,
+          "receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/middle-corruption/history/result.json",
+            "bytes": 123,
+            "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+          },
+          "input_receipt_read_error": null,
+          "input_receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/middle-corruption/history/inputs.json",
+            "bytes": 61,
+            "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+          },
+          "journal_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/middle-corruption/history/steps.jsonl",
+            "bytes": 155,
+            "sha256": "46f55b3b8be57253ab9c28f2006e2bb7b6b7086b74677820cddc25d9e6b79234"
+          },
+          "journal_read": {
+            "valid_prefix_rows": 1,
+            "first_unreadable_row": {
+              "line": 2,
+              "byte_offset": 72,
+              "error": "Expecting value: line 2 column 1 (char 11)"
+            },
+            "unparsed_tail_bytes": 83,
+            "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+          },
+          "task_returncode": null,
+          "group_returncode": 0,
+          "completed_history_reported": true,
+          "complete_history_established": false,
+          "last_recorded_time_s": 0.001,
+          "recorded_rows": 1,
+          "nonfinite_recorded_rows": 0,
+          "finite_flag_observations": 1,
+          "newton_cap_recorded_rows": 0,
+          "newton_cap_observations": 1,
+          "pcg_cap_recorded_rows": 0,
+          "pcg_cap_observations": 1,
+          "shell_cap_exhausted_physical_substeps": null,
+          "shell_cap_observations": 0,
+          "statistics": {
+            "newton": {
+              "maximum_absolute_value": 1,
+              "value_at_maximum_absolute": 1,
+              "time_at_maximum_absolute_s": 0.001,
+              "p99_absolute": 1.0,
+              "samples": 1,
+              "minimum_value": 1,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 1,
+              "time_at_maximum_s": 0.001
+            },
+            "pcg_max": {
+              "maximum_absolute_value": 4,
+              "value_at_maximum_absolute": 4,
+              "time_at_maximum_absolute_s": 0.001,
+              "p99_absolute": 4.0,
+              "samples": 1,
+              "minimum_value": 4,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 4,
+              "time_at_maximum_s": 0.001
+            }
+          },
+          "reference_qualified": false
+        }
+      },
+      {
+        "case": "corrupt-result",
+        "audit": {
+          "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/corrupt-result/history",
+          "receipt": null,
+          "receipt_read_error": "Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
+          "receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/corrupt-result/history/result.json",
+            "bytes": 1,
+            "sha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96"
+          },
+          "input_receipt_read_error": null,
+          "input_receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/corrupt-result/history/inputs.json",
+            "bytes": 61,
+            "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+          },
+          "journal_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/corrupt-result/history/steps.jsonl",
+            "bytes": 144,
+            "sha256": "4fc3fee220740f3705c645845d85e2a3d101d80fe60bbee3a276ba7efb239bd1"
+          },
+          "journal_read": {
+            "valid_prefix_rows": 2,
+            "first_unreadable_row": null,
+            "unparsed_tail_bytes": 0,
+            "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+          },
+          "task_returncode": null,
+          "group_returncode": 0,
+          "completed_history_reported": null,
+          "complete_history_established": false,
+          "last_recorded_time_s": 0.002,
+          "recorded_rows": 2,
+          "nonfinite_recorded_rows": 0,
+          "finite_flag_observations": 2,
+          "newton_cap_recorded_rows": 0,
+          "newton_cap_observations": 2,
+          "pcg_cap_recorded_rows": 0,
+          "pcg_cap_observations": 2,
+          "shell_cap_exhausted_physical_substeps": null,
+          "shell_cap_observations": 0,
+          "statistics": {
+            "newton": {
+              "maximum_absolute_value": 2,
+              "value_at_maximum_absolute": 2,
+              "time_at_maximum_absolute_s": 0.002,
+              "p99_absolute": 1.99,
+              "samples": 2,
+              "minimum_value": 1,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 2,
+              "time_at_maximum_s": 0.002
+            },
+            "pcg_max": {
+              "maximum_absolute_value": 5,
+              "value_at_maximum_absolute": 5,
+              "time_at_maximum_absolute_s": 0.002,
+              "p99_absolute": 4.99,
+              "samples": 2,
+              "minimum_value": 4,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 5,
+              "time_at_maximum_s": 0.002
+            }
+          },
+          "reference_qualified": false
+        }
+      },
+      {
+        "case": "failed-terminal",
+        "audit": {
+          "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/failed-terminal/history",
+          "receipt": {
+            "completed_requested_history": true,
+            "executed_steps": 2,
+            "config": {
+              "max_newton": 8,
+              "max_pcg": 16
+            }
+          },
+          "receipt_read_error": null,
+          "receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/failed-terminal/history/result.json",
+            "bytes": 123,
+            "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+          },
+          "input_receipt_read_error": null,
+          "input_receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/failed-terminal/history/inputs.json",
+            "bytes": 61,
+            "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+          },
+          "journal_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/failed-terminal/history/steps.jsonl",
+            "bytes": 144,
+            "sha256": "4fc3fee220740f3705c645845d85e2a3d101d80fe60bbee3a276ba7efb239bd1"
+          },
+          "journal_read": {
+            "valid_prefix_rows": 2,
+            "first_unreadable_row": null,
+            "unparsed_tail_bytes": 0,
+            "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+          },
+          "task_returncode": null,
+          "group_returncode": 1,
+          "completed_history_reported": true,
+          "complete_history_established": false,
+          "last_recorded_time_s": 0.002,
+          "recorded_rows": 2,
+          "nonfinite_recorded_rows": 0,
+          "finite_flag_observations": 2,
+          "newton_cap_recorded_rows": 0,
+          "newton_cap_observations": 2,
+          "pcg_cap_recorded_rows": 0,
+          "pcg_cap_observations": 2,
+          "shell_cap_exhausted_physical_substeps": null,
+          "shell_cap_observations": 0,
+          "statistics": {
+            "newton": {
+              "maximum_absolute_value": 2,
+              "value_at_maximum_absolute": 2,
+              "time_at_maximum_absolute_s": 0.002,
+              "p99_absolute": 1.99,
+              "samples": 2,
+              "minimum_value": 1,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 2,
+              "time_at_maximum_s": 0.002
+            },
+            "pcg_max": {
+              "maximum_absolute_value": 5,
+              "value_at_maximum_absolute": 5,
+              "time_at_maximum_absolute_s": 0.002,
+              "p99_absolute": 4.99,
+              "samples": 2,
+              "minimum_value": 4,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 5,
+              "time_at_maximum_s": 0.002
+            }
+          },
+          "reference_qualified": false
+        }
+      },
+      {
+        "case": "missing-terminal",
+        "audit": {
+          "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/missing-terminal/history",
+          "receipt": {
+            "completed_requested_history": true,
+            "executed_steps": 2,
+            "config": {
+              "max_newton": 8,
+              "max_pcg": 16
+            }
+          },
+          "receipt_read_error": null,
+          "receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/missing-terminal/history/result.json",
+            "bytes": 123,
+            "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+          },
+          "input_receipt_read_error": null,
+          "input_receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/missing-terminal/history/inputs.json",
+            "bytes": 61,
+            "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+          },
+          "journal_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/missing-terminal/history/steps.jsonl",
+            "bytes": 144,
+            "sha256": "4fc3fee220740f3705c645845d85e2a3d101d80fe60bbee3a276ba7efb239bd1"
+          },
+          "journal_read": {
+            "valid_prefix_rows": 2,
+            "first_unreadable_row": null,
+            "unparsed_tail_bytes": 0,
+            "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+          },
+          "task_returncode": null,
+          "group_returncode": null,
+          "completed_history_reported": true,
+          "complete_history_established": false,
+          "last_recorded_time_s": 0.002,
+          "recorded_rows": 2,
+          "nonfinite_recorded_rows": 0,
+          "finite_flag_observations": 2,
+          "newton_cap_recorded_rows": 0,
+          "newton_cap_observations": 2,
+          "pcg_cap_recorded_rows": 0,
+          "pcg_cap_observations": 2,
+          "shell_cap_exhausted_physical_substeps": null,
+          "shell_cap_observations": 0,
+          "statistics": {
+            "newton": {
+              "maximum_absolute_value": 2,
+              "value_at_maximum_absolute": 2,
+              "time_at_maximum_absolute_s": 0.002,
+              "p99_absolute": 1.99,
+              "samples": 2,
+              "minimum_value": 1,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 2,
+              "time_at_maximum_s": 0.002
+            },
+            "pcg_max": {
+              "maximum_absolute_value": 5,
+              "value_at_maximum_absolute": 5,
+              "time_at_maximum_absolute_s": 0.002,
+              "p99_absolute": 4.99,
+              "samples": 2,
+              "minimum_value": 4,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 5,
+              "time_at_maximum_s": 0.002
+            }
+          },
+          "reference_qualified": false
+        }
+      },
+      {
+        "case": "task-failure-precedence",
+        "audit": {
+          "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/task-failure-precedence/history",
+          "receipt": {
+            "completed_requested_history": true,
+            "executed_steps": 2,
+            "config": {
+              "max_newton": 8,
+              "max_pcg": 16
+            }
+          },
+          "receipt_read_error": null,
+          "receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/task-failure-precedence/history/result.json",
+            "bytes": 123,
+            "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+          },
+          "input_receipt_read_error": null,
+          "input_receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/task-failure-precedence/history/inputs.json",
+            "bytes": 61,
+            "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+          },
+          "journal_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/task-failure-precedence/history/steps.jsonl",
+            "bytes": 144,
+            "sha256": "4fc3fee220740f3705c645845d85e2a3d101d80fe60bbee3a276ba7efb239bd1"
+          },
+          "journal_read": {
+            "valid_prefix_rows": 2,
+            "first_unreadable_row": null,
+            "unparsed_tail_bytes": 0,
+            "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+          },
+          "task_returncode": 1,
+          "group_returncode": 0,
+          "completed_history_reported": true,
+          "complete_history_established": false,
+          "last_recorded_time_s": 0.002,
+          "recorded_rows": 2,
+          "nonfinite_recorded_rows": 0,
+          "finite_flag_observations": 2,
+          "newton_cap_recorded_rows": 0,
+          "newton_cap_observations": 2,
+          "pcg_cap_recorded_rows": 0,
+          "pcg_cap_observations": 2,
+          "shell_cap_exhausted_physical_substeps": null,
+          "shell_cap_observations": 0,
+          "statistics": {
+            "newton": {
+              "maximum_absolute_value": 2,
+              "value_at_maximum_absolute": 2,
+              "time_at_maximum_absolute_s": 0.002,
+              "p99_absolute": 1.99,
+              "samples": 2,
+              "minimum_value": 1,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 2,
+              "time_at_maximum_s": 0.002
+            },
+            "pcg_max": {
+              "maximum_absolute_value": 5,
+              "value_at_maximum_absolute": 5,
+              "time_at_maximum_absolute_s": 0.002,
+              "p99_absolute": 4.99,
+              "samples": 2,
+              "minimum_value": 4,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 5,
+              "time_at_maximum_s": 0.002
+            }
+          },
+          "reference_qualified": false
+        }
+      },
+      {
+        "case": "missing-journal",
+        "audit": {
+          "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/missing-journal/history",
+          "receipt": {
+            "completed_requested_history": true,
+            "executed_steps": 2,
+            "config": {
+              "max_newton": 8,
+              "max_pcg": 16
+            }
+          },
+          "receipt_read_error": null,
+          "receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/missing-journal/history/result.json",
+            "bytes": 123,
+            "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+          },
+          "input_receipt_read_error": null,
+          "input_receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/missing-journal/history/inputs.json",
+            "bytes": 61,
+            "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+          },
+          "journal_identity": null,
+          "journal_read": {
+            "error": "Journal missing",
+            "valid_prefix_rows": 0
+          },
+          "task_returncode": null,
+          "group_returncode": 0,
+          "completed_history_reported": true,
+          "complete_history_established": false,
+          "last_recorded_time_s": null,
+          "recorded_rows": 0,
+          "nonfinite_recorded_rows": null,
+          "finite_flag_observations": 0,
+          "newton_cap_recorded_rows": null,
+          "newton_cap_observations": 0,
+          "pcg_cap_recorded_rows": null,
+          "pcg_cap_observations": 0,
+          "shell_cap_exhausted_physical_substeps": null,
+          "shell_cap_observations": 0,
+          "statistics": {},
+          "reference_qualified": false
+        }
+      },
+      {
+        "case": "unobserved-flags",
+        "audit": {
+          "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/unobserved-flags/history",
+          "receipt": null,
+          "receipt_read_error": "[Errno 2] No such file or directory: '/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/unobserved-flags/history/result.json'",
+          "receipt_identity": null,
+          "input_receipt_read_error": null,
+          "input_receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/unobserved-flags/history/inputs.json",
+            "bytes": 61,
+            "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+          },
+          "journal_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/unobserved-flags/history/steps.jsonl",
+            "bytes": 18,
+            "sha256": "369f0c434b8f751826e9298416196573f71667e4d0ea82376a4a8a12d07d57ec"
+          },
+          "journal_read": {
+            "valid_prefix_rows": 1,
+            "first_unreadable_row": null,
+            "unparsed_tail_bytes": 0,
+            "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+          },
+          "task_returncode": null,
+          "group_returncode": null,
+          "completed_history_reported": null,
+          "complete_history_established": false,
+          "last_recorded_time_s": 0.001,
+          "recorded_rows": 1,
+          "nonfinite_recorded_rows": null,
+          "finite_flag_observations": 0,
+          "newton_cap_recorded_rows": null,
+          "newton_cap_observations": 0,
+          "pcg_cap_recorded_rows": null,
+          "pcg_cap_observations": 0,
+          "shell_cap_exhausted_physical_substeps": null,
+          "shell_cap_observations": 0,
+          "statistics": {},
+          "reference_qualified": false
+        }
+      },
+      {
+        "case": "missing-finite-evidence",
+        "audit": {
+          "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/missing-finite-evidence/history",
+          "receipt": {
+            "completed_requested_history": true,
+            "executed_steps": 1
+          },
+          "receipt_read_error": null,
+          "receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/missing-finite-evidence/history/result.json",
+            "bytes": 65,
+            "sha256": "321aa489b1fb13a648f79af2dfbf905f255b9c36e2efa0e47979712e532eee73"
+          },
+          "input_receipt_read_error": null,
+          "input_receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/missing-finite-evidence/history/inputs.json",
+            "bytes": 61,
+            "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+          },
+          "journal_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/missing-finite-evidence/history/steps.jsonl",
+            "bytes": 18,
+            "sha256": "369f0c434b8f751826e9298416196573f71667e4d0ea82376a4a8a12d07d57ec"
+          },
+          "journal_read": {
+            "valid_prefix_rows": 1,
+            "first_unreadable_row": null,
+            "unparsed_tail_bytes": 0,
+            "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+          },
+          "task_returncode": null,
+          "group_returncode": 0,
+          "completed_history_reported": true,
+          "complete_history_established": false,
+          "last_recorded_time_s": 0.001,
+          "recorded_rows": 1,
+          "nonfinite_recorded_rows": null,
+          "finite_flag_observations": 0,
+          "newton_cap_recorded_rows": null,
+          "newton_cap_observations": 0,
+          "pcg_cap_recorded_rows": null,
+          "pcg_cap_observations": 0,
+          "shell_cap_exhausted_physical_substeps": null,
+          "shell_cap_observations": 0,
+          "statistics": {},
+          "reference_qualified": false
+        }
+      },
+      {
+        "case": "actual-configured-caps",
+        "audit": {
+          "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/actual-configured-caps/history",
+          "receipt": {
+            "completed_requested_history": false,
+            "executed_steps": 1,
+            "config": {
+              "max_newton": 4,
+              "max_pcg": 8
+            }
+          },
+          "receipt_read_error": null,
+          "receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/actual-configured-caps/history/result.json",
+            "bytes": 123,
+            "sha256": "78ee15df55ab98e2f2460f341a5527c16c69f533d511d32329bb903255d60d52"
+          },
+          "input_receipt_read_error": null,
+          "input_receipt_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/actual-configured-caps/history/inputs.json",
+            "bytes": 61,
+            "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+          },
+          "journal_identity": {
+            "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group0/journal-controls/actual-configured-caps/history/steps.jsonl",
+            "bytes": 45,
+            "sha256": "3aa4d04ea06026f6a704edcd59ae648a8caaec391d455a2a32d56ddf71cd4f48"
+          },
+          "journal_read": {
+            "valid_prefix_rows": 1,
+            "first_unreadable_row": null,
+            "unparsed_tail_bytes": 0,
+            "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+          },
+          "task_returncode": null,
+          "group_returncode": 0,
+          "completed_history_reported": false,
+          "complete_history_established": false,
+          "last_recorded_time_s": 0.001,
+          "recorded_rows": 1,
+          "nonfinite_recorded_rows": null,
+          "finite_flag_observations": 0,
+          "newton_cap_recorded_rows": 1,
+          "newton_cap_observations": 1,
+          "pcg_cap_recorded_rows": 1,
+          "pcg_cap_observations": 1,
+          "shell_cap_exhausted_physical_substeps": null,
+          "shell_cap_observations": 0,
+          "statistics": {
+            "newton": {
+              "maximum_absolute_value": 4,
+              "value_at_maximum_absolute": 4,
+              "time_at_maximum_absolute_s": 0.001,
+              "p99_absolute": 4.0,
+              "samples": 1,
+              "minimum_value": 4,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 4,
+              "time_at_maximum_s": 0.001
+            },
+            "pcg_max": {
+              "maximum_absolute_value": 8,
+              "value_at_maximum_absolute": 8,
+              "time_at_maximum_absolute_s": 0.001,
+              "p99_absolute": 8.0,
+              "samples": 1,
+              "minimum_value": 8,
+              "time_at_minimum_s": 0.001,
+              "maximum_value": 8,
+              "time_at_maximum_s": 0.001
+            }
+          },
+          "reference_qualified": false
+        }
+      }
+    ],
+    "all_controls_passed": true,
+    "scope": "Synthetic metadata corruption/completion controls only. No physical trajectory, stress accuracy, numerical solver convergence or reference qualification is inferred."
+  },
+  "shell-independent-max": {
+    "kind": "same-state-full-and-max-interval-observer-control",
+    "identity": {
+      "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+      "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+      "hostname": "rtx-209-067",
+      "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+      "environment": {
+        "SLURM_JOB_ID": "726499",
+        "SLURM_ARRAY_JOB_ID": "726497",
+        "SLURM_ARRAY_TASK_ID": "1",
+        "CUDA_VISIBLE_DEVICES": "0",
+        "GENESIS_IMAGE_VER": "1_26"
+      },
+      "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-e3ae17a2-8c3a-b59e-e80d-ac03599051ab, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+    },
+    "conditions": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/case0.npz",
+      "bytes": 2096,
+      "sha256": "a555a5784363e52b92f15a51509dbd8a0a2cce131af0287127eb43d3d3c079c2"
+    },
+    "input_files": [
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/surface0/egg-mid-level1.obj",
+        "bytes": 3354,
+        "sha256": "1a7cddc3759c7f686cae58c64ea6b23acd71428bb7a6876419ea3c9903191bc4"
+      }
+    ],
+    "prefix_control_ticks": 420,
+    "control_ticks": 20,
+    "environments": 2,
+    "physical_observations": 200,
+    "maximum_peak_difference_pa": 2.9802322387695312e-08,
+    "controlled_nonfinite_Cauchy_detected_in_full_and_max": true,
+    "controlled_nonfinite_isolated_to_selected_environment": true,
+    "expected_VM_source": "Torch deviator norm from complete Cauchy tensors at every physical step, not the observer's VM/peak buffers",
+    "full_observer_bytes": 53784,
+    "max_only_observer_bytes": 352,
+    "scope": "Same actual state, unmodified PR22 physics and constitutive observer at every substep. Max-only stores one VM peak per environment over the full scene interval without writing full field arrays. The deliberately invalid final observer probe is not an accepted physical trajectory or a claim that Shell supplies an invalid-step counter."
+  },
+  "shell-max-application": {
+    "warmup_seconds": 38.91892743302742,
+    "warmup_invalid_environment_steps": null,
+    "repeats": [
+      {
+        "repeat": 0,
+        "seconds": 3.4814650569460355,
+        "env_steps": 80,
+        "requested_steps": 40,
+        "executed_steps": 40,
+        "completed_requested_history": true,
+        "nonfinite_step": null,
+        "final_output_finite_checked_after_timer": true,
+        "accuracy_qualified": null,
+        "invalid_environment_steps": null,
+        "invalid_steps_per_environment": null,
+        "valid_aggregate_env_steps_per_second": null,
+        "aggregate_env_steps_per_second": 22.97883181116186,
+        "batch_step_ms": 87.03662642365089,
+        "partial_reset_envs": 0,
+        "scope": "normal-max-only"
+      }
+    ],
+    "trajectory_summary": [
+      {
+        "all_recorded_fields_finite": null,
+        "minimum_position_z_m": null,
+        "maximum_position_z_m": null,
+        "maximum_peak_pa": null,
+        "cap_exhausted_substeps": null
+      }
+    ],
+    "kind": "matched-franka-egg",
+    "args": {
+      "model": "shell",
+      "output": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group2/shell-max-application",
+      "conditions": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/case0.npz",
+      "inputs": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/surface0",
+      "native_assets": null,
+      "envs": 2,
+      "level": 1,
+      "precision": "64",
+      "substeps": 10,
+      "sim_dt": 0.01,
+      "output_mode": "max",
+      "iterations": 50,
+      "tolerance": 0.0001,
+      "patches": 6,
+      "coarse_interval": 10,
+      "damping": 0.0,
+      "coupling_friction": 0.7191016138165071,
+      "coupling_softness": 0.002,
+      "bank_coupling_friction": true,
+      "wall_volume_input": null,
+      "warmup": 420,
+      "steps": 40,
+      "repetitions": 1,
+      "record_every": 0,
+      "instrumented": false,
+      "memory": false,
+      "trace": false,
+      "peak_snapshots": false
+    },
+    "identity": {
+      "analysis_import": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/analysis-source/research/rigid_stress/shell_comparison/common.py",
+      "genesis_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/kashu-shell-pr22-substep-peaks/genesis/__init__.py",
+      "python": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+      "executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+      "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+      "cpu_models": [
+        "INTEL(R) XEON(R) PLATINUM 8562Y+"
+      ],
+      "host": "rtx-209-067",
+      "job": "726500",
+      "array_job": "726497",
+      "array_task": "2",
+      "packages": {
+        "quadrants": "1.3.3",
+        "torch": "2.11.0+cu129",
+        "numpy": "2.2.6",
+        "scipy": "1.15.3",
+        "trimesh": "5.1.1",
+        "pydantic": "2.14.0"
+      },
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-c76298f5-14a5-a899-a833-a3a917a745f8, 595.71.05, 97887 MiB"
+    },
+    "condition_bank": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/case0.npz",
+      "bytes": 2096,
+      "sha256": "a555a5784363e52b92f15a51509dbd8a0a2cce131af0287127eb43d3d3c079c2"
+    },
+    "build_seconds": 90.57577174995095,
+    "observation_bytes": 352,
+    "source_scope": "read-only-substep-max-output",
+    "observation_contract": {
+      "mode": "max",
+      "full_field_arrays_written": false,
+      "temporal_coverage": "VM maximum across every physical substep of the current scene interval",
+      "observed_physical_substeps": 4600
+    },
+    "process_memory": {
+      "enabled": false,
+      "scope": "intrusive build/warm/rollout process sampling",
+      "peak_mib": null,
+      "samples": []
+    },
+    "rigid_dofs": 9,
+    "shell_numerics": {
+      "vertices": 42,
+      "faces": 80,
+      "patches": 1,
+      "fracture_enabled": false,
+      "plasticity_enabled": false,
+      "allocated_vertices": 42,
+      "lumped_shell_mass_kg": 0.006946250126509783,
+      "coupling_friction": 0.7191016138165071,
+      "coupling_softness_m": 0.002,
+      "bank_friction_ratio_applied_to_shell_coupling": false
+    }
+  }
+}

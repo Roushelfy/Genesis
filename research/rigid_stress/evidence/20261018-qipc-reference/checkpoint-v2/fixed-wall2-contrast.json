@@ -1,0 +1,107 @@
+{
+  "kind": "paired-reference-history-uncertainty",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726497",
+      "SLURM_ARRAY_JOB_ID": "726497",
+      "SLURM_ARRAY_TASK_ID": "7",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-c76298f5-14a5-a899-a833-a3a917a745f8, 00000000:21:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "reference": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-surface-uncertainty-v1/group0/base1-surface2-wall2/result.json",
+    "bytes": 652,
+    "sha256": "e8bad635307911c3d2121b4d4c50e6d8551e677835ed2bb1a7b894c294ca8843"
+  },
+  "surface_mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz",
+    "bytes": 144512,
+    "sha256": "9d0d4f99c71578bd3f6bb039f9c72a5abbf2a8159f0209b4b891a3bda2647998"
+  },
+  "comparisons": [
+    {
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-surface-uncertainty-v1/group1/base1-surface3-wall2/result.json",
+        "bytes": 651,
+        "sha256": "9d400d64bbbf2e11b628340432cddbde6a5de6d06e7d84da05cb24b5657aea6e"
+      },
+      "candidate_folder": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-surface-uncertainty-v1/group1/base1-surface3-wall2",
+      "candidate_config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 1e-08,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg"
+      },
+      "common_times": 600,
+      "missing_candidate_ticks": [],
+      "material_columns": 1280,
+      "pair_quadrature_points": 25600,
+      "complete_time_integrated_common_metrics": {
+        "common_tangent": {
+          "relative_error": 0.4116073181611759,
+          "reference_rms_over_time": 18445967.47059766,
+          "absolute_rms_error_over_time": 7592495.201460992,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "inner_surface": {
+          "relative_error": 0.40720083358161496,
+          "reference_rms_over_time": 17795770.609406434,
+          "absolute_rms_error_over_time": 7246452.626377504,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "outer_surface": {
+          "relative_error": 0.382695538067598,
+          "reference_rms_over_time": 19283508.349589095,
+          "absolute_rms_error_over_time": 7379712.603677017,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "membrane": {
+          "relative_error": 0.37692368495629963,
+          "reference_rms_over_time": 8610.163159179116,
+          "absolute_rms_error_over_time": 3245.374426032766,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 0.0005,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "bending": {
+          "relative_error": 0.7137268832879137,
+          "reference_rms_over_time": 0.1411770365888594,
+          "absolute_rms_error_over_time": 0.10076184631639037,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 2.5e-07,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        }
+      }
+    }
+  ],
+  "reference_qualified": false,
+  "scope": "The same material face-centroid columns are integrated on every union of both P1 partitions. Norms and resultants are exact along these columns up to geometric/roundoff tolerance; in-plane sampling remains finite. These are separate uncertainty contrasts, not an additive scalar error budget. Raw full-mesh peaks/solver caps remain in the source microstep journals. Complete finite histories and a small net wrench difference do not by themselves qualify per-finger reactions, contact regularization or continuum peaks."
+}
