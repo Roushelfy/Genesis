@@ -1,0 +1,195 @@
+{
+  "kind": "parallel-plate-pilot-admission",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726988",
+      "SLURM_ARRAY_JOB_ID": "726985",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-533f799a-d6e4-5e7c-d76b-0d63539b08f9, 00000000:45:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "settling_window_s": 0.05,
+  "runs": [
+    {
+      "label": "wall2",
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/spatial-controls-v1/group0/wall2",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/spatial-controls-v1/group0/wall2/result.json",
+        "bytes": 1734,
+        "sha256": "edb06dd4c46d43344950cdff6bd78063eea131032b491c6374382b480be85e31"
+      },
+      "source_input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall2.npz",
+        "bytes": 22313,
+        "sha256": "0320fa555277b5147af4ee27517e65773c64c11338b74b2eaa8f8ae1def9368b"
+      },
+      "completed": true,
+      "pcg_cap_steps_recorded": 19,
+      "pcg_cap_observations_lower_bound": 7,
+      "load_levels": [
+        {
+          "load_level": 0,
+          "command_force_n": 0.1,
+          "endpoint_s": 0.30000000000000004,
+          "frame": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/spatial-controls-v1/group0/wall2/frames/level0.npz",
+            "bytes": 134059,
+            "sha256": "cb856809792b6717eae588da83a51c5e000240cf0d328194a938c99baf28c90c"
+          },
+          "requested_endpoint_present": true,
+          "settling_window_observations": 6,
+          "observations_with_complete_equilibrium_metrics": 6,
+          "mechanical_window_passed": false,
+          "endpoint_equation_passed": true,
+          "pcg_caps_observed_in_window": 2,
+          "entire_window_equilibrium_passed": false,
+          "last_observation": {
+            "step": 300,
+            "time_s": 0.3,
+            "level": 0,
+            "within_level_step": 300,
+            "command_force_n": 0.1,
+            "plate_speed_m_per_s": 1.576869724378982e-05,
+            "compression_coordinate_m": 3.5114807162700545e-07,
+            "plate_separation_m": 0.06003964885192837,
+            "upper_lateral_position_m": [
+              0.003,
+              -6.649836923567582e-24
+            ],
+            "upper_quaternion_wxyz": [
+              1.0,
+              3.3612241877033173e-15,
+              7.248778434305341e-13,
+              2.4140876540005928e-27
+            ],
+            "empty_analytic_position_error_m": null,
+            "empty_analytic_velocity_error_m_per_s": null,
+            "newton": 5,
+            "pcg_max": 1810,
+            "pcg_total": 6731,
+            "line_search_max": 1,
+            "newton_last_max_displacement_m": 2.5717495673014385e-12,
+            "newton_last_contact_displacement_m": 0.0,
+            "ccd_minimum_alpha": 1.0,
+            "edge_triangle_check_enabled": true,
+            "edge_triangle_intersection_pairs": [],
+            "edge_triangle_intersection_count": 0,
+            "upper_reaction_n": 0.09913872333347226,
+            "lower_reaction_n": 0.09913422767130042,
+            "egg_inertia_resultant_norm_n": 4.49585548028338e-06,
+            "egg_kinetic_j": 1.705167535557435e-08,
+            "equation_residual_relative": 6.730212794848591e-07,
+            "minimum_det_F": 0.9999988586369518,
+            "raw_vm_peak_pa": 25238.061462794325,
+            "raw_principal_peak_pa": 9238.056838496963,
+            "equilibrium_checks": {
+              "both_plate_reactions": true,
+              "plate_velocity": false,
+              "egg_inertial_resultant": true,
+              "egg_kinetic": false,
+              "equation_residual": true
+            }
+          },
+          "normal_traction_footprints": {
+            "upper": {
+              "positive_normal_resultant_n": 0.09913872333347228,
+              "reported_vertex_force_threshold_n": 1e-09,
+              "force_bearing_vertices": 1,
+              "vertex_indices": [
+                25
+              ],
+              "vertex_forces_n": [
+                0.09913872333347228
+              ],
+              "weighted_center_xy_m": [
+                7.529884644343766e-05,
+                6.7808528148722964e-06
+              ],
+              "weighted_rms_radius_m": 8.470329472543003e-22,
+              "maximum_force_bearing_radius_m": 8.470329472543003e-22,
+              "scope": "Actual FEM nodal normal loads; no inferred finite pressure area for a point force."
+            },
+            "lower": {
+              "positive_normal_resultant_n": 0.09913422767130042,
+              "reported_vertex_force_threshold_n": 1e-09,
+              "force_bearing_vertices": 1,
+              "vertex_indices": [
+                28
+              ],
+              "vertex_forces_n": [
+                0.09913422767130042
+              ],
+              "weighted_center_xy_m": [
+                -6.751077877762618e-05,
+                -6.079551752358471e-06
+              ],
+              "weighted_rms_radius_m": 0.0,
+              "maximum_force_bearing_radius_m": 0.0,
+              "scope": "Actual FEM nodal normal loads; no inferred finite pressure area for a point force."
+            }
+          },
+          "motion_diagnostics": {
+            "center_velocity_m_per_s": [
+              7.315259627497824e-11,
+              3.5790498914662294e-12,
+              -7.452315759136188e-06
+            ],
+            "angular_velocity_rad_per_s": [
+              -0.010160545921285824,
+              0.11282533876095785,
+              -1.2543119196073715e-07
+            ],
+            "deformational_kinetic_j": 5.733244632281008e-17,
+            "translation_kinetic_j": 1.8132412326495462e-13,
+            "rotation_kinetic_j": 1.7051493974118667e-08,
+            "material_rotation_matrix": [
+              [
+                0.9999971674106095,
+                -1.8902770413545055e-07,
+                0.0023801619109497392
+              ],
+              [
+                -3.211376179277944e-07,
+                0.9999999770290856,
+                0.00021434021218426615
+              ],
+              [
+                -0.002380161896791473,
+                -0.00021434036940650363,
+                0.9999971444396987
+              ]
+            ]
+          },
+          "independent_same_traction_static_P1": {
+            "complete_tensor_difference": {
+              "relative_tensor_error": 3.0827741344956357e-06,
+              "absolute_tensor_rms_error_pa": 0.014423133052900484,
+              "reference_tensor_rms_pa": 4678.621405152088,
+              "relative_floor_pa": 1.0
+            },
+            "gauge_balance_correction_l2_n": 3.4293279187919215e-05,
+            "gauge_balance_correction_resultant_n": [
+              1.0700260074733929e-08,
+              9.63602555651648e-10,
+              -4.495649334565466e-06
+            ],
+            "equation_residual_l2_n": 3.195013528941131e-13,
+            "maximum_displacement_m": 3.9443095586249666e-08,
+            "scope": "Independent CPU linear Lam\u00e9 solve on the same full P1 domain, using actual measured nodal traction rotated to material coordinates. Six mass-orthogonal rigid modes are gauged; report every balancing correction, not a hidden support reaction. This controls elasticity at the observed footprint, not contact convergence."
+          }
+        }
+      ],
+      "admitted_equilibrium_and_solver_exits": false,
+      "mechanical_equilibrium_with_endpoint_equation": false,
+      "reference_qualified": false
+    }
+  ],
+  "same_mesh_solid_field_contrasts": [],
+  "scope": "Admission checks and separate inner/outer-tolerance contrasts. No physical reference qualification from numerical contrasts alone; spatial, timestep and contact uncertainty remain independent gates."
+}

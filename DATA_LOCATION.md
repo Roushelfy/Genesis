@@ -1,5 +1,16 @@
 # Current QIPC reference comparison
 
+## Parallel-plate benchmark storage, 2026-10-18
+
+The updated goal is pinned at fork commit `914a558df`. A new exclusive-create,
+write and fsync probe succeeded on data, whose filesystem reports available
+capacity again. New plate inputs, jobs, logs and outputs use
+`/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/`.
+Private per-job compilation caches remain node-local. Existing home fallback
+results are preserved in place; this is not a migration or a change to the
+previous 4GB exception. The goal/storage receipt is `meta/goal-and-storage.json`
+under the new run root.
+
 ## Explicitly authorized temporary home output, 2026-10-18
 
 After reviewing the storage requirement and the existing temporary outputs,

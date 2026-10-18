@@ -1,0 +1,28 @@
+[
+  [
+    {
+      "name": "reference",
+      "module": "research.rigid_stress.qipc_comparison.plate_audit",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/contact-entry-v1/group1/off-diagonal",
+        "--labels",
+        "off-diagonal"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "native",
+      "module": "research.rigid_stress.qipc_comparison.plate_audit",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v1/group0/dpr",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v1/group1/scr",
+        "--labels",
+        "dpr",
+        "scr"
+      ]
+    }
+  ]
+]

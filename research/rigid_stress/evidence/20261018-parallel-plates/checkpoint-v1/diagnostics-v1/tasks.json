@@ -1,0 +1,54 @@
+[
+  [
+    {
+      "name": "scr-rejection",
+      "module": "research.rigid_stress.qipc_comparison.plate_failure",
+      "args": [
+        "--run",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v2/group1/scr"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "numerical",
+      "module": "research.rigid_stress.qipc_comparison.plate_audit",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/contact-entry-v1/group1/off-diagonal",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/offdiagonal-controls-v1/group0/baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/offdiagonal-controls-v1/group1/newton-tight",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/offdiagonal-controls-v1/group2/pcg-tight",
+        "--labels",
+        "original",
+        "repeat",
+        "newton-tight",
+        "pcg-tight"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "numerical-fields",
+      "module": "research.rigid_stress.qipc_comparison.plate_fields",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/contact-entry-v1/group1/off-diagonal",
+        "--candidates",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/offdiagonal-controls-v1/group0/baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/offdiagonal-controls-v1/group1/newton-tight",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/offdiagonal-controls-v1/group2/pcg-tight",
+        "--labels",
+        "repeat",
+        "newton-tight",
+        "pcg-tight",
+        "--kinds",
+        "solid",
+        "solid",
+        "solid",
+        "--surface-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz"
+      ]
+    }
+  ]
+]

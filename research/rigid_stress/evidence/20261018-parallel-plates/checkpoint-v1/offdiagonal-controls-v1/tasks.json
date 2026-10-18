@@ -1,0 +1,90 @@
+[
+  [
+    {
+      "name": "baseline",
+      "module": "research.rigid_stress.qipc_comparison.plate_reference",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--loads",
+        "0.1",
+        "--clearance",
+        "2e-5",
+        "--plate-offset-x",
+        "0.003"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "newton-tight",
+      "module": "research.rigid_stress.qipc_comparison.plate_reference",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--loads",
+        "0.1",
+        "--clearance",
+        "2e-5",
+        "--plate-offset-x",
+        "0.003",
+        "--velocity-tolerance",
+        "1e-9"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "pcg-tight",
+      "module": "research.rigid_stress.qipc_comparison.plate_reference",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--loads",
+        "0.1",
+        "--clearance",
+        "2e-5",
+        "--plate-offset-x",
+        "0.003",
+        "--linear-tolerance",
+        "1e-6"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "dt-half",
+      "module": "research.rigid_stress.qipc_comparison.plate_reference",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--loads",
+        "0.1",
+        "--clearance",
+        "2e-5",
+        "--plate-offset-x",
+        "0.003",
+        "--dt",
+        "0.0005"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "mu001",
+      "module": "research.rigid_stress.qipc_comparison.plate_reference",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--loads",
+        "0.1",
+        "--clearance",
+        "2e-5",
+        "--plate-offset-x",
+        "0.003",
+        "--friction",
+        "0.01"
+      ]
+    }
+  ]
+]
