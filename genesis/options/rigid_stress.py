@@ -1,6 +1,7 @@
 from typing import Annotated, Literal
 
 from pydantic import Field, StrictBool
+from typing_extensions import Self
 
 from genesis.typing import PathType, PositiveFloat, PositiveInt, ValidFloat
 
@@ -15,7 +16,15 @@ class RigidStressOptions(Options):
     uses quadratic displacement on the complete tetrahedral mesh. The mesh
     does not change rigid collision geometry or feed displacement into motion.
 
-    ``contact_radius`` declares the finite pressure footprint in metres. A
+    ``RigidStressOptions.dpr(mesh=...)`` selects Directional Patch Recovery:
+    finite tractions aligned with each supplied normal-plus-friction force.
+    ``RigidStressOptions.scr(mesh=...)`` selects Surface-Constrained Recovery:
+    intrinsic surface support with the body-source-prior partition. These
+    constructors select complete load routes without changing any numerical
+    default. Other options can be passed as keywords. Use the explicit main
+    constructor when choosing a different partition or support variant.
+
+    ``contact_radius`` declares the finite traction footprint in metres. A
     larger footprint spreads the same contact wrench over more shell area;
     choose it from the contact model rather than the elastic mesh resolution.
     ``quadrature`` controls surface integration cost and accuracy.
@@ -188,3 +197,13 @@ class RigidStressOptions(Options):
     cached_face_bounds: StrictBool = True
     inverse_corrections: Annotated[int, Field(ge=0, le=8)] = 2
     preconditioner: Literal["diagonal", "block"] = "block"
+
+    @classmethod
+    def dpr(cls, *, mesh: PathType, **options) -> Self:
+        """Directional Patch Recovery, including the supplied tangential force."""
+        return cls(mesh=mesh, contact_model="pressure", **options)
+
+    @classmethod
+    def scr(cls, *, mesh: PathType, **options) -> Self:
+        """Surface-Constrained Recovery with the complete body-source-prior route."""
+        return cls(mesh=mesh, contact_model="intrinsic", intrinsic_load_partition="body_source_prior", **options)

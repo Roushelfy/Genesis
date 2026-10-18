@@ -33,8 +33,32 @@ The reusable submitter now captures QIPC/CMake/vendored sources and submodule
 identities, plus the new comparison package. Its original Genesis defaults
 remain available.
 
-This is an implementation/source checkpoint; no QIPC egg reference, stress
-error ranking, grasp qualification or new throughput result is claimed yet.
+Actual build726135 completed all453compile/link steps (Release solver image
+62422704B, SHA256`cebd257411c97a01e5d0c78ca8d5fb6271955c9b3b5c20ce3e53dab95e175cf1`),
+then failed its import because this main's top-level package imports the viewer
+even for headless use. The failure/log/runtime remain immutable. Build726150
+adds the viewer through the same completed incremental build cache, with fresh
+logs/runtime output and no tracked QIPC source patch. No solver rebuild is
+inferred without inspecting the actual build log.
+
+Controls726147 completed. A host C++ probe compiled against the **unmodified
+generated SNH energy/gradient header** agrees with the CUDA Cauchy/Piola observer
+to7.22e-16 at E=1. Rotation covariance and small-strain E/nu controls pass.
+SNH and Hencky finite-strain differences remain distinct. Fixed-domain
+refinement keeps the level1 mass at6.5298482104g while lumped inertia error
+decreases9.871% to0.6175%; the separately rounder level2 geometry has a different
+volume/mass and is not mislabeled numerical refinement. These checks do not
+qualify contact dynamics or a complete grasp.
+
+Public `RigidStressOptions.dpr(...)` / `.scr(...)` constructors are implemented
+as complete option presets with the old explicit identifiers. All other defaults
+and numerical kernels are unchanged. Full-field/max shared-operator tests now
+exercise DPR and verify complete SCR serialized equivalence. CPU/CUDA execution
+of that test is pending at this checkpoint.
+
+No QIPC egg reference, stress-error ranking, grasp qualification or new
+throughput result is claimed yet. Exact controls and build receipts are under
+`runs/20261018-qipc-reference/{controls-v1,build-v1,build-v2}/` on data.
 
 ## Completion gates
 

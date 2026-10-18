@@ -19,14 +19,28 @@ threshold. Keep native load rejections explicit.
 
 Configure a link before `scene.build()`:
 
+Choose a complete route with `RigidStressOptions.dpr(...)` (Directional Patch
+Recovery) or `RigidStressOptions.scr(...)` (Surface-Constrained Recovery).
+DPR includes the supplied tangential force. SCR combines intrinsic surface
+support and `body_source_prior`. Both accept the usual numerical/output keyword
+options and return ordinary `RigidStressOptions` with all effective fields.
+
+| Constructor | Exact serialized load configuration |
+| --- | --- |
+| `.dpr(mesh=...)` | `contact_model="pressure"` |
+| `.scr(mesh=...)` | `contact_model="intrinsic", intrinsic_load_partition="body_source_prior"` |
+
+The preset constructors fix those identifying fields. Use the main
+`RigidStressOptions(...)` constructor for other explicit load-law variants.
+The presets retain the existing solver and defaults. Historical identifiers in
+receipts remain unchanged, and the names do not express an accuracy ranking.
+
 ```python
 gs.init(backend=gs.gpu, precision="64")
 egg.base_link.configure_stress_recovery(
-    gs.options.RigidStressOptions(
+    gs.options.RigidStressOptions.scr(
         mesh="elastic.npz",
         contact_radius=0.006,
-        contact_model="intrinsic",
-        intrinsic_load_partition="body_source_prior",
     )
 )
 scene.build(n_envs=8)
