@@ -8,12 +8,11 @@ import numpy as np
 import torch
 
 import genesis as gs
-from genesis.utils.array_class import DataKind
 from genesis.utils.misc import qd_to_numpy, tensor_to_array
 
 from ..shell_comparison.memory import ProcessMemory
 from .artifacts import file_id, runtime_identity, write_json
-from .plates import force_history, parser, plate_xml
+from .plates import configure_native_plate, control_native_plate, force_history, parser, plate_xml, shear_target
 
 
 def main():
@@ -21,6 +20,7 @@ def main():
     cli.add_argument("--method", choices=("dpr", "scr", "rigid"), default="dpr")
     cli.add_argument("--assets", type=Path, required=True)
     cli.add_argument("--contact-radius", type=float, default=0.006)
+    cli.add_argument("--friction", type=float, default=0.01)
     cli.add_argument("--envs", type=int, default=1)
     cli.add_argument("--cost-steps", type=int, default=0)
     cli.add_argument("--cost-stride", type=int, default=100)
@@ -35,7 +35,7 @@ def main():
     with np.load(args.mesh) as mesh:
         vertices = mesh["vertices"]
     lower, upper = vertices[:, 2].min() - args.clearance, vertices[:, 2].max() + args.clearance
-    xml = plate_xml(lower, upper, args.plate_offset_x)
+    xml = plate_xml(lower, upper, args.plate_offset_x, bool(args.shear_distance))
     (args.output / "plates.xml").write_text(xml)
     gs.init(backend=gs.cuda, precision="64", logging_level="warning")
     scene = gs.Scene(
@@ -59,7 +59,7 @@ def main():
             default_armature=0.0,
         ),
         material=gs.materials.Rigid(
-            friction=0.01,
+            friction=args.friction,
         ),
     )
     egg, link = None, None
@@ -72,7 +72,7 @@ def main():
                 preserve_mesh_precision=True,
             ),
             material=gs.materials.Rigid(
-                friction=0.01,
+                friction=args.friction,
             ),
         )
         link = egg.base_link
@@ -89,9 +89,7 @@ def main():
             )
     started = perf_counter()
     scene.build(n_envs=args.envs)
-    plate.set_dofs_kp(0.0)
-    plate.set_dofs_kv(0.0)
-    plate.set_dofs_damping(args.damping)
+    configure_native_plate(plate, args)
     indices = {link.name: link.idx for link in plate.links}
     for name, height in (("lower", lower - 0.005), ("upper", upper + 0.005)):
         actual = plate.get_link(name).get_pos()[0]
@@ -104,6 +102,7 @@ def main():
             "genesis_import": gs.__file__,
             "input": file_id(args.mesh),
             "elastic_mesh": file_id(args.assets / "elastic.npz") if egg is not None else None,
+            "egg_rigid_mass_kg": link.get_mass().tolist() if egg is not None else None,
             "stress_options": link.stress_options.model_dump(mode="json")
             if egg is not None and args.method != "rigid"
             else None,
@@ -125,13 +124,16 @@ def main():
         try:
             for step, (level, within, force, endpoint) in enumerate(force_history(args)):
                 previous_velocity = egg.get_vel().clone() if egg is not None else None
-                plate.control_dofs_force(force)
+                control_native_plate(plate, args, force, step + 1)
                 if endpoint and entry is not None:
                     link.request_stress_update()
                 scene.step()
                 scene.rigid_solver.check_errno()
                 executed += 1
-                predicted_velocity = (0.05 * predicted_velocity + args.dt * force) / (0.05 + args.dt * args.damping)
+                moving_mass = 0.051 if args.shear_distance else 0.05
+                predicted_velocity = (moving_mass * predicted_velocity + args.dt * force) / (
+                    moving_mass + args.dt * args.damping
+                )
                 predicted_q += args.dt * predicted_velocity
                 if (step + 1) % args.record_stride and not endpoint:
                     continue
@@ -146,6 +148,8 @@ def main():
                     "plate_speed_m_per_s": velocity,
                     "compression_coordinate_m": q,
                     "plate_separation_m": upper - lower - q,
+                    "shear_target_m": shear_target(args, step + 1),
+                    "shear_coordinate_m": plate.get_dofs_position()[0, 1].item() if args.shear_distance else 0.0,
                     "empty_analytic_position_error_m": q - predicted_q if args.empty else None,
                     "empty_analytic_velocity_error_m_per_s": velocity - predicted_velocity if args.empty else None,
                 }
@@ -170,6 +174,8 @@ def main():
                     row.update(
                         upper_reaction_n=reactions["upper"][2].item(),
                         lower_reaction_n=-reactions["lower"][2].item(),
+                        upper_tangential_reaction_n=reactions["upper"][:2].tolist(),
+                        lower_tangential_reaction_n=reactions["lower"][:2].tolist(),
                         egg_inertia_resultant_norm_n=inertia,
                         egg_translational_kinetic_j=(0.5 * mass * (linear_velocity**2).sum()).item(),
                         egg_kinetic_upper_bound_j=(
@@ -238,6 +244,8 @@ def main():
                 )
                 payload.update({"contact_" + key: tensor_to_array(value) for key, value in egg.get_contacts().items()})
             if entry is not None:
+                from genesis.utils.array_class import DataKind
+
                 for item in scene.rigid_solver.stress_recovery.data:
                     if item.kind in (DataKind.CONFIG, DataKind.CONSTANT, DataKind.INFO):
                         continue

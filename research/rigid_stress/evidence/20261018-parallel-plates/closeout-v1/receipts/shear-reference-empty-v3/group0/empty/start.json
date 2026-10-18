@@ -1,0 +1,87 @@
+{
+  "args": {
+    "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+    "loads": [
+      0.1
+    ],
+    "dt": 0.001,
+    "ramp": 0.01,
+    "hold": 0.01,
+    "damping": 50.0,
+    "clearance": 2e-05,
+    "plate_offset_x": 0.003,
+    "shear_distance": 1e-06,
+    "shear_start": 0.0,
+    "shear_duration": 0.01,
+    "record_stride": 10,
+    "empty": true,
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/shear-reference-empty-v3/group0/empty",
+    "velocity_tolerance": 1e-08,
+    "linear_tolerance": 0.0001,
+    "d_hat": 2e-05,
+    "resistance": 10000000000.0,
+    "friction": 0.0,
+    "guide_stiffness": 10000000000.0,
+    "linear_solver": "linear_pcg",
+    "mas_precision": "float",
+    "cost_steps": 0,
+    "cost_stride": 100,
+    "cost_repeats": 3
+  },
+  "input": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+    "bytes": 34052,
+    "sha256": "40256c5711abb9e9e9f313adbb41944efb8511ae409538001a75d019e88728ea"
+  },
+  "native": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/qipc-stress-reference-roundoff/qipc/_src/native/solver/qipc_solver_ext.abi3.so",
+    "bytes": 62422704,
+    "sha256": "d4b90d5cbcbee44fb2c92b9406d5ca15f70e4dcda82469c5fb9865bc37526211"
+  },
+  "qipc_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/qipc-stress-reference-roundoff/qipc/__init__.py",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/qipc-owned-coarse-tree-check01-20261015/bin/python3.12",
+    "python_version": "3.12.13 (main, Jun  2 2026, 22:27:15) [Clang 22.1.3 ]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "727035",
+      "SLURM_ARRAY_JOB_ID": "727035",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-e5a1cecc-eff3-bf27-77f8-0d3cf44a8890, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "config": {
+    "dt": 0.001,
+    "young": 10000000000.0,
+    "poisson": 0.3,
+    "density": 2000.0,
+    "velocity_tolerance": 1e-08,
+    "linear_tolerance": 0.0001,
+    "max_newton": 256,
+    "max_pcg": 4096,
+    "d_hat": 2e-05,
+    "friction": 0.0,
+    "friction_epsilon_velocity": 0.0001,
+    "resistance": 10000000000.0,
+    "energy": "snh",
+    "mas_precision": "float",
+    "linear_solver": "linear_pcg",
+    "newton_aware_pcg": false
+  },
+  "plate_body_indices": {
+    "lower": 0,
+    "normal_carriage": 1,
+    "upper": 2
+  },
+  "plate_masses_kg": [
+    0.05,
+    0.001,
+    0.05
+  ],
+  "plate_separation_at_rest_m": 0.060039999999999996,
+  "setup_seconds": 0.7436652579926886,
+  "scope": "Intrusive short pilot; no reference qualification inferred from completion."
+}

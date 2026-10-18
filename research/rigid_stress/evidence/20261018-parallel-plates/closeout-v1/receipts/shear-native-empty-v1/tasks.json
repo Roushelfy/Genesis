@@ -1,0 +1,65 @@
+[
+  [
+    {
+      "name": "empty",
+      "module": "research.rigid_stress.qipc_comparison.plate_native",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--empty",
+        "--loads",
+        "0.1",
+        "--ramp",
+        "0.01",
+        "--hold",
+        "0.01",
+        "--clearance",
+        "2e-5",
+        "--plate-offset-x",
+        "0.003",
+        "--shear-distance",
+        "1e-6",
+        "--shear-start",
+        "0",
+        "--shear-duration",
+        "0.01",
+        "--method",
+        "rigid",
+        "--assets",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "empty",
+      "module": "research.rigid_stress.qipc_comparison.plate_native",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--empty",
+        "--loads",
+        "0.1",
+        "--ramp",
+        "0.01",
+        "--hold",
+        "0.01",
+        "--clearance",
+        "2e-5",
+        "--plate-offset-x",
+        "0.003",
+        "--shear-distance",
+        "1e-6",
+        "--shear-start",
+        "0",
+        "--shear-duration",
+        "0.01",
+        "--method",
+        "rigid",
+        "--assets",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1"
+      ],
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/kashu-shell-pr22-diagnostics"
+    }
+  ]
+]

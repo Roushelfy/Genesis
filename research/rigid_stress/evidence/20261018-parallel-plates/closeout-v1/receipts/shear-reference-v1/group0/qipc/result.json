@@ -1,0 +1,71 @@
+{
+  "completed": true,
+  "steps_returned": 2500,
+  "newton_cap_steps": 0,
+  "pcg_cap_steps": 522,
+  "elapsed_seconds_including_observation_IO": 530.5118134249933,
+  "last_observation": {
+    "step": 2500,
+    "time_s": 2.5,
+    "level": 0,
+    "within_level_step": 2500,
+    "command_force_n": 0.1,
+    "plate_speed_m_per_s": 3.885780586188048e-13,
+    "compression_coordinate_m": 1.8118066675426592e-07,
+    "plate_separation_m": 0.06003981881933324,
+    "shear_target_m": 1e-05,
+    "shear_coordinate_m": 1.0000000550257782e-05,
+    "upper_lateral_position_m": [
+      0.0030100000005502613,
+      -3.497632023333091e-18
+    ],
+    "upper_quaternion_wxyz": [
+      1.0,
+      -2.0755734377742588e-19,
+      1.49891587797095e-14,
+      5.2429711374588975e-21
+    ],
+    "empty_analytic_position_error_m": null,
+    "empty_analytic_velocity_error_m_per_s": null,
+    "newton": 2,
+    "pcg_max": 4096,
+    "pcg_total": 4692,
+    "line_search_max": 0,
+    "newton_last_max_displacement_m": 8.928268824643998e-16,
+    "newton_last_contact_displacement_m": 0.0,
+    "ccd_minimum_alpha": 1.0,
+    "edge_triangle_check_enabled": true,
+    "edge_triangle_intersection_pairs": [],
+    "edge_triangle_intersection_count": 0,
+    "upper_reaction_n": 0.10000000316506977,
+    "lower_reaction_n": 0.09999999937625823,
+    "upper_tangential_reaction_n": [
+      4.967388047603536e-08,
+      7.320173452148288e-10
+    ],
+    "lower_tangential_reaction_n": [
+      -5.445275938025667e-08,
+      7.500290949769638e-10
+    ],
+    "egg_inertia_resultant_norm_n": 2.457322902566033e-10,
+    "egg_kinetic_j": 2.921459563815368e-23,
+    "equation_residual_relative": 9.368446011079113e-05,
+    "minimum_det_F": 0.9999988482624776,
+    "raw_vm_peak_pa": 25574.740169510667,
+    "raw_principal_peak_pa": 9662.181181453501,
+    "equilibrium_checks": {
+      "both_plate_reactions": true,
+      "plate_velocity": true,
+      "egg_inertial_resultant": true,
+      "egg_kinetic": true,
+      "equation_residual": true
+    }
+  },
+  "reference_qualified": false,
+  "process_memory": {
+    "enabled": false,
+    "scope": "intrusive build/warm/rollout process sampling",
+    "peak_mib": null,
+    "samples": []
+  }
+}

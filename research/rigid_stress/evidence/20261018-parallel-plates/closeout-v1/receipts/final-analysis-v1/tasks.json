@@ -1,0 +1,34 @@
+[
+  [
+    {
+      "name": "summary",
+      "module": "research.rigid_stress.qipc_comparison.plate_summary",
+      "args": [
+        "--root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "dpr",
+      "module": "research.rigid_stress.qipc_comparison.plate_audit",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/shear-native-shell-v1/group0/dpr",
+        "--labels",
+        "dpr-shear"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "scr-rejection",
+      "module": "research.rigid_stress.qipc_comparison.plate_failure",
+      "args": [
+        "--run",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/shear-native-shell-v1/group1/scr"
+      ]
+    }
+  ]
+]

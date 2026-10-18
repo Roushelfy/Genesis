@@ -30,9 +30,10 @@ def main():
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     apply_nature_style(mpl)
-    traces, histories = [], []
+    traces, histories, starts = [], [], []
     for run in (args.reference, args.dpr, args.shell):
         histories.append([json.loads(line) for line in (run / "steps.jsonl").read_text().splitlines()])
+        starts.append(json.loads((run / "start.json").read_text()))
         traces.extend(file_id(run / name) for name in ("steps.jsonl", "start.json", "result.json"))
     field_result = json.loads(args.fields.read_text())
     traces.append(file_id(args.fields))
@@ -57,7 +58,7 @@ def main():
         plt.close(fig)
 
     fig, axes = plt.subplots(1, 2, figsize=figure_size("double", height_mm=72), layout="constrained")
-    for label, color, style, history in zip(labels, colors, styles, histories):
+    for label, color, style, history, start in zip(labels, colors, styles, histories, starts):
         short = [row for row in history if row["time_s"] <= 0.3 + 1e-12]
         axes[0].plot(
             [row["time_s"] for row in short],
@@ -66,7 +67,9 @@ def main():
             color=color,
             ls=style,
         )
-        ends = [row for row in history if "raw_vm_peak_pa" in row] if label == "DPR" else [history[-1]]
+        level_duration = start["args"]["ramp"] + start["args"]["hold"]
+        endpoints = [(level + 1) * level_duration for level in range(len(start["args"]["loads"]))]
+        ends = [row for row in history if any(abs(row["time_s"] - end) < 1e-12 for end in endpoints)]
         axes[1].plot(
             [row["compression_coordinate_m"] * 1e6 for row in ends],
             [row["upper_reaction_n"] for row in ends],
@@ -131,6 +134,82 @@ def main():
     axes[0].set_ylabel("Material height (mm)")
     fig.colorbar(artist, ax=axes, shrink=0.85, label="Outer tangential tensor norm (Pa; log scale)")
     export(fig, "outer-stress")
+    load_maps = []
+    for run, label in ((args.reference, "QIPC"), (args.dpr, "DPR"), (args.shell, "Shell")):
+        frame_path = run / "frames/level0.npz"
+        traces.append(file_id(frame_path))
+        with np.load(frame_path) as saved:
+            if label == "QIPC":
+                with np.load(run / "rest.npz") as rest:
+                    coordinates = rest["vertices"]
+                forces = saved["contact_forces_n"]
+            elif label == "DPR":
+                w, x, y, z = saved["link_quaternion_wxyz"]
+                rotation = np.array(
+                    [
+                        [1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
+                        [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
+                        [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)],
+                    ]
+                )
+                coordinates = (saved["contact_positions_world_m"] - saved["link_position_m"]) @ rotation
+                forces = saved["contact_forces_world_n"]
+            else:
+                with np.load(run / "rest.npz") as rest:
+                    coordinates = rest["vertices"]
+                forces = saved["contact_forces_world_n"]
+            selected = np.abs(forces[:, 2]) > 1e-12
+            load_maps.append((coordinates[selected].copy(), forces[selected, 2].copy()))
+    magnitudes = np.concatenate([np.abs(force) for _, force in load_maps])
+    load_norm = LogNorm(vmin=magnitudes.min(), vmax=magnitudes.max(), clip=False)
+    extent = max(8.0, 1.1 * max(np.abs(points[:, :2]).max() * 1000 for points, _ in load_maps))
+    fig, axes = plt.subplots(
+        2, 3, figsize=figure_size("double", height_mm=106), layout="constrained", sharex=True, sharey=True
+    )
+    for col, (label, (coordinates, force)) in enumerate(zip(labels, load_maps)):
+        for side, sign in enumerate((-1, 1)):
+            ax = axes[side, col]
+            mask = sign * force > 0
+            artist = ax.scatter(
+                coordinates[mask, 0] * 1000,
+                coordinates[mask, 1] * 1000,
+                c=np.abs(force[mask]),
+                norm=load_norm,
+                cmap="viridis",
+                marker="o",
+                s=22,
+                linewidths=0.3,
+                edgecolors="black",
+            )
+            if label == "DPR":
+                start = json.loads((args.dpr / "start.json").read_text())
+                for point in coordinates[mask]:
+                    ax.add_patch(
+                        plt.Circle(
+                            point[:2] * 1000,
+                            start["args"]["contact_radius"] * 1000,
+                            fill=False,
+                            color="0.5",
+                            ls="--",
+                            lw=0.6,
+                        )
+                    )
+            ax.set(xlim=(-extent, extent), ylim=(-extent, extent), aspect="equal")
+            ax.set_title(f"{label}: {'upper' if side == 0 else 'lower'}", fontsize=6)
+            ax.text(-0.12, 1.05, "abcdef"[side * 3 + col], transform=ax.transAxes, fontsize=8, fontweight="bold")
+            if side == 1:
+                ax.set_xlabel("Material x (mm)")
+            if col == 0:
+                ax.set_ylabel("Material y (mm)")
+            style_axes(ax)
+    bar = fig.colorbar(artist, ax=axes, shrink=0.8, label="Absolute discrete normal load (N; log scale)")
+    ticks = (
+        [load_norm.vmin]
+        + [10.0**power for power in range(-12, 2) if load_norm.vmin * 1.2 < 10.0**power < load_norm.vmax / 1.2]
+        + [load_norm.vmax]
+    )
+    bar.set_ticks(ticks, labels=[f"{value:.2g}" for value in ticks])
+    export(fig, "contact-loads")
     write_json(
         args.output / "result.json",
         {
@@ -141,6 +220,8 @@ def main():
             "vector_exports": args.export_vector,
             "scope": "Diagnostic maps share unmodified extrema and a common logarithmic scale. SCR absence is rejection, not zero stress. Shell carries a different actual force and is not admitted for equal-load accuracy. Upper plate travel includes initial clearance/contact regularization, not pure egg elastic indentation.",
             "color_limits_pa": [float(norm.vmin), float(norm.vmax)],
+            "load_map_limits_n": [float(load_norm.vmin), float(load_norm.vmax)],
+            "load_map_scope": "Actual QIPC nodal, native rigid source-point and Shell nodal impulse/dt loads at their declared endpoints. Force units N, not continuum pressure Pa. Shell positions are the loaded vertices in the rest material frame. Dashed native circles show the declared reconstruction radius, not an observed FEM pressure footprint. Components below1e-12N are omitted from the load-only map and retained in raw fields.",
         },
     )
 

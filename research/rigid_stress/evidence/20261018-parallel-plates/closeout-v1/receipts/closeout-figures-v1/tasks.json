@@ -1,0 +1,19 @@
+[
+  [
+    {
+      "name": "preview",
+      "module": "research.rigid_stress.qipc_comparison.plate_figures",
+      "args": [
+        "--fields",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/closeout-analysis-v1/group3/normal-fields/result.json",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/reference-loads-v1/group0/three-loads",
+        "--dpr",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v2/group0/dpr",
+        "--shell",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/shell-operator-v1/group0/tight",
+        "--export-vector"
+      ]
+    }
+  ]
+]

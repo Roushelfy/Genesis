@@ -1,0 +1,487 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "727017",
+      "SLURM_ARRAY_JOB_ID": "727016",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-7e607143-660e-ae9f-b941-5c2e8046d87f, 00000000:AE:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "costs": [
+    {
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-cost-v1/group0/dpr/cost.json",
+        "bytes": 2257,
+        "sha256": "677b87ff7ec235be20ff22a832b5c33533af9f6cbc33165664c4f3a224cb0cd9"
+      },
+      "method": "dpr",
+      "envs": 1,
+      "complete": true,
+      "repeat_rates": [
+        671.8230857625474,
+        697.459805831409,
+        696.5797472302409
+      ],
+      "median_env_steps_per_second": 696.5797472302409,
+      "all_observed_mechanical_checks_passed": true,
+      "physical_accuracy_qualified": false
+    },
+    {
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-cost-v1/group0/rigid/cost.json",
+        "bytes": 2235,
+        "sha256": "8d2b9d29280069b1b1f5b3fc13c28e5b009e9aa316c44cd5f4c42b9f128cce83"
+      },
+      "method": "rigid",
+      "envs": 1,
+      "complete": true,
+      "repeat_rates": [
+        696.6989700657361,
+        724.7717387201352,
+        725.0157905474179
+      ],
+      "median_env_steps_per_second": 724.7717387201352,
+      "all_observed_mechanical_checks_passed": true,
+      "physical_accuracy_qualified": false
+    },
+    {
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-cost-v1/group1/dpr/cost.json",
+        "bytes": 2254,
+        "sha256": "6f596484694bd3e2715b34416ab1cc91b7a847249d22ce125a183fa30f179f6b"
+      },
+      "method": "dpr",
+      "envs": 8,
+      "complete": true,
+      "repeat_rates": [
+        5178.582340668653,
+        5379.975066455053,
+        5359.187008843058
+      ],
+      "median_env_steps_per_second": 5359.187008843058,
+      "all_observed_mechanical_checks_passed": true,
+      "physical_accuracy_qualified": false
+    },
+    {
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-cost-v1/group1/rigid/cost.json",
+        "bytes": 2236,
+        "sha256": "8921467812f3c85511bbaddef222237fcecaffa38aed95f444708d064e8a06dc"
+      },
+      "method": "rigid",
+      "envs": 8,
+      "complete": true,
+      "repeat_rates": [
+        5295.998307043259,
+        5471.858262346971,
+        5470.458194454959
+      ],
+      "median_env_steps_per_second": 5470.458194454959,
+      "all_observed_mechanical_checks_passed": true,
+      "physical_accuracy_qualified": false
+    },
+    {
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-cost-v1/group2/dpr/cost.json",
+        "bytes": 2264,
+        "sha256": "cc8ceb679f56567cdd723678b49950f43b717e21fa68aa0ff043a468bfdd3b0f"
+      },
+      "method": "dpr",
+      "envs": 64,
+      "complete": true,
+      "repeat_rates": [
+        40323.64335947182,
+        41932.53435844946,
+        41804.40461387094
+      ],
+      "median_env_steps_per_second": 41804.40461387094,
+      "all_observed_mechanical_checks_passed": true,
+      "physical_accuracy_qualified": false
+    },
+    {
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-cost-v1/group2/rigid/cost.json",
+        "bytes": 2237,
+        "sha256": "de20ccbdd79c8305903509294c61b4c920789d115b6abda73c010ed6c88e6e1b"
+      },
+      "method": "rigid",
+      "envs": 64,
+      "complete": true,
+      "repeat_rates": [
+        42061.14456000468,
+        43536.81928020295,
+        43510.65138626898
+      ],
+      "median_env_steps_per_second": 43510.65138626898,
+      "all_observed_mechanical_checks_passed": true,
+      "physical_accuracy_qualified": false
+    },
+    {
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/reference-cost-v1/group0/qipc/cost.json",
+        "bytes": 4030,
+        "sha256": "a963ba012d17c6387f8142e2779064095b2c76b7ba86e4ae1cd2df2ab73af678"
+      },
+      "method": "qipc",
+      "envs": 1,
+      "complete": false,
+      "repeat_rates": [
+        4.17503241872499
+      ],
+      "median_env_steps_per_second": 4.17503241872499,
+      "all_observed_mechanical_checks_passed": false,
+      "physical_accuracy_qualified": false
+    }
+  ],
+  "profiles": [
+    {
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-profile-v1/group0/dpr/profile.json",
+        "bytes": 29762,
+        "sha256": "5de9c4d26ecb87590d01b33059bdda0e29e9f9986276e659a2b80ca08331ff87"
+      },
+      "method": "dpr",
+      "envs": 64,
+      "steps": 200,
+      "kernel_name_groups": {
+        "rigid_constraint_solve": {
+          "launches": 10800,
+          "gpu_duration_sum_ms": 68.19851600000005
+        },
+        "unclassified": {
+          "launches": 7400,
+          "gpu_duration_sum_ms": 36.32179700000003
+        },
+        "mechanics_and_kinematics": {
+          "launches": 5148,
+          "gpu_duration_sum_ms": 34.75944099999999
+        },
+        "collision_and_contact_assembly": {
+          "launches": 5800,
+          "gpu_duration_sum_ms": 118.30164500000002
+        },
+        "fused_stress_reconstruction_and_field": {
+          "launches": 196,
+          "gpu_duration_sum_ms": 1.9800779999999998
+        }
+      },
+      "process_peak_mib": 2268,
+      "scope": "Intrusive separate profile; kernel duration sums can overlap and are not exclusive wall-clock stages. Unclassified names remain in the source JSON."
+    },
+    {
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-profile-v1/group0/rigid/profile.json",
+        "bytes": 18741,
+        "sha256": "fd56a7345332ac132357637687435b6b587698cb4a2173297d4868476bc22c65"
+      },
+      "method": "rigid",
+      "envs": 64,
+      "steps": 200,
+      "kernel_name_groups": {
+        "unclassified": {
+          "launches": 7400,
+          "gpu_duration_sum_ms": 36.35345200000001
+        },
+        "collision_and_contact_assembly": {
+          "launches": 5800,
+          "gpu_duration_sum_ms": 113.13293900000001
+        },
+        "rigid_constraint_solve": {
+          "launches": 10800,
+          "gpu_duration_sum_ms": 68.12442200000004
+        },
+        "mechanics_and_kinematics": {
+          "launches": 5200,
+          "gpu_duration_sum_ms": 35.12217499999998
+        }
+      },
+      "process_peak_mib": 2130,
+      "scope": "Intrusive separate profile; kernel duration sums can overlap and are not exclusive wall-clock stages. Unclassified names remain in the source JSON."
+    }
+  ],
+  "native_stability": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-stability-v1/group0/load-unload",
+      "start": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-stability-v1/group0/load-unload/start.json",
+        "bytes": 4186,
+        "sha256": "ba9159c5178f3f31e4f004bb01326a3bff8234135d287d8e44c5865496df6513"
+      },
+      "completed": true,
+      "contact_radius_m": 0.006,
+      "endpoints": [
+        {
+          "step": 2100,
+          "time_s": 2.1,
+          "level": 0,
+          "within_level_step": 2100,
+          "command_force_n": 0.1,
+          "plate_speed_m_per_s": 1.9286399940272428e-08,
+          "compression_coordinate_m": 0.0003766684785169035,
+          "plate_separation_m": 0.05966333152148309,
+          "empty_analytic_position_error_m": null,
+          "empty_analytic_velocity_error_m_per_s": null,
+          "upper_reaction_n": 0.09999904120678944,
+          "lower_reaction_n": 0.0999990415615317,
+          "egg_inertia_resultant_norm_n": 3.547422636393854e-10,
+          "egg_translational_kinetic_j": 2.9335253036635674e-19,
+          "egg_kinetic_upper_bound_j": 2.9335253036635674e-19,
+          "egg_angular_velocity_rad_per_s": [
+            4.3402559149463356e-20,
+            -5.091111162968184e-20,
+            9.350778191784707e-36
+          ],
+          "maximum_contact_friction": 0.01,
+          "contact_tangential_force_sum_norm_n": 1.0933946967772317e-17,
+          "contact_count": 2,
+          "raw_vm_peak_pa": 22679.0711360016,
+          "equation_residual_relative": 3.610730376918183e-11,
+          "invalid_stress_steps": 0
+        },
+        {
+          "step": 4200,
+          "time_s": 4.2,
+          "level": 1,
+          "within_level_step": 2100,
+          "command_force_n": 0.3,
+          "plate_speed_m_per_s": 2.1790882731409223e-11,
+          "compression_coordinate_m": 0.0008723689301854279,
+          "plate_separation_m": 0.05916763106981457,
+          "empty_analytic_position_error_m": null,
+          "empty_analytic_velocity_error_m_per_s": null,
+          "upper_reaction_n": 0.2999999989209076,
+          "lower_reaction_n": 0.29999999892158874,
+          "egg_inertia_resultant_norm_n": 6.811206438825173e-13,
+          "egg_translational_kinetic_j": 3.8618916684804577e-25,
+          "egg_kinetic_upper_bound_j": 3.8618916684804577e-25,
+          "egg_angular_velocity_rad_per_s": [
+            1.101070699402653e-19,
+            -1.2933456142544827e-19,
+            -1.0556927370986768e-35
+          ],
+          "maximum_contact_friction": 0.01,
+          "contact_tangential_force_sum_norm_n": 3.293308156278822e-17,
+          "contact_count": 2,
+          "raw_vm_peak_pa": 68037.86550595939,
+          "equation_residual_relative": 3.6192418684366917e-11,
+          "invalid_stress_steps": 0
+        },
+        {
+          "step": 6300,
+          "time_s": 6.3,
+          "level": 2,
+          "within_level_step": 2100,
+          "command_force_n": 1.0,
+          "plate_speed_m_per_s": 1.2921561440984911e-15,
+          "compression_coordinate_m": 0.0017034474019160374,
+          "plate_separation_m": 0.05833655259808396,
+          "empty_analytic_position_error_m": null,
+          "empty_analytic_velocity_error_m_per_s": null,
+          "upper_reaction_n": 1.0000000000000298,
+          "lower_reaction_n": 1.0000000000000386,
+          "egg_inertia_resultant_norm_n": 1.1532659630214842e-15,
+          "egg_translational_kinetic_j": 2.0785873843641394e-33,
+          "egg_kinetic_upper_bound_j": 2.078587387701627e-33,
+          "egg_angular_velocity_rad_per_s": [
+            4.827135326016177e-19,
+            -8.352458914478985e-19,
+            2.3481291561772816e-35
+          ],
+          "maximum_contact_friction": 0.01,
+          "contact_tangential_force_sum_norm_n": 2.1899097537222092e-16,
+          "contact_count": 2,
+          "raw_vm_peak_pa": 226792.88583564223,
+          "equation_residual_relative": 3.484631558317466e-11,
+          "invalid_stress_steps": 0
+        },
+        {
+          "step": 8400,
+          "time_s": 8.4,
+          "level": 3,
+          "within_level_step": 2100,
+          "command_force_n": 0.30000000000000004,
+          "plate_speed_m_per_s": -1.6743758986802563e-11,
+          "compression_coordinate_m": 0.0008723689342026423,
+          "plate_separation_m": 0.05916763106579735,
+          "empty_analytic_position_error_m": null,
+          "empty_analytic_velocity_error_m_per_s": null,
+          "upper_reaction_n": 0.30000000082915773,
+          "lower_reaction_n": 0.3000000008286341,
+          "egg_inertia_resultant_norm_n": 5.235949566316919e-13,
+          "egg_translational_kinetic_j": 2.280064926410735e-25,
+          "egg_kinetic_upper_bound_j": 2.280064926410735e-25,
+          "egg_angular_velocity_rad_per_s": [
+            7.691141563943442e-20,
+            -5.505114083832388e-20,
+            4.863175030995822e-35
+          ],
+          "maximum_contact_friction": 0.01,
+          "contact_tangential_force_sum_norm_n": 4.654036623211801e-18,
+          "contact_count": 2,
+          "raw_vm_peak_pa": 68037.86593873677,
+          "equation_residual_relative": 3.514547054263521e-11,
+          "invalid_stress_steps": 0
+        },
+        {
+          "step": 10500,
+          "time_s": 10.5,
+          "level": 4,
+          "within_level_step": 2100,
+          "command_force_n": 0.1,
+          "plate_speed_m_per_s": -2.0032647291373787e-08,
+          "compression_coordinate_m": 0.00037667533893526715,
+          "plate_separation_m": 0.05966332466106473,
+          "empty_analytic_position_error_m": null,
+          "empty_analytic_velocity_error_m_per_s": null,
+          "upper_reaction_n": 0.10000099589170768,
+          "lower_reaction_n": 0.10000099552323764,
+          "egg_inertia_resultant_norm_n": 3.6847001558339274e-10,
+          "egg_translational_kinetic_j": 3.164931752765721e-19,
+          "egg_kinetic_upper_bound_j": 3.164931752765721e-19,
+          "egg_angular_velocity_rad_per_s": [
+            4.799376185830005e-20,
+            -6.118418750443542e-20,
+            3.1680174883244043e-35
+          ],
+          "maximum_contact_friction": 0.01,
+          "contact_tangential_force_sum_norm_n": 1.5453852244204895e-18,
+          "contact_count": 2,
+          "raw_vm_peak_pa": 22679.514444804547,
+          "equation_residual_relative": 3.589626091756031e-11,
+          "invalid_stress_steps": 0
+        },
+        {
+          "step": 12600,
+          "time_s": 12.6,
+          "level": 5,
+          "within_level_step": 2100,
+          "command_force_n": 0.0,
+          "plate_speed_m_per_s": -4.398390987443331e-08,
+          "compression_coordinate_m": 4.0008493978509e-05,
+          "plate_separation_m": 0.059999991506021484,
+          "empty_analytic_position_error_m": null,
+          "empty_analytic_velocity_error_m_per_s": null,
+          "upper_reaction_n": 2.1878075184833102e-06,
+          "lower_reaction_n": 2.1870798654895773e-06,
+          "egg_inertia_resultant_norm_n": 7.276529937329308e-10,
+          "egg_translational_kinetic_j": 1.5119943736962517e-18,
+          "egg_kinetic_upper_bound_j": 1.5119943736962517e-18,
+          "egg_angular_velocity_rad_per_s": [
+            9.699692244891816e-25,
+            -1.111411019697239e-24,
+            2.8017105242412886e-35
+          ],
+          "maximum_contact_friction": 0.01,
+          "contact_tangential_force_sum_norm_n": 3.371805455768627e-23,
+          "contact_count": 2,
+          "raw_vm_peak_pa": 0.49617935069017965,
+          "equation_residual_relative": 3.833944037050104e-11,
+          "invalid_stress_steps": 0
+        }
+      ],
+      "same_load_return_contrasts": [
+        {
+          "command_force_n": 0.1,
+          "first_level": 0,
+          "return_level": 4,
+          "corner_voigt_array_relative_change": 1.9543451784159287e-05,
+          "plate_coordinate_return_difference_m": 6.86041836365928e-09,
+          "scope": "Identical native mesh/array ordering; array norm is a repeatability diagnostic, not a volume-weighted continuum stress error."
+        }
+      ],
+      "zero_load_scope": "Raw residual/loads retained; the loaded relative equation criterion is not silently reinterpreted as an absolute zero-load criterion."
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-stability-v1/group1/radius003",
+      "start": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-stability-v1/group1/radius003/start.json",
+        "bytes": 4131,
+        "sha256": "9a04952a1e7c4dc3c67e970e4f19920944a1fe8bc20f99cdc7df31f98e3c6a5b"
+      },
+      "completed": true,
+      "contact_radius_m": 0.003,
+      "endpoints": [
+        {
+          "step": 2100,
+          "time_s": 2.1,
+          "level": 0,
+          "within_level_step": 2100,
+          "command_force_n": 0.1,
+          "plate_speed_m_per_s": 1.9286399940272428e-08,
+          "compression_coordinate_m": 0.0003766684785169035,
+          "plate_separation_m": 0.05966333152148309,
+          "empty_analytic_position_error_m": null,
+          "empty_analytic_velocity_error_m_per_s": null,
+          "upper_reaction_n": 0.09999904120678944,
+          "lower_reaction_n": 0.0999990415615317,
+          "egg_inertia_resultant_norm_n": 3.547422636393854e-10,
+          "egg_translational_kinetic_j": 2.9335253036635674e-19,
+          "egg_kinetic_upper_bound_j": 2.9335253036635674e-19,
+          "egg_angular_velocity_rad_per_s": [
+            4.3402559149463356e-20,
+            -5.091111162968184e-20,
+            9.350778191784707e-36
+          ],
+          "maximum_contact_friction": 0.01,
+          "contact_tangential_force_sum_norm_n": 1.0933946967772317e-17,
+          "contact_count": 2,
+          "raw_vm_peak_pa": 31915.559039752465,
+          "equation_residual_relative": 2.7150666064407176e-11,
+          "invalid_stress_steps": 0
+        }
+      ],
+      "same_load_return_contrasts": [],
+      "zero_load_scope": "Raw residual/loads retained; the loaded relative equation criterion is not silently reinterpreted as an absolute zero-load criterion."
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-stability-v1/group2/radius009",
+      "start": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-stability-v1/group2/radius009/start.json",
+        "bytes": 4131,
+        "sha256": "0ae4b46f8358b74d4eafa8c716399c6907380eaa72290f3270578a8b94b626dd"
+      },
+      "completed": true,
+      "contact_radius_m": 0.009,
+      "endpoints": [
+        {
+          "step": 2100,
+          "time_s": 2.1,
+          "level": 0,
+          "within_level_step": 2100,
+          "command_force_n": 0.1,
+          "plate_speed_m_per_s": 1.9286399940272428e-08,
+          "compression_coordinate_m": 0.0003766684785169035,
+          "plate_separation_m": 0.05966333152148309,
+          "empty_analytic_position_error_m": null,
+          "empty_analytic_velocity_error_m_per_s": null,
+          "upper_reaction_n": 0.09999904120678944,
+          "lower_reaction_n": 0.0999990415615317,
+          "egg_inertia_resultant_norm_n": 3.547422636393854e-10,
+          "egg_translational_kinetic_j": 2.9335253036635674e-19,
+          "egg_kinetic_upper_bound_j": 2.9335253036635674e-19,
+          "egg_angular_velocity_rad_per_s": [
+            4.3402559149463356e-20,
+            -5.091111162968184e-20,
+            9.350778191784707e-36
+          ],
+          "maximum_contact_friction": 0.01,
+          "contact_tangential_force_sum_norm_n": 1.0933946967772317e-17,
+          "contact_count": 2,
+          "raw_vm_peak_pa": 17187.798502491947,
+          "equation_residual_relative": 3.3617834443834065e-11,
+          "invalid_stress_steps": 0
+        }
+      ],
+      "same_load_return_contrasts": [],
+      "zero_load_scope": "Raw residual/loads retained; the loaded relative equation criterion is not silently reinterpreted as an absolute zero-load criterion."
+    }
+  ],
+  "reference_qualified": false,
+  "scope": "Numerically/mechanically screened compute and stability diagnostics, separate from the unresolved contact-field accuracy qualification."
+}

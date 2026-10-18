@@ -1,0 +1,32 @@
+[
+  [
+    {
+      "name": "qipc",
+      "module": "research.rigid_stress.qipc_comparison.plate_reference",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--loads",
+        "0.1",
+        "--ramp",
+        "0.1",
+        "--hold",
+        "2.4",
+        "--clearance",
+        "2e-5",
+        "--plate-offset-x",
+        "0.003",
+        "--shear-distance",
+        "1e-5",
+        "--shear-start",
+        "2.1",
+        "--shear-duration",
+        "0.2",
+        "--friction",
+        "0.3",
+        "--guide-stiffness",
+        "1e10"
+      ]
+    }
+  ]
+]

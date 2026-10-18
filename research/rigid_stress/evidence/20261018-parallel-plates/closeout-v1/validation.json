@@ -1,0 +1,36 @@
+{
+  "copied_artifacts_verified": 185,
+  "copied_bytes": 2788973,
+  "external_artifacts_verified": 173,
+  "referenced_files_checked": 75,
+  "historical_progress_dependency_superseded": [
+    {
+      "receipt": "receipts/checkpoint-analysis-v1/group0/summary/result.json",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/reference-cost-v1/group0/qipc/cost.json",
+      "recorded_sha256": "a963ba012d17c6387f8142e2779064095b2c76b7ba86e4ae1cd2df2ab73af678",
+      "terminal_sha256": "d66d8cab0de217de78e023940450c31ddcc16e2b6c8dc4fd41901b33427cce16"
+    }
+  ],
+  "historical_dependency_disposition": "Unchanged interim receipt predates completion of reference cost repeats; final-analysis-v1 and terminal cost receipt are authoritative. No final figure/field dependency mismatch.",
+  "markdown_files_checked": 9,
+  "ruff_check": "11 plate modules passed",
+  "ruff_format": "11 plate modules passed",
+  "diff_whitespace": "Passed; exact captured unified-diff data exempt through packet-scoped .gitattributes, preserving space-only context lines and original hashes. Source code remains checked.",
+  "figure_color_and_grayscale_visual_review": "All three figures reviewed; readable labels/units, full extrema, missing SCR and unequal Shell load explicit.",
+  "svg_editable_text_counts": {
+    "contact-loads.svg": 48,
+    "mechanics.svg": 36,
+    "outer-stress.svg": 45
+  },
+  "pdf_font_embedding_independently_verified": false,
+  "final_slurm_jobs": [
+    "727099_0      COMPLETED      0:0 ",
+    "727099_1      COMPLETED      0:0 ",
+    "727099_2      COMPLETED      0:0 ",
+    "727099_3      COMPLETED      0:0 ",
+    "727221_0      COMPLETED      0:0 ",
+    "727223_0      COMPLETED      0:0 ",
+    "727224_0      COMPLETED      0:0 "
+  ],
+  "smoke_scope": "20-step zero-load native B2 mass/full-field output and QIPC mass/profile-statistics serialization; software validation only, not physical accuracy or cost admission."
+}

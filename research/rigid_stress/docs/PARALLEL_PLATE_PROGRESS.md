@@ -4,7 +4,21 @@ The active specification is [PARALLEL_PLATE_COMPARISON_GOAL.md](PARALLEL_PLATE_C
 pinned at remote commit `914a558df`. The superseded Franka campaigns remain
 stopped and their accepted packets and unfinished source changes are preserved.
 
-## Checkpoint
+## Final disposition
+
+The bounded comparison is complete under the specification's explicitly
+diagnosed unsupported-quantity clause. See the
+[requirement audit](PARALLEL_PLATE_AUDIT.md),
+[running guide](RUNNING_PARALLEL_PLATES.md) and
+[closeout packet](../evidence/20261018-parallel-plates/closeout-v1/README.md).
+Three normal load levels, matched-history shear, bounded spatial/tolerance/
+timestep/contact controls, load/unload/radius stability and cost/profile/memory
+analysis have completed. Missing/rejected fields and failed reference cost
+remain explicit. No physical accuracy ranking or qualified speedup is claimed.
+All new runtime output remains on data; no original engine repair or broad
+Franka qualification sweep is included.
+
+## Diagnostic finding
 
 See [the measured diagnostic results](PARALLEL_PLATE_RESULTS_20261018.md).
 The initial adapter/geometry failures have been retained and corrected in new

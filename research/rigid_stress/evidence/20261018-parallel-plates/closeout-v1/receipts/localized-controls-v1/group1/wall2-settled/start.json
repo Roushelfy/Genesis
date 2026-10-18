@@ -1,0 +1,78 @@
+{
+  "args": {
+    "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall2.npz",
+    "loads": [
+      0.1
+    ],
+    "dt": 0.001,
+    "ramp": 0.1,
+    "hold": 1.0,
+    "damping": 50.0,
+    "clearance": 2e-05,
+    "plate_offset_x": 0.003,
+    "record_stride": 10,
+    "empty": false,
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/localized-controls-v1/group1/wall2-settled",
+    "velocity_tolerance": 1e-08,
+    "linear_tolerance": 0.0001,
+    "d_hat": 2e-05,
+    "resistance": 10000000000.0,
+    "friction": 0.0,
+    "linear_solver": "linear_pcg",
+    "mas_precision": "float"
+  },
+  "input": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall2.npz",
+    "bytes": 22313,
+    "sha256": "0320fa555277b5147af4ee27517e65773c64c11338b74b2eaa8f8ae1def9368b"
+  },
+  "native": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/qipc-stress-reference-roundoff/qipc/_src/native/solver/qipc_solver_ext.abi3.so",
+    "bytes": 62422704,
+    "sha256": "d4b90d5cbcbee44fb2c92b9406d5ca15f70e4dcda82469c5fb9865bc37526211"
+  },
+  "qipc_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/qipc-stress-reference-roundoff/qipc/__init__.py",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/qipc-owned-coarse-tree-check01-20261015/bin/python3.12",
+    "python_version": "3.12.13 (main, Jun  2 2026, 22:27:15) [Clang 22.1.3 ]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726984",
+      "SLURM_ARRAY_JOB_ID": "726982",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-5be56406-45bd-50ce-e9ae-d10e52cb77c1, 00000000:20:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "config": {
+    "dt": 0.001,
+    "young": 10000000000.0,
+    "poisson": 0.3,
+    "density": 2000.0,
+    "velocity_tolerance": 1e-08,
+    "linear_tolerance": 0.0001,
+    "max_newton": 256,
+    "max_pcg": 4096,
+    "d_hat": 2e-05,
+    "friction": 0.0,
+    "friction_epsilon_velocity": 0.0001,
+    "resistance": 10000000000.0,
+    "energy": "snh",
+    "mas_precision": "float",
+    "linear_solver": "linear_pcg",
+    "newton_aware_pcg": false
+  },
+  "plate_body_indices": {
+    "lower": 0,
+    "upper": 1
+  },
+  "plate_masses_kg": [
+    0.05,
+    0.05
+  ],
+  "plate_separation_at_rest_m": 0.060039999999999996,
+  "setup_seconds": 0.9702361289528199,
+  "scope": "Intrusive short pilot; no reference qualification inferred from completion."
+}

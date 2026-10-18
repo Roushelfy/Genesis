@@ -1,0 +1,1357 @@
+{
+  "steps": 1,
+  "envs": 1,
+  "kernel_totals": {
+    "void at::native::vectorized_elementwise_kernel<2, at::native::FillFunctor<double>, std::array<char*, 1ul> >(int, at::native::FillFunctor<double>, std::array<char*, 1ul>)": {
+      "count": 6,
+      "total_us": 6.337
+    },
+    "void at::native::index_elementwise_kernel<128, 4, at::native::gpu_index_kernel<at::native::index_put_kernel_impl<at::native::OpaqueType<8> >(at::TensorIterator&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1}>(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>, at::native::index_put_kernel_impl<at::native::OpaqueType<8> >(at::TensorIterator&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1} const&, bool)::{lambda(int)#1}>(long, at::native::gpu_index_kernel<at::native::index_put_kernel_impl<at::native::OpaqueType<8> >(at::TensorIterator&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1}>(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>, at::native::index_put_kernel_impl<at::native::OpaqueType<8> >(at::TensorIterator&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1} const&, bool)::{lambda(int)#1})": {
+      "count": 1,
+      "total_us": 1.888
+    },
+    "qipc::pipeline_reset_kernel(int*)": {
+      "count": 1,
+      "total_us": 0.608
+    },
+    "qipc::checkpoint_gate_kernel(int*, int const*, int, unsigned long long)": {
+      "count": 14,
+      "total_us": 17.279
+    },
+    "qipc::fem_predict_kernel(qipc::FEMContext const*, qipc::SimContext const*)": {
+      "count": 1,
+      "total_us": 3.744
+    },
+    "qipc::rigid_external_wrench_zero_kernel(qipc::RigidContext const*)": {
+      "count": 1,
+      "total_us": 2.272
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::CheckpointScope&)#2}::operator()(qipc::CheckpointScope&) const::{lambda()#1}>(qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::CheckpointScope&)#2}::operator()(qipc::CheckpointScope&) const::{lambda()#1})": {
+      "count": 1,
+      "total_us": 4.48
+    },
+    "qipc::rigid_prismatic_collect_force_kernel(qipc::RigidPrismaticJointContext const*, qipc::RigidJointDriveContext const*, qipc::RigidContext const*)": {
+      "count": 1,
+      "total_us": 9.664
+    },
+    "qipc::adaptive_kappa_body_update_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 3.296
+    },
+    "qipc::adaptive_kappa_global_update_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 1.76
+    },
+    "qipc::adaptive_kappa_update_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 2.624
+    },
+    "qipc::rigid_predict_kernel(qipc::RigidContext const*, qipc::SimContext const*)": {
+      "count": 1,
+      "total_us": 52.672
+    },
+    "qipc::pipeline_scope_gate_kernel(int const*, int, int, unsigned long long)": {
+      "count": 4,
+      "total_us": 6.144
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::ContactSystem::count_active(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::VarView<int>)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1}>(qipc::ContactSystem::count_active(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::VarView<int>)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1})": {
+      "count": 1,
+      "total_us": 1.089
+    },
+    "qipc::cipc_count_active_ee_kernel(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 20.128
+    },
+    "qipc::cipc_count_active_pt_kernel(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 11.935
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#2}::operator()(qipc::CheckpointScope&) const::{lambda()#1}>(qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#2}::operator()(qipc::CheckpointScope&) const::{lambda()#1})": {
+      "count": 1,
+      "total_us": 2.048
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::ContactSystem::count_active(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::VarView<int>)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#2}>(qipc::ContactSystem::count_active(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::VarView<int>)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#2})": {
+      "count": 1,
+      "total_us": 2.465
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#2}::operator()(qipc::CheckpointScope&) const::{lambda()#2}>(qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#2}::operator()(qipc::CheckpointScope&) const::{lambda()#2})": {
+      "count": 1,
+      "total_us": 2.144
+    },
+    "qipc::pipeline_yield_check_kernel(int*, int, int*)": {
+      "count": 8,
+      "total_us": 10.815999999999999
+    },
+    "qipc::reset_contact_sort_counters_sim_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 1.824
+    },
+    "void qipc::report_extent_kernel<qipc::SNHContext>(qipc::SNHContext*, qipc::GlobalLinearSystemContext const*, int)": {
+      "count": 1,
+      "total_us": 1.728
+    },
+    "qipc::fem_report_extent_kernel(qipc::FEMContext const*, qipc::GlobalLinearSystemContext const*, int)": {
+      "count": 1,
+      "total_us": 2.432
+    },
+    "void qipc::report_extent_kernel<qipc::RigidJointDampingContext>(qipc::RigidJointDampingContext*, qipc::GlobalLinearSystemContext const*, int)": {
+      "count": 1,
+      "total_us": 1.952
+    },
+    "void qipc::report_extent_kernel<qipc::RigidPrismaticJointContext>(qipc::RigidPrismaticJointContext*, qipc::GlobalLinearSystemContext const*, int)": {
+      "count": 1,
+      "total_us": 2.112
+    },
+    "void qipc::report_extent_kernel<qipc::RigidContext>(qipc::RigidContext*, qipc::GlobalLinearSystemContext const*, int)": {
+      "count": 1,
+      "total_us": 1.152
+    },
+    "qipc::in_contact_zero_kernel(qipc::GlobalVertexContext const*, qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 2.016
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::ContactSystem::filter_assemble(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::SimContext const*, qipc::VarView<int>)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1}>(qipc::ContactSystem::filter_assemble(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::SimContext const*, qipc::VarView<int>)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1})": {
+      "count": 1,
+      "total_us": 1.504
+    },
+    "qipc::compose_contact_doublet_keys_sim_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 1.888
+    },
+    "qipc::compose_contact_triplet_keys_sim_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 2.4
+    },
+    "qipc::derive_extents_kernel(qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 2.72
+    },
+    "qipc::cipc_filter_assemble_ee_kernel(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 29.312
+    },
+    "qipc::cipc_filter_assemble_pt_kernel(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 73.728
+    },
+    "qipc::memset_triplet_kernel(qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 3.392
+    },
+    "qipc::memset_b_rhs_kernel(qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 2.368
+    },
+    "void qipc::drs_memset_ctrs_kernel<unsigned int, qipc::ContactDoubletSortAcc>(qipc::ContactDoubletSortAcc, qipc::RadixSortContext<unsigned int> const*)": {
+      "count": 1,
+      "total_us": 1.472
+    },
+    "void qipc::drs_memset_bins_kernel<unsigned int, qipc::ContactDoubletSortAcc>(qipc::ContactDoubletSortAcc, qipc::RadixSortContext<unsigned int> const*)": {
+      "count": 1,
+      "total_us": 1.728
+    },
+    "void qipc::drs_memset_ctrs_kernel<unsigned long, qipc::ContactTripletSortAcc>(qipc::ContactTripletSortAcc, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 1,
+      "total_us": 1.536
+    },
+    "void qipc::drs_memset_bins_kernel<unsigned long, qipc::ContactTripletSortAcc>(qipc::ContactTripletSortAcc, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 1,
+      "total_us": 1.536
+    },
+    "qipc::copy_contact_staging_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 1.568
+    },
+    "qipc::in_contact_mark_kernel(qipc::GlobalVertexContext const*, qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 2.304
+    },
+    "qipc::rigid_kinetic_assemble_kernel(qipc::RigidContext const*, qipc::GlobalLinearSystemContext const*, qipc::SimContext const*, int)": {
+      "count": 1,
+      "total_us": 19.616
+    },
+    "qipc::fem_elastic_gradient_hessian_kernel(qipc::FEMContext const*, qipc::GlobalLinearSystemContext const*, qipc::SimContext const*, qipc::SNHContext const*, int)": {
+      "count": 1,
+      "total_us": 889.053
+    },
+    "qipc::rigid_prismatic_damping_assemble_kernel(qipc::RigidJointDampingContext const*, qipc::RigidPrismaticJointContext const*, qipc::RigidContext const*, qipc::GlobalLinearSystemContext const*, qipc::SimContext const*, int)": {
+      "count": 1,
+      "total_us": 16.96
+    },
+    "qipc::distribute_rigid_rigid_kernel(qipc::RigidContext const*, qipc::GlobalVertexContext const*, qipc::GlobalContactContext const*, qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 12.64
+    },
+    "qipc::distribute_rigid_fem_kernel(qipc::RigidContext const*, qipc::FEMContext const*, qipc::GlobalVertexContext const*, qipc::GlobalContactContext const*, qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 4.96
+    },
+    "qipc::distribute_fem_fem_kernel(qipc::FEMContext const*, qipc::GlobalContactContext const*, qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 4.416
+    },
+    "qipc::distribute_rigid_gradient_kernel(qipc::RigidContext const*, qipc::GlobalVertexContext const*, qipc::GlobalContactContext const*, qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 20.64
+    },
+    "qipc::distribute_fem_gradient_kernel(qipc::FEMContext const*, qipc::GlobalContactContext const*, qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 3.616
+    },
+    "qipc::fem_kinetic_gradient_hessian_kernel(qipc::FEMContext const*, qipc::GlobalLinearSystemContext const*, qipc::SimContext const*, int)": {
+      "count": 1,
+      "total_us": 7.36
+    },
+    "qipc::rigid_prismatic_joint_assemble_kernel(qipc::RigidPrismaticJointContext const*, qipc::RigidContext const*, qipc::GlobalLinearSystemContext const*, qipc::SimContext const*, int)": {
+      "count": 1,
+      "total_us": 172.543
+    },
+    "void qipc::drs_histogram_kernel<unsigned int, qipc::ContactDoubletSortAcc>(qipc::ContactDoubletSortAcc, qipc::RadixSortContext<unsigned int> const*)": {
+      "count": 1,
+      "total_us": 3.072
+    },
+    "void qipc::drs_histogram_kernel<unsigned long, qipc::ContactTripletSortAcc>(qipc::ContactTripletSortAcc, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 1,
+      "total_us": 3.328
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#2}::operator()(qipc::CheckpointScope&) const::{lambda()#3}>(qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#2}::operator()(qipc::CheckpointScope&) const::{lambda()#3})": {
+      "count": 1,
+      "total_us": 1.952
+    },
+    "void qipc::dual_ee_reset_query_kernel<qipc::ContactEEQueryAcc, DOP14f>(qipc::ContactEEQueryAcc, qipc::DualEEQueryContext*, qipc::BVHInternalViewsT<DOP14f> const*)": {
+      "count": 1,
+      "total_us": 4.192
+    },
+    "void qipc::bvh_query_pt_warp_kernel<qipc::ContactPTQueryAcc, qipc::ContactPTPred, DOP14f>(qipc::ContactPTQueryAcc, qipc::BVHInternalViewsT<DOP14f>*, qipc::ContactPTPred)": {
+      "count": 1,
+      "total_us": 49.632
+    },
+    "qipc::compose_sort_keys_padded_kernel(qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 2.592
+    },
+    "void qipc::drs_exclusive_sum_kernel<unsigned int, qipc::ContactDoubletSortAcc>(qipc::ContactDoubletSortAcc, qipc::RadixSortContext<unsigned int> const*)": {
+      "count": 1,
+      "total_us": 1.728
+    },
+    "void qipc::drs_exclusive_sum_kernel<unsigned long, qipc::ContactTripletSortAcc>(qipc::ContactTripletSortAcc, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 1,
+      "total_us": 1.76
+    },
+    "void qipc::dual_ee_frontier_expand_kernel<true, qipc::ContactEEQueryAcc, qipc::ContactEEPred, DOP14f>(qipc::ContactEEQueryAcc, qipc::ContactEEPred, qipc::DualEEQueryContext*, qipc::BVHInternalViewsT<DOP14f> const*)": {
+      "count": 9,
+      "total_us": 42.048
+    },
+    "void qipc::drs_memset_ctrs_kernel<unsigned long, qipc::BodyTripletSortAcc>(qipc::BodyTripletSortAcc, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 1,
+      "total_us": 1.44
+    },
+    "void qipc::drs_memset_bins_kernel<unsigned long, qipc::BodyTripletSortAcc>(qipc::BodyTripletSortAcc, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 1,
+      "total_us": 1.504
+    },
+    "void qipc::drs_memset_lookback_kernel<unsigned int, qipc::ContactDoubletSortAcc>(qipc::ContactDoubletSortAcc, qipc::RadixSortContext<unsigned int> const*)": {
+      "count": 4,
+      "total_us": 5.824
+    },
+    "void qipc::drs_memset_lookback_kernel<unsigned long, qipc::ContactTripletSortAcc>(qipc::ContactTripletSortAcc, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 8,
+      "total_us": 10.975999999999999
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::ContactSystem::ccd(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::CCDComponentPartitionerContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1}>(qipc::ContactSystem::ccd(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::CCDComponentPartitionerContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1})": {
+      "count": 1,
+      "total_us": 1.44
+    },
+    "void qipc::dual_ee_prepare_frontier_kernel<false, DOP14f>(qipc::DualEEQueryContext*, qipc::BVHInternalViewsT<DOP14f> const*)": {
+      "count": 9,
+      "total_us": 27.904000000000003
+    },
+    "void qipc::drs_histogram_kernel<unsigned long, qipc::BodyTripletSortAcc>(qipc::BodyTripletSortAcc, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 1,
+      "total_us": 3.648
+    },
+    "void qipc::drs_onesweep_kernel<unsigned int, qipc::ContactDoubletSortAcc>(qipc::ContactDoubletSortAcc, qipc::RadixSortContext<unsigned int> const*, int)": {
+      "count": 4,
+      "total_us": 37.151999999999994
+    },
+    "void qipc::drs_onesweep_kernel<unsigned long, qipc::ContactTripletSortAcc>(qipc::ContactTripletSortAcc, qipc::RadixSortContext<unsigned long> const*, int)": {
+      "count": 8,
+      "total_us": 58.624
+    },
+    "qipc::ccd_alpha_pt_kernel(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::GlobalContactContext const*, qipc::CCDComponentPartitionerContext const*)": {
+      "count": 1,
+      "total_us": 47.968
+    },
+    "qipc::ccd_alpha_ee_kernel(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::GlobalContactContext const*, qipc::CCDComponentPartitionerContext const*)": {
+      "count": 1,
+      "total_us": 63.904
+    },
+    "void qipc::dual_ee_frontier_expand_kernel<false, qipc::ContactEEQueryAcc, qipc::ContactEEPred, DOP14f>(qipc::ContactEEQueryAcc, qipc::ContactEEPred, qipc::DualEEQueryContext*, qipc::BVHInternalViewsT<DOP14f> const*)": {
+      "count": 9,
+      "total_us": 36.0
+    },
+    "void qipc::drs_exclusive_sum_kernel<unsigned long, qipc::BodyTripletSortAcc>(qipc::BodyTripletSortAcc, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 1,
+      "total_us": 1.76
+    },
+    "qipc::reduce_ccd_alpha_final_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 2.72
+    },
+    "void qipc::dual_ee_prepare_frontier_kernel<true, DOP14f>(qipc::DualEEQueryContext*, qipc::BVHInternalViewsT<DOP14f> const*)": {
+      "count": 9,
+      "total_us": 25.824000000000005
+    },
+    "void qipc::drs_memset_lookback_kernel<unsigned long, qipc::BodyTripletSortAcc>(qipc::BodyTripletSortAcc, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 8,
+      "total_us": 10.943999999999999
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::ContactSystem::ccd(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::CCDComponentPartitionerContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#3}>(qipc::ContactSystem::ccd(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::CCDComponentPartitionerContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#3})": {
+      "count": 1,
+      "total_us": 1.152
+    },
+    "void qipc::drs_onesweep_kernel<unsigned long, qipc::BodyTripletSortAcc>(qipc::BodyTripletSortAcc, qipc::RadixSortContext<unsigned long> const*, int)": {
+      "count": 8,
+      "total_us": 63.648
+    },
+    "qipc::ccd_sv_init_parent_kernel(qipc::CCDComponentPartitionerContext const*, qipc::GlobalVertexContext const*)": {
+      "count": 1,
+      "total_us": 2.464
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::CCDComponentPartitioner::partition_and_reduce(qipc::GlobalVertexContext const*, qipc::GlobalBodyContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1}>(qipc::CCDComponentPartitioner::partition_and_reduce(qipc::GlobalVertexContext const*, qipc::GlobalBodyContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1})": {
+      "count": 1,
+      "total_us": 1.6
+    },
+    "qipc::fem_reset_inversion_alpha_kernel(qipc::FEMContext const*)": {
+      "count": 1,
+      "total_us": 1.056
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#11}::operator()(qipc::CheckpointScope&) const::{lambda()#1}>(qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#11}::operator()(qipc::CheckpointScope&) const::{lambda()#1})": {
+      "count": 1,
+      "total_us": 2.431
+    },
+    "void qipc::drs_write_sorted_ptrs_kernel<unsigned int, qipc::ContactDoubletSortAcc>(qipc::ContactDoubletSortAcc, qipc::RadixSortContext<unsigned int> const*, int)": {
+      "count": 1,
+      "total_us": 1.472
+    },
+    "void qipc::bvh_calc_leaf_aabb_kernel<qipc::ETFaceBVHAcc, AABB>(qipc::ETFaceBVHAcc, qipc::BVHInternalViewsT<AABB>*)": {
+      "count": 1,
+      "total_us": 4.896
+    },
+    "qipc::ccd_mark_roots_kernel(qipc::CCDComponentPartitionerContext const*)": {
+      "count": 1,
+      "total_us": 1.727
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::CCDComponentPartitioner::partition_and_reduce(qipc::GlobalVertexContext const*, qipc::GlobalBodyContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda()#1}>(qipc::CCDComponentPartitioner::partition_and_reduce(qipc::GlobalVertexContext const*, qipc::GlobalBodyContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda()#1})": {
+      "count": 1,
+      "total_us": 0.96
+    },
+    "qipc::memset_unique_doublet_grad_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 1.856
+    },
+    "qipc::segment_flags_doublet_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 1.984
+    },
+    "void qipc::bvh_reduce_scene_partial_kernel<qipc::ETFaceBVHAcc, AABB>(qipc::ETFaceBVHAcc, qipc::BVHInternalViewsT<AABB>*)": {
+      "count": 1,
+      "total_us": 6.656
+    },
+    "void qipc::des_init_tile_state_kernel<qipc::CCDRelabelScanAcc>(qipc::CCDRelabelScanAcc, qipc::ExclusiveSumContext const*)": {
+      "count": 1,
+      "total_us": 1.215
+    },
+    "qipc::ccd_sv_hook_kernel(qipc::CCDComponentPartitionerContext const*)": {
+      "count": 1,
+      "total_us": 2.176
+    },
+    "void qipc::des_init_tile_state_kernel<qipc::DoubletScanAcc>(qipc::DoubletScanAcc, qipc::ExclusiveSumContext const*)": {
+      "count": 1,
+      "total_us": 1.216
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::EdgeTriangleChecker::build_report_flag_subgraph()::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1}>(qipc::EdgeTriangleChecker::build_report_flag_subgraph()::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1})": {
+      "count": 1,
+      "total_us": 1.12
+    },
+    "void qipc::bvh_reduce_scene_final_kernel<qipc::ETFaceBVHAcc, AABB>(qipc::ETFaceBVHAcc, qipc::BVHInternalViewsT<AABB>*)": {
+      "count": 1,
+      "total_us": 4.224
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#11}::operator()(qipc::CheckpointScope&) const::{lambda()#2}>(qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#11}::operator()(qipc::CheckpointScope&) const::{lambda()#2})": {
+      "count": 1,
+      "total_us": 4.192
+    },
+    "qipc::fem_step_forward_kernel(qipc::FEMContext const*, qipc::SimContext const*, qipc::GlobalVertexContext const*, qipc::CCDComponentPartitionerContext const*)": {
+      "count": 1,
+      "total_us": 3.999
+    },
+    "qipc::rigid_step_forward_kernel(qipc::RigidContext const*, qipc::SimContext const*, qipc::CCDComponentPartitionerContext const*)": {
+      "count": 1,
+      "total_us": 7.456
+    },
+    "void qipc::des_scan_kernel<qipc::CCDRelabelScanAcc>(qipc::CCDRelabelScanAcc, qipc::ExclusiveSumContext const*)": {
+      "count": 1,
+      "total_us": 2.305
+    },
+    "qipc::ccd_sv_flatten_kernel(qipc::CCDComponentPartitionerContext const*)": {
+      "count": 1,
+      "total_us": 1.823
+    },
+    "void qipc::des_scan_kernel<qipc::DoubletScanAcc>(qipc::DoubletScanAcc, qipc::ExclusiveSumContext const*)": {
+      "count": 1,
+      "total_us": 2.784
+    },
+    "void qipc::bvh_calc_morton_kernel<qipc::ETFaceBVHAcc, AABB>(qipc::ETFaceBVHAcc, qipc::BVHInternalViewsT<AABB>*)": {
+      "count": 1,
+      "total_us": 6.24
+    },
+    "qipc::fem_elastic_energy_partial_kernel(qipc::FEMContext const*, qipc::SimContext const*, qipc::SNHContext const*, long, long)": {
+      "count": 2,
+      "total_us": 30.687
+    },
+    "qipc::fem_compute_vert_positions_kernel(qipc::FEMContext const*, qipc::GlobalVertexContext const*)": {
+      "count": 1,
+      "total_us": 3.072
+    },
+    "qipc::fem_kinetic_energy_partial_kernel(qipc::FEMContext const*, qipc::SimContext const*, long)": {
+      "count": 2,
+      "total_us": 10.592
+    },
+    "qipc::rigid_prismatic_damping_energy_kernel(qipc::RigidJointDampingContext const*, qipc::RigidPrismaticJointContext const*, qipc::RigidContext const*, qipc::SimContext const*, qipc::GlobalJointContext const*, long, long)": {
+      "count": 2,
+      "total_us": 20.8
+    },
+    "qipc::rigid_compute_vert_positions_kernel(qipc::RigidContext const*, qipc::GlobalVertexContext const*)": {
+      "count": 1,
+      "total_us": 3.776
+    },
+    "qipc::rigid_kinetic_energy_partial_kernel(qipc::RigidContext const*, qipc::SimContext const*)": {
+      "count": 2,
+      "total_us": 9.407
+    },
+    "qipc::rigid_prismatic_joint_energy_partial_kernel(qipc::RigidPrismaticJointContext const*, qipc::RigidContext const*, qipc::SimContext const*, qipc::GlobalJointContext const*, long, long)": {
+      "count": 2,
+      "total_us": 22.624000000000002
+    },
+    "qipc::ccd_extract_K_kernel(qipc::CCDComponentPartitionerContext const*)": {
+      "count": 1,
+      "total_us": 1.92
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::CCDComponentPartitioner::partition_and_reduce(qipc::GlobalVertexContext const*, qipc::GlobalBodyContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda()#2}>(qipc::CCDComponentPartitioner::partition_and_reduce(qipc::GlobalVertexContext const*, qipc::GlobalBodyContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda()#2})": {
+      "count": 1,
+      "total_us": 1.855
+    },
+    "qipc::extract_unique_doublet_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 2.272
+    },
+    "qipc::fast_segmented_reduce_doublet_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 3.392
+    },
+    "qipc::pipeline_loop_tail_kernel(int const*, int const*, int*, int, unsigned long long)": {
+      "count": 4,
+      "total_us": 7.359
+    },
+    "void qipc::drs_memset_ctrs_kernel<unsigned long, qipc::BVHMortonSortAccT<AABB> >(qipc::BVHMortonSortAccT<AABB>, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 1,
+      "total_us": 1.376
+    },
+    "void qipc::drs_memset_bins_kernel<unsigned long, qipc::BVHMortonSortAccT<AABB> >(qipc::BVHMortonSortAccT<AABB>, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 1,
+      "total_us": 1.504
+    },
+    "qipc::fem_energy_final_kernel(qipc::FEMContext const*, qipc::SimContext const*)": {
+      "count": 2,
+      "total_us": 7.359999999999999
+    },
+    "qipc::reset_active_pairs_kernel(qipc::GlobalContactContext const*)": {
+      "count": 2,
+      "total_us": 3.072
+    },
+    "qipc::rigid_energy_final_kernel(qipc::RigidContext const*)": {
+      "count": 2,
+      "total_us": 5.632
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::GlobalJointSystem::energy_final()::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1}>(qipc::GlobalJointSystem::energy_final()::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1})": {
+      "count": 2,
+      "total_us": 3.008
+    },
+    "qipc::ccd_scatter_labels_kernel(qipc::CCDComponentPartitionerContext const*)": {
+      "count": 1,
+      "total_us": 1.983
+    },
+    "qipc::find_doublet_boundary_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 2.176
+    },
+    "void qipc::drs_histogram_kernel<unsigned long, qipc::BVHMortonSortAccT<AABB> >(qipc::BVHMortonSortAccT<AABB>, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 1,
+      "total_us": 3.328
+    },
+    "qipc::cipc_filter_energy_pt_kernel(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::GlobalContactContext const*)": {
+      "count": 2,
+      "total_us": 33.664
+    },
+    "qipc::cipc_filter_energy_ee_kernel(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::GlobalContactContext const*)": {
+      "count": 2,
+      "total_us": 30.816
+    },
+    "qipc::joint_energy_final_kernel(qipc::GlobalJointContext const*)": {
+      "count": 2,
+      "total_us": 12.192
+    },
+    "qipc::ccd_init_comp_alpha_kernel(qipc::CCDComponentPartitionerContext const*)": {
+      "count": 1,
+      "total_us": 1.569
+    },
+    "void qipc::drs_exclusive_sum_kernel<unsigned long, qipc::BVHMortonSortAccT<AABB> >(qipc::BVHMortonSortAccT<AABB>, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 1,
+      "total_us": 1.76
+    },
+    "qipc::reduce_simplex_barrier_energy_partial_kernel(qipc::GlobalContactContext const*)": {
+      "count": 2,
+      "total_us": 8.897
+    },
+    "qipc::ccd_segmented_min_reduce_kernel(qipc::CCDComponentPartitionerContext const*)": {
+      "count": 1,
+      "total_us": 2.975
+    },
+    "void qipc::drs_memset_lookback_kernel<unsigned long, qipc::BVHMortonSortAccT<AABB> >(qipc::BVHMortonSortAccT<AABB>, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 8,
+      "total_us": 11.199999999999998
+    },
+    "qipc::reduce_simplex_barrier_energy_final_kernel(qipc::GlobalContactContext const*)": {
+      "count": 2,
+      "total_us": 6.433
+    },
+    "qipc::ccd_compute_body_alpha_kernel(qipc::CCDComponentPartitionerContext const*)": {
+      "count": 1,
+      "total_us": 2.369
+    },
+    "void qipc::drs_write_sorted_ptrs_kernel<unsigned long, qipc::ContactTripletSortAcc>(qipc::ContactTripletSortAcc, qipc::RadixSortContext<unsigned long> const*, int)": {
+      "count": 1,
+      "total_us": 1.44
+    },
+    "void qipc::drs_onesweep_kernel<unsigned long, qipc::BVHMortonSortAccT<AABB> >(qipc::BVHMortonSortAccT<AABB>, qipc::RadixSortContext<unsigned long> const*, int)": {
+      "count": 8,
+      "total_us": 48.416000000000004
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::ContactSystem::contact_energy(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::SimContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#2}>(qipc::ContactSystem::contact_energy(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::SimContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#2})": {
+      "count": 2,
+      "total_us": 3.295
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::CCDComponentPartitioner::partition_and_reduce(qipc::GlobalVertexContext const*, qipc::GlobalBodyContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#2}>(qipc::CCDComponentPartitioner::partition_and_reduce(qipc::GlobalVertexContext const*, qipc::GlobalBodyContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#2})": {
+      "count": 1,
+      "total_us": 1.6
+    },
+    "qipc::memset_unique_triplet_val_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 1.856
+    },
+    "qipc::segment_flags_triplet_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 2.016
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#11}::operator()(qipc::CheckpointScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda()#1}>(qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#11}::operator()(qipc::CheckpointScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda()#1})": {
+      "count": 1,
+      "total_us": 3.808
+    },
+    "void qipc::des_init_tile_state_kernel<qipc::TripletScanAcc>(qipc::TripletScanAcc, qipc::ExclusiveSumContext const*)": {
+      "count": 1,
+      "total_us": 1.248
+    },
+    "void qipc::drs_write_sorted_ptrs_kernel<unsigned long, qipc::BodyTripletSortAcc>(qipc::BodyTripletSortAcc, qipc::RadixSortContext<unsigned long> const*, int)": {
+      "count": 1,
+      "total_us": 1.408
+    },
+    "void qipc::des_scan_kernel<qipc::TripletScanAcc>(qipc::TripletScanAcc, qipc::ExclusiveSumContext const*)": {
+      "count": 1,
+      "total_us": 2.72
+    },
+    "qipc::memset_bcoo_val_kernel(qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 3.168
+    },
+    "qipc::segment_flags_body_kernel(qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 3.456
+    },
+    "qipc::extract_unique_triplet_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 1.92
+    },
+    "qipc::fast_segmented_reduce_triplet_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 6.304
+    },
+    "void qipc::des_init_tile_state_kernel<qipc::BodyScanAcc>(qipc::BodyScanAcc, qipc::ExclusiveSumContext const*)": {
+      "count": 1,
+      "total_us": 1.248
+    },
+    "qipc::find_contact_boundaries_kernel(qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 2.688
+    },
+    "void qipc::des_scan_kernel<qipc::BodyScanAcc>(qipc::BodyScanAcc, qipc::ExclusiveSumContext const*)": {
+      "count": 1,
+      "total_us": 3.296
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#3}::operator()(qipc::CheckpointScope&) const::{lambda()#1}>(qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#3}::operator()(qipc::CheckpointScope&) const::{lambda()#1})": {
+      "count": 1,
+      "total_us": 2.816
+    },
+    "qipc::extract_unique_body_kernel(qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 3.2
+    },
+    "qipc::fast_segmented_reduce_body_kernel(qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 11.328
+    },
+    "qipc::bcoo_validate_kernel(qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 1.952
+    },
+    "qipc::mas_memset_hierarchy_kernel(qipc::MASContext const*)": {
+      "count": 1,
+      "total_us": 2.304
+    },
+    "qipc::tree_precond_memset_f64_kernel(qipc::TreePrecondContext const*)": {
+      "count": 1,
+      "total_us": 1.92
+    },
+    "qipc::mas_memset_clusters_kernel(qipc::MASContext const*)": {
+      "count": 1,
+      "total_us": 3.52
+    },
+    "qipc::mas_restore_and_fill_L0_kernel(qipc::MASContext const*)": {
+      "count": 1,
+      "total_us": 10.88
+    },
+    "void qipc::tree_precond_gather_kernel<qipc::LinearSystemPCGAcc, double, 6, 2>(qipc::LinearSystemPCGAcc, qipc::TreePrecondContext const*)": {
+      "count": 1,
+      "total_us": 6.016
+    },
+    "void cub::CUB_200700_1200_NS::DeviceScanInitKernel<cub::CUB_200700_1200_NS::ScanTileState<int, true> >(cub::CUB_200700_1200_NS::ScanTileState<int, true>, int)": {
+      "count": 1,
+      "total_us": 1.152
+    },
+    "qipc::rigid_tree_precond_factorize_f64_kernel(qipc::TreePrecondContext const*)": {
+      "count": 1,
+      "total_us": 1.248
+    },
+    "qipc::rigid_tree_precond_invert_singletons_f64_kernel(qipc::TreePrecondContext const*)": {
+      "count": 1,
+      "total_us": 19.488
+    },
+    "void cub::CUB_200700_1200_NS::DeviceScanKernel<cub::CUB_200700_1200_NS::DeviceScanPolicy<int, cuda::std::__4::plus<void> >::Policy900, int*, int*, cub::CUB_200700_1200_NS::ScanTileState<int, true>, cuda::std::__4::plus<void>, cub::CUB_200700_1200_NS::detail::InputValue<int, int*>, unsigned int, int, false>(int*, int*, cub::CUB_200700_1200_NS::ScanTileState<int, true>, int, cuda::std::__4::plus<void>, cub::CUB_200700_1200_NS::detail::InputValue<int, int*>, unsigned int)": {
+      "count": 1,
+      "total_us": 2.112
+    },
+    "qipc::mas_build_level1_kernel(qipc::MASContext const*)": {
+      "count": 1,
+      "total_us": 2.624
+    },
+    "qipc::mas_memset_coarse_connect_kernel(qipc::MASContext const*)": {
+      "count": 3,
+      "total_us": 5.152
+    },
+    "qipc::mas_connect_and_fill_Lx_kernel(qipc::MASContext const*, int)": {
+      "count": 3,
+      "total_us": 15.168000000000001
+    },
+    "void qipc::drs_write_sorted_ptrs_kernel<unsigned long, qipc::BVHMortonSortAccT<AABB> >(qipc::BVHMortonSortAccT<AABB>, qipc::RadixSortContext<unsigned long> const*, int)": {
+      "count": 1,
+      "total_us": 1.184
+    },
+    "qipc::mas_flood_fill_Lx_kernel(qipc::MASContext const*, int)": {
+      "count": 3,
+      "total_us": 6.944
+    },
+    "void qipc::bvh_extract_indices_kernel<qipc::ETFaceBVHAcc, AABB>(qipc::ETFaceBVHAcc, qipc::BVHInternalViewsT<AABB>*)": {
+      "count": 1,
+      "total_us": 2.304
+    },
+    "void cub::CUB_200700_1200_NS::DeviceScanInitKernel<cub::CUB_200700_1200_NS::ScanTileState<unsigned int, true> >(cub::CUB_200700_1200_NS::ScanTileState<unsigned int, true>, int)": {
+      "count": 3,
+      "total_us": 3.3920000000000003
+    },
+    "void qipc::bvh_copy_leaf_aabb_kernel<qipc::ETFaceBVHAcc, AABB>(qipc::ETFaceBVHAcc, qipc::BVHInternalViewsT<AABB>*)": {
+      "count": 1,
+      "total_us": 2.912
+    },
+    "void qipc::bvh_calc_leaf_nodes_kernel<qipc::ETFaceBVHAcc, AABB>(qipc::ETFaceBVHAcc, qipc::BVHInternalViewsT<AABB>*)": {
+      "count": 1,
+      "total_us": 3.2
+    },
+    "void cub::CUB_200700_1200_NS::DeviceScanKernel<cub::CUB_200700_1200_NS::DeviceScanPolicy<unsigned int, cuda::std::__4::plus<void> >::Policy900, unsigned int*, unsigned int*, cub::CUB_200700_1200_NS::ScanTileState<unsigned int, true>, cuda::std::__4::plus<void>, cub::CUB_200700_1200_NS::detail::InputValue<unsigned int, unsigned int*>, unsigned int, unsigned int, false>(unsigned int*, unsigned int*, cub::CUB_200700_1200_NS::ScanTileState<unsigned int, true>, int, cuda::std::__4::plus<void>, cub::CUB_200700_1200_NS::detail::InputValue<unsigned int, unsigned int*>, unsigned int)": {
+      "count": 3,
+      "total_us": 5.952
+    },
+    "void qipc::bvh_reorder_leaf_aabb_kernel<qipc::ETFaceBVHAcc, AABB>(qipc::ETFaceBVHAcc, qipc::BVHInternalViewsT<AABB>*)": {
+      "count": 1,
+      "total_us": 3.264
+    },
+    "void qipc::bvh_calc_internal_nodes_kernel<qipc::ETFaceBVHAcc, AABB>(qipc::ETFaceBVHAcc, qipc::BVHInternalViewsT<AABB>*)": {
+      "count": 1,
+      "total_us": 7.072
+    },
+    "qipc::mas_coarsen_Lx_kernel(qipc::MASContext const*, int)": {
+      "count": 3,
+      "total_us": 6.975999999999999
+    },
+    "void qipc::bvh_memset_flags_kernel<qipc::ETFaceBVHAcc, AABB>(qipc::ETFaceBVHAcc, qipc::BVHInternalViewsT<AABB>*)": {
+      "count": 1,
+      "total_us": 1.76
+    },
+    "void qipc::dual_ee_dfs_kernel<true, qipc::ContactEEQueryAcc, qipc::ContactEEPred, DOP14f>(qipc::ContactEEQueryAcc, qipc::ContactEEPred, qipc::DualEEQueryContext*, qipc::BVHInternalViewsT<DOP14f> const*)": {
+      "count": 1,
+      "total_us": 1.984
+    },
+    "void qipc::dual_ee_dfs_kernel<false, qipc::ContactEEQueryAcc, qipc::ContactEEPred, DOP14f>(qipc::ContactEEQueryAcc, qipc::ContactEEPred, qipc::DualEEQueryContext*, qipc::BVHInternalViewsT<DOP14f> const*)": {
+      "count": 1,
+      "total_us": 46.24
+    },
+    "qipc::mas_update_coarse_indices_kernel(qipc::MASContext const*, int)": {
+      "count": 3,
+      "total_us": 6.272
+    },
+    "void qipc::bvh_calc_internal_aabb_kernel<qipc::ETFaceBVHAcc, AABB>(qipc::ETFaceBVHAcc, qipc::BVHInternalViewsT<AABB>*)": {
+      "count": 1,
+      "total_us": 31.84
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::ContactSystem::trajectory_query(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::GlobalBodyContext const*, qipc::VarView<int>, qipc::VarView<qipc::GlobalContactContext const>)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1}>(qipc::ContactSystem::trajectory_query(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::GlobalBodyContext const*, qipc::VarView<int>, qipc::VarView<qipc::GlobalContactContext const>)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1})": {
+      "count": 1,
+      "total_us": 2.88
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::EdgeTriangleChecker::build_detect_subgraph(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::GlobalBodyContext const*, qipc::GlobalContactContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1}>(qipc::EdgeTriangleChecker::build_detect_subgraph(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::GlobalBodyContext const*, qipc::GlobalContactContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#1})": {
+      "count": 1,
+      "total_us": 1.44
+    },
+    "qipc::et_query_kernel(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::GlobalBodyContext const*, qipc::GlobalContactContext const*, qipc::BufferView<BVHNode>, qipc::BufferView<AABB>, qipc::ETCheckContext const*, qipc::VarView<int>)": {
+      "count": 1,
+      "total_us": 325.823
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::EdgeTriangleChecker::build_detect_subgraph(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::GlobalBodyContext const*, qipc::GlobalContactContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#2}>(qipc::EdgeTriangleChecker::build_detect_subgraph(qipc::GlobalVertexContext const*, qipc::GlobalSurfaceContext const*, qipc::GlobalBodyContext const*, qipc::GlobalContactContext const*)::{lambda(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&)#1}::operator()(qipc::SubgraphScope&, std::vector<CUgraphNode_st*, std::allocator<CUgraphNode_st*> > const&) const::{lambda()#2})": {
+      "count": 1,
+      "total_us": 1.472
+    },
+    "qipc::mas_finalize_hierarchy_kernel(qipc::MASContext*)": {
+      "count": 1,
+      "total_us": 1.728
+    },
+    "qipc::mas_build_level_tables_kernel(qipc::MASContext const*)": {
+      "count": 1,
+      "total_us": 2.88
+    },
+    "qipc::mas_scatter_hessian_kernel(qipc::MASContext const*, qipc::LinearSystemPCGAcc)": {
+      "count": 1,
+      "total_us": 87.328
+    },
+    "qipc::mas_restrict_hessian_kernel(qipc::MASContext const*)": {
+      "count": 1,
+      "total_us": 19.039
+    },
+    "void qipc::mas_invert_clusters_kernel<float, 1>(qipc::MASContext const*)": {
+      "count": 1,
+      "total_us": 74.335
+    },
+    "void qipc::pcg_memset_x_kernel<qipc::LinearSystemPCGAcc>(qipc::LinearSystemPCGAcc)": {
+      "count": 1,
+      "total_us": 1.599
+    },
+    "void qipc::pcg_acc_copy_b_to_r_kernel<qipc::LinearSystemPCGAcc>(qipc::LinearSystemPCGAcc, qipc::PCGContext*)": {
+      "count": 1,
+      "total_us": 1.92
+    },
+    "qipc::rigid_tree_precond_apply_singletons_f64_kernel(qipc::TreePrecondContext const*, qipc::PCGPrecondContext*)": {
+      "count": 2,
+      "total_us": 7.104
+    },
+    "qipc::mas_memset_workspace_kernel(qipc::MASContext const*)": {
+      "count": 2,
+      "total_us": 4.223
+    },
+    "qipc::rigid_tree_precond_apply_f64_kernel(qipc::TreePrecondContext const*, qipc::PCGPrecondContext*)": {
+      "count": 2,
+      "total_us": 2.4
+    },
+    "qipc::mas_restrict_residual_kernel(qipc::MASContext const*, qipc::PCGPrecondContext*)": {
+      "count": 2,
+      "total_us": 10.113
+    },
+    "qipc::mas_schwarz_solve_kernel(qipc::MASContext const*)": {
+      "count": 2,
+      "total_us": 6.368
+    },
+    "qipc::mas_prolongate_z_kernel(qipc::MASContext const*, qipc::PCGPrecondContext*)": {
+      "count": 2,
+      "total_us": 8.064
+    },
+    "qipc::pcg_set_cond_kernel(int*)": {
+      "count": 1,
+      "total_us": 1.375
+    },
+    "qipc::pcg_ctx_copy_z_to_p_kernel(qipc::PCGContext*)": {
+      "count": 1,
+      "total_us": 2.08
+    },
+    "qipc::pcg_dot_rz_partial_kernel(qipc::PCGContext*)": {
+      "count": 2,
+      "total_us": 7.488
+    },
+    "qipc::pcg_dot_rz_final_kernel(qipc::PCGContext*)": {
+      "count": 2,
+      "total_us": 5.824
+    },
+    "qipc::pcg_swap_rz_kernel(qipc::PCGContext*)": {
+      "count": 2,
+      "total_us": 3.328
+    },
+    "qipc::pcg_compute_conv_threshold_kernel(qipc::PCGContext*)": {
+      "count": 1,
+      "total_us": 1.984
+    },
+    "qipc::pipeline_condition_if_kernel(int*, unsigned long long)": {
+      "count": 1,
+      "total_us": 1.792
+    },
+    "qipc::record_vert_start_point_kernel(qipc::GlobalVertexContext const*)": {
+      "count": 1,
+      "total_us": 2.144
+    },
+    "qipc::rigid_record_start_point_kernel(qipc::RigidContext const*)": {
+      "count": 1,
+      "total_us": 3.168
+    },
+    "qipc::fem_record_start_point_kernel(qipc::FEMContext const*)": {
+      "count": 1,
+      "total_us": 2.496
+    },
+    "qipc::rigid_negate_dq_kernel(qipc::RigidContext const*, qipc::SimContext const*, qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 2.272
+    },
+    "qipc::fem_negate_dx_kernel(qipc::FEMContext const*, qipc::GlobalLinearSystemContext const*)": {
+      "count": 1,
+      "total_us": 3.296
+    },
+    "qipc::reset_newton_convergence_partials_kernel(qipc::SimContext const*)": {
+      "count": 1,
+      "total_us": 1.984
+    },
+    "qipc::pcg_ctx_memset_Ap_kernel(qipc::PCGContext*)": {
+      "count": 1,
+      "total_us": 1.568
+    },
+    "qipc::rigid_contribute_newton_max_disp_kernel(qipc::RigidContext const*, qipc::GlobalVertexContext const*, qipc::SimContext const*)": {
+      "count": 1,
+      "total_us": 9.216
+    },
+    "qipc::fem_contribute_newton_max_disp_kernel(qipc::FEMContext const*, qipc::GlobalVertexContext const*, qipc::SimContext const*)": {
+      "count": 1,
+      "total_us": 7.68
+    },
+    "void qipc::pcg_spmv_kernel<qipc::LinearSystemPCGAcc>(qipc::LinearSystemPCGAcc, qipc::PCGContext*)": {
+      "count": 1,
+      "total_us": 7.744
+    },
+    "qipc::pre_ccd_convergence_check_kernel(qipc::SimContext const*, qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 5.312
+    },
+    "qipc::pcg_dot_pAp_partial_kernel(qipc::PCGContext*)": {
+      "count": 1,
+      "total_us": 3.68
+    },
+    "qipc::compute_clamp_alpha_kernel(qipc::SimContext const*, qipc::GlobalContactContext const*)": {
+      "count": 1,
+      "total_us": 1.952
+    },
+    "qipc::pcg_dot_pAp_final_kernel(qipc::PCGContext*)": {
+      "count": 1,
+      "total_us": 2.912
+    },
+    "qipc::rigid_clamp_newton_direction_kernel(qipc::RigidContext const*, qipc::SimContext const*)": {
+      "count": 1,
+      "total_us": 1.888
+    },
+    "qipc::fem_clamp_newton_direction_kernel(qipc::FEMContext const*, qipc::SimContext const*)": {
+      "count": 1,
+      "total_us": 2.272
+    },
+    "qipc::pcg_compute_alpha_kernel(qipc::PCGContext*)": {
+      "count": 1,
+      "total_us": 2.208
+    },
+    "qipc::rigid_publish_global_vertex_trajectory_kernel(qipc::RigidContext const*, qipc::GlobalVertexContext const*)": {
+      "count": 1,
+      "total_us": 8.288
+    },
+    "qipc::fem_publish_trajectory_end_positions_kernel(qipc::FEMContext const*, qipc::GlobalVertexContext const*)": {
+      "count": 1,
+      "total_us": 2.528
+    },
+    "void qipc::pcg_update_xr_kernel<qipc::LinearSystemPCGAcc>(qipc::LinearSystemPCGAcc, qipc::PCGContext*)": {
+      "count": 1,
+      "total_us": 6.4
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#4}::operator()(qipc::CheckpointScope&) const::{lambda()#1}>(qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#4}::operator()(qipc::CheckpointScope&) const::{lambda()#1})": {
+      "count": 1,
+      "total_us": 1.92
+    },
+    "void qipc::pipeline_lambda_kernel<qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#4}::operator()(qipc::CheckpointScope&) const::{lambda(qipc::ConditionScope&)#1}::operator()(qipc::ConditionScope&) const::{lambda()#1}>(qipc::SimEngine::build_step_pipeline()::{lambda(qipc::MainScope&)#1}::operator()(qipc::MainScope&) const::{lambda(qipc::LoopScope&)#1}::operator()(qipc::LoopScope&) const::{lambda(qipc::CheckpointScope&)#4}::operator()(qipc::CheckpointScope&) const::{lambda(qipc::ConditionScope&)#1}::operator()(qipc::ConditionScope&) const::{lambda()#1})": {
+      "count": 1,
+      "total_us": 3.52
+    },
+    "void qipc::bvh_calc_leaf_aabb_kernel<qipc::ContactFaceBVHAcc, DOP14f>(qipc::ContactFaceBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 28.768
+    },
+    "void qipc::bvh_calc_leaf_aabb_kernel<qipc::ContactEdgeBVHAcc, DOP14f>(qipc::ContactEdgeBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 26.336
+    },
+    "void qipc::bvh_reduce_scene_partial_kernel<qipc::ContactFaceBVHAcc, DOP14f>(qipc::ContactFaceBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 3.648
+    },
+    "void qipc::bvh_reduce_scene_partial_kernel<qipc::ContactEdgeBVHAcc, DOP14f>(qipc::ContactEdgeBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 3.808
+    },
+    "void qipc::bvh_reduce_scene_final_kernel<qipc::ContactFaceBVHAcc, DOP14f>(qipc::ContactFaceBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 2.496
+    },
+    "void qipc::bvh_reduce_scene_final_kernel<qipc::ContactEdgeBVHAcc, DOP14f>(qipc::ContactEdgeBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 2.496
+    },
+    "void qipc::bvh_calc_morton_kernel<qipc::ContactFaceBVHAcc, DOP14f>(qipc::ContactFaceBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 5.856
+    },
+    "void qipc::bvh_calc_morton_kernel<qipc::ContactEdgeBVHAcc, DOP14f>(qipc::ContactEdgeBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 6.112
+    },
+    "void qipc::drs_memset_ctrs_kernel<unsigned long, qipc::BVHMortonSortAccT<DOP14f> >(qipc::BVHMortonSortAccT<DOP14f>, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 2,
+      "total_us": 2.912
+    },
+    "void qipc::drs_memset_bins_kernel<unsigned long, qipc::BVHMortonSortAccT<DOP14f> >(qipc::BVHMortonSortAccT<DOP14f>, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 2,
+      "total_us": 3.04
+    },
+    "void qipc::drs_histogram_kernel<unsigned long, qipc::BVHMortonSortAccT<DOP14f> >(qipc::BVHMortonSortAccT<DOP14f>, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 2,
+      "total_us": 6.752
+    },
+    "qipc::pcg_compute_beta_kernel(qipc::PCGContext*)": {
+      "count": 1,
+      "total_us": 2.208
+    },
+    "void qipc::drs_exclusive_sum_kernel<unsigned long, qipc::BVHMortonSortAccT<DOP14f> >(qipc::BVHMortonSortAccT<DOP14f>, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 2,
+      "total_us": 3.52
+    },
+    "qipc::pcg_update_p_kernel(qipc::PCGContext*)": {
+      "count": 1,
+      "total_us": 2.368
+    },
+    "void qipc::drs_memset_lookback_kernel<unsigned long, qipc::BVHMortonSortAccT<DOP14f> >(qipc::BVHMortonSortAccT<DOP14f>, qipc::RadixSortContext<unsigned long> const*)": {
+      "count": 16,
+      "total_us": 22.496000000000002
+    },
+    "void qipc::drs_onesweep_kernel<unsigned long, qipc::BVHMortonSortAccT<DOP14f> >(qipc::BVHMortonSortAccT<DOP14f>, qipc::RadixSortContext<unsigned long> const*, int)": {
+      "count": 16,
+      "total_us": 96.8
+    },
+    "qipc::pcg_check_convergence_kernel(qipc::PCGContext*, int*)": {
+      "count": 1,
+      "total_us": 1.856
+    },
+    "void qipc::drs_write_sorted_ptrs_kernel<unsigned long, qipc::BVHMortonSortAccT<DOP14f> >(qipc::BVHMortonSortAccT<DOP14f>, qipc::RadixSortContext<unsigned long> const*, int)": {
+      "count": 2,
+      "total_us": 2.592
+    },
+    "void qipc::bvh_extract_indices_kernel<qipc::ContactFaceBVHAcc, DOP14f>(qipc::ContactFaceBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 2.784
+    },
+    "void qipc::bvh_extract_indices_kernel<qipc::ContactEdgeBVHAcc, DOP14f>(qipc::ContactEdgeBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 2.368
+    },
+    "void qipc::bvh_copy_leaf_aabb_kernel<qipc::ContactFaceBVHAcc, DOP14f>(qipc::ContactFaceBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 20.48
+    },
+    "void qipc::bvh_calc_leaf_nodes_kernel<qipc::ContactFaceBVHAcc, DOP14f>(qipc::ContactFaceBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 2.592
+    },
+    "void qipc::bvh_copy_leaf_aabb_kernel<qipc::ContactEdgeBVHAcc, DOP14f>(qipc::ContactEdgeBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 20.256
+    },
+    "void qipc::bvh_calc_leaf_nodes_kernel<qipc::ContactEdgeBVHAcc, DOP14f>(qipc::ContactEdgeBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 3.616
+    },
+    "void qipc::bvh_reorder_leaf_aabb_kernel<qipc::ContactFaceBVHAcc, DOP14f>(qipc::ContactFaceBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 17.119
+    },
+    "void qipc::bvh_calc_internal_nodes_kernel<qipc::ContactFaceBVHAcc, DOP14f>(qipc::ContactFaceBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 22.656
+    },
+    "void qipc::bvh_reorder_leaf_aabb_kernel<qipc::ContactEdgeBVHAcc, DOP14f>(qipc::ContactEdgeBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 21.025
+    },
+    "void qipc::bvh_calc_internal_nodes_kernel<qipc::ContactEdgeBVHAcc, DOP14f>(qipc::ContactEdgeBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 22.944
+    },
+    "void qipc::bvh_memset_flags_kernel<qipc::ContactFaceBVHAcc, DOP14f>(qipc::ContactFaceBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 1.696
+    },
+    "void qipc::bvh_memset_flags_kernel<qipc::ContactEdgeBVHAcc, DOP14f>(qipc::ContactEdgeBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 1.696
+    },
+    "void qipc::bvh_calc_internal_aabb_kernel<qipc::ContactFaceBVHAcc, DOP14f>(qipc::ContactFaceBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 49.919
+    },
+    "void qipc::bvh_calc_internal_aabb_kernel<qipc::ContactEdgeBVHAcc, DOP14f>(qipc::ContactEdgeBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 55.072
+    },
+    "void qipc::bvh_stamp_leaf_body_ids_kernel<qipc::ContactFaceBVHAcc, DOP14f>(qipc::ContactFaceBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 4.127
+    },
+    "void qipc::bvh_memset_flags2_kernel<qipc::ContactFaceBVHAcc, DOP14f>(qipc::ContactFaceBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 1.727
+    },
+    "void qipc::bvh_stamp_leaf_body_ids_kernel<qipc::ContactEdgeBVHAcc, DOP14f>(qipc::ContactEdgeBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 4.096
+    },
+    "void qipc::bvh_memset_flags2_kernel<qipc::ContactEdgeBVHAcc, DOP14f>(qipc::ContactEdgeBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 1.825
+    },
+    "void qipc::bvh_propagate_body_ids_kernel<qipc::ContactFaceBVHAcc, DOP14f>(qipc::ContactFaceBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 22.081
+    },
+    "void qipc::bvh_propagate_body_ids_kernel<qipc::ContactEdgeBVHAcc, DOP14f>(qipc::ContactEdgeBVHAcc, qipc::BVHInternalViewsT<DOP14f>*)": {
+      "count": 1,
+      "total_us": 23.999
+    },
+    "qipc::rigid_prismatic_theta_kernel(qipc::RigidPrismaticJointContext const*, qipc::RigidContext const*)": {
+      "count": 1,
+      "total_us": 6.176
+    },
+    "qipc::fem_update_velocity_kernel(qipc::FEMContext const*, qipc::SimContext const*)": {
+      "count": 1,
+      "total_us": 3.872
+    },
+    "qipc::rigid_update_velocity_kernel(qipc::RigidContext const*, qipc::SimContext const*)": {
+      "count": 1,
+      "total_us": 4.672
+    },
+    "qipc::fem_copy_x_prev_kernel(qipc::FEMContext const*)": {
+      "count": 1,
+      "total_us": 1.984
+    },
+    "qipc::rigid_copy_prev_kernel(qipc::RigidContext const*, qipc::SimContext const*)": {
+      "count": 1,
+      "total_us": 2.144
+    },
+    "void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#4}::operator()() const::{lambda(long)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#4}::operator()() const::{lambda(long)#1} const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#4}::operator()() const::{lambda(long)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#4}::operator()() const::{lambda(long)#1} const&)::{lambda(int)#1})": {
+      "count": 2,
+      "total_us": 5.856
+    },
+    "void at::native::index_elementwise_kernel<128, 4, at::native::gpu_index_kernel<at::native::index_kernel_impl<at::native::OpaqueType<8> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1}>(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>, at::native::index_kernel_impl<at::native::OpaqueType<8> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1} const&, bool)::{lambda(int)#1}>(long, at::native::gpu_index_kernel<at::native::index_kernel_impl<at::native::OpaqueType<8> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1}>(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>, at::native::index_kernel_impl<at::native::OpaqueType<8> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1} const&, bool)::{lambda(int)#1})": {
+      "count": 6,
+      "total_us": 17.568
+    },
+    "void at::native::elementwise_kernel<128, 2, at::native::gpu_kernel_impl_nocast<at::native::CUDAFunctor_add<double> >(at::TensorIteratorBase&, at::native::CUDAFunctor_add<double> const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl_nocast<at::native::CUDAFunctor_add<double> >(at::TensorIteratorBase&, at::native::CUDAFunctor_add<double> const&)::{lambda(int)#1})": {
+      "count": 1,
+      "total_us": 1.824
+    },
+    "void cutlass::Kernel2<cutlass_80_tensorop_d884gemm_32x32_16x5_tt_align1>(cutlass_80_tensorop_d884gemm_32x32_16x5_tt_align1::Params)": {
+      "count": 1,
+      "total_us": 104.928
+    },
+    "void (anonymous namespace)::elementwise_kernel_with_index<int, at::native::arange_cuda_out(c10::Scalar const&, c10::Scalar const&, c10::Scalar const&, at::Tensor&)::{lambda()#1}::operator()() const::{lambda()#4}::operator()() const::{lambda(long)#1}>(int, at::native::arange_cuda_out(c10::Scalar const&, c10::Scalar const&, c10::Scalar const&, at::Tensor&)::{lambda()#1}::operator()() const::{lambda()#4}::operator()() const::{lambda(long)#1}, function_traits<at::native::arange_cuda_out(c10::Scalar const&, c10::Scalar const&, c10::Scalar const&, at::Tensor&)::{lambda()#1}::operator()() const::{lambda()#4}::operator()() const::{lambda(long)#1}>::result_type*)": {
+      "count": 6,
+      "total_us": 5.984
+    },
+    "void getrf_semiwarp<double, double, 2, 3, true>(int, double* const*, int, int*, int*, int)": {
+      "count": 4,
+      "total_us": 15.392
+    },
+    "reduction_prod_kernel": {
+      "count": 3,
+      "total_us": 9.216000000000001
+    },
+    "void (anonymous namespace)::elementwise_kernel_with_index<int, at::native::arange_cuda_out(c10::Scalar const&, c10::Scalar const&, c10::Scalar const&, at::Tensor&)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(long)#1}>(int, at::native::arange_cuda_out(c10::Scalar const&, c10::Scalar const&, c10::Scalar const&, at::Tensor&)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(long)#1}, function_traits<at::native::arange_cuda_out(c10::Scalar const&, c10::Scalar const&, c10::Scalar const&, at::Tensor&)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(long)#1}>::result_type*)": {
+      "count": 3,
+      "total_us": 2.912
+    },
+    "void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl_nocast<at::native::BinaryFunctor<int, int, bool, at::native::(anonymous namespace)::CompareEqFunctor<int> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<int, int, bool, at::native::(anonymous namespace)::CompareEqFunctor<int> > const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl_nocast<at::native::BinaryFunctor<int, int, bool, at::native::(anonymous namespace)::CompareEqFunctor<int> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<int, int, bool, at::native::(anonymous namespace)::CompareEqFunctor<int> > const&)::{lambda(int)#1})": {
+      "count": 3,
+      "total_us": 7.071999999999999
+    },
+    "void at::native::unrolled_elementwise_kernel<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#4}::operator()() const::{lambda(long)#1}, std::array<char*, 2ul>, 4, TrivialOffsetCalculator<1, unsigned int>, TrivialOffsetCalculator<1, unsigned int>, at::native::memory::LoadWithCast<1>, at::native::memory::StoreWithCast<1> >(int, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#4}::operator()() const::{lambda(long)#1}, std::array<char*, 2ul>, TrivialOffsetCalculator<1, unsigned int>, TrivialOffsetCalculator<1, unsigned int>, at::native::memory::LoadWithCast<1>, at::native::memory::StoreWithCast<1>)": {
+      "count": 4,
+      "total_us": 9.344999999999999
+    },
+    "void at::native::reduce_kernel<512, 1, at::native::ReduceOp<long, at::native::func_wrapper_t<long, at::native::sum_functor<long, long, long>::operator()(at::TensorIterator&)::{lambda(long, long)#1}>, unsigned int, long, 4, 4> >(at::native::ReduceOp<long, at::native::func_wrapper_t<long, at::native::sum_functor<long, long, long>::operator()(at::TensorIterator&)::{lambda(long, long)#1}>, unsigned int, long, 4, 4>)": {
+      "count": 3,
+      "total_us": 6.208
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::BUnaryFunctor<long, long, long, at::native::fmod_kernel_cuda(at::TensorIteratorBase&)::{lambda()#1}::operator()() const::{lambda()#4}::operator()() const::{lambda(long, long)#1}>, std::array<char*, 2ul> >(int, at::native::BUnaryFunctor<long, long, long, at::native::fmod_kernel_cuda(at::TensorIteratorBase&)::{lambda()#1}::operator()() const::{lambda()#4}::operator()() const::{lambda(long, long)#1}>, std::array<char*, 2ul>)": {
+      "count": 3,
+      "total_us": 6.016
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::AUnaryFunctor<long, long, long, at::native::binary_internal::MulFunctor<long> >, std::array<char*, 2ul> >(int, at::native::AUnaryFunctor<long, long, long, at::native::binary_internal::MulFunctor<long> >, std::array<char*, 2ul>)": {
+      "count": 3,
+      "total_us": 4.384
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::CUDAFunctorOnSelf_add<long>, std::array<char*, 2ul> >(int, at::native::CUDAFunctorOnSelf_add<long>, std::array<char*, 2ul>)": {
+      "count": 3,
+      "total_us": 4.256
+    },
+    "void at::native::unrolled_elementwise_kernel<at::native::BinaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> >, std::array<char*, 3ul>, 4, TrivialOffsetCalculator<2, unsigned int>, TrivialOffsetCalculator<1, unsigned int>, at::native::memory::LoadWithCast<2>, at::native::memory::StoreWithCast<1> >(int, at::native::BinaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> >, std::array<char*, 3ul>, TrivialOffsetCalculator<2, unsigned int>, TrivialOffsetCalculator<1, unsigned int>, at::native::memory::LoadWithCast<2>, at::native::memory::StoreWithCast<1>)": {
+      "count": 3,
+      "total_us": 10.176
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::BinaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> >, std::array<char*, 3ul> >(int, at::native::BinaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> >, std::array<char*, 3ul>)": {
+      "count": 9,
+      "total_us": 14.431
+    },
+    "void at::native::reduce_kernel<512, 1, at::native::ReduceOp<double, at::native::func_wrapper_t<double, at::native::sum_functor<double, double, double>::operator()(at::TensorIterator&)::{lambda(double, double)#1}>, unsigned int, double, 4, 4> >(at::native::ReduceOp<double, at::native::func_wrapper_t<double, at::native::sum_functor<double, double, double>::operator()(at::TensorIterator&)::{lambda(double, double)#1}>, unsigned int, double, 4, 4>)": {
+      "count": 8,
+      "total_us": 28.096
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::CUDAFunctorOnSelf_add<double>, std::array<char*, 2ul> >(int, at::native::CUDAFunctorOnSelf_add<double>, std::array<char*, 2ul>)": {
+      "count": 6,
+      "total_us": 9.632
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::reciprocal_kernel_cuda(at::TensorIteratorBase&)::{lambda()#1}::operator()() const::{lambda()#1}::operator()() const::{lambda(double)#1}, std::array<char*, 2ul> >(int, at::native::reciprocal_kernel_cuda(at::TensorIteratorBase&)::{lambda()#1}::operator()() const::{lambda()#1}::operator()() const::{lambda(double)#1}, std::array<char*, 2ul>)": {
+      "count": 1,
+      "total_us": 2.528
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::AUnaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> >, std::array<char*, 2ul> >(int, at::native::AUnaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> >, std::array<char*, 2ul>)": {
+      "count": 12,
+      "total_us": 18.817
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::CUDAFunctorOnOther_add<double>, std::array<char*, 2ul> >(int, at::native::CUDAFunctorOnOther_add<double>, std::array<char*, 2ul>)": {
+      "count": 1,
+      "total_us": 1.664
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::BinaryFunctor<double, double, double, at::native::binary_internal::DivFunctor<double> >, std::array<char*, 3ul> >(int, at::native::BinaryFunctor<double, double, double, at::native::binary_internal::DivFunctor<double> >, std::array<char*, 3ul>)": {
+      "count": 4,
+      "total_us": 14.624
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::CUDAFunctor_add<double>, std::array<char*, 3ul> >(int, at::native::CUDAFunctor_add<double>, std::array<char*, 3ul>)": {
+      "count": 14,
+      "total_us": 22.69
+    },
+    "void at::native::elementwise_kernel<128, 2, at::native::gpu_kernel_impl_nocast<at::native::FillFunctor<double> >(at::TensorIteratorBase&, at::native::FillFunctor<double> const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl_nocast<at::native::FillFunctor<double> >(at::TensorIteratorBase&, at::native::FillFunctor<double> const&)::{lambda(int)#1})": {
+      "count": 3,
+      "total_us": 3.455
+    },
+    "void gemmSN_TN_kernel<double, 128, 16, 2, 4, 4, 4, false, cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double> >(cublasGemmSmallNParams<cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double>, double>)": {
+      "count": 1,
+      "total_us": 29.248
+    },
+    "void at::native::elementwise_kernel<128, 2, at::native::gpu_kernel_impl_nocast<at::native::BinaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> > const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl_nocast<at::native::BinaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> > >(at::TensorIteratorBase&, at::native::BinaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> > const&)::{lambda(int)#1})": {
+      "count": 9,
+      "total_us": 15.105
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::log_kernel_cuda(at::TensorIteratorBase&)::{lambda()#2}::operator()() const::{lambda()#1}::operator()() const::{lambda(double)#1}, std::array<char*, 2ul> >(int, at::native::log_kernel_cuda(at::TensorIteratorBase&)::{lambda()#2}::operator()() const::{lambda()#1}::operator()() const::{lambda(double)#1}, std::array<char*, 2ul>)": {
+      "count": 2,
+      "total_us": 11.264
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::(anonymous namespace)::pow_tensor_scalar_kernel_impl<double, double>(at::TensorIteratorBase&, double)::{lambda(double)#1}, std::array<char*, 2ul> >(int, at::native::(anonymous namespace)::pow_tensor_scalar_kernel_impl<double, double>(at::TensorIteratorBase&, double)::{lambda(double)#1}, std::array<char*, 2ul>)": {
+      "count": 3,
+      "total_us": 4.482
+    },
+    "void at::native::elementwise_kernel<128, 2, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1} const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1} const&)::{lambda(int)#1})": {
+      "count": 2,
+      "total_us": 3.489
+    },
+    "void laswp_kernel<double, false>(int, double* const*, int, int, int, int const*, int, int, int)": {
+      "count": 1,
+      "total_us": 1.408
+    },
+    "void trsm_batch_left_lower_kernel<double>(cublasTrsmBatchParams<double>, double const* const*, double* const*, double const*, double)": {
+      "count": 1,
+      "total_us": 4.0
+    },
+    "void trsm_batch_left_upper_kernel<double>(cublasTrsmBatchParams<double>, double const* const*, double* const*, double const*, double)": {
+      "count": 1,
+      "total_us": 18.368
+    },
+    "void at::native::reduce_kernel<512, 1, at::native::ReduceOp<int, at::native::func_wrapper_t<bool, at::native::or_kernel_cuda(at::TensorIterator&)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(int, int)#1}>, unsigned int, bool, 4, 4> >(at::native::ReduceOp<int, at::native::func_wrapper_t<bool, at::native::or_kernel_cuda(at::TensorIterator&)::{lambda()#1}::operator()() const::{lambda()#3}::operator()() const::{lambda(int, int)#1}>, unsigned int, bool, 4, 4>)": {
+      "count": 2,
+      "total_us": 4.8
+    },
+    "void gemmSN_NN_kernel<double, 128, 2, 4, 8, 3, 4, false, cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double> >(cublasGemmSmallNParams<cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double>, double>)": {
+      "count": 2,
+      "total_us": 18.624
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::BUnaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> >, std::array<char*, 2ul> >(int, at::native::BUnaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> >, std::array<char*, 2ul>)": {
+      "count": 4,
+      "total_us": 6.08
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::sqrt_kernel_cuda(at::TensorIteratorBase&)::{lambda()#2}::operator()() const::{lambda()#1}::operator()() const::{lambda(double)#1}, std::array<char*, 2ul> >(int, at::native::sqrt_kernel_cuda(at::TensorIteratorBase&)::{lambda()#2}::operator()() const::{lambda()#1}::operator()() const::{lambda(double)#1}, std::array<char*, 2ul>)": {
+      "count": 1,
+      "total_us": 3.456
+    },
+    "void at::native::vectorized_elementwise_kernel<4, at::native::FillFunctor<int>, std::array<char*, 1ul> >(int, at::native::FillFunctor<int>, std::array<char*, 1ul>)": {
+      "count": 1,
+      "total_us": 1.12
+    },
+    "copy_info_kernel(int, int*)": {
+      "count": 2,
+      "total_us": 1.919
+    },
+    "void lansy_M_stage1<double, double, 8>(long, double const*, long, long, double*, long, int)": {
+      "count": 1,
+      "total_us": 35.648
+    },
+    "void lansy_M_stage2<double, 8>(double, double, long, double*, long, double*, double*)": {
+      "count": 1,
+      "total_us": 17.44
+    },
+    "void lascl_kernel<double, double, 8>(long, long, double*, long, long, double*, int, int)": {
+      "count": 1,
+      "total_us": 10.112
+    },
+    "xx_set_info_ker(int, int*, int)": {
+      "count": 1,
+      "total_us": 0.992
+    },
+    "void sytrd4_cta<sytrd_params<double, 16, 8, 32, 32, 0, 1, 2>, 1>(int, sytrd_params<double, 16, 8, 32, 32, 0, 1, 2>::data_type*, int, int, sytrd_params<double, 16, 8, 32, 32, 0, 1, 2>::pod_type*, int, sytrd_params<double, 16, 8, 32, 32, 0, 1, 2>::pod_type*, int, sytrd_params<double, 16, 8, 32, 32, 0, 1, 2>::data_type*, int, int)": {
+      "count": 1,
+      "total_us": 59.072
+    },
+    "void epilogue<sytrd_params<double, 32, 8, 512, 32, 16, 1, 2>, 128, 1, 1>(int, int, sytrd_params<double, 32, 8, 512, 32, 16, 1, 2>::data_type*, int, int, sytrd_params<double, 32, 8, 512, 32, 16, 1, 2>::pod_type*, int, sytrd_params<double, 32, 8, 512, 32, 16, 1, 2>::pod_type*, int, sytrd_params<double, 32, 8, 512, 32, 16, 1, 2>::data_type*, int, sytrd_params<double, 32, 8, 512, 32, 16, 1, 2>::data_type*, int, int)": {
+      "count": 1,
+      "total_us": 6.688
+    },
+    "void scale_max<double, 32, 32, 1>(long, long, double*, double*, double*, int*)": {
+      "count": 1,
+      "total_us": 7.52
+    },
+    "void steqr_ker<stedc_params_<double2, double, 8, 16, 128>, double, 0>(long, stedc_params_<double2, double, 8, 16, 128>::data_type*, stedc_params_<double2, double, 8, 16, 128>::data_type*, double*, long, int*, int*, long, long, stedc_params_<double2, double, 8, 16, 128>::data_type, stedc_params_<double2, double, 8, 16, 128>::data_type, int*, int)": {
+      "count": 1,
+      "total_us": 100.48
+    },
+    "void scale_max<double, 32, 128, 0>(long, long, double*, double*, double*, int*)": {
+      "count": 1,
+      "total_us": 4.224
+    },
+    "void cuds_scal_batch_kernel<double, 256>(int, double const*, double*, long long, int)": {
+      "count": 1,
+      "total_us": 4.064
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::neg_kernel_cuda(at::TensorIteratorBase&)::{lambda()#2}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1}, std::array<char*, 2ul> >(int, at::native::neg_kernel_cuda(at::TensorIteratorBase&)::{lambda()#2}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1}, std::array<char*, 2ul>)": {
+      "count": 3,
+      "total_us": 4.192
+    },
+    "void at::native::(anonymous namespace)::CatArrayBatchedCopy<at::native::(anonymous namespace)::OpaqueType<8u>, unsigned int, 3, 64, 64>(at::native::(anonymous namespace)::OpaqueType<8u>*, at::native::(anonymous namespace)::CatArrInputTensorMetadata<at::native::(anonymous namespace)::OpaqueType<8u>, unsigned int, 64, 64>, at::native::(anonymous namespace)::TensorSizeStride<unsigned int, 4u>, int, unsigned int)": {
+      "count": 1,
+      "total_us": 2.24
+    },
+    "void at::native::indexFuncLargeIndex<double, int, unsigned int, 2, 2, -2, true, at::native::(anonymous namespace)::ReduceAdd>(at::cuda::detail::TensorInfo<double, unsigned int>, at::cuda::detail::TensorInfo<double const, unsigned int>, at::cuda::detail::TensorInfo<int const, unsigned int>, int, int, unsigned int, unsigned int, long, long, at::native::(anonymous namespace)::ReduceAdd const&, double)": {
+      "count": 1,
+      "total_us": 1.952
+    },
+    "void at::native::vectorized_elementwise_kernel<4, at::native::BinaryFunctor<double, double, bool, at::native::(anonymous namespace)::CompareEqFunctor<double> >, std::array<char*, 3ul> >(int, at::native::BinaryFunctor<double, double, bool, at::native::(anonymous namespace)::CompareEqFunctor<double> >, std::array<char*, 3ul>)": {
+      "count": 2,
+      "total_us": 3.231
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::AbsFunctor<double>, std::array<char*, 2ul> >(int, at::native::AbsFunctor<double>, std::array<char*, 2ul>)": {
+      "count": 3,
+      "total_us": 4.482
+    },
+    "void at::native::vectorized_elementwise_kernel<4, at::native::AUnaryFunctor<double, double, bool, at::native::(anonymous namespace)::CompareEqFunctor<double> >, std::array<char*, 2ul> >(int, at::native::AUnaryFunctor<double, double, bool, at::native::(anonymous namespace)::CompareEqFunctor<double> >, std::array<char*, 2ul>)": {
+      "count": 1,
+      "total_us": 1.569
+    },
+    "void at::native::vectorized_elementwise_kernel<4, at::native::BinaryFunctor<bool, bool, bool, at::native::binary_internal::MulFunctor<bool> >, std::array<char*, 3ul> >(int, at::native::BinaryFunctor<bool, bool, bool, at::native::binary_internal::MulFunctor<bool> >, std::array<char*, 3ul>)": {
+      "count": 1,
+      "total_us": 1.409
+    },
+    "void at::native::vectorized_elementwise_kernel<4, at::native::(anonymous namespace)::CompareFunctor<double>, std::array<char*, 3ul> >(int, at::native::(anonymous namespace)::CompareFunctor<double>, std::array<char*, 3ul>)": {
+      "count": 1,
+      "total_us": 1.696
+    },
+    "void at::native::vectorized_elementwise_kernel<4, at::native::BinaryFunctor<bool, bool, bool, at::native::BitwiseAndFunctor<bool> >, std::array<char*, 3ul> >(int, at::native::BinaryFunctor<bool, bool, bool, at::native::BitwiseAndFunctor<bool> >, std::array<char*, 3ul>)": {
+      "count": 1,
+      "total_us": 1.408
+    },
+    "void at::native::vectorized_elementwise_kernel<4, at::native::BinaryFunctor<bool, bool, bool, at::native::BitwiseOrFunctor<bool> >, std::array<char*, 3ul> >(int, at::native::BinaryFunctor<bool, bool, bool, at::native::BitwiseOrFunctor<bool> >, std::array<char*, 3ul>)": {
+      "count": 1,
+      "total_us": 1.44
+    },
+    "void at::native::reduce_kernel<512, 1, at::native::ReduceOp<bool, at::native::func_wrapper_t<bool, at::native::and_kernel_cuda(at::TensorIterator&)::{lambda()#1}::operator()() const::{lambda()#12}::operator()() const::{lambda(bool, bool)#1}>, unsigned int, bool, 4, 4> >(at::native::ReduceOp<bool, at::native::func_wrapper_t<bool, at::native::and_kernel_cuda(at::TensorIterator&)::{lambda()#1}::operator()() const::{lambda()#12}::operator()() const::{lambda(bool, bool)#1}>, unsigned int, bool, 4, 4>)": {
+      "count": 3,
+      "total_us": 5.9830000000000005
+    },
+    "void at::native::vectorized_elementwise_kernel<4, at::native::compare_scalar_kernel<int>(at::TensorIteratorBase&, at::native::(anonymous namespace)::OpType, int)::{lambda(int)#1}, std::array<char*, 2ul> >(int, at::native::compare_scalar_kernel<int>(at::TensorIteratorBase&, at::native::(anonymous namespace)::OpType, int)::{lambda(int)#1}, std::array<char*, 2ul>)": {
+      "count": 2,
+      "total_us": 2.625
+    },
+    "void at::native::vectorized_elementwise_kernel<4, at::native::compare_scalar_kernel<long>(at::TensorIteratorBase&, at::native::(anonymous namespace)::OpType, long)::{lambda(long)#1}, std::array<char*, 2ul> >(int, at::native::compare_scalar_kernel<long>(at::TensorIteratorBase&, at::native::(anonymous namespace)::OpType, long)::{lambda(long)#1}, std::array<char*, 2ul>)": {
+      "count": 1,
+      "total_us": 1.312
+    },
+    "void at_cuda_detail::cub::DeviceReduceSingleTileKernel<at_cuda_detail::cub::DeviceReducePolicy<int, unsigned long long, cuda::std::__4::plus<void> >::Policy600, at_cuda_detail::cub::TransformInputIterator<bool, at::native::(anonymous namespace)::NonZeroOp<bool>, bool const*, long>, int*, unsigned long long, cuda::std::__4::plus<void>, int, int, cuda::std::__4::__identity>(at_cuda_detail::cub::TransformInputIterator<bool, at::native::(anonymous namespace)::NonZeroOp<bool>, bool const*, long>, int*, unsigned long long, cuda::std::__4::plus<void>, int, cuda::std::__4::__identity)": {
+      "count": 2,
+      "total_us": 2.848
+    },
+    "void at_cuda_detail::cub::DeviceCompactInitKernel<at_cuda_detail::cub::ScanTileState<int, true>, int*>(at_cuda_detail::cub::ScanTileState<int, true>, int, int*)": {
+      "count": 2,
+      "total_us": 2.08
+    },
+    "void at_cuda_detail::cub::DeviceSelectSweepKernel<at_cuda_detail::cub::detail::device_select_policy_hub<long, bool, int, false, false>::Policy900, at_cuda_detail::cub::CountingInputIterator<long, long>, at_cuda_detail::cub::TransformInputIterator<bool, at::native::(anonymous namespace)::NonZeroOp<bool>, bool const*, long>, long*, int*, at_cuda_detail::cub::ScanTileState<int, true>, at_cuda_detail::cub::NullType, at_cuda_detail::cub::NullType, int, false, false>(at_cuda_detail::cub::CountingInputIterator<long, long>, at_cuda_detail::cub::TransformInputIterator<bool, at::native::(anonymous namespace)::NonZeroOp<bool>, bool const*, long>, long*, int*, at_cuda_detail::cub::ScanTileState<int, true>, at_cuda_detail::cub::NullType, at_cuda_detail::cub::NullType, int, int, at_cuda_detail::cub::detail::vsmem_t)": {
+      "count": 2,
+      "total_us": 3.648
+    },
+    "void at::native::indexFuncSmallIndex<double, long, unsigned int, 2, 2, -2, at::native::(anonymous namespace)::ReduceAdd>(at::cuda::detail::TensorInfo<double, unsigned int>, at::cuda::detail::TensorInfo<double const, unsigned int>, at::cuda::detail::TensorInfo<long const, unsigned int>, int, int, unsigned int, long, long, at::native::(anonymous namespace)::ReduceAdd const&, double)": {
+      "count": 1,
+      "total_us": 2.08
+    }
+  },
+  "profiled_step_statistics": [
+    {
+      "newton": 2,
+      "pcg_max": 56,
+      "pcg_total": 100,
+      "line_search_max": 0,
+      "newton_last_max_displacement_m": 4.026479634237299e-18,
+      "newton_last_contact_displacement_m": 0.0,
+      "ccd_minimum_alpha": 1.0,
+      "edge_triangle_check_enabled": true,
+      "edge_triangle_intersection_pairs": [],
+      "edge_triangle_intersection_count": 0
+    }
+  ],
+  "scope": "Separate intrusive pinned-QIPC CPU/CUDA trace; complete kernel names retained. Kernel duration sums are not wall-clock throughput or an accuracy-qualified rate."
+}

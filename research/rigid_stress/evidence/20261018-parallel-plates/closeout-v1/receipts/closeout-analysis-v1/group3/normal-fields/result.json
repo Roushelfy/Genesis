@@ -1,0 +1,778 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "727099",
+      "SLURM_ARRAY_JOB_ID": "727099",
+      "SLURM_ARRAY_TASK_ID": "3",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-a8038889-c859-8a35-b6a0-da7d1da36c05, 00000000:C1:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/reference-loads-v1/group0/three-loads",
+  "surface_domain": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz",
+    "bytes": 144512,
+    "sha256": "9d0d4f99c71578bd3f6bb039f9c72a5abbf2a8159f0209b4b891a3bda2647998"
+  },
+  "comparisons": [
+    {
+      "label": "dpr",
+      "kind": "native",
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v2/group0/dpr",
+      "levels": [
+        {
+          "load_level": 0,
+          "command_force_n": 0.1,
+          "reference_frame_present": true,
+          "candidate_frame_present": true,
+          "qualified_accuracy_comparison": false,
+          "reference_frame": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/reference-loads-v1/group0/three-loads/frames/level0.npz",
+            "bytes": 242247,
+            "sha256": "5e76a189e72072cd58a5ee7bdc7e3b03be07ff3fe0ba54ee6fac80dc27ec94c7"
+          },
+          "candidate_frame": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v2/group0/dpr/frames/level0.npz",
+            "bytes": 139134,
+            "sha256": "378a901930443d8f3ef90d3315d8c26f0b9df948c6acb65736b35a9bbe44731c"
+          },
+          "reference_mechanics": {
+            "step": 300,
+            "time_s": 0.3,
+            "level": 0,
+            "within_level_step": 300,
+            "command_force_n": 0.1,
+            "plate_speed_m_per_s": -7.480127628411992e-12,
+            "compression_coordinate_m": 1.8101448604618264e-07,
+            "plate_separation_m": 0.06003981898551395,
+            "upper_lateral_position_m": [
+              0.003,
+              -7.227887663999919e-25
+            ],
+            "upper_quaternion_wxyz": [
+              1.0,
+              3.695787019157654e-16,
+              7.500448485583923e-13,
+              2.538547704236119e-28
+            ],
+            "empty_analytic_position_error_m": null,
+            "empty_analytic_velocity_error_m_per_s": null,
+            "newton": 2,
+            "pcg_max": 183,
+            "pcg_total": 203,
+            "line_search_max": 1,
+            "newton_last_max_displacement_m": 7.901478843899721e-12,
+            "newton_last_contact_displacement_m": 0.0,
+            "ccd_minimum_alpha": 1.0,
+            "edge_triangle_check_enabled": true,
+            "edge_triangle_intersection_pairs": [],
+            "edge_triangle_intersection_count": 0,
+            "upper_reaction_n": 0.10000003090488804,
+            "lower_reaction_n": 0.09999999968664265,
+            "egg_inertia_resultant_norm_n": 5.793324545347441e-10,
+            "egg_kinetic_j": 3.9861214970890265e-14,
+            "equation_residual_relative": 1.2302257705845462e-05,
+            "minimum_det_F": 0.9999988482304055,
+            "raw_vm_peak_pa": 25574.397545315016,
+            "raw_principal_peak_pa": 9661.731954533754,
+            "equilibrium_checks": {
+              "both_plate_reactions": true,
+              "plate_velocity": true,
+              "egg_inertial_resultant": true,
+              "egg_kinetic": true,
+              "equation_residual": true
+            }
+          },
+          "candidate_mechanics": {
+            "step": 2100,
+            "time_s": 2.1,
+            "level": 0,
+            "within_level_step": 2100,
+            "command_force_n": 0.1,
+            "plate_speed_m_per_s": 1.9286399940272428e-08,
+            "compression_coordinate_m": 0.0003766684785169035,
+            "plate_separation_m": 0.05966333152148309,
+            "empty_analytic_position_error_m": null,
+            "empty_analytic_velocity_error_m_per_s": null,
+            "upper_reaction_n": 0.09999904120678944,
+            "lower_reaction_n": 0.0999990415615317,
+            "egg_inertia_resultant_norm_n": 3.547422636393854e-10,
+            "egg_translational_kinetic_j": 2.9335253036635674e-19,
+            "egg_kinetic_upper_bound_j": 2.9335253036635674e-19,
+            "egg_angular_velocity_rad_per_s": [
+              4.3402559149463356e-20,
+              -5.091111162968184e-20,
+              9.350778191784707e-36
+            ],
+            "maximum_contact_friction": 0.01,
+            "contact_tangential_force_sum_norm_n": 1.0933946967772317e-17,
+            "contact_count": 2,
+            "raw_vm_peak_pa": 22679.07113604378,
+            "equation_residual_relative": 3.4507291108313665e-11,
+            "invalid_stress_steps": 0
+          },
+          "both_actual_loads_within_one_percent": true,
+          "status": "diagnostic field contrast; equilibrium and reference uncertainty require separate admission",
+          "tangent_field": {
+            "relative_tensor_error": 0.4225425951988303,
+            "absolute_tensor_rms_error_pa": 1687.3126279196363,
+            "reference_tensor_rms_pa": 3993.23676971705,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 0.41211534164987895,
+            "absolute_weighted_rms_error": 0.7590740936169067,
+            "reference_weighted_rms": 1.841897199405388,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 0.7655135190602949,
+            "absolute_weighted_rms_error": 1.0749734356024771e-05,
+            "reference_weighted_rms": 1.4042514061960124e-05,
+            "relative_floor": 2.5e-07
+          },
+          "raw_reference_peaks": {
+            "von_mises": {
+              "raw_peak_pa": 25574.397545315034,
+              "flat_index": 3762,
+              "material_location_m": [
+                0.0011360293496026862,
+                -0.001883910132028268,
+                0.0282914512940704
+              ]
+            },
+            "maximum_principal": {
+              "raw_peak_pa": 9661.731954533756,
+              "flat_index": 3630,
+              "material_location_m": [
+                -0.0022720586992053724,
+                0.0,
+                0.02813826611311841
+              ]
+            }
+          },
+          "raw_candidate_peaks": {
+            "von_mises": {
+              "raw_peak_pa": 22679.07113604378,
+              "flat_index": 326,
+              "material_location_m": [
+                0.0,
+                0.0,
+                0.03
+              ]
+            },
+            "maximum_principal": {
+              "raw_peak_pa": 7428.910129783557,
+              "flat_index": 1869,
+              "material_location_m": [
+                0.0,
+                0.0,
+                -0.0295
+              ]
+            }
+          },
+          "solid_only_full3D_on_columns": {
+            "relative_tensor_error": 0.5728825701953343,
+            "absolute_tensor_rms_error_pa": 2705.2737502937603,
+            "reference_tensor_rms_pa": 4722.213401206028,
+            "relative_floor_pa": 1.0
+          },
+          "inner_surface": {
+            "relative_tensor_error": 0.42421548049404023,
+            "absolute_tensor_rms_error_pa": 1621.2237580218216,
+            "reference_tensor_rms_pa": 3821.6987181461377,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 0.4142191147158176,
+            "absolute_tensor_rms_error_pa": 1725.9869588424824,
+            "reference_tensor_rms_pa": 4166.845269867921,
+            "relative_floor_pa": 1.0
+          },
+          "common_field_artifact": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/closeout-analysis-v1/group3/normal-fields/pair0-level0.npz",
+            "bytes": 3947656,
+            "sha256": "0eab173855babb3bd9c36cb2923592f662dc3c12586d2bdcd114c29a3bd67cc5"
+          }
+        },
+        {
+          "load_level": 1,
+          "command_force_n": 0.3,
+          "reference_frame_present": true,
+          "candidate_frame_present": true,
+          "qualified_accuracy_comparison": false,
+          "reference_frame": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/reference-loads-v1/group0/three-loads/frames/level1.npz",
+            "bytes": 244615,
+            "sha256": "7cf561daf90fad5820a0bc90df27d40df50841b20abbece54a389a5be67ffa97"
+          },
+          "candidate_frame": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v2/group0/dpr/frames/level1.npz",
+            "bytes": 139787,
+            "sha256": "3dce81cfd97e35a517ae1940451973b77ee66da82c166c951769e798de635aac"
+          },
+          "reference_mechanics": {
+            "step": 600,
+            "time_s": 0.6,
+            "level": 1,
+            "within_level_step": 300,
+            "command_force_n": 0.3,
+            "plate_speed_m_per_s": -9.853229343548264e-13,
+            "compression_coordinate_m": 3.8245760324712164e-07,
+            "plate_separation_m": 0.06003961754239675,
+            "upper_lateral_position_m": [
+              0.003,
+              -1.5348678421659107e-23
+            ],
+            "upper_quaternion_wxyz": [
+              1.0,
+              2.555678508094971e-15,
+              2.250393952835201e-12,
+              5.7722946472068255e-27
+            ],
+            "empty_analytic_position_error_m": null,
+            "empty_analytic_velocity_error_m_per_s": null,
+            "newton": 3,
+            "pcg_max": 1541,
+            "pcg_total": 1586,
+            "line_search_max": 1,
+            "newton_last_max_displacement_m": 1.3590642305139848e-14,
+            "newton_last_contact_displacement_m": 0.0,
+            "ccd_minimum_alpha": 1.0,
+            "edge_triangle_check_enabled": true,
+            "edge_triangle_intersection_pairs": [],
+            "edge_triangle_intersection_count": 0,
+            "upper_reaction_n": 0.3000000214055777,
+            "lower_reaction_n": 0.3000000435501702,
+            "egg_inertia_resultant_norm_n": 8.04800048972938e-12,
+            "egg_kinetic_j": 3.831118861698671e-14,
+            "equation_residual_relative": 6.352114613553533e-07,
+            "minimum_det_F": 0.9999965446832939,
+            "raw_vm_peak_pa": 76723.40200096427,
+            "raw_principal_peak_pa": 28985.44054147875,
+            "equilibrium_checks": {
+              "both_plate_reactions": true,
+              "plate_velocity": true,
+              "egg_inertial_resultant": true,
+              "egg_kinetic": true,
+              "equation_residual": true
+            }
+          },
+          "candidate_mechanics": {
+            "step": 4200,
+            "time_s": 4.2,
+            "level": 1,
+            "within_level_step": 2100,
+            "command_force_n": 0.3,
+            "plate_speed_m_per_s": 2.1790882731409223e-11,
+            "compression_coordinate_m": 0.0008723689301854279,
+            "plate_separation_m": 0.05916763106981457,
+            "empty_analytic_position_error_m": null,
+            "empty_analytic_velocity_error_m_per_s": null,
+            "upper_reaction_n": 0.2999999989209076,
+            "lower_reaction_n": 0.29999999892158874,
+            "egg_inertia_resultant_norm_n": 6.811206438825173e-13,
+            "egg_translational_kinetic_j": 3.8618916684804577e-25,
+            "egg_kinetic_upper_bound_j": 3.8618916684804577e-25,
+            "egg_angular_velocity_rad_per_s": [
+              1.101070699402653e-19,
+              -1.2933456142544827e-19,
+              -1.0556927370986768e-35
+            ],
+            "maximum_contact_friction": 0.01,
+            "contact_tangential_force_sum_norm_n": 3.293308156278822e-17,
+            "contact_count": 2,
+            "raw_vm_peak_pa": 68037.86550608928,
+            "equation_residual_relative": 3.3057664459282874e-11,
+            "invalid_stress_steps": 0
+          },
+          "both_actual_loads_within_one_percent": true,
+          "status": "diagnostic field contrast; equilibrium and reference uncertainty require separate admission",
+          "tangent_field": {
+            "relative_tensor_error": 0.4225435057156951,
+            "absolute_tensor_rms_error_pa": 5061.977461104154,
+            "reference_tensor_rms_pa": 11979.778159246076,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 0.4121163389943556,
+            "absolute_weighted_rms_error": 2.2772409100977007,
+            "reference_weighted_rms": 5.525723429589356,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 0.7655174785268019,
+            "absolute_weighted_rms_error": 3.224952066864074e-05,
+            "reference_weighted_rms": 4.212773917416392e-05,
+            "relative_floor": 2.5e-07
+          },
+          "raw_reference_peaks": {
+            "von_mises": {
+              "raw_peak_pa": 76723.40200096424,
+              "flat_index": 3762,
+              "material_location_m": [
+                0.0011360293496026862,
+                -0.001883910132028268,
+                0.0282914512940704
+              ]
+            },
+            "maximum_principal": {
+              "raw_peak_pa": 28985.44054147876,
+              "flat_index": 3630,
+              "material_location_m": [
+                -0.0022720586992053724,
+                0.0,
+                0.02813826611311841
+              ]
+            }
+          },
+          "raw_candidate_peaks": {
+            "von_mises": {
+              "raw_peak_pa": 68037.86550608929,
+              "flat_index": 326,
+              "material_location_m": [
+                0.0,
+                0.0,
+                0.03
+              ]
+            },
+            "maximum_principal": {
+              "raw_peak_pa": 22286.94391398133,
+              "flat_index": 1869,
+              "material_location_m": [
+                0.0,
+                0.0,
+                -0.0295
+              ]
+            }
+          },
+          "solid_only_full3D_on_columns": {
+            "relative_tensor_error": 0.5728826226591641,
+            "absolute_tensor_rms_error_pa": 8115.860551014632,
+            "reference_tensor_rms_pa": 14166.707506928786,
+            "relative_floor_pa": 1.0
+          },
+          "inner_surface": {
+            "relative_tensor_error": 0.4242167221347433,
+            "absolute_tensor_rms_error_pa": 4863.71861642681,
+            "reference_tensor_rms_pa": 11465.1741966974,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 0.41422002419595805,
+            "absolute_tensor_rms_error_pa": 5177.998539636166,
+            "reference_tensor_rms_pa": 12500.599288233767,
+            "relative_floor_pa": 1.0
+          },
+          "common_field_artifact": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/closeout-analysis-v1/group3/normal-fields/pair0-level1.npz",
+            "bytes": 3948441,
+            "sha256": "86cd056171a21915ec1c35d0cb1276f13f92a530c5a938b17fe9064a17b7c386"
+          }
+        },
+        {
+          "load_level": 2,
+          "command_force_n": 1.0,
+          "reference_frame_present": true,
+          "candidate_frame_present": true,
+          "qualified_accuracy_comparison": false,
+          "reference_frame": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/reference-loads-v1/group0/three-loads/frames/level2.npz",
+            "bytes": 245141,
+            "sha256": "fdf52b4821557d05be8f5892478ba33f1bc7f98fee91861a0d85fbfd39a2b8e3"
+          },
+          "candidate_frame": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v2/group0/dpr/frames/level2.npz",
+            "bytes": 139547,
+            "sha256": "c7017c55496ef88339f61ae9c5b656c798d79d80dc3f723e46b91b750a5d7a4c"
+          },
+          "reference_mechanics": {
+            "step": 900,
+            "time_s": 0.9,
+            "level": 2,
+            "within_level_step": 300,
+            "command_force_n": 1.0,
+            "plate_speed_m_per_s": 5.4539706084710815e-12,
+            "compression_coordinate_m": 1.001365124944642e-06,
+            "plate_separation_m": 0.06003899863487505,
+            "upper_lateral_position_m": [
+              0.003,
+              -2.804499969583349e-22
+            ],
+            "upper_quaternion_wxyz": [
+              1.0,
+              1.403234368131134e-14,
+              7.501290926016566e-12,
+              1.05133235494595e-25
+            ],
+            "empty_analytic_position_error_m": null,
+            "empty_analytic_velocity_error_m_per_s": null,
+            "newton": 2,
+            "pcg_max": 55,
+            "pcg_total": 66,
+            "line_search_max": 1,
+            "newton_last_max_displacement_m": 7.787241345478195e-13,
+            "newton_last_contact_displacement_m": 0.0,
+            "ccd_minimum_alpha": 1.0,
+            "edge_triangle_check_enabled": true,
+            "edge_triangle_intersection_pairs": [],
+            "edge_triangle_intersection_count": 0,
+            "upper_reaction_n": 0.9999993258604661,
+            "lower_reaction_n": 1.0000004068821824,
+            "egg_inertia_resultant_norm_n": 4.850627668132962e-10,
+            "egg_kinetic_j": 4.5520433953226117e-14,
+            "equation_residual_relative": 1.2755175651168655e-06,
+            "minimum_det_F": 0.9999884821710167,
+            "raw_vm_peak_pa": 255747.35106495323,
+            "raw_principal_peak_pa": 96621.11870006626,
+            "equilibrium_checks": {
+              "both_plate_reactions": true,
+              "plate_velocity": true,
+              "egg_inertial_resultant": true,
+              "egg_kinetic": true,
+              "equation_residual": true
+            }
+          },
+          "candidate_mechanics": {
+            "step": 6300,
+            "time_s": 6.3,
+            "level": 2,
+            "within_level_step": 2100,
+            "command_force_n": 1.0,
+            "plate_speed_m_per_s": 1.2921561440984911e-15,
+            "compression_coordinate_m": 0.0017034474019160374,
+            "plate_separation_m": 0.05833655259808396,
+            "empty_analytic_position_error_m": null,
+            "empty_analytic_velocity_error_m_per_s": null,
+            "upper_reaction_n": 1.0000000000000298,
+            "lower_reaction_n": 1.0000000000000386,
+            "egg_inertia_resultant_norm_n": 1.1532659630214842e-15,
+            "egg_translational_kinetic_j": 2.0785873843641394e-33,
+            "egg_kinetic_upper_bound_j": 2.078587387701627e-33,
+            "egg_angular_velocity_rad_per_s": [
+              4.827135326016177e-19,
+              -8.352458914478985e-19,
+              2.3481291561772816e-35
+            ],
+            "maximum_contact_friction": 0.01,
+            "contact_tangential_force_sum_norm_n": 2.1899097537222092e-16,
+            "contact_count": 2,
+            "raw_vm_peak_pa": 226792.88583605498,
+            "equation_residual_relative": 3.171923559495034e-11,
+            "invalid_stress_steps": 0
+          },
+          "both_actual_loads_within_one_percent": true,
+          "status": "diagnostic field contrast; equilibrium and reference uncertainty require separate admission",
+          "tangent_field": {
+            "relative_tensor_error": 0.42254108807908375,
+            "absolute_tensor_rms_error_pa": 16873.249531309226,
+            "reference_tensor_rms_pa": 39932.80182056801,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 0.4121138608804985,
+            "absolute_weighted_rms_error": 7.590796600458049,
+            "reference_weighted_rms": 18.41917324556858,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 0.7655071944869559,
+            "absolute_weighted_rms_error": 0.00010749845050003432,
+            "reference_weighted_rms": 0.00014042774682487464,
+            "relative_floor": 2.5e-07
+          },
+          "raw_reference_peaks": {
+            "von_mises": {
+              "raw_peak_pa": 255747.35106495314,
+              "flat_index": 3762,
+              "material_location_m": [
+                0.0011360293496026862,
+                -0.001883910132028268,
+                0.0282914512940704
+              ]
+            },
+            "maximum_principal": {
+              "raw_peak_pa": 96621.11870006633,
+              "flat_index": 3630,
+              "material_location_m": [
+                -0.0022720586992053724,
+                0.0,
+                0.02813826611311841
+              ]
+            }
+          },
+          "raw_candidate_peaks": {
+            "von_mises": {
+              "raw_peak_pa": 226792.88583605498,
+              "flat_index": 326,
+              "material_location_m": [
+                0.0,
+                0.0,
+                0.03
+              ]
+            },
+            "maximum_principal": {
+              "raw_peak_pa": 74289.81331369776,
+              "flat_index": 1869,
+              "material_location_m": [
+                0.0,
+                0.0,
+                -0.0295
+              ]
+            }
+          },
+          "solid_only_full3D_on_columns": {
+            "relative_tensor_error": 0.5728812416610609,
+            "absolute_tensor_rms_error_pa": 27052.950866899682,
+            "reference_tensor_rms_pa": 47222.61596218448,
+            "relative_floor_pa": 1.0
+          },
+          "inner_surface": {
+            "relative_tensor_error": 0.4242131105270599,
+            "absolute_tensor_rms_error_pa": 16212.381425775626,
+            "reference_tensor_rms_pa": 38217.53977766668,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 0.4142179534495298,
+            "absolute_tensor_rms_error_pa": 17259.989972936088,
+            "reference_tensor_rms_pa": 41668.86014765443,
+            "relative_floor_pa": 1.0
+          },
+          "common_field_artifact": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/closeout-analysis-v1/group3/normal-fields/pair0-level2.npz",
+            "bytes": 3947921,
+            "sha256": "37479f8c35ae3ef7959d5b180235b391a69988a8e86d849d124adefd5d6d4483"
+          }
+        }
+      ]
+    },
+    {
+      "label": "scr",
+      "kind": "native",
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v2/group1/scr",
+      "levels": [
+        {
+          "load_level": 0,
+          "command_force_n": 0.1,
+          "reference_frame_present": true,
+          "candidate_frame_present": false,
+          "qualified_accuracy_comparison": false,
+          "status": "missing field; retain failure, no substitute or extrapolation"
+        },
+        {
+          "load_level": 1,
+          "command_force_n": 0.3,
+          "reference_frame_present": true,
+          "candidate_frame_present": false,
+          "qualified_accuracy_comparison": false,
+          "status": "missing field; retain failure, no substitute or extrapolation"
+        },
+        {
+          "load_level": 2,
+          "command_force_n": 1.0,
+          "reference_frame_present": true,
+          "candidate_frame_present": false,
+          "qualified_accuracy_comparison": false,
+          "status": "missing field; retain failure, no substitute or extrapolation"
+        }
+      ]
+    },
+    {
+      "label": "shell",
+      "kind": "shell",
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/shell-operator-v1/group0/tight",
+      "levels": [
+        {
+          "load_level": 0,
+          "command_force_n": 0.1,
+          "reference_frame_present": true,
+          "candidate_frame_present": true,
+          "qualified_accuracy_comparison": false,
+          "reference_frame": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/reference-loads-v1/group0/three-loads/frames/level0.npz",
+            "bytes": 242247,
+            "sha256": "5e76a189e72072cd58a5ee7bdc7e3b03be07ff3fe0ba54ee6fac80dc27ec94c7"
+          },
+          "candidate_frame": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/shell-operator-v1/group0/tight/frames/level0.npz",
+            "bytes": 20709,
+            "sha256": "61b46da3701eb891428a4f556415677754b46d9ec0d7c6d700cb2502b61f6029"
+          },
+          "reference_mechanics": {
+            "step": 300,
+            "time_s": 0.3,
+            "level": 0,
+            "within_level_step": 300,
+            "command_force_n": 0.1,
+            "plate_speed_m_per_s": -7.480127628411992e-12,
+            "compression_coordinate_m": 1.8101448604618264e-07,
+            "plate_separation_m": 0.06003981898551395,
+            "upper_lateral_position_m": [
+              0.003,
+              -7.227887663999919e-25
+            ],
+            "upper_quaternion_wxyz": [
+              1.0,
+              3.695787019157654e-16,
+              7.500448485583923e-13,
+              2.538547704236119e-28
+            ],
+            "empty_analytic_position_error_m": null,
+            "empty_analytic_velocity_error_m_per_s": null,
+            "newton": 2,
+            "pcg_max": 183,
+            "pcg_total": 203,
+            "line_search_max": 1,
+            "newton_last_max_displacement_m": 7.901478843899721e-12,
+            "newton_last_contact_displacement_m": 0.0,
+            "ccd_minimum_alpha": 1.0,
+            "edge_triangle_check_enabled": true,
+            "edge_triangle_intersection_pairs": [],
+            "edge_triangle_intersection_count": 0,
+            "upper_reaction_n": 0.10000003090488804,
+            "lower_reaction_n": 0.09999999968664265,
+            "egg_inertia_resultant_norm_n": 5.793324545347441e-10,
+            "egg_kinetic_j": 3.9861214970890265e-14,
+            "equation_residual_relative": 1.2302257705845462e-05,
+            "minimum_det_F": 0.9999988482304055,
+            "raw_vm_peak_pa": 25574.397545315016,
+            "raw_principal_peak_pa": 9661.731954533754,
+            "equilibrium_checks": {
+              "both_plate_reactions": true,
+              "plate_velocity": true,
+              "egg_inertial_resultant": true,
+              "egg_kinetic": true,
+              "equation_residual": true
+            }
+          },
+          "candidate_mechanics": {
+            "step": 300,
+            "time_s": 0.3,
+            "level": 0,
+            "within_level_step": 300,
+            "command_force_n": 0.1,
+            "plate_speed_m_per_s": 0.0014550990551696376,
+            "compression_coordinate_m": 0.0004307936049260888,
+            "plate_separation_m": 0.05961320639507391,
+            "upper_reaction_n": 0.02745485835429954,
+            "lower_reaction_n": 0.027460254209292656,
+            "egg_kinetic_j": 1.0837163186091202e-09,
+            "egg_inertia_resultant_norm_n": 5.396499125293878e-06,
+            "last_step_cap_count": 0,
+            "maximum_linear_residual_relative": 8.558074736390157e-09,
+            "contact_tangential_force_sum_norm_n": 2.64550885574843e-16,
+            "minimum_midpoint_height_m": -0.029771998144238206,
+            "maximum_midpoint_height_m": 0.029339736004020248,
+            "raw_vm_peak_pa": 113220786.53371528,
+            "raw_principal_peak_pa": 4744287.379750218,
+            "split_contact_implicit_impulse_defect_l2_ns": 1.4414658117450234,
+            "split_contact_impulse_l2_ns": 3.87969040663447e-05,
+            "split_contact_implicit_impulse_defect_relative": 37154.145322524775
+          },
+          "both_actual_loads_within_one_percent": false,
+          "status": "diagnostic field contrast; equilibrium and reference uncertainty require separate admission",
+          "tangent_field": {
+            "relative_tensor_error": 7662.678193229363,
+            "absolute_tensor_rms_error_pa": 30598888.315712515,
+            "reference_tensor_rms_pa": 3993.2367697170516,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 7639.228816435088,
+            "absolute_weighted_rms_error": 14070.674162608726,
+            "reference_weighted_rms": 1.841897199405388,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 5220.958897334133,
+            "absolute_weighted_rms_error": 0.07331538873273037,
+            "reference_weighted_rms": 1.4042514061960123e-05,
+            "relative_floor": 2.5e-07
+          },
+          "raw_reference_peaks": {
+            "von_mises": {
+              "raw_peak_pa": 25574.397545315034,
+              "flat_index": 3762,
+              "material_location_m": [
+                0.0011360293496026862,
+                -0.001883910132028268,
+                0.0282914512940704
+              ]
+            },
+            "maximum_principal": {
+              "raw_peak_pa": 9661.731954533756,
+              "flat_index": 3630,
+              "material_location_m": [
+                -0.0022720586992053724,
+                0.0,
+                0.02813826611311841
+              ]
+            }
+          },
+          "raw_candidate_peaks": {
+            "von_mises": {
+              "raw_peak_pa": 113220786.53371531,
+              "flat_index": 81,
+              "material_location_m": [
+                -0.006031729325830322,
+                0.0,
+                0.02576955916417635
+              ]
+            },
+            "maximum_principal": {
+              "raw_peak_pa": 4744287.37975022,
+              "flat_index": 185,
+              "material_location_m": [
+                0.011923198590801945,
+                0.0,
+                0.021450667674760043
+              ]
+            }
+          },
+          "missing_shell_components": "No resolved solid thickness-normal stress/shear; tangential projected comparison only. Nominal thickness500um; source wall has variable normal projection.",
+          "inner_surface": {
+            "relative_tensor_error": 8092.418440218054,
+            "absolute_tensor_rms_error_pa": 30926785.179683503,
+            "reference_tensor_rms_pa": 3821.6987181461377,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 7601.401426952417,
+            "absolute_tensor_rms_error_pa": 31673863.580263942,
+            "reference_tensor_rms_pa": 4166.845269867921,
+            "relative_floor_pa": 1.0
+          },
+          "common_field_artifact": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/closeout-analysis-v1/group3/normal-fields/pair2-level0.npz",
+            "bytes": 3104872,
+            "sha256": "4e91f351545cc010c86a1d23a8598fb1446fdacbb4266ace40df9c43e7a8c0d7"
+          }
+        },
+        {
+          "load_level": 1,
+          "command_force_n": 0.3,
+          "reference_frame_present": true,
+          "candidate_frame_present": false,
+          "qualified_accuracy_comparison": false,
+          "status": "missing field; retain failure, no substitute or extrapolation"
+        },
+        {
+          "load_level": 2,
+          "command_force_n": 1.0,
+          "reference_frame_present": true,
+          "candidate_frame_present": false,
+          "qualified_accuracy_comparison": false,
+          "status": "missing field; retain failure, no substitute or extrapolation"
+        }
+      ]
+    }
+  ],
+  "reference_qualified": false,
+  "scope": "Full-spatial endpoint contrasts on shared material columns and exact one-sided surfaces. Raw extrema retained separately. Unequal actual load or missing equilibrium is diagnostic only; no inferred accuracy ranking."
+}

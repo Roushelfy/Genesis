@@ -5,17 +5,22 @@ conditional elastic stress from changing rigid contacts, including friction,
 and supports raw global max/full output, complete numerical checks, environment
 isolation and partial resets. Production numerical work remains in Quadrants.
 
-The active [parallel-plate comparison](docs/PARALLEL_PLATE_COMPARISON_GOAL.md)
+The [parallel-plate comparison](docs/PARALLEL_PLATE_COMPARISON_GOAL.md)
 uses two flat rigid plates and a full hollow egg for the primary stress-error
-benchmark. It compares DPR, SCR and Shell against a qualified QIPC solid-FEM
-reference under quasi-static common-force loading, with bounded friction
-controls, sparse full-spatial observations, cost and stability measurements.
+benchmark. The bounded study is complete with explicitly diagnosed unsupported
+physical-accuracy quantities, under the specification's completion clause.
+It evaluates DPR, SCR, original Shell and a pinned QIPC solid-FEM diagnostic
+candidate with common-force loading, friction controls, sparse full-spatial
+observations, cost and stability measurements.
 Full Franka physical-reference qualification is no longer a completion gate.
 
-The [plate checkpoint](docs/PARALLEL_PLATE_RESULTS_20261018.md) records verified
+The [plate report](docs/PARALLEL_PLATE_RESULTS_20261018.md) records verified
 mechanical equilibria, the SCR cancellation-sensitive admission failure,
 original Shell contact-split imbalance and unresolved QIPC point-contact fields.
-It is an interim diagnostic result, not a qualified three-way accuracy ranking.
+It does not qualify a three-way physical accuracy ranking. See the
+[requirement audit](docs/PARALLEL_PLATE_AUDIT.md),
+[running guide](docs/RUNNING_PARALLEL_PLATES.md) and
+[closeout packet](evidence/20261018-parallel-plates/closeout-v1/README.md).
 
 `RigidStressOptions.dpr(...)` and `.scr(...)` select the existing pressure and
 intrinsic/body_source_prior routes. Manual stress sampling is available through

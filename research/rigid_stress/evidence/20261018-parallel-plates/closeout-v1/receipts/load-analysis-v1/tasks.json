@@ -1,0 +1,90 @@
+[
+  [
+    {
+      "name": "summary",
+      "module": "research.rigid_stress.qipc_comparison.plate_summary",
+      "args": [
+        "--root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "audit",
+      "module": "research.rigid_stress.qipc_comparison.plate_audit",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/reference-loads-v1/group0/three-loads",
+        "--labels",
+        "reference"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "audit",
+      "module": "research.rigid_stress.qipc_comparison.plate_audit",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v2/group0/dpr",
+        "--labels",
+        "dpr"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "audit",
+      "module": "research.rigid_stress.qipc_comparison.plate_audit",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-stability-v1/group0/load-unload",
+        "--labels",
+        "load-unload"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "three-load-fields",
+      "module": "research.rigid_stress.qipc_comparison.plate_fields",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/reference-loads-v1/group0/three-loads",
+        "--candidates",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v2/group0/dpr",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v2/group1/scr",
+        "--labels",
+        "dpr",
+        "scr",
+        "--kinds",
+        "native",
+        "native",
+        "--surface-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "radii",
+      "module": "research.rigid_stress.qipc_comparison.plate_fields",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/contact-entry-v1/group1/off-diagonal",
+        "--candidates",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-stability-v1/group1/radius003",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-stability-v1/group2/radius009",
+        "--labels",
+        "r3",
+        "r9",
+        "--kinds",
+        "native",
+        "native",
+        "--surface-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz"
+      ]
+    }
+  ]
+]

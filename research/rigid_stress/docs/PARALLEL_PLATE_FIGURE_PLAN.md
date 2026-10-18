@@ -16,8 +16,9 @@ SVG/PDF are exported only after rendered review. No generated illustration.
 | Figure/panel | Claim and evidence | Form | Role |
 | --- | --- | --- | --- |
 | mechanics/a | Same command does not imply same actual force at0.3s; QIPC/native/Shell journals | Time/actual-force curves, command dashed | Reveals incomplete Shell settling |
-| mechanics/b | Equal-force indentation differs; actual endpoint force and plate coordinate | Endpoint dots, log displacement axis | Native0.1/0.3/1N; QIPC0.1N; Shell hollow unadmitted dot |
+| mechanics/b | Equal-force plate travel differs; actual endpoint force and plate coordinate | Endpoint dots, log displacement axis | Native and QIPC0.1/0.3/1N; Shell hollow unadmitted dot |
 | maps/a-d | Complete material-space outer tangential fields differ; missing/rejected and unequal-load fields are explicit | Unwrapped material azimuth/height scatter with one common logarithmic tensor-norm scale | QIPC/DPR/SCR/Shell; SCR remains blank with status40 |
+| contact-loads/a-f | The reference load remains on polar nodes; a native reconstruction radius is not a measured reference footprint | Upper/lower rest-material x/y point maps with common normal-force scale | Actual QIPC nodes, native rigid source points and original Shell impulse/dt nodes; N, not pressure Pa |
 
 Material passports: the figure receipt records hashes for every source journal,
 start/result receipt and common-field NPZ. No smoothing, temporal averaging,
@@ -44,3 +45,8 @@ QA: inspect color and grayscale at intended size, check labels/colorbar and
 missing-field annotation, preserve source data trace and editable vector text.
 Open issue: these are diagnostic report figures, not a qualified accuracy
 comparison or submission-ready paper result.
+
+Final source selection uses geometry-aligned native-equilibria-v2,
+reference-loads-v1 and the original Shell tight-operator diagnostic. QIPC means
+the separately pinned16-epsilon line-search roundoff candidate, as explicitly
+defined in the results and caption; it is not unmodified-main qualification.

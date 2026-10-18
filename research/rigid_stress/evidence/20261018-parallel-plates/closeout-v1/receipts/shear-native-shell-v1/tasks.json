@@ -1,0 +1,97 @@
+[
+  [
+    {
+      "name": "dpr",
+      "module": "research.rigid_stress.qipc_comparison.plate_native",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--loads",
+        "0.1",
+        "--ramp",
+        "0.1",
+        "--hold",
+        "2.4",
+        "--clearance",
+        "2e-5",
+        "--plate-offset-x",
+        "0.003",
+        "--shear-distance",
+        "1e-5",
+        "--shear-start",
+        "2.1",
+        "--shear-duration",
+        "0.2",
+        "--friction",
+        "0.3",
+        "--method",
+        "dpr",
+        "--assets",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "scr",
+      "module": "research.rigid_stress.qipc_comparison.plate_native",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--loads",
+        "0.1",
+        "--ramp",
+        "0.1",
+        "--hold",
+        "2.4",
+        "--clearance",
+        "2e-5",
+        "--plate-offset-x",
+        "0.003",
+        "--shear-distance",
+        "1e-5",
+        "--shear-start",
+        "2.1",
+        "--shear-duration",
+        "0.2",
+        "--friction",
+        "0.3",
+        "--method",
+        "scr",
+        "--assets",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shell",
+      "module": "research.rigid_stress.qipc_comparison.plate_shell",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/kashu-shell-pr22-diagnostics",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--loads",
+        "0.1",
+        "--ramp",
+        "0.1",
+        "--hold",
+        "2.4",
+        "--clearance",
+        "2e-5",
+        "--plate-offset-x",
+        "0.003",
+        "--shear-distance",
+        "1e-5",
+        "--shear-start",
+        "2.1",
+        "--shear-duration",
+        "0.2",
+        "--friction",
+        "0.3",
+        "--midpoint-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/surface0/egg-mid-level1.obj"
+      ]
+    }
+  ]
+]

@@ -1,4 +1,13 @@
-# Active goal: parallel-plate stress comparison
+# Completed bounded goal: parallel-plate stress comparison
+
+2026-10-18 closeout: [report](docs/PARALLEL_PLATE_RESULTS_20261018.md),
+[requirement audit](docs/PARALLEL_PLATE_AUDIT.md),
+[reproduction guide](docs/RUNNING_PARALLEL_PLATES.md).
+Completion uses the specification's explicitly diagnosed unsupported-quantity
+clause. The QIPC contact field remains spatially unresolved, SCR rejects the
+balanced load reconstruction, and original Shell lacks coupled equilibrium.
+Physical-error rankings and accuracy-qualified speedups remain unsupported.
+The original objective below is retained for scope; no Franka campaign resumes.
 
 Follow [docs/PARALLEL_PLATE_COMPARISON_GOAL.md](docs/PARALLEL_PLATE_COMPARISON_GOAL.md).
 
