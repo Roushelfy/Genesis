@@ -1,13 +1,13 @@
 # Working on native rigid stress recovery
 
-Read [GOAL.md](GOAL.md), [docs/PRESSURE_MODEL_COMPARISON_GOAL.md](docs/PRESSURE_MODEL_COMPARISON_GOAL.md),
+Read [GOAL.md](GOAL.md), [docs/SHELL_SOLVER_COMPARISON_GOAL.md](docs/SHELL_SOLVER_COMPARISON_GOAL.md),
 [README.md](README.md) and [docs/RUNNING.md](docs/RUNNING.md) first.
-The pressure/intrinsic comparison and cleanup are complete within their
-reported scopes. Preserve current configuration guidance, compact evidence and
-the native feature.
-Reuse earned verification, measure matched physical inputs and distinguish
-model error, numerical failure and unsupported inputs. Historical campaigns
-do not create additional active tasks.
+The active stage compares our full stress outputs with Kashu shell PR22.
+Unify mechanical observables, pin both sources, and separate contact instability,
+discretization/solve error and physical model differences. Reproduce issues
+before claiming them. Keep an original external baseline and label instrumentation
+or repairs separately. Prior pressure/intrinsic evidence and cleanup remain
+accepted within scope; historical campaigns do not create new active tasks.
 
 Follow root CLAUDE.md and CODING_GUIDELINES.md when editing engine code.
 The feature belongs to Genesis's existing rigid solver; all production numerical
