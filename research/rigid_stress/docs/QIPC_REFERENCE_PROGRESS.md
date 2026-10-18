@@ -278,6 +278,70 @@ See [reproduction instructions](RUNNING_QIPC_REFERENCE.md). Full reference
 qualification, actual point-wrench replay, lifecycle studies, profiles and the
 final shared-scale figures/report remain unfinished.
 
+## Complete sensitivity history and resolved-versus-point load layers
+
+Original-main Hencky/DBC1e4 candidate726271 completes all6000 prescribed steps.
+The complete-history audit726335 measures maximum COM tracking7.50e-9m and
+rotation1.09e-6rad; the egg escapes rather than following the higher-strength
+held branch. This is a real full-history sensitivity result, not a qualified
+unique grasp prediction. Actual three-way comparisons now cover600 common
+observations in726335, including one-sided inner/outer surface tangent stresses,
+bulk-column tangent fields and membrane/bending resultants. The surface metric
+checks2560 exact boundary positions, selecting the cell entered from within
+the wall. Display samples remain distinct from raw global extrema.
+
+Read-only original normal-barrier queries726312 use the saved actual robot/FEM
+poses and original contact kernels. They do not advance or replace friction
+history. Recorded total contact/inertial forces remain authoritative. A
+nonnegative linear program compresses each connected active mesh-support
+component while preserving its physical force/moment. Its radius comes only
+from the pre-existing condition-bank schedule. Aggregated nodal normals and
+provider-local support ids are explicitly derived packets, not fabricated
+observations from the native collider.
+
+Native replay726321 runs116 observation times through actual production
+Quadrants kernels. Resolved-load core replay has0 invalid frames. At1.16s its
+common tangent difference from independent P2 is1.74e-11 relative, while its
+difference from the failed nonlinear P1 source remains0.74389. This verifies
+the elastic core for that replay; it does not establish P1 contact/mesh truth.
+Compressed point-only packets with measured inertia have4 DPR and6 SCR rejected
+frames; preserve those source/wrench checks. Rigid-body-inertia replays are
+separate ablations. The first replay attempt726316 had an observer-only static
+connectivity-axis error; remaining affected tasks were cancelled with a recorded
+reason, then rerun fresh. No failed attempt was relabeled.
+
+The shared M1 build directory had advanced after the earlier641459 artifact.
+The new clean40275f0a2 source and copied matching native are recorded separately.
+Its only QIPC code difference from641459 is the5-line dense-BVH stack barrier
+fix. Baseline726310 still fails after1086 accepted steps. A separately pinned
+`kkt-roundoff-diagnostic.patch` changes its fixed incremental-energy allowance
+to16 double epsilons times absolute energy. Fresh native build726309 snapshots
+project includes, reuses hashed immutable objects, recompiles only the declared
+pipeline unit and performs fresh links/import checks. Candidate726314 then
+completes1300 capped-control steps, passing the former first-contact failure
+with0 invalid steps, but6 recorded PCG-cap steps. It remains unqualified pending
+full histories and uncertainty. New9s cases0/2/7 and case0 dt/mesh/stopping controls
+are submitted separately. Their workers also record passive, equality and
+complete rigid-plus-FEM contact work, using public per-vertex link owners rather
+than KKT proxy ids; these are observation changes, not a controller alteration.
+
+Geometry-only shell wall inputs726335 match6.529848g rest mass by using each
+wall-prism volume divided by its original midpoint area, without changing
+density or fitting stiffness/footprints. Vertex-lumped inertia differences are
+9.87%,2.46%,0.602% at surface0/1/2. A separately labeled research input adapter
+binds face mass before build and existing thickness state before stepping/reset
+capture. It changes no PR22 kernel. Nominal500um stock remains intact. Actual
+per-face thickness and vertex masses enter the common observer for this variant;
+director/contact representation differences remain. Its physical pilots must
+pass before full geometry-consistent histories are admitted.
+
+FP64 primary full/max timing now completesB1/64 native configurations; larger
+native/shell batches continue. MatchingFP64 memory/capacity and moving loaded
+profiles are separate campaigns726324/726327. Memory polling and profiler traces
+are not used as primary throughput samples. Additional surface refinement is
+registered because the existing prescribed force/field histories still show
+material spatial uncertainty. All completion gates below remain open as stated.
+
 ## Completion gates
 
 1. Exact-energy stress/parameter and independent small-control validation.

@@ -88,6 +88,15 @@ def main():
     assert np.linalg.norm(correction) / np.linalg.norm(analytic_load) < 1e-10
     assert np.linalg.norm(residual) / np.linalg.norm(analytic_load) < 1e-8
     transfer = transfer_loads(p2, authored, args.output)
+    np.savez_compressed(
+        args.output / "operator.npz",
+        p2_coordinates_m=p2.coordinates,
+        p2_component_dofs=p2.component_dofs,
+        transfer_data=transfer.data,
+        transfer_indices=transfer.indices,
+        transfer_indptr=transfer.indptr,
+        transfer_shape=transfer.shape,
+    )
     receipt = json.loads((args.reference / "result.json").read_text())
     with (args.output / "steps.jsonl").open("w", buffering=1) as journal:
         for index, path in enumerate(sorted((args.reference / "frames").glob("step*.npz"))):
@@ -99,6 +108,9 @@ def main():
                 actual_tensor = rotation.T @ saved["cauchy_pa"] @ rotation
                 time = saved["time_s"].item()
             load = contact - inertial
+            physical_material_position = (
+                position - mass @ position / mass.sum()
+            ) @ rotation + mass @ authored / mass.sum()
             tensor, displacement, correction, residual = p1.solve(load)
             mapped = transfer @ load.reshape(-1)
             p2_solution = p2.solve(mapped)
@@ -122,6 +134,8 @@ def main():
                 "reference_qualified": False,
                 "contact_wrench_material_origin": wrench(authored, contact).tolist(),
                 "inertial_wrench_material_origin": wrench(authored, inertial).tolist(),
+                "physical_contact_wrench_material_origin": wrench(physical_material_position, contact).tolist(),
+                "physical_inertial_wrench_material_origin": wrench(physical_material_position, inertial).tolist(),
                 "balance_correction_l2_n": np.linalg.norm(correction).item(),
                 "balance_correction_relative_load": np.linalg.norm(correction).item()
                 / max(np.linalg.norm(load).item(), 1e-12),
@@ -135,18 +149,21 @@ def main():
                 "p2_common_tangent_error": field_error(sampled_p2, sampled_actual, columns),
             }
             journal.write(json.dumps(row, allow_nan=False) + "\n")
-            if index % 20 == 0:
-                np.savez_compressed(
-                    args.output / "frames" / path.name,
-                    time_s=time,
-                    authored_contact_n=contact,
-                    authored_inertial_reaction_n=inertial,
-                    p1_displacement_m=displacement,
-                    p1_linear_stress_pa=tensor,
-                    p2_linear_corner_stress_pa=p2_solution.tensor_pa,
-                    p2_force_n=mapped_force,
-                    reference_corotated_cauchy_pa=actual_tensor,
-                )
+            np.savez_compressed(
+                args.output / "frames" / path.name,
+                time_s=time,
+                physical_contact_positions_world_m=position,
+                physical_contact_positions_material_m=physical_material_position,
+                material_rotation=rotation,
+                authored_contact_n=contact,
+                authored_inertial_reaction_n=inertial,
+                p1_displacement_m=displacement,
+                p1_linear_stress_pa=tensor,
+                p2_linear_corner_stress_pa=p2_solution.tensor_pa,
+                p2_force_n=mapped_force,
+                p2_balanced_force_n=p2_solution.rhs[p2.component_dofs],
+                reference_corotated_cauchy_pa=actual_tensor,
+            )
     write_json(
         args.output / "result.json",
         {

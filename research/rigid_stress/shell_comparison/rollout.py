@@ -256,6 +256,7 @@ def make_parser():
     parser.add_argument("--coarse-interval", type=int, default=10)
     parser.add_argument("--damping", type=float, default=0.0)
     parser.add_argument("--coupling-friction", type=float, default=0.6)
+    parser.add_argument("--wall-volume-input", type=Path)
     parser.add_argument("--warmup", type=int, default=60)
     parser.add_argument("--steps", type=int, default=900)
     parser.add_argument("--repetitions", type=int, default=3)

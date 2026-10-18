@@ -58,6 +58,50 @@ class CommonColumns:
     native_barycentric: np.ndarray
 
 
+@dataclass
+class CommonSurfaces:
+    points: np.ndarray
+    face_index: np.ndarray
+    weights_m2: np.ndarray
+    z: np.ndarray
+    side: np.ndarray
+    normal: np.ndarray
+    reference_elements: np.ndarray
+    reference_barycentric: np.ndarray
+    native_elements: np.ndarray
+    native_barycentric: np.ndarray
+
+
+def build_surfaces(reference, native, outer_vertices, inner_vertices, faces, columns):
+    outer, inner = outer_vertices[faces].mean(axis=1), inner_vertices[faces].mean(axis=1)
+    reference_elements, reference_barycentric, native_elements, native_barycentric = [], [], [], []
+    for p_inner, p_outer in zip(inner, outer):
+        points = np.stack((p_inner, p_outer))
+        # Select the one-sided cell entered from inside the wall, then
+        # interpolate at the exact boundary point. No surface smoothing or
+        # coordinate clipping is applied to the stress query.
+        fractions = np.array([1e-8, 1 - 1e-8])
+        for sampler, elements, barycentric in (
+            (reference, reference_elements, reference_barycentric),
+            (native, native_elements, native_barycentric),
+        ):
+            cell, bary = sampler.locate_on_column(points, fractions, sampler.intervals(p_inner, p_outer))
+            elements.append(cell)
+            barycentric.append(bary)
+    return CommonSurfaces(
+        np.stack((inner, outer), axis=1).reshape(-1, 3),
+        np.repeat(np.arange(len(faces)), 2),
+        np.repeat(columns.area, 2),
+        (columns.thickness[:, None] * np.array([-0.5, 0.5])).reshape(-1),
+        np.tile(np.arange(2), len(faces)),
+        columns.normal,
+        np.concatenate(reference_elements),
+        np.concatenate(reference_barycentric),
+        np.concatenate(native_elements),
+        np.concatenate(native_barycentric),
+    )
+
+
 def build_columns(reference, native, outer_vertices, inner_vertices, faces):
     outer, inner = outer_vertices[faces].mean(axis=1), inner_vertices[faces].mean(axis=1)
     midpoint = (outer_vertices + inner_vertices) / 2
@@ -134,13 +178,17 @@ def tangent(tensor, columns):
 
 
 def field_error(actual, reference, columns, floor_pa=1.0):
+    return tensor_error(actual, reference, columns.weights, floor_pa)
+
+
+def tensor_error(actual, reference, weights, floor_pa=1.0):
     difference = actual - reference
-    denominator = np.einsum("q,qij,qij->", columns.weights, reference, reference)
-    numerator = np.einsum("q,qij,qij->", columns.weights, difference, difference)
-    reference_rms = np.sqrt(denominator / columns.weights.sum())
+    denominator = np.einsum("q,qij,qij->", weights, reference, reference)
+    numerator = np.einsum("q,qij,qij->", weights, difference, difference)
+    reference_rms = np.sqrt(denominator / weights.sum())
     return {
         "relative_tensor_error": float(np.sqrt(numerator / denominator)) if reference_rms > floor_pa else None,
-        "absolute_tensor_rms_error_pa": float(np.sqrt(numerator / columns.weights.sum())),
+        "absolute_tensor_rms_error_pa": float(np.sqrt(numerator / weights.sum())),
         "reference_tensor_rms_pa": float(reference_rms),
         "relative_floor_pa": floor_pa,
     }

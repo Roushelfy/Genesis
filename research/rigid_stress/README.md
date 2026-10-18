@@ -10,8 +10,10 @@ extends those results to a common qualified contact/elasticity reference for
 complete Franka/egg grasps. It compares Directional Patch Recovery (DPR,
 currently pressure), Surface-Constrained Recovery (SCR, intrinsic +
 body_source_prior) and deformable shell for error, speed, memory and stability.
-These are working report names; the existing API mapping is explicit in the
-goal and no implementation rename is claimed by this goal update.
+`RigidStressOptions.dpr(...)` and `.scr(...)` select these exact existing routes;
+the presets preserve their physics/defaults. The [running guide](docs/RUNNING_QIPC_REFERENCE.md)
+and [progress record](docs/QIPC_REFERENCE_PROGRESS.md) retain current controls,
+complete candidate histories, failed reference attempts and open qualification gates.
 
 The [shell PR22 comparison](docs/SHELL_COMPARISON_RESULTS_20261018.md) is complete
 within its [declared scope](docs/SHELL_SOLVER_COMPARISON_GOAL.md). It pins both

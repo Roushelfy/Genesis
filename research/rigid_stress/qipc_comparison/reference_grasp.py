@@ -2,7 +2,7 @@
 
 import argparse
 import json
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from time import perf_counter
 
@@ -13,6 +13,7 @@ from scipy.spatial.transform import Rotation
 import qipc
 import qipc._src.native.solver.qipc_solver_ext as extension
 from qipc import tetmesh
+from qipc._src.native.solver import GlobalVertexManager, RigidBodyDynamics
 from qipc.geometry import ground
 
 from .artifacts import file_id, runtime_identity, write_json
@@ -76,6 +77,39 @@ def robot_energy(scene, velocity):
     return kinetic, potential
 
 
+@dataclass
+class ContactWorkObserver:
+    rigid_owner: torch.Tensor
+    fem_owner: torch.Tensor
+
+    @classmethod
+    def allocate(cls, scene, observer):
+        manager = scene.sim_systems[GlobalVertexManager]
+        offset = manager.vertex_offsets_view()[manager.vertex_slot(RigidBodyDynamics.layout_rank())].item()
+        rigid_owner = torch.full_like(observer.global_to_fem, -1)
+        # Public per-vertex owners deliberately differ from live KKT proxy
+        # body ids. Physical point velocity uses the public link's COM/twist.
+        owners = scene.rigid_body.body_id
+        assert owners.min().item() >= 0 and owners.max().item() < scene.rigid_body.n_public_bodies
+        rigid_owner[offset : offset + len(owners)] = owners
+        return cls(rigid_owner, observer.global_to_fem)
+
+    def power(self, scene, contact):
+        ids = contact.global_vertex_ids
+        velocity = torch.zeros_like(contact.global_forces_n)
+        rigid = self.rigid_owner[ids]
+        selected = rigid >= 0
+        public = rigid[selected]
+        point = contact.global_positions_m[ids[selected]]
+        velocity[selected] = scene.rigid_body.v[public] + torch.cross(
+            scene.rigid_body.omega[public], point - scene.rigid_body.t[public], dim=1
+        )
+        fem = self.fem_owner[ids]
+        selected = fem >= 0
+        velocity[selected] = scene.finite_element.velocities[fem[selected]]
+        return (contact.global_forces_n * velocity).sum()
+
+
 def snapshot(path, scene, field, contact, servo, inertial_reaction, step, time):
     global_ids = contact.global_vertex_ids
     np.savez_compressed(
@@ -88,6 +122,8 @@ def snapshot(path, scene, field, contact, servo, inertial_reaction, step, time):
         det_F=field.determinant.cpu().numpy(),
         contact_forces_n=contact.fem_forces_n.cpu().numpy(),
         inertial_reaction_n=inertial_reaction.cpu().numpy(),
+        actual_robot_com_world_m=scene.rigid_body.t[: scene.rigid_body.n_public_bodies].cpu().numpy(),
+        actual_robot_material_quaternion_wxyz=scene.rigid_body.quat[: scene.rigid_body.n_public_bodies].cpu().numpy(),
         active_global_ids=global_ids.cpu().numpy(),
         active_global_forces_n=contact.global_forces_n.cpu().numpy(),
         active_global_positions_m=contact.global_positions_m[global_ids].cpu().numpy(),
@@ -195,6 +231,9 @@ def main():
     with torch.cuda.stream(scene.solver.cuda_stream):
         observer = SolidObserver.allocate(scene, config)
         servo = CappedServo.allocate(robot, config.dt, equality)
+        contact_work_observer = ContactWorkObserver.allocate(scene, observer)
+        passive_damping = servo.q.new_tensor(json.loads(args.equality_constants.read_text())["damping"])
+        assert passive_damping.shape == servo.q.shape
     torch.cuda.synchronize()
     scene.solver.accd_iter_stats = True
     scene.solver.min_gap_stats = True
@@ -228,6 +267,9 @@ def main():
     pcg_cap_steps = 0
     resets = 0
     actuator_work = 0.0
+    passive_work = 0.0
+    equality_work = 0.0
+    contact_work = 0.0
     initial_total_energy = None
     raw_vm_peak = -np.inf
     raw_principal_peak = -np.inf
@@ -248,6 +290,9 @@ def main():
                     torch.cuda.synchronize()
                     resets += 1
                     actuator_work = 0.0
+                    passive_work = 0.0
+                    equality_work = 0.0
+                    contact_work = 0.0
                     initial_total_energy = None
                 if initial_total_energy is None:
                     initial_robot_kinetic, initial_robot_potential = robot_energy(scene, servo.velocity)
@@ -281,6 +326,9 @@ def main():
                 robot_kinetic, robot_potential = robot_energy(scene, servo.velocity)
                 total_energy = (kinetic + potential + elastic + robot_kinetic + robot_potential).item()
                 actuator_work += (servo.effective_actuator_force * (servo.q - servo.frame_q)).sum().item()
+                passive_work -= (passive_damping * servo.velocity**2).sum().item() * config.dt
+                equality_work += servo.equality_work.item()
+                contact_work += contact_work_observer.power(scene, contact).item() * config.dt
                 status = scene.solver.last_step_status
                 finite = bool(torch.isfinite(field.cauchy_pa).all() and torch.isfinite(servo.q).all())
                 physical = finite and field.determinant.min().item() > 0
@@ -316,6 +364,15 @@ def main():
                     "robot_kinetic_including_rotors_j": robot_kinetic.item(),
                     "robot_potential_j": robot_potential.item(),
                     "actuator_work_since_reset_j": actuator_work,
+                    "passive_work_since_reset_j": passive_work,
+                    "finger_equality_work_since_reset_j": equality_work,
+                    "contact_work_on_rigid_and_fem_since_reset_j": contact_work,
+                    "body_energy_change_minus_all_recorded_work_j": total_energy
+                    - initial_total_energy
+                    - actuator_work
+                    - passive_work
+                    - equality_work
+                    - contact_work,
                     "total_energy_change_minus_actuator_work_j": total_energy - initial_total_energy - actuator_work,
                     "equality_inertia_coefficient_relative_difference": servo.equality_coefficient_difference.item(),
                     "finger_q": servo.q[7:].tolist(),
