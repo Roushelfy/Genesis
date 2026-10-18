@@ -14,7 +14,7 @@ from .common import synchronize
 from .peak_capture import PeakCapture
 
 
-def controller_step(workload, shell_model, advance=True):
+def controller_step(workload, shell_model, advance=True, *, observe_stress=True):
     ids = np.flatnonzero((workload.tick > workload.delays) & ((workload.tick - workload.delays) % 600 == 0))
     if len(ids):
         workload.reset(ids)
@@ -46,9 +46,9 @@ def controller_step(workload, shell_model, advance=True):
         )
         workload.scene.step()
         if shell_model:
-            if workload.output_mode == "full":
+            if workload.output_mode == "full" and observe_stress:
                 workload.observation.update(workload.scene.sim.shell_solver)
-            else:
+            elif workload.output_mode == "max":
                 assert workload.observed_substeps == expected_observations, (
                     "Max-only Shell requires the declared read-only substep observer source"
                 )

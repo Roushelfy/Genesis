@@ -1,0 +1,20 @@
+{
+  "declared_at_utc": "2026-10-18T18:46:07.556003+00:00",
+  "phases": [
+    0.22,
+    0.46,
+    0.67,
+    0.73,
+    0.92
+  ],
+  "stages": [
+    "loaded squeeze",
+    "lift",
+    "lateral motion",
+    "weak grip",
+    "release/recontact"
+  ],
+  "additional_capped_key": "phase0.01 after first reset",
+  "rule": "Nearest recorded commanded phase on10ms grid, first time on ties. No stress-error selection. Apply to actual source rollout for prescribed motion, original reference control schedules for capped0/2/7. Freeze before new sparse field comparisons.",
+  "historical_context": "Old dense results are already known supplementary evidence; no claim that this is a blind new dataset."
+}

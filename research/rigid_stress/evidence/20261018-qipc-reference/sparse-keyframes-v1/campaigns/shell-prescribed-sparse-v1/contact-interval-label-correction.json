@@ -1,0 +1,5 @@
+{
+  "recorded_at_utc": "2026-10-18T19:11:10.525185+00:00",
+  "scope": "Captured instrumented Shell JSON names use over_control_interval, but their actual formula is impulse divided by scene_step_dt0.001s. Control cadence is0.01s. They are averages over one1ms scene/physical step, not10ms control interval or instantaneous force. Original arrays/JSON remain unchanged. New source uses explicit over_scene_step names and contact_interval_s.",
+  "unchanged_payload_units": "contact_impulses_ns are physical impulses accumulated over that scene step; Cauchy and other outputs unchanged."
+}

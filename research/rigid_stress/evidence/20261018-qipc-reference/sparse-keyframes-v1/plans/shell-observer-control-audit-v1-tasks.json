@@ -1,0 +1,60 @@
+[
+  [
+    {
+      "name": "stock-dense-r0",
+      "module": "research.rigid_stress.qipc_comparison.compare_cadence",
+      "args": [
+        "--macro",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-observer-control-v1/group0/stock-sparse-r0",
+        "--micro",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-observer-control-v1/group0/stock-dense-r0",
+        "--kind",
+        "shell",
+        "--comparison-scope",
+        "stress-sampling"
+      ]
+    },
+    {
+      "name": "stock-sparse-r1",
+      "module": "research.rigid_stress.qipc_comparison.compare_cadence",
+      "args": [
+        "--macro",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-observer-control-v1/group0/stock-sparse-r0",
+        "--micro",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-observer-control-v1/group0/stock-sparse-r1",
+        "--kind",
+        "shell",
+        "--comparison-scope",
+        "stress-sampling"
+      ]
+    },
+    {
+      "name": "volume-surface2-dense-r0",
+      "module": "research.rigid_stress.qipc_comparison.compare_cadence",
+      "args": [
+        "--macro",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-observer-control-v1/group1/volume-surface2-sparse-r0",
+        "--micro",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-observer-control-v1/group1/volume-surface2-dense-r0",
+        "--kind",
+        "shell",
+        "--comparison-scope",
+        "stress-sampling"
+      ]
+    },
+    {
+      "name": "volume-surface2-sparse-r1",
+      "module": "research.rigid_stress.qipc_comparison.compare_cadence",
+      "args": [
+        "--macro",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-observer-control-v1/group1/volume-surface2-sparse-r0",
+        "--micro",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-observer-control-v1/group1/volume-surface2-sparse-r1",
+        "--kind",
+        "shell",
+        "--comparison-scope",
+        "stress-sampling"
+      ]
+    }
+  ]
+]

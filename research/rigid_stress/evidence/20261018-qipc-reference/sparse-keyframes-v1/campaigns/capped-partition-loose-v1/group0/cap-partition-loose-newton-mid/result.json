@@ -1,0 +1,123 @@
+{
+  "kind": "continuous-short-contact-window-profile",
+  "protocol": "capped",
+  "config": {
+    "dt": 0.001,
+    "young": 10000000000.0,
+    "poisson": 0.3,
+    "density": 2000.0,
+    "velocity_tolerance": 1e-08,
+    "linear_tolerance": 0.01,
+    "max_newton": 256,
+    "max_pcg": 4096,
+    "d_hat": 2e-05,
+    "friction": 0.7191016138165071,
+    "friction_epsilon_velocity": 0.0001,
+    "resistance": 10000000000.0,
+    "energy": "snh",
+    "mas_precision": "double",
+    "linear_solver": "partition_pcg",
+    "newton_aware_pcg": false
+  },
+  "requested_steps": 1050,
+  "executed_steps": 1050,
+  "completed_requested_history": true,
+  "setup_seconds": 2.9150380750070326,
+  "elastic_observer_cold_activation_seconds": 0.26089431199943647,
+  "initialization_only_elastic_warmups": 1,
+  "timing_mode": "whole-window",
+  "field_IO_deferred": true,
+  "post_window_field_IO_seconds": 0.051151794963516295,
+  "total_intrusive_seconds": 18.987373502983246,
+  "window_intrusive_seconds": 2.9357733849901706,
+  "window_observations": 200,
+  "stage_summary": {
+    "controller": {
+      "calls": 200,
+      "total_wall_seconds": 0.09535116446204484,
+      "median_wall_ms": 0.46745402505621314,
+      "p95_wall_ms": 0.5956091306870801
+    },
+    "controller_state_update": {
+      "calls": 200,
+      "total_wall_seconds": 0.016307467012666166,
+      "median_wall_ms": 0.07450400153174996,
+      "p95_wall_ms": 0.12337725202087312
+    },
+    "full_field_host_transfer": {
+      "calls": 3,
+      "total_wall_seconds": 0.002423620957415551,
+      "median_wall_ms": 0.7468769908882678,
+      "p95_wall_ms": 0.9474824939388781
+    },
+    "journal_IO": {
+      "calls": 200,
+      "total_wall_seconds": 0.007371085055638105,
+      "median_wall_ms": 0.03453349927440286,
+      "p95_wall_ms": 0.04654836666304618
+    },
+    "native_status_and_geometry_check": {
+      "calls": 200,
+      "total_wall_seconds": 0.16359595878748223,
+      "median_wall_ms": 0.781273003667593,
+      "p95_wall_ms": 0.9877370670437812
+    },
+    "observer_prepare": {
+      "calls": 3,
+      "total_wall_seconds": 0.0002422920078970492,
+      "median_wall_ms": 0.07871701382100582,
+      "p95_wall_ms": 0.08545438759028912
+    },
+    "scalar_metrics_host_transfer": {
+      "calls": 3,
+      "total_wall_seconds": 0.03636226605158299,
+      "median_wall_ms": 0.4477549809962511,
+      "p95_wall_ms": 31.967565848026425
+    },
+    "solver_step": {
+      "calls": 200,
+      "total_wall_seconds": 2.5938655746285804,
+      "median_wall_ms": 12.230031017679721,
+      "p95_wall_ms": 16.319885654957034
+    },
+    "stress_and_contact_observer": {
+      "calls": 3,
+      "total_wall_seconds": 0.009216281992848963,
+      "median_wall_ms": 2.8290110058151186,
+      "p95_wall_ms": 3.606936801224947
+    }
+  },
+  "stress_observer_calls": 3,
+  "exported_keyframes_s": [
+    0.89,
+    0.9500000000000001,
+    1.05
+  ],
+  "keyframe_payloads": [
+    {
+      "time_s": 0.89,
+      "cauchy_field_bytes": 276480,
+      "all_exported_numeric_array_bytes": 385948
+    },
+    {
+      "time_s": 0.9500000000000001,
+      "cauchy_field_bytes": 276480,
+      "all_exported_numeric_array_bytes": 385948
+    },
+    {
+      "time_s": 1.05,
+      "cauchy_field_bytes": 276480,
+      "all_exported_numeric_array_bytes": 385948
+    }
+  ],
+  "pcg_cap_steps": 0,
+  "failure": null,
+  "newton_aware_gate": {
+    "active": false,
+    "attempts": null,
+    "accepts": null,
+    "last_ratio": null
+  },
+  "reference_qualified": false,
+  "scope": "Segmented mode explicitly synchronizes each phase; CUDA stream spans include dispatch/idle intervals rather than kernel sums. Whole-window mode adds only boundary synchronization and records host-call spans without interpreting those spans as GPU latency. Both retain necessary native/geometry checks and sparse observation costs. Setup and optional one-time read-only elastic-observer activation are outside the contact window. Optional deferred compression/IO is measured after the window; complete spatial host transfer remains declared in-window. Continuous mechanics/contact history is unchanged, with stress/contact observation only at selected physical steps. No temporal stress peak or whole-history stress norm is computed. Accepted-window checkpoint overhead is absent; rejected states receive native dumps."
+}

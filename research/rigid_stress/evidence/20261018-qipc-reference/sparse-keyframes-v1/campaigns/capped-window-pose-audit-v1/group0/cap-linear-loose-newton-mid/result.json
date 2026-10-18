@@ -1,0 +1,368 @@
+{
+  "kind": "actual-recorded-capped-rigid-pose-vs-authored-joint-kinematics",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726737",
+      "SLURM_ARRAY_JOB_ID": "726737",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-e3ae17a2-8c3a-b59e-e80d-ac03599051ab, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "mujoco_version": "3.15.0",
+  "reference": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-linear-loose-newton-mid/result.json",
+    "bytes": 4294,
+    "sha256": "cf017ed3a661ba295b746e3eff8d3d29d68d2cbf07ad58c15fc334800e38cc8c"
+  },
+  "binding": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-rigid-binding-v1/group0/case0/start.json",
+    "bytes": 8701,
+    "sha256": "d8fcd7ad2fa3677a2588541556cc75fd3818b310ebb4df986da1d4909e0a58b1"
+  },
+  "kinematic_model": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-fresh-coarse-v1/group0/case0/panda-bank-initial.xml",
+    "bytes": 18286,
+    "sha256": "2c7609a191f62dceebbce47e445b82e76e566060370113fef9556ac397b8f4c5"
+  },
+  "case": 0,
+  "recorded_control_observations": 3,
+  "last_recorded_time_s": 1.05,
+  "predeclared_bands": {
+    "com_position_m": 1e-07,
+    "material_rotation_rad": 1e-06
+  },
+  "per_public_body": [
+    {
+      "body": "link0",
+      "maximum_com_difference_m": 0.0,
+      "maximum_com_time_s": 0.89,
+      "maximum_rotation_difference_rad": 0.0,
+      "maximum_rotation_time_s": 0.89
+    },
+    {
+      "body": "link1",
+      "maximum_com_difference_m": 1.720024471381013e-17,
+      "maximum_com_time_s": 1.05,
+      "maximum_rotation_difference_rad": 2.3575005447874603e-16,
+      "maximum_rotation_time_s": 0.89
+    },
+    {
+      "body": "link2",
+      "maximum_com_difference_m": 4.819909745438293e-17,
+      "maximum_com_time_s": 1.05,
+      "maximum_rotation_difference_rad": 2.671446720478853e-16,
+      "maximum_rotation_time_s": 1.05
+    },
+    {
+      "body": "link3",
+      "maximum_com_difference_m": 1.8619006149354548e-16,
+      "maximum_com_time_s": 0.89,
+      "maximum_rotation_difference_rad": 6.472842004412563e-16,
+      "maximum_rotation_time_s": 1.05
+    },
+    {
+      "body": "link4",
+      "maximum_com_difference_m": 4.775249788392736e-16,
+      "maximum_com_time_s": 0.89,
+      "maximum_rotation_difference_rad": 1.0159327988669153e-15,
+      "maximum_rotation_time_s": 0.89
+    },
+    {
+      "body": "link5",
+      "maximum_com_difference_m": 9.094187519336122e-16,
+      "maximum_com_time_s": 0.89,
+      "maximum_rotation_difference_rad": 8.98955616174801e-16,
+      "maximum_rotation_time_s": 0.89
+    },
+    {
+      "body": "link6",
+      "maximum_com_difference_m": 8.622116668970984e-16,
+      "maximum_com_time_s": 0.89,
+      "maximum_rotation_difference_rad": 7.493704145045554e-16,
+      "maximum_rotation_time_s": 1.05
+    },
+    {
+      "body": "link7",
+      "maximum_com_difference_m": 1.0709779572848316e-15,
+      "maximum_com_time_s": 0.89,
+      "maximum_rotation_difference_rad": 1.147365820943587e-15,
+      "maximum_rotation_time_s": 1.05
+    },
+    {
+      "body": "left_finger",
+      "maximum_com_difference_m": 1.1597920595557874e-15,
+      "maximum_com_time_s": 0.89,
+      "maximum_rotation_difference_rad": 1.357246518787368e-15,
+      "maximum_rotation_time_s": 1.05
+    },
+    {
+      "body": "right_finger",
+      "maximum_com_difference_m": 1.1411896548754063e-15,
+      "maximum_com_time_s": 0.89,
+      "maximum_rotation_difference_rad": 2.029826140295018e-15,
+      "maximum_rotation_time_s": 1.05
+    }
+  ],
+  "maximum_com_difference_m": 1.1597920595557874e-15,
+  "maximum_rotation_difference_rad": 2.029826140295018e-15,
+  "recorded_capped_geometry_tracking_passed": true,
+  "retained_poses": [
+    {
+      "time_s": 0.89,
+      "q": [
+        -1.003208785685225,
+        1.5650772984331978,
+        1.358511697636855,
+        -1.678952881117653,
+        -1.5796484248497034,
+        1.7738912390726271,
+        1.4604364874370395,
+        0.039999999148501914,
+        0.03999999969829711
+      ],
+      "target_q": [
+        -1.0025870816401903,
+        1.5573510872678802,
+        1.3668880727176262,
+        -1.6781469776310356,
+        -1.579292706584276,
+        1.7749637355030814,
+        1.4604530826844024,
+        0.04,
+        0.04
+      ],
+      "actual_robot_com_world_m": [
+        [
+          -0.041018,
+          -0.00014,
+          0.049974
+        ],
+        [
+          0.0038378977447004743,
+          -0.0021486569994354473,
+          0.28538
+        ],
+        [
+          0.01837693127571979,
+          -0.022322261702863624,
+          0.33630519823253313
+        ],
+        [
+          0.16368336291644084,
+          -0.19130868454832103,
+          0.36699934929900596
+        ],
+        [
+          0.3458654553561925,
+          -0.20401995223628933,
+          0.2677450361650009
+        ],
+        [
+          0.5290711099761344,
+          -0.042466314898279935,
+          0.2554542450373273
+        ],
+        [
+          0.6222131610909378,
+          -0.006647918091793603,
+          0.22080578421388228
+        ],
+        [
+          0.6497699450884714,
+          0.0004310050668140555,
+          0.1354397311664298
+        ],
+        [
+          0.6487254697204474,
+          -0.03726578861356929,
+          0.06915842183134231
+        ],
+        [
+          0.6487116445466117,
+          0.042734150685016375,
+          0.06925504778548482
+        ]
+      ],
+      "egg_mass_com_world_m": [
+        0.6519660319723408,
+        0.002453828869266603,
+        0.028383927091456183
+      ],
+      "egg_fitted_material_axis_tilt_rad": 3.4007694117611243e-09
+    },
+    {
+      "time_s": 0.9500000000000001,
+      "q": [
+        -1.0029148415464975,
+        1.5651235524112994,
+        1.3585324875815026,
+        -1.6786657291777178,
+        -1.5796302557573374,
+        1.7738693466318038,
+        1.460444045311717,
+        0.03296097861083399,
+        0.032960978426459106
+      ],
+      "target_q": [
+        -1.002574757144111,
+        1.5573529097552063,
+        1.3668889368998398,
+        -1.678134853955695,
+        -1.5792919438565076,
+        1.7749628107945927,
+        1.4604534005426009,
+        0.018,
+        0.018
+      ],
+      "actual_robot_com_world_m": [
+        [
+          -0.041018,
+          -0.00014,
+          0.049974
+        ],
+        [
+          0.0038385291640192607,
+          -0.0021475287790792296,
+          0.28538
+        ],
+        [
+          0.018383574188508417,
+          -0.022316987804563634,
+          0.33630387066734857
+        ],
+        [
+          0.16373986245078478,
+          -0.19126224879947695,
+          0.3669885489652785
+        ],
+        [
+          0.34593202010998825,
+          -0.20394774968069393,
+          0.26773495680181814
+        ],
+        [
+          0.5291361042674128,
+          -0.04239174061177034,
+          0.2554497594652172
+        ],
+        [
+          0.622278090431912,
+          -0.006572165721773132,
+          0.22080191666498258
+        ],
+        [
+          0.649834645275648,
+          0.0005070399249615925,
+          0.13543581885639225
+        ],
+        [
+          0.6487889080035725,
+          -0.030150733981273756,
+          0.06916301006905928
+        ],
+        [
+          0.6487773727769616,
+          0.03577117395384791,
+          0.0692426389494893
+        ]
+      ],
+      "egg_mass_com_world_m": [
+        0.6519660319723425,
+        0.002453828869265107,
+        0.0283839270914591
+      ],
+      "egg_fitted_material_axis_tilt_rad": 3.400755407416282e-09
+    },
+    {
+      "time_s": 1.05,
+      "q": [
+        -1.0026949479094982,
+        1.5651592192667099,
+        1.3585475822867994,
+        -1.6784439590649056,
+        -1.5796164313581547,
+        1.7738520755065073,
+        1.4604498505960175,
+        0.023392703518817892,
+        0.02339270064604237
+      ],
+      "target_q": [
+        -1.002574757144111,
+        1.5573529097552063,
+        1.3668889368998398,
+        -1.678134853955695,
+        -1.5792919438565076,
+        1.7749628107945927,
+        1.4604534005426009,
+        0.018,
+        0.018
+      ],
+      "actual_robot_com_world_m": [
+        [
+          -0.041018,
+          -0.00014,
+          0.049974
+        ],
+        [
+          0.0038390012991266404,
+          -0.0021466846590274726,
+          0.28538
+        ],
+        [
+          0.018388544498862326,
+          -0.02231304414772028,
+          0.3363028469651571
+        ],
+        [
+          0.16378215192433088,
+          -0.19122752256054942,
+          0.3669801877332958
+        ],
+        [
+          0.3459819093443886,
+          -0.20389447633545552,
+          0.26772701643790925
+        ],
+        [
+          0.5291859195527393,
+          -0.04233794766705382,
+          0.25544589560335823
+        ],
+        [
+          0.622328082094327,
+          -0.006518150952251882,
+          0.220798420800126
+        ],
+        [
+          0.6498844293491192,
+          0.0005609969693268321,
+          0.13543225563805258
+        ],
+        [
+          0.6488367552413081,
+          -0.02052856077957911,
+          0.06917102526400315
+        ],
+        [
+          0.6488288201486865,
+          0.026256808629320477,
+          0.06922749805768535
+        ]
+      ],
+      "egg_mass_com_world_m": [
+        0.6519660319723399,
+        0.0024538288692670823,
+        0.028383927091464776
+      ],
+      "egg_fitted_material_axis_tilt_rad": 3.40074748433567e-09
+    }
+  ],
+  "physical_reference_qualified": false,
+  "scope": "Actual saved body COM/material rotations versus the authored MJCF FK at each actual saved joint coordinate. Constant frame offsets come only from the independently initialized input geometry, before any dynamic/contact step; no contact footprint, force, compliance or trajectory is fitted. This checks recorded10ms geometry, not unobserved physical-step extrema or contact/stress accuracy."
+}

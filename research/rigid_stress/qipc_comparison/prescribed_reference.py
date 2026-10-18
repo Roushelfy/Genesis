@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import sys
 from dataclasses import asdict
 from pathlib import Path
 from time import perf_counter
@@ -61,6 +62,7 @@ def main():
     parser.add_argument("--resistance", type=float, default=1e10)
     parser.add_argument("--record-interval", type=float, default=0.01)
     parser.add_argument("--record-times", type=float, nargs="*", default=[])
+    parser.add_argument("--keyframes", type=float, nargs="+")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     assert args.max_pcg > 0 and args.max_newton > 0
@@ -75,6 +77,11 @@ def main():
     record_stride = round(args.record_interval / args.dt)
     assert record_stride > 0 and abs(record_stride * args.dt - args.record_interval) < 1e-12
     extra_steps = {round(time / args.dt) for time in args.record_times}
+    key_steps = None if args.keyframes is None else {round(time / args.dt) for time in args.keyframes}
+    if args.keyframes is not None:
+        assert all(
+            0 < time <= args.duration and abs(round(time / args.dt) * args.dt - time) < 1e-12 for time in args.keyframes
+        )
     assert all(
         0 < time <= args.duration and abs(round(time / args.dt) * args.dt - time) < 1e-12 for time in args.record_times
     )
@@ -149,6 +156,8 @@ def main():
     steps = round(args.duration / config.dt)
     completed = False
     executed = 0
+    physics_steps_returned = 0
+    observed_fields = 0
     failed = False
     peak = -np.inf
     principal_peak = -np.inf
@@ -158,19 +167,67 @@ def main():
     with (args.output / "steps.jsonl").open("w", buffering=1) as journal:
         try:
             for step in range(steps):
+                observe = key_steps is None or step + 1 in key_steps
                 sample = (step + 1) * stride
                 with torch.cuda.stream(scene.solver.cuda_stream):
-                    previous = scene.finite_element.velocities.clone()
+                    previous = scene.finite_element.velocities.clone() if observe else None
                     robot.push(sample)
                 scene.step()
+                physics_steps_returned += 1
+                if key_steps is not None:
+                    statistics = solver_statistics(scene)
+                    assert statistics["edge_triangle_check_enabled"]
+                    assert statistics["edge_triangle_intersection_count"] is not None
+                    positions, tets = scene.finite_element.x, observer.tetrahedra
+                    determinant = torch.linalg.det(
+                        (positions[tets[:, 1:]] - positions[tets[:, :1]]).transpose(-1, -2) @ observer.inverse_rest
+                    )
+                    finite_geometry = bool(
+                        torch.isfinite(positions).all()
+                        & torch.isfinite(scene.finite_element.velocities).all()
+                        & torch.isfinite(determinant).all()
+                    )
+                    minimum_j = determinant.min().item() if finite_geometry else None
+                    failed = (
+                        not finite_geometry
+                        or minimum_j is None
+                        or minimum_j <= 0
+                        or statistics["edge_triangle_intersection_count"] > 0
+                        or statistics["newton"] >= config.max_newton
+                        or statistics["line_search_max"] >= 64
+                    )
+                    if not observe or failed:
+                        position_error, angle_error = robot.tracking(scene, sample)
+                        row = {
+                            "step": step,
+                            "time_s": (step + 1) * config.dt,
+                            **statistics,
+                            "stress_sampled": False,
+                            "geometry_finite": finite_geometry,
+                            "minimum_det_F": minimum_j,
+                            "maximum_robot_com_tracking_error_m": position_error,
+                            "maximum_robot_rotation_tracking_error_rad": angle_error,
+                            "invalid_step": failed,
+                        }
+                        executed += 1
+                        journal.write(json.dumps(row, allow_nan=False) + "\n")
+                        if failed:
+                            preserve_contact_failure(scene, args.output)
+                            break
+                        continue
                 state = observer.read_step(previous)
+                observed_fields += 1
                 position_error, angle_error = robot.tracking(scene, sample)
-                contact_work += (state.contact.fem_forces_n * scene.finite_element.velocities).sum().item() * config.dt
-                boundary_work += robot.boundary_power(scene, state.contact) * config.dt
+                if key_steps is None:
+                    contact_work += (
+                        state.contact.fem_forces_n * scene.finite_element.velocities
+                    ).sum().item() * config.dt
+                    boundary_work += robot.boundary_power(scene, state.contact) * config.dt
                 gap = scene.solver.min_gap_ratio
                 row = {
                     "step": step,
                     "time_s": (step + 1) * config.dt,
+                    "stress_sampled": True,
                     **solver_statistics(scene),
                     **state.metrics(),
                     "maximum_robot_com_tracking_error_m": position_error,
@@ -188,18 +245,32 @@ def main():
                     - initial_potential
                     - contact_work,
                 }
+                if key_steps is not None:
+                    for name in (
+                        "contact_work_on_egg_j",
+                        "moving_rigid_boundary_contact_work_j",
+                        "egg_energy_change_minus_contact_work_j",
+                    ):
+                        del row[name]
                 intersection_failed = row["edge_triangle_intersection_count"] not in (None, 0)
                 failed = (
                     not row["all_fields_finite"]
                     or row["minimum_det_F"] <= 0
                     or row["newton_cap_reached"]
+                    or row["line_search_cap_reached"]
                     or intersection_failed
                 )
                 row["invalid_step"] = failed
                 row["edge_triangle_forced_exit"] = intersection_failed
                 executed += 1
                 journal.write(json.dumps(row, allow_nan=False) + "\n")
-                if (step + 1) % record_stride == 0 or (step + 1) in extra_steps or failed or step == steps - 1:
+                if (
+                    key_steps is not None
+                    or (step + 1) % record_stride == 0
+                    or (step + 1) in extra_steps
+                    or failed
+                    or step == steps - 1
+                ):
                     save_frame(
                         args.output / "frames" / f"step{step:06d}.npz",
                         scene,
@@ -209,7 +280,7 @@ def main():
                         step,
                         row["time_s"],
                     )
-                if row["raw_vm_peak_pa"] > peak:
+                if key_steps is None and row["raw_vm_peak_pa"] > peak:
                     peak = row["raw_vm_peak_pa"]
                     save_frame(
                         args.output / "raw-vm-peak-state.npz",
@@ -220,7 +291,7 @@ def main():
                         step,
                         row["time_s"],
                     )
-                if row["raw_maximum_principal_pa"] > principal_peak:
+                if key_steps is None and row["raw_maximum_principal_pa"] > principal_peak:
                     principal_peak = row["raw_maximum_principal_pa"]
                     save_frame(
                         args.output / "raw-principal-peak-state.npz",
@@ -237,6 +308,7 @@ def main():
                     break
             completed = executed == steps and not failed
         finally:
+            exception_type, exception, _ = sys.exc_info()
             write_json(
                 args.output / "result.json",
                 {
@@ -244,6 +316,13 @@ def main():
                     "config": asdict(config),
                     "requested_steps": steps,
                     "executed_steps": executed,
+                    "physics_steps_returned": physics_steps_returned,
+                    "observed_fields": observed_fields,
+                    "full_spatial_keyframes_s": args.keyframes,
+                    "complete_contact_work_ledger_observed": key_steps is None,
+                    "python_exception": {"type": exception_type.__name__, "message": str(exception)}
+                    if exception_type is not None
+                    else None,
                     "completed_requested_history": completed,
                     "intrusive_seconds": perf_counter() - started,
                     "reference_qualified": False,

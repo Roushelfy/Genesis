@@ -13,17 +13,28 @@ now establishes actual sparse observation, stage timing, strict sparse/dense
 keyframe equivalence, bounded numerical contrasts and three minimally
 instrumented repeats. Solver calls dominate the measured cost. The separate
 [fixed-Newton PCG packet](../evidence/20261018-qipc-reference/short-window-pcg-v1/README.md)
-now shows1e-6/1e-4/1e-3/1e-2 all passing the same3 keys. PCG1e-2 is the next
-validation candidate: fewer total inner iterations and a34.953s versus59.888s
+shows1e-6/1e-4/1e-3/1e-2 all passing the same3 keys. PCG1e-2 was selected for
+further validation: fewer total inner iterations and a34.953s versus59.888s
 window, with more outer iterations. Each setting has one matched run; repeats
 of the new choice now pass in all three fresh processes (median35.001s), with
 all3 keyframes passing. The
 [native manual-sampling capability](../evidence/20261018-qipc-reference/native-manual-sampling-v1/README.md)
 passes4 CPU/5 CUDA lifecycle and physical-oracle cases; a deliberate fused-path
-gate removal triggers the expected snapshot assertion. Sparse application
-integration/profiling for native/Shell, complete-grasp keyframe qualification
-and matched primary sparse cost remain open. Capped short-window job726731 is
-live with predeclared mechanical-event keys0.89/0.95/1.05s.
+gate removal triggers the expected snapshot assertion. Complete-grasp keyframe
+qualification and matched primary sparse cost remain open. Capped short-window
+job726731 completes with predeclared mechanical-event keys0.89/0.95/1.05s.
+
+The [complete sparse checkpoint](../evidence/20261018-qipc-reference/sparse-keyframes-v1/README.md)
+supersedes pending-state assumptions above. Actual native application CUDA
+recovery counts fall200 to3, with all selected fields/poses equivalent. All
+four prescribed candidates complete6s/five fields; DPR/SCR old/new equivalence
+passes and both Shell comparisons fail. The practical PCG1e-2/1e-3 candidates
+both exhaust Newton during complete prescribed continuation;1e-4 is under
+bounded validation. All six capped short settings fail the final audit and
+the five fast variants have zero finger reaction at every declared key.
+Thus short-window numerical success does not admit a complete reference.
+Matched primary sparse costs, sparse capped candidate histories, selected-
+observable physical-reference qualification and final closure remain open.
 
  This is the current audit against the
 [current goal](QIPC_REFERENCE_COMPARISON_GOAL.md), including the explicit user

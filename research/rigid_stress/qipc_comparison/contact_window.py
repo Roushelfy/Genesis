@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import sys
 from dataclasses import asdict, replace
 from pathlib import Path
 from time import perf_counter
@@ -11,16 +12,21 @@ import torch
 
 import qipc._src.native.solver.qipc_solver_ext as extension
 from qipc import tetmesh
+from qipc._src.native.solver import NewtonAwarePCGGate
 from qipc.geometry import ground
 
 from .artifacts import file_id, runtime_identity, write_json
 from .pose_robot import PoseRobot, pose_contact_table
 from .reference import ReferenceConfig, SolidObserver, preserve_contact_failure, solver_statistics
+from .reference_grasp import configure_contact
+from .robot_inputs import JOINT_NAMES, robot_target
+from .servo import CappedServo, EqualityParameters
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--baseline", type=Path, required=True)
+    parser.add_argument("--protocol", choices=("prescribed", "capped"), default="prescribed")
     parser.add_argument("--duration", type=float, default=1.16)
     parser.add_argument("--window-start", type=float, default=1.05)
     parser.add_argument("--keyframes", type=float, nargs="+", default=[1.10, 1.13, 1.16])
@@ -38,7 +44,9 @@ def main():
     parser.add_argument("--stress-every-step", action="store_true", help="Supplementary dense-observer cost control")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    assert 0 < args.window_start < args.duration <= 1.5, "This entrypoint is a bounded short-window control"
+    maximum_duration = 3.0 if args.protocol == "capped" else 1.5
+    assert 0 < args.window_start < args.duration <= maximum_duration, "Bounded short-window control"
+    assert not args.targets_only or args.protocol == "prescribed"
     args.output.mkdir(parents=True, exist_ok=False)
     (args.output / "frames").mkdir()
     original = json.loads((args.baseline / "result.json").read_text())
@@ -65,34 +73,61 @@ def main():
     assert all(
         abs(round(time / config.dt) * config.dt - time) < 1e-12 and 0 < time <= args.duration for time in args.keyframes
     )
-    with np.load(inputs["motion"]["path"]) as saved:
-        motion = {key: saved[key] for key in saved.files}
-    sample_dt = motion["time_s"][1] - motion["time_s"][0]
-    stride = round(config.dt / sample_dt)
-    assert stride > 0 and abs(stride * sample_dt - config.dt) < 1e-12
+    motion, bank, equality, servo = None, None, None, None
+    if args.protocol == "prescribed":
+        with np.load(inputs["motion"]["path"]) as saved:
+            motion = {key: saved[key] for key in saved.files}
+        sample_dt = motion["time_s"][1] - motion["time_s"][0]
+        stride = round(config.dt / sample_dt)
+        assert stride > 0 and abs(stride * sample_dt - config.dt) < 1e-12
+    else:
+        with np.load(inputs["conditions"]["path"]) as saved:
+            bank = {key: saved[key] for key in saved.files}
+        ticks_per_control = round(0.01 / config.dt)
+        assert ticks_per_control > 0 and abs(ticks_per_control * config.dt - 0.01) < 1e-12
+        assert args.duration < (bank["delays"][inputs["case"]] + 600) * 0.01
+        stride = 1
     with np.load(args.baseline / "rest.npz") as saved:
         rest = {key: saved[key] for key in saved.files}
     setup_started = perf_counter()
     scene = config.scene()
-    descriptor_scene = config.scene(contact=False)
-    descriptor = descriptor_scene.add_mjcf(args.baseline / "panda-bank-initial.xml", link_type="rigid")
-    robot = PoseRobot.create(scene, descriptor, inputs["dbc_stiffness_ratio"])
+    if args.protocol == "prescribed":
+        descriptor_scene = config.scene(contact=False)
+        descriptor = descriptor_scene.add_mjcf(args.baseline / "panda-bank-initial.xml", link_type="rigid")
+        robot = PoseRobot.create(scene, descriptor, inputs["dbc_stiffness_ratio"])
+    else:
+        robot = scene.add_mjcf(
+            args.baseline / "panda-bank-initial.xml",
+            link_type="rigid",
+            minimal_coordinates=True,
+            authored_passive_terms=True,
+            enable_controller=True,
+        )
+        assert robot.joint_names == JOINT_NAMES
+        equality = EqualityParameters.from_native(inputs["equality_constants"]["path"])
+        equality.attach(robot, config.dt)
     geometry = tetmesh(rest["vertices_world_m"], rest["tetrahedra"])
     config.material().apply_to(
         geometry, youngs_modulus=config.young, poissons_ratio=config.poisson, mass_density=config.density
     )
     scene.geometries.create("egg", geometry)
     floor = ground(height=0, N=(0, 0, 1))
-    scene.geometries.create("floor", floor)
-    pose_contact_table(scene, robot, floor, config.resistance)
+    scene.geometries.create("ground" if args.protocol == "capped" else "floor", floor)
+    if args.protocol == "prescribed":
+        pose_contact_table(scene, robot, floor, config.resistance)
+    else:
+        configure_contact(scene, robot, floor, config.friction)
     scene.init()
-    from qipc._src.native.solver import NewtonAwarePCGGate
+    public_body_count = scene.rigid_body.n_public_bodies if args.protocol == "capped" else scene.rigid_body.t.shape[0]
 
     gate = scene.sim_systems.get(NewtonAwarePCGGate)
     assert (gate is not None) == config.newton_aware_pcg, "Requested native gate did not activate as declared"
     with torch.cuda.stream(scene.solver.cuda_stream):
         observer = SolidObserver.allocate(scene, config)
-        robot.allocate_targets(scene, motion)
+        if args.protocol == "prescribed":
+            robot.allocate_targets(scene, motion)
+        else:
+            servo = CappedServo.allocate(robot, config.dt, equality)
     torch.cuda.synchronize()
     setup_seconds = perf_counter() - setup_started
     observer_activation_seconds = None
@@ -117,7 +152,10 @@ def main():
             "baseline": file_id(args.baseline / "result.json"),
             "baseline_inputs": file_id(args.baseline / "inputs.json"),
             "native": file_id(extension.__file__),
-            "motion": inputs["motion"],
+            "motion": inputs.get("motion"),
+            "protocol": args.protocol,
+            "controller_inputs": inputs.get("equality_constants"),
+            "case": inputs.get("case"),
             "conditions": inputs["conditions"],
             "config": asdict(config),
             "overrides": overrides,
@@ -159,6 +197,7 @@ def main():
     timings, rows, observed, payloads = [], [], [], []
     completed, failure = False, None
     observer_calls = 0
+    executed_physics_steps = 0
     deferred_fields = []
     window_started = None
     total_started = perf_counter()
@@ -200,8 +239,15 @@ def main():
                 previous = (
                     measure("observer_prepare", lambda: scene.finite_element.velocities.clone()) if observe else None
                 )
-                measure("controller", lambda: robot.push(sample))
+                if args.protocol == "prescribed":
+                    measure("controller", lambda: robot.push(sample))
+                else:
+                    target, cap, phase = robot_target(bank, inputs["case"], (step - 1) // ticks_per_control)
+                    measure("controller", lambda: servo.push(servo.q.new_tensor(target), servo.q.new_tensor(cap)))
                 measure("solver_step", scene.step)
+                executed_physics_steps += 1
+                if args.protocol == "capped":
+                    measure("controller_state_update", servo.update)
 
                 def status():
                     result = solver_statistics(scene)
@@ -217,9 +263,19 @@ def main():
                     determinant = torch.linalg.det(deformation)
                     determinant_finite = bool(torch.isfinite(determinant).all())
                     result["minimum_det_F"] = determinant.min().item() if determinant_finite else None
-                    position_error, rotation_error = robot.tracking(scene, sample)
-                    result["maximum_robot_com_tracking_error_m"] = position_error
-                    result["maximum_robot_rotation_tracking_error_rad"] = rotation_error
+                    if args.protocol == "prescribed":
+                        position_error, rotation_error = robot.tracking(scene, sample)
+                        result["maximum_robot_com_tracking_error_m"] = position_error
+                        result["maximum_robot_rotation_tracking_error_rad"] = rotation_error
+                    else:
+                        result["robot_joint_state_finite"] = bool(
+                            torch.isfinite(servo.q).all() & torch.isfinite(servo.velocity).all()
+                        )
+                        result["maximum_clipped_pd_force_excess_n_or_nm"] = (
+                            torch.clamp(servo.clipped_force.abs() - servo.q.new_tensor(cap), min=0).max().item()
+                        )
+                        result["phase"] = phase
+                        result["reset_epoch"] = 0
                     result["ccd_maximum_iterations"] = scene.solver.max_accd_iters
                     gap = scene.solver.min_gap_ratio
                     result["minimum_reported_gap_ratio"] = gap if np.isfinite(gap) else None
@@ -228,6 +284,8 @@ def main():
                 info = measure("native_status_and_geometry_check", status)
                 failed = (
                     not info["positions_and_velocities_finite"]
+                    or not info.get("robot_joint_state_finite", True)
+                    or info.get("maximum_clipped_pd_force_excess_n_or_nm", 0) > 1e-12
                     or info["edge_triangle_intersection_count"] > 0
                     or info["newton"] >= config.max_newton
                     or info["line_search_max"] >= 64
@@ -253,7 +311,7 @@ def main():
                 if step in keyframes and state is not None:
 
                     def transfer():
-                        return {
+                        payload = {
                             "time_s": step * config.dt,
                             "step": step - 1,
                             "positions_m": scene.finite_element.x.cpu().numpy(),
@@ -269,10 +327,20 @@ def main():
                             ]
                             .cpu()
                             .numpy(),
-                            "target_q": motion["q"][sample],
-                            "actual_robot_com_world_m": scene.rigid_body.t.cpu().numpy(),
-                            "actual_robot_material_quaternion_wxyz": scene.rigid_body.quat.cpu().numpy(),
+                            "target_q": motion["q"][sample] if args.protocol == "prescribed" else target,
+                            "actual_robot_com_world_m": scene.rigid_body.t[:public_body_count].cpu().numpy(),
+                            "actual_robot_material_quaternion_wxyz": scene.rigid_body.quat[:public_body_count]
+                            .cpu()
+                            .numpy(),
                         }
+                        if args.protocol == "capped":
+                            payload.update(
+                                q=servo.q.cpu().numpy(),
+                                q_velocity=servo.velocity.cpu().numpy(),
+                                clipped_pd_force=servo.clipped_force.cpu().numpy(),
+                                effective_actuator_force=servo.effective_actuator_force.cpu().numpy(),
+                            )
+                        return payload
 
                     payload = measure("full_field_host_transfer", transfer)
                     payloads.append(
@@ -309,6 +377,7 @@ def main():
                     break
             completed = len(rows) == steps and failure is None
         finally:
+            exception_type, exception, _ = sys.exc_info()
             torch.cuda.synchronize()
             ended = perf_counter()
             elapsed = ended - total_started
@@ -339,9 +408,14 @@ def main():
                 args.output / "result.json",
                 {
                     "kind": "continuous-short-contact-window-profile",
+                    "protocol": args.protocol,
                     "config": asdict(config),
                     "requested_steps": steps,
-                    "executed_steps": len(rows),
+                    "executed_steps": executed_physics_steps,
+                    "recorded_step_rows": len(rows),
+                    "python_exception": {"type": exception_type.__name__, "message": str(exception)}
+                    if exception_type is not None
+                    else None,
                     "completed_requested_history": completed,
                     "setup_seconds": setup_seconds,
                     "elastic_observer_cold_activation_seconds": observer_activation_seconds,

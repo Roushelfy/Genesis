@@ -4,11 +4,13 @@ import argparse
 import json
 from pathlib import Path
 
-import mujoco
 import numpy as np
+
+import mujoco
 from scipy.spatial.transform import Rotation
 
 from .artifacts import file_id, runtime_identity, write_json
+from .common_metric import corotation
 from .history_audit import returncode
 from .reference_uncertainty import frame_index
 
@@ -20,6 +22,7 @@ def main():
     parser.add_argument("--mjcf", type=Path, required=True)
     parser.add_argument("--position-band", type=float, default=1e-7)
     parser.add_argument("--rotation-band", type=float, default=1e-6)
+    parser.add_argument("--retain-poses", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -54,6 +57,10 @@ def main():
         material_rotation_in_authored_body=offset_rotation,
         com_in_authored_body_m=offset_com,
     )
+    pose_rows = []
+    if args.retain_poses:
+        with np.load(args.reference / "rest.npz") as saved:
+            authored, masses = saved["authored_vertices_m"], saved["masses_kg"]
     times, positions, angles = [], [], []
     for tick, path in frame_index(args.reference).items():
         with np.load(path) as saved:
@@ -69,6 +76,22 @@ def main():
             positions.append(np.linalg.norm(actual_com - expected_com, axis=1))
             angles.append(Rotation.from_matrix(actual_rotation @ expected_rotation.transpose(0, 2, 1)).magnitude())
             times.append(tick * 0.01)
+            if args.retain_poses:
+                egg_rotation = corotation(authored, saved["positions_m"], masses)
+                pose_rows.append(
+                    {
+                        "time_s": tick * 0.01,
+                        "q": saved["q"].tolist(),
+                        "target_q": saved["target_q"].tolist() if "target_q" in saved.files else None,
+                        "actual_robot_com_world_m": actual_com.tolist(),
+                        "egg_mass_com_world_m": (
+                            (saved["positions_m"] * masses[:, None]).sum(axis=0) / masses.sum()
+                        ).tolist(),
+                        "egg_fitted_material_axis_tilt_rad": np.arctan2(
+                            np.linalg.norm(egg_rotation[:2, 2]), egg_rotation[2, 2]
+                        ).item(),
+                    }
+                )
     times, positions, angles = np.array(times), np.array(positions), np.array(angles)
     assert np.isfinite(positions).all() and np.isfinite(angles).all()
     records = []
@@ -108,6 +131,7 @@ def main():
             "recorded_capped_geometry_tracking_passed": bool(
                 positions.max() <= args.position_band and angles.max() <= args.rotation_band
             ),
+            "retained_poses": pose_rows,
             "physical_reference_qualified": False,
             "scope": "Actual saved body COM/material rotations versus the authored MJCF FK at each actual saved joint coordinate. Constant frame offsets come only from the independently initialized input geometry, before any dynamic/contact step; no contact footprint, force, compliance or trajectory is fitted. This checks recorded10ms geometry, not unobserved physical-step extrema or contact/stress accuracy.",
         },

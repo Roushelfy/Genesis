@@ -21,6 +21,11 @@ def main():
     parser.add_argument("--reactions", type=Path, required=True)
     parser.add_argument("--plan", type=Path, required=True)
     parser.add_argument("--reference-name", default="budget8192")
+    parser.add_argument(
+        "--no-observer-control",
+        action="store_true",
+        help="Declare no same-setting sparse/dense control was run; emit no observer-equivalence claim",
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -87,6 +92,15 @@ def main():
         by_tick = {round(row["time_s"] / result["config"]["dt"]): row for row in rows}
         key_results = []
         for key in sorted(keys):
+            where = np.flatnonzero(np.abs(reactions["reference_time_s"] - key * result["config"]["dt"]) < 1e-12)
+            assert len(where) == 1
+            index = where[0]
+            force_key = (
+                "reference_link_force_world_n"
+                if name == args.reference_name
+                else f"candidate{reaction_index[name]}_link_force_world_n"
+            )
+            finger_force_norm = float(np.linalg.norm(reactions[force_key][index, fingers]))
             values, expected = metrics[name][key], metrics[args.reference_name][key]
             net = float(np.linalg.norm(values["force_residual_resultant_n"]) / weight)
             residual = values["force_residual_relative_contact"]
@@ -99,10 +113,6 @@ def main():
                     row["common_tangent"]["reference_tensor_rms_pa"], 1
                 )
                 candidate = reaction_index[name]
-                ref_time = reactions["reference_time_s"]
-                where = np.flatnonzero(np.abs(ref_time - row["time_s"]) < 1e-12)
-                assert len(where) == 1
-                index = where[0]
                 for kind, floor in (("force_world_n", 1e-3), ("moment_about_com_nm", 1e-7)):
                     expected_vector = reactions[f"reference_link_{kind}"][index, fingers]
                     actual_vector = reactions[f"candidate{candidate}_link_{kind}"][index, fingers]
@@ -131,6 +141,7 @@ def main():
                     "nodal_force_residual_relative_contact": residual,
                     "common_tangent_contrast_with_floor": common,
                     "finger_force_contrast_with_floor": force_difference,
+                    "finger_force_vector_norm_n": finger_force_norm,
                     "finger_moment_contrast_with_floor": moment_difference,
                     "spatial_VM_peak_contrast_with_1Pa_floor": peak,
                     "provisional_keyframe_bands_passed": bool(numerical),
@@ -166,13 +177,16 @@ def main():
                 "newton_aware_gate": result.get("newton_aware_gate"),
                 "window_iteration_distributions": distributions,
                 "keyframes": key_results,
+                "keyframes_with_finger_reaction_above_1mN": sum(
+                    row["finger_force_vector_norm_n"] > 1e-3 for row in key_results
+                ),
                 "provisional_numerical_bands_passed": bool(
                     no_native_failure and all(row["provisional_keyframe_bands_passed"] for row in key_results)
                 ),
             }
         )
     invariance = []
-    for key in sorted(keys):
+    for key in () if args.no_observer_control else sorted(keys):
         tensors, points = [], []
         for name in ("baseline-sparse", "baseline-dense-compute"):
             with np.load(folders[name] / "frames" / f"step{key - 1:06d}.npz") as saved:
@@ -236,6 +250,7 @@ def main():
             "configurations": records,
             "rejected_or_incomplete_profiles": rejected,
             "same_config_sparse_dense_invariance": invariance,
+            "observer_equivalence_measured": not args.no_observer_control,
             "candidate_for_next_minimally_instrumented_timing_check": next_choice,
             "minimally_instrumented_repeat_summary": repeated_timing,
             "reference_qualified": False,

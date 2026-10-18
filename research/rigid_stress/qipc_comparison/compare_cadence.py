@@ -1,4 +1,4 @@
-"""Validate a one-substep observer against the original ten-substep capped scene."""
+"""Compare matching spatial snapshots after a scene-cadence or stress-sampling change."""
 
 import argparse
 from pathlib import Path
@@ -14,6 +14,7 @@ def main():
     parser.add_argument("--macro", type=Path, required=True)
     parser.add_argument("--micro", type=Path, required=True)
     parser.add_argument("--kind", choices=("native", "shell"), required=True)
+    parser.add_argument("--comparison-scope", choices=("macro-micro", "stress-sampling"), default="macro-micro")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -53,13 +54,21 @@ def main():
     write_json(
         args.output / "result.json",
         {
-            "kind": "held-controller-macro-micro-cadence-equivalence",
+            "kind": "stress-sampling-equivalence"
+            if args.comparison_scope == "stress-sampling"
+            else "held-controller-macro-micro-cadence-equivalence",
+            "comparison_scope": args.comparison_scope,
             "identity": runtime_identity(),
             "macro": file_id(args.macro / "result.json"),
             "micro": file_id(args.micro / "result.json"),
             "observations": rows,
             "passed": success,
-            "scope": "Same1ms physical step and unchanged10ms capped target/radius cadence. Separate Scene.step boundaries allow physical-step peak fields to be retained. Equivalence requires every saved common-time pose within1e-8 and every field within1e-4 relative above1Pa RMS, or1e-3Pa absolute at near-zero strain. This does not qualify the physical model or permit timing the intrusive observer as normal throughput.",
+            "scope": (
+                "Same physical/controller steps and prescribed input history, with different stress sampling. Every new keyframe is compared. "
+                if args.comparison_scope == "stress-sampling"
+                else "Same1ms physical step and unchanged10ms capped target/radius cadence. Separate Scene.step boundaries retain physical-step fields. "
+            )
+            + "Equivalence requires every saved common-time pose within1e-8 and every field within1e-4 relative above1Pa RMS, or1e-3Pa absolute at near-zero strain. Physical accuracy and primary throughput remain separate qualifications.",
         },
     )
     if not success:

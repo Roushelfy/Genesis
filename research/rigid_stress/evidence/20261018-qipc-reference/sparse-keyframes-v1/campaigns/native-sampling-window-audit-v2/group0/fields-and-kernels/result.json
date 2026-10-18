@@ -1,0 +1,1208 @@
+{
+  "kind": "native-sparse-field-and-CUDA-kernel-audit",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726744",
+      "SLURM_ARRAY_JOB_ID": "726744",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-17819d06-c563-257f-30fe-100c9f111279, 00000000:20:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "plan": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/meta/native-sampling-window-v1-plan.json",
+    "bytes": 1356,
+    "sha256": "216f398fae326d7e1fdcb7e47279ac03d05c1bc8b855cce229ef52942cc75112"
+  },
+  "comparisons": [
+    {
+      "method": "dpr",
+      "dense": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-sampling-window-v1/group0/dpr-every_step/result.json",
+        "bytes": 4037,
+        "sha256": "2433aa17e5a09bd3f2a3b7021b15acb382831cdce900ce923e556df56ceaf29e"
+      },
+      "sparse": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-sampling-window-v1/group0/dpr-manual/result.json",
+        "bytes": 4028,
+        "sha256": "c9bbd0424f76961bf81b90dd18db1c84d00b027bee3cdd4e1287ab392bba4bce"
+      },
+      "keyframes": [
+        {
+          "time_s": 0.89,
+          "link_position_difference_m": 0.0,
+          "link_rotation_difference_rad": 0.0,
+          "maximum_joint_coordinate_difference": 0.0,
+          "relative_authored_corner_tensor_with_1Pa_floor": 9.143799502492817e-12,
+          "raw_spatial_vm_peaks_pa": [
+            12280.790566663469,
+            12280.79056666097
+          ],
+          "strict_observer_equivalence_passed": true
+        },
+        {
+          "time_s": 0.95,
+          "link_position_difference_m": 0.0,
+          "link_rotation_difference_rad": 0.0,
+          "maximum_joint_coordinate_difference": 0.0,
+          "relative_authored_corner_tensor_with_1Pa_floor": 9.149086503078396e-12,
+          "raw_spatial_vm_peaks_pa": [
+            12239.902459246323,
+            12239.902459243665
+          ],
+          "strict_observer_equivalence_passed": true
+        },
+        {
+          "time_s": 1.05,
+          "link_position_difference_m": 0.0,
+          "link_rotation_difference_rad": 0.0,
+          "maximum_joint_coordinate_difference": 0.0,
+          "relative_authored_corner_tensor_with_1Pa_floor": 9.161950813334246e-12,
+          "raw_spatial_vm_peaks_pa": [
+            12180.251408612023,
+            12180.251408610253
+          ],
+          "strict_observer_equivalence_passed": true
+        }
+      ],
+      "all_strict_keyframe_bands_passed": true,
+      "selected_recovery_kernel_counts": [
+        {
+          "prefix": "kernel_rigid_stress_post",
+          "sampling": "every_step",
+          "kernels": [
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_0_serial",
+              "calls": 200,
+              "total_duration_us": 308.18900000000025
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_10_range_for",
+              "calls": 200,
+              "total_duration_us": 12863.600999999993
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_11_range_for",
+              "calls": 200,
+              "total_duration_us": 286.71999999999963
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_12_range_for",
+              "calls": 200,
+              "total_duration_us": 1724.799999999999
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_13_serial",
+              "calls": 200,
+              "total_duration_us": 352.38499999999914
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_14_range_for",
+              "calls": 200,
+              "total_duration_us": 22243.864999999976
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_15_serial",
+              "calls": 200,
+              "total_duration_us": 348.48099999999994
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_16_range_for",
+              "calls": 200,
+              "total_duration_us": 1760.9849999999997
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_17_range_for",
+              "calls": 200,
+              "total_duration_us": 1733.0000000000036
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_18_serial",
+              "calls": 200,
+              "total_duration_us": 358.620999999999
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_19_range_for",
+              "calls": 200,
+              "total_duration_us": 1748.5420000000033
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_1_range_for",
+              "calls": 200,
+              "total_duration_us": 1719.6799999999976
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_20_serial",
+              "calls": 200,
+              "total_duration_us": 337.15500000000026
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_21_range_for",
+              "calls": 200,
+              "total_duration_us": 1745.5370000000025
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_22_serial",
+              "calls": 200,
+              "total_duration_us": 515.4819999999996
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_23_range_for",
+              "calls": 200,
+              "total_duration_us": 1728.7720000000047
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_24_serial",
+              "calls": 200,
+              "total_duration_us": 339.4300000000008
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_25_range_for",
+              "calls": 200,
+              "total_duration_us": 1723.5239999999974
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_26_serial",
+              "calls": 200,
+              "total_duration_us": 357.0889999999991
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_27_range_for",
+              "calls": 200,
+              "total_duration_us": 1729.667000000005
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_28_serial",
+              "calls": 200,
+              "total_duration_us": 349.66499999999974
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_29_range_for",
+              "calls": 200,
+              "total_duration_us": 4717.672999999993
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_2_serial",
+              "calls": 200,
+              "total_duration_us": 486.7190000000005
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_30_serial",
+              "calls": 200,
+              "total_duration_us": 348.3540000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_31_range_for",
+              "calls": 200,
+              "total_duration_us": 1726.4360000000033
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_32_serial",
+              "calls": 200,
+              "total_duration_us": 412.15099999999995
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_33_range_for",
+              "calls": 200,
+              "total_duration_us": 1732.0870000000043
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_34_serial",
+              "calls": 200,
+              "total_duration_us": 347.5940000000003
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_35_range_for",
+              "calls": 200,
+              "total_duration_us": 1744.4170000000013
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_36_serial",
+              "calls": 200,
+              "total_duration_us": 351.1739999999995
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_37_range_for",
+              "calls": 200,
+              "total_duration_us": 1725.8590000000015
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_38_serial",
+              "calls": 200,
+              "total_duration_us": 356.16199999999895
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_39_range_for",
+              "calls": 200,
+              "total_duration_us": 2157.9600000000037
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_3_range_for",
+              "calls": 200,
+              "total_duration_us": 1734.0820000000037
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_40_serial",
+              "calls": 200,
+              "total_duration_us": 360.6469999999998
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_41_range_for",
+              "calls": 200,
+              "total_duration_us": 1747.4200000000058
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_42_range_for",
+              "calls": 200,
+              "total_duration_us": 1720.6129999999941
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_43_serial",
+              "calls": 200,
+              "total_duration_us": 348.64199999999994
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_44_range_for",
+              "calls": 200,
+              "total_duration_us": 1730.8200000000054
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_45_range_for",
+              "calls": 200,
+              "total_duration_us": 10298.085000000006
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_46_range_for",
+              "calls": 200,
+              "total_duration_us": 3334.6190000000047
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_47_range_for",
+              "calls": 200,
+              "total_duration_us": 1726.3290000000018
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_48_range_for",
+              "calls": 200,
+              "total_duration_us": 1732.1280000000045
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_49_serial",
+              "calls": 200,
+              "total_duration_us": 348.19500000000005
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_4_serial",
+              "calls": 200,
+              "total_duration_us": 1246.714000000001
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_50_range_for",
+              "calls": 200,
+              "total_duration_us": 7703.363999999998
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_51_range_for",
+              "calls": 200,
+              "total_duration_us": 1732.0280000000046
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_52_range_for",
+              "calls": 200,
+              "total_duration_us": 1751.621000000004
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_53_range_for",
+              "calls": 200,
+              "total_duration_us": 1723.1059999999964
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_54_range_for",
+              "calls": 200,
+              "total_duration_us": 1729.7390000000041
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_55_range_for",
+              "calls": 200,
+              "total_duration_us": 1759.2979999999973
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_56_range_for",
+              "calls": 200,
+              "total_duration_us": 1732.897000000004
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_57_range_for",
+              "calls": 200,
+              "total_duration_us": 1743.5859999999993
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_58_range_for",
+              "calls": 200,
+              "total_duration_us": 1728.9010000000053
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_59_range_for",
+              "calls": 200,
+              "total_duration_us": 1730.2680000000041
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_5_range_for",
+              "calls": 200,
+              "total_duration_us": 1728.5380000000039
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_60_range_for",
+              "calls": 200,
+              "total_duration_us": 1745.5430000000022
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_61_range_for",
+              "calls": 200,
+              "total_duration_us": 1725.7930000000017
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_62_serial",
+              "calls": 200,
+              "total_duration_us": 337.72800000000035
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_63_range_for",
+              "calls": 200,
+              "total_duration_us": 1755.3650000000014
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_64_range_for",
+              "calls": 200,
+              "total_duration_us": 1732.9590000000035
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_65_range_for",
+              "calls": 200,
+              "total_duration_us": 1735.357000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_66_range_for",
+              "calls": 200,
+              "total_duration_us": 1757.3119999999997
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_67_range_for",
+              "calls": 200,
+              "total_duration_us": 1732.4140000000043
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_68_range_for",
+              "calls": 200,
+              "total_duration_us": 1726.6610000000016
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_69_serial",
+              "calls": 200,
+              "total_duration_us": 354.9059999999991
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_6_serial",
+              "calls": 200,
+              "total_duration_us": 306.11700000000013
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_70_range_for",
+              "calls": 200,
+              "total_duration_us": 6596.498
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_71_range_for",
+              "calls": 200,
+              "total_duration_us": 1724.5089999999984
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_72_range_for",
+              "calls": 200,
+              "total_duration_us": 1729.8200000000043
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_73_range_for",
+              "calls": 200,
+              "total_duration_us": 1729.219000000005
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_74_serial",
+              "calls": 200,
+              "total_duration_us": 352.48299999999915
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_75_range_for",
+              "calls": 200,
+              "total_duration_us": 1726.1730000000014
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_76_serial",
+              "calls": 200,
+              "total_duration_us": 358.1089999999991
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_77_sweep_links_by_level_range_for",
+              "calls": 200,
+              "total_duration_us": 4147.198999999999
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_78_serial",
+              "calls": 200,
+              "total_duration_us": 311.6050000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_79_range_for",
+              "calls": 200,
+              "total_duration_us": 1733.4690000000041
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_7_range_for",
+              "calls": 200,
+              "total_duration_us": 1919.6079999999959
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_80_serial",
+              "calls": 200,
+              "total_duration_us": 347.1370000000003
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_81_range_for",
+              "calls": 200,
+              "total_duration_us": 1865.449
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_82_range_for",
+              "calls": 200,
+              "total_duration_us": 1739.4949999999965
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_83_range_for",
+              "calls": 200,
+              "total_duration_us": 1729.4930000000047
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_84_range_for",
+              "calls": 200,
+              "total_duration_us": 1737.6719999999993
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_85_serial",
+              "calls": 200,
+              "total_duration_us": 1102.5949999999998
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_86_sweep_links_by_level_range_for",
+              "calls": 200,
+              "total_duration_us": 33957.72999999993
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_87_serial",
+              "calls": 200,
+              "total_duration_us": 359.67499999999916
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_88_update_cartesian_space_com_inertial_range_for",
+              "calls": 200,
+              "total_duration_us": 1739.2699999999966
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_89_serial",
+              "calls": 200,
+              "total_duration_us": 334.48599999999936
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_8_serial",
+              "calls": 200,
+              "total_duration_us": 322.9180000000005
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_90_update_cartesian_space_com_sum_range_for",
+              "calls": 200,
+              "total_duration_us": 1726.401000000001
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_91_update_cartesian_space_com_range_for",
+              "calls": 200,
+              "total_duration_us": 2271.8149999999973
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_92_serial",
+              "calls": 200,
+              "total_duration_us": 392.83499999999947
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_93_sweep_links_by_level_range_for",
+              "calls": 200,
+              "total_duration_us": 3674.2139999999963
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_9_range_for",
+              "calls": 200,
+              "total_duration_us": 2004.5830000000026
+            }
+          ]
+        },
+        {
+          "prefix": "kernel_rigid_stress_post",
+          "sampling": "manual",
+          "kernels": [
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_0_serial",
+              "calls": 3,
+              "total_duration_us": 4.705
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_10_range_for",
+              "calls": 3,
+              "total_duration_us": 193.02499999999998
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_11_range_for",
+              "calls": 3,
+              "total_duration_us": 4.255
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_12_range_for",
+              "calls": 3,
+              "total_duration_us": 25.888
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_13_serial",
+              "calls": 3,
+              "total_duration_us": 5.311
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_14_range_for",
+              "calls": 3,
+              "total_duration_us": 333.376
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_15_serial",
+              "calls": 3,
+              "total_duration_us": 5.248
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_16_range_for",
+              "calls": 3,
+              "total_duration_us": 26.272000000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_17_range_for",
+              "calls": 3,
+              "total_duration_us": 26.144000000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_18_serial",
+              "calls": 3,
+              "total_duration_us": 5.247
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_19_range_for",
+              "calls": 3,
+              "total_duration_us": 26.208000000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_1_range_for",
+              "calls": 3,
+              "total_duration_us": 25.888
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_20_serial",
+              "calls": 3,
+              "total_duration_us": 5.248
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_21_range_for",
+              "calls": 3,
+              "total_duration_us": 26.368000000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_22_serial",
+              "calls": 3,
+              "total_duration_us": 7.585
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_23_range_for",
+              "calls": 3,
+              "total_duration_us": 25.792
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_24_serial",
+              "calls": 3,
+              "total_duration_us": 5.152
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_25_range_for",
+              "calls": 3,
+              "total_duration_us": 25.856
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_26_serial",
+              "calls": 3,
+              "total_duration_us": 5.248
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_27_range_for",
+              "calls": 3,
+              "total_duration_us": 25.952
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_28_serial",
+              "calls": 3,
+              "total_duration_us": 5.312
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_29_range_for",
+              "calls": 3,
+              "total_duration_us": 70.592
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_2_serial",
+              "calls": 3,
+              "total_duration_us": 7.295999999999999
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_30_serial",
+              "calls": 3,
+              "total_duration_us": 5.376
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_31_range_for",
+              "calls": 3,
+              "total_duration_us": 25.952
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_32_serial",
+              "calls": 3,
+              "total_duration_us": 6.08
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_33_range_for",
+              "calls": 3,
+              "total_duration_us": 26.016000000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_34_serial",
+              "calls": 3,
+              "total_duration_us": 5.28
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_35_range_for",
+              "calls": 3,
+              "total_duration_us": 26.400000000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_36_serial",
+              "calls": 3,
+              "total_duration_us": 5.152
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_37_range_for",
+              "calls": 3,
+              "total_duration_us": 25.824
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_38_serial",
+              "calls": 3,
+              "total_duration_us": 5.408
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_39_range_for",
+              "calls": 3,
+              "total_duration_us": 32.512
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_3_range_for",
+              "calls": 3,
+              "total_duration_us": 25.984
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_40_serial",
+              "calls": 3,
+              "total_duration_us": 5.345
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_41_range_for",
+              "calls": 3,
+              "total_duration_us": 26.176000000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_42_range_for",
+              "calls": 3,
+              "total_duration_us": 25.856
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_43_serial",
+              "calls": 3,
+              "total_duration_us": 5.088
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_44_range_for",
+              "calls": 3,
+              "total_duration_us": 26.112000000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_45_range_for",
+              "calls": 3,
+              "total_duration_us": 154.433
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_46_range_for",
+              "calls": 3,
+              "total_duration_us": 50.24000000000001
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_47_range_for",
+              "calls": 3,
+              "total_duration_us": 25.985000000000003
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_48_range_for",
+              "calls": 3,
+              "total_duration_us": 25.951
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_49_serial",
+              "calls": 3,
+              "total_duration_us": 5.343
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_4_serial",
+              "calls": 3,
+              "total_duration_us": 18.784
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_50_range_for",
+              "calls": 3,
+              "total_duration_us": 115.041
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_51_range_for",
+              "calls": 3,
+              "total_duration_us": 26.015
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_52_range_for",
+              "calls": 3,
+              "total_duration_us": 26.209
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_53_range_for",
+              "calls": 3,
+              "total_duration_us": 26.015
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_54_range_for",
+              "calls": 3,
+              "total_duration_us": 26.113
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_55_range_for",
+              "calls": 3,
+              "total_duration_us": 26.144000000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_56_range_for",
+              "calls": 3,
+              "total_duration_us": 25.952
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_57_range_for",
+              "calls": 3,
+              "total_duration_us": 26.144000000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_58_range_for",
+              "calls": 3,
+              "total_duration_us": 25.92
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_59_range_for",
+              "calls": 3,
+              "total_duration_us": 25.888
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_5_range_for",
+              "calls": 3,
+              "total_duration_us": 25.918
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_60_range_for",
+              "calls": 3,
+              "total_duration_us": 26.048000000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_61_range_for",
+              "calls": 3,
+              "total_duration_us": 25.92
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_62_serial",
+              "calls": 3,
+              "total_duration_us": 5.248
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_63_range_for",
+              "calls": 3,
+              "total_duration_us": 26.241000000000003
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_64_range_for",
+              "calls": 3,
+              "total_duration_us": 25.92
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_65_range_for",
+              "calls": 3,
+              "total_duration_us": 26.144000000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_66_range_for",
+              "calls": 3,
+              "total_duration_us": 26.208000000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_67_range_for",
+              "calls": 3,
+              "total_duration_us": 25.984
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_68_range_for",
+              "calls": 3,
+              "total_duration_us": 26.016000000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_69_serial",
+              "calls": 3,
+              "total_duration_us": 5.056
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_6_serial",
+              "calls": 3,
+              "total_duration_us": 4.895
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_70_range_for",
+              "calls": 3,
+              "total_duration_us": 100.96000000000001
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_71_range_for",
+              "calls": 3,
+              "total_duration_us": 25.92
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_72_range_for",
+              "calls": 3,
+              "total_duration_us": 25.984
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_73_range_for",
+              "calls": 3,
+              "total_duration_us": 25.92
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_74_serial",
+              "calls": 3,
+              "total_duration_us": 5.12
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_75_range_for",
+              "calls": 3,
+              "total_duration_us": 25.952
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_76_serial",
+              "calls": 3,
+              "total_duration_us": 5.5040000000000004
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_77_sweep_links_by_level_range_for",
+              "calls": 3,
+              "total_duration_us": 62.496
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_78_serial",
+              "calls": 3,
+              "total_duration_us": 4.800000000000001
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_79_range_for",
+              "calls": 3,
+              "total_duration_us": 25.824
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_7_range_for",
+              "calls": 3,
+              "total_duration_us": 28.607
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_80_serial",
+              "calls": 3,
+              "total_duration_us": 5.216
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_81_range_for",
+              "calls": 3,
+              "total_duration_us": 28.095999999999997
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_82_range_for",
+              "calls": 3,
+              "total_duration_us": 26.176000000000002
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_83_range_for",
+              "calls": 3,
+              "total_duration_us": 25.888
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_84_range_for",
+              "calls": 3,
+              "total_duration_us": 25.984
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_85_serial",
+              "calls": 3,
+              "total_duration_us": 16.927999999999997
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_86_sweep_links_by_level_range_for",
+              "calls": 3,
+              "total_duration_us": 509.504
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_87_serial",
+              "calls": 3,
+              "total_duration_us": 5.186
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_88_update_cartesian_space_com_inertial_range_for",
+              "calls": 3,
+              "total_duration_us": 26.271
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_89_serial",
+              "calls": 3,
+              "total_duration_us": 5.1209999999999996
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_8_serial",
+              "calls": 3,
+              "total_duration_us": 4.5440000000000005
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_90_update_cartesian_space_com_sum_range_for",
+              "calls": 3,
+              "total_duration_us": 25.921999999999997
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_91_update_cartesian_space_com_range_for",
+              "calls": 3,
+              "total_duration_us": 34.047
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_92_serial",
+              "calls": 3,
+              "total_duration_us": 5.856
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_93_sweep_links_by_level_range_for",
+              "calls": 3,
+              "total_duration_us": 55.29599999999999
+            },
+            {
+              "name": "kernel_rigid_stress_post_c1028_0_kernel_9_range_for",
+              "calls": 3,
+              "total_duration_us": 30.4
+            }
+          ]
+        }
+      ],
+      "profiled_window_seconds": [
+        0.7394482860108837,
+        0.4760634960257448
+      ]
+    },
+    {
+      "method": "scr",
+      "dense": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-sampling-window-v1/group1/scr-every_step/result.json",
+        "bytes": 4036,
+        "sha256": "afcbcec4abcceb51d2cc20dd01d08443a11b3b7084736fc3f5615439d8215697"
+      },
+      "sparse": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-sampling-window-v1/group1/scr-manual/result.json",
+        "bytes": 4031,
+        "sha256": "4cf4246d043930a95f851b84eeece8dbbe880d862658097f5c80b2e449ac11ff"
+      },
+      "keyframes": [
+        {
+          "time_s": 0.89,
+          "link_position_difference_m": 0.0,
+          "link_rotation_difference_rad": 0.0,
+          "maximum_joint_coordinate_difference": 0.0,
+          "relative_authored_corner_tensor_with_1Pa_floor": 4.899911390028098e-12,
+          "raw_spatial_vm_peaks_pa": [
+            12288.894093022302,
+            12288.894093022485
+          ],
+          "strict_observer_equivalence_passed": true
+        },
+        {
+          "time_s": 0.95,
+          "link_position_difference_m": 0.0,
+          "link_rotation_difference_rad": 0.0,
+          "maximum_joint_coordinate_difference": 0.0,
+          "relative_authored_corner_tensor_with_1Pa_floor": 4.904053255762171e-12,
+          "raw_spatial_vm_peaks_pa": [
+            12249.194975141165,
+            12249.194975142942
+          ],
+          "strict_observer_equivalence_passed": true
+        },
+        {
+          "time_s": 1.05,
+          "link_position_difference_m": 0.0,
+          "link_rotation_difference_rad": 0.0,
+          "maximum_joint_coordinate_difference": 0.0,
+          "relative_authored_corner_tensor_with_1Pa_floor": 4.914818624164934e-12,
+          "raw_spatial_vm_peaks_pa": [
+            12191.033550537433,
+            12191.03355053813
+          ],
+          "strict_observer_equivalence_passed": true
+        }
+      ],
+      "all_strict_keyframe_bands_passed": true,
+      "selected_recovery_kernel_counts": [
+        {
+          "prefix": "kernel_resolve_stress_contacts",
+          "sampling": "every_step",
+          "kernels": [
+            {
+              "name": "kernel_resolve_stress_contacts_c902_0_kernel_0_serial",
+              "calls": 200,
+              "total_duration_us": 240.7320000000002
+            },
+            {
+              "name": "kernel_resolve_stress_contacts_c902_0_kernel_1_range_for",
+              "calls": 200,
+              "total_duration_us": 1664.3539999999975
+            },
+            {
+              "name": "kernel_resolve_stress_contacts_c902_0_kernel_2_serial",
+              "calls": 200,
+              "total_duration_us": 370.07399999999956
+            },
+            {
+              "name": "kernel_resolve_stress_contacts_c902_0_kernel_3_range_for",
+              "calls": 200,
+              "total_duration_us": 1688.036000000004
+            },
+            {
+              "name": "kernel_resolve_stress_contacts_c902_0_kernel_4_serial",
+              "calls": 200,
+              "total_duration_us": 1059.393999999999
+            }
+          ]
+        },
+        {
+          "prefix": "kernel_resolve_stress_contacts",
+          "sampling": "manual",
+          "kernels": [
+            {
+              "name": "kernel_resolve_stress_contacts_c902_0_kernel_0_serial",
+              "calls": 3,
+              "total_duration_us": 3.55
+            },
+            {
+              "name": "kernel_resolve_stress_contacts_c902_0_kernel_1_range_for",
+              "calls": 3,
+              "total_duration_us": 25.025000000000002
+            },
+            {
+              "name": "kernel_resolve_stress_contacts_c902_0_kernel_2_serial",
+              "calls": 3,
+              "total_duration_us": 5.602
+            },
+            {
+              "name": "kernel_resolve_stress_contacts_c902_0_kernel_3_range_for",
+              "calls": 3,
+              "total_duration_us": 25.056
+            },
+            {
+              "name": "kernel_resolve_stress_contacts_c902_0_kernel_4_serial",
+              "calls": 3,
+              "total_duration_us": 15.712
+            }
+          ]
+        },
+        {
+          "prefix": "kernel_initialize_intrinsic_contacts",
+          "sampling": "every_step",
+          "kernels": []
+        },
+        {
+          "prefix": "kernel_initialize_intrinsic_contacts",
+          "sampling": "manual",
+          "kernels": []
+        },
+        {
+          "prefix": "kernel_surface_apply",
+          "sampling": "every_step",
+          "kernels": [
+            {
+              "name": "kernel_surface_apply_packed_c872_0_kernel_0_serial",
+              "calls": 200,
+              "total_duration_us": 282.7789999999994
+            },
+            {
+              "name": "kernel_surface_apply_packed_c872_0_kernel_1_range_for",
+              "calls": 200,
+              "total_duration_us": 3248.5530000000017
+            },
+            {
+              "name": "kernel_surface_apply_packed_c872_0_kernel_2_range_for",
+              "calls": 200,
+              "total_duration_us": 1667.3970000000018
+            }
+          ]
+        },
+        {
+          "prefix": "kernel_surface_apply",
+          "sampling": "manual",
+          "kernels": [
+            {
+              "name": "kernel_surface_apply_packed_c872_0_kernel_0_serial",
+              "calls": 3,
+              "total_duration_us": 4.223
+            },
+            {
+              "name": "kernel_surface_apply_packed_c872_0_kernel_1_range_for",
+              "calls": 3,
+              "total_duration_us": 49.759
+            },
+            {
+              "name": "kernel_surface_apply_packed_c872_0_kernel_2_range_for",
+              "calls": 3,
+              "total_duration_us": 25.12
+            }
+          ]
+        }
+      ],
+      "profiled_window_seconds": [
+        1.3454191819764674,
+        0.47818047396140173
+      ]
+    }
+  ],
+  "reference_accuracy_qualified": false,
+  "scope": "Same-method observer equivalence at all3 predeclared fields, using volume-weighted four-corner matrix norms with1Pa floor in the shared authored frame. This positive corner metric is an observation-mode check, not a new continuum accuracy norm. Exact CUDA kernel counts come from retained full CUPTI traces over the200-step contact window. Profiled costs remain intrusive single-run observations, separate from primary throughput. Physical-reference and full-grasp qualification remain open."
+}

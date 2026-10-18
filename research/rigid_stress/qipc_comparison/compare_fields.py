@@ -76,6 +76,7 @@ def main():
     parser.add_argument("--surfaces", type=Path)
     parser.add_argument("--shell-thickness", type=float, default=0.0005)
     parser.add_argument("--snapshot-times", type=float, nargs="*", default=None)
+    parser.add_argument("--skip-snapshot-payloads", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.snapshot_times is not None:
@@ -204,7 +205,7 @@ def main():
             if snapshot_ticks is None
             else control_step in snapshot_ticks
         )
-        if export_snapshot:
+        if export_snapshot and not args.skip_snapshot_payloads:
             payload = {
                 "points_m": columns.points,
                 "weights_m3": columns.weights,
@@ -297,6 +298,7 @@ def main():
             "expected_reference_duration_s": requested_duration_s(reference_receipt),
             "snapshots": snapshots,
             "requested_snapshot_times_s": args.snapshot_times,
+            "snapshot_payloads_enabled": not args.skip_snapshot_payloads,
             "snapshot_scope": "Snapshot selection affects derived field exports only. Every compatible recorded common observation still contributes to the history and complete-time metrics; original raw full fields and physical-step peak states stay at their source paths.",
             "unmatched_reference_frames": unmatched,
         },

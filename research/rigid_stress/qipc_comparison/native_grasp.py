@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from time import perf_counter
 
@@ -30,12 +31,20 @@ def main():
     parser.add_argument("--tracking-damping", type=float, default=1e10)
     parser.add_argument("--record-every", type=int, default=1)
     parser.add_argument("--control-interval", type=float, default=0.01)
+    parser.add_argument("--keyframes", type=float, nargs="+")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     assert args.steps > 0 and args.record_every > 0
     control_stride = round(args.control_interval / args.sim_dt)
     assert control_stride > 0 and abs(control_stride * args.sim_dt - args.control_interval) < 1e-12
     assert args.control_interval == 0.01
+    key_steps = None
+    if args.keyframes is not None:
+        key_steps = {round(time / args.sim_dt) for time in args.keyframes}
+        assert all(
+            abs(round(time / args.sim_dt) * args.sim_dt - time) < 1e-12 and 0 < time <= args.steps * args.sim_dt
+            for time in args.keyframes
+        )
     args.output.mkdir(parents=True, exist_ok=False)
     frames = args.output / "frames"
     frames.mkdir()
@@ -48,6 +57,7 @@ def main():
         conditions=args.conditions,
         substeps=args.substeps,
         output_mode="full",
+        stress_update_mode="manual" if key_steps is not None else "every_step",
         native_controller=False,
         egg_geometry="mesh64",
         use_gjk_collision=False,
@@ -85,8 +95,10 @@ def main():
             "protocol": "shared prescribed motion" if motion is not None else "original capped-control schedule",
             "prescribed_motion": motion.identity() if motion is not None else None,
             "stress_frame": "authored link frame",
-            "field_measure": "linear elastic tensor, Voigt xx yy zz xy xz yz; last physical substep per scene step. One-substep runs retain every physical-step peak state; a multi-substep final field cannot be called its interior peak field.",
-            "scope": "intrusive full-field/force history; excluded from primary timing",
+            "field_measure": "Linear elastic tensor, Voigt xx yy zz xy xz yz; last observed physical substep. Sparse keyframes have no whole-history temporal-peak certificate.",
+            "scope": "continuous mechanics with declared stress observations; excluded from primary timing",
+            "full_spatial_keyframes_s": args.keyframes,
+            "unsampled_stress_policy": "hold previous snapshot; no recovery/export" if key_steps is not None else None,
             "rigid_link_names": [{"id": link.idx, "name": link.name} for link in workload.scene.rigid_solver.links],
         },
     )
@@ -96,6 +108,9 @@ def main():
     completed = False
     executed = 0
     invalid = 0
+    invalid_mechanics = 0
+    physics_steps_returned = 0
+    observed_fields = 0
     peak = -np.inf
     principal_peak = -np.inf
     control_force_sum = np.zeros(3)
@@ -103,15 +118,50 @@ def main():
     with (args.output / "steps.jsonl").open("w", buffering=1) as journal:
         try:
             for step in range(args.steps):
+                observe = key_steps is None or step + 1 in key_steps
                 if motion is not None:
-                    phase = motion.advance(workload, step, True)
-                elif control_stride == 1:
+                    phase = motion.advance(
+                        workload, step, True, update_stress=observe if key_steps is not None else None
+                    )
+                elif control_stride == 1 and key_steps is None:
                     phase = controller_step(workload, False)
                 else:
                     if step % control_stride == 0:
                         phase = controller_step(workload, False, advance=False)
+                    if key_steps is not None and observe:
+                        workload.link.request_stress_update()
                     workload.scene.step()
+                physics_steps_returned += 1
+                if key_steps is not None:
+                    workload.scene.rigid_solver.check_errno()
+                    finite = bool(
+                        torch.isfinite(workload.robot.get_qpos()).all()
+                        & torch.isfinite(workload.robot.get_dofs_velocity()).all()
+                        & torch.isfinite(workload.egg.get_pos()).all()
+                        & torch.isfinite(workload.egg.get_vel()).all()
+                    )
+                    if not observe or not finite:
+                        invalid_mechanics += int(not finite)
+                        journal.write(
+                            json.dumps(
+                                {
+                                    "step": step,
+                                    "time_s": (step + 1) * args.sim_dt,
+                                    "stress_sampled": False,
+                                    "phase": tensor_to_array(phase)[0].item(),
+                                    "reset_epoch": workload.reset_count,
+                                    "mechanical_state_finite": finite,
+                                },
+                                allow_nan=False,
+                            )
+                            + "\n"
+                        )
+                        executed += 1
+                        if not finite:
+                            break
+                        continue
                 stress, vm = workload.link.get_stress_field(copy=False)
+                observed_fields += 1
                 stress, vm = tensor_to_array(stress)[0], tensor_to_array(vm)[0]
                 contacts = workload.egg.get_contacts(is_padded=False)
                 contacts = {key: tensor_to_array(value)[0] for key, value in contacts.items()}
@@ -157,17 +207,19 @@ def main():
                     contact_source_geom_a=contacts["geom_a"][valid],
                     contact_source_geom_b=contacts["geom_b"][valid],
                 )
-                if (step + 1) % args.record_every == 0 or step == args.steps - 1 or not finite:
+                if key_steps is not None or (step + 1) % args.record_every == 0 or step == args.steps - 1 or not finite:
                     np.savez_compressed(frames / f"step{step:06d}.npz", **payload)
-                if finite and vm.max() > peak:
+                if key_steps is None and finite and vm.max() > peak:
                     peak = vm.max().item()
                     np.savez_compressed(args.output / "raw-vm-peak-state.npz", **payload)
-                if finite and principal > principal_peak:
+                if key_steps is None and finite and principal > principal_peak:
                     principal_peak = principal
                     np.savez_compressed(args.output / "raw-principal-peak-state.npz", **payload)
                 row = {
                     "step": step,
                     "time_s": (step + 1) * args.sim_dt,
+                    "stress_sampled": True,
+                    "reset_epoch": workload.reset_count,
                     "phase": tensor_to_array(phase)[0].item(),
                     "position_m": position.tolist(),
                     "quaternion_wxyz": quaternion.tolist(),
@@ -194,7 +246,7 @@ def main():
                 }
                 if motion is not None:
                     row.update(motion.metrics(workload.robot, step))
-                elif args.substeps == 1 and (step + 1) % control_stride == 0:
+                elif key_steps is None and args.substeps == 1 and (step + 1) % control_stride == 0:
                     row.update(
                         contact_average_force_over_control_interval_n=(control_force_sum / control_stride).tolist(),
                         contact_average_moment_world_origin_over_control_interval_nm=(
@@ -210,6 +262,8 @@ def main():
                     break
             completed = executed == args.steps and finite
         finally:
+            exception_type, exception, _ = sys.exc_info()
+            invalid = (qd_to_numpy(entry.state.invalid_steps, transpose=True) - invalid_initial).sum().item()
             write_json(
                 args.output / "result.json",
                 {
@@ -220,8 +274,18 @@ def main():
                     "requested_control_ticks": args.steps,
                     "scene_step_dt_s": args.sim_dt,
                     "executed_control_ticks": executed,
+                    "physics_steps_returned": physics_steps_returned,
+                    "observed_fields": observed_fields,
                     "completed_requested_history": completed,
                     "invalid_environment_steps": invalid,
+                    "stress_invalid_counter_scope": "observed recovery substeps"
+                    if key_steps is not None
+                    else "all physical substeps",
+                    "invalid_mechanical_steps": invalid_mechanics,
+                    "full_spatial_keyframes_s": args.keyframes,
+                    "python_exception": {"type": exception_type.__name__, "message": str(exception)}
+                    if exception_type is not None
+                    else None,
                     "intrusive_seconds": perf_counter() - started,
                     "reference_accuracy_qualified": False,
                 },

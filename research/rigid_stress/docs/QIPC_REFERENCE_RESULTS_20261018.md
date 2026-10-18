@@ -12,7 +12,7 @@ in [the full goal](QIPC_REFERENCE_COMPARISON_GOAL.md).
 actual common-reference field discrepancies for DPR, SCR and PR22 Shell.
 The reference fails the current spatial/timestep uncertainty targets, so those
 discrepancies remain diagnostic. Capped cases0/2/7 now complete9s; case7 surface,
-wall, band and strict controls also complete, while half-dt is still running.
+wall, band and strict controls also complete, while half-dt times out at8.2445s.
 Full9s case7 wall/stopping
 contrasts exceed100%; the reference remains unqualified. The shared data mount is
 still unwritable; an explicitly documented bounded temporary output root now
@@ -92,14 +92,46 @@ iterations and receipts are in the
 The subsequent
 [three fresh-process repeats](../evidence/20261018-qipc-reference/short-window-pcg-repeats-v1/README.md)
 all pass these keys, with35.001/35.489/34.600s windows and no PCG caps. These
-results support1e-2 for capped/full-grasp validation. They are separate from
+results initially supported testing1e-2 for capped/full-grasp validation. They are separate from
 the frozen11-run packet. The native engine's
 [manual sampling capability](../evidence/20261018-qipc-reference/native-manual-sampling-v1/README.md)
 also passes4 CPU/5 CUDA lifecycle/physical-oracle cases, with a verified
-negative control. Application integration and cost profiling remain required.
+negative control. Application measurements and full-grasp failures follow below.
 A passing short window does not
 qualify complete grasps, capped coupling, spatial/contact uncertainty or a
 primary sparse DPR/SCR/Shell cost recommendation.
+
+## Complete sparse continuation changes the PCG conclusion
+
+The [new sparse checkpoint](../evidence/20261018-qipc-reference/sparse-keyframes-v1/README.md)
+retains the actual complete-grasp tests. With the same Newton1e-9m/s and
+caps256/4096, PCG1e-2 fails at2.113s and1e-3 at2.365s: both reach256 Newton
+iterations and stop with saved native/static failure states. They are not
+complete-grasp settings, despite passing all short-window fields/reactions.
+PCG1e-4 is the next bounded contrast, with no budget or physics change.
+The1e-6 baseline has not been proved necessary; the required inner accuracy
+must be selected from complete convergence and actual residuals rather than
+the outer tolerance's numeric value alone.
+
+DPR/SCR and both Shell settings complete6000×1ms mechanics with five fields
+at1.33/2.77/4.02/4.38/5.52s. Native old-dense/new-sparse equivalence passes all
+keys with identical physical poses. Both Shell variants fail the same retained
+thresholds. Same-source short controls726772/726776 also fail unchanged-sparse
+fresh repeats: stock tensor contrasts37.2–41.8%, volume/surface2 101.1–107.3%.
+This demonstrates repeat variability and prevents attributing old/new differences
+to sampling alone. Diagnostic common-reference discrepancies remain large and the
+historical QIPC candidate remains unqualified. Relative release errors are null
+at a near-zero reference, with absolute errors retained. No sparse aggregate
+is a whole-history norm or certified temporal peak.
+
+In the separately warmed200-step native contact profile, actual CUDA recovery
+calls fall200 to3 and all three full spatial fields remain equivalent. DPR
+dense/manual windows are0.739448/0.476063s, SCR1.345419/0.478180s. These intrusive
+n1 costs do not replace matched primary sparse throughput. All six capped
+short settings fail the final provisional audit; the five fast variants have
+zero finger reaction at the declared keys and a different egg path. Their
+2.567–2.936s windows cannot be interpreted as qualified speedups over the
+original partition setting's392.992s.
 
 ## Methods and what their fields mean
 

@@ -1,0 +1,60 @@
+[
+  [
+    {
+      "name": "dpr",
+      "module": "research.rigid_stress.qipc_comparison.compare_cadence",
+      "args": [
+        "--macro",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-prescribed-v1/group0/dpr-1e10",
+        "--micro",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-prescribed-sparse-v1/group0/dpr",
+        "--kind",
+        "native",
+        "--comparison-scope",
+        "stress-sampling"
+      ]
+    },
+    {
+      "name": "scr",
+      "module": "research.rigid_stress.qipc_comparison.compare_cadence",
+      "args": [
+        "--macro",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-prescribed-v1/group2/scr-1e10",
+        "--micro",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-prescribed-sparse-v1/group1/scr",
+        "--kind",
+        "native",
+        "--comparison-scope",
+        "stress-sampling"
+      ]
+    },
+    {
+      "name": "shell-stock",
+      "module": "research.rigid_stress.qipc_comparison.compare_cadence",
+      "args": [
+        "--macro",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-prescribed-v1/group0/stock",
+        "--micro",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-prescribed-sparse-v1/group0/stock",
+        "--kind",
+        "shell",
+        "--comparison-scope",
+        "stress-sampling"
+      ]
+    },
+    {
+      "name": "shell-volume-surface2",
+      "module": "research.rigid_stress.qipc_comparison.compare_cadence",
+      "args": [
+        "--macro",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-prescribed-full-v1/group2/surface2",
+        "--micro",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-prescribed-sparse-v1/group1/volume-surface2",
+        "--kind",
+        "shell",
+        "--comparison-scope",
+        "stress-sampling"
+      ]
+    }
+  ]
+]

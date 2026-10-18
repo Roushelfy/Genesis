@@ -1,0 +1,103 @@
+{
+  "kind": "native-continuous-contact-window-sampling-control",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726739",
+      "SLURM_ARRAY_JOB_ID": "726738",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-17819d06-c563-257f-30fe-100c9f111279, 00000000:20:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "genesis_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/__init__.py",
+  "method": "dpr",
+  "sampling": "manual",
+  "conditions": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/conditions.npz",
+    "bytes": 5226,
+    "sha256": "1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa"
+  },
+  "environment_bank_indices": [
+    0
+  ],
+  "motion": null,
+  "effective_options": {
+    "mesh": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+    "output_mode": "full",
+    "update_mode": "manual",
+    "young": 10000000000.0,
+    "poisson": 0.3,
+    "density": 2000.0,
+    "contact_radius": 0.006,
+    "contact_model": "pressure",
+    "intrinsic_integration": "surface_fan",
+    "intrinsic_support": "contact",
+    "intrinsic_load_partition": "body_source_prior",
+    "cooperative_tractions": true,
+    "surface_fan_frontier": true,
+    "warm_start_tractions": true,
+    "contact_block_size": 16,
+    "surface_edge_subdivisions": 8,
+    "source_projection_limit": 0.0001,
+    "source_geometry_tolerance": 1e-08,
+    "source_uncertainty": 0.0,
+    "quadrature": 10,
+    "tolerance": 1e-08,
+    "absolute_tolerance": 1e-11,
+    "max_iterations": 2000,
+    "warm_start": true,
+    "history_size": 0,
+    "method": "auto",
+    "cooperative_solve": true,
+    "cooperative_pressure": true,
+    "cooperative_scatter": true,
+    "cooperative_balance": true,
+    "contact_wrench_reuse": null,
+    "face_parallel_scatter": true,
+    "scatter_tasks_per_env": 32,
+    "contact_moment_reuse": null,
+    "inverse_max_bytes": 67108864,
+    "inverse_precision": "64",
+    "surface_inverse": true,
+    "packed_surface_loads": true,
+    "packed_block_size": null,
+    "coalesced_residual": null,
+    "fused_pipeline": true,
+    "fused_rigid_post": null,
+    "cached_peak": true,
+    "cached_face_bounds": true,
+    "inverse_corrections": 2,
+    "preconditioner": "block"
+  },
+  "setup_seconds": 25.415832119004335,
+  "cold_original_state_warmup_seconds": 6.868104102963116,
+  "initial_mechanical_reset_exact": true,
+  "window_s": [
+    0.85,
+    1.05
+  ],
+  "window_seconds": [
+    5.069167903973721,
+    0.4760634960257448
+  ],
+  "rollout_seconds": [
+    6.868104102963116,
+    2.1143808779888786
+  ],
+  "deferred_compression_IO_seconds": 0.022447069000918418,
+  "full_spatial_keyframes_s": [
+    0.89,
+    0.95,
+    1.05
+  ],
+  "payloads": 3,
+  "completed_requested_history": true,
+  "profiled": true,
+  "reference_accuracy_qualified": false,
+  "scope": "First continuous original-state pass warms physics/recovery and is reported separately. Public in-process restart is checked exactly in joint/link positions and velocities before the second complete original-state history. GPU-fenced window includes controller, mechanics, per-step native/finite checks and selected full-field host transfer. Compression/IO is deferred. Optional contact-window CUPTI trace is intrusive, not primary throughput. Manual observes only declared scene steps, with one physical substep per scene step; held snapshots are never exported as new samples."
+}
