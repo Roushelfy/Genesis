@@ -1,0 +1,37 @@
+{
+  "declared_at_utc": "2026-10-18T16:17:36.036894+00:00",
+  "order": "Short contact-window profiles and tolerance controls before new complete-length campaigns",
+  "initial_state": "Original initial state; no pose restart or reconstructed checkpoint",
+  "window_s": [
+    1.05,
+    1.16
+  ],
+  "full_spatial_stress_keyframes_s": [
+    1.1,
+    1.13,
+    1.16
+  ],
+  "changes": "One numerical option at a time; same geometry/material/contact/friction/pose history. Dense baseline computes every step but exports the same3 keyframes, isolating compute cost.",
+  "timing_scope": "Intrusive synchronized stage profile with CPU wall and CUDA stream spans; no assumption that spans equal kernel sums or uninstrumented throughput. Cold setup excluded. Checkpoint overhead absent and explicitly zero accepted-window checkpoints.",
+  "provisional_numerical_bands": {
+    "no_ET_Newton_or_LS_forced_exit": true,
+    "finite_state_and_positive_detF_every_step": true,
+    "keyframe_net_force_residual_over_weight": 0.01,
+    "keyframe_nodal_residual_relative_to_contact_norm": 0.001,
+    "common_tangent_relative_contrast": 0.05,
+    "finger_force_vector_contrast": 0.02,
+    "finger_moment_vector_contrast": 0.02,
+    "within_keyframe_spatial_peak_contrast": 0.1
+  },
+  "limits": "These bands guide numerical/cost selection relative to a stricter measured candidate, not physical-reference qualification. PCG caps are recorded and interpreted with actual final residuals/observables; increasing the cap alone is not qualification. A later minimally instrumented matched timing pass is required before a primary throughput claim. Capped-coupling short profiles and reset/phase-aware full keyframe scheduling remain separate required follow-ups.",
+  "held_existing_job": "726567_5 JobHeldUser; other already running sources unchanged",
+  "persistent_output_bound_bytes": 4000000000,
+  "expected_new_output_bytes_upper_estimate": 30000000,
+  "observer_equivalence_control": {
+    "declared_before_field_comparison_utc": "2026-10-18T16:24:52.824402+00:00",
+    "maximum_position_difference_m": 1e-09,
+    "same_mesh_volume_weighted_corotated_tensor_contrast": 1e-05,
+    "stress_denominator_floor_pa": 1,
+    "scope": "Strict numerical observation-mode control; report failures rather than assuming deterministic equivalence. These are not physical-reference tolerances."
+  }
+}

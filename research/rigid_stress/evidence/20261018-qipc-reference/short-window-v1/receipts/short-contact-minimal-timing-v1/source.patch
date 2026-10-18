@@ -1,0 +1,27 @@
+diff --git a/qipc/_src/native/solver/sim_engine_pipeline.cu b/qipc/_src/native/solver/sim_engine_pipeline.cu
+index ddc5e0852..95cdcfc3f 100644
+--- a/qipc/_src/native/solver/sim_engine_pipeline.cu
++++ b/qipc/_src/native/solver/sim_engine_pipeline.cu
+@@ -2205,12 +2205,20 @@ Pipeline SimEngine::build_step_pipeline()
+                                                 // ebuf[0]=E0, ebuf[1]=E(alpha=1), ebuf[2]=E(alpha=0.5), ...
+                                                 ebuf[step + 1] = e;
+ 
++                                                // Diagnostic variant: bound the
++                                                // energy-comparison roundoff;
++                                                // physical energy/derivatives
++                                                // and CCD remain unchanged.
++                                                constexpr double comparison_eps =
++                                                    16.0 * 2.2204460492503131e-16;
++                                                double energy_limit = ebuf[0]
++                                                    + comparison_eps * fabs(ebuf[0]);
+                                                 bool accept =
+-                                                    (rem <= 0 || e <= ebuf[0]);
++                                                    (rem <= 0 || e <= energy_limit);
+ 
+                                                 if(accept)
+                                                 {
+-                                                    if(rem <= 0 && e > ebuf[0])
++                                                    if(rem <= 0 && e > energy_limit)
+                                                     {
+                                                         printf(
+                                                             "[WARN] line search exhausted "

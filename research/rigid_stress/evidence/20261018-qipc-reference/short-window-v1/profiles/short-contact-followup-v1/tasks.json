@@ -1,0 +1,65 @@
+[
+  [
+    {
+      "name": "newton-mid-linear-relaxed",
+      "module": "research.rigid_stress.qipc_comparison.contact_window",
+      "args": [
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/roundoff-prescribed-v1/group0/snh",
+        "--duration",
+        "1.16",
+        "--window-start",
+        "1.05",
+        "--keyframes",
+        "1.10",
+        "1.13",
+        "1.16",
+        "--velocity-tolerance",
+        "1e-8",
+        "--linear-tolerance",
+        "1e-6"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "partition-gate-off",
+      "module": "research.rigid_stress.qipc_comparison.contact_window",
+      "args": [
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/roundoff-prescribed-v1/group0/snh",
+        "--duration",
+        "1.16",
+        "--window-start",
+        "1.05",
+        "--keyframes",
+        "1.10",
+        "1.13",
+        "1.16",
+        "--linear-solver",
+        "partition_pcg"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "partition-gate-on",
+      "module": "research.rigid_stress.qipc_comparison.contact_window",
+      "args": [
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/roundoff-prescribed-v1/group0/snh",
+        "--duration",
+        "1.16",
+        "--window-start",
+        "1.05",
+        "--keyframes",
+        "1.10",
+        "1.13",
+        "1.16",
+        "--linear-solver",
+        "partition_pcg",
+        "--newton-aware-pcg"
+      ]
+    }
+  ]
+]

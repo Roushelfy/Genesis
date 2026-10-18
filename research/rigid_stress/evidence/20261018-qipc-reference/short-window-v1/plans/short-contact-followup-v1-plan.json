@@ -1,0 +1,21 @@
+{
+  "declared_at_utc": "2026-10-18T16:32:27.192623+00:00",
+  "reason": "First profile shows about1.1million PCG iterations in110 loaded-window steps and dominant solver time. Newton1e-7 fails net-force criterion; linear1e-6 passes3 keyframes.",
+  "window_s": [
+    1.05,
+    1.16
+  ],
+  "keyframes_s": [
+    1.1,
+    1.13,
+    1.16
+  ],
+  "contrasts": [
+    "Intermediate Newton1e-8 relative to the measured linear-relaxed candidate",
+    "Original partition_pcg versus original linear_pcg, gate disabled in both",
+    "Existing Newton-aware entry gate enabled versus disabled under the same partition_pcg settings; actual native activation/counters required"
+  ],
+  "source_scope": "Unmodified pinned original-main plus the existing16eps energy-acceptance variant. No new engine patch, physical/contact/material change, or environment modification.",
+  "gate_scope": "The native option is an inertia/motion-bound entry gate, not an arbitrary adaptive relative-residual rule; it is only eligible for partition_pcg.",
+  "acceptance": "Same predeclared numerical bands as the first window. No new full-length run before these results and minimally instrumented timing/capped coupling checks."
+}

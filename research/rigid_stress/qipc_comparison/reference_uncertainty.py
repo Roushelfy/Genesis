@@ -86,6 +86,9 @@ def main():
     parser.add_argument("--reference", type=Path, required=True)
     parser.add_argument("--candidates", type=Path, nargs="+", required=True)
     parser.add_argument("--surface-mesh", type=Path, required=True)
+    parser.add_argument(
+        "--no-column-export", action="store_true", help="Keep the same metric but omit duplicate derived lookup files"
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -107,7 +110,8 @@ def main():
         sampler = TetSampler.allocate(candidate_rest["authored_vertices_m"], candidate_rest["tetrahedra"])
         columns = build_columns(reference_sampler, sampler, outer, inner, faces)
         surfaces = build_surfaces(reference_sampler, sampler, outer, inner, faces, columns)
-        np.savez_compressed(args.output / f"pair{candidate_number}-columns.npz", **asdict(columns))
+        if not args.no_column_export:
+            np.savez_compressed(args.output / f"pair{candidate_number}-columns.npz", **asdict(columns))
         candidate_index = frame_index(folder)
         rows = []
         for tick in sorted(reference_index.keys() & candidate_index.keys()):
@@ -196,6 +200,7 @@ def main():
             "constitutive_at_identical_deformation": constitutive,
             "comparisons": comparisons,
             "reference_qualified": False,
+            "derived_column_exports_written": not args.no_column_export,
             "scope": "The same material face-centroid columns are integrated on every union of both P1 partitions. Norms and resultants are exact along these columns up to geometric/roundoff tolerance; in-plane sampling remains finite. These are separate uncertainty contrasts, not an additive scalar error budget. Raw full-mesh peaks/solver caps remain in the source microstep journals. Complete finite histories and a small net wrench difference do not by themselves qualify per-finger reactions, contact regularization or continuum peaks.",
         },
     )

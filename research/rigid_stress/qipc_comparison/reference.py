@@ -30,8 +30,11 @@ class ReferenceConfig:
     energy: str = "snh"
     mas_precision: str = "float"
     linear_solver: str = "partition_pcg"
+    newton_aware_pcg: bool = False
 
     def scene(self, gravity=(0.0, 0.0, -9.81), contact=True, diagnostics=False):
+        if self.newton_aware_pcg and self.linear_solver != "partition_pcg":
+            raise ValueError("The pinned native Newton-aware entry gate requires partition_pcg")
         scene = Scene(
             dt=self.dt,
             gravity=gravity,
@@ -44,7 +47,7 @@ class ReferenceConfig:
                 "newton/max_iter": self.max_newton,
                 "linear_system/max_iter": self.max_pcg,
                 "linear_system/tol_rate": self.linear_tolerance,
-                "linear_system/newton_aware_pcg/enable": 0,
+                "linear_system/newton_aware_pcg/enable": int(self.newton_aware_pcg),
                 "linear_system/preconditioner/mas/invert_precision": self.mas_precision,
                 "linear_system/solver": self.linear_solver,
                 "line_search/max_iter": 64,

@@ -1,12 +1,70 @@
 # Goal: compare three stress methods against a qualified QIPC reference
 
 User direction, 2026-10-18. Deliver a detailed, reproducible comparison of our
-two rigid stress recovery routes and Kashu shell PR22 for **full stress
-distributions during complete Franka grasps of a hollow egg**. Evaluate error,
+two rigid stress recovery routes and Kashu shell PR22 for **full spatial stress
+distributions at a few keyframes during complete Franka grasps of a hollow egg**. Evaluate error,
 speed, stability, repeatability, memory and practical configuration choices.
 Use our existing cuda-graph-qipc as the principal independent contact/elasticity
 reference. Extend the completed study; do not treat its unqualified shell rates
 or same-mesh FEM agreement as an already completed common-ground-truth test.
+
+## User update: sparse stress keyframes and profiling first, 2026-10-18
+
+The user explicitly clarified: "只需要偶尔几个关键帧的应力数据就行" and
+"先短接触窗口做耗时剖析和容差对照，再完整长实验". This update takes
+precedence over earlier dense stress-observation, every-step peak-search and
+whole-history stress-integration requirements in this goal and existing plans.
+
+The execution order is now:
+
+1. **Profile a short representative contact window first.** Include contact
+   onset and a loaded portion. Preserve the preceding physical/contact history:
+   use the original initial state or an independently validated native-state
+   checkpoint, not a static pose restart that loses friction/controller state.
+   Separate warmed solver-step time, controller time, diagnostic/observer time,
+   host transfer/export and checkpoint overhead. Separate cold activation from
+   warmed timing; use appropriate GPU timing/synchronization boundaries.
+2. **Run a bounded tolerance comparison on that window.** Start with a few
+   controlled changes to Newton stopping and PCG stopping/budget. Record actual
+   Newton/PCG iteration distributions and cap/exit status, force residuals,
+   reactions, penetration/CCD observations and keyframe stresses. Check adaptive
+   inner stopping or preconditioning only as explicitly labeled contrasts when
+   indicated by the profile. Select a practical setting from measured cost and
+   declared numerical/observable acceptance bands, not from speed alone or by
+   merely raising iteration caps. Do not change material/contact physics to
+   obtain a faster result. Unqualified reference quantities stay unqualified.
+3. **Then run the complete grasp with sparse stress observations.** Predeclare
+   a small common keyframe set by grasp phase/contact event before inspecting
+   candidate stress errors; cover the informative stages such as loaded squeeze,
+   lift, lateral/near-slip motion and release/recontact as applicable. Compute
+   and export the complete spatial stress field only at those keyframes. On
+   unselected steps, avoid expensive stress recovery, stress extrema scans,
+   duplicate contact-gradient diagnostics and full-field host exports unless
+   the solver itself requires them or a separately justified control needs them.
+   Keep continuous mechanics, contact/friction/controller/reset history and
+   necessary low-cost numerical failure records. Fewer stress samples must not
+   disable native failure detection or admit invalid solves.
+
+"Full" now describes spatial coverage at the selected keyframes. Dense1ms/
+10ms stress histories,600/900-observation stress norms and the true maximum
+over the entire trajectory are no longer required deliverables. Report common
+keyframe field/resultant errors and within-keyframe spatial peaks/hotspots,
+with the temporal sampling limitation explicit. Do not label a sparse-keyframe
+aggregate as a whole-history norm or its largest sample as the global temporal
+peak. Existing dense raw evidence and accepted packets remain unchanged.
+
+Primary cost measurements must reflect this sparse-observation workload and
+declare its cadence/payload; retain solver-only and observation/export costs
+separately. Existing dense full/max timing remains a labeled supplementary
+workload, not the new application's default cost. Reference qualification and
+the two complete-grasp protocols below remain required at the selected
+observables; the change removes unnecessary temporal observation work.
+
+Do not launch further long parameter sweeps before the short-window results
+justify the configuration. Already-running jobs are not automatically canceled
+by this update: the executing agent should assess their progress/usefulness at
+a safe boundary, preserve results, and acknowledge the revised plan in the
+execution record. Do not hot-edit a running worker's captured sources.
 
 ## Three methods and clearer names
 
@@ -136,11 +194,13 @@ full 3D fields where available. State the transverse components a shell omits.
 Use one common metric/sampling domain for a three-way ranking; different norms
 may be useful supplementary results but must not share an unlabeled ranking.
 
-Report weighted tensor-field errors, raw VM and tensile-principal peaks where
-relevant, hotspot locations/times, stress histories, contact forces/moments,
+Report weighted tensor-field errors at the common keyframes, raw VM and
+tensile-principal spatial peaks where relevant, hotspot locations and sampled
+times, sparse stress observations, contact forces/moments,
 contact footprint, slip, deformation and grasp outcome. Include near-zero
-denominator handling. Preserve raw global peak fields and adaptive/extremum
-search limitations; a shared plotting grid alone does not establish the true
+denominator handling. Preserve raw spatial peak fields at those keyframes and
+adaptive/extremum search limitations; a shared plotting grid alone does not
+establish the true spatial maximum, and sparse times do not certify a temporal
 maximum. Add physical-volume averaged measures only as explicit supplements.
 
 Measure step-size/tolerance sensitivity, repeated fresh processes, duplicate
@@ -159,8 +219,11 @@ than the rigid approximation. Do not define success as our method winning.
 
 ## Speed, memory and the final deliverable
 
-Primary timing produces **full stress distributions**, with declared field
-payloads, numerical checks, controller and resets. Measure max-only separately.
+Primary timing runs complete mechanics and produces **full spatial stress
+distributions at the predeclared sparse keyframes**, with declared cadence,
+field payloads, numerical checks, controller and resets. Separate solver and
+observation/export costs. Keep dense full/max-only measurements as explicitly
+labeled supplementary workloads rather than requiring per-step stress output.
 On matched hardware (prefer existing RTX PRO6000 Blackwell), report complete
 scene latency and aggregate env-step/s across useful batch sizes, marginal
 overhead versus each applicable rigid baseline, memory/capacity, cold setup and
@@ -177,7 +240,8 @@ large-batch optimization. Explain any throughput changes from prior reports.
 Deliver one detailed three-method report with:
 - architecture/assumptions and exact new-name/config mapping;
 - qualified reference and its uncertainty, by protocol and measured quantity;
-- shared-scale stress/traction maps, time histories and per-case error tables;
+- shared-scale keyframe stress/traction maps, sparse phase observations,
+  necessary mechanical histories and per-case keyframe error tables;
 - stability/repeatability/failure tables and original-versus-repaired ablations;
 - speed, memory, scaling, profiles and accuracy-versus-cost figures;
 - clear recommendations on when DPR, SCR or shell is preferable, including
