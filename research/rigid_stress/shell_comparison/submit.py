@@ -27,8 +27,11 @@ def inventory(root):
 
 
 def capture_source(source, output, stem):
+    package = "qipc" if (source / "qipc").is_dir() else "genesis"
     names = subprocess.check_output(
-        ["git", "ls-files", "genesis", "pyproject.toml"], cwd=source, text=True
+        ["git", "ls-files", package, "pyproject.toml", "CMakeLists.txt", "external/GKlib", "external/METIS"],
+        cwd=source,
+        text=True,
     ).splitlines()
     revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=source, text=True).strip()
     rows = [
@@ -40,7 +43,7 @@ def capture_source(source, output, stem):
         for name in names
         if (source / name).is_file()
     ]
-    patch = subprocess.check_output(["git", "diff", "--binary", "HEAD", "--", "genesis"], cwd=source)
+    patch = subprocess.check_output(["git", "diff", "--binary", "HEAD", "--", package], cwd=source)
     (output / f"{stem}.patch").write_bytes(patch)
     (output / f"{stem}.json").write_text(
         json.dumps(
@@ -49,6 +52,9 @@ def capture_source(source, output, stem):
                 "revision": revision,
                 "patch_sha256": hashlib.sha256(patch).hexdigest(),
                 "files": rows,
+                "submodule_status": subprocess.check_output(["git", "submodule", "status"], cwd=source, text=True)
+                if package == "qipc"
+                else None,
             },
             indent=2,
         )
@@ -65,6 +71,7 @@ def main():
     parser.add_argument("--minutes", type=int, default=60)
     parser.add_argument("--memory-gb", type=int, default=64)
     parser.add_argument("--concurrency", type=int)
+    parser.add_argument("--cpus", type=int, default=8)
     args = parser.parse_args()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
@@ -83,6 +90,11 @@ def main():
     shutil.copytree(
         here, tools / "research/rigid_stress/shell_comparison", ignore=shutil.ignore_patterns("__pycache__")
     )
+    qipc_analysis = here.parent / "qipc_comparison"
+    if qipc_analysis.is_dir():
+        shutil.copytree(
+            qipc_analysis, tools / "research/rigid_stress/qipc_comparison", ignore=shutil.ignore_patterns("__pycache__")
+        )
     groups = json.loads(args.tasks.read_text())
     (output / "tasks.json").write_text(json.dumps(groups, indent=2) + "\n")
     (output / "analysis-files.json").write_text(json.dumps(inventory(tools), indent=2) + "\n")
@@ -135,7 +147,7 @@ def main():
         f"--array=0-{len(groups) - 1}" + (f"%{args.concurrency}" if args.concurrency is not None else ""),
         "--partition=rtx-mid",
         "--gres=gpu:1",
-        "--cpus-per-task=8",
+        f"--cpus-per-task={args.cpus}",
         f"--mem={args.memory_gb}G",
         f"--time={args.minutes}",
         "--job-name=shell22-compare",
