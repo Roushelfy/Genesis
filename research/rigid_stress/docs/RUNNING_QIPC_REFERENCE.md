@@ -3,6 +3,18 @@
 The [goal](QIPC_REFERENCE_COMPARISON_GOAL.md) defines the required deliverable;
 the [progress record](QIPC_REFERENCE_PROGRESS.md) distinguishes completed controls
 from failed or unqualified reference attempts. This is an ongoing comparison.
+The [working report](QIPC_REFERENCE_RESULTS_20261018.md) and
+[metric contract](QIPC_REFERENCE_METRICS.md) retain the complete-history scores
+and unresolved reference uncertainty.
+
+**Storage incident,2026-10-18:** `/mnt/data` is currently unwritable with
+`OSError122: Disk quota exceeded`. Do not submit new scientific campaigns until
+the destination can create, write and fsync a small file. Preserve interrupted
+campaigns and use a fresh output directory after storage recovers. Exact
+affected runs/checkpoints are in the
+[inventory](QIPC_STORAGE_AFFECTED_RUNS_20261018.json). Hash-verified native dumps
+are not validated cross-process restarts; the grasp runner has no resume option.
+Trajectory snapshots are not native contact/friction checkpoints.
 
 ## Source, runtime and storage
 
@@ -23,6 +35,8 @@ engine checkout while its jobs import it. Do not change shared environments.
 | --- | --- |
 | Original QIPC main | `fe252bd30acc6c717507b74add31512812f48761`; sibling `qipc-stress-reference-original` |
 | QIPC capped-robot integration | `641459b8826bb061e1bba01dfe9eba39793c3855`; sibling `qipc-stress-reference-integration` |
+| Later capped integration | `40275f0a26f0318659000c00191760fe83d9414c`; sibling `qipc-stress-reference-current`; separate native receipt |
+| Capped numerical diagnostic | Same40275 source plus [KKT roundoff patch](../qipc_comparison/kkt-roundoff-diagnostic.patch); sibling `qipc-stress-reference-capped-roundoff`; actual checkpointed and case7 sources |
 | Original QIPC numerical diagnostic | Same original main plus [the recorded patch](../qipc_comparison/line-search-roundoff-diagnostic.patch); sibling `qipc-stress-reference-roundoff` |
 | Native capped validation | `9bd1086ca`; sibling `rigid-stress-qipc-validation` |
 | Native prescribed example | `ad6b3e2da`; sibling `rigid-stress-qipc-prescribed`; optional scene timestep, original default preserved |

@@ -1,6 +1,7 @@
 """Compare all three candidates on one explicit material-column domain, retaining reference qualification limits."""
 
 import argparse
+import json
 from pathlib import Path
 
 import numpy as np
@@ -13,6 +14,7 @@ from .common_metric import (
     field_error,
     resultants,
     tangent,
+    time_integrated_error,
     tensor_error,
     voigt_tensor,
 )
@@ -118,7 +120,8 @@ def main():
             candidate_paths = [index[control_step + 1] for index in candidate_indices]
             rotation = corotation(authored, reference["positions_m"], masses)
             reference_tensor = reference["cauchy_pa"][columns.reference_elements]
-            expected = tangent(rotation.T @ reference_tensor @ rotation, columns)
+            expected_full = rotation.T @ reference_tensor @ rotation
+            expected = tangent(expected_full, columns)
             expected_surface = (
                 tangent(rotation.T @ reference["cauchy_pa"][surfaces.reference_elements] @ rotation, surfaces)
                 if surfaces is not None
@@ -126,6 +129,7 @@ def main():
             )
         expected_membrane, expected_bending = resultants(expected, columns)
         tensors = []
+        full_tensors = []
         surface_tensors = []
         for candidate in candidate_paths[:2]:
             with np.load(candidate) as saved:
@@ -133,6 +137,7 @@ def main():
                 full_corner = voigt_tensor(saved["stress_voigt_link_pa"])
                 corner = full_corner[columns.native_elements]
                 tensor = np.einsum("qi,qijk->qjk", columns.native_barycentric, corner)
+                full_tensors.append(tensor)
                 tensors.append(tangent(tensor, columns))
                 if surfaces is not None:
                     surface_tensor = np.einsum(
@@ -185,6 +190,8 @@ def main():
                     entry[name] = tensor_error(
                         surface_tensor[selected], expected_surface[selected], surfaces.weights_m2[selected]
                     )
+        for entry, full_tensor in zip(entries[:2], full_tensors):
+            entry["solid_only_full_3d_on_common_columns"] = field_error(full_tensor, expected_full, columns)
         history.append({"time_s": time, "all_fields_finite": True, "errors": entries})
         if path == files[-1] or control_step in (1, 19, 49, 99, 109, 119, 179, 249, 299, 419, 449, 539, 559):
             payload = {
@@ -195,12 +202,15 @@ def main():
                 "projected_thickness_m": columns.thickness,
                 "time_s": time,
                 "reference_tangent_pa": expected,
+                "reference_full_3d_on_columns_pa": expected_full,
                 "reference_membrane_n_per_m": expected_membrane,
                 "reference_bending_n": expected_bending,
             }
             for method, tensor in zip(("dpr", "scr", "shell"), tensors):
                 payload[f"{method}_tangent_pa"] = tensor
                 payload[f"{method}_membrane_n_per_m"], payload[f"{method}_bending_n"] = resultants(tensor, columns)
+            for method, tensor in zip(("dpr", "scr"), full_tensors):
+                payload[f"{method}_full_3d_on_columns_pa"] = tensor
             if surfaces is not None:
                 payload.update(
                     surface_points_m=surfaces.points,
@@ -213,6 +223,48 @@ def main():
             destination = args.output / f"common-step{control_step:06d}.npz"
             np.savez_compressed(destination, **payload)
             snapshots.append(file_id(destination))
+    reference_receipt = json.loads((args.reference / "result.json").read_text())
+    candidate_receipts = [
+        json.loads((folder / "result.json").read_text()) for folder in (args.dpr, args.scr, args.shell)
+    ]
+    complete = (
+        reference_receipt["completed_requested_history"]
+        and all(value["completed_requested_history"] for value in candidate_receipts)
+        and not unmatched
+        and all(row["all_fields_finite"] for row in history)
+    )
+    temporal = []
+    if complete:
+        for method in ("dpr", "scr", "shell"):
+            entries = [next(entry for entry in row["errors"] if entry["method"] == method) for row in history]
+            metrics = {}
+            for key, floor in (
+                ("tangent_field", 1.0),
+                ("inner_surface_tangent", 1.0),
+                ("outer_surface_tangent", 1.0),
+                ("membrane_n_per_m", 5e-4),
+                ("bending_n", 2.5e-7),
+                ("solid_only_full_3d_on_common_columns", 1.0),
+            ):
+                if key == "solid_only_full_3d_on_common_columns" and method == "shell":
+                    continue
+                if key in ("inner_surface_tangent", "outer_surface_tangent") and surfaces is None:
+                    continue
+                reference_key = (
+                    "reference_weighted_rms" if key in ("membrane_n_per_m", "bending_n") else "reference_tensor_rms_pa"
+                )
+                error_key = (
+                    "absolute_weighted_rms_error"
+                    if key in ("membrane_n_per_m", "bending_n")
+                    else "absolute_tensor_rms_error_pa"
+                )
+                metrics[key] = time_integrated_error(
+                    [row["time_s"] for row in history],
+                    [entry[key][reference_key] for entry in entries],
+                    [entry[key][error_key] for entry in entries],
+                    floor,
+                )
+            temporal.append({"method": method, "metrics": metrics})
     write_json(
         args.output / "result.json",
         {
@@ -226,6 +278,8 @@ def main():
             "scope": "Diagnostic common-position/time comparisons. Reference spatial/dt/contact uncertainty and complete-grasp qualification remain required; these numbers do not establish a qualified accuracy ranking.",
             "stress_convention": "World physical QIPC/Shell Cauchy corotated by each link's mass-weighted best fit; native authored-frame linear stress. Shared undeformed tangent projector; finite-strain model differences remain separate.",
             "history": history,
+            "complete_time_integrated_common_metrics": temporal,
+            "complete_common_observation_coverage": bool(complete),
             "snapshots": snapshots,
             "unmatched_reference_frames": unmatched,
         },

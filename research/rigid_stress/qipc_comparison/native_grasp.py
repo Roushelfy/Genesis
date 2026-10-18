@@ -87,6 +87,7 @@ def main():
             "stress_frame": "authored link frame",
             "field_measure": "linear elastic tensor, Voigt xx yy zz xy xz yz; last physical substep per scene step. One-substep runs retain every physical-step peak state; a multi-substep final field cannot be called its interior peak field.",
             "scope": "intrusive full-field/force history; excluded from primary timing",
+            "rigid_link_names": [{"id": link.idx, "name": link.name} for link in workload.scene.rigid_solver.links],
         },
     )
     with np.load(workload.link.stress_options.mesh) as mesh:
@@ -118,6 +119,15 @@ def main():
                 egg_is_a = contacts["link_a"] == workload.link.idx
                 forces = np.where(egg_is_a[:, None], contacts["force_a"], contacts["force_b"])[valid]
                 points = contacts["position"][valid]
+                normals = contacts["normal"][valid]
+                normal_force = np.einsum("ci,ci->c", forces, normals)
+                tangent_force = forces - normal_force[:, None] * normals
+                friction_utilization = np.full(len(forces), np.nan)
+                normal_admitted = np.abs(normal_force) > 1e-9
+                friction_utilization[normal_admitted] = np.linalg.norm(tangent_force[normal_admitted], axis=1) / (
+                    contacts["friction"][valid][normal_admitted] * np.abs(normal_force[normal_admitted])
+                )
+                penetration = contacts["penetration"][valid]
                 control_force_sum += forces.sum(axis=0)
                 control_moment_sum += np.cross(points, forces).sum(axis=0)
                 finite = bool(np.isfinite(stress).all() and np.isfinite(vm).all())
@@ -140,6 +150,9 @@ def main():
                     contact_positions_world_m=points,
                     contact_forces_world_n=forces,
                     contact_normals=contacts["normal"][valid],
+                    contact_penetration_m=penetration,
+                    contact_friction_utilization=friction_utilization,
+                    contact_counterpart_link=np.where(egg_is_a, contacts["link_b"], contacts["link_a"])[valid],
                     contact_friction=contacts["friction"][valid],
                     contact_source_geom_a=contacts["geom_a"][valid],
                     contact_source_geom_b=contacts["geom_b"][valid],
@@ -173,6 +186,11 @@ def main():
                     "contact_resultant_n": forces.sum(axis=0).tolist(),
                     "contact_moment_world_origin_nm": np.cross(points, forces).sum(axis=0).tolist(),
                     "contact_count": len(forces),
+                    "maximum_reported_contact_penetration_m": penetration.max().item() if len(penetration) else None,
+                    "maximum_contact_friction_utilization": friction_utilization[normal_admitted].max().item()
+                    if normal_admitted.any()
+                    else None,
+                    "friction_utilization_normal_force_floor_n": 1e-9,
                 }
                 if motion is not None:
                     row.update(motion.metrics(workload.robot, step))

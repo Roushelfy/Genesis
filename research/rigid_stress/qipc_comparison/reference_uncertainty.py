@@ -8,7 +8,16 @@ from pathlib import Path
 import numpy as np
 
 from .artifacts import file_id, runtime_identity, write_json
-from .common_metric import TetSampler, build_columns, build_surfaces, corotation, field_error, tangent, tensor_error
+from .common_metric import (
+    TetSampler,
+    build_columns,
+    build_surfaces,
+    corotation,
+    field_error,
+    tangent,
+    tensor_error,
+    time_integrated_error,
+)
 from .compare_fields import area_error, resultants
 
 
@@ -126,6 +135,32 @@ def main():
                         boundaries[1][selected], boundaries[0][selected], surfaces.weights_m2[selected]
                     )
                 rows.append(row)
+        complete = (
+            json.loads((args.reference / "result.json").read_text())["completed_requested_history"]
+            and json.loads((folder / "result.json").read_text())["completed_requested_history"]
+            and len(rows) == len(reference_index)
+        )
+        temporal = {}
+        if complete:
+            for key, floor in (
+                ("common_tangent", 1.0),
+                ("inner_surface", 1.0),
+                ("outer_surface", 1.0),
+                ("membrane", 5e-4),
+                ("bending", 2.5e-7),
+            ):
+                reference_key = (
+                    "reference_weighted_rms" if key in ("membrane", "bending") else "reference_tensor_rms_pa"
+                )
+                error_key = (
+                    "absolute_weighted_rms_error" if key in ("membrane", "bending") else "absolute_tensor_rms_error_pa"
+                )
+                temporal[key] = time_integrated_error(
+                    [row["time_s"] for row in rows],
+                    [row[key][reference_key] for row in rows],
+                    [row[key][error_key] for row in rows],
+                    floor,
+                )
         comparisons.append(
             {
                 "candidate": file_id(folder / "result.json"),
@@ -136,6 +171,7 @@ def main():
                 "material_columns": len(columns.area),
                 "pair_quadrature_points": len(columns.points),
                 "history": rows,
+                "complete_time_integrated_common_metrics": temporal,
             }
         )
     write_json(

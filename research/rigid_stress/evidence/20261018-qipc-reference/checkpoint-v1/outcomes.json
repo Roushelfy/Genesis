@@ -1,0 +1,91 @@
+{
+  "source": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-outcomes-v1/group0/outcomes/result.json",
+    "bytes": 980457,
+    "sha256": "28b28ac08d29eaf1a6f88ad68992e3945dfa432ed5929f690e8fc7e3791093d9"
+  },
+  "kind": "actual-common-grasp-outcomes-and-relative-drift",
+  "mujoco_version": "3.15.0",
+  "kinematic_model": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/roundoff-prescribed-v1/group0/snh/panda-bank-initial.xml",
+    "bytes": 18293,
+    "sha256": "438c5ffd1f96ebfff3bd10ab92736885cfa054475d4a2c50222be00def7067e4"
+  },
+  "protocol": "prescribed",
+  "reference_qualified": false,
+  "scope": "Actual mass COMs and fitted nonrigid RMS, without unweighted-vertex substitutions. Hand frames use the authored MuJoCo kinematics of each actual saved q; prescribed QIPC uses its shared target q, so its separately measured finite DBC tracking error remains. Hand-relative COM drift is a macroscopic grasp/slip observable, not a local contact stick/slip classification or friction-cone certificate. A zero native geometric deformation is its rigid-model assumption. No physical accuracy ranking or damage threshold follows from these descriptive outcomes.",
+  "histories": [
+    {
+      "method": "reference",
+      "source": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/roundoff-prescribed-v1/group0/snh/result.json",
+        "bytes": 651,
+        "sha256": "17224a4d93ec334c6d052b829d086880e6a8c19be55f56b0ac3dd3898f7e15f0"
+      },
+      "mass_contract": "Actual P1 nodal mass weights",
+      "maximum_com_height_m": 0.14834294088820024,
+      "final_com_world_m": [
+        0.5973091086324707,
+        0.036519733897396704,
+        0.025224711094578956
+      ],
+      "maximum_nonrigid_rms_m": 0.000107697399675913,
+      "maximum_hand_relative_com_drift_during_first_lift_hold_m": 7.350966368745302e-05,
+      "minimum_com_height_during_weak_first_grip_m": 0.14827088064786084
+    },
+    {
+      "method": "dpr",
+      "source": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-prescribed-v1/group0/dpr-1e10/result.json",
+        "bytes": 326,
+        "sha256": "4ffc3d6e931c3b604b3be2c8c31be593121d18028e3f13c5621aac2f0d81c4e9"
+      },
+      "mass_contract": "Actual authored URDF COM; geometry is rigid by the model assumption",
+      "maximum_com_height_m": 0.14810297394992208,
+      "final_com_world_m": [
+        0.6157988975200194,
+        0.014273006604332531,
+        0.02087487711402893
+      ],
+      "maximum_nonrigid_rms_m": 0.0,
+      "maximum_hand_relative_com_drift_during_first_lift_hold_m": 0.002823212162043116,
+      "minimum_com_height_during_weak_first_grip_m": 0.14535173598198092
+    },
+    {
+      "method": "scr",
+      "source": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-prescribed-v1/group2/scr-1e10/result.json",
+        "bytes": 326,
+        "sha256": "b96fec17ab9f905d309b4926ea983f9323c5b26688ba3a6829d726cb8ab03bde"
+      },
+      "mass_contract": "Actual authored URDF COM; geometry is rigid by the model assumption",
+      "maximum_com_height_m": 0.14810297394992208,
+      "final_com_world_m": [
+        0.6157988975200194,
+        0.014273006604332531,
+        0.02087487711402893
+      ],
+      "maximum_nonrigid_rms_m": 0.0,
+      "maximum_hand_relative_com_drift_during_first_lift_hold_m": 0.002823212162043116,
+      "minimum_com_height_during_weak_first_grip_m": 0.14535173598198092
+    },
+    {
+      "method": "shell",
+      "source": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-prescribed-v1/group0/stock/result.json",
+        "bytes": 300,
+        "sha256": "4f00f9541251f5a830cbc7d2b56fac8ff323e3603cf1eabcba72a4d406b50139"
+      },
+      "mass_contract": "Explicit legacy nominal500um rho2000 face-area masses; not an unweighted vertex mean",
+      "maximum_com_height_m": 0.146961543111178,
+      "final_com_world_m": [
+        0.6493550488878216,
+        0.0459110361239489,
+        0.1450309225342153
+      ],
+      "maximum_nonrigid_rms_m": 0.0002263422979253382,
+      "maximum_hand_relative_com_drift_during_first_lift_hold_m": 0.01254154690549484,
+      "minimum_com_height_during_weak_first_grip_m": 0.13477965098697606
+    }
+  ]
+}

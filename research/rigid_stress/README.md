@@ -14,6 +14,10 @@ body_source_prior) and deformable shell for error, speed, memory and stability.
 the presets preserve their physics/defaults. The [running guide](docs/RUNNING_QIPC_REFERENCE.md)
 and [progress record](docs/QIPC_REFERENCE_PROGRESS.md) retain current controls,
 complete candidate histories, failed reference attempts and open qualification gates.
+The [working results](docs/QIPC_REFERENCE_RESULTS_20261018.md) and
+[compact checkpoint](evidence/20261018-qipc-reference/checkpoint-v1/README.md)
+retain the measured complete-history discrepancies and the unresolved spatial/
+timestep uncertainty; the goal is not complete.
 
 The [shell PR22 comparison](docs/SHELL_COMPARISON_RESULTS_20261018.md) is complete
 within its [declared scope](docs/SHELL_SOLVER_COMPARISON_GOAL.md). It pins both

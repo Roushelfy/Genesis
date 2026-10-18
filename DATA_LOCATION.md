@@ -8,6 +8,18 @@ dependencies and runtime arrays stay on data. Existing QIPC dependency/toolkit
 caches are reused without modifying active environments or unrelated jobs.
 See [execution status](research/rigid_stress/docs/QIPC_REFERENCE_PROGRESS.md).
 
+On2026-10-18 the shared data mount reports800TB used and zero available;
+exclusive file creation fails with errno122. New scientific submissions are
+held until a writable persistent destination is available. Existing results,
+native checkpoints/builds, profiler traces, source receipts and Genesis
+precomputations stay in place. Only private regenerable compilation caches of
+successful terminal groups were removed, with exact paths/bytes in the
+[incident journal](research/rigid_stress/docs/QIPC_STORAGE_INCIDENT_20261018.json).
+No runtime data was moved into home. The small selected publication checkpoint
+under `research/rigid_stress/evidence/20261018-qipc-reference/checkpoint-v1/`
+contains existing derived JSON summaries and provenance for the working report;
+it is not a runtime storage fallback or a completed-goal evidence closure.
+
 # Completed shell PR22 comparison
 
 `runs/20261018-shell-comparison/` under the established task data root holds

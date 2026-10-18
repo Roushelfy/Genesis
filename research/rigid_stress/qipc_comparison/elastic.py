@@ -1,6 +1,6 @@
 """Physical, unprojected stress from the pinned QIPC SNH and StVK-Hencky energies."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 
 import torch
 
@@ -46,6 +46,21 @@ class SolidField:
 
 
 def evaluate(F, mu, lame, model="snh"):
+    # Bound individual cuSOLVER observer batches. Every matrix is independent;
+    # this changes neither the energy/stress formula nor the native solve.
+    if F.ndim == 3 and len(F) > 16384:
+        mu = torch.broadcast_to(mu, F.shape[:-2])
+        lame = torch.broadcast_to(lame, F.shape[:-2])
+        chunks = [
+            evaluate(F[start : start + 16384], mu[start : start + 16384], lame[start : start + 16384], model)
+            for start in range(0, len(F), 16384)
+        ]
+        return SolidField(
+            **{
+                member.name: torch.cat([getattr(chunk, member.name) for chunk in chunks], dim=0)
+                for member in fields(SolidField)
+            }
+        )
     determinant = torch.linalg.det(F)
     if model == "snh":
         tensor = snh_cauchy(F, mu, lame)

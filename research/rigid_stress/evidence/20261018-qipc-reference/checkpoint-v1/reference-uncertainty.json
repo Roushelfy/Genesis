@@ -1,0 +1,472 @@
+{
+  "source": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/reference-pairs-v2/group0/pairs/result.json",
+    "bytes": 8498915,
+    "sha256": "2a671636b69520e03b1f4e7f46ecd0bf55b70b053f2d371666d8d46ee548d945"
+  },
+  "reference": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/roundoff-prescribed-v1/group0/snh/result.json",
+    "bytes": 651,
+    "sha256": "17224a4d93ec334c6d052b829d086880e6a8c19be55f56b0ac3dd3898f7e15f0"
+  },
+  "comparisons": [
+    {
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-mesh-uncertainty-v1/group0/base1-surface1-wall2/result.json",
+        "bytes": 652,
+        "sha256": "f0fc1fc93275376fd8c8bd67f4e344dd84b9e7f8cb157ba535c95ad5e113a927"
+      },
+      "candidate_folder": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-mesh-uncertainty-v1/group0/base1-surface1-wall2",
+      "candidate_config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 1e-08,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg"
+      },
+      "common_times": 600,
+      "missing_candidate_ticks": [],
+      "material_columns": 1280,
+      "pair_quadrature_points": 40960,
+      "complete_time_integrated_common_metrics": {
+        "common_tangent": {
+          "relative_error": 0.12430451784325375,
+          "reference_rms_over_time": 21225295.029199243,
+          "absolute_rms_error_over_time": 2638400.064685422,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "inner_surface": {
+          "relative_error": 0.007386062736986539,
+          "reference_rms_over_time": 20406945.17369578,
+          "absolute_rms_error_over_time": 150726.9773231617,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "outer_surface": {
+          "relative_error": 0.006008578952475125,
+          "reference_rms_over_time": 21965493.629140325,
+          "absolute_rms_error_over_time": 131981.402700779,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "membrane": {
+          "relative_error": 0.012414407892997864,
+          "reference_rms_over_time": 9955.359842453014,
+          "absolute_rms_error_over_time": 123.58989780578267,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 0.0005,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "bending": {
+          "relative_error": 0.2337558867560397,
+          "reference_rms_over_time": 0.09306399895704963,
+          "absolute_rms_error_over_time": 0.02175425760126829,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 2.5e-07,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        }
+      }
+    },
+    {
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-mesh-uncertainty-v1/group1/base1-surface2-wall4/result.json",
+        "bytes": 651,
+        "sha256": "27a85f19e6d03200027ad65294124555c398c0a9b35b0d7cf3a22c370d7e97dc"
+      },
+      "candidate_folder": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-mesh-uncertainty-v1/group1/base1-surface2-wall4",
+      "candidate_config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 1e-08,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg"
+      },
+      "common_times": 600,
+      "missing_candidate_ticks": [],
+      "material_columns": 1280,
+      "pair_quadrature_points": 51200,
+      "complete_time_integrated_common_metrics": {
+        "common_tangent": {
+          "relative_error": 0.4102730374885699,
+          "reference_rms_over_time": 21225295.029199235,
+          "absolute_rms_error_over_time": 8708166.263220616,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "inner_surface": {
+          "relative_error": 0.3833875022115007,
+          "reference_rms_over_time": 20406945.17369578,
+          "absolute_rms_error_over_time": 7823767.737910264,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "outer_surface": {
+          "relative_error": 0.3986406278557647,
+          "reference_rms_over_time": 21965493.629140325,
+          "absolute_rms_error_over_time": 8756338.171482299,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "membrane": {
+          "relative_error": 0.39171980446824467,
+          "reference_rms_over_time": 9955.359842453014,
+          "absolute_rms_error_over_time": 3899.7116108967093,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 0.0005,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "bending": {
+          "relative_error": 0.8108060782472524,
+          "reference_rms_over_time": 0.09306399895704953,
+          "absolute_rms_error_over_time": 0.07545685602037171,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 2.5e-07,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        }
+      }
+    },
+    {
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-surface-uncertainty-v1/group0/base1-surface2-wall2/result.json",
+        "bytes": 652,
+        "sha256": "e8bad635307911c3d2121b4d4c50e6d8551e677835ed2bb1a7b894c294ca8843"
+      },
+      "candidate_folder": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-surface-uncertainty-v1/group0/base1-surface2-wall2",
+      "candidate_config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 1e-08,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg"
+      },
+      "common_times": 600,
+      "missing_candidate_ticks": [],
+      "material_columns": 1280,
+      "pair_quadrature_points": 40960,
+      "complete_time_integrated_common_metrics": {
+        "common_tangent": {
+          "relative_error": 0.40862922036315735,
+          "reference_rms_over_time": 21225295.029199243,
+          "absolute_rms_error_over_time": 8673275.759759685,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "inner_surface": {
+          "relative_error": 0.38162686798280365,
+          "reference_rms_over_time": 20406945.17369578,
+          "absolute_rms_error_over_time": 7787838.571734311,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "outer_surface": {
+          "relative_error": 0.39493752249351743,
+          "reference_rms_over_time": 21965493.629140325,
+          "absolute_rms_error_over_time": 8674997.63423982,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "membrane": {
+          "relative_error": 0.3909535009595831,
+          "reference_rms_over_time": 9955.359842453014,
+          "absolute_rms_error_over_time": 3892.082783719449,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 0.0005,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "bending": {
+          "relative_error": 0.905909243683611,
+          "reference_rms_over_time": 0.09306399895704964,
+          "absolute_rms_error_over_time": 0.0843075369093532,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 2.5e-07,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        }
+      }
+    },
+    {
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-numerical-uncertainty-v1/group0/dt-half/result.json",
+        "bytes": 654,
+        "sha256": "0ba3618667474c985528ccb58e5cb5fbf7c9770fc80e286a7b34c644b1792123"
+      },
+      "candidate_folder": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-numerical-uncertainty-v1/group0/dt-half",
+      "candidate_config": {
+        "dt": 0.0005,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 1e-08,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg"
+      },
+      "common_times": 600,
+      "missing_candidate_ticks": [],
+      "material_columns": 1280,
+      "pair_quadrature_points": 30720,
+      "complete_time_integrated_common_metrics": {
+        "common_tangent": {
+          "relative_error": 0.22998887235952561,
+          "reference_rms_over_time": 21225295.029199243,
+          "absolute_rms_error_over_time": 4881581.669263777,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "inner_surface": {
+          "relative_error": 0.22561512623423302,
+          "reference_rms_over_time": 20406945.17369578,
+          "absolute_rms_error_over_time": 4604115.511418445,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "outer_surface": {
+          "relative_error": 0.2340439047444124,
+          "reference_rms_over_time": 21965493.629140325,
+          "absolute_rms_error_over_time": 5140889.898602515,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "membrane": {
+          "relative_error": 0.22835536337357096,
+          "reference_rms_over_time": 9955.359842453014,
+          "absolute_rms_error_over_time": 2273.3598143380145,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 0.0005,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "bending": {
+          "relative_error": 0.356275794718177,
+          "reference_rms_over_time": 0.09306399895704964,
+          "absolute_rms_error_over_time": 0.03315645018807445,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 2.5e-07,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        }
+      }
+    },
+    {
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-numerical-uncertainty-v1/group1/nonlinear1e8/result.json",
+        "bytes": 651,
+        "sha256": "bc9dbc527b39350d3df52a1d90c00c2c05859289e25aaa8cbb3bbaf21d423e4a"
+      },
+      "candidate_folder": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-numerical-uncertainty-v1/group1/nonlinear1e8",
+      "candidate_config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-08,
+        "linear_tolerance": 1e-08,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg"
+      },
+      "common_times": 600,
+      "missing_candidate_ticks": [],
+      "material_columns": 1280,
+      "pair_quadrature_points": 30720,
+      "complete_time_integrated_common_metrics": {
+        "common_tangent": {
+          "relative_error": 8.791226555054761e-08,
+          "reference_rms_over_time": 21225295.029199243,
+          "absolute_rms_error_over_time": 1.865963772995682,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "inner_surface": {
+          "relative_error": 8.660295931982906e-08,
+          "reference_rms_over_time": 20406945.17369578,
+          "absolute_rms_error_over_time": 1.7673018427195575,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "outer_surface": {
+          "relative_error": 8.937477964645157e-08,
+          "reference_rms_over_time": 21965493.629140325,
+          "absolute_rms_error_over_time": 1.9631611529299522,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "membrane": {
+          "relative_error": 8.699628486577356e-08,
+          "reference_rms_over_time": 9955.359842453014,
+          "absolute_rms_error_over_time": 0.000866079320795325,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 0.0005,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "bending": {
+          "relative_error": 9.605726934610332e-08,
+          "reference_rms_over_time": 0.09306399895704964,
+          "absolute_rms_error_over_time": 8.939473614242795e-09,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 2.5e-07,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        }
+      }
+    },
+    {
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-physical-tolerance-v1/group1/hencky1e7/result.json",
+        "bytes": 654,
+        "sha256": "a0a65e99a72f96622693641d03c66c43ea5db5ba5830cc6d28eedbbb798b7678"
+      },
+      "candidate_folder": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-physical-tolerance-v1/group1/hencky1e7",
+      "candidate_config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-06,
+        "linear_tolerance": 1e-07,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "hencky",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg"
+      },
+      "common_times": 600,
+      "missing_candidate_ticks": [],
+      "material_columns": 1280,
+      "pair_quadrature_points": 30720,
+      "complete_time_integrated_common_metrics": {
+        "common_tangent": {
+          "relative_error": 0.0033763032857742244,
+          "reference_rms_over_time": 21225295.029199243,
+          "absolute_rms_error_over_time": 71663.0333486127,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "inner_surface": {
+          "relative_error": 0.0033277956177415503,
+          "reference_rms_over_time": 20406945.17369578,
+          "absolute_rms_error_over_time": 67910.14272051689,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "outer_surface": {
+          "relative_error": 0.003641036983329471,
+          "reference_rms_over_time": 21965493.629140325,
+          "absolute_rms_error_over_time": 79977.1746607878,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "membrane": {
+          "relative_error": 0.0030797843255583293,
+          "reference_rms_over_time": 9955.359842453014,
+          "absolute_rms_error_over_time": 30.66036119807963,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 0.0005,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "bending": {
+          "relative_error": 0.007499712028896688,
+          "reference_rms_over_time": 0.09306399895704964,
+          "absolute_rms_error_over_time": 0.000697953192435414,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 2.5e-07,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        }
+      }
+    }
+  ],
+  "reference_qualified": false,
+  "scope": "The same material face-centroid columns are integrated on every union of both P1 partitions. Norms and resultants are exact along these columns up to geometric/roundoff tolerance; in-plane sampling remains finite. These are separate uncertainty contrasts, not an additive scalar error budget. Raw full-mesh peaks/solver caps remain in the source microstep journals. Complete finite histories and a small net wrench difference do not by themselves qualify per-finger reactions, contact regularization or continuum peaks."
+}

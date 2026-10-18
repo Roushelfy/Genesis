@@ -1,0 +1,236 @@
+[
+  {
+    "campaign": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/integrated-metric-control-v1",
+    "analysis_inventory": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/integrated-metric-control-v1/analysis-files.json",
+      "bytes": 23494,
+      "sha256": "952bd461fe6ff930350ec896cc5c3024e7cf0fc369b4b72327cdd2d87e1c7fbb"
+    },
+    "engine_receipt": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/integrated-metric-control-v1/source.json",
+      "bytes": 153730,
+      "sha256": "6ecf71a78230eb3ed2dddac191361d6bc3509261a4e84170b67ec7892f276384"
+    },
+    "engine_patch": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/integrated-metric-control-v1/source.patch",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tasks": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/integrated-metric-control-v1/tasks.json",
+      "bytes": 1148,
+      "sha256": "3fba2abc3456b45be91d2956439b18e13a48420f4db5b2c23a13d5acf0c356da"
+    },
+    "submission": {
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--array=0-0%1",
+        "--partition=rtx-mid",
+        "--gres=gpu:1",
+        "--cpus-per-task=8",
+        "--mem=64G",
+        "--time=30",
+        "--job-name=shell22-compare",
+        "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/integrated-metric-control-v1/logs/%A_%a.log",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/integrated-metric-control-v1/job.sh"
+      ],
+      "job": "726486"
+    }
+  },
+  {
+    "campaign": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/reference-pairs-v2",
+    "analysis_inventory": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/reference-pairs-v2/analysis-files.json",
+      "bytes": 23494,
+      "sha256": "952bd461fe6ff930350ec896cc5c3024e7cf0fc369b4b72327cdd2d87e1c7fbb"
+    },
+    "engine_receipt": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/reference-pairs-v2/source.json",
+      "bytes": 153730,
+      "sha256": "6ecf71a78230eb3ed2dddac191361d6bc3509261a4e84170b67ec7892f276384"
+    },
+    "engine_patch": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/reference-pairs-v2/source.patch",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tasks": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/reference-pairs-v2/tasks.json",
+      "bytes": 1508,
+      "sha256": "012787a39cfad09fe90870cbc2b272fb4aa50b361afd72be9822a8958433f8dc"
+    },
+    "submission": {
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--array=0-0%1",
+        "--partition=rtx-mid",
+        "--gres=gpu:1",
+        "--cpus-per-task=8",
+        "--mem=64G",
+        "--time=60",
+        "--job-name=shell22-compare",
+        "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/reference-pairs-v2/logs/%A_%a.log",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/reference-pairs-v2/job.sh"
+      ],
+      "job": "726487"
+    }
+  },
+  {
+    "campaign": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-outcomes-v1",
+    "analysis_inventory": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-outcomes-v1/analysis-files.json",
+      "bytes": 23493,
+      "sha256": "5582c6c21490a8e0c9ae5208dad571c38a841f8005ec8254bbe480b35f58ff91"
+    },
+    "engine_receipt": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-outcomes-v1/source.json",
+      "bytes": 153730,
+      "sha256": "6ecf71a78230eb3ed2dddac191361d6bc3509261a4e84170b67ec7892f276384"
+    },
+    "engine_patch": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-outcomes-v1/source.patch",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tasks": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-outcomes-v1/tasks.json",
+      "bytes": 1043,
+      "sha256": "bc3db4e768dde7e8b313b27406c070f04ba3bb5c87c5c5cbbcb3c3c96f29291c"
+    },
+    "submission": {
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--array=0-0%1",
+        "--partition=rtx-mid",
+        "--gres=gpu:1",
+        "--cpus-per-task=8",
+        "--mem=64G",
+        "--time=20",
+        "--job-name=shell22-compare",
+        "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-outcomes-v1/logs/%A_%a.log",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-outcomes-v1/job.sh"
+      ],
+      "job": "726482"
+    }
+  },
+  {
+    "campaign": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-geometry-audit-v2",
+    "analysis_inventory": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-geometry-audit-v2/analysis-files.json",
+      "bytes": 23319,
+      "sha256": "4e3abeaae43cc9bc290c67e183b46920c45d97ddf0ec4145ff7ab3e772ad6bf9"
+    },
+    "engine_receipt": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-geometry-audit-v2/source.json",
+      "bytes": 153730,
+      "sha256": "6ecf71a78230eb3ed2dddac191361d6bc3509261a4e84170b67ec7892f276384"
+    },
+    "engine_patch": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-geometry-audit-v2/source.patch",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tasks": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-geometry-audit-v2/tasks.json",
+      "bytes": 987,
+      "sha256": "eaf806abfabdc6e1af94017c95c9c55b964b115f17ec2c31382b6b24acd22e5f"
+    },
+    "submission": {
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--array=0-0%1",
+        "--partition=rtx-mid",
+        "--gres=gpu:1",
+        "--cpus-per-task=8",
+        "--mem=64G",
+        "--time=15",
+        "--job-name=shell22-compare",
+        "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-geometry-audit-v2/logs/%A_%a.log",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-geometry-audit-v2/job.sh"
+      ],
+      "job": "726477"
+    }
+  },
+  {
+    "campaign": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-contact-diagnostics-v1",
+    "analysis_inventory": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-contact-diagnostics-v1/analysis-files.json",
+      "bytes": 23494,
+      "sha256": "720fd20a765d59f68b817777375431dbb0dee43ef106fff3ba24739f09befeef"
+    },
+    "engine_receipt": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-contact-diagnostics-v1/source.json",
+      "bytes": 153730,
+      "sha256": "6ecf71a78230eb3ed2dddac191361d6bc3509261a4e84170b67ec7892f276384"
+    },
+    "engine_patch": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-contact-diagnostics-v1/source.patch",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tasks": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-contact-diagnostics-v1/tasks.json",
+      "bytes": 1220,
+      "sha256": "0c3be228e7681cf3a9d4bf70f106e701720b32e9e1f586e9a2fb6549bf38182c"
+    },
+    "submission": {
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--array=0-1%2",
+        "--partition=rtx-mid",
+        "--gres=gpu:1",
+        "--cpus-per-task=8",
+        "--mem=64G",
+        "--time=45",
+        "--job-name=shell22-compare",
+        "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-contact-diagnostics-v1/logs/%A_%a.log",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-contact-diagnostics-v1/job.sh"
+      ],
+      "job": "726488"
+    }
+  },
+  {
+    "campaign": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/large-field-control-v1",
+    "analysis_inventory": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/large-field-control-v1/analysis-files.json",
+      "bytes": 23319,
+      "sha256": "15597fa867ebc6fe19b726501b297c6f03173a02cbbba64d89657986e907ce63"
+    },
+    "engine_receipt": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/large-field-control-v1/source.json",
+      "bytes": 160281,
+      "sha256": "7357e0003acf7925e7b647fc68146fe478d0e7797676ec069f50e459ec88c8d4"
+    },
+    "engine_patch": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/large-field-control-v1/source.patch",
+      "bytes": 1872,
+      "sha256": "c9ecba4791247396c4bad5cf2937a9bb23973e9182296cdcb4a94da0ee1c32ea"
+    },
+    "tasks": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/large-field-control-v1/tasks.json",
+      "bytes": 148,
+      "sha256": "ab8c6fa452a8cef041c8192401229372cbffa3cdc28174d5f41d021f86284544"
+    },
+    "submission": {
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--array=0-0%1",
+        "--partition=rtx-mid",
+        "--gres=gpu:1",
+        "--cpus-per-task=8",
+        "--mem=64G",
+        "--time=15",
+        "--job-name=shell22-compare",
+        "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/large-field-control-v1/logs/%A_%a.log",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/large-field-control-v1/job.sh"
+      ],
+      "job": "726471"
+    }
+  }
+]

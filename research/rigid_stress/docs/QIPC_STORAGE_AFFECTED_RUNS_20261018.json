@@ -1,0 +1,799 @@
+{
+  "time_utc": "2026-10-18T12:03:27.389796+00:00",
+  "scope": "Filesystem/result metadata inspection only. Hash-verified checkpoints are not scientifically validated restarts; incomplete tails remain unchanged. No simulation or derived field calculation on login node.",
+  "records": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group0/case0",
+      "job": "726439",
+      "group": 0,
+      "task": "case0",
+      "group_returncode": null,
+      "journal": {
+        "valid_json_rows": 2338,
+        "malformed_lines": [],
+        "bytes": 5416882,
+        "last_valid": {
+          "step": 2337,
+          "time_s": 2.338,
+          "invalid_step": false,
+          "status": {
+            "scope": "scene",
+            "newton_exit_reason": "converged",
+            "newton_converged": true,
+            "newton_budget_exhausted": false,
+            "line_search_exhausted": false,
+            "pcg_termination_certified": false,
+            "ccd_exhaustion_certified": false
+          },
+          "minimum_det_F": 0.9999963207491397
+        }
+      },
+      "checkpoints": [
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group0/case0/native-checkpoints/step000500/checkpoint.json",
+          "absolute_next_step": 500,
+          "time_s": 0.5,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        },
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group0/case0/native-checkpoints/step001000/checkpoint.json",
+          "absolute_next_step": 1000,
+          "time_s": 1.0,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        },
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group0/case0/native-checkpoints/step001500/checkpoint.json",
+          "absolute_next_step": 1500,
+          "time_s": 1.5,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        },
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group0/case0/native-checkpoints/step002000/checkpoint.json",
+          "absolute_next_step": 2000,
+          "time_s": 2.0,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        }
+      ]
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group1/dt-half",
+      "job": "726439",
+      "group": 1,
+      "task": "dt-half",
+      "group_returncode": null,
+      "journal": {
+        "valid_json_rows": 4504,
+        "malformed_lines": [],
+        "bytes": 10402162,
+        "last_valid": {
+          "step": 4503,
+          "time_s": 2.2520000000000002,
+          "invalid_step": false,
+          "status": {
+            "scope": "scene",
+            "newton_exit_reason": "converged",
+            "newton_converged": true,
+            "newton_budget_exhausted": false,
+            "line_search_exhausted": false,
+            "pcg_termination_certified": false,
+            "ccd_exhaustion_certified": false
+          },
+          "minimum_det_F": 0.9999964629596516
+        }
+      },
+      "checkpoints": [
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group1/dt-half/native-checkpoints/step001000/checkpoint.json",
+          "absolute_next_step": 1000,
+          "time_s": 0.5,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        },
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group1/dt-half/native-checkpoints/step002000/checkpoint.json",
+          "absolute_next_step": 2000,
+          "time_s": 1.0,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        },
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group1/dt-half/native-checkpoints/step003000/checkpoint.json",
+          "absolute_next_step": 3000,
+          "time_s": 1.5,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        },
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group1/dt-half/native-checkpoints/step004000/checkpoint.json",
+          "absolute_next_step": 4000,
+          "time_s": 2.0,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        }
+      ]
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group2/surface2-wall4",
+      "job": "726439",
+      "group": 2,
+      "task": "surface2-wall4",
+      "group_returncode": null,
+      "journal": {
+        "valid_json_rows": 2416,
+        "malformed_lines": [],
+        "bytes": 5596231,
+        "last_valid": {
+          "step": 2415,
+          "time_s": 2.416,
+          "invalid_step": false,
+          "status": {
+            "scope": "scene",
+            "newton_exit_reason": "converged",
+            "newton_converged": true,
+            "newton_budget_exhausted": false,
+            "line_search_exhausted": false,
+            "pcg_termination_certified": false,
+            "ccd_exhaustion_certified": false
+          },
+          "minimum_det_F": 0.9999962502140933
+        }
+      },
+      "checkpoints": [
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group2/surface2-wall4/native-checkpoints/step000500/checkpoint.json",
+          "absolute_next_step": 500,
+          "time_s": 0.5,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        },
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group2/surface2-wall4/native-checkpoints/step001000/checkpoint.json",
+          "absolute_next_step": 1000,
+          "time_s": 1.0,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        },
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group2/surface2-wall4/native-checkpoints/step001500/checkpoint.json",
+          "absolute_next_step": 1500,
+          "time_s": 1.5,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        },
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group2/surface2-wall4/native-checkpoints/step002000/checkpoint.json",
+          "absolute_next_step": 2000,
+          "time_s": 2.0,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        }
+      ]
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group3/strict",
+      "job": "726439",
+      "group": 3,
+      "task": "strict",
+      "group_returncode": null,
+      "journal": {
+        "valid_json_rows": 2287,
+        "malformed_lines": [],
+        "bytes": 5284077,
+        "last_valid": {
+          "step": 2286,
+          "time_s": 2.287,
+          "invalid_step": false,
+          "status": {
+            "scope": "scene",
+            "newton_exit_reason": "converged",
+            "newton_converged": true,
+            "newton_budget_exhausted": false,
+            "line_search_exhausted": false,
+            "pcg_termination_certified": false,
+            "ccd_exhaustion_certified": false
+          },
+          "minimum_det_F": 0.9999976906253408
+        }
+      },
+      "checkpoints": [
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group3/strict/native-checkpoints/step000500/checkpoint.json",
+          "absolute_next_step": 500,
+          "time_s": 0.5,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        },
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group3/strict/native-checkpoints/step001000/checkpoint.json",
+          "absolute_next_step": 1000,
+          "time_s": 1.0,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        },
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group3/strict/native-checkpoints/step001500/checkpoint.json",
+          "absolute_next_step": 1500,
+          "time_s": 1.5,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        },
+        {
+          "receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-checkpointed-v1/group3/strict/native-checkpoints/step002000/checkpoint.json",
+          "absolute_next_step": 2000,
+          "time_s": 2.0,
+          "hashes_match": {
+            "native": true,
+            "controller": true,
+            "inputs": true
+          }
+        }
+      ]
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-roundoff-reference-v1/group0/case0",
+      "job": "726342",
+      "group": 0,
+      "task": "case0",
+      "group_returncode": null,
+      "journal": {
+        "valid_json_rows": 5270,
+        "malformed_lines": [],
+        "bytes": 12225094,
+        "last_valid": {
+          "step": 5269,
+          "time_s": 5.2700000000000005,
+          "invalid_step": false,
+          "status": {
+            "scope": "scene",
+            "newton_exit_reason": "converged",
+            "newton_converged": true,
+            "newton_budget_exhausted": false,
+            "line_search_exhausted": false,
+            "pcg_termination_certified": false,
+            "ccd_exhaustion_certified": false
+          },
+          "minimum_det_F": 0.9999962490293081
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-roundoff-reference-v1/group1/case2",
+      "job": "726342",
+      "group": 1,
+      "task": "case2",
+      "group_returncode": null,
+      "journal": {
+        "valid_json_rows": 8613,
+        "malformed_lines": [],
+        "bytes": 19804796,
+        "last_valid": {
+          "step": 8612,
+          "time_s": 8.613,
+          "invalid_step": false,
+          "status": {
+            "scope": "scene",
+            "newton_exit_reason": "converged",
+            "newton_converged": true,
+            "newton_budget_exhausted": false,
+            "line_search_exhausted": false,
+            "pcg_termination_certified": false,
+            "ccd_exhaustion_certified": false
+          },
+          "minimum_det_F": 0.9999962394900827
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-roundoff-reference-v1/group2/case7",
+      "job": "726342",
+      "group": 2,
+      "task": "case7",
+      "group_returncode": "0",
+      "result": {
+        "kind": "QIPC-Franka-capped-candidate",
+        "completed_requested_history": true,
+        "requested_steps": 9000,
+        "executed_steps": 9000,
+        "invalid_steps": 0,
+        "pcg_cap_steps": 24,
+        "reference_qualified": false
+      },
+      "journal": {
+        "valid_json_rows": 9000,
+        "malformed_lines": [],
+        "bytes": 20674113,
+        "last_valid": {
+          "step": 8999,
+          "time_s": 9.0,
+          "invalid_step": false,
+          "status": {
+            "scope": "scene",
+            "newton_exit_reason": "converged",
+            "newton_converged": true,
+            "newton_budget_exhausted": false,
+            "line_search_exhausted": false,
+            "pcg_termination_certified": false,
+            "ccd_exhaustion_certified": false
+          },
+          "minimum_det_F": 0.9999994631970599
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-coupled-refinement-v2/group0/base1-surface3-wall4",
+      "job": "726472",
+      "group": 0,
+      "task": "base1-surface3-wall4",
+      "group_returncode": null,
+      "journal": {
+        "valid_json_rows": 2343,
+        "malformed_lines": [],
+        "bytes": 3318581,
+        "last_valid": {
+          "step": 2342,
+          "time_s": 2.343,
+          "minimum_det_F": 0.9887879402553552
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-numerical-uncertainty-v1/group0/dt-half",
+      "job": "726304",
+      "group": 0,
+      "task": "dt-half",
+      "group_returncode": "0",
+      "result": {
+        "kind": "QIPC-prescribed-link-motion-candidate",
+        "completed_requested_history": true,
+        "requested_steps": 12000,
+        "executed_steps": 12000,
+        "reference_qualified": false
+      },
+      "journal": {
+        "valid_json_rows": 12000,
+        "malformed_lines": [],
+        "bytes": 17017500,
+        "last_valid": {
+          "step": 11999,
+          "time_s": 6.0,
+          "minimum_det_F": 0.9999994336799314
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-numerical-uncertainty-v1/group1/nonlinear1e8",
+      "job": "726304",
+      "group": 1,
+      "task": "nonlinear1e8",
+      "group_returncode": "0",
+      "result": {
+        "kind": "QIPC-prescribed-link-motion-candidate",
+        "completed_requested_history": true,
+        "requested_steps": 6000,
+        "executed_steps": 6000,
+        "reference_qualified": false
+      },
+      "journal": {
+        "valid_json_rows": 6000,
+        "malformed_lines": [],
+        "bytes": 8504708,
+        "last_valid": {
+          "step": 5999,
+          "time_s": 6.0,
+          "minimum_det_F": 0.9999993249096863
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-numerical-uncertainty-v1/group2/friction-half",
+      "job": "726304",
+      "group": 2,
+      "task": "friction-half",
+      "group_returncode": "0",
+      "result": {
+        "kind": "QIPC-prescribed-link-motion-candidate",
+        "completed_requested_history": true,
+        "requested_steps": 6000,
+        "executed_steps": 6000,
+        "reference_qualified": false
+      },
+      "journal": {
+        "valid_json_rows": 6000,
+        "malformed_lines": [],
+        "bytes": 8503163,
+        "last_valid": {
+          "step": 5999,
+          "time_s": 6.0,
+          "minimum_det_F": 0.9999994415577453
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-numerical-uncertainty-v1/group3/band-half",
+      "job": "726304",
+      "group": 3,
+      "task": "band-half",
+      "group_returncode": null,
+      "journal": {
+        "valid_json_rows": 5788,
+        "malformed_lines": [],
+        "bytes": 8225590,
+        "last_valid": {
+          "step": 5787,
+          "time_s": 5.788,
+          "minimum_det_F": 0.9999995934942864
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-mesh-uncertainty-v1/group0/base1-surface1-wall2",
+      "job": "726301",
+      "group": 0,
+      "task": "base1-surface1-wall2",
+      "group_returncode": "0",
+      "result": {
+        "kind": "QIPC-prescribed-link-motion-candidate",
+        "completed_requested_history": true,
+        "requested_steps": 6000,
+        "executed_steps": 6000,
+        "reference_qualified": false
+      },
+      "journal": {
+        "valid_json_rows": 6000,
+        "malformed_lines": [],
+        "bytes": 8511761,
+        "last_valid": {
+          "step": 5999,
+          "time_s": 6.0,
+          "minimum_det_F": 0.9999993388010912
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-mesh-uncertainty-v1/group1/base1-surface2-wall4",
+      "job": "726301",
+      "group": 1,
+      "task": "base1-surface2-wall4",
+      "group_returncode": "0",
+      "result": {
+        "kind": "QIPC-prescribed-link-motion-candidate",
+        "completed_requested_history": true,
+        "requested_steps": 6000,
+        "executed_steps": 6000,
+        "reference_qualified": false
+      },
+      "journal": {
+        "valid_json_rows": 6000,
+        "malformed_lines": [],
+        "bytes": 8516952,
+        "last_valid": {
+          "step": 5999,
+          "time_s": 6.0,
+          "minimum_det_F": 0.9999986496889505
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-mesh-uncertainty-v1/group2/base1-surface2-wall8",
+      "job": "726301",
+      "group": 2,
+      "task": "base1-surface2-wall8",
+      "group_returncode": null,
+      "journal": {
+        "valid_json_rows": 2883,
+        "malformed_lines": [],
+        "bytes": 4089186,
+        "last_valid": {
+          "step": 2882,
+          "time_s": 2.883,
+          "minimum_det_F": 0.9931594943161048
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-surface-uncertainty-v1/group0/base1-surface2-wall2",
+      "job": "726365",
+      "group": 0,
+      "task": "base1-surface2-wall2",
+      "group_returncode": "0",
+      "result": {
+        "kind": "QIPC-prescribed-link-motion-candidate",
+        "completed_requested_history": true,
+        "requested_steps": 6000,
+        "executed_steps": 6000,
+        "reference_qualified": false
+      },
+      "journal": {
+        "valid_json_rows": 6000,
+        "malformed_lines": [],
+        "bytes": 8507381,
+        "last_valid": {
+          "step": 5999,
+          "time_s": 6.0,
+          "minimum_det_F": 0.9999986445143921
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-surface-uncertainty-v1/group1/base1-surface3-wall2",
+      "job": "726365",
+      "group": 1,
+      "task": "base1-surface3-wall2",
+      "group_returncode": "0",
+      "result": {
+        "kind": "QIPC-prescribed-link-motion-candidate",
+        "completed_requested_history": true,
+        "requested_steps": 6000,
+        "executed_steps": 6000,
+        "reference_qualified": false
+      },
+      "journal": {
+        "valid_json_rows": 6000,
+        "malformed_lines": [],
+        "bytes": 8523109,
+        "last_valid": {
+          "step": 5999,
+          "time_s": 6.0,
+          "minimum_det_F": 0.9999969649245211
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-band-prescribed-v1/group0/surface0-nominal-cutoff20um",
+      "job": "726473",
+      "group": 0,
+      "task": "surface0-nominal-cutoff20um",
+      "group_returncode": "0",
+      "result": {
+        "kind": "PR22-prescribed-full-field-history",
+        "completed_requested_history": true,
+        "requested_control_ticks": 6000,
+        "executed_control_ticks": 6000
+      },
+      "journal": {
+        "valid_json_rows": 6000,
+        "malformed_lines": [],
+        "bytes": 8603678,
+        "last_valid": {
+          "step": 5999,
+          "time_s": 6.0
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-band-prescribed-v1/group1/surface2-volume-cutoff20um",
+      "job": "726473",
+      "group": 1,
+      "task": "surface2-volume-cutoff20um",
+      "group_returncode": "0",
+      "result": {
+        "kind": "PR22-prescribed-full-field-history",
+        "completed_requested_history": true,
+        "requested_control_ticks": 6000,
+        "executed_control_ticks": 6000
+      },
+      "journal": {
+        "valid_json_rows": 6000,
+        "malformed_lines": [],
+        "bytes": 8644140,
+        "last_valid": {
+          "step": 5999,
+          "time_s": 6.0
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-band-capped-v1/group0/case0-stock-cutoff20um",
+      "job": "726475",
+      "group": 0,
+      "task": "case0-stock-cutoff20um",
+      "group_returncode": "0",
+      "result": {
+        "kind": "PR22-capped-full-field-history",
+        "completed_requested_history": true,
+        "requested_control_ticks": 900,
+        "executed_control_ticks": 900
+      },
+      "journal": {
+        "valid_json_rows": 900,
+        "malformed_lines": [],
+        "bytes": 1068906,
+        "last_valid": {
+          "step": 899,
+          "time_s": 9.0
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-band-capped-v1/group1/case0-volume-surface2-cutoff20um",
+      "job": "726475",
+      "group": 1,
+      "task": "case0-volume-surface2-cutoff20um",
+      "group_returncode": "0",
+      "result": {
+        "kind": "PR22-capped-full-field-history",
+        "completed_requested_history": true,
+        "requested_control_ticks": 900,
+        "executed_control_ticks": 900
+      },
+      "journal": {
+        "valid_json_rows": 900,
+        "malformed_lines": [],
+        "bytes": 1071070,
+        "last_valid": {
+          "step": 899,
+          "time_s": 9.0
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-solve-step-prescribed-v1/group0/nominal-strict-dt0.001",
+      "job": "726480",
+      "group": 0,
+      "task": "nominal-strict-dt0.001",
+      "group_returncode": "0",
+      "result": {
+        "kind": "PR22-prescribed-full-field-history",
+        "completed_requested_history": true,
+        "requested_control_ticks": 6000,
+        "executed_control_ticks": 6000
+      },
+      "journal": {
+        "valid_json_rows": 6000,
+        "malformed_lines": [],
+        "bytes": 8643721,
+        "last_valid": {
+          "step": 5999,
+          "time_s": 6.0
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-solve-step-prescribed-v1/group1/nominal-strict-dt0.0005",
+      "job": "726480",
+      "group": 1,
+      "task": "nominal-strict-dt0.0005",
+      "group_returncode": "0",
+      "result": {
+        "kind": "PR22-prescribed-full-field-history",
+        "completed_requested_history": true,
+        "requested_control_ticks": 12000,
+        "executed_control_ticks": 12000
+      },
+      "journal": {
+        "valid_json_rows": 12000,
+        "malformed_lines": [],
+        "bytes": 17118532,
+        "last_valid": {
+          "step": 11999,
+          "time_s": 6.0
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-solve-step-capped-v1/group0/nominal-strict-substeps10",
+      "job": "726478",
+      "group": 0,
+      "task": "nominal-strict-substeps10",
+      "group_returncode": "0",
+      "result": {
+        "kind": "PR22-capped-full-field-history",
+        "completed_requested_history": true,
+        "requested_control_ticks": 900,
+        "executed_control_ticks": 900
+      },
+      "journal": {
+        "valid_json_rows": 900,
+        "malformed_lines": [],
+        "bytes": 1071776,
+        "last_valid": {
+          "step": 899,
+          "time_s": 9.0
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-solve-step-capped-v1/group1/nominal-strict-substeps20",
+      "job": "726478",
+      "group": 1,
+      "task": "nominal-strict-substeps20",
+      "group_returncode": "0",
+      "result": {
+        "kind": "PR22-capped-full-field-history",
+        "completed_requested_history": true,
+        "requested_control_ticks": 900,
+        "executed_control_ticks": 900
+      },
+      "journal": {
+        "valid_json_rows": 900,
+        "malformed_lines": [],
+        "bytes": 1065205,
+        "last_valid": {
+          "step": 899,
+          "time_s": 9.0
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/matched-shell-cost-v1/group0/surface0-full-s10-b32",
+      "job": "726460",
+      "group": 0,
+      "task": "surface0-full-s10-b32",
+      "group_returncode": "0",
+      "result": {
+        "kind": "matched-franka-egg"
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/matched-shell-cost-v1/group1/surface2-full-s10-b32",
+      "job": "726460",
+      "group": 1,
+      "task": "surface2-full-s10-b32",
+      "group_returncode": "0",
+      "result": {
+        "kind": "matched-franka-egg"
+      }
+    }
+  ],
+  "slurm_command": [
+    "sacct",
+    "-j",
+    "726439,726342,726301,726304,726472",
+    "-X",
+    "-n",
+    "-o",
+    "JobID,JobIDRaw,State,ExitCode,Elapsed,End",
+    "-P"
+  ],
+  "slurm_output": "726301_0|726302|COMPLETED|0:0|00:54:31|2026-10-18T09:57:52\n726301_1|726303|COMPLETED|0:0|02:11:58|2026-10-18T11:15:20\n726301_2|726301|FAILED|1:0|01:48:55|2026-10-18T11:46:47\n726304_0|726305|COMPLETED|0:0|01:43:10|2026-10-18T10:46:34\n726304_1|726306|COMPLETED|0:0|01:16:44|2026-10-18T10:20:09\n726304_2|726360|COMPLETED|0:0|01:22:50|2026-10-18T11:42:59\n726304_3|726304|FAILED|1:0|01:17:47|2026-10-18T11:46:45\n726342_0|726343|FAILED|1:0|01:54:12|2026-10-18T11:46:45\n726342_1|726344|FAILED|1:0|01:54:08|2026-10-18T11:46:41\n726342_2|726342|COMPLETED|0:0|00:50:31|2026-10-18T11:19:30\n726439_0|726440|FAILED|1:0|00:53:51|2026-10-18T11:46:46\n726439_1|726441|FAILED|1:0|00:53:41|2026-10-18T11:46:37\n726439_2|726442|FAILED|1:0|00:53:48|2026-10-18T11:46:44\n726439_3|726439|FAILED|1:0|00:53:45|2026-10-18T11:46:41\n726472_0|726472|FAILED|1:0|00:34:03|2026-10-18T11:46:44\n",
+  "outage_causality_limit": "A subsequent task-list write and independent write/fsync probe directly fail errno122. Incomplete workers exit1 near-simultaneously; missing final exception logs prevent certifying their individual exception. Their last recorded accepted states are not classified as demonstrated physical failures."
+}
