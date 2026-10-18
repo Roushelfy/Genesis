@@ -99,6 +99,58 @@ No three-way stress-error ranking, complete-grasp qualification or new rate is
 claimed. Exact receipts live under `runs/20261018-qipc-reference/` on data,
 including `linear-controls-v1` and `meta/integration-native-reuse-v1`.
 
+## Franka controller and first coupled attempt
+
+No-contact controls now use the original XML collision shapes/inertials and all
+nine authored armatures0.1 and passive dampers1. The generated XML only selects
+the accepted initial bank keyframe and resolves asset paths. Asset bytes are
+hashed. Native's capped start-frame PD and implicit damping Jacobian are mapped
+onto QIPC's original force/kv API; numerical kernels remain unchanged.
+
+The XML also couples the two fingers. The initial uncoupled candidate differs
+by about1mm within20ms and is retained as an explicit failed mapping. A source-
+derived increment mapping of native equality impedance/inverse weight uses
+QIPC's public linear coupling plus paired predictor force. It does not fit
+held-out stress, contact forces or reconstruction radii. The actual first-step
+joint positions match native; after20ms the largest coordinate difference is
+about1.2e-8 (job726168 versus726165). The state-dependent equality-inertia
+coefficient differs from its authored dmin approximation by at most0.136% in
+that control. Preserve and budget this approximation in later grasps.
+
+Gravity100ms controls at1ms/0.5ms also completed on both engines
+(726171/726173). Their complete trajectories and effective actuator forces are
+retained; derived trajectory/error admission is still required. Neither these
+controls nor the small-strain controls qualify coupled contact.
+
+First combined egg/Franka attempt726170 fails before its first accepted step:
+`forest preconditioner: non-SPD edge pivot1 = -4.68478931963709545e+09`.
+The native CUDA failure prevents subsequent device-state recovery; the input,
+initial rest packet, generated robot asset, empty step journal and original
+traceback remain intact. No complete or partial rate is assigned. A separate
+read-only initial contact audit and native collision-filter inventory are
+submitted (726175/726176), to distinguish geometry/filter mapping from an
+actual reference solver defect. Do not suppress the assertion or rank this
+candidate as reference-qualified.
+
+### Initial finger geometry diagnosis
+
+Initial read-only contact audits726175/726177 find400 active PT and1000 EE
+pairs between the supposedly open fingers, with near-zero distances. The rigid
+vertex publication agrees with world poses to1.25e-16m; this is not a publication
+or observer-frame error. The original reader obtains inherited primitive type,
+but passes a literal0.05 size and does not expand inherited geom position.
+The five authored small fingertip boxes are therefore imported incorrectly.
+
+The generated input now explicitly materializes inherited geom attributes.
+QIPC source/native image and original authored XML/meshes stay unchanged. Actual
+MuJoCo3.15 control726179 compiles original and expanded inputs: all compared
+geom type/size/local pose, mesh arrays, link inertials, joint passive values,
+equality and actuator arrays are bitwise equal. World geom poses at common
+initial q are also exactly equal. The generated input changes only keyframe
+selection, meshdir resolution and explicit representation of existing defaults.
+New contact audit726180 and corrected coupled pilot follow; neither earlier
+failed input nor zero-contact control evidence is relabeled.
+
 ## Completion gates
 
 1. Exact-energy stress/parameter and independent small-control validation.
