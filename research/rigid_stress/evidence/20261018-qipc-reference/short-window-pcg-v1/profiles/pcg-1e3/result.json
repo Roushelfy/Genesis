@@ -1,0 +1,116 @@
+{
+  "kind": "continuous-short-contact-window-profile",
+  "config": {
+    "dt": 0.001,
+    "young": 10000000000.0,
+    "poisson": 0.3,
+    "density": 2000.0,
+    "velocity_tolerance": 1e-09,
+    "linear_tolerance": 0.001,
+    "max_newton": 256,
+    "max_pcg": 4096,
+    "d_hat": 2e-05,
+    "friction": 0.7191016138165071,
+    "friction_epsilon_velocity": 0.0001,
+    "resistance": 10000000000.0,
+    "energy": "snh",
+    "mas_precision": "double",
+    "linear_solver": "linear_pcg",
+    "newton_aware_pcg": false
+  },
+  "requested_steps": 1160,
+  "executed_steps": 1160,
+  "completed_requested_history": true,
+  "setup_seconds": 2.1315193479531445,
+  "elastic_observer_cold_activation_seconds": 0.2386469710036181,
+  "initialization_only_elastic_warmups": 1,
+  "timing_mode": "whole-window",
+  "field_IO_deferred": true,
+  "post_window_field_IO_seconds": 0.049480629968456924,
+  "total_intrusive_seconds": 57.2489298589644,
+  "window_intrusive_seconds": 47.49255212995922,
+  "window_observations": 110,
+  "stage_summary": {
+    "controller": {
+      "calls": 110,
+      "total_wall_seconds": 0.03509144205600023,
+      "median_wall_ms": 0.3038560098502785,
+      "p95_wall_ms": 0.3558858123142272
+    },
+    "full_field_host_transfer": {
+      "calls": 3,
+      "total_wall_seconds": 0.0017844339599832892,
+      "median_wall_ms": 0.6123479688540101,
+      "p95_wall_ms": 0.62322270241566
+    },
+    "journal_IO": {
+      "calls": 110,
+      "total_wall_seconds": 0.005364690034184605,
+      "median_wall_ms": 0.04206298035569489,
+      "p95_wall_ms": 0.08055465877987443
+    },
+    "native_status_and_geometry_check": {
+      "calls": 110,
+      "total_wall_seconds": 0.131576317071449,
+      "median_wall_ms": 1.1211060045752674,
+      "p95_wall_ms": 1.6602709132712334
+    },
+    "observer_prepare": {
+      "calls": 3,
+      "total_wall_seconds": 0.0002546320320107043,
+      "median_wall_ms": 0.08101703133434057,
+      "p95_wall_ms": 0.09215720929205418
+    },
+    "scalar_metrics_host_transfer": {
+      "calls": 3,
+      "total_wall_seconds": 0.0024443540605716407,
+      "median_wall_ms": 0.4457140457816422,
+      "p95_wall_ms": 1.4449624228291214
+    },
+    "solver_step": {
+      "calls": 110,
+      "total_wall_seconds": 47.304123432026245,
+      "median_wall_ms": 302.8640614938922,
+      "p95_wall_ms": 1224.1500771662684
+    },
+    "stress_and_contact_observer": {
+      "calls": 3,
+      "total_wall_seconds": 0.010330089076887816,
+      "median_wall_ms": 3.3752760500647128,
+      "p95_wall_ms": 3.7447512324433774
+    }
+  },
+  "stress_observer_calls": 3,
+  "exported_keyframes_s": [
+    1.1,
+    1.1300000000000001,
+    1.16
+  ],
+  "keyframe_payloads": [
+    {
+      "time_s": 1.1,
+      "cauchy_field_bytes": 276480,
+      "all_exported_numeric_array_bytes": 385660
+    },
+    {
+      "time_s": 1.1300000000000001,
+      "cauchy_field_bytes": 276480,
+      "all_exported_numeric_array_bytes": 386700
+    },
+    {
+      "time_s": 1.16,
+      "cauchy_field_bytes": 276480,
+      "all_exported_numeric_array_bytes": 386700
+    }
+  ],
+  "pcg_cap_steps": 0,
+  "failure": null,
+  "newton_aware_gate": {
+    "active": false,
+    "attempts": null,
+    "accepts": null,
+    "last_ratio": null
+  },
+  "reference_qualified": false,
+  "scope": "Segmented mode explicitly synchronizes each phase; CUDA stream spans include dispatch/idle intervals rather than kernel sums. Whole-window mode adds only boundary synchronization and records host-call spans without interpreting those spans as GPU latency. Both retain necessary native/geometry checks and sparse observation costs. Setup and optional one-time read-only elastic-observer activation are outside the contact window. Optional deferred compression/IO is measured after the window; complete spatial host transfer remains declared in-window. Continuous mechanics/contact history is unchanged, with stress/contact observation only at selected physical steps. No temporal stress peak or whole-history stress norm is computed. Accepted-window checkpoint overhead is absent; rejected states receive native dumps."
+}

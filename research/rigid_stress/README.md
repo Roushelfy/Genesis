@@ -14,11 +14,19 @@ body_source_prior) and deformable shell for error, speed, memory and stability.
 the presets preserve their physics/defaults. The [running guide](docs/RUNNING_QIPC_REFERENCE.md)
 and [progress record](docs/QIPC_REFERENCE_PROGRESS.md) retain current controls,
 complete candidate histories, failed reference attempts and open qualification gates.
-The [latest checkpoint](evidence/20261018-qipc-reference/checkpoint-v3/README.md)
+The latest [short-window checkpoint](evidence/20261018-qipc-reference/short-window-v1/README.md)
+implements the user's sparse-keyframe/profiling-first update, retaining33 full
+spatial fields from11 runs. The subsequent
+[fixed-Newton PCG contrast](evidence/20261018-qipc-reference/short-window-pcg-v1/README.md)
+shows that1e-2 passes the same3 keys while reducing measured inner work and
+window time relative to1e-6. It is the next validation candidate, with repeats,
+capped coupling and complete sparse-grasp qualification still required.
+The earlier [dense checkpoint](evidence/20261018-qipc-reference/checkpoint-v3/README.md)
 adds complete capped2/7 comparisons, ET forced-exit admission/geometry forensics,
 unloaded/actual-pose controls and the inspected cost/profile figure. Full9s
-reference sensitivities still exceed100%; physical-reference qualification
-and the complete goal remain open.
+reference sensitivities still exceed100% in its historical dense metrics;
+selected-observable physical-reference qualification and the complete goal
+remain open.
 The [working results](docs/QIPC_REFERENCE_RESULTS_20261018.md) and
 [compact checkpoint](evidence/20261018-qipc-reference/checkpoint-v1/README.md)
 retain the measured complete-history discrepancies and the unresolved spatial/

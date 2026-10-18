@@ -1,0 +1,528 @@
+{
+  "kind": "declared-keyframe-prescribed-boundary-tracking-audit",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726726",
+      "SLURM_ARRAY_JOB_ID": "726726",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-c76298f5-14a5-a899-a833-a3a917a745f8, 00000000:21:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "binding": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-pose-tracking-v1/group0/target-binding/result.json",
+    "bytes": 1113,
+    "sha256": "a3b7c1e0d0a2813eb802f1465475e392eea9b5dae6cd2f36a3270c34c4d72a5f"
+  },
+  "layout": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/reaction-layout-v1/group0/layout/layout.npz",
+    "bytes": 28688,
+    "sha256": "d03f0b123f11c46e2192cbb16e10ee949f970ec93fc93d9339b591f185e28471"
+  },
+  "body_names": [
+    "link0",
+    "link1",
+    "link2",
+    "link3",
+    "link4",
+    "link5",
+    "link6",
+    "link7",
+    "left_finger",
+    "right_finger"
+  ],
+  "quaternion_sign_invariance_passed": true,
+  "profiles": [
+    {
+      "name": "pcg-1e2",
+      "source": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-pcg-loose-v1/group0/pcg-1e2/result.json",
+        "bytes": 4076,
+        "sha256": "e46ace9a177d68c2ffb08b098c87dce1923ec118533e45b7e29665c2bd3863a6"
+      },
+      "keyframes": [
+        {
+          "time_s": 1.1,
+          "maximum_com_error_m": 9.810069423465961e-13,
+          "maximum_material_rotation_error_rad": 2.2050671187112875e-16,
+          "maximum_represented_rigid_vertex_tracking_error_m": 9.810485772805268e-13,
+          "vertex_error_over_contact_band": 4.905242886402633e-08,
+          "egg_mass_com_world_m": [
+            0.6519150972473939,
+            0.002947615177497372,
+            0.028380406161906215
+          ],
+          "egg_fitted_material_axis_tilt_rad": 0.015756975428624767,
+          "per_body_com_error_m": [
+            0.0,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.810069423465961e-13
+          ],
+          "per_body_rotation_error_rad": [
+            2.785506841514254e-17,
+            2.016868097533171e-16,
+            3.3120011812997764e-17,
+            1.7883065137936653e-16,
+            6.470997698027145e-17,
+            6.299239127886048e-17,
+            3.6498671390638585e-17,
+            0.0,
+            2.2050671187112875e-16,
+            5.421010775168221e-20
+          ]
+        },
+        {
+          "time_s": 1.1300000000000001,
+          "maximum_com_error_m": 5.621053484217503e-09,
+          "maximum_material_rotation_error_rad": 1.5089202362530183e-06,
+          "maximum_represented_rigid_vertex_tracking_error_m": 8.578058110257996e-08,
+          "vertex_error_over_contact_band": 0.0042890290551289975,
+          "egg_mass_com_world_m": [
+            0.6519852380397032,
+            0.0029136351338529395,
+            0.02840177738338078
+          ],
+          "egg_fitted_material_axis_tilt_rad": 0.0184293110279731,
+          "per_body_com_error_m": [
+            0.0,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            5.621053484217503e-09,
+            5.6118073830516324e-09
+          ],
+          "per_body_rotation_error_rad": [
+            2.785506841514254e-17,
+            1.8163031858748176e-16,
+            1.3153636436732727e-16,
+            1.7407841658416804e-16,
+            7.83444988206431e-17,
+            1.3275953788832994e-16,
+            3.5796007306383936e-16,
+            1.9356582031031576e-16,
+            1.4650908840384163e-06,
+            1.5089202362530183e-06
+          ]
+        },
+        {
+          "time_s": 1.16,
+          "maximum_com_error_m": 5.350382611941438e-09,
+          "maximum_material_rotation_error_rad": 1.4415251451896392e-06,
+          "maximum_represented_rigid_vertex_tracking_error_m": 8.183114235663752e-08,
+          "vertex_error_over_contact_band": 0.004091557117831875,
+          "egg_mass_com_world_m": [
+            0.6519896230299035,
+            0.0029159191358161776,
+            0.028401531286561435
+          ],
+          "egg_fitted_material_axis_tilt_rad": 0.018414173316701084,
+          "per_body_com_error_m": [
+            0.0,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            5.350382611941438e-09,
+            5.348191662377678e-09
+          ],
+          "per_body_rotation_error_rad": [
+            2.785506841514254e-17,
+            8.893676431030187e-17,
+            1.8158923896018003e-16,
+            4.978560681627509e-16,
+            2.5773165423768416e-17,
+            1.3820139727473517e-17,
+            2.0446355838441895e-16,
+            1.6498244325706638e-16,
+            1.397481835884214e-06,
+            1.4415251451896392e-06
+          ]
+        }
+      ]
+    },
+    {
+      "name": "pcg-1e3",
+      "source": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-pcg-loose-v1/group0/pcg-1e3/result.json",
+        "bytes": 4073,
+        "sha256": "3748aadc02c1162d84ebfa1bbf014011ed041fadfd57448d648c846bf31cb90b"
+      },
+      "keyframes": [
+        {
+          "time_s": 1.1,
+          "maximum_com_error_m": 9.810069423465961e-13,
+          "maximum_material_rotation_error_rad": 3.261450263838891e-16,
+          "maximum_represented_rigid_vertex_tracking_error_m": 9.810485772805268e-13,
+          "vertex_error_over_contact_band": 4.905242886402633e-08,
+          "egg_mass_com_world_m": [
+            0.6519150989799232,
+            0.002947615663820982,
+            0.02838040614497537
+          ],
+          "egg_fitted_material_axis_tilt_rad": 0.015757013312230332,
+          "per_body_com_error_m": [
+            0.0,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.810069423465961e-13
+          ],
+          "per_body_rotation_error_rad": [
+            2.785506841514254e-17,
+            3.0916647303367746e-17,
+            2.0529018586361213e-17,
+            3.261450263838891e-16,
+            6.470997698027145e-17,
+            6.299239127886048e-17,
+            3.6498671390638585e-17,
+            2.2371826426121345e-16,
+            2.2050671187112875e-16,
+            0.0
+          ]
+        },
+        {
+          "time_s": 1.1300000000000001,
+          "maximum_com_error_m": 5.620959069901366e-09,
+          "maximum_material_rotation_error_rad": 1.5089275758252526e-06,
+          "maximum_represented_rigid_vertex_tracking_error_m": 8.57809724838101e-08,
+          "vertex_error_over_contact_band": 0.004289048624190505,
+          "egg_mass_com_world_m": [
+            0.651985232004051,
+            0.00291363764934341,
+            0.028401788307487973
+          ],
+          "egg_fitted_material_axis_tilt_rad": 0.018430651337145356,
+          "per_body_com_error_m": [
+            0.0,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            5.620959069901366e-09,
+            5.611834215608832e-09
+          ],
+          "per_body_rotation_error_rad": [
+            2.785506841514254e-17,
+            1.9566179644182857e-16,
+            1.3153636436732727e-16,
+            3.1970579871971345e-16,
+            9.949027304842601e-17,
+            1.3275953788832994e-16,
+            1.338201640177875e-16,
+            1.9356582031031576e-16,
+            1.4650682709036603e-06,
+            1.5089275758252526e-06
+          ]
+        },
+        {
+          "time_s": 1.16,
+          "maximum_com_error_m": 5.350318620771656e-09,
+          "maximum_material_rotation_error_rad": 1.4415243524961827e-06,
+          "maximum_represented_rigid_vertex_tracking_error_m": 8.183104530055596e-08,
+          "vertex_error_over_contact_band": 0.0040915522650277975,
+          "egg_mass_com_world_m": [
+            0.6519896179903659,
+            0.002915920409275149,
+            0.028401542094967237
+          ],
+          "egg_fitted_material_axis_tilt_rad": 0.01841553762362033,
+          "per_body_com_error_m": [
+            0.0,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            5.350318620771656e-09,
+            5.3481888625141375e-09
+          ],
+          "per_body_rotation_error_rad": [
+            2.785506841514254e-17,
+            3.618960402145476e-16,
+            1.924609958673571e-16,
+            3.701732219046876e-16,
+            2.5773165423768416e-17,
+            1.1858992680947387e-16,
+            2.0446355838441895e-16,
+            1.6410534426638778e-16,
+            1.397466199097399e-06,
+            1.4415243524961827e-06
+          ]
+        }
+      ]
+    },
+    {
+      "name": "pcg-1e4",
+      "source": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-pcg-loose-v1/group0/pcg-1e4/result.json",
+        "bytes": 4078,
+        "sha256": "d066398a0cc8ce28efdfb0820e36c7124551e31b68b7f0e66b883201c4c8fbe1"
+      },
+      "keyframes": [
+        {
+          "time_s": 1.1,
+          "maximum_com_error_m": 9.810069423465961e-13,
+          "maximum_material_rotation_error_rad": 2.9957985350513393e-16,
+          "maximum_represented_rigid_vertex_tracking_error_m": 9.810485819920488e-13,
+          "vertex_error_over_contact_band": 4.9052429099602435e-08,
+          "egg_mass_com_world_m": [
+            0.6519150986590315,
+            0.0029476155620720796,
+            0.028380406148490276
+          ],
+          "egg_fitted_material_axis_tilt_rad": 0.01575700546329837,
+          "per_body_com_error_m": [
+            0.0,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.810069423465961e-13
+          ],
+          "per_body_rotation_error_rad": [
+            2.785506841514254e-17,
+            3.0916647303367746e-17,
+            2.0529018586361213e-17,
+            2.9957985350513393e-16,
+            6.470997698027145e-17,
+            6.299239127886048e-17,
+            3.6498671390638585e-17,
+            0.0,
+            2.2050671187112875e-16,
+            0.0
+          ]
+        },
+        {
+          "time_s": 1.1300000000000001,
+          "maximum_com_error_m": 5.620966289809678e-09,
+          "maximum_material_rotation_error_rad": 1.5089275269432717e-06,
+          "maximum_represented_rigid_vertex_tracking_error_m": 8.578097911187044e-08,
+          "vertex_error_over_contact_band": 0.004289048955593522,
+          "egg_mass_com_world_m": [
+            0.6519852319269127,
+            0.0029136375074913508,
+            0.028401787727246997
+          ],
+          "egg_fitted_material_axis_tilt_rad": 0.01843057718956257,
+          "per_body_com_error_m": [
+            0.0,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            5.620966289809678e-09,
+            5.611834953093995e-09
+          ],
+          "per_body_rotation_error_rad": [
+            2.785506841514254e-17,
+            0.0,
+            1.3153636436732727e-16,
+            3.0987052752505807e-16,
+            7.373809165250038e-17,
+            1.3275953788832994e-16,
+            3.5796007306383936e-16,
+            0.0,
+            1.4650698494555188e-06,
+            1.5089275269432717e-06
+          ]
+        },
+        {
+          "time_s": 1.16,
+          "maximum_com_error_m": 5.350324228690805e-09,
+          "maximum_material_rotation_error_rad": 1.441524731285257e-06,
+          "maximum_represented_rigid_vertex_tracking_error_m": 8.183107776641213e-08,
+          "vertex_error_over_contact_band": 0.004091553888320606,
+          "egg_mass_com_world_m": [
+            0.6519896178625276,
+            0.0029159203355213475,
+            0.02840154152104594
+          ],
+          "egg_fitted_material_axis_tilt_rad": 0.018415462213381896,
+          "per_body_com_error_m": [
+            0.0,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            5.350324228690805e-09,
+            5.3481911655961206e-09
+          ],
+          "per_body_rotation_error_rad": [
+            2.785506841514254e-17,
+            1.6498441677928289e-16,
+            3.8873108141632453e-16,
+            8.975309141698218e-16,
+            2.5773165423768416e-17,
+            6.299244115217715e-17,
+            2.0446355838441895e-16,
+            1.4548630021150956e-16,
+            1.39746740717959e-06,
+            1.441524731285257e-06
+          ]
+        }
+      ]
+    },
+    {
+      "name": "pcg-1e6-control",
+      "source": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-pcg-loose-v1/group0/pcg-1e6-control/result.json",
+        "bytes": 4076,
+        "sha256": "376b518ee73f0beb8416a31bb0000e1dc1860dfb28030ab7d020b005c86f181e"
+      },
+      "keyframes": [
+        {
+          "time_s": 1.1,
+          "maximum_com_error_m": 9.810069423465961e-13,
+          "maximum_material_rotation_error_rad": 5.107474315648028e-16,
+          "maximum_represented_rigid_vertex_tracking_error_m": 9.810485776731536e-13,
+          "vertex_error_over_contact_band": 4.905242888365768e-08,
+          "egg_mass_com_world_m": [
+            0.6519150987842582,
+            0.0029476156096268627,
+            0.0283804061474818
+          ],
+          "egg_fitted_material_axis_tilt_rad": 0.015757007714297777,
+          "per_body_com_error_m": [
+            0.0,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.810069423465961e-13
+          ],
+          "per_body_rotation_error_rad": [
+            2.785506841514254e-17,
+            3.0916647303367746e-17,
+            2.0529018586361213e-17,
+            5.107474315648028e-16,
+            6.470997698027145e-17,
+            1.2598478255772098e-16,
+            3.6498671390638585e-17,
+            0.0,
+            2.2050664216956086e-16,
+            1.0948807663290508e-16
+          ]
+        },
+        {
+          "time_s": 1.1300000000000001,
+          "maximum_com_error_m": 5.620963740763375e-09,
+          "maximum_material_rotation_error_rad": 1.508927531772315e-06,
+          "maximum_represented_rigid_vertex_tracking_error_m": 8.578097591584526e-08,
+          "vertex_error_over_contact_band": 0.004289048795792263,
+          "egg_mass_com_world_m": [
+            0.6519852319650853,
+            0.0029136375558511153,
+            0.028401787925151273
+          ],
+          "egg_fitted_material_axis_tilt_rad": 0.018430603500411053,
+          "per_body_com_error_m": [
+            0.0,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            5.620963740763375e-09,
+            5.611834623956773e-09
+          ],
+          "per_body_rotation_error_rad": [
+            2.785506841514254e-17,
+            1.8160786558346583e-16,
+            3.5890021339638054e-17,
+            5.50706461751953e-16,
+            7.373809165250038e-17,
+            8.599443876677165e-17,
+            5.5271255472161045e-17,
+            1.0529346054603722e-16,
+            1.4650692947417634e-06,
+            1.508927531772315e-06
+          ]
+        },
+        {
+          "time_s": 1.16,
+          "maximum_com_error_m": 5.350322233566807e-09,
+          "maximum_material_rotation_error_rad": 1.4415245896703199e-06,
+          "maximum_represented_rigid_vertex_tracking_error_m": 8.183106572441722e-08,
+          "vertex_error_over_contact_band": 0.004091553286220861,
+          "egg_mass_com_world_m": [
+            0.6519896179180306,
+            0.0029159203604868325,
+            0.02840154171678733
+          ],
+          "egg_fitted_material_axis_tilt_rad": 0.01841548895600591,
+          "per_body_com_error_m": [
+            0.0,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            9.809930645587883e-13,
+            5.350322233566807e-09,
+            5.348190302841535e-09
+          ],
+          "per_body_rotation_error_rad": [
+            2.785506841514254e-17,
+            1.4487932588572072e-16,
+            3.901714043135703e-16,
+            1.7146530614522267e-16,
+            2.5773165423768416e-17,
+            1.3820139727473517e-17,
+            2.0446355838441895e-16,
+            1.1427707839520324e-16,
+            1.3974669795129294e-06,
+            1.4415245896703199e-06
+          ]
+        }
+      ]
+    }
+  ],
+  "reference_qualified": false,
+  "scope": "Exact shared target poses use the pinned original initialized material frames, with no dynamics restart or fitted actual motion. Errors describe retained keyframes only. Represented rigid-vertex errors use the independently verified static layout, not a continuous Hausdorff certificate. Target tracking, free-egg trajectory/contact-history differences and elasticity/discretization error remain separate. A small target error relative to the barrier band alone does not qualify contact stress."
+}

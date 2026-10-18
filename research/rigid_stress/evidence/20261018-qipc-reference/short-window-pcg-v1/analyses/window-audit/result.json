@@ -1,0 +1,1631 @@
+{
+  "kind": "declared-short-window-tolerance-cost-audit",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726726",
+      "SLURM_ARRAY_JOB_ID": "726726",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-c76298f5-14a5-a899-a833-a3a917a745f8, 00000000:21:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "plan": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/meta/short-contact-pcg-loose-v1-plan.json",
+    "bytes": 3316,
+    "sha256": "fa49104f017682c7d209b37ecb735dcc5f6fa920de70ac23191065d108248b47"
+  },
+  "fields": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-pcg-loose-audit-v1/group0/keyframe-fields/result.json",
+    "bytes": 70153,
+    "sha256": "173bf5f2439e2cbd958a964781fb044aa3d1d7749299477855e6aee84cbed9be"
+  },
+  "reactions": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-pcg-loose-audit-v1/group0/keyframe-reactions/result.json",
+    "bytes": 27477,
+    "sha256": "5fad16f63a3a8f8ee8a4153f282af68296c9d6c905e3aa190c4d77a6c81947ff"
+  },
+  "numerical_comparison_reference": "budget8192",
+  "egg_weight_n": 0.06405781094403742,
+  "provisional_bands": {
+    "no_ET_Newton_or_LS_forced_exit": true,
+    "finite_state_and_positive_detF_every_step": true,
+    "keyframe_net_force_residual_over_weight": 0.01,
+    "keyframe_nodal_residual_relative_to_contact_norm": 0.001,
+    "common_tangent_relative_contrast": 0.05,
+    "finger_force_vector_contrast": 0.02,
+    "finger_moment_vector_contrast": 0.02,
+    "within_keyframe_spatial_peak_contrast": 0.1
+  },
+  "configurations": [
+    {
+      "name": "baseline-dense-compute",
+      "receipt": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1/group0/baseline-dense-compute/result.json",
+        "bytes": 3451,
+        "sha256": "0818e8dcbca28799d9ea6972d6a96f577d1548fe6a8b365ade6219db8c766fe1"
+      },
+      "config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 1e-08,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg"
+      },
+      "stress_observer_calls": 1160,
+      "pcg_cap_steps": 1,
+      "window_intrusive_seconds": 65.60447606799426,
+      "stage_summary": {
+        "controller": {
+          "calls": 110,
+          "total_wall_seconds": 0.03140532999532297,
+          "median_wall_ms": 0.28318495606072247,
+          "p95_wall_ms": 0.3115809318842366
+        },
+        "field_compression_and_IO": {
+          "calls": 3,
+          "total_wall_seconds": 0.05172643705736846,
+          "median_wall_ms": 17.22617103951052,
+          "p95_wall_ms": 18.844821891980246
+        },
+        "full_field_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.0015985649661161005,
+          "median_wall_ms": 0.5567349726334214,
+          "p95_wall_ms": 0.6214575667399913
+        },
+        "journal_IO": {
+          "calls": 110,
+          "total_wall_seconds": 0.006173829780891538,
+          "median_wall_ms": 0.05346749094314873,
+          "p95_wall_ms": 0.07333254034165293
+        },
+        "native_status_and_geometry_check": {
+          "calls": 110,
+          "total_wall_seconds": 0.08307444042293355,
+          "median_wall_ms": 0.6991765112616122,
+          "p95_wall_ms": 1.0716180549934506
+        },
+        "observer_prepare": {
+          "calls": 110,
+          "total_wall_seconds": 0.00787328922888264,
+          "median_wall_ms": 0.06935949204489589,
+          "p95_wall_ms": 0.07961791125126183
+        },
+        "scalar_metrics_host_transfer": {
+          "calls": 110,
+          "total_wall_seconds": 0.04862179164774716,
+          "median_wall_ms": 0.44048199197277427,
+          "p95_wall_ms": 0.46293698251247406
+        },
+        "solver_step": {
+          "calls": 110,
+          "total_wall_seconds": 65.08224501518998,
+          "median_wall_ms": 371.83269500383176,
+          "p95_wall_ms": 2251.4295811939514
+        },
+        "stress_and_contact_observer": {
+          "calls": 110,
+          "total_wall_seconds": 0.278217664163094,
+          "median_wall_ms": 2.4834125069901347,
+          "p95_wall_ms": 2.7901111141545694
+        }
+      },
+      "timing_mode": "segmented",
+      "field_IO_deferred": false,
+      "elastic_observer_cold_activation_seconds": null,
+      "newton_aware_gate": null,
+      "window_iteration_distributions": {
+        "newton": {
+          "median": 7.0,
+          "p95": 27.549999999999997,
+          "maximum": 53,
+          "sum": 1026
+        },
+        "pcg_total": {
+          "median": 6088.5,
+          "p95": 37612.149999999994,
+          "maximum": 73804,
+          "sum": 1074799
+        },
+        "pcg_max": {
+          "median": 1194.0,
+          "p95": 3552.8999999999996,
+          "maximum": 4096,
+          "sum": 131430
+        },
+        "line_search_max": {
+          "median": 1.0,
+          "p95": 8.0,
+          "maximum": 10,
+          "sum": 206
+        },
+        "ccd_maximum_iterations": {
+          "median": 1.0,
+          "p95": 2.0,
+          "maximum": 4,
+          "sum": 123
+        }
+      },
+      "keyframes": [
+        {
+          "time_s": 1.1,
+          "net_residual_over_egg_weight": 1.8846411468135285e-08,
+          "nodal_force_residual_relative_contact": 9.114475596004877e-05,
+          "common_tangent_contrast_with_floor": 1.742876256014961e-06,
+          "finger_force_contrast_with_floor": 0.0,
+          "finger_moment_contrast_with_floor": 0.0,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 2.860558326247306e-08,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 23,
+          "pcg_max": 3966
+        },
+        {
+          "time_s": 1.1300000000000001,
+          "net_residual_over_egg_weight": 1.6213980799172058e-05,
+          "nodal_force_residual_relative_contact": 8.933477953590813e-09,
+          "common_tangent_contrast_with_floor": 9.707885970115346e-09,
+          "finger_force_contrast_with_floor": 5.802728636225591e-09,
+          "finger_moment_contrast_with_floor": 4.177211645660796e-09,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 7.979090080903497e-10,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 7,
+          "pcg_max": 1138
+        },
+        {
+          "time_s": 1.16,
+          "net_residual_over_egg_weight": 1.95525260227938e-06,
+          "nodal_force_residual_relative_contact": 7.801107330492934e-09,
+          "common_tangent_contrast_with_floor": 1.09929168161119e-08,
+          "finger_force_contrast_with_floor": 5.092777451925553e-09,
+          "finger_moment_contrast_with_floor": 4.6073534949721966e-09,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 1.404716880343028e-09,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 7,
+          "pcg_max": 1287
+        }
+      ],
+      "provisional_numerical_bands_passed": true
+    },
+    {
+      "name": "baseline-sparse",
+      "receipt": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1/group0/baseline-sparse/result.json",
+        "bytes": 3441,
+        "sha256": "e05104c010b4ee9d9def53be16c117a5bc5b634c91baadc3d9d68a4c9dca24c6"
+      },
+      "config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 1e-08,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg"
+      },
+      "stress_observer_calls": 3,
+      "pcg_cap_steps": 3,
+      "window_intrusive_seconds": 67.2061724269879,
+      "stage_summary": {
+        "controller": {
+          "calls": 110,
+          "total_wall_seconds": 0.03558714973041788,
+          "median_wall_ms": 0.314484495902434,
+          "p95_wall_ms": 0.3778439247980714
+        },
+        "field_compression_and_IO": {
+          "calls": 3,
+          "total_wall_seconds": 0.052645556977950037,
+          "median_wall_ms": 16.077862004749477,
+          "p95_wall_ms": 20.567463419865817
+        },
+        "full_field_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.0015936350682750344,
+          "median_wall_ms": 0.5674920394085348,
+          "p95_wall_ms": 0.6259164190851152
+        },
+        "journal_IO": {
+          "calls": 110,
+          "total_wall_seconds": 0.004688929941039532,
+          "median_wall_ms": 0.03909497172571719,
+          "p95_wall_ms": 0.06255935877561568
+        },
+        "native_status_and_geometry_check": {
+          "calls": 110,
+          "total_wall_seconds": 0.09232380415778607,
+          "median_wall_ms": 0.8069140312727541,
+          "p95_wall_ms": 1.202248947811313
+        },
+        "observer_prepare": {
+          "calls": 3,
+          "total_wall_seconds": 0.0002917379606515169,
+          "median_wall_ms": 0.09024300379678607,
+          "p95_wall_ms": 0.11249365634284914
+        },
+        "scalar_metrics_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.0022050629486329854,
+          "median_wall_ms": 0.4953309544362128,
+          "p95_wall_ms": 1.1764599650632588
+        },
+        "solver_step": {
+          "calls": 110,
+          "total_wall_seconds": 66.85734020592645,
+          "median_wall_ms": 373.36510347086005,
+          "p95_wall_ms": 2615.468710946152
+        },
+        "stress_and_contact_observer": {
+          "calls": 3,
+          "total_wall_seconds": 0.1524515929631889,
+          "median_wall_ms": 3.3186819637194276,
+          "p95_wall_ms": 132.0606381923426
+        }
+      },
+      "timing_mode": "segmented",
+      "field_IO_deferred": false,
+      "elastic_observer_cold_activation_seconds": null,
+      "newton_aware_gate": null,
+      "window_iteration_distributions": {
+        "newton": {
+          "median": 7.0,
+          "p95": 31.0,
+          "maximum": 53,
+          "sum": 1036
+        },
+        "pcg_total": {
+          "median": 6098.5,
+          "p95": 43598.049999999996,
+          "maximum": 74565,
+          "sum": 1102522
+        },
+        "pcg_max": {
+          "median": 1185.0,
+          "p95": 3716.5499999999997,
+          "maximum": 4096,
+          "sum": 132909
+        },
+        "line_search_max": {
+          "median": 1.0,
+          "p95": 8.0,
+          "maximum": 9,
+          "sum": 205
+        },
+        "ccd_maximum_iterations": {
+          "median": 1.0,
+          "p95": 2.0,
+          "maximum": 3,
+          "sum": 123
+        }
+      },
+      "keyframes": [
+        {
+          "time_s": 1.1,
+          "net_residual_over_egg_weight": 4.2269775163499274e-08,
+          "nodal_force_residual_relative_contact": 9.453952356059124e-05,
+          "common_tangent_contrast_with_floor": 1.6129738514190977e-06,
+          "finger_force_contrast_with_floor": 0.0,
+          "finger_moment_contrast_with_floor": 0.0,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 7.351207030542203e-09,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 20,
+          "pcg_max": 4096
+        },
+        {
+          "time_s": 1.1300000000000001,
+          "net_residual_over_egg_weight": 3.097447798706638e-05,
+          "nodal_force_residual_relative_contact": 8.220048706902661e-09,
+          "common_tangent_contrast_with_floor": 8.587187626930939e-09,
+          "finger_force_contrast_with_floor": 5.196601524349854e-09,
+          "finger_moment_contrast_with_floor": 3.2740411450872477e-09,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 1.0450145088432588e-09,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 7,
+          "pcg_max": 1136
+        },
+        {
+          "time_s": 1.16,
+          "net_residual_over_egg_weight": 9.033516410783344e-06,
+          "nodal_force_residual_relative_contact": 8.701006914995863e-09,
+          "common_tangent_contrast_with_floor": 9.791022682815474e-09,
+          "finger_force_contrast_with_floor": 4.856211365648376e-09,
+          "finger_moment_contrast_with_floor": 4.297825604351788e-09,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 8.584920033021927e-09,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 7,
+          "pcg_max": 1293
+        }
+      ],
+      "provisional_numerical_bands_passed": true
+    },
+    {
+      "name": "budget8192",
+      "receipt": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1/group3/budget8192/result.json",
+        "bytes": 3441,
+        "sha256": "a033598bc5fe5acf463ed38745d14628cbf04afa75c8c118cc76b9513b9b7446"
+      },
+      "config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 1e-08,
+        "max_newton": 256,
+        "max_pcg": 8192,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg"
+      },
+      "stress_observer_calls": 3,
+      "pcg_cap_steps": 2,
+      "window_intrusive_seconds": 66.45003847201588,
+      "stage_summary": {
+        "controller": {
+          "calls": 110,
+          "total_wall_seconds": 0.03574922389816493,
+          "median_wall_ms": 0.3163744695484638,
+          "p95_wall_ms": 0.3708098694914952
+        },
+        "field_compression_and_IO": {
+          "calls": 3,
+          "total_wall_seconds": 0.05117019294993952,
+          "median_wall_ms": 15.535718004684895,
+          "p95_wall_ms": 19.727527373470362
+        },
+        "full_field_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.00167561398120597,
+          "median_wall_ms": 0.5771609721705317,
+          "p95_wall_ms": 0.6550677237100899
+        },
+        "journal_IO": {
+          "calls": 110,
+          "total_wall_seconds": 0.004886263865046203,
+          "median_wall_ms": 0.04252398503012955,
+          "p95_wall_ms": 0.06683554966002703
+        },
+        "native_status_and_geometry_check": {
+          "calls": 110,
+          "total_wall_seconds": 0.09409214905463159,
+          "median_wall_ms": 0.8265275100711733,
+          "p95_wall_ms": 1.2057066109264267
+        },
+        "observer_prepare": {
+          "calls": 3,
+          "total_wall_seconds": 0.00040991505375131965,
+          "median_wall_ms": 0.11117005487903953,
+          "p95_wall_ms": 0.2013095130678266
+        },
+        "scalar_metrics_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.0023275589919649065,
+          "median_wall_ms": 0.5173499812372029,
+          "p95_wall_ms": 1.217127888230607
+        },
+        "solver_step": {
+          "calls": 110,
+          "total_wall_seconds": 66.09835789626231,
+          "median_wall_ms": 371.1383684712928,
+          "p95_wall_ms": 2580.4025524674216
+        },
+        "stress_and_contact_observer": {
+          "calls": 3,
+          "total_wall_seconds": 0.15439344005426392,
+          "median_wall_ms": 3.5016059991903603,
+          "p95_wall_ms": 133.15748974564485
+        }
+      },
+      "timing_mode": "segmented",
+      "field_IO_deferred": false,
+      "elastic_observer_cold_activation_seconds": null,
+      "newton_aware_gate": null,
+      "window_iteration_distributions": {
+        "newton": {
+          "median": 7.0,
+          "p95": 29.0,
+          "maximum": 54,
+          "sum": 1036
+        },
+        "pcg_total": {
+          "median": 6074.0,
+          "p95": 43057.85,
+          "maximum": 74398,
+          "sum": 1088608
+        },
+        "pcg_max": {
+          "median": 1188.0,
+          "p95": 3623.3499999999995,
+          "maximum": 5066,
+          "sum": 133288
+        },
+        "line_search_max": {
+          "median": 1.0,
+          "p95": 8.0,
+          "maximum": 12,
+          "sum": 214
+        },
+        "ccd_maximum_iterations": {
+          "median": 1.0,
+          "p95": 2.0,
+          "maximum": 4,
+          "sum": 125
+        }
+      },
+      "keyframes": [
+        {
+          "time_s": 1.1,
+          "net_residual_over_egg_weight": 1.6272366420571558e-08,
+          "nodal_force_residual_relative_contact": 9.707454542702805e-05,
+          "common_tangent_contrast_with_floor": 0.0,
+          "finger_force_contrast_with_floor": 0.0,
+          "finger_moment_contrast_with_floor": 0.0,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 0.0,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 24,
+          "pcg_max": 3989
+        },
+        {
+          "time_s": 1.1300000000000001,
+          "net_residual_over_egg_weight": 3.69912414829496e-05,
+          "nodal_force_residual_relative_contact": 8.52957706547305e-09,
+          "common_tangent_contrast_with_floor": 0.0,
+          "finger_force_contrast_with_floor": 0.0,
+          "finger_moment_contrast_with_floor": 0.0,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 0.0,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 7,
+          "pcg_max": 1117
+        },
+        {
+          "time_s": 1.16,
+          "net_residual_over_egg_weight": 6.510256653814756e-06,
+          "nodal_force_residual_relative_contact": 8.286413717285013e-09,
+          "common_tangent_contrast_with_floor": 0.0,
+          "finger_force_contrast_with_floor": 0.0,
+          "finger_moment_contrast_with_floor": 0.0,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 0.0,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 7,
+          "pcg_max": 1301
+        }
+      ],
+      "provisional_numerical_bands_passed": true
+    },
+    {
+      "name": "linear-relaxed",
+      "receipt": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1/group2/linear-relaxed/result.json",
+        "bytes": 3444,
+        "sha256": "3130fd2841b4dcdc38137024c79dfddeb4382e2a31b1b1027aa55c7a95cb9272"
+      },
+      "config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 1e-06,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg"
+      },
+      "stress_observer_calls": 3,
+      "pcg_cap_steps": 1,
+      "window_intrusive_seconds": 61.8089967519918,
+      "stage_summary": {
+        "controller": {
+          "calls": 110,
+          "total_wall_seconds": 0.036018354032421485,
+          "median_wall_ms": 0.31572350417263806,
+          "p95_wall_ms": 0.37621361116180196
+        },
+        "field_compression_and_IO": {
+          "calls": 3,
+          "total_wall_seconds": 0.054225222003879026,
+          "median_wall_ms": 18.980827007908374,
+          "p95_wall_ms": 19.62137770606205
+        },
+        "full_field_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.001619103946723044,
+          "median_wall_ms": 0.5844349798280746,
+          "p95_wall_ms": 0.6332581775495782
+        },
+        "journal_IO": {
+          "calls": 110,
+          "total_wall_seconds": 0.004779764974955469,
+          "median_wall_ms": 0.0401345023419708,
+          "p95_wall_ms": 0.06737302901456133
+        },
+        "native_status_and_geometry_check": {
+          "calls": 110,
+          "total_wall_seconds": 0.0899017580668442,
+          "median_wall_ms": 0.7657069945707917,
+          "p95_wall_ms": 1.1211072487640195
+        },
+        "observer_prepare": {
+          "calls": 3,
+          "total_wall_seconds": 0.00028673201450146735,
+          "median_wall_ms": 0.09705100092105567,
+          "p95_wall_ms": 0.10615180945023894
+        },
+        "scalar_metrics_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.002277201012475416,
+          "median_wall_ms": 0.5341329961083829,
+          "p95_wall_ms": 1.2115540099330246
+        },
+        "solver_step": {
+          "calls": 110,
+          "total_wall_seconds": 61.46615009006928,
+          "median_wall_ms": 419.0300620102789,
+          "p95_wall_ms": 1358.7112587498266
+        },
+        "stress_and_contact_observer": {
+          "calls": 3,
+          "total_wall_seconds": 0.14685551798902452,
+          "median_wall_ms": 3.458240011241287,
+          "p95_wall_ms": 126.82497139612678
+        }
+      },
+      "timing_mode": "segmented",
+      "field_IO_deferred": false,
+      "elastic_observer_cold_activation_seconds": null,
+      "newton_aware_gate": null,
+      "window_iteration_distributions": {
+        "newton": {
+          "median": 9.0,
+          "p95": 28.0,
+          "maximum": 113,
+          "sum": 1292
+        },
+        "pcg_total": {
+          "median": 6745.0,
+          "p95": 22489.55,
+          "maximum": 144061,
+          "sum": 1011223
+        },
+        "pcg_max": {
+          "median": 1043.5,
+          "p95": 2900.5499999999997,
+          "maximum": 4005,
+          "sum": 111188
+        },
+        "line_search_max": {
+          "median": 1.0,
+          "p95": 8.0,
+          "maximum": 12,
+          "sum": 283
+        },
+        "ccd_maximum_iterations": {
+          "median": 1.0,
+          "p95": 2.549999999999997,
+          "maximum": 14,
+          "sum": 150
+        }
+      },
+      "keyframes": [
+        {
+          "time_s": 1.1,
+          "net_residual_over_egg_weight": 7.645793801228384e-10,
+          "nodal_force_residual_relative_contact": 9.115355396216292e-05,
+          "common_tangent_contrast_with_floor": 1.6548406995539104e-06,
+          "finger_force_contrast_with_floor": 0.0,
+          "finger_moment_contrast_with_floor": 0.0,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 1.018170462678352e-07,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 20,
+          "pcg_max": 2423
+        },
+        {
+          "time_s": 1.1300000000000001,
+          "net_residual_over_egg_weight": 5.710845576728796e-06,
+          "nodal_force_residual_relative_contact": 8.321842490795153e-09,
+          "common_tangent_contrast_with_floor": 6.706792407907885e-08,
+          "finger_force_contrast_with_floor": 4.527462834180146e-08,
+          "finger_moment_contrast_with_floor": 3.9621789455337964e-08,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 1.2772920211053903e-08,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 8,
+          "pcg_max": 954
+        },
+        {
+          "time_s": 1.16,
+          "net_residual_over_egg_weight": 6.2438836833628095e-06,
+          "nodal_force_residual_relative_contact": 8.599721161892585e-09,
+          "common_tangent_contrast_with_floor": 7.248878728950499e-08,
+          "finger_force_contrast_with_floor": 4.476535601482116e-08,
+          "finger_moment_contrast_with_floor": 4.3155117864932354e-08,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 1.4586780958858172e-07,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 9,
+          "pcg_max": 1044
+        }
+      ],
+      "provisional_numerical_bands_passed": true
+    },
+    {
+      "name": "newton-relaxed",
+      "receipt": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1/group1/newton-relaxed/result.json",
+        "bytes": 3444,
+        "sha256": "e9e0e97116d739a7465a641ab3b3bc0aea13635d0be3a8efe1dfeaedc8ed06d0"
+      },
+      "config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-07,
+        "linear_tolerance": 1e-08,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg"
+      },
+      "stress_observer_calls": 3,
+      "pcg_cap_steps": 1,
+      "window_intrusive_seconds": 58.192931306984974,
+      "stage_summary": {
+        "controller": {
+          "calls": 110,
+          "total_wall_seconds": 0.035950224060798064,
+          "median_wall_ms": 0.31926800147630274,
+          "p95_wall_ms": 0.3665871103294194
+        },
+        "field_compression_and_IO": {
+          "calls": 3,
+          "total_wall_seconds": 0.05402849896927364,
+          "median_wall_ms": 18.726073001744226,
+          "p95_wall_ms": 19.904693189891987
+        },
+        "full_field_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.0016998969949781895,
+          "median_wall_ms": 0.5672900006175041,
+          "p95_wall_ms": 0.6293629965512082
+        },
+        "journal_IO": {
+          "calls": 110,
+          "total_wall_seconds": 0.004762930126162246,
+          "median_wall_ms": 0.039318998460657895,
+          "p95_wall_ms": 0.0694834961905144
+        },
+        "native_status_and_geometry_check": {
+          "calls": 110,
+          "total_wall_seconds": 0.09397074993466958,
+          "median_wall_ms": 0.7813865086063743,
+          "p95_wall_ms": 1.253650363651104
+        },
+        "observer_prepare": {
+          "calls": 3,
+          "total_wall_seconds": 0.0003281849785707891,
+          "median_wall_ms": 0.1082700036931783,
+          "p95_wall_ms": 0.11402818781789392
+        },
+        "scalar_metrics_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.003548268025042489,
+          "median_wall_ms": 0.5035420181229711,
+          "p95_wall_ms": 2.349104505265131
+        },
+        "solver_step": {
+          "calls": 110,
+          "total_wall_seconds": 57.55508752501919,
+          "median_wall_ms": 306.94094399223104,
+          "p95_wall_ms": 2265.0281742069633
+        },
+        "stress_and_contact_observer": {
+          "calls": 3,
+          "total_wall_seconds": 0.43643191101728007,
+          "median_wall_ms": 3.5272130044177175,
+          "p95_wall_ms": 387.1330438967561
+        }
+      },
+      "timing_mode": "segmented",
+      "field_IO_deferred": false,
+      "elastic_observer_cold_activation_seconds": null,
+      "newton_aware_gate": null,
+      "window_iteration_distributions": {
+        "newton": {
+          "median": 6.0,
+          "p95": 26.099999999999994,
+          "maximum": 41,
+          "sum": 921
+        },
+        "pcg_total": {
+          "median": 5098.0,
+          "p95": 38530.69999999998,
+          "maximum": 59002,
+          "sum": 962559
+        },
+        "pcg_max": {
+          "median": 1175.0,
+          "p95": 3257.65,
+          "maximum": 4096,
+          "sum": 128807
+        },
+        "line_search_max": {
+          "median": 1.0,
+          "p95": 7.0,
+          "maximum": 9,
+          "sum": 199
+        },
+        "ccd_maximum_iterations": {
+          "median": 1.0,
+          "p95": 2.0,
+          "maximum": 3,
+          "sum": 122
+        }
+      },
+      "keyframes": [
+        {
+          "time_s": 1.1,
+          "net_residual_over_egg_weight": 3.078867628481534e-06,
+          "nodal_force_residual_relative_contact": 9.73084445698506e-05,
+          "common_tangent_contrast_with_floor": 1.6919886973804307e-06,
+          "finger_force_contrast_with_floor": 0.0,
+          "finger_moment_contrast_with_floor": 0.0,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 2.213784640245683e-08,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 24,
+          "pcg_max": 3436
+        },
+        {
+          "time_s": 1.1300000000000001,
+          "net_residual_over_egg_weight": 0.03865011189557399,
+          "nodal_force_residual_relative_contact": 2.731978943874073e-06,
+          "common_tangent_contrast_with_floor": 1.969565108203183e-08,
+          "finger_force_contrast_with_floor": 1.8004852478887363e-06,
+          "finger_moment_contrast_with_floor": 1.783619717988619e-06,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 1.568892761740802e-08,
+          "provisional_keyframe_bands_passed": false,
+          "newton": 6,
+          "pcg_max": 1052
+        },
+        {
+          "time_s": 1.16,
+          "net_residual_over_egg_weight": 2.4886052767136023e-05,
+          "nodal_force_residual_relative_contact": 1.9068070803197674e-08,
+          "common_tangent_contrast_with_floor": 2.0393620762614327e-08,
+          "finger_force_contrast_with_floor": 9.869636754153783e-09,
+          "finger_moment_contrast_with_floor": 1.042350213242259e-08,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 5.143988584360567e-08,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 6,
+          "pcg_max": 1312
+        }
+      ],
+      "provisional_numerical_bands_passed": false
+    },
+    {
+      "name": "pcg-1e2",
+      "receipt": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-pcg-loose-v1/group0/pcg-1e2/result.json",
+        "bytes": 4076,
+        "sha256": "e46ace9a177d68c2ffb08b098c87dce1923ec118533e45b7e29665c2bd3863a6"
+      },
+      "config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 0.01,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg",
+        "newton_aware_pcg": false
+      },
+      "stress_observer_calls": 3,
+      "pcg_cap_steps": 0,
+      "window_intrusive_seconds": 34.9529100980144,
+      "stage_summary": {
+        "controller": {
+          "calls": 110,
+          "total_wall_seconds": 0.03360242897178978,
+          "median_wall_ms": 0.3024580073542893,
+          "p95_wall_ms": 0.33828775922302157
+        },
+        "full_field_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.0018729259609244764,
+          "median_wall_ms": 0.6197439506649971,
+          "p95_wall_ms": 0.6495519890449941
+        },
+        "journal_IO": {
+          "calls": 110,
+          "total_wall_seconds": 0.005074262851849198,
+          "median_wall_ms": 0.040521001210436225,
+          "p95_wall_ms": 0.07151499448809773
+        },
+        "native_status_and_geometry_check": {
+          "calls": 110,
+          "total_wall_seconds": 0.12464517413172871,
+          "median_wall_ms": 1.0845834913197905,
+          "p95_wall_ms": 1.5815774648217484
+        },
+        "observer_prepare": {
+          "calls": 3,
+          "total_wall_seconds": 0.00028168695280328393,
+          "median_wall_ms": 0.09383598808199167,
+          "p95_wall_ms": 0.1000450924038887
+        },
+        "scalar_metrics_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.0024139629676938057,
+          "median_wall_ms": 0.4638059763237834,
+          "p95_wall_ms": 1.3882895582355559
+        },
+        "solver_step": {
+          "calls": 110,
+          "total_wall_seconds": 34.77287622477161,
+          "median_wall_ms": 246.35055899852887,
+          "p95_wall_ms": 812.6359287009107
+        },
+        "stress_and_contact_observer": {
+          "calls": 3,
+          "total_wall_seconds": 0.01065180404111743,
+          "median_wall_ms": 3.4891579998657107,
+          "p95_wall_ms": 3.8164268422406167
+        }
+      },
+      "timing_mode": "whole-window",
+      "field_IO_deferred": true,
+      "elastic_observer_cold_activation_seconds": 0.2397343479678966,
+      "newton_aware_gate": {
+        "active": false,
+        "attempts": null,
+        "accepts": null,
+        "last_ratio": null
+      },
+      "window_iteration_distributions": {
+        "newton": {
+          "median": 17.0,
+          "p95": 50.0,
+          "maximum": 73,
+          "sum": 2221
+        },
+        "pcg_total": {
+          "median": 3518.5,
+          "p95": 11881.849999999993,
+          "maximum": 34744,
+          "sum": 500367
+        },
+        "pcg_max": {
+          "median": 612.0,
+          "p95": 1972.8999999999999,
+          "maximum": 2891,
+          "sum": 72997
+        },
+        "line_search_max": {
+          "median": 5.0,
+          "p95": 11.0,
+          "maximum": 12,
+          "sum": 528
+        },
+        "ccd_maximum_iterations": {
+          "median": 1.0,
+          "p95": 10.549999999999997,
+          "maximum": 21,
+          "sum": 301
+        }
+      },
+      "keyframes": [
+        {
+          "time_s": 1.1,
+          "net_residual_over_egg_weight": 8.846317706061395e-09,
+          "nodal_force_residual_relative_contact": 8.94976756528323e-05,
+          "common_tangent_contrast_with_floor": 6.358979368153767e-06,
+          "finger_force_contrast_with_floor": 0.0,
+          "finger_moment_contrast_with_floor": 0.0,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 1.0385854396426783e-06,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 33,
+          "pcg_max": 1795
+        },
+        {
+          "time_s": 1.1300000000000001,
+          "net_residual_over_egg_weight": 1.313426649338981e-05,
+          "nodal_force_residual_relative_contact": 8.236532734999467e-09,
+          "common_tangent_contrast_with_floor": 4.322296847472846e-05,
+          "finger_force_contrast_with_floor": 2.6063275115707746e-05,
+          "finger_moment_contrast_with_floor": 1.6778889742429497e-05,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 5.324925788196651e-06,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 26,
+          "pcg_max": 625
+        },
+        {
+          "time_s": 1.16,
+          "net_residual_over_egg_weight": 3.0328953197698634e-06,
+          "nodal_force_residual_relative_contact": 8.962899264852718e-09,
+          "common_tangent_contrast_with_floor": 4.949468222933892e-05,
+          "finger_force_contrast_with_floor": 2.3513449198367095e-05,
+          "finger_moment_contrast_with_floor": 2.0719110212820416e-05,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 3.583628866087339e-05,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 16,
+          "pcg_max": 649
+        }
+      ],
+      "provisional_numerical_bands_passed": true
+    },
+    {
+      "name": "pcg-1e3",
+      "receipt": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-pcg-loose-v1/group0/pcg-1e3/result.json",
+        "bytes": 4073,
+        "sha256": "3748aadc02c1162d84ebfa1bbf014011ed041fadfd57448d648c846bf31cb90b"
+      },
+      "config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 0.001,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg",
+        "newton_aware_pcg": false
+      },
+      "stress_observer_calls": 3,
+      "pcg_cap_steps": 0,
+      "window_intrusive_seconds": 47.49255212995922,
+      "stage_summary": {
+        "controller": {
+          "calls": 110,
+          "total_wall_seconds": 0.03509144205600023,
+          "median_wall_ms": 0.3038560098502785,
+          "p95_wall_ms": 0.3558858123142272
+        },
+        "full_field_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.0017844339599832892,
+          "median_wall_ms": 0.6123479688540101,
+          "p95_wall_ms": 0.62322270241566
+        },
+        "journal_IO": {
+          "calls": 110,
+          "total_wall_seconds": 0.005364690034184605,
+          "median_wall_ms": 0.04206298035569489,
+          "p95_wall_ms": 0.08055465877987443
+        },
+        "native_status_and_geometry_check": {
+          "calls": 110,
+          "total_wall_seconds": 0.131576317071449,
+          "median_wall_ms": 1.1211060045752674,
+          "p95_wall_ms": 1.6602709132712334
+        },
+        "observer_prepare": {
+          "calls": 3,
+          "total_wall_seconds": 0.0002546320320107043,
+          "median_wall_ms": 0.08101703133434057,
+          "p95_wall_ms": 0.09215720929205418
+        },
+        "scalar_metrics_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.0024443540605716407,
+          "median_wall_ms": 0.4457140457816422,
+          "p95_wall_ms": 1.4449624228291214
+        },
+        "solver_step": {
+          "calls": 110,
+          "total_wall_seconds": 47.304123432026245,
+          "median_wall_ms": 302.8640614938922,
+          "p95_wall_ms": 1224.1500771662684
+        },
+        "stress_and_contact_observer": {
+          "calls": 3,
+          "total_wall_seconds": 0.010330089076887816,
+          "median_wall_ms": 3.3752760500647128,
+          "p95_wall_ms": 3.7447512324433774
+        }
+      },
+      "timing_mode": "whole-window",
+      "field_IO_deferred": true,
+      "elastic_observer_cold_activation_seconds": 0.2386469710036181,
+      "newton_aware_gate": {
+        "active": false,
+        "attempts": null,
+        "accepts": null,
+        "last_ratio": null
+      },
+      "window_iteration_distributions": {
+        "newton": {
+          "median": 16.0,
+          "p95": 49.64999999999999,
+          "maximum": 83,
+          "sum": 2172
+        },
+        "pcg_total": {
+          "median": 4580.5,
+          "p95": 19130.799999999996,
+          "maximum": 57291,
+          "sum": 729291
+        },
+        "pcg_max": {
+          "median": 721.5,
+          "p95": 2391.0499999999993,
+          "maximum": 3127,
+          "sum": 85629
+        },
+        "line_search_max": {
+          "median": 5.0,
+          "p95": 11.0,
+          "maximum": 12,
+          "sum": 567
+        },
+        "ccd_maximum_iterations": {
+          "median": 1.0,
+          "p95": 11.549999999999997,
+          "maximum": 22,
+          "sum": 366
+        }
+      },
+      "keyframes": [
+        {
+          "time_s": 1.1,
+          "net_residual_over_egg_weight": 8.955249589766006e-09,
+          "nodal_force_residual_relative_contact": 9.618605545601985e-05,
+          "common_tangent_contrast_with_floor": 2.83901385505044e-06,
+          "finger_force_contrast_with_floor": 0.0,
+          "finger_moment_contrast_with_floor": 0.0,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 3.350012414385029e-07,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 30,
+          "pcg_max": 1890
+        },
+        {
+          "time_s": 1.1300000000000001,
+          "net_residual_over_egg_weight": 2.948797521678066e-06,
+          "nodal_force_residual_relative_contact": 8.667502170272651e-09,
+          "common_tangent_contrast_with_floor": 1.6436205539017334e-06,
+          "finger_force_contrast_with_floor": 1.0443599428964131e-06,
+          "finger_moment_contrast_with_floor": 7.526775035741826e-07,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 2.667300647430456e-07,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 19,
+          "pcg_max": 691
+        },
+        {
+          "time_s": 1.16,
+          "net_residual_over_egg_weight": 7.332889268833255e-06,
+          "nodal_force_residual_relative_contact": 8.401920475607249e-09,
+          "common_tangent_contrast_with_floor": 1.8575541670082277e-06,
+          "finger_force_contrast_with_floor": 9.71363901095479e-07,
+          "finger_moment_contrast_with_floor": 8.814346774087651e-07,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 2.327204912797181e-06,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 15,
+          "pcg_max": 736
+        }
+      ],
+      "provisional_numerical_bands_passed": true
+    },
+    {
+      "name": "pcg-1e4",
+      "receipt": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-pcg-loose-v1/group0/pcg-1e4/result.json",
+        "bytes": 4078,
+        "sha256": "d066398a0cc8ce28efdfb0820e36c7124551e31b68b7f0e66b883201c4c8fbe1"
+      },
+      "config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 0.0001,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg",
+        "newton_aware_pcg": false
+      },
+      "stress_observer_calls": 3,
+      "pcg_cap_steps": 1,
+      "window_intrusive_seconds": 50.54232966003474,
+      "stage_summary": {
+        "controller": {
+          "calls": 110,
+          "total_wall_seconds": 0.03429436113219708,
+          "median_wall_ms": 0.3064199991058558,
+          "p95_wall_ms": 0.3557394491508603
+        },
+        "full_field_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.0018710939912125468,
+          "median_wall_ms": 0.6415169918909669,
+          "p95_wall_ms": 0.6537345063406974
+        },
+        "journal_IO": {
+          "calls": 110,
+          "total_wall_seconds": 0.004997816984541714,
+          "median_wall_ms": 0.03957451554015279,
+          "p95_wall_ms": 0.07206651789601892
+        },
+        "native_status_and_geometry_check": {
+          "calls": 110,
+          "total_wall_seconds": 0.12898043083259836,
+          "median_wall_ms": 1.0705729946494102,
+          "p95_wall_ms": 1.7269153846427796
+        },
+        "observer_prepare": {
+          "calls": 3,
+          "total_wall_seconds": 0.00024881400167942047,
+          "median_wall_ms": 0.08434802293777466,
+          "p95_wall_ms": 0.09051657980307937
+        },
+        "scalar_metrics_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.002447372069582343,
+          "median_wall_ms": 0.4714670358225703,
+          "p95_wall_ms": 1.4273867360316217
+        },
+        "solver_step": {
+          "calls": 110,
+          "total_wall_seconds": 50.357908958918415,
+          "median_wall_ms": 228.47589699085802,
+          "p95_wall_ms": 1515.4324568196898
+        },
+        "stress_and_contact_observer": {
+          "calls": 3,
+          "total_wall_seconds": 0.01007694803411141,
+          "median_wall_ms": 3.431782010011375,
+          "p95_wall_ms": 3.7531882349867374
+        }
+      },
+      "timing_mode": "whole-window",
+      "field_IO_deferred": true,
+      "elastic_observer_cold_activation_seconds": 0.23705138597870246,
+      "newton_aware_gate": {
+        "active": false,
+        "attempts": null,
+        "accepts": null,
+        "last_ratio": null
+      },
+      "window_iteration_distributions": {
+        "newton": {
+          "median": 9.0,
+          "p95": 41.749999999999986,
+          "maximum": 72,
+          "sum": 1740
+        },
+        "pcg_total": {
+          "median": 3636.5,
+          "p95": 24755.7,
+          "maximum": 55659,
+          "sum": 810215
+        },
+        "pcg_max": {
+          "median": 800.0,
+          "p95": 3109.8499999999995,
+          "maximum": 4096,
+          "sum": 99713
+        },
+        "line_search_max": {
+          "median": 1.0,
+          "p95": 10.549999999999997,
+          "maximum": 12,
+          "sum": 379
+        },
+        "ccd_maximum_iterations": {
+          "median": 1.0,
+          "p95": 22.0,
+          "maximum": 22,
+          "sum": 418
+        }
+      },
+      "keyframes": [
+        {
+          "time_s": 1.1,
+          "net_residual_over_egg_weight": 1.3263764713453962e-08,
+          "nodal_force_residual_relative_contact": 0.00010005613545826367,
+          "common_tangent_contrast_with_floor": 1.8735663166835193e-06,
+          "finger_force_contrast_with_floor": 0.0,
+          "finger_moment_contrast_with_floor": 0.0,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 4.3459929562049565e-07,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 21,
+          "pcg_max": 2785
+        },
+        {
+          "time_s": 1.1300000000000001,
+          "net_residual_over_egg_weight": 8.391011201790012e-06,
+          "nodal_force_residual_relative_contact": 7.87788957756488e-09,
+          "common_tangent_contrast_with_floor": 8.700916531573496e-07,
+          "finger_force_contrast_with_floor": 5.444831140056573e-07,
+          "finger_moment_contrast_with_floor": 3.822367014983812e-07,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 1.3188373933568718e-07,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 13,
+          "pcg_max": 775
+        },
+        {
+          "time_s": 1.16,
+          "net_residual_over_egg_weight": 1.713435984083505e-05,
+          "nodal_force_residual_relative_contact": 8.420976158403609e-09,
+          "common_tangent_contrast_with_floor": 9.872680190156839e-07,
+          "finger_force_contrast_with_floor": 5.045754426572929e-07,
+          "finger_moment_contrast_with_floor": 4.546819000225204e-07,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 1.132143814499747e-06,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 9,
+          "pcg_max": 789
+        }
+      ],
+      "provisional_numerical_bands_passed": true
+    },
+    {
+      "name": "pcg-1e6-control",
+      "receipt": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-pcg-loose-v1/group0/pcg-1e6-control/result.json",
+        "bytes": 4076,
+        "sha256": "376b518ee73f0beb8416a31bb0000e1dc1860dfb28030ab7d020b005c86f181e"
+      },
+      "config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 1e-06,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg",
+        "newton_aware_pcg": false
+      },
+      "stress_observer_calls": 3,
+      "pcg_cap_steps": 0,
+      "window_intrusive_seconds": 59.887656085018534,
+      "stage_summary": {
+        "controller": {
+          "calls": 110,
+          "total_wall_seconds": 0.03368002484785393,
+          "median_wall_ms": 0.302345521049574,
+          "p95_wall_ms": 0.34255927021149546
+        },
+        "full_field_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.0018131809192709625,
+          "median_wall_ms": 0.6089009693823755,
+          "p95_wall_ms": 0.6142721977084875
+        },
+        "journal_IO": {
+          "calls": 110,
+          "total_wall_seconds": 0.005367816775105894,
+          "median_wall_ms": 0.043510517571121454,
+          "p95_wall_ms": 0.0745367637136951
+        },
+        "native_status_and_geometry_check": {
+          "calls": 110,
+          "total_wall_seconds": 0.12833177600987256,
+          "median_wall_ms": 1.1410730076022446,
+          "p95_wall_ms": 1.584644938702695
+        },
+        "observer_prepare": {
+          "calls": 3,
+          "total_wall_seconds": 0.0002608519862405956,
+          "median_wall_ms": 0.08182803867384791,
+          "p95_wall_ms": 0.09696958004496992
+        },
+        "scalar_metrics_host_transfer": {
+          "calls": 3,
+          "total_wall_seconds": 0.002450509986374527,
+          "median_wall_ms": 0.4605120047926903,
+          "p95_wall_ms": 1.431110670091584
+        },
+        "solver_step": {
+          "calls": 110,
+          "total_wall_seconds": 59.70368849724764,
+          "median_wall_ms": 393.96329448209144,
+          "p95_wall_ms": 1359.7310770419426
+        },
+        "stress_and_contact_observer": {
+          "calls": 3,
+          "total_wall_seconds": 0.010439603996928781,
+          "median_wall_ms": 3.4327959874644876,
+          "p95_wall_ms": 3.712667210493237
+        }
+      },
+      "timing_mode": "whole-window",
+      "field_IO_deferred": true,
+      "elastic_observer_cold_activation_seconds": 0.23883422202197835,
+      "newton_aware_gate": {
+        "active": false,
+        "attempts": null,
+        "accepts": null,
+        "last_ratio": null
+      },
+      "window_iteration_distributions": {
+        "newton": {
+          "median": 9.0,
+          "p95": 28.0,
+          "maximum": 112,
+          "sum": 1285
+        },
+        "pcg_total": {
+          "median": 6650.5,
+          "p95": 22988.75,
+          "maximum": 138359,
+          "sum": 1008832
+        },
+        "pcg_max": {
+          "median": 1054.5,
+          "p95": 3019.0499999999997,
+          "maximum": 4028,
+          "sum": 113656
+        },
+        "line_search_max": {
+          "median": 1.0,
+          "p95": 8.0,
+          "maximum": 12,
+          "sum": 281
+        },
+        "ccd_maximum_iterations": {
+          "median": 1.0,
+          "p95": 2.549999999999997,
+          "maximum": 23,
+          "sum": 164
+        }
+      },
+      "keyframes": [
+        {
+          "time_s": 1.1,
+          "net_residual_over_egg_weight": 4.390702710112227e-10,
+          "nodal_force_residual_relative_contact": 9.566565976108713e-05,
+          "common_tangent_contrast_with_floor": 1.6554302156866967e-06,
+          "finger_force_contrast_with_floor": 0.0,
+          "finger_moment_contrast_with_floor": 0.0,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 1.5581473076370234e-09,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 19,
+          "pcg_max": 3042
+        },
+        {
+          "time_s": 1.1300000000000001,
+          "net_residual_over_egg_weight": 1.1527522398223209e-05,
+          "nodal_force_residual_relative_contact": 8.80552660628641e-09,
+          "common_tangent_contrast_with_floor": 5.4906615976070254e-08,
+          "finger_force_contrast_with_floor": 3.200128639565627e-08,
+          "finger_moment_contrast_with_floor": 3.176031125472762e-08,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 5.030394183225386e-09,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 8,
+          "pcg_max": 943
+        },
+        {
+          "time_s": 1.16,
+          "net_residual_over_egg_weight": 9.637873955627185e-06,
+          "nodal_force_residual_relative_contact": 8.782075756697692e-09,
+          "common_tangent_contrast_with_floor": 5.611646724013863e-08,
+          "finger_force_contrast_with_floor": 3.350158084699036e-08,
+          "finger_moment_contrast_with_floor": 3.400818762223669e-08,
+          "spatial_VM_peak_contrast_with_1Pa_floor": 1.0833346973981417e-07,
+          "provisional_keyframe_bands_passed": true,
+          "newton": 9,
+          "pcg_max": 1057
+        }
+      ],
+      "provisional_numerical_bands_passed": true
+    }
+  ],
+  "rejected_or_incomplete_profiles": [],
+  "same_config_sparse_dense_invariance": [
+    {
+      "time_s": 1.1,
+      "maximum_position_difference_m": 4.2864695627615896e-12,
+      "volume_weighted_corotated_3D_tensor_contrast_with_1Pa_floor": 2.8322162007891896e-06,
+      "strict_observer_equivalence_passed": true
+    },
+    {
+      "time_s": 1.1300000000000001,
+      "maximum_position_difference_m": 7.70694008793491e-11,
+      "volume_weighted_corotated_3D_tensor_contrast_with_1Pa_floor": 1.7318966090130867e-08,
+      "strict_observer_equivalence_passed": true
+    },
+    {
+      "time_s": 1.16,
+      "maximum_position_difference_m": 7.447227341145276e-11,
+      "volume_weighted_corotated_3D_tensor_contrast_with_1Pa_floor": 1.9201774843610735e-08,
+      "strict_observer_equivalence_passed": true
+    }
+  ],
+  "candidate_for_next_minimally_instrumented_timing_check": "linear-relaxed",
+  "minimally_instrumented_repeat_summary": [
+    {
+      "config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 0.01,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg",
+        "newton_aware_pcg": false
+      },
+      "repeats": 1,
+      "names": [
+        "pcg-1e2"
+      ],
+      "window_seconds": [
+        34.9529100980144
+      ],
+      "median_window_seconds": 34.9529100980144,
+      "minimum_window_seconds": 34.9529100980144,
+      "maximum_window_seconds": 34.9529100980144,
+      "all_provisional_keyframe_bands_passed": true,
+      "scope": "Short-window boundary timing, with declared3-keyframe computation/transfer and deferred compression/IO; not full-grasp throughput."
+    },
+    {
+      "config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 0.001,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg",
+        "newton_aware_pcg": false
+      },
+      "repeats": 1,
+      "names": [
+        "pcg-1e3"
+      ],
+      "window_seconds": [
+        47.49255212995922
+      ],
+      "median_window_seconds": 47.49255212995922,
+      "minimum_window_seconds": 47.49255212995922,
+      "maximum_window_seconds": 47.49255212995922,
+      "all_provisional_keyframe_bands_passed": true,
+      "scope": "Short-window boundary timing, with declared3-keyframe computation/transfer and deferred compression/IO; not full-grasp throughput."
+    },
+    {
+      "config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 0.0001,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg",
+        "newton_aware_pcg": false
+      },
+      "repeats": 1,
+      "names": [
+        "pcg-1e4"
+      ],
+      "window_seconds": [
+        50.54232966003474
+      ],
+      "median_window_seconds": 50.54232966003474,
+      "minimum_window_seconds": 50.54232966003474,
+      "maximum_window_seconds": 50.54232966003474,
+      "all_provisional_keyframe_bands_passed": true,
+      "scope": "Short-window boundary timing, with declared3-keyframe computation/transfer and deferred compression/IO; not full-grasp throughput."
+    },
+    {
+      "config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 1e-06,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg",
+        "newton_aware_pcg": false
+      },
+      "repeats": 1,
+      "names": [
+        "pcg-1e6-control"
+      ],
+      "window_seconds": [
+        59.887656085018534
+      ],
+      "median_window_seconds": 59.887656085018534,
+      "minimum_window_seconds": 59.887656085018534,
+      "maximum_window_seconds": 59.887656085018534,
+      "all_provisional_keyframe_bands_passed": true,
+      "scope": "Short-window boundary timing, with declared3-keyframe computation/transfer and deferred compression/IO; not full-grasp throughput."
+    }
+  ],
+  "reference_qualified": false,
+  "scope": "Numerical contrasts and intrusive stage costs for the entire declared short window with continuous physical history. All3 declared spatial keyframes contribute; no whole-history stress norm or temporal-peak claim. Reaction floors1mN/1e-7Nm and stress floor1Pa are explicit. PCG caps remain visible and are interpreted with final nonlinear force/field measurements. A passing band is relative to an unqualified stricter candidate, not physical accuracy. The named next candidate still requires minimally instrumented timing, capped-coupling qualification and full-grasp sparse controls before a practical primary-cost recommendation."
+}

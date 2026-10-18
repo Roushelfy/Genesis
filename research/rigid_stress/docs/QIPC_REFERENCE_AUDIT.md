@@ -11,9 +11,12 @@ preserve native failure/finite/geometry checks. The
 [11-run short-window packet](../evidence/20261018-qipc-reference/short-window-v1/README.md)
 now establishes actual sparse observation, stage timing, strict sparse/dense
 keyframe equivalence, bounded numerical contrasts and three minimally
-instrumented repeats. Solver calls dominate the measured cost. PCG1e-6 is a
-passing candidate, not a justified final setting: fixed-Newton looser-PCG
-contrasts are pending. Capped short-window validation, actual sparse native/
+instrumented repeats. Solver calls dominate the measured cost. The separate
+[fixed-Newton PCG packet](../evidence/20261018-qipc-reference/short-window-pcg-v1/README.md)
+now shows1e-6/1e-4/1e-3/1e-2 all passing the same3 keys. PCG1e-2 is the next
+validation candidate: fewer total inner iterations and a34.953s versus59.888s
+window, with more outer iterations. Each setting has one matched run; repeats
+of the new choice remain open. Capped short-window validation, actual sparse native/
 Shell computation, complete-grasp keyframe qualification and matched primary
 sparse cost remain open.
 
