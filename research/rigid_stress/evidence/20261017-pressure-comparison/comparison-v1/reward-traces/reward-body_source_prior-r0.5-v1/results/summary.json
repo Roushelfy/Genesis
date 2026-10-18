@@ -1,0 +1,322 @@
+{
+  "scope": "Measure raw-stress reward repeatability and paired grasp-force discrimination.\n\nEach of eight frozen conditions is duplicated with only the commanded strong\ngrip force limit changed. The original approach/lift/slide/weak/release schedule,\narm targets, radii, friction and resets are retained. Intrusive observations\nmake this a behavioral experiment, never a throughput benchmark.\n",
+  "model": "body_source_prior",
+  "radius_scale": 0.5,
+  "history_size": 0,
+  "requested_strong_limits_N": [
+    0.2,
+    4
+  ],
+  "condition_bank": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+  "condition_bank_sha256": "1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa",
+  "envs": 16,
+  "warmup": 900,
+  "steps_per_repetition": 1200,
+  "repetitions": 3,
+  "observed_environment_steps": 57600,
+  "invalid_stress_steps": 0,
+  "partial_resets_per_repetition": [
+    16,
+    16,
+    16
+  ],
+  "lift_window_phase": [
+    0.3,
+    0.6
+  ],
+  "lift_window_peak_relative_span": [
+    3.741723523783175e-13,
+    4.0473758468789315e-13,
+    1.4120105918273902e-14,
+    6.083884286291691e-14,
+    1.871368565945089e-13,
+    4.522604526764387e-14,
+    2.904821225562173e-13,
+    1.9324808722915793e-14,
+    1.2266537677805129e-13,
+    5.809063170636626e-13,
+    4.586344312442823e-14,
+    5.0703100990753684e-14,
+    6.015932937288936e-14,
+    2.4914370225172467e-13,
+    1.9512503511159488e-13,
+    1.741494426702694e-13
+  ],
+  "paired_choices": [
+    {
+      "condition": 0,
+      "strong_limit_N": [
+        0.2,
+        4
+      ],
+      "lift_window_peak_low_limit_Pa": [
+        51141.588638688765,
+        51141.58863866963,
+        51141.58863867157
+      ],
+      "lift_window_peak_high_limit_Pa": [
+        65958.83108573053,
+        65958.8310857341,
+        65958.83108573862
+      ],
+      "high_over_low": [
+        1.2897298038925697,
+        1.289729803893122,
+        1.2897298038931615
+      ],
+      "high_peak_exceeds_low_in_all_repetitions": true,
+      "minimum_separation_Pa": 14817.242447041768,
+      "maximum_lift_height_low_limit_m": [
+        0.1494826961310369,
+        0.1494826961310369,
+        0.1494826961310369
+      ],
+      "maximum_lift_height_high_limit_m": [
+        0.14939242935557387,
+        0.14939242935557387,
+        0.14939242935557387
+      ]
+    },
+    {
+      "condition": 1,
+      "strong_limit_N": [
+        0.2,
+        4
+      ],
+      "lift_window_peak_low_limit_Pa": [
+        60492.52231073959,
+        60492.522310735265,
+        60492.5223107151
+      ],
+      "lift_window_peak_high_limit_Pa": [
+        82991.85898901374,
+        82991.85898897343,
+        82991.85898902164
+      ],
+      "high_over_low": [
+        1.3719358330389824,
+        1.371935833038414,
+        1.3719358330396683
+      ],
+      "high_peak_exceeds_low_in_all_repetitions": true,
+      "minimum_separation_Pa": 22499.336678238164,
+      "maximum_lift_height_low_limit_m": [
+        0.1493907326546949,
+        0.1493907326546949,
+        0.1493907326546949
+      ],
+      "maximum_lift_height_high_limit_m": [
+        0.1494399614539652,
+        0.1494399614539652,
+        0.1494399614539652
+      ]
+    },
+    {
+      "condition": 2,
+      "strong_limit_N": [
+        0.2,
+        4
+      ],
+      "lift_window_peak_low_limit_Pa": [
+        49467.89599202847,
+        49467.895992028534,
+        49467.89599202917
+      ],
+      "lift_window_peak_high_limit_Pa": [
+        62823.00278676308,
+        62823.00278676596,
+        62823.00278676464
+      ],
+      "high_over_low": [
+        1.2699752339757229,
+        1.2699752339757795,
+        1.2699752339757366
+      ],
+      "high_peak_exceeds_low_in_all_repetitions": true,
+      "minimum_separation_Pa": 13355.10679473461,
+      "maximum_lift_height_low_limit_m": [
+        0.1495699552360953,
+        0.1495699552360953,
+        0.1495699552360953
+      ],
+      "maximum_lift_height_high_limit_m": [
+        0.14953668514758245,
+        0.14953668514758245,
+        0.14953668514758245
+      ]
+    },
+    {
+      "condition": 3,
+      "strong_limit_N": [
+        0.2,
+        4
+      ],
+      "lift_window_peak_low_limit_Pa": [
+        47239.61078743773,
+        47239.6107874406,
+        47239.61078743839
+      ],
+      "lift_window_peak_high_limit_Pa": [
+        61992.53355135897,
+        61992.533551355824,
+        61992.53355135846
+      ],
+      "high_over_low": [
+        1.3122998373188213,
+        1.312299837318675,
+        1.3122998373187922
+      ],
+      "high_peak_exceeds_low_in_all_repetitions": true,
+      "minimum_separation_Pa": 14752.922763915223,
+      "maximum_lift_height_low_limit_m": [
+        0.14956103313637553,
+        0.14956103313637553,
+        0.14956103313637553
+      ],
+      "maximum_lift_height_high_limit_m": [
+        0.1495322847966834,
+        0.1495322847966834,
+        0.1495322847966834
+      ]
+    },
+    {
+      "condition": 4,
+      "strong_limit_N": [
+        0.2,
+        4
+      ],
+      "lift_window_peak_low_limit_Pa": [
+        53654.96508969229,
+        53654.96508968504,
+        53654.96508968225
+      ],
+      "lift_window_peak_high_limit_Pa": [
+        70389.86929536931,
+        70389.86929536569,
+        70389.86929536508
+      ],
+      "high_over_low": [
+        1.3118985200661697,
+        1.3118985200662792,
+        1.3118985200663362
+      ],
+      "high_peak_exceeds_low_in_all_repetitions": true,
+      "minimum_separation_Pa": 16734.90420567702,
+      "maximum_lift_height_low_limit_m": [
+        0.1496114159663909,
+        0.1496114159663909,
+        0.1496114159663909
+      ],
+      "maximum_lift_height_high_limit_m": [
+        0.14964409142811036,
+        0.14964409142811036,
+        0.14964409142811036
+      ]
+    },
+    {
+      "condition": 5,
+      "strong_limit_N": [
+        0.2,
+        4
+      ],
+      "lift_window_peak_low_limit_Pa": [
+        60329.92911875998,
+        60329.92911875725,
+        60329.92911875776
+      ],
+      "lift_window_peak_high_limit_Pa": [
+        73068.05584952695,
+        73068.05584952276,
+        73068.05584950875
+      ],
+      "high_over_low": [
+        1.2111410856407914,
+        1.2111410856407765,
+        1.211141085640534
+      ],
+      "high_peak_exceeds_low_in_all_repetitions": true,
+      "minimum_separation_Pa": 12738.126730750984,
+      "maximum_lift_height_low_limit_m": [
+        0.14948328634287672,
+        0.14948328634287672,
+        0.14948328634287672
+      ],
+      "maximum_lift_height_high_limit_m": [
+        0.1495494573499206,
+        0.1495494573499206,
+        0.1495494573499206
+      ]
+    },
+    {
+      "condition": 6,
+      "strong_limit_N": [
+        0.2,
+        4
+      ],
+      "lift_window_peak_low_limit_Pa": [
+        50897.26604140714,
+        50897.266041416624,
+        50897.26604142193
+      ],
+      "lift_window_peak_high_limit_Pa": [
+        63465.356212519655,
+        63465.35621253204,
+        63465.356212529085
+      ],
+      "high_over_low": [
+        1.2469305553836196,
+        1.2469305553836307,
+        1.2469305553834427
+      ],
+      "high_peak_exceeds_low_in_all_repetitions": true,
+      "minimum_separation_Pa": 12568.090171107156,
+      "maximum_lift_height_low_limit_m": [
+        0.14944546116422938,
+        0.14944546116422938,
+        0.14944546116422938
+      ],
+      "maximum_lift_height_high_limit_m": [
+        0.14948988718346712,
+        0.14948988718346712,
+        0.14948988718346712
+      ]
+    },
+    {
+      "condition": 7,
+      "strong_limit_N": [
+        0.2,
+        4
+      ],
+      "lift_window_peak_low_limit_Pa": [
+        64006.47023969761,
+        64006.47023969822,
+        64006.47023969885
+      ],
+      "lift_window_peak_high_limit_Pa": [
+        86066.72783670104,
+        86066.72783671586,
+        86066.72783671603
+      ],
+      "high_over_low": [
+        1.344656681025997,
+        1.3446566810262157,
+        1.3446566810262053
+      ],
+      "high_peak_exceeds_low_in_all_repetitions": true,
+      "minimum_separation_Pa": 22060.25759700343,
+      "maximum_lift_height_low_limit_m": [
+        0.14942102053627068,
+        0.14942102053627068,
+        0.14942102053627068
+      ],
+      "maximum_lift_height_high_limit_m": [
+        0.1494945612166463,
+        0.1494945612166463,
+        0.1494945612166463
+      ]
+    }
+  ],
+  "reset_and_unselected_peak_checks_passed": true,
+  "goal_completion": false,
+  "limitations": "Raw stress and exposure are uncalibrated reward proxies for two explicitly controlled grip choices. This is numerical repeatability and useful discrimination conditional on the chosen480-tet mesh, actual rigid contact and model/radius assumptions. It does not certify a fracture threshold, physical stress accuracy or complete RL training. Different models can change stress rankings without changing rigid motion. All values and any rejected input remain; intrusive observer timing is excluded from throughput."
+}

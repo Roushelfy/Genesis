@@ -35,6 +35,10 @@ def main():
     parser.add_argument("--coalesced-residual", choices=("auto", "on", "off"), default="auto")
     parser.add_argument("--contact-moment-reuse", choices=("auto", "on", "off"), default="auto")
     parser.add_argument("--torch-controller", action="store_true")
+    parser.add_argument("--conditions", type=Path)
+    parser.add_argument("--egg-geometry", choices=("urdf", "mesh64"), default="urdf")
+    parser.add_argument("--collision-method", choices=("auto", "mpr", "gjk"), default="auto")
+    parser.add_argument("--contact-patch", choices=("auto", "on", "off"), default="auto")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -45,6 +49,10 @@ def main():
         seed=args.seed,
         output_mode=args.output_mode,
         substeps=args.substeps,
+        conditions=args.conditions,
+        egg_geometry=args.egg_geometry,
+        use_gjk_collision={"auto": None, "mpr": False, "gjk": True}[args.collision_method],
+        enable_contact_patch={"auto": None, "on": True, "off": False}[args.contact_patch],
         face_parallel_scatter=not args.contact_warp_scatter,
         scatter_tasks_per_env=args.scatter_tasks_per_env,
         contact_wrench_reuse={"auto": None, "on": True, "off": False}[args.contact_wrench_reuse],
@@ -187,6 +195,9 @@ def main():
         "seed": args.seed,
         "output_mode": args.output_mode,
         "substeps": args.substeps,
+        "conditions_sha256": hashlib.sha256(args.conditions.read_bytes()).hexdigest() if args.conditions else None,
+        "stress_options": entry.options.model_dump(mode="json"),
+        "scatter_overflow_calls": int(qd_to_numpy(entry.scatter.overflow_calls)),
         "source_revision": os.environ.get("RIGID_STRESS_SOURCE_REVISION", "unrecorded"),
         "source_sha256": {
             str(path): hashlib.sha256(path.read_bytes()).hexdigest()

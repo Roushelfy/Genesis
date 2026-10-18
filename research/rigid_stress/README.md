@@ -1,45 +1,38 @@
 # Native rigid stress recovery
 
-Optional stress recovery for Genesis's existing rigid solver. Geometry remains
-rigid; a shared linear-elastic model recovers a global raw maximum von Mises
-stress or the full stress field from normal and frictional contact loads.
-Production numerics use Quadrants and do not depend on the research prototype.
+The feature is part of the existing native rigid solver. It reconstructs
+conditional elastic stress from changing rigid contacts, including friction,
+and supports raw global max/full output, complete numerical checks, environment
+isolation and partial resets. Production numerical work remains in Quadrants.
 
-Start with [running the example and tests](docs/RUNNING.md), then use the
-[API](docs/NATIVE_API.md) and exact benchmark reproduction below.
-The [active goal](GOAL.md) is to complete current pressure/intrinsic comparison
-data and an evidence-based configuration guide.
-[Cleanup results](docs/BRANCH_CLEANUP_RESULTS.md) and [the archive index](archive/README.md)
-explain the retained tools and historical source/evidence recovery.
+The current [pressure/intrinsic comparison](docs/PRESSURE_COMPARISON_RESULTS_20261018.md)
+is complete within its declared scope. Its [running guide](docs/RUNNING_PRESSURE_COMPARISON.md)
+and [compact evidence packet](evidence/20261017-pressure-comparison/comparison-v1/README.md)
+provide current paired measurements, configuration choices, model limits,
+source/input/hardware identities and inspected editable figures.
 
-## Use and implementation
+At B16384 on RTX PRO6000 Blackwell, the default max/history0 pressure route
+measures296859 live/296297 policy valid aggregate env-step/s, versus
+113933/113971 for intrinsic body_source_prior. Separate matched pressure tuning
+confirms6.68%/6.38% throughput gains, with about21.8GiB sampled process peaks.
+These are inference rollouts; raw repeats, matched rigid overhead, memory,
+max/full and capacity evidence are in the report.
 
-- [Native API and options](docs/NATIVE_API.md).
-- [Franka/full hollow egg example](../../examples/rigid/franka_egg_stress.py).
-- [Production implementation](../../genesis/engine/solvers/rigid/stress/).
-- [Recommended settings and benchmark reproduction](docs/RUNNING_PRACTICAL_THROUGHPUT.md).
-- [Load-model assumptions](docs/BODY_SOURCE_PRIOR_MODEL.md).
+Choose pressure as a declared fast proxy where local-normal and topology
+limitations are acceptable. Prefer intrinsic body_source_prior when those
+constraints matter. Both retain substantial footprint/reference uncertainty;
+neither calibrates an absolute physical damage threshold. The matched two-model
+comparison and separate radius/reward sensitivity support conditional choices.
 
-## Current accepted results and limits
+Start with [API](docs/NATIVE_API.md), [running instructions](docs/RUNNING.md),
+[source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md) and [goal/status](GOAL.md).
+[Application results](docs/PRACTICAL_APPLICATION_RESULTS_20261016.md) retain
+independent FEM/R/L/M and feedback limits. The preceding
+[throughput study](docs/PRACTICAL_THROUGHPUT_RESULTS_20261017.md) retains distinct
+code/history comparisons and separately tuned intrinsic capacity. Its older
+rates are not substitutes for the current paired pressure measurements.
 
-[Throughput results](docs/PRACTICAL_THROUGHPUT_RESULTS_20261017.md):
-480 P2 tetrahedra,2430 DOF, FP64 intrinsic body_source_prior.
-The measured starting recommendation is history0, max output and B16384 on
-RTX PRO6000 Blackwell:116912 live /116695 policy valid env-step/s and about
-40.5GiB sampled process memory. B32768 reaches118929/118579 with about79GiB.
-These are workload-specific aggregate rates and policy inference, not full
-RL training throughput or individual-environment FPS.
-The [throughput acceptance audit](docs/PRACTICAL_THROUGHPUT_COMPLETION_AUDIT_20261017.md)
-records the exact qualification scope.
-
-[Application results](docs/PRACTICAL_APPLICATION_RESULTS_20261016.md) separate
-elastic agreement, reconstructed-load error and omitted feedback.
-The feature is a conditional stress/reward proxy: contact footprint assumptions,
-reference uncertainty and phase-dependent grasp rankings remain material limits.
-Absolute physical fracture thresholds are uncalibrated. The faster pressure
-model has a diagnosed local contact/friction-admissibility limitation.
-Full/max modes remain supported; the rates above measure max output.
-
-Earlier rates, standalone CPU/GPU backends and broad convergence studies are
-historical evidence. Consult them through linked reports or the archive rather
-than treating them as current instructions or current-feature measurements.
+Tests and useful reference modules remain at their original import paths.
+[Cleanup results](docs/BRANCH_CLEANUP_RESULTS.md) and [archive](archive/README.md)
+preserve historical identities, failed cases and unresolved research without
+reviving old campaigns. The original seven canonical packets remain unchanged.

@@ -1,0 +1,22 @@
+{
+  "scope": "Rebuild exact benchmark source bytes from a committed tree and archived overrides using stdlib only.",
+  "command": [
+    "git",
+    "archive",
+    "--format=tar",
+    "36ba93ce732e21a8bd973fb3085671d39555c5f3",
+    "--",
+    "research/rigid_stress/__init__.py",
+    "research/rigid_stress/practical_reward_proxy.py",
+    "research/rigid_stress/scripts/cluster_env.sh",
+    "research/rigid_stress/scripts/run_practical_reward_proxy.sh"
+  ],
+  "reconstruction_base_revision": "36ba93ce732e21a8bd973fb3085671d39555c5f3",
+  "recipe_sha256": "acac6bd922886caf88d32a104d781880ff853bda6f8d3d1f16ae458bf494a24c",
+  "snapshot_manifest_sha256": "f7e867d0b7322f25d2f2a371a436d944ca6bbffcbc0cd58d3ec1882b4bfaa83b",
+  "source_files_verified": 4,
+  "extra_files": [],
+  "missing_files": [],
+  "passed": true,
+  "goal_completion": false
+}

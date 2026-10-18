@@ -2,8 +2,9 @@
 
 Read [GOAL.md](GOAL.md), [docs/PRESSURE_MODEL_COMPARISON_GOAL.md](docs/PRESSURE_MODEL_COMPARISON_GOAL.md),
 [README.md](README.md) and [docs/RUNNING.md](docs/RUNNING.md) first.
-The active stage is current-source pressure/intrinsic comparison and useful
-configuration selection. Cleanup is complete; preserve the compact layout.
+The pressure/intrinsic comparison and cleanup are complete within their
+reported scopes. Preserve current configuration guidance, compact evidence and
+the native feature.
 Reuse earned verification, measure matched physical inputs and distinguish
 model error, numerical failure and unsupported inputs. Historical campaigns
 do not create additional active tasks.

@@ -1,0 +1,65 @@
+{
+  "scope": "Derived aggregation/rendering retries; native scientific source and original raw inputs remained unchanged. Accepted results use the final validators and exports.",
+  "attempts": [
+    {
+      "attempt": "render-draft-v1",
+      "job_id": "725686_0",
+      "status": "failed",
+      "reason": "Colorbar labels needed a keyword argument.",
+      "original_log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/render-draft-v1/program.log",
+      "log": "tooling-attempts/render-draft-v1.log",
+      "log_sha256": "7efbb4fb3a2ca51746db7a9430152f92223080293f948cd9a30c13150ebdc6ac",
+      "scientific_inputs_changed": false
+    },
+    {
+      "attempt": "render-draft-v2",
+      "job_id": "725689_0",
+      "status": "manual_layout_revision",
+      "reason": "Phase annotation overlapped data; title moved above axes.",
+      "original_log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/render-draft-v2/program.log",
+      "log": "tooling-attempts/render-draft-v2.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "scientific_inputs_changed": false
+    },
+    {
+      "attempt": "accuracy-audit-v1",
+      "job_id": "725706_0",
+      "status": "failed",
+      "reason": "Relative peak error was undefined on an unloaded zero-reference field; v2 retains its absolute zero error and labels relative undefined.",
+      "original_log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/meta/accuracy-audit-v1-725706_0.log",
+      "log": "tooling-attempts/accuracy-audit-v1.log",
+      "log_sha256": "92b4503e8a33aa2830adb55b7b763b09ca4ef583e7bd455c706bd06957ae06ce",
+      "scientific_inputs_changed": false
+    },
+    {
+      "attempt": "export-draft-v1",
+      "job_id": "725718_0",
+      "status": "failed",
+      "reason": "PDF CLI unavailable; isolated PyMuPDF QA subsequently passed.",
+      "original_log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/meta/export-draft-v1-725718_0.log",
+      "log": "tooling-attempts/export-draft-v1.log",
+      "log_sha256": "bd46ad70b022d0be23aa09d6896d83760596f1865ed2383cfc8ee29a1c20d607",
+      "scientific_inputs_changed": false
+    },
+    {
+      "attempt": "metadata-checkpoint-v4",
+      "job_id": null,
+      "status": "failed",
+      "reason": "Rigid-disabled baselines omit stress_configurations; v5 handles an empty option list.",
+      "original_log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/metadata-checkpoint-v4.log",
+      "log": "tooling-attempts/metadata-checkpoint-v4.log",
+      "log_sha256": "deed5e06f05705e266582b1c2eec08db1a991c2560e5048030c1a6f9ced8a2ac",
+      "scientific_inputs_changed": false
+    },
+    {
+      "attempt": "export-final-v1",
+      "job_id": "725825_0",
+      "status": "failed",
+      "reason": "Automatic log-axis tick artists outside visible bounds and crowded batch labels; explicit visible major ticks and rotated batch labels pass in v2.",
+      "original_log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/meta/export-final-v1-725825_0.log",
+      "log": "tooling-attempts/export-final-v1.log",
+      "log_sha256": "efeb2e6e91b1363185768ef0ff0a3ea839ea4f6127312259a7589d988dc79db4",
+      "scientific_inputs_changed": false
+    }
+  ]
+}

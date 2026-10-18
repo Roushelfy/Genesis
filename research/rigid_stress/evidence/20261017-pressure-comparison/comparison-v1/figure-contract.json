@@ -1,0 +1,108 @@
+{
+  "purpose": "Repository supplement for practical pressure/intrinsic configuration choice; no physical fracture calibration.",
+  "audience": "Genesis users and reviewers",
+  "stage": "repository supplement",
+  "formats": [
+    "editable SVG",
+    "embedded-font PDF",
+    "450dpi PNG",
+    "150dpi preview"
+  ],
+  "required_materials": [
+    "current paired native benchmark metadata",
+    "independent four-state R/L/M and controls",
+    "complete grasp raw reward analysis"
+  ],
+  "missing_materials": [],
+  "can_proceed": true,
+  "assumptions": [
+    "Three repeated warmed timings per single allocation are ranges, not confidence intervals.",
+    "Source-prior is another load model, not truth.",
+    "Capacity and sampled-memory diagnostics are not headline rates."
+  ],
+  "figures": {
+    "performance": {
+      "claim": "Compare measured aggregate rollout throughput, overhead and sampled process memory across small to large batches.",
+      "panels": [
+        "scripted throughput",
+        "policy inference throughput",
+        "incremental live stress latency",
+        "sampled live memory"
+      ],
+      "data": "comparison.json",
+      "marks": "connected medians, raw repeats and min/max ranges; log batch axis",
+      "uncertainty": "n=3 repeats within one process/allocation; no independent GPU replicate CI",
+      "claim_anchor": "pressure-comparison-performance"
+    },
+    "model-error-cost": {
+      "claim": "Extra intrinsic cost does not remove shared egg footprint/reference bias, while local admissibility and close-sheet support differ.",
+      "panels": [
+        "B32 live overhead vs nominal four-state M/L tensor changes",
+        "separate radius sensitivity",
+        "convex/gap paired control tensor changes, unsupported N/A",
+        "local material cone force-norm violations on matched-supported cases"
+      ],
+      "data": [
+        "comparison.json",
+        "model-comparison.json"
+      ],
+      "marks": "paired scatter, log-scaled labeled heatmap, individual audit scatter",
+      "limitations": "Cost and error use distinct representative native rollout vs frozen reference workloads. M/L is reconstructed-load difference, not experimental error.",
+      "claim_anchor": "pressure-comparison-model-error-cost"
+    },
+    "reward-phase": {
+      "claim": "The named phase changes practical grasp ranking; model/radius changes observed amplitudes and counterfactual threshold decisions.",
+      "panels": [
+        "whole-episode high minus low force peak",
+        "lift-phase high minus low force peak"
+      ],
+      "data": "reward-comparison.json",
+      "marks": "raw paired differences, n=3; color=model, shape=radius, fill=model",
+      "limitations": "Ranks are stable across tested models/radii within a phase. No actual early termination or fracture threshold is fitted.",
+      "claim_anchor": "pressure-comparison-reward-phase"
+    }
+  },
+  "rendered_qa": "Check final-size labels, overlap, grayscale/semantic shapes, SVG text, PDF embedded fonts, source hashes; manually view every final preview.",
+  "evidence_hierarchy": [
+    "native raw benchmark repeats / independent reference fields / full raw reward traces",
+    "hash-validated numerical and metadata summaries",
+    "report conclusions and rendered figures"
+  ],
+  "material_passport": [
+    {
+      "id": "model-comparison.json",
+      "path": "model-comparison.json",
+      "sha256": "2a023ec1340434775a98b431d7da31cb5289df2640faf69e992b1eb3b81cdd80",
+      "analysis_status": "qualified conditional comparison",
+      "missing_evidence": false
+    },
+    {
+      "id": "reward-comparison.json",
+      "path": "reward-comparison.json",
+      "sha256": "afa9ce5fae8e44847a6217176be34c92b0bfa03cb4fcc85ac896017106ffb473",
+      "analysis_status": "qualified conditional comparison",
+      "missing_evidence": false
+    },
+    {
+      "id": "profile-comparison.json",
+      "path": "profile-comparison.json",
+      "sha256": "c1ec9b48208e9ecf0aa3e73f5e42ef8364191425b2f76ebcebebc9aabb88a1c0",
+      "analysis_status": "qualified conditional comparison",
+      "missing_evidence": false
+    },
+    {
+      "id": "accuracy-summary.json",
+      "path": "accuracy-summary.json",
+      "sha256": "8a13f604a5ab589785cfc692d963093d1bfdd2bdf639516a0b6a2c40ea85831f",
+      "analysis_status": "qualified conditional comparison",
+      "missing_evidence": false
+    },
+    {
+      "id": "comparison.json",
+      "path": "comparison.json",
+      "sha256": "18982237820d7c3e0c37a29ac42bdcf9d571861b00810828e2bf5c5240a76d1c",
+      "analysis_status": "91 closed successful benchmark records, 3 preserved capacity failures, 0 incomplete cohorts",
+      "missing_evidence": false
+    }
+  ]
+}

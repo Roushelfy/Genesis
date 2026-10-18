@@ -1,0 +1,16 @@
+Genesis image version '1_26' found.
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/meta/qa_exports-v1.py", line 79, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/meta/qa_exports-v1.py", line 33, in main
+    fonts = subprocess.check_output(["pdffonts", str(path.with_suffix(".pdf"))], text=True)
+  File "/usr/lib/python3.10/subprocess.py", line 421, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+  File "/usr/lib/python3.10/subprocess.py", line 503, in run
+    with Popen(*popenargs, **kwargs) as process:
+  File "/usr/lib/python3.10/subprocess.py", line 971, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib/python3.10/subprocess.py", line 1863, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'pdffonts'
+srun: error: cpu-207-115: task 0: Exited with exit code 1

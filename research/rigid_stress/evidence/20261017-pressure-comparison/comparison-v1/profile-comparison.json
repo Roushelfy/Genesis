@@ -1,0 +1,1311 @@
+{
+  "scope": "Summarize separate moving traces without treating intrusive timings as rates.",
+  "records": [
+    {
+      "case": "pressure-default-live",
+      "steps": 600,
+      "gpu_uuid": "GPU-03ec8bc3-12fe-0bac-58bd-7864979f88ce",
+      "cpu_step_annotation_ms_per_step": 10.623005146666667,
+      "gpu_kernel_sum_ms_per_step": 8.868590758333333,
+      "gpu_interval_union_ms_per_step": 8.8685905984137,
+      "grouped_kernel_ms_per_step": {
+        "pressure_anchor": 0.0,
+        "pressure_sample_and_fit": 0.0,
+        "intrinsic_support_and_samples": 0.0,
+        "intrinsic_fit": 0.0,
+        "intrinsic_contact_pack": 0.0,
+        "scatter": 0.0,
+        "elastic_recovery": 0.0,
+        "balance_residual_acceptance": 0.0,
+        "peak": 0.0,
+        "history": 0.0,
+        "fused_rigid_stress_post_unseparated": 5.761998814999998
+      },
+      "other_rigid_controller_framework_kernel_ms_per_step": 3.106591943333331,
+      "matched_kernel_names": {
+        "pressure_anchor": [],
+        "pressure_sample_and_fit": [],
+        "intrinsic_support_and_samples": [],
+        "intrinsic_fit": [],
+        "intrinsic_contact_pack": [],
+        "scatter": [],
+        "elastic_recovery": [],
+        "balance_residual_acceptance": [],
+        "peak": [],
+        "history": [],
+        "fused_rigid_stress_post_unseparated": [
+          "kernel_rigid_stress_post_c1040_0_kernel_48_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_37_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_16_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_52_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_31_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_72_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_88_sweep_links_by_level_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_12_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_41_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_43_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_47_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_18_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_25_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_46_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_77_sweep_links_by_level_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_35_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_29_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_5_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_81_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_95_sweep_links_by_level_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_93_update_cartesian_space_com_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_92_update_cartesian_space_com_sum_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_90_update_cartesian_space_com_inertial_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_11_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_9_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_54_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_68_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_62_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_57_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_59_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_74_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_23_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_14_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_19_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_21_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_65_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_1_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_4_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_86_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_82_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_84_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_53_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_55_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_50_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_39_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_33_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_44_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_56_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_61_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_67_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_79_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_58_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_27_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_49_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_70_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_73_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_7_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_75_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_66_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_69_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_60_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_63_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_2_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_83_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_24_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_76_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_34_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_6_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_87_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_40_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_94_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_71_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_45_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_89_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_85_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_78_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_36_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_22_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_30_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_80_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_64_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_15_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_42_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_51_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_17_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_28_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_32_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_38_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_26_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_91_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_20_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_8_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_3_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_10_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_0_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_13_range_for"
+        ]
+      },
+      "runtime_counts": {
+        "cudaLaunchKernel": 8768,
+        "cudaMemcpyAsync": 135,
+        "cudaStreamSynchronize": 135,
+        "cuLaunchKernel": 18040,
+        "cudaDeviceSynchronize": 1
+      },
+      "runtime_duration_sum_ms": {
+        "cudaLaunchKernel": 49.16826899999982,
+        "cudaMemcpyAsync": 288.3675109999999,
+        "cudaStreamSynchronize": 37.446621999999984,
+        "cuLaunchKernel": 45.08369800000014,
+        "cudaDeviceSynchronize": 0.017001000000000002
+      },
+      "runtime_memcpy_fraction_overlapping_gpu_kernels": 0.9927678266633275,
+      "copy_or_memset_sum_ms": 2.8446690000000294,
+      "explicit_copy_or_memset_bytes": {
+        "gpu_memcpy: Memcpy HtoD (Pageable -> Device)": {
+          "events": 4288,
+          "known_bytes": 6311720,
+          "events_without_byte_count": 0
+        },
+        "gpu_memcpy: Memcpy DtoH (Device -> Pageable)": {
+          "events": 63,
+          "known_bytes": 516096,
+          "events_without_byte_count": 0
+        }
+      },
+      "native_buffer_bytes": 516429942,
+      "native_logical_buffer_bytes": 516429942,
+      "largest_native_buffers": [
+        {
+          "name": "stress.0.inverse.blocks",
+          "shape": [
+            810,
+            810,
+            3,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 47239200,
+          "alias_of": null,
+          "kind": 1
+        },
+        {
+          "name": "stress.0.state.force",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.state.rhs",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.state.displacement",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 4
+        },
+        {
+          "name": "stress.0.state.residual",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.position",
+          "shape": [
+            750,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 36864000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.center",
+          "shape": [
+            750,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 36864000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.force",
+          "shape": [
+            750,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 36864000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.normal",
+          "shape": [
+            750,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 36864000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.coefficient",
+          "shape": [
+            750,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 36864000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.friction",
+          "shape": [
+            750,
+            2048
+          ],
+          "dtype": "torch.float64",
+          "bytes": 12288000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.radius",
+          "shape": [
+            750,
+            2048
+          ],
+          "dtype": "torch.float64",
+          "bytes": 12288000,
+          "alias_of": null,
+          "kind": 2
+        }
+      ],
+      "setup_seconds_including_build_JIT": 107.93206661898876,
+      "trace_sha256": "076b10bbdd04e39e8c41e5c949e710b7ff07bfab4b40d0f41573aacdd5d032c3",
+      "scope": "intrusive moving-contact trace, excluded from headline rates"
+    },
+    {
+      "case": "pressure-scatter128-live",
+      "steps": 600,
+      "gpu_uuid": "GPU-03ec8bc3-12fe-0bac-58bd-7864979f88ce",
+      "cpu_step_annotation_ms_per_step": 10.359770875000006,
+      "gpu_kernel_sum_ms_per_step": 8.61134996,
+      "gpu_interval_union_ms_per_step": 8.611349959998751,
+      "grouped_kernel_ms_per_step": {
+        "pressure_anchor": 0.0,
+        "pressure_sample_and_fit": 0.0,
+        "intrinsic_support_and_samples": 0.0,
+        "intrinsic_fit": 0.0,
+        "intrinsic_contact_pack": 0.0,
+        "scatter": 0.0,
+        "elastic_recovery": 0.0,
+        "balance_residual_acceptance": 0.0,
+        "peak": 0.0,
+        "history": 0.0,
+        "fused_rigid_stress_post_unseparated": 5.503242481666668
+      },
+      "other_rigid_controller_framework_kernel_ms_per_step": 3.1081074783333316,
+      "matched_kernel_names": {
+        "pressure_anchor": [],
+        "pressure_sample_and_fit": [],
+        "intrinsic_support_and_samples": [],
+        "intrinsic_fit": [],
+        "intrinsic_contact_pack": [],
+        "scatter": [],
+        "elastic_recovery": [],
+        "balance_residual_acceptance": [],
+        "peak": [],
+        "history": [],
+        "fused_rigid_stress_post_unseparated": [
+          "kernel_rigid_stress_post_c1040_0_kernel_48_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_31_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_16_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_52_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_72_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_88_sweep_links_by_level_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_12_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_41_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_43_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_47_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_18_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_25_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_46_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_77_sweep_links_by_level_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_29_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_5_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_81_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_95_sweep_links_by_level_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_93_update_cartesian_space_com_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_92_update_cartesian_space_com_sum_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_90_update_cartesian_space_com_inertial_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_11_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_9_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_54_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_68_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_62_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_57_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_59_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_74_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_23_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_14_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_19_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_21_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_65_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_1_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_4_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_86_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_82_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_84_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_37_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_33_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_53_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_55_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_50_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_39_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_44_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_56_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_61_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_67_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_79_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_58_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_27_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_49_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_70_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_35_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_73_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_7_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_75_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_66_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_69_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_60_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_63_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_2_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_83_range_for",
+          "kernel_rigid_stress_post_c1040_0_kernel_24_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_76_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_6_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_87_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_40_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_34_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_94_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_71_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_45_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_89_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_85_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_36_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_78_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_22_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_30_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_64_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_80_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_15_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_42_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_51_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_17_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_28_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_32_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_26_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_38_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_91_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_20_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_8_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_3_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_10_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_0_serial",
+          "kernel_rigid_stress_post_c1040_0_kernel_13_range_for"
+        ]
+      },
+      "runtime_counts": {
+        "cudaLaunchKernel": 8768,
+        "cuLaunchKernel": 18040,
+        "cudaMemcpyAsync": 135,
+        "cudaStreamSynchronize": 135,
+        "cudaDeviceSynchronize": 1
+      },
+      "runtime_duration_sum_ms": {
+        "cudaLaunchKernel": 49.54736600000009,
+        "cuLaunchKernel": 44.54633400000017,
+        "cudaMemcpyAsync": 272.883641,
+        "cudaStreamSynchronize": 37.30560599999998,
+        "cudaDeviceSynchronize": 0.012811
+      },
+      "runtime_memcpy_fraction_overlapping_gpu_kernels": 0.9924171621043834,
+      "copy_or_memset_sum_ms": 2.8512990000000276,
+      "explicit_copy_or_memset_bytes": {
+        "gpu_memcpy: Memcpy HtoD (Pageable -> Device)": {
+          "events": 4288,
+          "known_bytes": 6311720,
+          "events_without_byte_count": 0
+        },
+        "gpu_memcpy: Memcpy DtoH (Device -> Pageable)": {
+          "events": 63,
+          "known_bytes": 516096,
+          "events_without_byte_count": 0
+        }
+      },
+      "native_buffer_bytes": 527439990,
+      "native_logical_buffer_bytes": 527439990,
+      "largest_native_buffers": [
+        {
+          "name": "stress.0.inverse.blocks",
+          "shape": [
+            810,
+            810,
+            3,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 47239200,
+          "alias_of": null,
+          "kind": 1
+        },
+        {
+          "name": "stress.0.state.force",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.state.rhs",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.state.displacement",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 4
+        },
+        {
+          "name": "stress.0.state.residual",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.position",
+          "shape": [
+            750,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 36864000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.center",
+          "shape": [
+            750,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 36864000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.force",
+          "shape": [
+            750,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 36864000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.normal",
+          "shape": [
+            750,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 36864000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.coefficient",
+          "shape": [
+            750,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 36864000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.scatter.wrench",
+          "shape": [
+            262144,
+            6
+          ],
+          "dtype": "torch.float64",
+          "bytes": 12582912,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.friction",
+          "shape": [
+            750,
+            2048
+          ],
+          "dtype": "torch.float64",
+          "bytes": 12288000,
+          "alias_of": null,
+          "kind": 6
+        }
+      ],
+      "setup_seconds_including_build_JIT": 107.46881220799696,
+      "trace_sha256": "4c6a1f4a306e53acef771e7fc4aafb2dc5f8bfb0d2bac385568c74449c34a8f3",
+      "scope": "intrusive moving-contact trace, excluded from headline rates"
+    },
+    {
+      "case": "intrinsic-live",
+      "steps": 600,
+      "gpu_uuid": "GPU-03ec8bc3-12fe-0bac-58bd-7864979f88ce",
+      "cpu_step_annotation_ms_per_step": 27.371004846666644,
+      "gpu_kernel_sum_ms_per_step": 23.12145856,
+      "gpu_interval_union_ms_per_step": 23.12145743993445,
+      "grouped_kernel_ms_per_step": {
+        "pressure_anchor": 0.0,
+        "pressure_sample_and_fit": 0.0,
+        "intrinsic_support_and_samples": 5.111216235000005,
+        "intrinsic_fit": 7.028603536666666,
+        "intrinsic_contact_pack": 0.10271605666666664,
+        "scatter": 2.5861960666666683,
+        "elastic_recovery": 1.4501033133333328,
+        "balance_residual_acceptance": 0.9722790516666665,
+        "peak": 0.42671310166666615,
+        "history": 0.0,
+        "fused_rigid_stress_post_unseparated": 0.0
+      },
+      "other_rigid_controller_framework_kernel_ms_per_step": 5.44363119833333,
+      "matched_kernel_names": {
+        "pressure_anchor": [],
+        "pressure_sample_and_fit": [],
+        "intrinsic_support_and_samples": [
+          "kernel_fan_frontier_samples_c1042_0_kernel_4_range_for",
+          "kernel_fan_frontier_c1040_0_kernel_4_range_for",
+          "kernel_refine_failed_disks_c768_0_kernel_4_range_for",
+          "kernel_fan_frontier_c1040_0_kernel_5_range_for",
+          "kernel_refresh_refined_source_priors_c784_0_kernel_1_range_for",
+          "kernel_fan_frontier_c1040_0_kernel_2_range_for",
+          "kernel_refine_failed_samples_c778_0_kernel_1_range_for",
+          "kernel_select_failed_fans_c774_0_kernel_1_range_for",
+          "kernel_bind_traction_support_impl_c800_0_kernel_1_range_for",
+          "kernel_fan_frontier_samples_c1042_0_kernel_5_range_for",
+          "kernel_fan_frontier_samples_c1042_0_kernel_2_range_for",
+          "kernel_refine_failed_samples_c778_0_kernel_3_range_for",
+          "kernel_refine_failed_disks_c768_0_kernel_2_range_for",
+          "kernel_refine_failed_charts_c776_0_kernel_2_range_for",
+          "kernel_refine_failed_charts_c776_0_kernel_3_range_for",
+          "kernel_refresh_refined_source_priors_c784_0_kernel_0_serial",
+          "kernel_fan_frontier_samples_c1042_0_kernel_3_serial",
+          "kernel_fan_frontier_c1040_0_kernel_0_range_for",
+          "kernel_refine_failed_disks_c768_0_kernel_3_serial",
+          "kernel_fan_frontier_c1040_0_kernel_3_serial",
+          "kernel_refine_failed_samples_c778_0_kernel_2_serial",
+          "kernel_fan_frontier_samples_c1042_0_kernel_1_serial",
+          "kernel_refine_failed_samples_c778_0_kernel_0_serial",
+          "kernel_bind_traction_support_impl_c800_0_kernel_0_serial",
+          "kernel_refine_failed_disks_c768_0_kernel_1_serial",
+          "kernel_fan_frontier_c1040_0_kernel_1_serial",
+          "kernel_select_failed_fans_c774_0_kernel_0_serial",
+          "kernel_refine_failed_charts_c776_0_kernel_1_serial",
+          "kernel_refine_failed_disks_c768_0_kernel_0_range_for",
+          "kernel_fan_frontier_samples_c1042_0_kernel_0_range_for",
+          "kernel_refine_failed_charts_c776_0_kernel_0_range_for"
+        ],
+        "intrinsic_fit": [
+          "kernel_fit_tractions_impl_c1044_0_kernel_1_range_for",
+          "kernel_fit_tractions_impl_c1044_1_kernel_1_range_for",
+          "kernel_fit_tractions_impl_c1044_2_kernel_1_range_for",
+          "kernel_fit_tractions_impl_c752_2_kernel_1_range_for",
+          "kernel_fit_tractions_impl_c752_0_kernel_1_range_for",
+          "kernel_fit_tractions_impl_c752_1_kernel_1_range_for",
+          "kernel_fit_tractions_impl_c1044_1_kernel_0_serial",
+          "kernel_fit_tractions_impl_c1044_2_kernel_0_serial",
+          "kernel_fit_tractions_impl_c752_0_kernel_0_serial",
+          "kernel_fit_tractions_impl_c752_1_kernel_0_serial",
+          "kernel_fit_tractions_impl_c1044_0_kernel_0_serial",
+          "kernel_fit_tractions_impl_c752_2_kernel_0_serial"
+        ],
+        "intrinsic_contact_pack": [
+          "kernel_pack_intrinsic_contacts_c796_0_kernel_7_range_for",
+          "kernel_commit_intrinsic_contacts_c1046_0_kernel_1_range_for",
+          "kernel_pack_intrinsic_contacts_c796_0_kernel_2_range_for",
+          "kernel_pack_intrinsic_contacts_c796_0_kernel_4_range_for",
+          "kernel_pack_intrinsic_contacts_c796_0_kernel_5_range_for",
+          "kernel_commit_intrinsic_contacts_c1046_0_kernel_0_serial",
+          "kernel_pack_intrinsic_contacts_c796_0_kernel_3_serial",
+          "kernel_pack_intrinsic_contacts_c796_0_kernel_6_serial",
+          "kernel_pack_intrinsic_contacts_c796_0_kernel_1_serial",
+          "kernel_pack_intrinsic_contacts_c796_0_kernel_0_range_for"
+        ],
+        "scatter": [
+          "kernel_scatter_cached_tractions_c1048_0_kernel_5_range_for",
+          "kernel_load_intrinsic_contacts_c802_0_kernel_3_range_for",
+          "kernel_load_intrinsic_contacts_c802_0_kernel_1_range_for",
+          "kernel_scatter_cached_tractions_c1048_0_kernel_3_range_for",
+          "kernel_scatter_cached_tractions_c1048_0_kernel_1_range_for",
+          "kernel_scatter_cached_tractions_c1048_0_kernel_4_serial",
+          "kernel_scatter_cached_tractions_c1048_0_kernel_2_serial",
+          "kernel_load_intrinsic_contacts_c802_0_kernel_2_serial",
+          "kernel_scatter_cached_tractions_c1048_0_kernel_0_serial",
+          "kernel_load_intrinsic_contacts_c802_0_kernel_0_serial"
+        ],
+        "elastic_recovery": [
+          "kernel_surface_apply_packed_c872_0_kernel_1_range_for",
+          "kernel_surface_pack_c870_0_kernel_1_range_for",
+          "kernel_direct_init_c858_0_kernel_3_range_for",
+          "kernel_apply_inverse_c832_0_kernel_1_range_for",
+          "kernel_apply_inverse_c832_0_kernel_2_range_for",
+          "kernel_solve_cooperative_c826_1_kernel_1_range_for",
+          "kernel_direct_init_c858_0_kernel_1_range_for",
+          "kernel_surface_apply_packed_c872_0_kernel_2_range_for",
+          "kernel_solve_cooperative_c826_1_kernel_2_range_for",
+          "kernel_apply_inverse_c832_0_kernel_0_serial",
+          "kernel_solve_cooperative_c826_1_kernel_0_serial",
+          "kernel_surface_apply_packed_c872_0_kernel_0_serial",
+          "kernel_direct_init_c858_0_kernel_2_serial",
+          "kernel_surface_pack_c870_0_kernel_0_serial",
+          "kernel_direct_init_c858_0_kernel_0_serial"
+        ],
+        "balance_residual_acceptance": [
+          "kernel_full_residual_impl_c866_0_kernel_3_range_for",
+          "kernel_balance_impl_c856_0_kernel_3_range_for",
+          "kernel_balance_impl_c856_0_kernel_5_range_for",
+          "kernel_full_residual_impl_c866_1_kernel_3_range_for",
+          "kernel_full_residual_impl_c866_1_kernel_1_range_for",
+          "kernel_full_residual_impl_c866_1_kernel_4_range_for",
+          "kernel_accept_impl_c886_0_kernel_1_range_for",
+          "kernel_full_residual_impl_c866_0_kernel_4_range_for",
+          "kernel_full_residual_impl_c866_0_kernel_1_range_for",
+          "kernel_balance_impl_c856_0_kernel_1_range_for",
+          "kernel_accept_impl_c886_0_kernel_3_range_for",
+          "kernel_full_residual_impl_c866_1_kernel_0_serial",
+          "kernel_full_residual_impl_c866_1_kernel_2_serial",
+          "kernel_full_residual_impl_c866_0_kernel_2_serial",
+          "kernel_balance_impl_c856_0_kernel_2_serial",
+          "kernel_full_residual_impl_c866_0_kernel_0_serial",
+          "kernel_balance_impl_c856_0_kernel_4_serial",
+          "kernel_balance_impl_c856_0_kernel_0_serial",
+          "kernel_accept_impl_c886_0_kernel_0_serial",
+          "kernel_accept_impl_c886_0_kernel_2_serial"
+        ],
+        "peak": [
+          "kernel_peak_impl_c868_0_kernel_3_range_for",
+          "kernel_peak_impl_c868_0_kernel_4_range_for",
+          "kernel_peak_impl_c868_0_kernel_1_range_for",
+          "kernel_peak_impl_c868_0_kernel_0_serial",
+          "kernel_peak_impl_c868_0_kernel_2_serial"
+        ],
+        "history": [],
+        "fused_rigid_stress_post_unseparated": []
+      },
+      "runtime_counts": {
+        "cudaLaunchKernel": 8768,
+        "cuLaunchKernel": 93040,
+        "cudaMemcpyAsync": 2535,
+        "cudaStreamSynchronize": 2535,
+        "cudaDeviceSynchronize": 1
+      },
+      "runtime_duration_sum_ms": {
+        "cudaLaunchKernel": 49.30884000000004,
+        "cuLaunchKernel": 273.24601299999864,
+        "cudaMemcpyAsync": 7790.560181000016,
+        "cudaStreamSynchronize": 22.139990000000004,
+        "cudaDeviceSynchronize": 0.019592
+      },
+      "runtime_memcpy_fraction_overlapping_gpu_kernels": 0.9937380908004012,
+      "copy_or_memset_sum_ms": 20.62638599999515,
+      "explicit_copy_or_memset_bytes": {
+        "gpu_memcpy: Memcpy HtoD (Pageable -> Device)": {
+          "events": 33088,
+          "known_bytes": 14937320,
+          "events_without_byte_count": 0
+        },
+        "gpu_memcpy: Memcpy DtoH (Device -> Pageable)": {
+          "events": 2463,
+          "known_bytes": 525696,
+          "events_without_byte_count": 0
+        }
+      },
+      "native_buffer_bytes": 2167367278,
+      "native_logical_buffer_bytes": 2167376958,
+      "largest_native_buffers": [
+        {
+          "name": "stress.0.intrinsic.tractions.sample_barycentric",
+          "shape": [
+            1019,
+            16,
+            2048,
+            2
+          ],
+          "dtype": "torch.float64",
+          "bytes": 534249472,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.intrinsic.tractions.profile",
+          "shape": [
+            1019,
+            16,
+            2048
+          ],
+          "dtype": "torch.float64",
+          "bytes": 267124736,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.intrinsic.footprints.port_distance",
+          "shape": [
+            882,
+            16,
+            2048
+          ],
+          "dtype": "torch.float64",
+          "bytes": 231211008,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.intrinsic.tractions.sample_indices",
+          "shape": [
+            1019,
+            16,
+            2048
+          ],
+          "dtype": "torch.int32",
+          "bytes": 133562368,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.intrinsic.certificates.ray",
+          "shape": [
+            750,
+            2048,
+            6
+          ],
+          "dtype": "torch.float64",
+          "bytes": 73728000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.intrinsic.tractions.fan_barycentric",
+          "shape": [
+            80,
+            16,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 62914560,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.intrinsic.wrench_search.triangles",
+          "shape": [
+            37,
+            16,
+            2048,
+            6
+          ],
+          "dtype": "torch.float64",
+          "bytes": 58195968,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.inverse.blocks",
+          "shape": [
+            810,
+            810,
+            3,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 47239200,
+          "alias_of": null,
+          "kind": 1
+        },
+        {
+          "name": "stress.0.state.force",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.state.rhs",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.state.displacement",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 4
+        },
+        {
+          "name": "stress.0.state.residual",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 6
+        }
+      ],
+      "setup_seconds_including_build_JIT": 101.64083360599761,
+      "trace_sha256": "5ed807a8bb6ec381c099b503034b4b04e1e5a5aac153142cc7b959b148be8eba",
+      "scope": "intrusive moving-contact trace, excluded from headline rates"
+    },
+    {
+      "case": "pressure-unfused-live",
+      "steps": 600,
+      "gpu_uuid": "GPU-7e48ba45-716e-683d-0b53-70faa2be0c38",
+      "cpu_step_annotation_ms_per_step": 11.258692024999998,
+      "gpu_kernel_sum_ms_per_step": 8.645153754999999,
+      "gpu_interval_union_ms_per_step": 8.645152314870423,
+      "grouped_kernel_ms_per_step": {
+        "pressure_anchor": 0.15369271166666662,
+        "pressure_sample_and_fit": 0.8533361316666653,
+        "intrinsic_support_and_samples": 0.0,
+        "intrinsic_fit": 0.0,
+        "intrinsic_contact_pack": 0.0,
+        "scatter": 1.4243434899999996,
+        "elastic_recovery": 1.4051174116666665,
+        "balance_residual_acceptance": 0.9447065983333328,
+        "peak": 0.4137362983333329,
+        "history": 0.0,
+        "fused_rigid_stress_post_unseparated": 0.0
+      },
+      "other_rigid_controller_framework_kernel_ms_per_step": 3.450221113333339,
+      "matched_kernel_names": {
+        "pressure_anchor": [
+          "kernel_anchor_c710_0_kernel_1_range_for",
+          "kernel_pack_contacts_c714_0_kernel_2_range_for",
+          "kernel_refine_contacts_c712_0_kernel_1_range_for",
+          "kernel_anchor_c710_0_kernel_0_serial",
+          "kernel_pack_contacts_c714_0_kernel_0_range_for",
+          "kernel_refine_contacts_c712_0_kernel_0_serial",
+          "kernel_pack_contacts_c714_0_kernel_1_serial"
+        ],
+        "pressure_sample_and_fit": [
+          "kernel_pressure_warp_c716_0_kernel_1_range_for",
+          "kernel_pressure_correct_warp_c718_0_kernel_1_range_for",
+          "kernel_pressure_warp_c716_0_kernel_0_serial",
+          "kernel_pressure_correct_warp_c718_0_kernel_0_serial"
+        ],
+        "intrinsic_support_and_samples": [],
+        "intrinsic_fit": [],
+        "intrinsic_contact_pack": [],
+        "scatter": [
+          "kernel_scatter_faces_impl_c810_0_kernel_16_range_for",
+          "kernel_scatter_faces_impl_c810_0_kernel_10_range_for",
+          "kernel_scatter_faces_impl_c810_0_kernel_4_range_for",
+          "kernel_scatter_faces_impl_c810_0_kernel_14_range_for",
+          "kernel_scatter_faces_impl_c810_0_kernel_8_range_for",
+          "kernel_scatter_faces_impl_c810_0_kernel_2_range_for",
+          "kernel_scatter_faces_impl_c810_0_kernel_12_range_for",
+          "kernel_scatter_faces_impl_c810_0_kernel_6_range_for",
+          "kernel_scatter_faces_impl_c810_0_kernel_3_serial",
+          "kernel_scatter_faces_impl_c810_0_kernel_13_serial",
+          "kernel_scatter_faces_impl_c810_0_kernel_5_serial",
+          "kernel_scatter_faces_impl_c810_0_kernel_0_range_for",
+          "kernel_scatter_faces_impl_c810_0_kernel_7_serial",
+          "kernel_scatter_faces_impl_c810_0_kernel_9_serial",
+          "kernel_scatter_faces_impl_c810_0_kernel_11_serial",
+          "kernel_scatter_faces_impl_c810_0_kernel_15_serial",
+          "kernel_scatter_faces_impl_c810_0_kernel_1_serial"
+        ],
+        "elastic_recovery": [
+          "kernel_surface_apply_packed_c872_0_kernel_1_range_for",
+          "kernel_surface_pack_c870_0_kernel_1_range_for",
+          "kernel_direct_init_c858_0_kernel_3_range_for",
+          "kernel_apply_inverse_c832_0_kernel_1_range_for",
+          "kernel_apply_inverse_c832_0_kernel_2_range_for",
+          "kernel_solve_cooperative_c826_1_kernel_1_range_for",
+          "kernel_direct_init_c858_0_kernel_1_range_for",
+          "kernel_surface_apply_packed_c872_0_kernel_2_range_for",
+          "kernel_solve_cooperative_c826_1_kernel_2_range_for",
+          "kernel_apply_inverse_c832_0_kernel_0_serial",
+          "kernel_solve_cooperative_c826_1_kernel_0_serial",
+          "kernel_surface_apply_packed_c872_0_kernel_0_serial",
+          "kernel_direct_init_c858_0_kernel_2_serial",
+          "kernel_surface_pack_c870_0_kernel_0_serial",
+          "kernel_direct_init_c858_0_kernel_0_serial"
+        ],
+        "balance_residual_acceptance": [
+          "kernel_full_residual_impl_c866_0_kernel_3_range_for",
+          "kernel_balance_impl_c856_0_kernel_3_range_for",
+          "kernel_balance_impl_c856_0_kernel_5_range_for",
+          "kernel_full_residual_impl_c866_1_kernel_3_range_for",
+          "kernel_full_residual_impl_c866_1_kernel_1_range_for",
+          "kernel_full_residual_impl_c866_1_kernel_4_range_for",
+          "kernel_accept_impl_c886_0_kernel_1_range_for",
+          "kernel_balance_impl_c856_0_kernel_1_range_for",
+          "kernel_full_residual_impl_c866_0_kernel_1_range_for",
+          "kernel_full_residual_impl_c866_0_kernel_4_range_for",
+          "kernel_accept_impl_c886_0_kernel_3_range_for",
+          "kernel_full_residual_impl_c866_1_kernel_0_serial",
+          "kernel_full_residual_impl_c866_1_kernel_2_serial",
+          "kernel_full_residual_impl_c866_0_kernel_0_serial",
+          "kernel_balance_impl_c856_0_kernel_2_serial",
+          "kernel_full_residual_impl_c866_0_kernel_2_serial",
+          "kernel_balance_impl_c856_0_kernel_4_serial",
+          "kernel_accept_impl_c886_0_kernel_0_serial",
+          "kernel_balance_impl_c856_0_kernel_0_serial",
+          "kernel_accept_impl_c886_0_kernel_2_serial"
+        ],
+        "peak": [
+          "kernel_peak_impl_c868_0_kernel_3_range_for",
+          "kernel_peak_impl_c868_0_kernel_4_range_for",
+          "kernel_peak_impl_c868_0_kernel_1_range_for",
+          "kernel_peak_impl_c868_0_kernel_0_serial",
+          "kernel_peak_impl_c868_0_kernel_2_serial"
+        ],
+        "history": [],
+        "fused_rigid_stress_post_unseparated": []
+      },
+      "runtime_counts": {
+        "cuLaunchKernel": 43840,
+        "cudaLaunchKernel": 8768,
+        "cudaMemcpyAsync": 135,
+        "cudaStreamSynchronize": 135,
+        "cudaDeviceSynchronize": 1
+      },
+      "runtime_duration_sum_ms": {
+        "cuLaunchKernel": 108.87142299999994,
+        "cudaLaunchKernel": 46.56278999999997,
+        "cudaMemcpyAsync": 1.4271049999999994,
+        "cudaStreamSynchronize": 3.776584000000001,
+        "cudaDeviceSynchronize": 0.019795
+      },
+      "runtime_memcpy_fraction_overlapping_gpu_kernels": 0.13219063079202734,
+      "copy_or_memset_sum_ms": 11.250734999998217,
+      "explicit_copy_or_memset_bytes": {
+        "gpu_memcpy: Memcpy HtoD (Pageable -> Device)": {
+          "events": 18688,
+          "known_bytes": 8490920,
+          "events_without_byte_count": 0
+        },
+        "gpu_memcpy: Memcpy DtoH (Device -> Pageable)": {
+          "events": 63,
+          "known_bytes": 516096,
+          "events_without_byte_count": 0
+        }
+      },
+      "native_buffer_bytes": 516429942,
+      "native_logical_buffer_bytes": 516429942,
+      "largest_native_buffers": [
+        {
+          "name": "stress.0.inverse.blocks",
+          "shape": [
+            810,
+            810,
+            3,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 47239200,
+          "alias_of": null,
+          "kind": 1
+        },
+        {
+          "name": "stress.0.state.force",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.state.rhs",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.state.displacement",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 4
+        },
+        {
+          "name": "stress.0.state.residual",
+          "shape": [
+            810,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 39813120,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.position",
+          "shape": [
+            750,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 36864000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.center",
+          "shape": [
+            750,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 36864000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.force",
+          "shape": [
+            750,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 36864000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.normal",
+          "shape": [
+            750,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 36864000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.coefficient",
+          "shape": [
+            750,
+            2048,
+            3
+          ],
+          "dtype": "torch.float64",
+          "bytes": 36864000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.friction",
+          "shape": [
+            750,
+            2048
+          ],
+          "dtype": "torch.float64",
+          "bytes": 12288000,
+          "alias_of": null,
+          "kind": 6
+        },
+        {
+          "name": "stress.0.contacts.radius",
+          "shape": [
+            750,
+            2048
+          ],
+          "dtype": "torch.float64",
+          "bytes": 12288000,
+          "alias_of": null,
+          "kind": 2
+        }
+      ],
+      "setup_seconds_including_build_JIT": 101.22412637999514,
+      "trace_sha256": "7e30f9f1f19299d306a1ac368c76af0c48d615845e05f06d29241374398883f1",
+      "scope": "intrusive moving-contact trace, excluded from headline rates"
+    }
+  ],
+  "group_prefixes": {
+    "pressure_anchor": [
+      "kernel_anchor_",
+      "kernel_refine_contacts_",
+      "kernel_pack_contacts_"
+    ],
+    "pressure_sample_and_fit": [
+      "kernel_pressure_warp_",
+      "kernel_pressure_correct_warp_"
+    ],
+    "intrinsic_support_and_samples": [
+      "kernel_fan_frontier_",
+      "kernel_refine_failed_",
+      "kernel_select_failed_",
+      "kernel_refresh_refined_",
+      "kernel_bind_traction_support_"
+    ],
+    "intrinsic_fit": [
+      "kernel_fit_tractions_impl_"
+    ],
+    "intrinsic_contact_pack": [
+      "kernel_pack_intrinsic_contacts_",
+      "kernel_commit_intrinsic_contacts_"
+    ],
+    "scatter": [
+      "kernel_scatter_faces_impl_",
+      "kernel_scatter_cached_tractions_",
+      "kernel_load_intrinsic_contacts_"
+    ],
+    "elastic_recovery": [
+      "kernel_surface_pack_",
+      "kernel_surface_apply_packed_",
+      "kernel_direct_init_",
+      "kernel_apply_inverse_",
+      "kernel_solve_cooperative_"
+    ],
+    "balance_residual_acceptance": [
+      "kernel_balance_impl_",
+      "kernel_full_residual_impl_",
+      "kernel_accept_impl_"
+    ],
+    "peak": [
+      "kernel_peak_impl_"
+    ],
+    "history": [
+      "kernel_history_"
+    ],
+    "fused_rigid_stress_post_unseparated": [
+      "kernel_rigid_stress_post"
+    ]
+  },
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/trace-summaries-v2/pressure-default-live.json": "d6d8cdb2e7326ba675c8a6782bf62d89651cfa60f419777101f1f845cadacd5c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/trace-b2048-v1/pressure-default-live/results/benchmark.json": "8643193f9a0e7a0c3ff66e79b945e8c264fd8aa5c7f6e357af5d1321c071946a",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/trace-summaries-v2/pressure-scatter128-live.json": "8460816514b5ebbc36afbe80cb993740ad2cbfebda7e0b88959c36022cd86a84",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/trace-b2048-v1/pressure-scatter128-live/results/benchmark.json": "7df6de0c2959dcd50e04bd0a4f05e1945bd610b7288f50d3031b0a434f0cfd7a",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/trace-summaries-v2/intrinsic-live.json": "cbc30af1e39d85d7af8bb2f865dcfeaf91978be33596c40fe22fe6d7e2c966b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/trace-b2048-v1/intrinsic-live/results/benchmark.json": "b21d7a98f8d34f8d1f9fc07d4a62ae9d2bee14bba8b98f76ef0ab7a2281c74a0",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/trace-summaries-v2/pressure-unfused-live.json": "3f2309294a6617b36c0158c7cb41fa857f5c7c6c3ef6ca24c07a4f55800dce02",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/trace-pressure-unfused-v1/pressure-unfused-live/results/benchmark.json": "abbe11123f1d3b4e878105d295326b231eaf744aa4b4f825cd08e3c8a9cfd07c"
+  },
+  "limitations": [
+    "Pressure fused post kernels cannot be reliably split into scientific stages from generated names.",
+    "Pressure support quadrature and fitting share a kernel; report their combined cost.",
+    "The unfused pressure diagnostic changes scheduling and is not a decomposition of the default wall time.",
+    "Kernel categories are disjoint; CPU/API spans overlap GPU work and must not be added to GPU durations.",
+    "History0 dispatches no history prediction/maintenance; history4 has a separate repeated rate experiment.",
+    "Logical/native allocation bytes and copy durations are not DRAM traffic or hardware bandwidth counters.",
+    "No device DRAM counter was collected; no measured bandwidth bottleneck is claimed."
+  ],
+  "passed": true
+}

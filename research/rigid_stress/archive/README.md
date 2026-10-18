@@ -104,3 +104,27 @@ runtime directory or other worktree was cancelled, migrated or deleted.
 These protected historical helpers are not a new active research goal.
 See [the cleanup result](../docs/BRANCH_CLEANUP_RESULTS.md) for verification and
 before/after counts.
+
+## Pressure/intrinsic comparison: retained negative evidence
+
+The [current comparison](../docs/PRESSURE_COMPARISON_RESULTS_20261018.md) and its
+[compact packet](../evidence/20261017-pressure-comparison/comparison-v1/README.md)
+add one evidence packet without changing the seven canonical cleanup packets.
+They preserve the current generated-bank status35 input, all four unsupported
+pressure free-moment controls, intrinsic B40960 CUDA OOM and pressure
+B65536/B131072 rigid-array capacity failures. Rejected/incomplete rollouts have
+no successful full-rollout rate.
+
+The existing near-cancelling source-prior limitation remains pinned in
+[`PHYSICAL_LOAD_MODELS_20261014.md`](https://github.com/Roushelfy/Genesis/blob/1606ee3a9e9628a935ad5e446984f920af3adc66/research/rigid_stress/docs/PHYSICAL_LOAD_MODELS_20261014.md).
+The original constant-vector reference's almost cancelling quadrature sum
+triggered status33 under the original aggregate-force-relative budget. Its
+rejected inputs/source and later exact-declared-strength reference are retained
+in `evidence/20261014-physical/load-model-checkpoint-v2/` at the archive revision.
+Manifest SHA256:
+`08122ea608f3c65d74956832531d773c7f57c52f66fa5eb13cb3e1c9caf99d9a`.
+The same packet retains the pre-repair wrong-sheet test, repaired matched
+inputs, local-cone violations and unresolved refinement tails. Retrieve only
+the required entries through that manifest; do not copy its giant field archive
+into the active tree. Exactly balanced successful gripping fixtures do not
+resolve near-zero FP64 wrench-budget sensitivity.
