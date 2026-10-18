@@ -244,6 +244,7 @@ def make_parser():
     parser.add_argument("--level", type=int, default=1)
     parser.add_argument("--precision", choices=("32", "64"), default="32")
     parser.add_argument("--substeps", type=int, default=1)
+    parser.add_argument("--sim-dt", type=float, default=0.01)
     parser.add_argument("--iterations", type=int, default=50)
     parser.add_argument("--tolerance", type=float, default=1e-4)
     parser.add_argument("--patches", type=int, default=6)

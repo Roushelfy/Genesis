@@ -14,6 +14,8 @@ from genesis.utils.misc import qd_to_numpy, tensor_to_array
 
 from ..shell_comparison.rollout import controller_step
 from .artifacts import file_id, runtime_identity, write_json
+from .common_metric import voigt_tensor
+from .prescribed_motion import PrescribedMotion
 
 
 def main():
@@ -23,8 +25,14 @@ def main():
     parser.add_argument("--steps", type=int, default=900)
     parser.add_argument("--substeps", type=int, default=10)
     parser.add_argument("--precision", choices=("32", "64"), default="64")
+    parser.add_argument("--motion", type=Path)
+    parser.add_argument("--sim-dt", type=float, default=0.01)
+    parser.add_argument("--tracking-damping", type=float, default=1e10)
+    parser.add_argument("--record-every", type=int, default=1)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    assert args.steps > 0 and args.record_every > 0
+    assert args.motion is not None or args.sim_dt == 0.01
     args.output.mkdir(parents=True, exist_ok=False)
     frames = args.output / "frames"
     frames.mkdir()
@@ -43,7 +51,15 @@ def main():
         enable_contact_patch=False,
         contact_model="pressure" if args.method == "dpr" else "intrinsic",
         intrinsic_load_partition="body_source_prior",
+        timestep=args.sim_dt,
     )
+    motion = (
+        PrescribedMotion.configure(workload.robot, args.motion, args.sim_dt, args.tracking_damping)
+        if args.motion is not None
+        else None
+    )
+    if motion is not None:
+        assert args.substeps == 1 and args.steps * motion.stride < len(motion.q)
     torch.cuda.synchronize()
     entry = workload.scene.rigid_solver.stress_recovery.links[0]
     write_json(
@@ -57,11 +73,12 @@ def main():
             "elastic_mesh": file_id(workload.link.stress_options.mesh),
             "method": args.method,
             "effective_options": workload.link.stress_options.model_dump(mode="json"),
-            "dt": 0.01,
+            "dt": args.sim_dt,
             "substeps": args.substeps,
             "precision": args.precision,
             "setup_seconds": perf_counter() - started,
-            "protocol": "original capped-control schedule",
+            "protocol": "shared prescribed motion" if motion is not None else "original capped-control schedule",
+            "prescribed_motion": motion.identity() if motion is not None else None,
             "stress_frame": "authored link frame",
             "field_measure": "linear elastic tensor, Voigt xx yy zz xy xz yz; last physical substep per control tick",
             "scope": "intrusive full-field/force history; excluded from primary timing",
@@ -73,10 +90,12 @@ def main():
     completed = False
     executed = 0
     invalid = 0
+    peak = -np.inf
+    principal_peak = -np.inf
     with (args.output / "steps.jsonl").open("w", buffering=1) as journal:
         try:
             for step in range(args.steps):
-                phase = controller_step(workload, False)
+                phase = motion.advance(workload, step, True) if motion is not None else controller_step(workload, False)
                 stress, vm = workload.link.get_stress_field(copy=False)
                 stress, vm = tensor_to_array(stress)[0], tensor_to_array(vm)[0]
                 contacts = workload.egg.get_contacts(is_padded=False)
@@ -86,6 +105,7 @@ def main():
                 forces = np.where(egg_is_a[:, None], contacts["force_a"], contacts["force_b"])[valid]
                 points = contacts["position"][valid]
                 finite = bool(np.isfinite(stress).all() and np.isfinite(vm).all())
+                principal = np.linalg.eigvalsh(voigt_tensor(stress))[..., -1].max().item() if finite else None
                 count = qd_to_numpy(entry.state.invalid_steps, transpose=True) - invalid_initial
                 invalid = count.sum().item()
                 q = tensor_to_array(workload.robot.get_qpos())[0]
@@ -93,9 +113,8 @@ def main():
                 quaternion = tensor_to_array(workload.egg.get_quat())[0]
                 residual = qd_to_numpy(entry.state.residual, transpose=True)[0]
                 rhs = qd_to_numpy(entry.state.rhs, transpose=True)[0]
-                np.savez_compressed(
-                    frames / f"step{step:06d}.npz",
-                    time_s=(step + 1) * 0.01,
+                payload = dict(
+                    time_s=(step + 1) * args.sim_dt,
                     step=step,
                     stress_voigt_link_pa=stress,
                     vm_pa=vm,
@@ -109,14 +128,23 @@ def main():
                     contact_source_geom_a=contacts["geom_a"][valid],
                     contact_source_geom_b=contacts["geom_b"][valid],
                 )
+                if (step + 1) % args.record_every == 0 or step == args.steps - 1 or not finite:
+                    np.savez_compressed(frames / f"step{step:06d}.npz", **payload)
+                if finite and vm.max() > peak:
+                    peak = vm.max().item()
+                    np.savez_compressed(args.output / "raw-vm-peak-state.npz", **payload)
+                if finite and principal > principal_peak:
+                    principal_peak = principal
+                    np.savez_compressed(args.output / "raw-principal-peak-state.npz", **payload)
                 row = {
                     "step": step,
-                    "time_s": (step + 1) * 0.01,
+                    "time_s": (step + 1) * args.sim_dt,
                     "phase": tensor_to_array(phase)[0].item(),
                     "position_m": position.tolist(),
                     "quaternion_wxyz": quaternion.tolist(),
                     "q": q.tolist(),
                     "all_fields_finite": finite,
+                    "raw_maximum_principal_pa": principal,
                     "invalid_environment_steps": invalid,
                     "raw_vm_peak_last_physical_substep_pa": vm.max().item() if finite else None,
                     "raw_vm_peak_over_scene_substeps_pa": tensor_to_array(workload.link.get_max_stress())[0].item()
@@ -130,18 +158,23 @@ def main():
                     "contact_moment_world_origin_nm": np.cross(points, forces).sum(axis=0).tolist(),
                     "contact_count": len(forces),
                 }
+                if motion is not None:
+                    row.update(motion.metrics(workload.robot, step))
                 executed += 1
                 journal.write(json.dumps(row, allow_nan=False) + "\n")
                 if not finite:
                     break
-            completed = executed == args.steps
+            completed = executed == args.steps and finite
         finally:
             write_json(
                 args.output / "result.json",
                 {
-                    "kind": "native-capped-full-field-history",
+                    "kind": "native-prescribed-full-field-history"
+                    if motion is not None
+                    else "native-capped-full-field-history",
                     "method": args.method,
                     "requested_control_ticks": args.steps,
+                    "scene_step_dt_s": args.sim_dt,
                     "executed_control_ticks": executed,
                     "completed_requested_history": completed,
                     "invalid_environment_steps": invalid,

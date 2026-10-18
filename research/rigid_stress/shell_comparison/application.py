@@ -32,7 +32,7 @@ class ShellEgg:
         self.fingers = np.array([7, 8])
         self.scene = gs.Scene(
             sim_options=gs.options.SimOptions(
-                dt=0.01,
+                dt=args.sim_dt,
                 substeps=args.substeps,
             ),
             rigid_options=gs.options.RigidOptions(
