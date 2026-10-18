@@ -28,11 +28,18 @@ def main():
     parser.add_argument("--libdwarf", type=Path, required=True)
     parser.add_argument("--zstd", type=Path, required=True)
     parser.add_argument("--jobs", type=int, default=4)
+    parser.add_argument("--reuse-build", type=Path)
+    parser.add_argument("--with-viewer", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
-    build = args.output / "native-build"
-    build.mkdir()
+    build = args.reuse_build or args.output / "native-build"
+    if args.reuse_build is None:
+        build.mkdir()
+    else:
+        assert (build / "CMakeCache.txt").is_file()
+        shutil.copy2(build / "CMakeCache.txt", args.output / "previous-CMakeCache.txt")
+        shutil.copy2(build / "compile_commands.json", args.output / "previous-compile_commands.json")
     environment = os.environ.copy()
     environment["PATH"] = str(args.toolkit / "bin") + ":" + str(Path(sys.executable).parent) + ":" + environment["PATH"]
     environment["LD_LIBRARY_PATH"] = str(args.toolkit / "lib64") + ":" + environment.get("LD_LIBRARY_PATH", "")
@@ -54,7 +61,7 @@ def main():
         "-DCMAKE_CUDA_ARCHITECTURES=120-real",
         "-DQIPC_CUDA_ARCHITECTURES=120-real",
         "-DQIPC_RUNTIME_CHECK=ON",
-        "-DQIPC_BUILD_VIEWER=OFF",
+        "-DQIPC_BUILD_VIEWER=" + ("ON" if args.with_viewer else "OFF"),
         "-DQIPC_GENERATE_STUBS=OFF",
         f"-DPython_EXECUTABLE={sys.executable}",
         f"-Dnanobind_DIR={nanobind}",
@@ -73,6 +80,9 @@ def main():
         "--parallel",
         str(args.jobs),
     ]
+    if args.with_viewer:
+        target = compile_command.index("qipc_solver_ext")
+        compile_command.insert(target + 1, "qipc_viewer_ext")
     receipt = {
         "started_utc": datetime.now(timezone.utc).isoformat(),
         "source": str(args.source),
@@ -98,6 +108,8 @@ def main():
     )
     destination = runtime / "qipc/_src/native/solver" / library.name
     shutil.copy2(library, destination)
+    if args.with_viewer:
+        shutil.copy2(build / "qipc_viewer_ext.abi3.so", runtime / "qipc/_src/native/viewer/qipc_viewer_ext.abi3.so")
     environment["PYTHONPATH"] = str(runtime)
     test = [
         sys.executable,

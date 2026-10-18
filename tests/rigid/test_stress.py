@@ -159,17 +159,33 @@ def test_native_full_field_same_state_and_invalid_solve(tmp_path):
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-def test_native_full_field_unbatched_shared_operator(tmp_path):
+def test_native_full_field_unbatched_shared_operator(tmp_path, show_viewer):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
+    assert RigidStressOptions.dpr(mesh=mesh).model_dump() == RigidStressOptions(mesh=mesh).model_dump()
+    assert (
+        RigidStressOptions.scr(mesh=mesh, output_mode="full").model_dump()
+        == RigidStressOptions(
+            mesh=mesh,
+            output_mode="full",
+            contact_model="intrinsic",
+            intrinsic_load_partition="body_source_prior",
+        ).model_dump()
+    )
     collision = tmp_path / "shell.obj"
     trimesh.Trimesh(vertices=vertices, faces=faces, process=False).export(collision)
-    scene = gs.Scene(show_viewer=False)
+    scene = gs.Scene(
+        viewer_options=gs.options.ViewerOptions(
+            camera_pos=(0.4, -0.4, 1.3),
+            camera_lookat=(0.0, 0.0, 1.0),
+        ),
+        show_viewer=show_viewer,
+    )
     maximum = scene.add_entity(gs.morphs.Mesh(file=collision, pos=(-0.1, 0, 1), convexify=True, decimate=False))
     complete = scene.add_entity(gs.morphs.Mesh(file=collision, pos=(0.1, 0, 1), convexify=True, decimate=False))
-    maximum.base_link.configure_stress_recovery(RigidStressOptions(mesh=mesh))
-    complete.base_link.configure_stress_recovery(RigidStressOptions(mesh=mesh, output_mode="full"))
+    maximum.base_link.configure_stress_recovery(RigidStressOptions.dpr(mesh=mesh))
+    complete.base_link.configure_stress_recovery(RigidStressOptions.dpr(mesh=mesh, output_mode="full"))
     scene.build()
     entries = scene.rigid_solver.stress_recovery.links
     assert entries[0].model is entries[1].model
