@@ -1,0 +1,79 @@
+{
+  "genesis_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/kashu-shell-pr22-diagnostics/genesis/__init__.py",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726772",
+      "SLURM_ARRAY_JOB_ID": "726772",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-e3ae17a2-8c3a-b59e-e80d-ac03599051ab, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "torch_version": "2.11.0+cu129",
+  "torch_cuda_version": "12.9",
+  "condition_bank": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/case0.npz",
+    "bytes": 2096,
+    "sha256": "a555a5784363e52b92f15a51509dbd8a0a2cce131af0287127eb43d3d3c079c2"
+  },
+  "midpoint_mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/surface2/egg-mid-level1.obj",
+    "bytes": 59300,
+    "sha256": "f5fe99b5798041ce905a92cac10efa44675dd343c0ddf679d3daabbbd1468e7f"
+  },
+  "method": "shell",
+  "dt": 0.001,
+  "protocol": "shared prescribed motion",
+  "prescribed_motion": {
+    "motion": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-input-v1/group0/motion/motion.npz",
+      "bytes": 9190260,
+      "sha256": "b050060473fd7332b339b6a91f82955876962e04c3c044b8c3bfb068160c2d29"
+    },
+    "tracking_damping": 10000000000.0,
+    "tracking_stiffness": 10000000000000.0,
+    "force_caps_overridden": true,
+    "enforcement": "finite implicit joint servo; report actual tracking and gain sensitivity"
+  },
+  "substeps": 1,
+  "precision": "64",
+  "pcg_cap": 300,
+  "pcg_threshold": 1e-08,
+  "coarse_interval": 1,
+  "coarse_patches": 6,
+  "damping": 0.0,
+  "coupling_friction": 0.7191016138165071,
+  "coupling_softness_m": 0.002,
+  "influence_0_1_cutoff_beyond_half_thickness_m": 0.004605170185988092,
+  "setup_seconds": 7.606413278961554,
+  "source_scope": "PR22 plus existing read-only diagnostics",
+  "stress_frame": "world Cauchy observer, nominal bottom/middle/top fibers per face",
+  "scope": "intrusive complete capped history, excluded from primary timing",
+  "full_spatial_keyframes_s": [
+    1.1,
+    1.13,
+    1.16
+  ],
+  "dense_observer_control": false,
+  "nominal_thickness_mass_kg": 0.006946250126509787,
+  "actual_face_mass_kg": 0.006529848210401324,
+  "wall_input": {
+    "input": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-and-complete-fields-v1/group0/wall/surface2.npz",
+      "bytes": 24936,
+      "sha256": "6bc9993a08f18b971218ae30b40711a07d19d24e22879d4169f6fa84aa262d82"
+    },
+    "mass_kg": 0.006529848210401324,
+    "maximum_midpoint_match_error_m": 1.388648082136233e-16,
+    "minimum_thickness_m": 0.00043117484413317004,
+    "maximum_thickness_m": 0.00048527825947980273,
+    "scope": "Separately labeled geometry-only rest-input adapter. Face masses are bound before build and existing thickness state is set before stepping/reset capture. No PR22 solver/contact/constitutive kernel modification."
+  },
+  "fracture_enabled": false,
+  "plasticity_enabled": false
+}

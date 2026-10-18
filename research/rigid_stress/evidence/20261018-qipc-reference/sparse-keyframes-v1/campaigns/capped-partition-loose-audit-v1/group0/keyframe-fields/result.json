@@ -1,0 +1,1135 @@
+{
+  "kind": "paired-reference-history-uncertainty",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726741",
+      "SLURM_ARRAY_JOB_ID": "726741",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-17819d06-c563-257f-30fe-100c9f111279, 00000000:20:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "reference": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-partition-original/result.json",
+    "bytes": 4291,
+    "sha256": "39903a8c7511047a1725421afc0f242cbbeb986ef70fc558e7db3be16b3043bf"
+  },
+  "surface_mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz",
+    "bytes": 144512,
+    "sha256": "9d0d4f99c71578bd3f6bb039f9c72a5abbf2a8159f0209b4b891a3bda2647998"
+  },
+  "constitutive_at_identical_deformation": [
+    {
+      "time_s": 0.89,
+      "maximum_principal_stretch_departure_from_one": 2.629653360064488e-06,
+      "hencky_at_identical_F_vs_recorded_energy": {
+        "relative_tensor_error": 1.6629943183014702e-06,
+        "absolute_tensor_rms_error_pa": 0.007259368953477932,
+        "reference_tensor_rms_pa": 4365.239780790364,
+        "relative_floor_pa": 1.0
+      },
+      "corotated_linear_at_identical_F_vs_recorded_energy": {
+        "relative_tensor_error": 3.1941156185380066e-07,
+        "absolute_tensor_rms_error_pa": 0.001394308056248593,
+        "reference_tensor_rms_pa": 4365.239780790364,
+        "relative_floor_pa": 1.0
+      },
+      "scope": "Same-deformation constitutive diagnostic, volume weighted. It does not replace a different-energy dynamic history."
+    },
+    {
+      "time_s": 0.9500000000000001,
+      "maximum_principal_stretch_departure_from_one": 1.4499288036873281e-06,
+      "hencky_at_identical_F_vs_recorded_energy": {
+        "relative_tensor_error": 1.0014040640050635e-06,
+        "absolute_tensor_rms_error_pa": 0.002367296579782275,
+        "reference_tensor_rms_pa": 2363.977404200254,
+        "relative_floor_pa": 1.0
+      },
+      "corotated_linear_at_identical_F_vs_recorded_energy": {
+        "relative_tensor_error": 2.212093918212998e-07,
+        "absolute_tensor_rms_error_pa": 0.0005229340038624331,
+        "reference_tensor_rms_pa": 2363.977404200254,
+        "relative_floor_pa": 1.0
+      },
+      "scope": "Same-deformation constitutive diagnostic, volume weighted. It does not replace a different-energy dynamic history."
+    },
+    {
+      "time_s": 1.05,
+      "maximum_principal_stretch_departure_from_one": 1.1389807796913232e-06,
+      "hencky_at_identical_F_vs_recorded_energy": {
+        "relative_tensor_error": 8.334051080427013e-07,
+        "absolute_tensor_rms_error_pa": 0.0016152390971908596,
+        "reference_tensor_rms_pa": 1938.1199870304845,
+        "relative_floor_pa": 1.0
+      },
+      "corotated_linear_at_identical_F_vs_recorded_energy": {
+        "relative_tensor_error": 1.9795020428194216e-07,
+        "absolute_tensor_rms_error_pa": 0.00038365124735559953,
+        "reference_tensor_rms_pa": 1938.1199870304845,
+        "relative_floor_pa": 1.0
+      },
+      "scope": "Same-deformation constitutive diagnostic, volume weighted. It does not replace a different-energy dynamic history."
+    }
+  ],
+  "comparisons": [
+    {
+      "candidate": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-linear-control/result.json",
+        "bytes": 4299,
+        "sha256": "aac83e1638a489361ffd51ac23486bf463fa3bcff47b73ae1c5bf9f3c1eea9e5"
+      },
+      "candidate_folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-linear-control",
+      "candidate_config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-07,
+        "linear_tolerance": 1e-05,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg",
+        "newton_aware_pcg": false
+      },
+      "common_times": 3,
+      "missing_candidate_ticks": [],
+      "material_columns": 1280,
+      "pair_quadrature_points": 30720,
+      "direct_point_query_fallbacks": {
+        "reference": 0,
+        "candidate": 0
+      },
+      "expected_reference_duration_s": 1.05,
+      "complete_reference_observation_grid": false,
+      "history": [
+        {
+          "time_s": 0.89,
+          "common_tangent": {
+            "relative_tensor_error": 1.0063337290045893,
+            "absolute_tensor_rms_error_pa": 3621.163116704942,
+            "reference_tensor_rms_pa": 3598.3720035765864,
+            "relative_floor_pa": 1.0
+          },
+          "membrane": {
+            "relative_error": 1.0030234050658549,
+            "absolute_weighted_rms_error": 1.6809501053522533,
+            "reference_weighted_rms": 1.6758832315003538,
+            "relative_floor": 0.0005
+          },
+          "bending": {
+            "relative_error": 1.1644632894904798,
+            "absolute_weighted_rms_error": 1.568843378642097e-05,
+            "reference_weighted_rms": 1.3472673572462357e-05,
+            "relative_floor": 2.5e-07
+          },
+          "net_egg_wrench": {
+            "force_difference_n": [
+              -0.0004523467454356482,
+              0.0007936627399779189,
+              -0.00411693964950581
+            ],
+            "reference_force_n": [
+              0.00045234654087006505,
+              -0.0007936629041897444,
+              0.06817475415168259
+            ],
+            "force_relative_difference": 0.06185126982145815,
+            "moment_world_origin_difference_nm": [
+              0.001435857711402777,
+              0.0022776055152264815,
+              0.0008346865458322533
+            ],
+            "scope": "Net egg wrench, including cancellation of opposing pinch forces. This alone cannot qualify per-finger reactions."
+          },
+          "mass_weighted_com_difference_m": [
+            0.006323532180688818,
+            0.016387090211384472,
+            0.00213084608860159
+          ],
+          "inner_surface": {
+            "relative_tensor_error": 0.9896141824699598,
+            "absolute_tensor_rms_error_pa": 3412.374670886856,
+            "reference_tensor_rms_pa": 3448.1869109534923,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 1.0268735360189698,
+            "absolute_tensor_rms_error_pa": 3800.203775741288,
+            "reference_tensor_rms_pa": 3700.751497087062,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "time_s": 0.9500000000000001,
+          "common_tangent": {
+            "relative_tensor_error": 1.171208691641351,
+            "absolute_tensor_rms_error_pa": 2235.9706222635505,
+            "reference_tensor_rms_pa": 1909.1137542106392,
+            "relative_floor_pa": 1.0
+          },
+          "membrane": {
+            "relative_error": 1.1645127135961728,
+            "absolute_weighted_rms_error": 1.0311442205778472,
+            "reference_weighted_rms": 0.8854727033366034,
+            "relative_floor": 0.0005
+          },
+          "bending": {
+            "relative_error": 1.4470065194889785,
+            "absolute_weighted_rms_error": 1.0708528813868708e-05,
+            "reference_weighted_rms": 7.400470329360028e-06,
+            "relative_floor": 2.5e-07
+          },
+          "net_egg_wrench": {
+            "force_difference_n": [
+              -0.014099310466780845,
+              0.0018069578188287681,
+              0.00614403209376263
+            ],
+            "reference_force_n": [
+              0.014099310569063639,
+              -0.0018069582791013393,
+              0.057913778752471626
+            ],
+            "force_relative_difference": 0.25968346238615736,
+            "moment_world_origin_difference_nm": [
+              0.0005601609106990193,
+              -0.004830179912115269,
+              0.0009036683453392761
+            ],
+            "scope": "Net egg wrench, including cancellation of opposing pinch forces. This alone cannot qualify per-finger reactions."
+          },
+          "mass_weighted_com_difference_m": [
+            0.0047129631362192725,
+            0.01122815176602885,
+            0.002004166096106208
+          ],
+          "inner_surface": {
+            "relative_tensor_error": 1.139772550051445,
+            "absolute_tensor_rms_error_pa": 2066.7811332025403,
+            "reference_tensor_rms_pa": 1813.3276969244905,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 1.212958815825876,
+            "absolute_tensor_rms_error_pa": 2405.223216280098,
+            "reference_tensor_rms_pa": 1982.9388969339707,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "time_s": 1.05,
+          "common_tangent": {
+            "relative_tensor_error": 0.0987199178280845,
+            "absolute_tensor_rms_error_pa": 150.97868738223957,
+            "reference_tensor_rms_pa": 1529.3639895969216,
+            "relative_floor_pa": 1.0
+          },
+          "membrane": {
+            "relative_error": 0.09903346467388827,
+            "absolute_weighted_rms_error": 0.06991122066606928,
+            "reference_weighted_rms": 0.7059353209168543,
+            "relative_floor": 0.0005
+          },
+          "bending": {
+            "relative_error": 0.06137267945189834,
+            "absolute_weighted_rms_error": 3.8730811727726463e-07,
+            "reference_weighted_rms": 6.310757828014053e-06,
+            "relative_floor": 2.5e-07
+          },
+          "net_egg_wrench": {
+            "force_difference_n": [
+              0.009530981679905078,
+              0.0010098948512819413,
+              0.0041009352708467894
+            ],
+            "reference_force_n": [
+              -0.00953098147533949,
+              -0.0010098949387816751,
+              0.059956874737717616
+            ],
+            "force_relative_difference": 0.17169239759516466,
+            "moment_world_origin_difference_nm": [
+              3.855564501475287e-05,
+              -0.002484284905729141,
+              0.0006427489591178478
+            ],
+            "scope": "Net egg wrench, including cancellation of opposing pinch forces. This alone cannot qualify per-finger reactions."
+          },
+          "mass_weighted_com_difference_m": [
+            0.0036388936750522127,
+            0.0011817799210211578,
+            0.0008348584803728604
+          ],
+          "inner_surface": {
+            "relative_tensor_error": 0.10307536095588384,
+            "absolute_tensor_rms_error_pa": 148.15580578934927,
+            "reference_tensor_rms_pa": 1437.3542271926638,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 0.09610806342979569,
+            "absolute_tensor_rms_error_pa": 155.52981168764714,
+            "reference_tensor_rms_pa": 1618.2805701964583,
+            "relative_floor_pa": 1.0
+          }
+        }
+      ],
+      "complete_time_integrated_common_metrics": {}
+    },
+    {
+      "candidate": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-linear-loose/result.json",
+        "bytes": 4291,
+        "sha256": "8dfe796a7035f67fdb7954aaf3024ba49b1eb14e167d799175a7ba132e31e088"
+      },
+      "candidate_folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-linear-loose",
+      "candidate_config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-07,
+        "linear_tolerance": 0.01,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg",
+        "newton_aware_pcg": false
+      },
+      "common_times": 3,
+      "missing_candidate_ticks": [],
+      "material_columns": 1280,
+      "pair_quadrature_points": 30720,
+      "direct_point_query_fallbacks": {
+        "reference": 0,
+        "candidate": 0
+      },
+      "expected_reference_duration_s": 1.05,
+      "complete_reference_observation_grid": false,
+      "history": [
+        {
+          "time_s": 0.89,
+          "common_tangent": {
+            "relative_tensor_error": 1.0063353479396246,
+            "absolute_tensor_rms_error_pa": 3621.1689422354493,
+            "reference_tensor_rms_pa": 3598.3720035765864,
+            "relative_floor_pa": 1.0
+          },
+          "membrane": {
+            "relative_error": 1.0030250584839695,
+            "absolute_weighted_rms_error": 1.6809528762879464,
+            "reference_weighted_rms": 1.6758832315003538,
+            "relative_floor": 0.0005
+          },
+          "bending": {
+            "relative_error": 1.164469477673047,
+            "absolute_weighted_rms_error": 1.5688517157784705e-05,
+            "reference_weighted_rms": 1.3472673572462357e-05,
+            "relative_floor": 2.5e-07
+          },
+          "net_egg_wrench": {
+            "force_difference_n": [
+              -0.000452344802062494,
+              0.0007936528585006914,
+              -0.004116957422542991
+            ],
+            "reference_force_n": [
+              0.00045234654087006505,
+              -0.0007936629041897444,
+              0.06817475415168259
+            ],
+            "force_relative_difference": 0.0618514939732728,
+            "moment_world_origin_difference_nm": [
+              0.0014358576672732807,
+              0.0022776170968346263,
+              0.000834680098676021
+            ],
+            "scope": "Net egg wrench, including cancellation of opposing pinch forces. This alone cannot qualify per-finger reactions."
+          },
+          "mass_weighted_com_difference_m": [
+            0.006323535417589787,
+            0.016387096332713312,
+            0.0021308460888885584
+          ],
+          "inner_surface": {
+            "relative_tensor_error": 0.9896159246101016,
+            "absolute_tensor_rms_error_pa": 3412.3806781116905,
+            "reference_tensor_rms_pa": 3448.1869109534923,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 1.026874208169298,
+            "absolute_tensor_rms_error_pa": 3800.206263202622,
+            "reference_tensor_rms_pa": 3700.751497087062,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "time_s": 0.9500000000000001,
+          "common_tangent": {
+            "relative_tensor_error": 1.171207306056247,
+            "absolute_tensor_rms_error_pa": 2235.9679770239704,
+            "reference_tensor_rms_pa": 1909.1137542106392,
+            "relative_floor_pa": 1.0
+          },
+          "membrane": {
+            "relative_error": 1.1645113863671068,
+            "absolute_weighted_rms_error": 1.0311430453527382,
+            "reference_weighted_rms": 0.8854727033366034,
+            "relative_floor": 0.0005
+          },
+          "bending": {
+            "relative_error": 1.4470095991789176,
+            "absolute_weighted_rms_error": 1.0708551605022726e-05,
+            "reference_weighted_rms": 7.400470329360028e-06,
+            "relative_floor": 2.5e-07
+          },
+          "net_egg_wrench": {
+            "force_difference_n": [
+              -0.014099308932538896,
+              0.0018069602923943516,
+              0.006144043785730649
+            ],
+            "reference_force_n": [
+              0.014099310569063639,
+              -0.0018069582791013393,
+              0.057913778752471626
+            ],
+            "force_relative_difference": 0.25968352159212177,
+            "moment_world_origin_difference_nm": [
+              0.0005601609386401403,
+              -0.004830187540692803,
+              0.0009036699542552465
+            ],
+            "scope": "Net egg wrench, including cancellation of opposing pinch forces. This alone cannot qualify per-finger reactions."
+          },
+          "mass_weighted_com_difference_m": [
+            0.0047129663730330895,
+            0.01122815788760589,
+            0.0020041660963759055
+          ],
+          "inner_surface": {
+            "relative_tensor_error": 1.139770849240768,
+            "absolute_tensor_rms_error_pa": 2066.7780490754326,
+            "reference_tensor_rms_pa": 1813.3276969244905,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 1.2129568386586762,
+            "absolute_tensor_rms_error_pa": 2405.2192956783515,
+            "reference_tensor_rms_pa": 1982.9388969339707,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "time_s": 1.05,
+          "common_tangent": {
+            "relative_tensor_error": 0.09871253943075418,
+            "absolute_tensor_rms_error_pa": 150.96740312706163,
+            "reference_tensor_rms_pa": 1529.3639895969216,
+            "relative_floor_pa": 1.0
+          },
+          "membrane": {
+            "relative_error": 0.09902606305934177,
+            "absolute_weighted_rms_error": 0.06990599560492908,
+            "reference_weighted_rms": 0.7059353209168543,
+            "relative_floor": 0.0005
+          },
+          "bending": {
+            "relative_error": 0.06136447629650776,
+            "absolute_weighted_rms_error": 3.872563491501691e-07,
+            "reference_weighted_rms": 6.310757828014053e-06,
+            "relative_floor": 2.5e-07
+          },
+          "net_egg_wrench": {
+            "force_difference_n": [
+              0.009530981577622282,
+              0.0010098945819905323,
+              0.004100955971499953
+            ],
+            "reference_force_n": [
+              -0.00953098147533949,
+              -0.0010098949387816751,
+              0.059956874737717616
+            ],
+            "force_relative_difference": 0.17169252974141896,
+            "moment_world_origin_difference_nm": [
+              3.855569511640237e-05,
+              -0.0024842984076968028,
+              0.0006427487837999806
+            ],
+            "scope": "Net egg wrench, including cancellation of opposing pinch forces. This alone cannot qualify per-finger reactions."
+          },
+          "mass_weighted_com_difference_m": [
+            0.0036388969118748005,
+            0.0011817860425887908,
+            0.0008348584806149931
+          ],
+          "inner_surface": {
+            "relative_tensor_error": 0.10306789199716633,
+            "absolute_tensor_rms_error_pa": 148.14507024996396,
+            "reference_tensor_rms_pa": 1437.3542271926638,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 0.09610092308105693,
+            "absolute_tensor_rms_error_pa": 155.5182566000188,
+            "reference_tensor_rms_pa": 1618.2805701964583,
+            "relative_floor_pa": 1.0
+          }
+        }
+      ],
+      "complete_time_integrated_common_metrics": {}
+    },
+    {
+      "candidate": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-linear-loose-newton-mid/result.json",
+        "bytes": 4294,
+        "sha256": "cf017ed3a661ba295b746e3eff8d3d29d68d2cbf07ad58c15fc334800e38cc8c"
+      },
+      "candidate_folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-linear-loose-newton-mid",
+      "candidate_config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-08,
+        "linear_tolerance": 0.01,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg",
+        "newton_aware_pcg": false
+      },
+      "common_times": 3,
+      "missing_candidate_ticks": [],
+      "material_columns": 1280,
+      "pair_quadrature_points": 30720,
+      "direct_point_query_fallbacks": {
+        "reference": 0,
+        "candidate": 0
+      },
+      "expected_reference_duration_s": 1.05,
+      "complete_reference_observation_grid": false,
+      "history": [
+        {
+          "time_s": 0.89,
+          "common_tangent": {
+            "relative_tensor_error": 1.0063336219389352,
+            "absolute_tensor_rms_error_pa": 3621.1627314428893,
+            "reference_tensor_rms_pa": 3598.3720035765864,
+            "relative_floor_pa": 1.0
+          },
+          "membrane": {
+            "relative_error": 1.0030232746153387,
+            "absolute_weighted_rms_error": 1.6809498867324206,
+            "reference_weighted_rms": 1.6758832315003538,
+            "relative_floor": 0.0005
+          },
+          "bending": {
+            "relative_error": 1.1644635968627501,
+            "absolute_weighted_rms_error": 1.5688437927547235e-05,
+            "reference_weighted_rms": 1.3472673572462357e-05,
+            "relative_floor": 2.5e-07
+          },
+          "net_egg_wrench": {
+            "force_difference_n": [
+              -0.0004523459271733042,
+              0.0007936630008789476,
+              -0.004116943771944215
+            ],
+            "reference_force_n": [
+              0.00045234654087006505,
+              -0.0007936629041897444,
+              0.06817475415168259
+            ],
+            "force_relative_difference": 0.061851328281877734,
+            "moment_world_origin_difference_nm": [
+              0.0014358574521563827,
+              0.0022776083311351406,
+              0.0008346867139229855
+            ],
+            "scope": "Net egg wrench, including cancellation of opposing pinch forces. This alone cannot qualify per-finger reactions."
+          },
+          "mass_weighted_com_difference_m": [
+            0.006323533560207539,
+            0.016387092846532662,
+            0.002130846088514663
+          ],
+          "inner_surface": {
+            "relative_tensor_error": 0.9896139915549376,
+            "absolute_tensor_rms_error_pa": 3412.3740125761756,
+            "reference_tensor_rms_pa": 3448.1869109534923,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 1.02687350412693,
+            "absolute_tensor_rms_error_pa": 3800.203657716773,
+            "reference_tensor_rms_pa": 3700.751497087062,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "time_s": 0.9500000000000001,
+          "common_tangent": {
+            "relative_tensor_error": 1.1712102262873425,
+            "absolute_tensor_rms_error_pa": 2235.973552077321,
+            "reference_tensor_rms_pa": 1909.1137542106392,
+            "relative_floor_pa": 1.0
+          },
+          "membrane": {
+            "relative_error": 1.1645142315597892,
+            "absolute_weighted_rms_error": 1.031145564693194,
+            "reference_weighted_rms": 0.8854727033366034,
+            "relative_floor": 0.0005
+          },
+          "bending": {
+            "relative_error": 1.4470078862744853,
+            "absolute_weighted_rms_error": 1.07085389287243e-05,
+            "reference_weighted_rms": 7.400470329360028e-06,
+            "relative_floor": 2.5e-07
+          },
+          "net_egg_wrench": {
+            "force_difference_n": [
+              -0.014099311080477607,
+              0.0018069581836107622,
+              0.006144031463536925
+            ],
+            "reference_force_n": [
+              0.014099310569063639,
+              -0.0018069582791013393,
+              0.057913778752471626
+            ],
+            "force_relative_difference": 0.25968346827680466,
+            "moment_world_origin_difference_nm": [
+              0.0005601606600196963,
+              -0.0048301793730393255,
+              0.0009036685846706536
+            ],
+            "scope": "Net egg wrench, including cancellation of opposing pinch forces. This alone cannot qualify per-finger reactions."
+          },
+          "mass_weighted_com_difference_m": [
+            0.004712964515738105,
+            0.011228154401175623,
+            0.0020041660960221364
+          ],
+          "inner_surface": {
+            "relative_tensor_error": 1.1397739555442639,
+            "absolute_tensor_rms_error_pa": 2066.7836818215965,
+            "reference_tensor_rms_pa": 1813.3276969244905,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 1.2129603586495787,
+            "absolute_tensor_rms_error_pa": 2405.226275605229,
+            "reference_tensor_rms_pa": 1982.9388969339707,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "time_s": 1.05,
+          "common_tangent": {
+            "relative_tensor_error": 0.0987232317078525,
+            "absolute_tensor_rms_error_pa": 150.9837555106226,
+            "reference_tensor_rms_pa": 1529.3639895969216,
+            "relative_floor_pa": 1.0
+          },
+          "membrane": {
+            "relative_error": 0.09903681103015674,
+            "absolute_weighted_rms_error": 0.06991358297715557,
+            "reference_weighted_rms": 0.7059353209168543,
+            "relative_floor": 0.0005
+          },
+          "bending": {
+            "relative_error": 0.06137473619975356,
+            "absolute_weighted_rms_error": 3.8732109691489226e-07,
+            "reference_weighted_rms": 6.310757828014053e-06,
+            "relative_floor": 2.5e-07
+          },
+          "net_egg_wrench": {
+            "force_difference_n": [
+              0.009530981270773902,
+              0.001009894828108495,
+              0.0041009273224437565
+            ],
+            "reference_force_n": [
+              -0.00953098147533949,
+              -0.0010098949387816751,
+              0.059956874737717616
+            ],
+            "force_relative_difference": 0.17169233990153257,
+            "moment_world_origin_difference_nm": [
+              3.8555376385766195e-05,
+              -0.002484279595445997,
+              0.0006427489450134868
+            ],
+            "scope": "Net egg wrench, including cancellation of opposing pinch forces. This alone cannot qualify per-finger reactions."
+          },
+          "mass_weighted_com_difference_m": [
+            0.0036388950545676035,
+            0.0011817825561700373,
+            0.000834858480294385
+          ],
+          "inner_surface": {
+            "relative_tensor_error": 0.10307878876354494,
+            "absolute_tensor_rms_error_pa": 148.16073276318096,
+            "reference_tensor_rms_pa": 1437.3542271926638,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 0.0961111882540969,
+            "absolute_tensor_rms_error_pa": 155.53486853009906,
+            "reference_tensor_rms_pa": 1618.2805701964583,
+            "relative_floor_pa": 1.0
+          }
+        }
+      ],
+      "complete_time_integrated_common_metrics": {}
+    },
+    {
+      "candidate": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-partition-loose-v1/group0/cap-partition-loose/result.json",
+        "bytes": 4297,
+        "sha256": "c6835ac19622fc5169578fff53b035148b9745338630f73d5ea43b795a4b6334"
+      },
+      "candidate_folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-partition-loose-v1/group0/cap-partition-loose",
+      "candidate_config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-07,
+        "linear_tolerance": 0.01,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "partition_pcg",
+        "newton_aware_pcg": false
+      },
+      "common_times": 3,
+      "missing_candidate_ticks": [],
+      "material_columns": 1280,
+      "pair_quadrature_points": 30720,
+      "direct_point_query_fallbacks": {
+        "reference": 0,
+        "candidate": 0
+      },
+      "expected_reference_duration_s": 1.05,
+      "complete_reference_observation_grid": false,
+      "history": [
+        {
+          "time_s": 0.89,
+          "common_tangent": {
+            "relative_tensor_error": 1.006334258790232,
+            "absolute_tensor_rms_error_pa": 3621.165023070766,
+            "reference_tensor_rms_pa": 3598.3720035765864,
+            "relative_floor_pa": 1.0
+          },
+          "membrane": {
+            "relative_error": 1.0030239285721205,
+            "absolute_weighted_rms_error": 1.6809509826876254,
+            "reference_weighted_rms": 1.6758832315003538,
+            "relative_floor": 0.0005
+          },
+          "bending": {
+            "relative_error": 1.1644638903931737,
+            "absolute_weighted_rms_error": 1.5688441882186813e-05,
+            "reference_weighted_rms": 1.3472673572462357e-05,
+            "relative_floor": 2.5e-07
+          },
+          "net_egg_wrench": {
+            "force_difference_n": [
+              -0.00045234654087006505,
+              0.0007936628965984433,
+              -0.00411694338505085
+            ],
+            "reference_force_n": [
+              0.00045234654087006505,
+              -0.0007936629041897444,
+              0.06817475415168259
+            ],
+            "force_relative_difference": 0.06185132341975087,
+            "moment_world_origin_difference_nm": [
+              0.001435857699220492,
+              0.0022776079504413307,
+              0.0008346866474415456
+            ],
+            "scope": "Net egg wrench, including cancellation of opposing pinch forces. This alone cannot qualify per-finger reactions."
+          },
+          "mass_weighted_com_difference_m": [
+            0.0063235311781170145,
+            0.016387088407816462,
+            0.00213084608858511
+          ],
+          "inner_surface": {
+            "relative_tensor_error": 0.989614606179714,
+            "absolute_tensor_rms_error_pa": 3412.376131917285,
+            "reference_tensor_rms_pa": 3448.1869109534923,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 1.0268740945840578,
+            "absolute_tensor_rms_error_pa": 3800.2058428518735,
+            "reference_tensor_rms_pa": 3700.751497087062,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "time_s": 0.9500000000000001,
+          "common_tangent": {
+            "relative_tensor_error": 1.1712099400357379,
+            "absolute_tensor_rms_error_pa": 2235.973005590445,
+            "reference_tensor_rms_pa": 1909.1137542106392,
+            "relative_floor_pa": 1.0
+          },
+          "membrane": {
+            "relative_error": 1.164513961235164,
+            "absolute_weighted_rms_error": 1.0311453253281173,
+            "reference_weighted_rms": 0.8854727033366034,
+            "relative_floor": 0.0005
+          },
+          "bending": {
+            "relative_error": 1.4470074064731724,
+            "absolute_weighted_rms_error": 1.0708535377968917e-05,
+            "reference_weighted_rms": 7.400470329360028e-06,
+            "relative_floor": 2.5e-07
+          },
+          "net_egg_wrench": {
+            "force_difference_n": [
+              -0.014099310569063639,
+              0.0018069582567269782,
+              0.006144032167843247
+            ],
+            "reference_force_n": [
+              0.014099310569063639,
+              -0.0018069582791013393,
+              0.057913778752471626
+            ],
+            "force_relative_difference": 0.2596834652975583,
+            "moment_world_origin_difference_nm": [
+              0.0005601609078593031,
+              -0.004830179960652992,
+              0.0009036686310850202
+            ],
+            "scope": "Net egg wrench, including cancellation of opposing pinch forces. This alone cannot qualify per-finger reactions."
+          },
+          "mass_weighted_com_difference_m": [
+            0.004712962133646137,
+            0.01122814996246108,
+            0.0020041660960895165
+          ],
+          "inner_surface": {
+            "relative_tensor_error": 1.139773670592916,
+            "absolute_tensor_rms_error_pa": 2066.7831651114257,
+            "reference_tensor_rms_pa": 1813.3276969244905,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 1.2129600764170336,
+            "absolute_tensor_rms_error_pa": 2405.2257159553374,
+            "reference_tensor_rms_pa": 1982.9388969339707,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "time_s": 1.05,
+          "common_tangent": {
+            "relative_tensor_error": 0.0987205612070534,
+            "absolute_tensor_rms_error_pa": 150.97967134286628,
+            "reference_tensor_rms_pa": 1529.3639895969216,
+            "relative_floor_pa": 1.0
+          },
+          "membrane": {
+            "relative_error": 0.09903411246231485,
+            "absolute_weighted_rms_error": 0.06991167796280007,
+            "reference_weighted_rms": 0.7059353209168543,
+            "relative_floor": 0.0005
+          },
+          "bending": {
+            "relative_error": 0.061372939349453474,
+            "absolute_weighted_rms_error": 3.873097574277952e-07,
+            "reference_weighted_rms": 6.310757828014053e-06,
+            "relative_floor": 2.5e-07
+          },
+          "net_egg_wrench": {
+            "force_difference_n": [
+              0.00953098147533949,
+              0.0010098949319894584,
+              0.004100936215368334
+            ],
+            "reference_force_n": [
+              -0.00953098147533949,
+              -0.0010098949387816751,
+              0.059956874737717616
+            ],
+            "force_relative_difference": 0.1716924007630847,
+            "moment_world_origin_difference_nm": [
+              3.855564431809123e-05,
+              -0.002484285521766827,
+              0.0006427490122383773
+            ],
+            "scope": "Net egg wrench, including cancellation of opposing pinch forces. This alone cannot qualify per-finger reactions."
+          },
+          "mass_weighted_com_difference_m": [
+            0.003638892672478522,
+            0.0011817781174536055,
+            0.0008348584803560648
+          ],
+          "inner_surface": {
+            "relative_tensor_error": 0.10307606297014335,
+            "absolute_tensor_rms_error_pa": 148.15681483251274,
+            "reference_tensor_rms_pa": 1437.3542271926638,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 0.09610868769832377,
+            "absolute_tensor_rms_error_pa": 155.53082192927673,
+            "reference_tensor_rms_pa": 1618.2805701964583,
+            "relative_floor_pa": 1.0
+          }
+        }
+      ],
+      "complete_time_integrated_common_metrics": {}
+    },
+    {
+      "candidate": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-partition-loose-v1/group0/cap-partition-loose-newton-mid/result.json",
+        "bytes": 4302,
+        "sha256": "aaa6ef8af05c9963d054b5520bdfea8997fd3cb864012eb0d09b860015c0c141"
+      },
+      "candidate_folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-partition-loose-v1/group0/cap-partition-loose-newton-mid",
+      "candidate_config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-08,
+        "linear_tolerance": 0.01,
+        "max_newton": 256,
+        "max_pcg": 4096,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "partition_pcg",
+        "newton_aware_pcg": false
+      },
+      "common_times": 3,
+      "missing_candidate_ticks": [],
+      "material_columns": 1280,
+      "pair_quadrature_points": 30720,
+      "direct_point_query_fallbacks": {
+        "reference": 0,
+        "candidate": 0
+      },
+      "expected_reference_duration_s": 1.05,
+      "complete_reference_observation_grid": false,
+      "history": [
+        {
+          "time_s": 0.89,
+          "common_tangent": {
+            "relative_tensor_error": 1.006333943937614,
+            "absolute_tensor_rms_error_pa": 3621.163890113921,
+            "reference_tensor_rms_pa": 3598.3720035765864,
+            "relative_floor_pa": 1.0
+          },
+          "membrane": {
+            "relative_error": 1.0030236088027615,
+            "absolute_weighted_rms_error": 1.6809504467915188,
+            "reference_weighted_rms": 1.6758832315003538,
+            "relative_floor": 0.0005
+          },
+          "bending": {
+            "relative_error": 1.1644639930222038,
+            "absolute_weighted_rms_error": 1.5688443264874238e-05,
+            "reference_weighted_rms": 1.3472673572462357e-05,
+            "relative_floor": 2.5e-07
+          },
+          "net_egg_wrench": {
+            "force_difference_n": [
+              -0.00045234654087006505,
+              0.0007936629181737202,
+              -0.004116943240584869
+            ],
+            "reference_force_n": [
+              0.00045234654087006505,
+              -0.0007936629041897444,
+              0.06817475415168259
+            ],
+            "force_relative_difference": 0.0618513214107543,
+            "moment_world_origin_difference_nm": [
+              0.001435857454170297,
+              0.0022776079848661757,
+              0.0008346866615078933
+            ],
+            "scope": "Net egg wrench, including cancellation of opposing pinch forces. This alone cannot qualify per-finger reactions."
+          },
+          "mass_weighted_com_difference_m": [
+            0.006323533552420546,
+            0.01638709286905501,
+            0.002130846088557594
+          ],
+          "inner_surface": {
+            "relative_tensor_error": 0.9896144169475387,
+            "absolute_tensor_rms_error_pa": 3412.375479409375,
+            "reference_tensor_rms_pa": 3448.1869109534923,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 1.0268737673752768,
+            "absolute_tensor_rms_error_pa": 3800.2046319334877,
+            "reference_tensor_rms_pa": 3700.751497087062,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "time_s": 0.9500000000000001,
+          "common_tangent": {
+            "relative_tensor_error": 1.1712096863115857,
+            "absolute_tensor_rms_error_pa": 2235.9725212021763,
+            "reference_tensor_rms_pa": 1909.1137542106392,
+            "relative_floor_pa": 1.0
+          },
+          "membrane": {
+            "relative_error": 1.164513692248787,
+            "absolute_weighted_rms_error": 1.031145087148023,
+            "reference_weighted_rms": 0.8854727033366034,
+            "relative_floor": 0.0005
+          },
+          "bending": {
+            "relative_error": 1.4470079839912937,
+            "absolute_weighted_rms_error": 1.070853965187464e-05,
+            "reference_weighted_rms": 7.400470329360028e-06,
+            "relative_floor": 2.5e-07
+          },
+          "net_egg_wrench": {
+            "force_difference_n": [
+              -0.014099310569063639,
+              0.0018069582667155323,
+              0.006144032322741341
+            ],
+            "reference_force_n": [
+              0.014099310569063639,
+              -0.0018069582791013393,
+              0.057913778752471626
+            ],
+            "force_relative_difference": 0.25968346634769357,
+            "moment_world_origin_difference_nm": [
+              0.0005601606628349298,
+              -0.0048301799330295325,
+              0.0009036686375972182
+            ],
+            "scope": "Net egg wrench, including cancellation of opposing pinch forces. This alone cannot qualify per-finger reactions."
+          },
+          "mass_weighted_com_difference_m": [
+            0.004712964507949224,
+            0.011228154423699434,
+            0.0020041660960631903
+          ],
+          "inner_surface": {
+            "relative_tensor_error": 1.1397733720449066,
+            "absolute_tensor_rms_error_pa": 2066.782623746051,
+            "reference_tensor_rms_pa": 1813.3276969244905,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 1.2129599218680525,
+            "absolute_tensor_rms_error_pa": 2405.225409494151,
+            "reference_tensor_rms_pa": 1982.9388969339707,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "time_s": 1.05,
+          "common_tangent": {
+            "relative_tensor_error": 0.09872128175550994,
+            "absolute_tensor_rms_error_pa": 150.98077332372844,
+            "reference_tensor_rms_pa": 1529.3639895969216,
+            "relative_floor_pa": 1.0
+          },
+          "membrane": {
+            "relative_error": 0.09903482724620753,
+            "absolute_weighted_rms_error": 0.06991218255399674,
+            "reference_weighted_rms": 0.7059353209168543,
+            "relative_floor": 0.0005
+          },
+          "bending": {
+            "relative_error": 0.061374458444503614,
+            "absolute_weighted_rms_error": 3.8731934406877437e-07,
+            "reference_weighted_rms": 6.310757828014053e-06,
+            "relative_floor": 2.5e-07
+          },
+          "net_egg_wrench": {
+            "force_difference_n": [
+              0.00953098147533949,
+              0.0010098949387816751,
+              0.004100936302252389
+            ],
+            "reference_force_n": [
+              -0.00953098147533949,
+              -0.0010098949387816751,
+              0.059956874737717616
+            ],
+            "force_relative_difference": 0.17169240133682745,
+            "moment_world_origin_difference_nm": [
+              3.855539912688248e-05,
+              -0.002484285449800526,
+              0.0006427490166666719
+            ],
+            "scope": "Net egg wrench, including cancellation of opposing pinch forces. This alone cannot qualify per-finger reactions."
+          },
+          "mass_weighted_com_difference_m": [
+            0.0036388950467816095,
+            0.0011817825786918832,
+            0.0008348584803306615
+          ],
+          "inner_surface": {
+            "relative_tensor_error": 0.10307683463065125,
+            "absolute_tensor_rms_error_pa": 148.15792398200574,
+            "reference_tensor_rms_pa": 1437.3542271926638,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 0.09610938201734424,
+            "absolute_tensor_rms_error_pa": 155.53194553225708,
+            "reference_tensor_rms_pa": 1618.2805701964583,
+            "relative_floor_pa": 1.0
+          }
+        }
+      ],
+      "complete_time_integrated_common_metrics": {}
+    }
+  ],
+  "reference_qualified": false,
+  "derived_column_exports_written": false,
+  "scope": "The same material face-centroid columns are integrated on every union of both P1 partitions. Norms and resultants are exact along these columns up to geometric/roundoff tolerance; in-plane sampling remains finite. These are separate uncertainty contrasts, not an additive scalar error budget. Raw full-mesh peaks/solver caps remain in the source microstep journals. Complete finite histories and a small net wrench difference do not by themselves qualify per-finger reactions, contact regularization or continuum peaks."
+}

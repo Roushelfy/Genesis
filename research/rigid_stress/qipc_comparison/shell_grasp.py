@@ -1,6 +1,7 @@
 """Retain PR22 full-field capped histories, with optional existing read-only solver/contact diagnostics."""
 
 import json
+import sys
 from pathlib import Path
 from time import perf_counter
 
@@ -23,8 +24,19 @@ def main():
     parser.add_argument("--tracking-damping", type=float, default=1e10)
     parser.add_argument("--control-interval", type=float, default=0.01)
     parser.add_argument("--substep-peaks", action="store_true")
+    parser.add_argument("--keyframes", type=float, nargs="+")
+    parser.add_argument("--dense-observer-control", action="store_true")
     args = parser.parse_args()
     assert args.model == "shell" and args.envs == 1 and args.output_mode == "full"
+    key_steps = None
+    assert not args.dense_observer_control or args.keyframes is not None
+    if args.keyframes is not None:
+        assert not args.substep_peaks
+        key_steps = {round(time / args.sim_dt) for time in args.keyframes}
+        assert all(
+            0 < time <= args.steps * args.sim_dt and abs(round(time / args.sim_dt) * args.sim_dt - time) < 1e-12
+            for time in args.keyframes
+        )
     args.output.mkdir(parents=True, exist_ok=False)
     frames = args.output / "frames"
     frames.mkdir()
@@ -87,6 +99,8 @@ def main():
             else "original PR22 plus full-field observer",
             "stress_frame": "world Cauchy observer, nominal bottom/middle/top fibers per face",
             "scope": "intrusive complete capped history, excluded from primary timing",
+            "full_spatial_keyframes_s": args.keyframes,
+            "dense_observer_control": args.dense_observer_control,
             "nominal_thickness_mass_kg": (workload.egg.topology.faces_rest_area.sum() * 2000 * 0.0005).item(),
             "actual_face_mass_kg": face_mass.sum().item(),
             "wall_input": workload.wall_input.description() if workload.wall_input is not None else None,
@@ -95,6 +109,9 @@ def main():
         },
     )
     completed = False
+    physics_steps_returned = 0
+    observed_fields = 0
+    stress_update_calls = 0
     count = 0
     nonfinite = False
     peak = -np.inf
@@ -152,20 +169,56 @@ def main():
     with (args.output / "steps.jsonl").open("w", buffering=1) as journal:
         try:
             for step in range(args.steps):
+                observe = key_steps is None or step + 1 in key_steps
                 if args.instrumented:
                     diagnostics.ACTIVE.clear()
                 if motion is not None:
                     phase = motion.advance(workload, step, False)
                 elif control_stride == 1:
-                    phase = controller_step(workload, True)
+                    phase = controller_step(workload, True, observe_stress=key_steps is None)
                 else:
                     if step % control_stride == 0:
                         phase = controller_step(workload, True, advance=False)
                     workload.scene.step()
+                physics_steps_returned += 1
+                compute_stress = observe or args.dense_observer_control
+                if compute_stress and (motion is not None or control_stride != 1 or key_steps is not None):
                     workload.observation.update(workload.scene.sim.shell_solver)
-                if motion is not None:
-                    workload.observation.update(workload.scene.sim.shell_solver)
+                    stress_update_calls += 1
+                elif key_steps is None:
+                    # The original one-step controller already updated it.
+                    stress_update_calls += 1
+                if key_steps is not None:
+                    workload.scene.rigid_solver.check_errno()
+                    finite_geometry = bool(
+                        torch.isfinite(workload.egg.get_verts_pos()).all()
+                        & torch.isfinite(workload.robot.get_qpos()).all()
+                    )
+                    if not observe or not finite_geometry:
+                        row = {
+                            "step": step,
+                            "time_s": (step + 1) * args.sim_dt,
+                            "stress_sampled": False,
+                            "mechanical_geometry_finite": finite_geometry,
+                            "phase": tensor_to_array(phase)[0].item(),
+                            "reset_epoch": workload.reset_count,
+                        }
+                        if args.instrumented:
+                            row["cap_exhausted_substeps"] = tensor_to_array(diagnostics.ACTIVE.caps)[0].item()
+                        journal.write(json.dumps(row, allow_nan=False) + "\n")
+                        count += 1
+                        if not finite_geometry:
+                            nonfinite = True
+                            np.savez_compressed(
+                                args.output / "invalid-mechanics-state.npz",
+                                time_s=(step + 1) * args.sim_dt,
+                                vertices_world_m=tensor_to_array(workload.egg.get_verts_pos())[0],
+                                q=tensor_to_array(workload.robot.get_qpos())[0],
+                            )
+                            break
+                        continue
                 tensor = tensor_to_array(workload.observation.tensors)[:, 0].reshape(-1, 3, 3, 3)
+                observed_fields += 1
                 vm = tensor_to_array(workload.observation.von_mises)[:, 0].reshape(-1, 3)
                 vertices = tensor_to_array(workload.egg.get_verts_pos())[0]
                 q = tensor_to_array(workload.robot.get_qpos())[0]
@@ -185,10 +238,16 @@ def main():
                         :, 0
                     ]
                     payload["contact_impulse_kinetic_work_j"] = tensor_to_array(diagnostics.ACTIVE.work)[:, 0]
-                if (step + 1) % max(args.record_every, 1) == 0 or step == args.steps - 1 or not finite:
+                if (
+                    key_steps is not None
+                    or (step + 1) % max(args.record_every, 1) == 0
+                    or step == args.steps - 1
+                    or not finite
+                ):
                     np.savez_compressed(frames / f"step{step:06d}.npz", **payload)
                 row = {
                     "step": step,
+                    "stress_sampled": True,
                     "time_s": (step + 1) * args.sim_dt,
                     "phase": tensor_to_array(phase)[0].item(),
                     "q": q.tolist(),
@@ -204,20 +263,21 @@ def main():
                         iteration_counts=tensor_to_array(diagnostics.ACTIVE.counts)[0].item(),
                         cap_exhausted_substeps=tensor_to_array(diagnostics.ACTIVE.caps)[0].item(),
                         actual_residuals=tensor_to_array(diagnostics.ACTIVE.residuals)[0].tolist(),
-                        contact_impulse_over_control_interval_ns=impulse.sum(axis=0).tolist(),
-                        contact_average_force_over_control_interval_n=(impulse.sum(axis=0) / args.sim_dt).tolist(),
-                        contact_average_force_scope="Accumulated impulses over all substeps; cannot be labeled an instantaneous final-substep force",
-                        contact_average_moment_world_origin_over_interval_nm=(
+                        contact_impulse_over_scene_step_ns=impulse.sum(axis=0).tolist(),
+                        contact_average_force_over_scene_step_n=(impulse.sum(axis=0) / args.sim_dt).tolist(),
+                        contact_interval_s=args.sim_dt,
+                        contact_average_force_scope="Impulse average over this scene step's physical substeps",
+                        contact_average_moment_world_origin_over_scene_step_nm=(
                             payload["contact_moment_impulses_world_origin_nms"].sum(axis=0) / args.sim_dt
                         ).tolist(),
                         contact_impulse_kinetic_work_j=payload["contact_impulse_kinetic_work_j"].sum().item(),
                     )
                 if motion is not None:
                     row.update(motion.metrics(workload.robot, step))
-                if finite and row["raw_vm_peak_pa"] > peak:
+                if key_steps is None and finite and row["raw_vm_peak_pa"] > peak:
                     peak = row["raw_vm_peak_pa"]
                     np.savez_compressed(args.output / "raw-vm-peak-state.npz", **payload)
-                if finite and row["raw_maximum_principal_pa"] > principal_peak:
+                if key_steps is None and finite and row["raw_maximum_principal_pa"] > principal_peak:
                     principal_peak = row["raw_maximum_principal_pa"]
                     np.savez_compressed(args.output / "raw-principal-peak-state.npz", **payload)
                 count += 1
@@ -231,6 +291,7 @@ def main():
                     completed and physical_observations == count * args.substeps and not invalid_physical_observations
                 )
         finally:
+            exception_type, exception, _ = sys.exc_info()
             if args.substep_peaks:
                 diagnostics.SUBSTEP_OBSERVER = None
                 micro_journal.close()
@@ -241,8 +302,16 @@ def main():
                     if motion is not None
                     else "PR22-capped-full-field-history",
                     "scene_step_dt_s": args.sim_dt,
+                    "full_spatial_keyframes_s": args.keyframes,
+                    "dense_observer_control": args.dense_observer_control,
+                    "stress_update_calls": stress_update_calls,
                     "requested_control_ticks": args.steps,
                     "executed_control_ticks": count,
+                    "physics_steps_returned": physics_steps_returned,
+                    "observed_fields": observed_fields,
+                    "python_exception": {"type": exception_type.__name__, "message": str(exception)}
+                    if exception_type is not None
+                    else None,
                     "completed_requested_history": completed,
                     "nonfinite_output": nonfinite,
                     "intrusive_seconds": perf_counter() - started,

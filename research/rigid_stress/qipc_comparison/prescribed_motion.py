@@ -43,7 +43,7 @@ class PrescribedMotion:
         robot.set_dofs_force_range([-float("inf")] * robot.n_dofs, [float("inf")] * robot.n_dofs)
         return cls(path, q, positions, quaternions, stride, dt, damping)
 
-    def advance(self, workload, step, native_stress):
+    def advance(self, workload, step, native_stress, *, update_stress=None):
         sample = (step + 1) * self.stride
         assert sample < len(self.q)
         workload.robot.control_dofs_position(self.q[sample][None])
@@ -53,6 +53,8 @@ class PrescribedMotion:
         if native_stress:
             radius = workload.base_radius * (1 + 0.15 * torch.sin(2 * torch.pi * phase))
             workload.link.set_stress_contact_radius(radius[:, None])
+            if update_stress:
+                workload.link.request_stress_update()
         workload.scene.step()
         return phase
 

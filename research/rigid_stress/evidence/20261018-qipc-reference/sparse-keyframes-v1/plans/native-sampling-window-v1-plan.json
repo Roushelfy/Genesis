@@ -1,0 +1,22 @@
+{
+  "declared_at_utc": "2026-10-18T18:19:16.332598+00:00",
+  "purpose": "Verify actual skipped recovery kernels and same-setting selected fields in full Franka DPR/SCR, not just fewer getters/files.",
+  "protocol": "Original case0 capped controller, mesh64 MPR/no-patch, FP64, one environment,1ms scene/physical steps,10ms control; native bodies remain rigid. Two complete original-state histories per process: cold warmup then checked public in-process restart, with exact joint/link initial state equality before measured repetition.",
+  "window_s": [
+    0.85,
+    1.05
+  ],
+  "full_spatial_stress_keyframes_s": [
+    0.89,
+    0.95,
+    1.05
+  ],
+  "comparison": "Each method every-step versus manual sampling, same3 exports and unchanged mechanics/contact/force/cadence. CUPTI covers only the200-step loaded window. Expected recovery cadence differs; actual complete kernel tables/raw traces retained.",
+  "strict_observer_equivalence_bands": {
+    "maximum_link_position_difference_m": 1e-09,
+    "relative_authored_corner_tensor_with_1Pa_floor": 1e-05
+  },
+  "timing": "Intrusive profiling; no primary throughput claim. Cold warmup and setup separated, identical per-step native/finite checks; full selected-field host transfer inside, compression/IO outside.",
+  "storage_bound_bytes": 4000000000,
+  "new_campaign_upper_estimate_bytes": 30000000
+}

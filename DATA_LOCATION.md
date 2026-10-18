@@ -16,6 +16,20 @@ inputs, environments and builds remain on data; no migration or deletion has
 occurred. Future consolidation requires writer/job checks, metadata/symlink-
 preserving copy and content verification before removal or replacement.
 
+At the sparse-keyframe checkpoint, successful terminal analysis726752 had
+produced ten reproducible common-column alignment NPZs,129240196 bytes, under
+the fallback's `prescribed-sparse-fields-v1/group0/stock/` and
+`group1/volume-surface2/`. Their hashes matched the completed result receipts
+and all referenced input receipts still matched. These derived intermediates
+were retired to keep persistent runtime outputs within4GB; original complete
+spatial simulator fields, rest meshes, metrics, source snapshots and inputs
+were retained unchanged. Exact retired paths/hashes and the captured rebuild
+recipe are in `meta/prescribed-sparse-fields-v1-derived-retirement.json`, also
+published in the
+[sparse checkpoint](research/rigid_stress/evidence/20261018-qipc-reference/sparse-keyframes-v1/README.md).
+This is bounded removal of regenerable derived arrays after writers exited,
+not migration of original observations or a compatibility-link change.
+
 `runs/20261018-qipc-reference/` under the established task data root holds the
 new three-method comparison's source/build/input receipts, native build/runtime,
 generated CCCL assets, controls, trajectories and per-job caches/logs. The

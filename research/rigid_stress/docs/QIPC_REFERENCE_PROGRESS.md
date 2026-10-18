@@ -818,3 +818,83 @@ finite and unflagged there, with no completed-history receipt. Retain it as an
 incomplete control; no full9s or missing-final-step admission follows. It is
 not restarted while short-window validation has priority. Friction726567_5
 remains held. No running worker's captured source was hot-edited.
+
+## Measured capped rejection and complete sparse prescribed fields
+
+The [sparse checkpoint](../evidence/20261018-qipc-reference/sparse-keyframes-v1/README.md)
+retains22 terminal campaigns with exact fields, continuous journals, source
+reconstructions, CUDA traces and failure states. Jobs726731/726735 complete
+six original-state capped short configurations. Audit726741 rejects all six
+against the original partition setting and provisional residual/field/reaction
+bands. The original partition takes392.992s over200ms and itself exceeds the
+nodal residual band at0.95s. Five fast settings take2.567–2.936s but have zero
+physical finger reaction at all three keys, while the original has loaded
+keys. They are not qualified accelerations. FK audit726737 passes actual robot
+poses but records very different free-egg COM/tilt; at0.89s the original tilts
+0.646863rad and linear-PCG remains nearly upright. The cause is unresolved.
+No tuned long capped reference run is justified by these timings.
+
+Native application job726738 runs exact checked original-state warmup/reset
+and profiles a second continuous capped history over(0.85,1.05]s. Actual CUDA
+recovery calls change200 to3. Corrected audit726744 passes every complete
+spatial key for DPR/SCR, tensor contrasts below1e-11 and exactly matching
+joint/egg poses. Intrusive n1 dense/manual windows measure0.739448/0.476063s
+for DPR and1.345419/0.478180s for SCR. These are not primary throughput.
+First audit726742 failed only on a scalar `.item()` call; its failure/correction
+is retained without changing physical data or thresholds. Prescribed regression
+726736 failed on the old facade's public-count attribute; corrected726740
+completes1160 physical steps/three fields. Both versions remain visible.
+
+Job726745 executes the predeclared full-grasp phase-key rule. Prescribed keys
+are1.33/2.77/4.02/4.38/5.52s. Capped0/2/7 use the corresponding actual delays
+0/0.74/2.59s and add a post-reset key. Job726746 completes DPR/SCR and726749
+completes stock/volume-surface2 Shell: each advances6000×1ms continuously,
+with exactly five complete spatial fields and no unselected stress recovery/
+host exports. Per-step mechanical failure checks remain. Instrumented Shell
+raw impulse averages used1ms scene intervals despite old control-interval
+labels; the correction JSON preserves old bytes and current labels are fixed.
+
+Job726748 tests the measured short-window PCG1e-2 candidate over the complete
+prescribed history with unchanged Newton1e-9, caps256/4096 and physics. It
+exhausts Newton at2.113s after2113 returned physical steps and one field.
+The independently predeclared1e-3 contrast726751 also exhausts Newton at
+2.365s after2365 steps and one field. Both have finite geometry and zero ET
+pairs on the failed step; both are rejected and retain native/static failure
+states. Short-window success and tight Newton stopping do not guarantee full
+convergence. PCG1e-6 is still only a conservative baseline, not proven necessary.
+The next bounded default-rate1e-4 contrast726774 starts fresh with unchanged
+Newton tolerance and budgets; its pending result is outside the frozen packet.
+
+Analysis726752 completes all five common-field comparisons against the
+historical complete QIPC candidate, explicitly unqualified and without dense
+history norms. Near-zero release denominators use absolute errors. Comparison
+726754 passes every DPR/SCR old-dense/new-sparse key but fails both Shell
+variants at all five keys: joint coordinates match, free vertices/stress do not.
+This is preserved as failed equivalence; observation cadence is not established
+as its cause. Short job726772 completes six same-source sparse/dense-compute/
+fresh-repeat histories, each1160 steps/three full fields, with actual update
+counts3/1160/3. Audit726776 fails every dense contrast and unchanged-sparse
+fresh repeat. Stock same-sparse tensor contrasts are37.2–41.8%; volume/surface2
+101.1–107.3%. Thus significant repeat variability exists without changing
+sampling. No Shell cadence-equivalence or accuracy qualification is claimed.
+Job726777 verifies that suppressing derived aligned-array exports preserves
+the exact encoded five-key metrics, with zero large derived NPZs written.
+
+Runtime storage reached3.959GB after the derived five-key alignment exports.
+After confirming726752 terminal and matching hashes/input receipts, ten
+regenerable derived arrays (129240196 bytes) were retired with an exact
+path/hash/rebuild journal. Original simulator fields, inputs, metrics, failure
+states and source captures remain. This keeps the explicitly authorized4GB
+home fallback bounded; new jobs retain `--allow-home-output` and private
+node-local caches. Original data/environments/symlinks remain unchanged.
+Matched primary sparse costs, representative sparse capped candidates,
+selected-reference uncertainty and final report/figures remain open.
+
+Next bounded candidate jobs726779/726781 replay the original capped cases0/2/7
+for9s with the six phase/post-reset keys declared by726745. Native DPR/SCR
+and stock/volume-surface2 Shell use their existing physical configurations;
+only stress observation cadence changes. Each task retains9000×1ms continuous
+mechanics, original10ms gains/targets/caps/friction/reset and failure checks.
+No QIPC accelerated capped setting is admitted. Their pending outputs remain
+outside the frozen22-campaign packet. New output estimates are20MB per campaign,
+within the remaining4GB fallback headroom; caches remain node-local.

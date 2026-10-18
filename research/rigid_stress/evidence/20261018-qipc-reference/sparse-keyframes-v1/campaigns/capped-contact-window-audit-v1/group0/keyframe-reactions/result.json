@@ -1,0 +1,369 @@
+{
+  "kind": "actual-per-public-link-reaction-uncertainty",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726733",
+      "SLURM_ARRAY_JOB_ID": "726733",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-17819d06-c563-257f-30fe-100c9f111279, 00000000:20:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "layout": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/reaction-layout-v1/group0/layout/layout.npz",
+    "bytes": 28688,
+    "sha256": "d03f0b123f11c46e2192cbb16e10ee949f970ec93fc93d9339b591f185e28471"
+  },
+  "reference": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-linear-control/result.json",
+    "bytes": 4299,
+    "sha256": "aac83e1638a489361ffd51ac23486bf463fa3bcff47b73ae1c5bf9f3c1eea9e5"
+  },
+  "body_names": [
+    "link0",
+    "link1",
+    "link2",
+    "link3",
+    "link4",
+    "link5",
+    "link6",
+    "link7",
+    "left_finger",
+    "right_finger"
+  ],
+  "finger_names": [
+    "left_finger",
+    "right_finger"
+  ],
+  "finger_body_ids": [
+    8,
+    9
+  ],
+  "comparisons": [
+    {
+      "source": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-partition-original/result.json",
+        "bytes": 4291,
+        "sha256": "39903a8c7511047a1725421afc0f242cbbeb986ef70fc558e7db3be16b3043bf"
+      },
+      "history": [
+        {
+          "time_s": 0.89,
+          "maximum_physical_point_layout_defect_m": 4.638690796298713e-16,
+          "finger_force_vector_relative_difference": null,
+          "finger_force_vector_absolute_difference_n": 0.07093862633084277,
+          "finger_moment_vector_relative_difference": null,
+          "per_body_force_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "per_body_moment_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "time_s": 0.9500000000000001,
+          "maximum_physical_point_layout_defect_m": 3.546989901551683e-16,
+          "finger_force_vector_relative_difference": null,
+          "finger_force_vector_absolute_difference_n": 0.017704961356153234,
+          "finger_moment_vector_relative_difference": null,
+          "per_body_force_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "per_body_moment_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "time_s": 1.05,
+          "maximum_physical_point_layout_defect_m": 0.0,
+          "finger_force_vector_relative_difference": null,
+          "finger_force_vector_absolute_difference_n": 0.0,
+          "finger_moment_vector_relative_difference": null,
+          "per_body_force_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "per_body_moment_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ],
+      "missing_candidate_ticks": [],
+      "expected_reference_duration_s": 1.05,
+      "complete_reference_observation_grid": false,
+      "complete_time_integrated_finger_metrics": {}
+    },
+    {
+      "source": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-linear-loose/result.json",
+        "bytes": 4291,
+        "sha256": "8dfe796a7035f67fdb7954aaf3024ba49b1eb14e167d799175a7ba132e31e088"
+      },
+      "history": [
+        {
+          "time_s": 0.89,
+          "maximum_physical_point_layout_defect_m": 0.0,
+          "finger_force_vector_relative_difference": null,
+          "finger_force_vector_absolute_difference_n": 0.0,
+          "finger_moment_vector_relative_difference": null,
+          "per_body_force_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "per_body_moment_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "time_s": 0.9500000000000001,
+          "maximum_physical_point_layout_defect_m": 0.0,
+          "finger_force_vector_relative_difference": null,
+          "finger_force_vector_absolute_difference_n": 0.0,
+          "finger_moment_vector_relative_difference": null,
+          "per_body_force_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "per_body_moment_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "time_s": 1.05,
+          "maximum_physical_point_layout_defect_m": 0.0,
+          "finger_force_vector_relative_difference": null,
+          "finger_force_vector_absolute_difference_n": 0.0,
+          "finger_moment_vector_relative_difference": null,
+          "per_body_force_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "per_body_moment_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ],
+      "missing_candidate_ticks": [],
+      "expected_reference_duration_s": 1.05,
+      "complete_reference_observation_grid": false,
+      "complete_time_integrated_finger_metrics": {}
+    },
+    {
+      "source": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-linear-loose-newton-mid/result.json",
+        "bytes": 4294,
+        "sha256": "cf017ed3a661ba295b746e3eff8d3d29d68d2cbf07ad58c15fc334800e38cc8c"
+      },
+      "history": [
+        {
+          "time_s": 0.89,
+          "maximum_physical_point_layout_defect_m": 0.0,
+          "finger_force_vector_relative_difference": null,
+          "finger_force_vector_absolute_difference_n": 0.0,
+          "finger_moment_vector_relative_difference": null,
+          "per_body_force_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "per_body_moment_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "time_s": 0.9500000000000001,
+          "maximum_physical_point_layout_defect_m": 0.0,
+          "finger_force_vector_relative_difference": null,
+          "finger_force_vector_absolute_difference_n": 0.0,
+          "finger_moment_vector_relative_difference": null,
+          "per_body_force_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "per_body_moment_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "time_s": 1.05,
+          "maximum_physical_point_layout_defect_m": 0.0,
+          "finger_force_vector_relative_difference": null,
+          "finger_force_vector_absolute_difference_n": 0.0,
+          "finger_moment_vector_relative_difference": null,
+          "per_body_force_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "per_body_moment_relative_difference": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ],
+      "missing_candidate_ticks": [],
+      "expected_reference_duration_s": 1.05,
+      "complete_reference_observation_grid": false,
+      "complete_time_integrated_finger_metrics": {}
+    }
+  ],
+  "reference_qualified": false,
+  "scope": "Actual recorded last-assembled contact gradients, force=-gradient/dt^2, and actual physical points. Rigid ownership is verified at every source frame against its saved accepted COM/material quaternion; non-rigid gradients must sum to the saved egg force. All body reactions, including any self-contact, are retained. Finger vector norms keep opposing loads separate; net egg wrench is a different observable. Moment is about each actual body COM. Absolute floors1e-3N/1e-7Nm suppress near-zero relative denominators. Accepted-state gradient closure and continuum/contact uncertainty remain separate qualification gates."
+}

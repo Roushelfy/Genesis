@@ -1,0 +1,58 @@
+[
+  [
+    {
+      "name": "dpr-every_step",
+      "module": "research.rigid_stress.qipc_comparison.native_window",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/conditions.npz",
+        "--method",
+        "dpr",
+        "--sampling",
+        "every_step",
+        "--profile"
+      ]
+    },
+    {
+      "name": "dpr-manual",
+      "module": "research.rigid_stress.qipc_comparison.native_window",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/conditions.npz",
+        "--method",
+        "dpr",
+        "--sampling",
+        "manual",
+        "--profile"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "scr-every_step",
+      "module": "research.rigid_stress.qipc_comparison.native_window",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/conditions.npz",
+        "--method",
+        "scr",
+        "--sampling",
+        "every_step",
+        "--profile"
+      ]
+    },
+    {
+      "name": "scr-manual",
+      "module": "research.rigid_stress.qipc_comparison.native_window",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/conditions.npz",
+        "--method",
+        "scr",
+        "--sampling",
+        "manual",
+        "--profile"
+      ]
+    }
+  ]
+]

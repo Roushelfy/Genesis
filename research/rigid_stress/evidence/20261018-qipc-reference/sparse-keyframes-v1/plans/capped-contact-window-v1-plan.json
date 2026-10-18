@@ -1,0 +1,76 @@
+{
+  "declared_at_utc": "2026-10-18T17:50:41.810668+00:00",
+  "protocol": "Actual original minimal-coordinate Franka capped servo, passive terms and finger-equality mapping; case0, native capped/16eps KKT source unchanged. Fresh continuous original initial histories. No reset falls within1.05s.",
+  "mechanical_event_evidence": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-events-v1/group0/case0/result.json",
+  "event_selection": "Original retained mechanical finger reactions first exceed1mN at0.89s and0.1N at0.91s. All physical sources retained, without claiming egg-only forces. No candidate stress errors informed keys.",
+  "window_s": [
+    0.85,
+    1.05
+  ],
+  "full_spatial_stress_keyframes_s": [
+    0.89,
+    0.95,
+    1.05
+  ],
+  "settings": [
+    [
+      "cap-partition-original",
+      [
+        "--linear-solver",
+        "partition_pcg",
+        "--linear-tolerance",
+        "1e-5",
+        "--velocity-tolerance",
+        "1e-7"
+      ]
+    ],
+    [
+      "cap-linear-control",
+      [
+        "--linear-solver",
+        "linear_pcg",
+        "--linear-tolerance",
+        "1e-5",
+        "--velocity-tolerance",
+        "1e-7"
+      ]
+    ],
+    [
+      "cap-linear-loose",
+      [
+        "--linear-solver",
+        "linear_pcg",
+        "--linear-tolerance",
+        "1e-2",
+        "--velocity-tolerance",
+        "1e-7"
+      ]
+    ],
+    [
+      "cap-linear-loose-newton-mid",
+      [
+        "--linear-solver",
+        "linear_pcg",
+        "--linear-tolerance",
+        "1e-2",
+        "--velocity-tolerance",
+        "1e-8"
+      ]
+    ]
+  ],
+  "provisional_numerical_bands": {
+    "no_ET_Newton_or_LS_forced_exit": true,
+    "finite_state_and_positive_detF_every_step": true,
+    "keyframe_net_force_residual_over_weight": 0.01,
+    "keyframe_nodal_residual_relative_to_contact_norm": 0.001,
+    "common_tangent_relative_contrast": 0.05,
+    "finger_force_vector_contrast": 0.02,
+    "finger_moment_vector_contrast": 0.02,
+    "within_keyframe_spatial_peak_contrast": 0.1
+  },
+  "numerical_comparison_reference": "cap-linear-control",
+  "interpretation": "Same-Newton inner tolerance and linear solver contrasts plus one Newton-only contrast. Relative to an unqualified numerical candidate, not qualified physical truth. All onset/loaded keys retained.",
+  "timing": "Four fresh sequential processes, one allocation, whole-window boundaries with read-only initial elastic activation outside and full selected-field transfer inside; compression outside. Controller push and state update separated. Per-step native/finite/J/joint-finite/PD-cap checks retained.",
+  "storage_bound_bytes": 4000000000,
+  "new_campaign_upper_estimate_bytes": 20000000
+}

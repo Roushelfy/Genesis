@@ -1,0 +1,5 @@
+{
+  "recorded_at_utc": "2026-10-18T18:37:31.416380+00:00",
+  "cause": "Installed SciPy Rotation.magnitude returns a Python float for a scalar rotation; calling.item failed before a result was emitted.",
+  "fix": "Convert the external scalar explicitly to a Python float for serialization. Rerun only the same analysis on unchanged physics/trace/keyframe data and bands; no numerical assertion or threshold changes."
+}

@@ -1,0 +1,137 @@
+{
+  "kind": "held-controller-macro-micro-cadence-equivalence",
+  "comparison_scope": "stress-sampling",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726754",
+      "SLURM_ARRAY_JOB_ID": "726754",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-e3ae17a2-8c3a-b59e-e80d-ac03599051ab, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "macro": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-prescribed-v1/group0/stock/result.json",
+    "bytes": 300,
+    "sha256": "4f00f9541251f5a830cbc7d2b56fac8ff323e3603cf1eabcba72a4d406b50139"
+  },
+  "micro": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-prescribed-sparse-v1/group0/stock/result.json",
+    "bytes": 577,
+    "sha256": "b66ac9f69c5f2de3618a44872347b4fbaf91df80785a7fc4b0f48556430325d6"
+  },
+  "observations": [
+    {
+      "time_s": 1.33,
+      "passed": false,
+      "differences": {
+        "q": {
+          "maximum_absolute_difference": 2.987193825632062e-15,
+          "relative_l2_difference": 1.013918193133123e-15,
+          "within_declared_tolerance": true
+        },
+        "vertices_world_m": {
+          "maximum_absolute_difference": 0.0484261011409689,
+          "relative_l2_difference": 0.047279814342369525,
+          "within_declared_tolerance": false
+        },
+        "cauchy_world_pa": {
+          "maximum_absolute_difference": 87455707.93496941,
+          "relative_l2_difference": 1.1196112953503605,
+          "within_declared_tolerance": false
+        }
+      }
+    },
+    {
+      "time_s": 2.77,
+      "passed": false,
+      "differences": {
+        "q": {
+          "maximum_absolute_difference": 3.774758283725532e-15,
+          "relative_l2_difference": 1.131121486357108e-15,
+          "within_declared_tolerance": true
+        },
+        "vertices_world_m": {
+          "maximum_absolute_difference": 0.1267958531907195,
+          "relative_l2_difference": 0.14264202599293266,
+          "within_declared_tolerance": false
+        },
+        "cauchy_world_pa": {
+          "maximum_absolute_difference": 485231535.8337235,
+          "relative_l2_difference": 1.0290045985868428,
+          "within_declared_tolerance": false
+        }
+      }
+    },
+    {
+      "time_s": 4.0200000000000005,
+      "passed": false,
+      "differences": {
+        "q": {
+          "maximum_absolute_difference": 3.774758283725532e-15,
+          "relative_l2_difference": 1.1149669807584706e-15,
+          "within_declared_tolerance": true
+        },
+        "vertices_world_m": {
+          "maximum_absolute_difference": 0.14968802687035518,
+          "relative_l2_difference": 0.1744794067961456,
+          "within_declared_tolerance": false
+        },
+        "cauchy_world_pa": {
+          "maximum_absolute_difference": 508033429.94428116,
+          "relative_l2_difference": 1.0262213033968997,
+          "within_declared_tolerance": false
+        }
+      }
+    },
+    {
+      "time_s": 4.38,
+      "passed": false,
+      "differences": {
+        "q": {
+          "maximum_absolute_difference": 3.9968028886505635e-15,
+          "relative_l2_difference": 1.1900207539120687e-15,
+          "within_declared_tolerance": true
+        },
+        "vertices_world_m": {
+          "maximum_absolute_difference": 0.14944883907826384,
+          "relative_l2_difference": 0.17605667814250628,
+          "within_declared_tolerance": false
+        },
+        "cauchy_world_pa": {
+          "maximum_absolute_difference": 516011601.8488674,
+          "relative_l2_difference": 1.0254836295717584,
+          "within_declared_tolerance": false
+        }
+      }
+    },
+    {
+      "time_s": 5.5200000000000005,
+      "passed": false,
+      "differences": {
+        "q": {
+          "maximum_absolute_difference": 6.439293542825908e-15,
+          "relative_l2_difference": 2.1175369170798237e-15,
+          "within_declared_tolerance": true
+        },
+        "vertices_world_m": {
+          "maximum_absolute_difference": 0.1576986893043757,
+          "relative_l2_difference": 0.1924049529643263,
+          "within_declared_tolerance": false
+        },
+        "cauchy_world_pa": {
+          "maximum_absolute_difference": 469470234.17333925,
+          "relative_l2_difference": 1.0228444571705344,
+          "within_declared_tolerance": false
+        }
+      }
+    }
+  ],
+  "passed": false,
+  "scope": "Same physical/controller steps and prescribed input history, with different stress sampling. Every new keyframe is compared. Equivalence requires every saved common-time pose within1e-8 and every field within1e-4 relative above1Pa RMS, or1e-3Pa absolute at near-zero strain. Physical accuracy and primary throughput remain separate qualifications."
+}

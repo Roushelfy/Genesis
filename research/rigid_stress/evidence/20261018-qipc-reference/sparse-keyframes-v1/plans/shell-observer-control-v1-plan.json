@@ -1,0 +1,12 @@
+{
+  "history": "Fresh original state, continuous prescribed mechanics to1.16s; unchanged material/contact/friction and common motion; no static restart.",
+  "keyframes_s": [
+    1.1,
+    1.13,
+    1.16
+  ],
+  "controls": "Per Shell source/setting, sparse-r0 then dense observer/sparse export then sparse-r1 in one allocation. Three full spatial fields per run; dense computes1160 stress updates, sparse3. Pose/field thresholds retained in compare_cadence, no speed/accuracy admission from timing.",
+  "reason": "Old dense/full sparse complete histories disagree; isolate sampling from same-setting fresh-process variability before attributing the difference.",
+  "output_estimate_bytes": 12000000,
+  "storage_scope": "Explicit user home exception,4GB persistent bound; caches node-local."
+}

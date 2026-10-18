@@ -1,0 +1,471 @@
+{
+  "qipc_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/qipc-stress-reference-capped-roundoff/qipc/__init__.py",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/qipc-owned-coarse-tree-check01-20261015/bin/python3.12",
+    "python_version": "3.12.13 (main, Jun  2 2026, 22:27:15) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726607",
+      "SLURM_ARRAY_JOB_ID": "726606",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-17819d06-c563-257f-30fe-100c9f111279, 00000000:20:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "native": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/qipc-stress-reference-capped-roundoff/qipc/_src/native/solver/qipc_solver_ext.abi3.so",
+    "bytes": 523468960,
+    "sha256": "b1379f5a4f2be80e30dba8245213aacf692b28cd7095f68ba3464a374569ccd1"
+  },
+  "condition_bank": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/conditions.npz",
+    "bytes": 5226,
+    "sha256": "1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa"
+  },
+  "config": {
+    "dt": 0.001,
+    "young": 10000000000.0,
+    "poisson": 0.3,
+    "density": 2000.0,
+    "velocity_tolerance": 1e-07,
+    "linear_tolerance": 1e-05,
+    "max_newton": 256,
+    "max_pcg": 4096,
+    "d_hat": 2e-05,
+    "friction": 0.6,
+    "friction_epsilon_velocity": 0.0001,
+    "resistance": 10000000000.0,
+    "energy": "snh",
+    "mas_precision": "double",
+    "linear_solver": "partition_pcg"
+  },
+  "case": 0,
+  "joint_names": [
+    "joint1",
+    "joint2",
+    "joint3",
+    "joint4",
+    "joint5",
+    "joint6",
+    "joint7",
+    "finger_joint1",
+    "finger_joint2"
+  ],
+  "initial_q": [
+    -1.0124,
+    1.5559,
+    1.3662,
+    -1.6878,
+    -1.5799,
+    1.7757,
+    1.4602,
+    0.04,
+    0.04
+  ],
+  "public_rigid_link_names": [
+    "link0",
+    "link1",
+    "link2",
+    "link3",
+    "link4",
+    "link5",
+    "link6",
+    "link7",
+    "left_finger",
+    "right_finger"
+  ],
+  "authored": [
+    {
+      "name": "panda/joint1",
+      "armature": [
+        0.1
+      ],
+      "passive_damping": [
+        1.0
+      ]
+    },
+    {
+      "name": "panda/joint2",
+      "armature": [
+        0.1
+      ],
+      "passive_damping": [
+        1.0
+      ]
+    },
+    {
+      "name": "panda/joint3",
+      "armature": [
+        0.1
+      ],
+      "passive_damping": [
+        1.0
+      ]
+    },
+    {
+      "name": "panda/joint4",
+      "armature": [
+        0.1
+      ],
+      "passive_damping": [
+        1.0
+      ]
+    },
+    {
+      "name": "panda/joint5",
+      "armature": [
+        0.1
+      ],
+      "passive_damping": [
+        1.0
+      ]
+    },
+    {
+      "name": "panda/joint6",
+      "armature": [
+        0.1
+      ],
+      "passive_damping": [
+        1.0
+      ]
+    },
+    {
+      "name": "panda/joint7",
+      "armature": [
+        0.1
+      ],
+      "passive_damping": [
+        1.0
+      ]
+    },
+    {
+      "name": "panda/finger_joint1",
+      "armature": [
+        0.1
+      ],
+      "passive_damping": [
+        1.0
+      ]
+    },
+    {
+      "name": "panda/finger_joint2",
+      "armature": [
+        0.1
+      ],
+      "passive_damping": [
+        1.0
+      ]
+    }
+  ],
+  "equality": {
+    "inverse_weight": 17.39684251117386,
+    "time_constant": 0.005,
+    "damping_ratio": 1.0,
+    "minimum_impedance": 0.95,
+    "maximum_impedance": 0.99,
+    "width": 0.001,
+    "midpoint": 0.5,
+    "power": 2.0
+  },
+  "public_rigid_mass_kg": [
+    0.629769,
+    4.970684,
+    0.646926,
+    3.228604,
+    3.587895,
+    1.225946,
+    1.666555,
+    1.465522,
+    0.015,
+    0.015
+  ],
+  "public_rigid_com_world_m": [
+    [
+      -0.041018,
+      -0.00014,
+      0.049974
+    ],
+    [
+      0.0038179871471573203,
+      -0.0021838406865294707,
+      0.28538
+    ],
+    [
+      0.01815427797422111,
+      -0.022463472646613924,
+      0.33656845819501063
+    ],
+    [
+      0.16153183890936432,
+      -0.19266133419860337,
+      0.3695552616646804
+    ],
+    [
+      0.34449645574705606,
+      -0.20638536148594128,
+      0.2723453004252124
+    ],
+    [
+      0.5278915051650356,
+      -0.04493924195523395,
+      0.26159263340504635
+    ],
+    [
+      0.6214271781218824,
+      -0.009222936565682162,
+      0.2279489746613613
+    ],
+    [
+      0.6500024072386866,
+      -0.002259367503012002,
+      0.142908711226087
+    ],
+    [
+      0.6497406892923068,
+      -0.040036713361394305,
+      0.07666556171086866
+    ],
+    [
+      0.6497403561008841,
+      0.03996328663341185,
+      0.07666471318986773
+    ]
+  ],
+  "public_rigid_material_quaternion_wxyz": [
+    [
+      0.9978667617244626,
+      -0.009703265111178068,
+      0.06455349025904998,
+      0.0007870114938915955
+    ],
+    [
+      0.19105929256788337,
+      0.6911719628436933,
+      0.18991447166660888,
+      -0.6706043229459896
+    ],
+    [
+      0.07009181186718606,
+      0.5366428244981805,
+      0.019606003125536845,
+      -0.8406647497458375
+    ],
+    [
+      0.935547199404716,
+      -0.14476375747903253,
+      -0.1158848839847934,
+      -0.3006086922734861
+    ],
+    [
+      0.08858381638333339,
+      -0.1298286478522058,
+      0.9385665498599057,
+      0.3072299808871281
+    ],
+    [
+      0.3477494005616082,
+      -0.11677264308821332,
+      -0.18832026756854228,
+      -0.9110268827307719
+    ],
+    [
+      0.7635827294894252,
+      0.6171476929249393,
+      0.1463587627049065,
+      0.12103409818060816
+    ],
+    [
+      0.3848007000361441,
+      0.613816620012358,
+      -0.27926055010131334,
+      0.6302151405713844
+    ],
+    [
+      2.2775247170466317e-06,
+      0.7071160180786767,
+      5.2224506752726805e-06,
+      0.7070975441508021
+    ],
+    [
+      0.707116018078677,
+      -2.277524717046632e-06,
+      -0.7070975441508021,
+      5.22245067527268e-06
+    ]
+  ],
+  "public_rigid_inertia_tensor": [
+    [
+      [
+        0.0031305107846664603,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.003879839091902542,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.004304650123430997
+      ]
+    ],
+    [
+      [
+        0.008524556277543038,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.7034354292338564,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.7071370144886002
+      ]
+    ],
+    [
+      [
+        0.002734250497989516,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.028300106936833852,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.03103264256517661
+      ]
+    ],
+    [
+      [
+        0.001246354440723826,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.041479257270665496,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.04150138828861054
+      ]
+    ],
+    [
+      [
+        0.010620083333833144,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.028148276242039704,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.03495964042412697
+      ]
+    ],
+    [
+      [
+        0.008034370472607964,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.028853091260661514,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.03676253826673035
+      ]
+    ],
+    [
+      [
+        0.0015978650692349927,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.004310373704197235,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0058427612265677395
+      ]
+    ],
+    [
+      [
+        0.006483723104275641,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.014023429661302744,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0165375996067949
+      ]
+    ],
+    [
+      [
+        7.499999999999979e-07,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        2.3749999999999925e-06,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        2.3749999999999925e-06
+      ]
+    ],
+    [
+      [
+        7.499999999999979e-07,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        2.3749999999999925e-06,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        2.3749999999999925e-06
+      ]
+    ]
+  ],
+  "servo_adapter": "External clip(kp*(target-q)-kv*v, caps) + kv*v and original implicit kv; mirrors Genesis approximate_implicitfast frozen-start PD force plus its unclipped damping Jacobian. Passive damping and armature remain separate authored terms."
+}

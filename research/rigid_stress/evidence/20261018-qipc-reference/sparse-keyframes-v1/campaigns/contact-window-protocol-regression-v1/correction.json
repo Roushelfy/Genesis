@@ -1,0 +1,5 @@
+{
+  "recorded_at_utc": "2026-10-18T18:21:06.054417+00:00",
+  "cause": "Capped-only n_public_bodies facade property was incorrectly used on the older prescribed source during first keyframe transfer. Actual physics returned through step1100, but only1099 rows were journaled; no completed history or first field export is admitted.",
+  "fix": "Select explicit public-body count by protocol. Track actual completed physical calls separately from journal rows and record Python exceptions in new receipts. Repeat same predeclared initial history/keys/tolerances, retaining original failed output."
+}

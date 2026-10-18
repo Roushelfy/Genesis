@@ -1,0 +1,54 @@
+[
+  [
+    {
+      "name": "stock",
+      "module": "research.rigid_stress.qipc_comparison.compare_fields",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/roundoff-prescribed-v1/group0/snh",
+        "--dpr",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-prescribed-sparse-v1/group0/dpr",
+        "--scr",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-prescribed-sparse-v1/group1/scr",
+        "--columns",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/columns.npz",
+        "--surfaces",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/surfaces.npz",
+        "--snapshot-times",
+        "1.33",
+        "2.77",
+        "4.0200000000000005",
+        "4.38",
+        "5.5200000000000005",
+        "--shell",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-prescribed-sparse-v1/group0/stock"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-surface2",
+      "module": "research.rigid_stress.qipc_comparison.compare_fields",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/roundoff-prescribed-v1/group0/snh",
+        "--dpr",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-prescribed-sparse-v1/group0/dpr",
+        "--scr",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-prescribed-sparse-v1/group1/scr",
+        "--columns",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/columns.npz",
+        "--surfaces",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/surfaces.npz",
+        "--snapshot-times",
+        "1.33",
+        "2.77",
+        "4.0200000000000005",
+        "4.38",
+        "5.5200000000000005",
+        "--shell",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-prescribed-sparse-v1/group1/volume-surface2"
+      ]
+    }
+  ]
+]

@@ -82,7 +82,8 @@ Each group is a sequential list of module/argument tasks, for example:
            "--mjcf", "PANDA.xml", "--mesh", "HOLLOW-P1.npz",
            "--duration", "6", "--dt", "0.001",
            "--velocity-tolerance", "1e-9", "--linear-tolerance", "1e-8",
-           "--dbc-stiffness", "1e7"]
+           "--dbc-stiffness", "1e7",
+           "--keyframes", "1.33", "2.77", "4.02", "4.38", "5.52"]
 }]]
 ```
 
@@ -101,6 +102,32 @@ The helper appends each task's `--output` directory. Existing outputs are never
 overwritten. `--keep-going` retains per-task return-code files, runs independent
 later configurations after a failure, and exits the campaign nonzero if any
 task failed. A queued/running job and a finite accepted prefix are not completion.
+
+The displayed1e-8 is the historical strict diagnostic, not a practical-tolerance
+recommendation. Standard PCG `linear_tolerance` controls the ratio of
+preconditioned squared residuals; its square root is the corresponding norm
+ratio with fixed SPD preconditioning. Newton velocity tolerance controls the
+mapped displacement criterion `velocity_tol * dt`. Qualify actual force/field
+residuals and complete-history cap status before selecting either tolerance.
+PCG1e-2 and1e-3 pass the prescribed short window but exhaust Newton during the
+complete grasp;1e-4 is under separate validation. No full-history accelerated
+reference setting is admitted yet.
+
+Both `native_grasp` and `shell_grasp` accept the same explicit `--keyframes`
+times, retaining continuous mechanics and computing/exporting full stress only
+there. Native builds with manual update mode and requests after controller/
+radius/state writes. Existing no-keyframe behavior remains available for
+labeled controls. `shell_grasp --dense-observer-control --keyframes ...`
+computes stress every step but transfers/exports only the selected fields;
+its actual update counter distinguishes dense computation from sparse files.
+This is an observation control, not the primary workload.
+
+`compare_cadence --comparison-scope stress-sampling` retains its original
+thresholds while checking all new keys. A failed Shell comparison is a failed
+equivalence check, not a successful validation. `compare_fields
+--skip-snapshot-payloads` retains all computed metrics without duplicating
+large derived aligned arrays. Keep original simulator fields and the common
+domain; render/rebuild derived arrays in node-local temporary storage as needed.
 
 ## Inputs and protocols
 

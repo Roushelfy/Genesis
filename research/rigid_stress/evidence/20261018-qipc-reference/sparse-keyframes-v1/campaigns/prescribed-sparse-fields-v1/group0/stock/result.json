@@ -1,0 +1,3059 @@
+{
+  "kind": "actual-three-way-common-column-errors",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726753",
+      "SLURM_ARRAY_JOB_ID": "726752",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-e3ae17a2-8c3a-b59e-e80d-ac03599051ab, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "reference_receipt": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/roundoff-prescribed-v1/group0/snh/result.json",
+    "bytes": 651,
+    "sha256": "17224a4d93ec334c6d052b829d086880e6a8c19be55f56b0ac3dd3898f7e15f0"
+  },
+  "columns": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/columns.npz",
+    "bytes": 3396445,
+    "sha256": "ee4515ed1c7d7b220d9902e2cd472cf9cf95a1d0be096edc814b8492ff02c902"
+  },
+  "surfaces": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/surfaces.npz",
+    "bytes": 73746,
+    "sha256": "aedb92d201e8b3bcb58ccd037a73bcd1118cfc049091077d24e66dd8620bb2f3"
+  },
+  "candidate_receipts": [
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-prescribed-sparse-v1/group0/dpr/result.json",
+      "bytes": 622,
+      "sha256": "d75c9f5bbc0e52d558a4ea004145827f64def7db0416af57c3b3328af745afc1"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-prescribed-sparse-v1/group1/scr/result.json",
+      "bytes": 623,
+      "sha256": "e7cf14b239ba5a334f5fe4cb4f8b8f888b97e3e40e694e2bce92775552592adf"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-prescribed-sparse-v1/group0/stock/result.json",
+      "bytes": 577,
+      "sha256": "b66ac9f69c5f2de3618a44872347b4fbaf91df80785a7fc4b0f48556430325d6"
+    }
+  ],
+  "reference_qualified": false,
+  "scope": "Diagnostic common-position/time comparisons. Reference spatial/dt/contact uncertainty and complete-grasp qualification remain required; these numbers do not establish a qualified accuracy ranking.",
+  "stress_convention": "World physical QIPC/Shell Cauchy corotated by each link's mass-weighted best fit; native authored-frame linear stress. Shared undeformed tangent projector; finite-strain model differences remain separate.",
+  "history": [
+    {
+      "time_s": 1.33,
+      "all_fields_finite": true,
+      "errors": [
+        {
+          "method": "dpr",
+          "tangent_field": {
+            "relative_tensor_error": 0.9995331993068894,
+            "absolute_tensor_rms_error_pa": 27006578.27610257,
+            "reference_tensor_rms_pa": 27019190.853120092,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 0.999530913860914,
+            "absolute_weighted_rms_error": 12668.946559233003,
+            "reference_weighted_rms": 12674.892175466925,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 0.9992251877463109,
+            "absolute_weighted_rms_error": 0.11699021026355165,
+            "reference_weighted_rms": 0.11708092599968949,
+            "relative_floor": 2.5e-07
+          },
+          "inner_surface_tangent": {
+            "relative_tensor_error": 0.9995230129144724,
+            "absolute_tensor_rms_error_pa": 26013822.513388462,
+            "reference_tensor_rms_pa": 26026236.692175515,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface_tangent": {
+            "relative_tensor_error": 0.9995366684244704,
+            "absolute_tensor_rms_error_pa": 27885497.53259354,
+            "reference_tensor_rms_pa": 27898423.753225915,
+            "relative_floor_pa": 1.0
+          },
+          "solid_only_full_3d_on_common_columns": {
+            "relative_tensor_error": 0.9996673529017968,
+            "absolute_tensor_rms_error_pa": 33152389.79879338,
+            "reference_tensor_rms_pa": 33163421.514726743,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "method": "scr",
+          "tangent_field": {
+            "relative_tensor_error": 0.9995309724779073,
+            "absolute_tensor_rms_error_pa": 27006518.108985305,
+            "reference_tensor_rms_pa": 27019190.853120092,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 0.9995286870593023,
+            "absolute_weighted_rms_error": 12668.918334762679,
+            "reference_weighted_rms": 12674.892175466925,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 0.999214580413398,
+            "absolute_weighted_rms_error": 0.11698896834719182,
+            "reference_weighted_rms": 0.11708092599968949,
+            "relative_floor": 2.5e-07
+          },
+          "inner_surface_tangent": {
+            "relative_tensor_error": 0.9995207834726437,
+            "absolute_tensor_rms_error_pa": 26013764.489407737,
+            "reference_tensor_rms_pa": 26026236.692175515,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface_tangent": {
+            "relative_tensor_error": 0.9995343759193782,
+            "absolute_tensor_rms_error_pa": 27885433.57531502,
+            "reference_tensor_rms_pa": 27898423.753225915,
+            "relative_floor_pa": 1.0
+          },
+          "solid_only_full_3d_on_common_columns": {
+            "relative_tensor_error": 0.9996656750893629,
+            "absolute_tensor_rms_error_pa": 33152334.156792413,
+            "reference_tensor_rms_pa": 33163421.514726743,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "method": "shell",
+          "tangent_field": {
+            "relative_tensor_error": 1.3388677007452934,
+            "absolute_tensor_rms_error_pa": 36175121.93351516,
+            "reference_tensor_rms_pa": 27019190.853120092,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 1.3342312167535937,
+            "absolute_weighted_rms_error": 16911.23680949384,
+            "reference_weighted_rms": 12674.892175466925,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 1.0422970396202824,
+            "absolute_weighted_rms_error": 0.12203310256547772,
+            "reference_weighted_rms": 0.11708092599968949,
+            "relative_floor": 2.5e-07
+          },
+          "inner_surface_tangent": {
+            "relative_tensor_error": 1.3635205710479466,
+            "absolute_tensor_rms_error_pa": 35487309.116744176,
+            "reference_tensor_rms_pa": 26026236.692175515,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface_tangent": {
+            "relative_tensor_error": 1.329165071771676,
+            "absolute_tensor_rms_error_pa": 37081610.41027316,
+            "reference_tensor_rms_pa": 27898423.753225915,
+            "relative_floor_pa": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "time_s": 2.77,
+      "all_fields_finite": true,
+      "errors": [
+        {
+          "method": "dpr",
+          "tangent_field": {
+            "relative_tensor_error": 0.9995328426164383,
+            "absolute_tensor_rms_error_pa": 26635747.30174669,
+            "reference_tensor_rms_pa": 26648196.20336169,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 0.9995303488522816,
+            "absolute_weighted_rms_error": 12492.840828760724,
+            "reference_weighted_rms": 12498.71086266237,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 0.9992298655739669,
+            "absolute_weighted_rms_error": 0.11678973094996319,
+            "reference_weighted_rms": 0.11687974406457326,
+            "relative_floor": 2.5e-07
+          },
+          "inner_surface_tangent": {
+            "relative_tensor_error": 0.9995217110966736,
+            "absolute_tensor_rms_error_pa": 25584570.078215443,
+            "reference_tensor_rms_pa": 25596812.74971415,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface_tangent": {
+            "relative_tensor_error": 0.9995368748892793,
+            "absolute_tensor_rms_error_pa": 27586557.391799465,
+            "reference_tensor_rms_pa": 27599339.338886604,
+            "relative_floor_pa": 1.0
+          },
+          "solid_only_full_3d_on_common_columns": {
+            "relative_tensor_error": 0.9996695247393345,
+            "absolute_tensor_rms_error_pa": 32836326.67697018,
+            "reference_tensor_rms_pa": 32847181.85795682,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "method": "scr",
+          "tangent_field": {
+            "relative_tensor_error": 0.9995294445670933,
+            "absolute_tensor_rms_error_pa": 26635656.74986103,
+            "reference_tensor_rms_pa": 26648196.20336169,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 0.9995269705967021,
+            "absolute_weighted_rms_error": 12492.798604921014,
+            "reference_weighted_rms": 12498.71086266237,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 0.9992142637400633,
+            "absolute_weighted_rms_error": 0.1167879074116096,
+            "reference_weighted_rms": 0.11687974406457326,
+            "relative_floor": 2.5e-07
+          },
+          "inner_surface_tangent": {
+            "relative_tensor_error": 0.9995183288046687,
+            "absolute_tensor_rms_error_pa": 25584483.502320327,
+            "reference_tensor_rms_pa": 25596812.74971415,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface_tangent": {
+            "relative_tensor_error": 0.9995332310247306,
+            "absolute_tensor_rms_error_pa": 27586456.823545277,
+            "reference_tensor_rms_pa": 27599339.338886604,
+            "relative_floor_pa": 1.0
+          },
+          "solid_only_full_3d_on_common_columns": {
+            "relative_tensor_error": 0.9996671106658314,
+            "absolute_tensor_rms_error_pa": 32836247.381458804,
+            "reference_tensor_rms_pa": 32847181.85795682,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "method": "shell",
+          "tangent_field": {
+            "relative_tensor_error": 1.346307717126642,
+            "absolute_tensor_rms_error_pa": 35876672.19609073,
+            "reference_tensor_rms_pa": 26648196.20336169,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 1.3416745897826299,
+            "absolute_weighted_rms_error": 16769.20276947424,
+            "reference_weighted_rms": 12498.71086266237,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 1.0421378817547915,
+            "absolute_weighted_rms_error": 0.12180480889949653,
+            "reference_weighted_rms": 0.11687974406457326,
+            "relative_floor": 2.5e-07
+          },
+          "inner_surface_tangent": {
+            "relative_tensor_error": 1.3732969251874416,
+            "absolute_tensor_rms_error_pa": 35152024.24378115,
+            "reference_tensor_rms_pa": 25596812.74971415,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface_tangent": {
+            "relative_tensor_error": 1.3346191345121328,
+            "absolute_tensor_rms_error_pa": 36834606.381571494,
+            "reference_tensor_rms_pa": 27599339.338886604,
+            "relative_floor_pa": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "time_s": 4.0200000000000005,
+      "all_fields_finite": true,
+      "errors": [
+        {
+          "method": "dpr",
+          "tangent_field": {
+            "relative_tensor_error": 0.9995381478565224,
+            "absolute_tensor_rms_error_pa": 27486721.495966468,
+            "reference_tensor_rms_pa": 27499422.16303686,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 0.9995357489026439,
+            "absolute_weighted_rms_error": 12891.580985300094,
+            "reference_weighted_rms": 12897.568695720307,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 0.9992125553268725,
+            "absolute_weighted_rms_error": 0.12077567994178973,
+            "reference_weighted_rms": 0.12087085905588964,
+            "relative_floor": 2.5e-07
+          },
+          "inner_surface_tangent": {
+            "relative_tensor_error": 0.9995275375629141,
+            "absolute_tensor_rms_error_pa": 26401856.96972407,
+            "reference_tensor_rms_pa": 26414336.751639757,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface_tangent": {
+            "relative_tensor_error": 0.9995407756162286,
+            "absolute_tensor_rms_error_pa": 28472977.78629501,
+            "reference_tensor_rms_pa": 28486059.27931363,
+            "relative_floor_pa": 1.0
+          },
+          "solid_only_full_3d_on_common_columns": {
+            "relative_tensor_error": 0.9996717977425751,
+            "absolute_tensor_rms_error_pa": 33898898.87826851,
+            "reference_tensor_rms_pa": 33910028.22608165,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "method": "scr",
+          "tangent_field": {
+            "relative_tensor_error": 0.9995363922063091,
+            "absolute_tensor_rms_error_pa": 27486673.216600083,
+            "reference_tensor_rms_pa": 27499422.16303686,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 0.9995339989548538,
+            "absolute_weighted_rms_error": 12891.558415228259,
+            "reference_weighted_rms": 12897.568695720307,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 0.9992051562031695,
+            "absolute_weighted_rms_error": 0.12077478560335149,
+            "reference_weighted_rms": 0.12087085905588964,
+            "relative_floor": 2.5e-07
+          },
+          "inner_surface_tangent": {
+            "relative_tensor_error": 0.9995258654872802,
+            "absolute_tensor_rms_error_pa": 26401812.8029552,
+            "reference_tensor_rms_pa": 26414336.751639757,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface_tangent": {
+            "relative_tensor_error": 0.9995389135711208,
+            "absolute_tensor_rms_error_pa": 28472924.74396769,
+            "reference_tensor_rms_pa": 28486059.27931363,
+            "relative_floor_pa": 1.0
+          },
+          "solid_only_full_3d_on_common_columns": {
+            "relative_tensor_error": 0.9996704893475054,
+            "absolute_tensor_rms_error_pa": 33898854.51055476,
+            "reference_tensor_rms_pa": 33910028.22608165,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "method": "shell",
+          "tangent_field": {
+            "relative_tensor_error": 1.328584311681119,
+            "absolute_tensor_rms_error_pa": 36535300.86610683,
+            "reference_tensor_rms_pa": 27499422.16303686,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 1.324191827394413,
+            "absolute_weighted_rms_error": 17078.855060130853,
+            "reference_weighted_rms": 12897.568695720307,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 1.0397483021629637,
+            "absolute_weighted_rms_error": 0.12567527048434013,
+            "reference_weighted_rms": 0.12087085905588964,
+            "relative_floor": 2.5e-07
+          },
+          "inner_surface_tangent": {
+            "relative_tensor_error": 1.3542477140069773,
+            "absolute_tensor_rms_error_pa": 35771555.16291863,
+            "reference_tensor_rms_pa": 26414336.751639757,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface_tangent": {
+            "relative_tensor_error": 1.3173779751291228,
+            "absolute_tensor_rms_error_pa": 37526907.09279036,
+            "reference_tensor_rms_pa": 28486059.27931363,
+            "relative_floor_pa": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "time_s": 4.38,
+      "all_fields_finite": true,
+      "errors": [
+        {
+          "method": "dpr",
+          "tangent_field": {
+            "relative_tensor_error": 0.9991460682811113,
+            "absolute_tensor_rms_error_pa": 2934044.753912272,
+            "reference_tensor_rms_pa": 2936552.3691244447,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 0.9991405344608514,
+            "absolute_weighted_rms_error": 1374.7897145716418,
+            "reference_weighted_rms": 1375.972315359516,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 0.9984515322667497,
+            "absolute_weighted_rms_error": 0.013965238718395518,
+            "reference_weighted_rms": 0.013986896977052781,
+            "relative_floor": 2.5e-07
+          },
+          "inner_surface_tangent": {
+            "relative_tensor_error": 0.9991176481608719,
+            "absolute_tensor_rms_error_pa": 2818994.371990742,
+            "reference_tensor_rms_pa": 2821483.9135108986,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface_tangent": {
+            "relative_tensor_error": 0.9991534629249903,
+            "absolute_tensor_rms_error_pa": 3032447.220951376,
+            "reference_tensor_rms_pa": 3035016.4749206617,
+            "relative_floor_pa": 1.0
+          },
+          "solid_only_full_3d_on_common_columns": {
+            "relative_tensor_error": 0.9994277861197025,
+            "absolute_tensor_rms_error_pa": 3753860.725681642,
+            "reference_tensor_rms_pa": 3756009.9667191342,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "method": "scr",
+          "tangent_field": {
+            "relative_tensor_error": 0.9989544581877782,
+            "absolute_tensor_rms_error_pa": 2933482.080838746,
+            "reference_tensor_rms_pa": 2936552.3691244447,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 0.9989479887900804,
+            "absolute_weighted_rms_error": 1374.5247770592186,
+            "reference_weighted_rms": 1375.972315359516,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 0.9980764589619554,
+            "absolute_weighted_rms_error": 0.013959992606722519,
+            "reference_weighted_rms": 0.013986896977052781,
+            "relative_floor": 2.5e-07
+          },
+          "inner_surface_tangent": {
+            "relative_tensor_error": 0.9989228330933316,
+            "absolute_tensor_rms_error_pa": 2818444.7044115677,
+            "reference_tensor_rms_pa": 2821483.9135108986,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface_tangent": {
+            "relative_tensor_error": 0.9989593008655523,
+            "absolute_tensor_rms_error_pa": 3031857.935902177,
+            "reference_tensor_rms_pa": 3035016.4749206617,
+            "relative_floor_pa": 1.0
+          },
+          "solid_only_full_3d_on_common_columns": {
+            "relative_tensor_error": 0.9993000305364602,
+            "absolute_tensor_rms_error_pa": 3753380.8744376795,
+            "reference_tensor_rms_pa": 3756009.9667191342,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "method": "shell",
+          "tangent_field": {
+            "relative_tensor_error": 8.179274127122437,
+            "absolute_tensor_rms_error_pa": 24018866.815719664,
+            "reference_tensor_rms_pa": 2936552.3691244447,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 8.12372200229267,
+            "absolute_weighted_rms_error": 11178.016572831686,
+            "reference_weighted_rms": 1375.972315359516,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 2.7790485489829395,
+            "absolute_weighted_rms_error": 0.0388702657488524,
+            "reference_weighted_rms": 0.013986896977052781,
+            "relative_floor": 2.5e-07
+          },
+          "inner_surface_tangent": {
+            "relative_tensor_error": 8.579194350218827,
+            "absolute_tensor_rms_error_pa": 24206058.850026008,
+            "reference_tensor_rms_pa": 2821483.9135108986,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface_tangent": {
+            "relative_tensor_error": 8.011495034090201,
+            "absolute_tensor_rms_error_pa": 24315019.417208828,
+            "reference_tensor_rms_pa": 3035016.4749206617,
+            "relative_floor_pa": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "time_s": 5.5200000000000005,
+      "all_fields_finite": true,
+      "errors": [
+        {
+          "method": "dpr",
+          "tangent_field": {
+            "relative_tensor_error": null,
+            "absolute_tensor_rms_error_pa": 0.07001699876804399,
+            "reference_tensor_rms_pa": 0.07001701506162564,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": null,
+            "absolute_weighted_rms_error": 3.2988284664446756e-05,
+            "reference_weighted_rms": 3.298829233008874e-05,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": null,
+            "absolute_weighted_rms_error": 1.0090521496746098e-10,
+            "reference_weighted_rms": 1.0090517176706235e-10,
+            "relative_floor": 2.5e-07
+          },
+          "inner_surface_tangent": {
+            "relative_tensor_error": null,
+            "absolute_tensor_rms_error_pa": 0.07148017109045982,
+            "reference_tensor_rms_pa": 0.07148018824009728,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface_tangent": {
+            "relative_tensor_error": null,
+            "absolute_tensor_rms_error_pa": 0.06816086119291274,
+            "reference_tensor_rms_pa": 0.06816087588768414,
+            "relative_floor_pa": 1.0
+          },
+          "solid_only_full_3d_on_common_columns": {
+            "relative_tensor_error": null,
+            "absolute_tensor_rms_error_pa": 0.07263321492706136,
+            "reference_tensor_rms_pa": 0.07263323079577992,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "method": "scr",
+          "tangent_field": {
+            "relative_tensor_error": null,
+            "absolute_tensor_rms_error_pa": 0.07001699876804399,
+            "reference_tensor_rms_pa": 0.07001701506162564,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": null,
+            "absolute_weighted_rms_error": 3.2988284664446756e-05,
+            "reference_weighted_rms": 3.298829233008874e-05,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": null,
+            "absolute_weighted_rms_error": 1.0090521496746098e-10,
+            "reference_weighted_rms": 1.0090517176706235e-10,
+            "relative_floor": 2.5e-07
+          },
+          "inner_surface_tangent": {
+            "relative_tensor_error": null,
+            "absolute_tensor_rms_error_pa": 0.07148017109045982,
+            "reference_tensor_rms_pa": 0.07148018824009728,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface_tangent": {
+            "relative_tensor_error": null,
+            "absolute_tensor_rms_error_pa": 0.06816086119291274,
+            "reference_tensor_rms_pa": 0.06816087588768414,
+            "relative_floor_pa": 1.0
+          },
+          "solid_only_full_3d_on_common_columns": {
+            "relative_tensor_error": null,
+            "absolute_tensor_rms_error_pa": 0.07263321492706136,
+            "reference_tensor_rms_pa": 0.07263323079577992,
+            "relative_floor_pa": 1.0
+          }
+        },
+        {
+          "method": "shell",
+          "tangent_field": {
+            "relative_tensor_error": null,
+            "absolute_tensor_rms_error_pa": 23789635.218356207,
+            "reference_tensor_rms_pa": 0.07001701506162564,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": null,
+            "absolute_weighted_rms_error": 11069.612897514178,
+            "reference_weighted_rms": 3.298829233008874e-05,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": null,
+            "absolute_weighted_rms_error": 0.03645314855239079,
+            "reference_weighted_rms": 1.0090517176706235e-10,
+            "relative_floor": 2.5e-07
+          },
+          "inner_surface_tangent": {
+            "relative_tensor_error": null,
+            "absolute_tensor_rms_error_pa": 24015071.165055327,
+            "reference_tensor_rms_pa": 0.07148018824009728,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface_tangent": {
+            "relative_tensor_error": null,
+            "absolute_tensor_rms_error_pa": 24060405.009688284,
+            "reference_tensor_rms_pa": 0.06816087588768414,
+            "relative_floor_pa": 1.0
+          }
+        }
+      ]
+    }
+  ],
+  "complete_time_integrated_common_metrics": [],
+  "complete_common_observation_coverage": false,
+  "expected_reference_duration_s": 6.0,
+  "snapshots": [
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-sparse-fields-v1/group0/stock/common-step000132.npz",
+      "bytes": 12868469,
+      "sha256": "896c0bd3bdcd6c9728b9f38bddce3677019b0850f455be708ed9c8fb6f2bba95"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-sparse-fields-v1/group0/stock/common-step000276.npz",
+      "bytes": 12858404,
+      "sha256": "6ad40af0e2b5c963ccf3f419aeb2191eed45d9018686b7e32990fcb18fde738e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-sparse-fields-v1/group0/stock/common-step000401.npz",
+      "bytes": 12868397,
+      "sha256": "315639bdf0d2d3debb1e7ba15e4d31cb228592041346004ce7e0b99ad037158f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-sparse-fields-v1/group0/stock/common-step000437.npz",
+      "bytes": 12874357,
+      "sha256": "6787012000e3cdd596ed5f9d12717c2bafd344ec0bf9a496f2698ef2119489c3"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-sparse-fields-v1/group0/stock/common-step000551.npz",
+      "bytes": 12898205,
+      "sha256": "f2f2095a8c226f0ab909175d795f48f89ed985d5496622c9b60063060f150528"
+    }
+  ],
+  "requested_snapshot_times_s": [
+    1.33,
+    2.77,
+    4.0200000000000005,
+    4.38,
+    5.5200000000000005
+  ],
+  "snapshot_scope": "Snapshot selection affects derived field exports only. Every compatible recorded common observation still contributes to the history and complete-time metrics; original raw full fields and physical-step peak states stay at their source paths.",
+  "unmatched_reference_frames": [
+    {
+      "time_s": 0.01,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.02,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.03,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.04,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.05,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.06,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.07,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.08,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.09,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.1,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.11,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.12,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.13,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.14,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.15,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.16,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.17,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.18,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.19,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.2,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.21,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.22,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.23,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.24,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.25,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.26,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.27,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.28,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.29,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.3,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.31,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.32,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.33,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.34,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.35000000000000003,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.36,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.37,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.38,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.39,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.4,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.41000000000000003,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.42,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.43,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.44,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.45,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.46,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.47000000000000003,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.48,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.49,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.5,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.51,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.52,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.53,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.54,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.55,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.56,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.5700000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.58,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.59,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.6,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.61,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.62,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.63,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.64,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.65,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.66,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.67,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.68,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.6900000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.7000000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.71,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.72,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.73,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.74,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.75,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.76,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.77,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.78,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.79,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.8,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.81,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.8200000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.8300000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.84,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.85,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.86,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.87,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.88,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.89,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.9,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.91,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.92,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.93,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.9400000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.9500000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.96,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.97,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.98,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 0.99,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.0,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.01,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.02,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.03,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.04,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.05,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.06,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.07,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.08,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.09,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.1,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.11,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.12,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.1300000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.1400000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.1500000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.16,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.17,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.18,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.19,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.2,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.21,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.22,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.23,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.24,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.25,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.26,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.27,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.28,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.29,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.3,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.31,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.32,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.34,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.35,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.36,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.37,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.3800000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.3900000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.4000000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.41,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.42,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.43,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.44,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.45,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.46,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.47,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.48,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.49,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.5,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.51,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.52,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.53,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.54,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.55,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.56,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.57,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.58,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.59,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.6,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.61,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.62,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.6300000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.6400000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.6500000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.6600000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.67,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.68,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.69,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.7,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.71,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.72,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.73,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.74,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.75,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.76,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.77,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.78,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.79,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.8,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.81,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.82,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.83,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.84,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.85,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.86,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.87,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.8800000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.8900000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.9000000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.9100000000000001,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.92,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.93,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.94,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.95,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.96,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.97,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.98,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 1.99,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.0,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.0100000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.02,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.0300000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.04,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.05,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.06,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.07,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.08,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.09,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.1,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.11,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.12,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.13,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.14,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.15,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.16,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.17,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.18,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.19,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.2,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.21,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.22,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.23,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.24,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.25,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.2600000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.27,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.2800000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.29,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.3000000000000003,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.31,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.32,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.33,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.34,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.35,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.36,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.37,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.38,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.39,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.4,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.41,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.42,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.43,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.44,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.45,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.46,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.47,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.48,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.49,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.5,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.5100000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.52,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.5300000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.54,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.5500000000000003,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.56,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.57,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.58,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.59,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.6,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.61,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.62,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.63,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.64,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.65,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.66,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.67,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.68,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.69,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.7,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.71,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.72,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.73,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.74,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.75,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.7600000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.7800000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.79,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.8000000000000003,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.81,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.82,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.83,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.84,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.85,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.86,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.87,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.88,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.89,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.9,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.91,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.92,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.93,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.94,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.95,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.96,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.97,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.98,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 2.99,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.0,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.0100000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.02,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.0300000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.04,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.0500000000000003,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.06,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.0700000000000003,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.08,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.09,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.1,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.11,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.12,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.13,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.14,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.15,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.16,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.17,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.18,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.19,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.2,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.21,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.22,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.23,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.24,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.25,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.2600000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.27,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.2800000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.29,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.3000000000000003,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.31,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.3200000000000003,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.33,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.34,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.35,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.36,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.37,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.38,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.39,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.4,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.41,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.42,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.43,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.44,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.45,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.46,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.47,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.48,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.49,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.5,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.5100000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.52,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.5300000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.54,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.5500000000000003,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.56,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.5700000000000003,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.58,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.59,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.6,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.61,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.62,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.63,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.64,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.65,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.66,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.67,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.68,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.69,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.7,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.71,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.72,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.73,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.74,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.75,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.7600000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.77,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.7800000000000002,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.79,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.8000000000000003,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.81,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.8200000000000003,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.83,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.84,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.85,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.86,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.87,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.88,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.89,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.9,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.91,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.92,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.93,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.94,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.95,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.96,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.97,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.98,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 3.99,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.0,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.01,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.03,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.04,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.05,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.0600000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.07,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.08,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.09,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.1,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.11,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.12,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.13,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.14,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.15,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.16,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.17,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.18,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.19,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.2,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.21,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.22,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.23,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.24,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.25,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.26,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.2700000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.28,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.29,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.3,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.3100000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.32,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.33,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.34,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.3500000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.36,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.37,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.39,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.4,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.41,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.42,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.43,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.44,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.45,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.46,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.47,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.48,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.49,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.5,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.51,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.5200000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.53,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.54,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.55,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.5600000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.57,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.58,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.59,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.6000000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.61,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.62,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.63,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.64,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.65,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.66,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.67,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.68,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.69,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.7,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.71,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.72,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.73,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.74,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.75,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.76,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.7700000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.78,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.79,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.8,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.8100000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.82,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.83,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.84,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.8500000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.86,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.87,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.88,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.89,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.9,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.91,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.92,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.93,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.94,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.95,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.96,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.97,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.98,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 4.99,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.0,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.01,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.0200000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.03,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.04,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.05,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.0600000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.07,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.08,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.09,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.1000000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.11,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.12,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.13,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.14,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.15,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.16,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.17,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.18,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.19,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.2,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.21,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.22,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.23,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.24,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.25,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.26,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.2700000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.28,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.29,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.3,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.3100000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.32,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.33,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.34,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.3500000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.36,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.37,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.38,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.39,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.4,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.41,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.42,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.43,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.44,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.45,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.46,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.47,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.48,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.49,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.5,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.51,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.53,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.54,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.55,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.5600000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.57,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.58,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.59,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.6000000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.61,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.62,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.63,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.64,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.65,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.66,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.67,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.68,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.69,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.7,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.71,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.72,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.73,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.74,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.75,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.76,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.7700000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.78,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.79,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.8,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.8100000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.82,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.83,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.84,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.8500000000000005,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.86,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.87,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.88,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.89,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.9,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.91,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.92,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.93,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.94,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.95,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.96,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.97,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.98,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 5.99,
+      "reason": "candidate frame missing at declared common time"
+    },
+    {
+      "time_s": 6.0,
+      "reason": "candidate frame missing at declared common time"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/qipc-owned-coarse-tree-check01-20261015/bin/python3.12",
+    "python_version": "3.12.13 (main, Jun  2 2026, 22:27:15) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726751",
+      "SLURM_ARRAY_JOB_ID": "726751",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-17819d06-c563-257f-30fe-100c9f111279, 00000000:20:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "qipc_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/qipc-stress-reference-roundoff/qipc/__init__.py",
+  "native": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/qipc-stress-reference-roundoff/qipc/_src/native/solver/qipc_solver_ext.abi3.so",
+    "bytes": 62422704,
+    "sha256": "d4b90d5cbcbee44fb2c92b9406d5ca15f70e4dcda82469c5fb9865bc37526211"
+  },
+  "motion": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-input-v1/group0/motion/motion.npz",
+    "bytes": 9190260,
+    "sha256": "b050060473fd7332b339b6a91f82955876962e04c3c044b8c3bfb068160c2d29"
+  },
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+    "bytes": 34052,
+    "sha256": "40256c5711abb9e9e9f313adbb41944efb8511ae409538001a75d019e88728ea"
+  },
+  "conditions": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/case0.npz",
+    "bytes": 2096,
+    "sha256": "a555a5784363e52b92f15a51509dbd8a0a2cce131af0287127eb43d3d3c079c2"
+  },
+  "config": {
+    "dt": 0.001,
+    "young": 10000000000.0,
+    "poisson": 0.3,
+    "density": 2000.0,
+    "velocity_tolerance": 1e-09,
+    "linear_tolerance": 0.001,
+    "max_newton": 256,
+    "max_pcg": 4096,
+    "d_hat": 2e-05,
+    "friction": 0.7191016138165071,
+    "friction_epsilon_velocity": 0.0001,
+    "resistance": 10000000000.0,
+    "energy": "snh",
+    "mas_precision": "double",
+    "linear_solver": "linear_pcg",
+    "newton_aware_pcg": false
+  },
+  "dbc_stiffness_ratio": 10000000.0,
+  "requested_duration_s": 6.0,
+  "record_interval_s": 0.01,
+  "extra_observation_times_s": [],
+  "observer_scope": "Stress/residual/raw peak observations at every physical step. Periodic/extra full-state frames follow the explicit recording grid; sparse pilot frames do not establish complete6s common observation coverage.",
+  "protocol": "shared prescribed motion; original rigid pose-DBC potentials, no articulated KKT, no capped controller",
+  "tracking_contract": "Finite-strength DBC is admitted only after measured pose and stiffness-sensitivity checks; the egg is free and every contact/reaction is solved."
+}

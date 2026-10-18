@@ -1,0 +1,56 @@
+[
+  [
+    {
+      "name": "cap-partition-original",
+      "module": "research.rigid_stress.qipc_comparison.rigid_pose_audit",
+      "args": [
+        "--reference",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-partition-original",
+        "--binding",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-rigid-binding-v1/group0/case0",
+        "--mjcf",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-fresh-coarse-v1/group0/case0/panda-bank-initial.xml",
+        "--retain-poses"
+      ]
+    },
+    {
+      "name": "cap-linear-control",
+      "module": "research.rigid_stress.qipc_comparison.rigid_pose_audit",
+      "args": [
+        "--reference",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-linear-control",
+        "--binding",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-rigid-binding-v1/group0/case0",
+        "--mjcf",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-fresh-coarse-v1/group0/case0/panda-bank-initial.xml",
+        "--retain-poses"
+      ]
+    },
+    {
+      "name": "cap-linear-loose",
+      "module": "research.rigid_stress.qipc_comparison.rigid_pose_audit",
+      "args": [
+        "--reference",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-linear-loose",
+        "--binding",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-rigid-binding-v1/group0/case0",
+        "--mjcf",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-fresh-coarse-v1/group0/case0/panda-bank-initial.xml",
+        "--retain-poses"
+      ]
+    },
+    {
+      "name": "cap-linear-loose-newton-mid",
+      "module": "research.rigid_stress.qipc_comparison.rigid_pose_audit",
+      "args": [
+        "--reference",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-contact-window-v1/group0/cap-linear-loose-newton-mid",
+        "--binding",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-rigid-binding-v1/group0/case0",
+        "--mjcf",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-fresh-coarse-v1/group0/case0/panda-bank-initial.xml",
+        "--retain-poses"
+      ]
+    }
+  ]
+]

@@ -19,8 +19,15 @@ implements the user's sparse-keyframe/profiling-first update, retaining33 full
 spatial fields from11 runs. The subsequent
 [fixed-Newton PCG contrast](evidence/20261018-qipc-reference/short-window-pcg-v1/README.md)
 shows that1e-2 passes the same3 keys while reducing measured inner work and
-window time relative to1e-6. It is the next validation candidate, with repeats,
-capped coupling and complete sparse-grasp qualification still required.
+window time relative to1e-6; three fresh repeats pass. Subsequent
+[complete sparse runs](evidence/20261018-qipc-reference/sparse-keyframes-v1/README.md)
+reject PCG1e-2/1e-3 at2.113/2.365s because Newton reaches its256-iteration cap.
+Fixed Newton alone does not guarantee convergence with every inner tolerance.
+DPR/SCR and both Shell settings complete6s with five full spatial observations;
+same-method old-dense/new-sparse equivalence passes only for DPR/SCR. Actual
+native CUDA recovery calls fall from200 to3 in the profiled contact window.
+The capped fast alternatives fail the common numerical/contact checks.
+Physical-reference qualification and matched primary sparse cost remain open.
 The earlier [dense checkpoint](evidence/20261018-qipc-reference/checkpoint-v3/README.md)
 adds complete capped2/7 comparisons, ET forced-exit admission/geometry forensics,
 unloaded/actual-pose controls and the inspected cost/profile figure. Full9s
