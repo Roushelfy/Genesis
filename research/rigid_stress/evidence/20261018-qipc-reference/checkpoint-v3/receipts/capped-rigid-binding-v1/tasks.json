@@ -1,0 +1,74 @@
+[
+  [
+    {
+      "name": "case0",
+      "module": "research.rigid_stress.qipc_comparison.robot_audit",
+      "args": [
+        "--mjcf",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/conditions.npz",
+        "--dt",
+        "0.001",
+        "--steps",
+        "9000",
+        "--gravity",
+        "9.81",
+        "--bank-schedule",
+        "--case",
+        "0",
+        "--equality-constants",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-robot-constants-v1/group0/robot/start.json",
+        "--layout-only"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "case2",
+      "module": "research.rigid_stress.qipc_comparison.robot_audit",
+      "args": [
+        "--mjcf",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/conditions.npz",
+        "--dt",
+        "0.001",
+        "--steps",
+        "9000",
+        "--gravity",
+        "9.81",
+        "--bank-schedule",
+        "--case",
+        "2",
+        "--equality-constants",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-robot-constants-v1/group0/robot/start.json",
+        "--layout-only"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "case7",
+      "module": "research.rigid_stress.qipc_comparison.robot_audit",
+      "args": [
+        "--mjcf",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/conditions.npz",
+        "--dt",
+        "0.001",
+        "--steps",
+        "9000",
+        "--gravity",
+        "9.81",
+        "--bank-schedule",
+        "--case",
+        "7",
+        "--equality-constants",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-robot-constants-v1/group0/robot/start.json",
+        "--layout-only"
+      ]
+    }
+  ]
+]

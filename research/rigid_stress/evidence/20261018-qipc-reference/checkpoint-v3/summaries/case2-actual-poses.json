@@ -1,0 +1,117 @@
+{
+  "kind": "actual-recorded-capped-rigid-pose-vs-authored-joint-kinematics",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-099",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726657",
+      "SLURM_ARRAY_JOB_ID": "726654",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-a84194fe-4866-e5ab-389f-5c0715e30913, 00000000:46:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "mujoco_version": "3.15.0",
+  "reference": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-fresh-coarse-v1/group1/case2/result.json",
+    "bytes": 713,
+    "sha256": "d2a3d9ce4228655cfc81a0dc81ff3caf69889b4e9b59628d63caa5471bbde4dc"
+  },
+  "binding": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-rigid-binding-v1/group1/case2/start.json",
+    "bytes": 8701,
+    "sha256": "6d44b4e28b7d770cfb46ed8e1a63b6a65b5a18c11e66eee4b2a3b428ae5c2dff"
+  },
+  "kinematic_model": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml",
+    "bytes": 14369,
+    "sha256": "e502e07fcef6219024be02dfb9cd65d5c194b4767adf381ca51f10172ff8a32d"
+  },
+  "case": 2,
+  "recorded_control_observations": 900,
+  "last_recorded_time_s": 9.0,
+  "predeclared_bands": {
+    "com_position_m": 1e-07,
+    "material_rotation_rad": 1e-06
+  },
+  "per_public_body": [
+    {
+      "body": "link0",
+      "maximum_com_difference_m": 0.0,
+      "maximum_com_time_s": 0.01,
+      "maximum_rotation_difference_rad": 0.0,
+      "maximum_rotation_time_s": 0.01
+    },
+    {
+      "body": "link1",
+      "maximum_com_difference_m": 1.82403925686028e-17,
+      "maximum_com_time_s": 7.09,
+      "maximum_rotation_difference_rad": 4.966313114069623e-16,
+      "maximum_rotation_time_s": 8.36
+    },
+    {
+      "body": "link2",
+      "maximum_com_difference_m": 7.050749370775813e-17,
+      "maximum_com_time_s": 7.51,
+      "maximum_rotation_difference_rad": 8.929612394352764e-16,
+      "maximum_rotation_time_s": 1.06
+    },
+    {
+      "body": "link3",
+      "maximum_com_difference_m": 3.597533769998862e-16,
+      "maximum_com_time_s": 4.87,
+      "maximum_rotation_difference_rad": 1.239913775318156e-15,
+      "maximum_rotation_time_s": 2.92
+    },
+    {
+      "body": "link4",
+      "maximum_com_difference_m": 5.933464366067994e-16,
+      "maximum_com_time_s": 2.92,
+      "maximum_rotation_difference_rad": 1.4520183997628297e-15,
+      "maximum_rotation_time_s": 3.44
+    },
+    {
+      "body": "link5",
+      "maximum_com_difference_m": 1.1601241284390262e-15,
+      "maximum_com_time_s": 1.2,
+      "maximum_rotation_difference_rad": 1.5589306187458028e-15,
+      "maximum_rotation_time_s": 5.3100000000000005
+    },
+    {
+      "body": "link6",
+      "maximum_com_difference_m": 1.0888758524337805e-15,
+      "maximum_com_time_s": 1.2,
+      "maximum_rotation_difference_rad": 1.7760735156978668e-15,
+      "maximum_rotation_time_s": 3.44
+    },
+    {
+      "body": "link7",
+      "maximum_com_difference_m": 1.2396866065718535e-15,
+      "maximum_com_time_s": 4.4,
+      "maximum_rotation_difference_rad": 2.1210195827970207e-15,
+      "maximum_rotation_time_s": 3.44
+    },
+    {
+      "body": "left_finger",
+      "maximum_com_difference_m": 1.3761420400220208e-15,
+      "maximum_com_time_s": 1.2,
+      "maximum_rotation_difference_rad": 2.3288335015989455e-15,
+      "maximum_rotation_time_s": 0.6
+    },
+    {
+      "body": "right_finger",
+      "maximum_com_difference_m": 1.4142582492228051e-15,
+      "maximum_com_time_s": 1.2,
+      "maximum_rotation_difference_rad": 2.7741936985646174e-15,
+      "maximum_rotation_time_s": 2.92
+    }
+  ],
+  "maximum_com_difference_m": 1.4142582492228051e-15,
+  "maximum_rotation_difference_rad": 2.7741936985646174e-15,
+  "recorded_capped_geometry_tracking_passed": true,
+  "physical_reference_qualified": false,
+  "scope": "Actual saved body COM/material rotations versus the authored MJCF FK at each actual saved joint coordinate. Constant frame offsets come only from the independently initialized input geometry, before any dynamic/contact step; no contact footprint, force, compliance or trajectory is fitted. This checks recorded10ms geometry, not unobserved physical-step extrema or contact/stress accuracy."
+}

@@ -1,0 +1,170 @@
+{
+  "warmup_seconds": 402.95380227899295,
+  "warmup_invalid_environment_steps": null,
+  "repeats": [
+    {
+      "repeat": 0,
+      "seconds": 401.22447872097837,
+      "env_steps": 900,
+      "requested_steps": 900,
+      "executed_steps": 900,
+      "completed_requested_history": true,
+      "nonfinite_step": null,
+      "final_output_finite_checked_after_timer": true,
+      "accuracy_qualified": null,
+      "invalid_environment_steps": null,
+      "invalid_steps_per_environment": null,
+      "valid_aggregate_env_steps_per_second": null,
+      "aggregate_env_steps_per_second": 2.2431333274306096,
+      "batch_step_ms": 445.8049763566426,
+      "partial_reset_envs": 1,
+      "scope": "normal-full-field"
+    },
+    {
+      "repeat": 1,
+      "seconds": 401.3136947909952,
+      "env_steps": 900,
+      "requested_steps": 900,
+      "executed_steps": 900,
+      "completed_requested_history": true,
+      "nonfinite_step": null,
+      "final_output_finite_checked_after_timer": true,
+      "accuracy_qualified": null,
+      "invalid_environment_steps": null,
+      "invalid_steps_per_environment": null,
+      "valid_aggregate_env_steps_per_second": null,
+      "aggregate_env_steps_per_second": 2.2426346563346695,
+      "batch_step_ms": 445.90410532332805,
+      "partial_reset_envs": 1,
+      "scope": "normal-full-field"
+    },
+    {
+      "repeat": 2,
+      "seconds": 401.24361660398426,
+      "env_steps": 900,
+      "requested_steps": 900,
+      "executed_steps": 900,
+      "completed_requested_history": true,
+      "nonfinite_step": null,
+      "final_output_finite_checked_after_timer": true,
+      "accuracy_qualified": null,
+      "invalid_environment_steps": null,
+      "invalid_steps_per_environment": null,
+      "valid_aggregate_env_steps_per_second": null,
+      "aggregate_env_steps_per_second": 2.2430263380072004,
+      "batch_step_ms": 445.8262406710936,
+      "partial_reset_envs": 1,
+      "scope": "normal-full-field"
+    }
+  ],
+  "trajectory_summary": [
+    {
+      "all_recorded_fields_finite": null,
+      "minimum_position_z_m": null,
+      "maximum_position_z_m": null,
+      "maximum_peak_pa": null,
+      "cap_exhausted_substeps": null
+    },
+    {
+      "all_recorded_fields_finite": null,
+      "minimum_position_z_m": null,
+      "maximum_position_z_m": null,
+      "maximum_peak_pa": null,
+      "cap_exhausted_substeps": null
+    },
+    {
+      "all_recorded_fields_finite": null,
+      "minimum_position_z_m": null,
+      "maximum_position_z_m": null,
+      "maximum_peak_pa": null,
+      "cap_exhausted_substeps": null
+    }
+  ],
+  "kind": "matched-franka-egg",
+  "args": {
+    "model": "shell",
+    "output": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-b1-full-error-cost-v1/group1/volume-surface2-b1-full",
+    "conditions": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/case0.npz",
+    "inputs": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/surface2",
+    "native_assets": null,
+    "envs": 1,
+    "level": 1,
+    "precision": "64",
+    "substeps": 10,
+    "sim_dt": 0.01,
+    "output_mode": "full",
+    "iterations": 300,
+    "tolerance": 1e-08,
+    "patches": 6,
+    "coarse_interval": 1,
+    "damping": 0.0,
+    "coupling_friction": 0.7191016138165071,
+    "coupling_softness": 0.002,
+    "bank_coupling_friction": true,
+    "wall_volume_input": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-and-complete-fields-v1/group0/wall/surface2.npz",
+    "warmup": 900,
+    "steps": 900,
+    "repetitions": 3,
+    "record_every": 0,
+    "instrumented": false,
+    "memory": false,
+    "trace": false,
+    "peak_snapshots": false
+  },
+  "identity": {
+    "analysis_import": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-b1-full-error-cost-v1/analysis-source/research/rigid_stress/shell_comparison/common.py",
+    "genesis_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/kashu-shell-pr22-substep-peaks/genesis/__init__.py",
+    "python": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "cpu_models": [
+      "INTEL(R) XEON(R) PLATINUM 8562Y+"
+    ],
+    "host": "rtx-209-113",
+    "job": "726647",
+    "array_job": "726647",
+    "array_task": "1",
+    "packages": {
+      "quadrants": "1.3.3",
+      "torch": "2.11.0+cu129",
+      "numpy": "2.2.6",
+      "scipy": "1.15.3",
+      "trimesh": "5.1.1",
+      "pydantic": "2.14.0"
+    },
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-34e58548-f13c-2693-80a2-5f089c8f4d86, 595.71.05, 97887 MiB"
+  },
+  "condition_bank": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/case0.npz",
+    "bytes": 2096,
+    "sha256": "a555a5784363e52b92f15a51509dbd8a0a2cce131af0287127eb43d3d3c079c2"
+  },
+  "build_seconds": 90.15165854399675,
+  "observation_bytes": 430092,
+  "source_scope": "original-plus-output-sidecar",
+  "observation_contract": {
+    "mode": "full",
+    "full_field_arrays_written": true,
+    "temporal_coverage": "Complete face/three-fiber field at the last physical substep of the scene interval",
+    "observed_physical_substeps": null
+  },
+  "process_memory": {
+    "enabled": false,
+    "scope": "intrusive build/warm/rollout process sampling",
+    "peak_mib": null,
+    "samples": []
+  },
+  "rigid_dofs": 9,
+  "shell_numerics": {
+    "vertices": 642,
+    "faces": 1280,
+    "patches": 6,
+    "fracture_enabled": false,
+    "plasticity_enabled": false,
+    "allocated_vertices": 642,
+    "lumped_shell_mass_kg": 0.006529848210401324,
+    "coupling_friction": 0.7191016138165071,
+    "coupling_softness_m": 0.002,
+    "bank_friction_ratio_applied_to_shell_coupling": false
+  }
+}

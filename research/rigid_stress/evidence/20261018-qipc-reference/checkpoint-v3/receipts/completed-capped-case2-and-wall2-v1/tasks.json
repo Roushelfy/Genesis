@@ -1,0 +1,103 @@
+[
+  [
+    {
+      "name": "case2-stock",
+      "module": "research.rigid_stress.qipc_comparison.compare_fields",
+      "args": [
+        "--reference",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-fresh-coarse-v1/group1/case2",
+        "--dpr",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-capped-v1/group2/dpr-case2",
+        "--scr",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-capped-v1/group3/scr-case2",
+        "--shell",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-capped-v2/group1/case2-stock",
+        "--columns",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/columns.npz",
+        "--surfaces",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/surfaces.npz",
+        "--snapshot-times",
+        "1.1",
+        "4.2",
+        "9.0"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "case2-volume-surface2",
+      "module": "research.rigid_stress.qipc_comparison.compare_fields",
+      "args": [
+        "--reference",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-fresh-coarse-v1/group1/case2",
+        "--dpr",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-capped-v1/group2/dpr-case2",
+        "--scr",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-capped-v1/group3/scr-case2",
+        "--shell",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-capped-v2/group2/case2-volume-surface2",
+        "--columns",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/columns.npz",
+        "--surfaces",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/surfaces.npz",
+        "--snapshot-times"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "case2-actual-poses",
+      "module": "research.rigid_stress.qipc_comparison.rigid_pose_audit",
+      "args": [
+        "--reference",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-fresh-coarse-v1/group1/case2",
+        "--binding",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-rigid-binding-v1/group1/case2",
+        "--mjcf",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "case7-wall2-fields",
+      "module": "research.rigid_stress.qipc_comparison.reference_uncertainty",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-roundoff-reference-v1/group2/case7",
+        "--candidates",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-uncertainty-v1/group0/wall2",
+        "--surface-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "case7-wall2-reactions",
+      "module": "research.rigid_stress.qipc_comparison.reaction_history",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-roundoff-reference-v1/group2/case7",
+        "--candidates",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-uncertainty-v1/group0/wall2",
+        "--layout",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/reaction-layout-v1/group0/layout/layout.npz",
+        "--finger-names",
+        "left_finger",
+        "right_finger"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "histories",
+      "module": "research.rigid_stress.qipc_comparison.history_audit",
+      "args": [
+        "--histories",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-fresh-coarse-v1/group1/case2",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-uncertainty-v1/group0/wall2"
+      ]
+    }
+  ]
+]

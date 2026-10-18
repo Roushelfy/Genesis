@@ -14,6 +14,11 @@ body_source_prior) and deformable shell for error, speed, memory and stability.
 the presets preserve their physics/defaults. The [running guide](docs/RUNNING_QIPC_REFERENCE.md)
 and [progress record](docs/QIPC_REFERENCE_PROGRESS.md) retain current controls,
 complete candidate histories, failed reference attempts and open qualification gates.
+The [latest checkpoint](evidence/20261018-qipc-reference/checkpoint-v3/README.md)
+adds complete capped2/7 comparisons, ET forced-exit admission/geometry forensics,
+unloaded/actual-pose controls and the inspected cost/profile figure. Full9s
+reference sensitivities still exceed100%; physical-reference qualification
+and the complete goal remain open.
 The [working results](docs/QIPC_REFERENCE_RESULTS_20261018.md) and
 [compact checkpoint](evidence/20261018-qipc-reference/checkpoint-v1/README.md)
 retain the measured complete-history discrepancies and the unresolved spatial/

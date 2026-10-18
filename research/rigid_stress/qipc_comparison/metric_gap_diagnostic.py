@@ -1,4 +1,4 @@
-"""Preserve a failed common-column query and independently inspect its nearest tetrahedron."""
+"""Preserve an original interval-only rejection and independently inspect its nearest tetrahedron."""
 
 import argparse
 from decimal import Decimal, localcontext
@@ -66,6 +66,7 @@ class GapProbe(TetSampler):
                         ],
                     }
                 )
+            raise AssertionError("A common material column has a gap in the FEM domain")
         return super().locate_on_column(points, fractions, intervals)
 
 
@@ -99,7 +100,7 @@ def main():
             + [file_id(args.surface_mesh)],
             "failure": failure,
             "first_failing_column_queries": records,
-            "scope": "Unchanged common-column admission. Independent float64 solve and80-digit Decimal Cramer solve inspect the nearest tetrahedron at the exact binary query coordinates. No tolerance relaxation, coordinate clipping, mesh repair or field score is applied. This diagnoses a geometric query, not solver/reference qualification.",
+            "scope": "The original interval-only preselection is deliberately retained by this diagnostic probe, even when the main sampler supports a direct point-query fallback. Independent float64 solve and80-digit Decimal Cramer solve inspect the nearest tetrahedron at the exact binary query coordinates. No tolerance relaxation, coordinate clipping, mesh repair or field score is applied. This diagnoses a query, not solver/reference qualification.",
         },
     )
 

@@ -586,3 +586,88 @@ selects existing derived values, exact executed sources/receipts and the new
 figure. No scientific analysis runs on the login node. Fresh original-state
 9s capped cases0/2 in726509 are still running; neither is admitted as complete.
 The goal and unresolved qualification gates remain unchanged and active.
+
+
+## Material-query correction and complete capped comparison, 2026-10-18
+
+Job726565 validates a direct-coordinate fallback for interval preselection:
+actual recorded inside point accepted, true outside point rejected, exact
+one-sided boundary interpolation retained and all21 legacy arrays exactly
+unchanged. Six adaptive fallbacks recover14 prefix comparisons; at1.13s
+common tangent/membrane/bending contrasts are0.628771/0.578531/2.407296.
+This repairs observation coverage only;696 PCG-cap steps and606.5-weight
+net residual still reject that adaptive pilot's numerical qualification.
+
+Cost figure726571 and export QA726572 pass at183x160mm, with editable SVG,
+embedded PDF fonts and450dpi PNG. Both actual PNG and independent PDF preview
+are viewed. Full/max, sampled memory, n1 cold activation and overlapping
+intrusive kernel durations retain their separate meanings.
+
+The same726572 also completes both case7 common-field comparisons over all900
+times/9s. DPR/SCR/stock Shell tangent discrepancies are7.14440/7.17043/18398.8;
+volume-surface2 Shell gives1.36409e10. All use the same1511.70Pa reference
+RMS over time and1Pa denominator floor. They are diagnostic, not qualified
+accuracy scores or evidence that lifting visually improves stress prediction.
+
+Six full original-control case7 sensitivity groups are submitted as726567 with
+concurrency3,240-minute limits and actual0.5s checkpoints. The disclosed fallback
+budget becomes4GB before crossing2GB, based on measured existing output sizes.
+New derived snapshot selection can limit duplicate field exports without
+changing any complete-time metric or deleting source raw/peak fields.
+Fresh complete cases0/2 in726509 remain live and are not restarted.
+
+
+## ET failure correction, complete case2 and full9s controls
+
+The current selected evidence is [checkpointv3](../evidence/20261018-qipc-reference/checkpoint-v3/README.md).
+It preserves complete selected JSON bytes as lossless gzip plus compact value
+selections, exact sources/variants/tasks/patches/return codes and the inspected
+full/max-memory-cold-profile figure. The goal remains incomplete.
+
+-726585 strengthens the material-query controls: opposite interior points choose
+ distinct one-sided cells at the same exact boundary. All21 old arrays stay
+ bitwise equal.726614 adds complete600/900-grid and sparse/missing/shifted-grid
+ controls; sparse adaptive pilots emit no whole-history norms.
+-726576 removes all PCG caps by increasing only the adaptive pilot's budget to
+ 16384, but retained logs show2 ET forced exits, maximum net residual119.496N
+ (1865.45 egg weights), and raw VM589.948MPa. The4k pilot has6 ET events.
+ Raising the budget does not cure early native Newton termination.
+-726640 passes15 admission controls and audits25 histories. Missing historical
+ per-step ET counters remain unknown; original completed flags are not rewritten.
+-726639 validates the new runner gate on a fresh actual failure:1102 recorded
+ steps, first ET event1.102s, last invalid true, requested completion false,
+ process/group1, no Newton/PCG caps. Static topology, failure frame and actual
+ native checkpoint are retained. No continuation through the state occurs.
+-726679 checks the exact reported pair with80-digit Decimal and24 analytic
+ controls. It is outside the triangle despite the source predicate reporting
+ intersection in its approximate-coplanar branch. All5 vertices belong to the
+ egg, and global/FEM/active-point saved geometry agrees exactly. This is one
+ detector false positive; native forced termination still rejects the solve.
+ Earlier forensic versions preserve a mistaken floor-inclusive owner assertion
+ and its explicit correction rather than claiming solver-state inconsistency.
+-726579/726582 complete unloaded original bank schedules0/2/7 for9s each;
+726587 matches all9000 commands/caps/phases/reset epochs and passes the declared
+ arm/finger/hand bands. No failed QIPC status/PCG caps. Maximum hand-position
+ difference is about10.52um, still material relative to the20um contact band.
+-726606 captures immutable initial rigid-frame bindings.726609/726654 verify all
+900 recorded actual public body poses for capped7/2 against authored FK at
+ actual joint states, with maximum COM errors1.543e-15/1.414e-15m. These are
+ geometry controls, not loaded contact qualification.
+-726509 case2 completes all9000 steps/9s/one reset.726654 completes both full
+ common-field comparisons: tangent DPR/SCR/stock Shell0.988975/0.990957/3439.938;
+ volume-surface2 Shell1.981454e7. All900 times use the same reference RMS8971.386Pa.
+ Case0 in the same campaign remains running; it is not restarted on a poll.
+-726567 wall2 and strict finish full9s.726654/726679 compare all900 observations:
+ tangent contrasts1.374548/1.323348 and finger-force contrasts1.0/1.010078.
+ Strict changes stopping and budget together and retains1 PCG cap; wall2 has0.
+ These failures of the5%/2% targets remain visible despite finite completion.
+-726647 completes three matched B1 full-field repeats for both stock/fine Shell.
+ These supply the correct batch scope for later B1 error/cost points; B32
+ timing cannot stand in for B1 when Shell batch equivalence fails.
+
+The user explicitly authorized continued writes to the existing home fallback
+following the storage-policy review. The4GB persistent-output bound and private
+node-local caches remain; new submissions record `--allow-home-output`. Original
+data, environments/builds and compatibility links remain in place. No unrelated
+jobs are stopped. Full raw/source closure and the remaining capped, local-contact,
+reference-qualification and final figure/report requirements remain open.

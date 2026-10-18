@@ -11,11 +11,13 @@ from .common_metric import (
     CommonColumns,
     CommonSurfaces,
     corotation,
+    complete_control_grid,
     field_error,
     resultants,
     tangent,
     time_integrated_error,
     tensor_error,
+    requested_duration_s,
     voigt_tensor,
 )
 
@@ -73,8 +75,12 @@ def main():
     parser.add_argument("--columns", type=Path, required=True)
     parser.add_argument("--surfaces", type=Path)
     parser.add_argument("--shell-thickness", type=float, default=0.0005)
+    parser.add_argument("--snapshot-times", type=float, nargs="*", default=None)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    if args.snapshot_times is not None:
+        assert all(time > 0 and abs(round(time / 0.01) * 0.01 - time) < 1e-12 for time in args.snapshot_times)
+    snapshot_ticks = None if args.snapshot_times is None else {round(time / 0.01) - 1 for time in args.snapshot_times}
     args.output.mkdir(parents=True, exist_ok=False)
     with np.load(args.columns) as saved:
         columns = CommonColumns(**{key: saved[key] for key in saved.files})
@@ -193,7 +199,12 @@ def main():
         for entry, full_tensor in zip(entries[:2], full_tensors):
             entry["solid_only_full_3d_on_common_columns"] = field_error(full_tensor, expected_full, columns)
         history.append({"time_s": time, "all_fields_finite": True, "errors": entries})
-        if path == files[-1] or control_step in (1, 19, 49, 99, 109, 119, 179, 249, 299, 419, 449, 539, 559):
+        export_snapshot = (
+            path == files[-1] or control_step in (1, 19, 49, 99, 109, 119, 179, 249, 299, 419, 449, 539, 559)
+            if snapshot_ticks is None
+            else control_step in snapshot_ticks
+        )
+        if export_snapshot:
             payload = {
                 "points_m": columns.points,
                 "weights_m3": columns.weights,
@@ -232,6 +243,9 @@ def main():
         and all(value["completed_requested_history"] for value in candidate_receipts)
         and not unmatched
         and all(row["all_fields_finite"] for row in history)
+        and complete_control_grid(
+            [round(row["time_s"] / 0.01) for row in history], requested_duration_s(reference_receipt)
+        )
     )
     temporal = []
     if complete:
@@ -280,7 +294,10 @@ def main():
             "history": history,
             "complete_time_integrated_common_metrics": temporal,
             "complete_common_observation_coverage": bool(complete),
+            "expected_reference_duration_s": requested_duration_s(reference_receipt),
             "snapshots": snapshots,
+            "requested_snapshot_times_s": args.snapshot_times,
+            "snapshot_scope": "Snapshot selection affects derived field exports only. Every compatible recorded common observation still contributes to the history and complete-time metrics; original raw full fields and physical-step peak states stay at their source paths.",
             "unmatched_reference_frames": unmatched,
         },
     )

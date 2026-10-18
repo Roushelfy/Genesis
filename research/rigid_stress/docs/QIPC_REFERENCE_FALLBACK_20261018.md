@@ -11,6 +11,11 @@ root `R`. No original run, compatibility link or environment is migrated.
 The initial persistent-output budget was1GB; it is explicitly revised to2GB
 at13:44UTC before crossing that initial budget, to retain selected running
 histories, the sparse adaptive pilot and compact audit/figure outputs.
+It is subsequently explicitly revised to4GB before crossing2GB for six
+complete case7 uncertainty controls, using existing measured output sizes.
+Those jobs have concurrency3 and240-minute per-group limits. Future comparisons
+can select a few derived snapshots while retaining every common-time metric
+and all original raw histories, avoiding redundant large field exports.
 At the first complete validation
 snapshot it uses about215MB. Actual totals are monitored while bounded selected
 histories proceed. Compile/model/temp caches use private compute-node `/tmp`
@@ -68,6 +73,10 @@ zero linear caps do not establish physical reliability.
 | `adaptive-prescribed-audit-v1` |726557 | Reaction and history groups complete; common-column field comparison exits1 at the geometric domain-coverage assertion. It produces no field score. |
 | `adaptive-metric-gap-v1` |726564 | Independent float64/80-digit Decimal query confirms the first uncovered sample lies inside an actual tetrahedron; diagnostic complete, field admission unchanged. |
 | `qualification-figure-v3` / `qualification-export-qa-v1` |726561/726562 | Accepted complete-reference sensitivity/raw-peak/signed-work figure. Text bounds/export checks pass; actual PNG and PDF previews are inspected. Earlier clipped/overlapping drafts are retained and excluded. |
+| `adaptive-query-validated-v1` |726565 | All sequential tasks return0. Actual inside-point/outside-point/one-sided controls pass;21 legacy sampling arrays are exactly unchanged. Adaptive coverage uses six direct point-query fallbacks and yields14-time prefix discrepancies, with no whole-history norm. |
+| `capped-case7-uncertainty-v1` |726567 | Six complete9s original-control contrasts: wall2, surface2/wall4, half-dt, tighter stopping/larger linear budget, half-band and half-friction smoothing. First three running; remaining groups queue under concurrency3. Native/controller checkpoints every0.5s. |
+| `cost-scope-figure-v1` |726571 | Full/max repeats, sampled memory, isolated cold activation and intrusive top-three-kernel attribution. Actual PNG preview inspected. |
+| `capped-case7-fields-and-cost-qa-v1` |726572 | All three groups return0: stock/volume case7 common fields cover900 observations/9s; cost export QA passes. Actual independent PDF preview inspected. |
 
 The Shell transfer maps contact and measured inertial loads separately to the
 supporting midpoint triangles. Local force couples preserve the actual source
@@ -121,6 +130,16 @@ proof of a physical hole. No tolerance or coordinate is changed and no field
 score is admitted. Further coverage diagnosis remains open. Raw failed analysis and its source
 remain available for diagnosis.
 
+The validated direct query keeps the existing2e-9 barycentric tolerance and
+actual coordinates; an independent solve checks its selected cell. One-sided
+surface evaluation still selects an interior cell and evaluates the exact
+boundary point. A real domain-exterior query is rejected. All21 old column/
+surface arrays are exactly unchanged, with zero legacy fallbacks. The adaptive
+pair uses six fallbacks and obtains at1.13s tangent0.628771, membrane0.578531
+and bending2.407296 versus surface2/wall4. These are14-time prefix diagnostics;
+the earlier failed interval-only analysis is retained, and the large physical
+residual/cap failures still prevent qualification.
+
 The halved-friction-smoothing complete-history tangent contrast is0.0188165;
 finger force/moment contrasts are0.00682619/0.00682133. These small contrasts
 do not resolve the larger surface/timestep dependence. The mapped equality
@@ -147,3 +166,28 @@ The [selected checkpointv2](../evidence/20261018-qipc-reference/checkpoint-v2/RE
 preserves these already-derived values, exact captured sources/receipts,
 profile tables and the inspected uncertainty figure without recalculating
 scientific metrics on the login node.
+
+
+## Storage-policy correction: no new home-output submissions
+
+The user reaffirmed the data-directory requirement. At this review the home
+fallback contains about2.75GB and several selected task groups still write
+there. The data mount still reports800TB/800TB and an actual exclusive-create/
+fsync probe fails122. No new experiment is submitted to home after this
+review. The submission helper rejects paths resolving under the user home;
+existing symlinks resolving into data remain usable. Handling of the already
+running/queued task groups awaits the user's choice because stopping discards
+unvalidated in-memory continuation state. No existing scientific data has
+been deleted or migrated. The fallback is an acknowledged deviation from the
+preferred storage policy, not continuing authorization.
+
+
+## User-authorized continuation after storage review
+
+The user explicitly replied "允许继续写入用户", authorizing continued use of
+the existing home fallback. The current task retains its4GB persistent-output
+bound, node-local caches and unchanged original data/environment locations.
+New submissions record `--allow-home-output`; the default still rejects home
+runtime paths. Running and queued jobs can continue. No data migration or
+deletion occurred. At authorization the fallback held about2.79GB and a new
+exclusive-create/fsync probe on data still failed122.

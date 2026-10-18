@@ -1,0 +1,81 @@
+{
+  "kind": "actual-per-public-link-reaction-uncertainty",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-113",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726682",
+      "SLURM_ARRAY_JOB_ID": "726679",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-12233c86-3afd-a427-e69f-a473d0efb9cf, 00000000:20:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "layout": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/reaction-layout-v1/group0/layout/layout.npz",
+    "bytes": 28688,
+    "sha256": "d03f0b123f11c46e2192cbb16e10ee949f970ec93fc93d9339b591f185e28471"
+  },
+  "reference": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-roundoff-reference-v1/group2/case7/result.json",
+    "bytes": 714,
+    "sha256": "92477dedafd80758ee045256a51960a37e44f76eec6f220038fd57a6bfe0f59b"
+  },
+  "body_names": [
+    "link0",
+    "link1",
+    "link2",
+    "link3",
+    "link4",
+    "link5",
+    "link6",
+    "link7",
+    "left_finger",
+    "right_finger"
+  ],
+  "finger_names": [
+    "left_finger",
+    "right_finger"
+  ],
+  "finger_body_ids": [
+    8,
+    9
+  ],
+  "comparisons": [
+    {
+      "source": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-uncertainty-v1/group3/strict/result.json",
+        "bytes": 713,
+        "sha256": "ad3e20b81218113545c6a988b7f93ea3a31ed355a92027e23e54d49aafdd591c"
+      },
+      "missing_candidate_ticks": [],
+      "expected_reference_duration_s": 9.0,
+      "complete_reference_observation_grid": true,
+      "complete_time_integrated_finger_metrics": {
+        "finger_force": {
+          "relative_error": 1.010077879484337,
+          "reference_rms_over_time": 0.0012212992918623604,
+          "absolute_rms_error_over_time": 0.0012336073989400553,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 0.001,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "finger_moment": {
+          "relative_error": 1.0096056187784448,
+          "reference_rms_over_time": 5.1201294887314654e-05,
+          "absolute_rms_error_over_time": 5.169311500696493e-05,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 1e-07,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        }
+      }
+    }
+  ],
+  "reference_qualified": false,
+  "scope": "Actual recorded last-assembled contact gradients, force=-gradient/dt^2, and actual physical points. Rigid ownership is verified at every source frame against its saved accepted COM/material quaternion; non-rigid gradients must sum to the saved egg force. All body reactions, including any self-contact, are retained. Finger vector norms keep opposing loads separate; net egg wrench is a different observable. Moment is about each actual body COM. Absolute floors1e-3N/1e-7Nm suppress near-zero relative denominators. Accepted-state gradient closure and continuum/contact uncertainty remain separate qualification gates."
+}

@@ -1,0 +1,86 @@
+[
+  [
+    {
+      "name": "histories",
+      "module": "research.rigid_stress.qipc_comparison.history_audit",
+      "args": [
+        "--histories",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-pilot-v1/group0/adaptive-edge0.0005-wall4",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-linear-budget-v2/group0/adaptive-edge0.0005-wall4"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "budget-vs-surface2",
+      "module": "research.rigid_stress.qipc_comparison.reference_uncertainty",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-mesh-uncertainty-v1/group1/base1-surface2-wall4",
+        "--candidates",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-linear-budget-v2/group0/adaptive-edge0.0005-wall4",
+        "--surface-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "linear-budget-contrast",
+      "module": "research.rigid_stress.qipc_comparison.reference_uncertainty",
+      "args": [
+        "--reference",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-pilot-v1/group0/adaptive-edge0.0005-wall4",
+        "--candidates",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-linear-budget-v2/group0/adaptive-edge0.0005-wall4",
+        "--surface-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "candidate-material-range",
+      "module": "research.rigid_stress.qipc_comparison.reference_uncertainty",
+      "args": [
+        "--reference",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-linear-budget-v2/group0/adaptive-edge0.0005-wall4",
+        "--candidates",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-pilot-v1/group0/adaptive-edge0.0005-wall4",
+        "--surface-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "budget-vs-surface2-reactions",
+      "module": "research.rigid_stress.qipc_comparison.reaction_history",
+      "args": [
+        "--layout",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/reaction-layout-v1/group0/layout/layout.npz",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-mesh-uncertainty-v1/group1/base1-surface2-wall4",
+        "--finger-names",
+        "left_finger",
+        "right_finger",
+        "--candidates",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-linear-budget-v2/group0/adaptive-edge0.0005-wall4"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "grid-admission",
+      "module": "research.rigid_stress.qipc_comparison.observation_grid_controls",
+      "args": [
+        "--complete-comparisons",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group6/surface2-comparison/result.json",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/result.json",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group1/case7-volume-surface2/result.json",
+        "--sparse-reference",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-linear-budget-v2/group0/adaptive-edge0.0005-wall4"
+      ]
+    }
+  ]
+]

@@ -28,6 +28,18 @@ def inventory(root):
     ]
 
 
+def runtime_output_path(path, allow_home=False):
+    """Honor the storage policy, including compatibility links into data."""
+    output = path.resolve()
+    if output.is_relative_to(Path.home().resolve()) and not allow_home:
+        raise ValueError(
+            f"Runtime output resolves under the user home directory: {output}. "
+            "Choose a writable project data directory. A full/unwritable data "
+            "mount must be reported; use --allow-home-output only for an explicitly user-authorized exception."
+        )
+    return output
+
+
 def capture_source(source, output, stem):
     package = "qipc" if (source / "qipc").is_dir() else "genesis"
     paths = [package, "pyproject.toml", "CMakeLists.txt", "external/GKlib", "external/METIS"]
@@ -85,10 +97,13 @@ def main():
     parser.add_argument("--cpus", type=int, default=8)
     parser.add_argument("--keep-going", action="store_true")
     parser.add_argument(
+        "--allow-home-output", action="store_true", help="Record an explicitly user-authorized home-output exception"
+    )
+    parser.add_argument(
         "--node-local-cache", action="store_true", help="Use and remove private compute-node /tmp caches"
     )
     args = parser.parse_args()
-    output = args.output.resolve()
+    output = runtime_output_path(args.output, args.allow_home_output)
     output.mkdir(parents=True, exist_ok=False)
     tools = output / "analysis-source"
     here = Path(__file__).resolve().parent
@@ -209,7 +224,16 @@ def main():
     ]
     result = subprocess.check_output(command, text=True).strip()
     (output / "submission.json").write_text(
-        json.dumps({"command": command, "job": result, "node_local_cache": args.node_local_cache}, indent=2) + "\n"
+        json.dumps(
+            {
+                "command": command,
+                "job": result,
+                "node_local_cache": args.node_local_cache,
+                "allow_home_output": args.allow_home_output,
+            },
+            indent=2,
+        )
+        + "\n"
     )
     print(result)
 

@@ -1,0 +1,15 @@
+diff --git a/qipc/_src/native/solver/sim_engine_pipeline.cu b/qipc/_src/native/solver/sim_engine_pipeline.cu
+index 0ec17560f..6acdd972e 100644
+--- a/qipc/_src/native/solver/sim_engine_pipeline.cu
++++ b/qipc/_src/native/solver/sim_engine_pipeline.cu
+@@ -172,7 +172,9 @@ __device__ void decide_proxy_line_search(Context* ctx,
+     bool    elastic_restoration = kkt && proxy_ctx->restoration_active();
+     bool    decision_elastic_restoration = elastic_restoration;
+     bool    hard_probe = kkt && *proxy_ctx->restoration_hard_probe_view() != 0;
+-    double  energy_roundoff  = kkt ? 1e-12 * (1.0 + fabs(ebuf[0])) : 0.0;
++    // Diagnostic numerical ablation: keep the energy allowance relative to
++    // its floating-point scale instead of a fixed incremental-energy floor.
++    double  energy_roundoff  = kkt ? 16.0 * 2.2204460492503131e-16 * fabs(ebuf[0]) : 0.0;
+     bool    energy_ok        = e <= ebuf[0] + energy_roundoff;
+     bool    accepted_by_rule = energy_ok;
+     bool    feasibility_mode = false;

@@ -1,0 +1,72 @@
+[
+  [
+    {
+      "name": "stock-b1-full",
+      "module": "research.rigid_stress.shell_comparison.application",
+      "args": [
+        "--model",
+        "shell",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/case0.npz",
+        "--envs",
+        "1",
+        "--precision",
+        "64",
+        "--sim-dt",
+        "0.01",
+        "--substeps",
+        "10",
+        "--bank-coupling-friction",
+        "--warmup",
+        "900",
+        "--steps",
+        "900",
+        "--repetitions",
+        "3",
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/surface0",
+        "--output-mode",
+        "full"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-surface2-b1-full",
+      "module": "research.rigid_stress.shell_comparison.application",
+      "args": [
+        "--model",
+        "shell",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/case0.npz",
+        "--envs",
+        "1",
+        "--precision",
+        "64",
+        "--sim-dt",
+        "0.01",
+        "--substeps",
+        "10",
+        "--bank-coupling-friction",
+        "--warmup",
+        "900",
+        "--steps",
+        "900",
+        "--repetitions",
+        "3",
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/surface2",
+        "--output-mode",
+        "full",
+        "--wall-volume-input",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-and-complete-fields-v1/group0/wall/surface2.npz",
+        "--iterations",
+        "300",
+        "--tolerance",
+        "1e-8",
+        "--coarse-interval",
+        "1"
+      ]
+    }
+  ]
+]

@@ -1,0 +1,508 @@
+{
+  "kind": "complete-history-tracking-residual-and-failure-audit",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-099",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726654",
+      "SLURM_ARRAY_JOB_ID": "726654",
+      "SLURM_ARRAY_TASK_ID": "5",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-7e48ba45-716e-683d-0b53-70faa2be0c38, 00000000:C0:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "histories": [
+    {
+      "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-fresh-coarse-v1/group1/case2",
+      "receipt": {
+        "kind": "QIPC-Franka-capped-candidate",
+        "config": {
+          "dt": 0.001,
+          "young": 10000000000.0,
+          "poisson": 0.3,
+          "density": 2000.0,
+          "velocity_tolerance": 1e-07,
+          "linear_tolerance": 1e-05,
+          "max_newton": 256,
+          "max_pcg": 4096,
+          "d_hat": 2e-05,
+          "friction": 0.4373755715172453,
+          "friction_epsilon_velocity": 0.0001,
+          "resistance": 10000000000.0,
+          "energy": "snh",
+          "mas_precision": "double",
+          "linear_solver": "partition_pcg"
+        },
+        "requested_steps": 9000,
+        "executed_steps": 9000,
+        "completed_requested_history": true,
+        "invalid_steps": 0,
+        "pcg_cap_steps": 201,
+        "resets": 1,
+        "intrusive_elapsed_seconds": 7680.07246009598,
+        "reference_qualified": false
+      },
+      "receipt_read_error": null,
+      "receipt_identity": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-fresh-coarse-v1/group1/case2/result.json",
+        "bytes": 713,
+        "sha256": "d2a3d9ce4228655cfc81a0dc81ff3caf69889b4e9b59628d63caa5471bbde4dc"
+      },
+      "input_receipt_read_error": null,
+      "input_receipt_identity": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-fresh-coarse-v1/group1/case2/inputs.json",
+        "bytes": 2863,
+        "sha256": "aa77381c1ffe722cfaef6422d155247913404d5804bd27fc946c4d066223eeb9"
+      },
+      "journal_identity": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-fresh-coarse-v1/group1/case2/steps.jsonl",
+        "bytes": 20690559,
+        "sha256": "8c56a7c7432dfa28a594911b83add913b8e08799c778a61812d13bdf344e5b9e"
+      },
+      "journal_read": {
+        "valid_prefix_rows": 9000,
+        "first_unreadable_row": null,
+        "unparsed_tail_bytes": 0,
+        "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+      },
+      "task_returncode": 0,
+      "group_returncode": 0,
+      "completed_history_reported": true,
+      "complete_history_established": true,
+      "last_recorded_time_s": 9.0,
+      "recorded_rows": 9000,
+      "nonfinite_recorded_rows": 0,
+      "finite_flag_observations": 9000,
+      "newton_cap_recorded_rows": 0,
+      "newton_cap_observations": 9000,
+      "pcg_cap_recorded_rows": 201,
+      "pcg_cap_observations": 9000,
+      "shell_cap_exhausted_physical_substeps": null,
+      "shell_cap_observations": 0,
+      "edge_triangle_count_observations": 0,
+      "edge_triangle_recorded_failure_rows": null,
+      "edge_triangle_failure_detected": null,
+      "first_edge_triangle_failure_time_s": null,
+      "edge_triangle_log": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-fresh-coarse-v1/group1/case2.log",
+        "bytes": 2478,
+        "sha256": "856b08bd298e1e0b400366d5fd0f8d6d3f29d012c929488ba445688c48f78222"
+      },
+      "logged_edge_triangle_native_frames": [],
+      "logged_edge_triangle_forced_exit_events": 0,
+      "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+      "statistics": {
+        "force_residual_l2_n": {
+          "maximum_absolute_value": 0.0006283262283947839,
+          "value_at_maximum_absolute": 0.0006283262283947839,
+          "time_at_maximum_absolute_s": 3.637,
+          "p99_absolute": 0.00018150804322203585,
+          "samples": 9000,
+          "minimum_value": 4.56332386564332e-06,
+          "time_at_minimum_s": 5.648,
+          "maximum_value": 0.0006283262283947839,
+          "time_at_maximum_s": 3.637
+        },
+        "force_residual_relative_contact": {
+          "maximum_absolute_value": 0.0509627742275445,
+          "value_at_maximum_absolute": 0.0509627742275445,
+          "time_at_maximum_absolute_s": 5.026,
+          "p99_absolute": 0.0010200416135283292,
+          "samples": 8841,
+          "minimum_value": 1.1968894334443133e-06,
+          "time_at_minimum_s": 5.178,
+          "maximum_value": 0.0509627742275445,
+          "time_at_maximum_s": 5.026
+        },
+        "raw_vm_peak_pa": {
+          "maximum_absolute_value": 1129426.96455221,
+          "value_at_maximum_absolute": 1129426.96455221,
+          "time_at_maximum_absolute_s": 5.178,
+          "p99_absolute": 90192.19617005247,
+          "samples": 9000,
+          "minimum_value": 0.006525899827761553,
+          "time_at_minimum_s": 0.005,
+          "maximum_value": 1129426.96455221,
+          "time_at_maximum_s": 5.178
+        },
+        "raw_maximum_principal_pa": {
+          "maximum_absolute_value": 491951.8252132837,
+          "value_at_maximum_absolute": 491951.8252132837,
+          "time_at_maximum_absolute_s": 5.178,
+          "p99_absolute": 42072.90060383465,
+          "samples": 9000,
+          "minimum_value": 0.010533848693992875,
+          "time_at_minimum_s": 0.004,
+          "maximum_value": 491951.8252132837,
+          "time_at_maximum_s": 5.178
+        },
+        "newton": {
+          "maximum_absolute_value": 49,
+          "value_at_maximum_absolute": 49,
+          "time_at_maximum_absolute_s": 3.3160000000000003,
+          "p99_absolute": 28.0,
+          "samples": 9000,
+          "minimum_value": 2,
+          "time_at_minimum_s": 0.24,
+          "maximum_value": 49,
+          "time_at_maximum_s": 3.3160000000000003
+        },
+        "pcg_max": {
+          "maximum_absolute_value": 4096,
+          "value_at_maximum_absolute": 4096,
+          "time_at_maximum_absolute_s": 3.0140000000000002,
+          "p99_absolute": 4096.0,
+          "samples": 9000,
+          "minimum_value": 4,
+          "time_at_minimum_s": 0.991,
+          "maximum_value": 4096,
+          "time_at_maximum_s": 3.0140000000000002
+        },
+        "line_search_max": {
+          "maximum_absolute_value": 10,
+          "value_at_maximum_absolute": 10,
+          "time_at_maximum_absolute_s": 2.669,
+          "p99_absolute": 9.0,
+          "samples": 9000,
+          "minimum_value": 1,
+          "time_at_minimum_s": 0.001,
+          "maximum_value": 10,
+          "time_at_maximum_s": 2.669
+        },
+        "body_energy_change_minus_all_recorded_work_j": {
+          "maximum_absolute_value": 0.00834110746763007,
+          "value_at_maximum_absolute": -0.00834110746763007,
+          "time_at_maximum_absolute_s": 6.74,
+          "p99_absolute": 0.008337046004538674,
+          "samples": 9000,
+          "minimum_value": -0.00834110746763007,
+          "time_at_minimum_s": 6.74,
+          "maximum_value": -0.000307811227781446,
+          "time_at_maximum_s": 6.7410000000000005
+        },
+        "total_energy_change_minus_actuator_work_j": {
+          "maximum_absolute_value": 0.10873932382539131,
+          "value_at_maximum_absolute": -0.10873932382539131,
+          "time_at_maximum_absolute_s": 6.74,
+          "p99_absolute": 0.10873336817433495,
+          "samples": 9000,
+          "minimum_value": -0.10873932382539131,
+          "time_at_minimum_s": 6.74,
+          "maximum_value": -0.0003081015734905493,
+          "time_at_maximum_s": 6.7410000000000005
+        },
+        "minimum_det_F": {
+          "maximum_absolute_value": 1.000000000001054,
+          "value_at_maximum_absolute": 1.000000000001054,
+          "time_at_maximum_absolute_s": 5.12,
+          "p99_absolute": 0.9999999999980841,
+          "samples": 9000,
+          "minimum_value": 0.9999539120496572,
+          "time_at_minimum_s": 5.178,
+          "maximum_value": 1.000000000001054,
+          "time_at_maximum_s": 5.12
+        },
+        "minimum_surface_height_m": {
+          "maximum_absolute_value": 0.11948783245017185,
+          "value_at_maximum_absolute": 0.11948783245017185,
+          "time_at_maximum_absolute_s": 4.401,
+          "p99_absolute": 0.11948727627039375,
+          "samples": 9000,
+          "minimum_value": 1.988802621599266e-05,
+          "time_at_minimum_s": 5.178,
+          "maximum_value": 0.11948783245017185,
+          "time_at_maximum_s": 4.401
+        },
+        "equality_inertia_coefficient_relative_difference": {
+          "maximum_absolute_value": 2.0471043127301414e-07,
+          "value_at_maximum_absolute": 2.0471043127301414e-07,
+          "time_at_maximum_absolute_s": 1.832,
+          "p99_absolute": 1.0872293011221508e-07,
+          "samples": 9000,
+          "minimum_value": 0.0,
+          "time_at_minimum_s": 0.001,
+          "maximum_value": 2.0471043127301414e-07,
+          "time_at_maximum_s": 1.832
+        },
+        "minimum_reported_gap_ratio": {
+          "maximum_absolute_value": 0.9991834819041066,
+          "value_at_maximum_absolute": 0.9991834819041066,
+          "time_at_maximum_absolute_s": 4.999,
+          "p99_absolute": 0.9987912345959092,
+          "samples": 8841,
+          "minimum_value": 0.25003218176550135,
+          "time_at_minimum_s": 5.003,
+          "maximum_value": 0.9991834819041066,
+          "time_at_maximum_s": 4.999
+        },
+        "ccd_maximum_iterations": {
+          "maximum_absolute_value": 4,
+          "value_at_maximum_absolute": 4,
+          "time_at_maximum_absolute_s": 2.8770000000000002,
+          "p99_absolute": 3.0,
+          "samples": 9000,
+          "minimum_value": 1,
+          "time_at_minimum_s": 0.001,
+          "maximum_value": 4,
+          "time_at_maximum_s": 2.8770000000000002
+        },
+        "net_force_residual": {
+          "maximum_n": 0.0007240087516421959,
+          "maximum_time_s": 4.654,
+          "rms_n": 5.72761119288356e-05,
+          "maximum_relative_to_egg_weight": 0.01130242730702607,
+          "scope": "Actual residual resultant, distinct from a residual normalized by opposing pinch-force norm"
+        }
+      },
+      "reference_qualified": false
+    },
+    {
+      "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-uncertainty-v1/group0/wall2",
+      "receipt": {
+        "kind": "QIPC-Franka-capped-candidate",
+        "config": {
+          "dt": 0.001,
+          "young": 10000000000.0,
+          "poisson": 0.3,
+          "density": 2000.0,
+          "velocity_tolerance": 1e-07,
+          "linear_tolerance": 1e-05,
+          "max_newton": 256,
+          "max_pcg": 4096,
+          "d_hat": 2e-05,
+          "friction": 0.5830322319136272,
+          "friction_epsilon_velocity": 0.0001,
+          "resistance": 10000000000.0,
+          "energy": "snh",
+          "mas_precision": "double",
+          "linear_solver": "partition_pcg"
+        },
+        "requested_steps": 9000,
+        "executed_steps": 9000,
+        "completed_requested_history": true,
+        "invalid_steps": 0,
+        "pcg_cap_steps": 0,
+        "resets": 1,
+        "intrusive_elapsed_seconds": 1877.7410806029802,
+        "reference_qualified": false
+      },
+      "receipt_read_error": null,
+      "receipt_identity": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-uncertainty-v1/group0/wall2/result.json",
+        "bytes": 713,
+        "sha256": "79a5bc0f62674a0e9c5276c11822f46a0466c408737332c33d2763125276a65f"
+      },
+      "input_receipt_read_error": null,
+      "input_receipt_identity": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-uncertainty-v1/group0/wall2/inputs.json",
+        "bytes": 2863,
+        "sha256": "9ac5bc1b606bad4bb84ca51fc6c6885d549dfc5acae53a86dc8383a5edb01233"
+      },
+      "journal_identity": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-uncertainty-v1/group0/wall2/steps.jsonl",
+        "bytes": 20756015,
+        "sha256": "f8aa8a4806d3c407064656cc69b00b763cf3b71ba59ce9caa5aa5826b1a58d60"
+      },
+      "journal_read": {
+        "valid_prefix_rows": 9000,
+        "first_unreadable_row": null,
+        "unparsed_tail_bytes": 0,
+        "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+      },
+      "task_returncode": 0,
+      "group_returncode": 0,
+      "completed_history_reported": true,
+      "complete_history_established": true,
+      "last_recorded_time_s": 9.0,
+      "recorded_rows": 9000,
+      "nonfinite_recorded_rows": 0,
+      "finite_flag_observations": 9000,
+      "newton_cap_recorded_rows": 0,
+      "newton_cap_observations": 9000,
+      "pcg_cap_recorded_rows": 0,
+      "pcg_cap_observations": 9000,
+      "shell_cap_exhausted_physical_substeps": null,
+      "shell_cap_observations": 0,
+      "edge_triangle_count_observations": 0,
+      "edge_triangle_recorded_failure_rows": null,
+      "edge_triangle_failure_detected": null,
+      "first_edge_triangle_failure_time_s": null,
+      "edge_triangle_log": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-uncertainty-v1/group0/wall2.log",
+        "bytes": 1770,
+        "sha256": "225a72216ca1e9b01f391dbb9929d69a0e98cb8bc902190653e781fe49e63721"
+      },
+      "logged_edge_triangle_native_frames": [],
+      "logged_edge_triangle_forced_exit_events": 0,
+      "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+      "statistics": {
+        "force_residual_l2_n": {
+          "maximum_absolute_value": 0.0004226962324185519,
+          "value_at_maximum_absolute": 0.0004226962324185519,
+          "time_at_maximum_absolute_s": 2.361,
+          "p99_absolute": 3.486722229012032e-05,
+          "samples": 9000,
+          "minimum_value": 1.3326716113577804e-06,
+          "time_at_minimum_s": 8.043000000000001,
+          "maximum_value": 0.0004226962324185519,
+          "time_at_maximum_s": 2.361
+        },
+        "force_residual_relative_contact": {
+          "maximum_absolute_value": 0.011207634897358201,
+          "value_at_maximum_absolute": 0.011207634897358201,
+          "time_at_maximum_absolute_s": 2.361,
+          "p99_absolute": 0.0005828199111514554,
+          "samples": 8972,
+          "minimum_value": 1.93512689635798e-06,
+          "time_at_minimum_s": 1.354,
+          "maximum_value": 0.011207634897358201,
+          "time_at_maximum_s": 2.361
+        },
+        "raw_vm_peak_pa": {
+          "maximum_absolute_value": 223509.427573044,
+          "value_at_maximum_absolute": 223509.427573044,
+          "time_at_maximum_absolute_s": 1.354,
+          "p99_absolute": 16745.631696548728,
+          "samples": 9000,
+          "minimum_value": 0.0031689939411743057,
+          "time_at_minimum_s": 0.004,
+          "maximum_value": 223509.427573044,
+          "time_at_maximum_s": 1.354
+        },
+        "raw_maximum_principal_pa": {
+          "maximum_absolute_value": 111906.86209856732,
+          "value_at_maximum_absolute": 111906.86209856732,
+          "time_at_maximum_absolute_s": 1.354,
+          "p99_absolute": 8987.039365537004,
+          "samples": 9000,
+          "minimum_value": 0.00478877816120949,
+          "time_at_minimum_s": 8.595,
+          "maximum_value": 111906.86209856732,
+          "time_at_maximum_s": 1.354
+        },
+        "newton": {
+          "maximum_absolute_value": 23,
+          "value_at_maximum_absolute": 23,
+          "time_at_maximum_absolute_s": 1.298,
+          "p99_absolute": 13.0,
+          "samples": 9000,
+          "minimum_value": 2,
+          "time_at_minimum_s": 2.66,
+          "maximum_value": 23,
+          "time_at_maximum_s": 1.298
+        },
+        "pcg_max": {
+          "maximum_absolute_value": 2382,
+          "value_at_maximum_absolute": 2382,
+          "time_at_maximum_absolute_s": 1.325,
+          "p99_absolute": 1643.0,
+          "samples": 9000,
+          "minimum_value": 2,
+          "time_at_minimum_s": 8.379,
+          "maximum_value": 2382,
+          "time_at_maximum_s": 1.325
+        },
+        "line_search_max": {
+          "maximum_absolute_value": 8,
+          "value_at_maximum_absolute": 8,
+          "time_at_maximum_absolute_s": 1.283,
+          "p99_absolute": 5.0,
+          "samples": 9000,
+          "minimum_value": 1,
+          "time_at_minimum_s": 0.001,
+          "maximum_value": 8,
+          "time_at_maximum_s": 1.283
+        },
+        "body_energy_change_minus_all_recorded_work_j": {
+          "maximum_absolute_value": 0.004632122802601727,
+          "value_at_maximum_absolute": -0.004632122802601727,
+          "time_at_maximum_absolute_s": 8.59,
+          "p99_absolute": 0.0046321218430881985,
+          "samples": 9000,
+          "minimum_value": -0.004632122802601727,
+          "time_at_minimum_s": 8.59,
+          "maximum_value": -0.0003078112276464429,
+          "time_at_maximum_s": 0.001
+        },
+        "total_energy_change_minus_actuator_work_j": {
+          "maximum_absolute_value": 0.10046463516218473,
+          "value_at_maximum_absolute": -0.10046463516218473,
+          "time_at_maximum_absolute_s": 8.59,
+          "p99_absolute": 0.10046447673617667,
+          "samples": 9000,
+          "minimum_value": -0.10046463516218473,
+          "time_at_minimum_s": 8.59,
+          "maximum_value": -0.00030810157335554617,
+          "time_at_maximum_s": 0.001
+        },
+        "minimum_det_F": {
+          "maximum_absolute_value": 0.9999999999996656,
+          "value_at_maximum_absolute": 0.9999999999996656,
+          "time_at_maximum_absolute_s": 0.005,
+          "p99_absolute": 0.999999728022828,
+          "samples": 9000,
+          "minimum_value": 0.9999913192522146,
+          "time_at_minimum_s": 1.354,
+          "maximum_value": 0.9999999999996656,
+          "time_at_maximum_s": 0.005
+        },
+        "minimum_surface_height_m": {
+          "maximum_absolute_value": 0.0011156189110274244,
+          "value_at_maximum_absolute": 0.0011156189110274244,
+          "time_at_maximum_absolute_s": 8.591,
+          "p99_absolute": 1.998365457645995e-05,
+          "samples": 9000,
+          "minimum_value": 1.9936743885310426e-05,
+          "time_at_minimum_s": 1.397,
+          "maximum_value": 0.0011156189110274244,
+          "time_at_maximum_s": 8.591
+        },
+        "equality_inertia_coefficient_relative_difference": {
+          "maximum_absolute_value": 5.313001594231537e-09,
+          "value_at_maximum_absolute": 5.313001594231537e-09,
+          "time_at_maximum_absolute_s": 0.009000000000000001,
+          "p99_absolute": 3.6151236160186786e-09,
+          "samples": 9000,
+          "minimum_value": 0.0,
+          "time_at_minimum_s": 0.001,
+          "maximum_value": 5.313001594231537e-09,
+          "time_at_maximum_s": 0.009000000000000001
+        },
+        "minimum_reported_gap_ratio": {
+          "maximum_absolute_value": 0.999183030118988,
+          "value_at_maximum_absolute": 0.999183030118988,
+          "time_at_maximum_absolute_s": 2.658,
+          "p99_absolute": 0.999182728822318,
+          "samples": 8972,
+          "minimum_value": 0.9764079244033559,
+          "time_at_minimum_s": 1.826,
+          "maximum_value": 0.999183030118988,
+          "time_at_maximum_s": 2.658
+        },
+        "ccd_maximum_iterations": {
+          "maximum_absolute_value": 1,
+          "value_at_maximum_absolute": 1,
+          "time_at_maximum_absolute_s": 0.001,
+          "p99_absolute": 1.0,
+          "samples": 9000,
+          "minimum_value": 1,
+          "time_at_minimum_s": 0.001,
+          "maximum_value": 1,
+          "time_at_maximum_s": 0.001
+        },
+        "net_force_residual": {
+          "maximum_n": 0.0006894175229534359,
+          "maximum_time_s": 2.361,
+          "rms_n": 1.3669319756013113e-05,
+          "maximum_relative_to_egg_weight": 0.010762427138756374,
+          "scope": "Actual residual resultant, distinct from a residual normalized by opposing pinch-force norm"
+        }
+      },
+      "reference_qualified": false
+    }
+  ],
+  "scope": "Actual recorded fields/diagnostics. A native exception can occur after the last recorded accepted state; completion and process status must be checked as well as recorded cap/finite counters. No quantity is reference-qualified by this descriptive audit."
+}

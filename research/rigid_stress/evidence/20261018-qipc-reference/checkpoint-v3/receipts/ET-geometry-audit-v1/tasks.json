@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "name": "geometry",
+      "module": "research.rigid_stress.qipc_comparison.et_failure_geometry",
+      "args": [
+        "--failure",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-ET-forensics-v3/group0/adaptive-edge0.0005-wall4"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "histories",
+      "module": "research.rigid_stress.qipc_comparison.history_audit",
+      "args": [
+        "--histories",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-ET-forensics-v3/group0/adaptive-edge0.0005-wall4"
+      ]
+    }
+  ]
+]

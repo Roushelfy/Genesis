@@ -1,0 +1,40 @@
+[
+  [
+    {
+      "name": "rebuilt-surface2-metric",
+      "module": "research.rigid_stress.qipc_comparison.build_metric",
+      "args": [
+        "--reference-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz",
+        "--native-mesh",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-qipc-validation/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+        "--surface-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz"
+      ]
+    },
+    {
+      "name": "query-controls",
+      "module": "research.rigid_stress.qipc_comparison.metric_query_controls",
+      "args": [
+        "--recorded-gap",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-metric-gap-v1/group0/metric-gap/result.json",
+        "--old-metric",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group6/surface2-metric",
+        "--new-metric",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-query-validated-v1/group0/rebuilt-surface2-metric"
+      ]
+    },
+    {
+      "name": "adaptive-prefix-pair",
+      "module": "research.rigid_stress.qipc_comparison.reference_uncertainty",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-mesh-uncertainty-v1/group1/base1-surface2-wall4",
+        "--candidates",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-pilot-v1/group0/adaptive-edge0.0005-wall4",
+        "--surface-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz"
+      ]
+    }
+  ]
+]

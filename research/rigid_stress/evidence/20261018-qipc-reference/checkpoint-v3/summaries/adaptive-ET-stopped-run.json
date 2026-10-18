@@ -1,0 +1,25 @@
+{
+  "kind": "QIPC-prescribed-link-motion-candidate",
+  "config": {
+    "dt": 0.001,
+    "young": 10000000000.0,
+    "poisson": 0.3,
+    "density": 2000.0,
+    "velocity_tolerance": 1e-09,
+    "linear_tolerance": 1e-08,
+    "max_newton": 256,
+    "max_pcg": 16384,
+    "d_hat": 2e-05,
+    "friction": 0.7191016138165071,
+    "friction_epsilon_velocity": 0.0001,
+    "resistance": 10000000000.0,
+    "energy": "snh",
+    "mas_precision": "double",
+    "linear_solver": "linear_pcg"
+  },
+  "requested_steps": 1160,
+  "executed_steps": 1102,
+  "completed_requested_history": false,
+  "intrusive_seconds": 895.088695243001,
+  "reference_qualified": false
+}

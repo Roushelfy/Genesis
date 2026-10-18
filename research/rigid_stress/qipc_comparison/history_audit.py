@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import re
 from pathlib import Path
 
 import numpy as np
@@ -134,6 +135,33 @@ def audit(folder):
     group_rc = returncode(folder.parent / "returncode.txt")
     expected_rows = (receipt or {}).get("executed_steps", (receipt or {}).get("executed_control_ticks"))
     shell_caps = [row["cap_exhausted_substeps"] for row in rows if "cap_exhausted_substeps" in row]
+    et_values = [
+        (row["time_s"], row["edge_triangle_intersection_count"])
+        for row in rows
+        if row.get("edge_triangle_intersection_count") is not None
+    ]
+    log_path = folder.parent / f"{folder.name}.log"
+    et_frames = None
+    if log_path.is_file():
+        et_frames = [
+            int(value)
+            for value in re.findall(
+                r"ET intersection detected at frame (\d+), forcing Newton exit", log_path.read_text(errors="replace")
+            )
+        ]
+    et_detected = (
+        True
+        if et_frames or any(value > 0 for _, value in et_values)
+        else (False if rows and len(et_values) == len(rows) else None)
+    )
+    first_et_time = next((time for time, value in et_values if value > 0), None)
+    if (
+        first_et_time is None
+        and et_frames
+        and (receipt or {}).get("kind", "").startswith("QIPC-prescribed")
+        and "dt" in config
+    ):
+        first_et_time = (et_frames[0] + 1) * config["dt"]
     return {
         "folder": str(folder),
         "receipt": receipt,
@@ -165,6 +193,14 @@ def audit(folder):
         "pcg_cap_observations": len(pcg_flags),
         "shell_cap_exhausted_physical_substeps": sum(shell_caps) if shell_caps else None,
         "shell_cap_observations": len(shell_caps),
+        "edge_triangle_count_observations": len(et_values),
+        "edge_triangle_recorded_failure_rows": sum(value > 0 for _, value in et_values) if et_values else None,
+        "edge_triangle_failure_detected": et_detected,
+        "first_edge_triangle_failure_time_s": first_et_time,
+        "edge_triangle_log": file_id(log_path) if log_path.is_file() else None,
+        "logged_edge_triangle_native_frames": et_frames,
+        "logged_edge_triangle_forced_exit_events": len(et_frames) if et_frames is not None else None,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
         "statistics": statistics,
         "reference_qualified": False,
     }

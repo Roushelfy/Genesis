@@ -1,0 +1,1189 @@
+{
+  "kind": "interrupted-history-evidence-admission-controls",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-113",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726641",
+      "SLURM_ARRAY_JOB_ID": "726640",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-adb3f72e-e837-07af-76f0-f0838bfdf2ed, 00000000:C1:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "cases": [
+    {
+      "case": "complete-success",
+      "audit": {
+        "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/complete-success/history",
+        "receipt": {
+          "completed_requested_history": true,
+          "executed_steps": 2,
+          "config": {
+            "max_newton": 8,
+            "max_pcg": 16
+          }
+        },
+        "receipt_read_error": null,
+        "receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/complete-success/history/result.json",
+          "bytes": 123,
+          "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+        },
+        "input_receipt_read_error": null,
+        "input_receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/complete-success/history/inputs.json",
+          "bytes": 61,
+          "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+        },
+        "journal_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/complete-success/history/steps.jsonl",
+          "bytes": 144,
+          "sha256": "4fc3fee220740f3705c645845d85e2a3d101d80fe60bbee3a276ba7efb239bd1"
+        },
+        "journal_read": {
+          "valid_prefix_rows": 2,
+          "first_unreadable_row": null,
+          "unparsed_tail_bytes": 0,
+          "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+        },
+        "task_returncode": null,
+        "group_returncode": 0,
+        "completed_history_reported": true,
+        "complete_history_established": true,
+        "last_recorded_time_s": 0.002,
+        "recorded_rows": 2,
+        "nonfinite_recorded_rows": 0,
+        "finite_flag_observations": 2,
+        "newton_cap_recorded_rows": 0,
+        "newton_cap_observations": 2,
+        "pcg_cap_recorded_rows": 0,
+        "pcg_cap_observations": 2,
+        "shell_cap_exhausted_physical_substeps": null,
+        "shell_cap_observations": 0,
+        "edge_triangle_count_observations": 0,
+        "edge_triangle_recorded_failure_rows": null,
+        "edge_triangle_failure_detected": null,
+        "first_edge_triangle_failure_time_s": null,
+        "edge_triangle_log": null,
+        "logged_edge_triangle_native_frames": null,
+        "logged_edge_triangle_forced_exit_events": null,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+        "statistics": {
+          "newton": {
+            "maximum_absolute_value": 2,
+            "value_at_maximum_absolute": 2,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 1.99,
+            "samples": 2,
+            "minimum_value": 1,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 2,
+            "time_at_maximum_s": 0.002
+          },
+          "pcg_max": {
+            "maximum_absolute_value": 5,
+            "value_at_maximum_absolute": 5,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 4.99,
+            "samples": 2,
+            "minimum_value": 4,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 5,
+            "time_at_maximum_s": 0.002
+          }
+        },
+        "reference_qualified": false
+      }
+    },
+    {
+      "case": "missing-result",
+      "audit": {
+        "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/missing-result/history",
+        "receipt": null,
+        "receipt_read_error": "[Errno 2] No such file or directory: '/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/missing-result/history/result.json'",
+        "receipt_identity": null,
+        "input_receipt_read_error": null,
+        "input_receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/missing-result/history/inputs.json",
+          "bytes": 61,
+          "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+        },
+        "journal_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/missing-result/history/steps.jsonl",
+          "bytes": 144,
+          "sha256": "4fc3fee220740f3705c645845d85e2a3d101d80fe60bbee3a276ba7efb239bd1"
+        },
+        "journal_read": {
+          "valid_prefix_rows": 2,
+          "first_unreadable_row": null,
+          "unparsed_tail_bytes": 0,
+          "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+        },
+        "task_returncode": null,
+        "group_returncode": null,
+        "completed_history_reported": null,
+        "complete_history_established": false,
+        "last_recorded_time_s": 0.002,
+        "recorded_rows": 2,
+        "nonfinite_recorded_rows": 0,
+        "finite_flag_observations": 2,
+        "newton_cap_recorded_rows": 0,
+        "newton_cap_observations": 2,
+        "pcg_cap_recorded_rows": 0,
+        "pcg_cap_observations": 2,
+        "shell_cap_exhausted_physical_substeps": null,
+        "shell_cap_observations": 0,
+        "edge_triangle_count_observations": 0,
+        "edge_triangle_recorded_failure_rows": null,
+        "edge_triangle_failure_detected": null,
+        "first_edge_triangle_failure_time_s": null,
+        "edge_triangle_log": null,
+        "logged_edge_triangle_native_frames": null,
+        "logged_edge_triangle_forced_exit_events": null,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+        "statistics": {
+          "newton": {
+            "maximum_absolute_value": 2,
+            "value_at_maximum_absolute": 2,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 1.99,
+            "samples": 2,
+            "minimum_value": 1,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 2,
+            "time_at_maximum_s": 0.002
+          },
+          "pcg_max": {
+            "maximum_absolute_value": 5,
+            "value_at_maximum_absolute": 5,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 4.99,
+            "samples": 2,
+            "minimum_value": 4,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 5,
+            "time_at_maximum_s": 0.002
+          }
+        },
+        "reference_qualified": false
+      }
+    },
+    {
+      "case": "truncated-tail",
+      "audit": {
+        "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/truncated-tail/history",
+        "receipt": {
+          "completed_requested_history": true,
+          "executed_steps": 2,
+          "config": {
+            "max_newton": 8,
+            "max_pcg": 16
+          }
+        },
+        "receipt_read_error": null,
+        "receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/truncated-tail/history/result.json",
+          "bytes": 123,
+          "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+        },
+        "input_receipt_read_error": null,
+        "input_receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/truncated-tail/history/inputs.json",
+          "bytes": 61,
+          "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+        },
+        "journal_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/truncated-tail/history/steps.jsonl",
+          "bytes": 82,
+          "sha256": "36b651ab5e4167232e52d4d6766ab686bee8c9c16146bf7e71a9d0930849c126"
+        },
+        "journal_read": {
+          "valid_prefix_rows": 1,
+          "first_unreadable_row": {
+            "line": 2,
+            "byte_offset": 72,
+            "error": "Expecting value: line 1 column 11 (char 10)"
+          },
+          "unparsed_tail_bytes": 10,
+          "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+        },
+        "task_returncode": null,
+        "group_returncode": 0,
+        "completed_history_reported": true,
+        "complete_history_established": false,
+        "last_recorded_time_s": 0.001,
+        "recorded_rows": 1,
+        "nonfinite_recorded_rows": 0,
+        "finite_flag_observations": 1,
+        "newton_cap_recorded_rows": 0,
+        "newton_cap_observations": 1,
+        "pcg_cap_recorded_rows": 0,
+        "pcg_cap_observations": 1,
+        "shell_cap_exhausted_physical_substeps": null,
+        "shell_cap_observations": 0,
+        "edge_triangle_count_observations": 0,
+        "edge_triangle_recorded_failure_rows": null,
+        "edge_triangle_failure_detected": null,
+        "first_edge_triangle_failure_time_s": null,
+        "edge_triangle_log": null,
+        "logged_edge_triangle_native_frames": null,
+        "logged_edge_triangle_forced_exit_events": null,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+        "statistics": {
+          "newton": {
+            "maximum_absolute_value": 1,
+            "value_at_maximum_absolute": 1,
+            "time_at_maximum_absolute_s": 0.001,
+            "p99_absolute": 1.0,
+            "samples": 1,
+            "minimum_value": 1,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 1,
+            "time_at_maximum_s": 0.001
+          },
+          "pcg_max": {
+            "maximum_absolute_value": 4,
+            "value_at_maximum_absolute": 4,
+            "time_at_maximum_absolute_s": 0.001,
+            "p99_absolute": 4.0,
+            "samples": 1,
+            "minimum_value": 4,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 4,
+            "time_at_maximum_s": 0.001
+          }
+        },
+        "reference_qualified": false
+      }
+    },
+    {
+      "case": "middle-corruption",
+      "audit": {
+        "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/middle-corruption/history",
+        "receipt": {
+          "completed_requested_history": true,
+          "executed_steps": 2,
+          "config": {
+            "max_newton": 8,
+            "max_pcg": 16
+          }
+        },
+        "receipt_read_error": null,
+        "receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/middle-corruption/history/result.json",
+          "bytes": 123,
+          "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+        },
+        "input_receipt_read_error": null,
+        "input_receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/middle-corruption/history/inputs.json",
+          "bytes": 61,
+          "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+        },
+        "journal_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/middle-corruption/history/steps.jsonl",
+          "bytes": 155,
+          "sha256": "46f55b3b8be57253ab9c28f2006e2bb7b6b7086b74677820cddc25d9e6b79234"
+        },
+        "journal_read": {
+          "valid_prefix_rows": 1,
+          "first_unreadable_row": {
+            "line": 2,
+            "byte_offset": 72,
+            "error": "Expecting value: line 2 column 1 (char 11)"
+          },
+          "unparsed_tail_bytes": 83,
+          "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+        },
+        "task_returncode": null,
+        "group_returncode": 0,
+        "completed_history_reported": true,
+        "complete_history_established": false,
+        "last_recorded_time_s": 0.001,
+        "recorded_rows": 1,
+        "nonfinite_recorded_rows": 0,
+        "finite_flag_observations": 1,
+        "newton_cap_recorded_rows": 0,
+        "newton_cap_observations": 1,
+        "pcg_cap_recorded_rows": 0,
+        "pcg_cap_observations": 1,
+        "shell_cap_exhausted_physical_substeps": null,
+        "shell_cap_observations": 0,
+        "edge_triangle_count_observations": 0,
+        "edge_triangle_recorded_failure_rows": null,
+        "edge_triangle_failure_detected": null,
+        "first_edge_triangle_failure_time_s": null,
+        "edge_triangle_log": null,
+        "logged_edge_triangle_native_frames": null,
+        "logged_edge_triangle_forced_exit_events": null,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+        "statistics": {
+          "newton": {
+            "maximum_absolute_value": 1,
+            "value_at_maximum_absolute": 1,
+            "time_at_maximum_absolute_s": 0.001,
+            "p99_absolute": 1.0,
+            "samples": 1,
+            "minimum_value": 1,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 1,
+            "time_at_maximum_s": 0.001
+          },
+          "pcg_max": {
+            "maximum_absolute_value": 4,
+            "value_at_maximum_absolute": 4,
+            "time_at_maximum_absolute_s": 0.001,
+            "p99_absolute": 4.0,
+            "samples": 1,
+            "minimum_value": 4,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 4,
+            "time_at_maximum_s": 0.001
+          }
+        },
+        "reference_qualified": false
+      }
+    },
+    {
+      "case": "corrupt-result",
+      "audit": {
+        "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/corrupt-result/history",
+        "receipt": null,
+        "receipt_read_error": "Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
+        "receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/corrupt-result/history/result.json",
+          "bytes": 1,
+          "sha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96"
+        },
+        "input_receipt_read_error": null,
+        "input_receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/corrupt-result/history/inputs.json",
+          "bytes": 61,
+          "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+        },
+        "journal_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/corrupt-result/history/steps.jsonl",
+          "bytes": 144,
+          "sha256": "4fc3fee220740f3705c645845d85e2a3d101d80fe60bbee3a276ba7efb239bd1"
+        },
+        "journal_read": {
+          "valid_prefix_rows": 2,
+          "first_unreadable_row": null,
+          "unparsed_tail_bytes": 0,
+          "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+        },
+        "task_returncode": null,
+        "group_returncode": 0,
+        "completed_history_reported": null,
+        "complete_history_established": false,
+        "last_recorded_time_s": 0.002,
+        "recorded_rows": 2,
+        "nonfinite_recorded_rows": 0,
+        "finite_flag_observations": 2,
+        "newton_cap_recorded_rows": 0,
+        "newton_cap_observations": 2,
+        "pcg_cap_recorded_rows": 0,
+        "pcg_cap_observations": 2,
+        "shell_cap_exhausted_physical_substeps": null,
+        "shell_cap_observations": 0,
+        "edge_triangle_count_observations": 0,
+        "edge_triangle_recorded_failure_rows": null,
+        "edge_triangle_failure_detected": null,
+        "first_edge_triangle_failure_time_s": null,
+        "edge_triangle_log": null,
+        "logged_edge_triangle_native_frames": null,
+        "logged_edge_triangle_forced_exit_events": null,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+        "statistics": {
+          "newton": {
+            "maximum_absolute_value": 2,
+            "value_at_maximum_absolute": 2,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 1.99,
+            "samples": 2,
+            "minimum_value": 1,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 2,
+            "time_at_maximum_s": 0.002
+          },
+          "pcg_max": {
+            "maximum_absolute_value": 5,
+            "value_at_maximum_absolute": 5,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 4.99,
+            "samples": 2,
+            "minimum_value": 4,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 5,
+            "time_at_maximum_s": 0.002
+          }
+        },
+        "reference_qualified": false
+      }
+    },
+    {
+      "case": "failed-terminal",
+      "audit": {
+        "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/failed-terminal/history",
+        "receipt": {
+          "completed_requested_history": true,
+          "executed_steps": 2,
+          "config": {
+            "max_newton": 8,
+            "max_pcg": 16
+          }
+        },
+        "receipt_read_error": null,
+        "receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/failed-terminal/history/result.json",
+          "bytes": 123,
+          "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+        },
+        "input_receipt_read_error": null,
+        "input_receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/failed-terminal/history/inputs.json",
+          "bytes": 61,
+          "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+        },
+        "journal_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/failed-terminal/history/steps.jsonl",
+          "bytes": 144,
+          "sha256": "4fc3fee220740f3705c645845d85e2a3d101d80fe60bbee3a276ba7efb239bd1"
+        },
+        "journal_read": {
+          "valid_prefix_rows": 2,
+          "first_unreadable_row": null,
+          "unparsed_tail_bytes": 0,
+          "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+        },
+        "task_returncode": null,
+        "group_returncode": 1,
+        "completed_history_reported": true,
+        "complete_history_established": false,
+        "last_recorded_time_s": 0.002,
+        "recorded_rows": 2,
+        "nonfinite_recorded_rows": 0,
+        "finite_flag_observations": 2,
+        "newton_cap_recorded_rows": 0,
+        "newton_cap_observations": 2,
+        "pcg_cap_recorded_rows": 0,
+        "pcg_cap_observations": 2,
+        "shell_cap_exhausted_physical_substeps": null,
+        "shell_cap_observations": 0,
+        "edge_triangle_count_observations": 0,
+        "edge_triangle_recorded_failure_rows": null,
+        "edge_triangle_failure_detected": null,
+        "first_edge_triangle_failure_time_s": null,
+        "edge_triangle_log": null,
+        "logged_edge_triangle_native_frames": null,
+        "logged_edge_triangle_forced_exit_events": null,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+        "statistics": {
+          "newton": {
+            "maximum_absolute_value": 2,
+            "value_at_maximum_absolute": 2,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 1.99,
+            "samples": 2,
+            "minimum_value": 1,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 2,
+            "time_at_maximum_s": 0.002
+          },
+          "pcg_max": {
+            "maximum_absolute_value": 5,
+            "value_at_maximum_absolute": 5,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 4.99,
+            "samples": 2,
+            "minimum_value": 4,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 5,
+            "time_at_maximum_s": 0.002
+          }
+        },
+        "reference_qualified": false
+      }
+    },
+    {
+      "case": "missing-terminal",
+      "audit": {
+        "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/missing-terminal/history",
+        "receipt": {
+          "completed_requested_history": true,
+          "executed_steps": 2,
+          "config": {
+            "max_newton": 8,
+            "max_pcg": 16
+          }
+        },
+        "receipt_read_error": null,
+        "receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/missing-terminal/history/result.json",
+          "bytes": 123,
+          "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+        },
+        "input_receipt_read_error": null,
+        "input_receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/missing-terminal/history/inputs.json",
+          "bytes": 61,
+          "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+        },
+        "journal_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/missing-terminal/history/steps.jsonl",
+          "bytes": 144,
+          "sha256": "4fc3fee220740f3705c645845d85e2a3d101d80fe60bbee3a276ba7efb239bd1"
+        },
+        "journal_read": {
+          "valid_prefix_rows": 2,
+          "first_unreadable_row": null,
+          "unparsed_tail_bytes": 0,
+          "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+        },
+        "task_returncode": null,
+        "group_returncode": null,
+        "completed_history_reported": true,
+        "complete_history_established": false,
+        "last_recorded_time_s": 0.002,
+        "recorded_rows": 2,
+        "nonfinite_recorded_rows": 0,
+        "finite_flag_observations": 2,
+        "newton_cap_recorded_rows": 0,
+        "newton_cap_observations": 2,
+        "pcg_cap_recorded_rows": 0,
+        "pcg_cap_observations": 2,
+        "shell_cap_exhausted_physical_substeps": null,
+        "shell_cap_observations": 0,
+        "edge_triangle_count_observations": 0,
+        "edge_triangle_recorded_failure_rows": null,
+        "edge_triangle_failure_detected": null,
+        "first_edge_triangle_failure_time_s": null,
+        "edge_triangle_log": null,
+        "logged_edge_triangle_native_frames": null,
+        "logged_edge_triangle_forced_exit_events": null,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+        "statistics": {
+          "newton": {
+            "maximum_absolute_value": 2,
+            "value_at_maximum_absolute": 2,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 1.99,
+            "samples": 2,
+            "minimum_value": 1,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 2,
+            "time_at_maximum_s": 0.002
+          },
+          "pcg_max": {
+            "maximum_absolute_value": 5,
+            "value_at_maximum_absolute": 5,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 4.99,
+            "samples": 2,
+            "minimum_value": 4,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 5,
+            "time_at_maximum_s": 0.002
+          }
+        },
+        "reference_qualified": false
+      }
+    },
+    {
+      "case": "task-failure-precedence",
+      "audit": {
+        "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/task-failure-precedence/history",
+        "receipt": {
+          "completed_requested_history": true,
+          "executed_steps": 2,
+          "config": {
+            "max_newton": 8,
+            "max_pcg": 16
+          }
+        },
+        "receipt_read_error": null,
+        "receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/task-failure-precedence/history/result.json",
+          "bytes": 123,
+          "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+        },
+        "input_receipt_read_error": null,
+        "input_receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/task-failure-precedence/history/inputs.json",
+          "bytes": 61,
+          "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+        },
+        "journal_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/task-failure-precedence/history/steps.jsonl",
+          "bytes": 144,
+          "sha256": "4fc3fee220740f3705c645845d85e2a3d101d80fe60bbee3a276ba7efb239bd1"
+        },
+        "journal_read": {
+          "valid_prefix_rows": 2,
+          "first_unreadable_row": null,
+          "unparsed_tail_bytes": 0,
+          "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+        },
+        "task_returncode": 1,
+        "group_returncode": 0,
+        "completed_history_reported": true,
+        "complete_history_established": false,
+        "last_recorded_time_s": 0.002,
+        "recorded_rows": 2,
+        "nonfinite_recorded_rows": 0,
+        "finite_flag_observations": 2,
+        "newton_cap_recorded_rows": 0,
+        "newton_cap_observations": 2,
+        "pcg_cap_recorded_rows": 0,
+        "pcg_cap_observations": 2,
+        "shell_cap_exhausted_physical_substeps": null,
+        "shell_cap_observations": 0,
+        "edge_triangle_count_observations": 0,
+        "edge_triangle_recorded_failure_rows": null,
+        "edge_triangle_failure_detected": null,
+        "first_edge_triangle_failure_time_s": null,
+        "edge_triangle_log": null,
+        "logged_edge_triangle_native_frames": null,
+        "logged_edge_triangle_forced_exit_events": null,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+        "statistics": {
+          "newton": {
+            "maximum_absolute_value": 2,
+            "value_at_maximum_absolute": 2,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 1.99,
+            "samples": 2,
+            "minimum_value": 1,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 2,
+            "time_at_maximum_s": 0.002
+          },
+          "pcg_max": {
+            "maximum_absolute_value": 5,
+            "value_at_maximum_absolute": 5,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 4.99,
+            "samples": 2,
+            "minimum_value": 4,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 5,
+            "time_at_maximum_s": 0.002
+          }
+        },
+        "reference_qualified": false
+      }
+    },
+    {
+      "case": "missing-journal",
+      "audit": {
+        "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/missing-journal/history",
+        "receipt": {
+          "completed_requested_history": true,
+          "executed_steps": 2,
+          "config": {
+            "max_newton": 8,
+            "max_pcg": 16
+          }
+        },
+        "receipt_read_error": null,
+        "receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/missing-journal/history/result.json",
+          "bytes": 123,
+          "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+        },
+        "input_receipt_read_error": null,
+        "input_receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/missing-journal/history/inputs.json",
+          "bytes": 61,
+          "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+        },
+        "journal_identity": null,
+        "journal_read": {
+          "error": "Journal missing",
+          "valid_prefix_rows": 0
+        },
+        "task_returncode": null,
+        "group_returncode": 0,
+        "completed_history_reported": true,
+        "complete_history_established": false,
+        "last_recorded_time_s": null,
+        "recorded_rows": 0,
+        "nonfinite_recorded_rows": null,
+        "finite_flag_observations": 0,
+        "newton_cap_recorded_rows": null,
+        "newton_cap_observations": 0,
+        "pcg_cap_recorded_rows": null,
+        "pcg_cap_observations": 0,
+        "shell_cap_exhausted_physical_substeps": null,
+        "shell_cap_observations": 0,
+        "edge_triangle_count_observations": 0,
+        "edge_triangle_recorded_failure_rows": null,
+        "edge_triangle_failure_detected": null,
+        "first_edge_triangle_failure_time_s": null,
+        "edge_triangle_log": null,
+        "logged_edge_triangle_native_frames": null,
+        "logged_edge_triangle_forced_exit_events": null,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+        "statistics": {},
+        "reference_qualified": false
+      }
+    },
+    {
+      "case": "unobserved-flags",
+      "audit": {
+        "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/unobserved-flags/history",
+        "receipt": null,
+        "receipt_read_error": "[Errno 2] No such file or directory: '/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/unobserved-flags/history/result.json'",
+        "receipt_identity": null,
+        "input_receipt_read_error": null,
+        "input_receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/unobserved-flags/history/inputs.json",
+          "bytes": 61,
+          "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+        },
+        "journal_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/unobserved-flags/history/steps.jsonl",
+          "bytes": 18,
+          "sha256": "369f0c434b8f751826e9298416196573f71667e4d0ea82376a4a8a12d07d57ec"
+        },
+        "journal_read": {
+          "valid_prefix_rows": 1,
+          "first_unreadable_row": null,
+          "unparsed_tail_bytes": 0,
+          "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+        },
+        "task_returncode": null,
+        "group_returncode": null,
+        "completed_history_reported": null,
+        "complete_history_established": false,
+        "last_recorded_time_s": 0.001,
+        "recorded_rows": 1,
+        "nonfinite_recorded_rows": null,
+        "finite_flag_observations": 0,
+        "newton_cap_recorded_rows": null,
+        "newton_cap_observations": 0,
+        "pcg_cap_recorded_rows": null,
+        "pcg_cap_observations": 0,
+        "shell_cap_exhausted_physical_substeps": null,
+        "shell_cap_observations": 0,
+        "edge_triangle_count_observations": 0,
+        "edge_triangle_recorded_failure_rows": null,
+        "edge_triangle_failure_detected": null,
+        "first_edge_triangle_failure_time_s": null,
+        "edge_triangle_log": null,
+        "logged_edge_triangle_native_frames": null,
+        "logged_edge_triangle_forced_exit_events": null,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+        "statistics": {},
+        "reference_qualified": false
+      }
+    },
+    {
+      "case": "missing-finite-evidence",
+      "audit": {
+        "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/missing-finite-evidence/history",
+        "receipt": {
+          "completed_requested_history": true,
+          "executed_steps": 1
+        },
+        "receipt_read_error": null,
+        "receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/missing-finite-evidence/history/result.json",
+          "bytes": 65,
+          "sha256": "321aa489b1fb13a648f79af2dfbf905f255b9c36e2efa0e47979712e532eee73"
+        },
+        "input_receipt_read_error": null,
+        "input_receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/missing-finite-evidence/history/inputs.json",
+          "bytes": 61,
+          "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+        },
+        "journal_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/missing-finite-evidence/history/steps.jsonl",
+          "bytes": 18,
+          "sha256": "369f0c434b8f751826e9298416196573f71667e4d0ea82376a4a8a12d07d57ec"
+        },
+        "journal_read": {
+          "valid_prefix_rows": 1,
+          "first_unreadable_row": null,
+          "unparsed_tail_bytes": 0,
+          "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+        },
+        "task_returncode": null,
+        "group_returncode": 0,
+        "completed_history_reported": true,
+        "complete_history_established": false,
+        "last_recorded_time_s": 0.001,
+        "recorded_rows": 1,
+        "nonfinite_recorded_rows": null,
+        "finite_flag_observations": 0,
+        "newton_cap_recorded_rows": null,
+        "newton_cap_observations": 0,
+        "pcg_cap_recorded_rows": null,
+        "pcg_cap_observations": 0,
+        "shell_cap_exhausted_physical_substeps": null,
+        "shell_cap_observations": 0,
+        "edge_triangle_count_observations": 0,
+        "edge_triangle_recorded_failure_rows": null,
+        "edge_triangle_failure_detected": null,
+        "first_edge_triangle_failure_time_s": null,
+        "edge_triangle_log": null,
+        "logged_edge_triangle_native_frames": null,
+        "logged_edge_triangle_forced_exit_events": null,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+        "statistics": {},
+        "reference_qualified": false
+      }
+    },
+    {
+      "case": "actual-configured-caps",
+      "audit": {
+        "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/actual-configured-caps/history",
+        "receipt": {
+          "completed_requested_history": false,
+          "executed_steps": 1,
+          "config": {
+            "max_newton": 4,
+            "max_pcg": 8
+          }
+        },
+        "receipt_read_error": null,
+        "receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/actual-configured-caps/history/result.json",
+          "bytes": 123,
+          "sha256": "78ee15df55ab98e2f2460f341a5527c16c69f533d511d32329bb903255d60d52"
+        },
+        "input_receipt_read_error": null,
+        "input_receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/actual-configured-caps/history/inputs.json",
+          "bytes": 61,
+          "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+        },
+        "journal_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/actual-configured-caps/history/steps.jsonl",
+          "bytes": 45,
+          "sha256": "3aa4d04ea06026f6a704edcd59ae648a8caaec391d455a2a32d56ddf71cd4f48"
+        },
+        "journal_read": {
+          "valid_prefix_rows": 1,
+          "first_unreadable_row": null,
+          "unparsed_tail_bytes": 0,
+          "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+        },
+        "task_returncode": null,
+        "group_returncode": 0,
+        "completed_history_reported": false,
+        "complete_history_established": false,
+        "last_recorded_time_s": 0.001,
+        "recorded_rows": 1,
+        "nonfinite_recorded_rows": null,
+        "finite_flag_observations": 0,
+        "newton_cap_recorded_rows": 1,
+        "newton_cap_observations": 1,
+        "pcg_cap_recorded_rows": 1,
+        "pcg_cap_observations": 1,
+        "shell_cap_exhausted_physical_substeps": null,
+        "shell_cap_observations": 0,
+        "edge_triangle_count_observations": 0,
+        "edge_triangle_recorded_failure_rows": null,
+        "edge_triangle_failure_detected": null,
+        "first_edge_triangle_failure_time_s": null,
+        "edge_triangle_log": null,
+        "logged_edge_triangle_native_frames": null,
+        "logged_edge_triangle_forced_exit_events": null,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+        "statistics": {
+          "newton": {
+            "maximum_absolute_value": 4,
+            "value_at_maximum_absolute": 4,
+            "time_at_maximum_absolute_s": 0.001,
+            "p99_absolute": 4.0,
+            "samples": 1,
+            "minimum_value": 4,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 4,
+            "time_at_maximum_s": 0.001
+          },
+          "pcg_max": {
+            "maximum_absolute_value": 8,
+            "value_at_maximum_absolute": 8,
+            "time_at_maximum_absolute_s": 0.001,
+            "p99_absolute": 8.0,
+            "samples": 1,
+            "minimum_value": 8,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 8,
+            "time_at_maximum_s": 0.001
+          }
+        },
+        "reference_qualified": false
+      }
+    },
+    {
+      "case": "finite-with-logged-ET-forced-exit",
+      "audit": {
+        "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/finite-with-logged-ET-forced-exit/history",
+        "receipt": {
+          "completed_requested_history": true,
+          "executed_steps": 2,
+          "config": {
+            "max_newton": 8,
+            "max_pcg": 16,
+            "dt": 0.001
+          },
+          "kind": "QIPC-prescribed-link-motion-candidate"
+        },
+        "receipt_read_error": null,
+        "receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/finite-with-logged-ET-forced-exit/history/result.json",
+          "bytes": 191,
+          "sha256": "df11fecc13a6b3764722a6d6881511c5dfb8cd8b17f0d3e4587914398a9e3963"
+        },
+        "input_receipt_read_error": null,
+        "input_receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/finite-with-logged-ET-forced-exit/history/inputs.json",
+          "bytes": 61,
+          "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+        },
+        "journal_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/finite-with-logged-ET-forced-exit/history/steps.jsonl",
+          "bytes": 144,
+          "sha256": "4fc3fee220740f3705c645845d85e2a3d101d80fe60bbee3a276ba7efb239bd1"
+        },
+        "journal_read": {
+          "valid_prefix_rows": 2,
+          "first_unreadable_row": null,
+          "unparsed_tail_bytes": 0,
+          "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+        },
+        "task_returncode": null,
+        "group_returncode": 0,
+        "completed_history_reported": true,
+        "complete_history_established": true,
+        "last_recorded_time_s": 0.002,
+        "recorded_rows": 2,
+        "nonfinite_recorded_rows": 0,
+        "finite_flag_observations": 2,
+        "newton_cap_recorded_rows": 0,
+        "newton_cap_observations": 2,
+        "pcg_cap_recorded_rows": 0,
+        "pcg_cap_observations": 2,
+        "shell_cap_exhausted_physical_substeps": null,
+        "shell_cap_observations": 0,
+        "edge_triangle_count_observations": 0,
+        "edge_triangle_recorded_failure_rows": null,
+        "edge_triangle_failure_detected": true,
+        "first_edge_triangle_failure_time_s": 0.001,
+        "edge_triangle_log": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/finite-with-logged-ET-forced-exit/history.log",
+          "bytes": 73,
+          "sha256": "c5c512233925a216ea6ff4ec979f079033dc9379cc1ee159c352513f8a4613b1"
+        },
+        "logged_edge_triangle_native_frames": [
+          0
+        ],
+        "logged_edge_triangle_forced_exit_events": 1,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+        "statistics": {
+          "newton": {
+            "maximum_absolute_value": 2,
+            "value_at_maximum_absolute": 2,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 1.99,
+            "samples": 2,
+            "minimum_value": 1,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 2,
+            "time_at_maximum_s": 0.002
+          },
+          "pcg_max": {
+            "maximum_absolute_value": 5,
+            "value_at_maximum_absolute": 5,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 4.99,
+            "samples": 2,
+            "minimum_value": 4,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 5,
+            "time_at_maximum_s": 0.002
+          }
+        },
+        "reference_qualified": false
+      }
+    },
+    {
+      "case": "recorded-ET-count-0",
+      "audit": {
+        "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/recorded-ET-count-0/history",
+        "receipt": {
+          "completed_requested_history": true,
+          "executed_steps": 2,
+          "config": {
+            "max_newton": 8,
+            "max_pcg": 16
+          }
+        },
+        "receipt_read_error": null,
+        "receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/recorded-ET-count-0/history/result.json",
+          "bytes": 123,
+          "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+        },
+        "input_receipt_read_error": null,
+        "input_receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/recorded-ET-count-0/history/inputs.json",
+          "bytes": 61,
+          "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+        },
+        "journal_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/recorded-ET-count-0/history/steps.jsonl",
+          "bytes": 222,
+          "sha256": "e7cb87d3621d474d94e11d2285d7f0fde55c73b5f4e43b95144147e04086a5d4"
+        },
+        "journal_read": {
+          "valid_prefix_rows": 2,
+          "first_unreadable_row": null,
+          "unparsed_tail_bytes": 0,
+          "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+        },
+        "task_returncode": null,
+        "group_returncode": 0,
+        "completed_history_reported": true,
+        "complete_history_established": true,
+        "last_recorded_time_s": 0.002,
+        "recorded_rows": 2,
+        "nonfinite_recorded_rows": 0,
+        "finite_flag_observations": 2,
+        "newton_cap_recorded_rows": 0,
+        "newton_cap_observations": 2,
+        "pcg_cap_recorded_rows": 0,
+        "pcg_cap_observations": 2,
+        "shell_cap_exhausted_physical_substeps": null,
+        "shell_cap_observations": 0,
+        "edge_triangle_count_observations": 2,
+        "edge_triangle_recorded_failure_rows": 0,
+        "edge_triangle_failure_detected": false,
+        "first_edge_triangle_failure_time_s": null,
+        "edge_triangle_log": null,
+        "logged_edge_triangle_native_frames": null,
+        "logged_edge_triangle_forced_exit_events": null,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+        "statistics": {
+          "newton": {
+            "maximum_absolute_value": 2,
+            "value_at_maximum_absolute": 2,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 1.99,
+            "samples": 2,
+            "minimum_value": 1,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 2,
+            "time_at_maximum_s": 0.002
+          },
+          "pcg_max": {
+            "maximum_absolute_value": 5,
+            "value_at_maximum_absolute": 5,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 4.99,
+            "samples": 2,
+            "minimum_value": 4,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 5,
+            "time_at_maximum_s": 0.002
+          }
+        },
+        "reference_qualified": false
+      }
+    },
+    {
+      "case": "recorded-ET-count-2",
+      "audit": {
+        "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/recorded-ET-count-2/history",
+        "receipt": {
+          "completed_requested_history": true,
+          "executed_steps": 2,
+          "config": {
+            "max_newton": 8,
+            "max_pcg": 16
+          }
+        },
+        "receipt_read_error": null,
+        "receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/recorded-ET-count-2/history/result.json",
+          "bytes": 123,
+          "sha256": "4ce58cfaa0d6866c754cf4f6dee03a4b43630a8f5f0eeb99eae12a1aa84acce6"
+        },
+        "input_receipt_read_error": null,
+        "input_receipt_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/recorded-ET-count-2/history/inputs.json",
+          "bytes": 61,
+          "sha256": "11df3fafe107d25c823c87d26f1eefc5aae398e05f6099f0d22017bb34da7854"
+        },
+        "journal_identity": {
+          "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/ET-history-admission-v3/group0/journal-controls/recorded-ET-count-2/history/steps.jsonl",
+          "bytes": 222,
+          "sha256": "b5ac70cad43e57d248c099f794e09a213aaae5fa6daf742083f1a5085269f3a9"
+        },
+        "journal_read": {
+          "valid_prefix_rows": 2,
+          "first_unreadable_row": null,
+          "unparsed_tail_bytes": 0,
+          "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+        },
+        "task_returncode": null,
+        "group_returncode": 0,
+        "completed_history_reported": true,
+        "complete_history_established": true,
+        "last_recorded_time_s": 0.002,
+        "recorded_rows": 2,
+        "nonfinite_recorded_rows": 0,
+        "finite_flag_observations": 2,
+        "newton_cap_recorded_rows": 0,
+        "newton_cap_observations": 2,
+        "pcg_cap_recorded_rows": 0,
+        "pcg_cap_observations": 2,
+        "shell_cap_exhausted_physical_substeps": null,
+        "shell_cap_observations": 0,
+        "edge_triangle_count_observations": 2,
+        "edge_triangle_recorded_failure_rows": 2,
+        "edge_triangle_failure_detected": true,
+        "first_edge_triangle_failure_time_s": 0.001,
+        "edge_triangle_log": null,
+        "logged_edge_triangle_native_frames": null,
+        "logged_edge_triangle_forced_exit_events": null,
+        "edge_triangle_scope": "An ET detection forces the native Newton loop to exit independently of PCG/Newton caps. Finite complete-record admission is not physical admission. Historical receipts/journals remain unchanged; explicit per-step counts or retained native warnings identify rejected histories. Missing ET observations remain unknown; a clean log alone is not a per-step zero counter. Native frame numbers are not mapped across unknown resets.",
+        "statistics": {
+          "newton": {
+            "maximum_absolute_value": 2,
+            "value_at_maximum_absolute": 2,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 1.99,
+            "samples": 2,
+            "minimum_value": 1,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 2,
+            "time_at_maximum_s": 0.002
+          },
+          "pcg_max": {
+            "maximum_absolute_value": 5,
+            "value_at_maximum_absolute": 5,
+            "time_at_maximum_absolute_s": 0.002,
+            "p99_absolute": 4.99,
+            "samples": 2,
+            "minimum_value": 4,
+            "time_at_minimum_s": 0.001,
+            "maximum_value": 5,
+            "time_at_maximum_s": 0.002
+          }
+        },
+        "reference_qualified": false
+      }
+    }
+  ],
+  "all_controls_passed": true,
+  "scope": "Synthetic metadata corruption/completion controls only. No physical trajectory, stress accuracy, numerical solver convergence or reference qualification is inferred."
+}

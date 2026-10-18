@@ -1,5 +1,21 @@
 # Current QIPC reference comparison
 
+## Explicitly authorized temporary home output, 2026-10-18
+
+After reviewing the storage requirement and the existing temporary outputs,
+the user explicitly authorized continued writes to the existing home fallback
+("允许继续写入用户"). This exception is scoped to the current task and the
+existing4GB persistent-output bound; data remains the preferred destination.
+At authorization the fallback held about2.79GB. An exclusive-create/fsync probe
+still fails122 and the data mount has zero free bytes. Existing running/queued
+experiments may continue; new submissions must explicitly record the exception
+with `--allow-home-output` and retain private node-local caches. The default
+submission path check still rejects runtime destinations resolving under home.
+Existing compatibility links resolving into data remain usable. Large original
+inputs, environments and builds remain on data; no migration or deletion has
+occurred. Future consolidation requires writer/job checks, metadata/symlink-
+preserving copy and content verification before removal or replacement.
+
 `runs/20261018-qipc-reference/` under the established task data root holds the
 new three-method comparison's source/build/input receipts, native build/runtime,
 generated CCCL assets, controls, trajectories and per-job caches/logs. The
@@ -34,10 +50,13 @@ After a third exclusive-create probe still failed122 at12:31UTC, lightweight
 observer/admission/audit validation uses the explicitly announced temporary
 project data root
 `/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/`.
-The initial1GB persistent-output budget is revised to2GB at13:44UTC for
-selected coarse histories, the sparse adaptive pilot and compact audit/figure
-outputs. The revision was explicitly disclosed before exceeding the initial
-budget; original large inputs, builds and environments remain on data. Source,
+The initial1GB persistent-output budget was revised to2GB at13:44UTC and
+then explicitly to4GB for the selected complete case7 sensitivity study, before
+exceeding either prior limit. The six9s controls have concurrency3,240-minute
+per-group limits and actual0.5s native checkpoints. The original case7 uses
+232.5MB; the existing fine6s prescribed history uses621.8MB, providing a
+measured output estimate. Original large inputs, builds and environments remain
+on data. No broad new sweep or environment is included. Source,
 task capture, logs and small derived results remain there; compile/model/tmp
 caches use private compute-node `/tmp` directories through `--node-local-cache`
 and are removed when each allocation exits. This does not change the default
