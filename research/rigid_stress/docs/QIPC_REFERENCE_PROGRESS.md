@@ -151,6 +151,54 @@ selection, meshdir resolution and explicit representation of existing defaults.
 New contact audit726180 and corrected coupled pilot follow; neither earlier
 failed input nor zero-contact control evidence is relabeled.
 
+## Common observables and actual three-way histories
+
+Canonical-input contact audit726180 has no active initial finger pairs, with
+rigid publication error below1.25e-16m. Corrected200ms QIPC pilots complete all
+200 steps with no caps/nonfinite states. Tightening Newton velocity tolerance
+from1e-5 to1e-7m/s is essential: the loose point permits about46% maximum local
+force residual during impact, despite successful Newton exit. With1e-7,
+linear1e-7 versus1e-5 agrees to1.05e-6 in reactions, and local residuals stay
+below1.07e-4 relative to nodal contact norm (726188/726190). Raw small unloaded
+peaks still show floating-point sensitivity; retain absolute errors/floors.
+
+The new common metric uses1280 fixed-geometry material face-centroid columns,
+40960 Gauss points on the union of native/QIPC tet intersections. It compares
+corotated tangent Cauchy tensors, membrane and bending resultants on one
+explicit weighted domain. Analytic constant-stress/linear-bending integrals,
+affine interpolation and rigid-rotation checks pass in726208. The first sampler
+attempt726207 incorrectly assumed native tet winding; the corrected locator
+preserves original corner order and accepts either nondegenerate orientation.
+This metric is not an exact full-volume integral or a global-peak search.
+
+All three200ms candidate output pilots pass (726192/726194). New full900-control-
+tick case0 DPR/SCR and stock-shell runs complete (726201/726204), with additional
+cases2/7 and a finer diagnosed shell still running at this checkpoint. Fields,
+forces/impulses, frames and full-history journals are retained. These are new
+intrusive error/stability datasets, not primary throughput measurements.
+Shell coupling friction is now explicit per single-case bank, through a helper
+option whose old default0.6 is preserved. The nominal500um shell mass is6.94625g
+versus6.52985g solid mass: retain the6.38% area-thickness approximation mismatch;
+do not silently call it matched mass.
+
+The first complete QIPC candidate726195 stops after1086 accepted steps at
+1.086s, with a256-Newton KKT proxy stationarity/feasibility exception on the next
+step. Prior accepted local force residuals and all raw fields remain available.
+The whole attempted history is unqualified. Wider100um contact band and Hencky
+controls726198 also stop near the same first-grasp stage; the half-step case
+continues. A standard-PCG/tighter-linear candidate726219 tests whether the
+partitioned solve is responsible. No increased iteration count, different
+energy or changed band alone is claimed to solve this failure.
+
+Actual three-way diagnostic comparisons726214 now cover108 common times through
+1.08s. At that final available time, compatible tangent errors are about0.499
+for DPR/SCR and2.81e4 for stock shell. This is **not an accuracy ranking**:
+reference spatial/dt/contact uncertainty and the complete grasp remain
+unqualified, and the models' feedback/mass/contact differences are included.
+Source/frame/sampling identities and exact absolute errors are recorded. Full
+reference qualification, replay separation, both protocols and new primary
+speed evidence are still required.
+
 ## Completion gates
 
 1. Exact-energy stress/parameter and independent small-control validation.

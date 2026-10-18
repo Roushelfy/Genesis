@@ -57,7 +57,7 @@ class ShellEgg:
             morph=gs.morphs.Plane(),
             material=gs.materials.Rigid(
                 friction=0.1,
-                coup_friction=0.6,
+                coup_friction=args.coupling_friction,
             ),
         )
         self.robot = self.scene.add_entity(
@@ -66,7 +66,7 @@ class ShellEgg:
             ),
             material=gs.materials.Rigid(
                 friction=0.1,
-                coup_friction=0.6,
+                coup_friction=args.coupling_friction,
             ),
         )
         if args.model == "shell":
@@ -172,7 +172,7 @@ def main():
             "plasticity_enabled": workload.scene.sim.shell_solver._static_config.has_plasticity,
             "allocated_vertices": workload.egg.n_verts_max,
             "lumped_shell_mass_kg": float(workload.egg.topology.faces_mass.sum()),
-            "coupling_friction": 0.6,
+            "coupling_friction": args.coupling_friction,
             "bank_friction_ratio_applied_to_shell_coupling": False,
         }
         if args.model == "shell"
