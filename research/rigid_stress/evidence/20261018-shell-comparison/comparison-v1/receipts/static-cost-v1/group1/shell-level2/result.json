@@ -1,0 +1,152 @@
+{
+  "kind": "same-prescribed-load-cost",
+  "args": {
+    "inputs": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/prepare-inputs-v2/group0/matched-inputs",
+    "loads": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/static-inputs-v1/group0/inputs",
+    "level": 2,
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/static-cost-v1/group1/shell-level2",
+    "repetitions": 3
+  },
+  "identity": {
+    "genesis_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/kashu-shell-pr22/genesis/__init__.py",
+    "python": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "host": "rtx-209-099",
+    "job": "725924",
+    "array_job": "725924",
+    "array_task": "1",
+    "packages": {
+      "quadrants": "1.3.3",
+      "torch": "2.11.0+cu129",
+      "numpy": "2.2.6",
+      "scipy": "1.15.3",
+      "trimesh": "5.1.1",
+      "pydantic": "2.14.0"
+    },
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-6bbd7dc5-a342-9d69-8dd7-5f461a9d7025, 595.71.05, 97887 MiB"
+  },
+  "method": {
+    "method": "original-kernel static-relaxation harness",
+    "outer_steps": 3,
+    "dt": 0.01,
+    "pcg_cap": 300,
+    "pcg_threshold": 1e-08,
+    "coarse_update_interval": 1,
+    "initial_guess": "zero from rest",
+    "static_relative_force_budget": 1e-08,
+    "nodes": 162,
+    "note": "No contact solver, plasticity or fracture. This is separate from original scene-step rates."
+  },
+  "warmup": [
+    {
+      "amplitude": 0.8,
+      "seconds": 1.0840654780040495,
+      "numerically_valid": true,
+      "complete_relative_force_residual": 1.8697758125689333e-09,
+      "cap_exhausted": false
+    },
+    {
+      "amplitude": 1.2,
+      "seconds": 0.13397711199650075,
+      "numerically_valid": true,
+      "complete_relative_force_residual": 1.2036466722648595e-09,
+      "cap_exhausted": false
+    },
+    {
+      "amplitude": 1.0,
+      "seconds": 0.13322218898974825,
+      "numerically_valid": true,
+      "complete_relative_force_residual": 1.3412285678497584e-09,
+      "cap_exhausted": false
+    }
+  ],
+  "repeats": [
+    {
+      "repeat": 0,
+      "problems": 3,
+      "seconds": 0.4002236799860839,
+      "cases": [
+        {
+          "amplitude": 0.8,
+          "seconds": 0.13350976099900436,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 1.8128564094904272e-09,
+          "cap_exhausted": false
+        },
+        {
+          "amplitude": 1.2,
+          "seconds": 0.13324728299630806,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 1.2272987955807408e-09,
+          "cap_exhausted": false
+        },
+        {
+          "amplitude": 1.0,
+          "seconds": 0.13346663599077147,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 1.457240873417268e-09,
+          "cap_exhausted": false
+        }
+      ]
+    },
+    {
+      "repeat": 1,
+      "problems": 3,
+      "seconds": 0.4011548799899174,
+      "cases": [
+        {
+          "amplitude": 0.8,
+          "seconds": 0.13416062299802434,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 1.7769706230025916e-09,
+          "cap_exhausted": false
+        },
+        {
+          "amplitude": 1.2,
+          "seconds": 0.1337388230022043,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 1.1895526600456628e-09,
+          "cap_exhausted": false
+        },
+        {
+          "amplitude": 1.0,
+          "seconds": 0.13325543398968875,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 1.4669387747547692e-09,
+          "cap_exhausted": false
+        }
+      ]
+    },
+    {
+      "repeat": 2,
+      "problems": 3,
+      "seconds": 0.40004323901666794,
+      "cases": [
+        {
+          "amplitude": 0.8,
+          "seconds": 0.133254548010882,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 1.7174455613957432e-09,
+          "cap_exhausted": false
+        },
+        {
+          "amplitude": 1.2,
+          "seconds": 0.13333112400141545,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 1.2362276751325258e-09,
+          "cap_exhausted": false
+        },
+        {
+          "amplitude": 1.0,
+          "seconds": 0.1334575670043705,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 1.3551378896532447e-09,
+          "cap_exhausted": false
+        }
+      ]
+    }
+  ],
+  "scope": "device-resident prescribed force input to accepted full stress field; host field export excluded",
+  "comparison_limit": "Common quadrature loads use each discretization's basis; native rigid reconstruction and deformable shell statics are different mechanical models."
+}

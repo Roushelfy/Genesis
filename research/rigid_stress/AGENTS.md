@@ -2,7 +2,10 @@
 
 Read [GOAL.md](GOAL.md), [docs/SHELL_SOLVER_COMPARISON_GOAL.md](docs/SHELL_SOLVER_COMPARISON_GOAL.md),
 [README.md](README.md) and [docs/RUNNING.md](docs/RUNNING.md) first.
-The active stage compares our full stress outputs with Kashu shell PR22.
+The completed stage compares our full stress outputs with Kashu shell PR22;
+read [its report](docs/SHELL_COMPARISON_RESULTS_20261018.md),
+[running guide](docs/RUNNING_SHELL_COMPARISON.md) and
+[requirement audit](docs/SHELL_COMPARISON_AUDIT.md). No new campaign is active.
 Unify mechanical observables, pin both sources, and separate contact instability,
 discretization/solve error and physical model differences. Reproduce issues
 before claiming them. Keep an original external baseline and label instrumentation

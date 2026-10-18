@@ -5,10 +5,21 @@ conditional elastic stress from changing rigid contacts, including friction,
 and supports raw global max/full output, complete numerical checks, environment
 isolation and partial resets. Production numerical work remains in Quadrants.
 
-The active [next comparison](docs/SHELL_SOLVER_COMPARISON_GOAL.md) evaluates
-full stress distributions and grasping/contact reliability against
-[Kashu shell PR22](https://github.com/Kashu7100/Genesis/pull/22), with matched
-mechanical observables, practical cost and reproducible failure diagnostics.
+The [shell PR22 comparison](docs/SHELL_COMPARISON_RESULTS_20261018.md) is complete
+within its [declared scope](docs/SHELL_SOLVER_COMPARISON_GOAL.md). It pins both
+implementations, defines compatible full fields, executes analytic/same-load
+and contact/Franka controls, and measures full-field cost on matched hardware.
+Its [running guide](docs/RUNNING_SHELL_COMPARISON.md),
+[audit](docs/SHELL_COMPARISON_AUDIT.md) and
+[evidence packet](evidence/20261018-shell-comparison/comparison-v1/README.md)
+preserve exact source/input/hardware identities, failures and editable figures.
+
+At B4096, full-output native pressure/tuned/intrinsic achieve239264/255089/99024
+numerically valid aggregate env-step/s. Original shell32/64 measure36282/24885
+diagnostic env-step/s; no accuracy-qualified shell grasp setting was established.
+Shell deformation feedback remains an additional capability, while its contact,
+time integration and state-history limitations are documented. The native
+production engine and previous accepted evidence remain unchanged.
 
 The current [pressure/intrinsic comparison](docs/PRESSURE_COMPARISON_RESULTS_20261018.md)
 is complete within its declared scope. Its [running guide](docs/RUNNING_PRESSURE_COMPARISON.md)

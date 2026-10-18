@@ -1,3 +1,18 @@
+# Current shell PR22 comparison
+
+`runs/20261018-shell-comparison/` under the established task data root holds
+immutable analysis captures, exact PR API/source receipts, matched input meshes,
+controlled fields/trajectories, Slurm logs and isolated per-allocation caches.
+The external original and diagnostic source checkouts are isolated sibling
+worktrees under the existing workspace. Scientific execution uses the existing
+data-side `genesis-shell-contact` and `rigid-stress-physical` environments without
+modifying either. Original accepted evidence and unrelated project outputs are
+read without migration. Selected compact publication files are linked from
+[the comparison report](research/rigid_stress/docs/SHELL_COMPARISON_RESULTS_20261018.md)
+and stored in `research/rigid_stress/evidence/20261018-shell-comparison/comparison-v1/`.
+Full raw traces, runtime arrays and isolated source/figure capture staging remain
+on data, including `runs/publication-capture-shell-v2/`; no active writer was moved.
+
 # Current pressure/intrinsic comparison
 
 The pressure/configuration comparison uses

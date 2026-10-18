@@ -1,0 +1,180 @@
+{
+  "kind": "same-prescribed-load-cost",
+  "args": {
+    "inputs": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/prepare-inputs-v2/group0/matched-inputs",
+    "loads": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/static-inputs-v1/group0/inputs",
+    "level": 1,
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/static-cost-v1/group0/native-level1",
+    "repetitions": 3
+  },
+  "identity": {
+    "genesis_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/__init__.py",
+    "python": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "host": "rtx-209-099",
+    "job": "725925",
+    "array_job": "725924",
+    "array_task": "0",
+    "packages": {
+      "quadrants": "1.3.3",
+      "torch": "2.11.0+cu129",
+      "numpy": "2.2.6",
+      "scipy": "1.15.3",
+      "trimesh": "5.1.1",
+      "pydantic": "2.14.0"
+    },
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-13316917-f6f2-4d83-5def-71d3279491c9, 595.71.05, 97887 MiB"
+  },
+  "method": {
+    "method": "inverse",
+    "options": {
+      "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/prepare-inputs-v2/group0/matched-inputs/egg-level1.npz",
+      "output_mode": "full",
+      "young": 10000000000.0,
+      "poisson": 0.3,
+      "density": 2000.0,
+      "contact_radius": 0.006,
+      "contact_model": "pressure",
+      "intrinsic_integration": "surface_fan",
+      "intrinsic_support": "contact",
+      "intrinsic_load_partition": "componentwise",
+      "cooperative_tractions": true,
+      "surface_fan_frontier": true,
+      "warm_start_tractions": true,
+      "contact_block_size": 16,
+      "surface_edge_subdivisions": 8,
+      "source_projection_limit": 0.0001,
+      "source_geometry_tolerance": 1e-08,
+      "source_uncertainty": 0.0,
+      "quadrature": 10,
+      "tolerance": 1e-08,
+      "absolute_tolerance": 1e-11,
+      "max_iterations": 2000,
+      "warm_start": true,
+      "history_size": 0,
+      "method": "auto",
+      "cooperative_solve": true,
+      "cooperative_pressure": true,
+      "cooperative_scatter": true,
+      "cooperative_balance": true,
+      "contact_wrench_reuse": null,
+      "face_parallel_scatter": true,
+      "scatter_tasks_per_env": 32,
+      "contact_moment_reuse": null,
+      "inverse_max_bytes": 67108864,
+      "inverse_precision": "64",
+      "surface_inverse": true,
+      "packed_surface_loads": true,
+      "packed_block_size": null,
+      "coalesced_residual": null,
+      "fused_pipeline": true,
+      "fused_rigid_post": null,
+      "cached_peak": true,
+      "cached_face_bounds": true,
+      "inverse_corrections": 2,
+      "preconditioner": "block"
+    },
+    "nodes": 810,
+    "mesh_fixed": true
+  },
+  "warmup": [
+    {
+      "amplitude": 0.8,
+      "seconds": 1.27686705099768,
+      "numerically_valid": true,
+      "complete_relative_force_residual": 3.346202347939162e-11
+    },
+    {
+      "amplitude": 1.2,
+      "seconds": 0.0011991430073976517,
+      "numerically_valid": true,
+      "complete_relative_force_residual": 2.8192500742814776e-11
+    },
+    {
+      "amplitude": 1.0,
+      "seconds": 0.000992934001260437,
+      "numerically_valid": true,
+      "complete_relative_force_residual": 3.297876172177033e-11
+    }
+  ],
+  "repeats": [
+    {
+      "repeat": 0,
+      "problems": 3,
+      "seconds": 0.0029051000019535422,
+      "cases": [
+        {
+          "amplitude": 0.8,
+          "seconds": 0.0009682439995231107,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 3.364961172608798e-11
+        },
+        {
+          "amplitude": 1.2,
+          "seconds": 0.0009659500065026805,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 2.884381953183821e-11
+        },
+        {
+          "amplitude": 1.0,
+          "seconds": 0.0009709059959277511,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 3.284598598499112e-11
+        }
+      ]
+    },
+    {
+      "repeat": 1,
+      "problems": 3,
+      "seconds": 0.002891361014917493,
+      "cases": [
+        {
+          "amplitude": 0.8,
+          "seconds": 0.0009642080112826079,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 3.365373786391915e-11
+        },
+        {
+          "amplitude": 1.2,
+          "seconds": 0.0009616150055080652,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 2.8890310282003265e-11
+        },
+        {
+          "amplitude": 1.0,
+          "seconds": 0.0009655379981268197,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 3.293423517355981e-11
+        }
+      ]
+    },
+    {
+      "repeat": 2,
+      "problems": 3,
+      "seconds": 0.0029063800029689446,
+      "cases": [
+        {
+          "amplitude": 0.8,
+          "seconds": 0.0009626919927541167,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 3.368951357552016e-11
+        },
+        {
+          "amplitude": 1.2,
+          "seconds": 0.0009841780120041221,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 2.8816386586862616e-11
+        },
+        {
+          "amplitude": 1.0,
+          "seconds": 0.0009595099982107058,
+          "numerically_valid": true,
+          "complete_relative_force_residual": 3.292189831468099e-11
+        }
+      ]
+    }
+  ],
+  "scope": "device-resident prescribed force input to accepted full stress field; host field export excluded",
+  "comparison_limit": "Common quadrature loads use each discretization's basis; native rigid reconstruction and deformable shell statics are different mechanical models."
+}
