@@ -312,8 +312,10 @@ reason, then rerun fresh. No failed attempt was relabeled.
 
 The shared M1 build directory had advanced after the earlier641459 artifact.
 The new clean40275f0a2 source and copied matching native are recorded separately.
-Its only QIPC code difference from641459 is the5-line dense-BVH stack barrier
-fix. Baseline726310 still fails after1086 accepted steps. A separately pinned
+Its only QIPC code difference from641459 is a5-line dense-BVH stack barrier
+placement change. Original main already has per-child-round barriers; this
+change is not evidence that original main misses contacts. Baseline726310 still
+fails after1086 accepted steps. A separately pinned
 `kkt-roundoff-diagnostic.patch` changes its fixed incremental-energy allowance
 to16 double epsilons times absolute energy. Fresh native build726309 snapshots
 project includes, reuses hashed immutable objects, recompiles only the declared
@@ -410,6 +412,104 @@ retain editable SVG/PDF,450dpi PNG, data and150dpi previews. All pass rendered
 text checks, and export QA726404 verifies183mm widths, embedded non-Type3 fonts
 and editable SVG text. The actual previews were visually inspected. They remain
 explicitly diagnostic where reference qualification is open.
+
+## Complete-history metrics and additional completed controls
+
+The [metric contract](QIPC_REFERENCE_METRICS.md) defines one space/time L2 norm
+on the same common tangential domain for all methods. It includes all600 finite
+observations, including low-load intervals, without per-time relative-error
+masking. Independent full3D solid-only metrics remain supplementary. The exact
+executed observer/metric source hashes match the current files for726486 and
+726487. Relative discrepancies from the coarse strict SNH candidate are:
+
+| Complete6s contrast | Common tangent | Inner | Outer | Membrane | Bending |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| DPR versus candidate | 0.999500 | 0.999488 | 0.999503 | 0.999497 | 0.999145 |
+| SCR versus candidate | 0.999497 | 0.999485 | 0.999500 | 0.999494 | 0.999133 |
+| Stock Shell versus candidate | 4.033453 | 4.118496 | 3.920339 | 4.066672 | 1.324473 |
+| Same surface, wall2 versus wall4 | 0.124305 | 0.007386 | 0.006009 | 0.012414 | 0.233756 |
+| Surface2/wall4 versus surface1/wall4 | 0.410273 | 0.383388 | 0.398641 | 0.391720 | 0.810806 |
+| Half timestep versus1ms | 0.229989 | 0.225615 | 0.234044 | 0.228355 | 0.356276 |
+| Nonlinear1e-8 versus1e-9 | 8.791e-8 | 8.660e-8 | 8.937e-8 | 8.700e-8 | 9.606e-8 |
+
+These are measured discrepancies, not qualified physical accuracy scores. The
+spatial and timestep contrasts exceed the declared5% common-field target.
+Per-time, raw peak and reaction gates are not replaced by this history norm.
+Hencky with different stopping/DBC settings changes the history norm0.3376%;
+it remains a combined contrast rather than a pure constitutive test.
+
+Surface2/wall2 and surface3/wall2 both complete6s in726365. Friction smoothing
+halved also completes6s in726304. Shell narrow-cutoff prescribed/capped histories
+726473/726475, strict stopping/half-step histories726480/726478 and matched
+full-field cost726460 all complete. Their finite completion does not qualify
+their physics or suppress reported penetration/cap/lifecycle defects.
+
+The actual-contact probe726488 completes native prescribed6s and capped9s,
+retaining reported penetration, counterpart public-link identity and uncapped
+friction utilization with1e-9N normal denominator floor. Outcome audit726482
+uses actual mass COMs and authored hand kinematics. First lift/hold maximum
+hand-relative COM drift is0.07351mm for the coarse reference candidate,
+2.823mm for DPR/SCR and12.54mm for stock Shell. This macroscopic observable is
+not a local stick/slip or friction-cone certificate.
+
+Wall-geometry audit726477 uses PR22's actual first fan face at each vertex,
+superseding the retained union-envelope assumption in audit-v1. Nominal500um
+has about21% normal second-moment discrepancy; volume/area thickness reduces
+it to0.344–0.368%, while sampled support gaps remain as large as30.16um.
+These direction samples are not an all-direction Hausdorff bound. The actual
+default2mm coupling softness adds4.605mm cutoff padding beyond half thickness.
+Separate8.686um softness inputs set that cutoff to20um; they retain PR22's
+velocity/impulse contact law and are not an IPC substitution or force fit.
+
+Source inspection finds QIPC's implemented barrier pair weight is
+`min(Aa,Ab)*dhat/4` and half-plane weight is `Avertex*dhat`, with the solver's
+dt-squared scaling. Its friction uses lagged normal force and C1 norm smoothing
+at `epsilon_velocity*dt`. Area weighting is present; the name Consistent IPC
+alone does not establish convergence. Source formulas and remaining mappings
+are in the [working report](QIPC_REFERENCE_RESULTS_20261018.md).
+
+The61440-tet observer initially triggers a cuSOLVER batched-eigensolver API
+error even on a known-finite analytic input. Independent NumPy stress/eigenvalue
+controls726471 pass with bounded16384-matrix observer chunks. This changes no
+elastic energy, native solver or physical state. The corrected refinement
+retry726472 records2.343s before the storage incident below; it is incomplete.
+
+## Shared storage incident,2026-10-18 UTC
+
+At approximately11:46UTC several long jobs exit1 near-simultaneously. Their
+final result/returncode files are absent; their last saved states are finite
+and do not report an invalid step. At11:58UTC a subsequent task-list write
+directly raises `OSError122: Disk quota exceeded`; `/mnt/data` reports800TB
+used and zero available. A separate write/fsync probe at12:02UTC also fails122.
+The missing terminal logs cannot prove the individual exception in every
+interrupted worker, so those exits are classified as incomplete during a
+confirmed storage outage, not counted as demonstrated physical solver failures.
+
+No task GPU writer remains active. Only private regenerable CUDA/Numba/
+Quadrants/RTC caches of explicitly successful terminal groups were removed.
+Genesis precomputations, native images/checkpoints, raw arrays, profiler traces,
+logs, source receipts and historical evidence remain unchanged. The data mount
+still reports no free space after that cleanup. No runtime dataset is diverted
+into home. Exact deletions are journaled in
+[the storage incident record](QIPC_STORAGE_INCIDENT_20261018.json).
+
+[The affected-run inventory](QIPC_STORAGE_AFFECTED_RUNS_20261018.json) records
+last valid journal rows, completion receipts and checkpoint SHA256 checks.
+Checkpointed capped case0/half-dt/surface2/strict runs stop at2.338/2.252/
+2.416/2.287s. Each has hash-verified actual public native checkpoints through2s.
+This verifies files, not cross-process scientific continuation; resume is not
+yet implemented or validated. The older non-checkpointed case0/case2 stop at
+5.270/8.613s and cannot be resumed from trajectory frames. Case7 does complete
+all9000 steps, one protocol reset,0 invalid steps and24 recorded PCG-cap steps.
+Its reference qualification remains false.
+
+The uncompleted prescribed wall8, half-contact-band and corrected surface3/wall4
+runs reach2.883/5.788/2.343s respectively. These prefixes do not replace complete
+refinement histories. Shell max-only observer work is prepared but has not been
+executed; there is no Shell max-only timing claim. Final uncertainty/reaction/
+energy audits, capped comparisons, secondary Shell timing, figures, compact
+publication and requirement closeout still need a writable persistent data
+location. The goal stays active and all completion gates remain required.
 
 ## Completion gates
 

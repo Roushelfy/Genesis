@@ -1,0 +1,183 @@
+{
+  "source": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-geometry-audit-v2/group0/geometry/result.json",
+    "bytes": 10753,
+    "sha256": "c183d28ca23805fe91060da297732791e3819e59a63b1f0158c58bce565cc487"
+  },
+  "kind": "shell-wall-collision-and-bending-geometry-audit",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-113",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726477",
+      "SLURM_ARRAY_JOB_ID": "726477",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-4d15444c-fb29-f665-9616-e2238ca38c67, 00000000:C0:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "parallel_plate_second_moment_control_passed": true,
+  "sampled_support_directions": 1536,
+  "records": [
+    {
+      "level": 0,
+      "variant": "nominal500um",
+      "solid_source": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface0-wall2.npz",
+        "bytes": 6831,
+        "sha256": "e1429fac5e50443ff137ddac0440f2ff51cc70a9d5ef7dbebc45c78fb2a40545"
+      },
+      "wall_input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-and-complete-fields-v1/group0/wall/surface0.npz",
+        "bytes": 3154,
+        "sha256": "b58bef0dd754148723236755da3c948dc38816a4115ebe751d892d67170bdd49"
+      },
+      "actual_shell_layout": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-contact-layout-v1/group0/surface0/layout.npz",
+        "bytes": 2671,
+        "sha256": "fd7915fccb166f02ea7bd59b2e1559e4d0582e215889d582588aaf36e405b634"
+      },
+      "maximum_geometry_influence_cutoff_padding_m": 0.004605170185988092,
+      "minimum_sampled_support_gap_m": -2.7755575615628914e-17,
+      "maximum_sampled_support_gap_m": 2.3090011643706748e-05,
+      "maximum_absolute_sampled_support_gap_m": 2.3090011643706748e-05,
+      "normal_second_moment_area_weighted_relative_difference": 0.20954645082342205,
+      "minimum_face_normal_second_moment_relative_difference": 0.12274522155265288,
+      "maximum_face_normal_second_moment_relative_difference": 0.41982061301868606
+    },
+    {
+      "level": 0,
+      "variant": "wall-volume",
+      "solid_source": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface0-wall2.npz",
+        "bytes": 6831,
+        "sha256": "e1429fac5e50443ff137ddac0440f2ff51cc70a9d5ef7dbebc45c78fb2a40545"
+      },
+      "wall_input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-and-complete-fields-v1/group0/wall/surface0.npz",
+        "bytes": 3154,
+        "sha256": "b58bef0dd754148723236755da3c948dc38816a4115ebe751d892d67170bdd49"
+      },
+      "actual_shell_layout": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-contact-layout-v1/group0/surface0/layout.npz",
+        "bytes": 2671,
+        "sha256": "fd7915fccb166f02ea7bd59b2e1559e4d0582e215889d582588aaf36e405b634"
+      },
+      "maximum_geometry_influence_cutoff_padding_m": 0.004605170185988092,
+      "minimum_sampled_support_gap_m": -2.4250377219776215e-05,
+      "maximum_sampled_support_gap_m": 1.3569680381748939e-05,
+      "maximum_absolute_sampled_support_gap_m": 2.4250377219776215e-05,
+      "normal_second_moment_area_weighted_relative_difference": 0.0036784903175965445,
+      "minimum_face_normal_second_moment_relative_difference": -0.008265667002186665,
+      "maximum_face_normal_second_moment_relative_difference": 0.006801795160861299
+    },
+    {
+      "level": 1,
+      "variant": "nominal500um",
+      "solid_source": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall2.npz",
+        "bytes": 22313,
+        "sha256": "0320fa555277b5147af4ee27517e65773c64c11338b74b2eaa8f8ae1def9368b"
+      },
+      "wall_input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-and-complete-fields-v1/group0/wall/surface1.npz",
+        "bytes": 7908,
+        "sha256": "72d13a34c90bce8530caf1b9b5ab3c645fbd8605162fe3fbe522daac5d2092ff"
+      },
+      "actual_shell_layout": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-contact-layout-v1/group1/surface1/layout.npz",
+        "bytes": 6328,
+        "sha256": "c2f74a40801c8955a9366096a1ec2a97fffeb3488fba16f5552ed12d9a11e1dd"
+      },
+      "maximum_geometry_influence_cutoff_padding_m": 0.004605170185988092,
+      "minimum_sampled_support_gap_m": -2.7755575615628914e-17,
+      "maximum_sampled_support_gap_m": 2.3090011643706748e-05,
+      "maximum_absolute_sampled_support_gap_m": 2.3090011643706748e-05,
+      "normal_second_moment_area_weighted_relative_difference": 0.21002931282516368,
+      "minimum_face_normal_second_moment_relative_difference": 0.1019632215200475,
+      "maximum_face_normal_second_moment_relative_difference": 0.5110858113773492
+    },
+    {
+      "level": 1,
+      "variant": "wall-volume",
+      "solid_source": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall2.npz",
+        "bytes": 22313,
+        "sha256": "0320fa555277b5147af4ee27517e65773c64c11338b74b2eaa8f8ae1def9368b"
+      },
+      "wall_input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-and-complete-fields-v1/group0/wall/surface1.npz",
+        "bytes": 7908,
+        "sha256": "72d13a34c90bce8530caf1b9b5ab3c645fbd8605162fe3fbe522daac5d2092ff"
+      },
+      "actual_shell_layout": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-contact-layout-v1/group1/surface1/layout.npz",
+        "bytes": 6328,
+        "sha256": "c2f74a40801c8955a9366096a1ec2a97fffeb3488fba16f5552ed12d9a11e1dd"
+      },
+      "maximum_geometry_influence_cutoff_padding_m": 0.004605170185988092,
+      "minimum_sampled_support_gap_m": -2.819175431837892e-05,
+      "maximum_sampled_support_gap_m": 1.3352701659075789e-05,
+      "maximum_absolute_sampled_support_gap_m": 2.819175431837892e-05,
+      "normal_second_moment_area_weighted_relative_difference": 0.003470261603167942,
+      "minimum_face_normal_second_moment_relative_difference": -0.008565921640242662,
+      "maximum_face_normal_second_moment_relative_difference": 0.008385518772235602
+    },
+    {
+      "level": 2,
+      "variant": "nominal500um",
+      "solid_source": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz",
+        "bytes": 144512,
+        "sha256": "9d0d4f99c71578bd3f6bb039f9c72a5abbf2a8159f0209b4b891a3bda2647998"
+      },
+      "wall_input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-and-complete-fields-v1/group0/wall/surface2.npz",
+        "bytes": 24936,
+        "sha256": "6bc9993a08f18b971218ae30b40711a07d19d24e22879d4169f6fa84aa262d82"
+      },
+      "actual_shell_layout": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-contact-layout-v1/group2/surface2/layout.npz",
+        "bytes": 19805,
+        "sha256": "ecbd889d3a927cba75b33ba85db21ffca280b65995abbf58a2d0a14275ba4cb5"
+      },
+      "maximum_geometry_influence_cutoff_padding_m": 0.004605170185988092,
+      "minimum_sampled_support_gap_m": -2.7755575615628914e-17,
+      "maximum_sampled_support_gap_m": 2.3090011643706748e-05,
+      "maximum_absolute_sampled_support_gap_m": 2.3090011643706748e-05,
+      "normal_second_moment_area_weighted_relative_difference": 0.210181819737119,
+      "minimum_face_normal_second_moment_relative_difference": 0.09127637670102501,
+      "maximum_face_normal_second_moment_relative_difference": 0.5594808856530573
+    },
+    {
+      "level": 2,
+      "variant": "wall-volume",
+      "solid_source": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz",
+        "bytes": 144512,
+        "sha256": "9d0d4f99c71578bd3f6bb039f9c72a5abbf2a8159f0209b4b891a3bda2647998"
+      },
+      "wall_input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-and-complete-fields-v1/group0/wall/surface2.npz",
+        "bytes": 24936,
+        "sha256": "6bc9993a08f18b971218ae30b40711a07d19d24e22879d4169f6fa84aa262d82"
+      },
+      "actual_shell_layout": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-contact-layout-v1/group2/surface2/layout.npz",
+        "bytes": 19805,
+        "sha256": "ecbd889d3a927cba75b33ba85db21ffca280b65995abbf58a2d0a14275ba4cb5"
+      },
+      "maximum_geometry_influence_cutoff_padding_m": 0.004605170185988092,
+      "minimum_sampled_support_gap_m": -3.0162442867680272e-05,
+      "maximum_sampled_support_gap_m": 1.3565698393874087e-05,
+      "maximum_absolute_sampled_support_gap_m": 3.0162442867680272e-05,
+      "normal_second_moment_area_weighted_relative_difference": 0.0034375521629679,
+      "minimum_face_normal_second_moment_relative_difference": -0.008444566174190945,
+      "maximum_face_normal_second_moment_relative_difference": 0.008338706160783943
+    }
+  ],
+  "scope": "Pure rest geometry, no force/stress fitting or density scaling. Actual PR22 topology selects its FIRST fan face thickness at each physical vertex. Solid support is the fixed outer polyhedron; nominal Shell half-thickness support is sampled on common face normals, wall directors and axes. SDF softness adds a separately recorded influence padding at the0.1 cutoff; the velocity-projection law is not an IPC barrier and no penetration guarantee is implied. This is not an exact all-direction Hausdorff bound or replacement collider. Exact tet normal second moments versus h^3/12 quantify geometry, not complete nonlinear bending error. Matched mass does not imply matched contact or bending geometry."
+}

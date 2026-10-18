@@ -1,0 +1,35 @@
+{
+  "source": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-roundoff-reference-v1/group2/case7/result.json",
+    "bytes": 714,
+    "sha256": "92477dedafd80758ee045256a51960a37e44f76eec6f220038fd57a6bfe0f59b"
+  },
+  "result": {
+    "kind": "QIPC-Franka-capped-candidate",
+    "config": {
+      "dt": 0.001,
+      "young": 10000000000.0,
+      "poisson": 0.3,
+      "density": 2000.0,
+      "velocity_tolerance": 1e-07,
+      "linear_tolerance": 1e-05,
+      "max_newton": 256,
+      "max_pcg": 4096,
+      "d_hat": 2e-05,
+      "friction": 0.5830322319136272,
+      "friction_epsilon_velocity": 0.0001,
+      "resistance": 10000000000.0,
+      "energy": "snh",
+      "mas_precision": "double",
+      "linear_solver": "partition_pcg"
+    },
+    "requested_steps": 9000,
+    "executed_steps": 9000,
+    "completed_requested_history": true,
+    "invalid_steps": 0,
+    "pcg_cap_steps": 24,
+    "resets": 1,
+    "intrusive_elapsed_seconds": 2994.1538555259467,
+    "reference_qualified": false
+  }
+}

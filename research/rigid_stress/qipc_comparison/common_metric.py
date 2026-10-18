@@ -201,3 +201,23 @@ def resultants(tensor, columns):
     np.add.at(membrane, columns.face_index, weights[:, None, None] * tensor)
     np.add.at(bending, columns.face_index, (weights * columns.z)[:, None, None] * tensor)
     return membrane, bending
+
+
+def time_integrated_error(times, reference_norms, error_norms, floor=1.0):
+    """Same-observable L2 over all fixed end-of-interval observation times."""
+    times, reference_norms, error_norms = map(np.asarray, (times, reference_norms, error_norms))
+    widths = np.diff(np.r_[0.0, times])
+    assert len(times) and (widths > 0).all()
+    assert np.isfinite(reference_norms).all() and np.isfinite(error_norms).all()
+    denominator = np.dot(widths, reference_norms**2)
+    numerator = np.dot(widths, error_norms**2)
+    reference_rms = np.sqrt(denominator / times[-1]).item()
+    return {
+        "relative_error": np.sqrt(numerator / denominator).item() if reference_rms > floor else None,
+        "reference_rms_over_time": reference_rms,
+        "absolute_rms_error_over_time": np.sqrt(numerator / times[-1]).item(),
+        "observations": len(times),
+        "duration_s": times[-1].item(),
+        "relative_denominator_floor": floor,
+        "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers.",
+    }
