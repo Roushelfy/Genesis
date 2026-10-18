@@ -116,6 +116,7 @@ def main():
             'export GS_CACHE_FILE_PATH="$task_run/cache/genesis" QD_OFFLINE_CACHE_FILE_PATH="$task_run/cache/quadrants"',
             'export CUDA_CACHE_PATH="$task_run/cache/cuda" NUMBA_CACHE_DIR="$task_run/cache/numba"',
             'export MPLCONFIGDIR="$task_run/cache/matplotlib"',
+            'export QIPC_RTC_CACHE="$task_run/cache/qipc_rtc"',
             f"export PYTHONPATH={shlex.quote(str(tools) + ':' + str(source))}",
             f"cd {shlex.quote(str(source))}",
             'trap \'task_status=$?; printf "%s\\n" "$task_status" > "$task_run/returncode.txt"; exit "$task_status"\' EXIT',

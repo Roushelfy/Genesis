@@ -54,11 +54,50 @@ Public `RigidStressOptions.dpr(...)` / `.scr(...)` constructors are implemented
 as complete option presets with the old explicit identifiers. All other defaults
 and numerical kernels are unchanged. Full-field/max shared-operator tests now
 exercise DPR and verify complete SCR serialized equivalence. CPU/CUDA execution
-of that test is pending at this checkpoint.
+of that focused test passed (job726151; one test per backend).
 
-No QIPC egg reference, stress-error ranking, grasp qualification or new
-throughput result is claimed yet. Exact controls and build receipts are under
-`runs/20261018-qipc-reference/{controls-v1,build-v1,build-v2}/` on data.
+Build726150 completed/imported successfully. Its eight compile/link steps build
+the viewer; the solver SHA above is unchanged. The first failed runtime and
+import log remain preserved. Successful runtime extensions are explicitly
+linked into the isolated original checkout.
+
+## First actual dynamics and numerical controls
+
+Original-main hollow-egg/plane workflow726153 completed20 steps of1ms,
+including actual barrier/friction contact gradients, unprojected elastic
+Cauchy fields and momentum/energy diagnostics. Its final local force residual
+was1.98% of nodal contact-force norm, with15 linear-cap steps. Successful
+process completion does not establish physical-reference qualification.
+
+Bounded controls726158 retain the same3840-tet input and unmodified main.
+With diagnostics enabled, default float MAS reaches4096 PCG iterations on15/20
+steps; its final recursive residual increases in the last Newton system.
+Double MAS has0/20 such cap steps and final local force residual4.45e-6
+relative to contact. Standard versus partitioned PCG under double MAS gives
+13294.9801 versus13294.9806Pa final raw VM peak. Actual sparse systems and
+residual histories are retained. This is a precision diagnosis, not spatial/
+contact/friction convergence or grasp qualification.
+
+The same job ran independent CPU P1 isotropic-stiffness/lumped-mass implicit
+Euler controls against actual QIPC FEM dynamics, for SNH/Hencky and two load
+scales. Final volume-weighted tensor discrepancies range7.0e-7 to4.23e-4.
+The tight1e-8m/s SNH/full-load point hits its256-Newton cap after line-search
+stagnation; retain that failure and inspect stopping/energy precision before
+admission. Constitutive and dynamic differences are recorded separately.
+
+Source audit finds original main does not import MJCF damping/armature; drive
+kv also lies outside its proportional-force cap. These are material mismatches
+for the original Franka task. Integration641459b8826bb061e1bba01dfe9eba39793c3855
+contains authored passive terms and hard minimal-coordinate joints, including
+commit a9206cd11. Its previous native build has an exact matching-source receipt
+and SHA8763018e8ca49e2b7c156cc5cdcf42318b03dfd0363618c3b824daaca39e1213.
+An isolated detached candidate explicitly reuses that image. It is a different
+candidate from fe252bd30 main; new egg and robot controls must qualify it before
+use. Old task quality is not transferred to this egg.
+
+No three-way stress-error ranking, complete-grasp qualification or new rate is
+claimed. Exact receipts live under `runs/20261018-qipc-reference/` on data,
+including `linear-controls-v1` and `meta/integration-native-reuse-v1`.
 
 ## Completion gates
 
