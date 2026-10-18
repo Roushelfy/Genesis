@@ -1,0 +1,19 @@
+{
+  "scope": "Reuse prior numerical/lifecycle acceptance only where source is unchanged; current model/load replays are separate.",
+  "previous_source_manifest": "research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/selected/snapshot.json",
+  "previous_qualification_revision": "1606ee3a9e9628a935ad5e446984f920af3adc66",
+  "previous_qualification_path": "research/rigid_stress/docs/PRACTICAL_THROUGHPUT_QUALIFICATION_RECHECK_20261017.json",
+  "previous_qualification_sha256": "fc196ce2eeb766e0f5c77b3ccfb0c8d589c3ed064b2b992af2699219af1f2bda",
+  "current_source_manifest_sha256": "8aaeed17e16822cdf084d155c59469d8f68e40a1a14329096c3072d19d42878d",
+  "matching_engine_files": 841,
+  "all_engine_sha256_identical": true,
+  "changed_non_engine_snapshot_files": [
+    "examples/rigid/franka_egg_stress.py",
+    "examples/speed_benchmark/rigid_stress.py",
+    "examples/speed_benchmark/rigid_stress_metrics.py",
+    "research/rigid_stress/docs/NATIVE_API.md",
+    "source.patch"
+  ],
+  "test_changes_since_previous_qualification": [],
+  "passed": true
+}

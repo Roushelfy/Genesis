@@ -1,3 +1,19 @@
+# Current pressure/intrinsic comparison
+
+The pressure/configuration comparison uses
+`runs/20261017-pressure-comparison/` under the established data root below.
+It contains immutable current899-file native snapshots, small reference and
+orchestration source captures, paired four-scope scaling, separately sampled
+memory/capacity, moving traces, current R/L/M/convex/narrow-gap fields and
+complete-grasp reward diagnostics. Each process has explicit data-side
+output/tmp/cache/log paths. The frozen eight-condition bank and previous
+independent reference packets are read without migration or rewriting.
+Selected compact results/figure sources are linked from the comparison
+report; full raw measurements and arrays remain under this data-side run root.
+PDF export QA additionally uses the isolated data-side asset
+`assets/pymupdf-1.26.5/`; its wheel/install receipt is under the comparison run's
+`pdf-qa-install-v1/`. The active scientific environments are not modified.
+
 # Current checkout and archived publications
 
 The 2026-10-17 branch cleanup retains seven canonical current evidence/source

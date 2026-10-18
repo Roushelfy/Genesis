@@ -1,0 +1,26 @@
+{
+  "reviewed_utc": "2026-10-18T01:38:48.036948+00:00",
+  "source_snapshot": "plot-source-v5",
+  "source_inventory_sha256": "bcff8d68aed699a54517fad6eb3504e4b8b02f3fb0f7ca6e51b83d977303c1e9",
+  "metadata_sha256": "18982237820d7c3e0c37a29ac42bdcf9d571861b00810828e2bf5c5240a76d1c",
+  "manual_visual_review": "pass",
+  "figures": [
+    "performance",
+    "model-error-cost",
+    "reward-phase"
+  ],
+  "checks": {
+    "all_final_png_previews_inspected": true,
+    "all_actual_pdf_rasters_inspected": true,
+    "labels_legends_units_readable": true,
+    "no_visible_clipping_or_text_data_overlap": true,
+    "markers_and_line_styles_distinguish_models": true,
+    "unsupported_cases_and_raw_repeats_retained": true,
+    "editable_svg_text": true,
+    "pdf_fonts_embedded_truetype_no_type3": true,
+    "exact_width_183mm_and_png_450dpi": true
+  },
+  "scheduler_receipts": "725768_0|COMPLETED|0:0|00:01:06|cpu-207-115\n725833_0|COMPLETED|0:0|00:00:58|cpu-207-115\n725834_0|COMPLETED|0:0|00:00:47|cpu-207-115\n",
+  "remaining_visual_issues": [],
+  "scientific_limits": "Conditional model/reference comparison; raw repeats are not confidence intervals and physical damage thresholds remain uncalibrated."
+}

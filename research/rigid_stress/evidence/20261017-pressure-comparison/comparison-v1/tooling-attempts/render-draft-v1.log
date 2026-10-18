@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/plot-source-v1/plot_comparison.py", line 356, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/plot-source-v1/plot_comparison.py", line 350, in main
+    errors(args, read(args.metadata), read(args.models))
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/plot-source-v1/plot_comparison.py", line 245, in errors
+    bar.set_ticks([0.1, 1, 10, 100], ["0.1", "1", "10", "100"])
+TypeError: Colorbar.set_ticks() takes 2 positional arguments but 3 were given

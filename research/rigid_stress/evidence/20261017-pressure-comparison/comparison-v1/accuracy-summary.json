@@ -1,0 +1,508 @@
+{
+  "scope": "Reduce audited model fields and full-field oracle results to decision metrics.",
+  "groups": [
+    {
+      "geometry": "egg",
+      "model": "pressure",
+      "accepted_fields": 8,
+      "maximum_local_force_shift_N": 1.3329179921125024e-15,
+      "maximum_local_moment_shift_Nm": 4.345294622625049e-18,
+      "maximum_aggregate_force_error_N": 1.4172351069131001e-15,
+      "maximum_aggregate_moment_error_Nm": 1.3032036138620188e-18,
+      "loaded_area_range_m2": [
+        4.497594469157247e-05,
+        0.0002209158070168397
+      ],
+      "maximum_opposing_normal_force_fraction": 0.467379344658612,
+      "cones": {
+        "supplied_pad": {
+          "maximum_raw_violation_Pa": 0.0,
+          "maximum_violating_force_fraction": 0.0
+        },
+        "material": {
+          "maximum_raw_violation_Pa": 240982.2531425075,
+          "maximum_violating_force_fraction": 0.5115862447121022
+        }
+      },
+      "by_radius": [
+        {
+          "radius_m": 0.003,
+          "volume_tensor_M_vs_L_range": [
+            0.10920825721526224,
+            0.13806183466723573
+          ],
+          "raw_peak_M_vs_L_fractional_change_range": [
+            -0.1939074195344439,
+            -0.1894770198993384
+          ]
+        },
+        {
+          "radius_m": 0.006,
+          "volume_tensor_M_vs_L_range": [
+            0.20289491513034977,
+            0.25727761406797894
+          ],
+          "raw_peak_M_vs_L_fractional_change_range": [
+            -0.368065193324293,
+            -0.35341204427867323
+          ]
+        }
+      ]
+    },
+    {
+      "geometry": "egg",
+      "model": "body_source_prior",
+      "accepted_fields": 8,
+      "maximum_local_force_shift_N": 0.002973556723939264,
+      "maximum_local_moment_shift_Nm": 0.0001918961614571368,
+      "maximum_aggregate_force_error_N": 1.0447271637217253e-10,
+      "maximum_aggregate_moment_error_Nm": 6.134350524927349e-13,
+      "loaded_area_range_m2": [
+        3.157231736153898e-05,
+        0.00011566601959676624
+      ],
+      "maximum_opposing_normal_force_fraction": 0.0,
+      "cones": {
+        "supplied_pad": {
+          "maximum_raw_violation_Pa": 0.0,
+          "maximum_violating_force_fraction": 0.0
+        },
+        "material": {
+          "maximum_raw_violation_Pa": 3.5818777595391228e-12,
+          "maximum_violating_force_fraction": 0.0
+        }
+      },
+      "by_radius": [
+        {
+          "radius_m": 0.003,
+          "volume_tensor_M_vs_L_range": [
+            0.10603009388643743,
+            0.12997877233716124
+          ],
+          "raw_peak_M_vs_L_fractional_change_range": [
+            -0.1996477521811303,
+            -0.19319309888453462
+          ]
+        },
+        {
+          "radius_m": 0.006,
+          "volume_tensor_M_vs_L_range": [
+            0.20205061469139143,
+            0.25551108358591146
+          ],
+          "raw_peak_M_vs_L_fractional_change_range": [
+            -0.37632315374172676,
+            -0.3641293285981294
+          ]
+        }
+      ]
+    },
+    {
+      "geometry": "ellipsoid",
+      "model": "pressure",
+      "accepted_fields": 6,
+      "maximum_local_force_shift_N": 1.1102230246251565e-16,
+      "maximum_local_moment_shift_Nm": 4.715532046870057e-20,
+      "maximum_aggregate_force_error_N": 1.0755285551056204e-16,
+      "maximum_aggregate_moment_error_Nm": 1.7092334671449656e-19,
+      "loaded_area_range_m2": [
+        1.7724044631761484e-05,
+        2.848178472063727e-05
+      ],
+      "maximum_opposing_normal_force_fraction": 0.0,
+      "cones": {
+        "supplied_pad": {
+          "maximum_raw_violation_Pa": 0.0,
+          "maximum_violating_force_fraction": 0.0
+        },
+        "material": {
+          "maximum_raw_violation_Pa": 0.0,
+          "maximum_violating_force_fraction": 0.0
+        }
+      },
+      "weighted_tensor_relative_L2_range": [
+        0.0033715422389446483,
+        0.006021980134663928
+      ],
+      "raw_peak_fractional_change_range": [
+        -0.016646008861651684,
+        -0.010197310878451327
+      ],
+      "hotspot_distance_from_reference_range_m": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "geometry": "ellipsoid",
+      "model": "body_source_prior",
+      "accepted_fields": 8,
+      "maximum_local_force_shift_N": 0.003377623674227869,
+      "maximum_local_moment_shift_Nm": 2.682495161751837e-06,
+      "maximum_aggregate_force_error_N": 1.7042155860643378e-12,
+      "maximum_aggregate_moment_error_Nm": 1.6831079815639376e-14,
+      "loaded_area_range_m2": [
+        1.7187797514366632e-05,
+        2.7932521308422326e-05
+      ],
+      "maximum_opposing_normal_force_fraction": 0.0,
+      "cones": {
+        "supplied_pad": {
+          "maximum_raw_violation_Pa": 7511.198127912225,
+          "maximum_violating_force_fraction": 0.6280272972162807
+        },
+        "material": {
+          "maximum_raw_violation_Pa": 7.12950202001458e-12,
+          "maximum_violating_force_fraction": 0.0
+        }
+      },
+      "weighted_tensor_relative_L2_range": [
+        0.002664458712477776,
+        0.05207690379929818
+      ],
+      "raw_peak_fractional_change_range": [
+        -0.0001686559677296362,
+        0.03984853392794241
+      ],
+      "hotspot_distance_from_reference_range_m": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "geometry": "narrow_gap",
+      "model": "pressure",
+      "accepted_fields": 6,
+      "maximum_local_force_shift_N": 1.249000902703301e-16,
+      "maximum_local_moment_shift_Nm": 1.6266561508358556e-18,
+      "maximum_aggregate_force_error_N": 1.5108076114895298e-16,
+      "maximum_aggregate_moment_error_Nm": 1.4056381134823085e-18,
+      "loaded_area_range_m2": [
+        2.94633618975959e-05,
+        5.002774622714788e-05
+      ],
+      "maximum_opposing_normal_force_fraction": 0.27901425449889833,
+      "cones": {
+        "supplied_pad": {
+          "maximum_raw_violation_Pa": 0.0,
+          "maximum_violating_force_fraction": 0.0
+        },
+        "material": {
+          "maximum_raw_violation_Pa": 11595.399121314838,
+          "maximum_violating_force_fraction": 0.2790171505317417
+        }
+      },
+      "weighted_tensor_relative_L2_range": [
+        0.32227131751479293,
+        0.5582675968806641
+      ],
+      "raw_peak_fractional_change_range": [
+        -0.5581171027288656,
+        -0.32235231735085657
+      ],
+      "hotspot_distance_from_reference_range_m": [
+        0.0,
+        0.004001695624741246
+      ],
+      "cross_gap_force_fraction_range": [
+        0.16134157021198414,
+        0.27901425449889833
+      ]
+    },
+    {
+      "geometry": "narrow_gap",
+      "model": "body_source_prior",
+      "accepted_fields": 8,
+      "maximum_local_force_shift_N": 0.004412179019326571,
+      "maximum_local_moment_shift_Nm": 3.665768751038202e-05,
+      "maximum_aggregate_force_error_N": 3.112298624232487e-11,
+      "maximum_aggregate_moment_error_Nm": 2.624978874534833e-13,
+      "loaded_area_range_m2": [
+        1.726696358102568e-05,
+        2.8206229271902272e-05
+      ],
+      "maximum_opposing_normal_force_fraction": 0.0,
+      "cones": {
+        "supplied_pad": {
+          "maximum_raw_violation_Pa": 0.0,
+          "maximum_violating_force_fraction": 0.0
+        },
+        "material": {
+          "maximum_raw_violation_Pa": 6.108506056978154e-12,
+          "maximum_violating_force_fraction": 0.0
+        }
+      },
+      "weighted_tensor_relative_L2_range": [
+        0.00105892763776323,
+        0.09295204092645704
+      ],
+      "raw_peak_fractional_change_range": [
+        -0.0006313380410222225,
+        0.08124212785575868
+      ],
+      "hotspot_distance_from_reference_range_m": [
+        0.0,
+        0.0
+      ],
+      "cross_gap_force_fraction_range": [
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "paired_egg_hotspots": [
+    {
+      "step": 11,
+      "radius_m": 0.003,
+      "pressure_position_m": [
+        0.0,
+        -4.518088265618559e-19,
+        -0.028363975783367152
+      ],
+      "intrinsic_position_m": [
+        0.0,
+        -4.518088265618559e-19,
+        -0.028363975783367152
+      ],
+      "paired_hotspot_distance_m": 0.0
+    },
+    {
+      "step": 11,
+      "radius_m": 0.006,
+      "pressure_position_m": [
+        0.0,
+        -4.518088265618559e-19,
+        -0.028363975783367152
+      ],
+      "intrinsic_position_m": [
+        0.0,
+        -4.518088265618559e-19,
+        -0.028363975783367152
+      ],
+      "paired_hotspot_distance_m": 0.0
+    },
+    {
+      "step": 866,
+      "radius_m": 0.003,
+      "pressure_position_m": [
+        0.0,
+        0.022,
+        0.0016360242166328469
+      ],
+      "intrinsic_position_m": [
+        0.0,
+        0.022,
+        0.0016360242166328469
+      ],
+      "paired_hotspot_distance_m": 0.0
+    },
+    {
+      "step": 866,
+      "radius_m": 0.006,
+      "pressure_position_m": [
+        0.0,
+        0.022,
+        0.0016360242166328469
+      ],
+      "intrinsic_position_m": [
+        0.0,
+        0.022,
+        0.0016360242166328469
+      ],
+      "paired_hotspot_distance_m": 0.0
+    },
+    {
+      "step": 869,
+      "radius_m": 0.003,
+      "pressure_position_m": [
+        0.0,
+        -0.022,
+        0.0016360242166328469
+      ],
+      "intrinsic_position_m": [
+        0.0,
+        -0.022,
+        0.0016360242166328469
+      ],
+      "paired_hotspot_distance_m": 0.0
+    },
+    {
+      "step": 869,
+      "radius_m": 0.006,
+      "pressure_position_m": [
+        0.0,
+        -0.022,
+        0.0016360242166328469
+      ],
+      "intrinsic_position_m": [
+        0.0,
+        -0.022,
+        0.0016360242166328469
+      ],
+      "paired_hotspot_distance_m": 0.0
+    },
+    {
+      "step": 2640,
+      "radius_m": 0.003,
+      "pressure_position_m": [
+        0.0,
+        0.022,
+        0.0016360242166328469
+      ],
+      "intrinsic_position_m": [
+        0.0,
+        0.022,
+        0.0016360242166328469
+      ],
+      "paired_hotspot_distance_m": 0.0
+    },
+    {
+      "step": 2640,
+      "radius_m": 0.006,
+      "pressure_position_m": [
+        0.0,
+        0.022,
+        0.0016360242166328469
+      ],
+      "intrinsic_position_m": [
+        0.0,
+        0.022,
+        0.0016360242166328469
+      ],
+      "paired_hotspot_distance_m": 0.0
+    }
+  ],
+  "pressure_oracles": [
+    {
+      "case": "tasks32",
+      "sampled_complete_fields": 120,
+      "partial_resets": 32,
+      "scatter_overflow_calls": 451,
+      "maximum_complete_gauge_budget_fraction": 0.005950410777573463,
+      "maximum_tensor_error_Pa": 1.5503401300520636e-06,
+      "maximum_global_peak_error_Pa": 1.2068121577613056e-06,
+      "maximum_global_peak_relative_error": 2.519224515437172e-11,
+      "zero_reference_fields_with_undefined_relative_error": 1,
+      "maximum_absolute_error_on_zero_reference_fields_Pa": 0.0,
+      "maximum_individual_force_error_N": 2.4999285328858064e-16,
+      "maximum_individual_moment_error_Nm": 2.332712670036199e-19
+    },
+    {
+      "case": "tasks128",
+      "sampled_complete_fields": 120,
+      "partial_resets": 32,
+      "scatter_overflow_calls": 0,
+      "maximum_complete_gauge_budget_fraction": 0.0060638982752527085,
+      "maximum_tensor_error_Pa": 1.4809393178438768e-06,
+      "maximum_global_peak_error_Pa": 1.1588635970838368e-06,
+      "maximum_global_peak_relative_error": 2.3164276196718947e-11,
+      "zero_reference_fields_with_undefined_relative_error": 1,
+      "maximum_absolute_error_on_zero_reference_fields_Pa": 0.0,
+      "maximum_individual_force_error_N": 2.4999285328858064e-16,
+      "maximum_individual_moment_error_Nm": 2.332712670036199e-19
+    },
+    {
+      "case": "tasks256",
+      "sampled_complete_fields": 120,
+      "partial_resets": 32,
+      "scatter_overflow_calls": 0,
+      "maximum_complete_gauge_budget_fraction": 0.005702546852286726,
+      "maximum_tensor_error_Pa": 1.686871655692812e-06,
+      "maximum_global_peak_error_Pa": 1.848959072958678e-06,
+      "maximum_global_peak_relative_error": 3.172270736593033e-11,
+      "zero_reference_fields_with_undefined_relative_error": 1,
+      "maximum_absolute_error_on_zero_reference_fields_Pa": 0.0,
+      "maximum_individual_force_error_N": 2.4999285328858064e-16,
+      "maximum_individual_moment_error_Nm": 2.332712670036199e-19
+    },
+    {
+      "case": "fast128",
+      "sampled_complete_fields": 120,
+      "partial_resets": 32,
+      "scatter_overflow_calls": 0,
+      "maximum_complete_gauge_budget_fraction": 0.006335432524646454,
+      "maximum_tensor_error_Pa": 2.064604814222548e-06,
+      "maximum_global_peak_error_Pa": 2.0874576875939965e-06,
+      "maximum_global_peak_relative_error": 3.3227883937040903e-11,
+      "zero_reference_fields_with_undefined_relative_error": 1,
+      "maximum_absolute_error_on_zero_reference_fields_Pa": 0.0,
+      "maximum_individual_force_error_N": 2.4999285328858064e-16,
+      "maximum_individual_moment_error_Nm": 2.332712670036199e-19
+    }
+  ],
+  "unsupported_controls": [
+    {
+      "geometry": "ellipsoid",
+      "case": "near_slip",
+      "radius_m": 0.0024,
+      "reference_peak_Pa": 14772.066767774171,
+      "reference_peak_position_m": [
+        0.012000000000000002,
+        -3.67394039744206e-18,
+        -1.6597911650929065e-17
+      ],
+      "model": "pressure",
+      "native_quadrature": 10,
+      "ports": 8,
+      "accepted": false,
+      "classification": "unsupported_free_contact_moment"
+    },
+    {
+      "geometry": "ellipsoid",
+      "case": "near_slip",
+      "radius_m": 0.003,
+      "reference_peak_Pa": 11040.493402650976,
+      "reference_peak_position_m": [
+        0.012000000000000002,
+        -3.67394039744206e-18,
+        -1.6597911650929065e-17
+      ],
+      "model": "pressure",
+      "native_quadrature": 10,
+      "ports": 8,
+      "accepted": false,
+      "classification": "unsupported_free_contact_moment"
+    },
+    {
+      "geometry": "narrow_gap",
+      "case": "near_slip",
+      "radius_m": 0.0024,
+      "reference_peak_Pa": 52561.847743318474,
+      "reference_peak_position_m": [
+        -9.349544452867433e-05,
+        -0.0022321609471377944,
+        0.003296328173214431
+      ],
+      "model": "pressure",
+      "native_quadrature": 10,
+      "ports": 8,
+      "accepted": false,
+      "classification": "unsupported_free_contact_moment"
+    },
+    {
+      "geometry": "narrow_gap",
+      "case": "near_slip",
+      "radius_m": 0.003,
+      "reference_peak_Pa": 52868.367494558035,
+      "reference_peak_position_m": [
+        -9.349544452867433e-05,
+        -0.0022321609471377944,
+        0.003296328173214431
+      ],
+      "model": "pressure",
+      "native_quadrature": 10,
+      "ports": 8,
+      "accepted": false,
+      "classification": "unsupported_free_contact_moment"
+    }
+  ],
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/model-audit-v2/model-comparison.json": "2a023ec1340434775a98b431d7da31cb5289df2640faf69e992b1eb3b81cdd80",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/pressure-oracle-tasks32-v1/oracle.json": "ddf1f0945f4d7d40157202acf5cc4fc2f2641b7205a834f96602624f4d68431b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/pressure-oracle-tasks128-v1/oracle.json": "d877df07bb527cb9bd7604468348e7ee43948f1fb6b6639c8d487f19d1b60b62",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/pressure-oracle-tasks256-v1/oracle.json": "db0e33f10c7a9e2367a977ce619128911171d78bbe9b48d87223f46c3d54c4bd",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261017-pressure-comparison/pressure-oracle-fast128-v1/oracle.json": "61788a351cb0771f5062d8982c9fa88a3d30e52475528358e347c0187612b6be"
+  },
+  "limitations": "Accepted-field ranges use the declared law; pressure excludes four unsupported free-moment cases. Model envelopes with unequal supported cases are not paired accuracy improvements. Hotspot coordinates use the material/reference frame; raw maxima are not smoothed.",
+  "passed": true
+}

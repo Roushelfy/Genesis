@@ -1,0 +1,36 @@
+{
+  "goal_commit": "6dae89e13f6e213b61fbcd6e28be3c1d5905f17f",
+  "benchmark_source_commit": "36ba93ce732e21a8bd973fb3085671d39555c5f3",
+  "benchmark_manifest_sha256": "8aaeed17e16822cdf084d155c59469d8f68e40a1a14329096c3072d19d42878d",
+  "main_checkout_head_preserved": "53da6e92c8c7c804413f6ca1378bb5b8577d6c11",
+  "condition_bank_sha256": "1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa",
+  "fixed_physical": {
+    "tetrahedra": 480,
+    "dof": 2430,
+    "young_Pa": 10000000000.0,
+    "poisson": 0.3,
+    "density": 2000,
+    "dt": 0.01,
+    "substeps": 1,
+    "collision": "mpr",
+    "contact_patch": false,
+    "precision": "64",
+    "warmup": 900,
+    "steps_per_repeat": 2400,
+    "repeats": 3
+  },
+  "requirements": {
+    "public_default": "literal RigidStressOptions(mesh=...) guarded against tuning overrides",
+    "paired_cost": "shared rigid/policy-rigid and pressure/intrinsic live/policy on same allocation",
+    "scaling": "32,256,2048,8192,16384,32768 plus pressure shoulder/capacity after memory evidence",
+    "output": "max headline, bounded matched full costs at small/recommended widths",
+    "tuning": "pressure-specific same-fidelity fast-path/history candidates and matched retiming",
+    "memory": "separate sampled per-process memory runs; no diagnostic headline mixing",
+    "profiling": "separate moving 600-step traces, cold build/JIT distinct",
+    "accuracy": "current native four-state egg R/L/M replay plus smooth convex and U/close-sheet controls, original numerical gates",
+    "applicability": "local material cones vs pressure pad-frame constraints, topology support, source redistribution, rejections",
+    "reward": "complete episodes, named-phase and radius sensitivity separately; no damage calibration claim",
+    "delivery": "one comparison report, configuration table, scalable summaries, source-complete editable/exported figures, commands, clean committed branch"
+  },
+  "status": "experiments in progress"
+}
