@@ -1,0 +1,54 @@
+{
+  "declared_at_utc": "2026-10-18T17:37:54.045061+00:00",
+  "user_direction": "Question why fixed PCG1e-6 is needed; final nonlinear precision should primarily depend on Newton stopping.",
+  "window_s": [
+    1.05,
+    1.16
+  ],
+  "full_spatial_stress_keyframes_s": [
+    1.1,
+    1.13,
+    1.16
+  ],
+  "provisional_numerical_bands": {
+    "no_ET_Newton_or_LS_forced_exit": true,
+    "finite_state_and_positive_detF_every_step": true,
+    "keyframe_net_force_residual_over_weight": 0.01,
+    "keyframe_nodal_residual_relative_to_contact_norm": 0.001,
+    "common_tangent_relative_contrast": 0.05,
+    "finger_force_vector_contrast": 0.02,
+    "finger_moment_vector_contrast": 0.02,
+    "within_keyframe_spatial_peak_contrast": 0.1
+  },
+  "fixed": "Newton1e-9m/s, dt1ms, standard linear_pcg, double MAS, cap4096; all other original-state continuous mechanics/targets/contact/friction and3 keyframes unchanged.",
+  "linear_tol_rates": [
+    0.01
+  ],
+  "code_verified_semantics": "abs(r_k^T z_k) <= tol_rate * abs(r_0^T z_0), z=M^-1 r. For a fixed SPD preconditioner, relative preconditioned residual norm is sqrt(tol_rate). Native iteration cap is an independent exit. PCG1e-6 is provisional, not a justified final choice.",
+  "newton_stopping": "Maximum mapped vertex Newton direction before CCD compared with velocity_tol*dt (contact scale1); displacement criterion alone does not certify force equilibrium.",
+  "adaptive_scope": "No Eisenstat-Walker forcing policy implemented. Existing Newton-aware partition-PCG entry gate is distinct and had0 accepts in the previous control; do not label it adaptive relative-residual stopping.",
+  "timing": "Identical whole-window boundaries, initial elastic prewarm, deferred IO and per-step target/native/finite/J checks;3 fresh processes sequential in one allocation.",
+  "acceptance": "Same predeclared bands and budget8192 reference as earlier. All3 keys including onset retained; report true failures and actual force residual, finger reactions, full fields. No long-run qualification follows from this window.",
+  "output_bound_bytes": 4000000000,
+  "new_campaign_upper_estimate_bytes": 10000000,
+  "code_evidence": [
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/qipc-stress-reference-roundoff/qipc/_src/native/solver/subgraph/pcg_kernels.cu",
+      "sha256": "a83bd9071aea219c988503acc82d35b8a208a666996b275ab61c305393a1a437"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/qipc-stress-reference-roundoff/qipc/_src/native/solver/solver_kernels.cu",
+      "sha256": "e475dfe8f9a05d8e1d4579620b87642e7ca3a13bb17cf585ac050c193882692e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/qipc-stress-reference-roundoff/qipc/_src/native/solver/sim_engine_pipeline.cu",
+      "sha256": "6eb1a24866a5ffee2b31b4b185ecf88a7ef279878749beba333e481d263f3716"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/qipc-stress-reference-roundoff/qipc/scene/config.py",
+      "sha256": "e9087fe91b43fd55e9a64a38d3f038f2a0e40dd06c319da5b7c072409e237f1c"
+    }
+  ],
+  "purpose": "Fresh-process repeats of the fastest all-band-passing exploratory setting PCG1e-2. No physical-reference qualification or adaptive stopping claim.",
+  "repetitions": 3
+}

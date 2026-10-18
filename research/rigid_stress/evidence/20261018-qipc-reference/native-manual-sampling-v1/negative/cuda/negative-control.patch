@@ -1,0 +1,11 @@
+--- original
++++ unconditional-fused-recovery
+@@ -1372,7 +1372,7 @@
+                     self.rigid_config,
+                     constraint_solver._n_iterations,
+                 )
+-            if self.stress_recovery is None or not self.stress_recovery.is_update_requested:
++            if self.stress_recovery is None:
+                 kernel_substep_post(
+                     self.dyn_state,
+                     collider.collider_state,

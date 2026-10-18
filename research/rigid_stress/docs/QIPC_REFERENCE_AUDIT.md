@@ -16,9 +16,14 @@ instrumented repeats. Solver calls dominate the measured cost. The separate
 now shows1e-6/1e-4/1e-3/1e-2 all passing the same3 keys. PCG1e-2 is the next
 validation candidate: fewer total inner iterations and a34.953s versus59.888s
 window, with more outer iterations. Each setting has one matched run; repeats
-of the new choice remain open. Capped short-window validation, actual sparse native/
-Shell computation, complete-grasp keyframe qualification and matched primary
-sparse cost remain open.
+of the new choice now pass in all three fresh processes (median35.001s), with
+all3 keyframes passing. The
+[native manual-sampling capability](../evidence/20261018-qipc-reference/native-manual-sampling-v1/README.md)
+passes4 CPU/5 CUDA lifecycle and physical-oracle cases; a deliberate fused-path
+gate removal triggers the expected snapshot assertion. Sparse application
+integration/profiling for native/Shell, complete-grasp keyframe qualification
+and matched primary sparse cost remain open. Capped short-window job726731 is
+live with predeclared mechanical-event keys0.89/0.95/1.05s.
 
  This is the current audit against the
 [current goal](QIPC_REFERENCE_COMPARISON_GOAL.md), including the explicit user

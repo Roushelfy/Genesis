@@ -89,8 +89,14 @@ tangent-field contrast is4.949e-5 and maximum physical finger-force contrast
 2.606e-5 against the same stricter candidate. All exact fields, residuals,
 iterations and receipts are in the
 [fixed-Newton PCG packet](../evidence/20261018-qipc-reference/short-window-pcg-v1/README.md).
-These results support1e-2 as the next validation candidate, subject to repeats
-and capped/full-grasp controls. They are separate from the frozen11-run packet.
+The subsequent
+[three fresh-process repeats](../evidence/20261018-qipc-reference/short-window-pcg-repeats-v1/README.md)
+all pass these keys, with35.001/35.489/34.600s windows and no PCG caps. These
+results support1e-2 for capped/full-grasp validation. They are separate from
+the frozen11-run packet. The native engine's
+[manual sampling capability](../evidence/20261018-qipc-reference/native-manual-sampling-v1/README.md)
+also passes4 CPU/5 CUDA lifecycle/physical-oracle cases, with a verified
+negative control. Application integration and cost profiling remain required.
 A passing short window does not
 qualify complete grasps, capped coupling, spatial/contact uncertainty or a
 primary sparse DPR/SCR/Shell cost recommendation.

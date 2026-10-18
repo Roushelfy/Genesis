@@ -768,3 +768,53 @@ support the user's concern about inner oversolving:1e-6 is unnecessary for the
 declared window bands. The next candidate is1e-2 with unchanged Newton/physical
 checks, still requiring repeats, capped coupling and complete sparse-grasp
 qualification. No full-goal completion or physical accuracy ranking is claimed.
+
+## PCG repeats, manual native sampling and capped-window validation
+
+Jobs726727/726728 complete three fresh PCG1e-2 processes and all field/reaction/
+residual/pose audits. Every predeclared key passes, with no PCG caps. Window
+times are35.001181/35.489127/34.600375s, median35.001181s. The
+[repeat packet](../evidence/20261018-qipc-reference/short-window-pcg-repeats-v1/README.md)
+retains all9 new full-spatial fields, complete numerical/timing results and
+exact source reconstruction identities. This selects1e-2 for further bounded
+validation, while complete-grasp and capped qualification remain open.
+
+The native engine now offers build-time `update_mode="manual"` and the public
+`link.request_stress_update()` operation. A request samples all physical
+substeps of the next scene step. Unrequested steps use ordinary rigid post
+integration, and mixed-link recovery skips unrequested links. Default
+every-step sampling is preserved. Getters hold the last sampled observation;
+state changes retain the existing per-environment invalidation and cancel
+pending link requests. The public API documents the held-value/time contract.
+Job726729 passes4 CPU and5 CUDA focused cases from existing lifecycle/shared-
+operator tests: physical contact/stress oracles, max/full,1/4 substeps,
+fused/nonfused post, history4, batch3, partial reset/restore, ordinary rigid
+trajectories, unbatched and mixed manual/automatic links. Engine and test hashes
+are verified unchanged during each worker. Separate application profiling and
+sparse primary-cost integration remain required.
+
+Job726732 deliberately removes the fused-path sampling gate in a private
+compute-node source copy, leaving the working engine untouched. The same
+manual/full/4-substep test fails on its retained-snapshot assertion, confirming
+the new observable check detects unwanted recovery on an unrequested step.
+The helper records the true pytest failure and verified alternate import path;
+expected negative-control admission is separate from a passing physics test.
+
+Job726730 plans a capped case0 window from recorded mechanical reactions,
+without using candidate stress errors. On the saved10ms grid, a physical
+finger reaction first exceeds1mN at0.89s and0.1N at0.91s; all source loads,
+including any self-contact, remain included. Job726731 predeclares the timed
+window(0.85,1.05]s and complete spatial keys0.89/0.95/1.05s. It uses the
+original capped servo, passive terms and finger equality, with fresh continuous
+initial histories and the separately pinned KKT/16eps engine. Four bounded
+settings compare partition/linear PCG,1e-5/1e-2 inner stopping, and one
+Newton-only change1e-7 to1e-8. Native/finite/J/joint-finite/PD-cap checks remain
+every step, stress/contact observation only at the keys. The original
+partition run is live; no capped error/cost qualification follows yet.
+
+Existing half-dt case7 task726567_2 is now authoritatively terminal: Slurm
+reports TIMEOUT after4h. Its last journal row is8.2445s/16489 physical steps,
+finite and unflagged there, with no completed-history receipt. Retain it as an
+incomplete control; no full9s or missing-final-step admission follows. It is
+not restarted while short-window validation has priority. Friction726567_5
+remains held. No running worker's captured source was hot-edited.
