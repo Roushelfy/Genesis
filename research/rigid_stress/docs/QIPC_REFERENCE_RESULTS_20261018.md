@@ -9,11 +9,15 @@ storage outage prevents new durable runs. This report is a checkpoint, not the
 goal closeout or an accuracy-qualified ranking.
 
 The [goal](QIPC_REFERENCE_COMPARISON_GOAL.md),
+[requirement audit](QIPC_REFERENCE_AUDIT.md),
 [metric contract](QIPC_REFERENCE_METRICS.md),
 [execution record](QIPC_REFERENCE_PROGRESS.md) and
 [running guide](RUNNING_QIPC_REFERENCE.md) define the task and remaining work.
 The [compact checkpoint](../evidence/20261018-qipc-reference/checkpoint-v1/README.md)
 preserves selected values from completed Slurm analyses and their source hashes.
+The [figure checkpoint](../evidence/20261018-qipc-reference/checkpoint-figures-v1/README.md)
+contains inspected editable exports, plotted arrays and their original renderer;
+its cost snapshot still omits some later-completed measurements.
 All runtime paths below are relative to the established data run
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/`.
 
@@ -257,7 +261,8 @@ native friction/contact history. Case7 does complete9s with one reset,0 invalid
 steps and24 recorded PCG-cap steps, but is not yet reference-qualified.
 
 The goal still requires complete capped case0/uncertainty histories, outstanding
-paired field/reaction/friction/energy/peak analyses, Shell max-only verification
+paired field/reaction/friction/energy/peak analyses, a meaningful QIPC-load Shell
+replay with explicit force/couple mapping, Shell max-only verification
 and timing, final error/cost/profile/uncertainty figures, full source closure,
 the requirement audit and final commit/push. Existing three diagnostic figures
 have inspected previews and export QA, but do not close these gates. New durable

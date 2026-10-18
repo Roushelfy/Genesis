@@ -4,6 +4,10 @@ This inspected diagnostic checkpoint does not close the active reference goal.
 Data/exports are in`20261018-qipc-reference/figures-v1`; actual export QA is in
 `figure-exports-v1`. The[figure contracts](QIPC_REFERENCE_FIGURE_SPEC.md)record
 claims and source evidence.
+The [publication checkpoint](../evidence/20261018-qipc-reference/checkpoint-figures-v1/README.md)
+retains the exact original editable exports, plotted data, rendering sources and
+QA. The cost plot is its original snapshot: later-completed Shell/memory points
+still require a refreshed consolidated figure.
 
 ## New full-field cost
 
@@ -49,8 +53,10 @@ must be assessed with absolute tensors/reference RMS and state-history controls.
 
 Outer tangent VM at1.2s squeeze and4.2s weak-grip onset for the same complete
 histories. All panels share undeformed azimuth/height samples and one symmetric-
-log colour scale, including zero, a1Pa linear region and the actual maximum
-displayed value. No smoothing, percentile clipping or fitted footprint is used.
+log colour scale, including zero and a1Pa linear region. Its upper bound is the
+maximum over both inner and outer sampled surfaces across the selected times
+and methods; every displayed outer value lies within that common range.
+No smoothing, percentile clipping or fitted footprint is used.
 One-sided fields on1280 material columns are display samples, rather than a
 full-volume norm or raw global3D extremum search. Source raw peak fields and
 element/fiber locations remain separate. Reference qualification is open.

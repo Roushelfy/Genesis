@@ -36,6 +36,10 @@ def configuration(campaign, group, task):
         and repeat["final_output_finite_checked_after_timer"]
         and repeat["valid_aggregate_env_steps_per_second"] is not None
     ]
+    raw_scope = repeats[0]["scope"] if repeats else result.get("scope")
+    scope = (
+        "normal-max-only" if raw_scope == "normal-full-field" and result["args"]["output_mode"] == "max" else raw_scope
+    )
     row.update(
         {
             "identity": file_id(result_path),
@@ -43,7 +47,8 @@ def configuration(campaign, group, task):
             "hardware": result.get("identity"),
             "build_seconds": result.get("build_seconds"),
             "warmup_seconds": result.get("warmup_seconds"),
-            "scope": repeats[0]["scope"] if repeats else result.get("scope"),
+            "scope": scope,
+            "original_worker_scope": raw_scope,
             "process_memory": result.get("process_memory"),
             "median_aggregate_env_steps_per_second": np.median(rates).item() if rates else None,
             "minimum_aggregate_env_steps_per_second": min(rates) if rates else None,

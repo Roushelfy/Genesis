@@ -19,6 +19,10 @@ No runtime data was moved into home. The small selected publication checkpoint
 under `research/rigid_stress/evidence/20261018-qipc-reference/checkpoint-v1/`
 contains existing derived JSON summaries and provenance for the working report;
 it is not a runtime storage fallback or a completed-goal evidence closure.
+The adjacent `checkpoint-figures-v1/` contains about6MB of existing inspected
+SVG/PDF/PNG, plotted arrays and exact rendering source copied with byte/hash
+verification from the original data-side jobs. These are selected publication
+deliverables; no new rendering or runtime dataset is produced in home.
 
 # Completed shell PR22 comparison
 

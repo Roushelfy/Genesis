@@ -31,6 +31,8 @@ class ShellEgg:
             assert np.all(coefficients == coefficients[0]), "Shell coupling friction is global; use one cohort"
             args.coupling_friction = coefficients[0].item()
         self.n_envs = args.envs
+        self.output_mode = args.output_mode
+        self.observed_substeps = 0
         self.tick = 0
         self.reset_count = 0
         self.stress = False
@@ -65,6 +67,7 @@ class ShellEgg:
             material=gs.materials.Rigid(
                 friction=0.1,
                 coup_friction=args.coupling_friction,
+                coup_softness=args.coupling_softness,
             ),
         )
         self.robot = self.scene.add_entity(
@@ -74,6 +77,7 @@ class ShellEgg:
             material=gs.materials.Rigid(
                 friction=0.1,
                 coup_friction=args.coupling_friction,
+                coup_softness=args.coupling_softness,
             ),
         )
         if args.model == "shell":
@@ -141,7 +145,16 @@ class ShellEgg:
             self.egg.set_quat(quaternion)
             self.egg.set_friction_ratio(friction)
         self.reset_state = self.scene.get_state()
-        self.observation = FullField.allocate(self.scene.sim.shell_solver) if args.model == "shell" else None
+        self.observation = (
+            FullField.allocate(self.scene.sim.shell_solver, args.output_mode) if args.model == "shell" else None
+        )
+        if args.model == "shell" and args.output_mode == "max":
+
+            def observe_max(solver):
+                self.observation.update(solver, reset_peak=self.observed_substeps % args.substeps == 0)
+                self.observed_substeps += 1
+
+            diagnostics.SUBSTEP_OBSERVER = observe_max
         if args.instrumented:
             diagnostics.configure(self.scene.sim.shell_solver)
 
@@ -153,7 +166,7 @@ class ShellEgg:
 def main():
     args = make_parser().parse_args()
     assert args.model in ("shell", "rigid")
-    assert args.output_mode == "full"
+    assert args.output_mode == "full" or (not args.record_every and not args.peak_snapshots)
     args.output.mkdir(parents=True, exist_ok=False)
     memory = ProcessMemory(args.memory)
     memory.start()
@@ -174,7 +187,21 @@ def main():
         condition_bank=file_identity(args.conditions),
         build_seconds=build_seconds,
         observation_bytes=workload.observation.nbytes if workload.observation is not None else 0,
-        source_scope="instrumented-read-only" if args.instrumented else "original-plus-output-sidecar",
+        source_scope="instrumented-read-only"
+        if args.instrumented
+        else "read-only-substep-max-output"
+        if args.model == "shell" and args.output_mode == "max"
+        else "original-plus-output-sidecar",
+        observation_contract={
+            "mode": args.output_mode,
+            "full_field_arrays_written": args.output_mode == "full",
+            "temporal_coverage": "VM maximum across every physical substep of the current scene interval"
+            if args.output_mode == "max"
+            else "Complete face/three-fiber field at the last physical substep of the scene interval",
+            "observed_physical_substeps": workload.observed_substeps if args.output_mode == "max" else None,
+        }
+        if args.model == "shell"
+        else None,
         process_memory=memory.finish(),
         rigid_dofs=workload.scene.rigid_solver.n_dofs,
         shell_numerics={
@@ -186,6 +213,7 @@ def main():
             "allocated_vertices": workload.egg.n_verts_max,
             "lumped_shell_mass_kg": float(workload.egg.topology.faces_mass.sum()),
             "coupling_friction": args.coupling_friction,
+            "coupling_softness_m": args.coupling_softness,
             "bank_friction_ratio_applied_to_shell_coupling": False,
         }
         if args.model == "shell"
