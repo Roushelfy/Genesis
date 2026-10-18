@@ -1,0 +1,36 @@
+{
+  "kind": "static-cost-inputs",
+  "cases": [
+    {
+      "level": 1,
+      "mesh": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/prepare-inputs-v2/group0/matched-inputs/egg-level1.npz",
+        "bytes": 4951,
+        "sha256": "52edc4d6249f5765135961c7ff5393b8f1275405ebd3d91de52d0de9960bda76"
+      },
+      "load": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/prepare-loads-v2/group0/inputs/level1.npz",
+        "bytes": 59056,
+        "sha256": "782e1bb5858ce2a30ef8fcd7e8b23a0b473b55497532872ec3f3e5a8c2c8f9ef"
+      },
+      "native_nodes": 810,
+      "shell_nodes": 42
+    },
+    {
+      "level": 2,
+      "mesh": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/prepare-inputs-v2/group0/matched-inputs/egg-level2.npz",
+        "bytes": 16837,
+        "sha256": "1c021b3a58b444ef98dc4893239f0c0da14342d97825c7fb2b460c5ba3254576"
+      },
+      "load": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/prepare-loads-v2/group0/inputs/level2.npz",
+        "bytes": 272073,
+        "sha256": "aee0efdddc323c0c19bb04558638a704f00cb24a5ed5cbfa8dc5d68e12afaeb0"
+      },
+      "native_nodes": 3210,
+      "shell_nodes": 162
+    }
+  ],
+  "scope": "Same integrated finite compression, topology mapping only; no fitted load or stress surrogate."
+}

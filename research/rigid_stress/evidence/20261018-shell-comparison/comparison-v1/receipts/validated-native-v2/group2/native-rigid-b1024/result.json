@@ -1,0 +1,144 @@
+{
+  "warmup_seconds": 8.616973149997648,
+  "warmup_invalid_environment_steps": null,
+  "repeats": [
+    {
+      "repeat": 0,
+      "seconds": 3.826837942004204,
+      "env_steps": 921600,
+      "requested_steps": 900,
+      "executed_steps": 900,
+      "completed_requested_history": true,
+      "nonfinite_step": null,
+      "final_output_finite_checked_after_timer": true,
+      "accuracy_qualified": null,
+      "invalid_environment_steps": null,
+      "invalid_steps_per_environment": null,
+      "valid_aggregate_env_steps_per_second": null,
+      "aggregate_env_steps_per_second": 240825.4579804173,
+      "batch_step_ms": 4.252042157782449,
+      "partial_reset_envs": 1024,
+      "scope": "normal-full-field"
+    },
+    {
+      "repeat": 1,
+      "seconds": 3.818014175980352,
+      "env_steps": 921600,
+      "requested_steps": 900,
+      "executed_steps": 900,
+      "completed_requested_history": true,
+      "nonfinite_step": null,
+      "final_output_finite_checked_after_timer": true,
+      "accuracy_qualified": null,
+      "invalid_environment_steps": null,
+      "invalid_steps_per_environment": null,
+      "valid_aggregate_env_steps_per_second": null,
+      "aggregate_env_steps_per_second": 241382.02676090397,
+      "batch_step_ms": 4.242237973311502,
+      "partial_reset_envs": 1024,
+      "scope": "normal-full-field"
+    },
+    {
+      "repeat": 2,
+      "seconds": 3.809979090001434,
+      "env_steps": 921600,
+      "requested_steps": 900,
+      "executed_steps": 900,
+      "completed_requested_history": true,
+      "nonfinite_step": null,
+      "final_output_finite_checked_after_timer": true,
+      "accuracy_qualified": null,
+      "invalid_environment_steps": null,
+      "invalid_steps_per_environment": null,
+      "valid_aggregate_env_steps_per_second": null,
+      "aggregate_env_steps_per_second": 241891.0913234574,
+      "batch_step_ms": 4.233310100001593,
+      "partial_reset_envs": 1024,
+      "scope": "normal-full-field"
+    }
+  ],
+  "trajectory_summary": [
+    {
+      "all_recorded_fields_finite": null,
+      "minimum_position_z_m": null,
+      "maximum_position_z_m": null,
+      "maximum_peak_pa": null,
+      "cap_exhausted_substeps": null
+    },
+    {
+      "all_recorded_fields_finite": null,
+      "minimum_position_z_m": null,
+      "maximum_position_z_m": null,
+      "maximum_peak_pa": null,
+      "cap_exhausted_substeps": null
+    },
+    {
+      "all_recorded_fields_finite": null,
+      "minimum_position_z_m": null,
+      "maximum_position_z_m": null,
+      "maximum_peak_pa": null,
+      "cap_exhausted_substeps": null
+    }
+  ],
+  "kind": "matched-franka-egg",
+  "args": {
+    "model": "rigid",
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/validated-native-v2/group2/native-rigid-b1024",
+    "conditions": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+    "inputs": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/prepare-inputs-v2/group0/matched-inputs",
+    "native_assets": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg",
+    "envs": 1024,
+    "level": 1,
+    "precision": "64",
+    "substeps": 1,
+    "iterations": 50,
+    "tolerance": 0.0001,
+    "patches": 6,
+    "coarse_interval": 10,
+    "damping": 0.0,
+    "warmup": 900,
+    "steps": 900,
+    "repetitions": 3,
+    "record_every": 0,
+    "instrumented": false,
+    "memory": false,
+    "trace": false
+  },
+  "identity": {
+    "genesis_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/__init__.py",
+    "python": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "cpu_models": [
+      "INTEL(R) XEON(R) PLATINUM 8562Y+"
+    ],
+    "host": "rtx-210-023",
+    "job": "725950",
+    "array_job": "725947",
+    "array_task": "2",
+    "packages": {
+      "quadrants": "1.3.3",
+      "torch": "2.11.0+cu129",
+      "numpy": "2.2.6",
+      "scipy": "1.15.3",
+      "trimesh": "5.1.1",
+      "pydantic": "2.14.0"
+    },
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-5be56406-45bd-50ce-e9ae-d10e52cb77c1, 595.71.05, 97887 MiB"
+  },
+  "condition_bank": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+    "bytes": 5226,
+    "sha256": "1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa"
+  },
+  "build_seconds": 83.31594705802854,
+  "source_scope": "native-unchanged-engine",
+  "process_memory": {
+    "enabled": false,
+    "scope": "intrusive build/warm/rollout process sampling",
+    "peak_mib": null,
+    "samples": []
+  },
+  "native_numerics": null,
+  "rigid_dofs": 15
+}

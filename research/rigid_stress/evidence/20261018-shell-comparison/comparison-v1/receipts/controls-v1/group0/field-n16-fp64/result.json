@@ -1,0 +1,77 @@
+{
+  "kind": "field-conversion",
+  "args": {
+    "kind": "field",
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/controls-v1/group0/field-n16-fp64",
+    "resolution": 16,
+    "precision": "64",
+    "backend": "cuda",
+    "dt": 0.001,
+    "substeps": 1,
+    "steps": 200,
+    "iterations": 50,
+    "tolerance": 0.0001,
+    "patches": 6,
+    "coarse_interval": 10
+  },
+  "identity": {
+    "genesis_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/kashu-shell-pr22/genesis/__init__.py",
+    "python": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "host": "rtx-209-187",
+    "job": "725862",
+    "array_job": "725861",
+    "array_task": "0",
+    "packages": {
+      "quadrants": "1.3.3",
+      "torch": "2.11.0+cu129",
+      "numpy": "2.2.6",
+      "scipy": "1.15.3",
+      "trimesh": "5.1.1",
+      "pydantic": "2.14.0"
+    },
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-e0c2b8fd-f4b8-f5a0-49ee-b4ecdc397ba8, 595.71.05, 97887 MiB"
+  },
+  "cases": [
+    {
+      "case": "affine-stretch",
+      "strain": 0.0,
+      "expected_cauchy_xx_pa": 0.0,
+      "max_absolute_xx_error_pa": 2.2370596868501407e-09,
+      "min_xx_pa": -1.6684461795986029e-09,
+      "max_xx_pa": 2.2370596868501407e-09,
+      "other_components_max_pa": 2.203832411650486e-09
+    },
+    {
+      "case": "affine-stretch",
+      "strain": 0.0001,
+      "expected_cauchy_xx_pa": 1000.1500049995859,
+      "max_absolute_xx_error_pa": 9.24887899600435e-09,
+      "min_xx_pa": 1000.1500049932092,
+      "max_xx_pa": 1000.1500050088348,
+      "other_components_max_pa": 2.7746828951653596e-09
+    },
+    {
+      "case": "affine-stretch",
+      "strain": -0.0001,
+      "expected_cauchy_xx_pa": -999.8500049996387,
+      "max_absolute_xx_error_pa": 7.3098362918244675e-09,
+      "min_xx_pa": -999.8500050069485,
+      "max_xx_pa": -999.8500049936175,
+      "other_components_max_pa": 2.43916267975147e-09
+    },
+    {
+      "case": "cylindrical-bending",
+      "curvature_per_m": 2.0,
+      "interior_faces": 448,
+      "interior_absolute_principal_curvature_mean_per_m": 2.0000000000000004,
+      "expected_outer_fiber_vm_pa": 10000.0,
+      "interior_outer_fiber_vm_mean_pa": 9999.934895960492,
+      "interior_outer_fiber_vm_min_pa": 9934.8314922144,
+      "interior_outer_fiber_vm_max_pa": 10065.038299703214,
+      "boundary_outer_fiber_vm_mean_pa": 5032.519149845453,
+      "membrane_max_n_per_m": 0.0651038275883975
+    }
+  ]
+}

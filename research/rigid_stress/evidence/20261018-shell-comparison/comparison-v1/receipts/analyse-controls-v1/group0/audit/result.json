@@ -1,0 +1,281 @@
+{
+  "kind": "controlled-output-audit",
+  "records": [
+    {
+      "run": "controls-v1/group0/field-n16-fp64",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/controls-v1/group0/field-n16-fp64/result.json",
+        "bytes": 2663,
+        "sha256": "ea62f7faf4c0cfd4d4b2f10278314bc86f13c950bcfa9beb558891d2bebcdf8f"
+      },
+      "top_signed_xx_mean_pa": -10035.603285571411,
+      "bottom_signed_xx_mean_pa": 9905.77726545389,
+      "expected_cylindrical_top_sign": "compressive for the declared upward normal"
+    },
+    {
+      "run": "controls-v1/group0/field-n8-fp32",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/controls-v1/group0/field-n8-fp32/result.json",
+        "bytes": 2618,
+        "sha256": "3a0c2f99369d5b5335090815251b1ce42fc3942bdc56248a7e4b36e568cc293b"
+      },
+      "top_signed_xx_mean_pa": -10233.9970703125,
+      "bottom_signed_xx_mean_pa": 9714.5380859375,
+      "expected_cylindrical_top_sign": "compressive for the declared upward normal"
+    },
+    {
+      "run": "controls-v1/group0/field-n8-fp64",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/controls-v1/group0/field-n8-fp64/result.json",
+        "bytes": 2661,
+        "sha256": "c6a53ab0790b631e445ffdce67fdc6470d8dfdc4b8a6e30aca44730578fc95f2"
+      },
+      "top_signed_xx_mean_pa": -10234.00154622796,
+      "bottom_signed_xx_mean_pa": 9714.519629910945,
+      "expected_cylindrical_top_sign": "compressive for the declared upward normal"
+    },
+    {
+      "run": "controls-v1/group1/contact-n16-fp32",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/controls-v1/group1/contact-n16-fp32/result.json",
+        "bytes": 2819,
+        "sha256": "aa14c40b35f73e424261e85a2a9a72d336b8497ee117785294460ce92210abae"
+      },
+      "peak_pa": 4348569088.0,
+      "fell_through": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "run": "controls-v1/group1/contact-n2-fp32",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/controls-v1/group1/contact-n2-fp32/result.json",
+        "bytes": 2874,
+        "sha256": "28c53c43906d8906bd8268d78cf746686c25d0d3941188869cc90c0b95fecfdf"
+      },
+      "peak_pa": 18233.921875,
+      "fell_through": [
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "run": "controls-v1/group1/contact-n8-fp32",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/controls-v1/group1/contact-n8-fp32/result.json",
+        "bytes": 2843,
+        "sha256": "1efd45bada8fc7ea34caadafc0494b1b849a997f1decff7a8d3f2ee96078c3b9"
+      },
+      "peak_pa": 5839490.0,
+      "fell_through": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "run": "diagnostic-controls-v2/group0/drop-n16",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/diagnostic-controls-v2/group0/drop-n16/result.json",
+        "bytes": 2916,
+        "sha256": "9f5e6f76678fe99d60e648cd6343e192b968bcde857cbb01ab8335b171454f47"
+      },
+      "cap_exhausted_substeps": 0,
+      "mean_iterations_per_control_env": 11.398125,
+      "max_iterations_per_control_env": 31,
+      "maximum_true_l2_relative_residual": 0.0005358483176678419,
+      "maximum_true_block_jacobi_relative_residual": 9.673635213403031e-05,
+      "maximum_recursive_squared_budget_fraction": 0.9999204277992249,
+      "active_vertex_impulse_samples": 1778,
+      "total_impulse_n_s": [
+        -0.00018815710791386664,
+        0.00030131146195344627,
+        -0.12464364618062973
+      ],
+      "peak_pa": 4353657856.0,
+      "fell_through": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "run": "diagnostic-controls-v2/group0/drop-n16-pcg200",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/diagnostic-controls-v2/group0/drop-n16-pcg200/result.json",
+        "bytes": 2923,
+        "sha256": "ab68779a823b0ac4e80b12bcaa0b240192a64e4b00521e66411a78563e4ffd98"
+      },
+      "cap_exhausted_substeps": 0,
+      "mean_iterations_per_control_env": 11.401875,
+      "max_iterations_per_control_env": 32,
+      "maximum_true_l2_relative_residual": 0.0005148543859831989,
+      "maximum_true_block_jacobi_relative_residual": 9.673498425399885e-05,
+      "maximum_recursive_squared_budget_fraction": 0.999126136302948,
+      "active_vertex_impulse_samples": 1778,
+      "total_impulse_n_s": [
+        -0.000188111123861745,
+        0.00030133602558635175,
+        -0.12464392930269241
+      ],
+      "peak_pa": 4352160256.0,
+      "fell_through": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "run": "diagnostic-controls-v2/group0/drop-n2",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/diagnostic-controls-v2/group0/drop-n2/result.json",
+        "bytes": 2959,
+        "sha256": "2643ed6768207fd81c56bfd97267591861b34dc53aec3755859dad6aa9bbdf04"
+      },
+      "cap_exhausted_substeps": 0,
+      "mean_iterations_per_control_env": 1.044375,
+      "max_iterations_per_control_env": 2,
+      "maximum_true_l2_relative_residual": 0.00012396300735417753,
+      "maximum_true_block_jacobi_relative_residual": 6.749552267137915e-05,
+      "maximum_recursive_squared_budget_fraction": 0.8965582251548767,
+      "active_vertex_impulse_samples": 285,
+      "total_impulse_n_s": [
+        -0.007587099447846413,
+        -8.932653505766552e-10,
+        -0.09324135631322861
+      ],
+      "peak_pa": 18233.921875,
+      "fell_through": [
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "run": "diagnostic-controls-v2/group1/drop-n16-sub4",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/diagnostic-controls-v2/group1/drop-n16-sub4/result.json",
+        "bytes": 2919,
+        "sha256": "626cbd3494add3d10914f3eb20796207448e73cae9c1e92e1a23ca06fd685757"
+      },
+      "cap_exhausted_substeps": 0,
+      "mean_iterations_per_control_env": 31.35875,
+      "max_iterations_per_control_env": 86,
+      "maximum_true_l2_relative_residual": 0.0006082028266973794,
+      "maximum_true_block_jacobi_relative_residual": 9.706713171908632e-05,
+      "maximum_recursive_squared_budget_fraction": 0.9999997615814209,
+      "active_vertex_impulse_samples": 1872,
+      "total_impulse_n_s": [
+        0.001581067917868495,
+        0.0014926099684089422,
+        -0.2584969103336334
+      ],
+      "peak_pa": 331916064.0,
+      "fell_through": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "run": "press-controls-v3/group0/press-mu0",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/press-controls-v3/group0/press-mu0/result.json",
+        "bytes": 2921,
+        "sha256": "e4bad0018ed5d9286e3b99ee79293ac2df6fa35b994e5c8732379855720aa047"
+      },
+      "cap_exhausted_substeps": 0,
+      "mean_iterations_per_control_env": 14.025,
+      "max_iterations_per_control_env": 30,
+      "maximum_true_l2_relative_residual": 0.000553297286387533,
+      "maximum_true_block_jacobi_relative_residual": 9.726239659357816e-05,
+      "maximum_recursive_squared_budget_fraction": 0.9998352527618408,
+      "active_vertex_impulse_samples": 1857,
+      "total_impulse_n_s": [
+        0.004232251085340977,
+        0.0001841125776991248,
+        -0.009882144629955292
+      ],
+      "peak_pa": 235957.421875,
+      "fell_through": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "run": "press-controls-v3/group0/press-mu06",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/press-controls-v3/group0/press-mu06/result.json",
+        "bytes": 2893,
+        "sha256": "7af20238daa11a69bdd0bdc41405affd84bca8af1fd707e2acfff93ee5da892b"
+      },
+      "cap_exhausted_substeps": 0,
+      "mean_iterations_per_control_env": 13.775,
+      "max_iterations_per_control_env": 31,
+      "maximum_true_l2_relative_residual": 0.0005530802882276475,
+      "maximum_true_block_jacobi_relative_residual": 9.710044832900167e-05,
+      "maximum_recursive_squared_budget_fraction": 0.9999893307685852,
+      "active_vertex_impulse_samples": 2546,
+      "total_impulse_n_s": [
+        0.03640750050544739,
+        0.00011831692245323211,
+        -0.008021390065550804
+      ],
+      "peak_pa": 32662238.0,
+      "fell_through": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  ]
+}

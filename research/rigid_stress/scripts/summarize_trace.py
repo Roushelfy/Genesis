@@ -21,6 +21,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--trace", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--step-name", default="rigid_stress_trace_step")
+    parser.add_argument("--expected-steps", type=int)
     args = parser.parse_args()
     raw = args.trace.read_bytes()
     events = json.loads(raw)["traceEvents"]
@@ -31,11 +33,9 @@ def main():
     runtime = [event for event in timed if event.get("cat") in ("cuda_runtime", "cuda_driver")]
     # GPU annotations mirror each CPU range on every participating stream;
     # count the original CPU ranges once rather than adding the mirrors.
-    steps = [
-        event
-        for event in timed
-        if event.get("name") == "rigid_stress_trace_step" and event.get("cat") == "user_annotation"
-    ]
+    steps = [event for event in timed if event.get("name") == args.step_name and event.get("cat") == "user_annotation"]
+    if args.expected_steps is not None:
+        assert len(steps) == args.expected_steps, (len(steps), args.expected_steps)
     counts = Counter(event["name"] for event in runtime)
     runtime_totals = Counter()
     for event in runtime:

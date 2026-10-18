@@ -1,0 +1,159 @@
+{
+  "kind": "private-cache-restore-ablation",
+  "args": {
+    "model": "shell",
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/cache-ablation-v2/group0/ablation",
+    "conditions": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+    "inputs": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-shell-comparison/prepare-inputs-v2/group0/matched-inputs",
+    "native_assets": null,
+    "envs": 16,
+    "level": 1,
+    "precision": "64",
+    "substeps": 10,
+    "iterations": 300,
+    "tolerance": 1e-08,
+    "patches": 6,
+    "coarse_interval": 1,
+    "damping": 0.0,
+    "warmup": 60,
+    "steps": 900,
+    "repetitions": 3,
+    "record_every": 0,
+    "instrumented": false,
+    "memory": false,
+    "trace": false,
+    "modes": [
+      "public",
+      "shell-dv-only",
+      "shell-scratch"
+    ]
+  },
+  "identity": {
+    "genesis_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/kashu-shell-pr22/genesis/__init__.py",
+    "python": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "cpu_models": [
+      "INTEL(R) XEON(R) PLATINUM 8562Y+"
+    ],
+    "host": "rtx-210-023",
+    "job": "725952",
+    "array_job": "725952",
+    "array_task": "0",
+    "packages": {
+      "quadrants": "1.3.3",
+      "torch": "2.11.0+cu129",
+      "numpy": "2.2.6",
+      "scipy": "1.15.3",
+      "trimesh": "5.1.1",
+      "pydantic": "2.14.0"
+    },
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-7e607143-660e-ae9f-b941-5c2e8046d87f, 595.71.05, 97887 MiB"
+  },
+  "checks": [
+    {
+      "mode": "public",
+      "repeat": 0,
+      "maximum_position_difference_m": 4.265406520422184e-07,
+      "maximum_velocity_difference_m_per_s": 5.889834433751764e-05,
+      "maximum_tensor_difference_pa": 108036.61734901369,
+      "tensor_relative_difference": 0.0003736552772842214
+    },
+    {
+      "mode": "public",
+      "repeat": 1,
+      "maximum_position_difference_m": 4.3620491906298103e-07,
+      "maximum_velocity_difference_m_per_s": 6.28952014917368e-05,
+      "maximum_tensor_difference_pa": 106109.4564665854,
+      "tensor_relative_difference": 0.00031916384917431433
+    },
+    {
+      "mode": "public",
+      "repeat": 2,
+      "maximum_position_difference_m": 4.365292408004158e-07,
+      "maximum_velocity_difference_m_per_s": 6.297118779679048e-05,
+      "maximum_tensor_difference_pa": 106123.73196272552,
+      "tensor_relative_difference": 0.00037558141536206055
+    },
+    {
+      "mode": "shell-dv-only",
+      "repeat": 0,
+      "maximum_position_difference_m": 1.3487544414658714e-11,
+      "maximum_velocity_difference_m_per_s": 1.9795949254830525e-09,
+      "maximum_tensor_difference_pa": 2.934703767299652,
+      "tensor_relative_difference": 1.14460177127787e-08
+    },
+    {
+      "mode": "shell-dv-only",
+      "repeat": 1,
+      "maximum_position_difference_m": 9.327385218360629e-12,
+      "maximum_velocity_difference_m_per_s": 3.1186739024580135e-09,
+      "maximum_tensor_difference_pa": 3.7804953157901764,
+      "tensor_relative_difference": 1.3212054933379289e-08
+    },
+    {
+      "mode": "shell-dv-only",
+      "repeat": 2,
+      "maximum_position_difference_m": 1.476097022390377e-11,
+      "maximum_velocity_difference_m_per_s": 3.449969525337604e-09,
+      "maximum_tensor_difference_pa": 4.706443563103676,
+      "tensor_relative_difference": 1.8006731696803866e-08
+    },
+    {
+      "mode": "shell-scratch",
+      "repeat": 0,
+      "maximum_position_difference_m": 3.051581209945198e-11,
+      "maximum_velocity_difference_m_per_s": 4.3352756870507214e-09,
+      "maximum_tensor_difference_pa": 9.953105583786964,
+      "tensor_relative_difference": 2.4950703933834906e-08
+    },
+    {
+      "mode": "shell-scratch",
+      "repeat": 1,
+      "maximum_position_difference_m": 7.430722703816173e-12,
+      "maximum_velocity_difference_m_per_s": 2.29554301262036e-09,
+      "maximum_tensor_difference_pa": 3.2054132372140884,
+      "tensor_relative_difference": 1.1103831616641571e-08
+    },
+    {
+      "mode": "shell-scratch",
+      "repeat": 2,
+      "maximum_position_difference_m": 2.6984969814236592e-11,
+      "maximum_velocity_difference_m_per_s": 5.253925100534573e-09,
+      "maximum_tensor_difference_pa": 10.3743936419487,
+      "tensor_relative_difference": 2.716044914128175e-08
+    }
+  ],
+  "shell_scratch_fields": [
+    "shell_scratch.verts_mass",
+    "shell_scratch.verts_rhs",
+    "shell_scratch.verts_dv",
+    "shell_scratch.verts_r",
+    "shell_scratch.verts_z",
+    "shell_scratch.verts_p",
+    "shell_scratch.verts_Ap",
+    "shell_scratch.verts_prec",
+    "shell_scratch.verts_normal",
+    "shell_scratch.verts_separation",
+    "shell_scratch.verts_split",
+    "shell_scratch.faces_F",
+    "shell_scratch.faces_stress",
+    "shell_scratch.faces_stiffness",
+    "shell_scratch.faces_fracture_stress",
+    "shell_scratch.hinges_grad",
+    "shell_scratch.hinges_stiffness",
+    "shell_scratch.corners_render_pos",
+    "shell_scratch.corners_render_normal",
+    "shell_scratch.coarse_assembly",
+    "shell_scratch.coarse_matrix",
+    "shell_scratch.coarse_factor_inv",
+    "shell_scratch.coarse_vec",
+    "shell_scratch.coarse_sol",
+    "shell_scratch.envs_rz",
+    "shell_scratch.envs_rz_new",
+    "shell_scratch.envs_rz_threshold",
+    "shell_scratch.envs_step",
+    "shell_scratch.envs_is_solving"
+  ],
+  "note": "A successful private-buffer ablation does not claim a fixed public SceneState API or bitwise GPU determinism."
+}
