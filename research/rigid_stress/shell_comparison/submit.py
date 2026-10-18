@@ -28,8 +28,17 @@ def inventory(root):
 
 def capture_source(source, output, stem):
     package = "qipc" if (source / "qipc").is_dir() else "genesis"
+    paths = [package, "pyproject.toml", "CMakeLists.txt", "external/GKlib", "external/METIS"]
+    if package == "genesis":
+        paths.extend(
+            (
+                "examples/rigid/franka_egg_stress.py",
+                "examples/rigid/egg_stress_controller.py",
+                "examples/rigid/assets/hollow_egg",
+            )
+        )
     names = subprocess.check_output(
-        ["git", "ls-files", package, "pyproject.toml", "CMakeLists.txt", "external/GKlib", "external/METIS"],
+        ["git", "ls-files", *paths],
         cwd=source,
         text=True,
     ).splitlines()
@@ -43,7 +52,7 @@ def capture_source(source, output, stem):
         for name in names
         if (source / name).is_file()
     ]
-    patch = subprocess.check_output(["git", "diff", "--binary", "HEAD", "--", package], cwd=source)
+    patch = subprocess.check_output(["git", "diff", "--binary", "HEAD", "--", *paths], cwd=source)
     (output / f"{stem}.patch").write_bytes(patch)
     (output / f"{stem}.json").write_text(
         json.dumps(

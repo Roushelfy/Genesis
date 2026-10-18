@@ -115,6 +115,7 @@ def main():
     parser.add_argument("--max-newton", type=int, default=256)
     parser.add_argument("--d-hat", type=float, default=2e-5)
     parser.add_argument("--friction-epsilon-velocity", type=float, default=1e-4)
+    parser.add_argument("--friction-override", type=float)
     parser.add_argument("--energy", choices=("snh", "hencky"), default="snh")
     parser.add_argument("--initial-contact-audit", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
@@ -131,6 +132,8 @@ def main():
     vertices = authored_vertices @ initial_rotation.T + bank["position"][args.case]
     initial = bank["initial_joints"][args.case]
     friction = 0.6 * bank["friction"][args.case, 0].item()
+    if args.friction_override is not None:
+        friction = args.friction_override
     config = ReferenceConfig(
         dt=args.dt,
         mas_precision="double",
@@ -159,6 +162,7 @@ def main():
         "protocol": "matched capped-controller candidate; contact and reference qualification pending",
         "output_scope": "intrusive full-field/force/energy diagnostics, excluded from primary throughput",
         "reconstruction_radius_controls_reference": False,
+        "diagnostic_friction_override": args.friction_override,
     }
     write_json(args.output / "inputs.json", input_receipt)
     assert vertices[:, 2].min() > 0, "Authored initial egg intersects the unchanged plane"

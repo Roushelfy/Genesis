@@ -77,6 +77,39 @@ class ContactField:
 
 
 @dataclass
+class SolidStep:
+    field: SolidField
+    contact: ContactField
+    inertial_reaction_n: torch.Tensor
+    residual_n: torch.Tensor
+    positions_m: torch.Tensor
+    kinetic_j: torch.Tensor
+    potential_j: torch.Tensor
+    elastic_j: torch.Tensor
+
+    def metrics(self):
+        load = torch.linalg.norm(self.contact.fem_forces_n).item()
+        residual = torch.linalg.norm(self.residual_n).item()
+        return {
+            "minimum_det_F": self.field.determinant.min().item(),
+            "all_fields_finite": bool(torch.isfinite(self.field.cauchy_pa).all()),
+            "raw_vm_peak_pa": self.field.von_mises_pa.max().item(),
+            "raw_maximum_principal_pa": self.field.maximum_principal_pa.max().item(),
+            "minimum_surface_height_m": self.positions_m[:, 2].min().item(),
+            "contact_resultant_n": self.contact.fem_forces_n.sum(dim=0).tolist(),
+            "contact_moment_world_origin_nm": torch.cross(self.positions_m, self.contact.fem_forces_n, dim=1)
+            .sum(dim=0)
+            .tolist(),
+            "force_residual_l2_n": residual,
+            "force_residual_relative_contact": residual / load if load > 1e-12 else None,
+            "force_residual_resultant_n": self.residual_n.sum(dim=0).tolist(),
+            "egg_kinetic_j": self.kinetic_j.item(),
+            "egg_potential_j": self.potential_j.item(),
+            "egg_elastic_j": self.elastic_j.item(),
+        }
+
+
+@dataclass
 class SolidObserver:
     scene: Scene
     config: ReferenceConfig
@@ -134,6 +167,23 @@ class SolidObserver:
 
     def elastic_gradient(self, field):
         return nodal_elastic_gradient(field, self.inverse_rest, self.volumes, self.tetrahedra, len(self.rest))
+
+    def read_step(self, previous_velocity):
+        fe = self.scene.finite_element
+        with torch.cuda.stream(self.scene.solver.cuda_stream):
+            field = self.update()
+            gradient = self.elastic_gradient(field)
+            inertial = self.masses[:, None] * (
+                (fe.velocities - previous_velocity) / self.config.dt - fe.gravity - fe.external_acc
+            )
+            kinetic = (self.masses[:, None] * fe.velocities**2).sum() / 2
+            potential = -(self.masses[:, None] * fe.gravity * fe.x).sum()
+            elastic = (self.volumes * field.energy_density_relative_rest_j_per_m3).sum()
+        torch.cuda.synchronize()
+        contact = self.contact()
+        return SolidStep(
+            field, contact, inertial, inertial + gradient - contact.fem_forces_n, fe.x, kinetic, potential, elastic
+        )
 
     def contact(self):
         native = self.scene.sim_systems[ContactSystem]
