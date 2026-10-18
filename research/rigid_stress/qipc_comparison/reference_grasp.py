@@ -15,7 +15,7 @@ import qipc._src.native.solver.qipc_solver_ext as extension
 from qipc import tetmesh
 from qipc.geometry import ground
 
-from .artifacts import file_id, write_json
+from .artifacts import file_id, runtime_identity, write_json
 from .contact_audit import initial_contact_audit
 from .reference import ReferenceConfig, SolidObserver, solver_statistics
 from .robot_inputs import JOINT_NAMES, prepare_mjcf, robot_target
@@ -76,7 +76,7 @@ def robot_energy(scene, velocity):
     return kinetic, potential
 
 
-def snapshot(path, scene, observer, field, contact, servo, step, time):
+def snapshot(path, scene, field, contact, servo, inertial_reaction, step, time):
     global_ids = contact.global_vertex_ids
     np.savez_compressed(
         path,
@@ -87,6 +87,7 @@ def snapshot(path, scene, observer, field, contact, servo, step, time):
         cauchy_pa=field.cauchy_pa.cpu().numpy(),
         det_F=field.determinant.cpu().numpy(),
         contact_forces_n=contact.fem_forces_n.cpu().numpy(),
+        inertial_reaction_n=inertial_reaction.cpu().numpy(),
         active_global_ids=global_ids.cpu().numpy(),
         active_global_forces_n=contact.global_forces_n.cpu().numpy(),
         active_global_positions_m=contact.global_positions_m[global_ids].cpu().numpy(),
@@ -109,6 +110,7 @@ def main():
     parser.add_argument("--record-interval", type=float, default=0.01)
     parser.add_argument("--velocity-tolerance", type=float, default=1e-5)
     parser.add_argument("--linear-tolerance", type=float, default=1e-7)
+    parser.add_argument("--linear-solver", choices=("linear_pcg", "partition_pcg"), default="partition_pcg")
     parser.add_argument("--max-pcg", type=int, default=4096)
     parser.add_argument("--max-newton", type=int, default=256)
     parser.add_argument("--d-hat", type=float, default=2e-5)
@@ -135,6 +137,7 @@ def main():
         energy=args.energy,
         velocity_tolerance=args.velocity_tolerance,
         linear_tolerance=args.linear_tolerance,
+        linear_solver=args.linear_solver,
         max_pcg=args.max_pcg,
         max_newton=args.max_newton,
         d_hat=args.d_hat,
@@ -143,6 +146,9 @@ def main():
     )
     input_receipt = {
         "qipc_import": qipc.__file__,
+        "identity": runtime_identity(),
+        "torch_version": torch.__version__,
+        "torch_cuda_version": torch.version.cuda,
         "native": file_id(extension.__file__),
         "conditions": file_id(args.conditions),
         "mesh": file_id(args.mesh),
@@ -219,6 +225,8 @@ def main():
     resets = 0
     actuator_work = 0.0
     initial_total_energy = None
+    raw_vm_peak = -np.inf
+    raw_principal_peak = -np.inf
     motion_time, motion_q = [0.0], [initial.copy()]
     with (args.output / "steps.jsonl").open("w", buffering=1) as journal:
         try:
@@ -237,6 +245,15 @@ def main():
                     resets += 1
                     actuator_work = 0.0
                     initial_total_energy = None
+                if initial_total_energy is None:
+                    initial_robot_kinetic, initial_robot_potential = robot_energy(scene, servo.velocity)
+                    initial_egg_kinetic = (observer.masses[:, None] * scene.finite_element.velocities**2).sum() / 2
+                    initial_egg_potential = -(
+                        observer.masses[:, None] * scene.finite_element.gravity * scene.finite_element.x
+                    ).sum()
+                    initial_total_energy = (
+                        initial_robot_kinetic + initial_robot_potential + initial_egg_kinetic + initial_egg_potential
+                    ).item()
                 target, cap, phase = robot_target(bank, args.case, control_tick)
                 with torch.cuda.stream(scene.solver.cuda_stream):
                     previous_velocity = scene.finite_element.velocities.clone()
@@ -248,8 +265,10 @@ def main():
                 torch.cuda.synchronize()
                 contact = observer.contact()
                 fe = scene.finite_element
-                residual = observer.masses[:, None] * ((fe.velocities - previous_velocity) / config.dt - fe.gravity)
-                residual += observer.elastic_gradient(field) - contact.fem_forces_n
+                inertial_reaction = observer.masses[:, None] * (
+                    (fe.velocities - previous_velocity) / config.dt - fe.gravity
+                )
+                residual = inertial_reaction + observer.elastic_gradient(field) - contact.fem_forces_n
                 contact_norm = torch.linalg.norm(contact.fem_forces_n).item()
                 force_norm = torch.linalg.norm(residual).item()
                 kinetic = (observer.masses[:, None] * fe.velocities**2).sum() / 2
@@ -257,8 +276,6 @@ def main():
                 elastic = (observer.volumes * field.energy_density_relative_rest_j_per_m3).sum()
                 robot_kinetic, robot_potential = robot_energy(scene, servo.velocity)
                 total_energy = (kinetic + potential + elastic + robot_kinetic + robot_potential).item()
-                if initial_total_energy is None:
-                    initial_total_energy = total_energy
                 actuator_work += (servo.effective_actuator_force * (servo.q - servo.frame_q)).sum().item()
                 status = scene.solver.last_step_status
                 finite = bool(torch.isfinite(field.cauchy_pa).all() and torch.isfinite(servo.q).all())
@@ -300,6 +317,16 @@ def main():
                     "finger_q": servo.q[7:].tolist(),
                     "invalid_step": failed,
                 }
+                vm_element = field.von_mises_pa.argmax().item()
+                principal_element = field.maximum_principal_pa.argmax().item()
+                row.update(
+                    raw_vm_peak_tetrahedron=vm_element,
+                    raw_vm_peak_material_centroid_m=authored_vertices[tetrahedra[vm_element]].mean(axis=0).tolist(),
+                    raw_maximum_principal_tetrahedron=principal_element,
+                    raw_maximum_principal_material_centroid_m=authored_vertices[tetrahedra[principal_element]]
+                    .mean(axis=0)
+                    .tolist(),
+                )
                 count += 1
                 invalid += int(failed)
                 pcg_cap_steps += int(scene.solver.max_pcg_iters >= config.max_pcg)
@@ -310,10 +337,34 @@ def main():
                     snapshot(
                         frames / f"step{step:06d}.npz",
                         scene,
-                        observer,
                         field,
                         contact,
                         servo,
+                        inertial_reaction,
+                        step,
+                        (step + 1) * config.dt,
+                    )
+                if row["raw_vm_peak_pa"] > raw_vm_peak:
+                    raw_vm_peak = row["raw_vm_peak_pa"]
+                    snapshot(
+                        args.output / "raw-vm-peak-state.npz",
+                        scene,
+                        field,
+                        contact,
+                        servo,
+                        inertial_reaction,
+                        step,
+                        (step + 1) * config.dt,
+                    )
+                if row["raw_maximum_principal_pa"] > raw_principal_peak:
+                    raw_principal_peak = row["raw_maximum_principal_pa"]
+                    snapshot(
+                        args.output / "raw-principal-peak-state.npz",
+                        scene,
+                        field,
+                        contact,
+                        servo,
+                        inertial_reaction,
                         step,
                         (step + 1) * config.dt,
                     )
