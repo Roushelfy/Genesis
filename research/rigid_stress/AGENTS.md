@@ -1,16 +1,19 @@
 # Working on native rigid stress recovery
 
-Read [GOAL.md](GOAL.md), [docs/SHELL_SOLVER_COMPARISON_GOAL.md](docs/SHELL_SOLVER_COMPARISON_GOAL.md),
+Read [GOAL.md](GOAL.md), [docs/QIPC_REFERENCE_COMPARISON_GOAL.md](docs/QIPC_REFERENCE_COMPARISON_GOAL.md),
 [README.md](README.md) and [docs/RUNNING.md](docs/RUNNING.md) first.
-The completed stage compares our full stress outputs with Kashu shell PR22;
-read [its report](docs/SHELL_COMPARISON_RESULTS_20261018.md),
+The active task compares DPR (pressure), SCR (intrinsic + body_source_prior)
+and Kashu shell against qualified cuda-graph-qipc reference grasps. Deliver
+common-reference error, speed/memory and stability evidence, with clearer
+configuration names. Separate prescribed robot motion from matched capped
+actuation, and qualify reference uncertainty before ranking accuracy.
+
+Reuse the preceding [shell report](docs/SHELL_COMPARISON_RESULTS_20261018.md),
 [running guide](docs/RUNNING_SHELL_COMPARISON.md) and
-[requirement audit](docs/SHELL_COMPARISON_AUDIT.md). No new campaign is active.
-Unify mechanical observables, pin both sources, and separate contact instability,
-discretization/solve error and physical model differences. Reproduce issues
-before claiming them. Keep an original external baseline and label instrumentation
-or repairs separately. Prior pressure/intrinsic evidence and cleanup remain
-accepted within scope; historical campaigns do not create new active tasks.
+[requirement audit](docs/SHELL_COMPARISON_AUDIT.md). Prior pressure/intrinsic
+evidence and cleanup remain accepted within scope. Pin each source; preserve
+the unmodified external baselines and distinguish diagnostic/repaired variants.
+Historical campaigns do not create unrelated active tasks.
 
 Follow root CLAUDE.md and CODING_GUIDELINES.md when editing engine code.
 The feature belongs to Genesis's existing rigid solver; all production numerical

@@ -5,6 +5,14 @@ conditional elastic stress from changing rigid contacts, including friction,
 and supports raw global max/full output, complete numerical checks, environment
 isolation and partial resets. Production numerical work remains in Quadrants.
 
+The active [three-method QIPC reference goal](docs/QIPC_REFERENCE_COMPARISON_GOAL.md)
+extends those results to a common qualified contact/elasticity reference for
+complete Franka/egg grasps. It compares Directional Patch Recovery (DPR,
+currently pressure), Surface-Constrained Recovery (SCR, intrinsic +
+body_source_prior) and deformable shell for error, speed, memory and stability.
+These are working report names; the existing API mapping is explicit in the
+goal and no implementation rename is claimed by this goal update.
+
 The [shell PR22 comparison](docs/SHELL_COMPARISON_RESULTS_20261018.md) is complete
 within its [declared scope](docs/SHELL_SOLVER_COMPARISON_GOAL.md). It pins both
 implementations, defines compatible full fields, executes analytic/same-load
