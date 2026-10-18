@@ -1,4 +1,14 @@
-# Current shell PR22 comparison
+# Current QIPC reference comparison
+
+`runs/20261018-qipc-reference/` under the established task data root holds the
+new three-method comparison's source/build/input receipts, native build/runtime,
+generated CCCL assets, controls, trajectories and per-job caches/logs. The
+original QIPC source checkout is an isolated sibling worktree. Large binaries,
+dependencies and runtime arrays stay on data. Existing QIPC dependency/toolkit
+caches are reused without modifying active environments or unrelated jobs.
+See [execution status](research/rigid_stress/docs/QIPC_REFERENCE_PROGRESS.md).
+
+# Completed shell PR22 comparison
 
 `runs/20261018-shell-comparison/` under the established task data root holds
 immutable analysis captures, exact PR API/source receipts, matched input meshes,
