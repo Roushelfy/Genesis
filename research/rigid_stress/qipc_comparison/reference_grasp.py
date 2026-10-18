@@ -18,7 +18,7 @@ from qipc.geometry import ground
 
 from .artifacts import file_id, runtime_identity, write_json
 from .contact_audit import initial_contact_audit
-from .reference import ReferenceConfig, SolidObserver, solver_statistics
+from .reference import ReferenceConfig, SolidObserver, preserve_contact_failure, solver_statistics
 from .robot_inputs import JOINT_NAMES, prepare_mjcf, robot_target
 from .servo import CappedServo, EqualityParameters
 
@@ -337,7 +337,14 @@ def main():
                 status = scene.solver.last_step_status
                 finite = bool(torch.isfinite(field.cauchy_pa).all() and torch.isfinite(servo.q).all())
                 physical = finite and field.determinant.min().item() > 0
-                failed = not physical or status["newton_budget_exhausted"] or status["line_search_exhausted"]
+                statistics = solver_statistics(scene)
+                intersection_failed = statistics["edge_triangle_intersection_count"] not in (None, 0)
+                failed = (
+                    not physical
+                    or status["newton_budget_exhausted"]
+                    or status["line_search_exhausted"]
+                    or intersection_failed
+                )
                 gap = scene.solver.min_gap_ratio
                 row = {
                     "step": step,
@@ -345,7 +352,7 @@ def main():
                     "control_tick": control_tick,
                     "phase": float(phase),
                     "reset_epoch": resets,
-                    **solver_statistics(scene),
+                    **statistics,
                     "status": status,
                     "minimum_det_F": field.determinant.min().item(),
                     "all_fields_finite": finite,
@@ -382,6 +389,7 @@ def main():
                     "equality_inertia_coefficient_relative_difference": servo.equality_coefficient_difference.item(),
                     "finger_q": servo.q[7:].tolist(),
                     "invalid_step": failed,
+                    "edge_triangle_forced_exit": intersection_failed,
                 }
                 vm_element = field.von_mises_pa.argmax().item()
                 principal_element = field.maximum_principal_pa.argmax().item()
@@ -435,6 +443,8 @@ def main():
                         (step + 1) * config.dt,
                     )
                 if failed:
+                    if intersection_failed:
+                        preserve_contact_failure(scene, args.output)
                     break
                 if checkpoint_stride and (step + 1) % checkpoint_stride == 0:
                     checkpoint = args.output / "native-checkpoints" / f"step{step + 1:06d}"

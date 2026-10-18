@@ -1,0 +1,296 @@
+{
+  "kind": "actual-three-way-common-column-errors",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726573",
+      "SLURM_ARRAY_JOB_ID": "726572",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-17819d06-c563-257f-30fe-100c9f111279, 00000000:20:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "reference_receipt": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-roundoff-reference-v1/group2/case7/result.json",
+    "bytes": 714,
+    "sha256": "92477dedafd80758ee045256a51960a37e44f76eec6f220038fd57a6bfe0f59b"
+  },
+  "columns": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/columns.npz",
+    "bytes": 3396445,
+    "sha256": "ee4515ed1c7d7b220d9902e2cd472cf9cf95a1d0be096edc814b8492ff02c902"
+  },
+  "surfaces": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/surfaces.npz",
+    "bytes": 73746,
+    "sha256": "aedb92d201e8b3bcb58ccd037a73bcd1118cfc049091077d24e66dd8620bb2f3"
+  },
+  "candidate_receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-capped-v1/group4/dpr-case7/result.json",
+      "bytes": 292,
+      "sha256": "5431a26c53349677f2d6fbb1682df9babd7264767b45ff0dcd0357d8e70f8ead"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-capped-v1/group5/scr-case7/result.json",
+      "bytes": 291,
+      "sha256": "216ed57bbb5e90c223dd52cb937cdff48875da1da71dac952d50ed3b8004245b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-capped-v2/group3/case7-stock/result.json",
+      "bytes": 373,
+      "sha256": "5a9538cf1a8aa4d35efecbce97cbdbb8bfbdbbb94c2a5761ef6e1f2b21a33a69"
+    }
+  ],
+  "reference_qualified": false,
+  "scope": "Diagnostic common-position/time comparisons. Reference spatial/dt/contact uncertainty and complete-grasp qualification remain required; these numbers do not establish a qualified accuracy ranking.",
+  "stress_convention": "World physical QIPC/Shell Cauchy corotated by each link's mass-weighted best fit; native authored-frame linear stress. Shared undeformed tangent projector; finite-strain model differences remain separate.",
+  "complete_time_integrated_common_metrics": [
+    {
+      "method": "dpr",
+      "metrics": {
+        "tangent_field": {
+          "relative_error": 7.144397564513124,
+          "reference_rms_over_time": 1511.697581288872,
+          "absolute_rms_error_over_time": 10800.168518040598,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "inner_surface_tangent": {
+          "relative_error": 7.297800123279845,
+          "reference_rms_over_time": 1436.9574095385785,
+          "absolute_rms_error_over_time": 10486.627960478525,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "outer_surface_tangent": {
+          "relative_error": 7.354156373093842,
+          "reference_rms_over_time": 1572.6349536683258,
+          "absolute_rms_error_over_time": 11565.403367070057,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "membrane_n_per_m": {
+          "relative_error": 7.107396821379754,
+          "reference_rms_over_time": 0.7053842034574831,
+          "absolute_rms_error_over_time": 5.013445445505205,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 0.0005,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "bending_n": {
+          "relative_error": 16.20496662477007,
+          "reference_rms_over_time": 7.5434618910751375e-06,
+          "absolute_rms_error_over_time": 0.00012224154818009754,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 2.5e-07,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "solid_only_full_3d_on_common_columns": {
+          "relative_error": 5.9576700860079645,
+          "reference_rms_over_time": 1954.775947801508,
+          "absolute_rms_error_over_time": 11645.91018906491,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        }
+      }
+    },
+    {
+      "method": "scr",
+      "metrics": {
+        "tangent_field": {
+          "relative_error": 7.170434188896105,
+          "reference_rms_over_time": 1511.697581288872,
+          "absolute_rms_error_over_time": 10839.528020145279,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "inner_surface_tangent": {
+          "relative_error": 7.326743148763438,
+          "reference_rms_over_time": 1436.9574095385785,
+          "absolute_rms_error_over_time": 10528.217855401637,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "outer_surface_tangent": {
+          "relative_error": 7.381810783329319,
+          "reference_rms_over_time": 1572.6349536683258,
+          "absolute_rms_error_over_time": 11608.893659229452,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "membrane_n_per_m": {
+          "relative_error": 7.13182880766627,
+          "reference_rms_over_time": 0.7053842034574831,
+          "absolute_rms_error_over_time": 5.030679382690804,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 0.0005,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "bending_n": {
+          "relative_error": 16.365888492705285,
+          "reference_rms_over_time": 7.5434618910751375e-06,
+          "absolute_rms_error_over_time": 0.00012345545615830746,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 2.5e-07,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "solid_only_full_3d_on_common_columns": {
+          "relative_error": 5.982704600042822,
+          "reference_rms_over_time": 1954.775947801508,
+          "absolute_rms_error_over_time": 11694.847054965148,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        }
+      }
+    },
+    {
+      "method": "shell",
+      "metrics": {
+        "tangent_field": {
+          "relative_error": 18398.824128897493,
+          "reference_rms_over_time": 1511.697581288872,
+          "absolute_rms_error_over_time": 27813457.93421368,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "inner_surface_tangent": {
+          "relative_error": 19536.28814650025,
+          "reference_rms_over_time": 1436.9574095385785,
+          "absolute_rms_error_over_time": 28072814.006994233,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "outer_surface_tangent": {
+          "relative_error": 17905.148930285133,
+          "reference_rms_over_time": 1572.6349536683258,
+          "absolute_rms_error_over_time": 28158263.058403432,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "membrane_n_per_m": {
+          "relative_error": 18340.92535500661,
+          "reference_rms_over_time": 0.7053842034574831,
+          "absolute_rms_error_over_time": 12937.399022214491,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 0.0005,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "bending_n": {
+          "relative_error": 6162.371228198351,
+          "reference_rms_over_time": 7.5434618910751375e-06,
+          "absolute_rms_error_over_time": 0.04648561251857215,
+          "observations": 900,
+          "duration_s": 9.0,
+          "relative_denominator_floor": 2.5e-07,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        }
+      }
+    }
+  ],
+  "complete_common_observation_coverage": true,
+  "snapshots": [
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/common-step000001.npz",
+      "bytes": 12894740,
+      "sha256": "f7af248af55dd712e3d8e1cf6d3758ec992d3a9ea5456ebbd9f0d5f8cc996323"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/common-step000019.npz",
+      "bytes": 12873292,
+      "sha256": "08434f8e7a998c584afeaeab628a55fb3a4a6ed1912d6513872646bb9942f346"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/common-step000049.npz",
+      "bytes": 12841534,
+      "sha256": "fcb3870cb185c4d6c0c4b395616879c128076eb63fa923baabba15b9c2b50eb4"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/common-step000099.npz",
+      "bytes": 12878921,
+      "sha256": "f3c91bb7746c8bd8361633dd312b3a0e5c2150b64b3c0cbbed86c9f46fd7525b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/common-step000109.npz",
+      "bytes": 12879011,
+      "sha256": "053466b6f08bd58d8281d099c3104d818ec4f354c8355f1115d84fcb323e11bc"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/common-step000119.npz",
+      "bytes": 12882036,
+      "sha256": "60ea52e8b83fc79974f7a3ba79c3dc0f1a08a95b0ad0a0f9bce2511aca783b22"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/common-step000179.npz",
+      "bytes": 12887396,
+      "sha256": "18620ff16fd1c400349cd7f173bd3e24b399ea913d30bf1ff8027c13d92e7796"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/common-step000249.npz",
+      "bytes": 12885322,
+      "sha256": "852a3df65443616d457ac5a06f860502f1d40aa426fecb6b59275f891371f2de"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/common-step000299.npz",
+      "bytes": 12892299,
+      "sha256": "4089c19dbbf7a13417195933e3a5bd3ed06ca2cb4c32e91111da34ba076b7560"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/common-step000419.npz",
+      "bytes": 12844637,
+      "sha256": "b2ef08b2357ebc4ce2fb69382862b2f1fe756525545b376a55538861596205ab"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/common-step000449.npz",
+      "bytes": 12856893,
+      "sha256": "f39c8ed2137bfadf5e57cd140bdcb79a0e3c728d607e3eb918d41a5544b897bb"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/common-step000539.npz",
+      "bytes": 12848838,
+      "sha256": "fa739648007e2d333f098ccffa3c1e2037e289498f58121aba307c5a1d7d41c2"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/common-step000559.npz",
+      "bytes": 12832516,
+      "sha256": "197b4d2254120c7d2c2e547487e6f1ff0b1381932879bfcd335ea1987f47165f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/common-step000899.npz",
+      "bytes": 12845716,
+      "sha256": "5fb77cda9fb532640252d91e7331560e8db2ef72acb976fed573dd32a01a23ed"
+    }
+  ],
+  "unmatched_reference_frames": []
+}

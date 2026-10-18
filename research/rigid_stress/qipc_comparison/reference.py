@@ -206,6 +206,11 @@ class SolidObserver:
 
 def solver_statistics(scene):
     solver = scene.solver
+    enabled = getattr(solver, "_et_check_enabled", None)
+    reader = getattr(solver, "read_et_intersections", None)
+    if reader is None:
+        reader = getattr(getattr(solver, "_native", None), "read_et_intersections", None)
+    pairs = reader() if reader is not None and enabled else None
     return {
         "newton": solver.newton_iters,
         "pcg_max": solver.max_pcg_iters,
@@ -214,4 +219,33 @@ def solver_statistics(scene):
         "newton_last_max_displacement_m": solver.newton_max_disp_free,
         "newton_last_contact_displacement_m": solver.newton_max_disp_contact,
         "ccd_minimum_alpha": solver.min_ccd_alpha,
+        "edge_triangle_check_enabled": enabled,
+        "edge_triangle_intersection_pairs": [list(pair) for pair in pairs] if pairs is not None else None,
+        "edge_triangle_intersection_count": len(pairs) if pairs is not None else None,
     }
+
+
+def preserve_contact_failure(scene, output):
+    """Keep a real native dump and static contact indices at an already rejected state."""
+    from .artifacts import file_id, write_json
+
+    native = scene.solver._native
+    outcomes = {}
+    try:
+        native.contact_closure_stage_static()
+        arrays = {key: np.asarray(value) for key, value in native.contact_closure_get_static().items()}
+        path = output / "failure-contact-static.npz"
+        np.savez_compressed(path, **arrays)
+        outcomes["static_contact"] = file_id(path)
+    except Exception as error:
+        outcomes["static_contact_export_error"] = f"{type(error).__name__}: {error}"
+    try:
+        scene.workspace = output / "failure-native-checkpoint"
+        scene.dump()
+        outcomes["native_checkpoint"] = str(scene.workspace)
+    except Exception as error:
+        outcomes["native_checkpoint_export_error"] = f"{type(error).__name__}: {error}"
+    outcomes["scope"] = (
+        "Rejected-state forensic capture only. A real native dump does not validate continuation through an intersection. No solver, contact law, history, tolerance or state is repaired."
+    )
+    write_json(output / "contact-failure-capture.json", outcomes)

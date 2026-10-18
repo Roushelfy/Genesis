@@ -1,0 +1,59 @@
+diff --git a/genesis/engine/couplers/legacy_coupler.py b/genesis/engine/couplers/legacy_coupler.py
+index a2a4cddb6..d71b6b33b 100644
+--- a/genesis/engine/couplers/legacy_coupler.py
++++ b/genesis/engine/couplers/legacy_coupler.py
+@@ -984,6 +984,9 @@ class LegacyCoupler(RBC):
+ 
+         # Shell <-> Rigid
+         if self._rigid_shell:
++            from research.rigid_stress.shell_comparison import diagnostics as comparison_diagnostics
++
++            comparison_diagnostics.before_contact(self.shell_solver)
+             self.kernel_shell_rigid_collide(
+                 self.shell_solver.shell_state,
+                 self.shell_solver.shell_scratch,
+@@ -995,6 +998,7 @@ class LegacyCoupler(RBC):
+                 self.rigid_solver.collider._sdf._sdf_info,
+                 self.rigid_solver.collider.collider_config,
+             )
++            comparison_diagnostics.after_contact(self.shell_solver)
+ 
+     def couple_grad(self, f):
+         if self.fem_solver.is_active:
+diff --git a/genesis/engine/solvers/shell_solver.py b/genesis/engine/solvers/shell_solver.py
+index e87f9256f..f8c78d19c 100644
+--- a/genesis/engine/solvers/shell_solver.py
++++ b/genesis/engine/solvers/shell_solver.py
+@@ -281,6 +281,8 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
+         pass
+ 
+     def substep_pre_coupling(self, f):
++        from research.rigid_stress.shell_comparison import diagnostics as comparison_diagnostics
++
+         if not self.is_active:
+             return
+         kernel_shell_compute_forces(
+@@ -296,11 +298,15 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
+         kernel_shell_system_product(scratch.verts_dv, scratch.verts_Ap, state, scratch, info)
+         kernel_shell_pcg_init(self._pcg_threshold, state, scratch, info, config)
+         for _ in range(self._n_pcg_iterations):
++            comparison_diagnostics.iteration(self)
+             kernel_shell_system_product(scratch.verts_p, scratch.verts_Ap, state, scratch, info)
+             kernel_shell_pcg_update(state, scratch, info, config)
++        comparison_diagnostics.after_solve(self)
+         kernel_shell_apply_dv(state, scratch)
+ 
+     def substep_post_coupling(self, f):
++        from research.rigid_stress.shell_comparison import diagnostics as comparison_diagnostics
++
+         if not self.is_active:
+             return
+         kernel_shell_integrate(self._substep_dt, self._shell_state, self._shell_scratch)
+@@ -308,6 +314,7 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
+             kernel_shell_plastic_flow(self._substep_dt, self._shell_state, self._shell_scratch, self._shell_info)
+         if self._static_config.has_fracture:
+             kernel_shell_fracture(self._shell_state, self._shell_scratch, self._shell_info)
++        comparison_diagnostics.after_shell_substep(self)
+ 
+     def substep_pre_coupling_grad(self, f):
+         pass

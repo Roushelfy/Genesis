@@ -17,7 +17,7 @@ from qipc.geometry import ground
 
 from .artifacts import file_id, runtime_identity, write_json
 from .pose_robot import PoseRobot, pose_contact_table
-from .reference import ReferenceConfig, SolidObserver, solver_statistics
+from .reference import ReferenceConfig, SolidObserver, preserve_contact_failure, solver_statistics
 from .robot_inputs import prepare_mjcf
 
 
@@ -53,6 +53,8 @@ def main():
     parser.add_argument("--dbc-stiffness", type=float, default=1e8)
     parser.add_argument("--velocity-tolerance", type=float, default=1e-7)
     parser.add_argument("--linear-tolerance", type=float, default=1e-5)
+    parser.add_argument("--max-pcg", type=int, default=4096)
+    parser.add_argument("--max-newton", type=int, default=256)
     parser.add_argument("--energy", choices=("snh", "hencky"), default="snh")
     parser.add_argument("--d-hat", type=float, default=2e-5)
     parser.add_argument("--friction-epsilon-velocity", type=float, default=1e-4)
@@ -61,6 +63,7 @@ def main():
     parser.add_argument("--record-times", type=float, nargs="*", default=[])
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    assert args.max_pcg > 0 and args.max_newton > 0
     args.output.mkdir(parents=True, exist_ok=False)
     (args.output / "frames").mkdir()
     with np.load(args.motion) as saved:
@@ -89,6 +92,8 @@ def main():
         linear_solver="linear_pcg",
         velocity_tolerance=args.velocity_tolerance,
         linear_tolerance=args.linear_tolerance,
+        max_pcg=args.max_pcg,
+        max_newton=args.max_newton,
         energy=args.energy,
         d_hat=args.d_hat,
         friction_epsilon_velocity=args.friction_epsilon_velocity,
@@ -183,7 +188,15 @@ def main():
                     - initial_potential
                     - contact_work,
                 }
-                failed = not row["all_fields_finite"] or row["minimum_det_F"] <= 0 or row["newton_cap_reached"]
+                intersection_failed = row["edge_triangle_intersection_count"] not in (None, 0)
+                failed = (
+                    not row["all_fields_finite"]
+                    or row["minimum_det_F"] <= 0
+                    or row["newton_cap_reached"]
+                    or intersection_failed
+                )
+                row["invalid_step"] = failed
+                row["edge_triangle_forced_exit"] = intersection_failed
                 executed += 1
                 journal.write(json.dumps(row, allow_nan=False) + "\n")
                 if (step + 1) % record_stride == 0 or (step + 1) in extra_steps or failed or step == steps - 1:
@@ -219,6 +232,8 @@ def main():
                         row["time_s"],
                     )
                 if failed:
+                    if intersection_failed:
+                        preserve_contact_failure(scene, args.output)
                     break
             completed = executed == steps and not failed
         finally:

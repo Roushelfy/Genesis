@@ -1,0 +1,95 @@
+{
+  "kind": "complete-unloaded-native-QIPC-capped-schedule-comparison",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726589",
+      "SLURM_ARRAY_JOB_ID": "726587",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-deec06d9-69c0-a4df-e1da-1c42f2a60220, 00000000:C1:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "case": 2,
+  "sources": [
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/robot-schedule-native-v1/group1/case2/result.json",
+      "bytes": 1161,
+      "sha256": "c0d7db10a05dcf7b94d2382a0fe02a315f18f8087683d2a41f3fa7b5e555b317"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/robot-schedule-native-v1/group1/case2/steps.jsonl",
+      "bytes": 8443180,
+      "sha256": "755d45ccf45ece9ddd633cecc1fa4628ca0da5c086281c3b2348a0b5c6a6bd2c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/robot-schedule-native-v1/group1/case2/start.json",
+      "bytes": 16708,
+      "sha256": "2667ce306fab2fcf36250526573c5fa3d36aae370a8c1ba1d235c2b0789c2ead"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/robot-schedule-qipc-v1/group1/case2/result.json",
+      "bytes": 1407,
+      "sha256": "8eeade7fb4befc937f66fcb7636ebca23e6fe992336b5a150bd6a3f6025c7988"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/robot-schedule-qipc-v1/group1/case2/steps.jsonl",
+      "bytes": 15048197,
+      "sha256": "725daf28f1e6555c8c83acd7c61e29de5f9182fbb092614cbc64d88fa5ba13d7"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/robot-schedule-qipc-v1/group1/case2/start.json",
+      "bytes": 7146,
+      "sha256": "d9db7105718c02807843ca1470530167cb13297ec04913e5de1c37d09df2005e"
+    }
+  ],
+  "kinematic_model": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml",
+    "bytes": 14369,
+    "sha256": "e502e07fcef6219024be02dfb9cd65d5c194b4767adf381ca51f10172ff8a32d"
+  },
+  "mujoco_version": "3.15.0",
+  "physical_observations": 9000,
+  "duration_s": 9.0,
+  "resets": 1,
+  "commands_caps_phases_and_reset_epochs_exactly_equal": true,
+  "statistics": {
+    "arm_coordinate_rad": {
+      "maximum": 1.148573359799343e-05,
+      "maximum_time_s": 3.335,
+      "rms": 2.748874465603716e-06
+    },
+    "finger_coordinate_m": {
+      "maximum": 7.644605478709932e-06,
+      "maximum_time_s": 3.1910000000000003,
+      "rms": 1.8374392642121797e-06
+    },
+    "authored_hand_position_m": {
+      "maximum": 1.0512360942698417e-05,
+      "maximum_time_s": 3.335,
+      "rms": 2.516725290946048e-06
+    },
+    "authored_hand_rotation_rad": {
+      "maximum": 1.9487959106619742e-05,
+      "maximum_time_s": 3.335,
+      "rms": 4.661043636897369e-06
+    }
+  },
+  "predeclared_bands": {
+    "arm_coordinate_rad": 0.0001,
+    "finger_coordinate_m": 1e-05,
+    "authored_hand_position_m": 5e-05,
+    "authored_hand_rotation_rad": 0.0001
+  },
+  "qipc_status_flags_observed": true,
+  "qipc_failed_status_steps": 0,
+  "qipc_pcg_flags_observed": true,
+  "qipc_pcg_cap_steps": 0,
+  "no_contact_schedule_bands_passed": true,
+  "physical_contact_reference_qualified": false,
+  "scope": "Every physical-step coordinate and authored hand FK is compared over the complete original command schedule, including reset. No egg/contact, imposed actual q or fitted reaction force is present. Predeclared position/rotation bands test unloaded control/integration matching; passing cannot qualify loaded contact, friction, FEM stress or continuum peaks. Unknown numerical flags remain unknown and cannot pass."
+}

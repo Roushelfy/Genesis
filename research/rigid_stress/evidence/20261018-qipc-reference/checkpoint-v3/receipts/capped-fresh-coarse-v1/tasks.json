@@ -1,0 +1,82 @@
+[
+  [
+    {
+      "name": "case0",
+      "module": "research.rigid_stress.qipc_comparison.reference_grasp",
+      "args": [
+        "--mjcf",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/conditions.npz",
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--equality-constants",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-robot-constants-v1/group0/robot/start.json",
+        "--duration",
+        "0.2",
+        "--velocity-tolerance",
+        "1e-7",
+        "--linear-tolerance",
+        "1e-5",
+        "--duration",
+        "9.0",
+        "--linear-solver",
+        "linear_pcg",
+        "--linear-tolerance",
+        "1e-7",
+        "--duration",
+        "1.3",
+        "--linear-solver",
+        "partition_pcg",
+        "--linear-tolerance",
+        "1e-5",
+        "--duration",
+        "9.0",
+        "--case",
+        "0",
+        "--checkpoint-interval",
+        "0.5"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "case2",
+      "module": "research.rigid_stress.qipc_comparison.reference_grasp",
+      "args": [
+        "--mjcf",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/conditions.npz",
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--equality-constants",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-robot-constants-v1/group0/robot/start.json",
+        "--duration",
+        "0.2",
+        "--velocity-tolerance",
+        "1e-7",
+        "--linear-tolerance",
+        "1e-5",
+        "--duration",
+        "9.0",
+        "--linear-solver",
+        "linear_pcg",
+        "--linear-tolerance",
+        "1e-7",
+        "--duration",
+        "1.3",
+        "--linear-solver",
+        "partition_pcg",
+        "--linear-tolerance",
+        "1e-5",
+        "--duration",
+        "9.0",
+        "--case",
+        "2",
+        "--checkpoint-interval",
+        "0.5"
+      ]
+    }
+  ]
+]

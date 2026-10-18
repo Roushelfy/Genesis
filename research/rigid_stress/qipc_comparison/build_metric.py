@@ -69,6 +69,7 @@ def main():
             "maximum_projected_wall_m": columns.thickness.max().item(),
             "weighted_domain_measure_m3": columns.weights.sum().item(),
             "analytic_constant_tensor_linear_bending_affine_interpolation_rotation_checks_passed": True,
+            "direct_point_query_fallbacks": [sampler.direct_point_query_fallbacks for sampler in samplers],
             "metric": "Area-weighted material face-centroid columns; tangent Cauchy tensors in the corotated authored frame. Two Gauss points on every union P1/P2 tet intersection segment. This is one common three-way metric domain, not an exact full-volume integral or global-extremum search.",
         },
     )

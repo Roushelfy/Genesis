@@ -565,6 +565,27 @@
       "time_utc": "2026-10-18T13:42:21.318529+00:00",
       "persistent_output_budget_bytes": 2000000000,
       "reason": "Retain already selected coarse histories, sparse adaptive pilot and compact audit/figure outputs; disclosed before exceeding initial1GB; no new environment/cache in home"
+    },
+    "case7_budget_revision": {
+      "time_utc": "2026-10-18T14:04:07.196025+00:00",
+      "baseline": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-roundoff-reference-v1/group2/case7",
+      "scope": "Six full original-control9s independent sensitivity histories. Same initial state/controller/force caps/reset/continuum/material; one named numerical/geometric contrast per group. Strict stopping also increases the linear budget and is labeled combined. No prescribed force or altered grasp target.",
+      "baseline_measured_intrusive_seconds": 2994.1538555259467,
+      "baseline_measured_output_bytes": 232535895,
+      "fine6s_measured_output_bytes": 621821426,
+      "persistent_fallback_budget_bytes": 4000000000,
+      "maximum_concurrent_groups": 3,
+      "group_time_limit_minutes": 240,
+      "native_checkpoint_interval_s": 0.5,
+      "no_qualification_inferred_from_submission": true
     }
+  },
+  "user_authorized_home_continuation": {
+    "recorded_at_utc": "2026-10-18T15:43:57.369129+00:00",
+    "user_instruction": "允许继续写入用户",
+    "scope": "Current task existing fallback; retained 4000000000-byte persistent-output bound; no environment migration or unrelated project exception",
+    "submission_flag": "--allow-home-output",
+    "last_metadata_snapshot_bytes": 2788712565,
+    "data_write_probe_errno": 122
   }
 }

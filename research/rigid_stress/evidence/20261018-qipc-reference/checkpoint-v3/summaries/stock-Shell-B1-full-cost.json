@@ -1,0 +1,170 @@
+{
+  "warmup_seconds": 78.7396990940033,
+  "warmup_invalid_environment_steps": null,
+  "repeats": [
+    {
+      "repeat": 0,
+      "seconds": 77.98005473299418,
+      "env_steps": 900,
+      "requested_steps": 900,
+      "executed_steps": 900,
+      "completed_requested_history": true,
+      "nonfinite_step": null,
+      "final_output_finite_checked_after_timer": true,
+      "accuracy_qualified": null,
+      "invalid_environment_steps": null,
+      "invalid_steps_per_environment": null,
+      "valid_aggregate_env_steps_per_second": null,
+      "aggregate_env_steps_per_second": 11.541412776403202,
+      "batch_step_ms": 86.64450525888242,
+      "partial_reset_envs": 1,
+      "scope": "normal-full-field"
+    },
+    {
+      "repeat": 1,
+      "seconds": 77.83092180700623,
+      "env_steps": 900,
+      "requested_steps": 900,
+      "executed_steps": 900,
+      "completed_requested_history": true,
+      "nonfinite_step": null,
+      "final_output_finite_checked_after_timer": true,
+      "accuracy_qualified": null,
+      "invalid_environment_steps": null,
+      "invalid_steps_per_environment": null,
+      "valid_aggregate_env_steps_per_second": null,
+      "aggregate_env_steps_per_second": 11.563527440053821,
+      "batch_step_ms": 86.47880200778471,
+      "partial_reset_envs": 1,
+      "scope": "normal-full-field"
+    },
+    {
+      "repeat": 2,
+      "seconds": 77.97560366700054,
+      "env_steps": 900,
+      "requested_steps": 900,
+      "executed_steps": 900,
+      "completed_requested_history": true,
+      "nonfinite_step": null,
+      "final_output_finite_checked_after_timer": true,
+      "accuracy_qualified": null,
+      "invalid_environment_steps": null,
+      "invalid_steps_per_environment": null,
+      "valid_aggregate_env_steps_per_second": null,
+      "aggregate_env_steps_per_second": 11.542071592590723,
+      "batch_step_ms": 86.6395596300006,
+      "partial_reset_envs": 1,
+      "scope": "normal-full-field"
+    }
+  ],
+  "trajectory_summary": [
+    {
+      "all_recorded_fields_finite": null,
+      "minimum_position_z_m": null,
+      "maximum_position_z_m": null,
+      "maximum_peak_pa": null,
+      "cap_exhausted_substeps": null
+    },
+    {
+      "all_recorded_fields_finite": null,
+      "minimum_position_z_m": null,
+      "maximum_position_z_m": null,
+      "maximum_peak_pa": null,
+      "cap_exhausted_substeps": null
+    },
+    {
+      "all_recorded_fields_finite": null,
+      "minimum_position_z_m": null,
+      "maximum_position_z_m": null,
+      "maximum_peak_pa": null,
+      "cap_exhausted_substeps": null
+    }
+  ],
+  "kind": "matched-franka-egg",
+  "args": {
+    "model": "shell",
+    "output": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-b1-full-error-cost-v1/group0/stock-b1-full",
+    "conditions": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/case0.npz",
+    "inputs": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/surface0",
+    "native_assets": null,
+    "envs": 1,
+    "level": 1,
+    "precision": "64",
+    "substeps": 10,
+    "sim_dt": 0.01,
+    "output_mode": "full",
+    "iterations": 50,
+    "tolerance": 0.0001,
+    "patches": 6,
+    "coarse_interval": 10,
+    "damping": 0.0,
+    "coupling_friction": 0.7191016138165071,
+    "coupling_softness": 0.002,
+    "bank_coupling_friction": true,
+    "wall_volume_input": null,
+    "warmup": 900,
+    "steps": 900,
+    "repetitions": 3,
+    "record_every": 0,
+    "instrumented": false,
+    "memory": false,
+    "trace": false,
+    "peak_snapshots": false
+  },
+  "identity": {
+    "analysis_import": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-b1-full-error-cost-v1/analysis-source/research/rigid_stress/shell_comparison/common.py",
+    "genesis_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/kashu-shell-pr22-substep-peaks/genesis/__init__.py",
+    "python": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "cpu_models": [
+      "INTEL(R) XEON(R) PLATINUM 8562Y+"
+    ],
+    "host": "rtx-209-113",
+    "job": "726648",
+    "array_job": "726647",
+    "array_task": "0",
+    "packages": {
+      "quadrants": "1.3.3",
+      "torch": "2.11.0+cu129",
+      "numpy": "2.2.6",
+      "scipy": "1.15.3",
+      "trimesh": "5.1.1",
+      "pydantic": "2.14.0"
+    },
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-3fca1524-6874-acf6-4b5a-8f4bbdf257e8, 595.71.05, 97887 MiB"
+  },
+  "condition_bank": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/case0.npz",
+    "bytes": 2096,
+    "sha256": "a555a5784363e52b92f15a51509dbd8a0a2cce131af0287127eb43d3d3c079c2"
+  },
+  "build_seconds": 91.44700552901486,
+  "observation_bytes": 26892,
+  "source_scope": "original-plus-output-sidecar",
+  "observation_contract": {
+    "mode": "full",
+    "full_field_arrays_written": true,
+    "temporal_coverage": "Complete face/three-fiber field at the last physical substep of the scene interval",
+    "observed_physical_substeps": null
+  },
+  "process_memory": {
+    "enabled": false,
+    "scope": "intrusive build/warm/rollout process sampling",
+    "peak_mib": null,
+    "samples": []
+  },
+  "rigid_dofs": 9,
+  "shell_numerics": {
+    "vertices": 42,
+    "faces": 80,
+    "patches": 1,
+    "fracture_enabled": false,
+    "plasticity_enabled": false,
+    "allocated_vertices": 42,
+    "lumped_shell_mass_kg": 0.006946250126509783,
+    "coupling_friction": 0.7191016138165071,
+    "coupling_softness_m": 0.002,
+    "bank_friction_ratio_applied_to_shell_coupling": false
+  }
+}

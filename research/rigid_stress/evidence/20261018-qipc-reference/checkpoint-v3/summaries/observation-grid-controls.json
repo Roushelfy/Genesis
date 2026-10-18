@@ -1,0 +1,88 @@
+{
+  "kind": "common-observation-grid-admission-controls",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726614",
+      "SLURM_ARRAY_JOB_ID": "726614",
+      "SLURM_ARRAY_TASK_ID": "5",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-779281f8-1132-b676-132d-571b2ccec62c, 00000000:46:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "cases": [
+    {
+      "case": "complete-six-seconds",
+      "admitted": true
+    },
+    {
+      "case": "complete-nine-seconds",
+      "admitted": true
+    },
+    {
+      "case": "contiguous-short-prefix",
+      "admitted": false
+    },
+    {
+      "case": "missing-middle-observation",
+      "admitted": false
+    },
+    {
+      "case": "missing-terminal-observation",
+      "admitted": false
+    },
+    {
+      "case": "shifted-observation-clock",
+      "admitted": false
+    },
+    {
+      "case": "unknown-requested-duration",
+      "admitted": false
+    }
+  ],
+  "actual_complete_comparisons": [
+    {
+      "source": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/validation-after-storage-v1/group6/surface2-comparison/result.json",
+        "bytes": 2818962,
+        "sha256": "a92f371ad28ba7df18723eb934ea25eb8229ce5ca6245153259e53a97a7b8a37"
+      },
+      "duration_s": 6.0,
+      "observations": 600,
+      "admitted": true
+    },
+    {
+      "source": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group0/case7-stock/result.json",
+        "bytes": 4232567,
+        "sha256": "21530fc98c2e3101a3d27a7a37c0f8838bb09f8030aca6521424dc1a7af98178"
+      },
+      "duration_s": 9.0,
+      "observations": 900,
+      "admitted": true
+    },
+    {
+      "source": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-case7-fields-and-cost-qa-v1/group1/case7-volume-surface2/result.json",
+        "bytes": 4228763,
+        "sha256": "52af7c0dd9995e3e267145ef8e0660c07c3c24b9df21cfb2fead57a7a6a54ff5"
+      },
+      "duration_s": 9.0,
+      "observations": 900,
+      "admitted": true
+    }
+  ],
+  "actual_sparse_source": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-linear-budget-v2/group0/adaptive-edge0.0005-wall4/result.json",
+    "bytes": 651,
+    "sha256": "d8fe8f43bb70557637ab70fe3f277cabbcce28920873279425375c0308a90335"
+  },
+  "actual_sparse_observations": 14,
+  "sparse_whole_history_admitted": false,
+  "all_controls_passed": true,
+  "scope": "Completing the requested simulation does not imply a complete10ms field observation grid. All expected ticks from the original requested duration must exist. No phase cut, missing-prefix normalization or sparse-frame whole-history norm is admitted."
+}

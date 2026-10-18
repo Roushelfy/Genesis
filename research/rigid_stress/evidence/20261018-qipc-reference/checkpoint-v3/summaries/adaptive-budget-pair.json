@@ -1,0 +1,67 @@
+{
+  "kind": "paired-reference-history-uncertainty",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726617",
+      "SLURM_ARRAY_JOB_ID": "726614",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-deec06d9-69c0-a4df-e1da-1c42f2a60220, 00000000:C1:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "reference": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-pilot-v1/group0/adaptive-edge0.0005-wall4/result.json",
+    "bytes": 652,
+    "sha256": "86f1ba3681b03c96bc1103ad0021d179caa6afeb44b13e8c2cef460be8fb265c"
+  },
+  "surface_mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz",
+    "bytes": 144512,
+    "sha256": "9d0d4f99c71578bd3f6bb039f9c72a5abbf2a8159f0209b4b891a3bda2647998"
+  },
+  "comparisons": [
+    {
+      "candidate": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-linear-budget-v2/group0/adaptive-edge0.0005-wall4/result.json",
+        "bytes": 651,
+        "sha256": "d8fe8f43bb70557637ab70fe3f277cabbcce28920873279425375c0308a90335"
+      },
+      "candidate_folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-linear-budget-v2/group0/adaptive-edge0.0005-wall4",
+      "candidate_config": {
+        "dt": 0.001,
+        "young": 10000000000.0,
+        "poisson": 0.3,
+        "density": 2000.0,
+        "velocity_tolerance": 1e-09,
+        "linear_tolerance": 1e-08,
+        "max_newton": 256,
+        "max_pcg": 16384,
+        "d_hat": 2e-05,
+        "friction": 0.7191016138165071,
+        "friction_epsilon_velocity": 0.0001,
+        "resistance": 10000000000.0,
+        "energy": "snh",
+        "mas_precision": "double",
+        "linear_solver": "linear_pcg"
+      },
+      "common_times": 14,
+      "missing_candidate_ticks": [],
+      "material_columns": 1280,
+      "pair_quadrature_points": 30126,
+      "direct_point_query_fallbacks": {
+        "reference": 6,
+        "candidate": 6
+      },
+      "expected_reference_duration_s": 1.16,
+      "complete_reference_observation_grid": false,
+      "complete_time_integrated_common_metrics": {}
+    }
+  ],
+  "reference_qualified": false,
+  "scope": "The same material face-centroid columns are integrated on every union of both P1 partitions. Norms and resultants are exact along these columns up to geometric/roundoff tolerance; in-plane sampling remains finite. These are separate uncertainty contrasts, not an additive scalar error budget. Raw full-mesh peaks/solver caps remain in the source microstep journals. Complete finite histories and a small net wrench difference do not by themselves qualify per-finger reactions, contact regularization or continuum peaks."
+}

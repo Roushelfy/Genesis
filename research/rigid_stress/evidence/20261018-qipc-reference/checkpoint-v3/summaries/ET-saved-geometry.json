@@ -1,0 +1,151 @@
+{
+  "kind": "rejected-edge-triangle-independent-saved-geometry-audit",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-099",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726680",
+      "SLURM_ARRAY_JOB_ID": "726679",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-13316917-f6f2-4d83-5def-71d3279491c9, 00000000:20:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "analytic_controls": {
+    "known_crossing_and_outside_cases": 24,
+    "coplanar_case_reported_unresolved": true
+  },
+  "inputs": [
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-ET-forensics-v3/group0/adaptive-edge0.0005-wall4/failure-contact-static.npz",
+      "bytes": 1008225,
+      "sha256": "e481390e9d79612a0b03eb46469ea72834903eef1a5fd502169a6358c34b5f86"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-ET-forensics-v3/group0/adaptive-edge0.0005-wall4/failure-native-checkpoint/dump/frame_1102.npz",
+      "bytes": 11206069,
+      "sha256": "e062f4dbfebcd47213330c1589741014d5d5332bcfe625be32275fa7312d4e21"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-ET-forensics-v3/group0/adaptive-edge0.0005-wall4/frames/step001101.npz",
+      "bytes": 9885393,
+      "sha256": "8606704bf8d40804d8255c1a3e6c13f60378fbd9d0c06e5997f42b135941776c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-ET-forensics-v3/group0/adaptive-edge0.0005-wall4/steps.jsonl",
+      "bytes": 1748748,
+      "sha256": "583fd6b8447b1d1254d767d6ed8e0c11d8f2b66213aa62f6dbd8e5555f56374b"
+    }
+  ],
+  "failure_time_s": 1.102,
+  "failure_step": 1101,
+  "all_previous_recorded_ET_counts_zero": true,
+  "saved_geometry_consistency": {
+    "dump_FEM_equals_saved_field_exactly": true,
+    "global_FEM_shape": [
+      30290,
+      3
+    ],
+    "saved_FEM_shape": [
+      30290,
+      3
+    ],
+    "global_FEM_equals_saved_field_exactly": true,
+    "global_FEM_maximum_component_difference_m": 0.0,
+    "global_active_equals_saved_points_exactly": true,
+    "global_active_maximum_component_difference_m": 0.0,
+    "scope": "Global positions and FEM public fields are distinct checkpoint arrays. Pair tests below use native global positions only, retaining every measured discrepancy rather than assuming state equality."
+  },
+  "number_of_rigid_bodies": 10,
+  "pairs": [
+    {
+      "edge": 21424,
+      "face": 4617,
+      "global_vertex_ids": [
+        5640,
+        6813,
+        1941,
+        2772,
+        4246
+      ],
+      "body_ids": [
+        10,
+        10,
+        10,
+        10,
+        10
+      ],
+      "owner_types": [
+        "FEM",
+        "FEM",
+        "FEM",
+        "FEM",
+        "FEM"
+      ],
+      "positions_m": [
+        [
+          0.656547683607517,
+          -0.017808129241794327,
+          0.031946297782868005
+        ],
+        [
+          0.6563598784725474,
+          -0.017805887444817377,
+          0.031948383294749166
+        ],
+        [
+          0.6571846780526257,
+          -0.017751661431362253,
+          0.03217283894815692
+        ],
+        [
+          0.6564333324495499,
+          -0.017742514186212137,
+          0.03218113329282974
+        ],
+        [
+          0.6569233237349676,
+          -0.017812703696160906,
+          0.031942152034066036
+        ]
+      ],
+      "float64_segment_parameter": 0.03169956428578815,
+      "float64_triangle_barycentric": [
+        -0.5078819659802708,
+        0.5078790809882118,
+        1.000002884992059
+      ],
+      "float64_linear_system_residual_m": 2.7939250479261703e-20,
+      "decimal": {
+        "unique_plane_crossing": true,
+        "segment_parameter": "0.0316995642855789373295933154676418446621438523060934724056105330112887487217",
+        "triangle_barycentric": [
+          "-0.5078819659802184126482918939682919962697975206730977364926613135242643408462439",
+          "0.50787908098815947327075229308133173697140942989303829682362664151035558816279",
+          "1.0000028849920589393775396008869602592983880907800594396690346720139087526834539"
+        ],
+        "segment_crosses_plane": true,
+        "plane_crossing_inside_triangle": false,
+        "closed_segment_triangle_intersection": false,
+        "arithmetic": "80-digit Decimal from exact stored float64 coordinates; no geometric tolerance or clipping"
+      },
+      "native_predicate_transcription": {
+        "intersection": true,
+        "coplanar_branch": true,
+        "unnormalized_plane_products_m3": [
+          -2.67069990269661e-16,
+          8.157966640040925e-15
+        ],
+        "unit_normal_signed_endpoint_distances_m": [
+          -1.467307013979595e-09,
+          4.482061671795183e-08
+        ],
+        "scope": "Diagnostic float64 source transcription. GPU instruction ordering can differ; Decimal plane crossing supplies the independent pair verdict."
+      }
+    }
+  ],
+  "scope": "Independent narrow-phase tests only for the actually reported pairs at the saved rejected state. No exhaustive contact search, CCD certification, solver continuation, repair, or physical reference qualification. Body ids use native static ownership; rigid names are not inferred from face/vertex order."
+}

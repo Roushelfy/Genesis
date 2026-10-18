@@ -13,10 +13,12 @@ from .common_metric import (
     build_columns,
     build_surfaces,
     corotation,
+    complete_control_grid,
     field_error,
     tangent,
     tensor_error,
     time_integrated_error,
+    requested_duration_s,
 )
 from .compare_fields import area_error, resultants
 
@@ -89,6 +91,8 @@ def main():
     args.output.mkdir(parents=True, exist_ok=False)
     rest = load_rest(args.reference)
     reference_index = frame_index(args.reference)
+    reference_receipt = json.loads((args.reference / "result.json").read_text())
+    reference_duration = requested_duration_s(reference_receipt)
     reference_sampler = TetSampler.allocate(rest["authored_vertices_m"], rest["tetrahedra"])
     with np.load(args.surface_mesh) as saved:
         outer, inner, faces = saved["outer_vertices"], saved["inner_vertices"], saved["mid_faces"]
@@ -98,6 +102,7 @@ def main():
         with np.load(path) as saved:
             constitutive.append({"time_s": tick * 0.01, **constitutive_snapshot(saved, rest)})
     for candidate_number, folder in enumerate(args.candidates):
+        reference_sampler.direct_point_query_fallbacks = 0
         candidate_rest = load_rest(folder)
         sampler = TetSampler.allocate(candidate_rest["authored_vertices_m"], candidate_rest["tetrahedra"])
         columns = build_columns(reference_sampler, sampler, outer, inner, faces)
@@ -136,9 +141,10 @@ def main():
                     )
                 rows.append(row)
         complete = (
-            json.loads((args.reference / "result.json").read_text())["completed_requested_history"]
+            reference_receipt["completed_requested_history"]
             and json.loads((folder / "result.json").read_text())["completed_requested_history"]
             and len(rows) == len(reference_index)
+            and complete_control_grid(reference_index, reference_duration)
         )
         temporal = {}
         if complete:
@@ -170,6 +176,12 @@ def main():
                 "missing_candidate_ticks": sorted(reference_index.keys() - candidate_index.keys()),
                 "material_columns": len(columns.area),
                 "pair_quadrature_points": len(columns.points),
+                "direct_point_query_fallbacks": {
+                    "reference": reference_sampler.direct_point_query_fallbacks,
+                    "candidate": sampler.direct_point_query_fallbacks,
+                },
+                "expected_reference_duration_s": reference_duration,
+                "complete_reference_observation_grid": complete_control_grid(reference_index, reference_duration),
                 "history": rows,
                 "complete_time_integrated_common_metrics": temporal,
             }

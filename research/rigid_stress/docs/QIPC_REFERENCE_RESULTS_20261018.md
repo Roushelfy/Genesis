@@ -3,8 +3,9 @@
 **Status: active, incomplete.** Complete prescribed-motion histories now have
 actual common-reference field discrepancies for DPR, SCR and PR22 Shell.
 The reference fails the current spatial/timestep uncertainty targets, so those
-discrepancies remain diagnostic. Capped case7 completes9s, while representative
-case0 and its uncertainty controls remain incomplete. The shared data mount is
+discrepancies remain diagnostic. Capped cases2/7 complete9s, while representative
+case0 and the remaining controls are still running. Full9s case7 wall/stopping
+contrasts exceed100%; the reference remains unqualified. The shared data mount is
 still unwritable; an explicitly documented bounded temporary output root now
 allows selected validation and coarse histories to proceed. This report is a checkpoint, not the
 goal closeout or an accuracy-qualified ranking.
@@ -24,6 +25,11 @@ its cost snapshot still omits some later-completed measurements.
 The [validated checkpointv2](../evidence/20261018-qipc-reference/checkpoint-v2/README.md)
 adds the actual post-outage controls, consolidated costs, corrected Shell
 static replay, adaptive negative evidence and an inspected uncertainty figure.
+The [corrected checkpointv3](../evidence/20261018-qipc-reference/checkpoint-v3/README.md)
+adds complete capped2/7 comparisons, full9s wall/strict contrasts, native ET
+failure admission and saved-geometry forensics, unloaded/actual-pose controls,
+matched Shell B1 timing and the inspected cost/profile figure. Full selected
+JSON histories are losslessly retained alongside compact summaries.
 Original runtime paths below are relative to the established data run
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/`.
 New fallback campaigns are explicitly labeled with root `F` in the execution record.
@@ -115,6 +121,50 @@ variants, not unmodified-baseline results. The five-line BVH barrier placement
 change between the integration pins is not evidence of missing contacts in
 original main; original main has per-child-round barriers.
 
+## Corrected native-failure and observation admission
+
+A source/log audit found that native ET detection forces Newton exit independently
+of PCG/Newton caps. The old runner missed this status and could label a finite,
+unconverged history complete. The original receipts remain unchanged; the
+retrospective audit identifies6 forced exits in the adaptive4k-PCG pilot and2
+in its16k counterpart. Their first recorded events are1.103/1.107s. The16k
+pilot eliminates PCG caps but reaches119.496N maximum net force residual,1865.45
+egg weights, and remains invalid. Raising a linear budget does not resolve the
+native forced-exit mechanism.
+
+The corrected runner records enabled status, pair ids and counts at every
+physical step, stops at the first event and retains a full failure frame,
+static contact topology and real native dump. Fresh job726639 stops at1.102s:
+all1101 previous per-step counts are zero; the last count is1, invalid is true,
+requested completion is false and the process exits1. Newton/PCG caps are zero.
+Last displacement86.8um is far above the1pm stopping scale. This verifies the
+new admission gate with an actual failure, beyond the15 passing audit controls.
+Historical missing ET observations remain unknown; a clean retained log alone
+is not a per-step zero counter.
+
+Independent saved-geometry audit726679 validates exact agreement of native
+global FEM positions, saved FEM fields and active contact points. All five
+vertices of reported edge21424/face4617 belong to the egg FEM body. The80-digit
+Decimal plane crossing has segment parameter0.03169956, but triangle
+barycentrics[-0.50788197,0.50787908,1.00000288], outside the triangle. The
+source-transcribed predicate reports true via its approximate-coplanar branch;
+its endpoint signed distances are-1.467nm/+44.821nm. This is a detector false
+positive for that saved pair, not demonstrated physical self-intersection.
+The native solver nevertheless stopped its solve; the trajectory remains
+rejected. No repaired detector, solver continuation or exhaustive CCD
+certificate is claimed. Other historical ET pairs are not geometrically
+classified. The initial forensic owner assertion mistakenly included the floor
+vertex; its failed version and corrected explicit single-FEM-body check are
+both retained, with24 independent analytic crossing/outside controls.
+
+The material-coordinate query correction is separately validated: unchanged
+coordinates and2e-9 barycentric tolerance,21 legacy arrays exactly unchanged,
+actual inside point accepted, outside point rejected and distinct one-sided
+cells at the same exact boundary. Six adaptive fallbacks recover14 sparse
+observations. New complete-grid controls reject sparse, shifted, missing-middle
+and missing-end observations for full-history norms; real600/900 grids pass.
+This fixes observation admission, not reference physics or failed native solves.
+
 ## Complete prescribed-motion discrepancies and uncertainty
 
 Every three-way observation uses the same1280 material wall columns and10ms
@@ -173,8 +223,16 @@ pilot retains every physical-step global peak but exhausts PCG696 times; maximum
 net force residual is606.5 egg weights. The raw VM reaches647.933MPa at1.13s.
 At that time finger force/moment differ57.62%/56.78% from surface2/wall4.
 Its14 sparse full frames cannot qualify a full6s history, and the separate
-field comparison stops at the material-column coverage assertion, with no
-admitted field score. Input construction and failed bounds
+initial field comparison stops at the material-column coverage assertion.
+A validated coordinate query fixes that observation defect: all21 legacy arrays
+are exactly unchanged, real outside points are rejected, and six adaptive
+fallbacks produce14-time prefix diagnostics. At1.13s tangent/membrane/bending
+contrasts are0.628771/0.578531/2.407296. The large residual and PCG-cap failures
+and the later-discovered ET forced exits
+still reject numerical/physical qualification; no whole-history norm is inferred.
+The16k-PCG repeat has no PCG caps but2 ET exits. At1.13s its tangent/membrane/
+bending contrast is0.648171/0.599350/2.421243; these are post-failure diagnostics.
+Input construction and failed bounds
 are preserved in the [fallback record](QIPC_REFERENCE_FALLBACK_20261018.md).
 
 ## Loads, outcomes and state history
@@ -242,6 +300,74 @@ the unowned reference scene. Native physical-step histories match the original
 Shell changing to that outer cadence fails equivalence, so its actual physical
 peak observer is a separate read-only callback in the unchanged integrator.
 
+## Complete force-limited cases2 and7
+
+Both stock and volume-surface2 Shell comparisons now cover all900 common times
+over9s with the original controller, force caps, delay, weak/release schedule
+and one reset. The same coarse reference has tangent RMS1511.70Pa over time,
+above the1Pa denominator floor. These are complete diagnostic ratios:
+
+| Method / input | Tangent field | Membrane | Bending |
+| --- | ---: | ---: | ---: |
+| DPR | 7.14440 | 7.10740 | 16.20497 |
+| SCR | 7.17043 | 7.13183 | 16.36589 |
+| Stock Shell | 1.83988e4 | 1.83409e4 | 6.16237e3 |
+| Volume-surface2 Shell | 1.36409e10 | 1.38755e10 | 3.89621e8 |
+
+The solid-only3D supplements are5.95767 DPR and5.98270 SCR; they do not rank
+Shell under a different observable. The reference and stock Shell fail lift
+in this case, while volume Shell lifts and has severely different stress fields.
+Neither a visual lift nor finite enormous fields establishes better stress
+accuracy. Case7 starts its approach after2.59s; the reference's recorded global
+VM maximum at1.115s precedes that commanded approach. It must not be labeled
+a squeeze peak. Full initial/support, grasp, release and reset intervals remain
+in every norm and raw history.
+
+The fresh original-state case2 reference now completes all9000 physical steps,
+one reset and9s. Its all900-time tangent reference RMS is8971.386Pa, with
+common discrepancies below. Full3D supplements remain separate.
+
+| Case2 method / input | Tangent field | Membrane | Bending |
+| --- | ---: | ---: | ---: |
+| DPR | 0.988975 | 0.968443 | 2.818253 |
+| SCR | 0.990957 | 0.970342 | 2.827556 |
+| Stock Shell | 3439.938 | 3429.215 | 1325.717 |
+| Volume-surface2 Shell | 1.981454e7 | 1.932920e7 | 1.525881e6 |
+
+Complete case7 reference sensitivity is also now measured over all900 times:
+
+| Full9s contrast against the original coarse case7 | Tangent | Membrane | Bending | Finger force / moment |
+| --- | ---: | ---: | ---: | ---: |
+| Wall2 versus wall4 | 1.374548 | 1.375348 | 1.413411 | 1.000000 / 1.000000 |
+| Stricter stopping plus PCG budget | 1.323348 | 1.325274 | 1.244933 | 1.010078 / 1.009606 |
+
+Strict uses velocity1e-8/linear1e-7/maxPCG8192 versus1e-7/1e-5/4096, so it
+is explicitly a combined numerical contrast. Wall2 has0 PCG caps, strict1,
+and the baseline24. Finite/cap counts do not qualify a field that changes by
+more than100%. The baseline finger-vector force RMS is only0.0012213N and
+moment RMS5.12013e-5Nm; the1mN/1e-7Nm floors and absolute errors remain in the
+results. Wall2 has no finger reaction over the saved grid. Do not disguise
+this small-force/contact-onset sensitivity with a larger denominator floor.
+
+Three complete unloaded9s schedules (cases0/2/7) independently execute all
+9000 physical steps and match every command, cap, phase and reset epoch.
+Declared bands are1e-4rad arm,1e-5m finger,5e-5m hand position and1e-4rad hand
+rotation. All pass with maxima about1.15e-5rad,7.65e-6m,1.052e-5m and1.95e-5rad;
+QIPC has no failed-status or PCG-cap steps. A10.5um unloaded hand discrepancy
+is still substantial relative to the20um contact band. No loaded trajectory
+or contact accuracy follows from this control.
+
+Independent immutable initial frame bindings verify actual public rigid COM/
+material orientation versus authored MJCF FK at every900 saved case2/7
+observation. Maximum COM errors are1.414e-15/1.543e-15m and rotation errors
+2.774e-15/2.783e-15rad, below the predeclared1e-7m/1e-6rad bands. This checks
+recorded geometry at actual saved joint states, not unsaved physical extrema.
+
+Fresh case0 and the remaining case7 surface/dt/band/friction groups are still
+running or pending. None is accepted on a prefix or submission. The complete
+wall/strict contrasts already contradict reference qualification; further
+successful execution cannot erase those measurements.
+
 ## Matched cost and what can be recommended
 
 New primary measurements use FP64, complete scene mechanics, the common host
@@ -284,6 +410,23 @@ measures358.142/356.189 diagnostic env-step/s; the fine pair completes at
 stock/fine, versus592B max-only. Smaller payload does not ensure faster execution.
 The max payload covers all physical substeps; full exports the last-substep
 field. Original primary rates keep their exact source/observer receipts.
+The new inspected cost-scope figure preserves all three paired repeats,
+measured batch-specific memory, eight isolated cold activations and the three
+largest individual kernels in each of six intrusive traces. It keeps numerical
+native rates separate from diagnostic Shell rates; kernel sums are not latency.
+AtB4096 the largest SCR traction-fit kernel occupies36.94% of summed kernel
+duration, followed by19.95% surface-frontier and10.60% cached-traction scatter.
+These are trace attribution fractions, not an additive scene-time model.
+The [inspected cost figure](../evidence/20261018-qipc-reference/checkpoint-v3/figure/output-memory-activation-profiles.pdf)
+and its actual plotted CSV/export QA are retained in checkpointv3.
+
+Matched B1 Shell full-field timing is now complete for the same case0,FP64,
+10-substep configurations used in the B1 error histories: three stock rates
+11.5414/11.5635/11.5421 env-step/s, and volume-surface2 rates
+2.243133/2.242635/2.243026. The full B32 cost figure retains its own batch.
+Because Shell batch equivalence fails, B1 error must not be silently paired
+with B32 timing as if it describes one admitted configuration. These are
+finite diagnostic timing receipts, with no explicit invalid-step counter.
 
 DPR remains the measured faster rigid stress proxy; SCR supplies a different
 surface-constrained load model, with its cost visible. Neither has qualified
@@ -315,7 +458,7 @@ steps and24 recorded PCG-cap steps, but is not yet reference-qualified.
 After explicit disclosure, a bounded temporary project output root in home
 and private compute-node caches allow selected work to continue. Original large
 data remain on the data mount. Eight validation groups finish; fresh9s coarse
-cases0/2 are running; final Shell paired timing completes. Resolved Shell dead-load
+case0 is running and case2 is complete; final Shell paired timing completes. Resolved Shell dead-load
 replay preserves source wrenches in the fixed reference configuration;
 the complete nominal600-time replay rejects486 statics and retains deformed
 moment drift. Corrected volume replay also fails static admission. Exact paths and results are in the

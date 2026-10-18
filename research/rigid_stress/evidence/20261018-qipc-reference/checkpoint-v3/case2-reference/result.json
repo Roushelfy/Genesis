@@ -1,0 +1,28 @@
+{
+  "kind": "QIPC-Franka-capped-candidate",
+  "config": {
+    "dt": 0.001,
+    "young": 10000000000.0,
+    "poisson": 0.3,
+    "density": 2000.0,
+    "velocity_tolerance": 1e-07,
+    "linear_tolerance": 1e-05,
+    "max_newton": 256,
+    "max_pcg": 4096,
+    "d_hat": 2e-05,
+    "friction": 0.4373755715172453,
+    "friction_epsilon_velocity": 0.0001,
+    "resistance": 10000000000.0,
+    "energy": "snh",
+    "mas_precision": "double",
+    "linear_solver": "partition_pcg"
+  },
+  "requested_steps": 9000,
+  "executed_steps": 9000,
+  "completed_requested_history": true,
+  "invalid_steps": 0,
+  "pcg_cap_steps": 201,
+  "resets": 1,
+  "intrusive_elapsed_seconds": 7680.07246009598,
+  "reference_qualified": false
+}

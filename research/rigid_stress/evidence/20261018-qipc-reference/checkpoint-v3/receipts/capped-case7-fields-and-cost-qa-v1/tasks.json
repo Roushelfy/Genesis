@@ -1,0 +1,54 @@
+[
+  [
+    {
+      "name": "case7-stock",
+      "module": "research.rigid_stress.qipc_comparison.compare_fields",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-roundoff-reference-v1/group2/case7",
+        "--dpr",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-capped-v1/group4/dpr-case7",
+        "--scr",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-capped-v1/group5/scr-case7",
+        "--shell",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-capped-v2/group3/case7-stock",
+        "--columns",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/columns.npz",
+        "--surfaces",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/surfaces.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "case7-volume-surface2",
+      "module": "research.rigid_stress.qipc_comparison.compare_fields",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/capped-roundoff-reference-v1/group2/case7",
+        "--dpr",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-capped-v1/group4/dpr-case7",
+        "--scr",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-capped-v1/group5/scr-case7",
+        "--shell",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-capped-v2/group4/case7-volume-surface2",
+        "--columns",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/columns.npz",
+        "--surfaces",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/surface-metric-v1/group0/metric/surfaces.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "export-qa",
+      "module": "research.rigid_stress.shell_comparison.figure_qa",
+      "args": [
+        "--figures",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/cost-scope-figure-v1/group0/cost-figure",
+        "--pdf-library",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/assets/pymupdf-1.26.5"
+      ]
+    }
+  ]
+]

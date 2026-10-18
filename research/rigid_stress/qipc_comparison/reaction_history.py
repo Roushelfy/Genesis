@@ -8,7 +8,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 
 from .artifacts import file_id, runtime_identity, write_json
-from .common_metric import time_integrated_error
+from .common_metric import complete_control_grid, requested_duration_s, time_integrated_error
 from .reference_uncertainty import frame_index
 
 
@@ -55,6 +55,8 @@ def main():
         )
     fingers = np.array([names.index(name) for name in args.finger_names])
     reference = frame_index(args.reference)
+    reference_receipt = json.loads((args.reference / "result.json").read_text())
+    reference_duration = requested_duration_s(reference_receipt)
     expected = {tick: reactions(path, owners, local, len(names)) for tick, path in reference.items()}
     records, arrays = [], {}
     times = sorted(reference)
@@ -88,9 +90,10 @@ def main():
         arrays[f"candidate{index}_link_moment_about_com_nm"] = np.array(candidate_moment)
         temporal = {}
         complete = (
-            json.loads((args.reference / "result.json").read_text())["completed_requested_history"]
+            reference_receipt["completed_requested_history"]
             and json.loads((folder / "result.json").read_text())["completed_requested_history"]
             and len(rows) == len(reference)
+            and complete_control_grid(reference, reference_duration)
         )
         if complete:
             for name, actual, ref_value, floor in (
@@ -118,6 +121,8 @@ def main():
                 "source": file_id(folder / "result.json"),
                 "history": rows,
                 "missing_candidate_ticks": sorted(reference.keys() - frames.keys()),
+                "expected_reference_duration_s": reference_duration,
+                "complete_reference_observation_grid": complete_control_grid(reference, reference_duration),
                 "complete_time_integrated_finger_metrics": temporal,
             }
         )

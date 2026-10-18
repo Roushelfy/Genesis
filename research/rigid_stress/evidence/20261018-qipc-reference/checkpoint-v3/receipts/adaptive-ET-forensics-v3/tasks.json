@@ -1,0 +1,36 @@
+[
+  [
+    {
+      "name": "adaptive-edge0.0005-wall4",
+      "module": "research.rigid_stress.qipc_comparison.prescribed_reference",
+      "args": [
+        "--motion",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/prescribed-input-v1/group0/motion/motion.npz",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/case0.npz",
+        "--mjcf",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-qipc-validation/genesis/assets/xml/franka_emika_panda/panda.xml",
+        "--mesh",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-input-v2/group0/inputs/adaptive-edge0.0005-wall4.npz",
+        "--duration",
+        "1.16",
+        "--energy",
+        "snh",
+        "--dbc-stiffness",
+        "1e7",
+        "--linear-tolerance",
+        "1e-8",
+        "--velocity-tolerance",
+        "1e-9",
+        "--record-interval",
+        "0.1",
+        "--record-times",
+        "1.1",
+        "1.13",
+        "1.15",
+        "--max-pcg",
+        "16384"
+      ]
+    }
+  ]
+]

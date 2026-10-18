@@ -233,3 +233,40 @@ identify actual evidence and open qualifications. Use the existing
 `shell_comparison.figure_qa`with the data-side PyMuPDF library, then inspect
 rendered previews. Editable publication figures may stay in Git; large raw
 histories, traces, caches and binaries remain in the established data directory.
+
+
+## Corrected ET and complete-observation admission
+
+Current reference workers record native ET-check enabled status, pair ids and
+counts at every physical step. A nonzero count marks the step invalid, writes
+the rejected frame/static topology/real native checkpoint, stops execution and
+exits nonzero. This observes an existing native forced exit; it does not modify
+the detector or contact law. Historical4k/16k adaptive pilot receipts missed
+this condition and remain immutable; `history_audit` separately scans their
+native warning logs and preserves unknown per-step counts. Never equate finite
+completion or no PCG cap with an admitted nonlinear solve.
+
+`et_failure_geometry --failure /ABS/REJECTED/HISTORY --output /ABS/FRESH/AUDIT`
+checks the actually reported pair using the captured native topology/global
+positions and independent80-digit Decimal plane crossing. It verifies the
+single-FEM owner mapping excludes the floor, and checks saved FEM/active points
+exactly. A false-positive detector report is distinguished from physical
+intersection; the prematurely terminated solve still fails admission. No
+exhaustive CCD search or continuation is inferred.
+
+Common field/reaction/uncertainty workers now require every expected10ms
+reference observation and every matched candidate observation before emitting
+a whole-history norm. Sparse14-frame pilots retain per-time results only.
+`compare_fields --snapshot-times 1.1 4.2 9.0` limits only duplicate derived
+snapshot exports; an empty `--snapshot-times` exports none, with complete
+metrics and source raw/peak fields unchanged. The default export behavior is
+unchanged.
+
+The storage-policy review and explicit user exception are recorded in
+[DATA_LOCATION.md](../../../DATA_LOCATION.md). During the current unwritable-
+data outage only this task's existing home fallback is authorized, within4GB
+persistent output. Pass `--allow-home-output --node-local-cache` to the
+submitter and record each task/source/return-code receipt. Without the explicit
+flag it rejects runtime output resolving under home, while allowing existing
+compatibility symlinks resolving into data. Original inputs, builds, environments
+and results remain at their existing data paths.

@@ -1,0 +1,44 @@
+[
+  [
+    {
+      "name": "case0",
+      "module": "research.rigid_stress.qipc_comparison.robot_schedule_compare",
+      "args": [
+        "--native",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/robot-schedule-native-v1/group0/case0",
+        "--qipc",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/robot-schedule-qipc-v1/group0/case0",
+        "--mjcf",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "case2",
+      "module": "research.rigid_stress.qipc_comparison.robot_schedule_compare",
+      "args": [
+        "--native",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/robot-schedule-native-v1/group1/case2",
+        "--qipc",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/robot-schedule-qipc-v1/group1/case2",
+        "--mjcf",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "case7",
+      "module": "research.rigid_stress.qipc_comparison.robot_schedule_compare",
+      "args": [
+        "--native",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/robot-schedule-native-v1/group2/case7",
+        "--qipc",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/robot-schedule-qipc-v1/group2/case7",
+        "--mjcf",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml"
+      ]
+    }
+  ]
+]

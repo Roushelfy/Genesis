@@ -15,6 +15,12 @@ evidence and cleanup remain accepted within scope. Pin each source; preserve
 the unmodified external baselines and distinguish diagnostic/repaired variants.
 Historical campaigns do not create unrelated active tasks.
 
+Follow the storage exception in [DATA_LOCATION.md](../../DATA_LOCATION.md):
+the user explicitly permits this task's existing home fallback within its4GB
+persistent-output bound while data remains unwritable. New submissions must
+record `--allow-home-output`; private caches stay node-local. This exception
+does not alter other projects or authorize an unbounded home-data sweep.
+
 Follow root CLAUDE.md and CODING_GUIDELINES.md when editing engine code.
 The feature belongs to Genesis's existing rigid solver; all production numerical
 work remains in Quadrants. Preserve arbitrary convex/nonconvex changing contacts,

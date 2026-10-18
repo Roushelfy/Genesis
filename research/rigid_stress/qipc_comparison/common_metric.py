@@ -5,11 +5,32 @@ from dataclasses import dataclass
 import numpy as np
 
 
+def requested_duration_s(receipt):
+    config = receipt.get("config", {})
+    if "requested_steps" not in receipt or "dt" not in config:
+        return None
+    return receipt["requested_steps"] * config["dt"]
+
+
+def complete_control_grid(ticks, duration_s):
+    if duration_s is None or not np.isfinite(duration_s) or duration_s <= 0:
+        return False
+    expected = round(duration_s / 0.01)
+    observed = np.asarray(sorted(ticks))
+    return bool(
+        expected > 0
+        and abs(expected * 0.01 - duration_s) < 1e-12
+        and len(observed) == expected
+        and np.array_equal(observed, np.arange(1, expected + 1))
+    )
+
+
 @dataclass
 class TetSampler:
     vertices: np.ndarray
     tetrahedra: np.ndarray
     inverse: np.ndarray
+    direct_point_query_fallbacks: int = 0
 
     @classmethod
     def allocate(cls, vertices, tetrahedra):
@@ -30,11 +51,33 @@ class TetSampler:
         valid = (upper - lower > 1e-11) & ~parallel_outside
         return np.flatnonzero(valid), lower[valid], upper[valid]
 
-    def locate_on_column(self, points, fractions, intervals):
+    def locate_on_column(self, points, fractions, intervals, selection_points=None):
         elements, lower, upper = intervals
         included = (fractions[:, None] >= lower[None] - 1e-11) & (fractions[:, None] <= upper[None] + 1e-11)
-        assert included.any(axis=1).all(), "A common material column has a gap in the FEM domain"
-        selected = elements[included.argmax(axis=1)]
+        covered = included.any(axis=1)
+        selected = np.empty(len(points), dtype=np.int64)
+        selected[covered] = elements[included[covered].argmax(axis=1)] if len(elements) else []
+        # An almost parallel face can lose a valid interval near an endpoint.
+        # Query the unchanged coordinates directly, retaining the existing
+        # barycentric tolerance and independently checking the selected cell.
+        # Boundary interpolation uses an interior selection point to keep its
+        # one-sided cell contract, then evaluates at the exact boundary below.
+        query = points if selection_points is None else selection_points
+        for index in np.flatnonzero(~covered):
+            free = np.einsum("tij,tj->ti", self.inverse, query[index] - self.vertices[self.tetrahedra[:, 0]])
+            bary = np.column_stack((1 - free.sum(axis=1), free))
+            candidate = bary.min(axis=1).argmax()
+            assert bary[candidate].min() > -2e-9 and bary[candidate].max() < 1 + 2e-9, (
+                "A common material column has a gap in the FEM domain"
+            )
+            vertices = self.vertices[self.tetrahedra[candidate]]
+            independent = np.linalg.solve((vertices[1:] - vertices[0]).T, query[index] - vertices[0])
+            checked = np.r_[1 - independent.sum(), independent]
+            assert checked.min() > -2e-9 and checked.max() < 1 + 2e-9, (
+                "Independent point query is outside the FEM domain"
+            )
+            selected[index] = candidate
+            self.direct_point_query_fallbacks += 1
         bary_free = np.einsum(
             "qij,qj->qi", self.inverse[selected], points - self.vertices[self.tetrahedra[selected, 0]]
         )
@@ -85,7 +128,10 @@ def build_surfaces(reference, native, outer_vertices, inner_vertices, faces, col
             (reference, reference_elements, reference_barycentric),
             (native, native_elements, native_barycentric),
         ):
-            cell, bary = sampler.locate_on_column(points, fractions, sampler.intervals(p_inner, p_outer))
+            selection_points = p_inner + fractions[:, None] * (p_outer - p_inner)
+            cell, bary = sampler.locate_on_column(
+                points, fractions, sampler.intervals(p_inner, p_outer), selection_points=selection_points
+            )
             elements.append(cell)
             barycentric.append(bary)
     return CommonSurfaces(

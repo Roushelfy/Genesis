@@ -22,7 +22,7 @@ def main():
     receipt = {"completed_requested_history": True, "executed_steps": 2, "config": config}
     records = []
 
-    def fixture(name, journal, result=receipt, group_rc=0, task_rc=None):
+    def fixture(name, journal, result=receipt, group_rc=0, task_rc=None, log=None):
         group = args.output / name
         folder = group / "history"
         folder.mkdir(parents=True)
@@ -38,6 +38,8 @@ def main():
             (group / "returncode.txt").write_text(str(group_rc) + "\n")
         if task_rc is not None:
             (group / "history.returncode.txt").write_text(str(task_rc) + "\n")
+        if log is not None:
+            (group / "history.log").write_text(log)
         value = audit(folder)
         if journal is not None:
             assert (folder / "steps.jsonl").read_bytes() == journal, "An audit must preserve damaged evidence"
@@ -97,6 +99,23 @@ def main():
     value = fixture("actual-configured-caps", b'{"time_s": 0.001, "newton": 4, "pcg_max": 8}\n', result=changed)
     assert value["newton_cap_recorded_rows"] == value["pcg_cap_recorded_rows"] == 1
     assert not value["complete_history_established"]
+
+    et_receipt = {**receipt, "kind": "QIPC-prescribed-link-motion-candidate", "config": {**config, "dt": 0.001}}
+    value = fixture(
+        "finite-with-logged-ET-forced-exit",
+        b"".join(lines),
+        result=et_receipt,
+        log="[QIPC][warning] ET intersection detected at frame 0, forcing Newton exit\n",
+    )
+    assert value["complete_history_established"] and value["edge_triangle_failure_detected"]
+    assert value["logged_edge_triangle_forced_exit_events"] == 1
+    assert value["first_edge_triangle_failure_time_s"] == 0.001
+    for count, expected in ((0, False), (2, True)):
+        et_rows = [{**row, "edge_triangle_intersection_count": count} for row in rows]
+        journal = "".join(json.dumps(row) + "\n" for row in et_rows).encode()
+        value = fixture(f"recorded-ET-count-{count}", journal)
+        assert value["edge_triangle_failure_detected"] is expected
+        assert value["edge_triangle_count_observations"] == 2
 
     write_json(
         args.output / "result.json",
