@@ -16,6 +16,7 @@ from qipc import tetmesh
 
 from .artifacts import file_id, write_json
 from .reference import ReferenceConfig, SolidObserver, solver_statistics
+from .p1_elastic import independent_operator, linear_stress
 
 
 def beam_mesh():
@@ -41,35 +42,6 @@ def beam_mesh():
     negative = signed < 0
     tetrahedra[negative, :2] = tetrahedra[negative, 1::-1]
     return vertices, tetrahedra
-
-
-def independent_operator(vertices, tetrahedra, young, poisson, density):
-    inverse = np.linalg.inv((vertices[tetrahedra[:, 1:]] - vertices[tetrahedra[:, :1]]).transpose(0, 2, 1))
-    gradients = np.concatenate((-inverse.sum(axis=1, keepdims=True), inverse), axis=1)
-    volume = 1 / np.linalg.det(inverse) / 6
-    mu = young / (2 * (1 + poisson))
-    lame = young * poisson / ((1 + poisson) * (1 - 2 * poisson))
-    local = (
-        lame * np.einsum("tai,tbj->taibj", gradients, gradients)
-        + mu * np.einsum("tak,tbk,ij->taibj", gradients, gradients, np.eye(3))
-        + mu * np.einsum("taj,tbi->taibj", gradients, gradients)
-    ) * volume[:, None, None, None, None]
-    dofs = (tetrahedra[:, :, None] * 3 + np.arange(3)).reshape(-1, 12)
-    rows = np.broadcast_to(dofs[:, :, None], local.reshape(-1, 12, 12).shape)
-    columns = np.broadcast_to(dofs[:, None, :], rows.shape)
-    matrix = sparse.coo_matrix(
-        (local.reshape(-1), (rows.reshape(-1), columns.reshape(-1))), shape=(len(vertices) * 3, len(vertices) * 3)
-    ).tocsr()
-    masses = np.bincount(tetrahedra.reshape(-1), weights=np.repeat(volume * density / 4, 4), minlength=len(vertices))
-    return matrix, masses, gradients, volume
-
-
-def linear_stress(displacement, tetrahedra, gradients, young, poisson):
-    gradient = np.einsum("tai,taj->tij", displacement[tetrahedra], gradients)
-    strain = (gradient + gradient.transpose(0, 2, 1)) / 2
-    mu = young / (2 * (1 + poisson))
-    lame = young * poisson / ((1 + poisson) * (1 - 2 * poisson))
-    return 2 * mu * strain + lame * np.trace(strain, axis1=-2, axis2=-1)[:, None, None] * np.eye(3)
 
 
 def run_case(config, amplitude, output):

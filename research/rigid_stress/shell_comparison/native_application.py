@@ -13,6 +13,8 @@ from .rollout import make_parser, profile_run, run
 def main():
     args = make_parser().parse_args()
     assert args.model != "shell" and not args.instrumented
+    assert args.output_mode == "full" or (not args.record_every and not args.peak_snapshots)
+    assert args.sim_dt == 0.01
     args.output.mkdir(parents=True, exist_ok=False)
     memory = ProcessMemory(args.memory)
     memory.start()
@@ -24,7 +26,7 @@ def main():
         stress=args.model != "rigid",
         conditions=args.conditions,
         substeps=args.substeps,
-        output_mode="full",
+        output_mode=args.output_mode,
         native_controller=False,
         egg_geometry="mesh64",
         use_gjk_collision=False,

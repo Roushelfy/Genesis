@@ -1,0 +1,155 @@
+# Run the three-method QIPC reference comparison
+
+The [goal](QIPC_REFERENCE_COMPARISON_GOAL.md) defines the required deliverable;
+the [progress record](QIPC_REFERENCE_PROGRESS.md) distinguishes completed controls
+from failed or unqualified reference attempts. This is an ongoing comparison.
+
+## Source, runtime and storage
+
+Use a fresh run under the task's established data directory:
+
+```bash
+task_root=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery
+task_run="$task_root/runs/20261018-qipc-reference"
+```
+
+Keep scientific execution, tests, analysis and rendering inside Slurm
+`rtx-mid` with `GENESIS_IMAGE_VER=1_26 gs-srun`. The stdlib-only submitter captures
+analysis sources and source/input identities, writes explicit data-side caches,
+temporary files and logs, and submits GPU task groups. Do not edit a frozen
+engine checkout while its jobs import it. Do not change shared environments.
+
+| Role | Frozen source or identity |
+| --- | --- |
+| Original QIPC main | `fe252bd30acc6c717507b74add31512812f48761`; sibling `qipc-stress-reference-original` |
+| QIPC capped-robot integration | `641459b8826bb061e1bba01dfe9eba39793c3855`; sibling `qipc-stress-reference-integration` |
+| Original QIPC numerical diagnostic | Same original main plus [the recorded patch](../qipc_comparison/line-search-roundoff-diagnostic.patch); sibling `qipc-stress-reference-roundoff` |
+| Native capped validation | `9bd1086ca`; sibling `rigid-stress-qipc-validation` |
+| Native prescribed example | `ad6b3e2da`; sibling `rigid-stress-qipc-prescribed`; optional scene timestep, original default preserved |
+| Shell original | `fd051fe3f6ed58b52810846d4295d7b6fbb5e2ab`; sibling `kashu-shell-pr22` |
+| Shell read-only diagnostics | Same pinned shell plus [the diagnostic patch](../shell_comparison/pr22-diagnostics.patch); sibling `kashu-shell-pr22-diagnostics` |
+
+QIPC uses the existing data-side `qipc-owned-coarse-tree-check01-20261015`
+Python3.12 environment. Native and shell share `genesis-shell-contact`; independent
+CPU elasticity and MuJoCo FK use `rigid-stress-physical`. Actual executable,
+Python/Torch/CUDA versions, hostname, Slurm identity and visible GPU are recorded
+in each new scientific worker. Do not infer the container Python version from
+the host executable alone.
+
+The source/build campaigns preserve exact submodule versions, compiler flags,
+native hashes and import tests. Original main solver SHA256 is
+`cebd257411c97a01e5d0c78ca8d5fb6271955c9b3b5c20ce3e53dab95e175cf1`;
+the capped integration library is
+`8763018e8ca49e2b7c156cc5cdcf42318b03dfd0363618c3b824daaca39e1213`.
+These are binary hashes, not Git revisions. A shared build directory may later
+advance; reuse the pinned artifact and its receipts, never a similarly named
+current library without checking its identity.
+
+## Task submission
+
+From this task checkout, create a data-side JSON list of independent groups.
+Each group is a sequential list of module/argument tasks, for example:
+
+```json
+[[{
+  "name": "reference",
+  "module": "research.rigid_stress.qipc_comparison.prescribed_reference",
+  "args": ["--motion", "MOTION.npz", "--conditions", "CASE.npz",
+           "--mjcf", "PANDA.xml", "--mesh", "HOLLOW-P1.npz",
+           "--duration", "6", "--dt", "0.001",
+           "--velocity-tolerance", "1e-9", "--linear-tolerance", "1e-8",
+           "--dbc-stiffness", "1e7"]
+}]]
+```
+
+Use actual absolute paths in place of the capitalized input names. Submit with:
+
+```bash
+python3 research/rigid_stress/shell_comparison/submit.py \
+  --source /ABS/FROZEN/QIPC/CHECKOUT \
+  --tasks "$task_run/meta/fresh-tasks.json" \
+  --output "$task_run/fresh-campaign" \
+  --python /mnt/data/zhaofeng/venvs/qipc-owned-coarse-tree-check01-20261015/bin/python3.12 \
+  --minutes 120 --concurrency 2
+```
+
+The helper appends each task's `--output` directory. Existing outputs are never
+overwritten. `--keep-going` retains per-task return-code files, runs independent
+later configurations after a failure, and exits the campaign nonzero if any
+task failed. A queued/running job and a finite accepted prefix are not completion.
+
+## Inputs and protocols
+
+`controls-v1/group0/inputs/` contains fixed-facet hollow P1 meshes with independent
+surface and wall refinements. Subdivision preserves the same base1 continuum;
+base2 is a separately rounded geometry. `qualify-tight-v1/group0/evaluation/`
+contains single-case condition banks and shell midpoint meshes on those fixed
+facets. Source densities/materials are unchanged; the nominal area-times500um
+shell has a6.38% mass mismatch relative to the solid, explicitly retained until
+a separately identified geometric correction is qualified.
+
+`prescribed-input-v1/group0/motion/motion.npz` is the frozen6s common input,
+SHA256`b050060473fd7332b339b6a91f82955876962e04c3c044b8c3bfb068160c2d29`.
+The native/Shell prescribed workers accept `--motion`, `--sim-dt 0.001`,
+`--substeps 1`, `--steps 6000`, `--tracking-damping` and `--record-every 10`.
+They override force caps and measure actual joint/link tracking. This protocol
+is distinct from the original capped-controller workers, which retain10ms
+targets/gains/caps, weak/release schedule, resets and1ms physical substeps.
+
+Reference snapshots contain actual physical Cauchy stress from the unchanged
+energy, nodal contact forces, measured inertial reactions, material/world
+geometry and moving robot poses. Contact gradients are last-assembled solver
+gradients; the residual against the exported accepted-state stress/acceleration
+is an explicit measured closure check. Small relative residual against squeeze
+forces does not imply a small error in the net egg wrench. Preserve raw peaks,
+gap/CCD diagnostics, cap exhaustion and failed histories.
+
+## Common fields and independent load replay
+
+`build_metric` produces material-column integration points on the union of
+reference/native tet intersections, with constant-stress, affine, rotation and
+linear-bending controls. `common-metric-v2/group0/metric/columns.npz` is the
+current40960-point domain. It is neither a full-volume quadrature nor a global
+peak search.
+
+Inside the same Slurm/container setup, run:
+
+```bash
+python -m research.rigid_stress.qipc_comparison.compare_fields \
+  --reference /ABS/REFERENCE/HISTORY --dpr /ABS/DPR/HISTORY \
+  --scr /ABS/SCR/HISTORY --shell /ABS/SHELL/HISTORY \
+  --columns /ABS/columns.npz --output /ABS/FRESH/COMPARISON
+
+python -m research.rigid_stress.qipc_comparison.reference_replay \
+  --reference /ABS/REFERENCE/HISTORY --native-mesh /ABS/elastic.npz \
+  --columns /ABS/columns.npz --output /ABS/FRESH/REPLAY
+```
+
+Use the independent CPU environment for replay. It solves measured spatial
+contact minus acceleration/gravity loads with independent P1/P2 elasticity.
+P2 transfer preserves virtual work, force and undeformed moment. The output
+retains balance correction and deformed-coordinate moment differences. This
+is the resolved-load elastic/discretization layer; it does not yet implement
+compression to the rigid feature's point-wrench information.
+
+`compare_fields` matches actual saved times, including the different filename
+cadences of capped and prescribed workers. It records missing/off-grid reference
+observations and compares compatible corotated tangent fields and membrane/
+bending resultants. Qualification flags remain false until the full uncertainty
+study supports each measured quantity.
+
+## Timing and interpretation
+
+Primary `full-field-native-timing-v1` and `full-field-shell-timing-v1` campaigns
+useFP64,900 warmup and three900-control-tick repeats, without timed field exports,
+memory polling or solver instrumentation. Native max-only is separate. Native
+rigid/DPR/tuned-DPR/SCR and shell default/fine-tuned settings are kept distinct,
+including substep counts and batch sizes. The duplicate case0 cohort matches
+shell's scalar coupling friction; it is not a varied-policy workload.
+
+The older-named `primary-native-cost-v1` and `primary-shell-cost-v1` enable memory
+polling and therefore remain intrusive diagnostics. FP32 native rejected-contact
+failures must stay in the tables. Do not silently relax force/moment checks,
+reuse old rates as new results, or label numerical completion as physical
+reference qualification. Detailed profiles, additional lifecycle checks and the
+final figures/report are still required by the active goal.

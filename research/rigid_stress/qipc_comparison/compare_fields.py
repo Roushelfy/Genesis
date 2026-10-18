@@ -42,6 +42,17 @@ def area_error(actual, reference, area, floor):
     }
 
 
+def index_frames(folder):
+    frames = {}
+    for path in sorted((folder / "frames").glob("step*.npz")):
+        with np.load(path) as saved:
+            time = saved["time_s"].item()
+        tick = round(time / 0.01)
+        assert abs(tick * 0.01 - time) < 1e-12 and tick not in frames
+        frames[tick] = path
+    return frames
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reference", type=Path, required=True)
@@ -65,16 +76,22 @@ def main():
     shell_masses = np.bincount(shell_faces.reshape(-1), weights=np.repeat(shell_area, 3), minlength=len(shell_vertices))
     history = []
     snapshots = []
+    candidate_indices = [index_frames(folder) for folder in (args.dpr, args.scr, args.shell)]
+    unmatched = []
     files = sorted((args.reference / "frames").glob("step*.npz"))
     for path in files:
         with np.load(path) as reference:
             time = reference["time_s"].item()
             control_step = round(time / 0.01) - 1
-            assert abs((control_step + 1) * 0.01 - time) < 1e-12
-            name = f"step{control_step:06d}.npz"
-            candidate_paths = [args.dpr / "frames" / name, args.scr / "frames" / name, args.shell / "frames" / name]
-            if not all(candidate.exists() for candidate in candidate_paths):
+            if abs((control_step + 1) * 0.01 - time) >= 1e-12:
+                unmatched.append(
+                    {"time_s": time, "reason": "reference frame is outside declared 10ms common observation grid"}
+                )
                 continue
+            if not all(control_step + 1 in index for index in candidate_indices):
+                unmatched.append({"time_s": time, "reason": "candidate frame missing at declared common time"})
+                continue
+            candidate_paths = [index[control_step + 1] for index in candidate_indices]
             rotation = corotation(authored, reference["positions_m"], masses)
             reference_tensor = reference["cauchy_pa"][columns.reference_elements]
             expected = tangent(rotation.T @ reference_tensor @ rotation, columns)
@@ -139,6 +156,7 @@ def main():
             "stress_convention": "World physical QIPC/Shell Cauchy corotated by each link's mass-weighted best fit; native authored-frame linear stress. Shared undeformed tangent projector; finite-strain model differences remain separate.",
             "history": history,
             "snapshots": snapshots,
+            "unmatched_reference_frames": unmatched,
         },
     )
 

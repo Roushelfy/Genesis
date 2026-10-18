@@ -53,6 +53,10 @@ def main():
     parser.add_argument("--dbc-stiffness", type=float, default=1e8)
     parser.add_argument("--velocity-tolerance", type=float, default=1e-7)
     parser.add_argument("--linear-tolerance", type=float, default=1e-5)
+    parser.add_argument("--energy", choices=("snh", "hencky"), default="snh")
+    parser.add_argument("--d-hat", type=float, default=2e-5)
+    parser.add_argument("--friction-epsilon-velocity", type=float, default=1e-4)
+    parser.add_argument("--resistance", type=float, default=1e10)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -79,6 +83,10 @@ def main():
         linear_solver="linear_pcg",
         velocity_tolerance=args.velocity_tolerance,
         linear_tolerance=args.linear_tolerance,
+        energy=args.energy,
+        d_hat=args.d_hat,
+        friction_epsilon_velocity=args.friction_epsilon_velocity,
+        resistance=args.resistance,
     )
     scene = config.scene()
     descriptor_scene = config.scene(contact=False)
