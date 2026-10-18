@@ -82,6 +82,21 @@ recomputes the observation. A saved peak is not a valid restored observation.
 
 Set `RigidStressOptions(output_mode="full", ...)` before `scene.build()` to
 enable `tensor_pa, von_mises_pa = link.get_stress_field(copy=False)`.
+
+For occasional keyframes, also set `update_mode="manual"` before building.
+After applying that step's controller/state inputs, call
+`link.request_stress_update()` and then `scene.step()`. This observes that link
+across all environments and all physical substeps of the requested scene step.
+Unrequested steps advance ordinary rigid mechanics while skipping that link's
+auxiliary stress recovery. The default `update_mode="every_step"` observes
+every scene step.
+
+In manual mode, getters retain the last sampled field and sampled-step maximum
+between requests. Record the requested times when exporting them. These held
+values represent their sampled step rather than the current unsampled state.
+State changes clear the affected observations as described below and cancel
+pending requests for that link. Request after setting the step's inputs.
+Requests made after the first physical substep of a scene step raise an error.
 The default `output_mode="max"` keeps the existing maximum observation,
 allocates no full-field storage and compiles out full-field writes.
 Reconfiguring a built link or changing its output mode requires rebuilding.
@@ -99,10 +114,10 @@ and change when the next recovery writes their buffers.
 The field describes the latest physical recovery substep. Its von Mises
 maximum equals the maximum-only result for that recovered state. With
 multiple substeps, `get_max_stress()` retains the temporal maximum over the
-scene step, which may exceed the latest field maximum. Before first recovery,
+observed scene step, which may exceed the latest field maximum. Before first recovery,
 after reset/restoration or following an invalid recovery, full fields contain
 NaNs. A partial reset invalidates only its selected environments. Observations
-are recomputed on the next physical step; checkpointed fields do not become
+are recomputed on the next observed physical step; checkpointed fields do not become
 valid merely by restoring a checkpoint. The level-1 FP64 tensor plus von
 Mises storage is 107,520 bytes per environment, versus zero in max mode.
 

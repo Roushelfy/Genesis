@@ -1,0 +1,733 @@
+{
+  "kind": "native-manual-stress-sampling-lifecycle-checkpoint",
+  "created_at_utc": "2026-10-18T18:06:18.364408+00:00",
+  "goal_complete": false,
+  "reference_qualified": false,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2635,
+      "sha256": "5f9e4b37adddf5417f4c598acac92909034551d29b47588346e9175176f00c9d"
+    },
+    {
+      "path": "capture.py",
+      "bytes": 4299,
+      "sha256": "d3a8201859b0588034e7e4bcdfd750408589488c65fc0c527ec8b55e0da48b6a"
+    },
+    {
+      "path": "negative/cuda/negative-control.patch",
+      "bytes": 442,
+      "sha256": "352740fbc5a8c17d84561ee75f09033e4cbad0949eeeecdd0f768ca32312bca7"
+    },
+    {
+      "path": "negative/cuda/report.xml",
+      "bytes": 1476,
+      "sha256": "39768616b71761d54bfd585ece6848cc52aac8959e1432d55298167005347385"
+    },
+    {
+      "path": "negative/cuda/result.json",
+      "bytes": 101674,
+      "sha256": "cd47b97cc93cc0e9a89e0e6c6356a4b6843b03bdb43a64af1a6c31fd4bd74625"
+    },
+    {
+      "path": "negative/cuda/tests.log.gz",
+      "bytes": 2304,
+      "sha256": "21920c9741c1122df73440d96a7165b7af7c47813d1dcd03571e46c037fc685d"
+    },
+    {
+      "path": "plan.json",
+      "bytes": 803,
+      "sha256": "68ac7d81776d8beb31b4e679698b163b69d924cc3ee82e0f73c26608408c23ea"
+    },
+    {
+      "path": "positive/cpu/report.xml",
+      "bytes": 785,
+      "sha256": "5967eda8d8244f7084dd0cea2904d0813722b648005937cc381c510a251b7c4a"
+    },
+    {
+      "path": "positive/cpu/result.json",
+      "bytes": 101671,
+      "sha256": "391c8602a71b0dca766b0fa0b87471b68fdf4bd42a5f7bba730cb9c06f5f977e"
+    },
+    {
+      "path": "positive/cpu/tests.log.gz",
+      "bytes": 892,
+      "sha256": "788601dc024ea7916f5b5b3f3cf99887e390b21a3a049825b2c51b46b46dd9eb"
+    },
+    {
+      "path": "positive/cuda/report.xml",
+      "bytes": 921,
+      "sha256": "169f0c7bec838088e0ce24b058559cc37c356143c5fc73291049805b27c6072e"
+    },
+    {
+      "path": "positive/cuda/result.json",
+      "bytes": 101777,
+      "sha256": "723f50158d75a99d80ef487f352084ac0299ebce168b530220f7b47fb31244b8"
+    },
+    {
+      "path": "positive/cuda/tests.log.gz",
+      "bytes": 853,
+      "sha256": "d94e35c7c69f14221c06897c652e21204d1433d71d0f41523dc655037b42f113"
+    },
+    {
+      "path": "receipts/native-manual-negative-v1/analysis-files.json.gz",
+      "bytes": 8342,
+      "sha256": "0132a06543682c997d3cd643b1eb5fc3d02671f35cafd4ea6338e660f40ebbb1"
+    },
+    {
+      "path": "receipts/native-manual-negative-v1/cuda.returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "receipts/native-manual-negative-v1/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "receipts/native-manual-negative-v1/source.json.gz",
+      "bytes": 43219,
+      "sha256": "fe4a9c81baf63909b6514a3eca3be5092cfa1b575514ee47989cb9afc114af46"
+    },
+    {
+      "path": "receipts/native-manual-negative-v1/source.patch",
+      "bytes": 6733,
+      "sha256": "798a44ea1c2253d86588c1460015d55fde783e57470a1440337f1695e7fdae5c"
+    },
+    {
+      "path": "receipts/native-manual-negative-v1/submission.json",
+      "bytes": 608,
+      "sha256": "290e3e9dff73cb04fa6ecfeab87f987ffee3df82f0695cd4d965d889e92c0570"
+    },
+    {
+      "path": "receipts/native-manual-negative-v1/tasks.json",
+      "bytes": 216,
+      "sha256": "53afecc0e4f9b79e7911038d939847f1d3c8028c06799ad80ff07c551049d846"
+    },
+    {
+      "path": "receipts/native-manual-sampling-v1/analysis-files.json.gz",
+      "bytes": 8294,
+      "sha256": "aa152bcfe5b66c4c4f1f3fc2f459cd08a8dac701fac64bd7ac1411e61852bc96"
+    },
+    {
+      "path": "receipts/native-manual-sampling-v1/cpu.returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "receipts/native-manual-sampling-v1/cuda.returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "receipts/native-manual-sampling-v1/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "receipts/native-manual-sampling-v1/source.json.gz",
+      "bytes": 43219,
+      "sha256": "fe4a9c81baf63909b6514a3eca3be5092cfa1b575514ee47989cb9afc114af46"
+    },
+    {
+      "path": "receipts/native-manual-sampling-v1/source.patch",
+      "bytes": 6733,
+      "sha256": "798a44ea1c2253d86588c1460015d55fde783e57470a1440337f1695e7fdae5c"
+    },
+    {
+      "path": "receipts/native-manual-sampling-v1/submission.json",
+      "bytes": 608,
+      "sha256": "1ff63c33dfb02a208e7f3c8d62645dd54d425a29f76b0d8ec88b91f68d8acf37"
+    },
+    {
+      "path": "receipts/native-manual-sampling-v1/tasks.json",
+      "bytes": 359,
+      "sha256": "97384525c1a519af0a644f303c23ec71a63b11daf0db0ed93e7b48fdd0dcb8c3"
+    },
+    {
+      "path": "selection-provenance.json",
+      "bytes": 63856,
+      "sha256": "92c08e5da1a3fc589c294e3b70b0b4c37b62acdb43e1dd010107e88f0d99c615"
+    },
+    {
+      "path": "source-variants/native-manual-negative-v1/research/rigid_stress/qipc_comparison/contact_events.py",
+      "bytes": 3000,
+      "sha256": "688225dd5f7acd32b06f263efacd19e52abb2537a8e5c623b83cd34c5e86b596"
+    },
+    {
+      "path": "source-variants/native-manual-negative-v1/research/rigid_stress/qipc_comparison/contact_window.py",
+      "bytes": 24115,
+      "sha256": "06797f2a99cbaba79f22c418363c1e7504092fcdc230d241503ffec1e1a22f9b"
+    },
+    {
+      "path": "source-variants/native-manual-negative-v1/research/rigid_stress/qipc_comparison/native_sampling_checks.py",
+      "bytes": 5814,
+      "sha256": "49fd10e5413ce6911a3f62055d0791cd4ffe0b78c159e8f8467750403dfcac41"
+    },
+    {
+      "path": "source-variants/native-manual-sampling-v1/research/rigid_stress/qipc_comparison/native_sampling_checks.py",
+      "bytes": 3403,
+      "sha256": "d57d0244bdc747a843889337700b3e8bd4accb4cb84d6727808ea7ec0498634b"
+    },
+    {
+      "path": "test-source/pyproject.toml",
+      "bytes": 8673,
+      "sha256": "390913a65ab0a6a0b6bd659e8b76a094564d6659d5f2cdfb9576a8f721646376"
+    },
+    {
+      "path": "test-source/tests/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "test-source/tests/benchmarks/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "test-source/tests/benchmarks/test_rigid.py",
+      "bytes": 43945,
+      "sha256": "a3e5c474277a4f966c9be98e0ec55bddc309ba2e351de284639585e292ebf89a"
+    },
+    {
+      "path": "test-source/tests/conftest.py",
+      "bytes": 41847,
+      "sha256": "7f6c233441b56b898a13057c547fcd5113ca27b8b4a0fe17d5a60f96a95a8f82"
+    },
+    {
+      "path": "test-source/tests/core/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "test-source/tests/core/test_backend.py",
+      "bytes": 5190,
+      "sha256": "42780bd4bd3e1b62611eb07d4135f2179a1af3bdb44a67da5f8e2af0564ac485"
+    },
+    {
+      "path": "test-source/tests/core/test_bvh.py",
+      "bytes": 4643,
+      "sha256": "1a4fce6a8ab517d11687f837a6afe1b3d3418975adcf62f6ee4e610fc0ba4db8"
+    },
+    {
+      "path": "test-source/tests/core/test_misc.py",
+      "bytes": 32400,
+      "sha256": "42c15dd20de55527ef1976194de76636abdd2c24dd8ac7218f5d823c36a5a777"
+    },
+    {
+      "path": "test-source/tests/core/test_quadrants.py",
+      "bytes": 14128,
+      "sha256": "d8e7f3a5cf0a743a355f57efff74d847f030be66510641011c0af7957b3cbe39"
+    },
+    {
+      "path": "test-source/tests/core/test_recorders.py",
+      "bytes": 15047,
+      "sha256": "00d7864c8bbcd2946f2b5ca950d54df46c55610b3367eae602d283422fa6b110"
+    },
+    {
+      "path": "test-source/tests/core/test_substep_callbacks.py",
+      "bytes": 1823,
+      "sha256": "630a66f3e66e5427030aaa20556b704890bd4b1e37a36fb78ab1ab0d04035685"
+    },
+    {
+      "path": "test-source/tests/core/test_surface.py",
+      "bytes": 5155,
+      "sha256": "dde326584ab6f042ee682a26ca3392be74c23419007a949ae09568734546a16f"
+    },
+    {
+      "path": "test-source/tests/core/test_utils.py",
+      "bytes": 49792,
+      "sha256": "e564c587eb71aece6ba25752c74de535b98b5ebf457a4ec5b82fd04a55c385a6"
+    },
+    {
+      "path": "test-source/tests/coupling/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "test-source/tests/coupling/test_hybrid.py",
+      "bytes": 14916,
+      "sha256": "74fffde54c14cd1f2c532d49652ae230ab4264abb25c1b2dae3ccc725db60d4f"
+    },
+    {
+      "path": "test-source/tests/coupling/test_sph_rigid.py",
+      "bytes": 5667,
+      "sha256": "449f30bae3bc12ffb6f4db7a861d02333be3bf6b47f50b09f2982480821a1974"
+    },
+    {
+      "path": "test-source/tests/deformable/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "test-source/tests/deformable/test_fem.py",
+      "bytes": 26697,
+      "sha256": "03ec2af2442cb6c7facafdbc1c299187dd2d50d8d8bb5f0b28f1a0f78ae12c39"
+    },
+    {
+      "path": "test-source/tests/deformable/test_muscle.py",
+      "bytes": 3193,
+      "sha256": "95dd1ca307c965743255a08d6137205473a23fb5ed87e032bde4eb8f1e6ca978"
+    },
+    {
+      "path": "test-source/tests/gpu_info.py",
+      "bytes": 7929,
+      "sha256": "04bf866201cb176835db5b3b459ecb4f5070b035bd5ab71a91a9e4d5962e36d5"
+    },
+    {
+      "path": "test-source/tests/grad/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "test-source/tests/grad/conftest.py",
+      "bytes": 14647,
+      "sha256": "4306bbffdcaaac536ce737ac6f6b59c79d4c4eb69ba7ab9ec0dccffb85a50024"
+    },
+    {
+      "path": "test-source/tests/grad/test_grad_tape.py",
+      "bytes": 4844,
+      "sha256": "7bb7e0a50cf344be61d787b1d6d4359cb1cb2214a0cdd6b54b90d15cc01e9911"
+    },
+    {
+      "path": "test-source/tests/grad/test_hybrid_push.py",
+      "bytes": 2397,
+      "sha256": "f6fba6622407250c9576a9e13649a371d99e10855f9ff3e74bb9cd9ca1575b72"
+    },
+    {
+      "path": "test-source/tests/grad/test_rigid_collision.py",
+      "bytes": 22629,
+      "sha256": "81889f6f490a857ab379f3e6529e28dbd80248aa3bb02ebbec9a15d75a4c9420"
+    },
+    {
+      "path": "test-source/tests/grad/test_rigid_constraints.py",
+      "bytes": 9431,
+      "sha256": "dfe8b08f02894887629c6868b7c87d30edac27efad9224904e2953a9ff3ca6b0"
+    },
+    {
+      "path": "test-source/tests/grad/test_rigid_dynamics.py",
+      "bytes": 9631,
+      "sha256": "5b07cde7af83e14b1ee55f205e6979498e1c87658a8c469c250449e8e06f953e"
+    },
+    {
+      "path": "test-source/tests/grad/test_rigid_optim.py",
+      "bytes": 5520,
+      "sha256": "92cbd91ceb5a8b60315d33f61895ca490a07f4246a15ba1f33ff3fdf0229f273"
+    },
+    {
+      "path": "test-source/tests/grad/utils.py",
+      "bytes": 5439,
+      "sha256": "ee38570adc14bc2cfad769ab0a81cc97f9f2a694c342d1f5474ae255a2a18842"
+    },
+    {
+      "path": "test-source/tests/integration/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "test-source/tests/integration/test_integration.py",
+      "bytes": 10725,
+      "sha256": "810aeb4615ef2ec898bfa6677092bd3a789941fe8a30d6248e0f581a5fd9a64f"
+    },
+    {
+      "path": "test-source/tests/ipc/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "test-source/tests/ipc/test_api.py",
+      "bytes": 11520,
+      "sha256": "d15550bd47473c0de30586dfb53a554fe25f494c37da93aaba011183ed1de73a"
+    },
+    {
+      "path": "test-source/tests/ipc/test_deformable.py",
+      "bytes": 15814,
+      "sha256": "088e993d12f6d20a7f649662e77db2f80b47fa4f6b12ae54e1d1260f5da006e8"
+    },
+    {
+      "path": "test-source/tests/ipc/test_rigid.py",
+      "bytes": 31612,
+      "sha256": "5c2837878726db97f88eff865bfac1d025b4e3dcdf1a410753bdc3bcd6a9687c"
+    },
+    {
+      "path": "test-source/tests/ipc/utils.py",
+      "bytes": 2465,
+      "sha256": "4860ba478ecdb6058a7123861d39e31d112b31273fb5bd26bb21212fcb047eaf"
+    },
+    {
+      "path": "test-source/tests/monitor_test_mem.py",
+      "bytes": 4720,
+      "sha256": "25cd3a5482cc60f09b540b3055fbaf4883c7f28589495b0256651cf65baade39"
+    },
+    {
+      "path": "test-source/tests/parsers/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "test-source/tests/parsers/conftest.py",
+      "bytes": 78378,
+      "sha256": "42aff446bc25b41f484f499bdb7b6789322681859540e499828053ec64599c25"
+    },
+    {
+      "path": "test-source/tests/parsers/test_mesh.py",
+      "bytes": 37075,
+      "sha256": "45296ae317b74c5c465726161ff7e55c57ba27fa345ef17974aebb196e42d4f7"
+    },
+    {
+      "path": "test-source/tests/parsers/test_usd.py",
+      "bytes": 27513,
+      "sha256": "1308265a2da26e63f162fcd71e260f926536a513a41fd4e89621a26b03180233"
+    },
+    {
+      "path": "test-source/tests/particles/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "test-source/tests/particles/test_mpm.py",
+      "bytes": 6265,
+      "sha256": "41dd4bc32de5a213b162a7b5b8df831705db23ca68c237ca62599026f973d0b8"
+    },
+    {
+      "path": "test-source/tests/particles/test_pbd.py",
+      "bytes": 8675,
+      "sha256": "0ae405f9527143a96b7197e5928c267ad0d6147c9a0cc4199a90dcbb6a464eba"
+    },
+    {
+      "path": "test-source/tests/particles/test_sf.py",
+      "bytes": 3468,
+      "sha256": "05410a5e6fb632d7205206fd2783ac2d29c92789e7fcfc920ec2e6ec24b91d1f"
+    },
+    {
+      "path": "test-source/tests/particles/test_sph.py",
+      "bytes": 13335,
+      "sha256": "a5169d8fba9dcdcc177f35a943098c84e9f77c5898aba11d870fb5fba0b96fb6"
+    },
+    {
+      "path": "test-source/tests/rendering/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "test-source/tests/rendering/conftest.py",
+      "bytes": 3244,
+      "sha256": "cb5c096fa6e6211b18e9ee447c7fe024a2d357899f09acbdf17c0739bc13d8a5"
+    },
+    {
+      "path": "test-source/tests/rendering/test_batch_render.py",
+      "bytes": 2862,
+      "sha256": "7b668e507f0c816bb76ee88d501def30d2c3b140479ae6fc9b3085fdb7c1b699"
+    },
+    {
+      "path": "test-source/tests/rendering/test_debug_draw.py",
+      "bytes": 9631,
+      "sha256": "bf999fabfb0905c2044b62a59e6db65d778003329fff6b1b4bf82e1b44376748"
+    },
+    {
+      "path": "test-source/tests/rendering/test_dynamic_meshes.py",
+      "bytes": 16941,
+      "sha256": "771cfc3877a2be5296bcd8641ae00d83940e45c260a31fb80908f4f802376599"
+    },
+    {
+      "path": "test-source/tests/rendering/test_imgui_overlay.py",
+      "bytes": 19630,
+      "sha256": "7148a06096a139a0abfcbc01990354b28ded6d8088bae52e9ddd4095f6dec549"
+    },
+    {
+      "path": "test-source/tests/rendering/test_interactive_viewer.py",
+      "bytes": 31489,
+      "sha256": "4a13bce9dbc7a8eee5967042188803323e9de53fe22a21f9d695a35adc3fe15c"
+    },
+    {
+      "path": "test-source/tests/rendering/test_offscreen.py",
+      "bytes": 71884,
+      "sha256": "f25eee6681cde1c50ab45d5761a1cd3765dfd81662372dd901c37e2217690a9f"
+    },
+    {
+      "path": "test-source/tests/rigid/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "test-source/tests/rigid/conftest.py",
+      "bytes": 75646,
+      "sha256": "2bde45667e6c3eb40e7619db7bf24e5e316f3b23bc0315833ca7f9f39b9a13ff"
+    },
+    {
+      "path": "test-source/tests/rigid/test_api.py",
+      "bytes": 67816,
+      "sha256": "6274537db9174646bf674c38e109ff81e7063e09128066d80bfe2d04872eeb6c"
+    },
+    {
+      "path": "test-source/tests/rigid/test_asset_loading.py",
+      "bytes": 96288,
+      "sha256": "64b9f042f4e469a6a8eea6806ba5a88ad7f54828701571d3dd5f95565f360069"
+    },
+    {
+      "path": "test-source/tests/rigid/test_collision.py",
+      "bytes": 93366,
+      "sha256": "334a94397f73d4c881115f77d04664b4db6b9c5d5e66386da0b9b7cd1c0ef579"
+    },
+    {
+      "path": "test-source/tests/rigid/test_collision_nonconvex.py",
+      "bytes": 43316,
+      "sha256": "8132c78ab158d032a3f4b38a04573c967c20023708ee2b304e17c42d2bc443e6"
+    },
+    {
+      "path": "test-source/tests/rigid/test_constraints.py",
+      "bytes": 12554,
+      "sha256": "1a3cf33dd446ba8228dc080c95d9d24cf9d1ec2d7d988daaa836ece3bcf04a26"
+    },
+    {
+      "path": "test-source/tests/rigid/test_contact_normal.py",
+      "bytes": 2883,
+      "sha256": "bcf49679e1a36d0af4a62c2f80c68c2605079f9a3f0d83dd4817076e79cb119a"
+    },
+    {
+      "path": "test-source/tests/rigid/test_control.py",
+      "bytes": 12733,
+      "sha256": "4a2bcfb9c61962c21fc8bf86fe0171dd70dc2cdaa5c89b4b274d6f766c732da3"
+    },
+    {
+      "path": "test-source/tests/rigid/test_dynamics.py",
+      "bytes": 53196,
+      "sha256": "ec4b36d3f505fc17846accc292c3a9ea5fd7dd97ec547138bcbc4fe5d9f5c593"
+    },
+    {
+      "path": "test-source/tests/rigid/test_epa_shallow_contact.py",
+      "bytes": 2483,
+      "sha256": "f7822209e4736129a80762454c3b3334f06ba6cbafb7556ddd78778e1f624397"
+    },
+    {
+      "path": "test-source/tests/rigid/test_friction.py",
+      "bytes": 55449,
+      "sha256": "6f5e2e72cb60d92f3264a998b03dd4712e9687ffd39f6740437f1d37b022bae6"
+    },
+    {
+      "path": "test-source/tests/rigid/test_heterogeneous.py",
+      "bytes": 24572,
+      "sha256": "334056a65304daee6bfd967b3920dc448145a8838f6f84811788f918dc482d53"
+    },
+    {
+      "path": "test-source/tests/rigid/test_islands.py",
+      "bytes": 46756,
+      "sha256": "cf66f88b985c266ef46e946e0af812bbe66578241a59dc7b1f1261045e782138"
+    },
+    {
+      "path": "test-source/tests/rigid/test_kinematics.py",
+      "bytes": 41390,
+      "sha256": "9422ce34a509bd297bf35865a8153ded6e1cbebce07ad46f56c0d15aeb883680"
+    },
+    {
+      "path": "test-source/tests/rigid/test_mujoco_parity.py",
+      "bytes": 20965,
+      "sha256": "bfec779f61c68ddae4f30c91e33ae2f725033a939652f67bf5c9a073ba18d9aa"
+    },
+    {
+      "path": "test-source/tests/rigid/test_narrowphase.py",
+      "bytes": 64283,
+      "sha256": "0575efc78bff60467296e8423e63a917d776f84f350eb75fa9bf6f6d607f3ecf"
+    },
+    {
+      "path": "test-source/tests/rigid/test_serialization.py",
+      "bytes": 42100,
+      "sha256": "fff8d5ba753e1f74aca528a55f61a74391c8e130f524088f7772bd97d5766432"
+    },
+    {
+      "path": "test-source/tests/rigid/test_sparse.py",
+      "bytes": 3749,
+      "sha256": "b171e7d297bbd8e2bb5b401365f88d0893baa541aaa8b42628f93a648e51cad3"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress.py",
+      "bytes": 63784,
+      "sha256": "0343f8aa4d8b5bca61735693b93d1a4b2d91e64cf7712bd322268794806f11c3"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_compatibility.py",
+      "bytes": 28460,
+      "sha256": "a9b549d76a32825a9a69a8060b3f395bd1cdabe87722471c8f32ff6056dc3143"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_corner_precision.py",
+      "bytes": 2010,
+      "sha256": "fa61a3dc3504433f49d20fd7dbce726cf9f58e789455af565a72a0ff3bea790e"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_disk_refinement.py",
+      "bytes": 16792,
+      "sha256": "21551119884955a09b6b5755a8cac311bfb73597972f1bb0a017eef47cc90aa7"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_disk_torque.py",
+      "bytes": 11288,
+      "sha256": "07984b18d93a1e60efc8dec03bc79a9c4dd7824ac085eda457d58690d9012369"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_failure_diagnostics.py",
+      "bytes": 4215,
+      "sha256": "79c58ac0fd88de4951f93bc0b1523fd39d5e748e37053a7c1ebba77ee638eda6"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_footprint.py",
+      "bytes": 25296,
+      "sha256": "f0b116db7b510b444dbfc301212d0304e1377fb8e34a16c3d8f9434190b75b72"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_independent_fem.py",
+      "bytes": 8993,
+      "sha256": "ab483fcf0e899e0aa9d25a325f43ae79b450abed5e7f0651df345ef226121b7b"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_intrinsic_lifecycle.py",
+      "bytes": 4036,
+      "sha256": "cb0344cba101463c35dde344a590371ea159b5c879457360bafd69b513745633"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_nonconvex.py",
+      "bytes": 15508,
+      "sha256": "25788caa5bb20723757d6d6d509b982fdf4acbbdae8b9e4b8fc58c4f382f015a"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_shared_lifecycle.py",
+      "bytes": 13223,
+      "sha256": "74aa32edeac81f648275695b65afbd8f870dad2a47fedae2be21294ce1d9606c"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_shared_support.py",
+      "bytes": 11817,
+      "sha256": "4899fc79e1cd94be23e25231382cb1b0200c381487d674ac6aaa43dc087c0c0d"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_sliding_footprint.py",
+      "bytes": 9515,
+      "sha256": "334d45d6bcaabc81d32469789a1e1ebe9a09983ec058fccebbb5324a2fd20b2a"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_source_priors.py",
+      "bytes": 33911,
+      "sha256": "40d2895cf5b7427f975239968756efc9ebda0a7784b018e8edacc71f5fdad882"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_sources.py",
+      "bytes": 16043,
+      "sha256": "3e1f52b23583917aa7293ce9d509158e0be6a57b21243c70bf7732324f54ee89"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_surface_fan.py",
+      "bytes": 28703,
+      "sha256": "c09f8d28686e526868d988ff6194a63794b873f5450aba6dfb04cc46066daf7f"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_traction.py",
+      "bytes": 18084,
+      "sha256": "864178ac96941605f8778f7be1a5a61f125d13ccf6a4a5811bf71a24757e34bc"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_witness.py",
+      "bytes": 10414,
+      "sha256": "a434a0774364164dd421a1869ea4c48918f71a0ec2b04ebf079282a005d38214"
+    },
+    {
+      "path": "test-source/tests/rigid/test_stress_witness_manifold.py",
+      "bytes": 4320,
+      "sha256": "3c26282bb34c68bf3e709a948fd2838181464b76063060151a4cf7435f2830e7"
+    },
+    {
+      "path": "test-source/tests/rigid/test_terrain.py",
+      "bytes": 15546,
+      "sha256": "fb024a17785bd9501a42cbe006bb60a051ae8e4f78a2ff5f7d3abe229892c3d0"
+    },
+    {
+      "path": "test-source/tests/sensors/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "test-source/tests/sensors/conftest.py",
+      "bytes": 924,
+      "sha256": "0ed83fdaaac9a9324ad8fa124d8637b8796fcf57f70cb4230a3231c0d8dfd1ef"
+    },
+    {
+      "path": "test-source/tests/sensors/test_api.py",
+      "bytes": 32700,
+      "sha256": "944684b098514e9fdd9404cc46cb0ec315dacea6e6310ef9dcd085996ef9ad4e"
+    },
+    {
+      "path": "test-source/tests/sensors/test_camera.py",
+      "bytes": 22759,
+      "sha256": "7394257e3f73a4a6c3f2a8b5d8373a812887ca54441c57931da84f236b1baeed"
+    },
+    {
+      "path": "test-source/tests/sensors/test_contact.py",
+      "bytes": 8645,
+      "sha256": "3144d72c1f55c486ff277eec1f740681745a9f17f6c67e70a1c084a6b36eefce"
+    },
+    {
+      "path": "test-source/tests/sensors/test_imu.py",
+      "bytes": 9399,
+      "sha256": "74469236fd222a9951b4322c641d62ddc6f1678f1aaec191c6b312b234e830c7"
+    },
+    {
+      "path": "test-source/tests/sensors/test_joint_torque.py",
+      "bytes": 7120,
+      "sha256": "3e3ebcd78d2ffa11a44e5355c9aa741f5d865e5f09dc50a1335ca18bd8fb7fdd"
+    },
+    {
+      "path": "test-source/tests/sensors/test_raycaster.py",
+      "bytes": 41562,
+      "sha256": "7343f4324cfe8ec443ed2029eb59e220f5ab3d6e7307c4998ad5736254765bfc"
+    },
+    {
+      "path": "test-source/tests/sensors/test_tactile.py",
+      "bytes": 71965,
+      "sha256": "4ac0fb80cf2b372f3bf9e92027877d95403a5ff9708725c8f74deaf256c52157"
+    },
+    {
+      "path": "test-source/tests/sensors/test_temperature.py",
+      "bytes": 6417,
+      "sha256": "0aedc95f464265769fa8ee425a2867eeef778b6887de3e70be5d309ed0e8c52d"
+    },
+    {
+      "path": "test-source/tests/test_examples.py",
+      "bytes": 3407,
+      "sha256": "778e640c61a932c82049203c5a2c0c55a7ba51456f99e2fa6ced1cce2af6d24e"
+    },
+    {
+      "path": "test-source/tests/upload_benchmarks_table_to_wandb.py",
+      "bytes": 4776,
+      "sha256": "aa56682638607c5a97fa39759f7f9ad73cfaedf58e449d60730fb53330a7b488"
+    },
+    {
+      "path": "test-source/tests/utils/assertions.py",
+      "bytes": 5019,
+      "sha256": "6e38c8ae0c8c999c11bbeada79d016e6b8a17204c94c246af66647b0b0496d6d"
+    },
+    {
+      "path": "test-source/tests/utils/assets.py",
+      "bytes": 6003,
+      "sha256": "b16a0b9143664fb5099c0335024cb59caa3e657cab2db86b31a818a580e16eeb"
+    },
+    {
+      "path": "test-source/tests/utils/collision.py",
+      "bytes": 24256,
+      "sha256": "9eb9e765db04c44d9d284d3faa846218b49dfef3e3bf955e7150a18cbdedb4c0"
+    },
+    {
+      "path": "test-source/tests/utils/misc.py",
+      "bytes": 474,
+      "sha256": "30b007976660f1c822bc08d36a681ebce1753aa310612e848d0b8a7e7fd2ce22"
+    },
+    {
+      "path": "test-source/tests/utils/mujoco_parity.py",
+      "bytes": 46853,
+      "sha256": "fa4b4650ee73302cc2a39085c01a499c2f57f9eee3586b287c2aed574e2ce5e9"
+    },
+    {
+      "path": "test-source/tests/utils/simulators.py",
+      "bytes": 7580,
+      "sha256": "a350f3a20a0faa1cd7427a62c6cdc7f8cb12f79ed35581bf6fcf580a5a35c0ea"
+    }
+  ]
+}

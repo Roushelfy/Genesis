@@ -1,0 +1,126 @@
+diff --git a/genesis/engine/entities/rigid_entity/rigid_link.py b/genesis/engine/entities/rigid_entity/rigid_link.py
+index d0ba57c4e..21dbde91f 100644
+--- a/genesis/engine/entities/rigid_entity/rigid_link.py
++++ b/genesis/engine/entities/rigid_entity/rigid_link.py
+@@ -469,9 +469,21 @@ class RigidLink(KinematicLink):
+     def stress_options(self) -> RigidStressOptions | None:
+         return self._stress_options
+ 
++    @gs.assert_built
++    def request_stress_update(self) -> None:
++        """Request stress observations for the next scene step, across all environments and physical substeps.
++
++        Call after setting the step's inputs and before ``scene.step()`` when configured with ``update_mode='manual'``.
++        State changes cancel pending requests. Getters retain the last sampled values between observed steps.
++        """
++        recovery = self._solver.stress_recovery
++        if recovery is None:
++            gs.raise_exception("Stress recovery is not enabled for this link.")
++        recovery.request_update(self.idx)
++
+     @gs.assert_built
+     def get_max_stress(self, envs_idx=None, *, copy: bool = True) -> torch.Tensor:
+-        """Return global maximum von Mises stress in Pa over this scene step's physical substeps."""
++        """Return global maximum von Mises stress in Pa over the latest observed scene step's physical substeps."""
+         recovery = self._solver.stress_recovery
+         if recovery is None:
+             gs.raise_exception("Stress recovery is not enabled for this link.")
+@@ -486,8 +498,8 @@ class RigidLink(KinematicLink):
+         mesh tetrahedron vertex order; components are xx, yy, zz, xy, xz, yz
+         in the authored link frame. Fields are NaN before recovery or after
+         reset, restore or invalid recovery. ``copy=False`` aliases read-only
+-        observation buffers. Fields describe the last physical substep,
+-        while ``get_max_stress`` aggregates all substeps of the scene step.
++        observation buffers. Fields describe the last observed physical substep,
++        while ``get_max_stress`` aggregates all substeps of that sampled scene step.
+         """
+         recovery = self._solver.stress_recovery
+         if recovery is None:
+diff --git a/genesis/engine/solvers/rigid/rigid_solver.py b/genesis/engine/solvers/rigid/rigid_solver.py
+index bd9a627b3..ff0e07108 100644
+--- a/genesis/engine/solvers/rigid/rigid_solver.py
++++ b/genesis/engine/solvers/rigid/rigid_solver.py
+@@ -1372,7 +1372,7 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
+                     self.rigid_config,
+                     constraint_solver._n_iterations,
+                 )
+-            if self.stress_recovery is None:
++            if self.stress_recovery is None or not self.stress_recovery.is_update_requested:
+                 kernel_substep_post(
+                     self.dyn_state,
+                     collider.collider_state,
+diff --git a/genesis/engine/solvers/rigid/stress/recovery.py b/genesis/engine/solvers/rigid/stress/recovery.py
+index 4315f1080..bfb487206 100644
+--- a/genesis/engine/solvers/rigid/stress/recovery.py
++++ b/genesis/engine/solvers/rigid/stress/recovery.py
+@@ -59,6 +59,7 @@ class StressLink:
+     coalesced_residual: bool
+     reuse_contact_moments: bool
+     intrinsic: IntrinsicContacts | None = None
++    requested_step: int = -1
+ 
+ 
+ class RigidStressRecovery:
+@@ -188,6 +189,24 @@ class RigidStressRecovery:
+             if entry.fused_pipeline and selected:
+                 self.post_kernel = create_post_kernel()
+ 
++    @property
++    def is_update_requested(self) -> bool:
++        return any(
++            entry.options.update_mode == "every_step" or entry.requested_step == self.solver.sim.cur_step_global
++            for entry in self.links
++        )
++
++    def request_update(self, link_idx: int) -> None:
++        if self.solver.sim.cur_substep_global % self.solver.substeps:
++            gs.raise_exception("Request stress updates before the first physical substep of a scene step.")
++        for entry in self.links:
++            if entry.link.idx == link_idx:
++                if entry.link.stress_options != entry.options:
++                    gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
++                entry.requested_step = self.solver.sim.cur_step_global
++                return
++        gs.raise_exception("Stress recovery is not enabled for this link.")
++
+     def _pipeline_arguments(self, entry: StressLink, i_substep: int):
+         solver = self.solver
+         options = entry.options
+@@ -251,6 +270,8 @@ class RigidStressRecovery:
+             options = entry.link.stress_options
+             if options != entry.options:
+                 gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
++            if options.update_mode == "manual" and entry.requested_step != solver.sim.cur_step_global:
++                continue
+             if entry.fused_pipeline:
+                 kernel_pipeline(*self._pipeline_arguments(entry, i_substep))
+                 continue
+@@ -329,6 +350,7 @@ class RigidStressRecovery:
+     def reset(self, change: StateChange, envs_idx, *, entry: StressLink | None = None) -> None:
+         envs_idx = self.solver.scene._sanitize_envs_idx(envs_idx)
+         for affected in self.links if entry is None else (entry,):
++            affected.requested_step = -1
+             kernel_reset(envs_idx, affected.state)
+             if affected.history is not None:
+                 affected.history.reset(envs_idx)
+diff --git a/genesis/options/rigid_stress.py b/genesis/options/rigid_stress.py
+index c5ccebe57..046943c53 100644
+--- a/genesis/options/rigid_stress.py
++++ b/genesis/options/rigid_stress.py
+@@ -150,10 +150,16 @@ class RigidStressOptions(Options):
+     tensor and von Mises value at all four corners of every tetrahedron.
+     Full fields describe the latest recovery substep. Select the mode before
+     building the scene; changing it requires rebuilding.
++
++    ``update_mode="every_step"`` observes each scene step, including its maximum over physical substeps.
++    ``update_mode="manual"`` saves observation work between requested samples. Call the link's
++    ``request_stress_update()`` before each scene step to observe. Getters retain the latest sampled values between
++    requests, so callers must track their sample times. State changes invalidate observations as usual.
+     """
+ 
+     mesh: PathType
+     output_mode: Literal["max", "full"] = "max"
++    update_mode: Literal["every_step", "manual"] = "every_step"
+     young: PositiveFloat = 1e10
+     poisson: Annotated[ValidFloat, Field(gt=-1.0, lt=0.5)] = 0.3
+     density: PositiveFloat = 2000.0

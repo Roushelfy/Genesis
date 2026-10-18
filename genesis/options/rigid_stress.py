@@ -150,10 +150,16 @@ class RigidStressOptions(Options):
     tensor and von Mises value at all four corners of every tetrahedron.
     Full fields describe the latest recovery substep. Select the mode before
     building the scene; changing it requires rebuilding.
+
+    ``update_mode="every_step"`` observes each scene step, including its maximum over physical substeps.
+    ``update_mode="manual"`` saves observation work between requested samples. Call the link's
+    ``request_stress_update()`` before each scene step to observe. Getters retain the latest sampled values between
+    requests, so callers must track their sample times. State changes invalidate observations as usual.
     """
 
     mesh: PathType
     output_mode: Literal["max", "full"] = "max"
+    update_mode: Literal["every_step", "manual"] = "every_step"
     young: PositiveFloat = 1e10
     poisson: Annotated[ValidFloat, Field(gt=-1.0, lt=0.5)] = 0.3
     density: PositiveFloat = 2000.0

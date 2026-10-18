@@ -1372,7 +1372,7 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                     self.rigid_config,
                     constraint_solver._n_iterations,
                 )
-            if self.stress_recovery is None:
+            if self.stress_recovery is None or not self.stress_recovery.is_update_requested:
                 kernel_substep_post(
                     self.dyn_state,
                     collider.collider_state,

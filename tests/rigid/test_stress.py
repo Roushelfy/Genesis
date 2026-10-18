@@ -159,7 +159,8 @@ def test_native_full_field_same_state_and_invalid_solve(tmp_path):
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-def test_native_full_field_unbatched_shared_operator(tmp_path, show_viewer):
+@pytest.mark.parametrize("update_mode", ("every_step", "manual"))
+def test_native_full_field_unbatched_shared_operator(tmp_path, show_viewer, update_mode):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
@@ -185,7 +186,9 @@ def test_native_full_field_unbatched_shared_operator(tmp_path, show_viewer):
     maximum = scene.add_entity(gs.morphs.Mesh(file=collision, pos=(-0.1, 0, 1), convexify=True, decimate=False))
     complete = scene.add_entity(gs.morphs.Mesh(file=collision, pos=(0.1, 0, 1), convexify=True, decimate=False))
     maximum.base_link.configure_stress_recovery(RigidStressOptions.dpr(mesh=mesh))
-    complete.base_link.configure_stress_recovery(RigidStressOptions.dpr(mesh=mesh, output_mode="full"))
+    complete.base_link.configure_stress_recovery(
+        RigidStressOptions.dpr(mesh=mesh, output_mode="full", update_mode=update_mode)
+    )
     scene.build()
     entries = scene.rigid_solver.stress_recovery.links
     assert entries[0].model is entries[1].model
@@ -193,6 +196,10 @@ def test_native_full_field_unbatched_shared_operator(tmp_path, show_viewer):
     tensor, vm = complete.base_link.get_stress_field(copy=False)
     assert tensor.shape == (len(tetrahedra), 4, 6) and vm.shape == (len(tetrahedra), 4)
     assert np.isnan(tensor_to_array(tensor)).all()
+    if update_mode == "manual":
+        scene.step()
+        assert np.isnan(tensor_to_array(complete.base_link.get_stress_field(copy=False)[0])).all()
+        complete.base_link.request_stress_update()
     scene.step()
     scene.rigid_solver.check_errno()
     np.testing.assert_array_equal(tensor_to_array(vm), 0.0)
@@ -226,6 +233,8 @@ def test_native_full_field_unbatched_shared_operator(tmp_path, show_viewer):
         scene.step()
     complete.base_link.stress_options.cooperative_pressure = True
     scene.reset()
+    if update_mode == "manual":
+        complete.base_link.request_stress_update()
     scene.step()
     np.testing.assert_array_equal(tensor_to_array(complete.base_link.get_stress_field(copy=False)[1]), 0.0)
 
@@ -881,7 +890,10 @@ def test_native_pcg_iteration_limit_and_freefall(tmp_path, preconditioner):
 @pytest.mark.parametrize("substeps", (1, 4))
 @pytest.mark.parametrize("output_mode", ("max", "full"))
 @pytest.mark.parametrize("fused_rigid_post", (False, True))
-def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, output_mode, fused_rigid_post, monkeypatch):
+@pytest.mark.parametrize("update_mode", ("every_step", "manual"))
+def test_native_rigid_lifecycle_and_partial_reset(
+    tmp_path, substeps, output_mode, fused_rigid_post, update_mode, monkeypatch
+):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
@@ -906,6 +918,7 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, output_mod
             tolerance=1e-7,
             history_size=4 if output_mode == "max" and not fused_rigid_post else 0,
             output_mode=output_mode,
+            update_mode=update_mode,
             contact_wrench_reuse=True,
             packed_block_size=512,
             coalesced_residual=True,
@@ -922,13 +935,22 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, output_mod
     egg.set_quat(quaternions)
     entry = scene.rigid_solver.stress_recovery.links[0]
     reached_contact = np.zeros(3, dtype=bool)
-    for _ in range(30):
+    for i_step in range(30):
+        previous_peak = link.get_max_stress()
+        previous_field = link.get_stress_field() if output_mode == "full" else None
+        if update_mode == "manual" and i_step % 3 != 1:
+            link.request_stress_update()
         scene.step()
         scene.rigid_solver.check_errno()
         peak = tensor_to_array(link.get_max_stress(copy=False))
         assert np.isfinite(peak).all()
         reached_contact |= peak > 1.0
         assert (peak >= qd_to_numpy(entry.state.peak)).all()
+        if update_mode == "manual" and i_step % 3 == 1:
+            assert_allclose(link.get_max_stress(), previous_peak, tol=0)
+            if previous_field is not None:
+                for current, previous in zip(link.get_stress_field(), previous_field):
+                    assert_allclose(current, previous, tol=0)
     assert reached_contact.all()
     # Independent frame/contact audit of the actual final solved contact snapshot.
     frame_quat = qd_to_numpy(entry.contacts.frame_quaternion)

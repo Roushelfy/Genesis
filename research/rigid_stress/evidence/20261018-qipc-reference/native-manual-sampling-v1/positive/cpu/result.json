@@ -1,0 +1,2111 @@
+{
+  "kind": "native-manual-stress-sampling-focused-checks",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726729",
+      "SLURM_ARRAY_JOB_ID": "726729",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-c76298f5-14a5-a899-a833-a3a917a745f8, 00000000:21:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "genesis_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/__init__.py",
+  "command": [
+    "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "-m",
+    "pytest",
+    "-n",
+    "0",
+    "--backend",
+    "cpu",
+    "--tb=short",
+    "-q",
+    "--junitxml",
+    "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-manual-sampling-v1/group0/cpu/report.xml",
+    "-o",
+    "cache_dir=/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-manual-sampling-v1/group0/cpu/pytest-cache",
+    "--basetemp",
+    "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-manual-sampling-v1/group0/cpu/pytest-tmp",
+    "tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[manual-False-full-4]",
+    "tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[manual-False-max-1]",
+    "tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[every_step-True-full-4]",
+    "tests/rigid/test_stress.py::test_native_full_field_unbatched_shared_operator[manual]"
+  ],
+  "test_sources": [
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/benchmarks/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/benchmarks/test_rigid.py",
+      "bytes": 43945,
+      "sha256": "a3e5c474277a4f966c9be98e0ec55bddc309ba2e351de284639585e292ebf89a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/conftest.py",
+      "bytes": 41847,
+      "sha256": "7f6c233441b56b898a13057c547fcd5113ca27b8b4a0fe17d5a60f96a95a8f82"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/core/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/core/test_backend.py",
+      "bytes": 5190,
+      "sha256": "42780bd4bd3e1b62611eb07d4135f2179a1af3bdb44a67da5f8e2af0564ac485"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/core/test_bvh.py",
+      "bytes": 4643,
+      "sha256": "1a4fce6a8ab517d11687f837a6afe1b3d3418975adcf62f6ee4e610fc0ba4db8"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/core/test_misc.py",
+      "bytes": 32400,
+      "sha256": "42c15dd20de55527ef1976194de76636abdd2c24dd8ac7218f5d823c36a5a777"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/core/test_quadrants.py",
+      "bytes": 14128,
+      "sha256": "d8e7f3a5cf0a743a355f57efff74d847f030be66510641011c0af7957b3cbe39"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/core/test_recorders.py",
+      "bytes": 15047,
+      "sha256": "00d7864c8bbcd2946f2b5ca950d54df46c55610b3367eae602d283422fa6b110"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/core/test_substep_callbacks.py",
+      "bytes": 1823,
+      "sha256": "630a66f3e66e5427030aaa20556b704890bd4b1e37a36fb78ab1ab0d04035685"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/core/test_surface.py",
+      "bytes": 5155,
+      "sha256": "dde326584ab6f042ee682a26ca3392be74c23419007a949ae09568734546a16f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/core/test_utils.py",
+      "bytes": 49792,
+      "sha256": "e564c587eb71aece6ba25752c74de535b98b5ebf457a4ec5b82fd04a55c385a6"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/coupling/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/coupling/test_hybrid.py",
+      "bytes": 14916,
+      "sha256": "74fffde54c14cd1f2c532d49652ae230ab4264abb25c1b2dae3ccc725db60d4f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/coupling/test_sph_rigid.py",
+      "bytes": 5667,
+      "sha256": "449f30bae3bc12ffb6f4db7a861d02333be3bf6b47f50b09f2982480821a1974"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/deformable/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/deformable/test_fem.py",
+      "bytes": 26697,
+      "sha256": "03ec2af2442cb6c7facafdbc1c299187dd2d50d8d8bb5f0b28f1a0f78ae12c39"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/deformable/test_muscle.py",
+      "bytes": 3193,
+      "sha256": "95dd1ca307c965743255a08d6137205473a23fb5ed87e032bde4eb8f1e6ca978"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/gpu_info.py",
+      "bytes": 7929,
+      "sha256": "04bf866201cb176835db5b3b459ecb4f5070b035bd5ab71a91a9e4d5962e36d5"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/grad/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/grad/conftest.py",
+      "bytes": 14647,
+      "sha256": "4306bbffdcaaac536ce737ac6f6b59c79d4c4eb69ba7ab9ec0dccffb85a50024"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/grad/test_grad_tape.py",
+      "bytes": 4844,
+      "sha256": "7bb7e0a50cf344be61d787b1d6d4359cb1cb2214a0cdd6b54b90d15cc01e9911"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/grad/test_hybrid_push.py",
+      "bytes": 2397,
+      "sha256": "f6fba6622407250c9576a9e13649a371d99e10855f9ff3e74bb9cd9ca1575b72"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/grad/test_rigid_collision.py",
+      "bytes": 22629,
+      "sha256": "81889f6f490a857ab379f3e6529e28dbd80248aa3bb02ebbec9a15d75a4c9420"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/grad/test_rigid_constraints.py",
+      "bytes": 9431,
+      "sha256": "dfe8b08f02894887629c6868b7c87d30edac27efad9224904e2953a9ff3ca6b0"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/grad/test_rigid_dynamics.py",
+      "bytes": 9631,
+      "sha256": "5b07cde7af83e14b1ee55f205e6979498e1c87658a8c469c250449e8e06f953e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/grad/test_rigid_optim.py",
+      "bytes": 5520,
+      "sha256": "92cbd91ceb5a8b60315d33f61895ca490a07f4246a15ba1f33ff3fdf0229f273"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/grad/utils.py",
+      "bytes": 5439,
+      "sha256": "ee38570adc14bc2cfad769ab0a81cc97f9f2a694c342d1f5474ae255a2a18842"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/integration/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/integration/test_integration.py",
+      "bytes": 10725,
+      "sha256": "810aeb4615ef2ec898bfa6677092bd3a789941fe8a30d6248e0f581a5fd9a64f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/ipc/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/ipc/test_api.py",
+      "bytes": 11520,
+      "sha256": "d15550bd47473c0de30586dfb53a554fe25f494c37da93aaba011183ed1de73a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/ipc/test_deformable.py",
+      "bytes": 15814,
+      "sha256": "088e993d12f6d20a7f649662e77db2f80b47fa4f6b12ae54e1d1260f5da006e8"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/ipc/test_rigid.py",
+      "bytes": 31612,
+      "sha256": "5c2837878726db97f88eff865bfac1d025b4e3dcdf1a410753bdc3bcd6a9687c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/ipc/utils.py",
+      "bytes": 2465,
+      "sha256": "4860ba478ecdb6058a7123861d39e31d112b31273fb5bd26bb21212fcb047eaf"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/monitor_test_mem.py",
+      "bytes": 4720,
+      "sha256": "25cd3a5482cc60f09b540b3055fbaf4883c7f28589495b0256651cf65baade39"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/parsers/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/parsers/conftest.py",
+      "bytes": 78378,
+      "sha256": "42aff446bc25b41f484f499bdb7b6789322681859540e499828053ec64599c25"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/parsers/test_mesh.py",
+      "bytes": 37075,
+      "sha256": "45296ae317b74c5c465726161ff7e55c57ba27fa345ef17974aebb196e42d4f7"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/parsers/test_usd.py",
+      "bytes": 27513,
+      "sha256": "1308265a2da26e63f162fcd71e260f926536a513a41fd4e89621a26b03180233"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/particles/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/particles/test_mpm.py",
+      "bytes": 6265,
+      "sha256": "41dd4bc32de5a213b162a7b5b8df831705db23ca68c237ca62599026f973d0b8"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/particles/test_pbd.py",
+      "bytes": 8675,
+      "sha256": "0ae405f9527143a96b7197e5928c267ad0d6147c9a0cc4199a90dcbb6a464eba"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/particles/test_sf.py",
+      "bytes": 3468,
+      "sha256": "05410a5e6fb632d7205206fd2783ac2d29c92789e7fcfc920ec2e6ec24b91d1f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/particles/test_sph.py",
+      "bytes": 13335,
+      "sha256": "a5169d8fba9dcdcc177f35a943098c84e9f77c5898aba11d870fb5fba0b96fb6"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rendering/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rendering/conftest.py",
+      "bytes": 3244,
+      "sha256": "cb5c096fa6e6211b18e9ee447c7fe024a2d357899f09acbdf17c0739bc13d8a5"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rendering/test_batch_render.py",
+      "bytes": 2862,
+      "sha256": "7b668e507f0c816bb76ee88d501def30d2c3b140479ae6fc9b3085fdb7c1b699"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rendering/test_debug_draw.py",
+      "bytes": 9631,
+      "sha256": "bf999fabfb0905c2044b62a59e6db65d778003329fff6b1b4bf82e1b44376748"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rendering/test_dynamic_meshes.py",
+      "bytes": 16941,
+      "sha256": "771cfc3877a2be5296bcd8641ae00d83940e45c260a31fb80908f4f802376599"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rendering/test_imgui_overlay.py",
+      "bytes": 19630,
+      "sha256": "7148a06096a139a0abfcbc01990354b28ded6d8088bae52e9ddd4095f6dec549"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rendering/test_interactive_viewer.py",
+      "bytes": 31489,
+      "sha256": "4a13bce9dbc7a8eee5967042188803323e9de53fe22a21f9d695a35adc3fe15c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rendering/test_offscreen.py",
+      "bytes": 71884,
+      "sha256": "f25eee6681cde1c50ab45d5761a1cd3765dfd81662372dd901c37e2217690a9f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/conftest.py",
+      "bytes": 75646,
+      "sha256": "2bde45667e6c3eb40e7619db7bf24e5e316f3b23bc0315833ca7f9f39b9a13ff"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_api.py",
+      "bytes": 67816,
+      "sha256": "6274537db9174646bf674c38e109ff81e7063e09128066d80bfe2d04872eeb6c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_asset_loading.py",
+      "bytes": 96288,
+      "sha256": "64b9f042f4e469a6a8eea6806ba5a88ad7f54828701571d3dd5f95565f360069"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_collision.py",
+      "bytes": 93366,
+      "sha256": "334a94397f73d4c881115f77d04664b4db6b9c5d5e66386da0b9b7cd1c0ef579"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_collision_nonconvex.py",
+      "bytes": 43316,
+      "sha256": "8132c78ab158d032a3f4b38a04573c967c20023708ee2b304e17c42d2bc443e6"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_constraints.py",
+      "bytes": 12554,
+      "sha256": "1a3cf33dd446ba8228dc080c95d9d24cf9d1ec2d7d988daaa836ece3bcf04a26"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_contact_normal.py",
+      "bytes": 2883,
+      "sha256": "bcf49679e1a36d0af4a62c2f80c68c2605079f9a3f0d83dd4817076e79cb119a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_control.py",
+      "bytes": 12733,
+      "sha256": "4a2bcfb9c61962c21fc8bf86fe0171dd70dc2cdaa5c89b4b274d6f766c732da3"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_dynamics.py",
+      "bytes": 53196,
+      "sha256": "ec4b36d3f505fc17846accc292c3a9ea5fd7dd97ec547138bcbc4fe5d9f5c593"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_epa_shallow_contact.py",
+      "bytes": 2483,
+      "sha256": "f7822209e4736129a80762454c3b3334f06ba6cbafb7556ddd78778e1f624397"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_friction.py",
+      "bytes": 55449,
+      "sha256": "6f5e2e72cb60d92f3264a998b03dd4712e9687ffd39f6740437f1d37b022bae6"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_heterogeneous.py",
+      "bytes": 24572,
+      "sha256": "334056a65304daee6bfd967b3920dc448145a8838f6f84811788f918dc482d53"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_islands.py",
+      "bytes": 46756,
+      "sha256": "cf66f88b985c266ef46e946e0af812bbe66578241a59dc7b1f1261045e782138"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_kinematics.py",
+      "bytes": 41390,
+      "sha256": "9422ce34a509bd297bf35865a8153ded6e1cbebce07ad46f56c0d15aeb883680"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_mujoco_parity.py",
+      "bytes": 20965,
+      "sha256": "bfec779f61c68ddae4f30c91e33ae2f725033a939652f67bf5c9a073ba18d9aa"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_narrowphase.py",
+      "bytes": 64283,
+      "sha256": "0575efc78bff60467296e8423e63a917d776f84f350eb75fa9bf6f6d607f3ecf"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_serialization.py",
+      "bytes": 42100,
+      "sha256": "fff8d5ba753e1f74aca528a55f61a74391c8e130f524088f7772bd97d5766432"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_sparse.py",
+      "bytes": 3749,
+      "sha256": "b171e7d297bbd8e2bb5b401365f88d0893baa541aaa8b42628f93a648e51cad3"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress.py",
+      "bytes": 63784,
+      "sha256": "0343f8aa4d8b5bca61735693b93d1a4b2d91e64cf7712bd322268794806f11c3"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_compatibility.py",
+      "bytes": 28460,
+      "sha256": "a9b549d76a32825a9a69a8060b3f395bd1cdabe87722471c8f32ff6056dc3143"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_corner_precision.py",
+      "bytes": 2010,
+      "sha256": "fa61a3dc3504433f49d20fd7dbce726cf9f58e789455af565a72a0ff3bea790e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_disk_refinement.py",
+      "bytes": 16792,
+      "sha256": "21551119884955a09b6b5755a8cac311bfb73597972f1bb0a017eef47cc90aa7"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_disk_torque.py",
+      "bytes": 11288,
+      "sha256": "07984b18d93a1e60efc8dec03bc79a9c4dd7824ac085eda457d58690d9012369"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_failure_diagnostics.py",
+      "bytes": 4215,
+      "sha256": "79c58ac0fd88de4951f93bc0b1523fd39d5e748e37053a7c1ebba77ee638eda6"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_footprint.py",
+      "bytes": 25296,
+      "sha256": "f0b116db7b510b444dbfc301212d0304e1377fb8e34a16c3d8f9434190b75b72"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_independent_fem.py",
+      "bytes": 8993,
+      "sha256": "ab483fcf0e899e0aa9d25a325f43ae79b450abed5e7f0651df345ef226121b7b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_intrinsic_lifecycle.py",
+      "bytes": 4036,
+      "sha256": "cb0344cba101463c35dde344a590371ea159b5c879457360bafd69b513745633"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_nonconvex.py",
+      "bytes": 15508,
+      "sha256": "25788caa5bb20723757d6d6d509b982fdf4acbbdae8b9e4b8fc58c4f382f015a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_shared_lifecycle.py",
+      "bytes": 13223,
+      "sha256": "74aa32edeac81f648275695b65afbd8f870dad2a47fedae2be21294ce1d9606c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_shared_support.py",
+      "bytes": 11817,
+      "sha256": "4899fc79e1cd94be23e25231382cb1b0200c381487d674ac6aaa43dc087c0c0d"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_sliding_footprint.py",
+      "bytes": 9515,
+      "sha256": "334d45d6bcaabc81d32469789a1e1ebe9a09983ec058fccebbb5324a2fd20b2a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_source_priors.py",
+      "bytes": 33911,
+      "sha256": "40d2895cf5b7427f975239968756efc9ebda0a7784b018e8edacc71f5fdad882"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_sources.py",
+      "bytes": 16043,
+      "sha256": "3e1f52b23583917aa7293ce9d509158e0be6a57b21243c70bf7732324f54ee89"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_surface_fan.py",
+      "bytes": 28703,
+      "sha256": "c09f8d28686e526868d988ff6194a63794b873f5450aba6dfb04cc46066daf7f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_traction.py",
+      "bytes": 18084,
+      "sha256": "864178ac96941605f8778f7be1a5a61f125d13ccf6a4a5811bf71a24757e34bc"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_witness.py",
+      "bytes": 10414,
+      "sha256": "a434a0774364164dd421a1869ea4c48918f71a0ec2b04ebf079282a005d38214"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_witness_manifold.py",
+      "bytes": 4320,
+      "sha256": "3c26282bb34c68bf3e709a948fd2838181464b76063060151a4cf7435f2830e7"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_terrain.py",
+      "bytes": 15546,
+      "sha256": "fb024a17785bd9501a42cbe006bb60a051ae8e4f78a2ff5f7d3abe229892c3d0"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/sensors/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/sensors/conftest.py",
+      "bytes": 924,
+      "sha256": "0ed83fdaaac9a9324ad8fa124d8637b8796fcf57f70cb4230a3231c0d8dfd1ef"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/sensors/test_api.py",
+      "bytes": 32700,
+      "sha256": "944684b098514e9fdd9404cc46cb0ec315dacea6e6310ef9dcd085996ef9ad4e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/sensors/test_camera.py",
+      "bytes": 22759,
+      "sha256": "7394257e3f73a4a6c3f2a8b5d8373a812887ca54441c57931da84f236b1baeed"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/sensors/test_contact.py",
+      "bytes": 8645,
+      "sha256": "3144d72c1f55c486ff277eec1f740681745a9f17f6c67e70a1c084a6b36eefce"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/sensors/test_imu.py",
+      "bytes": 9399,
+      "sha256": "74469236fd222a9951b4322c641d62ddc6f1678f1aaec191c6b312b234e830c7"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/sensors/test_joint_torque.py",
+      "bytes": 7120,
+      "sha256": "3e3ebcd78d2ffa11a44e5355c9aa741f5d865e5f09dc50a1335ca18bd8fb7fdd"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/sensors/test_raycaster.py",
+      "bytes": 41562,
+      "sha256": "7343f4324cfe8ec443ed2029eb59e220f5ab3d6e7307c4998ad5736254765bfc"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/sensors/test_tactile.py",
+      "bytes": 71965,
+      "sha256": "4ac0fb80cf2b372f3bf9e92027877d95403a5ff9708725c8f74deaf256c52157"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/sensors/test_temperature.py",
+      "bytes": 6417,
+      "sha256": "0aedc95f464265769fa8ee425a2867eeef778b6887de3e70be5d309ed0e8c52d"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/test_examples.py",
+      "bytes": 3407,
+      "sha256": "778e640c61a932c82049203c5a2c0c55a7ba51456f99e2fa6ced1cce2af6d24e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/upload_benchmarks_table_to_wandb.py",
+      "bytes": 4776,
+      "sha256": "aa56682638607c5a97fa39759f7f9ad73cfaedf58e449d60730fb53330a7b488"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/utils/assertions.py",
+      "bytes": 5019,
+      "sha256": "6e38c8ae0c8c999c11bbeada79d016e6b8a17204c94c246af66647b0b0496d6d"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/utils/assets.py",
+      "bytes": 6003,
+      "sha256": "b16a0b9143664fb5099c0335024cb59caa3e657cab2db86b31a818a580e16eeb"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/utils/collision.py",
+      "bytes": 24256,
+      "sha256": "9eb9e765db04c44d9d284d3faa846218b49dfef3e3bf955e7150a18cbdedb4c0"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/utils/misc.py",
+      "bytes": 474,
+      "sha256": "30b007976660f1c822bc08d36a681ebce1753aa310612e848d0b8a7e7fd2ce22"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/utils/mujoco_parity.py",
+      "bytes": 46853,
+      "sha256": "fa4b4650ee73302cc2a39085c01a499c2f57f9eee3586b287c2aed574e2ce5e9"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/utils/simulators.py",
+      "bytes": 7580,
+      "sha256": "a350f3a20a0faa1cd7427a62c6cdc7f8cb12f79ed35581bf6fcf580a5a35c0ea"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/pyproject.toml",
+      "bytes": 8673,
+      "sha256": "390913a65ab0a6a0b6bd659e8b76a094564d6659d5f2cdfb9576a8f721646376"
+    }
+  ],
+  "engine_sources": [
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/__init__.py",
+      "bytes": 17971,
+      "sha256": "e589b12c2ca585cf8a9fa40ecc28623f6ef1cd8392cb909e4fde57cb522dc622"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/_main.py",
+      "bytes": 10416,
+      "sha256": "73453bb994fb348bfa2229dfa292541e9b6e70bc29e1b4e2b41a4c439693eae2"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/meshes/bolt_nut/generate_bolt_nut.py",
+      "bytes": 6781,
+      "sha256": "6162bfd1c2cff9818d442470d6fb33c99fcac92a82eb560b7fbab3a7e70a4b78"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/tower/generate_tower.py",
+      "bytes": 14463,
+      "sha256": "3d2a1f08a8d1fa8b7f1d3e4165cac797549426986d44d6972257e1b89e758c27"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/urdf/plane/generate_checker.py",
+      "bytes": 636,
+      "sha256": "b7e35ffc0c70070fcb623f82774f3598247a03656b8c69e43d40eabfdea22199"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/constants.py",
+      "bytes": 7756,
+      "sha256": "1c4efd08674a0fb5037f4234e516afffe927bee5aa6330ad181fe2fb28b828f9"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/datatypes.py",
+      "bytes": 5089,
+      "sha256": "08fdcb7bb834b602160f7cb5b6fe881f81cab961f2bb7b1968690de6c3d51eef"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/boundaries/__init__.py",
+      "bytes": 26,
+      "sha256": "dfac97f936b81a417101068fe07bfcd6c92a039a859b3f2ff0332f0cf3f52fcb"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/boundaries/boundaries.py",
+      "bytes": 2018,
+      "sha256": "dad4cafc1c2092c40e762634218e55b8c4d9d31f32972dabae91d73b31dce18f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/bvh.py",
+      "bytes": 25174,
+      "sha256": "1bed8ee1da37e5bb537b2076d24e8dd34a8c2ad4c82af117871c2d804c2780a5"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/couplers/__init__.py",
+      "bytes": 114,
+      "sha256": "4765ab0878bd930a795673a75894ee88a2e3d271116388eeaef5a8c806673e10"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/couplers/ipc_coupler/__init__.py",
+      "bytes": 58,
+      "sha256": "93afee61a24506c6031fe440c829794339b21f72f2e1ea5f4944d049e7213abf"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/couplers/ipc_coupler/coupler.py",
+      "bytes": 57301,
+      "sha256": "e663fd3f076c6efdadac32b7c8c8911277fe3ec41081db23a3f8c86c5ca661a3"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/couplers/ipc_coupler/data.py",
+      "bytes": 2392,
+      "sha256": "60ebd069627acde4f6f35aa0d7cfdf9d23f4868a07aecb7049a495892b617848"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/couplers/ipc_coupler/utils.py",
+      "bytes": 8472,
+      "sha256": "30c91008a1d7868583892d96b366f4d23c554f3f0cbb1741f09e9864dd3b46b5"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/couplers/legacy_coupler.py",
+      "bytes": 46473,
+      "sha256": "53ec19072dd2e177ab28278d029fa13f662ce5296b8d76cc463e5e21d5f702b2"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/couplers/sap_coupler.py",
+      "bytes": 184556,
+      "sha256": "bb49f98bba97e2abee1deae2cdd8476fb75625781900c55004cd90a859c9611b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/__init__.py",
+      "bytes": 474,
+      "sha256": "28c8f3e25a05635d49042f35896584b5081b08be4c4f26b88dae3d4286da8f21"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/base_entity.py",
+      "bytes": 5742,
+      "sha256": "6f806e2eb684b39f936e3ef3e9c6d8c54d3e11427bbd918718f1d9e09acc9eb7"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/emitter.py",
+      "bytes": 10619,
+      "sha256": "79dd45af6d57e3dc654b70e829e6cc2901181f145aeaa4a8537e9a7072296a9b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/fem_entity.py",
+      "bytes": 46127,
+      "sha256": "cec576ead4651f9fa3b9d2724b2e80b0d6cc7be7c6f8ef79fe702a0fbbf810d0"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/hybrid_entity.py",
+      "bytes": 28372,
+      "sha256": "82ecce7e3458fd3605b05cf8e1e71de346f7e8d2835b4ef9301f1ac8764dec43"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/mpm_entity.py",
+      "bytes": 27437,
+      "sha256": "da59d325d33d3d96263f9c1029061038e6827bf0b4f5d6ab7f9fc896f01d78f2"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/particle_entity.py",
+      "bytes": 32060,
+      "sha256": "3bc1a2abfbde3699a3d4952fcf5c3731d3a4e9267abe43ec732c2cc20774d9b0"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/pbd_entity.py",
+      "bytes": 27997,
+      "sha256": "4563a749ab7af99aa8f11a4e4e3e2ddcffcfb4c253f0fb1fdc952ece6917e77e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/rigid_entity/__init__.py",
+      "bytes": 253,
+      "sha256": "af3bdc683df56043cd16959364a25bbee32cf99b4bb34d70a36ee7f718157da9"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/rigid_entity/description.py",
+      "bytes": 98078,
+      "sha256": "3bb64792b62103e490166405ecc381aeb73f8f08b724a789f0f64e3bdeafccd6"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/rigid_entity/drone_entity.py",
+      "bytes": 4234,
+      "sha256": "25ad539e0e3c4bfab967f7c1edf98ae3a8032bab5e84cf7008725634b16e49de"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/rigid_entity/inertial.py",
+      "bytes": 10511,
+      "sha256": "87f6a8208d187e1cca28b35ffc8c4be4d3e6acd975d597a4f1fb569a2f5b5b94"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/rigid_entity/rigid_entity.py",
+      "bytes": 166688,
+      "sha256": "6c4cd71f9b524fbefe988872cb9f43c436c363192c52fbbfb05a5e58ada2c09b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/rigid_entity/rigid_equality.py",
+      "bytes": 3482,
+      "sha256": "f2e0b29518841419fdcfa3a61f71bc9ec689768de171aafb9a1c9a3673f5c032"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/rigid_entity/rigid_geom.py",
+      "bytes": 40850,
+      "sha256": "9380eef8300bec235be7241a6814e3c9fe43041eaed32c6d80c67ea8f9d0f244"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/rigid_entity/rigid_joint.py",
+      "bytes": 14867,
+      "sha256": "117932bbeeb05133e0f7821f5dd55b991433d9256abadbae1d208d765d331563"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/rigid_entity/rigid_link.py",
+      "bytes": 32754,
+      "sha256": "226e9ce719daeba902b77b768fd05d562976c3b544767f46c876c63400cef2c1"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/rigid_entity/terrain_entity.py",
+      "bytes": 2966,
+      "sha256": "78e4e8632d1c753fad2c160d9dcf7c1014c2ea67bd6bb3174e753001cc4c6543"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/sf_entity.py",
+      "bytes": 1208,
+      "sha256": "351232f7ccf807e1e810d09a85c5e1d57615dd1f4b5951b0a0f00d93873a4344"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/sph_entity.py",
+      "bytes": 7447,
+      "sha256": "f19fb86ade0217c80370c5dc44873723b8005e7dee48eeb3a37b7e9df167794d"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/tool_entity/__init__.py",
+      "bytes": 36,
+      "sha256": "8225d67d8f9f76e22938c532d1de4e4ea94255ea25341cbb28b195380c041f95"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/tool_entity/mesh.py",
+      "bytes": 8844,
+      "sha256": "2fee126580796d28e4a1f5e1814ad73662526c6260e335ca10ac73b35a464611"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/tool_entity/tool_entity.py",
+      "bytes": 19051,
+      "sha256": "e66a4a6f7818d4d7b726e17b63d15e1a2e496745a75296f4e855f3c4d6401af2"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/force_fields.py",
+      "bytes": 15310,
+      "sha256": "15e6b8ad239e561d1ff08555f366275411e9481353ec53072d2dbc0e34dc8635"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/interactive_scene.py",
+      "bytes": 14212,
+      "sha256": "21102fed451c995f9a0627f515c74314ab0cc90013ec88a7588a1c6747c68917"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/FEM/__init__.py",
+      "bytes": 104,
+      "sha256": "cc1563eb613e705dc2c14fd3ff5839845e19ad7863d867df9e25d7612753a253"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/FEM/base.py",
+      "bytes": 4424,
+      "sha256": "fd2a09efbdd0b70be9b1fa8c12502efd2016b6da95014e1adb015d7db3b33135"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/FEM/cloth.py",
+      "bytes": 2395,
+      "sha256": "4e2e333e9f730bd90946723bc35a365b106beeb25fe3826d8d0fead39230adbd"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/FEM/elastic.py",
+      "bytes": 9088,
+      "sha256": "4035dccd1c5e5be3959b9d02461469ba166c01d99e4f1e7d5bd741e257d1b288"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/FEM/muscle.py",
+      "bytes": 1705,
+      "sha256": "829f9b344708a724b28f08b0687f7a0a229bf17d405d9dc141abe4038e794f98"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/MPM/__init__.py",
+      "bytes": 194,
+      "sha256": "157a10e73a73e2b7017c96a8da07a1a8ab59fb20113cb74b9d4f8455991df104"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/MPM/base.py",
+      "bytes": 3508,
+      "sha256": "9098959d12e5353842977c895e52473e2aaf0600cd7ac9c1c91743d468d9af89"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/MPM/elastic.py",
+      "bytes": 1958,
+      "sha256": "de0f4f46a711a499561cdb26bfe6a9809b3e3fd8f24557827e5fe0970d56992d"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/MPM/elasto_plastic.py",
+      "bytes": 2584,
+      "sha256": "4261a9937ecbfc4314dda4668a755a4b53a73cbbbe5d16b67ba92199b9caf551"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/MPM/liquid.py",
+      "bytes": 1553,
+      "sha256": "f5b92dd8244abd94cf87a47d3402cc60498d76d146c9e6f68a1f489473d22db3"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/MPM/muscle.py",
+      "bytes": 1580,
+      "sha256": "1908d216d1c51e2f9da6622c18f7581fe930e0c2e746f74b7361917c77dbfb15"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/MPM/sand.py",
+      "bytes": 2835,
+      "sha256": "fc286b1d1f7731d7559cb60b042c282dad9d9c8249f05cf897a6117306a8ecf8"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/MPM/snow.py",
+      "bytes": 2335,
+      "sha256": "2600fa1185a9b034cfd7a66c4fac2268cc4c1bd2dc1dd3a0ff1a5650351d5f51"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/PBD/__init__.py",
+      "bytes": 135,
+      "sha256": "59776c5629959f3e9140167c4a0db5fd15f738d4a1229354edc28c7b6be926ae"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/PBD/base.py",
+      "bytes": 196,
+      "sha256": "e8a0751662ac7c929d36bb6a4f47d1c05482bd26dca32982f595a5a891c328f4"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/PBD/cloth.py",
+      "bytes": 1648,
+      "sha256": "bb2d7b7e53962d288cadd70c40357bb6c6a8a9b04249d7134021315d5de8d291"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/PBD/elastic.py",
+      "bytes": 1573,
+      "sha256": "90e2fd1b3eb575548c85d45f5804ea543c643bbdf9f931476a166f5b64a1eb86"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/PBD/liquid.py",
+      "bytes": 1229,
+      "sha256": "e4a03f953371cec2330e445a56e93337293ba07b6e354c91c1d9c39be33f2aed"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/PBD/particle.py",
+      "bytes": 1153,
+      "sha256": "8ef5b01176b8bdfdc166052bfe28be1129be74525ff6c3a15a0e09dcbfce2c22"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/SF/__init__.py",
+      "bytes": 48,
+      "sha256": "8ea6b4fbd159faaaa0a82cfd84a8bf8a27e58e415f8ff42b62da87ca41efb253"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/SF/base.py",
+      "bytes": 61,
+      "sha256": "7e82b8e6915d8fe7a410871ad8393997a807e7c6cc93591763e7be62a5c70481"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/SF/smoke.py",
+      "bytes": 226,
+      "sha256": "887f5ff252b30280c43c94782b6140097a39f6bdca36eaa11a0aa2cada975af5"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/SPH/__init__.py",
+      "bytes": 50,
+      "sha256": "44820cab1ee4045857fd71cfe6ebc1d3a34fb0ef123cc0c7ce4016571ea3e43c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/SPH/base.py",
+      "bytes": 791,
+      "sha256": "b6b3b077b5085afe08be8eb125eb10d87ec880e196f55524863bd4aa9e10fec2"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/SPH/liquid.py",
+      "bytes": 1034,
+      "sha256": "b836d7a50d00ea6f847f541744092cf08bcb8274a00535e3e57bcf32e1e20f5c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/__init__.py",
+      "bytes": 145,
+      "sha256": "e8d9bf411814e8822d86368b0520026618e1dab73a86aaaa639ba53df38a9d74"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/base.py",
+      "bytes": 467,
+      "sha256": "a39371122c1b4ea227634c735e876e841b88b0538641635a53a4719459984a0c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/hybrid.py",
+      "bytes": 1867,
+      "sha256": "1e24190a7113e48dfb24798e1e0793e8acd5eb8343c1bbd0289b304585ad667a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/kinematic.py",
+      "bytes": 726,
+      "sha256": "6c4b10f54bc1a5525f5559954d22f3b960c87405d5de9b3c22436ecd73b16592"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/rigid.py",
+      "bytes": 8227,
+      "sha256": "4fca3e9d505e03d4496b2b8c4ef5a88a4cb6797e65f94c65f7da46b95a131704"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/materials/tool.py",
+      "bytes": 848,
+      "sha256": "0d548bda5db3f6a3f8b734e2620f570a8d72d1cde8c0293a5a6172ba95d24d57"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/mesh.py",
+      "bytes": 29237,
+      "sha256": "6356e9d29064183109f6e65c7bf7b5debfe9abce617f36bf7e0e45166beaa85f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/scene.py",
+      "bytes": 87062,
+      "sha256": "80ea6b30d5f31c686075189535e68a7ef2cbc48d1ee60236b1229f43238cadb1"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/sensors/__init__.py",
+      "bytes": 272,
+      "sha256": "99e31eb1330531633989eb12e106ed4c342c9490fc11b2eb45cfeda5c6d74c02"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/sensors/base_sensor.py",
+      "bytes": 50642,
+      "sha256": "3968cd241daa13e92f1463b866389aa1c11cfbfe7a09fcdb4ae2efb7ebe9eb1d"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/sensors/camera.py",
+      "bytes": 33831,
+      "sha256": "4f4d92a9475e4729ebb80c3ff79ec8ff61e31c314539c2ceb599c740cbe4e489"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/sensors/contact_force.py",
+      "bytes": 16112,
+      "sha256": "ac54c69ea32051b9417cd12cc37f69965531a5fd1283df422437cf2fc70cb5dc"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/sensors/depth_camera.py",
+      "bytes": 1179,
+      "sha256": "e1eaf3f35567507960c23f26d1dbf3535b94f0805dfd2671c9d59ef009f06ddf"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/sensors/imu.py",
+      "bytes": 11971,
+      "sha256": "ca652fe4c5e668060682f54b19e14e1c60e5cb9d8d11ac18e868f2d6d154a7bc"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/sensors/joint_torque.py",
+      "bytes": 3234,
+      "sha256": "0afffc5ed15cf954ccb090ad3bf980de1eae6053e96a4e678b95b4807574c984"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/sensors/kinematic_tactile.py",
+      "bytes": 59272,
+      "sha256": "bd3b113faf7025642af535f636fbcc6f6c69479b4960d37ed4217e6933998d67"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/sensors/point_cloud_tactile.py",
+      "bytes": 114643,
+      "sha256": "5557908452fd1ba9c9740754839168ee1fefc6751a617bea36d2e168d1583e6f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/sensors/probe.py",
+      "bytes": 26407,
+      "sha256": "1c0a326422bf16eb2340950e9a21dbf16c2b7a8a6d888c03aa4feb9b673c0321"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/sensors/raycaster.py",
+      "bytes": 42318,
+      "sha256": "9af185b875248dce93be94562a5ab02c3528cf22002ad061d2556a2ff1817b4b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/sensors/sensor_manager.py",
+      "bytes": 28516,
+      "sha256": "27d0826cb8d6873a391b9a390f293f441aa1d30675abfd3045a76c793306cb32"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/sensors/surface_distance_probe.py",
+      "bytes": 22940,
+      "sha256": "4d006e90a52de0eaebe39b45737a46f0cc214ac1e831817c250ac04b704c8886"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/sensors/tactile_shared.py",
+      "bytes": 42245,
+      "sha256": "3d48e917cbc9d583845053e176048d6a7a3ce3f18cfb85e28088a964a8ee6202"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/sensors/temperature.py",
+      "bytes": 38683,
+      "sha256": "30774081fc6467c7f64e5b7821dcb18c3be3705b45ad221bf7fe49303e0563af"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/simulator.py",
+      "bytes": 27041,
+      "sha256": "d3659db9e0a6ff300117449b09fd924fafeecdf80799938fbb98fc2e61a6beb3"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/__init__.py",
+      "bytes": 294,
+      "sha256": "f7705b22d6ff4000f51503fb30857bb02cd0eb80b86d2b17fdac31544de27170"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/base_solver.py",
+      "bytes": 19875,
+      "sha256": "70bda581b6ace161131c91c21f48b17095a291e54192b04dbf9f8cd0aad0fbfb"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/fem_solver.py",
+      "bytes": 66567,
+      "sha256": "e45074058e33765bd6ea719fde1fe9df33301736818b98a948cba1c82419d22e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/kinematic_solver.py",
+      "bytes": 91215,
+      "sha256": "0929b31d254e3cdf0652509e0b6ebda5776d6bd647c6165d6a70d7261af1819c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/mpm_solver.py",
+      "bytes": 61232,
+      "sha256": "201e36bf3dea47197981abbfd21ceb7b8ef3fc54a8d852a81c9a62b4f36d6016"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/pbd_solver.py",
+      "bytes": 46798,
+      "sha256": "1cca66812186fd77f29ebdeb3adf72df01192bb14ea7f521da87c269b1a9b3f9"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/abd/__init__.py",
+      "bytes": 360,
+      "sha256": "54a64f24959ab148714ebde751d600e976ace56efc8dd2770209d6889db9727e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/abd/accessor.py",
+      "bytes": 54501,
+      "sha256": "b81eca2402e50cc464ace204937ed37bc3890a3d2da5bde6db9a8834cf40f44c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/abd/diff.py",
+      "bytes": 14563,
+      "sha256": "8612aa00d63d06cf3ea5af3410373af93b011786f22359fc672819694ab32559"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/abd/forward_dynamics.py",
+      "bytes": 125075,
+      "sha256": "daedb872a9111fbc5ed6c873193496ee05c758097b8da621da7bb32eb75202aa"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/abd/forward_kinematics.py",
+      "bytes": 61739,
+      "sha256": "39e230ec3ae6ac54310cf35eca06ddf0d66aa79fdabeb0053513544fe8608be1"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/abd/inverse_kinematics.py",
+      "bytes": 35203,
+      "sha256": "6b4f31a22661e7081b53407e4f742fdfe15339b16c25294b676abeb09e0de0a2"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/abd/manual_bw.py",
+      "bytes": 29027,
+      "sha256": "d0edc183f221070bda1ff0ee0459dd41f317b6ac022d618dba6880effe193f33"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/abd/misc.py",
+      "bytes": 46299,
+      "sha256": "dc25724ad54eb29286bed66149bb081d9f10c821b534b1cbfa080bac8be565b1"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/__init__.py",
+      "bytes": 798,
+      "sha256": "e24b0419713c0c56afad32f6bb4ea2347fb655bdba832762c3f17ea456d6a75d"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/box_contact.py",
+      "bytes": 33851,
+      "sha256": "e6771e1703add30008e1e0773dfe9852d9230e0ad4e2122baad64b03676f690b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/broadphase.py",
+      "bytes": 21059,
+      "sha256": "68c6611a5cc760b964e42464aa1f7e538a0547f8f0322dbce807fd8e8333b2cf"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/capsule_contact.py",
+      "bytes": 8435,
+      "sha256": "71b01482150cd2f9b623965e068b541cc45b30eee28778b53bf59decaff698a4"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/collider.py",
+      "bytes": 69506,
+      "sha256": "0347e6a3e6fa2076b5741347037c9c41cc472018b70e5f01b325a2341ec5c00c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/constants.py",
+      "bytes": 3115,
+      "sha256": "03c3674b79cb75713f1cfea7056adbe1d447c231e8173b6bbe60887f99dcebda"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/contact.py",
+      "bytes": 91494,
+      "sha256": "a497ce5cabcfcf1bea971bfce2768de93409c10bbc026d3306b499991ea458bc"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/diff_gjk.py",
+      "bytes": 39746,
+      "sha256": "3772173ed1cea7b632c5188f523026f8b52e095abc251b94a43554052ef327e5"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/epa.py",
+      "bytes": 51465,
+      "sha256": "6a22c74b202f488827fb686cfd5c74a96ce361465368f1dd3a59f929ed4aedac"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/gjk.py",
+      "bytes": 73044,
+      "sha256": "454b511266be09b463ab97228d52f2bd5b4e522ac84cbddc8d4ff5cb77b0b12a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/gjk_support.py",
+      "bytes": 5836,
+      "sha256": "30a71b5661e404e31f0ad2f86c93661217995c43efb3b4e45321c5b6586bfce2"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/gjk_utils.py",
+      "bytes": 7317,
+      "sha256": "2977dd8a8875f81c2f8ab8074cb19a84f62590f2d0736458d7bad5e3ec9367ff"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/mpr.py",
+      "bytes": 40369,
+      "sha256": "f325c976a3e961b6cc421204b0c41b14e04cf440ff0b70ebfb4cd6ee72dbeff4"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/multi_contact.py",
+      "bytes": 43470,
+      "sha256": "9e06d0e7e1202cd6501dc8cbe749a6b796bd2e26290cfd5c053d8b6bc9f2e6e0"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/narrowphase.py",
+      "bytes": 207389,
+      "sha256": "489907becbe12a3ab4788c7321bc6e5c2d9941b9f34aa5f84107ce0dfca2d08e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/support_field.py",
+      "bytes": 18816,
+      "sha256": "a4504b0e321c906c2dc19ea87ea96e33878b71c8b4cc94696144ff763b904813"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/utils.py",
+      "bytes": 3600,
+      "sha256": "268d4859e6106c179cf8f6849d41504676c059f2fa96c8ed4e3830199a0d11b3"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/collider/witness.py",
+      "bytes": 2832,
+      "sha256": "31f57cf0ff24f6d493ca82f12b1999d5a61b0f2f45c8241928cedab2afe857cd"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/constraint/__init__.py",
+      "bytes": 303,
+      "sha256": "e63a2f381b17324bef72497f0ea835e62d8500254c474a9d7577e4d7d8a863f8"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/constraint/backward.py",
+      "bytes": 78482,
+      "sha256": "68cdfb662af27ee7771dd6e80db00aff15faa0043e58a5ffc04868703691108c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/constraint/island.py",
+      "bytes": 53368,
+      "sha256": "94750dfc819612b8693b2e48c02cd564edbdbf679050081536d3d445b32306b7"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/constraint/linesearch.py",
+      "bytes": 78292,
+      "sha256": "e7a5b2460289ebc48173a26411a6c4cf9dcfc4db6b27f4684a7db47d797d71d1"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/constraint/noslip.py",
+      "bytes": 28885,
+      "sha256": "c5a910b31d655f53da06a8df281e6a94aca6adc349f9ee549853169347479ed1"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/constraint/solver.py",
+      "bytes": 308056,
+      "sha256": "2468c3297626882fa571aedd1f25dc020f63b07d371414724efa9241f9a86fc3"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/constraint/solver_breakdown.py",
+      "bytes": 19103,
+      "sha256": "40c34a9f383516ce831a999894ced7128d7ed430c2bb99bbcb556ccd55ce8f16"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/rigid_solver.py",
+      "bytes": 200902,
+      "sha256": "e700fe5b024320329625e9355f434c1f4d3d532072e6ce7e080f20916dad62f7"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/__init__.py",
+      "bytes": 72,
+      "sha256": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/association.py",
+      "bytes": 4147,
+      "sha256": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py",
+      "bytes": 5310,
+      "sha256": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/boundary_certificate.py",
+      "bytes": 5536,
+      "sha256": "8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/compatibility.py",
+      "bytes": 35645,
+      "sha256": "a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/contact.py",
+      "bytes": 35663,
+      "sha256": "5bba6b725145f62dc0c7f730cd2129d32110a7f1c63df594bb5979261e78a3ac"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py",
+      "bytes": 19034,
+      "sha256": "6b2fde4187bd2b9f72c417715d04da2a2d2cf7deb21dcdf1a685adfd94392e2b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_scatter.py",
+      "bytes": 12835,
+      "sha256": "4f067d2ceaba4c38f66baedfdc6a2446be90aea413b97b246df2b808ae218858"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/data.py",
+      "bytes": 2171,
+      "sha256": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/factor.py",
+      "bytes": 14633,
+      "sha256": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/failure.py",
+      "bytes": 5371,
+      "sha256": "01c4ad605afb4fc69ae9a175a267c35b310f6f3cd63c6feb4d94f569ec8c6f63"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/fan_refinement.py",
+      "bytes": 8846,
+      "sha256": "94307edb615c0585cedd8e324af8601a9fab0766446d22e0191e6610f9be354a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/footprint.py",
+      "bytes": 40973,
+      "sha256": "9c6d0539e3809f97e31d36946bae256191ac4abcb5add63c6b05f785b3f04895"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/grid.py",
+      "bytes": 3661,
+      "sha256": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/history.py",
+      "bytes": 7077,
+      "sha256": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/intrinsic.py",
+      "bytes": 36842,
+      "sha256": "8856d301448c76b53f7afcdca45eb9dcad35ef89261c93ae33ff6a046317fb6c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/inverse.py",
+      "bytes": 3908,
+      "sha256": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/lifecycle.py",
+      "bytes": 1826,
+      "sha256": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/model.py",
+      "bytes": 15914,
+      "sha256": "6c25c7666d5a2e0cb1d2082344b267a4f5bff58f7c0cc48fbfc106df9ce9717e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/operators.py",
+      "bytes": 10408,
+      "sha256": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/paths.py",
+      "bytes": 11287,
+      "sha256": "002b874dcad674273d4fa4637d4927987c2601a98d31841b33826c910a282c70"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/pipeline.py",
+      "bytes": 5573,
+      "sha256": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/post.py",
+      "bytes": 3326,
+      "sha256": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/provenance.py",
+      "bytes": 14170,
+      "sha256": "846401ff7449414c613db2e3ef4186cab100ccfd24a7483494373d94546258e1"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/recovery.py",
+      "bytes": 27744,
+      "sha256": "c848785ebb615e08f5314e4722cd16d9783680cea7719218207655ce14349f80"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/scatter.py",
+      "bytes": 13531,
+      "sha256": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/solve.py",
+      "bytes": 15877,
+      "sha256": "139fa6fd6be876a12cc813c15b46bf3e377fd8e6990b3e648d012f0b3b471c06"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/source_priors.py",
+      "bytes": 3279,
+      "sha256": "882de40ffef9ff74b29212dcedf4d3fd09f8cb834420bd8512d2cd9b1023be1d"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/source_vertices.py",
+      "bytes": 8421,
+      "sha256": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/surface.py",
+      "bytes": 5052,
+      "sha256": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/surface_frontier.py",
+      "bytes": 12365,
+      "sha256": "51c4c7b9f412a137bad0132c8ea94aa613096c59a73b7ee89477ade13ec0b5ca"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/surface_inverse.py",
+      "bytes": 8209,
+      "sha256": "5f618141c94558aa9b7fc018e35db19652e59b58aaa675dbd2d6c5ba3b831a09"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/topology.py",
+      "bytes": 2646,
+      "sha256": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/traction.py",
+      "bytes": 46455,
+      "sha256": "cb125d3064fc51855d5797cd938522dbb605de1a4e276de5a2950562644c9fa9"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/sf_solver.py",
+      "bytes": 10519,
+      "sha256": "024b3c1c1f811c57177931512cc70e80f820157da60effaab8ed9ccc243cb63c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/sph_solver.py",
+      "bytes": 39916,
+      "sha256": "8dd0715757da4cea313396b22dec82b13c130ee4656fd2c62983a8bce39fd3b1"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/tool_solver.py",
+      "bytes": 4225,
+      "sha256": "18ef3fe945fd7d16300fdad55bca8d6c3bd4ad255c74d3352c2185298b2b5de3"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/states/__init__.py",
+      "bytes": 44,
+      "sha256": "af5ef6588d88ecc03ffa0846235488964721cace0171920388114d3575979a6a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/states/cache.py",
+      "bytes": 1583,
+      "sha256": "61e42427b83631e592101cd9c2ca882dd9343a9eb64a977dadf18e7ea141ff35"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/states/entities.py",
+      "bytes": 4854,
+      "sha256": "4033832b07b16c21e54c745c25993f2a582d31f3fccb04b5972594779002a48a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/states/solvers.py",
+      "bytes": 9078,
+      "sha256": "0ee4c105a89137fc4bd895ca75318784fe4060e942c7994d702c144a087fb48f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/_trimesh_patch.py",
+      "bytes": 35080,
+      "sha256": "9e54b10a02049259e8dcd99a1c798c5ec6df610056cc58c4405d803485d2d079"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/isaacgym/terrain_utils.py",
+      "bytes": 16659,
+      "sha256": "27683b34b70a58b189e98395ff32e3a31d82e082cb6f2a2587605a99938be67e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/__init__.py",
+      "bytes": 985,
+      "sha256": "c5a4f6e4ce1ac97bfcd48d739f6f2e3294fa139a7a3341dd2776e4600d2f3b11"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/camera.py",
+      "bytes": 10884,
+      "sha256": "681ba95116285f031e5193f73bce2c0cae2364c2a1334d98e3e2e786fbb84bbe"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/constants.py",
+      "bytes": 4970,
+      "sha256": "16f1f1c895ff62c0215504b770395e81a8c25356176f2b4a354e6d4329886e15"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/font.py",
+      "bytes": 9284,
+      "sha256": "6c2196c282f4bde69c27b6b5bb37c7ad41e066ed5f4c3c6544af04bfd175eb84"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/jit_render.py",
+      "bytes": 71422,
+      "sha256": "3af1d3a8c1dc9bf2361135fc87c482e10d5c3777201db72eca92ea215eb99d3a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/light.py",
+      "bytes": 12923,
+      "sha256": "2e768dee6b346e9eec50d5e9ac2223cc8b748f28ed01c7aed89765c05f774de1"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/material.py",
+      "bytes": 27448,
+      "sha256": "bd6582e007d9bef748371b3e5b06b29f384c928a8e850884857f136e99fa17b2"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/mesh.py",
+      "bytes": 12247,
+      "sha256": "4c9c952e5279376c726ab9b83c6990bf0897b026b190eb547a109f4a6097e92b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/node.py",
+      "bytes": 7190,
+      "sha256": "d31f4c48036f8a5463454227afdcf5e21ba338ca60e4b05202115d40a7825bd7"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/numba_gl_wrapper.py",
+      "bytes": 6375,
+      "sha256": "53c4c8901e50e0e43debdfd87022dbca3a5c1fe6c19e2c4f45826cfee7474ea2"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/offscreen.py",
+      "bytes": 7787,
+      "sha256": "36fc9e7634b80a619b9e03664e7e6c32d80919072dd9d4c6712016c4e8d515f7"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/overlay/__init__.py",
+      "bytes": 265,
+      "sha256": "da3ae4cf526949b2c9276aeb2f06feb98e57d7b2bf040688e2192782570d8ce4"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/overlay/plugin.py",
+      "bytes": 62777,
+      "sha256": "221a6f4178278d0b072d746c65bb51d6e1f249c42cabaad9d86677146e814263"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/overlay/style.py",
+      "bytes": 3000,
+      "sha256": "cfb92a1bcadc144893f216ac60a4e1a93b6e22e043a94207eb256e90c10bc156"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/overlay/types.py",
+      "bytes": 3505,
+      "sha256": "788c9cf5347f3484920d302ade0063b91d3816ec6ad3f892d9d1ac39de782c03"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/platforms/__init__.py",
+      "bytes": 123,
+      "sha256": "b72d242f3d4cb54b7ecac3981b311d97042d65513f7d23716d40f0845cf15425"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/platforms/base.py",
+      "bytes": 1562,
+      "sha256": "b0e228cc0bf2f6aa8fc5a36b6c84356488c3caf6653872d57e1f915ba9ee9274"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/platforms/cgl.py",
+      "bytes": 6002,
+      "sha256": "ac96a4027c747d5853fbcab832f47cc4bf1977a3fcc480b232cf3b2ebb9544c9"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/platforms/egl.py",
+      "bytes": 11096,
+      "sha256": "fc700c48b3953cb49a7253424217240a550aa60f53e015dbbd0f2864890bef56"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/platforms/osmesa.py",
+      "bytes": 3919,
+      "sha256": "1e9661a0db947d596608554296ead37ce108ea675ac65d834bf4f55f58be9e1b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/platforms/pyglet_platform.py",
+      "bytes": 3990,
+      "sha256": "24ccc17adedbdd3145a1feb811f5f19bcf61661a9f2435f63f901aa95dd995a0"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/primitive.py",
+      "bytes": 20504,
+      "sha256": "832a9c0e9738bdd94208d16425b1d010188cca26a448c8770a6818189a86349d"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/renderer.py",
+      "bytes": 42830,
+      "sha256": "ce061ae28d1426d6ceabcd67d5b28a25a1935721bce07826a40d6d66384685ad"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/sampler.py",
+      "bytes": 2552,
+      "sha256": "a0c7296dccc8ecf4da4a3b74f8534a65bb174f24702b7c8f1bd527133cba0970"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/scene.py",
+      "bytes": 23512,
+      "sha256": "6c03bf82731993cb0f47fec21243d6bd1ee2f15050e216001acf8bc45b5205f7"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/shader_program.py",
+      "bytes": 9623,
+      "sha256": "966c3dded87a502fd3ecf693976cd2ebc4795962a11b28d265fb5c1e87824727"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/texture.py",
+      "bytes": 12028,
+      "sha256": "0da3ca5a127764ebd75aa60bb772fc9c3e0d5ff2848d9d90f56fb7fcad499a7b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/trackball.py",
+      "bytes": 8853,
+      "sha256": "70cb62f51a431e524d8ca8c7ca4c0b1012f89cf3da5f388eb3959bd041bd0510"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/utils.py",
+      "bytes": 4449,
+      "sha256": "3ee95a310809c4c3794be9cce8ae05e1d32a83e088261ff9f659d1a7be8fa7a5"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/version.py",
+      "bytes": 23,
+      "sha256": "1b5070e5211e4684a51d5c6614a7fa3c8a4adfc4874d84c58521469bd77c6103"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/pyrender/viewer.py",
+      "bytes": 65756,
+      "sha256": "94e3f38aba25826f856259a84a85e857cef93c3bf5f097ea25b6db04ed28274f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/urdfpy/__init__.py",
+      "bytes": 983,
+      "sha256": "3dd129e5d5e9d0c708b1c8d251e1fb2bd1ab6b2220269fe4d4429caf6ca396d9"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/urdfpy/urdf.py",
+      "bytes": 132806,
+      "sha256": "a97c361d877f4a10df3fe1d66cbf2238a37e0b185837be62585c112f47d6fb7b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/urdfpy/utils.py",
+      "bytes": 8979,
+      "sha256": "d85f12bcf55ac92da8aff42ca03162b6e2e26d27786d22fad5cae7d228be69db"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/ext/urdfpy/version.py",
+      "bytes": 23,
+      "sha256": "8e6dc3b5687aee31c69ddb9d6c03e85077bfdc72850563770796e57cf8fabfd8"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/grad/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/grad/creation_ops.py",
+      "bytes": 3530,
+      "sha256": "fca94b83d15dae38563d91d39da213084ca9733322448fc70d651216d73bf0a8"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/grad/tensor.py",
+      "bytes": 4268,
+      "sha256": "a2a102c5afb5d27dca0e62c2687bb9b25483ee70e37be005c7ae942cb0be752b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/logging/__init__.py",
+      "bytes": 27,
+      "sha256": "899572b96127517a8797e198641465770a7b4fd250181cfeba4fcc367f2634bd"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/logging/logger.py",
+      "bytes": 7266,
+      "sha256": "cff75865d1c92f41310a1b3ab17c07c791d74bf7d3d9d2dd6e0ad1d83bc2383b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/logging/time_elapser.py",
+      "bytes": 2209,
+      "sha256": "7d99fd1b6604bddcc606c756fed4fb194a590d7b8ebdd69ae1e44f8c18f7fa7b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/__init__.py",
+      "bytes": 914,
+      "sha256": "c795d61eede01c13fa5e74c05e77ee07f85bf0361ae7b8f22c338876f6395da8"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/misc.py",
+      "bytes": 2122,
+      "sha256": "7c7fe4438de8eb219e2649054da120b3522ee95a3bed4b454aac2221b77f79ed"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/morphs.py",
+      "bytes": 101878,
+      "sha256": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/options.py",
+      "bytes": 7318,
+      "sha256": "5a6b1ca42aadf9aaa49e1fb013a1bc24aefa7923ba814e22ee2b9441bf3c08a6"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/profiling.py",
+      "bytes": 717,
+      "sha256": "82cbc37ea688542664b863e56096fa235fa3f944eb1c9160089453f81c24831a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/recorders.py",
+      "bytes": 15052,
+      "sha256": "8b8a1dceb2545607fb0d67591d53b612b2d2721fae148e1274455a2f8b804cb8"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/renderers.py",
+      "bytes": 5158,
+      "sha256": "0898d886e208a9889ccd3a6611834c118a474324efe76cba436b28dbe786431b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/rigid_stress.py",
+      "bytes": 13430,
+      "sha256": "7a112293703178e8d371edd26bfc004ebe2a8cb2a157d7f6f738806a4dfb3512"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/scene.py",
+      "bytes": 3945,
+      "sha256": "135b4a2301a001d158b447cdc2f512951847a1aba90e82e3c771be5aa0772fb8"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/sensors/__init__.py",
+      "bytes": 974,
+      "sha256": "b1487e5fa0e6da6f9c8e06690900b340ed9f38d99998b2665b1b26f47ae30cc7"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/sensors/camera.py",
+      "bytes": 5519,
+      "sha256": "7cd4b59560a8d9b2edd7f310cc92bf0520ad1bd12cc3f5a00f51960b630576d4"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/sensors/options.py",
+      "bytes": 30823,
+      "sha256": "e636667991a5220f5e070c95a8d967ac2ff4eed63896cffdd08181302e32de38"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/sensors/raycaster.py",
+      "bytes": 10405,
+      "sha256": "13a609ebd1168e7ac894ccb49ab84a848c81eb3d001bdadce433e98e6cfaee52"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/sensors/tactile.py",
+      "bytes": 30631,
+      "sha256": "518b521a3936a0659c5c300416addba70d668801bb7fea15926fd3d6e3c4b0a2"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/solvers.py",
+      "bytes": 50151,
+      "sha256": "c951820210c09b387c3b26e7b1a8809fd1b2e9758072f879143145f00929bfc8"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/surfaces.py",
+      "bytes": 32628,
+      "sha256": "3ffb310e9c21a5d3808a355015f07e39e77084d166455a6ea344268cbcf75bfb"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/textures.py",
+      "bytes": 15949,
+      "sha256": "949f8700332f6b14e30a0a56eda95954234d7e6dc5f374965960029819baae54"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/vis.py",
+      "bytes": 11724,
+      "sha256": "538f161c75916ed92fa5f645613972323d9e6729aa0fce80a8267cd0eb367b32"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/recorders/__init__.py",
+      "bytes": 203,
+      "sha256": "0da9ac4cbd730bf30ad0f0dd8f0b8ea506b6faf4ff9360da91643b34b3ab0115"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/recorders/base_recorder.py",
+      "bytes": 11231,
+      "sha256": "f220fd19244c87b4b40d2f6aa0627af0c8c8954e9707ed37d48ac5aa38cf65fd"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/recorders/file_writers.py",
+      "bytes": 6317,
+      "sha256": "c707e33c7247bcfd348823aa661e64f2d4cedb2ebab4417b7711f77572ba1ee7"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/recorders/plotters.py",
+      "bytes": 36731,
+      "sha256": "7fa2b0eaef4d786f47fc4020e34b4c712596f4bf9e6e0334c7f9f712b12d5fd8"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/recorders/recorder_manager.py",
+      "bytes": 5000,
+      "sha256": "10cca50cf6075cb7340975c045a77760e5e0699c56357b4a692ca3890b309cbe"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/recorders/trajectory.py",
+      "bytes": 27188,
+      "sha256": "b47d6150ae71ab0b65825b3e222456669234b07e883b18da2074ab300386cce1"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/repr_base.py",
+      "bytes": 4097,
+      "sha256": "6f624f7e3ac36a47fe2a99e874e4a2456a89f94a04cd6a331a7d4a57e13f7961"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/styles.py",
+      "bytes": 5741,
+      "sha256": "4670ecba2703f1e167fad9c21aaa9c93510990cd130e63cf50863adcbb6cf807"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/typing.py",
+      "bytes": 9999,
+      "sha256": "8f8cbf7cb17eaf2fb8e164aff3d6cbe65b6bbd19ffcedb9e1a149e268782448b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/__init__.py",
+      "bytes": 20,
+      "sha256": "2d44be8c6ad7945e5e7427cb45a105548bfdfa4da3eb4f6d1df8cf7fa94149da"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/array_class.py",
+      "bytes": 158664,
+      "sha256": "ac269251baa277f7e8e58dfd5746ad8282ee54b5187c2293edbba3b975a970ea"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/collision.py",
+      "bytes": 2876,
+      "sha256": "b9483d41644655af5cb1415eaa5de095f5b7a75b3da4f906a69428c00430656f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/deprecated_module_wrapper.py",
+      "bytes": 1412,
+      "sha256": "5169f325a6fcd7e991b4392f926a6a980ee27310b2d8c78f6d26ed4906ace703"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/element.py",
+      "bytes": 1794,
+      "sha256": "771f3fad4b4221cd6526300f6b90a413d740cecf435c1edd86d891f339f10fd9"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/emoji.py",
+      "bytes": 278,
+      "sha256": "8bf89d552b883d9f4e85c6a2ba20b42f7289691bc02ad5423960e62688aeef45"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/geom.py",
+      "bytes": 94620,
+      "sha256": "33c18d215656013762ef40aaf2da10ca181cf91079241fb21b9203b0ab051dd6"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/gltf.py",
+      "bytes": 18536,
+      "sha256": "4bb7f47072141bb2ee2b6da0a9aba62daef13e83cccabe164f48a20d67dd2b1e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/hybrid.py",
+      "bytes": 8884,
+      "sha256": "624a6d49f58985fefe499ccb3d64000d60c04f5e07abc92dd9f85cdeefddf325"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/image_exporter.py",
+      "bytes": 10387,
+      "sha256": "bf2c3ab65b5e9dc6f9a418b84ab799e890d73a1eefe82e41cff7b84569351168"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/linalg.py",
+      "bytes": 2854,
+      "sha256": "07f1d5183722f255c2dc3b928dccb553389f3b5a883ec9a1b45bd7026d517dc3"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/mesh.py",
+      "bytes": 66767,
+      "sha256": "43aa1942e827d2bf40beeba3a1a42ba1a20514771205fb0027cdebb3dbeb8eff"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/misc.py",
+      "bytes": 60798,
+      "sha256": "746cea4185cc86a7fb66242544adb2bee5330da41ea80a9829e625560416d71a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/mjcf.py",
+      "bytes": 40573,
+      "sha256": "f6d4a068884251445e11ce2138f6ba2933de1bea4c5d6b39df66aba2ff00ea11"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/particle.py",
+      "bytes": 16310,
+      "sha256": "9119d66184ba0d26d95ead95a955e56a45ba52aaaed75a151b0f72b23d16ebc8"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/path_planning.py",
+      "bytes": 50225,
+      "sha256": "eb35f562e4ddf90e13fe4697710080e78c0fefa5e2d7c7f56240ec25a356ffef"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/point_cloud.py",
+      "bytes": 5506,
+      "sha256": "d2c60b1334c65676a8363cf75ffad1aad5146e90700ead57af8bbf8510b0b644"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/raycast.py",
+      "bytes": 1214,
+      "sha256": "6f5f604d02bdee6af4f976a273bc1340c21a5631268c17dc6ac6f76d2e47e592"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/raycast_qd.py",
+      "bytes": 40871,
+      "sha256": "18a3746a64b9cdb28cb5dd6bfa2529d7bd17f2b7118544ae28084d7c060478d3"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/repr.py",
+      "bytes": 1047,
+      "sha256": "2c5a0235ebc989c4d0842820d51e62245cfbdb03f39147b852bb1e684fc5b1cb"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/ring_buffer.py",
+      "bytes": 6072,
+      "sha256": "e8c1f9bde22632338787a32ae41cc2ff0b4edeb4286a9d57ec5b519fbdf3b146"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/sdf.py",
+      "bytes": 22856,
+      "sha256": "2fdb6fd047d2acb09ec0c8ecab720d0909d9a59b73af47be643a4985a3e08068"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/serialization.py",
+      "bytes": 33768,
+      "sha256": "5df19494256fb6613297babd6ea81f1c2a9cd802b74c8707576e115a3f1e10b7"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/simt.py",
+      "bytes": 4829,
+      "sha256": "41d127e5501d487d0de7054dd25067c749c729d83e392b6dba6a83aa2d2780c5"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/terrain.py",
+      "bytes": 20894,
+      "sha256": "3c3d43ee94e9f6f81b39b8605a22ca4668740a1b6263a24841448b8db911531b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/tools.py",
+      "bytes": 11245,
+      "sha256": "e690ddb04c7969da1a73594d5fb132801dc21cc1a2231668b7d0a8953bae02e2"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/uid.py",
+      "bytes": 1163,
+      "sha256": "7465c1f52a16429f1ecf9455be5309e106feb3cba4782d0761df6520fc5fc58e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/urdf.py",
+      "bytes": 27774,
+      "sha256": "704137e4d29f6b15b9a536306882960e700af46b2b7f20f16123042eaa2b9d40"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/usd/__init__.py",
+      "bytes": 2007,
+      "sha256": "bb0acd545cc98c347195c03f5e731edaac15d8358ac7bda7119041049639527c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/usd/usd_bake.py",
+      "bytes": 5847,
+      "sha256": "dd650beeece689de68855afd8bbfcd5b27c1da5b3947b7e5c99486e02ee9d82b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/usd/usd_collision.py",
+      "bytes": 6401,
+      "sha256": "7bbf05cb8bd5c3ddf5cf766eebd0e8cf694e465caee28bf348fdcf108b62604f"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/usd/usd_context.py",
+      "bytes": 25448,
+      "sha256": "f21d5f3955256a960a5a4a2bd47775193fe222b2ccfc789659a0fe32a49188cf"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/usd/usd_geometry.py",
+      "bytes": 21296,
+      "sha256": "4087f2d6957b374edfd99fd66ec7c20910cc6dd1a43b50bbcf7d6d640d639fd2"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/usd/usd_material.py",
+      "bytes": 7609,
+      "sha256": "d6dd9f980ddab13cb54e4fbeb5b4b6700f29ff3f702156f3dddde78c8c3b9e56"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/usd/usd_rigid_entity.py",
+      "bytes": 35132,
+      "sha256": "41a56006bc895ee91411f4057c37cd3efab5af977eb183de017942236576ca76"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/usd/usd_stage.py",
+      "bytes": 7968,
+      "sha256": "eb88091c45128e99fcc87b06fe724293eeec7cfed4c4208effad0789f2cae499"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/usd/usd_utils.py",
+      "bytes": 10138,
+      "sha256": "c911d48baf7f4754a33efa08d74839bdb459a1b36b88fe85158f5c962456a88a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/video_encoder.py",
+      "bytes": 12115,
+      "sha256": "151eb73ff3685851859eeb856026379ddeb9049201cb2b626072c4b918fddc38"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/warnings.py",
+      "bytes": 189,
+      "sha256": "14f651f3abb3b9d485bf848a9f604829c4e605afd2921fc39fc9965254c88bce"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/watertighten.py",
+      "bytes": 62121,
+      "sha256": "5ba2822a5daeea33e13b39ce8d82dc33f6a25cac5a71635c86b0ea14d47313d3"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/version.py",
+      "bytes": 22,
+      "sha256": "af1bd051649eea7bd2003908caece2ca2f08ae4ef4b360d94b1381f5cf1ca404"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/vis/__init__.py",
+      "bytes": 35,
+      "sha256": "4d5e8f63fb8eab7e336a19be8cc846ac66b82c740b83e0b23bb7f2f7a4db0117"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/vis/batch_renderer.py",
+      "bytes": 19740,
+      "sha256": "7a3da5caf6edd48baaee28086222f9160c203e7c5514718a7a92dc8746549b1b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/vis/camera.py",
+      "bytes": 45485,
+      "sha256": "7a194af8a7e46d72ed8db14b41e0f6d0719a49fc159bd927b561148d6ea786c4"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/vis/keybindings.py",
+      "bytes": 13657,
+      "sha256": "ac3a91ad5f9aefc71adba7069622ddc4db173d03cd145be0492e14d83b8d9803"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/vis/rasterizer.py",
+      "bytes": 8034,
+      "sha256": "d010b927a8b7973c8e8210f429bf7e3896664760753a3eddb795801f042d5f9b"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/vis/rasterizer_context.py",
+      "bytes": 61922,
+      "sha256": "fff7b8d9903ddc7efb5ca85a1eb20eb136f0775c32d5da1fc1078b6136914035"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/vis/raytracer.py",
+      "bytes": 36882,
+      "sha256": "cc0831e31ca449ae232826e3a9087619f1e7241f41cd974a3fe55ab2382c9500"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/vis/viewer.py",
+      "bytes": 21567,
+      "sha256": "e6915662848a9519deb37270d13c7b0fd7a1d64b953dbce5f4a203f6dbba5935"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/vis/viewer_plugins/__init__.py",
+      "bytes": 158,
+      "sha256": "f3c73ff36b8938b782ca6fea1ca1c703536bd88638421a7e6eea93f16724b885"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/vis/viewer_plugins/base.py",
+      "bytes": 1740,
+      "sha256": "cac0e9eb1f955f43fa8a87b6308ad4ed57d50382a9032fe8c5be98a60a215a05"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/vis/viewer_plugins/plugins/__init__.py",
+      "bytes": 180,
+      "sha256": "b1a48ba7d5909ad99d304e7f1acc6de572d0331f571aa1b2af925a0bc45c98d0"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/vis/viewer_plugins/plugins/default_controls.py",
+      "bytes": 6980,
+      "sha256": "34cefe5cc55a2e1e1569b20dd3ac007f854938310b129dab0e535a05ab1f49ac"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/vis/viewer_plugins/plugins/mouse_interaction.py",
+      "bytes": 22833,
+      "sha256": "c35aa2eed8ab1af49ad96a2c4540e1687ccf7f7843523941709853f548bfbb4e"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/vis/viewer_plugins/raycast.py",
+      "bytes": 12262,
+      "sha256": "120f7ad5b4ab777d1fd340e99fef2345ae70d30fbeb5c967a2f3e94481cc797a"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/vis/visualizer.py",
+      "bytes": 11614,
+      "sha256": "f6200a69eba801540a120a54ad6ed01d1fc41b26221fbbe3f5e24058b0c27b0e"
+    }
+  ],
+  "source_unchanged": true,
+  "returncode": 0,
+  "log": {
+    "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/native-manual-sampling-v1/group0/cpu/tests.log",
+    "bytes": 2583,
+    "sha256": "bca294c039a51ab6105252246a6ce400aadf249058fa3e65e107e8063e2c7e4d"
+  },
+  "scope": "Existing lifecycle and shared-operator capabilities, extended with manual requests. Numerical contact/field oracles, substep maxima, retained snapshots, partial reset/restore and ordinary rigid trajectories remain checked. Separate profiling must verify skipped recovery work and practical cost."
+}

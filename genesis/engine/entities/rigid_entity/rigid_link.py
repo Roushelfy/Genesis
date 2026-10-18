@@ -470,8 +470,20 @@ class RigidLink(KinematicLink):
         return self._stress_options
 
     @gs.assert_built
+    def request_stress_update(self) -> None:
+        """Request stress observations for the next scene step, across all environments and physical substeps.
+
+        Call after setting the step's inputs and before ``scene.step()`` when configured with ``update_mode='manual'``.
+        State changes cancel pending requests. Getters retain the last sampled values between observed steps.
+        """
+        recovery = self._solver.stress_recovery
+        if recovery is None:
+            gs.raise_exception("Stress recovery is not enabled for this link.")
+        recovery.request_update(self.idx)
+
+    @gs.assert_built
     def get_max_stress(self, envs_idx=None, *, copy: bool = True) -> torch.Tensor:
-        """Return global maximum von Mises stress in Pa over this scene step's physical substeps."""
+        """Return global maximum von Mises stress in Pa over the latest observed scene step's physical substeps."""
         recovery = self._solver.stress_recovery
         if recovery is None:
             gs.raise_exception("Stress recovery is not enabled for this link.")
@@ -486,8 +498,8 @@ class RigidLink(KinematicLink):
         mesh tetrahedron vertex order; components are xx, yy, zz, xy, xz, yz
         in the authored link frame. Fields are NaN before recovery or after
         reset, restore or invalid recovery. ``copy=False`` aliases read-only
-        observation buffers. Fields describe the last physical substep,
-        while ``get_max_stress`` aggregates all substeps of the scene step.
+        observation buffers. Fields describe the last observed physical substep,
+        while ``get_max_stress`` aggregates all substeps of that sampled scene step.
         """
         recovery = self._solver.stress_recovery
         if recovery is None:

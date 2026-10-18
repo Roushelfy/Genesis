@@ -59,6 +59,7 @@ class StressLink:
     coalesced_residual: bool
     reuse_contact_moments: bool
     intrinsic: IntrinsicContacts | None = None
+    requested_step: int = -1
 
 
 class RigidStressRecovery:
@@ -188,6 +189,24 @@ class RigidStressRecovery:
             if entry.fused_pipeline and selected:
                 self.post_kernel = create_post_kernel()
 
+    @property
+    def is_update_requested(self) -> bool:
+        return any(
+            entry.options.update_mode == "every_step" or entry.requested_step == self.solver.sim.cur_step_global
+            for entry in self.links
+        )
+
+    def request_update(self, link_idx: int) -> None:
+        if self.solver.sim.cur_substep_global % self.solver.substeps:
+            gs.raise_exception("Request stress updates before the first physical substep of a scene step.")
+        for entry in self.links:
+            if entry.link.idx == link_idx:
+                if entry.link.stress_options != entry.options:
+                    gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
+                entry.requested_step = self.solver.sim.cur_step_global
+                return
+        gs.raise_exception("Stress recovery is not enabled for this link.")
+
     def _pipeline_arguments(self, entry: StressLink, i_substep: int):
         solver = self.solver
         options = entry.options
@@ -251,6 +270,8 @@ class RigidStressRecovery:
             options = entry.link.stress_options
             if options != entry.options:
                 gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
+            if options.update_mode == "manual" and entry.requested_step != solver.sim.cur_step_global:
+                continue
             if entry.fused_pipeline:
                 kernel_pipeline(*self._pipeline_arguments(entry, i_substep))
                 continue
@@ -329,6 +350,7 @@ class RigidStressRecovery:
     def reset(self, change: StateChange, envs_idx, *, entry: StressLink | None = None) -> None:
         envs_idx = self.solver.scene._sanitize_envs_idx(envs_idx)
         for affected in self.links if entry is None else (entry,):
+            affected.requested_step = -1
             kernel_reset(envs_idx, affected.state)
             if affected.history is not None:
                 affected.history.reset(envs_idx)
