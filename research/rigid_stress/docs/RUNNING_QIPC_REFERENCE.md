@@ -15,6 +15,9 @@ affected runs/checkpoints are in the
 [inventory](QIPC_STORAGE_AFFECTED_RUNS_20261018.json). Hash-verified native dumps
 are not validated cross-process restarts; the grasp runner has no resume option.
 Trajectory snapshots are not native contact/friction checkpoints.
+The [prepared validation tasks](QIPC_PENDING_VALIDATION_20261018.md) cover
+unexecuted max-only/interrupt-admission controls and outstanding completed-data
+audits; their existence is not a submitted job or a passing result.
 
 ## Source, runtime and storage
 

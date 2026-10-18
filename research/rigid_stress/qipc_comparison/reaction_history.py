@@ -1,12 +1,14 @@
 """Compare recorded physical per-link reactions without cancelling opposing finger loads."""
 
 import argparse
+import json
 from pathlib import Path
 
 import numpy as np
 from scipy.spatial.transform import Rotation
 
 from .artifacts import file_id, runtime_identity, write_json
+from .common_metric import time_integrated_error
 from .reference_uncertainty import frame_index
 
 
@@ -84,11 +86,39 @@ def main():
         arrays[f"candidate{index}_time_s"] = np.array(candidate_time)
         arrays[f"candidate{index}_link_force_world_n"] = np.array(candidate_force)
         arrays[f"candidate{index}_link_moment_about_com_nm"] = np.array(candidate_moment)
+        temporal = {}
+        complete = (
+            json.loads((args.reference / "result.json").read_text())["completed_requested_history"]
+            and json.loads((folder / "result.json").read_text())["completed_requested_history"]
+            and len(rows) == len(reference)
+        )
+        if complete:
+            for name, actual, ref_value, floor in (
+                (
+                    "finger_force",
+                    np.array(candidate_force)[:, fingers],
+                    np.array([expected[tick][0][fingers] for tick in times]),
+                    1e-3,
+                ),
+                (
+                    "finger_moment",
+                    np.array(candidate_moment)[:, fingers],
+                    np.array([expected[tick][1][fingers] for tick in times]),
+                    1e-7,
+                ),
+            ):
+                temporal[name] = time_integrated_error(
+                    candidate_time,
+                    np.linalg.norm(ref_value, axis=(1, 2)),
+                    np.linalg.norm(actual - ref_value, axis=(1, 2)),
+                    floor,
+                )
         records.append(
             {
                 "source": file_id(folder / "result.json"),
                 "history": rows,
                 "missing_candidate_ticks": sorted(reference.keys() - frames.keys()),
+                "complete_time_integrated_finger_metrics": temporal,
             }
         )
     np.savez_compressed(args.output / "reactions.npz", **arrays)

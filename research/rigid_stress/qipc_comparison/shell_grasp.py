@@ -24,7 +24,7 @@ def main():
     parser.add_argument("--control-interval", type=float, default=0.01)
     parser.add_argument("--substep-peaks", action="store_true")
     args = parser.parse_args()
-    assert args.model == "shell" and args.envs == 1
+    assert args.model == "shell" and args.envs == 1 and args.output_mode == "full"
     args.output.mkdir(parents=True, exist_ok=False)
     frames = args.output / "frames"
     frames.mkdir()
@@ -79,6 +79,8 @@ def main():
             "coarse_patches": args.patches,
             "damping": args.damping,
             "coupling_friction": args.coupling_friction,
+            "coupling_softness_m": args.coupling_softness,
+            "influence_0_1_cutoff_beyond_half_thickness_m": (args.coupling_softness * np.log(10)).item(),
             "setup_seconds": perf_counter() - started,
             "source_scope": "PR22 plus existing read-only diagnostics"
             if args.instrumented

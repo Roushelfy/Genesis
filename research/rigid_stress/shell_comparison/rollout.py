@@ -39,9 +39,19 @@ def controller_step(workload, shell_model, advance=True):
         radius = workload.base_radius * (1.0 + 0.15 * torch.sin(2.0 * torch.pi * phase))
         workload.link.set_stress_contact_radius(radius[:, None])
     if advance:
+        expected_observations = (
+            workload.observed_substeps + workload.scene.sim.substeps
+            if shell_model and workload.output_mode == "max"
+            else None
+        )
         workload.scene.step()
         if shell_model:
-            workload.observation.update(workload.scene.sim.shell_solver)
+            if workload.output_mode == "full":
+                workload.observation.update(workload.scene.sim.shell_solver)
+            else:
+                assert workload.observed_substeps == expected_observations, (
+                    "Max-only Shell requires the declared read-only substep observer source"
+                )
     workload.tick += 1
     return phase
 
@@ -129,7 +139,9 @@ def run(args, workload, shell_model, diagnostic_buffers=None):
         failed_per_env = invalid_after - invalid_before if invalid_after is not None else None
         invalid_environment_steps = int(failed_per_env.sum()) if failed_per_env is not None else None
         if shell_model:
-            final_fields = tensor_to_array(workload.observation.tensors)
+            final_fields = tensor_to_array(
+                workload.observation.tensors if args.output_mode == "full" else workload.observation.peaks
+            )
             final_positions = tensor_to_array(workload.egg.get_verts_pos())
         else:
             final_fields = (
@@ -163,7 +175,9 @@ def run(args, workload, shell_model, diagnostic_buffers=None):
                 "partial_reset_envs": workload.reset_count,
                 "scope": "intrusive-diagnostic"
                 if args.record_every or args.instrumented or args.memory
-                else "normal-full-field",
+                else "normal-full-field"
+                if args.output_mode == "full"
+                else "normal-max-only",
             }
         )
         trace = {
@@ -257,6 +271,7 @@ def make_parser():
     parser.add_argument("--coarse-interval", type=int, default=10)
     parser.add_argument("--damping", type=float, default=0.0)
     parser.add_argument("--coupling-friction", type=float, default=0.6)
+    parser.add_argument("--coupling-softness", type=float, default=0.002)
     parser.add_argument("--bank-coupling-friction", action="store_true")
     parser.add_argument("--wall-volume-input", type=Path)
     parser.add_argument("--warmup", type=int, default=60)

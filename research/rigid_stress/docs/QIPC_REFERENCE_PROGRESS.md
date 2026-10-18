@@ -511,6 +511,17 @@ energy audits, capped comparisons, secondary Shell timing, figures, compact
 publication and requirement closeout still need a writable persistent data
 location. The goal stays active and all completion gates remain required.
 
+The12:13UTC write probe confirms the same errno122 storage block. Source review
+finds that the old history audit cannot describe missing/corrupt terminal
+receipts, and its absent cap flags can appear as zero. Prepared changes now
+retain structurally valid journal prefixes with explicit unreadable byte ranges,
+unknown counters, process receipts and configured caps. New synthetic metadata
+controls cover those admission failures without claiming physical validation.
+The prepared Shell max control derives VM independently from complete Cauchy
+tensors after an actual loaded prefix and checks selected-environment nonfinite
+isolation. No such control has run. Exact fresh Slurm tasks and required checks
+are in [the pending validation record](QIPC_PENDING_VALIDATION_20261018.md).
+
 ## Completion gates
 
 1. Exact-energy stress/parameter and independent small-control validation.

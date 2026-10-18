@@ -538,5 +538,12 @@
     "error": "Disk quota exceeded",
     "operation": "exclusive-create then write/fsync; creation failed; no probe file retained"
   },
-  "task_gpu_jobs_active_after_cleanup": false
+  "task_gpu_jobs_active_after_cleanup": false,
+  "probe_20261018T121331UTC": {
+    "time_utc": "2026-10-18T12:13:31.154592+00:00",
+    "errno": 122,
+    "operation": "Exclusive-create/write/fsync probe; create failed; no probe file retained",
+    "task_gpu_jobs_active": false,
+    "state": "Storage remains unwritable. Task GPU jobs are terminal; sources and selected publication deliverables remain writable in their established source location."
+  }
 }

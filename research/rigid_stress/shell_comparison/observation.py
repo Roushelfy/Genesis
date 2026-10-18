@@ -27,9 +27,12 @@ def recover_fields(
     peaks: qd.types.ndarray(ndim=1),
     state: array_class.ShellState,
     info: array_class.ShellInfo,
+    full_output: qd.template(),
+    reset_peak: qd.template(),
 ):
-    for i_b in range(peaks.shape[0]):
-        peaks[i_b] = 0.0
+    if qd.static(reset_peak):
+        for i_b in range(peaks.shape[0]):
+            peaks[i_b] = 0.0
     for i_f, i_b in qd.ndrange(state.faces_thickness.shape[0], state.faces_thickness.shape[1]):
         i_e = info.faces_entity[i_f]
         thickness = state.faces_thickness[i_f, i_b]
@@ -61,19 +64,23 @@ def recover_fields(
         )
         cross = qd.Vector([F[0, 0], F[1, 0], F[2, 0]]).cross(qd.Vector([F[0, 1], F[1, 1], F[2, 1]]))
         jacobian = qd.max(cross.norm(), shell.NORM_FLOOR)
-        for j, k in qd.static(qd.ndrange(2, 2)):
-            membrane[i_f, i_b, j, k] = stress[j, k]
-            curvature_output[i_f, i_b, j, k] = curvature[j, k]
-            bending[i_f, i_b, j, k] = thickness**3 / 12.0 * fiber_gradient[j, k]
+        if qd.static(full_output):
+            for j, k in qd.static(qd.ndrange(2, 2)):
+                membrane[i_f, i_b, j, k] = stress[j, k]
+                curvature_output[i_f, i_b, j, k] = curvature[j, k]
+                bending[i_f, i_b, j, k] = thickness**3 / 12.0 * fiber_gradient[j, k]
         for i_layer in range(3):
             z = 0.5 * (i_layer - 1) * thickness
             sigma = F @ (stress / thickness + z * fiber_gradient) @ F.transpose() / jacobian
             deviator = sigma - sigma.trace() / 3.0 * qd.Matrix.identity(gs.qd_float, 3)
             vm = qd.sqrt(qd.max(1.5 * (deviator * deviator).sum(), 0.0))
+            if not (qd.abs(sigma.sum()) < qd.math.inf):
+                vm = gs.qd_float(float("inf"))
             i_out = 3 * i_f + i_layer
-            for j, k in qd.static(qd.ndrange(3, 3)):
-                tensors[i_out, i_b, j, k] = sigma[j, k]
-            von_mises[i_out, i_b] = vm
+            if qd.static(full_output):
+                for j, k in qd.static(qd.ndrange(3, 3)):
+                    tensors[i_out, i_b, j, k] = sigma[j, k]
+                von_mises[i_out, i_b] = vm
             qd.atomic_max(peaks[i_b], vm)
 
 
@@ -99,21 +106,25 @@ class FullField:
     bending: torch.Tensor
     peaks: torch.Tensor
     locations: torch.Tensor
+    output_mode: str
 
     @classmethod
-    def allocate(cls, solver):
+    def allocate(cls, solver, output_mode="full"):
+        assert output_mode in ("full", "max")
         n_faces, n_envs = solver.n_faces, solver.shell_state.faces_thickness.shape[1]
+        stored_faces, stored_envs = (n_faces, n_envs) if output_mode == "full" else (1, 1)
         return cls(
-            torch.empty((3 * n_faces, n_envs, 3, 3), dtype=gs.tc_float, device=gs.device),
-            torch.empty((3 * n_faces, n_envs), dtype=gs.tc_float, device=gs.device),
-            torch.empty((n_faces, n_envs, 2, 2), dtype=gs.tc_float, device=gs.device),
-            torch.empty((n_faces, n_envs, 2, 2), dtype=gs.tc_float, device=gs.device),
-            torch.empty((n_faces, n_envs, 2, 2), dtype=gs.tc_float, device=gs.device),
+            torch.empty((3 * stored_faces, stored_envs, 3, 3), dtype=gs.tc_float, device=gs.device),
+            torch.empty((3 * stored_faces, stored_envs), dtype=gs.tc_float, device=gs.device),
+            torch.empty((stored_faces, stored_envs, 2, 2), dtype=gs.tc_float, device=gs.device),
+            torch.empty((stored_faces, stored_envs, 2, 2), dtype=gs.tc_float, device=gs.device),
+            torch.empty((stored_faces, stored_envs, 2, 2), dtype=gs.tc_float, device=gs.device),
             torch.empty(n_envs, dtype=gs.tc_float, device=gs.device),
-            torch.empty(n_envs, dtype=gs.tc_int, device=gs.device),
+            torch.empty(n_envs if output_mode == "full" else 0, dtype=gs.tc_int, device=gs.device),
+            output_mode,
         )
 
-    def update(self, solver):
+    def update(self, solver, reset_peak=True):
         recover_fields(
             self.tensors,
             self.von_mises,
@@ -123,8 +134,11 @@ class FullField:
             self.peaks,
             solver.shell_state,
             solver.shell_info,
+            self.output_mode == "full",
+            reset_peak,
         )
-        locate_peaks(self.von_mises, self.peaks, self.locations)
+        if self.output_mode == "full":
+            locate_peaks(self.von_mises, self.peaks, self.locations)
 
     @property
     def nbytes(self):
