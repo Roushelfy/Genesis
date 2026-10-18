@@ -752,3 +752,19 @@ complete. Half-dt726567_2 is still running and friction726567_5 remains held.
 At the latest storage check, the authorized fallback occupies3.721GB of its
 4GB bound; the four-run comparison has a20MB output estimate and private
 node-local caches. Original data/environments/symlinks remain unchanged.
+
+Job726725 and the four analyses in726726 have now completed with true return
+code0. PCG1e-6/1e-4/1e-3/1e-2 all pass the predeclared three-keyframe bands;
+window times are59.8877/50.5423/47.4926/34.9529s. Each is a fresh-process n1
+contrast in one allocation. Window PCG totals are1008832/810215/729291/500367;
+Newton totals1285/1740/2172/2221. PCG1e-4 has1 cap step, the others0, with no
+native invalid-step/ET/Newton/LS forced exit. At1e-2 the maximum common tangent
+contrast is4.949e-5, finger-force contrast2.606e-5, net residual/weight1.313e-5.
+The [companion packet](../evidence/20261018-qipc-reference/short-window-pcg-v1/README.md)
+retains all12 new full-spatial fields, exact numerical/timing results, native
+stopping source, logs and source reconstruction identities. Prior shared
+reference/target/input states remain in the frozen11-run packet. These results
+support the user's concern about inner oversolving:1e-6 is unnecessary for the
+declared window bands. The next candidate is1e-2 with unchanged Newton/physical
+checks, still requiring repeats, capped coupling and complete sparse-grasp
+qualification. No full-goal completion or physical accuracy ranking is claimed.

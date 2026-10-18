@@ -80,9 +80,18 @@ is reached. With a fixed SPD preconditioner,1e-6 therefore corresponds to a
 relative preconditioned residual norm1e-3; default1e-4 corresponds to1e-2.
 The outer Newton displacement test uses `velocity_tol * dt`, rather than a
 direct force tolerance. Final force/field checks remain necessary. At the
-user's request, job726725 now compares PCG1e-6/1e-4/1e-3/1e-2 with Newton fixed
-and otherwise identical short-window physics/timing. Its results are pending
-and are not part of the frozen11-run packet. A passing short window does not
+user's request, jobs726725/726726 compare and audit
+PCG1e-6/1e-4/1e-3/1e-2 with Newton fixed and otherwise identical short-window
+physics/timing. All four pass all3 keyframes. Measured window seconds are
+59.888/50.542/47.493/34.953, each n1. PCG1e-2 uses500367 total inner iterations
+versus1008832 at1e-6, with2221 versus1285 Newton iterations. Its maximum common
+tangent-field contrast is4.949e-5 and maximum physical finger-force contrast
+2.606e-5 against the same stricter candidate. All exact fields, residuals,
+iterations and receipts are in the
+[fixed-Newton PCG packet](../evidence/20261018-qipc-reference/short-window-pcg-v1/README.md).
+These results support1e-2 as the next validation candidate, subject to repeats
+and capped/full-grasp controls. They are separate from the frozen11-run packet.
+A passing short window does not
 qualify complete grasps, capped coupling, spatial/contact uncertainty or a
 primary sparse DPR/SCR/Shell cost recommendation.
 
