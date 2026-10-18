@@ -154,6 +154,7 @@ def main():
     parser.add_argument("--friction-override", type=float)
     parser.add_argument("--energy", choices=("snh", "hencky"), default="snh")
     parser.add_argument("--initial-contact-audit", action="store_true")
+    parser.add_argument("--checkpoint-interval", type=float, default=0.0)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -204,6 +205,10 @@ def main():
     assert vertices[:, 2].min() > 0, "Authored initial egg intersects the unchanged plane"
     ticks_per_control = round(0.01 / config.dt)
     recording_stride = round(args.record_interval / config.dt)
+    checkpoint_stride = round(args.checkpoint_interval / config.dt)
+    assert args.checkpoint_interval == 0 or (
+        checkpoint_stride > 0 and abs(checkpoint_stride * config.dt - args.checkpoint_interval) < 1e-12
+    )
     steps = round(args.duration / config.dt)
     assert ticks_per_control > 0 and np.isclose(ticks_per_control * config.dt, 0.01)
     assert recording_stride > 0 and np.isclose(recording_stride * config.dt, args.record_interval)
@@ -431,6 +436,28 @@ def main():
                     )
                 if failed:
                     break
+                if checkpoint_stride and (step + 1) % checkpoint_stride == 0:
+                    checkpoint = args.output / "native-checkpoints" / f"step{step + 1:06d}"
+                    scene.workspace = checkpoint
+                    native_path = scene.dump()
+                    np.savez_compressed(
+                        checkpoint / "controller.npz",
+                        q=servo.q.cpu().numpy(),
+                        velocity=servo.velocity.cpu().numpy(),
+                        absolute_next_step=step + 1,
+                    )
+                    write_json(
+                        checkpoint / "checkpoint.json",
+                        {
+                            "native": file_id(native_path),
+                            "controller": file_id(checkpoint / "controller.npz"),
+                            "inputs": file_id(args.output / "inputs.json"),
+                            "absolute_next_step": step + 1,
+                            "time_s": (step + 1) * config.dt,
+                            "reset_epoch": resets,
+                            "scope": "Actual public Scene.dump and explicit Python servo state. A checkpoint is not a completed history or a qualification claim.",
+                        },
+                    )
             completed = count == steps and invalid == 0
         finally:
             if not completed:

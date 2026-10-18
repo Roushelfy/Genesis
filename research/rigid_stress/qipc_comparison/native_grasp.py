@@ -29,10 +29,13 @@ def main():
     parser.add_argument("--sim-dt", type=float, default=0.01)
     parser.add_argument("--tracking-damping", type=float, default=1e10)
     parser.add_argument("--record-every", type=int, default=1)
+    parser.add_argument("--control-interval", type=float, default=0.01)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     assert args.steps > 0 and args.record_every > 0
-    assert args.motion is not None or args.sim_dt == 0.01
+    control_stride = round(args.control_interval / args.sim_dt)
+    assert control_stride > 0 and abs(control_stride * args.sim_dt - args.control_interval) < 1e-12
+    assert args.control_interval == 0.01
     args.output.mkdir(parents=True, exist_ok=False)
     frames = args.output / "frames"
     frames.mkdir()
@@ -75,12 +78,14 @@ def main():
             "effective_options": workload.link.stress_options.model_dump(mode="json"),
             "dt": args.sim_dt,
             "substeps": args.substeps,
+            "control_interval_s": args.control_interval,
+            "control_stride_scene_steps": control_stride,
             "precision": args.precision,
             "setup_seconds": perf_counter() - started,
             "protocol": "shared prescribed motion" if motion is not None else "original capped-control schedule",
             "prescribed_motion": motion.identity() if motion is not None else None,
             "stress_frame": "authored link frame",
-            "field_measure": "linear elastic tensor, Voigt xx yy zz xy xz yz; last physical substep per control tick",
+            "field_measure": "linear elastic tensor, Voigt xx yy zz xy xz yz; last physical substep per scene step. One-substep runs retain every physical-step peak state; a multi-substep final field cannot be called its interior peak field.",
             "scope": "intrusive full-field/force history; excluded from primary timing",
         },
     )
@@ -92,10 +97,19 @@ def main():
     invalid = 0
     peak = -np.inf
     principal_peak = -np.inf
+    control_force_sum = np.zeros(3)
+    control_moment_sum = np.zeros(3)
     with (args.output / "steps.jsonl").open("w", buffering=1) as journal:
         try:
             for step in range(args.steps):
-                phase = motion.advance(workload, step, True) if motion is not None else controller_step(workload, False)
+                if motion is not None:
+                    phase = motion.advance(workload, step, True)
+                elif control_stride == 1:
+                    phase = controller_step(workload, False)
+                else:
+                    if step % control_stride == 0:
+                        phase = controller_step(workload, False, advance=False)
+                    workload.scene.step()
                 stress, vm = workload.link.get_stress_field(copy=False)
                 stress, vm = tensor_to_array(stress)[0], tensor_to_array(vm)[0]
                 contacts = workload.egg.get_contacts(is_padded=False)
@@ -104,6 +118,8 @@ def main():
                 egg_is_a = contacts["link_a"] == workload.link.idx
                 forces = np.where(egg_is_a[:, None], contacts["force_a"], contacts["force_b"])[valid]
                 points = contacts["position"][valid]
+                control_force_sum += forces.sum(axis=0)
+                control_moment_sum += np.cross(points, forces).sum(axis=0)
                 finite = bool(np.isfinite(stress).all() and np.isfinite(vm).all())
                 principal = np.linalg.eigvalsh(voigt_tensor(stress))[..., -1].max().item() if finite else None
                 count = qd_to_numpy(entry.state.invalid_steps, transpose=True) - invalid_initial
@@ -160,6 +176,16 @@ def main():
                 }
                 if motion is not None:
                     row.update(motion.metrics(workload.robot, step))
+                elif args.substeps == 1 and (step + 1) % control_stride == 0:
+                    row.update(
+                        contact_average_force_over_control_interval_n=(control_force_sum / control_stride).tolist(),
+                        contact_average_moment_world_origin_over_control_interval_nm=(
+                            control_moment_sum / control_stride
+                        ).tolist(),
+                        control_force_scope="Average of actual end-of-physical-step contact forces and physical moments; never final point times accumulated force",
+                    )
+                    control_force_sum.fill(0)
+                    control_moment_sum.fill(0)
                 executed += 1
                 journal.write(json.dumps(row, allow_nan=False) + "\n")
                 if not finite:

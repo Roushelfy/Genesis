@@ -129,8 +129,23 @@ Use the independent CPU environment for replay. It solves measured spatial
 contact minus acceleration/gravity loads with independent P1/P2 elasticity.
 P2 transfer preserves virtual work, force and undeformed moment. The output
 retains balance correction and deformed-coordinate moment differences. This
-is the resolved-load elastic/discretization layer; it does not yet implement
-compression to the rigid feature's point-wrench information.
+is the resolved-load elastic/discretization layer. Subsequent`contact_packets`
+and`native_reference_replay`workers separately measure compression to the rigid
+feature's point-wrench information:
+
+```bash
+python -m research.rigid_stress.qipc_comparison.contact_packets \
+  --reference /ABS/ORIGINAL-MAIN-PRESCRIBED/HISTORY --output /ABS/PACKETS
+python -m research.rigid_stress.qipc_comparison.native_reference_replay \
+  --packets /ABS/PACKETS --oracle /ABS/SPATIAL/REPLAY --columns /ABS/columns.npz \
+  --route dpr --body-loads measured --output /ABS/POINT/REPLAY
+```
+
+The first worker uses pinned QIPC; the second uses pinned native Genesis.
+Run core/measured, DPR/SCR measured and DPR/SCR rigid-body inertia separately.
+Retain rejected packets and inferred source provenance. Physical point-wrench
+agreement does not make traction fields equivalent. `audit_replay`checks
+physical compression and plane-gradient units without summing layer error norms.
 
 `compare_fields` matches actual saved times, including the different filename
 cadences of capped and prescribed workers. It records missing/off-grid reference
@@ -153,3 +168,44 @@ failures must stay in the tables. Do not silently relax force/moment checks,
 reuse old rates as new results, or label numerical completion as physical
 reference qualification. Detailed profiles, additional lifecycle checks and the
 final figures/report are still required by the active goal.
+
+## Lifecycle, raw peaks and activation
+
+`qipc_comparison.lifecycle`uses the common rollout parser and original10ms
+capped controller. It measures B1/B2, duplicate inputs, fresh processes, three
+restores and partial-restore continuation with separate selected controller
+clocks. Native immediate full-field invalidation is expected; evaluate the
+continuation. `audit_lifecycle`retains all differences and separate wall inputs.
+
+`qipc_lifecycle`uses actual QIPC Scene.dump/recover/reset plus explicit Python
+servo state. Its bounded contact-onset scope is not a complete near-slip batch
+qualification. Capped histories accept`--checkpoint-interval 0.5`and retain
+native state, servo q/velocity, absolute next step and hashes under
+`native-checkpoints`. A checkpoint/prefix is not completion. Slurm may forbid
+extending a running allocation; longer independent repeats keep earlier
+attempts and true process statuses intact.
+
+The native physical-step observer keeps10ms capped targets/radius and1ms physics,
+retaining interior peak fields and10ms averaged forces/physical moments.
+`compare_cadence`must validate it against the original ten-substep scene. The
+130-observation DPR/SCR pilot passes; Shell does not and stays a separate variant.
+For actual Shell interior peaks, use PR22 plus[the combined read-only substep
+patch](../shell_comparison/pr22-substep-peaks.patch)with
+`--instrumented --substep-peaks`. It reads fields after unchanged integration
+and requires every physical step. The200-step pilot passes. Moment-of-impulse
+uses actual substep points. A final point times accumulated force is not a
+moment measurement. `--bank-coupling-friction`materializes0.6 times the bank ratio
+for one homogeneous cohort before validating it; use separate Shell cohorts
+for different coefficients.
+
+`cold_activation`uses a fresh task group/cache for each configuration and records
+initialization, build and first/second steps. Imports are outside that timer;
+no shared cache is reset. Warm full/max timing, memory polling and profiles keep
+separate scopes in`audit_cost`and`tables`.
+
+`figures`and`tables`consume measured receipts and common comparisons. Their
+[contracts](QIPC_REFERENCE_FIGURE_SPEC.md)and[captions](QIPC_REFERENCE_FIGURE_CAPTIONS.md)
+identify actual evidence and open qualifications. Use the existing
+`shell_comparison.figure_qa`with the data-side PyMuPDF library, then inspect
+rendered previews. Editable publication figures may stay in Git; large raw
+histories, traces, caches and binaries remain in the established data directory.

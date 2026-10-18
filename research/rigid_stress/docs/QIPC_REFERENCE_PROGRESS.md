@@ -342,6 +342,75 @@ are not used as primary throughput samples. Additional surface refinement is
 registered because the existing prescribed force/field histories still show
 material spatial uncertainty. All completion gates below remain open as stated.
 
+## Complete six-second controls and new audits
+
+The16-epsilon original-main SNH diagnostic726298 completes6000/6000 physical
+steps at1ms, nonlinear velocity tolerance1e-9 and linear tolerance1e-8. Original
+unmodified-main Hencky variants726273 atDBC1e6/1e7 and looser nonlinear stopping
+also complete6s. Neither completion closes the reference gate. The same-surface
+wall2/wall4 comparison spans600 observations and reaches232% common-column
+discrepancy; the1e-8/1e-9 nonlinear tolerance contrast reaches0.921%. The dynamic
+Hencky contrast also changes stopping and is not a pure constitutive ablation.
+`reference-pairs-v1`726380 retains exact union-column integrals, boundary fields,
+net wrench differences and identical-deformation constitutive diagnostics.
+Independent surface2/surface3 wall2 runs726365 continue alongside the existing
+surface2 wall4/wall8, dt, contact-band and friction-regularization histories.
+
+All600 prescribed observations now have actual three-way common tensor,
+membrane/bending and inner/outer comparisons in`strict-complete-fields-v1`
+726378. The maps keep raw global peaks separate. Full spatial load replay726377,
+normal query/compressed packets726376 and production Quadrants replay726392
+cover the complete6s history. The core has0 rejected frames, while the derived
+DPR/SCR point-only interfaces reject15/397 of600 frames; these are interface
+ablations, not native-collider rollout failure rates. The116-frame unit control
+has normal-force discrepancy6.93e-11 relative; physical force/moment compression
+defects are3.29e-12N/6.52e-15Nm. Actual robot-link reactions are now retained from
+recorded global gradients, with physical points/moments rather than inferred
+counterbody assignment. Replays continue to label their source unqualified.
+
+New near-slip lifecycle726370 uses tick427 and61-tick continuation, three public
+restores, partial restores with the selected controller clock aligned, B1/B2
+and duplicate/fresh processes. DPR/SCR continuation position changes are about
+2.08e-10m and stress changes0.00434Pa; immediate native full-field invalidation
+is intentional and continuation restores finite output. Stock shell shows
+approximately0.68mm restore-continuation position and574MPa tensor differences;
+its duplicated inputs differ by13.2cm. Geometry-only wall inputs remain separate,
+including their own lifecycle record. Capped QIPC public dump/recover and full
+reset controls726402 use actual native checkpoints plus explicit Python servo
+state, with no trajectory-snapshot reconstruction of friction history.
+
+Mass-matched shell pilots726350 and all three complete6s histories726362 finish.
+New per-case shell submission726387 exits before physics because a legacy
+friction assertion preceded the explicit bank-coefficient materialization;
+`wall-capped-v1/correction.json` preserves the error. The check is now after
+construction, and fresh20-tick pilots726407 pass. Read-only impulse observers
+also accumulate physical moment of impulse and exact contact-phase kinetic work,
+instead of multiplying an accumulated impulse by a final point. Stock thickness
+and physics remain a separate baseline, and finite wall variants are not thereby
+reference-qualified.
+
+The physical-step observer pilot726405/726416 keeps10ms capped targets and1ms
+physics. Native DPR/SCR match130 common observations within the declared pose/
+field tolerances; shell fails that equivalence and stays a separate variant.
+Full native physical-step histories726425 retain the actual interior raw peak
+fields and control-interval average forces/moments, pending full equivalence.
+A new isolated PR22 substep-peak observer adds only a callback after its unchanged
+integration. Its combined[read-only patch](../shell_comparison/pr22-substep-peaks.patch)
+is separate from the original diagnostic patch. Pilot726429 must record all200
+physical steps before full capped shell peak histories use this source.
+
+New cost audit726397 preserves primary, memory and trace scopes and failures.
+AtB4096,1ms physics/10substeps, full DPR/tuned DPR/SCR currently measure
+27417/30558/10937 aggregate10ms control env-step/s. These are FP64/common-host-
+controller measurements, not the earlier FP32/native-controller workload.
+Fresh group/cache activation726419 separately measures initialization, build
+and first/second step; normal timed configurations can reuse campaign caches.
+Three figures726400 follow the[figure contracts](QIPC_REFERENCE_FIGURE_SPEC.md),
+retain editable SVG/PDF,450dpi PNG, data and150dpi previews. All pass rendered
+text checks, and export QA726404 verifies183mm widths, embedded non-Type3 fonts
+and editable SVG text. The actual previews were visually inspected. They remain
+explicitly diagnostic where reference qualification is open.
+
 ## Completion gates
 
 1. Exact-energy stress/parameter and independent small-control validation.

@@ -14,7 +14,7 @@ from .common import synchronize
 from .peak_capture import PeakCapture
 
 
-def controller_step(workload, shell_model):
+def controller_step(workload, shell_model, advance=True):
     ids = np.flatnonzero((workload.tick > workload.delays) & ((workload.tick - workload.delays) % 600 == 0))
     if len(ids):
         workload.reset(ids)
@@ -38,9 +38,10 @@ def controller_step(workload, shell_model):
     if not shell_model and workload.stress:
         radius = workload.base_radius * (1.0 + 0.15 * torch.sin(2.0 * torch.pi * phase))
         workload.link.set_stress_contact_radius(radius[:, None])
-    workload.scene.step()
-    if shell_model:
-        workload.observation.update(workload.scene.sim.shell_solver)
+    if advance:
+        workload.scene.step()
+        if shell_model:
+            workload.observation.update(workload.scene.sim.shell_solver)
     workload.tick += 1
     return phase
 
@@ -256,6 +257,7 @@ def make_parser():
     parser.add_argument("--coarse-interval", type=int, default=10)
     parser.add_argument("--damping", type=float, default=0.0)
     parser.add_argument("--coupling-friction", type=float, default=0.6)
+    parser.add_argument("--bank-coupling-friction", action="store_true")
     parser.add_argument("--wall-volume-input", type=Path)
     parser.add_argument("--warmup", type=int, default=60)
     parser.add_argument("--steps", type=int, default=900)

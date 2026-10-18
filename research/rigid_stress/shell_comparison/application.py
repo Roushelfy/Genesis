@@ -25,6 +25,11 @@ from .wall_input import ShellWallInput
 
 class ShellEgg:
     def __init__(self, args):
+        if args.bank_coupling_friction:
+            with np.load(args.conditions) as bank:
+                coefficients = 0.6 * bank["friction"][:, 0]
+            assert np.all(coefficients == coefficients[0]), "Shell coupling friction is global; use one cohort"
+            args.coupling_friction = coefficients[0].item()
         self.n_envs = args.envs
         self.tick = 0
         self.reset_count = 0

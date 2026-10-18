@@ -72,6 +72,8 @@ def begin_step(
     caps: qd.types.ndarray(ndim=1),
     residuals: qd.types.ndarray(ndim=2),
     impulses: qd.types.ndarray(ndim=3),
+    moments: qd.types.ndarray(ndim=3),
+    work: qd.types.ndarray(ndim=2),
 ):
     for i_b in range(counts.shape[0]):
         counts[i_b] = 0
@@ -80,6 +82,9 @@ def begin_step(
             residuals[i_b, k] = 0.0
     for i_v, i_b, k in qd.ndrange(impulses.shape[0], impulses.shape[1], 3):
         impulses[i_v, i_b, k] = 0.0
+        moments[i_v, i_b, k] = 0.0
+        if k == 0:
+            work[i_v, i_b] = 0.0
 
 
 @qd.kernel
@@ -139,12 +144,21 @@ def accumulate_contact_impulses(
     velocities: qd.types.ndarray(ndim=3),
     impulses: qd.types.ndarray(ndim=3),
     points: qd.types.ndarray(ndim=3),
+    moments: qd.types.ndarray(ndim=3),
+    work: qd.types.ndarray(ndim=2),
     state: array_class.ShellState,
     scratch: array_class.ShellScratch,
 ):
-    for i_v, i_b, k in qd.ndrange(velocities.shape[0], velocities.shape[1], 3):
-        impulses[i_v, i_b, k] += scratch.verts_mass[i_v, i_b] * (state.verts_vel[i_v, i_b][k] - velocities[i_v, i_b, k])
-        points[i_v, i_b, k] = state.verts_pos[i_v, i_b][k]
+    for i_v, i_b in qd.ndrange(velocities.shape[0], velocities.shape[1]):
+        old = qd.Vector([velocities[i_v, i_b, k] for k in range(3)])
+        new = state.verts_vel[i_v, i_b]
+        impulse = scratch.verts_mass[i_v, i_b] * (new - old)
+        moment = state.verts_pos[i_v, i_b].cross(impulse)
+        work[i_v, i_b] += impulse.dot((new + old) * 0.5)
+        for k in qd.static(range(3)):
+            impulses[i_v, i_b, k] += impulse[k]
+            points[i_v, i_b, k] = state.verts_pos[i_v, i_b][k]
+            moments[i_v, i_b, k] += moment[k]
 
 
 @dataclass
@@ -156,6 +170,8 @@ class DiagnosticBuffers:
     velocities: torch.Tensor
     impulses: torch.Tensor
     points: torch.Tensor
+    moments: torch.Tensor
+    work: torch.Tensor
     true_product: object
 
     @classmethod
@@ -169,14 +185,17 @@ class DiagnosticBuffers:
             torch.empty((n_verts, n_envs, 3), dtype=gs.tc_float, device=gs.device),
             torch.zeros((n_verts, n_envs, 3), dtype=gs.tc_float, device=gs.device),
             torch.empty((n_verts, n_envs, 3), dtype=gs.tc_float, device=gs.device),
+            torch.zeros((n_verts, n_envs, 3), dtype=gs.tc_float, device=gs.device),
+            torch.zeros((n_verts, n_envs), dtype=gs.tc_float, device=gs.device),
             array_class.V(dtype=gs.qd_vec3, shape=(n_verts, n_envs)),
         )
 
     def clear(self):
-        begin_step(self.counts, self.caps, self.residuals, self.impulses)
+        begin_step(self.counts, self.caps, self.residuals, self.impulses, self.moments, self.work)
 
 
 ACTIVE: DiagnosticBuffers | None = None
+SUBSTEP_OBSERVER = None
 
 
 def configure(solver):
@@ -210,5 +229,16 @@ def before_contact(solver):
 def after_contact(solver):
     if ACTIVE is not None:
         accumulate_contact_impulses(
-            ACTIVE.velocities, ACTIVE.impulses, ACTIVE.points, solver.shell_state, solver.shell_scratch
+            ACTIVE.velocities,
+            ACTIVE.impulses,
+            ACTIVE.points,
+            ACTIVE.moments,
+            ACTIVE.work,
+            solver.shell_state,
+            solver.shell_scratch,
         )
+
+
+def after_shell_substep(solver):
+    if SUBSTEP_OBSERVER is not None:
+        SUBSTEP_OBSERVER(solver)

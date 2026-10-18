@@ -72,6 +72,7 @@ def compress(points, forces, adjacency, length):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reference", type=Path, required=True)
+    parser.add_argument("--layout-only", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -118,6 +119,28 @@ def main():
     np.testing.assert_array_equal(manager.body_id_view()[: len(owners)].cpu().numpy(), owners)
     local = scene.rigid_body.x_bar.cpu().numpy() - scene.rigid_body.com_local.cpu().numpy()[owners]
     fem_global = observer.fem_global.cpu().numpy()
+    body_indices = np.array([slot.geometry.meta["rigid_body_offset"].cpu()[0].item() for slot in robot.links])
+    assert np.array_equal(np.sort(body_indices), np.arange(scene.rigid_body.n_bodies))
+    body_names = np.array(robot.names)[np.argsort(body_indices)]
+    np.savez_compressed(
+        args.output / "layout.npz",
+        rigid_vertex_public_owner=owners,
+        rigid_local_points_m=local,
+        body_names=body_names,
+    )
+    if args.layout_only:
+        write_json(
+            args.output / "result.json",
+            {
+                "kind": "verified-original-main-rigid-vertex-layout",
+                "identity": runtime_identity(),
+                "source": file_id(args.reference / "inputs.json"),
+                "layout": file_id(args.output / "layout.npz"),
+                "body_names": body_names.tolist(),
+                "scope": "Verified original-main rigid prefix and public physical owners; no simulation step or inferred KKT proxy mapping.",
+            },
+        )
+        return
     with (args.output / "steps.jsonl").open("w", buffering=1) as journal:
         for path in sorted((args.reference / "frames").glob("step*.npz")):
             with np.load(path) as saved:
@@ -136,6 +159,17 @@ def main():
                 )
                 query[fem_global] = position
                 time, step = saved["time_s"].item(), saved["step"].item()
+                active = saved["active_global_ids"]
+                rigid_active = active < len(owners)
+                public_owner = owners[active[rigid_active]]
+                rigid_force = np.zeros((scene.rigid_body.n_bodies, 3))
+                rigid_moment = np.zeros_like(rigid_force)
+                recorded_force = saved["active_global_forces_n"][rigid_active]
+                recorded_point = saved["active_global_positions_m"][rigid_active]
+                np.add.at(rigid_force, public_owner, recorded_force)
+                np.add.at(rigid_moment, public_owner, np.cross(recorded_point, recorded_force))
+                rigid_com_moment = rigid_moment - np.cross(saved["actual_robot_com_world_m"], rigid_force)
+                implied_floor_reaction = -saved["active_global_forces_n"].sum(axis=0)
             query = torch.as_tensor(query, device="cuda")
             normal_force, normal_bound = barrier_forces(scene, query, config.dt)
             normal_force = normal_force[observer.fem_global].cpu().numpy() @ rotation
@@ -173,6 +207,10 @@ def main():
                 omega_material_rad_per_s=omega,
                 friction=config.friction,
                 radius_m=base_radius * (1 + 0.15 * np.sin(2 * np.pi * phase)),
+                actual_robot_contact_force_world_n=rigid_force,
+                actual_robot_contact_moment_world_origin_nm=rigid_moment,
+                actual_robot_contact_moment_about_com_nm=rigid_com_moment,
+                implied_analytic_floor_reaction_world_n=implied_floor_reaction,
             )
             journal.write(
                 json.dumps(
