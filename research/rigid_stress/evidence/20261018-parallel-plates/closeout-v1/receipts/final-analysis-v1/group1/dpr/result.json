@@ -1,0 +1,99 @@
+{
+  "kind": "parallel-plate-pilot-admission",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-115",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "727081",
+      "SLURM_ARRAY_JOB_ID": "727079",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-ea9a1fb0-0ea2-7392-95c1-64a5279178e1, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "settling_window_s": 0.05,
+  "runs": [
+    {
+      "label": "dpr-shear",
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/shear-native-shell-v1/group0/dpr",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/shear-native-shell-v1/group0/dpr/result.json",
+        "bytes": 1635,
+        "sha256": "8d2cf8f9f11b5d87ef4aefd4359c1a5f4a0e70ef7842074465898d402bb79cb9"
+      },
+      "source_input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "bytes": 34052,
+        "sha256": "40256c5711abb9e9e9f313adbb41944efb8511ae409538001a75d019e88728ea"
+      },
+      "completed": true,
+      "pcg_cap_steps_recorded": null,
+      "pcg_cap_observations_lower_bound": 0,
+      "load_levels": [
+        {
+          "load_level": 0,
+          "command_force_n": 0.1,
+          "endpoint_s": 2.5,
+          "frame": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/shear-native-shell-v1/group0/dpr/frames/level0.npz",
+            "bytes": 141898,
+            "sha256": "b2dc3ef7ff40cde809b80db2fa666e244c36f17d4081dbaeeac6904deea09218"
+          },
+          "requested_endpoint_present": true,
+          "settling_window_observations": 6,
+          "observations_with_complete_equilibrium_metrics": 0,
+          "mechanical_window_passed": true,
+          "endpoint_equation_passed": true,
+          "pcg_caps_observed_in_window": 0,
+          "entire_window_equilibrium_passed": false,
+          "last_observation": {
+            "step": 2500,
+            "time_s": 2.5,
+            "level": 0,
+            "within_level_step": 2500,
+            "command_force_n": 0.1,
+            "plate_speed_m_per_s": 3.4010195924605905e-09,
+            "compression_coordinate_m": 0.0003831842123491953,
+            "plate_separation_m": 0.0596568157876508,
+            "shear_target_m": 1e-05,
+            "shear_coordinate_m": 1.0000167761255013e-05,
+            "empty_analytic_position_error_m": null,
+            "empty_analytic_velocity_error_m_per_s": null,
+            "upper_reaction_n": 0.09999983092769066,
+            "lower_reaction_n": 0.09999983098830204,
+            "upper_tangential_reaction_n": [
+              1.6776148513153845e-05,
+              6.293621695628338e-19
+            ],
+            "lower_tangential_reaction_n": [
+              -1.6776148509245713e-05,
+              -6.293794816345349e-19
+            ],
+            "egg_inertia_resultant_norm_n": 6.061135881810752e-11,
+            "egg_translational_kinetic_j": 9.76008465475071e-21,
+            "egg_kinetic_upper_bound_j": 7.598114280610195e-19,
+            "egg_angular_velocity_rad_per_s": [
+              -3.816159887602815e-20,
+              4.573286426068556e-07,
+              -1.6062522071237565e-20
+            ],
+            "maximum_contact_friction": 0.3,
+            "contact_tangential_force_sum_norm_n": 3.355229702239956e-05,
+            "contact_count": 2,
+            "raw_vm_peak_pa": 22679.23391415867,
+            "equation_residual_relative": 2.9426990503026725e-11,
+            "invalid_stress_steps": 0
+          }
+        }
+      ],
+      "admitted_equilibrium_and_solver_exits": false,
+      "mechanical_equilibrium_with_endpoint_equation": true,
+      "reference_qualified": false
+    }
+  ],
+  "same_mesh_solid_field_contrasts": [],
+  "scope": "Admission checks and separate inner/outer-tolerance contrasts. No physical reference qualification from numerical contrasts alone; spatial, timestep and contact uncertainty remain independent gates."
+}

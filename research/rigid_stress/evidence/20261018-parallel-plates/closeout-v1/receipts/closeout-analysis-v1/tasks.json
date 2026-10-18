@@ -1,0 +1,82 @@
+[
+  [
+    {
+      "name": "audit",
+      "module": "research.rigid_stress.qipc_comparison.plate_audit",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/shear-reference-v1/group0/qipc",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/contact-band-v1/group0/band-half",
+        "--labels",
+        "shear",
+        "band-half"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shear-fields",
+      "module": "research.rigid_stress.qipc_comparison.plate_fields",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/shear-reference-v1/group0/qipc",
+        "--candidates",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/shear-native-shell-v1/group0/dpr",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/shear-native-shell-v1/group1/scr",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/shear-native-shell-v1/group2/shell",
+        "--labels",
+        "dpr",
+        "scr",
+        "shell",
+        "--kinds",
+        "native",
+        "native",
+        "shell",
+        "--surface-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "band-fields",
+      "module": "research.rigid_stress.qipc_comparison.plate_fields",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/contact-entry-v1/group1/off-diagonal",
+        "--candidates",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/contact-band-v1/group0/band-half",
+        "--labels",
+        "band-half",
+        "--kinds",
+        "solid",
+        "--surface-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "normal-fields",
+      "module": "research.rigid_stress.qipc_comparison.plate_fields",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/reference-loads-v1/group0/three-loads",
+        "--candidates",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v2/group0/dpr",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v2/group1/scr",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/shell-operator-v1/group0/tight",
+        "--labels",
+        "dpr",
+        "scr",
+        "shell",
+        "--kinds",
+        "native",
+        "native",
+        "shell",
+        "--surface-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz"
+      ]
+    }
+  ]
+]

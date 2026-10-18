@@ -14,7 +14,7 @@ from genesis.utils import array_class
 from ..shell_comparison import diagnostics
 from ..shell_comparison.observation import FullField
 from .artifacts import file_id, runtime_identity, write_json
-from .plates import force_history, parser, plate_xml
+from .plates import configure_native_plate, control_native_plate, force_history, parser, plate_xml, shear_target
 
 
 def main():
@@ -24,6 +24,7 @@ def main():
     cli.add_argument("--tolerance", type=float, default=1e-4)
     cli.add_argument("--coupling-softness", type=float, default=0.002)
     cli.add_argument("--shell-damping", type=float, default=0.0)
+    cli.add_argument("--friction", type=float, default=0.0)
     args = cli.parse_args()
     assert not args.empty
     args.output.mkdir(parents=True, exist_ok=False)
@@ -31,7 +32,7 @@ def main():
     with np.load(args.mesh) as mesh:
         vertices = mesh["vertices"]
     lower, upper = vertices[:, 2].min() - args.clearance, vertices[:, 2].max() + args.clearance
-    xml = plate_xml(lower, upper, args.plate_offset_x)
+    xml = plate_xml(lower, upper, args.plate_offset_x, bool(args.shear_distance))
     (args.output / "plates.xml").write_text(xml)
     gs.init(backend=gs.cuda, precision="64", logging_level="warning")
     scene = gs.Scene(
@@ -59,7 +60,7 @@ def main():
         ),
         material=gs.materials.Rigid(
             friction=0.01,
-            coup_friction=0.0,
+            coup_friction=args.friction,
             coup_softness=args.coupling_softness,
         ),
     )
@@ -78,9 +79,7 @@ def main():
     )
     started = perf_counter()
     scene.build(n_envs=1)
-    plate.set_dofs_kp(0.0)
-    plate.set_dofs_kv(0.0)
-    plate.set_dofs_damping(args.damping)
+    configure_native_plate(plate, args)
     for name, height in (("lower", lower - 0.005), ("upper", upper + 0.005)):
         actual = plate.get_link(name).get_pos()[0]
         np.testing.assert_allclose(tensor_to_array(actual), [args.plate_offset_x, 0, height], rtol=0, atol=1e-12)
@@ -124,7 +123,7 @@ def main():
         try:
             for step, (level, within, force, endpoint) in enumerate(force_history(args)):
                 previous_velocity = qd_to_numpy(solver.shell_state.verts_vel, transpose=True)[0]
-                plate.control_dofs_force(force)
+                control_native_plate(plate, args, force, step + 1)
                 diagnostics.ACTIVE.clear()
                 scene.step()
                 scene.rigid_solver.check_errno()
@@ -151,8 +150,12 @@ def main():
                     "plate_speed_m_per_s": speed,
                     "compression_coordinate_m": q,
                     "plate_separation_m": upper - lower - q,
+                    "shear_target_m": shear_target(args, step + 1),
+                    "shear_coordinate_m": plate.get_dofs_position()[0, 1].item() if args.shear_distance else 0.0,
                     "upper_reaction_n": -forces[from_upper, 2].sum().item(),
                     "lower_reaction_n": forces[~from_upper, 2].sum().item(),
+                    "upper_tangential_reaction_n": (-forces[from_upper, :2].sum(axis=0)).tolist(),
+                    "lower_tangential_reaction_n": (-forces[~from_upper, :2].sum(axis=0)).tolist(),
                     "egg_kinetic_j": (0.5 * masses[:, None] * velocity**2).sum().item(),
                     "egg_inertia_resultant_norm_n": np.linalg.norm(
                         (masses[:, None] * (velocity - previous_velocity) / args.dt).sum(axis=0)

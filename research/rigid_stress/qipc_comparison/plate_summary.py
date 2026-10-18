@@ -2,6 +2,8 @@
 
 import argparse
 import json
+import math
+import xml.etree.ElementTree as ET
 from pathlib import Path
 from statistics import median
 
@@ -17,6 +19,30 @@ def main():
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     costs, profiles, stability = [], [], []
+    reference_run = args.root / "reference-loads-v1/group0/three-loads"
+    with np.load(reference_run / "rest.npz") as mesh:
+        vertices, tets = mesh["vertices"], mesh["tetrahedra"]
+        solid_volume = np.abs(np.linalg.det(vertices[tets[:, 1:]] - vertices[tets[:, :1]])).sum() / 6
+    ref_start = json.loads((reference_run / "start.json").read_text())
+    native_start = json.loads((args.root / "native-equilibria-v2/group0/dpr/start.json").read_text())
+    urdf = Path(native_start["args"]["assets"]) / "egg_shell.urdf"
+    native_mass = float(ET.parse(urdf).getroot().find("link/inertial/mass").attrib["value"])
+    shell_start_path = next((args.root / "shell-operator-v1/group0").glob("*/start.json"))
+    shell_start = json.loads(shell_start_path.read_text())
+    with np.load(shell_start_path.parent / "rest.npz") as mesh:
+        shell_mass = mesh["masses_kg"].sum().item()
+    materials = {
+        "solid_volume_m3": float(solid_volume),
+        "solid_density_kg_per_m3": ref_start["config"]["density"],
+        "solid_mass_kg": float(solid_volume * ref_start["config"]["density"]),
+        "native_authored_rigid_mass_kg": native_mass,
+        "native_urdf": file_id(urdf),
+        "shell_nodal_mass_kg": shell_mass,
+        "shell_nominal_thickness_m": 0.0005,
+        "shell_contact_softness_m": shell_start["args"]["coupling_softness"],
+        "qipc_contact_d_hat_m": ref_start["config"]["d_hat"],
+        "scope": "Exact input-domain volume/mass versus authored rigid inertia and original nominal-thickness Shell nodal mass. These are disclosed baseline differences, not a mass-calibrated Shell variant.",
+    }
     for campaign in ("native-cost-v1", "reference-cost-v1"):
         for path in sorted((args.root / campaign).glob("group*/*/cost.json")):
             data = json.loads(path.read_text())
@@ -40,7 +66,12 @@ def main():
                     "physical_accuracy_qualified": False,
                 }
             )
-    for path in sorted((args.root / "native-profile-v1").glob("group*/*/profile.json")):
+    profile_paths = [
+        path
+        for campaign in ("native-profile-v1", "reference-profile-v1")
+        for path in (args.root / campaign).glob("group*/*/profile.json")
+    ]
+    for path in sorted(profile_paths):
         data = json.loads(path.read_text())
         groups = {}
         for name, row in data["kernel_totals"].items():
@@ -53,6 +84,16 @@ def main():
                 group = "rigid_constraint_solve"
             elif any(token in name for token in ("substep_pre", "substep_post", "forward_kinematics")):
                 group = "mechanics_and_kinematics"
+            elif path.parent.name == "qipc":
+                lowered = name.lower()
+                if any(token in lowered for token in ("pcg_", "mas_", "linear_system", "spmv")):
+                    group = "linear_solve_and_preconditioner"
+                elif "fem_elastic" in lowered:
+                    group = "elastic_assembly"
+                elif any(token in lowered for token in ("contact", "ccd", "cipc", "bvh", "et_query")):
+                    group = "contact_broadphase_barrier_and_ccd"
+                elif any(token in lowered for token in ("rigid_", "joint", "predict")):
+                    group = "rigid_guide_and_prediction"
             total = groups.setdefault(group, {"launches": 0, "gpu_duration_sum_ms": 0.0})
             total["launches"] += row["count"]
             total["gpu_duration_sum_ms"] += row["total_us"] / 1000
@@ -78,7 +119,12 @@ def main():
         repeated = []
         for index, row in enumerate(endpoints):
             previous = next(
-                (old for old in endpoints[:index] if old["command_force_n"] == row["command_force_n"]), None
+                (
+                    old
+                    for old in endpoints[:index]
+                    if math.isclose(old["command_force_n"], row["command_force_n"], rel_tol=0, abs_tol=1e-12)
+                ),
+                None,
             )
             if previous is None:
                 continue
@@ -118,6 +164,7 @@ def main():
             "costs": costs,
             "profiles": profiles,
             "native_stability": stability,
+            "material_and_mass_contract": materials,
             "reference_qualified": False,
             "scope": "Numerically/mechanically screened compute and stability diagnostics, separate from the unresolved contact-field accuracy qualification.",
         },

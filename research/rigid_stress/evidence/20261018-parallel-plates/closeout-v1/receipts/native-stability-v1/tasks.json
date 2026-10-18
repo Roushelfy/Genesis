@@ -1,0 +1,77 @@
+[
+  [
+    {
+      "name": "load-unload",
+      "module": "research.rigid_stress.qipc_comparison.plate_native",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--assets",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1",
+        "--loads",
+        "0.1",
+        "0.3",
+        "1",
+        "0.3",
+        "0.1",
+        "0",
+        "--hold",
+        "2",
+        "--clearance",
+        "2e-5",
+        "--plate-offset-x",
+        "0.003",
+        "--method",
+        "dpr"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "radius003",
+      "module": "research.rigid_stress.qipc_comparison.plate_native",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--assets",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1",
+        "--loads",
+        "0.1",
+        "--hold",
+        "2",
+        "--clearance",
+        "2e-5",
+        "--plate-offset-x",
+        "0.003",
+        "--method",
+        "dpr",
+        "--contact-radius",
+        "0.003"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "radius009",
+      "module": "research.rigid_stress.qipc_comparison.plate_native",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--assets",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1",
+        "--loads",
+        "0.1",
+        "--hold",
+        "2",
+        "--clearance",
+        "2e-5",
+        "--plate-offset-x",
+        "0.003",
+        "--method",
+        "dpr",
+        "--contact-radius",
+        "0.009"
+      ]
+    }
+  ]
+]

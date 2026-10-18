@@ -1,0 +1,88 @@
+{
+  "envs": 1,
+  "method": "qipc",
+  "samples": [
+    {
+      "repeat": -1,
+      "warmup": true,
+      "steps": 1,
+      "elapsed_seconds": 0.03711009002290666,
+      "aggregate_env_steps_per_second": 26.94684920954753,
+      "latency_ms_per_step": 37.11009002290666,
+      "synchronous_engine_seconds": 0.015323656960390508,
+      "sparse_observation_admission_seconds": 0.021456415008287877,
+      "pcg_cap_steps": 0,
+      "newton_cap_steps": 0,
+      "observations": [
+        {
+          "step": 1,
+          "upper_reaction_n": 3.108518112325241e-34,
+          "lower_reaction_n": 4.508841177318508e-31,
+          "plate_speed_m_per_s": -0.0,
+          "egg_inertia_resultant_norm_n": 1.2821904991373813e-14,
+          "egg_kinetic_j": 1.9738477665529827e-32,
+          "equation_residual_relative": 156772.05566608638,
+          "minimum_det_F": 0.9999999999999653,
+          "checks": {
+            "both_plate_reactions": true,
+            "plate_velocity": true,
+            "egg_inertial_resultant": true,
+            "egg_kinetic": true,
+            "equation_residual": false
+          }
+        }
+      ],
+      "all_observed_equilibria_passed": false
+    },
+    {
+      "repeat": 0,
+      "warmup": false,
+      "steps": 2,
+      "elapsed_seconds": 0.029170336027164012,
+      "aggregate_env_steps_per_second": 68.56280291517928,
+      "latency_ms_per_step": 14.585168013582006,
+      "synchronous_engine_seconds": 0.02196322800591588,
+      "sparse_observation_admission_seconds": 0.0066873939940705895,
+      "pcg_cap_steps": 0,
+      "newton_cap_steps": 0,
+      "observations": [
+        {
+          "step": 1,
+          "upper_reaction_n": 4.44781003913257e-32,
+          "lower_reaction_n": 7.605733567249809e-32,
+          "plate_speed_m_per_s": -0.0,
+          "egg_inertia_resultant_norm_n": 7.349316165806496e-15,
+          "egg_kinetic_j": 3.4155568787078825e-32,
+          "equation_residual_relative": 104022.25910904702,
+          "minimum_det_F": 0.99999999999997,
+          "checks": {
+            "both_plate_reactions": true,
+            "plate_velocity": true,
+            "egg_inertial_resultant": true,
+            "egg_kinetic": true,
+            "equation_residual": false
+          }
+        },
+        {
+          "step": 2,
+          "upper_reaction_n": 4.44781003913257e-32,
+          "lower_reaction_n": 7.605733567249808e-32,
+          "plate_speed_m_per_s": -0.0,
+          "egg_inertia_resultant_norm_n": 3.4913296185618876e-15,
+          "egg_kinetic_j": 3.749321956267273e-32,
+          "equation_residual_relative": 145409.0642017804,
+          "minimum_det_F": 0.9999999999999669,
+          "checks": {
+            "both_plate_reactions": true,
+            "plate_velocity": true,
+            "egg_inertial_resultant": true,
+            "egg_kinetic": true,
+            "equation_residual": false
+          }
+        }
+      ],
+      "all_observed_equilibria_passed": false
+    }
+  ],
+  "scope": "Warmed continuously held discrete plate contact; sparse complete stress/VM host transfer and mechanical/equation admission, per-step original solver/ET checks included. No frame file I/O. Engine and observer times are measured separately; this does not qualify unresolved continuum contact fields. PCG caps and failed observations remain explicit, not accepted speedups."
+}

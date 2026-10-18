@@ -1,0 +1,1591 @@
+{
+  "completed": true,
+  "steps_returned": 2100,
+  "elapsed_seconds_including_observation_IO": 19.411258962005377,
+  "last_observation": {
+    "step": 2100,
+    "time_s": 2.1,
+    "level": 0,
+    "within_level_step": 2100,
+    "command_force_n": 0.1,
+    "plate_speed_m_per_s": 1.9286399940272428e-08,
+    "compression_coordinate_m": 0.0003766684785169035,
+    "plate_separation_m": 0.05966333152148309,
+    "empty_analytic_position_error_m": null,
+    "empty_analytic_velocity_error_m_per_s": null,
+    "upper_reaction_n": 0.09999904120678944,
+    "lower_reaction_n": 0.0999990415615317,
+    "egg_inertia_resultant_norm_n": 3.547422636393854e-10,
+    "egg_translational_kinetic_j": 2.9335253036635674e-19,
+    "egg_kinetic_upper_bound_j": 2.9335253036635674e-19,
+    "egg_angular_velocity_rad_per_s": [
+      4.3402559149463356e-20,
+      -5.091111162968184e-20,
+      9.350778191784707e-36
+    ],
+    "maximum_contact_friction": 0.01,
+    "contact_tangential_force_sum_norm_n": 1.0933946967772317e-17,
+    "contact_count": 2,
+    "raw_vm_peak_pa": 22679.071135969203,
+    "equation_residual_relative": 3.1590490800936094e-11,
+    "invalid_stress_steps": 0
+  },
+  "physical_accuracy_qualified": false,
+  "process_memory": {
+    "enabled": true,
+    "scope": "intrusive build/warm/rollout process sampling",
+    "peak_mib": 2268,
+    "samples": [
+      {
+        "seconds": 0.43670876702526584,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 854
+      },
+      {
+        "seconds": 0.5612191660038661,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 854
+      },
+      {
+        "seconds": 0.6862048059992958,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 854
+      },
+      {
+        "seconds": 0.8100538110011257,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 854
+      },
+      {
+        "seconds": 0.9300694090197794,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 854
+      },
+      {
+        "seconds": 1.1995892900158651,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 854
+      },
+      {
+        "seconds": 1.320582161017228,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 854
+      },
+      {
+        "seconds": 1.4440392690012231,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 888
+      },
+      {
+        "seconds": 1.57102440300514,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 888
+      },
+      {
+        "seconds": 1.6907472790044267,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 888
+      },
+      {
+        "seconds": 1.8334167280117981,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 888
+      },
+      {
+        "seconds": 1.9632527750218287,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 2.1793302330188453,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 2.342140932014445,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 2.5656627810094506,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 2.801154936023522,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 2.973509086004924,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 3.298801007011207,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 3.479782321024686,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 3.7763470850186422,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 3.958011359005468,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 4.105921622016467,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 4.339949938002974,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 4.476873877021717,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 4.650473876012256,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 4.77040324700647,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 4.890520358021604,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 5.019254073005868,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 5.140289294009563,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 5.261905685998499,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 5.38282640001853,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 5.502816071006237,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 5.622000263014343,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 5.741869881021557,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 5.861576165014412,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 5.981799786997726,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 6.101804194011493,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 6.2224632230063435,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 6.3426487969991285,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 6.462555751000764,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 6.582374910009094,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 6.702643099997658,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 6.822385274019325,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 6.943627357017249,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 7.064382290001959,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 7.196248405001825,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 7.321828357002232,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 7.4492996930202935,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 7.57021875801729,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 7.689770410011988,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 7.809244518022751,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 7.929777380020823,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 8.050033456005622,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 8.170621330005815,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 8.292404025996802,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 8.413606464018812,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 8.53563102800399,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 8.65563437200035,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 8.779516271024477,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 8.899672304018168,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 9.020498167024925,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 9.140686130005633,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 9.261485617025755,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 9.382073731016135,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 9.50316048701643,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 9.62919539300492,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 9.748877283011097,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 9.869241740001598,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 9.989665440021781,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 10.110719032003544,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 10.231369446002645,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 10.351375929021742,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 10.471122118004132,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 10.591272020014003,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 10.7109985910065,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 10.83128171201679,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 10.951466298021842,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 11.091892052005278,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 11.211949033022393,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 11.332604204013478,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 11.45274975002394,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 11.572755352011882,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 11.692339986999286,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 11.812299380020704,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 11.933366925019072,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 12.053977735020453,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 12.176555562997237,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 12.297121314011747,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 12.418046911014244,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 12.538832970021758,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 12.659476268017897,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 12.779919780005002,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 12.900327946001198,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 13.020462849002797,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 13.14082016699831,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 13.261383499018848,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 13.382168792013545,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 13.50256345901289,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 13.622749121015659,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 13.742837769998005,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 13.86348252100288,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 13.984209907008335,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 14.10410576002323,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 14.224155105999671,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 14.344207619025838,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 14.46508543100208,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 14.58643238901277,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 14.706694059015717,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 14.826672839000821,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 14.947761641000398,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 15.068325644999277,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 15.189023008017102,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 15.31070156302303,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 15.431423188012559,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 15.5521726590232,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 15.673196034011198,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 15.794022155023413,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 15.914699408021988,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 16.035546156024793,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 16.156882431998383,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 16.27802220801823,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 16.399144863011315,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 16.519540148001397,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 16.64074290302233,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 16.761060415999964,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 16.88142120500561,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 17.002469958009897,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 17.123719098017318,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 17.244300845020916,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 17.364999202021863,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 17.48514275101479,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 17.605537385999924,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 17.725819871004205,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 17.846670134022133,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1784
+      },
+      {
+        "seconds": 17.987892046017805,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2008
+      },
+      {
+        "seconds": 18.13842283800477,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2008
+      },
+      {
+        "seconds": 18.415178189025028,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2008
+      },
+      {
+        "seconds": 18.715329730010126,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2040
+      },
+      {
+        "seconds": 18.849500807002187,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1880
+      },
+      {
+        "seconds": 19.084610075020464,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1880
+      },
+      {
+        "seconds": 19.253371833008714,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 19.400883490015985,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 19.521679042023607,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 19.643049830017844,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 19.85297710201121,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 19.98242507802206,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 20.117042539000977,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 20.25298693199875,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 20.399395281012403,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 20.531516170012765,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 20.668201798020164,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 20.79957812000066,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 20.93446703502559,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 21.065867173019797,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 21.1924647190026,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 21.317819579009665,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 21.57714582400513,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 21.70870734201162,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 21.837024603009922,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 21.972530724015087,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 22.10739549100981,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 22.2385379600164,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 22.366524708020734,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 22.500806274998467,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 22.632393014006084,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 22.765168162004557,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 22.89519292800105,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 23.029833058011718,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 23.16275874301209,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 23.306861745018978,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 23.442473633011105,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 23.578965346008772,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 23.715001194010256,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 23.840638115012553,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 23.982090458011953,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 24.261698949005222,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 24.393102752015693,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 24.533990003023064,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 24.658510317996843,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 24.783592149004107,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 24.924459769012174,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 25.064121522998903,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 25.2004488450184,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 25.339901268016547,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 25.480087072006427,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 25.60568432600121,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 25.739031930017518,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 25.86886273001437,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 25.996104467019904,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 26.1329720299982,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 26.26028149400372,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 26.39505185300368,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 26.52773225301644,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 26.666752193006687,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 26.794669468014035,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 26.921434870018857,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 27.050308240024606,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 27.18261705400073,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 27.31598001800012,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 27.442940725013614,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 27.57064185201307,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 27.705023546004668,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 27.830179323005723,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 27.968807883007685,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 28.096336982998764,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 28.22164436400635,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 28.352336117997766,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 28.48404176501208,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 28.621529101015767,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 28.7589988130203,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 28.88294490001863,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 29.015274004021194,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 29.15014229802182,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 29.29284944702522,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 29.426500891015166,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 29.54620127202361,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 48.36626322500524,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 1882
+      },
+      {
+        "seconds": 56.031708479014924,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2220
+      },
+      {
+        "seconds": 56.18468271900201,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2220
+      },
+      {
+        "seconds": 56.395336265006335,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2222
+      },
+      {
+        "seconds": 56.60098426201148,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2222
+      },
+      {
+        "seconds": 56.737669287016615,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2222
+      },
+      {
+        "seconds": 56.91930580700864,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2230
+      },
+      {
+        "seconds": 57.04183101002127,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 57.16388517100131,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 57.28888588800328,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 57.412405531009426,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 57.534825114009436,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 57.65843190002488,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 57.7817714260018,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 57.905047628009925,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 58.03216387302382,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 58.155734747997485,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 58.27908851200482,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 58.402171524998266,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 58.52700112701859,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 58.649314402020536,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 58.773168897023425,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 58.89709210200817,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 59.020932482002536,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 59.143847993022064,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 59.26724554502289,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 59.3915621030028,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 59.51547866000328,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 59.63862556600361,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 59.76153036300093,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 59.885555368004134,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 60.008221602009144,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 60.13315556800808,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 60.258664492022945,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 60.3838884550205,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 60.50811558202258,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 60.63202189700678,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 60.75499256901094,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 60.87761228901218,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 61.0073946150078,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 61.1426783290226,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 61.28629007501877,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 61.417899286025204,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 61.73095496301539,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 61.86756566801341,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 62.00430521700764,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 62.14421039802255,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 62.28167901400593,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 62.41556506699999,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 62.54981733200839,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 62.6845875440049,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 62.81533753100666,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 62.97613419100526,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 63.109235583018744,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 63.24253575800685,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 63.38074210201739,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 63.50898564700037,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 63.63692736401572,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 63.76113986701239,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 63.89008934501908,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 64.01473363500554,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 64.14482588000828,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 64.2723852560157,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 64.4129518950067,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 64.54695935701602,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 64.68327789701289,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 64.82584405102534,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 64.97022134100553,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 65.11578722501872,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 65.24444420801592,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 65.37940819200594,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 65.51351960501052,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 73.16093896102393,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2232
+      },
+      {
+        "seconds": 73.28724095202051,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 73.41039092300343,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 73.5307975760079,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 73.65325366501929,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 73.77580091101117,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 73.8982346720004,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 74.02176666501327,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 74.14346538801328,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 74.26588946901029,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 74.38843808800448,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 74.51049399201293,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 74.63229697401403,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 74.7546658780193,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 74.87707423701067,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 74.99920838300022,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 75.12057529602316,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2256
+      },
+      {
+        "seconds": 75.24266792001436,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2268
+      },
+      {
+        "seconds": 75.3655440560251,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2268
+      },
+      {
+        "seconds": 75.48699389401008,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2268
+      },
+      {
+        "seconds": 75.81056233702111,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2268
+      },
+      {
+        "seconds": 76.21156671101926,
+        "gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+        "process_mib": 2268
+      }
+    ]
+  }
+}

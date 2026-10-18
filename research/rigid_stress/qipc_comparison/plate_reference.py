@@ -12,8 +12,9 @@ import qipc._src.native.solver.qipc_solver_ext as extension
 from qipc import tetmesh
 from qipc._src.native.solver import GlobalVertexManager
 
+from ..shell_comparison.memory import ProcessMemory
 from .artifacts import file_id, runtime_identity, write_json
-from .plates import equilibrium, force_history, parser, plate_xml
+from .plates import equilibrium, force_history, parser, plate_xml, shear_target
 from .reference import ReferenceConfig, SolidObserver, preserve_contact_failure, solver_statistics
 
 
@@ -24,14 +25,19 @@ def main():
     cli.add_argument("--d-hat", type=float, default=2e-5)
     cli.add_argument("--resistance", type=float, default=1e10)
     cli.add_argument("--friction", type=float, default=0.0)
+    cli.add_argument("--guide-stiffness", type=float, default=1e8)
     cli.add_argument("--linear-solver", choices=("linear_pcg", "partition_pcg"), default="linear_pcg")
     cli.add_argument("--mas-precision", choices=("float", "double"), default="float")
     cli.add_argument("--cost-steps", type=int, default=0)
     cli.add_argument("--cost-stride", type=int, default=100)
     cli.add_argument("--cost-repeats", type=int, default=3)
+    cli.add_argument("--profile-steps", type=int, default=0)
+    cli.add_argument("--memory", action="store_true")
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     (args.output / "frames").mkdir()
+    memory = ProcessMemory(args.memory)
+    memory.start()
     config = ReferenceConfig(
         dt=args.dt,
         velocity_tolerance=args.velocity_tolerance,
@@ -46,12 +52,19 @@ def main():
         vertices, tets = mesh["vertices"].copy(), mesh["tetrahedra"].copy()
     lower, upper = vertices[:, 2].min() - args.clearance, vertices[:, 2].max() + args.clearance
     xml = args.output / "plates.xml"
-    xml.write_text(plate_xml(lower, upper, args.plate_offset_x))
+    xml.write_text(plate_xml(lower, upper, args.plate_offset_x, bool(args.shear_distance)))
     scene = config.scene(gravity=(0.0, 0.0, 0.0))
     plate = scene.add_mjcf(
-        xml, link_type="rigid", position=(args.plate_offset_x, 0.0, float(lower - 0.005)), enable_controller=True
+        xml,
+        link_type="rigid",
+        position=(args.plate_offset_x, 0.0, float(lower - 0.005)),
+        enable_controller=True,
+        kappa_pivot=args.guide_stiffness,
+        kappa_axis=args.guide_stiffness,
     )
-    assert plate.joint_names == ["compression"], plate.joint_names
+    assert plate.joint_names == (["compression", "shear"] if args.shear_distance else ["compression"]), (
+        plate.joint_names
+    )
     if not args.empty:
         geometry = tetmesh(vertices, tets)
         config.material().apply_to(
@@ -61,8 +74,8 @@ def main():
     started = perf_counter()
     scene.init()
     torch.cuda.synchronize()
-    plate.set_dofs_kp(0.0)
-    plate.set_dofs_kv(args.damping)
+    plate.set_dofs_kp(np.array([0.0, 1e5]) if args.shear_distance else 0.0)
+    plate.set_dofs_kv(np.array([args.damping, 150.0]) if args.shear_distance else args.damping)
     plate.set_dofs_force_range(-np.inf, np.inf)
     observer = None
     if not args.empty:
@@ -94,6 +107,7 @@ def main():
             "config": asdict(config),
             "plate_body_indices": indices,
             "plate_masses_kg": scene.rigid_body.mass.cpu().tolist(),
+            "egg_fem_mass_kg": observer.masses.sum().item() if observer is not None else None,
             "plate_separation_at_rest_m": upper - lower,
             "setup_seconds": perf_counter() - started,
             "scope": "Intrusive short pilot; no reference qualification inferred from completion.",
@@ -111,7 +125,11 @@ def main():
                 if observer is not None:
                     with torch.cuda.stream(scene.solver.cuda_stream):
                         previous_velocity = scene.finite_element.velocities.clone()
-                plate.control_dofs_force(force)
+                if args.shear_distance:
+                    plate.control_dofs_position(np.array([0.0, shear_target(args, step + 1)]))
+                    plate.control_dofs_force(np.array([force, 0.0]))
+                else:
+                    plate.control_dofs_force(force)
                 scene.step()
                 executed += 1
                 stats = solver_statistics(scene)
@@ -120,7 +138,10 @@ def main():
                 if stats["edge_triangle_intersection_count"]:
                     write_json(args.output / "rejected-step.json", {"step": step + 1, **stats})
                     raise RuntimeError("Reference edge-triangle intersection; continuation is rejected")
-                predicted_velocity = (0.05 * predicted_velocity + args.dt * force) / (0.05 + args.dt * args.damping)
+                moving_mass = 0.051 if args.shear_distance else 0.05
+                predicted_velocity = (moving_mass * predicted_velocity + args.dt * force) / (
+                    moving_mass + args.dt * args.damping
+                )
                 predicted_q += args.dt * predicted_velocity
                 if (step + 1) % args.record_stride and not endpoint:
                     continue
@@ -136,6 +157,8 @@ def main():
                     "plate_speed_m_per_s": velocity,
                     "compression_coordinate_m": q,
                     "plate_separation_m": upper - lower - q,
+                    "shear_target_m": shear_target(args, step + 1),
+                    "shear_coordinate_m": plate.get_dofs_position()[1].item() if args.shear_distance else 0.0,
                     "upper_lateral_position_m": scene.rigid_body.t[indices["upper"], :2].cpu().tolist(),
                     "upper_quaternion_wxyz": scene.rigid_body.quat[indices["upper"]].cpu().tolist(),
                     "empty_analytic_position_error_m": q - predicted_q if args.empty else None,
@@ -153,6 +176,8 @@ def main():
                     row.update(
                         upper_reaction_n=reactions["upper"][2].item(),
                         lower_reaction_n=-reactions["lower"][2].item(),
+                        upper_tangential_reaction_n=reactions["upper"][:2].cpu().tolist(),
+                        lower_tangential_reaction_n=reactions["lower"][:2].cpu().tolist(),
                         egg_inertia_resultant_norm_n=torch.linalg.norm(state.inertial_reaction_n.sum(dim=0)).item(),
                         egg_kinetic_j=state.kinetic_j.item(),
                         equation_residual_relative=torch.linalg.norm(state.residual_n).item()
@@ -195,6 +220,7 @@ def main():
         finally:
             if not completed and observer is not None:
                 preserve_contact_failure(scene, args.output)
+            memory_report = memory.finish()
             write_json(
                 args.output / "result.json",
                 {
@@ -205,6 +231,7 @@ def main():
                     "elapsed_seconds_including_observation_IO": perf_counter() - started,
                     "last_observation": samples[-1] if samples else None,
                     "reference_qualified": False,
+                    "process_memory": memory_report,
                 },
             )
 

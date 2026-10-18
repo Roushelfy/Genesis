@@ -1,0 +1,971 @@
+{
+  "steps": 200,
+  "envs": 64,
+  "kernel_totals": {
+    "func_solve_init_c690_0_kernel_15_update_constraint_cost_range_for": {
+      "count": 200,
+      "total_us": 1562.1329999999994
+    },
+    "func_solve_init_c690_0_kernel_16_serial": {
+      "count": 200,
+      "total_us": 273.50399999999996
+    },
+    "func_solve_init_c690_0_kernel_17_init_improved_range_for": {
+      "count": 200,
+      "total_us": 1597.5600000000015
+    },
+    "func_solve_init_c690_0_kernel_18_serial": {
+      "count": 200,
+      "total_us": 317.9170000000001
+    },
+    "func_solve_init_c690_0_kernel_19_island_hessian_assemble_range_for": {
+      "count": 200,
+      "total_us": 1664.544
+    },
+    "func_solve_init_c690_0_kernel_20_serial": {
+      "count": 200,
+      "total_us": 273.02099999999984
+    },
+    "func_solve_init_c690_0_kernel_21_wrap_cone_hessian_range_for": {
+      "count": 200,
+      "total_us": 1929.8219999999992
+    },
+    "func_solve_init_c690_0_kernel_22_serial": {
+      "count": 200,
+      "total_us": 269.3209999999998
+    },
+    "func_solve_init_c690_0_kernel_23_update_gradient_no_solve_range_for": {
+      "count": 200,
+      "total_us": 1651.709000000003
+    },
+    "func_solve_init_c690_0_kernel_24_serial": {
+      "count": 200,
+      "total_us": 350.27799999999985
+    },
+    "func_solve_init_c690_0_kernel_25_island_tiled_factor_solve_range_for": {
+      "count": 200,
+      "total_us": 12458.953000000003
+    },
+    "func_solve_init_c690_0_kernel_26_serial": {
+      "count": 200,
+      "total_us": 308.67200000000025
+    },
+    "func_solve_init_c690_0_kernel_27_wrap_cone_hessian_range_for": {
+      "count": 200,
+      "total_us": 1949.5929999999973
+    },
+    "func_solve_init_c690_0_kernel_28_assign_search_range_for": {
+      "count": 200,
+      "total_us": 1651.7710000000045
+    },
+    "func_solve_init_c690_0_kernel_29_certify_converged_range_for": {
+      "count": 200,
+      "total_us": 1597.0510000000017
+    },
+    "void at::native::vectorized_elementwise_kernel<4, at::native::FillFunctor<int>, std::array<char*, 1ul> >(int, at::native::FillFunctor<int>, std::array<char*, 1ul>)": {
+      "count": 400,
+      "total_us": 404.3510000000002
+    },
+    "_kernel_solve_graph_c696_0_kernel_0_serial": {
+      "count": 200,
+      "total_us": 225.53200000000015
+    },
+    "_kernel_solve_graph_c696_0_kernel_1_islands_linesearch_range_for": {
+      "count": 200,
+      "total_us": 3071.311000000004
+    },
+    "_kernel_solve_graph_c696_0_kernel_2_serial": {
+      "count": 200,
+      "total_us": 266.53099999999984
+    },
+    "_kernel_solve_graph_c696_0_kernel_3_snapshot_prev_active_range_for": {
+      "count": 200,
+      "total_us": 1650.5400000000036
+    },
+    "_kernel_solve_graph_c696_0_kernel_4_serial": {
+      "count": 200,
+      "total_us": 254.1219999999999
+    },
+    "_kernel_solve_graph_c696_0_kernel_5_update_constraint_forces_range_for": {
+      "count": 200,
+      "total_us": 1602.2539999999995
+    },
+    "_kernel_solve_graph_c696_0_kernel_6_serial": {
+      "count": 200,
+      "total_us": 253.37700000000004
+    },
+    "_kernel_solve_graph_c696_0_kernel_7_update_constraint_qfrc_range_for": {
+      "count": 200,
+      "total_us": 1654.4540000000031
+    },
+    "_kernel_solve_graph_c696_0_kernel_8_serial": {
+      "count": 200,
+      "total_us": 261.76100000000065
+    },
+    "_kernel_solve_graph_c696_0_kernel_9_island_hessian_assemble_range_for": {
+      "count": 200,
+      "total_us": 1671.9960000000037
+    },
+    "_kernel_solve_graph_c696_0_kernel_10_serial": {
+      "count": 200,
+      "total_us": 254.6160000000001
+    },
+    "_kernel_solve_graph_c696_0_kernel_11_update_gradient_no_solve_range_for": {
+      "count": 200,
+      "total_us": 1663.8369999999986
+    },
+    "_kernel_solve_graph_c696_0_kernel_12_serial": {
+      "count": 200,
+      "total_us": 227.87099999999973
+    },
+    "_kernel_solve_graph_c696_0_kernel_13_wrap_cone_hessian_range_for": {
+      "count": 200,
+      "total_us": 1725.3650000000011
+    },
+    "_kernel_solve_graph_c696_0_kernel_14_serial": {
+      "count": 200,
+      "total_us": 327.9690000000001
+    },
+    "_kernel_solve_graph_c696_0_kernel_15_island_tiled_factor_solve_range_for": {
+      "count": 200,
+      "total_us": 5346.849999999996
+    },
+    "_kernel_solve_graph_c696_0_kernel_16_serial": {
+      "count": 200,
+      "total_us": 256.25400000000013
+    },
+    "_kernel_solve_graph_c696_0_kernel_17_wrap_cone_hessian_range_for": {
+      "count": 200,
+      "total_us": 1716.9189999999974
+    },
+    "_kernel_solve_graph_c696_0_kernel_18_serial": {
+      "count": 200,
+      "total_us": 255.83400000000015
+    },
+    "_kernel_solve_graph_c696_0_kernel_19_islands_update_search_direction_range_for": {
+      "count": 200,
+      "total_us": 1605.7849999999971
+    },
+    "_kernel_solve_graph_c696_0_kernel_20_check_early_exit_reset_flag_range_for": {
+      "count": 200,
+      "total_us": 360.57299999999975
+    },
+    "_kernel_solve_graph_c696_0_kernel_21_serial": {
+      "count": 200,
+      "total_us": 256.06300000000016
+    },
+    "_kernel_solve_graph_c696_0_kernel_22_check_early_exit_scan_values_range_for": {
+      "count": 200,
+      "total_us": 1655.4860000000026
+    },
+    "_kernel_solve_graph_c696_0_kernel_23_check_early_exit_set_counter_range_for": {
+      "count": 200,
+      "total_us": 291.5520000000001
+    },
+    "_qd_graph_do_while_cond": {
+      "count": 200,
+      "total_us": 297.0549999999999
+    },
+    "kernel_substep_post_c900_0_kernel_0_serial": {
+      "count": 198,
+      "total_us": 294.3019999999998
+    },
+    "kernel_substep_post_c900_0_kernel_1_range_for": {
+      "count": 198,
+      "total_us": 1703.9909999999948
+    },
+    "kernel_substep_post_c900_0_kernel_2_range_for": {
+      "count": 198,
+      "total_us": 1702.8699999999958
+    },
+    "kernel_substep_post_c900_0_kernel_3_serial": {
+      "count": 198,
+      "total_us": 306.1690000000004
+    },
+    "kernel_substep_post_c900_0_kernel_4_range_for": {
+      "count": 198,
+      "total_us": 1718.8410000000013
+    },
+    "kernel_substep_post_c900_0_kernel_5_range_for": {
+      "count": 198,
+      "total_us": 1714.812000000004
+    },
+    "kernel_substep_post_c900_0_kernel_6_serial": {
+      "count": 198,
+      "total_us": 339.45500000000067
+    },
+    "kernel_substep_post_c900_0_kernel_7_sweep_links_by_level_range_for": {
+      "count": 198,
+      "total_us": 2584.2739999999985
+    },
+    "kernel_substep_post_c900_0_kernel_8_serial": {
+      "count": 198,
+      "total_us": 312.4190000000004
+    },
+    "kernel_substep_post_c900_0_kernel_9_range_for": {
+      "count": 198,
+      "total_us": 1701.0179999999984
+    },
+    "kernel_substep_post_c900_0_kernel_10_serial": {
+      "count": 198,
+      "total_us": 329.5059999999992
+    },
+    "kernel_substep_post_c900_0_kernel_11_range_for": {
+      "count": 198,
+      "total_us": 1850.9370000000008
+    },
+    "kernel_substep_post_c900_0_kernel_12_range_for": {
+      "count": 198,
+      "total_us": 1714.1650000000045
+    },
+    "kernel_substep_post_c900_0_kernel_13_range_for": {
+      "count": 198,
+      "total_us": 1704.6959999999954
+    },
+    "kernel_substep_post_c900_0_kernel_14_range_for": {
+      "count": 198,
+      "total_us": 1703.2249999999954
+    },
+    "kernel_substep_post_c900_0_kernel_15_serial": {
+      "count": 198,
+      "total_us": 341.23400000000055
+    },
+    "kernel_substep_post_c900_0_kernel_16_range_for": {
+      "count": 198,
+      "total_us": 1719.4209999999998
+    },
+    "kernel_substep_post_c900_0_kernel_17_serial": {
+      "count": 198,
+      "total_us": 378.35900000000004
+    },
+    "kernel_substep_post_c900_0_kernel_18_sweep_links_by_level_range_for": {
+      "count": 198,
+      "total_us": 4048.684000000005
+    },
+    "kernel_substep_post_c900_0_kernel_19_serial": {
+      "count": 198,
+      "total_us": 339.93000000000063
+    },
+    "kernel_substep_post_c900_0_kernel_20_update_cartesian_space_com_inertial_range_for": {
+      "count": 198,
+      "total_us": 1720.7029999999982
+    },
+    "kernel_substep_post_c900_0_kernel_21_serial": {
+      "count": 198,
+      "total_us": 338.6260000000007
+    },
+    "kernel_substep_post_c900_0_kernel_22_update_cartesian_space_com_sum_range_for": {
+      "count": 198,
+      "total_us": 1738.8769999999995
+    },
+    "kernel_substep_post_c900_0_kernel_23_update_cartesian_space_com_range_for": {
+      "count": 198,
+      "total_us": 2270.7739999999985
+    },
+    "kernel_substep_post_c900_0_kernel_24_serial": {
+      "count": 198,
+      "total_us": 370.5519999999992
+    },
+    "kernel_substep_post_c900_0_kernel_25_sweep_links_by_level_range_for": {
+      "count": 198,
+      "total_us": 1811.601
+    },
+    "void at::native::vectorized_elementwise_kernel<2, at::native::FillFunctor<double>, std::array<char*, 1ul> >(int, at::native::FillFunctor<double>, std::array<char*, 1ul>)": {
+      "count": 600,
+      "total_us": 639.7140000000011
+    },
+    "void at::native::vectorized_elementwise_kernel<4, at::native::CUDAFunctorOnSelf_add<int>, std::array<char*, 2ul> >(int, at::native::CUDAFunctorOnSelf_add<int>, std::array<char*, 2ul>)": {
+      "count": 200,
+      "total_us": 238.81399999999977
+    },
+    "kernel_substep_dynamics_c896_1_kernel_0_serial": {
+      "count": 200,
+      "total_us": 322.7180000000004
+    },
+    "kernel_substep_dynamics_c896_1_kernel_1_crb_initialize_range_for": {
+      "count": 200,
+      "total_us": 1732.730000000004
+    },
+    "kernel_substep_dynamics_c896_1_kernel_2_serial": {
+      "count": 200,
+      "total_us": 375.0069999999993
+    },
+    "kernel_substep_dynamics_c896_1_kernel_3_sweep_links_by_level_range_for": {
+      "count": 200,
+      "total_us": 1646.962
+    },
+    "kernel_substep_dynamics_c896_1_kernel_4_mass_mat_range_for": {
+      "count": 200,
+      "total_us": 1783.835000000002
+    },
+    "kernel_substep_dynamics_c896_1_kernel_5_serial": {
+      "count": 200,
+      "total_us": 347.87400000000014
+    },
+    "kernel_substep_dynamics_c896_1_kernel_6_mass_mat_assemble_range_for": {
+      "count": 200,
+      "total_us": 1683.1599999999996
+    },
+    "kernel_substep_dynamics_c896_1_kernel_7_serial": {
+      "count": 200,
+      "total_us": 305.75800000000027
+    },
+    "kernel_substep_dynamics_c896_1_kernel_8_armature_range_for": {
+      "count": 200,
+      "total_us": 1726.9030000000032
+    },
+    "kernel_substep_dynamics_c896_1_kernel_9_impint_order_1_corr_range_for": {
+      "count": 200,
+      "total_us": 1726.8650000000025
+    },
+    "kernel_substep_dynamics_c896_1_kernel_10_serial": {
+      "count": 200,
+      "total_us": 320.73100000000034
+    },
+    "kernel_substep_dynamics_c896_1_kernel_11_range_for": {
+      "count": 200,
+      "total_us": 1754.1960000000024
+    },
+    "kernel_substep_dynamics_c896_1_kernel_12_serial": {
+      "count": 200,
+      "total_us": 339.26800000000077
+    },
+    "kernel_substep_dynamics_c896_1_kernel_13_range_for": {
+      "count": 200,
+      "total_us": 1732.4730000000031
+    },
+    "kernel_substep_dynamics_c896_1_kernel_14_serial": {
+      "count": 200,
+      "total_us": 349.24499999999966
+    },
+    "kernel_substep_dynamics_c896_1_kernel_15_range_for": {
+      "count": 200,
+      "total_us": 1718.492999999998
+    },
+    "kernel_substep_dynamics_c896_1_kernel_16_serial": {
+      "count": 200,
+      "total_us": 341.01800000000077
+    },
+    "kernel_substep_dynamics_c896_1_kernel_17_sweep_links_by_level_range_for": {
+      "count": 200,
+      "total_us": 1669.494000000004
+    },
+    "kernel_substep_dynamics_c896_1_kernel_18_serial": {
+      "count": 200,
+      "total_us": 345.1880000000007
+    },
+    "kernel_substep_dynamics_c896_1_kernel_19_range_for": {
+      "count": 200,
+      "total_us": 1738.1419999999982
+    },
+    "kernel_substep_dynamics_c896_1_kernel_20_serial": {
+      "count": 200,
+      "total_us": 343.6440000000007
+    },
+    "kernel_substep_dynamics_c896_1_kernel_21_sweep_links_by_level_range_for": {
+      "count": 200,
+      "total_us": 1679.7980000000002
+    },
+    "kernel_substep_dynamics_c896_1_kernel_22_range_for": {
+      "count": 200,
+      "total_us": 1737.821999999998
+    },
+    "kernel_substep_dynamics_c896_1_kernel_23_serial": {
+      "count": 200,
+      "total_us": 376.1879999999994
+    },
+    "kernel_substep_dynamics_c896_1_kernel_24_factor_mass_range_for": {
+      "count": 200,
+      "total_us": 2663.3150000000023
+    },
+    "kernel_substep_dynamics_c896_1_kernel_25_serial": {
+      "count": 200,
+      "total_us": 339.5550000000007
+    },
+    "kernel_substep_dynamics_c896_1_kernel_26_range_for": {
+      "count": 200,
+      "total_us": 1720.2829999999956
+    },
+    "kernel_substep_dynamics_c896_1_kernel_27_serial": {
+      "count": 200,
+      "total_us": 350.5209999999994
+    },
+    "kernel_substep_dynamics_c896_1_kernel_28_clear_links_constrained_range_for": {
+      "count": 200,
+      "total_us": 1746.1080000000036
+    },
+    "kernel_substep_dynamics_c896_1_kernel_29_range_for": {
+      "count": 200,
+      "total_us": 1824.5689999999977
+    },
+    "kernel_substep_collision_c898_0_kernel_0_serial": {
+      "count": 200,
+      "total_us": 305.0900000000001
+    },
+    "kernel_substep_collision_c898_0_kernel_1_range_for": {
+      "count": 200,
+      "total_us": 2914.961999999998
+    },
+    "kernel_substep_collision_c898_0_kernel_2_serial": {
+      "count": 200,
+      "total_us": 313.8250000000001
+    },
+    "kernel_substep_collision_c898_0_kernel_3_collision_clear_range_for": {
+      "count": 200,
+      "total_us": 1720.3309999999958
+    },
+    "kernel_substep_collision_c898_0_kernel_4_serial": {
+      "count": 200,
+      "total_us": 328.747
+    },
+    "kernel_substep_collision_c898_0_kernel_5_init_broad_pairs_range_for": {
+      "count": 200,
+      "total_us": 1721.4639999999956
+    },
+    "kernel_substep_collision_c898_0_kernel_6_serial": {
+      "count": 200,
+      "total_us": 348.995
+    },
+    "kernel_substep_collision_c898_0_kernel_7_traverse_valid_range_for": {
+      "count": 200,
+      "total_us": 1716.7170000000012
+    },
+    "kernel_substep_collision_c898_0_kernel_8_serial": {
+      "count": 200,
+      "total_us": 320.2570000000002
+    },
+    "kernel_substep_collision_c898_0_kernel_9_range_for": {
+      "count": 200,
+      "total_us": 310.5190000000003
+    },
+    "kernel_substep_collision_c898_0_kernel_10_range_for": {
+      "count": 200,
+      "total_us": 21277.883000000005
+    },
+    "kernel_substep_collision_c898_0_kernel_11_range_for": {
+      "count": 200,
+      "total_us": 63988.467000000026
+    },
+    "kernel_substep_collision_c898_0_kernel_12_range_for": {
+      "count": 200,
+      "total_us": 281.44099999999946
+    },
+    "kernel_substep_collision_c898_0_kernel_13_range_for": {
+      "count": 200,
+      "total_us": 3543.6639999999993
+    },
+    "kernel_substep_collision_c898_0_kernel_14_serial": {
+      "count": 200,
+      "total_us": 296.57800000000003
+    },
+    "kernel_substep_collision_c898_0_kernel_15_range_for": {
+      "count": 200,
+      "total_us": 1743.2579999999991
+    },
+    "kernel_substep_collision_c898_0_kernel_16_serial": {
+      "count": 200,
+      "total_us": 604.04
+    },
+    "kernel_substep_collision_c898_0_kernel_17_clamp_prune_contacts_coop_range_for": {
+      "count": 200,
+      "total_us": 1656.5360000000019
+    },
+    "kernel_substep_collision_c898_0_kernel_18_serial": {
+      "count": 200,
+      "total_us": 303.426
+    },
+    "kernel_substep_collision_c898_0_kernel_19_range_for": {
+      "count": 200,
+      "total_us": 278.4929999999997
+    },
+    "kernel_substep_collision_c898_0_kernel_20_serial": {
+      "count": 200,
+      "total_us": 341.3390000000009
+    },
+    "kernel_substep_collision_c898_0_kernel_21_sort_contacts_and_build_islands_range_for": {
+      "count": 200,
+      "total_us": 2407.376999999999
+    },
+    "kernel_substep_collision_c898_0_kernel_22_serial": {
+      "count": 200,
+      "total_us": 411.7740000000001
+    },
+    "kernel_substep_collision_c898_0_kernel_23_add_frictionloss_constraints_range_for": {
+      "count": 200,
+      "total_us": 1737.8529999999987
+    },
+    "kernel_substep_collision_c898_0_kernel_24_serial": {
+      "count": 200,
+      "total_us": 322.55500000000035
+    },
+    "kernel_substep_collision_c898_0_kernel_25_add_collision_constraints_range_for": {
+      "count": 200,
+      "total_us": 5406.1820000000025
+    },
+    "kernel_substep_collision_c898_0_kernel_26_add_collision_count_range_for": {
+      "count": 200,
+      "total_us": 1701.0170000000023
+    },
+    "kernel_substep_collision_c898_0_kernel_27_serial": {
+      "count": 200,
+      "total_us": 343.09600000000086
+    },
+    "kernel_substep_collision_c898_0_kernel_28_add_joint_limit_constraints_range_for": {
+      "count": 200,
+      "total_us": 1655.759000000002
+    },
+    "func_solve_init_c690_0_kernel_0_serial": {
+      "count": 200,
+      "total_us": 283.0719999999996
+    },
+    "func_solve_init_c690_0_kernel_1_reset_cone_latches_range_for": {
+      "count": 200,
+      "total_us": 1654.4210000000028
+    },
+    "func_solve_init_c690_0_kernel_2_serial": {
+      "count": 200,
+      "total_us": 276.8649999999998
+    },
+    "func_solve_init_c690_0_kernel_3_from_warmstart_range_for": {
+      "count": 200,
+      "total_us": 1653.4350000000031
+    },
+    "func_solve_init_c690_0_kernel_4_serial": {
+      "count": 200,
+      "total_us": 242.66000000000025
+    },
+    "func_solve_init_c690_0_kernel_5_init_ma_range_for": {
+      "count": 200,
+      "total_us": 1651.4440000000031
+    },
+    "func_solve_init_c690_0_kernel_6_serial": {
+      "count": 200,
+      "total_us": 237.14999999999972
+    },
+    "func_solve_init_c690_0_kernel_7_init_jaref_parallel_range_for": {
+      "count": 200,
+      "total_us": 1563.063999999998
+    },
+    "func_solve_init_c690_0_kernel_8_serial": {
+      "count": 200,
+      "total_us": 250.17299999999986
+    },
+    "func_solve_init_c690_0_kernel_9_snapshot_prev_active_range_for": {
+      "count": 200,
+      "total_us": 1653.8820000000032
+    },
+    "func_solve_init_c690_0_kernel_10_serial": {
+      "count": 200,
+      "total_us": 269.1529999999998
+    },
+    "func_solve_init_c690_0_kernel_11_update_constraint_forces_range_for": {
+      "count": 200,
+      "total_us": 1596.5660000000023
+    },
+    "func_solve_init_c690_0_kernel_12_serial": {
+      "count": 200,
+      "total_us": 281.7219999999995
+    },
+    "func_solve_init_c690_0_kernel_13_update_constraint_qfrc_range_for": {
+      "count": 200,
+      "total_us": 1602.545999999999
+    },
+    "func_solve_init_c690_0_kernel_14_serial": {
+      "count": 200,
+      "total_us": 269.6619999999997
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_0_serial": {
+      "count": 2,
+      "total_us": 3.04
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_1_range_for": {
+      "count": 2,
+      "total_us": 17.248
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_2_range_for": {
+      "count": 2,
+      "total_us": 17.28
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_3_serial": {
+      "count": 2,
+      "total_us": 3.008
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_4_range_for": {
+      "count": 2,
+      "total_us": 17.376
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_5_range_for": {
+      "count": 2,
+      "total_us": 17.504
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_6_serial": {
+      "count": 2,
+      "total_us": 4.351
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_7_range_for": {
+      "count": 2,
+      "total_us": 17.153
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_8_serial": {
+      "count": 2,
+      "total_us": 3.072
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_9_range_for": {
+      "count": 2,
+      "total_us": 19.137
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_10_serial": {
+      "count": 2,
+      "total_us": 3.072
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_11_range_for": {
+      "count": 2,
+      "total_us": 19.968
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_12_range_for": {
+      "count": 2,
+      "total_us": 133.79000000000002
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_13_range_for": {
+      "count": 2,
+      "total_us": 2.7199999999999998
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_14_range_for": {
+      "count": 2,
+      "total_us": 17.248
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_15_serial": {
+      "count": 2,
+      "total_us": 3.52
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_16_range_for": {
+      "count": 2,
+      "total_us": 183.872
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_17_serial": {
+      "count": 2,
+      "total_us": 3.328
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_18_range_for": {
+      "count": 2,
+      "total_us": 17.567
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_19_range_for": {
+      "count": 2,
+      "total_us": 17.248
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_20_serial": {
+      "count": 2,
+      "total_us": 3.392
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_21_range_for": {
+      "count": 2,
+      "total_us": 17.376
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_22_serial": {
+      "count": 2,
+      "total_us": 3.36
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_23_range_for": {
+      "count": 2,
+      "total_us": 17.472
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_24_serial": {
+      "count": 2,
+      "total_us": 5.024
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_25_range_for": {
+      "count": 2,
+      "total_us": 17.44
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_26_serial": {
+      "count": 2,
+      "total_us": 3.392
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_27_range_for": {
+      "count": 2,
+      "total_us": 17.216
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_28_serial": {
+      "count": 2,
+      "total_us": 3.488
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_29_range_for": {
+      "count": 2,
+      "total_us": 17.344
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_30_serial": {
+      "count": 2,
+      "total_us": 3.423
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_31_range_for": {
+      "count": 2,
+      "total_us": 75.167
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_32_serial": {
+      "count": 2,
+      "total_us": 3.424
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_33_range_for": {
+      "count": 2,
+      "total_us": 17.376
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_34_serial": {
+      "count": 2,
+      "total_us": 3.904
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_35_range_for": {
+      "count": 2,
+      "total_us": 17.312
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_36_serial": {
+      "count": 2,
+      "total_us": 3.424
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_37_range_for": {
+      "count": 2,
+      "total_us": 17.536
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_38_serial": {
+      "count": 2,
+      "total_us": 3.392
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_39_range_for": {
+      "count": 2,
+      "total_us": 17.184
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_40_serial": {
+      "count": 2,
+      "total_us": 3.52
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_41_range_for": {
+      "count": 2,
+      "total_us": 28.064
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_42_serial": {
+      "count": 2,
+      "total_us": 3.488
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_43_range_for": {
+      "count": 2,
+      "total_us": 17.984
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_44_range_for": {
+      "count": 2,
+      "total_us": 17.248
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_45_serial": {
+      "count": 2,
+      "total_us": 3.296
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_46_range_for": {
+      "count": 2,
+      "total_us": 24.032
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_47_range_for": {
+      "count": 2,
+      "total_us": 119.35900000000001
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_48_range_for": {
+      "count": 2,
+      "total_us": 78.01599999999999
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_49_range_for": {
+      "count": 2,
+      "total_us": 17.248
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_50_range_for": {
+      "count": 2,
+      "total_us": 17.248
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_51_serial": {
+      "count": 2,
+      "total_us": 3.52
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_52_range_for": {
+      "count": 2,
+      "total_us": 88.32
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_53_range_for": {
+      "count": 2,
+      "total_us": 17.312
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_54_range_for": {
+      "count": 2,
+      "total_us": 17.376
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_55_range_for": {
+      "count": 2,
+      "total_us": 17.248
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_56_range_for": {
+      "count": 2,
+      "total_us": 17.312
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_57_range_for": {
+      "count": 2,
+      "total_us": 17.376
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_58_range_for": {
+      "count": 2,
+      "total_us": 17.344
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_59_range_for": {
+      "count": 2,
+      "total_us": 17.344
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_60_range_for": {
+      "count": 2,
+      "total_us": 17.216
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_61_range_for": {
+      "count": 2,
+      "total_us": 17.279
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_62_range_for": {
+      "count": 2,
+      "total_us": 17.344
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_63_range_for": {
+      "count": 2,
+      "total_us": 17.216
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_64_serial": {
+      "count": 2,
+      "total_us": 3.424
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_65_range_for": {
+      "count": 2,
+      "total_us": 17.536
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_66_range_for": {
+      "count": 2,
+      "total_us": 17.343
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_67_range_for": {
+      "count": 2,
+      "total_us": 17.247
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_68_range_for": {
+      "count": 2,
+      "total_us": 17.184
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_69_range_for": {
+      "count": 2,
+      "total_us": 17.344
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_70_range_for": {
+      "count": 2,
+      "total_us": 17.407
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_71_serial": {
+      "count": 2,
+      "total_us": 3.296
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_72_range_for": {
+      "count": 2,
+      "total_us": 119.84
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_73_range_for": {
+      "count": 2,
+      "total_us": 17.248
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_74_range_for": {
+      "count": 2,
+      "total_us": 17.28
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_75_range_for": {
+      "count": 2,
+      "total_us": 17.344
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_76_serial": {
+      "count": 2,
+      "total_us": 3.456
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_77_range_for": {
+      "count": 2,
+      "total_us": 17.312
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_78_serial": {
+      "count": 2,
+      "total_us": 3.456
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_79_sweep_links_by_level_range_for": {
+      "count": 2,
+      "total_us": 26.112000000000002
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_80_serial": {
+      "count": 2,
+      "total_us": 3.072
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_81_range_for": {
+      "count": 2,
+      "total_us": 17.311
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_82_serial": {
+      "count": 2,
+      "total_us": 3.36
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_83_range_for": {
+      "count": 2,
+      "total_us": 18.688
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_84_range_for": {
+      "count": 2,
+      "total_us": 17.279
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_85_range_for": {
+      "count": 2,
+      "total_us": 17.247
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_86_range_for": {
+      "count": 2,
+      "total_us": 17.279
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_87_serial": {
+      "count": 2,
+      "total_us": 3.583
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_88_range_for": {
+      "count": 2,
+      "total_us": 17.343
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_89_serial": {
+      "count": 2,
+      "total_us": 3.808
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_90_sweep_links_by_level_range_for": {
+      "count": 2,
+      "total_us": 40.8
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_91_serial": {
+      "count": 2,
+      "total_us": 3.296
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_92_update_cartesian_space_com_inertial_range_for": {
+      "count": 2,
+      "total_us": 17.439
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_93_serial": {
+      "count": 2,
+      "total_us": 3.455
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_94_update_cartesian_space_com_sum_range_for": {
+      "count": 2,
+      "total_us": 17.407
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_95_update_cartesian_space_com_range_for": {
+      "count": 2,
+      "total_us": 22.848
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_96_serial": {
+      "count": 2,
+      "total_us": 3.776
+    },
+    "kernel_rigid_stress_post_c1026_0_kernel_97_sweep_links_by_level_range_for": {
+      "count": 2,
+      "total_us": 18.4
+    }
+  },
+  "scope": "Separate intrusive warmed torch CPU/CUDA trace. Kernel duration sums are not wall-clock throughput and may overlap across streams; complete unclassified kernel names are retained."
+}

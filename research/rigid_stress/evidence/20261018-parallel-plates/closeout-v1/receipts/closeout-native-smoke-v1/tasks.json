@@ -1,0 +1,28 @@
+[
+  [
+    {
+      "name": "smoke",
+      "module": "research.rigid_stress.qipc_comparison.plate_native",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--loads",
+        "0",
+        "--ramp",
+        "0.01",
+        "--hold",
+        "0.01",
+        "--clearance",
+        "2e-5",
+        "--plate-offset-x",
+        "0.003",
+        "--method",
+        "dpr",
+        "--assets",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1",
+        "--envs",
+        "2"
+      ]
+    }
+  ]
+]

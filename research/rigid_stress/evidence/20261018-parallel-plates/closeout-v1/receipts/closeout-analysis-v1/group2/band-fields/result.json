@@ -1,0 +1,237 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "727102",
+      "SLURM_ARRAY_JOB_ID": "727099",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-3536a1e6-ce95-c58e-fc60-6f3fb8fdc4f0, 00000000:46:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/contact-entry-v1/group1/off-diagonal",
+  "surface_domain": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz",
+    "bytes": 144512,
+    "sha256": "9d0d4f99c71578bd3f6bb039f9c72a5abbf2a8159f0209b4b891a3bda2647998"
+  },
+  "comparisons": [
+    {
+      "label": "band-half",
+      "kind": "solid",
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/contact-band-v1/group0/band-half",
+      "levels": [
+        {
+          "load_level": 0,
+          "command_force_n": 0.1,
+          "reference_frame_present": true,
+          "candidate_frame_present": true,
+          "qualified_accuracy_comparison": false,
+          "reference_frame": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/contact-entry-v1/group1/off-diagonal/frames/level0.npz",
+            "bytes": 237945,
+            "sha256": "51f90d2aca311432c53a873b23573d3a2b5c53adfdc35053b4b037b17250a4af"
+          },
+          "candidate_frame": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/contact-band-v1/group0/band-half/frames/level0.npz",
+            "bytes": 236723,
+            "sha256": "165147213ce639273822c9c30200beab86589fc5fc4e47a3de0fa96c236c35e0"
+          },
+          "reference_mechanics": {
+            "step": 300,
+            "time_s": 0.3,
+            "level": 0,
+            "within_level_step": 300,
+            "command_force_n": 0.1,
+            "plate_speed_m_per_s": 5.204170427930421e-13,
+            "compression_coordinate_m": 1.810147490302616e-07,
+            "plate_separation_m": 0.060039818985250966,
+            "upper_lateral_position_m": [
+              0.003,
+              2.891054577629725e-26
+            ],
+            "upper_quaternion_wxyz": [
+              1.0,
+              -1.7972690576064944e-17,
+              7.499939902173788e-13,
+              -2.564828773526729e-30
+            ],
+            "empty_analytic_position_error_m": null,
+            "empty_analytic_velocity_error_m_per_s": null,
+            "newton": 2,
+            "pcg_max": 53,
+            "pcg_total": 68,
+            "line_search_max": 1,
+            "newton_last_max_displacement_m": 6.726296201911881e-13,
+            "newton_last_contact_displacement_m": 0.0,
+            "ccd_minimum_alpha": 1.0,
+            "edge_triangle_check_enabled": true,
+            "edge_triangle_intersection_pairs": [],
+            "edge_triangle_intersection_count": 0,
+            "upper_reaction_n": 0.09999999838992045,
+            "lower_reaction_n": 0.09999999813472049,
+            "egg_inertia_resultant_norm_n": 2.607568563182955e-11,
+            "egg_kinetic_j": 1.1527629688015387e-16,
+            "equation_residual_relative": 1.948706885962505e-06,
+            "minimum_det_F": 0.9999988482306894,
+            "raw_vm_peak_pa": 25574.39091630453,
+            "raw_principal_peak_pa": 9661.727931596843,
+            "equilibrium_checks": {
+              "both_plate_reactions": true,
+              "plate_velocity": true,
+              "egg_inertial_resultant": true,
+              "egg_kinetic": true,
+              "equation_residual": true
+            }
+          },
+          "candidate_mechanics": {
+            "step": 300,
+            "time_s": 0.3,
+            "level": 0,
+            "within_level_step": 300,
+            "command_force_n": 0.1,
+            "plate_speed_m_per_s": -3.3306690738754696e-13,
+            "compression_coordinate_m": 2.012947012251798e-05,
+            "plate_separation_m": 0.06001987052987748,
+            "shear_target_m": 0.0,
+            "shear_coordinate_m": 0.0,
+            "upper_lateral_position_m": [
+              0.003,
+              -3.524275573223748e-30
+            ],
+            "upper_quaternion_wxyz": [
+              1.0,
+              1.3684386408946926e-17,
+              7.500001939946489e-13,
+              -3.080830440830639e-29
+            ],
+            "empty_analytic_position_error_m": null,
+            "empty_analytic_velocity_error_m_per_s": null,
+            "newton": 2,
+            "pcg_max": 60,
+            "pcg_total": 76,
+            "line_search_max": 1,
+            "newton_last_max_displacement_m": 4.5356845840198884e-13,
+            "newton_last_contact_displacement_m": 0.0,
+            "ccd_minimum_alpha": 1.0,
+            "edge_triangle_check_enabled": true,
+            "edge_triangle_intersection_pairs": [],
+            "edge_triangle_intersection_count": 0,
+            "upper_reaction_n": 0.10000000192936766,
+            "lower_reaction_n": 0.10000000159323703,
+            "upper_tangential_reaction_n": [
+              1.50001541254681e-13,
+              -3.2732461378719492e-22
+            ],
+            "lower_tangential_reaction_n": [
+              0.0,
+              -2.3227591848501285e-22
+            ],
+            "egg_inertia_resultant_norm_n": 4.5020158128316015e-12,
+            "egg_kinetic_j": 7.565791679530256e-17,
+            "equation_residual_relative": 1.8770598532267579e-06,
+            "minimum_det_F": 0.9999988482308837,
+            "raw_vm_peak_pa": 25574.390951471378,
+            "raw_principal_peak_pa": 9661.728319024585,
+            "equilibrium_checks": {
+              "both_plate_reactions": true,
+              "plate_velocity": true,
+              "egg_inertial_resultant": true,
+              "egg_kinetic": true,
+              "equation_residual": true
+            }
+          },
+          "both_actual_loads_within_one_percent": true,
+          "status": "diagnostic field contrast; equilibrium and reference uncertainty require separate admission",
+          "tangent_field": {
+            "relative_tensor_error": 6.559525604732735e-07,
+            "absolute_tensor_rms_error_pa": 0.002619385648683479,
+            "reference_tensor_rms_pa": 3993.254705482935,
+            "relative_floor_pa": 1.0
+          },
+          "membrane_n_per_m": {
+            "relative_error": 6.653632543433211e-07,
+            "absolute_weighted_rms_error": 1.2255363615732438e-06,
+            "reference_weighted_rms": 1.8419056862146443,
+            "relative_floor": 0.0005
+          },
+          "bending_n": {
+            "relative_error": 3.9519733674640386e-07,
+            "absolute_weighted_rms_error": 5.549568683183591e-12,
+            "reference_weighted_rms": 1.4042525511108698e-05,
+            "relative_floor": 2.5e-07
+          },
+          "raw_reference_peaks": {
+            "von_mises": {
+              "raw_peak_pa": 25574.390916304543,
+              "flat_index": 3762,
+              "material_location_m": [
+                0.0011360293496026862,
+                -0.001883910132028268,
+                0.0282914512940704
+              ]
+            },
+            "maximum_principal": {
+              "raw_peak_pa": 9661.727931596844,
+              "flat_index": 3630,
+              "material_location_m": [
+                -0.0022720586992053724,
+                0.0,
+                0.02813826611311841
+              ]
+            }
+          },
+          "raw_candidate_peaks": {
+            "von_mises": {
+              "raw_peak_pa": 25574.390951471392,
+              "flat_index": 3762,
+              "material_location_m": [
+                0.0011360293496026862,
+                -0.001883910132028268,
+                0.0282914512940704
+              ]
+            },
+            "maximum_principal": {
+              "raw_peak_pa": 9661.728319024594,
+              "flat_index": 3630,
+              "material_location_m": [
+                -0.0022720586992053724,
+                0.0,
+                0.02813826611311841
+              ]
+            }
+          },
+          "solid_only_full3D_on_columns": {
+            "relative_tensor_error": 6.041543004095292e-07,
+            "absolute_tensor_rms_error_pa": 0.0028529553580578736,
+            "reference_tensor_rms_pa": 4722.229662395819,
+            "relative_floor_pa": 1.0
+          },
+          "inner_surface": {
+            "relative_tensor_error": 6.944254938253132e-07,
+            "absolute_tensor_rms_error_pa": 0.002653898200123182,
+            "reference_tensor_rms_pa": 3821.7176986171903,
+            "relative_floor_pa": 1.0
+          },
+          "outer_surface": {
+            "relative_tensor_error": 6.217399748736894e-07,
+            "absolute_tensor_rms_error_pa": 0.002590704696815936,
+            "reference_tensor_rms_pa": 4166.862034795584,
+            "relative_floor_pa": 1.0
+          },
+          "common_field_artifact": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/closeout-analysis-v1/group2/band-fields/pair0-level0.npz",
+            "bytes": 1934110,
+            "sha256": "8565ab3f6cfa950853112dd1318c8ba8f178e9afc8fff07229ca197b6095c384"
+          }
+        }
+      ]
+    }
+  ],
+  "reference_qualified": false,
+  "scope": "Full-spatial endpoint contrasts on shared material columns and exact one-sided surfaces. Raw extrema retained separately. Unequal actual load or missing equilibrium is diagnostic only; no inferred accuracy ranking."
+}

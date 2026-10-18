@@ -14,6 +14,7 @@ from .artifacts import write_json
 def measure(args, scene, plate, egg, link, entry):
     assert args.cost_steps > 0 and args.cost_stride > 0 and args.cost_repeats > 0
     assert not args.empty and args.loads[-1] > 0
+    assert not args.shear_distance, "This warmed cost contract measures the normal held-load baseline"
     samples = []
     for repeat in range(-1, args.cost_repeats):
         steps = max(args.cost_stride * 2, 100) if repeat < 0 else args.cost_steps
