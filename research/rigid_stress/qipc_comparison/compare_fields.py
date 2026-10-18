@@ -186,7 +186,7 @@ def main():
                         surface_tensor[selected], expected_surface[selected], surfaces.weights_m2[selected]
                     )
         history.append({"time_s": time, "all_fields_finite": True, "errors": entries})
-        if path == files[-1] or control_step in (1, 19, 49, 99):
+        if path == files[-1] or control_step in (1, 19, 49, 99, 109, 119, 179, 249, 299, 419, 449, 539, 559):
             payload = {
                 "points_m": columns.points,
                 "weights_m3": columns.weights,

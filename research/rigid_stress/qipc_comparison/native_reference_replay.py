@@ -110,6 +110,12 @@ def main():
     assert native_elements.shape == (entry.state.stress_tensor.shape[0], 10)
     distance, permutation = cKDTree(coordinates).query(native_coordinates)
     assert distance.max() < 1e-14 and len(np.unique(permutation)) == len(coordinates)
+    np.savez_compressed(
+        args.output / "rest.npz",
+        coordinates_m=native_coordinates,
+        p2_elements=native_elements,
+        independent_p2_node_permutation=permutation,
+    )
     force_view = qd_to_torch(entry.state.force, transpose=True, copy=False)
     omega_view = qd_to_torch(entry.omega, transpose=True, copy=False)
     errno_view = qd_to_torch(workload.scene.rigid_solver._errno, transpose=True, copy=False)

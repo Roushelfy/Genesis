@@ -21,6 +21,8 @@ def main():
     parser = make_parser()
     parser.add_argument("--motion", type=Path)
     parser.add_argument("--tracking-damping", type=float, default=1e10)
+    parser.add_argument("--control-interval", type=float, default=0.01)
+    parser.add_argument("--substep-peaks", action="store_true")
     args = parser.parse_args()
     assert args.model == "shell" and args.envs == 1
     args.output.mkdir(parents=True, exist_ok=False)
@@ -28,10 +30,10 @@ def main():
     frames.mkdir()
     with np.load(args.conditions) as bank:
         coefficient = 0.6 * bank["friction"][0, 0].item()
-    assert np.isclose(coefficient, args.coupling_friction, rtol=0, atol=1e-15)
     gs.init(backend=gs.cuda, precision=args.precision, logging_level="warning")
     started = perf_counter()
     workload = ShellEgg(args)
+    assert np.isclose(coefficient, args.coupling_friction, rtol=0, atol=1e-15)
     motion = (
         PrescribedMotion.configure(workload.robot, args.motion, args.sim_dt, args.tracking_damping)
         if args.motion is not None
@@ -40,7 +42,9 @@ def main():
     if motion is not None:
         assert args.substeps == 1 and args.steps * motion.stride < len(motion.q)
     else:
-        assert args.sim_dt == 0.01
+        control_stride = round(args.control_interval / args.sim_dt)
+        assert args.control_interval == 0.01 and control_stride > 0
+        assert abs(control_stride * args.sim_dt - args.control_interval) < 1e-12
     torch.cuda.synchronize()
     faces = tensor_to_array(workload.egg.get_faces())[0]
     face_mass = workload.egg.topology.faces_mass
@@ -93,12 +97,70 @@ def main():
     nonfinite = False
     peak = -np.inf
     principal_peak = -np.inf
+    physical_observations = 0
+    invalid_physical_observations = 0
+    micro_journal = None
+    if args.substep_peaks:
+        assert args.instrumented and motion is None
+        micro_journal = (args.output / "physical-step-peaks.jsonl").open("w", buffering=1)
+
+        def observe_physical_step(solver):
+            nonlocal peak, principal_peak, physical_observations, invalid_physical_observations
+            physical_observations += 1
+            workload.observation.update(solver)
+            tensor = workload.observation.tensors[:, 0].reshape(-1, 3, 3, 3)
+            finite = torch.isfinite(tensor).all().item()
+            vm_peak = workload.observation.von_mises[:, 0].max().item() if finite else None
+            tensile_peak = torch.linalg.eigvalsh(tensor)[..., -1].max().item() if finite else None
+            time = physical_observations * args.sim_dt / args.substeps
+            micro_journal.write(
+                json.dumps(
+                    {
+                        "physical_step": physical_observations - 1,
+                        "time_s": time,
+                        "all_fields_finite": bool(finite),
+                        "raw_vm_peak_pa": vm_peak,
+                        "raw_maximum_principal_pa": tensile_peak,
+                    },
+                    allow_nan=False,
+                )
+                + "\n"
+            )
+            invalid_physical_observations += not finite
+            if not finite or vm_peak > peak or tensile_peak > principal_peak:
+                payload = {
+                    "time_s": time,
+                    "physical_step": physical_observations - 1,
+                    "cauchy_world_pa": tensor_to_array(tensor).copy(),
+                    "vm_pa": tensor_to_array(workload.observation.von_mises)[:, 0].reshape(-1, 3),
+                    "vertices_world_m": tensor_to_array(workload.egg.get_verts_pos())[0],
+                    "q": tensor_to_array(workload.robot.get_qpos())[0],
+                }
+                if not finite:
+                    np.savez_compressed(args.output / "invalid-physical-step-state.npz", **payload)
+                else:
+                    if vm_peak > peak:
+                        peak = vm_peak
+                        np.savez_compressed(args.output / "raw-vm-peak-state.npz", **payload)
+                    if tensile_peak > principal_peak:
+                        principal_peak = tensile_peak
+                        np.savez_compressed(args.output / "raw-principal-peak-state.npz", **payload)
+
+        diagnostics.SUBSTEP_OBSERVER = observe_physical_step
     with (args.output / "steps.jsonl").open("w", buffering=1) as journal:
         try:
             for step in range(args.steps):
                 if args.instrumented:
                     diagnostics.ACTIVE.clear()
-                phase = motion.advance(workload, step, False) if motion is not None else controller_step(workload, True)
+                if motion is not None:
+                    phase = motion.advance(workload, step, False)
+                elif control_stride == 1:
+                    phase = controller_step(workload, True)
+                else:
+                    if step % control_stride == 0:
+                        phase = controller_step(workload, True, advance=False)
+                    workload.scene.step()
+                    workload.observation.update(workload.scene.sim.shell_solver)
                 if motion is not None:
                     workload.observation.update(workload.scene.sim.shell_solver)
                 tensor = tensor_to_array(workload.observation.tensors)[:, 0].reshape(-1, 3, 3, 3)
@@ -117,6 +179,10 @@ def main():
                 if args.instrumented:
                     payload["contact_impulses_ns"] = tensor_to_array(diagnostics.ACTIVE.impulses)[:, 0]
                     payload["contact_positions_world_m"] = tensor_to_array(diagnostics.ACTIVE.points)[:, 0]
+                    payload["contact_moment_impulses_world_origin_nms"] = tensor_to_array(diagnostics.ACTIVE.moments)[
+                        :, 0
+                    ]
+                    payload["contact_impulse_kinetic_work_j"] = tensor_to_array(diagnostics.ACTIVE.work)[:, 0]
                 if (step + 1) % max(args.record_every, 1) == 0 or step == args.steps - 1 or not finite:
                     np.savez_compressed(frames / f"step{step:06d}.npz", **payload)
                 row = {
@@ -139,6 +205,10 @@ def main():
                         contact_impulse_over_control_interval_ns=impulse.sum(axis=0).tolist(),
                         contact_average_force_over_control_interval_n=(impulse.sum(axis=0) / args.sim_dt).tolist(),
                         contact_average_force_scope="Accumulated impulses over all substeps; cannot be labeled an instantaneous final-substep force",
+                        contact_average_moment_world_origin_over_interval_nm=(
+                            payload["contact_moment_impulses_world_origin_nms"].sum(axis=0) / args.sim_dt
+                        ).tolist(),
+                        contact_impulse_kinetic_work_j=payload["contact_impulse_kinetic_work_j"].sum().item(),
                     )
                 if motion is not None:
                     row.update(motion.metrics(workload.robot, step))
@@ -154,7 +224,14 @@ def main():
                     nonfinite = True
                     break
             completed = count == args.steps and not nonfinite
+            if args.substep_peaks:
+                completed = (
+                    completed and physical_observations == count * args.substeps and not invalid_physical_observations
+                )
         finally:
+            if args.substep_peaks:
+                diagnostics.SUBSTEP_OBSERVER = None
+                micro_journal.close()
             write_json(
                 args.output / "result.json",
                 {
@@ -168,6 +245,8 @@ def main():
                     "nonfinite_output": nonfinite,
                     "intrusive_seconds": perf_counter() - started,
                     "reference_accuracy_qualified": False,
+                    "physical_peak_observations": physical_observations,
+                    "invalid_physical_peak_observations": invalid_physical_observations,
                 },
             )
     workload.scene.rigid_solver.check_errno()
