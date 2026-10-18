@@ -81,6 +81,7 @@ def main():
     parser.add_argument("--memory-gb", type=int, default=64)
     parser.add_argument("--concurrency", type=int)
     parser.add_argument("--cpus", type=int, default=8)
+    parser.add_argument("--keep-going", action="store_true")
     args = parser.parse_args()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
@@ -130,6 +131,8 @@ def main():
             f"cd {shlex.quote(str(source))}",
             'trap \'task_status=$?; printf "%s\\n" "$task_status" > "$task_run/returncode.txt"; exit "$task_status"\' EXIT',
         ]
+        if args.keep_going:
+            lines.append("campaign_status=0")
         for task in group:
             command = [str(args.python), "-m", task["module"], *task["args"], "--output", str(run / task["name"])]
             task_source = str(Path(task.get("source", source)).resolve())
@@ -142,7 +145,24 @@ def main():
                     + shlex.join(["env", "PYTHONPATH=" + str(tools) + ":" + task_source, *command])
                     + " )"
                 )
-            lines.append(invocation + " > " + shlex.quote(str(run / (task["name"] + ".log"))) + " 2>&1")
+            invocation += " > " + shlex.quote(str(run / (task["name"] + ".log"))) + " 2>&1"
+            if args.keep_going:
+                status_path = shlex.quote(str(run / (task["name"] + ".returncode.txt")))
+                lines.extend(
+                    (
+                        "if " + invocation + "; then",
+                        "  printf '%s\\n' 0 > " + status_path,
+                        "else",
+                        "  task_exit=$?",
+                        "  printf '%s\\n' \"$task_exit\" > " + status_path,
+                        "  campaign_status=1",
+                        "fi",
+                    )
+                )
+            else:
+                lines.append(invocation)
+        if args.keep_going:
+            lines.append('exit "$campaign_status"')
         (output / f"workload-{group_id}.sh").write_text("\n".join(lines) + "\n")
     job = output / "job.sh"
     job.write_text(

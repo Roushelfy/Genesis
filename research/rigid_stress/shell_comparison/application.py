@@ -141,6 +141,7 @@ class ShellEgg:
 def main():
     args = make_parser().parse_args()
     assert args.model in ("shell", "rigid")
+    assert args.output_mode == "full"
     args.output.mkdir(parents=True, exist_ok=False)
     memory = ProcessMemory(args.memory)
     memory.start()

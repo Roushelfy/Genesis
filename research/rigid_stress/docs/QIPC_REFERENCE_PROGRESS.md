@@ -199,6 +199,85 @@ Source/frame/sampling identities and exact absolute errors are recorded. Full
 reference qualification, replay separation, both protocols and new primary
 speed evidence are still required.
 
+## Prescribed motion, independent replay and current numerical limits
+
+All six capped DPR/SCR case0/2/7 histories726201 and both stock/fine-diagnostic
+shell histories726204 now complete900 ticks. Completion/finite output is not
+physical qualification. The half-step QIPC control726198 also fails near1.088s;
+standard PCG726219 fails after881 accepted steps, and the smoother-friction
+control726224 fails after798. Friction-off726224 is a separate causal diagnostic,
+never a replacement for the original friction task.
+
+The frozen shared motion726222 uses the first complete6s of case0's rigid
+trajectory, joint-linear interpolation and exact MuJoCo FK at0.25ms. It is fixed
+without QIPC stress or footprint fitting. Native/Shell use finite implicit
+servos with caps overridden; QIPC uses its original per-link rigid pose DBC and
+a free3D hollow solid. Native physics-step time is an optional example argument
+whose default remains10ms. A new frozen native source isad6b3e2da; the previous
+validation checkout9bd1086ca remains unchanged.
+
+The1.2s tracking audit726282 measures maximum authored-link position errors
+7.11e-12m for damping1e10 and7.11e-10m for1e8, with the same bound in the shell
+pilot. This is measured enforcement, not an assertion that actuator gains equal
+the capped protocol. All three6s native prescribed histories726276 and stock,
+coarse-diagnostic and fine-diagnostic shell histories726279 now complete. Raw
+VM/principal peak states are retained in the new workers. Complete grasp force,
+field and gain-sensitivity audits remain required.
+
+Original-main prescribed QIPC726263 reaches1.087s, then hits256 Newton iterations.
+Its preceding726227 attempt was an observer-only API error: original main lacks
+the integration branch's body-offset binding. The corrected observer verifies
+original main's rigid ownership prefix against its public owner array and the
+absence of ABD/cluster topology changes. DBC/tolerance726264 and Hencky726271
+controls preserve their distinct failed/partial histories. Neither the finite
+pose error nor a small residual relative to hundreds of newtons of squeeze
+establishes a small error in the much smaller net egg wrench. Net balance and
+motion outcomes must be checked separately.
+
+Independent actual-load replay726290 now passes an affine elastic control and
+replays measured spatial contact minus actual acceleration/gravity loads into
+independent P1 and P2 elasticity. P2 virtual-work transfer preserves force and
+undeformed moment, and records the deformed-coordinate moment difference and
+the small rigid-balance correction. A complete material locator resolves the
+first scikit-fem boundary-point lookup failure726282: maximum selected-tet
+projection distance is1.49e-16m, with no coordinate clipping in the transfer.
+At1.16s of the failed Hencky source, independent P1/P2 common tangent errors are
+0.01449/0.74389. This diagnoses constitutive/discretization response under the
+actual resolved loads; it is not a qualified contact ranking or point-wrench
+reconstruction comparison.
+
+One bounded numerical diagnostic is isolated from the unchanged QIPC baseline:
+`line-search-roundoff-diagnostic.patch` adds16 double epsilons times absolute
+current energy to the non-KKT line-search comparison. Original physical energy,
+gradient, Hessian, CCD and all other native objects are unchanged. Job726291
+recompiles that one translation unit and performs fresh device/host links into
+owned files, hashing reused objects and verifying the original binary unchanged.
+The variant library SHA256 is
+`d4b90d5cbcbee44fb2c92b9406d5ca15f70e4dcda82469c5fb9865bc37526211`.
+Its SNH candidate726298 uses velocity1e-9/linear1e-8 and advances beyond the
+old first-grasp failure with measured force residuals; the Hencky candidate
+still exhausts Newton/PCG at1.103s. This variant is not yet qualified. Bounded
+complete-history mesh/thickness and dt/stopping/friction/band studies are
+registered separately; their failures and unresolved peaks remain evidence.
+
+New throughput work distinguishes scopes explicitly. The historically named
+`primary-*-cost-v1` campaigns enable process-memory polling and are intrusive
+diagnostic cost/memory runs. Their FP32 native DPR warmup rejects the contact
+wrench preservation budget atB1/64/4096; retain these failures without relaxing
+the check. The separate `full-field-*-timing-v1` campaigns useFP64, no memory
+polling, field export or solver instrumentation inside the timer, with900 warmup
+and three900-tick repeats. Native rigid/DPR/tuned-DPR/SCR full output and separate
+max output, substeps1/10 andB1/64/4096 are registered; shell default/fine-tuned
+full output usesB1/32/256. The cohort repeats the same case0 bank and matching
+shell friction, so it must be labeled a duplicate-case scaling cohort rather
+than a varied RL bank. These are new measurements; no old rates are substituted.
+The submitter can retain individual task exit codes while continuing independent
+configurations, and still returns a failing campaign status if any task fails.
+
+See [reproduction instructions](RUNNING_QIPC_REFERENCE.md). Full reference
+qualification, actual point-wrench replay, lifecycle studies, profiles and the
+final shared-scale figures/report remain unfinished.
+
 ## Completion gates
 
 1. Exact-energy stress/parameter and independent small-control validation.

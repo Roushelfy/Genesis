@@ -132,7 +132,11 @@ def run(args, workload, shell_model, diagnostic_buffers=None):
             final_positions = tensor_to_array(workload.egg.get_verts_pos())
         else:
             final_fields = (
-                tensor_to_array(workload.link.get_stress_field(copy=False)[0]) if workload.stress else np.empty(0)
+                tensor_to_array(workload.link.get_stress_field(copy=False)[0])
+                if workload.stress and args.output_mode == "full"
+                else tensor_to_array(workload.link.get_max_stress())
+                if workload.stress
+                else np.empty(0)
             )
             final_positions = tensor_to_array(workload.egg.get_pos())
         final_output_finite = bool(np.isfinite(final_fields).all() and np.isfinite(final_positions).all())
@@ -245,6 +249,7 @@ def make_parser():
     parser.add_argument("--precision", choices=("32", "64"), default="32")
     parser.add_argument("--substeps", type=int, default=1)
     parser.add_argument("--sim-dt", type=float, default=0.01)
+    parser.add_argument("--output-mode", choices=("full", "max"), default="full")
     parser.add_argument("--iterations", type=int, default=50)
     parser.add_argument("--tolerance", type=float, default=1e-4)
     parser.add_argument("--patches", type=int, default=6)
