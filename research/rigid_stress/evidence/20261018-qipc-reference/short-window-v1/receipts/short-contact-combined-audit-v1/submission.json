@@ -1,0 +1,18 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0%1",
+    "--partition=rtx-mid",
+    "--gres=gpu:1",
+    "--cpus-per-task=8",
+    "--mem=64G",
+    "--time=30",
+    "--job-name=shell22-compare",
+    "--output=/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-combined-audit-v1/logs/%A_%a.log",
+    "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-combined-audit-v1/job.sh"
+  ],
+  "job": "726719",
+  "node_local_cache": true,
+  "allow_home_output": true
+}

@@ -1,7 +1,25 @@
 # Requirement audit: QIPC three-method comparison
 
-**Completion is not established.** This is the current audit against the
-[unchanged goal](QIPC_REFERENCE_COMPARISON_GOAL.md), not a reduced acceptance
+**Completion is not established.** The user-directed sparse-keyframe update
+supersedes older dense stress norms, temporal-max and primary dense-timing
+requirements. The historical evidence rows below retain their measured scope;
+they do not reinstate those requirements. New required gates are short-contact-
+window stage profiling, bounded tolerance comparison, justified numerical/cost
+selection, and full spatial fields at the predeclared sparse frames during
+continuous prescribed and original capped grasps. Sparse computation must
+preserve native failure/finite/geometry checks. The
+[11-run short-window packet](../evidence/20261018-qipc-reference/short-window-v1/README.md)
+now establishes actual sparse observation, stage timing, strict sparse/dense
+keyframe equivalence, bounded numerical contrasts and three minimally
+instrumented repeats. Solver calls dominate the measured cost. PCG1e-6 is a
+passing candidate, not a justified final setting: fixed-Newton looser-PCG
+contrasts are pending. Capped short-window validation, actual sparse native/
+Shell computation, complete-grasp keyframe qualification and matched primary
+sparse cost remain open.
+
+ This is the current audit against the
+[current goal](QIPC_REFERENCE_COMPARISON_GOAL.md), including the explicit user
+update. It is not a silently reduced acceptance
 contract. An executed finite history proves only that history's stated scope.
 Uncertainty failures, missing evidence and prepared-but-unexecuted code remain
 open. The [working report](QIPC_REFERENCE_RESULTS_20261018.md) gives measured

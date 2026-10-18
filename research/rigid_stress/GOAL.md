@@ -2,6 +2,15 @@
 
 Follow [docs/QIPC_REFERENCE_COMPARISON_GOAL.md](docs/QIPC_REFERENCE_COMPARISON_GOAL.md).
 
+User update,2026-10-18: stress output is needed only at a few predeclared
+keyframes, with complete spatial fields there. First profile a short contact
+window and compare solver tolerances; select a measured practical setting
+before further full-length experiments. Preserve continuous physical/contact
+history and failure detection, but remove unnecessary every-step stress
+recovery/export. Dense stress histories, whole-history stress norms and a
+certified temporal maximum are no longer acceptance requirements. The detailed
+goal's user-update section supersedes conflicting earlier observation plans.
+
 Deliver a detailed comparison of Directional Patch Recovery (DPR, currently
 pressure), Surface-Constrained Recovery (SCR, intrinsic + body_source_prior),
 and Kashu shell PR22. Use qualified cuda-graph-qipc 3D solid FEM contact
@@ -11,7 +20,8 @@ uncertainty, load reconstruction and omitted deformation feedback.
 
 Run common prescribed-motion and representative original force-limited-control
 protocols. Keep normal force and friction, arbitrary convex/nonconvex changing
-contacts, full-field primary timing and max-only secondary timing. Make the two
+contacts, primary timing at the sparse stress-observation cadence and separate
+solver/observer costs. Existing dense full/max timing is supplementary. Make the two
 rigid route names understandable without changing their physics by renaming.
 
 Reuse the [completed shell comparison](docs/SHELL_COMPARISON_RESULTS_20261018.md),

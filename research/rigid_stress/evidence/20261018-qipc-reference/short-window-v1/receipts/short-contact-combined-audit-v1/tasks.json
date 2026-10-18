@@ -1,0 +1,66 @@
+[
+  [
+    {
+      "name": "keyframe-fields",
+      "module": "research.rigid_stress.qipc_comparison.reference_uncertainty",
+      "args": [
+        "--reference",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1/group3/budget8192",
+        "--candidates",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1/group0/baseline-dense-compute",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1/group0/baseline-sparse",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1/group2/linear-relaxed",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-minimal-timing-v1/group0/linear-relaxed-timing-r0",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-minimal-timing-v1/group0/linear-relaxed-timing-r1",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-minimal-timing-v1/group0/linear-relaxed-timing-r2",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-followup-v1/group0/newton-mid-linear-relaxed",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1/group1/newton-relaxed",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-followup-v1/group1/partition-gate-off",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-followup-v1/group2/partition-gate-on",
+        "--surface-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface2-wall4.npz",
+        "--no-column-export"
+      ]
+    },
+    {
+      "name": "keyframe-reactions",
+      "module": "research.rigid_stress.qipc_comparison.reaction_history",
+      "args": [
+        "--reference",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1/group3/budget8192",
+        "--candidates",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1/group0/baseline-dense-compute",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1/group0/baseline-sparse",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1/group2/linear-relaxed",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-minimal-timing-v1/group0/linear-relaxed-timing-r0",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-minimal-timing-v1/group0/linear-relaxed-timing-r1",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-minimal-timing-v1/group0/linear-relaxed-timing-r2",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-followup-v1/group0/newton-mid-linear-relaxed",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1/group1/newton-relaxed",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-followup-v1/group1/partition-gate-off",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-followup-v1/group2/partition-gate-on",
+        "--layout",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/reaction-layout-v1/group0/layout/layout.npz",
+        "--finger-names",
+        "left_finger",
+        "right_finger"
+      ]
+    },
+    {
+      "name": "window-audit",
+      "module": "research.rigid_stress.qipc_comparison.window_audit",
+      "args": [
+        "--profiles",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-followup-v1",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-minimal-timing-v1",
+        "--fields",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-combined-audit-v1/group0/keyframe-fields/result.json",
+        "--reactions",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-combined-audit-v1/group0/keyframe-reactions",
+        "--plan",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/meta/short-contact-profile-v1-plan.json"
+      ]
+    }
+  ]
+]

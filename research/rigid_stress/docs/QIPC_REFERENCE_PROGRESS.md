@@ -671,3 +671,84 @@ node-local caches remain; new submissions record `--allow-home-output`. Original
 data, environments/builds and compatibility links remain in place. No unrelated
 jobs are stopped. Full raw/source closure and the remaining capped, local-contact,
 reference-qualification and final figure/report requirements remain open.
+
+
+## User-directed execution change: sparse keyframes, profiling first
+
+The user-update section in `QIPC_REFERENCE_COMPARISON_GOAL.md` supersedes dense
+stress-observation requirements. Full now means spatial fields at a few
+predeclared keyframes. Whole-history stress norms and temporal maxima are no
+longer required. Published dense packets remain unchanged as supplementary
+evidence. This update is acknowledged before further long submissions.
+
+Next execution order:
+
+1. Continuous original-state prescribed contact window through1.16s, profiled
+   over(1.05,1.16]s, including onset and loaded contact. Predeclared diagnostic
+   keyframes are1.10/1.13/1.16s, selected from motion/contact stages rather than
+   candidate stress errors. Separate controller, solver, native/geometry checks,
+   stress/contact observer, scalar/full-field transfer, compression/I/O and cold
+   setup. Explicit synchronization makes this an intrusive profile, not final
+   uninstrumented throughput. A later matched timing pass must verify the choice.
+2. Bounded numerical contrasts around the existing original-main/16eps source:
+   baseline, Newton stopping only, linear stopping only and linear budget only.
+   A baseline dense-compute/sparse-export control isolates observation cost.
+   Keep material/contact physics unchanged. Inspect actual iterations, caps,
+   ET/LS/Newton exits, force balance, reactions and common keyframe fields.
+3. Choose settings only after measured residual/observable and cost checks;
+   qualify capped coupling separately before a new full-length sparse campaign.
+   Preserve continuous contact/friction/controller history. Sparse mode must
+   avoid `SolidObserver.read_step` on unselected steps, rather than merely
+   suppressing files. Native failures, finite states and geometry-only det(F)
+   checks remain on every physical step; rejected states retain native dumps.
+
+Existing jobs were assessed without hot edits or cancellation. Fresh case0
+726509_0 has passed8.66/9s and remains useful; case7 surface/dt/band controls
+726567_1/2/4 continue with their immutable sources. The not-yet-started final
+friction task726567_5 is reversibly held (`JobHeldUser`) until short-window
+results justify further long work. Existing dense observations can later be
+sampled at the declared frames; they do not prescribe new dense computation.
+The user's temporary-home authorization and4GB output bound still apply.
+
+## Measured short-window checkpoint and PCG stopping semantics
+
+Jobs726699/726705 execute8 original-state contact-window configurations;
+726709 adds3 fresh boundary-timing repeats. Analyses726704/726719 verify all3
+predeclared fields/reactions and actual numerical bands. The
+[short-window packet](../evidence/20261018-qipc-reference/short-window-v1/README.md)
+retains all33 full-spatial NPZs, exact journals/timing data and source variants.
+Sparse computation makes3 stress/contact observer calls rather than1160,
+with strict same-setting keyframe equivalence. Native solver calls dominate:
+66.857s of the baseline67.206s window, versus0.152s observation. The baseline
+uses1,102,522 PCG iterations in110 physical steps. No n1 dense/sparse speed ratio
+or full-grasp throughput follows from these intrusive spans.
+
+Linear1e-6 at fixed Newton1e-9 passes all3 provisional keyframe bands; the
+whole-window repetitions measure59.292/62.896/63.783s, with separately measured
+initial read-only elastic activation and deferred compression/I/O. Newton1e-7
+alone fails actual net force balance at1.13s despite tiny field contrasts.
+Partition-PCG gate off/on fails common field/reaction bands; the enabled gate
+has4892 attempts and0 accepts. It is an entry gate, not residual-based adaptive
+inexact Newton stopping. Target-binding audits726722/726724 independently
+verify robot poses against shared targets and retain actual free-egg COM/tilt
+at the keys. Small keyframe target errors do not explain path differences.
+
+The user questioned whether PCG1e-6 is needed when Newton controls nonlinear
+precision. Local source confirms that `tol_rate` multiplies the initial
+`abs(r^T M^-1 r)`, so its square root is the relative preconditioned residual
+norm for a fixed SPD preconditioner. The configuration's short residual/rhs
+description is imprecise. Newton compares the mapped vertex direction before
+CCD with `velocity_tol * dt`; direct force residuals remain necessary.
+The1e-6 setting is provisional and has not been shown necessary. Predeclared
+job726725 fixes Newton1e-9 and compares PCG1e-6/1e-4/1e-3/1e-2 with identical
+continuous physics,3 keys, instrumentation and actual per-step robot-tracking
+checks. All4 fresh processes share an allocation; each tolerance has one run.
+Results are pending, outside the frozen11-run packet. No native binary change
+or adaptive residual forcing policy is included in this comparison.
+
+Existing case0 completes9000 steps/9s with one reset,0 invalid steps and175
+PCG-cap steps; those caps remain visible. Case7 surface2 and half-band also
+complete. Half-dt726567_2 is still running and friction726567_5 remains held.
+At the latest storage check, the authorized fallback occupies3.721GB of its
+4GB bound; the four-run comparison has a20MB output estimate and private
+node-local caches. Original data/environments/symlinks remain unchanged.

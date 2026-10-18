@@ -1,0 +1,35 @@
+[
+  [
+    {
+      "name": "target-binding",
+      "module": "research.rigid_stress.qipc_comparison.contact_window",
+      "args": [
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/roundoff-prescribed-v1/group0/snh",
+        "--duration",
+        "1.16",
+        "--window-start",
+        "1.05",
+        "--keyframes",
+        "1.10",
+        "1.13",
+        "1.16",
+        "--targets-only"
+      ]
+    },
+    {
+      "name": "pose-tracking",
+      "module": "research.rigid_stress.qipc_comparison.pose_tracking",
+      "args": [
+        "--binding",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-pose-tracking-v1/group0/target-binding",
+        "--profiles",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-v1",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-followup-v1",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-minimal-timing-v1",
+        "--layout",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/reaction-layout-v1/group0/layout/layout.npz"
+      ]
+    }
+  ]
+]

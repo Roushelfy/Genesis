@@ -1,10 +1,19 @@
 # Three-method QIPC comparison: working results,2026-10-18
 
-**Status: active, incomplete.** Complete prescribed-motion histories now have
+**Status: active, incomplete.** The user's latest update requires full spatial
+fields only at a few predeclared keyframes, with short-window profiling and
+numerical tolerance comparison before new long experiments. The dense norms,
+physical-step temporal peaks and dense full/max timing below are retained
+historical supplementary evidence; they are no longer required observation
+cadence or the primary application cost. Current execution follows the update
+in [the full goal](QIPC_REFERENCE_COMPARISON_GOAL.md).
+
+ Complete prescribed-motion histories now have
 actual common-reference field discrepancies for DPR, SCR and PR22 Shell.
 The reference fails the current spatial/timestep uncertainty targets, so those
-discrepancies remain diagnostic. Capped cases2/7 complete9s, while representative
-case0 and the remaining controls are still running. Full9s case7 wall/stopping
+discrepancies remain diagnostic. Capped cases0/2/7 now complete9s; case7 surface,
+wall, band and strict controls also complete, while half-dt is still running.
+Full9s case7 wall/stopping
 contrasts exceed100%; the reference remains unqualified. The shared data mount is
 still unwritable; an explicitly documented bounded temporary output root now
 allows selected validation and coarse histories to proceed. This report is a checkpoint, not the
@@ -33,6 +42,49 @@ JSON histories are losslessly retained alongside compact summaries.
 Original runtime paths below are relative to the established data run
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/`.
 New fallback campaigns are explicitly labeled with root `F` in the execution record.
+
+## New sparse-keyframe short-window evidence
+
+The [11-run short-window checkpoint](../evidence/20261018-qipc-reference/short-window-v1/README.md)
+retains all33 full-spatial keyframe states, executed source variants and
+measured analyses. Original-state histories advance continuously to1.16s;
+the timed interval(1.05,1.16]s contains110 physical steps and the predeclared
+1.10/1.13/1.16s observations. Sparse mode actually skips elastic/contact stress
+observation on unselected steps while preserving native failure, finite-state
+and geometry-only det(F) checks.
+
+The initial segmented sparse profile measures67.206s, including66.857s native
+solver calls and0.152s total for3 stress/contact observations. Its window uses
+1,102,522 PCG iterations. The dense-compute control performs1160 observations
+but exports the same3 fields. All3 same-setting fields pass strict observation
+equivalence: maximum position difference7.71e-11m and volume-weighted corotated
+tensor contrast2.84e-6 with a1Pa denominator floor. Their different iteration
+counts and n1 measurements do not establish a sparse/dense throughput ratio.
+
+With Newton1e-9m/s fixed, linear1e-6 passes the provisional keyframe bands;
+three fresh whole-window checks measure59.292/62.896/63.783s, median62.896s.
+Cold elastic activation is outside that window, full-field host transfer is
+inside, and compression/I/O is deferred. Relaxing Newton alone to1e-7m/s
+fails the declared force-balance band at1.13s: net residual3.865% of egg
+weight exceeds1%, despite small field contrasts. Partition-PCG gate off/on
+changes loaded tangent fields16.63–17.32%/15.27–16.00%, failing the declared5%
+band. The native Newton-aware option makes4892 attempts and0 accepts; it is a
+partition-PCG entry gate, not an adaptive inner residual forcing policy.
+Independent target bindings show represented robot-vertex tracking errors
+below9e-8m at these keys in all11 runs; this does not certify the full boundary
+history or explain free-egg/contact-path differences.
+
+**PCG1e-6 remains provisional.** Native code stops when
+`abs(r_k^T M^-1 r_k) <= tol_rate * abs(r_0^T M^-1 r_0)` or the iteration cap
+is reached. With a fixed SPD preconditioner,1e-6 therefore corresponds to a
+relative preconditioned residual norm1e-3; default1e-4 corresponds to1e-2.
+The outer Newton displacement test uses `velocity_tol * dt`, rather than a
+direct force tolerance. Final force/field checks remain necessary. At the
+user's request, job726725 now compares PCG1e-6/1e-4/1e-3/1e-2 with Newton fixed
+and otherwise identical short-window physics/timing. Its results are pending
+and are not part of the frozen11-run packet. A passing short window does not
+qualify complete grasps, capped coupling, spatial/contact uncertainty or a
+primary sparse DPR/SCR/Shell cost recommendation.
 
 ## Methods and what their fields mean
 

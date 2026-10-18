@@ -1,5 +1,16 @@
 # Working on native rigid stress recovery
 
+**Execution-agent handoff,2026-10-18:** the user changed the observation and
+execution priorities. Read the user-update section of
+[the active goal](docs/QIPC_REFERENCE_COMPARISON_GOAL.md) before further long
+submissions: only a few predeclared full-spatial-stress keyframes are needed;
+first run short-contact-window timing profiles and tolerance comparisons,
+then full-length experiments with sparse stress computation/export. Preserve
+continuous mechanics/contact history and failure checks. Dense stress norms
+and global temporal peaks are no longer required. Acknowledge this update in
+the progress record at the next safe boundary; assess existing jobs without
+hot-editing their captured source or automatically discarding their results.
+
 Read [GOAL.md](GOAL.md), [docs/QIPC_REFERENCE_COMPARISON_GOAL.md](docs/QIPC_REFERENCE_COMPARISON_GOAL.md),
 [README.md](README.md) and [docs/RUNNING.md](docs/RUNNING.md) first.
 The active task compares DPR (pressure), SCR (intrinsic + body_source_prior)

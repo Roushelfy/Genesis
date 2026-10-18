@@ -1,0 +1,5 @@
+{
+  "time_utc": "2026-10-18T16:51:05.314094+00:00",
+  "scope": "Metadata label correction only; original results remain unchanged",
+  "note": "The first3 minimal timing results inherited a legacy kind string containing segmented. Their explicit timing_mode=whole-window, input arguments and captured measure() implementation establish that no per-stage CUDA events/synchronization were added. Use timing_mode as the authoritative mode. Future source uses a generic kind label."
+}

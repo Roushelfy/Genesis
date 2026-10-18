@@ -1,0 +1,100 @@
+{
+  "kind": "continuous-short-contact-window-segmented-profile",
+  "config": {
+    "dt": 0.001,
+    "young": 10000000000.0,
+    "poisson": 0.3,
+    "density": 2000.0,
+    "velocity_tolerance": 1e-09,
+    "linear_tolerance": 1e-08,
+    "max_newton": 256,
+    "max_pcg": 4096,
+    "d_hat": 2e-05,
+    "friction": 0.7191016138165071,
+    "friction_epsilon_velocity": 0.0001,
+    "resistance": 10000000000.0,
+    "energy": "snh",
+    "mas_precision": "double",
+    "linear_solver": "partition_pcg",
+    "newton_aware_pcg": false
+  },
+  "requested_steps": 1160,
+  "executed_steps": 1160,
+  "completed_requested_history": true,
+  "setup_seconds": 3.3744694649940357,
+  "total_intrusive_seconds": 270.1484546919819,
+  "window_intrusive_seconds": 53.606600684986915,
+  "window_observations": 110,
+  "stage_summary": {
+    "controller": {
+      "calls": 110,
+      "total_wall_seconds": 0.034573924902360886,
+      "median_wall_ms": 0.30937601695768535,
+      "p95_wall_ms": 0.3458004328422248
+    },
+    "field_compression_and_IO": {
+      "calls": 3,
+      "total_wall_seconds": 0.04905909899389371,
+      "median_wall_ms": 15.51095099421218,
+      "p95_wall_ms": 18.00127440947108
+    },
+    "full_field_host_transfer": {
+      "calls": 3,
+      "total_wall_seconds": 0.0015006500761955976,
+      "median_wall_ms": 0.5026780418120325,
+      "p95_wall_ms": 0.6086458335630596
+    },
+    "journal_IO": {
+      "calls": 110,
+      "total_wall_seconds": 0.004353175696451217,
+      "median_wall_ms": 0.036909535992890596,
+      "p95_wall_ms": 0.05685873329639435
+    },
+    "native_status_and_geometry_check": {
+      "calls": 110,
+      "total_wall_seconds": 0.08352422300959006,
+      "median_wall_ms": 0.7209410250652581,
+      "p95_wall_ms": 0.9762337547726929
+    },
+    "observer_prepare": {
+      "calls": 3,
+      "total_wall_seconds": 0.00026130094192922115,
+      "median_wall_ms": 0.07968296995386481,
+      "p95_wall_ms": 0.10057198232971132
+    },
+    "scalar_metrics_host_transfer": {
+      "calls": 3,
+      "total_wall_seconds": 0.0022306019673123956,
+      "median_wall_ms": 0.4750299849547446,
+      "p95_wall_ms": 1.2045843934174625
+    },
+    "solver_step": {
+      "calls": 110,
+      "total_wall_seconds": 53.27037371811457,
+      "median_wall_ms": 386.4103544910904,
+      "p95_wall_ms": 1792.7407756709724
+    },
+    "stress_and_contact_observer": {
+      "calls": 3,
+      "total_wall_seconds": 0.15408026601653546,
+      "median_wall_ms": 2.8502700151875615,
+      "p95_wall_ms": 133.86248609167524
+    }
+  },
+  "stress_observer_calls": 3,
+  "exported_keyframes_s": [
+    1.1,
+    1.1300000000000001,
+    1.16
+  ],
+  "pcg_cap_steps": 7,
+  "failure": null,
+  "newton_aware_gate": {
+    "active": false,
+    "attempts": null,
+    "accepts": null,
+    "last_ratio": null
+  },
+  "reference_qualified": false,
+  "scope": "Intrusive segmented profile: explicit synchronization and CUDA stream spans include host dispatch/idle intervals; they are not summed kernel durations or an uninstrumented throughput estimate. Setup is outside the warmed contact window. Mechanics/controller/native failure status, finite position/velocity and geometry-only determinant checks run continuously from the original state; sparse mode never recovers stress/contact gradients at unselected steps. Full fields are transferred/compressed only at declared keyframes. Force residuals/reactions are sampled, not certified at unsampled steps. No temporal stress peak or whole-history stress norm is computed. No checkpoint is taken during an accepted window; a rejected state receives a native forensic dump."
+}

@@ -29,6 +29,19 @@ def main():
     with np.load(args.conditions) as saved:
         assert len(saved["position"]) == 1
         delay = saved["delays"][0].item() * 0.01
+        cohort = {key: saved[key][0] for key in ("position", "quaternion", "friction", "radius", "delays")}
+    reference_inputs = json.loads((args.reference / "inputs.json").read_text())
+    reference_case = reference_inputs.get("case", 0)
+    with np.load(reference_inputs["conditions"]["path"]) as saved:
+        for key, value in cohort.items():
+            np.testing.assert_array_equal(value, saved[key][reference_case])
+    schedule = {}
+    if args.protocol == "capped":
+        for line in (args.reference / "steps.jsonl").read_text().splitlines():
+            row = json.loads(line)
+            tick = round(row["time_s"] / 0.01)
+            if abs(tick * 0.01 - row["time_s"]) < 1e-12:
+                schedule[tick] = (row["phase"], row["reset_epoch"])
     model_path = args.reference / "panda-bank-initial.xml"
     model = mujoco.MjModel.from_xml_path(str(model_path))
     assert model.nq == 9
@@ -94,6 +107,8 @@ def main():
                         "mass_com_world_m": center.tolist(),
                         "authored_hand_relative_com_m": relative.tolist(),
                         "mass_weighted_nonrigid_rms_m": rms_deformation,
+                        "commanded_phase": schedule[tick][0] if args.protocol == "capped" else None,
+                        "command_reset_epoch": schedule[tick][1] if args.protocol == "capped" else None,
                     }
                 )
         times = np.array([row["time_s"] for row in rows])
@@ -103,12 +118,23 @@ def main():
         baseline = np.abs(times - (delay + 1.8)).argmin()
         selected = (times >= delay + 1.8) & (times <= delay + 5.4)
         weak = (times >= delay + 4.2) & (times <= delay + 4.56)
+        if args.protocol == "capped":
+            phase = np.array([row["commanded_phase"] for row in rows])
+            first_episode = np.array([row["command_reset_epoch"] == 0 for row in rows])
+            eligible = np.flatnonzero(first_episode)
+            assert len(eligible)
+            baseline = eligible[np.abs(phase[eligible] - 0.3).argmin()]
+            selected = first_episode & (phase >= 0.3) & (phase <= 0.9)
+            weak = first_episode & (phase >= 0.7) & (phase < 0.76)
         drift = np.linalg.norm(relative - relative[baseline], axis=1)
         outcomes.append(
             {
                 "method": method,
                 "source": file_id(folder / "result.json"),
                 "mass_contract": mass_note,
+                "geometry_observations": len(rows),
+                "lift_hold_phase_observations": int(selected.sum()),
+                "weak_first_grip_observations": int(weak.sum()),
                 "maximum_com_height_m": centers[:, 2].max().item(),
                 "final_com_world_m": centers[-1].tolist(),
                 "maximum_nonrigid_rms_m": deformation.max().item(),
@@ -132,9 +158,12 @@ def main():
             "mujoco_version": mujoco.__version__,
             "kinematic_model": file_id(model_path),
             "protocol": args.protocol,
+            "condition_cohort": file_id(args.conditions),
+            "reference_bank_case": reference_case,
+            "condition_cohort_exactly_matches_reference_bank_case": True,
             "histories": outcomes,
             "reference_qualified": False,
-            "scope": "Actual mass COMs and fitted nonrigid RMS, without unweighted-vertex substitutions. Hand frames use the authored MuJoCo kinematics of each actual saved q; prescribed QIPC uses its shared target q, so its separately measured finite DBC tracking error remains. Hand-relative COM drift is a macroscopic grasp/slip observable, not a local contact stick/slip classification or friction-cone certificate. A zero native geometric deformation is its rigid-model assumption. No physical accuracy ranking or damage threshold follows from these descriptive outcomes.",
+            "scope": "Actual mass COMs and fitted nonrigid RMS at recorded geometry times. Extrema are over those observations and are not a continuous temporal certificate. Capped first-lift/weak selectors use the shared recorded command phase and reset epoch0, preventing post-reset observations from being mislabeled as the first grasp's weak interval. A missing stage remains unobserved. Hand frames use authored MuJoCo kinematics at each actual saved q; prescribed QIPC uses its shared target q with separately measured DBC tracking error. Hand-relative COM drift is macroscopic, not local stick/slip or a friction-cone certificate. Zero native deformation is the rigid-model assumption. No physical ranking or damage threshold follows.",
         },
     )
 

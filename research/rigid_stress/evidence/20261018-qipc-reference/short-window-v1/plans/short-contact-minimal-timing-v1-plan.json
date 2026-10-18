@@ -1,0 +1,20 @@
+{
+  "declared_at_utc": "2026-10-18T16:39:25.712322+00:00",
+  "selection_source": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/short-contact-profile-audit-v1/group0/window-audit/result.json",
+  "candidate": "linear-relaxed: velocity1e-9/linear1e-6/maxPCG4096 original linear_pcg",
+  "fresh_process_repeats": 3,
+  "same_allocation_sequential": true,
+  "continuous_prefix_s": 1.05,
+  "timed_window_s": [
+    1.05,
+    1.16
+  ],
+  "full_spatial_keyframes_s": [
+    1.1,
+    1.13,
+    1.16
+  ],
+  "timing": "One synchronized window boundary at each end, no additional per-stage event/synchronization. Host-call spans are not GPU latency. Necessary native/finite/J checks and3 complete keyframe stress+contact observations remain. Full host transfer stays in-window; compression/write follows the timed window.",
+  "cold": "Scene/observer setup and one read-only initial elastic-kernel activation are outside the window; both costs are recorded. Initial x/velocity are verified unchanged exactly. No initial contact query or native physical step is added.",
+  "scope": "Short-window reference-generation timing only, not complete-grasp primary throughput or physical-reference qualification. Verify keyframe residual/reaction/stress bands before using the repeats."
+}
