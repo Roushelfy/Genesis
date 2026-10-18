@@ -5,39 +5,26 @@ conditional elastic stress from changing rigid contacts, including friction,
 and supports raw global max/full output, complete numerical checks, environment
 isolation and partial resets. Production numerical work remains in Quadrants.
 
-The active [three-method QIPC reference goal](docs/QIPC_REFERENCE_COMPARISON_GOAL.md)
-extends those results to a common qualified contact/elasticity reference for
-complete Franka/egg grasps. It compares Directional Patch Recovery (DPR,
-currently pressure), Surface-Constrained Recovery (SCR, intrinsic +
-body_source_prior) and deformable shell for error, speed, memory and stability.
-`RigidStressOptions.dpr(...)` and `.scr(...)` select these exact existing routes;
-the presets preserve their physics/defaults. The [running guide](docs/RUNNING_QIPC_REFERENCE.md)
-and [progress record](docs/QIPC_REFERENCE_PROGRESS.md) retain current controls,
-complete candidate histories, failed reference attempts and open qualification gates.
-The latest [short-window checkpoint](evidence/20261018-qipc-reference/short-window-v1/README.md)
-implements the user's sparse-keyframe/profiling-first update, retaining33 full
-spatial fields from11 runs. The subsequent
-[fixed-Newton PCG contrast](evidence/20261018-qipc-reference/short-window-pcg-v1/README.md)
-shows that1e-2 passes the same3 keys while reducing measured inner work and
-window time relative to1e-6; three fresh repeats pass. Subsequent
-[complete sparse runs](evidence/20261018-qipc-reference/sparse-keyframes-v1/README.md)
-reject PCG1e-2/1e-3 at2.113/2.365s because Newton reaches its256-iteration cap.
-Fixed Newton alone does not guarantee convergence with every inner tolerance.
-DPR/SCR and both Shell settings complete6s with five full spatial observations;
-same-method old-dense/new-sparse equivalence passes only for DPR/SCR. Actual
-native CUDA recovery calls fall from200 to3 in the profiled contact window.
-The capped fast alternatives fail the common numerical/contact checks.
-Physical-reference qualification and matched primary sparse cost remain open.
-The earlier [dense checkpoint](evidence/20261018-qipc-reference/checkpoint-v3/README.md)
-adds complete capped2/7 comparisons, ET forced-exit admission/geometry forensics,
-unloaded/actual-pose controls and the inspected cost/profile figure. Full9s
-reference sensitivities still exceed100% in its historical dense metrics;
-selected-observable physical-reference qualification and the complete goal
-remain open.
-The [working results](docs/QIPC_REFERENCE_RESULTS_20261018.md) and
-[compact checkpoint](evidence/20261018-qipc-reference/checkpoint-v1/README.md)
-retain the measured complete-history discrepancies and the unresolved spatial/
-timestep uncertainty; the goal is not complete.
+The active [parallel-plate comparison](docs/PARALLEL_PLATE_COMPARISON_GOAL.md)
+uses two flat rigid plates and a full hollow egg for the primary stress-error
+benchmark. It compares DPR, SCR and Shell against a qualified QIPC solid-FEM
+reference under quasi-static common-force loading, with bounded friction
+controls, sparse full-spatial observations, cost and stability measurements.
+Full Franka physical-reference qualification is no longer a completion gate.
+
+`RigidStressOptions.dpr(...)` and `.scr(...)` select the existing pressure and
+intrinsic/body_source_prior routes. Manual stress sampling is available through
+`update_mode="manual"` and `link.request_stress_update()`; ordinary every-step
+sampling remains the default. See [API](docs/NATIVE_API.md).
+
+The preceding [Franka/QIPC report](docs/QIPC_REFERENCE_RESULTS_20261018.md),
+[running guide](docs/RUNNING_QIPC_REFERENCE.md),
+[progress](docs/QIPC_REFERENCE_PROGRESS.md) and
+[sparse checkpoint](evidence/20261018-qipc-reference/sparse-keyframes-v1/README.md)
+retain useful implementation, cost, failed reference qualification and
+repeatability evidence. Those historical results are not accepted physical
+ground truth; reuse their controls and data for the simpler active benchmark.
+Existing Franka throughput remains separately labeled engineering evidence.
 
 The [shell PR22 comparison](docs/SHELL_COMPARISON_RESULTS_20261018.md) is complete
 within its [declared scope](docs/SHELL_SOLVER_COMPARISON_GOAL.md). It pins both

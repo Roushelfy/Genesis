@@ -1,32 +1,21 @@
-# Active goal: three stress methods against a QIPC reference
+# Active goal: parallel-plate stress comparison
 
-Follow [docs/QIPC_REFERENCE_COMPARISON_GOAL.md](docs/QIPC_REFERENCE_COMPARISON_GOAL.md).
+Follow [docs/PARALLEL_PLATE_COMPARISON_GOAL.md](docs/PARALLEL_PLATE_COMPARISON_GOAL.md).
 
-User update,2026-10-18: stress output is needed only at a few predeclared
-keyframes, with complete spatial fields there. First profile a short contact
-window and compare solver tolerances; select a measured practical setting
-before further full-length experiments. Preserve continuous physical/contact
-history and failure detection, but remove unnecessary every-step stress
-recovery/export. Dense stress histories, whole-history stress norms and a
-certified temporal maximum are no longer acceptance requirements. The detailed
-goal's user-update section supersedes conflicting earlier observation plans.
+Use two parallel rigid plates compressing a full hollow egg as the primary
+DPR/SCR/Shell accuracy benchmark against qualified cuda-graph-qipc solid FEM.
+Begin with quasi-static common-force normal loading without gravity/friction,
+then add bounded friction/tangential and off-axis controls. Remove Franka
+robot/controller complexity from primary error qualification.
 
-Deliver a detailed comparison of Directional Patch Recovery (DPR, currently
-pressure), Surface-Constrained Recovery (SCR, intrinsic + body_source_prior),
-and Kashu shell PR22. Use qualified cuda-graph-qipc 3D solid FEM contact
-references for full Franka/hollow-egg grasp histories. Compare errors under
-common observables, speed/memory, stability and repeatability; explain reference
-uncertainty, load reconstruction and omitted deformation feedback.
+Retain occasional predeclared full-spatial stress fields, short-window profiling
+and tolerance selection before larger runs. Compare field/peak errors,
+reactions/indentation/contact footprints, speed/memory and stability. Equal
+plate separation and equal reaction are different protocols; do not impose both.
 
-Run common prescribed-motion and representative original force-limited-control
-protocols. Keep normal force and friction, arbitrary convex/nonconvex changing
-contacts, primary timing at the sparse stress-observation cadence and separate
-solver/observer costs. Existing dense full/max timing is supplementary. Make the two
-rigid route names understandable without changing their physics by renaming.
-
-Reuse the [completed shell comparison](docs/SHELL_COMPARISON_RESULTS_20261018.md),
-[pressure comparison](docs/PRESSURE_COMPARISON_RESULTS_20261018.md) and existing
-R/L/M/independent FEM evidence. They are baselines, not already qualified common
-ground truth for this new stage. Keep the native Quadrants feature and cleaned
-layout intact. Use engineering judgment on experiment size; preserve failures,
-exact sources and reproducible results.
+This replaces full-Franka physical-reference qualification as an active gate.
+Reuse existing [QIPC work](docs/QIPC_REFERENCE_RESULTS_20261018.md),
+[sparse sampling evidence](evidence/20261018-qipc-reference/sparse-keyframes-v1/README.md)
+and prior FEM/replay controls. Keep Franka throughput as separate engineering
+evidence. Preserve native Quadrants integration, original external baselines,
+failure records, accepted evidence and the cleaned branch.
