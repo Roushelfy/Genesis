@@ -1,16 +1,17 @@
-# Completed: pressure evidence and configuration selection
+# Active goal: compare stress recovery with Kashu shell PR22
 
-The stage specified in [PRESSURE_MODEL_COMPARISON_GOAL.md](docs/PRESSURE_MODEL_COMPARISON_GOAL.md)
-is complete within the scope of the [comparison report](docs/PRESSURE_COMPARISON_RESULTS_20261018.md).
-It qualifies current paired default pressure/intrinsic costs, useful tuning,
-small-to-large scaling, memory/capacity, max/full and model/applicability limits.
+Follow [docs/SHELL_SOLVER_COMPARISON_GOAL.md](docs/SHELL_SOLVER_COMPARISON_GOAL.md).
 
-Use the [configuration table](docs/PRESSURE_COMPARISON_RESULTS_20261018.md#configuration-decision)
-and [reproduction guide](docs/RUNNING_PRESSURE_COMPARISON.md). The
-[packet](evidence/20261017-pressure-comparison/comparison-v1/README.md) retains
-raw repeats, independent audits, source recipes and inspected figures.
+Compare our pressure/intrinsic stress recovery with
+[Kashu7100/Genesis PR22](https://github.com/Kashu7100/Genesis/pull/22)
+for full stress distributions, contact robustness, numerical consistency,
+Franka/egg grasping behavior and accuracy-versus-throughput/memory.
+Pin source versions, unify stress units/measures and separate prescribed-load
+mechanics from contact/deformation feedback. Reproduce reported shell problems
+before treating them as conclusions; preserve the unmodified baseline.
 
-Preserve the native feature, existing independent numerical gates and compact
-layout. Source-prior remains another load model; footprint/reference uncertainty,
-unsupported/incompatible cases and physical-damage calibration limits remain.
-Historical campaigns do not create additional active work.
+Reuse the completed [pressure comparison](docs/PRESSURE_COMPARISON_RESULTS_20261018.md)
+and [reproduction guide](docs/RUNNING_PRESSURE_COMPARISON.md).
+Keep the native Quadrants feature and cleaned layout intact. Use inexpensive
+controlled cases, bounded application checks and compact reproducible evidence.
+Historical campaigns and fracture calibration remain outside this stage.

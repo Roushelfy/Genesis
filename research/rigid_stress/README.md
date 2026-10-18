@@ -5,6 +5,11 @@ conditional elastic stress from changing rigid contacts, including friction,
 and supports raw global max/full output, complete numerical checks, environment
 isolation and partial resets. Production numerical work remains in Quadrants.
 
+The active [next comparison](docs/SHELL_SOLVER_COMPARISON_GOAL.md) evaluates
+full stress distributions and grasping/contact reliability against
+[Kashu shell PR22](https://github.com/Kashu7100/Genesis/pull/22), with matched
+mechanical observables, practical cost and reproducible failure diagnostics.
+
 The current [pressure/intrinsic comparison](docs/PRESSURE_COMPARISON_RESULTS_20261018.md)
 is complete within its declared scope. Its [running guide](docs/RUNNING_PRESSURE_COMPARISON.md)
 and [compact evidence packet](evidence/20261017-pressure-comparison/comparison-v1/README.md)
