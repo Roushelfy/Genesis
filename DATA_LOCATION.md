@@ -9,20 +9,52 @@ caches are reused without modifying active environments or unrelated jobs.
 See [execution status](research/rigid_stress/docs/QIPC_REFERENCE_PROGRESS.md).
 
 On2026-10-18 the shared data mount reports800TB used and zero available;
-exclusive file creation fails with errno122. New scientific submissions are
-held until a writable persistent destination is available. Existing results,
+exclusive file creation fails with errno122. The initial submission hold was
+lifted only for the disclosed bounded writable fallback below. Existing results,
 native checkpoints/builds, profiler traces, source receipts and Genesis
 precomputations stay in place. Only private regenerable compilation caches of
 successful terminal groups were removed, with exact paths/bytes in the
 [incident journal](research/rigid_stress/docs/QIPC_STORAGE_INCIDENT_20261018.json).
-No runtime data was moved into home. The small selected publication checkpoint
+No runtime data was moved during that incident cleanup. The small selected publication checkpoint
 under `research/rigid_stress/evidence/20261018-qipc-reference/checkpoint-v1/`
 contains existing derived JSON summaries and provenance for the working report;
 it is not a runtime storage fallback or a completed-goal evidence closure.
 The adjacent `checkpoint-figures-v1/` contains about6MB of existing inspected
 SVG/PDF/PNG, plotted arrays and exact rendering source copied with byte/hash
-verification from the original data-side jobs. These are selected publication
-deliverables; no new rendering or runtime dataset is produced in home.
+verification from the original data-side jobs. Publishing these selected
+deliverables uses byte copies without rerendering them.
+The later `checkpoint-v2/` selects about9.4MB of already Slurm-derived controls,
+cost/negative-result summaries, exact source/receipt captures and inspected
+uncertainty SVG/PDF/PNG/CSV. Large memory-polling sample arrays remain in their
+original hashed audit rather than being duplicated in this publication.
+
+## Bounded storage-outage validation fallback
+
+After a third exclusive-create probe still failed122 at12:31UTC, lightweight
+observer/admission/audit validation uses the explicitly announced temporary
+project data root
+`/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/`.
+The initial1GB persistent-output budget is revised to2GB at13:44UTC for
+selected coarse histories, the sparse adaptive pilot and compact audit/figure
+outputs. The revision was explicitly disclosed before exceeding the initial
+budget; original large inputs, builds and environments remain on data. Source,
+task capture, logs and small derived results remain there; compile/model/tmp
+caches use private compute-node `/tmp` directories through `--node-local-cache`
+and are removed when each allocation exits. This does not change the default
+data-side cache behavior of other submissions or shared environments.
+
+Original experiments, large inputs, native binaries, checkpoints and traces
+stay on `/mnt/data` and are read in place. Two fresh coarse9s capped histories
+reuse the existing solver/input configuration and start from the initial state;
+their output estimate uses the existing232.5MB complete case7 and147.9MB/5.27s
+case0 prefix. The completed validation currently uses about215MB. Actual public
+checkpoints are retained every0.5s. No interrupted native state is reconstructed
+from trajectory frames. No migration, compatibility symlink change, or new
+environment is part of this fallback.
+When data storage is writable again, any consolidation must check writers/jobs,
+preserve metadata/symlinks, verify hashes and record paths before removing the
+temporary source, following the normal storage policy. The fallback is a
+disclosed response to the unwritable mount, not a new preferred runtime root.
 
 # Completed shell PR22 comparison
 

@@ -1,8 +1,10 @@
 """Capture analysis inputs and submit sequential task groups as Slurm GPU arrays.
 
 This stdlib-only login-node helper does not run scientific work. The source
-checkout is pinned by a complete file inventory, and each allocation gets
-isolated data-side caches. Tasks are module/argument lists, never shell snippets.
+checkout is pinned by a complete file inventory. Each allocation gets isolated
+caches, optionally on node-local temporary storage; scientific outputs/logs
+remain at the explicit durable output path. Tasks are module/argument lists,
+never shell snippets.
 """
 
 import argparse
@@ -82,6 +84,9 @@ def main():
     parser.add_argument("--concurrency", type=int)
     parser.add_argument("--cpus", type=int, default=8)
     parser.add_argument("--keep-going", action="store_true")
+    parser.add_argument(
+        "--node-local-cache", action="store_true", help="Use and remove private compute-node /tmp caches"
+    )
     args = parser.parse_args()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
@@ -120,17 +125,35 @@ def main():
             "set -euo pipefail",
             f"task_run={shlex.quote(str(run))}",
             'test ! -e "$task_run"',
-            'mkdir -p "$task_run/tmp" "$task_run/cache"',
-            'export TMPDIR="$task_run/tmp" PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1',
-            "export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1",
-            'export GS_CACHE_FILE_PATH="$task_run/cache/genesis" QD_OFFLINE_CACHE_FILE_PATH="$task_run/cache/quadrants"',
-            'export CUDA_CACHE_PATH="$task_run/cache/cuda" NUMBA_CACHE_DIR="$task_run/cache/numba"',
-            'export MPLCONFIGDIR="$task_run/cache/matplotlib"',
-            'export QIPC_RTC_CACHE="$task_run/cache/qipc_rtc"',
-            f"export PYTHONPATH={shlex.quote(str(tools) + ':' + str(source))}",
-            f"cd {shlex.quote(str(source))}",
-            'trap \'task_status=$?; printf "%s\\n" "$task_status" > "$task_run/returncode.txt"; exit "$task_status"\' EXIT',
+            'mkdir -p "$task_run"',
+            "task_scratch=''",
+            'trap \'task_status=$?; printf "%s\\n" "$task_status" > "$task_run/returncode.txt"; if test -n "$task_scratch"; then rm -rf -- "$task_scratch"; fi; exit "$task_status"\' EXIT',
         ]
+        if args.node_local_cache:
+            lines.extend(
+                (
+                    "task_scratch=$(mktemp -d /tmp/gs-shell-compare.XXXXXX)",
+                    'task_cache="$task_scratch/cache"',
+                    'task_tmp="$task_scratch/tmp"',
+                    'printf "%s\\n" "$task_scratch" > "$task_run/node-local-scratch.txt"',
+                    'df -Pk "$task_scratch" > "$task_run/node-local-filesystem.txt"',
+                )
+            )
+        else:
+            lines.extend(('task_cache="$task_run/cache"', 'task_tmp="$task_run/tmp"'))
+        lines.extend(
+            [
+                'mkdir -p "$task_tmp" "$task_cache"',
+                'export TMPDIR="$task_tmp" PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1',
+                "export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1",
+                'export GS_CACHE_FILE_PATH="$task_cache/genesis" QD_OFFLINE_CACHE_FILE_PATH="$task_cache/quadrants"',
+                'export CUDA_CACHE_PATH="$task_cache/cuda" NUMBA_CACHE_DIR="$task_cache/numba"',
+                'export MPLCONFIGDIR="$task_cache/matplotlib"',
+                'export QIPC_RTC_CACHE="$task_cache/qipc_rtc"',
+                f"export PYTHONPATH={shlex.quote(str(tools) + ':' + str(source))}",
+                f"cd {shlex.quote(str(source))}",
+            ]
+        )
         if args.keep_going:
             lines.append("campaign_status=0")
         for task in group:
@@ -185,7 +208,9 @@ def main():
         str(job),
     ]
     result = subprocess.check_output(command, text=True).strip()
-    (output / "submission.json").write_text(json.dumps({"command": command, "job": result}, indent=2) + "\n")
+    (output / "submission.json").write_text(
+        json.dumps({"command": command, "job": result, "node_local_cache": args.node_local_cache}, indent=2) + "\n"
+    )
     print(result)
 
 

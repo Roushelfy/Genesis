@@ -1,0 +1,249 @@
+{
+  "kind": "complete-history-tracking-residual-and-failure-audit",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726557",
+      "SLURM_ARRAY_JOB_ID": "726557",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-56ea077b-99d7-8845-1f28-8cfa2174feb6, 00000000:45:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "histories": [
+    {
+      "folder": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-pilot-v1/group0/adaptive-edge0.0005-wall4",
+      "receipt": {
+        "kind": "QIPC-prescribed-link-motion-candidate",
+        "config": {
+          "dt": 0.001,
+          "young": 10000000000.0,
+          "poisson": 0.3,
+          "density": 2000.0,
+          "velocity_tolerance": 1e-09,
+          "linear_tolerance": 1e-08,
+          "max_newton": 256,
+          "max_pcg": 4096,
+          "d_hat": 2e-05,
+          "friction": 0.7191016138165071,
+          "friction_epsilon_velocity": 0.0001,
+          "resistance": 10000000000.0,
+          "energy": "snh",
+          "mas_precision": "double",
+          "linear_solver": "linear_pcg"
+        },
+        "requested_steps": 1160,
+        "executed_steps": 1160,
+        "completed_requested_history": true,
+        "intrusive_seconds": 1072.3966076460201,
+        "reference_qualified": false
+      },
+      "receipt_read_error": null,
+      "receipt_identity": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-pilot-v1/group0/adaptive-edge0.0005-wall4/result.json",
+        "bytes": 652,
+        "sha256": "86f1ba3681b03c96bc1103ad0021d179caa6afeb44b13e8c2cef460be8fb265c"
+      },
+      "input_receipt_read_error": null,
+      "input_receipt_identity": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-pilot-v1/group0/adaptive-edge0.0005-wall4/inputs.json",
+        "bytes": 3117,
+        "sha256": "8045726433db12795e81925a95d92467dbb6ab615485162e95a2fbbf53cd31c0"
+      },
+      "journal_identity": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/adaptive-prescribed-pilot-v1/group0/adaptive-edge0.0005-wall4/steps.jsonl",
+        "bytes": 1638352,
+        "sha256": "99a9b79971bf1a1036abdcafe538cba7e278e5f863a6a7452ad3dc846edbf906"
+      },
+      "journal_read": {
+        "valid_prefix_rows": 1160,
+        "first_unreadable_row": null,
+        "unparsed_tail_bytes": 0,
+        "scope": "Only the structurally valid prefix is summarized. An unreadable tail is explicit and remains unchanged in the source; it is not accepted as a complete history."
+      },
+      "task_returncode": null,
+      "group_returncode": 0,
+      "completed_history_reported": true,
+      "complete_history_established": true,
+      "last_recorded_time_s": 1.16,
+      "recorded_rows": 1160,
+      "nonfinite_recorded_rows": 0,
+      "finite_flag_observations": 1160,
+      "newton_cap_recorded_rows": 0,
+      "newton_cap_observations": 1160,
+      "pcg_cap_recorded_rows": 696,
+      "pcg_cap_observations": 1160,
+      "shell_cap_exhausted_physical_substeps": null,
+      "shell_cap_observations": 0,
+      "statistics": {
+        "maximum_robot_com_tracking_error_m": {
+          "maximum_absolute_value": 1.618159207839115e-09,
+          "value_at_maximum_absolute": 1.618159207839115e-09,
+          "time_at_maximum_absolute_s": 1.129,
+          "p99_absolute": 1.591690723865682e-09,
+          "samples": 1160,
+          "minimum_value": 9.809930645588422e-13,
+          "time_at_minimum_s": 0.9420000000000001,
+          "maximum_value": 1.618159207839115e-09,
+          "time_at_maximum_s": 1.129
+        },
+        "maximum_robot_rotation_tracking_error_rad": {
+          "maximum_absolute_value": 4.5607000487564413e-07,
+          "value_at_maximum_absolute": 4.5607000487564413e-07,
+          "time_at_maximum_absolute_s": 1.1300000000000001,
+          "p99_absolute": 4.4923384201037554e-07,
+          "samples": 1160,
+          "minimum_value": 2.3055512673781017e-16,
+          "time_at_minimum_s": 0.987,
+          "maximum_value": 4.5607000487564413e-07,
+          "time_at_maximum_s": 1.1300000000000001
+        },
+        "force_residual_l2_n": {
+          "maximum_absolute_value": 54.08323197317511,
+          "value_at_maximum_absolute": 54.08323197317511,
+          "time_at_maximum_absolute_s": 1.129,
+          "p99_absolute": 3.169898398165758e-06,
+          "samples": 1160,
+          "minimum_value": 1.8300019724548228e-06,
+          "time_at_minimum_s": 0.001,
+          "maximum_value": 54.08323197317511,
+          "time_at_maximum_s": 1.129
+        },
+        "force_residual_relative_contact": {
+          "maximum_absolute_value": 0.5198491115130222,
+          "value_at_maximum_absolute": 0.5198491115130222,
+          "time_at_maximum_absolute_s": 1.119,
+          "p99_absolute": 4.9517378475314396e-05,
+          "samples": 1138,
+          "minimum_value": 2.3683824633739025e-08,
+          "time_at_minimum_s": 1.141,
+          "maximum_value": 0.5198491115130222,
+          "time_at_maximum_s": 1.119
+        },
+        "raw_vm_peak_pa": {
+          "maximum_absolute_value": 647932927.1124107,
+          "value_at_maximum_absolute": 647932927.1124107,
+          "time_at_maximum_absolute_s": 1.1300000000000001,
+          "p99_absolute": 636270168.2180151,
+          "samples": 1160,
+          "minimum_value": 0.009440604142510422,
+          "time_at_minimum_s": 0.002,
+          "maximum_value": 647932927.1124107,
+          "time_at_maximum_s": 1.1300000000000001
+        },
+        "raw_maximum_principal_pa": {
+          "maximum_absolute_value": 419900637.41101813,
+          "value_at_maximum_absolute": 419900637.41101813,
+          "time_at_maximum_absolute_s": 1.1300000000000001,
+          "p99_absolute": 416420097.8709407,
+          "samples": 1160,
+          "minimum_value": 0.012833257914514283,
+          "time_at_minimum_s": 0.002,
+          "maximum_value": 419900637.41101813,
+          "time_at_maximum_s": 1.1300000000000001
+        },
+        "newton": {
+          "maximum_absolute_value": 29,
+          "value_at_maximum_absolute": 29,
+          "time_at_maximum_absolute_s": 1.088,
+          "p99_absolute": 19.410000000000082,
+          "samples": 1160,
+          "minimum_value": 1,
+          "time_at_minimum_s": 1.119,
+          "maximum_value": 29,
+          "time_at_maximum_s": 1.088
+        },
+        "pcg_max": {
+          "maximum_absolute_value": 4096,
+          "value_at_maximum_absolute": 4096,
+          "time_at_maximum_absolute_s": 0.015,
+          "p99_absolute": 4096.0,
+          "samples": 1160,
+          "minimum_value": 4,
+          "time_at_minimum_s": 0.032,
+          "maximum_value": 4096,
+          "time_at_maximum_s": 0.015
+        },
+        "line_search_max": {
+          "maximum_absolute_value": 8,
+          "value_at_maximum_absolute": 8,
+          "time_at_maximum_absolute_s": 1.088,
+          "p99_absolute": 2.410000000000082,
+          "samples": 1160,
+          "minimum_value": 1,
+          "time_at_minimum_s": 0.001,
+          "maximum_value": 8,
+          "time_at_maximum_s": 1.088
+        },
+        "egg_energy_change_minus_contact_work_j": {
+          "maximum_absolute_value": 0.005843140170960118,
+          "value_at_maximum_absolute": -0.005843140170960118,
+          "time_at_maximum_absolute_s": 1.16,
+          "p99_absolute": 0.005840744472960666,
+          "samples": 1160,
+          "minimum_value": -0.005843140170960118,
+          "time_at_minimum_s": 1.16,
+          "maximum_value": -3.1420227354942917e-07,
+          "time_at_maximum_s": 0.001
+        },
+        "minimum_det_F": {
+          "maximum_absolute_value": 0.9999999999989794,
+          "value_at_maximum_absolute": 0.9999999999989794,
+          "time_at_maximum_absolute_s": 0.007,
+          "p99_absolute": 0.999999999998852,
+          "samples": 1160,
+          "minimum_value": 0.9302896985008455,
+          "time_at_minimum_s": 1.1300000000000001,
+          "maximum_value": 0.9999999999989794,
+          "time_at_maximum_s": 0.007
+        },
+        "minimum_surface_height_m": {
+          "maximum_absolute_value": 0.0026263559012568503,
+          "value_at_maximum_absolute": 0.0026263559012568503,
+          "time_at_maximum_absolute_s": 0.001,
+          "p99_absolute": 0.0017957432012569194,
+          "samples": 1160,
+          "minimum_value": 1.9603112942071387e-05,
+          "time_at_minimum_s": 0.024,
+          "maximum_value": 0.0026263559012568503,
+          "time_at_maximum_s": 0.001
+        },
+        "minimum_reported_gap_ratio": {
+          "maximum_absolute_value": 0.9919060273234729,
+          "value_at_maximum_absolute": 0.9919060273234729,
+          "time_at_maximum_absolute_s": 0.027,
+          "p99_absolute": 0.9919058956773404,
+          "samples": 1138,
+          "minimum_value": 0.039420960599147015,
+          "time_at_minimum_s": 1.09,
+          "maximum_value": 0.9919060273234729,
+          "time_at_maximum_s": 0.027
+        },
+        "ccd_maximum_iterations": {
+          "maximum_absolute_value": 2,
+          "value_at_maximum_absolute": 2,
+          "time_at_maximum_absolute_s": 1.084,
+          "p99_absolute": 2.0,
+          "samples": 1160,
+          "minimum_value": 1,
+          "time_at_minimum_s": 0.001,
+          "maximum_value": 2,
+          "time_at_maximum_s": 1.084
+        },
+        "net_force_residual": {
+          "maximum_n": 38.85081443332337,
+          "maximum_time_s": 1.107,
+          "rms_n": 1.3291092947862448,
+          "maximum_relative_to_egg_weight": 606.4961299920884,
+          "scope": "Actual residual resultant, distinct from a residual normalized by opposing pinch-force norm"
+        }
+      },
+      "reference_qualified": false
+    }
+  ],
+  "scope": "Actual recorded fields/diagnostics. A native exception can occur after the last recorded accepted state; completion and process status must be checked as well as recorded cap/finite counters. No quantity is reference-qualified by this descriptive audit."
+}

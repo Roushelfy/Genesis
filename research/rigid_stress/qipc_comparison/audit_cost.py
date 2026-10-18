@@ -50,6 +50,23 @@ def configuration(campaign, group, task):
             "scope": scope,
             "original_worker_scope": raw_scope,
             "process_memory": result.get("process_memory"),
+            "source_scope": result.get("source_scope"),
+            "observation_bytes": result.get("observation_bytes"),
+            "observation_contract": result.get("observation_contract"),
+            "shell_numerics": result.get("shell_numerics"),
+            "cold_activation": {
+                key: result[key]
+                for key in (
+                    "genesis_initialization_seconds",
+                    "construction_and_build_seconds",
+                    "init_build_and_first_two_steps_seconds",
+                    "first_step_seconds",
+                    "second_step_seconds",
+                    "full_fields_finite",
+                    "cache_paths",
+                )
+                if key in result
+            },
             "median_aggregate_env_steps_per_second": np.median(rates).item() if rates else None,
             "minimum_aggregate_env_steps_per_second": min(rates) if rates else None,
             "maximum_aggregate_env_steps_per_second": max(rates) if rates else None,

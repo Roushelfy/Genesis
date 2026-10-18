@@ -1,10 +1,10 @@
 # Prepared validation after storage recovery
 
-**Not submitted or executed.** The shared data destination still fails an
-exclusive create/write/fsync probe with errno122. An additional probe
-at12:13UTC confirms the same storage failure. Observer/evidence controls below
-are prepared for subsequent execution. Static source checks are not Slurm
-validation.
+**Subsequently executed as job726497.** This is the original prepared task
+contract. After continued errno122 failures, a captured copy with a bounded
+temporary output root runs through Slurm; all eight groups/nine tasks exit0.
+See [actual execution and limits](QIPC_REFERENCE_FALLBACK_20261018.md).
+Static source checks alone were not treated as validation.
 
 [The prepared task file](QIPC_PENDING_TASKS_20261018.json) has eight independent
 groups and nine tasks. It reuses existing inputs and completed trajectories.

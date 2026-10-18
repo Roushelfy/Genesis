@@ -1,0 +1,409 @@
+{
+  "kind": "full-shell-load-replay-admission-and-moment-audit",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726554",
+      "SLURM_ARRAY_JOB_ID": "726554",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-e3ae17a2-8c3a-b59e-e80d-ac03599051ab, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "replays": [
+    {
+      "source": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-resolved-full-replay-v1/group0/nominal/result.json",
+        "bytes": 3067,
+        "sha256": "ef256c7ad4d58ad87f3852ba678f953085cf2942fc49d66a8df8b3b965577969"
+      },
+      "journal": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-resolved-full-replay-v1/group0/nominal/steps.jsonl",
+        "bytes": 1258761,
+        "sha256": "b26e9630f9422cca0a653c51eaf5525ef407a107e4f1187b9bc4632cc5cae911"
+      },
+      "wall_input": null,
+      "actual_wall": {
+        "actual_lumped_mass_kg": 0.006946250126509785,
+        "minimum_face_thickness_m": 0.0005,
+        "maximum_face_thickness_m": 0.0005
+      },
+      "transfer_controls": {
+        "random_force_and_moment_defect": [
+          7.105427357601002e-14,
+          2.842170943040401e-14,
+          2.6645352591003757e-14,
+          -7.771561172376096e-16,
+          9.71445146547012e-16,
+          -4.440892098500626e-16
+        ],
+        "rigid_virtual_work_difference": -3.552713678800501e-15,
+        "pure_through_wall_couple_defect": [
+          6.938893903907228e-18,
+          -6.938893903907228e-18,
+          -7.28583859910259e-17,
+          -2.0599841277224584e-18,
+          -2.8189256484623115e-18,
+          3.7947076036992655e-19
+        ],
+        "scope": "Actual-source-point force/moment and arbitrary rigid virtual work transferred to the fixed undeformed Shell configuration. These controls do not establish equivalence for nonrigid through-wall virtual displacements or unchanged moment after Shell deformation."
+      },
+      "task_returncode": 0,
+      "group_returncode": 0,
+      "complete_replay_set_established": true,
+      "full600_observation_grid": true,
+      "all_recorded_fields_finite": true,
+      "admitted_replays": 114,
+      "rejected_replays": 486,
+      "pcg_cap_steps": 0,
+      "statistics": {
+        "static_relative_force_residual": {
+          "observations": 600,
+          "minimum": 9.116207387898881e-10,
+          "median": 0.8780163134579368,
+          "p95": 20.934056922679293,
+          "maximum": 252.87216940198024,
+          "maximum_time_s": 4.37
+        },
+        "static_force_residual_l2_n": {
+          "observations": 600,
+          "minimum": 5.8193329228046105e-11,
+          "median": 532.940709169542,
+          "p95": 12746.095707463897,
+          "maximum": 31919.276104048033,
+          "maximum_time_s": 4.59
+        },
+        "balanced_load_l2_n": {
+          "observations": 600,
+          "minimum": 9.615071821088281e-13,
+          "median": 640.6428084188751,
+          "p95": 666.0342778479263,
+          "maximum": 759.35975716023,
+          "maximum_time_s": 1.1300000000000001
+        },
+        "balance_correction_l2_n": {
+          "observations": 600,
+          "minimum": 1.581831122644452e-13,
+          "median": 5.3060466121154705e-08,
+          "p95": 1.4896227145178605e-07,
+          "maximum": 2.562656651844065e-06,
+          "maximum_time_s": 4.63
+        },
+        "raw_vm_peak_pa": {
+          "observations": 600,
+          "minimum": 4.427580140141531e-06,
+          "median": 584114278.9420912,
+          "p95": 855936396.1434364,
+          "maximum": 1545937343.1730156,
+          "maximum_time_s": 4.22
+        },
+        "contact_deformed_moment_drift_net_norm_nm": {
+          "observations": 600,
+          "minimum": 0.0,
+          "median": 15.173197899965633,
+          "p95": 19.367483740034622,
+          "maximum": 22.38695359325946,
+          "maximum_time_s": 4.21
+        },
+        "contact_deformed_moment_drift_sum_local_moment_drift_norms_nm": {
+          "observations": 600,
+          "minimum": 0.0,
+          "median": 15.237312996885972,
+          "p95": 19.417007927917187,
+          "maximum": 22.412411617587953,
+          "maximum_time_s": 4.21
+        },
+        "inertial_deformed_moment_drift_net_norm_nm": {
+          "observations": 600,
+          "minimum": 2.4701308788735505e-28,
+          "median": 2.182412721228216e-07,
+          "p95": 2.164250559975531e-06,
+          "maximum": 3.439436501320067e-05,
+          "maximum_time_s": 4.34
+        },
+        "inertial_deformed_moment_drift_sum_local_moment_drift_norms_nm": {
+          "observations": 600,
+          "minimum": 2.0000937759024614e-27,
+          "median": 0.0009505503975474251,
+          "p95": 0.0012751831289483052,
+          "maximum": 0.002991804086119956,
+          "maximum_time_s": 5.5600000000000005
+        }
+      },
+      "phase_coverage": [
+        {
+          "phase": "approach",
+          "replays": 90,
+          "admitted": 88
+        },
+        {
+          "phase": "squeeze",
+          "replays": 90,
+          "admitted": 19
+        },
+        {
+          "phase": "lift-hold",
+          "replays": 180,
+          "admitted": 0
+        },
+        {
+          "phase": "lateral",
+          "replays": 60,
+          "admitted": 0
+        },
+        {
+          "phase": "weak",
+          "replays": 35,
+          "admitted": 0
+        },
+        {
+          "phase": "hold-after-weak",
+          "replays": 85,
+          "admitted": 0
+        },
+        {
+          "phase": "release-recontact",
+          "replays": 60,
+          "admitted": 7
+        }
+      ],
+      "diagnostic_all_finite_replay_time_norms": {
+        "common_tangent": {
+          "relative_error": 11.18367800017076,
+          "reference_rms_over_time": 21225295.02919924,
+          "absolute_rms_error_over_time": 237376865.0651893,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "membrane": {
+          "relative_error": 10.633239442781681,
+          "reference_rms_over_time": 9955.359842453014,
+          "absolute_rms_error_over_time": 105857.72494385623,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 0.0005,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "bending": {
+          "relative_error": 51.35181048177627,
+          "reference_rms_over_time": 0.09306399895704964,
+          "absolute_rms_error_over_time": 4.779004837118637,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 2.5e-07,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        }
+      },
+      "all_static_replays_numerically_admitted": false,
+      "original_scope": "Independent static elastic-response replay at each recorded source time. Contact and measured inertial loads are separately mapped to supporting midpoint triangles; local nodal couples preserve the actual source-point wrench and rigid virtual work in the fixed undeformed Shell configuration. Deformation changes the applied moment; both its net drift and a sum of uncancelled local drift norms are retained separately. A reported six-mode mass-weighted balance correction makes the free static problem solvable. This does not preserve every nonrigid3D virtual displacement, does not fit a footprint, and is not a contact-history or capped-control rollout. Original PR22 force/stiffness/PCG/integration kernels and the existing dt*external-force adapter are used; no IPC/contact substitution. Rejected and nonfinite states remain in the journal and raw world fields; material corotation is stored instead of a redundant second tensor copy.",
+      "scope": "Time norms retain every finite replay, including rejected static states; they are diagnostic field discrepancies, not admitted static or physical accuracy scores. Phase counts retain the exact source outcomes. Moment drift is measured at deformed Shell vertices, with both a net norm and a sum of local norms to expose cancellation. Near-zero denominators, balance corrections and strict relative-force failures stay explicit."
+    },
+    {
+      "source": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-resolved-full-replay-v2/group0/volume/result.json",
+        "bytes": 3768,
+        "sha256": "83dcbf274146a35eda6e149d2c8f840c964cf6823971a344e81b84c783f60f6f"
+      },
+      "journal": {
+        "path": "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/shell-resolved-full-replay-v2/group0/volume/steps.jsonl",
+        "bytes": 1259608,
+        "sha256": "dd8a5ea26bee7d61e30577a0a84a2085094900704b0b139c9b34e127540f9cd1"
+      },
+      "wall_input": {
+        "input": {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/wall-and-complete-fields-v1/group0/wall/surface1.npz",
+          "bytes": 7908,
+          "sha256": "72d13a34c90bce8530caf1b9b5ab3c645fbd8605162fe3fbe522daac5d2092ff"
+        },
+        "mass_kg": 0.006529848210401324,
+        "maximum_midpoint_match_error_m": 0.0,
+        "minimum_thickness_m": 0.0004357118634527193,
+        "maximum_thickness_m": 0.0004832672343008842,
+        "scope": "Separately labeled geometry-only rest-input adapter. Face masses are bound before build and existing thickness state is set before stepping/reset capture. No PR22 solver/contact/constitutive kernel modification."
+      },
+      "actual_wall": {
+        "actual_lumped_mass_kg": 0.006529848210401324,
+        "minimum_face_thickness_m": 0.0004357118634527193,
+        "maximum_face_thickness_m": 0.0004832672343008842
+      },
+      "transfer_controls": {
+        "random_force_and_moment_defect": [
+          7.105427357601002e-14,
+          2.842170943040401e-14,
+          2.6645352591003757e-14,
+          -7.771561172376096e-16,
+          9.71445146547012e-16,
+          -4.440892098500626e-16
+        ],
+        "rigid_virtual_work_difference": -3.552713678800501e-15,
+        "pure_through_wall_couple_defect": [
+          6.938893903907228e-18,
+          -6.938893903907228e-18,
+          -7.28583859910259e-17,
+          -2.0599841277224584e-18,
+          -2.8189256484623115e-18,
+          3.7947076036992655e-19
+        ],
+        "scope": "Actual-source-point force/moment and arbitrary rigid virtual work transferred to the fixed undeformed Shell configuration. These controls do not establish equivalence for nonrigid through-wall virtual displacements or unchanged moment after Shell deformation."
+      },
+      "task_returncode": null,
+      "group_returncode": 0,
+      "complete_replay_set_established": true,
+      "full600_observation_grid": true,
+      "all_recorded_fields_finite": true,
+      "admitted_replays": 113,
+      "rejected_replays": 487,
+      "pcg_cap_steps": 0,
+      "statistics": {
+        "static_relative_force_residual": {
+          "observations": 600,
+          "minimum": 8.612875864100622e-10,
+          "median": 0.5849054580530477,
+          "p95": 3.1643632748079433,
+          "maximum": 235.62599070357786,
+          "maximum_time_s": 4.41
+        },
+        "static_force_residual_l2_n": {
+          "observations": 600,
+          "minimum": 5.4918914021812174e-11,
+          "median": 307.7483795009961,
+          "p95": 1563.0858439234244,
+          "maximum": 28054.683834256404,
+          "maximum_time_s": 1.11
+        },
+        "balanced_load_l2_n": {
+          "observations": 600,
+          "minimum": 2.156772393978708e-13,
+          "median": 640.6428084188755,
+          "p95": 666.0342778479284,
+          "maximum": 759.3597571602264,
+          "maximum_time_s": 1.1300000000000001
+        },
+        "balance_correction_l2_n": {
+          "observations": 600,
+          "minimum": 1.5824037172397858e-13,
+          "median": 5.3086531382004074e-08,
+          "p95": 1.4915614290179564e-07,
+          "maximum": 2.5635037924653166e-06,
+          "maximum_time_s": 4.63
+        },
+        "raw_vm_peak_pa": {
+          "observations": 600,
+          "minimum": 4.146985995401988e-06,
+          "median": 584688845.61045,
+          "p95": 608775842.4062634,
+          "maximum": 1608722414.6319118,
+          "maximum_time_s": 1.11
+        },
+        "contact_deformed_moment_drift_net_norm_nm": {
+          "observations": 600,
+          "minimum": 0.0,
+          "median": 12.849934741731536,
+          "p95": 16.603535911878154,
+          "maximum": 19.119672469656123,
+          "maximum_time_s": 4.22
+        },
+        "contact_deformed_moment_drift_sum_local_moment_drift_norms_nm": {
+          "observations": 600,
+          "minimum": 0.0,
+          "median": 12.920071811854974,
+          "p95": 16.652534823830727,
+          "maximum": 19.239836174372016,
+          "maximum_time_s": 1.11
+        },
+        "inertial_deformed_moment_drift_net_norm_nm": {
+          "observations": 600,
+          "minimum": 2.20520227645743e-28,
+          "median": 3.978117434862625e-08,
+          "p95": 6.647899162149803e-08,
+          "maximum": 4.454231554183446e-05,
+          "maximum_time_s": 5.5600000000000005
+        },
+        "inertial_deformed_moment_drift_sum_local_moment_drift_norms_nm": {
+          "observations": 600,
+          "minimum": 2.0986859965954264e-27,
+          "median": 0.000806593386079648,
+          "p95": 0.0011919150496105635,
+          "maximum": 0.008217505695229967,
+          "maximum_time_s": 5.5600000000000005
+        }
+      },
+      "phase_coverage": [
+        {
+          "phase": "approach",
+          "replays": 90,
+          "admitted": 88
+        },
+        {
+          "phase": "squeeze",
+          "replays": 90,
+          "admitted": 19
+        },
+        {
+          "phase": "lift-hold",
+          "replays": 180,
+          "admitted": 0
+        },
+        {
+          "phase": "lateral",
+          "replays": 60,
+          "admitted": 0
+        },
+        {
+          "phase": "weak",
+          "replays": 35,
+          "admitted": 0
+        },
+        {
+          "phase": "hold-after-weak",
+          "replays": 85,
+          "admitted": 0
+        },
+        {
+          "phase": "release-recontact",
+          "replays": 60,
+          "admitted": 6
+        }
+      ],
+      "diagnostic_all_finite_replay_time_norms": {
+        "common_tangent": {
+          "relative_error": 6.202593055207082,
+          "reference_rms_over_time": 21225295.02919924,
+          "absolute_rms_error_over_time": 131651867.54283258,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 1.0,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "membrane": {
+          "relative_error": 5.094138544819546,
+          "reference_rms_over_time": 9955.359842453014,
+          "absolute_rms_error_over_time": 50713.98230098855,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 0.0005,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        },
+        "bending": {
+          "relative_error": 52.476721688026885,
+          "reference_rms_over_time": 0.09306399895704964,
+          "absolute_rms_error_over_time": 4.883693572443918,
+          "observations": 600,
+          "duration_s": 6.0,
+          "relative_denominator_floor": 2.5e-07,
+          "rule": "End-of-interval time rectangles on the common observation grid. Every finite observation contributes, including near-zero-load intervals; no per-time relative-error mask or phase cut is applied. This is one field norm over time, not an additive error budget across modeling layers."
+        }
+      },
+      "all_static_replays_numerically_admitted": false,
+      "original_scope": "Independent static elastic-response replay at each recorded source time. Contact and measured inertial loads are separately mapped to supporting midpoint triangles; local nodal couples preserve the actual source-point wrench and rigid virtual work in the fixed undeformed Shell configuration. Deformation changes the applied moment; both its net drift and a sum of uncancelled local drift norms are retained separately. A reported six-mode mass-weighted balance correction makes the free static problem solvable. This does not preserve every nonrigid3D virtual displacement, does not fit a footprint, and is not a contact-history or capped-control rollout. Original PR22 force/stiffness/PCG/integration kernels and the existing dt*external-force adapter are used; no IPC/contact substitution. Rejected and nonfinite states remain in the journal and raw world fields; material corotation is stored instead of a redundant second tensor copy.",
+      "scope": "Time norms retain every finite replay, including rejected static states; they are diagnostic field discrepancies, not admitted static or physical accuracy scores. Phase counts retain the exact source outcomes. Moment drift is measured at deformed Shell vertices, with both a net norm and a sum of local norms to expose cancellation. Near-zero denominators, balance corrections and strict relative-force failures stay explicit."
+    }
+  ],
+  "reference_qualified": false
+}

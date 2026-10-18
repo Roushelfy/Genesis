@@ -8,16 +8,19 @@ The [working report](QIPC_REFERENCE_RESULTS_20261018.md) and
 and unresolved reference uncertainty.
 
 **Storage incident,2026-10-18:** `/mnt/data` is currently unwritable with
-`OSError122: Disk quota exceeded`. Do not submit new scientific campaigns until
-the destination can create, write and fsync a small file. Preserve interrupted
-campaigns and use a fresh output directory after storage recovers. Exact
+`OSError122: Disk quota exceeded`. The explicitly disclosed bounded temporary
+destination in [DATA_LOCATION.md](../../../DATA_LOCATION.md) passed exclusive
+create/write/fsync; new selected campaigns use that root with node-local
+compilation caches. Preserve interrupted campaigns and use fresh output
+directories. Exact
 affected runs/checkpoints are in the
 [inventory](QIPC_STORAGE_AFFECTED_RUNS_20261018.json). Hash-verified native dumps
 are not validated cross-process restarts; the grasp runner has no resume option.
 Trajectory snapshots are not native contact/friction checkpoints.
-The [prepared validation tasks](QIPC_PENDING_VALIDATION_20261018.md) cover
-unexecuted max-only/interrupt-admission controls and outstanding completed-data
-audits; their existence is not a submitted job or a passing result.
+The [validation tasks](QIPC_PENDING_VALIDATION_20261018.md) executed in
+job726497 with all eight groups/nine tasks returning0. The
+[fallback execution record](QIPC_REFERENCE_FALLBACK_20261018.md) separates those
+passing observer/admission/audit controls from running and unqualified physics.
 
 ## Source, runtime and storage
 
@@ -33,6 +36,10 @@ Keep scientific execution, tests, analysis and rendering inside Slurm
 analysis sources and source/input identities, writes explicit data-side caches,
 temporary files and logs, and submits GPU task groups. Do not edit a frozen
 engine checkout while its jobs import it. Do not change shared environments.
+For an allocation with sufficient node-local space, `--node-local-cache` creates
+a private `/tmp/gs-shell-compare.XXXXXX` for compilation/model/tmp caches and
+removes only that directory at allocation exit. Persistent logs, results and
+source receipts stay under `--output`; default cache behavior is unchanged.
 
 | Role | Frozen source or identity |
 | --- | --- |

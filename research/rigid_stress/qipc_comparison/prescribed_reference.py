@@ -57,6 +57,8 @@ def main():
     parser.add_argument("--d-hat", type=float, default=2e-5)
     parser.add_argument("--friction-epsilon-velocity", type=float, default=1e-4)
     parser.add_argument("--resistance", type=float, default=1e10)
+    parser.add_argument("--record-interval", type=float, default=0.01)
+    parser.add_argument("--record-times", type=float, nargs="*", default=[])
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -67,8 +69,12 @@ def main():
     stride = round(args.dt / sample_dt)
     assert stride > 0 and np.isclose(stride * sample_dt, args.dt)
     assert args.duration <= motion["time_s"][-1]
-    record_stride = round(0.01 / args.dt)
-    assert np.isclose(record_stride * args.dt, 0.01)
+    record_stride = round(args.record_interval / args.dt)
+    assert record_stride > 0 and abs(record_stride * args.dt - args.record_interval) < 1e-12
+    extra_steps = {round(time / args.dt) for time in args.record_times}
+    assert all(
+        0 < time <= args.duration and abs(round(time / args.dt) * args.dt - time) < 1e-12 for time in args.record_times
+    )
     with np.load(args.conditions) as bank:
         position, quaternion = bank["position"][0], bank["quaternion"][0]
         coefficient = 0.6 * bank["friction"][0, 0].item()
@@ -111,6 +117,10 @@ def main():
             "conditions": file_id(args.conditions),
             "config": asdict(config),
             "dbc_stiffness_ratio": args.dbc_stiffness,
+            "requested_duration_s": args.duration,
+            "record_interval_s": args.record_interval,
+            "extra_observation_times_s": args.record_times,
+            "observer_scope": "Stress/residual/raw peak observations at every physical step. Periodic/extra full-state frames follow the explicit recording grid; sparse pilot frames do not establish complete6s common observation coverage.",
             "protocol": "shared prescribed motion; original rigid pose-DBC potentials, no articulated KKT, no capped controller",
             "tracking_contract": "Finite-strength DBC is admitted only after measured pose and stiffness-sensitivity checks; the egg is free and every contact/reaction is solved.",
         },
@@ -176,7 +186,7 @@ def main():
                 failed = not row["all_fields_finite"] or row["minimum_det_F"] <= 0 or row["newton_cap_reached"]
                 executed += 1
                 journal.write(json.dumps(row, allow_nan=False) + "\n")
-                if (step + 1) % record_stride == 0 or failed or step == steps - 1:
+                if (step + 1) % record_stride == 0 or (step + 1) in extra_steps or failed or step == steps - 1:
                     save_frame(
                         args.output / "frames" / f"step{step:06d}.npz",
                         scene,
