@@ -1,0 +1,59 @@
+{
+  "envs": 1,
+  "method": "rigid",
+  "samples": [
+    {
+      "repeat": -1,
+      "warmup": true,
+      "steps": 200,
+      "elapsed_seconds": 0.3175421039923094,
+      "latency_ms_per_step": 1.587710519961547,
+      "aggregate_env_steps_per_second": 629.8377364308319,
+      "full_field_observations": 0,
+      "full_field_host_bytes": 0,
+      "all_environment_load_and_velocity_passed": true,
+      "maximum_load_error_n": 3.0572654836913404e-07,
+      "maximum_plate_speed_m_per_s": 6.149777099905097e-09
+    },
+    {
+      "repeat": 0,
+      "warmup": false,
+      "steps": 1000,
+      "elapsed_seconds": 1.4353401439730078,
+      "latency_ms_per_step": 1.4353401439730078,
+      "aggregate_env_steps_per_second": 696.6989700657361,
+      "full_field_observations": 0,
+      "full_field_host_bytes": 0,
+      "all_environment_load_and_velocity_passed": true,
+      "maximum_load_error_n": 1.007816566311881e-09,
+      "maximum_plate_speed_m_per_s": 2.0271486126799143e-11
+    },
+    {
+      "repeat": 1,
+      "warmup": false,
+      "steps": 1000,
+      "elapsed_seconds": 1.3797447480028495,
+      "latency_ms_per_step": 1.3797447480028495,
+      "aggregate_env_steps_per_second": 724.7717387201352,
+      "full_field_observations": 0,
+      "full_field_host_bytes": 0,
+      "all_environment_load_and_velocity_passed": true,
+      "maximum_load_error_n": 3.3012065303594795e-12,
+      "maximum_plate_speed_m_per_s": 6.770955955500047e-14
+    },
+    {
+      "repeat": 2,
+      "warmup": false,
+      "steps": 1000,
+      "elapsed_seconds": 1.3792803040123545,
+      "latency_ms_per_step": 1.3792803040123545,
+      "aggregate_env_steps_per_second": 725.0157905474179,
+      "full_field_observations": 0,
+      "full_field_host_bytes": 0,
+      "all_environment_load_and_velocity_passed": true,
+      "maximum_load_error_n": 2.706168622523819e-14,
+      "maximum_plate_speed_m_per_s": 4.533146334423921e-16
+    }
+  ],
+  "scope": "Warmed continuous mechanics at the last held load. Sparse complete stress/VM host transfers, finite checks and actual engine admission included; frame files and post-window contact reductions excluded. This cost does not itself establish physical accuracy. Warmup row excluded from primary rate."
+}

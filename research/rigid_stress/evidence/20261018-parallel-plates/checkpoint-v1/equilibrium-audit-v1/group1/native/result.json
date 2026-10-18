@@ -1,0 +1,267 @@
+{
+  "kind": "parallel-plate-pilot-admission",
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726973",
+      "SLURM_ARRAY_JOB_ID": "726973",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-3536a1e6-ce95-c58e-fc60-6f3fb8fdc4f0, 00000000:46:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "settling_window_s": 0.05,
+  "runs": [
+    {
+      "label": "dpr",
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v1/group0/dpr",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v1/group0/dpr/result.json",
+        "bytes": 1204,
+        "sha256": "0770d81271edb653b6b9ffbb1c712a2e1ee65c75ad7dd18469b817df404e3d35"
+      },
+      "source_input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "bytes": 34052,
+        "sha256": "40256c5711abb9e9e9f313adbb41944efb8511ae409538001a75d019e88728ea"
+      },
+      "completed": true,
+      "pcg_cap_steps_recorded": null,
+      "pcg_cap_observations_lower_bound": 0,
+      "load_levels": [
+        {
+          "load_level": 0,
+          "command_force_n": 0.1,
+          "endpoint_s": 2.1,
+          "frame": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v1/group0/dpr/frames/level0.npz",
+            "bytes": 139239,
+            "sha256": "6ef25871330604f8453c49f2d4078a079e58819b1fbc78a330cf745191a78307"
+          },
+          "requested_endpoint_present": true,
+          "settling_window_observations": 6,
+          "observations_with_complete_equilibrium_metrics": 0,
+          "mechanical_window_passed": true,
+          "endpoint_equation_passed": true,
+          "pcg_caps_observed_in_window": 0,
+          "entire_window_equilibrium_passed": false,
+          "last_observation": {
+            "step": 2100,
+            "time_s": 2.1,
+            "level": 0,
+            "within_level_step": 2100,
+            "command_force_n": 0.1,
+            "plate_speed_m_per_s": 1.949915749484859e-08,
+            "compression_coordinate_m": 0.0003806684413947287,
+            "plate_separation_m": 0.05966333155860527,
+            "empty_analytic_position_error_m": null,
+            "empty_analytic_velocity_error_m_per_s": null,
+            "upper_reaction_n": 0.09999903062987972,
+            "lower_reaction_n": 0.09999903098853538,
+            "egg_inertia_resultant_norm_n": 3.586556451836832e-10,
+            "egg_translational_kinetic_j": 2.998604549966252e-19,
+            "egg_kinetic_upper_bound_j": 2.998604549966252e-19,
+            "egg_angular_velocity_rad_per_s": [
+              9.998089813620531e-21,
+              2.5231275964102438e-20,
+              3.7872611849031896e-36
+            ],
+            "maximum_contact_friction": 0.01,
+            "contact_tangential_force_sum_norm_n": 4.166188677530783e-18,
+            "contact_count": 2,
+            "raw_vm_peak_pa": 22679.068737253514,
+            "equation_residual_relative": 3.036235829881119e-11,
+            "invalid_stress_steps": 0
+          }
+        },
+        {
+          "load_level": 1,
+          "command_force_n": 0.3,
+          "endpoint_s": 4.2,
+          "frame": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v1/group0/dpr/frames/level1.npz",
+            "bytes": 139540,
+            "sha256": "d5c73da485f07be2e3029698583f8ee86bf4c21d747a8ce6a51c9b9e71370455"
+          },
+          "requested_endpoint_present": true,
+          "settling_window_observations": 6,
+          "observations_with_complete_equilibrium_metrics": 0,
+          "mechanical_window_passed": true,
+          "endpoint_equation_passed": true,
+          "pcg_caps_observed_in_window": 0,
+          "entire_window_equilibrium_passed": false,
+          "last_observation": {
+            "step": 4200,
+            "time_s": 4.2,
+            "level": 1,
+            "within_level_step": 2100,
+            "command_force_n": 0.3,
+            "plate_speed_m_per_s": 2.1790883492736775e-11,
+            "compression_coordinate_m": 0.0008763689301854318,
+            "plate_separation_m": 0.05916763106981457,
+            "empty_analytic_position_error_m": null,
+            "empty_analytic_velocity_error_m_per_s": null,
+            "upper_reaction_n": 0.2999999989209076,
+            "lower_reaction_n": 0.29999999892158874,
+            "egg_inertia_resultant_norm_n": 6.811204001563336e-13,
+            "egg_translational_kinetic_j": 3.8618919250911615e-25,
+            "egg_kinetic_upper_bound_j": 3.8618919250911615e-25,
+            "egg_angular_velocity_rad_per_s": [
+              4.0895673352793447e-20,
+              1.0320471600507365e-19,
+              3.717288559586969e-36
+            ],
+            "maximum_contact_friction": 0.01,
+            "contact_tangential_force_sum_norm_n": 1.2551989568615985e-17,
+            "contact_count": 2,
+            "raw_vm_peak_pa": 68037.86550602295,
+            "equation_residual_relative": 3.0307715839864745e-11,
+            "invalid_stress_steps": 0
+          }
+        },
+        {
+          "load_level": 2,
+          "command_force_n": 1.0,
+          "endpoint_s": 6.300000000000001,
+          "frame": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v1/group0/dpr/frames/level2.npz",
+            "bytes": 139605,
+            "sha256": "0dcd92e76fc4a11208cd92f07061039275ed5b976a361641b74b6b4c6df697e7"
+          },
+          "requested_endpoint_present": true,
+          "settling_window_observations": 6,
+          "observations_with_complete_equilibrium_metrics": 0,
+          "mechanical_window_passed": true,
+          "endpoint_equation_passed": true,
+          "pcg_caps_observed_in_window": 0,
+          "entire_window_equilibrium_passed": false,
+          "last_observation": {
+            "step": 6300,
+            "time_s": 6.3,
+            "level": 2,
+            "within_level_step": 2100,
+            "command_force_n": 1.0,
+            "plate_speed_m_per_s": -1.1428620904500641e-16,
+            "compression_coordinate_m": 0.001707447401916027,
+            "plate_separation_m": 0.05833655259808397,
+            "empty_analytic_position_error_m": null,
+            "empty_analytic_velocity_error_m_per_s": null,
+            "upper_reaction_n": 1.0000000000000133,
+            "lower_reaction_n": 1.0000000000000104,
+            "egg_inertia_resultant_norm_n": 1.7332669613802498e-15,
+            "egg_translational_kinetic_j": 1.2734576393977302e-35,
+            "egg_kinetic_upper_bound_j": 1.2734576393977302e-35,
+            "egg_angular_velocity_rad_per_s": [
+              -5.28104600212925e-35,
+              -1.3209629905865884e-34,
+              3.6420818691118514e-36
+            ],
+            "maximum_contact_friction": 0.01,
+            "contact_tangential_force_sum_norm_n": 1.1190325971027203e-31,
+            "contact_count": 2,
+            "raw_vm_peak_pa": 226792.88583583536,
+            "equation_residual_relative": 3.086005531175623e-11,
+            "invalid_stress_steps": 0
+          }
+        }
+      ],
+      "admitted_equilibrium_and_solver_exits": false,
+      "mechanical_equilibrium_with_endpoint_equation": true,
+      "reference_qualified": false
+    },
+    {
+      "label": "scr",
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v1/group1/scr",
+      "receipt": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v1/group1/scr/result.json",
+        "bytes": 1073,
+        "sha256": "43cdf858d433eed2503c441577fd31c95fc2271682df8fc92528ef75de9ddc19"
+      },
+      "source_input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "bytes": 34052,
+        "sha256": "40256c5711abb9e9e9f313adbb41944efb8511ae409538001a75d019e88728ea"
+      },
+      "completed": false,
+      "pcg_cap_steps_recorded": null,
+      "pcg_cap_observations_lower_bound": 0,
+      "load_levels": [
+        {
+          "load_level": 0,
+          "command_force_n": 0.1,
+          "endpoint_s": 2.1,
+          "frame": null,
+          "requested_endpoint_present": false,
+          "settling_window_observations": 5,
+          "observations_with_complete_equilibrium_metrics": 0,
+          "mechanical_window_passed": false,
+          "endpoint_equation_passed": false,
+          "pcg_caps_observed_in_window": 0,
+          "entire_window_equilibrium_passed": false,
+          "last_observation": {
+            "step": 2090,
+            "time_s": 2.09,
+            "level": 0,
+            "within_level_step": 2090,
+            "command_force_n": 0.1,
+            "plate_speed_m_per_s": 2.0645975841546682e-08,
+            "compression_coordinate_m": 0.00038066824129653844,
+            "plate_separation_m": 0.05966333175870346,
+            "empty_analytic_position_error_m": null,
+            "empty_analytic_velocity_error_m_per_s": null,
+            "upper_reaction_n": 0.09999897361759846,
+            "lower_reaction_n": 0.09999897399734795,
+            "egg_inertia_resultant_norm_n": 3.797494720133438e-10,
+            "egg_translational_kinetic_j": 3.361695145466172e-19,
+            "egg_kinetic_upper_bound_j": 3.361695145466172e-19,
+            "egg_angular_velocity_rad_per_s": [
+              8.42648957078249e-21,
+              2.1265170468236518e-20,
+              3.7874744843728166e-36
+            ],
+            "maximum_contact_friction": 0.01,
+            "contact_tangential_force_sum_norm_n": 5.305416908471639e-22,
+            "contact_count": 2
+          }
+        },
+        {
+          "load_level": 1,
+          "command_force_n": 0.3,
+          "endpoint_s": 4.2,
+          "frame": null,
+          "requested_endpoint_present": false,
+          "settling_window_observations": 0,
+          "observations_with_complete_equilibrium_metrics": 0,
+          "mechanical_window_passed": false,
+          "endpoint_equation_passed": false,
+          "pcg_caps_observed_in_window": 0,
+          "entire_window_equilibrium_passed": false,
+          "last_observation": null
+        },
+        {
+          "load_level": 2,
+          "command_force_n": 1.0,
+          "endpoint_s": 6.300000000000001,
+          "frame": null,
+          "requested_endpoint_present": false,
+          "settling_window_observations": 0,
+          "observations_with_complete_equilibrium_metrics": 0,
+          "mechanical_window_passed": false,
+          "endpoint_equation_passed": false,
+          "pcg_caps_observed_in_window": 0,
+          "entire_window_equilibrium_passed": false,
+          "last_observation": null
+        }
+      ],
+      "admitted_equilibrium_and_solver_exits": false,
+      "mechanical_equilibrium_with_endpoint_equation": false,
+      "reference_qualified": false
+    }
+  ],
+  "same_mesh_solid_field_contrasts": [],
+  "scope": "Admission checks and separate inner/outer-tolerance contrasts. No physical reference qualification from numerical contrasts alone; spatial, timestep and contact uncertainty remain independent gates."
+}

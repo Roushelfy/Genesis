@@ -1,0 +1,111 @@
+{
+  "args": {
+    "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+    "loads": [
+      0.1
+    ],
+    "dt": 0.001,
+    "ramp": 0.1,
+    "hold": 2.0,
+    "damping": 50.0,
+    "clearance": 2e-05,
+    "plate_offset_x": 0.003,
+    "record_stride": 10,
+    "empty": false,
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-cost-v1/group1/dpr",
+    "method": "dpr",
+    "assets": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1",
+    "contact_radius": 0.006,
+    "envs": 8,
+    "cost_steps": 1000,
+    "cost_stride": 100,
+    "cost_repeats": 3
+  },
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726991",
+      "SLURM_ARRAY_JOB_ID": "726989",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-3536a1e6-ce95-c58e-fc60-6f3fb8fdc4f0, 00000000:46:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "genesis_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/__init__.py",
+  "input": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+    "bytes": 34052,
+    "sha256": "40256c5711abb9e9e9f313adbb41944efb8511ae409538001a75d019e88728ea"
+  },
+  "elastic_mesh": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+    "bytes": 3573,
+    "sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4"
+  },
+  "stress_options": {
+    "mesh": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+    "output_mode": "full",
+    "update_mode": "manual",
+    "young": 10000000000.0,
+    "poisson": 0.3,
+    "density": 2000.0,
+    "contact_radius": 0.006,
+    "contact_model": "pressure",
+    "intrinsic_integration": "surface_fan",
+    "intrinsic_support": "contact",
+    "intrinsic_load_partition": "body_source_prior",
+    "cooperative_tractions": true,
+    "surface_fan_frontier": true,
+    "warm_start_tractions": true,
+    "contact_block_size": 16,
+    "surface_edge_subdivisions": 8,
+    "source_projection_limit": 0.0001,
+    "source_geometry_tolerance": 1e-08,
+    "source_uncertainty": 0.0,
+    "quadrature": 10,
+    "tolerance": 1e-08,
+    "absolute_tolerance": 1e-11,
+    "max_iterations": 2000,
+    "warm_start": true,
+    "history_size": 0,
+    "method": "auto",
+    "cooperative_solve": true,
+    "cooperative_pressure": true,
+    "cooperative_scatter": true,
+    "cooperative_balance": true,
+    "contact_wrench_reuse": null,
+    "face_parallel_scatter": true,
+    "scatter_tasks_per_env": 32,
+    "contact_moment_reuse": null,
+    "inverse_max_bytes": 67108864,
+    "inverse_precision": "64",
+    "surface_inverse": true,
+    "packed_surface_loads": true,
+    "packed_block_size": null,
+    "coalesced_residual": null,
+    "fused_pipeline": true,
+    "fused_rigid_post": null,
+    "cached_peak": true,
+    "cached_face_bounds": true,
+    "inverse_corrections": 2,
+    "preconditioner": "block"
+  },
+  "plate_link_indices": {
+    "world": 0,
+    "lower": 1,
+    "upper": 2
+  },
+  "plate_dofs_armature": [
+    0.0
+  ],
+  "plate_dofs_damping": [
+    50.0
+  ],
+  "native_friction_floor": 0.01,
+  "scope": "Original native contact with measured mu=0.01 floor; not an exact frictionless model.",
+  "setup_seconds": 49.2636693380191
+}

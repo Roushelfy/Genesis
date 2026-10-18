@@ -1,0 +1,55 @@
+{
+  "completed": true,
+  "steps_returned": 300,
+  "newton_cap_steps": 0,
+  "pcg_cap_steps": 299,
+  "elapsed_seconds_including_observation_IO": 180.72849454800598,
+  "last_observation": {
+    "step": 300,
+    "time_s": 0.3,
+    "level": 0,
+    "within_level_step": 300,
+    "command_force_n": 0.1,
+    "plate_speed_m_per_s": -5.100087019371813e-12,
+    "compression_coordinate_m": 1.8076121535703926e-07,
+    "plate_separation_m": 0.06003981923878464,
+    "upper_lateral_position_m": [
+      0.003,
+      -2.0234943498967766e-25
+    ],
+    "upper_quaternion_wxyz": [
+      1.0,
+      9.146691710783896e-17,
+      7.499898694332256e-13,
+      9.616629056884261e-29
+    ],
+    "empty_analytic_position_error_m": null,
+    "empty_analytic_velocity_error_m_per_s": null,
+    "newton": 2,
+    "pcg_max": 4096,
+    "pcg_total": 4159,
+    "line_search_max": 1,
+    "newton_last_max_displacement_m": 2.985130433638526e-14,
+    "newton_last_contact_displacement_m": 0.0,
+    "ccd_minimum_alpha": 1.0,
+    "edge_triangle_check_enabled": true,
+    "edge_triangle_intersection_pairs": [],
+    "edge_triangle_intersection_count": 0,
+    "upper_reaction_n": 0.1000000183483823,
+    "lower_reaction_n": 0.09999979771841794,
+    "egg_inertia_resultant_norm_n": 5.01750544402104e-08,
+    "egg_kinetic_j": 1.380184441338306e-15,
+    "equation_residual_relative": 0.003280503239299159,
+    "minimum_det_F": 0.9999988503585097,
+    "raw_vm_peak_pa": 25559.1066564613,
+    "raw_principal_peak_pa": 9660.53396923864,
+    "equilibrium_checks": {
+      "both_plate_reactions": true,
+      "plate_velocity": true,
+      "egg_inertial_resultant": true,
+      "egg_kinetic": true,
+      "equation_residual": false
+    }
+  },
+  "reference_qualified": false
+}

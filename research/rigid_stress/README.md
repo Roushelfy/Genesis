@@ -12,6 +12,11 @@ reference under quasi-static common-force loading, with bounded friction
 controls, sparse full-spatial observations, cost and stability measurements.
 Full Franka physical-reference qualification is no longer a completion gate.
 
+The [plate checkpoint](docs/PARALLEL_PLATE_RESULTS_20261018.md) records verified
+mechanical equilibria, the SCR cancellation-sensitive admission failure,
+original Shell contact-split imbalance and unresolved QIPC point-contact fields.
+It is an interim diagnostic result, not a qualified three-way accuracy ranking.
+
 `RigidStressOptions.dpr(...)` and `.scr(...)` select the existing pressure and
 intrinsic/body_source_prior routes. Manual stress sampling is available through
 `update_mode="manual"` and `link.request_stress_update()`; ordinary every-step

@@ -1,0 +1,111 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "726996",
+      "SLURM_ARRAY_JOB_ID": "726996",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-989c26dd-70a0-d765-fb71-8b8ae18dec56, 00000000:21:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "input": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-parallel-plates/native-equilibria-v2/group1/scr/rejected-state.npz",
+    "bytes": 116583,
+    "sha256": "e79ec59323caa33d84b72ee476e8d9280e712fb25b0b983705ed9231965a84db"
+  },
+  "rejection": {
+    "exception": "GenesisException('Native stress contact recovery rejected a load. link=3, env=0, contact=0, status=40: vector traction fails final original wrench or local friction acceptance; radius=0.006 m, mu=0.01; link=3, env=0, contact=1, status=40: vector traction fails final original wrench or local friction acceptance; radius=0.006 m, mu=0.01')",
+    "attempted_step": 2100,
+    "load_level": 0,
+    "command_force_n": 0.1,
+    "dump_errors": []
+  },
+  "contacts": [
+    {
+      "env": 0,
+      "packed_contact": 0,
+      "auxiliary_aggregate_force_n": [
+        1.3286289818311102e-22,
+        5.937356440344062e-23,
+        3.5474226334208936e-10
+      ],
+      "retained_physical_source_prior_force_n": [
+        -4.661806799300682e-18,
+        -2.8556203362151793e-18,
+        0.0999990415615317
+      ],
+      "retained_group_force_scale_n": 0.19999808276832115,
+      "reconstructed_force_n": [
+        0.0,
+        0.0,
+        3.5474226377577023e-10
+      ],
+      "auxiliary_aggregate_free_moment_nm": [
+        2.1048470316003216e-23,
+        -4.710109790169567e-23,
+        -3.637929979360817e-40
+      ],
+      "reconstructed_moment_nm": [
+        0.0,
+        3.3881317890172014e-20,
+        -1.9058241313221758e-21
+      ],
+      "force_error_n": 4.336808934105074e-19,
+      "force_budget_n": 3.547422633420894e-18,
+      "moment_error_nm": 3.3981910241890663e-20,
+      "moment_budget_nm": 2.1284535800525364e-20,
+      "force_acceptance_passed": true,
+      "moment_acceptance_passed": false,
+      "local_friction_acceptance_passed": true,
+      "traction_fit_status": 0,
+      "fit_force_error_normalized": 6.463717753730896e-09,
+      "fit_moment_error_normalized": 3.981540606462671e-09
+    },
+    {
+      "env": 0,
+      "packed_contact": 1,
+      "auxiliary_aggregate_force_n": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "retained_physical_source_prior_force_n": [
+        4.661939662198865e-18,
+        2.8556797097795828e-18,
+        -0.09999904120678944
+      ],
+      "retained_group_force_scale_n": 0.0,
+      "reconstructed_force_n": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "auxiliary_aggregate_free_moment_nm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reconstructed_moment_nm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "force_error_n": 0.0,
+      "force_budget_n": 0.0,
+      "moment_error_nm": 0.0,
+      "moment_budget_nm": 0.0,
+      "force_acceptance_passed": true,
+      "moment_acceptance_passed": true,
+      "local_friction_acceptance_passed": true,
+      "traction_fit_status": 0,
+      "fit_force_error_normalized": 0.0,
+      "fit_moment_error_normalized": 0.0
+    }
+  ],
+  "scope": "Read-only evaluation of final wrench/cone acceptance in cooperative_scatter.py, using packed contact arrays. body_source_prior replaces auxiliary constraints by the net body wrench while retaining opposing physical priors; only the leader aggregate is constrained and its failure propagates to all members. No acceptance relaxation or reconstructed successful field."
+}

@@ -1,0 +1,60 @@
+[
+  [
+    {
+      "name": "zero-load",
+      "module": "research.rigid_stress.qipc_comparison.plate_shell",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--midpoint-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/surface0/egg-mid-level1.obj",
+        "--loads",
+        "0.0",
+        "--coupling-softness",
+        "0.002"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "tight",
+      "module": "research.rigid_stress.qipc_comparison.plate_shell",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--midpoint-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/surface0/egg-mid-level1.obj",
+        "--loads",
+        "0.1",
+        "--coupling-softness",
+        "0.002",
+        "--iterations",
+        "300",
+        "--tolerance",
+        "1e-8"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "tight-half-dt",
+      "module": "research.rigid_stress.qipc_comparison.plate_shell",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/controls-v1/group0/inputs/base1-surface1-wall4.npz",
+        "--midpoint-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261018-qipc-reference/qualify-tight-v1/group0/evaluation/surface0/egg-mid-level1.obj",
+        "--loads",
+        "0.1",
+        "--coupling-softness",
+        "0.002",
+        "--iterations",
+        "300",
+        "--tolerance",
+        "1e-8",
+        "--dt",
+        "0.0005"
+      ]
+    }
+  ]
+]
