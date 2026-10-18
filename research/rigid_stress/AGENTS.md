@@ -1,23 +1,19 @@
 # Working on native rigid stress recovery
 
-**Execution-agent handoff,2026-10-18:** the user changed the observation and
-execution priorities. Read the user-update section of
-[the active goal](docs/QIPC_REFERENCE_COMPARISON_GOAL.md) before further long
-submissions: only a few predeclared full-spatial-stress keyframes are needed;
-first run short-contact-window timing profiles and tolerance comparisons,
-then full-length experiments with sparse stress computation/export. Preserve
-continuous mechanics/contact history and failure checks. Dense stress norms
-and global temporal peaks are no longer required. Acknowledge this update in
-the progress record at the next safe boundary; assess existing jobs without
-hot-editing their captured source or automatically discarding their results.
+**Execution-agent handoff,2026-10-18:** the primary accuracy benchmark is now
+two parallel rigid plates compressing the hollow egg. Read
+[the new goal](docs/PARALLEL_PLATE_COMPARISON_GOAL.md) before further long jobs.
+Start with common-force quasi-static loading, then bounded friction controls.
+Full Franka reference/controller/convergence work is no longer a completion
+gate; keep its existing results and useful engineering cost evidence.
 
-Read [GOAL.md](GOAL.md), [docs/QIPC_REFERENCE_COMPARISON_GOAL.md](docs/QIPC_REFERENCE_COMPARISON_GOAL.md),
+Read [GOAL.md](GOAL.md), [docs/PARALLEL_PLATE_COMPARISON_GOAL.md](docs/PARALLEL_PLATE_COMPARISON_GOAL.md),
 [README.md](README.md) and [docs/RUNNING.md](docs/RUNNING.md) first.
-The active task compares DPR (pressure), SCR (intrinsic + body_source_prior)
-and Kashu shell against qualified cuda-graph-qipc reference grasps. Deliver
-common-reference error, speed/memory and stability evidence, with clearer
-configuration names. Separate prescribed robot motion from matched capped
-actuation, and qualify reference uncertainty before ranking accuracy.
+Compare DPR, SCR and original PR22 Shell against qualified QIPC solid FEM.
+Preserve occasional full-spatial keyframes, short-window stage profiling,
+measured tolerance selection, continuous mechanical history and failure checks.
+Assess already running work at a safe boundary without hot-editing captured
+sources or discarding evidence. Do not restart broad Franka qualification sweeps.
 
 Reuse the preceding [shell report](docs/SHELL_COMPARISON_RESULTS_20261018.md),
 [running guide](docs/RUNNING_SHELL_COMPARISON.md) and

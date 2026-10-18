@@ -1,5 +1,13 @@
 # Goal: compare three stress methods against a qualified QIPC reference
 
+> Superseded scope update,2026-10-18: follow
+> [the parallel-plate goal](PARALLEL_PLATE_COMPARISON_GOAL.md) for the active
+> accuracy benchmark. The user requested a simpler scene instead of complex
+> Franka grasping. Full-Franka reference/controller/convergence requirements
+> below are previous plans, not current completion gates. Sparse full-spatial
+> observations, profiling first and the three-method comparison remain.
+
+
 User direction, 2026-10-18. Deliver a detailed, reproducible comparison of our
 two rigid stress recovery routes and Kashu shell PR22 for **full spatial stress
 distributions at a few keyframes during complete Franka grasps of a hollow egg**. Evaluate error,
