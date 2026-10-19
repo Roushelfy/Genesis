@@ -1,5 +1,26 @@
 # Rigid-stress data and artifact locations
 
+The independent-process-memory-v2 packet adds331 compact payloads/2,775,215
+bytes for14 collector controls and24 source-matched fresh memory profiles.
+Twenty full raw benchmark JSON files and eight complete replay arrays remain
+under the established20261019-qualified-ranking data root with external hashes.
+The independent child uses only private job TMPDIR for temporary query logs;
+complete query records are retained in the explicit data-side profile results.
+Active fine histories, environments and compatibility links stay in place.
+
+The oversized generated publication draft was untracked, unpublished and had no
+active writer after all associated jobs/publisher completed. It was copied with
+copy2 metadata and symlink preservation,352 files verified for bytes/SHA-256,
+mode and mtime, then only its verified home copy was removed:
+
+- Old: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/research/rigid_stress/evidence/20261019-qualified-ranking/independent-process-memory-v1
+- New: /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/publication-drafts/independent-process-memory-v1
+
+No compatibility link is needed for this unpublished draft. Exact checks and
+inventories are in meta/independent-process-memory-draft-migration-v1.json at the
+same run root and in the compact packet. No frozen manifest is rewritten, no
+tracked directory is replaced and no live scientific output is migrated.
+
 The native-performance-summary-v1 packet adds203 compact payloads/1,464,777
 bytes for the61-row source-bound scene summary, four current-source B8 module
 modes and four separate process-memory runs. It retains original reader failures,

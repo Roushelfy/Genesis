@@ -47,10 +47,10 @@ class Reader:
         self.check("hash/" + ident["path"], self.identify(ident["path"]) == ident)
 
     def audit(self, name):
-        path = self.root / name / "group0/audit/result.json"
+        path = name if isinstance(name, Path) else self.root / name / "group0/audit/result.json"
         result = self.read(path)
-        self.check(name + "/admitted", result.get("passed", result.get("timing_receipts_passed", False)))
-        self.check(name + "/all_checks", all(c["passed"] for c in result.get("checks", [])))
+        self.check(str(name) + "/admitted", result.get("passed", result.get("timing_receipts_passed", False)))
+        self.check(str(name) + "/all_checks", all(c["passed"] for c in result.get("checks", [])))
         for ident in result["receipts"]:
             self.verify(ident)
         return result, self.identify(path)
@@ -158,6 +158,10 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--root", type=Path, required=True)
     cli.add_argument("--b8-equivalence", type=Path, required=True)
+    cli.add_argument("--memory128-512", type=Path)
+    cli.add_argument("--memory2048-8192", type=Path)
+    cli.add_argument("--memory-audit128-512", type=Path)
+    cli.add_argument("--memory-audit2048-8192", type=Path)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -224,8 +228,11 @@ def main():
                     "source": source, "conformance_source": control_source,
                 })
     for suffix, cohort in (("128-512", "scaling128-512"), ("2048-8192", "scaling2048-8192")):
-        campaign = args.root / f"native-production-memory{suffix}-v1"
-        audit, audit_id = reader.audit(f"native-production-memory{suffix}-audit-v1")
+        custom = getattr(args, "memory" + suffix.replace("-", "_"))
+        custom_audit = getattr(args, "memory_audit" + suffix.replace("-", "_"))
+        assert (custom is None) == (custom_audit is None), "Memory campaign/audit overrides must be paired"
+        campaign = custom or args.root / f"native-production-memory{suffix}-v1"
+        audit, audit_id = reader.audit(custom_audit or f"native-production-memory{suffix}-audit-v1")
         reader.source(campaign)
         batches = sorted({r["batch"] for r in audit["rows"]})
         for admitted in audit["rows"]:

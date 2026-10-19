@@ -1,0 +1,23 @@
+{
+  "scope": "Instrumentation-only independent subprocess sampler. No engine/physics/primary benchmark changes; existing captured samplers stay immutable.",
+  "legacy_sampler": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-module-memory-canonical-v1/analysis-source/research/rigid_stress/shell_comparison/memory.py",
+    "sha256": "4bc55bfd0d6796d51ecdf01ea07bf7ad1f24279bc3dd51e047411f233c3ff17a"
+  },
+  "workers": {
+    "shell_comparison/memory.py": "b1e454f1196401668fa118c85b28614be87d05e20a44fbe660064426e7373449",
+    "qipc_comparison/check_process_memory.py": "77655b83f4b4a69a4cafbd0ee2f1aa5557547ad85aa109035a4b9a8fe41a768a"
+  },
+  "fixed_control": {
+    "C_call": "ctypes.PyDLL(None).sleep(3), retaining parent GIL",
+    "minimum_hold_seconds": 2.9,
+    "minimum_old_gap_seconds": 2.5,
+    "minimum_new_samples_and_polls_during_hold": 10,
+    "maximum_new_hold_sample_gap_seconds": 1.0,
+    "query_failure": "private fake NVIDIA command exits17; error must propagate and owned collector be reaped; restore only the test PATH",
+    "disabled": "no child/no samples",
+    "collector": "separate PID, no torch/genesis/numpy/quadrants imports, original target PID and GPU, normal exit0"
+  },
+  "follow_up": "Only after this integration control passes, repeat separate low-resolution memory profiles with the exact existing physical/solver tasks; primary timing and fine references stay unchanged.",
+  "storage": "Explicit data outputs and node-local temporary logs/caches; no new environment."
+}

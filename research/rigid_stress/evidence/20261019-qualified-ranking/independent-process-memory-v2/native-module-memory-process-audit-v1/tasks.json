@@ -1,0 +1,17 @@
+[
+  [
+    {
+      "name": "audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_native_module_memory",
+      "args": [
+        "--primary",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-module-replay-canonical-v2",
+        "--primary-audit",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-module-replay-canonical-audit-v1/group0/audit/result.json",
+        "--memory",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-module-memory-process-v1",
+        "--require-independent-sampler"
+      ]
+    }
+  ]
+]

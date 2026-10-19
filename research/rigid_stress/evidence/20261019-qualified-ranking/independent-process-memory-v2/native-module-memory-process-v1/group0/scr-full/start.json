@@ -1,0 +1,29 @@
+{
+  "task": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/native-module-memory-scr-full-v1-task.json",
+    "bytes": 538,
+    "sha256": "a1c6a56eb5f2ec19e8cf15d20a8c177e21e92987526c29a4e886a78418c9f649"
+  },
+  "driver_argv": [
+    "research.rigid_stress.qipc_comparison.native_production_controls",
+    "--method",
+    "scr",
+    "--envs",
+    "8",
+    "--conditions",
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+    "--output-mode",
+    "full",
+    "--steps",
+    "1200",
+    "--warmup",
+    "900",
+    "--field-stride",
+    "120",
+    "--replay",
+    "--repetitions",
+    "1",
+    "--output",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-module-memory-process-v1/group0/scr-full/replay"
+  ]
+}
