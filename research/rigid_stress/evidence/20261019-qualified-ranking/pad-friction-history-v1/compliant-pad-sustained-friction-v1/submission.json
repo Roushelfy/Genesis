@@ -1,0 +1,18 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-1%2",
+    "--partition=rtx-mid",
+    "--gres=gpu:1",
+    "--cpus-per-task=8",
+    "--mem=64G",
+    "--time=25",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-sustained-friction-v1/logs/%A_%a.log",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-sustained-friction-v1/job.sh"
+  ],
+  "job": "727954",
+  "node_local_cache": true,
+  "allow_home_output": false
+}

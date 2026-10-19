@@ -1206,3 +1206,43 @@ cycle and same-tolerance half-step control (`727956`) remain required beyond
 this first admitted hold.
 Selected unchanged receipts and the independent linear audit are in the
 [refinement/friction packet](../evidence/20261019-qualified-ranking/pad-refinement-friction-v1/README.md).
+
+## Sustained shear and preconditioner invariance
+
+Both actual friction histories (`727954`) finish400/800 steps at1/0.5ms.
+All normal and sustained-shear windows pass, with zero solver flags and
+51/101 samples per window. At1ms the final tangential resultant is
+-0.007480995025N, balancing the0.007480995019N horizontal body force;
+both normal reactions remain0.1N. The independently reconstructed lagged-law
+error is1.68e-14, current Coulomb-cone excess is zero, and maximum window
+contact-relative equation residual is1.60e-8. At0.5ms the corresponding
+residual is8.64e-9. These are mechanical admissions, not stress-error rankings.
+
+The complete same-mesh timestep comparison (`727960`) changes tangent,
+membrane and bending fields by2.75e-7/2.10e-7/3.44e-7 relatively, with raw
+Mises/tension changes4.06e-8/1.14e-8; the unchanged solver/timestep gates pass.
+Motion decomposition (`727961`) resolves center velocity6.47e-6m/s, angular
+velocity about y of-1.44e-5rad/s and nonrigid RMS velocity1.13e-11m/s in both
+shear endpoints. The free egg creeps and slowly rotates; this is not a
+zero-velocity static solution. A friction reference must retain that history
+or quantify a justified reduction, rather than assume fixed rigid orientation.
+The longer loading/unloading repeat and500um friction arm (`727962`) check
+repeatability, return fields and spatial sensitivity without pinning the egg.
+
+The500um preconditioner comparison (`727958_0`) passes: changing only0 to12
+patches changes tangent/membrane/bending by8.00e-8/6.12e-8/1.02e-7 and raw
+peaks by at most4.69e-9. The complete250um Shell comparison (`727958_1`) is
+still provisional: versus250um solid, tangent/membrane/bending differences
+are25.9687%/5.8716%/41.8727%, while raw Mises/tension differ0.00952%/14.1604%.
+Refining Shell500-to250um changes tangent35.0822% and bending55.6825% despite
+much smaller raw-peak changes. Thus a nearly matching Mises maximum alone
+would seriously misrepresent complete-field agreement. Neither this admitted
+Shell configuration nor small timestep uncertainty removes the remaining
+solid-reference spatial qualification, native contact-response or cost work.
+
+The250um half-step arm (`727956_1`) now completes400 steps and passes its
+50ms mechanical window; complete tangent/membrane/bending changes against
+the1ms hold are3.48e-8/2.67e-8/4.46e-8, with peaks below1.85e-8. The full
+five-load cycle remains running. Sustained friction, motion decomposition
+and preconditioner invariance receipts are published in the
+[continuous friction checkpoint](../evidence/20261019-qualified-ranking/pad-friction-history-v1/README.md).

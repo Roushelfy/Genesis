@@ -36,6 +36,14 @@ def main():
                 position = saved["vertices_world_m"]
                 force = saved["contact_forces_world_n"]
                 residual = saved["equation_residual_n"]
+                velocity = saved["velocities_m_per_s"]
+            centered_position = position - mass @ position / mass.sum()
+            center_velocity = mass @ velocity / mass.sum()
+            inertia = np.eye(3) * np.sum(mass[:, None] * centered_position**2)
+            inertia -= np.einsum("n,ni,nj->ij", mass, centered_position, centered_position)
+            angular_momentum = np.cross(centered_position, mass[:, None] * (velocity - center_velocity)).sum(axis=0)
+            angular_velocity = np.linalg.solve(inertia, angular_momentum)
+            deformation_velocity = velocity - center_velocity - np.cross(angular_velocity, centered_position)
             rotation = corotation(rest, position, mass)
             centered = (position - mass @ position / mass.sum()) @ rotation
             elastic_difference = centered - (rest - mass @ rest / mass.sum())
@@ -48,6 +56,11 @@ def main():
                     "maximum_displacement_m": float(np.linalg.norm(position - rest, axis=1).max()),
                     "rotation_rad": float(np.arccos(np.clip((np.trace(rotation) - 1) / 2, -1, 1))),
                     "rotation_matrix": rotation.tolist(),
+                    "mass_center_velocity_m_per_s": center_velocity.tolist(),
+                    "angular_velocity_rad_per_s": angular_velocity.tolist(),
+                    "deformation_velocity_mass_rms_m_per_s": float(
+                        np.sqrt(np.sum(mass[:, None] * deformation_velocity**2) / mass.sum())
+                    ),
                     "maximum_corotated_displacement_m": float(np.linalg.norm(elastic_difference, axis=1).max()),
                     "lower_vertical_half_thickness_envelope_gap_m": float(position[:, 2].min() - 0.00025 - lower),
                     "upper_vertical_half_thickness_envelope_gap_m": float(
