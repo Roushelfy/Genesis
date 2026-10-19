@@ -1,0 +1,30 @@
+{
+  "module_sha256": "64c37ee3d641de39413fb2ab810dc5ac399f0cc2c3f26bfda8338ddad5fffb98",
+  "normal_timing_configurations": 24,
+  "normal_metric_associations": 120,
+  "friction_timing_configurations": 4,
+  "friction_metric_associations": 36,
+  "full_output_metrics": 9,
+  "max_output_metrics": [
+    "raw_mises"
+  ],
+  "physical_solver_mass_mesh_asset_and_runtime_source_match_required": true,
+  "captured_worker_precision_bits": 64,
+  "mass_relative_match_tolerance": 1e-12,
+  "existing_endpoint_field_conformance_limit": 0.005,
+  "existing_endpoint_raw_peak_conformance_limit": 0.01,
+  "normal_reference_case_time_s": 0.2,
+  "normal_timed_interval_s": [
+    0.2,
+    0.8
+  ],
+  "friction_reference_case_time_s": 0.4,
+  "friction_timed_interval_s": [
+    0.4,
+    1.0
+  ],
+  "reference_error_is_exact_timed_endpoint_error": false,
+  "sparse_memory_inherited_from_every_step": false,
+  "default_collider_production_inherits_pad_error": false,
+  "whole_goal_complete": false
+}

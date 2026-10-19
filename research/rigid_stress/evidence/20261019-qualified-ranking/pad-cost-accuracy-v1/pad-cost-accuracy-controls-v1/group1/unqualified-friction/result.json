@@ -1,0 +1,39 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-235",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "730051",
+      "SLURM_ARRAY_JOB_ID": "730051",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "case": "friction",
+  "passed": false,
+  "checks": {
+    "explicit_final_friction_ranking_provided": true,
+    "qualified_friction_error_ranking_admitted": false,
+    "complete_matched_cost_error_contract": false
+  },
+  "error": "qualified_friction_error_ranking_admitted",
+  "matched_configurations": [],
+  "reference_case_error_cost_rows": [],
+  "preserved_every_step_failures": [],
+  "runtime_source_manifests": [],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-normal-qualification-v2/group0/qualification/result.json",
+      "bytes": 42447,
+      "sha256": "c79fbba32143ca71a90475c8ad1cdb109ba86f09c9ff60608480c113db486a2b"
+    }
+  ],
+  "whole_goal_complete": false,
+  "scope": "Qualified reference-case error measurements and separately own-admitted research-workflow timings share exact geometry, material assets, mass, physical/solver parameters and byte-identical Genesis runtime inventories. Output/cadence/batch and physical history horizons are explicit. Endpoint field/peak conformance is retained separately; it is not a new continuum error bound or an exact error measurement at each timed endpoint. Max-only rows associate only raw Mises magnitude error; no complete-field error is assigned to unexported tensors. Sparse memory is unavailable, and sampled every-step memory comes from separate process profiles. Warm blocks are not independent process repeats. Default-collider production/module throughput never inherits pad errors."
+}

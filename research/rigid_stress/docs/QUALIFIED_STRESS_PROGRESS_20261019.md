@@ -1743,3 +1743,34 @@ matching cost/error consolidation remain open; the goal is still in progress.
 
 
 The [renderer packet](../evidence/20261019-qualified-ranking/stvk-figure-render-controls-v1/README.md) retains123 compact payloads/1,750,818 bytes, four inspected control previews and exact original/encoded hashes. Full plotted arrays and vector/high-resolution exports remain on data with external identities; live fine outputs and final scientific artwork are excluded.
+
+
+## Matched normal reference-case errors and workflow costs
+
+[Consolidator730051_0](MATCHED_PAD_ERROR_COST_20261019.md) passes478 checks,
+rehashes1649 distinct runtime files and binds24 own-admitted normal timing
+configurations to120 applicable reference-case metric rows. Captured workers
+explicitly select64-bit precision. Fifteen changed configuration probes reject
+radius, friction, dt, mass and runtime mismatches; a separate read-only provenance
+audit verifies28 material/recovery constructor pairs. Reference-case errors stay
+at0.2s, with warm workflow costs explicitly over0.2–0.8s. Max-only output receives
+raw Mises magnitude association only. Sparse memory stays unavailable; profiles
+remain separate and sampled. These are configuration associations, not new
+continuum bounds or exact error measurements at every timed endpoint.
+
+Negative730051_1 rejects a normal-only receipt for friction and writes no joined
+CSV. Final friction730062 waits on qualified ranking729835 and retains four
+admitted cost configurations, including every-step Shell, while preserving both
+failed every-step native costs. Fine-reference/friction ranks and these36 final
+associations remain pending; default-collider production speeds inherit no pad
+error value.
+
+The live half-dt729314_1 pace raises a concrete resource concern: a recent five-step
+window suggests more than20h remaining versus its original15h total limit.
+A live-job extension attempt to36h is denied by Slurm permissions. Exact command,
+pace, before/after state and denial are retained; the user was asked to coordinate administrator assistance. The task remains RUNNING with no restart, source edit or numerical
+change. Other fine histories and all pending gates remain intact. This runtime
+extrapolation does not admit the reference or establish an actual timeout.
+
+
+The [matched association packet](../evidence/20261019-qualified-ranking/pad-cost-accuracy-v1/README.md) retains66 compact payloads/1,005,710 bytes: actual normal CSVs, source/provenance checks, negative friction rejection, immutable queued plan and the denied live-task resource-change journal. Original arrays, source trees and live references remain in place.

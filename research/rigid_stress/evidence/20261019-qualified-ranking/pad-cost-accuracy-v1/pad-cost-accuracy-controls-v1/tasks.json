@@ -1,0 +1,28 @@
+[
+  [
+    {
+      "name": "normal",
+      "module": "research.rigid_stress.qipc_comparison.pad_cost_accuracy",
+      "args": [
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking",
+        "--case",
+        "normal"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "unqualified-friction",
+      "module": "research.rigid_stress.qipc_comparison.pad_cost_accuracy",
+      "args": [
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking",
+        "--case",
+        "friction",
+        "--ranking",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-normal-qualification-v2/group0/qualification/result.json"
+      ]
+    }
+  ]
+]
