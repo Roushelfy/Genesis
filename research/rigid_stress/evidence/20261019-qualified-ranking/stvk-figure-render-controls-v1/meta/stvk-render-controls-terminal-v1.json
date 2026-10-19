@@ -1,0 +1,118 @@
+{
+  "expected": {
+    "729875_0": [
+      "FAILED",
+      "1:0"
+    ],
+    "729877_0": [
+      "FAILED",
+      "1:0"
+    ],
+    "729882_0": [
+      "FAILED",
+      "1:0"
+    ],
+    "729932_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729930_0": [
+      "FAILED",
+      "1:0"
+    ]
+  },
+  "observed": {
+    "729875_0": [
+      "FAILED",
+      "1:0"
+    ],
+    "729875_0.batch": [
+      "FAILED",
+      "1:0"
+    ],
+    "729875_0.0": [
+      "FAILED",
+      "1:0"
+    ],
+    "729877_0": [
+      "FAILED",
+      "1:0"
+    ],
+    "729877_0.batch": [
+      "FAILED",
+      "1:0"
+    ],
+    "729877_0.0": [
+      "FAILED",
+      "1:0"
+    ],
+    "729882_0": [
+      "FAILED",
+      "1:0"
+    ],
+    "729882_0.batch": [
+      "FAILED",
+      "1:0"
+    ],
+    "729882_0.0": [
+      "FAILED",
+      "1:0"
+    ],
+    "729930_0": [
+      "FAILED",
+      "1:0"
+    ],
+    "729930_0.batch": [
+      "FAILED",
+      "1:0"
+    ],
+    "729930_0.0": [
+      "FAILED",
+      "1:0"
+    ],
+    "729932_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729932_0.batch": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729932_0.0": [
+      "COMPLETED",
+      "0:0"
+    ]
+  },
+  "sacct": "729875_0|FAILED|1:0\n729875_0.batch|FAILED|1:0\n729875_0.0|FAILED|1:0\n729877_0|FAILED|1:0\n729877_0.batch|FAILED|1:0\n729877_0.0|FAILED|1:0\n729882_0|FAILED|1:0\n729882_0.batch|FAILED|1:0\n729882_0.0|FAILED|1:0\n729930_0|FAILED|1:0\n729930_0.batch|FAILED|1:0\n729930_0.0|FAILED|1:0\n729932_0|COMPLETED|0:0\n729932_0.batch|COMPLETED|0:0\n729932_0.0|COMPLETED|0:0\n",
+  "renderer_checks_passed": 15,
+  "four_previews_inspected": true,
+  "negative_normal_only_qualification_rejected": true,
+  "fine_reference_and_final_figures_pending": true,
+  "final_submission": {
+    "command": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0%1",
+      "--partition=rtx-mid",
+      "--no-requeue",
+      "--gres=none",
+      "--cpus-per-task=2",
+      "--mem=32G",
+      "--time=30",
+      "--job-name=shell22-compare",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/canonical-stvk-figures-v1/logs/%A_%a.log",
+      "--dependency=afterany:729835:729519",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/canonical-stvk-figures-v1/job.sh"
+    ],
+    "job": "729938",
+    "dependency": "afterany:729835:729519",
+    "node_local_cache": true,
+    "kernel_profiler": false,
+    "allow_home_output": false
+  },
+  "source_contract": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/canonical-stvk-figure-contract-v1.json",
+    "bytes": 1023,
+    "sha256": "a56193136bdc9a1b0674c39b4e37e613195680b2112694f1d986a2b85aad4850"
+  }
+}

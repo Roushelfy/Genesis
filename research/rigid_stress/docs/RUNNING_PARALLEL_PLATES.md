@@ -719,3 +719,20 @@ integrals are mandatory. The captured18-task recipe replaces pending v1 only
 to add surface exports; numerical settings stay fixed. No unqualified-reference
 fallback, raw-peak trimming or threshold retuning is available. Preserve the
 negative tests and both failed every-step native cost observations separately.
+
+
+### Guarded friction figures and renderer controls
+
+Follow the [rendering report](STVK_FIGURE_RENDERING_20261019.md).
+`check_stvk_figure_rendering --data-root RUN_ROOT --style CAPTURED_STYLE
+--output NEW_DATA_PATH` uses fixed qualified normal fields and mechanically
+admitted500um friction data strictly as renderer controls. Four inspected
+control previews and all15 data/export checks pass; no fine friction rank is
+inferred. `plot_stvk_pad_figures --data-root RUN_ROOT --reference-qualification
+QUALIFIED_JSON --ranking RANKING_JSON --force-data FORCE_DATA_JSON --style
+CAPTURED_STYLE --output NEW_DATA_PATH` additionally requires successful fine
+qualification, all54 admitted errors/eighteen ranking records and identical
+ranked/extracted fields, meshes and candidate histories. Normal-only admission
+is an intentional rejected input. There is no admission-bypass flag. Use the
+same Slurm CPU-only workflow and fresh data-side outputs; retain per-figure
+export QA and inspect all final previews before publishing final artwork.

@@ -477,3 +477,13 @@ The `stvk-ranking-reader-controls-v1` publication retains83 compact payloads
 control arrays remain on data with their exact hashes in the receipts. Live
 fine and pending final ranking/figure outputs are excluded; no existing
 source, array, environment, compatibility link or shared cache is migrated.
+
+
+Renderer controls use `stvk-figure-render-controls-v1` through `v4` under the
+20261019 ranking data root. The first three failures, final15-check/four-preview
+success and negative `stvk-final-figure-admission-negative-v1` stay in place.
+`canonical-stvk-figures-v1` captures the queued matching fine-reference renderer;
+no live fine output is moved or frozen. Full plotted arrays, CSV and SVG/PDF/PNG
+exports stay on data. Small selected previews, source, QA and exact external
+hashes may be retained as repository deliverables; node-local private caches
+and original engine sources/environments/compatibility links are preserved.
