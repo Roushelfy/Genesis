@@ -13,6 +13,7 @@ from scipy.optimize import linprog, minimize
 
 from .artifacts import file_id, runtime_identity, write_json
 from .p1_elastic import FreeElasticP1
+from .contact_qp import solve_contact_qp
 
 
 @dataclass
@@ -72,9 +73,15 @@ def main():
     cli.add_argument("--continuous-quadratic-contact", action="store_true")
     cli.add_argument("--contact-operator", type=Path)
     cli.add_argument("--contact-certificate", type=Path)
+    cli.add_argument("--qp-solver-path", type=Path)
+    cli.add_argument("--qp-rounds", type=int, default=40)
+    cli.add_argument("--cholespy-path", type=Path)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     assert not args.continuous_quadratic_contact or args.element_order == 2
+    assert args.cholespy_path is None or args.element_order == 2
+    assert args.qp_solver_path is None or (args.continuous_quadratic_contact and args.contact_certificate is None)
+    independent = args.contact_certificate is not None or args.qp_solver_path is not None
     certificate = None
     if args.contact_certificate is not None:
         assert args.continuous_quadratic_contact and args.contact_operator is not None and len(args.loads) == 1
@@ -99,7 +106,18 @@ def main():
 
         model_class = FreeElasticP2
     write_json(args.output / "assembly.json", {"element_order": args.element_order, "mesh": file_id(args.mesh)})
-    model = model_class(vertices, tets, 1e10, 0.3, 2000.0, column_faces=faces if args.column_ordering else None)
+    if args.element_order == 2:
+        model = model_class(
+            vertices,
+            tets,
+            1e10,
+            0.3,
+            2000.0,
+            column_faces=faces if args.column_ordering else None,
+            cholespy_path=args.cholespy_path,
+        )
+    else:
+        model = model_class(vertices, tets, 1e10, 0.3, 2000.0, column_faces=faces if args.column_ordering else None)
     outer_nodes = np.arange(len(outer))
     if args.element_order == 2:
         outer_nodes, faces, quadratic_faces = model.surface(faces)
@@ -128,6 +146,8 @@ def main():
             "tetrahedra": len(tets),
             "loads_n": args.loads,
             "element_order": args.element_order,
+            "qp_solver_path": str(args.qp_solver_path) if args.qp_solver_path is not None else None,
+            "cholespy_path": str(args.cholespy_path) if args.cholespy_path is not None else None,
         },
     )
     factor_seconds = time.perf_counter() - start
@@ -179,7 +199,7 @@ def main():
             gap = initial_gap / displacement_scale
             fitted = (
                 None
-                if certificate is not None
+                if independent
                 else minimize(
                     lambda x: (0.5 * x @ matrix @ x + gap @ x, matrix @ x + gap),
                     initial,
@@ -192,6 +212,12 @@ def main():
             )
             interpolation = np.eye(len(nodes))
             constraint_rounds, continuous_converged = 0, True
+            qp = None
+            if args.continuous_quadratic_contact:
+                candidate_map = np.full(len(vertices), -1, dtype=int)
+                candidate_map[outer_nodes[nodes]] = np.arange(len(nodes))
+                candidate_faces = candidate_map[quadratic_faces]
+                candidate_faces = candidate_faces[(candidate_faces >= 0).all(axis=1)]
             if certificate is not None:
                 with np.load(args.contact_operator) as saved:
                     np.testing.assert_array_equal(saved["nodes"], nodes)
@@ -212,13 +238,26 @@ def main():
                 constraint_rounds = len(certificate["constraint_rounds"])
                 minimum = ContactMinimum(multipliers, coordinates, multipliers > 0, -1, constraint_rounds, kkt_passed)
                 continuous_converged = certificate["candidate_face_certificate_passed"]
+            elif args.qp_solver_path is not None:
+                qp = solve_contact_qp(
+                    matrix,
+                    gap,
+                    rigid,
+                    target,
+                    candidate_faces,
+                    args.qp_solver_path,
+                    round_limit=args.qp_rounds,
+                    journal=journal,
+                )
+                interpolation = qp.interpolation
+                constraint_rounds = len(qp.rounds)
+                minimum = ContactMinimum(
+                    qp.multipliers, qp.coordinates, qp.multipliers > 0, -1, constraint_rounds, qp.fixed_passed
+                )
+                continuous_converged = qp.candidate_passed
             elif args.continuous_quadratic_contact:
                 from .quadratic_contact import quadratic_contact_minimum
 
-                candidate_map = np.full(len(vertices), -1, dtype=int)
-                candidate_map[outer_nodes[nodes]] = np.arange(len(nodes))
-                candidate_faces = candidate_map[quadratic_faces]
-                candidate_faces = candidate_faces[(candidate_faces >= 0).all(axis=1)]
                 continuous = quadratic_contact_minimum(
                     matrix, gap, rigid, target, fitted.x, candidate_faces, active_contact_minimum, journal
                 )
@@ -256,9 +295,7 @@ def main():
             contact_error = np.abs((interpolation @ actual_gap)[minimum.active]).max() / displacement_scale
             complementarity = np.max(np.abs(minimum.force * (interpolation @ actual_gap))) / displacement_scale
             contact_optimality = (
-                rank == minimum.active.sum() + 4 and contact_error < 1e-7
-                if certificate is None
-                else complementarity < 1e-8
+                rank == minimum.active.sum() + 4 and contact_error < 1e-7 if not independent else complementarity < 1e-8
             )
             admitted = bool(
                 minimum.converged
@@ -338,15 +375,27 @@ def main():
                 "linear_contact_equations_admitted": admitted,
                 "physical_reference_qualified": False,
                 "optimizer_success": bool(fitted.success) if fitted is not None else None,
-                "final_solver": "Independent primal-dual certificate replay with freshly solved elasticity, global quadratic gaps, force/moment balance and force-weighted complementarity. Multiplier uniqueness is not required."
-                if certificate is not None
+                "final_solver": "Independent primal-dual contact with freshly solved elasticity, global quadratic gaps, force/moment balance and force-weighted complementarity. Multiplier uniqueness is not required."
+                if independent
                 else "Feasible primal active-set KKT solve with blocking steps and inactive-gap admission; SLSQP supplies a feasible initial point when available.",
-                "active_set_converged": minimum.converged,
-                "active_set_iterations": minimum.iterations,
+                "contact_solver_converged": minimum.converged,
+                "active_set_converged": minimum.converged if not independent else None,
+                "active_set_iterations": minimum.iterations if not independent else None,
                 "optimizer_message": str(fitted.message) if fitted is not None else None,
                 "optimizer_iterations": fitted.nit if fitted is not None else None,
-                "active_kkt_rank": int(rank) if certificate is None else None,
-                "active_kkt_dimension": int(minimum.active.sum() + 4) if certificate is None else None,
+                "active_kkt_rank": int(rank) if not independent else None,
+                "active_kkt_dimension": int(minimum.active.sum() + 4) if not independent else None,
+                "qp_certificate": {
+                    "status": qp.status,
+                    "solver_version": qp.solver_version,
+                    "solver_module": qp.solver_module,
+                    "rounds": qp.rounds,
+                    "stationarity_scaled_l2": qp.stationarity,
+                    "fixed_qp_certificate_passed": qp.fixed_passed,
+                    "candidate_face_certificate_passed": qp.candidate_passed,
+                }
+                if qp is not None
+                else None,
                 "continuous_constraint_rounds": constraint_rounds,
                 "continuous_constraints_converged": continuous_converged,
                 "force_moment_constraint_relative_error": float(reaction_error),
@@ -354,7 +403,8 @@ def main():
                 "balance_correction_relative": float(balance_correction),
                 "minimum_compression_fraction": float(minimum.force.min()),
                 "minimum_global_gap_m": float(minimum_gap),
-                "active_contact_gap_relative": float(contact_error),
+                "active_contact_gap_relative": float(contact_error) if not independent else None,
+                "positive_multiplier_gap_relative": float(contact_error) if independent else None,
                 "force_weighted_complementarity_scaled": float(complementarity),
                 "plate_travel_m": float(-coordinate[3]),
                 "raw_maximum_tension_pa": float(eig[..., -1].max()),
