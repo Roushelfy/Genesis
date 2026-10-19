@@ -1720,3 +1720,26 @@ The [qualification-pipeline packet](../evidence/20261019-qualified-ranking/frict
 Pending729518 is cancelled before execution; replacement729539 retains18 comparisons and additionally exports q9/q25 full surface tensors for independent outer/inner errors. Final audit729835 waits on those fields, requires explicit fine-reference success and writes54 dimensional rows/eighteen per-metric ranking records only after every original admission, field/mesh identity, full-array and integration check passes. Contract/source hashes are fixed before fine results; interval overlap remains unresolved. Live fine data, final errors/ranks and final figures are still pending.
 
 The [ranking-reader packet](../evidence/20261019-qualified-ranking/stvk-ranking-reader-controls-v1/README.md) preserves83 payloads/492,556 bytes. The queued rank worker's three core module hashes match the predeclared contract. Raw original arrays, both physical every-step failures and all active fine outputs remain in place on data; no final physical rank is claimed from the controls.
+
+
+## Complete-field and physical-load rendering preparation
+
+[Renderer729932](STVK_FIGURE_RENDERING_20261019.md) passes15 checks and all four
+previews pass visual inspection. Qualified normal maps retain every material
+face and both poles; coarse physical friction controls retain all nonzero-force
+samples, both signed tangential components and all1600 actual-mass history rows.
+Editable SVG/PDF, exact183mm dimensions, embedded fonts and PNG DPI pass checks.
+Original729875's unit-inconsistent derived-density comparison and729877/729882's
+out-of-history0.45s tick warning remain captured. The fixes compare original
+dimensional primitives, independently recompute density and explicitly declare
+the complete0–0.4s time domain; original mechanical gates are unchanged.
+
+Negative729930 rejects a qualified normal-only reference without producing final
+friction artwork. Final729938 waits on729835/729519 and independently requires
+fine-reference,54-row/eighteen-ranking, exact frame/mesh/history and complete-data
+admission. Its three core source hashes match the predeclared figure contract.
+Final fine reference, actual errors/ranks, inspected final friction graphics and
+matching cost/error consolidation remain open; the goal is still in progress.
+
+
+The [renderer packet](../evidence/20261019-qualified-ranking/stvk-figure-render-controls-v1/README.md) retains123 compact payloads/1,750,818 bytes, four inspected control previews and exact original/encoded hashes. Full plotted arrays and vector/high-resolution exports remain on data with external identities; live fine outputs and final scientific artwork are excluded.
