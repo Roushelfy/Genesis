@@ -1,30 +1,29 @@
-# Completed bounded goal: parallel-plate stress comparison
+# Active goal: qualified stress-error rankings
 
-2026-10-18 closeout: [report](docs/PARALLEL_PLATE_RESULTS_20261018.md),
-[requirement audit](docs/PARALLEL_PLATE_AUDIT.md),
-[reproduction guide](docs/RUNNING_PARALLEL_PLATES.md).
-Completion uses the specification's explicitly diagnosed unsupported-quantity
-clause. The QIPC contact field remains spatially unresolved, SCR rejects the
-balanced load reconstruction, and original Shell lacks coupled equilibrium.
-Physical-error rankings and accuracy-qualified speedups remain unsupported.
-The original objective below is retained for scope; no Franka campaign resumes.
+Follow [docs/QUALIFIED_STRESS_RANKING_GOAL.md](docs/QUALIFIED_STRESS_RANKING_GOAL.md).
 
-Follow [docs/PARALLEL_PLATE_COMPARISON_GOAL.md](docs/PARALLEL_PLATE_COMPARISON_GOAL.md).
+Finish measured DPR / SCR / Shell stress-error rankings, uncertainty, speed
+and stability on the simple full-hollow-egg parallel-plate benchmark. Repair
+SCR's balanced-load acceptance and shear fit, obtain an admitted Shell
+configuration with consistent contact/elastic coupling, and establish a
+spatially resolved finite-area-contact reference using QIPC/independent FEM.
+Keep original external baselines and label every repaired variant.
 
-Use two parallel rigid plates compressing a full hollow egg as the primary
-DPR/SCR/Shell accuracy benchmark against qualified cuda-graph-qipc solid FEM.
-Begin with quasi-static common-force normal loading without gravity/friction,
-then add bounded friction/tangential and off-axis controls. Remove Franka
-robot/controller complexity from primary error qualification.
+The preceding [bounded plate report](docs/PARALLEL_PLATE_RESULTS_20261018.md)
+localizes the blockers but does not establish physical accuracy. Its
+unsupported-quantity completion clause is superseded for this stage.
+Completion requires actual qualified comparisons, with ties where uncertainty
+prevents separation, and matched admitted cost/stability evidence. Diagnosis
+or another closeout report alone is insufficient; remaining blockers keep
+the goal in progress.
 
-Retain occasional predeclared full-spatial stress fields, short-window profiling
-and tolerance selection before larger runs. Compare field/peak errors,
-reactions/indentation/contact footprints, speed/memory and stability. Equal
-plate separation and equal reaction are different protocols; do not impose both.
+Retain full-spatial fields at selected equilibria, short profiling and CPU
+controls before expensive runs, same-load versus contact-error separation,
+and exact sources/inputs/failure records. Distinguish every-step stress cost
+from sparse observation. Production recovery stays in the existing rigid
+solver and Quadrants, preserving arbitrary moving convex/nonconvex contacts,
+friction, max/full output, batching and partial resets.
 
-This replaces full-Franka physical-reference qualification as an active gate.
-Reuse existing [QIPC work](docs/QIPC_REFERENCE_RESULTS_20261018.md),
-[sparse sampling evidence](evidence/20261018-qipc-reference/sparse-keyframes-v1/README.md)
-and prior FEM/replay controls. Keep Franka throughput as separate engineering
-evidence. Preserve native Quadrants integration, original external baselines,
-failure records, accepted evidence and the cleaned branch.
+Reuse [plate reproduction instructions](docs/RUNNING_PARALLEL_PLATES.md) and
+the existing diagnostic packet. Full Franka physical qualification remains
+out of scope; keep its useful throughput/application evidence separately.

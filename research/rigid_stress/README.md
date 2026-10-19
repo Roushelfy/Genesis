@@ -5,14 +5,14 @@ conditional elastic stress from changing rigid contacts, including friction,
 and supports raw global max/full output, complete numerical checks, environment
 isolation and partial resets. Production numerical work remains in Quadrants.
 
-The [parallel-plate comparison](docs/PARALLEL_PLATE_COMPARISON_GOAL.md)
-uses two flat rigid plates and a full hollow egg for the primary stress-error
-benchmark. The bounded study is complete with explicitly diagnosed unsupported
-physical-accuracy quantities, under the specification's completion clause.
-It evaluates DPR, SCR, original Shell and a pinned QIPC solid-FEM diagnostic
-candidate with common-force loading, friction controls, sparse full-spatial
-observations, cost and stability measurements.
-Full Franka physical-reference qualification is no longer a completion gate.
+The active [qualified stress-ranking goal](docs/QUALIFIED_STRESS_RANKING_GOAL.md)
+requires actual DPR / SCR / Shell error rankings, reference uncertainty,
+matched speed and stability evidence on the full-egg parallel-plate benchmark.
+It authorizes minimal, separately labeled SCR/Shell/reference repairs while
+preserving original baselines. The previous bounded plate campaign diagnosed
+failures; it did not finish physical accuracy qualification. Diagnostic closure
+or unsupported quantities alone cannot complete the current goal.
+Full Franka physical-reference qualification remains out of scope.
 
 The [plate report](docs/PARALLEL_PLATE_RESULTS_20261018.md) records verified
 mechanical equilibria, the SCR cancellation-sensitive admission failure,
