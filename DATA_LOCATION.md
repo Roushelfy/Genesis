@@ -463,3 +463,17 @@ The `friction-qualification-pipeline-v1` publication retains92 compact payloads
 remain on data with explicit hashes. Live fine-reference results and future
 qualification, method fields and final figure data are excluded from this
 immutable checkpoint.
+
+Complete-array error-reader controls and candidate admission use
+`stress-error-measures-controls-v1`, `pad-candidate-admission-controls-v1` and
+`stvk-ranking-admission-negative-v1` under the ranking run root. Replacement
+`canonical-stvk-method-fields-v2` retains full q9/q25 surface arrays as well as
+resultants/column integrals. Final pending audit uses
+`canonical-stvk-method-ranking-v1`. All full arrays remain on data; cancelled
+pending v1 plans, actual failures and immutable source snapshots are preserved.
+
+The `stvk-ranking-reader-controls-v1` publication retains83 compact payloads
+(492,556 bytes). Full volume-column, resultant/surface, raw-field and legacy
+control arrays remain on data with their exact hashes in the receipts. Live
+fine and pending final ranking/figure outputs are excluded; no existing
+source, array, environment, compatibility link or shared cache is migrated.

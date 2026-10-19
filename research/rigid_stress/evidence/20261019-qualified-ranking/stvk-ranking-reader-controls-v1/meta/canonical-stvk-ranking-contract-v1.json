@@ -1,0 +1,35 @@
+{
+  "cases": [
+    "normal0.1N",
+    "sustained_friction0.1N"
+  ],
+  "methods": [
+    "dpr",
+    "scr",
+    "repaired250um_shell"
+  ],
+  "metric_count": 9,
+  "expected_dimensional_error_rows": 54,
+  "required_own_candidate_frames": 6,
+  "reference_qualification": "canonical-friction-reference-qualification-v1/group0/qualification/result.json",
+  "method_fields_campaign": "canonical-stvk-method-fields-v2",
+  "required_field_sampling": [
+    9,
+    25
+  ],
+  "required_depth_sampling": 4,
+  "complete_surface_resultant_and_volume_reintegration": true,
+  "independent_raw_peak_and_location_checks": true,
+  "reference_norm_shared_relative_target": 1e-09,
+  "method_sampling_field_target": 0.005,
+  "method_sampling_peak_target": 0.01,
+  "reference_envelope": "Conservative product of1+each predeclared observed reference change, minus1, enlarged by measured reference-norm angular sensitivity. Preserve observed sum separately.",
+  "method_measurement_uncertainty": "Absolute q9/q25 relative-error change for fields/raw peaks; actual peak sampling change normalized by the reference for common peaks.",
+  "conditional_interval": "max(e-m-d,0)/(1+d), (e+m+d)/(1-d), requiring0<=d<1. Strict separation only; overlap stays unresolved.",
+  "claims": "Conditional numerical sensitivity, no statistical/continuum proof. Exact0.4s endpoint errors; cost horizons and failing every-step modes remain separate.",
+  "source_sha256": {
+    "stress_error_measures.py": "4c3ac4aa8c703dfb4a9ac5442e03ab2bb8b1e86afaec997c54ad8e4d24f9c9d3",
+    "pad_candidate_admission.py": "4e264d76da158afb27bbca88325b1e10d4a4db00889555c0f78cf6422070db7d",
+    "rank_stvk_pad_methods.py": "c210b5a2ad7881cd9dba9c67a26042cb90083865971462027e1009331356a669"
+  }
+}

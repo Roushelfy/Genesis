@@ -706,3 +706,16 @@ resultant-array checks and corresponding reference uncertainty. q1 display
 exports are not the numerical peak metric. Run CPU postprocessing through the
 same captured Slurm workflow, with optional GPU inventory and explicit data-side
 output/cache paths.
+
+
+### Complete-array method errors and conditional ranks
+
+Follow the [ranking pipeline](STVK_METHOD_RANKING_PIPELINE_20261019.md).
+`rank_stvk_pad_methods --data-root RUN_ROOT --reference-qualification QUALIFIED_JSON
+--fields-campaign canonical-stvk-method-fields-v2 --output NEW_DATA_PATH`
+requires six own-admitted candidate frames and the actual successful fine
+reference. Complete q9/q25 surface exports, resultant arrays and volume-column
+integrals are mandatory. The captured18-task recipe replaces pending v1 only
+to add surface exports; numerical settings stay fixed. No unqualified-reference
+fallback, raw-peak trimming or threshold retuning is available. Preserve the
+negative tests and both failed every-step native cost observations separately.
