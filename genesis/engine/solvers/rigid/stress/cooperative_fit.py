@@ -13,6 +13,7 @@ from .traction import (
     func_coulomb_projection,
     func_traction_constraint_active,
     func_traction_direction,
+    func_traction_error_scales,
     func_traction_geometry,
     func_traction_reference,
     func_traction_source_friction,
@@ -220,9 +221,9 @@ def kernel_fit_tractions_impl(
                 if qd.static(len(traction_state.priors.force.shape) == 2):
                     scale = qd.max(scale, traction_state.priors.group_scale[i_c, i_b])
                 if scale > 0.0:
-                    budget_scale = force.norm()
-                    if budget_scale == 0.0:
-                        budget_scale = scale
+                    force_scale, moment_scale = func_traction_error_scales(
+                        i_c, i_b, scale, contact_state, traction_state
+                    )
                     force /= scale
                     moment /= radius * scale
                     target = qd.Vector([force[0], force[1], force[2], moment[0], moment[1], moment[2]])
@@ -265,10 +266,10 @@ def kernel_fit_tractions_impl(
                             if accepted:
                                 current, energy, gradient = proposal, trial_energy, trial_gradient
                                 gradient_squared = trial_squared
-                                force_error = gradient[0:3].norm() * scale / budget_scale
+                                force_error = gradient[0:3].norm() * scale / force_scale
                                 offset = (contact_state.position[i_c, i_b] - anchor) / radius
                                 moment_error = (
-                                    (gradient[3:6] - offset.cross(gradient[0:3])).norm() * scale / budget_scale
+                                    (gradient[3:6] - offset.cross(gradient[0:3])).norm() * radius * scale / moment_scale
                                 )
                                 if qd.max(force_error, moment_error) <= fit_tolerance:
                                     status = StressTractionStatus.SUCCESS

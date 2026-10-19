@@ -107,6 +107,8 @@ class StressTractionPriors:
     anchor_moment: qd.Tensor
     weight_sum: qd.Tensor
     group_scale: qd.Tensor
+    force_scale: qd.Tensor
+    moment_scale: qd.Tensor
 
 
 @dataclass(frozen=True)
@@ -234,6 +236,8 @@ def create_tractions(
             anchor_moment=V_VEC(3, dtype=gs.qd_float, shape=shape if source_priors else ()),
             weight_sum=V(dtype=gs.qd_float, shape=shape if source_priors else ()),
             group_scale=V(dtype=gs.qd_float, shape=shape if source_priors else ()),
+            force_scale=V(dtype=gs.qd_float, shape=shape if source_priors else ()),
+            moment_scale=V(dtype=gs.qd_float, shape=shape if source_priors else ()),
         ),
         acceptance=StressTractionAcceptance(
             force=V_VEC(3, dtype=gs.qd_float, shape=shape if cached_acceptance else ()),
@@ -273,6 +277,25 @@ def func_traction_constraint_active(i_c: int, i_b: int, traction_state: StressTr
     if qd.static(len(traction_state.priors.force.shape) == 2):
         active = i_c == traction_state.support.start[i_c, i_b]
     return active
+
+
+@qd.func
+def func_traction_error_scales(
+    i_c: int,
+    i_b: int,
+    scale: float,
+    contact_state: StressContactState,
+    traction_state: StressTractionState,
+):
+    """Return physical force and original-point moment scales before opposing sources cancel."""
+    force_scale = contact_state.force[i_c, i_b].norm()
+    if force_scale == 0.0:
+        force_scale = scale
+    moment_scale = force_scale * contact_state.radius[i_c, i_b]
+    if qd.static(len(traction_state.priors.force.shape) == 2):
+        force_scale = traction_state.priors.force_scale[i_c, i_b]
+        moment_scale = traction_state.priors.moment_scale[i_c, i_b]
+    return force_scale, moment_scale
 
 
 @qd.func
@@ -784,9 +807,9 @@ def kernel_fit_tractions_impl(
                     scale = qd.max(scale, traction_state.priors.group_scale[i_c, i_b])
                 traction_state.scale[i_c, i_b] = scale
                 if scale > 0.0:
-                    budget_scale = force.norm()
-                    if budget_scale == 0.0:
-                        budget_scale = scale
+                    force_scale, moment_scale = func_traction_error_scales(
+                        i_c, i_b, scale, contact_state, traction_state
+                    )
                     force /= scale
                     moment /= radius * scale
                     target = qd.Vector([force[0], force[1], force[2], moment[0], moment[1], moment[2]])
@@ -831,12 +854,12 @@ def kernel_fit_tractions_impl(
                                 current, energy, gradient = proposal, trial_energy, trial_gradient
                                 gradient_squared = trial_squared
                                 traction_state.dual[i_c, i_b] = current
-                                force_error = gradient[0:3].norm() * scale / budget_scale
+                                force_error = gradient[0:3].norm() * scale / force_scale
                                 # The constraint is conditioned about the anchor;
                                 # acceptance concerns the unchanged original point.
                                 offset = (contact_state.position[i_c, i_b] - anchor) / radius
                                 moment_error = (
-                                    (gradient[3:6] - offset.cross(gradient[0:3])).norm() * scale / budget_scale
+                                    (gradient[3:6] - offset.cross(gradient[0:3])).norm() * radius * scale / moment_scale
                                 )
                                 traction_state.force_error[i_c, i_b] = force_error
                                 traction_state.moment_error[i_c, i_b] = moment_error
