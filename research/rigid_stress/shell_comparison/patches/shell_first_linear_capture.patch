@@ -1,0 +1,26 @@
+diff --git a/genesis/engine/solvers/shell_solver.py b/genesis/engine/solvers/shell_solver.py
+index 9cb1a4bdd..9033b93e3 100644
+--- a/genesis/engine/solvers/shell_solver.py
++++ b/genesis/engine/solvers/shell_solver.py
+@@ -4711,17 +4711,10 @@ def kernel_shell_rigid_contact_solve(
+                 pcg_flag, shell_state, shell_scratch, shell_info, shell_static_config, max_iterations, errno
+             )
+             func_pcg_advance(shell_state, shell_scratch, shell_info, shell_static_config)
+-        func_contact_direction(
+-            shell_state, shell_scratch, shell_contact, shell_info, dyn_info, rigid_info, shell_static_config
+-        )
+-        func_contact_line_search_start(
+-            line_flag, shell_state, shell_scratch, shell_contact, shell_info, rigid_info, shell_static_config
+-        )
+-        while qd.graph.do_while(line_flag):
+-            func_contact_line_search_points(dt, shell_scratch, shell_contact, shell_static_config)
+-            func_contact_line_search_update(line_flag, shell_contact, shell_static_config)
+-        func_contact_line_search_apply(shell_state, shell_scratch, shell_contact, shell_static_config)
+-        func_contact_continue(newton_flag, shell_scratch)
++        # Diagnostic pin: retain the first frozen linear system before any line-search or next-iteration writes.
++        for _ in range(1):
++            newton_flag[()] = 0
++
+ 
+ 
+ @qd.kernel

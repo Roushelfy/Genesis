@@ -157,3 +157,37 @@ quadrature and geometric refinement uncertainty separate and retains all raw
 peaks. Optional stored material directions support the declared land geometry.
 `plate_contact_fem` records SLSQP and active-set status separately and admits
 only the final primal/dual/complementarity and full physical equation checks.
+
+
+## Coupled Shell linear and contact-iteration controls
+
+The frozen first-linear diagnostic is deliberately truncated and cannot supply
+an admitted trajectory. Starting at the external optional-coarse repair
+`a86ba81d06d16dcea7bba6904a617c8140b83958`, apply
+[`shell_first_linear_capture.patch`](../shell_comparison/patches/shell_first_linear_capture.patch)
+in an isolated checkout. `plate_shell_coupled --capture-first-linear` checks
+its exact solver hash. Then run `audit_shell_linear --field <capture>/frozen-linear.npz
+--output <fresh-data-output>` to independently assemble and solve that system.
+The complete commands and source receipts remain in
+`20261019-qualified-ranking/shell-linear-capture-v1/` and
+`shell-linear-audit-v1/` under the established run root.
+
+The successful land mechanical control uses the complete optional-coarse
+repair, **without** the truncation patch:
+
+```bash
+python -m research.rigid_stress.qipc_comparison.plate_shell_coupled \
+  --mesh "$ranking_root/land-mesh-v2/group0/meshes/land-contact-0.npz" \
+  --loads 0.1 --clearance 0 --plate-offset-x 0.003 \
+  --coarse-patches 0 --floating-sums --tolerance 1e-6 \
+  --velocity-tolerance 1e-10 --iterations 8000 \
+  --ramp 0.05 --hold 0.15 --record-stride 1 --output "$fresh_run"
+```
+
+Set `ranking_root` and `fresh_run` explicitly under data and execute through
+the established submission helper/Slurm workflow. Floating sums are an explicit
+setting, with repeat dispersion measured separately. `audit_coupled_shell`
+checks50ms mechanical windows; `compare_coupled_shell` compares complete
+same-mesh fields for timestep/repeat/history sensitivity, with0.5% field and1%
+raw-peak targets. Passing these checks does not qualify a continuum reference
+or complete the three-method ranking.

@@ -348,3 +348,116 @@ The driver now hashes the loaded solver file and uses a neutral captured-source
 description for subsequent variants. Historical receipts remain unmodified.
 All runtime assets, fields, test logs and failure captures in this section
 remain below the qualified-stage data root. The overall goal stays in progress.
+
+
+## Frozen coupled system and nonlinear stopping budget
+
+`land-shell-floating-v1` (`727552`) isolates the existing floating-sum setting
+(`use_deterministic_algorithms=False`) on the optional-zero-coarse repair
+`a86ba81d0`; no constitutive or contact penalty change is made. The zero-patch
+arm returns two steps without solver failure, but its equation residual is
+0.96699. The 12-patch arm still fails its first linear solve. Returning without
+a failure flag is not physical admission.
+
+To distinguish linear error from contact iteration, `shell-linear-capture-v1`
+(`727554`) uses a separately retained diagnostic source: apply
+`patches/shell_first_linear_capture.patch` under `shell_comparison` to
+`a86ba81d0`. This truncates the first contact Newton iteration immediately after
+its linear solve and before line search; its returned state is deliberately
+not an admissible physical trajectory. The driver checks the exact solver
+SHA256 `3f42e2d46c3d45292bba294c84e503fc4d5d04b9c6614ec5da2200f5c2bfb360`
+before allowing this capture mode. Cached tangents, RHS, contact Jacobians,
+Schur inverse, iterate and recursive residual are saved without observer writes
+to simulation state. The retained patch SHA256 is
+`10aa4d4ef945ad66462339737f77cf442e1744e1ef56fbbc81f361593939ec01`.
+
+`audit_shell_linear` independently differentiates the membrane stress in NumPy,
+assembles the hinge/contact terms and the joint shell/rigid sparse operator,
+and solves with SuperLU. The auxiliary rigid RHS is zero because the captured
+shell RHS is already reduced; eliminating this auxiliary block reproduces the
+captured Schur equation. `shell-linear-audit-v1` (`727558`) reports:
+
+| First frozen solve | Fixed-point sums | Floating sums |
+| --- | ---: | ---: |
+| PCG products | 4000, capped | 2037, converged |
+| Independent direct relative residual | 1.879e-11 | 1.255e-11 |
+| Actual iterate relative residual | 1.242e-2 | 2.837e-5 |
+| Recursive/true residual disagreement, relative to RHS | 1.230e-2 | 4.780e-12 |
+| Mass-RMS velocity error versus direct solution, m/s | 2.411e-7 | 3.672e-13 |
+
+The assembled operators have relative asymmetry below6e-17 and positive rigid
+inertia after subtracting contact stiffness. The floating solve satisfies its
+absolute mass-based velocity error bound, despite not meeting the relative
+criterion. These data localize a fixed-point accumulation precision problem;
+they do not establish correctness of the complete nonlinear contact step.
+
+`land-shell-newton-budget-v1` (`727562`) therefore keeps relative PCG tolerance
+1e-6 and uses the existing floating sums, zero coarse patches and an8000-product
+cap, varying absolute velocity tolerance from1e-7 to1e-10. Both two-step arms
+return without failure. At1e-7 the cached contact velocity changes match
+`J_shell dv_shell - J_rigid dv_rigid` to3.4e-21m/s, ruling out a cache mismatch
+at that observation. However, the local nonlinear impulse-model stopping
+budget converts to as much as0.01194N per contact, against a commanded0.001N;
+the sum of all local budgets is2.888N. These are allowed budgets, not measured
+errors. At1e-10 the final equation residual falls from0.96699 to1.922e-7,
+while the final static residual is9.817e-5 and the egg is still transient.
+This supports tightening the contact/absolute-velocity criterion for this
+stiff, small-load case; it does not justify arbitrary tighter relative PCG.
+The new longer load/hold controls must still establish an equilibrium window,
+trajectory admission, timestep/repeat sensitivity and reference agreement.
+
+## Isolated wall refinement
+
+`contact-wall-isolation-mesh-v1` (`727556`) and
+`contact-wall-isolation-fem-v1` (`727560`) keep the original coarse projected
+surface exactly fixed and increase wall layers from4 to8. The mass is unchanged,
+and the8-layer contact solve passes all existing algebraic gates, including
+4.71e-12 equation residual. Nevertheless, exact full-column tangent change is
+31.94%, membrane6.925%, bending5.988%, raw von Mises2.068% and raw tension18.29%.
+This is not a qualified reference, and the peak-only von Mises agreement cannot
+substitute for the complete-field criterion. The control motivates testing
+quadratic elasticity rather than another blind simultaneous P1 refinement.
+
+
+## Sustained coupled Shell on the declared land geometry
+
+`land-shell-hold-v1` (`727564`) uses the unchanged constitutive/contact model
+on the optional-zero-coarse repair, floating sums, relative tolerance1e-6,
+absolute velocity tolerance1e-10 and8000 products per inner solve. Each full
+free egg starts touching, ramps for50ms and holds for150ms at0.001N or0.1N.
+Both200-step histories return without a solver failure. Their final raw von
+Mises peaks are1548.53Pa and165388.13Pa. No state or velocity clearing is used.
+
+The independent `contact-order-controls-v1` (`727571`, `shell-windows`) checks
+all51 observations in the last50ms against the previously declared reaction,
+plate-speed, inertia, kinetic-energy and equation gates. Both windows pass.
+At0.1N, the maximum equation residual relative to the *contact force norm*
+is2.717e-9, maximum plate speed2.62e-14m/s and maximum kinetic energy5.64e-19J.
+The driver originally retained the residual norm and internal/contact
+resultants rather than the inertia resultant itself. For these two older
+histories the audit uses the rigorous bound
+`||sum(f_internal+f_contact)|| + sqrt(n_vertices)*||residual||`;
+its maximum is9.762e-9N for0.1N, comfortably below the predeclared1% gate.
+New histories directly retain the inertia resultant as well. This is mechanical
+admission only; resolved contact geometry, full physical reference uncertainty
+and matched three-method error/cost are still required.
+
+The half-dt arm of `land-shell-stability-v1` (`727569_1`) also completes all400
+steps without failure, ending at0.1N reaction,9.61e-10 equation residual
+(command-force normalization), and165388.131Pa raw von Mises. Complete-field
+comparison and its own50ms admission are performed separately. The other arm
+repeats the0.1N history, then continues0.3/1/0.3/0.1N without resetting state;
+only its completed frames may be compared while the rest of that job runs.
+
+
+`land-shell-sensitivity-v1` (`727581`) compares complete same-mesh fields with
+area weights, rigid corotation and exact Simpson integration of the squared
+linear fiber field. The repeated0.1N endpoint differs by7.17e-10 in tangent
+norm,5.86e-10 membrane and9.64e-10 bending. The half-dt run passes its own101-
+observation mechanical window but changes tangent stress2.260%, membrane0.475%
+and bending4.125%. Both raw peaks change by less than1e-7 relatively.
+Thus the0.5% field-sensitivity target **fails despite essentially identical
+peaks**. This configuration is mechanically settled but not yet admitted for
+timestep-independent stress ranking. `land-shell-quarter-dt-v1` tests the next
+half-step on the same physical history; its result must not be inferred from
+the passing peak comparison.
