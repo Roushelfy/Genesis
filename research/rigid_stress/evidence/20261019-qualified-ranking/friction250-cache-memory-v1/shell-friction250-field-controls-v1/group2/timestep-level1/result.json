@@ -1,0 +1,91 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-231",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728448",
+      "SLURM_ARRAY_JOB_ID": "728445",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-c41c23c1-ebfd-c8a1-9f2f-6b6b8db067f0, 00000000:45:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "reference": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group0/fine/frames/level1.npz",
+    "bytes": 11102073,
+    "sha256": "62e19cf0a6d74b9c4118d941ecd0001ab40e6ac64fefd2fce0dbb488793311a7"
+  },
+  "comparisons": [
+    {
+      "frame": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group1/fine/frames/level1.npz",
+        "bytes": 11101282,
+        "sha256": "a2276966045e5127b21fd9d830609ead06a05f0f86f63edb5b22749214eb3abb"
+      },
+      "complete_surface_difference": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/shell-friction250-field-controls-v1/group2/timestep-level1/difference-0.npz",
+        "bytes": 2372477,
+        "sha256": "7000ca9fc9a416649ae8ff4c61eb2918ffe61aba3c3d542f50cacdfeacabc0c8"
+      },
+      "regions_diagnostic_only": [
+        {
+          "polar_radius_min_m": 0,
+          "polar_radius_max_m": 0.0005,
+          "area_fraction": 0.0002027830906440461,
+          "tangent_squared_difference_fraction": 0.001982544181348931,
+          "tangent_squared_reference_fraction": 0.03067718920515943,
+          "membrane_squared_difference_fraction": 0.0003478004147993283,
+          "membrane_squared_reference_fraction": 0.009410470151484517,
+          "bending_squared_difference_fraction": 0.0029055565479040204,
+          "bending_squared_reference_fraction": 0.06367862289015808
+        },
+        {
+          "polar_radius_min_m": 0.0005,
+          "polar_radius_max_m": 0.002,
+          "area_fraction": 0.003169632762815969,
+          "tangent_squared_difference_fraction": 0.3295657349922829,
+          "tangent_squared_reference_fraction": 0.29794875367462925,
+          "membrane_squared_difference_fraction": 0.08954729097007989,
+          "membrane_squared_reference_fraction": 0.14806194128889183,
+          "bending_squared_difference_fraction": 0.4650861750778066,
+          "bending_squared_reference_fraction": 0.5305409438436423
+        },
+        {
+          "polar_radius_min_m": 0.002,
+          "polar_radius_max_m": 0.004,
+          "area_fraction": 0.010645166457442313,
+          "tangent_squared_difference_fraction": 0.4709197490446165,
+          "tangent_squared_reference_fraction": 0.2903596038160046,
+          "membrane_squared_difference_fraction": 0.5353625749297317,
+          "membrane_squared_reference_fraction": 0.3051621842489285,
+          "bending_squared_difference_fraction": 0.4345336852990856,
+          "bending_squared_reference_fraction": 0.26738942100958074
+        },
+        {
+          "polar_radius_min_m": 0.004,
+          "polar_radius_max_m": null,
+          "area_fraction": 0.9859824176890977,
+          "tangent_squared_difference_fraction": 0.1975319717817517,
+          "tangent_squared_reference_fraction": 0.3810144533042067,
+          "membrane_squared_difference_fraction": 0.37474233368538923,
+          "membrane_squared_reference_fraction": 0.537365404310695,
+          "bending_squared_difference_fraction": 0.09747458307520387,
+          "bending_squared_reference_fraction": 0.13839101225661882
+        }
+      ],
+      "tangent_relative_l2": 3.681581831354631e-07,
+      "membrane_relative_l2": 2.8360622748071254e-07,
+      "bending_relative_l2": 4.701664929212554e-07,
+      "raw_vm_relative_change": 1.8541708390884537e-07,
+      "raw_tension_relative_change": 3.557363070783026e-09,
+      "raw_vm_pa": 191497.13831700536,
+      "raw_tension_pa": 129911.85478848705,
+      "field_and_peak_sensitivity_passed": true
+    }
+  ],
+  "physical_accuracy_qualified": false,
+  "scope": "Complete area-weighted same-mesh fields, rigid corotation, exact linear-fiber square integration; raw peaks unmodified. Targets 0.5% fields and 1% peaks, separately from mechanical admission and continuum reference qualification."
+}

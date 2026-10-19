@@ -18,6 +18,13 @@ The [later spatial/cost checkpoint](NORMAL_SPATIAL_COST_20261019.md) completes
 the normal full-surface/actual-traction maps and B1 sparse full/max primary
 audits. B4/memory and sustained-friction spatial qualification remain open.
 
+The [friction resolution/memory checkpoint](FRICTION_RESOLUTION_MEMORY_20261019.md)
+adds exact StVK cache equivalence, true250um Shell friction histories and
+complete B1/B4 full/max process-memory profiles. Timestep changes are small,
+but500-to250um Shell tangent/bending changes reach35%/56%; the fixed250um
+normal comparison is not a mesh-independent Shell accuracy claim. Fine
+reference qualification and final cost/cross-case synthesis remain open.
+
 ## Declared acceptance and comparison scope
 
 Reference qualification requires a refinement trend with <=2% change in the

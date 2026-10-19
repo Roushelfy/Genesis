@@ -54,6 +54,7 @@ def main():
     cli.add_argument("--elasticity", choices=("linear", "stvk"), default="linear")
     cli.add_argument("--warm-contact", action="store_true")
     cli.add_argument("--constitutive-correction", choices=("subtracted", "direct"), default="subtracted")
+    cli.add_argument("--cache-constitutive-evaluations", action="store_true")
     args = cli.parse_args()
     assert not args.empty and not args.shear_distance and args.plate_offset_x == 0
     assert args.record_stride == 1 and (not args.gravity_x or args.friction == 0.3)
@@ -67,7 +68,7 @@ def main():
         vertices, tets, 1e10, 0.3, 2000, column_faces=faces, through_wall_ordering=True, factorize=False
     )
     reference = model.reference
-    nonlinear = P2StVK(reference) if args.elasticity == "stvk" else None
+    nonlinear = P2StVK(reference, args.cache_constitutive_evaluations) if args.elasticity == "stvk" else None
     np.testing.assert_array_equal(reference.component_dofs.reshape(-1), np.arange(reference.basis.N))
     nodes, interpolation, points, area, candidate_faces = pad_quadrature(
         model, len(outer), args.candidate_radius, args.quadrature_order, sparse_interpolation=True

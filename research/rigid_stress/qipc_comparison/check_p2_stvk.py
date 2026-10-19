@@ -62,6 +62,21 @@ def main():
     shifted_correction = model.force_correction(shifted_displacement)
     correction_translation_error = np.linalg.norm(shifted_correction - correction) / np.linalg.norm(correction)
     assert correction_translation_error < 1e-9
+    cached = P2StVK(reference, cache_evaluations=True)
+    mutable = displacement.copy()
+    for state in (displacement, rotated, displacement, small):
+        # Mutate the same caller-owned array to detect identity-based stale reuse.
+        mutable[:] = state
+        expected_force, expected_energy = model.force_energy(state)
+        expected_correction = model.force_correction(state)
+        for _ in range(2):
+            actual_correction = cached.force_correction(mutable)
+            np.testing.assert_array_equal(actual_correction, expected_correction)
+            actual_force, actual_energy = cached.force_energy(mutable)
+            np.testing.assert_array_equal(actual_force, expected_force)
+            assert actual_energy == expected_energy
+            # Returned arrays must not let a caller overwrite the internal cache.
+            actual_correction[:] = 0
     np.testing.assert_allclose(
         cauchy_from_gradient(np.broadcast_to(deformation - np.eye(3), tensor.shape), 1e10, 0.3),
         tensor,
@@ -112,6 +127,7 @@ def main():
             "small_strain_linear_force_relative_error": float(linear_error),
             "direct_correction_full_force_relative_error": float(correction_error),
             "direct_correction_translation_relative_error": float(correction_translation_error),
+            "exact_cache_state_mutation_and_return_alias_controls_passed": True,
             "nonlinear_column_sampling_relative_error": column_error,
         },
     )

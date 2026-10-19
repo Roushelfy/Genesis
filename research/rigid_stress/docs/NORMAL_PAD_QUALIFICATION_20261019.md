@@ -13,6 +13,11 @@ The subsequent [spatial/cost update](NORMAL_SPATIAL_COST_20261019.md) completes
 normal field/traction maps and B1 sparse timing; fine friction and B4/memory
 remain outstanding.
 
+The later [friction resolution/memory checkpoint](FRICTION_RESOLUTION_MEMORY_20261019.md)
+completes process-memory controls and measures large500-to250um Shell field
+changes. Rankings here apply to the explicitly fixed250um Shell configuration;
+they are not a mesh-independent Shell accuracy claim.
+
 The physical case remains the full free hollow egg,500um wall,E=10GPa,nu=0.3,
 rho=2000kg/m3, with the explicitly declared1e9N/m3 compliant pad. Native DPR
 and SCR use all actual contact sources with the fixed2mm reconstruction radius.
