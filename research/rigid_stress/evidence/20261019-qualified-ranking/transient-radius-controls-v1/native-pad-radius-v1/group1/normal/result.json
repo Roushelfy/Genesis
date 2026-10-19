@@ -1,0 +1,81 @@
+{
+  "completed": true,
+  "steps": 600,
+  "history_checks": {
+    "native_velocity_prediction": true,
+    "physical_pad_law": true,
+    "physical_friction_law": true,
+    "linear_equation": true,
+    "angular_equation": true,
+    "frozen_point_moment": true
+  },
+  "history_failed_steps": [],
+  "mechanical_history_passed": true,
+  "windows": [
+    {
+      "level": 0,
+      "samples": 51,
+      "checks": {
+        "both_plate_reactions": true,
+        "plate_velocity": true,
+        "egg_inertial_resultant": true,
+        "egg_kinetic": true,
+        "equation_residual": true,
+        "native_velocity_prediction": true,
+        "physical_pad_law": true,
+        "physical_friction_law": true,
+        "linear_equation": true,
+        "angular_equation": true,
+        "frozen_point_moment": true
+      },
+      "maximum_prediction_error_m_per_s": 1.0459759533648132e-17,
+      "maximum_normal_law_error": 6.139398924710555e-13,
+      "maximum_friction_law_error": 0.0,
+      "mechanical_window_passed": true
+    },
+    {
+      "level": 1,
+      "samples": 51,
+      "checks": {
+        "both_plate_reactions": true,
+        "plate_velocity": true,
+        "egg_inertial_resultant": true,
+        "egg_kinetic": true,
+        "equation_residual": true,
+        "native_velocity_prediction": true,
+        "physical_pad_law": true,
+        "physical_friction_law": true,
+        "linear_equation": true,
+        "angular_equation": true,
+        "frozen_point_moment": true
+      },
+      "maximum_prediction_error_m_per_s": 3.6526875279020035e-17,
+      "maximum_normal_law_error": 1.8950478502721246e-13,
+      "maximum_friction_law_error": 0.0,
+      "mechanical_window_passed": true
+    },
+    {
+      "level": 2,
+      "samples": 51,
+      "checks": {
+        "both_plate_reactions": true,
+        "plate_velocity": true,
+        "egg_inertial_resultant": true,
+        "egg_kinetic": true,
+        "equation_residual": true,
+        "native_velocity_prediction": true,
+        "physical_pad_law": true,
+        "physical_friction_law": true,
+        "linear_equation": true,
+        "angular_equation": true,
+        "frozen_point_moment": true
+      },
+      "maximum_prediction_error_m_per_s": 2.001560469403701e-16,
+      "maximum_normal_law_error": 8.059456980836663e-14,
+      "maximum_friction_law_error": 0.0,
+      "mechanical_window_passed": true
+    }
+  ],
+  "elapsed_seconds": 27.03159698896343,
+  "physical_accuracy_qualified": false
+}

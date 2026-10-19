@@ -49,6 +49,10 @@ class ColumnField:
     sorted_faces: np.ndarray
     wall_depths: np.ndarray | None = None
     volumes: np.ndarray | None = None
+    stvk_gradient: np.ndarray | None = None
+    material_rotation: np.ndarray | None = None
+    young: float = 1e10
+    poisson: float = 0.3
 
     def __post_init__(self):
         if self.wall_depths is None:
@@ -85,7 +89,7 @@ class ColumnField:
 
     def sample(self, depth, basis):
         layer, local, kind, elements = self.locate(depth)
-        tensor = self.stress[elements]
+        tensor = self.stress[elements] if self.stvk_gradient is None else self.stvk_gradient[elements]
         if self.stress.ndim == 4:
             # Barycentric weights in the sorted-column prism, in its actual tetrahedron ordering.
             node = self.tetrahedra[elements]
@@ -112,6 +116,12 @@ class ColumnField:
             np.testing.assert_allclose(bary.sum(axis=1), 1, atol=1e-10)
             assert bary.min() >= -1e-9
             tensor = np.einsum("qc,qcij->qij", bary, tensor)
+        if self.stvk_gradient is not None:
+            from .p2_stvk import cauchy_from_gradient
+
+            tensor = cauchy_from_gradient(tensor, self.young, self.poisson)
+            assert self.material_rotation is not None
+            tensor = self.material_rotation.T @ tensor @ self.material_rotation
         return basis.transpose(0, 2, 1) @ tensor @ basis
 
 
@@ -123,8 +133,10 @@ def main():
     cli.add_argument("--shell-indices", type=int, nargs="*", default=[])
     cli.add_argument("--surface-quadrature", type=int, choices=(1, 3, 9, 25), default=1)
     cli.add_argument("--physical-volume", action="store_true")
+    cli.add_argument("--depth-quadrature", type=int, choices=(2, 4, 8), default=2)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
+    depth_nodes, depth_weights = np.polynomial.legendre.leggauss(args.depth_quadrature)
     assert len(args.meshes) == len(args.runs)
     assert all(0 <= index < len(args.runs) for index in args.shell_indices)
     assert all(not run.is_file() or len(args.loads) == 1 for run in args.runs)
@@ -178,6 +190,14 @@ def main():
             else:
                 with np.load(path) as saved:
                     stress = saved["stress_pa"]
+                    constitutive = {}
+                    if "stvk_gradient" in saved:
+                        constitutive = {
+                            "stvk_gradient": saved["stvk_gradient"],
+                            "material_rotation": saved["rotation_material_to_world"],
+                            "young": float(saved["young_pa"]),
+                            "poisson": float(saved["poisson"]),
+                        }
                 volumes = None
                 if args.physical_volume and index == len(args.runs) - 1:
                     volumes = np.linalg.det(vertices[tets[:, 1:]] - vertices[tets[:, :1]]) / 6
@@ -194,6 +214,7 @@ def main():
                         np.sort(faces, axis=1),
                         wall_depths,
                         volumes,
+                        **constitutive,
                     )
                 )
             dev = stress - np.trace(stress, axis1=-2, axis2=-1)[..., None, None] * np.eye(3) / 3
@@ -233,18 +254,18 @@ def main():
             for lower, upper in zip(breaks[:-1], breaks[1:]):
                 midpoint = (lower + upper) / 2
                 width = upper - lower
-                for offset in (-1 / np.sqrt(3), 1 / np.sqrt(3)):
+                for offset, depth_weight in zip(depth_nodes, depth_weights):
                     depth = midpoint + offset * width / 2
                     a, r = actual.sample(depth, basis), reference.sample(depth, basis)
-                    weight = width * area / 2
+                    weight = width * area / 2 * depth_weight
                     if args.physical_volume:
-                        weight = width / 2 * column_angular_weights * fields[-1].volume_density(depth)
+                        weight = width / 2 * column_angular_weights * fields[-1].volume_density(depth) * depth_weight
                     integration_measure += weight.sum()
                     error_by_column += np.einsum("qij,qij,q->q", a - r, a - r, weight)
                     reference_by_column += np.einsum("qij,qij,q->q", r, r, weight)
                     values = np.stack((a, r))
-                    membrane += values * width[None, :, None, None] / 2 * 0.0005
-                    bending += values * (width / 2 * (0.5 - depth))[None, :, None, None] * 0.0005**2
+                    membrane += values * width[None, :, None, None] / 2 * 0.0005 * depth_weight
+                    bending += values * (width / 2 * (0.5 - depth))[None, :, None, None] * 0.0005**2 * depth_weight
             if args.physical_volume:
                 np.testing.assert_allclose(integration_measure, fields[-1].volumes.sum(), rtol=1e-9, atol=1e-18)
             differences = []
@@ -321,8 +342,9 @@ def main():
             "shell_indices": args.shell_indices,
             "surface_quadrature_points_per_face": args.surface_quadrature,
             "physical_volume_weighting": args.physical_volume,
+            "depth_quadrature_points": args.depth_quadrature,
             "physical_reference_qualified": False,
-            "scope": "Exact integration of piecewise-constant P1 or piecewise-linear P2 stress along material columns, including unioned "
+            "scope": "Exact integration of piecewise-constant P1 or piecewise-linear P2 stress along material columns. StVK uses the exact P2 displacement gradient at each sample and constitutive Cauchy evaluation, with explicit depth-quadrature sensitivity required. Integration includes unioned "
             "tetrahedron partitions for squared field differences and analytic membrane/bending moments. "
             "Shell uses its complete linear fiber field after rigid corotation in the same material basis. "
             "Optional physical volume weights use exact reference-tetrahedron Jacobians, including every reference partition. "

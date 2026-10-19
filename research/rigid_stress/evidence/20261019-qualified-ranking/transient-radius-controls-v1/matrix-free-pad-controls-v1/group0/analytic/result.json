@@ -1,0 +1,396 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-099",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728159",
+      "SLURM_ARRAY_JOB_ID": "728159",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-a84194fe-4866-e5ab-389f-5c0715e30913, 00000000:46:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "cases": [
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.001,
+      "speed_scale": 0.0,
+      "friction": 0.0,
+      "maximum_velocity_error": 1.5798213267906492e-17,
+      "maximum_condensed_velocity_difference": 1.5777780458883766e-17,
+      "newton_iterations": 4,
+      "pcg_iterations": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.001,
+      "speed_scale": 0.0,
+      "friction": 0.3,
+      "maximum_velocity_error": 1.762295571623326e-15,
+      "maximum_condensed_velocity_difference": 1.765337977242547e-15,
+      "newton_iterations": 6,
+      "pcg_iterations": [
+        5,
+        5,
+        5,
+        5,
+        5
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.001,
+      "speed_scale": 1e-05,
+      "friction": 0.0,
+      "maximum_velocity_error": 1.5807328861659753e-17,
+      "maximum_condensed_velocity_difference": 1.583019875123562e-17,
+      "newton_iterations": 4,
+      "pcg_iterations": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.001,
+      "speed_scale": 1e-05,
+      "friction": 0.3,
+      "maximum_velocity_error": 2.470964513730245e-17,
+      "maximum_condensed_velocity_difference": 2.480451282739493e-17,
+      "newton_iterations": 6,
+      "pcg_iterations": [
+        5,
+        5,
+        5,
+        5,
+        6
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.001,
+      "speed_scale": 0.001,
+      "friction": 0.0,
+      "maximum_velocity_error": 3.1929753979698106e-17,
+      "maximum_condensed_velocity_difference": 3.2146594414195206e-17,
+      "newton_iterations": 4,
+      "pcg_iterations": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.001,
+      "speed_scale": 0.001,
+      "friction": 0.3,
+      "maximum_velocity_error": 9.568084172184577e-17,
+      "maximum_condensed_velocity_difference": 9.535558107010011e-17,
+      "newton_iterations": 4,
+      "pcg_iterations": [
+        3,
+        3,
+        2
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.002,
+      "speed_scale": 0.0,
+      "friction": 0.0,
+      "maximum_velocity_error": 1.4688502404602224e-14,
+      "maximum_condensed_velocity_difference": 1.4688619821056838e-14,
+      "newton_iterations": 3,
+      "pcg_iterations": [
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.002,
+      "speed_scale": 0.0,
+      "friction": 0.3,
+      "maximum_velocity_error": 1.4937336897870543e-14,
+      "maximum_condensed_velocity_difference": 1.5012977258476695e-14,
+      "newton_iterations": 8,
+      "pcg_iterations": [
+        5,
+        5,
+        6,
+        6,
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.002,
+      "speed_scale": 1e-05,
+      "friction": 0.0,
+      "maximum_velocity_error": 1.4584477560104087e-14,
+      "maximum_condensed_velocity_difference": 1.4584552099003445e-14,
+      "newton_iterations": 3,
+      "pcg_iterations": [
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.002,
+      "speed_scale": 1e-05,
+      "friction": 0.3,
+      "maximum_velocity_error": 3.7322177480155795e-16,
+      "maximum_condensed_velocity_difference": 3.7328106710786575e-16,
+      "newton_iterations": 8,
+      "pcg_iterations": [
+        4,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.002,
+      "speed_scale": 0.001,
+      "friction": 0.0,
+      "maximum_velocity_error": 1.481985107548711e-14,
+      "maximum_condensed_velocity_difference": 1.482023054624748e-14,
+      "newton_iterations": 3,
+      "pcg_iterations": [
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.002,
+      "speed_scale": 0.001,
+      "friction": 0.3,
+      "maximum_velocity_error": 5.5967600345874224e-14,
+      "maximum_condensed_velocity_difference": 5.595372255806641e-14,
+      "newton_iterations": 4,
+      "pcg_iterations": [
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.001,
+      "speed_scale": 0.0,
+      "friction": 0.0,
+      "maximum_velocity_error": 4.202991763907769e-15,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 3,
+      "pcg_iterations": [
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.001,
+      "speed_scale": 0.0,
+      "friction": 0.3,
+      "maximum_velocity_error": 4.3123343115822103e-17,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 7,
+      "pcg_iterations": [
+        4,
+        4,
+        5,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.001,
+      "speed_scale": 1e-05,
+      "friction": 0.0,
+      "maximum_velocity_error": 4.194273373709853e-15,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 3,
+      "pcg_iterations": [
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.001,
+      "speed_scale": 1e-05,
+      "friction": 0.3,
+      "maximum_velocity_error": 2.6529503894807786e-15,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 6,
+      "pcg_iterations": [
+        4,
+        5,
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.001,
+      "speed_scale": 0.001,
+      "friction": 0.0,
+      "maximum_velocity_error": 3.011479954295737e-15,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 3,
+      "pcg_iterations": [
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.001,
+      "speed_scale": 0.001,
+      "friction": 0.3,
+      "maximum_velocity_error": 2.684484579074109e-16,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 4,
+      "pcg_iterations": [
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.002,
+      "speed_scale": 0.0,
+      "friction": 0.0,
+      "maximum_velocity_error": 4.219859056674829e-14,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 3,
+      "pcg_iterations": [
+        4,
+        4
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.002,
+      "speed_scale": 0.0,
+      "friction": 0.3,
+      "maximum_velocity_error": 1.727288251160871e-14,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 8,
+      "pcg_iterations": [
+        5,
+        5,
+        6,
+        5,
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.002,
+      "speed_scale": 1e-05,
+      "friction": 0.0,
+      "maximum_velocity_error": 4.210979912748318e-14,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 3,
+      "pcg_iterations": [
+        4,
+        4
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.002,
+      "speed_scale": 1e-05,
+      "friction": 0.3,
+      "maximum_velocity_error": 2.876667884476637e-16,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 8,
+      "pcg_iterations": [
+        4,
+        5,
+        6,
+        6,
+        6,
+        7,
+        6
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.002,
+      "speed_scale": 0.001,
+      "friction": 0.0,
+      "maximum_velocity_error": 2.3891479072890576e-14,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 3,
+      "pcg_iterations": [
+        4,
+        4
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.002,
+      "speed_scale": 0.001,
+      "friction": 0.3,
+      "maximum_velocity_error": 9.744809126299714e-16,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 5,
+      "pcg_iterations": [
+        4,
+        4,
+        4,
+        2
+      ]
+    }
+  ],
+  "passed": true
+}

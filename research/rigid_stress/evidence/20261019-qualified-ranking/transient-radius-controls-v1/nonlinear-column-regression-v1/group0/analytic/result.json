@@ -1,0 +1,136 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-223",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728177",
+      "SLURM_ARRAY_JOB_ID": "728177",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-8e4d594b-2f96-203d-69d3-3fcc7c758473, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "controls": [
+    {
+      "ordered": false,
+      "bending": false,
+      "stress_relative_error": 1.210366498216118e-14,
+      "equation_relative_error": 7.669268956596055e-15,
+      "balance_relative_correction": 5.721884797866867e-17
+    },
+    {
+      "ordered": false,
+      "bending": true,
+      "stress_relative_error": 8.434507791978504e-14,
+      "equation_relative_error": 5.1447267135666996e-14,
+      "balance_relative_correction": 4.378854868935643e-17
+    },
+    {
+      "ordered": true,
+      "bending": false,
+      "stress_relative_error": 4.130700575028703e-14,
+      "equation_relative_error": 1.4658601768281336e-14,
+      "balance_relative_correction": 5.721884797866867e-17
+    },
+    {
+      "ordered": true,
+      "bending": true,
+      "stress_relative_error": 5.093800183108297e-14,
+      "equation_relative_error": 3.920820573598997e-14,
+      "balance_relative_correction": 4.378854868935643e-17
+    },
+    {
+      "wall_depths": [
+        0.0,
+        1.0
+      ],
+      "through_wall_ordering": false,
+      "stress_relative_error": 3.043136920760396e-14,
+      "equation_relative_error": 1.1539335112746874e-14
+    },
+    {
+      "wall_depths": [
+        0.0,
+        1.0
+      ],
+      "through_wall_ordering": true,
+      "stress_relative_error": 2.2314618478519065e-14,
+      "equation_relative_error": 8.798020761745974e-15
+    },
+    {
+      "wall_depths": [
+        0.0,
+        0.5,
+        1.0
+      ],
+      "through_wall_ordering": false,
+      "stress_relative_error": 9.002032977917882e-14,
+      "equation_relative_error": 3.1261214077357366e-14
+    },
+    {
+      "wall_depths": [
+        0.0,
+        0.5,
+        1.0
+      ],
+      "through_wall_ordering": true,
+      "stress_relative_error": 6.265264883591277e-14,
+      "equation_relative_error": 3.919056691372714e-14
+    },
+    {
+      "wall_depths": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "through_wall_ordering": false,
+      "stress_relative_error": 3.122164570446313e-13,
+      "equation_relative_error": 1.403696525004414e-13
+    },
+    {
+      "wall_depths": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "through_wall_ordering": true,
+      "stress_relative_error": 4.349305989231739e-13,
+      "equation_relative_error": 2.0279840682612723e-13
+    },
+    {
+      "wall_depths": [
+        0.0,
+        0.05,
+        0.15,
+        0.4,
+        1.0
+      ],
+      "through_wall_ordering": false,
+      "stress_relative_error": 7.162363994051927e-13,
+      "equation_relative_error": 2.600808369291053e-13
+    },
+    {
+      "wall_depths": [
+        0.0,
+        0.05,
+        0.15,
+        0.4,
+        1.0
+      ],
+      "through_wall_ordering": true,
+      "stress_relative_error": 9.03351988112402e-13,
+      "equation_relative_error": 2.8816124995914677e-13
+    }
+  ],
+  "quadratic_gap_extrema_passed": true,
+  "finite_area_polynomial_virtual_work_and_quadrature_passed": true,
+  "shell_and_solid_linear_fiber_mapping_passed": true,
+  "independent_contact_controls": []
+}

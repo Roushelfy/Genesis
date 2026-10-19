@@ -1,0 +1,142 @@
+[
+  [
+    {
+      "name": "repeat-normal",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-sources-v1/group0/native/frames/stress-level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/stress-level0.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "9",
+        "--physical-volume"
+      ]
+    },
+    {
+      "name": "repeat-shear",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-sources-v1/group0/native/frames/stress-level1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/stress-level1.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "9",
+        "--physical-volume"
+      ]
+    },
+    {
+      "name": "return-normal",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level4.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "9",
+        "--physical-volume"
+      ]
+    },
+    {
+      "name": "friction-parameter",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-sources-v1/group0/native/frames/stress-level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "9",
+        "--physical-volume"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "repeat-normal",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-sources-v1/group1/native/frames/stress-level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group3/native/frames/stress-level0.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "9",
+        "--physical-volume"
+      ]
+    },
+    {
+      "name": "repeat-shear",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-sources-v1/group1/native/frames/stress-level1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group3/native/frames/stress-level1.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "9",
+        "--physical-volume"
+      ]
+    },
+    {
+      "name": "return-normal",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group1/native/frames/stress-level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group1/native/frames/stress-level4.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "9",
+        "--physical-volume"
+      ]
+    },
+    {
+      "name": "friction-parameter",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-sources-v1/group1/native/frames/stress-level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group1/native/frames/stress-level0.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "9",
+        "--physical-volume"
+      ]
+    }
+  ]
+]
