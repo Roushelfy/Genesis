@@ -1866,3 +1866,23 @@ retains331 payloads/2,775,215 bytes, with twenty raw benchmark JSON and eight fu
 replay arrays externally hashed on data. An oversized untracked publication draft
 is copied with metadata/symlinks to data,352 files verified, then its home copy
 removed; immutable bytes and the migration journal remain preserved.
+
+
+## First complete125um physical parent
+
+Actual729312_0 completes in4h43m58s with400 sequential steps, original six
+whole-history mechanical checks and two51-sample admitted equilibrium windows.
+Own independent current momentum and exact endpoint transfer pass. Strict
+preflight730592 completes with all ten original result/history/momentum/journal/
+endpoint-byte checks. This extends the corrected full-velocity contact-force
+validation to the first fine two-wall/q10 history; no physical/numerical target
+is changed. The parent retains physical_reference_qualified=false until the
+separate spatial/wall/time/contact comparisons pass. The other three fine
+writers and the original guarded analysis/ranking/figure DAG remain unchanged.
+
+The [first-fine-parent packet](../evidence/20261019-qualified-ranking/canonical125-surface-terminal-v1/README.md)
+retains64 payloads/341,005 bytes with exact original/encoded hashes, the actual
+terminal accounting, complete captured research import cone and strict
+admission. Two full endpoints and the mesh remain externally hashed on data.
+All live group1 and other fine outputs are excluded; final friction reference
+uncertainty, method errors/ranks and figures remain pending.

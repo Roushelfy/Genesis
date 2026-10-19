@@ -1,0 +1,59 @@
+{
+  "accounting": "729312_0|COMPLETED|0:0|04:43:58\n729312_0.batch|COMPLETED|0:0|04:43:58\n729312_0.0|COMPLETED|0:0|04:43:57\n729312_1|RUNNING|0:0|04:44:59\n729312_1.batch|RUNNING|0:0|04:44:59\n729312_1.0|RUNNING|0:0|04:44:59\n",
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group0/reference",
+  "result": {
+    "completed": true,
+    "steps": 400,
+    "elapsed_seconds": 16215.472710978007,
+    "history_checks": {
+      "complete_equation": true,
+      "actual_pressure": true,
+      "actual_friction": true,
+      "point_velocity_prediction": true,
+      "complete_boundary": true,
+      "current_moment": true
+    },
+    "mechanical_history_passed": true,
+    "windows": [
+      {
+        "level": 0,
+        "samples": 51,
+        "checks": {
+          "both_plate_reactions": true,
+          "plate_velocity": true,
+          "egg_inertial_resultant": true,
+          "egg_kinetic": true,
+          "equation_residual": true,
+          "complete_equation": true,
+          "actual_pressure": true,
+          "actual_friction": true,
+          "point_velocity_prediction": true,
+          "complete_boundary": true,
+          "current_moment": true
+        },
+        "mechanical_window_passed": true
+      },
+      {
+        "level": 1,
+        "samples": 51,
+        "checks": {
+          "both_plate_reactions": true,
+          "plate_velocity": true,
+          "egg_inertial_resultant": true,
+          "egg_kinetic": true,
+          "equation_residual": true,
+          "complete_equation": true,
+          "actual_pressure": true,
+          "actual_friction": true,
+          "point_velocity_prediction": true,
+          "complete_boundary": true,
+          "current_moment": true,
+          "sustained_shear": true
+        },
+        "mechanical_window_passed": true
+      }
+    ],
+    "physical_reference_qualified": false
+  },
+  "scope": "Actual completed first125um two-wall400-step parent. Own history/windows pass; strict endpoint/momentum/journal admission is separately submitted. No spatial/time/contact reference qualification or method error is inferred. Other three fine writers and original DAG remain unchanged."
+}

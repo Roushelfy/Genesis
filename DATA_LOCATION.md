@@ -1,5 +1,11 @@
 # Rigid-stress data and artifact locations
 
+The canonical125-surface-terminal-v1 packet adds64 payloads/341,005 bytes for
+the actual terminal400-step125um/two-wall physical parent and its10-check strict
+admission. Two complete endpoint fields and the mesh remain on data with external
+hashes. Only terminal group0 receipts/source/logs are frozen; live group1 and the
+other fine writers are excluded. No scientific data/environment/link is moved.
+
 The independent-process-memory-v2 packet adds331 compact payloads/2,775,215
 bytes for14 collector controls and24 source-matched fresh memory profiles.
 Twenty full raw benchmark JSON files and eight complete replay arrays remain
