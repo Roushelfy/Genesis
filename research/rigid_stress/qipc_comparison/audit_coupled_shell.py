@@ -8,6 +8,7 @@ import numpy as np
 
 from .artifacts import file_id, runtime_identity, write_json
 from .common_metric import corotation
+from .plates import equilibrium
 
 
 def main():
@@ -62,6 +63,50 @@ def main():
             for row in history
             if carried and row["time_s"] > carried[0]["time_s"] and row["upper_reaction_n"] < 1e-8
         ]
+        windows = []
+        for level in sorted({row["level"] for row in history}):
+            level_rows = [row for row in history if row["level"] == level]
+            endpoint = level_rows[-1]
+            window = [row for row in level_rows if row["time_s"] >= endpoint["time_s"] - 0.05 - 1e-10]
+            checks = []
+            inertia_bounds = []
+            for row in window:
+                observed = dict(row)
+                residual_norm = row["equation_residual_relative"] * row["residual_force_scale_n"]
+                observed["equation_residual_relative"] = residual_norm / row["contact_force_norm_n"]
+                # Older journals did not retain the inertia resultant. Bound it from
+                # m a = f_internal + f_contact - residual without assuming equilibrium.
+                bound = np.linalg.norm(np.array(row["internal_force_resultant_n"]) + row["contact_force_resultant_n"])
+                bound += np.sqrt(len(rest)) * residual_norm
+                inertia_bounds.append(float(bound))
+                if "egg_inertia_resultant_norm_n" not in observed:
+                    observed["egg_inertia_resultant_norm_n"] = float(bound)
+                checks.append(equilibrium(observed, endpoint["command_force_n"]))
+            failures = sum(any(row["solver_failure_flags"]) for row in level_rows)
+            windows.append(
+                {
+                    "level": level,
+                    "command_force_n": endpoint["command_force_n"],
+                    "samples": len(window),
+                    "failed_steps_in_level": failures,
+                    "maximum_equation_residual_contact_relative": max(
+                        row["equation_residual_relative"] * row["residual_force_scale_n"] / row["contact_force_norm_n"]
+                        for row in window
+                    ),
+                    "maximum_inertia_resultant_bound_n": max(inertia_bounds),
+                    "maximum_plate_speed_m_per_s": max(abs(row["plate_speed_m_per_s"]) for row in window),
+                    "maximum_kinetic_j": max(row["egg_kinetic_j"] for row in window),
+                    "checks": {key: all(row[key] for row in checks) for key in checks[0]},
+                    "mechanical_window_passed": bool(
+                        result["completed"]
+                        and len(window) >= 5
+                        and window[-1]["time_s"] - window[0]["time_s"] >= 0.05 - 1e-10
+                        and not failures
+                        and all(all(row.values()) for row in checks)
+                    ),
+                    "physical_accuracy_qualified": False,
+                }
+            )
         rows.append(
             {
                 "result": file_id(run / "result.json"),
@@ -74,6 +119,7 @@ def main():
                     if row["time_s"] >= history[-1]["time_s"] - 0.05 - 1e-10
                 ),
                 "fields": fields,
+                "equilibrium_windows": windows,
             }
         )
     write_json(

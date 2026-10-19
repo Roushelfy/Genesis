@@ -16,6 +16,7 @@ from genesis.utils.misc import qd_to_numpy, tensor_to_array
 from ..shell_comparison.observation import FullField
 from .artifacts import file_id, runtime_identity, write_json
 from .plates import configure_native_plate, control_native_plate, force_history, parser, plate_xml
+from .shell_linear_capture import capture, contact_diagnostics
 
 
 @qd.kernel
@@ -59,7 +60,14 @@ def main():
     cli.add_argument("--coarse-patches", type=int, default=12)
     cli.add_argument("--friction", type=float, default=0.0)
     cli.add_argument("--midpoint-mesh", type=Path)
+    cli.add_argument("--floating-sums", action="store_true")
+    cli.add_argument("--capture-first-linear", action="store_true")
     args = cli.parse_args()
+    if args.capture_first_linear:
+        assert (
+            file_id(Path(shell.__file__))["sha256"]
+            == "3f42e2d46c3d45292bba294c84e503fc4d5d04b9c6614ec5da2200f5c2bfb360"
+        ), "First-linear capture requires the retained diagnostic source patch, not a complete trajectory solver"
     args.output.mkdir(parents=True, exist_ok=False)
     (args.output / "frames").mkdir()
     with np.load(args.mesh) as saved:
@@ -71,7 +79,9 @@ def main():
     lower, upper = vertices[:, 2].min() - args.clearance, vertices[:, 2].max() + args.clearance
     xml = plate_xml(lower, upper, args.plate_offset_x, bool(args.shear_distance))
     (args.output / "plates.xml").write_text(xml)
-    gs.init(backend=gs.cuda, precision="64", logging_level="warning")
+    gs.init(
+        backend=gs.cuda, precision="64", logging_level="warning", use_deterministic_algorithms=not args.floating_sums
+    )
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=args.dt, gravity=(0.0, 0.0, 0.0)),
         rigid_options=gs.options.RigidOptions(
@@ -133,6 +143,9 @@ def main():
                 scene.step()
                 scene.rigid_solver.check_errno()
                 executed += 1
+                if args.capture_first_linear:
+                    capture(solver, scene.rigid_solver, args.output)
+                    return
                 failure_flags = tensor_to_array(solver.get_envs_solver_failure())
                 failed = bool(failure_flags.any())
                 if (step + 1) % args.record_stride and not endpoint and not failed:
@@ -156,6 +169,7 @@ def main():
                     "plate_speed_m_per_s": plate.get_dofs_velocity()[0, 0].item(),
                     "upper_reaction_n": -contact[from_upper, 2].sum().item(),
                     "lower_reaction_n": contact[~from_upper, 2].sum().item(),
+                    "egg_inertia_resultant_norm_n": float(np.linalg.norm(inertia.sum(axis=0))),
                     "egg_kinetic_j": (0.5 * masses[:, None] * velocity**2).sum().item(),
                     "equation_residual_relative": float(np.linalg.norm(residual) / scale) if scale else None,
                     "static_residual_relative": float(np.linalg.norm(internal + contact) / scale) if scale else None,
@@ -183,6 +197,9 @@ def main():
                         ).tolist(),
                     }
                 if endpoint or failed:
+                    row["contact_iteration_audit"] = contact_diagnostics(
+                        solver, scene.rigid_solver, args.dt, args.velocity_tolerance, args.contact_stiffness
+                    )
                     field.update(solver)
                     tensors = tensor_to_array(field.tensors)[:, 0].reshape(-1, 3, 3, 3)
                     vm = tensor_to_array(field.von_mises)[:, 0].reshape(-1, 3)
