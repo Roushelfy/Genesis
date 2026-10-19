@@ -1636,3 +1636,47 @@ Audit729236 completes with all15 canonical repaired-source timing receipts
 passed. The [canonical timing packet](../evidence/20261019-qualified-ranking/native-canonical-production-v1/README.md) preserves92 verified payloads; the
 [contact report](NATIVE_CONTACT_CONSISTENCY_20261019.md) now includes its
 source-matched B1/B8/B32 rates. Larger conformance/memory remains separate.
+
+
+## Canonical physical-force evaluation repairs fine-reference admission
+
+The old125um two/three-wall histories both fail the original friction-law gate at step38:4.7494e-7 and3.5113e-7. The contact solver returns force evaluated at an auxiliary modal velocity, while the driver audits the actual full-DOF velocity. This near-detachment mismatch can violate a relative force gate despite a small momentum residual. No outer or inner tolerance needs to change to evaluate the physical law at the actual returned state.
+
+For full velocity V=V_free+A^-1 J^T P_aux, the canonical physical impulse is P_phys=-grad E_contact(J V). Its actual momentum defect is J^T(P_aux-P_phys). The existing A^-1-weighted defect check already bounds this under the original tolerance. The corrected research-only modal solver returns V and P_phys after that check, records the auxiliary defect and response impulse, and retains all normal/friction/source/material parameters. It computes J@(V_free+response) directly, using the same full-DOF evaluation as the driver.
+
+The original detachment fixture729250 rejects the inconsistent force. Its12 cases now pass, alongside24 contact cases. The response-reuse test keeps its1e-14 algebraic assertion for the actual auxiliary RHS and separately recomputes the canonical physical momentum under the original budget. The first test adaptation729252 exposed the old exact-physical-force identity assumption (1.75e-14 difference);729255's divide/multiply exact-equality assertion and729263's CPU-only NVIDIA metadata requirement also fail and remain retained. The corrected729265 completes all36 cases without relaxing a scientific gate. Maximum independent friction discrepancy falls from0.00852253 to2.05960e-16.
+
+The unchanged400-step coarse physical configuration729267 passes every-step equations, pressure/friction, boundary and independent current-moment admission. Both normal/friction q9/depth4 old/new field comparisons pass the predeclared1e-8 target: maximum five-field contrast5.6152e-10 and raw-peak change2.2767e-10. All journal entries use the canonical full velocity; maximum friction-law residual is1.61325e-16. Aggregate729344 passes28 checks and rehashes the actual inputs. This is a numerical/reference repair control, not fine spatial qualification.
+
+New pinned executions729312(two/three-wall125um) and729314(exact fine q6/half-dt controls) capture the corrected source and retain every prior physical/uncertainty target. Old rejected and preempted outputs remain in place; the older live three-wall writer is untouched. Fine q9/q25/depth comparisons, final friction ranks and figures remain pending.
+
+## Larger native conformance, sampled process memory and diverse failures
+
+B128/B512 complete conformance729223/729241 passes159 checks. Ten separate fresh-process memory runs729228 and aggregate729260 match the primary timing configuration and source1ff39b077. B512 sampled NVIDIA process peaks are2656MiB rigid,2928/2992MiB DPR max/full and3410/3442MiB SCR max/full, with interval/command-latency limitations. These are not logical/Torch-only allocations or a proven maximum capacity.
+
+Independently generated128/512-condition banks each pass32 complete rigid/DPR checks in729323, including distinct authored conditions. The deliberate repeated-eight-condition control fails only its diversity gate. All four diverse SCR max/full runs729247 reject during warmup. Timely after-step capture729346 preserves the actual first rejected max states at767/env9 and645/env330; ordinary pre-step error checks can observe a latched failure only after the next controller radius setter invalidates the current contact flags/certificate. Original770/647 observed-error records and unsuccessful reader assumptions are retained, not repaired in place.
+
+The independent full-wrench reader729351 verifies strict continuous polar bounds across all original source supports and every recorded failed environment. It uses exact closest-triangle geometry, longest-edge binary subdivision and the original independent1e-8 force/moment budgets. Both captured targets are genuinely incompatible with the declared friction-cone/support model. The [native report](NATIVE_CONTACT_CONSISTENCY_20261019.md) retains the signed bounds and projection budgets. These are first-failure certificates, not whole-history failure-rate estimates, physical-error qualifications or permission to clip loads.
+
+B2048/B8192 primary runs729261 complete; separate timing audit729348, complete conformance729291 and total process memory729349 remain independently checked. Their eight-condition input bank cannot substitute for diverse environment reliability. Sparse/output-cadence delivery and matching collider-error qualification remain open under the full goal.
+
+The [canonical-force packet](../evidence/20261019-qualified-ranking/modal-canonical-force-v1/README.md)
+retains143 payloads totaling1,162,186 bytes for the complete coarse repair controls,
+original failures, exact source variants and immutable new fine-task inputs.
+The [batch/memory/diversity packet](../evidence/20261019-qualified-ranking/native-batch-memory-diversity-v1/README.md)
+retains413 payloads totaling3,964,315 bytes. New fine outputs are excluded from
+both publications. Portable certificate replay729357 passes both relocated
+positive inputs and rejects the altered-byte fixture before numerical evaluation.
+
+Larger B2048/B8192 conformance729371 and complete source-matched memory
+aggregation729409 now pass159 checks/ten profiles alongside primary audit729348.
+The [native contact report](NATIVE_CONTACT_CONSISTENCY_20261019.md) retains
+actual rates, sampled peaks and the repeated-bank/tested-capacity limitations.
+Source reconstruction from published6b851ec plus a5KB observer overlay verifies
+all858 executed source files and225263082 bytes, independently of private Git
+object availability. New two-wall125um execution crosses the old step38 defect;
+the early prefix is a live diagnostic, not full-history/spatial admission.
+
+The [capacity8192 packet](../evidence/20261019-qualified-ranking/native-capacity8192-v1/README.md) freezes164 compact payloads/1,291,101 bytes. Raw arrays and large primary JSON remain on data; all required source/timing/conformance/memory checks are terminal. This tested eight-condition capacity does not certify diverse SCR reliability or close pending physical-error, sparse-output and fine-friction requirements.
+
+Publication closure also restores169 manifest-listed tiny logs (24,922 bytes) omitted by Git ignore rules. No prior payload, manifest or hash is rewritten. The [index-repair inventory and reader](../evidence/20261019-qualified-ranking/publication-index-repair-v1/README.md) verify all5,865 copied payloads directly from the published Git tree. Immutable failed-log whitespace remains intact; source/documentation formatting is checked separately.

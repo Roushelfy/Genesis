@@ -1,0 +1,49 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-191",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729247",
+      "SLURM_ARRAY_JOB_ID": "729247",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-c09fdf1f-137f-346a-6ccb-6846034e475e, 00000000:45:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "passed": true,
+  "checks": {
+    "finite_motion": true,
+    "every_step_errno_zero": true,
+    "all_environments_retained": true
+  },
+  "method": "rigid",
+  "observed_stress": false,
+  "effective_rigid_post_fusion": false,
+  "output_mode": "max",
+  "envs": 512,
+  "steps": 1200,
+  "warmup": 900,
+  "dt_s": 0.01,
+  "substeps": 1,
+  "resets": 512,
+  "conditions": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-independent-condition-banks-v1/group1/conditions.npz",
+    "bytes": 190698,
+    "sha256": "e104ec9604c978372248e1ed16161129d490abbc43c77f1589ef377960b33f1c"
+  },
+  "trajectory": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-conformance128-512-v1/group1/rigid-max/trajectory.npz",
+    "bytes": 120974304,
+    "sha256": "ff6dd9d99bf45370d4e398660ecd9a195e0bcc51c569f8a6c3cea97bb8af052b"
+  },
+  "stress_configuration": null,
+  "intrinsic_workspace_contacts": null,
+  "replay": null,
+  "physical_reference_qualified": false,
+  "scope": "Intrusive motion/output control; recording cost is not primary production throughput."
+}

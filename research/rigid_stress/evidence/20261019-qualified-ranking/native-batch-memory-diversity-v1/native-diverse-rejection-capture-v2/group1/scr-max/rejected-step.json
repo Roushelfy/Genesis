@@ -1,0 +1,266 @@
+{
+  "passed": false,
+  "phase": "warmup",
+  "attempted_step": 645,
+  "error": "Native stress contact recovery rejected a load. link=12, env=330, contact=0, status=36: original wrench is incompatible with the continuous reference-surface friction cones inside the physical radius; radius=0.00562359281 m, mu=0.713472763 (first preserved contact failure); env=330: body_source_prior conserves the aggregate wrench of 2 original contacts; target_force and target_moment are retained in the failure record about its original application point",
+  "stress_options": {
+    "mesh": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-witness-consistency/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+    "output_mode": "max",
+    "update_mode": "every_step",
+    "young": 10000000000.0,
+    "poisson": 0.3,
+    "density": 2000.0,
+    "contact_radius": 0.006,
+    "contact_model": "intrinsic",
+    "intrinsic_integration": "surface_fan",
+    "intrinsic_support": "contact",
+    "intrinsic_load_partition": "body_source_prior",
+    "cooperative_tractions": true,
+    "surface_fan_frontier": true,
+    "warm_start_tractions": true,
+    "contact_block_size": 16,
+    "surface_edge_subdivisions": 8,
+    "source_projection_limit": 0.0001,
+    "source_geometry_tolerance": 1e-08,
+    "source_uncertainty": 0.0,
+    "quadrature": 10,
+    "tolerance": 1e-08,
+    "absolute_tolerance": 1e-11,
+    "max_iterations": 2000,
+    "warm_start": true,
+    "history_size": 0,
+    "method": "auto",
+    "cooperative_solve": true,
+    "cooperative_pressure": true,
+    "cooperative_scatter": true,
+    "cooperative_balance": true,
+    "contact_wrench_reuse": null,
+    "face_parallel_scatter": true,
+    "scatter_tasks_per_env": 32,
+    "contact_moment_reuse": null,
+    "inverse_max_bytes": 67108864,
+    "inverse_precision": "64",
+    "surface_inverse": true,
+    "packed_surface_loads": true,
+    "packed_block_size": null,
+    "coalesced_residual": null,
+    "fused_pipeline": true,
+    "fused_rigid_post": null,
+    "cached_peak": true,
+    "cached_face_bounds": true,
+    "inverse_corrections": 2,
+    "preconditioner": "block"
+  },
+  "state": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-capture-v2/group1/scr-max/rejected-state.npz",
+    "bytes": 637615,
+    "sha256": "fc9db961e3e390f9dad2ca33ef84dc09bfd5b4b36527e76f3d73791d70781d90"
+  },
+  "array_shapes": {
+    "errno": [
+      512
+    ],
+    "step_valid": [
+      512
+    ],
+    "contacts.position": [
+      750,
+      512,
+      3
+    ],
+    "contacts.center": [
+      750,
+      512,
+      3
+    ],
+    "contacts.anchor_face": [
+      750,
+      512
+    ],
+    "contacts.is_refined": [
+      750,
+      512
+    ],
+    "contacts.force": [
+      750,
+      512,
+      3
+    ],
+    "contacts.normal": [
+      750,
+      512,
+      3
+    ],
+    "contacts.friction": [
+      750,
+      512
+    ],
+    "contacts.radius": [
+      750,
+      512
+    ],
+    "contacts.valid": [
+      750,
+      512
+    ],
+    "contacts.coefficient": [
+      750,
+      512,
+      3
+    ],
+    "contacts.weight_sum": [
+      750,
+      512
+    ],
+    "contacts.status": [
+      750,
+      512
+    ],
+    "contacts.force_error": [
+      750,
+      512
+    ],
+    "contacts.moment_error": [
+      750,
+      512
+    ],
+    "contacts.candidate_count": [
+      750,
+      512
+    ],
+    "contacts.evaluations": [
+      750,
+      512
+    ],
+    "contacts.active_pairs": [
+      0,
+      2
+    ],
+    "contacts.active_count": [],
+    "contacts.frame_position": [
+      512,
+      3
+    ],
+    "contacts.frame_quaternion": [
+      512,
+      4
+    ],
+    "sources.geom": [
+      750,
+      512
+    ],
+    "sources.pair": [
+      750,
+      512
+    ],
+    "sources.method": [
+      750,
+      512
+    ],
+    "sources.vertex": [
+      750,
+      512
+    ],
+    "sources.has_vertex_ambiguity": [
+      750,
+      512
+    ],
+    "sources.witness": [
+      750,
+      512,
+      3
+    ],
+    "sources.witness_face": [
+      750,
+      512
+    ],
+    "sources.witness_barycentric": [
+      750,
+      512,
+      3
+    ],
+    "sources.uncertainty": [
+      750,
+      512
+    ],
+    "sources.free_moment": [
+      750,
+      512,
+      3
+    ],
+    "sources.anchor_moment": [
+      750,
+      512,
+      3
+    ],
+    "sources.barycentric": [
+      750,
+      512,
+      3
+    ],
+    "sources.status": [
+      750,
+      512
+    ],
+    "failure.contact": [
+      512
+    ],
+    "failure.status": [
+      512
+    ],
+    "failure.radius": [
+      512
+    ],
+    "failure.friction": [
+      512
+    ],
+    "failure.position": [
+      512,
+      3
+    ],
+    "failure.anchor": [
+      512,
+      3
+    ],
+    "failure.force": [
+      512,
+      3
+    ],
+    "failure.free_moment": [
+      512,
+      3
+    ],
+    "failure.group_count": [
+      512
+    ],
+    "failure.target_force": [
+      512,
+      3
+    ],
+    "failure.target_moment": [
+      512,
+      3
+    ],
+    "certificates.ray": [
+      750,
+      512,
+      6
+    ],
+    "certificates.margin": [
+      750,
+      512
+    ],
+    "mesh.vertices": [
+      810,
+      3
+    ],
+    "mesh.surface_nodes": [
+      80,
+      6
+    ],
+    "mesh.surface_opposite_vertices": [
+      80
+    ]
+  },
+  "scope": "Raw first rejected state, including all environments, source forces and preserved certificates. Tensor dimensions retain native order; vectors/matrices append component axes. No error is cleared, force changed, environment dropped or continuation attempted."
+}

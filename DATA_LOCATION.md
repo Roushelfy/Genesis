@@ -1,4 +1,13 @@
-# Current QIPC reference comparison
+# Rigid-stress data and artifact locations
+
+The canonical-force/batch checkpoint adds `modal-canonical-force-v1`
+(143 payloads,1,162,186 bytes) and `native-batch-memory-diversity-v1`
+(413,3,964,315 bytes). They retain terminal controls, original failures,
+portable small rejection inputs, deterministic gzip and both original/encoded
+hashes. Full coarse/fine fields, trajectories and raw benchmark JSON stay in
+the established `20261019-qualified-ranking` data root. New corrected125um
+reference/time/contact and larger batch/memory jobs contribute immutable inputs
+only. No live reference output, environment or compatibility link is migrated.
 
 The contact/static-control checkpoint adds three compact Git evidence packets:
 `native-contact-consistency-v1` (307 payloads,3,290,067 bytes),
@@ -417,3 +426,7 @@ under the data root. Its writer job712467 was terminalCOMPLETED before copying.
 All4321 files were SHA256-verified before removing the untracked source copy.
 No tracked deliverable or active writer was moved. Exact old/new absolute paths
 and validation are recorded in that run root's `publication-attempt-migration.json`.
+
+The `native-capacity8192-v1` packet retains164 compact payloads totaling1,291,101 bytes for terminal B2048/B8192 timing, complete conformance and separate memory. Full arrays and large raw benchmark JSON stay on data. The public-source overlay packet adds3 payloads/45,790 bytes and reconstructs858 exact source files from a public commit without relying on a private Git object. Temporary source validation was removed after verification; no active source or data was moved.
+
+The publication-index repair explicitly tracks169 previously ignored, manifest-listed tiny logs (24,922 bytes) in the20261019 qualified-ranking evidence. Their original bytes, existing manifests and hashes are preserved. Final verification reads all5,865 manifest-listed payloads directly from the Git tree, including encoded and recorded decoded hashes; raw datasets and active jobs remain on data. The repair inventory and portable reader are in `research/rigid_stress/evidence/20261019-qualified-ranking/publication-index-repair-v1/`.

@@ -1,0 +1,46 @@
+[
+  [
+    {
+      "name": "scr-max",
+      "module": "research.rigid_stress.qipc_comparison.native_production_controls",
+      "args": [
+        "--method",
+        "scr",
+        "--envs",
+        "128",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-independent-condition-banks-v1/group0/conditions.npz",
+        "--output-mode",
+        "max",
+        "--steps",
+        "1200",
+        "--warmup",
+        "900",
+        "--field-stride",
+        "120"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "scr-max",
+      "module": "research.rigid_stress.qipc_comparison.native_production_controls",
+      "args": [
+        "--method",
+        "scr",
+        "--envs",
+        "512",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-independent-condition-banks-v1/group1/conditions.npz",
+        "--output-mode",
+        "max",
+        "--steps",
+        "1200",
+        "--warmup",
+        "900",
+        "--field-stride",
+        "120"
+      ]
+    }
+  ]
+]

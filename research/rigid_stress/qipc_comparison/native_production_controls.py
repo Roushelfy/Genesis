@@ -6,7 +6,7 @@ path, but excludes physical dynamics and host field export.
 """
 
 import argparse
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 from pathlib import Path
 from time import perf_counter
 
@@ -19,7 +19,7 @@ from examples.rigid.franka_egg_stress import FrankaEgg
 from examples.speed_benchmark.rigid_stress import restore_frame
 from genesis.engine.solvers.base_solver import StateChange
 from genesis.utils.array_class import DataKind
-from genesis.utils.misc import qd_to_torch, tensor_to_array
+from genesis.utils.misc import qd_to_numpy, qd_to_torch, tensor_to_array
 
 from .artifacts import file_id, runtime_identity, write_json
 
@@ -29,6 +29,54 @@ class ReplayBuffer:
     name: str
     live: torch.Tensor
     frames: torch.Tensor
+
+
+def checked_step(workload, output, phase, tick, check_every_step=False):
+    try:
+        workload.step()
+        if check_every_step:
+            workload.scene.rigid_solver.check_errno()
+    except Exception as error:
+        receipt = {
+            "passed": False,
+            "phase": phase,
+            "attempted_step": tick,
+            "error": str(error),
+            "checked_after_every_step": check_every_step,
+        }
+        try:
+            qd.sync()
+            solver = workload.scene.rigid_solver
+            entry = solver.stress_recovery.links[0] if workload.stress else None
+            arrays = {"errno": qd_to_numpy(solver._errno)}
+            if entry is not None:
+                arrays["step_valid"] = qd_to_numpy(entry.state.step_valid)
+                groups = [("contacts", entry.contacts)]
+                if entry.intrinsic is not None:
+                    groups.extend(
+                        (
+                            ("sources", entry.intrinsic.raw_sources),
+                            ("failure", entry.intrinsic.failure),
+                            ("certificates", entry.intrinsic.certificates),
+                        )
+                    )
+                for prefix, group in groups:
+                    for field in fields(group):
+                        arrays[prefix + "." + field.name] = qd_to_numpy(getattr(group, field.name))
+                for name in ("vertices", "surface_nodes", "surface_opposite_vertices"):
+                    arrays["mesh." + name] = qd_to_numpy(getattr(entry.model.info, name))
+                receipt["stress_options"] = entry.options.model_dump(mode="json")
+            path = output / "rejected-state.npz"
+            np.savez_compressed(path, **arrays)
+            receipt["state"] = file_id(path)
+            receipt["array_shapes"] = {name: list(value.shape) for name, value in arrays.items()}
+            receipt["scope"] = (
+                "State at the observed exception, including all environments and separately preserved first-failure records. Only check-every-step capture precedes the next controller mutation; delayed checking can leave current contact flags/certificates invalidated by a radius change. Tensor dimensions retain native order; vectors/matrices append component axes. No error is cleared, force changed, environment dropped or continuation attempted after detection."
+            )
+        except Exception as capture_error:
+            receipt["capture_error"] = repr(capture_error)
+        write_json(output / "rejected-step.json", receipt)
+        raise
 
 
 def replay_buffers(workload, steps):
@@ -147,6 +195,11 @@ def main():
     cli.add_argument("--contact-block-size", type=int, default=16)
     cli.add_argument("--deterministic", choices=("auto", "on", "off"), default="auto")
     cli.add_argument("--construction-snapshots", action="store_true")
+    cli.add_argument(
+        "--check-every-step",
+        action="store_true",
+        help="Intrusive first-rejection capture before the next controller mutation",
+    )
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     if min(args.envs, args.steps, args.field_stride, args.repetitions) < 1 or args.warmup < 0:
@@ -193,8 +246,8 @@ def main():
     if args.construction_snapshots:
         capture_physics(workload, args.output / "constructed.npz")
     with torch.inference_mode():
-        for _ in range(args.warmup):
-            workload.step()
+        for tick in range(args.warmup):
+            checked_step(workload, args.output, "warmup", tick + 1, args.check_every_step)
         qd.sync()
         solver.check_errno()
         workload.restart()
@@ -217,7 +270,7 @@ def main():
         field_ticks = sorted({0, args.steps - 1, *range(args.field_stride - 1, args.steps, args.field_stride)})
         tensors, mises = [], []
         for tick in range(args.steps):
-            workload.step()
+            checked_step(workload, args.output, "recording", tick + 1, args.check_every_step)
             states[tick].copy_(motion(workload))
             if args.construction_snapshots and tick + 1 in (108, 109, 110, 120, args.steps):
                 capture_physics(workload, args.output / f"step{tick + 1}.npz")

@@ -4,6 +4,9 @@ C=J A^-1 J^T is split exactly into B B^T and C-B B^T, where B is the
 A-orthonormal image of selected free modes. Only the latter part is lagged
 inside the fixed-point iteration. Final full-compliance force, velocity and
 preconditioned momentum defects must converge; no mode is fixed or discarded.
+The returned force is evaluated at the full returned velocity. The auxiliary
+response impulse is retained separately, with their mismatch bounded by the
+original preconditioned momentum test.
 """
 
 import numpy as np
@@ -71,7 +74,8 @@ class ModalPadDynamics:
             impulse = current.reshape(-1)
             body_response = self.factor.solve(self.jacobian.T @ impulse)
             response = self.jacobian @ body_response
-            actual = (free + response).reshape(-1, 3)
+            full_velocity = free_velocity + body_response
+            actual = (self.jacobian @ full_velocity).reshape(-1, 3)
             actual_impulse = potential(actual, gap, self.sign, self.area, previous_normal, dt, stiffness, friction)[1]
             defect = impulse - actual_impulse.reshape(-1)
             force_error = float(np.linalg.norm(defect) / max(np.linalg.norm(impulse), dt * max(load, 1e-3) * 1e-3))
@@ -83,11 +87,20 @@ class ModalPadDynamics:
                 residual = np.sqrt(squared)
                 if residual <= tolerance:
                     if self.warm_start:
-                        self.previous_impulse = impulse.copy()
+                        self.previous_impulse = actual_impulse.reshape(-1).copy()
+                    # Evaluate the physical law at the returned full-DOF
+                    # velocity. The auxiliary modal velocity is only an
+                    # iterate; its tiny difference can matter relatively at
+                    # detachment. The momentum defect above measures the
+                    # mismatch with this physical impulse under the original
+                    # tolerance, without clipping or changing the force law.
                     return {
-                        "velocity": velocity,
-                        "full_velocity": free_velocity + body_response,
-                        "force": current / dt,
+                        "velocity": actual,
+                        "full_velocity": full_velocity,
+                        "force": actual_impulse / dt,
+                        "response_impulse": current,
+                        "force_evaluation": "full_velocity",
+                        "auxiliary_force_defect_n": float(np.linalg.norm(defect) / dt),
                         "iterations": sum(newton_iterations),
                         "fixed_point_iterations": outer + 1,
                         "modal_newton_iterations": newton_iterations,

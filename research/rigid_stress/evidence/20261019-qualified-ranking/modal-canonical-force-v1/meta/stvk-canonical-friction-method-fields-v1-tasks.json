@@ -1,0 +1,197 @@
+[
+  [
+    {
+      "name": "dpr-q9",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/stress-level1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group1/reference/frames/level1.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "9",
+        "--depth-quadrature",
+        "4",
+        "--physical-volume",
+        "--common-peaks"
+      ]
+    },
+    {
+      "name": "dpr-q25",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/stress-level1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group1/reference/frames/level1.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "25",
+        "--depth-quadrature",
+        "4",
+        "--physical-volume",
+        "--common-peaks"
+      ]
+    },
+    {
+      "name": "dpr-q1",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/stress-level1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group1/reference/frames/level1.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "1",
+        "--depth-quadrature",
+        "4",
+        "--physical-volume",
+        "--common-peaks",
+        "--export-surface-fields"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "scr-q9",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group3/native/frames/stress-level1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group1/reference/frames/level1.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "9",
+        "--depth-quadrature",
+        "4",
+        "--physical-volume",
+        "--common-peaks"
+      ]
+    },
+    {
+      "name": "scr-q25",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group3/native/frames/stress-level1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group1/reference/frames/level1.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "25",
+        "--depth-quadrature",
+        "4",
+        "--physical-volume",
+        "--common-peaks"
+      ]
+    },
+    {
+      "name": "scr-q1",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group3/native/frames/stress-level1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group1/reference/frames/level1.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "1",
+        "--depth-quadrature",
+        "4",
+        "--physical-volume",
+        "--common-peaks",
+        "--export-surface-fields"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shell-q9",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group0/fine/frames/level1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group1/reference/frames/level1.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "9",
+        "--depth-quadrature",
+        "4",
+        "--physical-volume",
+        "--common-peaks",
+        "--shell-indices",
+        "0"
+      ]
+    },
+    {
+      "name": "shell-q25",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group0/fine/frames/level1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group1/reference/frames/level1.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "25",
+        "--depth-quadrature",
+        "4",
+        "--physical-volume",
+        "--common-peaks",
+        "--shell-indices",
+        "0"
+      ]
+    },
+    {
+      "name": "shell-q1",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group0/fine/frames/level1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group1/reference/frames/level1.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "1",
+        "--depth-quadrature",
+        "4",
+        "--physical-volume",
+        "--common-peaks",
+        "--shell-indices",
+        "0",
+        "--export-surface-fields"
+      ]
+    }
+  ]
+]

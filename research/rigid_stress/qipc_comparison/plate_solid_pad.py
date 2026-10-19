@@ -66,7 +66,8 @@ def main():
     with np.load(args.mesh) as saved:
         vertices, tets, outer, faces = (saved[k] for k in ("vertices", "tetrahedra", "outer_vertices", "mid_faces"))
     write_json(
-        args.output / "building.json", {"identity": runtime_identity(require_gpu_inventory=False), "mesh": file_id(args.mesh)}
+        args.output / "building.json",
+        {"identity": runtime_identity(require_gpu_inventory=False), "mesh": file_id(args.mesh)},
     )
     model = FreeElasticP2(
         vertices, tets, 1e10, 0.3, 2000, column_faces=faces, through_wall_ordering=True, factorize=False
@@ -217,6 +218,8 @@ def main():
                     ),
                     "normal_law_relative_error": float(np.linalg.norm(sign * force[:, 2] - normal) / scale),
                     "friction_law_relative_error": float(np.linalg.norm(force[:, :2] - tangent) / scale),
+                    "contact_force_evaluation": result.get("force_evaluation", "auxiliary_velocity"),
+                    "auxiliary_force_defect_n": result.get("auxiliary_force_defect_n"),
                     "point_velocity_prediction_error_m_per_s": float(
                         np.max(np.abs(actual_point_velocity - result["velocity"]))
                     ),

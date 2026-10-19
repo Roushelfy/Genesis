@@ -6,8 +6,9 @@ numerical targets. All349 combined motion/output/baseline checks pass, including
 bitwise-equal complete mechanics against the repaired pure-rigid path.
 Three focused MPR/GJK/patch witness and lifecycle regressions pass. The fix is
 in task-branch commit58bbcdd5b; its isolated engine source is1ff39b077.
-Canonical-source timing receipts also pass; larger-batch conformance and total
-process-memory qualification remain independent work.
+Canonical-source timing receipts also pass. A further159 B128/B512 conformance
+checks and ten separately sampled process-memory runs pass. Larger scaling,
+diverse-input reliability and output-cadence work remain separately qualified.
 
 ## Root localization and repaired behavior
 
@@ -138,10 +139,91 @@ they do not establish diverse-input capacity. Median env-scene-step/s are:
 Each five-mode batch shares a GPU and uses three warm1200-step windows.
 Different batches may use different physical GPUs. Full output stays on GPU;
 there is no policy inference or full-field host-output cost in these rates.
-Larger complete motion/output conformance and total process-memory measurements
-remain pending, so these are measured timing baselines, not a capacity recommendation.
+The separate B128/B512 conformance audit729241 passes159 checks over ten
+complete1200-step cases and their11 full-field snapshots. Memory aggregation
+729260 rehashes the source and binds each fresh profile to this same configuration,
+the complete conformance and its primary timing. These still repeat only eight
+conditions and do not establish a diverse-input capacity recommendation.
+
+| Batch | Rigid MiB | DPR max MiB | DPR full MiB | SCR max MiB | SCR full MiB |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 128 | 2334 | 2510 | 2510 | 2640 | 2640 |
+| 512 | 2656 | 2928 | 2992 | 3410 | 3442 |
+
+These are sampled total NVIDIA process peaks, including non-Torch allocations
+and build/warmup. Sampling requests0.1s plus command latency and can miss brief
+peaks. Each fresh memory profile runs one complete1200-step window after warmup.
+Memory profiles use a separate process/GPU allocation; their timing is
+intrusive and never substitutes for the primary rates. Do not extrapolate a
+maximum batch size from these samples. B2048/B8192 timing, complete conformance
+and memory are independent larger follow-ups.
+
+Independently generated128/512-condition banks retain one distinct authored
+condition per environment. Their complete rigid/DPR max/full paths pass32 checks
+per bank, including the diversity gate. A repeated-eight-condition negative
+control fails only that gate. Both SCR max/full variants reject during warmup,
+so these banks do not qualify general SCR stability or a complete timing window.
+The fresh after-step captures locate the first rejected max-output states at
+warmup767/environment9 and645/environment330. Ordinary delayed checking reported
+770/647 after a controller radius mutation had cleared current contact diagnostics;
+those earlier snapshots are retained but are not the certificate inputs.
+
+Independent closest-triangle geometry and longest-edge binary subdivision verify
+the complete6D polar certificates on conservative Euclidean support supersets.
+The maximum continuous polar bounds are-0.00127775 and-8.97805e-6; positive target
+wrench projections2.98453e-4N and5.54422e-7N exceed their independent original
+1e-8 force/moment projection budgets2.20944e-9N and1.49249e-9N. This proves the
+captured loads incompatible with the declared continuous friction cones, rather
+than inferring infeasibility from a failed sampled fit or a status code. All
+physical group members and captured failed environments are checked. It does
+not estimate whole-history failure rates or justify clipping a load, changing
+its friction/radius, or claiming physical accuracy for DPR's passing proxy.
 Collider6mm source errors
 remain pending and cannot inherit the qualified2mm full-centroid pad errors.
 The original pad every-step friction failures remain distinct and unchanged.
 The full goal remains active until fine friction qualification, matched delivery
 and remaining completion requirements are verified.
+
+The [batch/memory/diversity packet](../evidence/20261019-qualified-ranking/native-batch-memory-diversity-v1/README.md)
+retains413 verified payloads totaling3,964,315 bytes, including exact small
+first-rejection states and the independent portable reader. Full trajectories,
+raw benchmark JSON and larger active outputs remain on data with exact identities.
+Both relocated positive certificate inputs pass; a changed-byte copy fails the
+hash gate. Earlier erroneous/delayed reader attempts remain explicit evidence,
+without changing their original bytes or treating them as physical rejections.
+
+
+## Larger tested batches and public source reconstruction
+
+B2048/B8192 primary audit729348,159-check complete conformance729371 and
+source-matched memory aggregation729409 all pass. These retain the original
+eight-condition bank, all environments, three warm1200-step primary windows,
+required native checks and11 complete-field snapshots per conformance run.
+They do not substitute for the diverse SCR failures above.
+
+| Batch | Rigid env-step/s | DPR max | DPR full | SCR max | SCR full |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 2048 | 443438 | 207430 | 203983 | 80557 | 80288 |
+| 8192 | 783737 | 280708 | 275222 | 110557 | 110005 |
+
+| Batch | Rigid MiB | DPR max MiB | DPR full MiB | SCR max MiB | SCR full MiB |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 2048 | 4004 | 4724 | 4948 | 6422 | 6870 |
+| 8192 | 9340 | 12108 | 12940 | 21902 | 20270 |
+
+Memory is separately sampled total process memory including build/warmup;
+transient allocation/compilation and sampling can dominate mode differences.
+The lower measured full SCR peak does not prove smaller field storage. These
+are tested capacities, not a located hardware maximum or universal RL capacity.
+Each batch's five primary modes share one GPU; different batch/profile groups
+can use different physical GPUs. Primary rates exclude policy inference and
+full host readback. Fine physical-pad errors remain a different configuration.
+
+The [public-source overlay](../evidence/20261019-qualified-ranking/native-public-source-overlay-v1/README.md)
+reconstructs all858 measured source files from published6b851ec plus a small
+benchmark-observer overlay. All225263082 source bytes match the original
+manifest. The native engine already matches; only the benchmark observer file
+differs. This avoids relying on the private isolated commit's availability.
+Reexecutions use their actual local SCM identity and preserve original receipts.
+
+The [capacity8192 packet](../evidence/20261019-qualified-ranking/native-capacity8192-v1/README.md) retains terminal source/configuration/timing/conformance/memory receipts and both CSV tables. Large raw benchmark JSON and complete trajectory arrays remain on data with exact identities.

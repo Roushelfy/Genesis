@@ -1,0 +1,62 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-191",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729359",
+      "SLURM_ARRAY_JOB_ID": "729357",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "passed": true,
+  "state": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/native-rejection-reader-fixtures-v1/good1/rejected-state.npz",
+    "bytes": 637615,
+    "sha256": "fc9db961e3e390f9dad2ca33ef84dc09bfd5b4b36527e76f3d73791d70781d90"
+  },
+  "receipt": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/native-rejection-reader-fixtures-v1/good1/rejected-step.json",
+    "bytes": 5525,
+    "sha256": "cd8e95797fb5df1d7272876a0777a26607bc8cabc0113de0c487e9241b168cfe"
+  },
+  "rows": [
+    {
+      "environment": 330,
+      "native_status": 36,
+      "first_preserved_contact": 0,
+      "captured_valid_dtype": "bool",
+      "original_contact_count": 2,
+      "independent_infeasibility_proven": true,
+      "proofs": [
+        {
+          "certificate_contact": 0,
+          "ray": [
+            -0.010422870729968283,
+            -0.7111964582814219,
+            0.7027294555475287,
+            -0.0002118728528990121,
+            0.011382986740998788,
+            0.011517661322104607
+          ],
+          "maximum_continuous_polar_support": -8.97804859577145e-06,
+          "visited_nodes": 168,
+          "maximum_depth": 2,
+          "target_wrench_projection_n": 5.544215604005748e-07,
+          "acceptance_projection_budget_n": 1.4924851807528747e-09,
+          "roundoff_projection_allowance_n": 7.141142131052954e-14,
+          "independent_infeasibility_proven": true
+        }
+      ]
+    }
+  ],
+  "geometry_controls": 12,
+  "all_recorded_failed_environments_checked": true,
+  "scope": "Independent closest-triangle geometry, longest-edge binary subdivision and convex Coulomb polar bounds on a conservative Euclidean-ball superset of every original source footprint. All source friction/radius values and grouped force/moment are retained. A strict common polar field plus positive target wrench projection beyond independent1e-8 force/moment budgets proves infeasibility. A propagated raw status can have no certificate; all nonzero group-member certificates are checked against the complete physical group. No sampled fit, native status alone, dropped environment, force clipping or changed radius is proof. This checks the captured first rejection, not a complete failure-rate history."
+}

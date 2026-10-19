@@ -642,3 +642,26 @@ samples NVIDIA total process memory in a separate fresh benchmark process,
 including build and warmup. Its nested timing is explicitly intrusive and
 cannot replace primary rates; compare its own runtime counters and separately
 qualified motion/output configuration. Preserve sample interval limitations.
+
+For canonical reference-force controls, run `check_modal_physical_force`,
+`check_matrix_free_pad`, the pinned400-step `plate_solid_pad` task and its
+`audit_solid_pad`, then `audit_modal_physical_force --data-root RANKING_DATA`.
+The modal result exposes the auxiliary `response_impulse` for the exact response
+identity, while `force` is the physical law at returned full velocity; the
+original momentum budget remains independently required. This research variant
+does not change the native rigid solver or qualify an unfinished fine run.
+
+`native_production_controls --check-every-step` captures the first rejected
+state immediately after a physical step, before a subsequent controller radius
+change clears contact diagnostics. It is intrusive, never a primary timing mode.
+`audit_native_rejection --run CAPTURE` verifies a retained full-wrench witness
+independently on conservative continuous support. All member forces/radii/
+friction and recorded failed environments must remain present. A zero or missing
+certificate on a delayed snapshot is not evidence of feasibility.
+
+The production conformance auditor's explicit `--methods rigid dpr` scope
+retains every environment and full trajectory for those methods; it does not
+admit failed SCR cases. `--require-diverse` checks distinct authored conditions,
+with the repeated-eight-case negative control retained. `audit_native_production_memory`
+binds separate sampled process peaks to source-matched primary timing and
+complete conformance; its CSV never substitutes intrusive profile rates.

@@ -1,0 +1,36 @@
+[
+  [
+    {
+      "name": "audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_native_production_controls",
+      "args": [
+        "--campaign",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-conformance128-512-v1",
+        "--batches",
+        "128",
+        "--group-indices",
+        "0",
+        "--methods",
+        "rigid",
+        "dpr"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_native_production_controls",
+      "args": [
+        "--campaign",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-conformance128-512-v1",
+        "--batches",
+        "512",
+        "--group-indices",
+        "1",
+        "--methods",
+        "rigid",
+        "dpr"
+      ]
+    }
+  ]
+]
