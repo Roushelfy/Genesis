@@ -1774,3 +1774,28 @@ extrapolation does not admit the reference or establish an actual timeout.
 
 
 The [matched association packet](../evidence/20261019-qualified-ranking/pad-cost-accuracy-v1/README.md) retains66 compact payloads/1,005,710 bytes: actual normal CSVs, source/provenance checks, negative friction rejection, immutable queued plan and the denied live-task resource-change journal. Original arrays, source trees and live references remain in place.
+
+
+## Verified endpoint-continuation fallback
+
+[Coarse continuation730362](REFERENCE_ENDPOINT_CONTINUATION_20261019.md) completes
+all400 physical steps using200 exact original journal records and200 newly
+integrated steps. Both equilibrium windows and own independent momentum pass;
+maximum equation/friction residuals are1.11535e-9/1.61325e-16. Aggregation730363
+passes33 checks against the uninterrupted reference. Largest compatible-field
+change is6.07596e-10 under the predeclared1e-8 limit; full saved stress, point-force
+and displacement changes are4.67486e-10/9.88606e-10/3.97801e-10. Maximum full-nodal
+velocity difference is2.46566e-12m/s. Raw/common peak changes remain below4.26e-10.
+
+Input730366 passes15 controls, including changed arguments/receipts, complete
+numerical-module coverage, aliases and an actual live-parent refusal. The tighter
+validator preserves identical restoration-function AST and driver bytes from the
+executed numerical control. Exact state, global time/loading, prefix bytes and
+inherited/new step accounting are explicit; no tolerance, physical load or source
+is modified. Original half-dt729314_1 and all fine writers remain live and untouched.
+This prepares a verified continuation only after actual terminal status and a
+complete saved endpoint; it does not itself qualify fine resolution or satisfy
+the remaining final friction/ranking/figure requirements.
+
+
+The [endpoint-continuation packet](../evidence/20261019-qualified-ranking/solid-pad-endpoint-continuation-v1/README.md) retains99 compact payloads/496,923 bytes with exact original/encoded hashes, executed control variants and source/proof lineage. Three full state/column arrays stay on data with external hashes. No live fine field is frozen or admitted by this packet.

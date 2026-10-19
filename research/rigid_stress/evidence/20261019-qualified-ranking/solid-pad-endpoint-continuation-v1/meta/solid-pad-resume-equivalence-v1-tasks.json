@@ -1,0 +1,18 @@
+[
+  [
+    {
+      "name": "audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_solid_pad_resume",
+      "args": [
+        "--run",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-resume-coarse-control-v1/group0/reference",
+        "--parent",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-physical-force-coarse-v1/group0/reference",
+        "--comparison",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-resume-coarse-control-v1/group0/equivalence-level1/result.json",
+        "--contract",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/solid-pad-resume-contract-v1.json"
+      ]
+    }
+  ]
+]

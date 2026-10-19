@@ -16,6 +16,7 @@ from .modal_pad_dynamics import ModalPadDynamics
 from .p2_elastic import FreeElasticP2, quadratic_triangle_minimum
 from .p2_stvk import P2StVK
 from .plates import equilibrium, force_history, parser
+from .solid_pad_checkpoint import restore_checkpoint, validate_checkpoint
 from .solid_pad_step import advance
 
 
@@ -56,10 +57,16 @@ def main():
     cli.add_argument("--constitutive-correction", choices=("subtracted", "direct"), default="subtracted")
     cli.add_argument("--cache-constitutive-evaluations", action="store_true")
     cli.add_argument("--reuse-contact-velocity", action="store_true")
+    cli.add_argument(
+        "--resume-checkpoint",
+        type=Path,
+        help="Terminal-parent endpoint receipt; preserves the complete recorded prefix",
+    )
     args = cli.parse_args()
     assert not args.reuse_contact_velocity or args.contact_solver == "modal"
     assert not args.empty and not args.shear_distance and args.plate_offset_x == 0
     assert args.record_stride == 1 and (not args.gravity_x or args.friction == 0.3)
+    checkpoint = validate_checkpoint(args, step_checks) if args.resume_checkpoint is not None else None
     args.output.mkdir(parents=True, exist_ok=False)
     (args.output / "frames").mkdir()
     started = perf_counter()
@@ -125,12 +132,20 @@ def main():
     displacement = np.zeros(n_body + 1)
     velocity = np.zeros_like(displacement)
     previous_normal = np.zeros(len(points))
+    provenance = None
+    if checkpoint is not None:
+        displacement, velocity, previous_normal, contact.previous_impulse, provenance = restore_checkpoint(
+            args, checkpoint, model, tets, points, area, sign
+        )
     write_json(
         args.output / "start.json",
         {
             "identity": runtime_identity(require_gpu_inventory=False),
             "mesh": file_id(args.mesh),
-            "args": {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
+            "args": {
+                k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items() if k != "resume_checkpoint"
+            },
+            "resume_provenance": provenance,
             "mass_kg": reference.total_mass,
             "body_dofs": n_body,
             "dynamic_dofs": len(displacement),
@@ -142,11 +157,16 @@ def main():
             "scope": "Independent affine-geometry P2 solid with explicit linear/StVK constitutive choice, full consistent inertia and free rigid modes; fixed reference-area physical pad, lagged smooth Coulomb friction. Spatial/kinematic qualification remains separate.",
         },
     )
-    rows, completed = [], False
+    rows, completed = ([] if checkpoint is None else checkpoint[1]), False
+    inherited_steps = len(rows)
     started = perf_counter()
     with (args.output / "steps.jsonl").open("w", buffering=1) as journal:
+        if checkpoint is not None:
+            journal.write(checkpoint[2].decode("utf-8"))
         try:
             for step, (level, within, command, endpoint) in enumerate(force_history(args)):
+                if step < inherited_steps:
+                    continue
                 gravity = args.gravity_x * min(
                     max(((step + 1) * args.dt - args.gravity_start) / args.gravity_ramp, 0), 1
                 )
@@ -319,6 +339,9 @@ def main():
                     "completed": completed,
                     "steps": len(rows),
                     "elapsed_seconds": perf_counter() - started,
+                    "inherited_steps": inherited_steps,
+                    "newly_executed_steps": len(rows) - inherited_steps,
+                    "elapsed_seconds_scope": "newly executed segment, excluding inherited history and setup",
                     "history_checks": {k: all(c[k] for c in checks) for k in checks[0]} if checks else {},
                     "mechanical_history_passed": bool(completed and checks and all(all(c.values()) for c in checks)),
                     "windows": windows,

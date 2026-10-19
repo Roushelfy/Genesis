@@ -497,3 +497,13 @@ source trees and sampled-memory data stay in place; compact CSV/metadata/source
 receipts may be published. The read-only constructor provenance audit and denied
 half-dt walltime-extension journal are under `meta/`. No active data, runtime,
 environment or compatibility path is migrated.
+
+
+Terminal-endpoint continuation uses `solid-pad-resume-preparation-v1`, the
+actual `solid-pad-resume-live-negative-v1`, `solid-pad-resume-coarse-control-v1`,
+`solid-pad-resume-input-controls-v2` and `solid-pad-resume-equivalence-v1` under
+the ranking data root. Original parent fields/journals stay untouched. New
+endpoint copies and new segments stay on data, with exact saved-prefix lineage;
+only small source/proof/control metadata is selected for publication. No live
+fine task is resumed, relocated or hot-edited. The new segment's elapsed time
+is explicitly separated from inherited physical history.
