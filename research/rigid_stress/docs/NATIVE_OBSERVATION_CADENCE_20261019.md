@@ -1,9 +1,10 @@
 # Native observation cadence and parent-admission controls
 
-The sparse-output pilot729460 passes two complete1200-step output controls and
-one separate three-repeat primary-timing control. B8/B128 paired campaigns
-729467/729470 and their independent audit729473 remain pending. No sparse
-speedup or physical-error claim is inferred from the unpaired pilot.
+B8/B128 complete conformance729467 and paired primary timing729470 finish all
+26 cases each. Independent audit729473 passes521 checks and rehashes858 source
+files. Sparse sampling preserves the measured motion and requested stress
+observations while reducing scene cost. Physical collider errors and diverse
+SCR reliability remain separate from this repeated eight-condition bank.
 
 ## Observation contract
 
@@ -35,8 +36,8 @@ Pilot DPR/full/stride10 issues210 requests across900 warmup and1200 recorded
 steps; its1080 unsampled full-field states pass exact holding/reset checks.
 SCR/full/stride50 issues42 requests and passes1176 such checks. Both independently
 recompute von Mises stress from all saved tensor components and compare the
-global reduction with the saved maxima. These pilots do not yet compare all
-requested samples with a matched every-step run.
+global reduction with the saved maxima. The completed campaign additionally compares all
+requested peaks and twelve common complete fields with matched every-step runs.
 
 The predeclared complete-campaign checks retain the existing1e-10 position/
 configuration and1e-9 velocity motion budgets, exact contact counts, max/full
@@ -67,11 +68,51 @@ success receipt exists, but history, momentum and every-step physical admission
 fail. The positive and rejected originals remain unchanged.
 
 Pending analysis-only jobs729474/729475 were cancelled before any worker ran.
-Replacement fields depend on729478, the explicit six-parent admission preflight,
-which itself waits for729312/729314 to complete. Both250um parent baselines and
-all four new fine trajectories must pass before any dependent comparison runs.
+Time/contact fields depend on729478, the explicit six-parent preflight waiting
+for729312/729314. Spatial fields use only four of those parents; a separately
+pinned preflight729487 waits for729312 and verifies both fine q10 histories plus
+both250um baselines. Pending spatial job729479 now depends on729487, with the
+exact scheduler update recorded in meta/spatial-parent-dependency-split-v1.json.
+No field worker or captured source changes. Final qualification still requires
+the separate time/contact controls.
 Slurm dependency metadata, worker code and immutable task inputs are retained
 under the data-side ranking run root. Queued jobs are not completed evidence;
 fine spatial/time/contact qualification and final friction delivery remain open.
 
-The [pilot packet](../evidence/20261019-qualified-ranking/native-observation-cadence-pilot-v1/README.md) retains66 payloads/390,160 bytes. The [parent-gate packet](../evidence/20261019-qualified-ranking/fine-parent-admission-guard-v1/README.md) retains84 payloads/502,986 bytes, including failed/cancelled receipts and guarded immutable follow-up plans. Live campaign outputs are excluded. Replacement spatial729479 and time/contact729480 depend on preflight729478.
+The [pilot packet](../evidence/20261019-qualified-ranking/native-observation-cadence-pilot-v1/README.md) retains66 payloads/390,160 bytes. The [parent-gate packet](../evidence/20261019-qualified-ranking/fine-parent-admission-guard-v1/README.md) retains84 payloads/502,986 bytes, including failed/cancelled receipts and guarded immutable follow-up plans. Live campaign outputs are excluded. Spatial729479 depends on four-parent preflight729487; time/contact729480 retains six-parent preflight729478. Archived earlier plans retain their original dependency and publication-time scope.
+
+
+## Completed scene results
+
+Each batch's thirteen primary modes run on one NVIDIA RTX PRO 6000 Blackwell
+Server Edition GPU; the batches use different GPU UUIDs of that same model.
+Motion is bitwise identical to pure rigid for all1200 recorded steps in every
+stress mode. The largest sampled peak/full-tensor differences against every-step
+are0.000378Pa/0.000246Pa, within the predeclared budgets. Max/full output, complete
+contact counts, condition-matched batches and all held/reset states pass.
+
+The table shows median aggregate env-scene-step/s at B128. Parentheses show
+added scene latency relative to the paired pure-rigid median44385.6; they are
+not overhead per stress update. Intervals use three warm repeats within process.
+The complete CSV retains all26 rows and minimum/maximum repeat rates.
+
+| GPU output | Every step | Every10 steps | Every50 steps |
+| --- | ---: | ---: | ---: |
+| DPR max | 32108 (+38.2%) | 42255 (+5.0%) | 43562 (+1.9%) |
+| DPR full | 31928 (+39.0%) | 42056 (+5.5%) | 43566 (+1.9%) |
+| SCR max | 10833 (+309.7%) | 33013 (+34.4%) | 41164 (+7.8%) |
+| SCR full | 10873 (+308.2%) | 32867 (+35.0%) | 40968 (+8.3%) |
+
+At B8, pure rigid is2932.2 env-scene-step/s. DPR max rates are2207.5/2811.1/2895.2
+and SCR max721.7/2185.7/2727.2 for strides1/10/50. These rates count physical scene
+steps; requested stress observations occur at100/10/2Hz per environment.
+Max/full differences within these runs do not establish a general full-output
+speed advantage. Memory profiling and module replay retain their separately
+measured scopes; this experiment adds no policy or host-observation accounting.
+
+The [terminal packet](../evidence/20261019-qualified-ranking/native-observation-cadence-v1/README.md)
+retains312 payloads/879,107 bytes of exact primary/control/audit receipts, CSV, raw-log bytes, worker variants,
+source identities and the prospective spatial-dependency update. Large complete
+trajectories remain on data with hashes. This closes the measured sparse-output
+configuration comparison for this bank. It does not replace every-step friction
+failures, certify unobserved peaks or qualify physical errors for collider inputs.

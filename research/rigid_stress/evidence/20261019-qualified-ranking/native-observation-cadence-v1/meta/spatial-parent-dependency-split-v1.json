@@ -1,0 +1,27 @@
+{
+  "job": "729479",
+  "before": "JobId=729479 ArrayJobId=729479 ArrayTaskId=0-7%2 ArrayTaskThrottle=2 JobName=shell22-compare\n   UserId=zhaofeng(2157) GroupId=zhaofeng(2157) MCS_label=N/A\n   Priority=1 Nice=0 Account=root QOS=normal\n   JobState=PENDING Reason=Dependency Dependency=afterok:729478_*(unfulfilled)\n   Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0\n   RunTime=00:00:00 TimeLimit=03:00:00 TimeMin=N/A\n   SubmitTime=2026-10-19T20:08:12 EligibleTime=Unknown\n   AccrueTime=Unknown\n   StartTime=Unknown EndTime=Unknown Deadline=N/A\n   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-19T20:08:12 Scheduler=Main\n   Partition=rtx-mid AllocNode:Sid=cpu-207-159:4106652\n   ReqNodeList=(null) ExcNodeList=(null)\n   NodeList=\n   NumNodes=1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:*\n   ReqTRES=cpu=8,mem=64G,node=1,billing=8\n   AllocTRES=(null)\n   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*\n   MinCPUsNode=8 MinMemoryNode=64G MinTmpDiskNode=0\n   Features=(null) DelayBoot=00:00:00\n   OverSubscribe=OK Contiguous=0 Licenses=(null) LicensesAlloc=(null) Network=(null)\n   Command=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-canonical125-fields-v2/job.sh\n   WorkDir=/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking\n   StdErr=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-canonical125-fields-v2/logs/729479_4294967294.log\n   StdIn=/dev/null\n   StdOut=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-canonical125-fields-v2/logs/729479_4294967294.log\n   TresPerTask=cpu=8\n   \n\n",
+  "update_command": [
+    "scontrol",
+    "update",
+    "JobId=729479",
+    "Dependency=afterok:729487"
+  ],
+  "after": "JobId=729479 ArrayJobId=729479 ArrayTaskId=0-7%2 ArrayTaskThrottle=2 JobName=shell22-compare\n   UserId=zhaofeng(2157) GroupId=zhaofeng(2157) MCS_label=N/A\n   Priority=1 Nice=0 Account=root QOS=normal\n   JobState=PENDING Reason=None Dependency=afterok:729487_*(unfulfilled)\n   Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0\n   RunTime=00:00:00 TimeLimit=03:00:00 TimeMin=N/A\n   SubmitTime=2026-10-19T20:08:12 EligibleTime=Unknown\n   AccrueTime=Unknown\n   StartTime=Unknown EndTime=Unknown Deadline=N/A\n   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-19T20:08:12 Scheduler=Main\n   Partition=rtx-mid AllocNode:Sid=cpu-207-159:4106652\n   ReqNodeList=(null) ExcNodeList=(null)\n   NodeList=\n   NumNodes=1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:*\n   ReqTRES=cpu=8,mem=64G,node=1,billing=8\n   AllocTRES=(null)\n   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*\n   MinCPUsNode=8 MinMemoryNode=64G MinTmpDiskNode=0\n   Features=(null) DelayBoot=00:00:00\n   OverSubscribe=OK Contiguous=0 Licenses=(null) LicensesAlloc=(null) Network=(null)\n   Command=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-canonical125-fields-v2/job.sh\n   WorkDir=/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking\n   StdErr=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-canonical125-fields-v2/logs/729479_4294967294.log\n   StdIn=/dev/null\n   StdOut=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-canonical125-fields-v2/logs/729479_4294967294.log\n   TresPerTask=cpu=8\n   \n\n",
+  "spatial_parent_guard": "729487",
+  "time_contact_parent_guard": "729478",
+  "time_contact_fields_job": "729480",
+  "reason": "Spatial tasks use exactly four parents (two q10 fine histories plus two admitted250um baselines). Verify those independently as soon as729312 completes, while q6 and half-dt controls continue. Final reference qualification still requires all controls. Captured worker source and original submission/archived plans remain unchanged; this receipt records the pending scheduler dependency update.",
+  "all_spatial_parent_paths": [
+    "--runs",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group0/reference",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group1/reference",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial250-cache-v1/group0/reference",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-wall250x3-cache-v1/group0/reference",
+    "--expected-steps",
+    "400",
+    "400",
+    "400",
+    "400"
+  ]
+}
