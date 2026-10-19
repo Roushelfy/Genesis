@@ -214,3 +214,13 @@ columns; stress values at all four tetrahedron corners retain unsmoothed P2
 extrema. All commands require explicit data-side output paths and the existing
 Slurm submission wrapper. The current task lists, sources, logs and fields are
 under `20261019-qualified-ranking/contact-p2-*`.
+
+
+For a failed quadratic active-set solve, first run the inexpensive
+`quadratic_contact --mesh <mesh.npz> --field <retained-load.npz> --load 0.1
+--output <fresh-data-output>` replay. It verifies the retained operator's mesh
+and order, then diagnoses constraint generation without repeating the full
+elastic factorization. A passing condensed replay must be followed by
+`plate_contact_fem --contact-operator <retained-contact-operator.npz>` with the
+same mesh/order and continuous-contact option; only this full solve checks
+elastic equations and gaps across the entire outer surface.
