@@ -1,0 +1,30 @@
+{
+  "control_job": "730520",
+  "control_terminal_accounting": "730520_0|COMPLETED|0:0\n730520_0.batch|COMPLETED|0:0\n730520_0.0|COMPLETED|0:0\n",
+  "control_passed": true,
+  "fixed_profile_scope": "Same20 existing native scene and4 module physical/solver/mesh/bank tasks, one full diagnostic interval each; only independent memory collection and profile PID metadata change. Primary timing, complete conformance and fine reference jobs remain unchanged.",
+  "engine_revision": "1ff39b0775200120737225fdfb8631c9b1fc5fa7",
+  "query_gap_target_seconds": 1.0,
+  "target_scope": "Report actual measured query gaps separately from mechanical admission; even meeting this target does not certify a continuous memory peak or maximum capacity.",
+  "wrapper_AST_proof": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/process-memory-wrapper-equivalence-v1.json",
+  "workers": {
+    "shell_comparison/memory.py": "b1e454f1196401668fa118c85b28614be87d05e20a44fbe660064426e7373449",
+    "qipc_comparison/check_process_memory.py": "77655b83f4b4a69a4cafbd0ee2f1aa5557547ad85aa109035a4b9a8fe41a768a",
+    "qipc_comparison/process_memory_receipts.py": "9dffb00aadb7137c34f58238c3da2ccfd2c19ba2dd611cdc87489920d371812c",
+    "qipc_comparison/native_module_memory.py": "50f8c4d723900e840c434dc863f8f7f83f3ee0d74b2f3d0d1b625550a5c7dd32",
+    "qipc_comparison/native_production_memory.py": "0d49c204458bf724a819ee6d109cbae78b82de1946074d45adc6c13d11bf65e5",
+    "qipc_comparison/audit_native_module_memory.py": "79db3cccc03d08d01e08aaf6a3d55cd75953dace8cef9eeb6a0739a60fa76153",
+    "qipc_comparison/audit_native_production_memory.py": "e53edc022fbda8ac87f9345069e9db2bfcb68166930048f569440a3dec91d319",
+    "qipc_comparison/native_scene_summary.py": "abbc521a14655a96faa01eedb170b4579bcd5d84605cb7810e74a0e445af6353"
+  },
+  "fresh_outputs": [
+    "native-module-memory-process-v1",
+    "native-production-memory128-512-process-v1",
+    "native-production-memory2048-8192-process-v1"
+  ],
+  "original_results_preserved": true,
+  "fine_jobs_unchanged": [
+    729312,
+    729314
+  ]
+}

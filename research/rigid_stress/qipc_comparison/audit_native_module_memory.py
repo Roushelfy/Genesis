@@ -9,6 +9,7 @@ import statistics
 
 from .artifacts import file_id, runtime_identity, write_json
 from .native_module_replay_audit import source_receipt
+from .process_memory_receipts import audit_polling
 
 
 def main():
@@ -16,6 +17,7 @@ def main():
     cli.add_argument("--primary", type=Path, required=True)
     cli.add_argument("--primary-audit", type=Path, required=True)
     cli.add_argument("--memory", type=Path, required=True)
+    cli.add_argument("--require-independent-sampler", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -105,6 +107,9 @@ def main():
         check(name + "/same_profile_gpu", all(s["gpu_uuid"].removeprefix("GPU-") == gpu for s in samples))
         peak = max(s["process_mib"] for s in samples)
         check(name + "/sampled_peak_recomputed", profile["memory"]["peak_mib"] == peak)
+        coverage = None
+        if args.require_independent_sampler:
+            coverage = audit_polling(profile["memory"], profile["profile_pid"], diagnostic["gpu_uuid"])
         row = primary_rows[name]
         check(name + "/primary_row_bound", row["result"] == file_id(args.primary / "group0" / name / "result.json"))
         rows.append({
@@ -128,11 +133,12 @@ def main():
             "profile_gpu_uuid": diagnostic["gpu_uuid"],
             "same_physical_gpu_as_primary": primary["gpu_uuid"].removeprefix("GPU-") == gpu,
             "physical_error": None,
+            "independent_polling": coverage,
         })
     with (args.output / "module-throughput-memory.csv").open("w", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader()
-        writer.writerows(rows)
+        writer.writerows({**r, "independent_polling": json.dumps(r["independent_polling"], sort_keys=True)} for r in rows)
     write_json(args.output / "result.json", {
         "identity": runtime_identity(require_gpu_inventory=False),
         "passed": all(c["passed"] for c in checks),
@@ -144,6 +150,7 @@ def main():
         "captured_workers_rehashed": {"primary": len(primary_workers), "memory": len(memory_workers)},
         "physical_reference_qualified": False,
         "capacity_limit_measured": False,
+        "independent_sampler_required": args.require_independent_sampler,
         "scope": "B8 complete1200-frame changing collider-history replay, every-step max/full, three warmed primary repeats; separate matched fresh-process memory runs include recording, validation, resident histories and replay. Memory peaks are sampled observations; first/last sample times and observed gaps are not bounds on unseen peaks. No dynamics/policy rate, production-scene memory, independent-process timing dispersion or physical-pad error is inferred.",
     })
 

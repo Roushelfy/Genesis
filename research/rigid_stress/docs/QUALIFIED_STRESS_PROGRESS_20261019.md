@@ -1840,3 +1840,29 @@ Fine friction, final rankings/figures and full matched delivery remain open.
 
 
 The [performance summary packet](../evidence/20261019-qualified-ranking/native-performance-summary-v1/README.md) retains203 compact payloads/1,464,777 bytes with exact original/encoded hashes, both failed metadata readers, source/worker variants, actual terminal receipts and CSV tables. Sixteen full replay histories/trajectories stay on data with external hashes. Live fine outputs and final friction products are excluded.
+
+
+## Independent process-memory sampling
+
+Actual730520 passes14 GIL-hold/query-error/cleanup/disabled controls. The old
+thread has a3.06274s gap during a3s GIL-retaining C call; the independent stdlib
+collector obtains23 samples with maximum0.133726s gap. Whole-wrapper AST proofs
+permit only a new PID import/output key, preserving all numerical driver calls.
+New730526/730531/730533 complete four module and twenty scene memory profiles;
+730536/730538/730539 bind exact source/options, original primary timing,
+parent/collector identities, complete poll/sample records and normal child exit.
+All24 observed query-gap targets pass; the largest query/sample gaps are
+0.759928/0.759925s. New observed B8192 SCR full memory is22830MiB, versus the
+retained earlier thread observation20270MiB. Separate processes/transient
+allocations and sampling prevent treating either as a continuous capacity bound.
+
+Consolidator730541 passes14,506 checks and4,319 identities. Its61 primary rows
+match the earlier summary exactly except separate memory observations. No
+physical error, numerical argument, runtime acceptance or live fine writer is
+changed. Final friction/reference/ranking/figure requirements remain open.
+
+The [independent-process packet](../evidence/20261019-qualified-ranking/independent-process-memory-v2/README.md)
+retains331 payloads/2,775,215 bytes, with twenty raw benchmark JSON and eight full
+replay arrays externally hashed on data. An oversized untracked publication draft
+is copied with metadata/symlinks to data,352 files verified, then its home copy
+removed; immutable bytes and the migration journal remain preserved.

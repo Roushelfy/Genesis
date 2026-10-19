@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import os
 import resource
 import runpy
 import sys
@@ -56,6 +57,7 @@ def main():
             "passed": all(checks.values()),
             "checks": checks,
             "primary_timing": False,
+            "profile_pid": os.getpid(),
             "memory": memory,
             "process_max_rss_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
             "driver_error": repr(driver_error) if driver_error else None,

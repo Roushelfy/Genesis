@@ -1,0 +1,22 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0%1",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=none",
+    "--cpus-per-task=4",
+    "--mem=32G",
+    "--time=30",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-scene-process-memory-summary-v1/logs/%A_%a.log",
+    "--dependency=afterany:730538:730539",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-scene-process-memory-summary-v1/job.sh"
+  ],
+  "job": "730541",
+  "dependency": "afterany:730538:730539",
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "allow_home_output": false
+}

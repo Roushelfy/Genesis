@@ -1,12 +1,19 @@
 # Source-bound native performance summary
 
-Scene consolidator730473 passes14,454 checks, binds61 primary configurations
-to their own complete motion/output controls and rehashes4,267 distinct files.
-It also binds20 separate process-memory profiles. This is the current positive
-scene table; the [original report](NATIVE_PRODUCTION_PERFORMANCE_20261019.md)
-retains the superseded engine's32/259 failed motion checks and its own rates.
-The [contact report](NATIVE_CONTACT_CONSISTENCY_20261019.md) retains the MPR
-repair, independent regressions, diverse-input failures and measured tuning.
+Scene consolidator730541 passes14,506 checks, binds61 original primary
+configurations to their complete motion/output controls and rehashes4,319 files.
+It replaces only the20 separate memory observations with independent-process
+profiles; all61 performance/configuration/error rows are identical to730473.
+Four module memory profiles have their own170-check binding audit. Actual
+GIL-hold/error/cleanup controls pass14 checks and all24 profiles meet the
+predeclared1s observed-query-gap target. Physical errors for these collider
+configurations remain unqualified.
+
+The [original report](NATIVE_PRODUCTION_PERFORMANCE_20261019.md) retains the
+superseded engine's32/259 failed motion checks and its rates. The
+[contact report](NATIVE_CONTACT_CONSISTENCY_20261019.md) retains the MPR repair,
+regressions, diverse-input failures and measured tuning. Earlier730473 and
+thread-memory receipts remain preserved with their original scope.
 
 ## Configuration and accounting
 
@@ -78,21 +85,34 @@ Sparse rows inherit no every-step memory profile or every-step reliability.
 
 ## Sampled process memory and its observed gaps
 
-All20 profiles are separate fresh processes, with one complete1200-step
-interval after900 warmup steps. Their timings are intrusive diagnostics.
-NVIDIA process samples include allocations outside Torch and the logical
-native-buffer inventory. B8192 sampled peaks are9340/12108/12940/21902/20270MiB
-for rigid/DPR max/DPR full/SCR max/SCR full.
+The current20 scene profiles are separate fresh processes with one complete
+1200-step interval after900 warmup steps. Their rates remain intrusive diagnostics;
+only the original primary rates appear in the throughput table. NVIDIA samples
+include parent-process allocations outside Torch and the logical native inventory.
+The independent collector logs all query times, even before GPU visibility.
 
-The new join retains actual sample counts, first/last sample times and
-maximum/median observed gaps. A requested0.1s interval was not sustained
-throughout setup: first process samples occur12.46–21.15s after sampler start,
-and maximum observed gaps range0.504–34.513s across the profiles. For example,
-B128 DPR max has367 samples and a34.513s gap; B8192 SCR full has1685 samples
-and a0.504s gap. These records are sampled observations, with potentially missed
-transients. They do not bound unseen peaks, establish maximum capacity, or prove
-that full SCR uses less memory than max SCR. Successful full-run admission
-establishes only that these exact tested jobs fit on their allocated hardware.
+| Batch | Rigid MiB | DPR max MiB | DPR full MiB | SCR max MiB | SCR full MiB |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 128 | 2334 | 2510 | 2510 | 2640 | 2640 |
+| 512 | 2656 | 2928 | 2992 | 3538 | 3474 |
+| 2048 | 4004 | 4724 | 4948 | 6422 | 7254 |
+| 8192 | 9340 | 12108 | 12940 | 21902 | 22830 |
+
+Across these20 scene and four module profiles, the largest observed query-start
+and process-sample gaps are0.759928s and0.759925s. All meet the predeclared1s
+query-gap target. Counts, initial visibility, query durations, complete polling
+records and primary/profile GPU identities remain in the receipts. Polling at a
+requested0.1s plus query/scheduling latency can still miss shorter transients;
+these are sampled peaks and successfully tested jobs, not a continuous peak or
+located hardware-capacity limit. Sparse configurations inherit no memory profile.
+
+Earlier thread profiles had first process samples at12.46–21.15s and maximum
+observed sample gaps0.504–34.513s. They remain preserved. The new B8192 SCR full
+observation is22830MiB versus its earlier20270MiB. These are separate fresh-process
+observations subject to compilation/allocator transients and sampling; preserve
+both rather than infer a general storage ordering from the earlier lower full
+value. The controlled GIL experiment below establishes the collector mechanism,
+not a unique cause for every historical difference.
 
 ## Reliability and physical-error boundaries
 
@@ -121,7 +141,10 @@ Run native_scene_summary through the established shell_comparison.submit
 rtx-mid/container path, with explicit --root RUN_ROOT and --b8-equivalence
 RUN_ROOT/meta/native-performance-b8-comment-equivalence-v1.json. Reuse the
 immutable task JSON and worker receipts in the evidence packet; choose a fresh
-output directory. The reader performs metadata/hash/configuration association,
+output directory. For the current join, use the paired --memory128-512/--memory-audit128-512
+and --memory2048-8192/--memory-audit2048-8192 overrides in
+meta/native-scene-process-memory-summary-v1-tasks.json. Omitting these keeps the
+historical default thread-profile paths. The reader performs metadata/hash/configuration association,
 not a new scientific trajectory integration. Original730471 fails on an absent
 rigid-only stress-options field;730473 fixes that schema handling while requiring
 the complete options for every stress-enabled record. The original failure and
@@ -129,20 +152,21 @@ captured source remain intact.
 
 ## Current-source resident module replay
 
-Primary730460 and separate memory730461 both complete all four modes; independent
-replay audit730463 passes. Matching-memory audit730498 passes170 checks, rehashing
-858 engine/asset files and293 captured workers per campaign. All modes retain
-1200 recorded frames,24 typed device buffers and their exact partial stress
-resets. Complete replay peaks and11 full snapshots per full-output run match
-within the unchanged rtol1e-4/atol1e-3Pa criteria. Largest peak difference is
-0.000374Pa; this numerical consistency budget is not a physical-error bound.
+Primary730460 completes all four modes and independent replay audit730463
+passes. Current independent-process memory730526 is bound by audit730536's170
+checks, rehashing858 engine/asset files and293/297 primary/profile workers.
+Original thread run730461 and audit730498 remain preserved. All modes retain
+1200 frames,24 typed device buffers and exact partial stress resets. Complete
+replay peaks and11 full snapshots per full-output run match within unchanged
+rtol1e-4/atol1e-3Pa criteria. Largest primary replay peak difference is0.000374Pa;
+this numerical consistency criterion is not a physical-error bound.
 
-| B8 mode | Median env-updates/s | Minimum–maximum | Batch-update ms | Sampled process MiB | Samples | Largest observed gap s |
+| B8 mode | Median env-updates/s | Minimum–maximum | Batch-update ms | Sampled process MiB | Samples | Largest observed sample gap s |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| dpr-max | 8232.96 | 8222.79–8235.81 | 0.971704 | 3514 | 561 | 14.936 |
-| dpr-full | 8087.35 | 8083.33–8100.26 | 0.989199 | 3528 | 310 | 7.320 |
-| scr-max | 966.09 | 963.96–966.19 | 8.280835 | 3548 | 583 | 1.344 |
-| scr-full | 965.15 | 964.38–966.63 | 8.288890 | 3560 | 572 | 0.751 |
+| dpr-max | 8232.96 | 8222.79–8235.81 | 0.971704 | 3516 | 1364 | 0.177 |
+| dpr-full | 8087.35 | 8083.33–8100.26 | 0.989199 | 3528 | 468 | 0.206 |
+| scr-max | 966.09 | 963.96–966.19 | 8.280835 | 3548 | 794 | 0.211 |
+| scr-full | 965.15 | 964.38–966.63 | 8.288890 | 3560 | 680 | 0.195 |
 
 All primary modes share one GPU allocation; memory uses another GPU of the same
 model. Module timing includes device restoration, dispatch and unchanged native
@@ -168,3 +192,49 @@ delivery remain open.
 
 
 The [performance summary packet](../evidence/20261019-qualified-ranking/native-performance-summary-v1/README.md) retains203 compact payloads/1,464,777 bytes with exact original/encoded hashes, both failed metadata readers, source/worker variants, actual terminal receipts and CSV tables. Sixteen full replay histories/trajectories stay on data with external hashes. Live fine outputs and final friction products are excluded.
+
+## Independent polling follow-up
+
+The observed thread-sampling gaps motivated an instrumentation repair, without
+changing the numerical drivers, primary timings or live references. A separate
+stdlib-only Python process now queries only its parent PID through NVIDIA and
+retains every query's start/end time, including queries before GPU visibility.
+A temporary file in the explicit job TMPDIR prevents pipe capacity from blocking
+the collector when its parent holds the GIL. Normal completion, query failure,
+owned-child cleanup and disabled sampling have explicit behavior.
+
+Actual integration control730520 passes14 checks. During a3s C call retaining
+the parent GIL, the captured old thread has a3.06274s sample gap; the independent
+collector obtains23 samples with a0.133726s maximum gap. The complete query
+history's maximum start-time gap is0.169658s. The child imports no scientific
+runtime, targets the same GPU parent and exits normally. A private NVIDIA-command
+failure exits17 and is rejected with the child reaped; the test's PATH is restored.
+This identifies a real mechanism for thread gaps, rather than establishing that
+every historical gap has the same cause.
+
+The two profile wrappers add only a PID import/output record: whole-module AST
+comparison after removing those two additions matches their original captured
+wrappers. Numerical runpy calls, arguments and acceptance remain unchanged.
+New separate profiles730526/730531/730533 cover the same four B8 module modes
+and twenty B128/B512/B2048/B8192 scene modes. Their audits require exact source,
+configuration, parent/collector identities, successful child exit and complete
+poll/sample consistency. Observed gaps and a predeclared1s query-gap target are
+reported separately from mechanical admission. The61-row follow-up730541 changes
+only separately bound memory observations; all primary performance/error rows
+must stay identical. All24 fresh profiles pass their own complete-runtime and independent polling
+audits. Final730541 passes14,506 checks with4,319 file identities; its61 primary
+rows are unchanged except the separate memory observations. Module/scene
+primary timing, physical errors and live references remain unchanged.
+
+An independent sampler removes the parent's GIL dependency. Query latency,
+scheduling and the polling interval can still miss short transients; a passing
+coverage target is not a continuous peak or maximum-capacity guarantee. Original
+thread profiles and all earlier scoped observations remain preserved.
+
+
+The [independent-process packet](../evidence/20261019-qualified-ranking/independent-process-memory-v2/README.md)
+retains331 payloads/2,775,215 bytes. Eight full replay arrays and twenty raw
+benchmark JSON files remain on data with exact external hashes. The oversized
+unpublished first draft is preserved on data with a verified352-file migration
+journal; no frozen manifest or scientific result is rewritten. Fine-friction
+qualification, final rankings/figures and complete matched delivery remain open.

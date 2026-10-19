@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from .artifacts import file_id, runtime_identity, write_json
+from .process_memory_receipts import audit_polling
 
 
 def main():
@@ -14,6 +15,7 @@ def main():
     cli.add_argument("--timing-campaign", type=Path, required=True)
     cli.add_argument("--timing-audit", type=Path, required=True)
     cli.add_argument("--conformance", type=Path, required=True)
+    cli.add_argument("--require-independent-sampler", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -85,6 +87,9 @@ def main():
             assert all(r["gpu_uuid"] == benchmark["gpu_uuid"] and r["process_mib"] > 0 for r in samples)
             assert all(b["seconds"] > a["seconds"] for a, b in zip(samples, samples[1:]))
             assert memory["peak_mib"] == max(r["process_mib"] for r in samples)
+            coverage = None
+            if args.require_independent_sampler:
+                coverage = audit_polling(memory, profile["profile_pid"], benchmark["gpu_uuid"])
             rows.append(
                 {
                     "batch": batch,
@@ -98,12 +103,13 @@ def main():
                     "primary_gpu_uuid": original["gpu_uuid"],
                     "same_physical_gpu_as_primary": benchmark["gpu_uuid"] == original["gpu_uuid"],
                     "primary_env_scene_steps_per_s": primary["median_env_steps_per_s"],
+                    "independent_polling": coverage,
                 }
             )
     with (args.output / "memory.csv").open("w", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader()
-        writer.writerows(rows)
+        writer.writerows({**r, "independent_polling": json.dumps(r["independent_polling"], sort_keys=True)} for r in rows)
     write_json(
         args.output / "result.json",
         {
@@ -116,6 +122,7 @@ def main():
             "source_files_rehashed": len(memory_source["files"]),
             "physical_error_qualified": False,
             "whole_goal_complete": False,
+            "independent_sampler_required": args.require_independent_sampler,
             "scope": "Configuration-matched separate timing, complete conformance and fresh-process GPU memory. Sampled NVIDIA process peaks include non-Torch allocations but can miss brief peaks at requested0.1s cadence plus command latency. Profile rates are intrusive diagnostics; displayed throughput is exclusively from the primary timing audit. This repeated-condition bank is not diverse-input capacity or physical accuracy qualification.",
         },
     )
