@@ -1,0 +1,959 @@
+{
+  "scope": "Completed full-source normal/radius/repeat controls, transient linear-reference failure, contact solvers and objective P2 analytic controls. Full StVK and matrix-free histories and joint spatial qualification remain pending.",
+  "files": [
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/condensed-pad-analytic-v1/analysis-files.json",
+      "copy": "condensed-pad-analytic-v1/analysis-files.json",
+      "bytes": 37887,
+      "sha256": "c16b1ef4baf93b8816264da0c337a4567c6dd4ba84bfd95b0ed97dc795b5b8bc"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/condensed-pad-analytic-v1/group0/controls/result.json",
+      "copy": "condensed-pad-analytic-v1/group0/controls/result.json",
+      "bytes": 1687,
+      "sha256": "6a63d4768bf29318cb02d0b9aa1bd810d9cde7275441d303d1a58f6483b82d97"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/condensed-pad-analytic-v1/group0/returncode.txt",
+      "copy": "condensed-pad-analytic-v1/group0/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/condensed-pad-analytic-v1/source.json",
+      "copy": "condensed-pad-analytic-v1/source.json",
+      "bytes": 153726,
+      "sha256": "66ec8305f7b7bc6ffd371c1e9bfebcf1eafdc45b0831ae26f2b870cca86acef6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/condensed-pad-analytic-v1/submission.json",
+      "copy": "condensed-pad-analytic-v1/submission.json",
+      "bytes": 589,
+      "sha256": "6690eb1a2d128cb32d1fe5d92d7a9357715dd5093b529ade8f4bf6600c56b105"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/condensed-pad-analytic-v1/tasks.json",
+      "copy": "condensed-pad-analytic-v1/tasks.json",
+      "bytes": 144,
+      "sha256": "c4617950041980b96918e5c91beebe07506cc2ebb0d479556a47d0bd8da9b5e8"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/analysis-files.json",
+      "copy": "full-source-pad-normal-fields-v1/analysis-files.json",
+      "bytes": 37514,
+      "sha256": "1fe241e2b5054592a923f8a56d9f78b272acff1e5538d8b8b2e66d547c965156"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/group0/dpr-0/result.json",
+      "copy": "full-source-pad-normal-fields-v1/group0/dpr-0/result.json",
+      "bytes": 5310,
+      "sha256": "ad94bd4fb94f81f8f49fd6ec13827e613628903218805d36d1bafeb41a865161"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/group0/dpr-1/result.json",
+      "copy": "full-source-pad-normal-fields-v1/group0/dpr-1/result.json",
+      "bytes": 5315,
+      "sha256": "d857be57034468cba1a7e283681ffc6a2e22f159070aa23a1c396531c503ff14"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/group0/dpr-2/result.json",
+      "copy": "full-source-pad-normal-fields-v1/group0/dpr-2/result.json",
+      "bytes": 5311,
+      "sha256": "f77531d0334781c8d36a9da9fa98efb684ab54a59a49235523359500a7612685"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/group0/returncode.txt",
+      "copy": "full-source-pad-normal-fields-v1/group0/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/group1/returncode.txt",
+      "copy": "full-source-pad-normal-fields-v1/group1/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/group1/scr-0/result.json",
+      "copy": "full-source-pad-normal-fields-v1/group1/scr-0/result.json",
+      "bytes": 5315,
+      "sha256": "ffc4427da15f895a5abc3692271a0540b2052a69312469ec2251c087e1ab5488"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/group1/scr-1/result.json",
+      "copy": "full-source-pad-normal-fields-v1/group1/scr-1/result.json",
+      "bytes": 5315,
+      "sha256": "2904a7ff8ded8891baef89c32746dd73e624f09e8d9a983c57c22fe9cc8107f6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/group1/scr-2/result.json",
+      "copy": "full-source-pad-normal-fields-v1/group1/scr-2/result.json",
+      "bytes": 5315,
+      "sha256": "b3aa418852ef091d4501d7f25a44b2c4254aa60a31e61085d3b9948970905ddd"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/group2/returncode.txt",
+      "copy": "full-source-pad-normal-fields-v1/group2/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/group2/shell-0/result.json",
+      "copy": "full-source-pad-normal-fields-v1/group2/shell-0/result.json",
+      "bytes": 5352,
+      "sha256": "26c9c2cae2a750268b9c31df388f21cac7c70408d4357ab15443091f0951f509"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/group2/shell-1/result.json",
+      "copy": "full-source-pad-normal-fields-v1/group2/shell-1/result.json",
+      "bytes": 5352,
+      "sha256": "ce9264158546180f75dafbd425897cfe46e4667588cafec88356e791fc3ce562"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/group2/shell-2/result.json",
+      "copy": "full-source-pad-normal-fields-v1/group2/shell-2/result.json",
+      "bytes": 5352,
+      "sha256": "474bf08ec35c030800e96adc31512a2bb85f83e4ee83745b5a92ac8240b33440"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/group3/adapter/result.json",
+      "copy": "full-source-pad-normal-fields-v1/group3/adapter/result.json",
+      "bytes": 13294,
+      "sha256": "e7c9a877f649f020d42d2ad8d50f1473c1a5a0d6cc1d3a01f08dd0951cd2f28f"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/group3/returncode.txt",
+      "copy": "full-source-pad-normal-fields-v1/group3/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/source.json",
+      "copy": "full-source-pad-normal-fields-v1/source.json",
+      "bytes": 153726,
+      "sha256": "dc0c7bbda8fd1adac6ad013a97eafe45d99f1274ff3fee4eeb9e45d2163ffc07"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/submission.json",
+      "copy": "full-source-pad-normal-fields-v1/submission.json",
+      "bytes": 603,
+      "sha256": "ae601c51bb1482f7ef5a8d8b7173c2cfdd1aa7b0a01e5977daa8d562bba9a953"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/tasks.json",
+      "copy": "full-source-pad-normal-fields-v1/tasks.json",
+      "bytes": 10000,
+      "sha256": "cdff6bb70212a2d0227310b4482bf0e525e66d319c494613e4fb3c06889b40eb"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/matrix-free-pad-controls-v1/analysis-files.json",
+      "copy": "matrix-free-pad-controls-v1/analysis-files.json",
+      "bytes": 38627,
+      "sha256": "6d423ed37bd2ddd35ff3a2514a83e59ca5470ccbb3f1ba571265fbdb56f2e515"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/matrix-free-pad-controls-v1/group0/analytic/result.json",
+      "copy": "matrix-free-pad-controls-v1/group0/analytic/result.json",
+      "bytes": 9424,
+      "sha256": "4a3378e6a964d8588984d8ec61860ede0cda678965ae32313fd0e80aebc68506"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/matrix-free-pad-controls-v1/group0/returncode.txt",
+      "copy": "matrix-free-pad-controls-v1/group0/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/matrix-free-pad-controls-v1/source.json",
+      "copy": "matrix-free-pad-controls-v1/source.json",
+      "bytes": 153726,
+      "sha256": "66ec8305f7b7bc6ffd371c1e9bfebcf1eafdc45b0831ae26f2b870cca86acef6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/matrix-free-pad-controls-v1/submission.json",
+      "copy": "matrix-free-pad-controls-v1/submission.json",
+      "bytes": 592,
+      "sha256": "552a637ff7eea4ab79e1bebb562337ca96fc8a2efd2d18856ddbc37ea9cdf8b3"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/matrix-free-pad-controls-v1/tasks.json",
+      "copy": "matrix-free-pad-controls-v1/tasks.json",
+      "bytes": 146,
+      "sha256": "3d1285f7caf888380f30de62d1d51323a6ac9fffda1d69b08c40baa5d5f14bc1"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/matrix-free-pad-controls-v2/analysis-files.json",
+      "copy": "matrix-free-pad-controls-v2/analysis-files.json",
+      "bytes": 38627,
+      "sha256": "455530b8f1b220e2f3f4763cdcb30bd1fc32e13ca5573f3baa9e1f49b96a8582"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/matrix-free-pad-controls-v2/group0/analytic/result.json",
+      "copy": "matrix-free-pad-controls-v2/group0/analytic/result.json",
+      "bytes": 9370,
+      "sha256": "42641a2f6b230d6b88df926a4173fc50e880b69c98d19d11af86e0eb16d8af0a"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/matrix-free-pad-controls-v2/group0/returncode.txt",
+      "copy": "matrix-free-pad-controls-v2/group0/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/matrix-free-pad-controls-v2/source.json",
+      "copy": "matrix-free-pad-controls-v2/source.json",
+      "bytes": 153726,
+      "sha256": "66ec8305f7b7bc6ffd371c1e9bfebcf1eafdc45b0831ae26f2b870cca86acef6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/matrix-free-pad-controls-v2/submission.json",
+      "copy": "matrix-free-pad-controls-v2/submission.json",
+      "bytes": 592,
+      "sha256": "e5101edd38ee19ce59d6e7568f4f15d2e34a381fd9ba4513423ba7d2bd230cc6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/matrix-free-pad-controls-v2/tasks.json",
+      "copy": "matrix-free-pad-controls-v2/tasks.json",
+      "bytes": 146,
+      "sha256": "3d1285f7caf888380f30de62d1d51323a6ac9fffda1d69b08c40baa5d5f14bc1"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-repeat-fields-v1/analysis-files.json",
+      "copy": "native-pad-full-source-repeat-fields-v1/analysis-files.json",
+      "bytes": 37514,
+      "sha256": "1fe241e2b5054592a923f8a56d9f78b272acff1e5538d8b8b2e66d547c965156"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-repeat-fields-v1/group0/friction-parameter/result.json",
+      "copy": "native-pad-full-source-repeat-fields-v1/group0/friction-parameter/result.json",
+      "bytes": 5288,
+      "sha256": "faa3f8db57a8561e4b2a4398b3da3857e592589b05881dec62cf0d0f635d15c6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-repeat-fields-v1/group0/repeat-normal/result.json",
+      "copy": "native-pad-full-source-repeat-fields-v1/group0/repeat-normal/result.json",
+      "bytes": 5296,
+      "sha256": "4662990e5cbbb4216de4bec1500a0bf01a0ea872d6e976b615fd296880979bc1"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-repeat-fields-v1/group0/repeat-shear/result.json",
+      "copy": "native-pad-full-source-repeat-fields-v1/group0/repeat-shear/result.json",
+      "bytes": 5296,
+      "sha256": "efccf87c24e93ba53eb7ba91caf6387152a18c9d99c23d73c43cba01761c60b3"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-repeat-fields-v1/group0/return-normal/result.json",
+      "copy": "native-pad-full-source-repeat-fields-v1/group0/return-normal/result.json",
+      "bytes": 5299,
+      "sha256": "84fb1cb294aa072a6b88ce80c095d820ea90f451dffc9e98560f97446134b224"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-repeat-fields-v1/group0/returncode.txt",
+      "copy": "native-pad-full-source-repeat-fields-v1/group0/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-repeat-fields-v1/group1/friction-parameter/result.json",
+      "copy": "native-pad-full-source-repeat-fields-v1/group1/friction-parameter/result.json",
+      "bytes": 5271,
+      "sha256": "914daa690a5f93982f60f439471558dd4857573604743e67504c36b4e5acf1fa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-repeat-fields-v1/group1/repeat-normal/result.json",
+      "copy": "native-pad-full-source-repeat-fields-v1/group1/repeat-normal/result.json",
+      "bytes": 5290,
+      "sha256": "4bb01c95858095bd78e51d1f06fa6c618fc3349fef03e603988027745912ed98"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-repeat-fields-v1/group1/repeat-shear/result.json",
+      "copy": "native-pad-full-source-repeat-fields-v1/group1/repeat-shear/result.json",
+      "bytes": 5294,
+      "sha256": "6ab82a3b07e3192dc721d42ca6a9751556ca4d519d736046b8cc9e865af83369"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-repeat-fields-v1/group1/return-normal/result.json",
+      "copy": "native-pad-full-source-repeat-fields-v1/group1/return-normal/result.json",
+      "bytes": 5300,
+      "sha256": "c9d69b6ea23dcb7c3ba231e14d1802cec3f8adc699c81166fce2f3c2f06ec793"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-repeat-fields-v1/group1/returncode.txt",
+      "copy": "native-pad-full-source-repeat-fields-v1/group1/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-repeat-fields-v1/source.json",
+      "copy": "native-pad-full-source-repeat-fields-v1/source.json",
+      "bytes": 153726,
+      "sha256": "66ec8305f7b7bc6ffd371c1e9bfebcf1eafdc45b0831ae26f2b870cca86acef6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-repeat-fields-v1/submission.json",
+      "copy": "native-pad-full-source-repeat-fields-v1/submission.json",
+      "bytes": 617,
+      "sha256": "b2956f4684e4716b8e2eea55f8bd02e5d90fdc1052e4bb53e622fdd9add1c9a6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-repeat-fields-v1/tasks.json",
+      "copy": "native-pad-full-source-repeat-fields-v1/tasks.json",
+      "bytes": 8117,
+      "sha256": "6c78c3833c40b6117d048c320d47e70ea1c2e2ad0aac03403af4872c587be96a"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/analysis-files.json",
+      "copy": "native-pad-radius-fields-v1/analysis-files.json",
+      "bytes": 38627,
+      "sha256": "6d423ed37bd2ddd35ff3a2514a83e59ca5470ccbb3f1ba571265fbdb56f2e515"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group0/adapter/result.json",
+      "copy": "native-pad-radius-fields-v1/group0/adapter/result.json",
+      "bytes": 8121,
+      "sha256": "a47de502803c23a4ec9ea59dadfd977bc685a515fd002dab0966f9d124108db4"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group0/normal-0/result.json",
+      "copy": "native-pad-radius-fields-v1/group0/normal-0/result.json",
+      "bytes": 5258,
+      "sha256": "0693c357bbb082e1e701aa2c61939f1c1d09eacd75eeb36ff15824426a4c451c"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group0/normal-1/result.json",
+      "copy": "native-pad-radius-fields-v1/group0/normal-1/result.json",
+      "bytes": 5259,
+      "sha256": "04024808bc665928cfbfaadf5a373c621d03ca62fc84f9bd5d10dfa2389d53a0"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group0/normal-2/result.json",
+      "copy": "native-pad-radius-fields-v1/group0/normal-2/result.json",
+      "bytes": 5253,
+      "sha256": "bcfc7740e166513fe4ab6b12a8b7906be8023e0862ade73830de5c3cd1f8d155"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group0/returncode.txt",
+      "copy": "native-pad-radius-fields-v1/group0/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group0/shear-0/result.json",
+      "copy": "native-pad-radius-fields-v1/group0/shear-0/result.json",
+      "bytes": 5254,
+      "sha256": "85ac72bb90e82f91bb5103bf8fbea621c979e257d6c8497092f1568db8fe819f"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group0/shear-1/result.json",
+      "copy": "native-pad-radius-fields-v1/group0/shear-1/result.json",
+      "bytes": 5257,
+      "sha256": "a56cf7a33acadb23d252289f092a724f1239b4014675ba7eccc27e499e08b1ab"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group1/adapter/result.json",
+      "copy": "native-pad-radius-fields-v1/group1/adapter/result.json",
+      "bytes": 8121,
+      "sha256": "ec8f6edf4a78cb0d820f405e173dc12db4ea4586d2e559dd0c9347d276659804"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group1/normal-0/result.json",
+      "copy": "native-pad-radius-fields-v1/group1/normal-0/result.json",
+      "bytes": 5253,
+      "sha256": "28b353cb691b9743425eb8108dd0639d7637586246b47d9fbb2da69981af21f3"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group1/normal-1/result.json",
+      "copy": "native-pad-radius-fields-v1/group1/normal-1/result.json",
+      "bytes": 5257,
+      "sha256": "5614b2be594adaaf5def7472aa085654fb6e6db44250def06d30b098a6e037f9"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group1/normal-2/result.json",
+      "copy": "native-pad-radius-fields-v1/group1/normal-2/result.json",
+      "bytes": 5253,
+      "sha256": "0f896fd389cd4768b3b679fddb1e2715ab00bb475f549051a6d85d92404aa21f"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group1/returncode.txt",
+      "copy": "native-pad-radius-fields-v1/group1/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group1/shear-0/result.json",
+      "copy": "native-pad-radius-fields-v1/group1/shear-0/result.json",
+      "bytes": 5252,
+      "sha256": "0db5eff324263667dd1324f9a60fb131ffe61062dcbb4286044be3daeed38db3"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group1/shear-1/result.json",
+      "copy": "native-pad-radius-fields-v1/group1/shear-1/result.json",
+      "bytes": 5250,
+      "sha256": "4dc285c8a79bcacc8f82b42b9d1f7641164a59afec4df47fad209281b27a02da"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group2/adapter/result.json",
+      "copy": "native-pad-radius-fields-v1/group2/adapter/result.json",
+      "bytes": 8122,
+      "sha256": "565e9e7c5ba7ac6dff089e3ad46721064b13fd98977984bc5dc144816a16e306"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group2/normal-0/result.json",
+      "copy": "native-pad-radius-fields-v1/group2/normal-0/result.json",
+      "bytes": 5258,
+      "sha256": "b3a363488a4f86c42792e7d1c24f5536115d61c7f8da7b6b6f6d154f87f11d56"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group2/normal-1/result.json",
+      "copy": "native-pad-radius-fields-v1/group2/normal-1/result.json",
+      "bytes": 5254,
+      "sha256": "ae92f0a7b0847633468ced89e1192007770e791f2207358503c44b366e0c6a99"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group2/normal-2/result.json",
+      "copy": "native-pad-radius-fields-v1/group2/normal-2/result.json",
+      "bytes": 5256,
+      "sha256": "dd38b6287b08613c9ef03278021a4dc520f55be1f2642a94919b74c638727767"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group2/returncode.txt",
+      "copy": "native-pad-radius-fields-v1/group2/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group2/shear-0/result.json",
+      "copy": "native-pad-radius-fields-v1/group2/shear-0/result.json",
+      "bytes": 5253,
+      "sha256": "66e1094812109d8d53397bbc42e5fefa0235f3b4c71cc7056b9ab44030c8999f"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group2/shear-1/result.json",
+      "copy": "native-pad-radius-fields-v1/group2/shear-1/result.json",
+      "bytes": 5257,
+      "sha256": "98cceaa2a5ebfc5e136d8d8c3e11890da28a4dcbd6b26024e11f0e68f0648dd7"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group3/adapter/result.json",
+      "copy": "native-pad-radius-fields-v1/group3/adapter/result.json",
+      "bytes": 8126,
+      "sha256": "0a1c45a79fac6fb2619fc13b680fda66e13bb3f530894049a860b4fb6bf48f59"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group3/normal-0/result.json",
+      "copy": "native-pad-radius-fields-v1/group3/normal-0/result.json",
+      "bytes": 5252,
+      "sha256": "52bbc6d848ceda44593ff1176702508e4be2ceaf2c09ecf3dea97919d6554c66"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group3/normal-1/result.json",
+      "copy": "native-pad-radius-fields-v1/group3/normal-1/result.json",
+      "bytes": 5251,
+      "sha256": "6d1736aebb28458bdb300732a4d9d33eb0e07382e164c96be7139ffc97d3852c"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group3/normal-2/result.json",
+      "copy": "native-pad-radius-fields-v1/group3/normal-2/result.json",
+      "bytes": 5254,
+      "sha256": "d2882fee68aeda44f64e9951cd68a5dc85265cefd0db62f08ddf85b0914179fb"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group3/returncode.txt",
+      "copy": "native-pad-radius-fields-v1/group3/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group3/shear-0/result.json",
+      "copy": "native-pad-radius-fields-v1/group3/shear-0/result.json",
+      "bytes": 5250,
+      "sha256": "0f3e66dec69b37196ea8e1fe4c4b53faf9d3b592685fe18c48b10d144b0d7d4c"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/group3/shear-1/result.json",
+      "copy": "native-pad-radius-fields-v1/group3/shear-1/result.json",
+      "bytes": 5253,
+      "sha256": "cf27dfa286aaf3bccb13ff36a255ed3edd535acc2dbb0063ec9e507b685de2d6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/source.json",
+      "copy": "native-pad-radius-fields-v1/source.json",
+      "bytes": 153726,
+      "sha256": "66ec8305f7b7bc6ffd371c1e9bfebcf1eafdc45b0831ae26f2b870cca86acef6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/submission.json",
+      "copy": "native-pad-radius-fields-v1/submission.json",
+      "bytes": 593,
+      "sha256": "f563c5ca09fa5fa15ce63887356647af728a9a46e05f380111841e9e89b1b230"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-fields-v1/tasks.json",
+      "copy": "native-pad-radius-fields-v1/tasks.json",
+      "bytes": 21755,
+      "sha256": "9721299d456786966e6317c72a507e7c67d023308e9dec19479036b019b68dba"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/analysis-files.json",
+      "copy": "native-pad-radius-v1/analysis-files.json",
+      "bytes": 38069,
+      "sha256": "b26373845e3bd8acab502b506f450c9bf70dff9d5dfb695e7f801cd5289f28f9"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/group0/normal/result.json",
+      "copy": "native-pad-radius-v1/group0/normal/result.json",
+      "bytes": 2456,
+      "sha256": "bf7ef9ad651ea635d41222e8c745a7ecdef0e2496f017b375937236977a87612"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/group0/returncode.txt",
+      "copy": "native-pad-radius-v1/group0/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/group0/shear/result.json",
+      "copy": "native-pad-radius-v1/group0/shear/result.json",
+      "bytes": 1864,
+      "sha256": "b6bb9cb92b62d83952415969d10220be23d11602e7eb0346ce46cd31455c76d1"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/group1/normal/result.json",
+      "copy": "native-pad-radius-v1/group1/normal/result.json",
+      "bytes": 2457,
+      "sha256": "6c569c9e03da0ba83c7360314b8b0772dd0689e2fdf65124bde4d293673bd2af"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/group1/returncode.txt",
+      "copy": "native-pad-radius-v1/group1/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/group1/shear/result.json",
+      "copy": "native-pad-radius-v1/group1/shear/result.json",
+      "bytes": 1860,
+      "sha256": "37d44aed8c64e51dd449b0ab40c25371f6ad0ec3c6f57a591bd6e3a28160ccd8"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/group2/normal/result.json",
+      "copy": "native-pad-radius-v1/group2/normal/result.json",
+      "bytes": 2456,
+      "sha256": "c207c078c456eba245d7d12ebfaad9059f572b36d46095abcff99e488e70e881"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/group2/returncode.txt",
+      "copy": "native-pad-radius-v1/group2/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/group2/shear/result.json",
+      "copy": "native-pad-radius-v1/group2/shear/result.json",
+      "bytes": 1862,
+      "sha256": "06c4cefcff54991dd18e2f4729b7c93291fd72d8adf3cc891b49e2b69f73a8b7"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/group3/normal/result.json",
+      "copy": "native-pad-radius-v1/group3/normal/result.json",
+      "bytes": 2455,
+      "sha256": "5adf373ea0bcc8d70d80be8f39c212cebe95af732f7030cda664b5a98be006a8"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/group3/returncode.txt",
+      "copy": "native-pad-radius-v1/group3/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/group3/shear/result.json",
+      "copy": "native-pad-radius-v1/group3/shear/result.json",
+      "bytes": 1861,
+      "sha256": "727f23642286899fe7cc392d7d5caece6e61327096c2a22242ebd718ae4066ee"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/source.json",
+      "copy": "native-pad-radius-v1/source.json",
+      "bytes": 153726,
+      "sha256": "66ec8305f7b7bc6ffd371c1e9bfebcf1eafdc45b0831ae26f2b870cca86acef6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/submission.json",
+      "copy": "native-pad-radius-v1/submission.json",
+      "bytes": 579,
+      "sha256": "f2e2df69aed6e838b0e34db578e6e3e94f3aaa437ea17f03b2f787a39bab160f"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-radius-v1/tasks.json",
+      "copy": "native-pad-radius-v1/tasks.json",
+      "bytes": 7139,
+      "sha256": "bbaf8295d2baf31d4fa179f07b8711eaf7f45944006089efca923f9e21059df0"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nonlinear-column-regression-v1/analysis-files.json",
+      "copy": "nonlinear-column-regression-v1/analysis-files.json",
+      "bytes": 39159,
+      "sha256": "a0a2dea62f5fbad55e5daea0b264503d645c8fc98e633353f8fae07b380d2433"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nonlinear-column-regression-v1/group0/affine-2/result.json",
+      "copy": "nonlinear-column-regression-v1/group0/affine-2/result.json",
+      "bytes": 5464,
+      "sha256": "eeb12f604bb08bff1529e8afe79440a7dee4d7df9a76ad90a0712e5e577e981f"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nonlinear-column-regression-v1/group0/affine-4/result.json",
+      "copy": "nonlinear-column-regression-v1/group0/affine-4/result.json",
+      "bytes": 5464,
+      "sha256": "000cf9b3398e3111d6dccc79666f98c5ad637997500e0f633f75199aabdec084"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nonlinear-column-regression-v1/group0/analytic/result.json",
+      "copy": "nonlinear-column-regression-v1/group0/analytic/result.json",
+      "bytes": 3795,
+      "sha256": "793c390a5e7f01203dbbd27ef1d2b29c45dadcd147f3eb096f53f0d720db5f9d"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nonlinear-column-regression-v1/group0/returncode.txt",
+      "copy": "nonlinear-column-regression-v1/group0/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nonlinear-column-regression-v1/source.json",
+      "copy": "nonlinear-column-regression-v1/source.json",
+      "bytes": 153726,
+      "sha256": "66ec8305f7b7bc6ffd371c1e9bfebcf1eafdc45b0831ae26f2b870cca86acef6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nonlinear-column-regression-v1/submission.json",
+      "copy": "nonlinear-column-regression-v1/submission.json",
+      "bytes": 599,
+      "sha256": "149214946e0dd075e8c7e2291450a99f3c165fe60f32bd7ed6ffca7f4173969e"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nonlinear-column-regression-v1/tasks.json",
+      "copy": "nonlinear-column-regression-v1/tasks.json",
+      "bytes": 2256,
+      "sha256": "fb9e63d7a12902db7c5050114cd0c75056ab887d077a8c93e6022b61d55f3846"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/p2-stvk-controls-v1/analysis-files.json",
+      "copy": "p2-stvk-controls-v1/analysis-files.json",
+      "bytes": 38979,
+      "sha256": "c0b3de01fd8be0e579f2d27e0c9b7fb42d98f41f9738f4be94fc38c46a3d6fc3"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/p2-stvk-controls-v1/group0/analytic/result.json",
+      "copy": "p2-stvk-controls-v1/group0/analytic/result.json",
+      "bytes": 1223,
+      "sha256": "dd54451ded459e27352dd8e67f99b44760fbd7554344810d8db72e0fc5cfd234"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/p2-stvk-controls-v1/group0/returncode.txt",
+      "copy": "p2-stvk-controls-v1/group0/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/p2-stvk-controls-v1/source.json",
+      "copy": "p2-stvk-controls-v1/source.json",
+      "bytes": 153726,
+      "sha256": "66ec8305f7b7bc6ffd371c1e9bfebcf1eafdc45b0831ae26f2b870cca86acef6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/p2-stvk-controls-v1/submission.json",
+      "copy": "p2-stvk-controls-v1/submission.json",
+      "bytes": 576,
+      "sha256": "0c61d9a285d0178c3fb953f34a9b0e65b2ccb55cc2fc297cdc9cfb271431a0da"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/p2-stvk-controls-v1/tasks.json",
+      "copy": "p2-stvk-controls-v1/tasks.json",
+      "bytes": 138,
+      "sha256": "b2c7406b32e0520bf960501ff729896ad67df28ae9cc1625d896fac6bcd5082b"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v1/analysis-files.json",
+      "copy": "solid-pad-history-v1/analysis-files.json",
+      "bytes": 38069,
+      "sha256": "d5481ea11f7af8df3601056a53e73914edf2b13a5dcadf89a181dc8b8ed097f9"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v1/analysis-source/research/rigid_stress/qipc_comparison/condensed_pad_dynamics.py",
+      "copy": "solid-pad-history-v1/analysis-source/research/rigid_stress/qipc_comparison/condensed_pad_dynamics.py",
+      "bytes": 4816,
+      "sha256": "df975b17930935d9de184e5868c62f34011a6e35694f4a2d6509c871e7341bb1"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v1/analysis-source/research/rigid_stress/qipc_comparison/plate_solid_pad.py",
+      "copy": "solid-pad-history-v1/analysis-source/research/rigid_stress/qipc_comparison/plate_solid_pad.py",
+      "bytes": 13503,
+      "sha256": "0616fb5452fa7ea08bbf87f0782a3409af95edfb86b3a371745066000fbff0af"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v1/group0/reference.log",
+      "copy": "solid-pad-history-v1/group0/reference.log",
+      "bytes": 1802,
+      "sha256": "27c9b3a817e2690608b6dd4786c10281d181f49ff715ed198b1172e000488c8f"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v1/group0/returncode.txt",
+      "copy": "solid-pad-history-v1/group0/returncode.txt",
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v1/source.json",
+      "copy": "solid-pad-history-v1/source.json",
+      "bytes": 153726,
+      "sha256": "66ec8305f7b7bc6ffd371c1e9bfebcf1eafdc45b0831ae26f2b870cca86acef6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v1/submission.json",
+      "copy": "solid-pad-history-v1/submission.json",
+      "bytes": 579,
+      "sha256": "1de20b0adeab1175813f369b6af4f9c77297a9d107f82bfb1e56e8513877123e"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v1/tasks.json",
+      "copy": "solid-pad-history-v1/tasks.json",
+      "bytes": 1602,
+      "sha256": "aec7d58046348da4a9a34d47113553e46cfa5055a1ec267db71c58bd5ca99c1a"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v2/analysis-files.json",
+      "copy": "solid-pad-history-v2/analysis-files.json",
+      "bytes": 38069,
+      "sha256": "b26373845e3bd8acab502b506f450c9bf70dff9d5dfb695e7f801cd5289f28f9"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v2/group0/normal-static/result.json",
+      "copy": "solid-pad-history-v2/group0/normal-static/result.json",
+      "bytes": 5358,
+      "sha256": "0757f89b6feb60904d4dc6a96ee4da7cccc6cdfff3b5cd3c49cb0320be5794b9"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v2/group0/reference/result.json",
+      "copy": "solid-pad-history-v2/group0/reference/result.json",
+      "bytes": 1335,
+      "sha256": "5fc73fb37c3d13b909cc13beef23daf1d04f17ba3feac17252d32e965d62e661"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v2/group0/returncode.txt",
+      "copy": "solid-pad-history-v2/group0/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v2/source.json",
+      "copy": "solid-pad-history-v2/source.json",
+      "bytes": 153726,
+      "sha256": "66ec8305f7b7bc6ffd371c1e9bfebcf1eafdc45b0831ae26f2b870cca86acef6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v2/submission.json",
+      "copy": "solid-pad-history-v2/submission.json",
+      "bytes": 579,
+      "sha256": "0f75c374d2f114358fad2a618b4c2162406356723c62792e66da00b1ace68c38"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v2/tasks.json",
+      "copy": "solid-pad-history-v2/tasks.json",
+      "bytes": 1602,
+      "sha256": "304dd239eb38209d8e0626b077c530ec8a36777cfa02c0b5ff5087b595caabc6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-matrix-free-v1/analysis-files.json",
+      "copy": "solid-pad-matrix-free-v1/analysis-files.json",
+      "bytes": 38627,
+      "sha256": "6d423ed37bd2ddd35ff3a2514a83e59ca5470ccbb3f1ba571265fbdb56f2e515"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-matrix-free-v1/analysis-source/research/rigid_stress/qipc_comparison/condensed_pad_dynamics.py",
+      "copy": "solid-pad-matrix-free-v1/analysis-source/research/rigid_stress/qipc_comparison/condensed_pad_dynamics.py",
+      "bytes": 4816,
+      "sha256": "df975b17930935d9de184e5868c62f34011a6e35694f4a2d6509c871e7341bb1"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-matrix-free-v1/analysis-source/research/rigid_stress/qipc_comparison/matrix_free_pad_dynamics.py",
+      "copy": "solid-pad-matrix-free-v1/analysis-source/research/rigid_stress/qipc_comparison/matrix_free_pad_dynamics.py",
+      "bytes": 4603,
+      "sha256": "3633a0851396c0099765167d73dbdb678fffa889741c67ffda484f7b9f2955e4"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-matrix-free-v1/analysis-source/research/rigid_stress/qipc_comparison/plate_solid_pad.py",
+      "copy": "solid-pad-matrix-free-v1/analysis-source/research/rigid_stress/qipc_comparison/plate_solid_pad.py",
+      "bytes": 14057,
+      "sha256": "745ce219b99cac7cd1a6bde33f8a086918265b681b4b9240769a075e2e4f7dbf"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-matrix-free-v1/group0/reference/result.json",
+      "copy": "solid-pad-matrix-free-v1/group0/reference/result.json",
+      "bytes": 836,
+      "sha256": "b65ad30b636f433bf9a6182e8ab3ed7482ee73cfea909ee92f0612051234bce6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-matrix-free-v1/group0/reference.log",
+      "copy": "solid-pad-matrix-free-v1/group0/reference.log",
+      "bytes": 1197,
+      "sha256": "61de732e58c81a4f89fd6fcbf2d9c98da7e639fc5928628ad1f654e4ebbebbd9"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-matrix-free-v1/group0/returncode.txt",
+      "copy": "solid-pad-matrix-free-v1/group0/returncode.txt",
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-matrix-free-v1/source.json",
+      "copy": "solid-pad-matrix-free-v1/source.json",
+      "bytes": 153726,
+      "sha256": "66ec8305f7b7bc6ffd371c1e9bfebcf1eafdc45b0831ae26f2b870cca86acef6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-matrix-free-v1/submission.json",
+      "copy": "solid-pad-matrix-free-v1/submission.json",
+      "bytes": 587,
+      "sha256": "976b3afa16b34e485f8aeafd0769069f430fdeb410f87e99d56779048f834103"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-matrix-free-v1/tasks.json",
+      "copy": "solid-pad-matrix-free-v1/tasks.json",
+      "bytes": 957,
+      "sha256": "84a2f2b9c734ede71089f674fe3f9f775a13e39b8e5e3759def729ef5318bd05"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-moment-v1/analysis-files.json",
+      "copy": "solid-pad-moment-v1/analysis-files.json",
+      "bytes": 38627,
+      "sha256": "6d423ed37bd2ddd35ff3a2514a83e59ca5470ccbb3f1ba571265fbdb56f2e515"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-moment-v1/group0/audit/result.json",
+      "copy": "solid-pad-moment-v1/group0/audit/result.json",
+      "bytes": 3249,
+      "sha256": "fab33d76334c6c24e95333a3176b5b5fe2ffe637aefc2d69897630473bc9a067"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-moment-v1/group0/returncode.txt",
+      "copy": "solid-pad-moment-v1/group0/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-moment-v1/source.json",
+      "copy": "solid-pad-moment-v1/source.json",
+      "bytes": 153726,
+      "sha256": "66ec8305f7b7bc6ffd371c1e9bfebcf1eafdc45b0831ae26f2b870cca86acef6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-moment-v1/submission.json",
+      "copy": "solid-pad-moment-v1/submission.json",
+      "bytes": 576,
+      "sha256": "7ed052e8fe64f1707083190e803c31a3ad500a6b695ca779f90a1ee3327e6bca"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-moment-v1/tasks.json",
+      "copy": "solid-pad-moment-v1/tasks.json",
+      "bytes": 309,
+      "sha256": "51ba27c3498f982029e544e743bff3dae9db8c48eb445bc24dabdf8aec930dc5"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/analysis-files.json",
+      "copy": "solid-pad-stvk-v1/analysis-files.json",
+      "bytes": 39159,
+      "sha256": "a0a2dea62f5fbad55e5daea0b264503d645c8fc98e633353f8fae07b380d2433"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/audit_solid_pad.py",
+      "copy": "solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/audit_solid_pad.py",
+      "bytes": 3777,
+      "sha256": "c81bdb3c6c066989e6aaec3e520a5a2c1a3838484e8800f83b00f977e55d5586"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/check_condensed_pad.py",
+      "copy": "solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/check_condensed_pad.py",
+      "bytes": 2734,
+      "sha256": "0fef5a0217f524f7fb7b517870069863e1c4a772f157faca103daaf7ea331214"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/check_matrix_free_pad.py",
+      "copy": "solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/check_matrix_free_pad.py",
+      "bytes": 3657,
+      "sha256": "de32ab4833d037ca6f25033a3e62d61795e13892957c2a50df553028af96b439"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/check_p2_stvk.py",
+      "copy": "solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/check_p2_stvk.py",
+      "bytes": 4822,
+      "sha256": "a47a2e6e0639169378829e408e1ca9f07db64c0f0270ae6c571c3b69d4af6dfa"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/condensed_pad_dynamics.py",
+      "copy": "solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/condensed_pad_dynamics.py",
+      "bytes": 4816,
+      "sha256": "df975b17930935d9de184e5868c62f34011a6e35694f4a2d6509c871e7341bb1"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/contact_fem_exact_columns.py",
+      "copy": "solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/contact_fem_exact_columns.py",
+      "bytes": 18993,
+      "sha256": "72f59e11056bb7b30a409942254bdf4fdf3f4b4923cce1b6b48f3a6667e58a5b"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/matrix_free_pad_dynamics.py",
+      "copy": "solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/matrix_free_pad_dynamics.py",
+      "bytes": 5254,
+      "sha256": "7d7f7df7dda8514e0d0b93855d75d1dbc889de954052cb5c75429eebff2450e4"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/p2_elastic.py",
+      "copy": "solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/p2_elastic.py",
+      "bytes": 8981,
+      "sha256": "c0ec32cd2437a23db9ba652fc1c15977bcf2ef9b809132df9261ff51d1ac6ade"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/p2_stvk.py",
+      "copy": "solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/p2_stvk.py",
+      "bytes": 2391,
+      "sha256": "ba7b5746684cc5f641a7868e4aa21a0082f5a7e5c040b0a32be328c22b1df198"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/plate_solid_pad.py",
+      "copy": "solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/plate_solid_pad.py",
+      "bytes": 16298,
+      "sha256": "0970e7e81fb13548885083f29389b844926f2b5b99ae5c31d52194ab586ab840"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/solid_pad_step.py",
+      "copy": "solid-pad-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/solid_pad_step.py",
+      "bytes": 1930,
+      "sha256": "1840c4cec5772cfd0b6fdafcbea1f3012eca2c2a2f9b8cce2d2e721d3447a645"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/group0/analytic/result.json",
+      "copy": "solid-pad-stvk-v1/group0/analytic/result.json",
+      "bytes": 1292,
+      "sha256": "56f5f0bf3c729422afc44c7625093239fc08698c5c590b44be6fdab6cb368612"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/source.json",
+      "copy": "solid-pad-stvk-v1/source.json",
+      "bytes": 153726,
+      "sha256": "66ec8305f7b7bc6ffd371c1e9bfebcf1eafdc45b0831ae26f2b870cca86acef6"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/submission.json",
+      "copy": "solid-pad-stvk-v1/submission.json",
+      "bytes": 573,
+      "sha256": "c4dc6fb8f96123e573825ad52da2b642aacccf3903055c2eea47479eee24ca2c"
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/tasks.json",
+      "copy": "solid-pad-stvk-v1/tasks.json",
+      "bytes": 1066,
+      "sha256": "44876e2c011bf97970f471da16820197f6cea1b37689988e4af5e6b9cdb7b8a0"
+    }
+  ]
+}

@@ -36,6 +36,12 @@ The5.6MB wheel, install report and log are recorded by Slurm727753 under
 `runs/20261019-qualified-ranking/cholespy-install-v1/`. Active environments
 are unchanged; factor controls and generated fields use that same run root.
 
+The `transient-radius-controls-v1` selected publication adds159 verified
+receipts/source/log files totaling3,178,729 bytes. Full fields, live transient
+and joint-reference jobs, new logs and all dependency assets remain on data.
+It contains retained failed attempts and explicitly partial reference controls,
+not a migration or a runtime output destination in the source checkout.
+
 ## Parallel-plate benchmark storage, 2026-10-18
 
 The updated goal is pinned at fork commit `914a558df`. A new exclusive-create,

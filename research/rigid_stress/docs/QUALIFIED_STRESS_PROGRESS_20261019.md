@@ -1419,3 +1419,125 @@ comparisons. Its completion and spatial qualification remain open.
 The completed full-source and factor controls, including the failed joint
 factor log, are retained in the
 [full-source/factor packet](../evidence/20261019-qualified-ranking/full-source-factor-control-v1/README.md).
+
+
+## Full-source repeatability and predeclared radius controls
+
+The identical-configuration full-source repeats and their complete-field
+checks (`728127_2/3`, `728141`) are complete. Normal/shear tangent,
+membrane and bending differences are below1.71e-11, with raw-peak differences
+below2.88e-12. The friction0 five-load cycles return to their initial0.1N
+fields within4.56e-11, including raw peaks. The separate friction-parameter
+contrast changes SCR tangent/membrane/bending by0.5643%/0.5830%/0.5229%;
+DPR changes remain below6.56e-12. This latter pair changes the admissible
+reconstruction friction cone and is not a same-configuration repeat.
+
+Before executing the next sensitivity controls, retain the previously declared
+2mm recovery radius as the primary configuration. Test fixed1.5mm and2.5mm
+radii, a symmetric25% perturbation, for both methods on the same full-source
+motion: normal friction0 loads0.1/0.3/1N and friction0.3 normal/shear0.1N.
+Keep all physical parameters, source points, solver tolerances, mesh and output
+sampling unchanged. Report parameter dependence separately from numerical
+uncertainty; do not select a radius by minimizing reference-field errors.
+The controls must retain complete fields and pass the existing history,
+window and native recovery gates before their errors or costs are interpreted.
+
+
+## Full-source normal contact comparison (joint uncertainty pending)
+
+The three-load comparisons (`728135`) use actual friction0 full-source
+native fields and the admitted250um Shell cycle against the125um/two-wall
+P2 reference at contact quadrature10. The complete adapter audit passes.
+All table entries below are percentages; complete-field metrics use the
+common physical-volume columns, with no clipped peaks or excluded polar region.
+
+| Method | Load N | Tangent L2 | Membrane L2 | Bending L2 | Raw Mises | Raw tension |
+|---|---:|---:|---:|---:|---:|---:|
+| DPR | 0.1 | 7.9897 | 4.6994 | 10.2963 | 3.0211 | 5.4545 |
+| DPR | 0.3 | 7.9969 | 4.5452 | 10.8913 | 0.4415 | 0.6298 |
+| DPR | 1.0 | 7.4748 | 4.3289 | 10.5086 | 0.8259 | 1.8506 |
+| SCR | 0.1 | 8.0324 | 4.8269 | 10.2733 | 1.3956 | 4.9187 |
+| SCR | 0.3 | 7.9738 | 4.6859 | 10.7114 | 1.1397 | 0.0053 |
+| SCR | 1.0 | 7.4901 | 4.5898 | 10.2807 | 2.2923 | 2.5147 |
+| SHELL | 0.1 | 26.0000 | 5.7665 | 42.0390 | 0.3865 | 14.6697 |
+| SHELL | 0.3 | 25.2183 | 5.6565 | 41.9102 | 0.2682 | 14.7863 |
+| SHELL | 1.0 | 24.0015 | 5.4697 | 41.7246 | 0.3441 | 15.4841 |
+
+These are provisional errors, not a qualified universal order. They replace
+the sparse-adapter values only for this explicitly full-source variant. The
+DPR/SCR differences are small relative to the unresolved joint spatial
+uncertainty, whereas Shell has substantially larger complete tangent/bending
+errors despite small raw Mises differences. Retain metric-specific comparisons
+and ties where uncertainty prevents separation. Independent friction reference,
+radius sensitivity, matched cost/batching and figures remain outstanding.
+
+
+## Radius dependence and an independent transient reference
+
+All eight fixed-radius histories (`728155`) complete:600 steps for each
+normal three-load arm and400 for each friction arm. Every existing history,
+window and native field acceptance gate passes. Their source-adapter audits
+(`728160`) pass. Relative to the primary2mm radius, the predeclared1.5/2.5mm
+controls change complete tangent fields by2.89--4.21%, membrane by1.68--2.22%,
+bending by4.50--6.44%, raw Mises by2.59--4.87%, and raw tension by3.61--6.62%.
+These are reconstruction-parameter effects, not solver error or nondeterminism.
+The primary radius stays2mm. They reinforce retaining DPR/SCR ties rather than
+claiming their small primary-field difference is a robust method advantage.
+
+The new `plate_solid_pad` reference advances the full consistent P2 mass and
+elastic operator, including all six free rigid coordinates, with the same
+physical pad and lagged smooth friction. No static gauge is fixed in dynamics.
+`condensed_pad_dynamics` solves in Cholesky contact-compliance coordinates.
+Seven independent point-mass and coupled-normal controls (`728147`) pass,
+with velocity differences below2.17e-19. The first full launch (`728152`)
+failed while serializing a NumPy integer in its start receipt; no physics
+result was produced. Converting the DOF count to a Python integer permits
+`728154` to finish400 steps and both51-sample windows. All force-equation,
+pressure/friction, velocity-prediction and omitted-boundary checks pass.
+The normal field agrees with the independent static reference within5.86e-8
+in complete tangent/membrane/bending metrics and1.46e-8 in raw peaks.
+
+A separate current-position moment audit (`728166`) nevertheless rejects the
+linear model's shear endpoint: normalized moment5.2081e-6 exceeds the unchanged
+1e-7 mechanical target, although material-position moment is3.75e-10. The
+normal endpoint passes. The residual is reproduced by the linear elastic
+internal force's moment at the deformed positions. This is finite-rotation
+inconsistency, not contact-source loss or failed force balance. These linear
+fields remain diagnostic and cannot qualify the independent friction reference.
+
+For high-order contact integration, a matrix-free alternative avoids forming
+or inverting the possibly rank-deficient contact compliance. Its first
+full-body velocity formulation passes24 manufactured controls (`728159`) but
+fails line search at first contact after33 returned steps (`728165`); retain
+this failed source/log. The replacement uses contact impulses and the SPD
+operator I+sqrt(H) J A^-1 J^T sqrt(H), allowing redundant quadrature rows and
+avoiding subtraction through the stiff full-body operator. All24 controls
+(`728167`), including redundant rows and dense-solver agreement, pass within
+6.40e-14 velocity error. The complete-trajectory comparison (`728169`) is
+separate and must pass before use in spatial refinement.
+
+The explicitly labeled StVK option retains E=10GPa, nu=0.3 and the same free
+mass/contact model, and converges total-Lagrangian elastic-force corrections
+inside each time step. It uses Green strain, second Piola stress and its
+Cauchy push-forward; see the standard
+[finite-strain formulation](https://getfem.org/userdoc/model_nonlinear_elasticity.html).
+This is an objective small-strain material extension, not a large-strain
+qualification or an unchanged-linear-model claim. Its controls (`728168`,
+`728171` analytic task) check rigid rotation, covariance, energy gradient,
+current-position moment and the linear small-strain limit. Covariance errors
+are below2.79e-12, energy-gradient error1.47e-12, and small-strain force
+contrast1.41e-8. Common-column sampling evaluates the nonlinear Cauchy stress
+from the exact affine P2 displacement gradient, rather than interpolating
+nonlinear corner stress. An independent variable-shear column control passes
+within6.46e-16. Depth quadrature2/4/8 is explicit for the required integration
+sensitivity. Full nonlinear history, moment, timestep and spatial qualification
+remain pending; no reference tolerance or mechanical gate is relaxed.
+
+
+The completed repeat/radius/normal comparison receipts, failed transient
+reference controls and executed objective/impulse solver sources are retained
+in the [transient/radius checkpoint](../evidence/20261019-qualified-ranking/transient-radius-controls-v1/README.md).
+The existing affine P2/column regression (`728177`) passes after adding nonlinear
+sampling; two- versus four-point depth integration changes the complete native
+DPR/SCR contrast by at most3.5e-18 absolute. New nonlinear trajectories still
+require their own measured depth-integration and physical-momentum checks.

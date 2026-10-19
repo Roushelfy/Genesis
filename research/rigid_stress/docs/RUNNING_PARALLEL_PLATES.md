@@ -406,3 +406,48 @@ continuous/static Shell error, use the order0 reference field with
 the continuous frame using `compare_coupled_shell`. High-order reference
 fields separately measure centroid quadrature error; do not attribute that
 difference to timestep or nonlinear convergence.
+
+
+### Independent transient solid and radius controls
+
+The research `qipc_comparison.plate_solid_pad` entrypoint advances the full
+P2 consistent mass and free rigid modes. It uses the existing data-side
+physical environment and CVXOPT1.3.2 long-index factor. Run it only through
+the established rtx-mid / `GENESIS_IMAGE_VER=1_26` submission workflow, with
+all output paths explicitly under the project data run directory. Source,
+mesh and dependency receipts are retained by `shell_comparison.submit`.
+
+The common two-window friction arguments are:
+
+```text
+--mesh <coarse-land-mesh.npz> --loads 0.1 0.1 --dt 0.001
+--ramp 0.05 --hold 0.15 --record-stride 1 --friction 0.3 --gravity-x 1
+```
+
+The original `--elasticity linear --contact-solver condensed` trajectory
+passes its affine force/contact equations but fails the actual current-position
+moment target in shear. Preserve it as a diagnostic, not a qualified friction
+reference. The new explicit `--elasticity stvk` option iterates objective
+elastic forces with the same mass and pad law. Its complete history and
+current-position moment must pass independently; analytic controls alone do
+not qualify it. `audit_solid_pad --run <run>` records both material-frame and
+actual-position moment balances. The nonlinear frames contain exact P2 corner
+gradients and a mass-weighted material rotation. Common-column comparisons
+re-evaluate Cauchy stress at each sample; use `--depth-quadrature 2/4/8` for
+integration sensitivity instead of assuming nonlinear stress is affine.
+
+`--contact-solver matrix-free` uses contact-impulse Newton/PCG applications
+through the full dynamic factor. It supports redundant high-order contact
+quadrature without inverting the contact compliance. This alternative must
+match the dense solver on admitted full histories before fine-mesh use.
+`check_condensed_pad`, `check_matrix_free_pad`, `check_p2_stvk` and the existing
+`validate_p2_contact` controls run in the same allocated physical environment.
+Failure source captures, logs and receipts remain immutable.
+
+For full-source native recovery,2mm remains the primary radius. The declared
+1.5/2.5mm perturbations use `plate_native_pad --source-reduction none --radius`
+and retain the original method/material/tolerance settings. Runs728155 and
+728160 measure parameter effects over normal0.1/0.3/1N and nonzero sustained
+shear; these effects are not solver uncertainty and do not authorize fitting
+radius to a reference field. Full fields and actual source packets remain
+under `native-pad-radius-v1` and `native-pad-radius-fields-v1` on data.

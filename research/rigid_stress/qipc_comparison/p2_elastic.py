@@ -43,6 +43,7 @@ class FreeElasticP2:
         through_wall_ordering=False,
         cholespy_path=None,
         cvxopt_factor=False,
+        factorize=True,
     ):
         self.reference = SkfemElasticReference(vertices, tetrahedra, young, poisson, density)
         reference = self.reference
@@ -91,6 +92,11 @@ class FreeElasticP2:
                 order = np.argsort(rank[node_groups], kind="stable")
             dofs = (3 * np.asarray(order)[:, None] + np.arange(3)).reshape(-1)
             self.free = dofs[np.isin(dofs, self.free)]
+        self.factor = None
+        if not factorize:
+            # A transient caller can reuse assembly/order data and include all
+            # DOFs, including the six static gauge coordinates, in its M+dt^2 K.
+            return
         matrix = (self.stiffness[self.free][:, self.free] / young).tocsc()
         if cvxopt_factor:
             from .cvxopt_factor import CvxoptCholeskyFactor
