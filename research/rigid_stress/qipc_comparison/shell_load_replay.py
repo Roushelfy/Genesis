@@ -51,7 +51,8 @@ class ShellLoadTransfer:
             index = distances.argmin()
             assert distances[index] < 1e-12, "Material midpoint rays do not share the Shell domain"
             selected.append(faces[index])
-            weights.append(bary[index])
+            # Keep three weights, not a view retaining every candidate face.
+            weights.append(bary[index].copy())
         selected = np.tile(np.array(selected), (layers, 1))
         weights = np.tile(np.array(weights), (layers, 1))
         relative = vertices[selected] - vertices[selected].mean(axis=1, keepdims=True)

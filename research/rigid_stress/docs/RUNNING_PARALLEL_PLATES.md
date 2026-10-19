@@ -1,5 +1,17 @@
 # Reproducing the parallel-plate comparison
 
+`qualify_prescribed_load --data-root RUN_ROOT --output NEW_DATA_PATH` verifies
+the independent C2 reference's fixed wall/surface/joint/integration targets after
+the named field campaigns finish. `contact_fem_exact_columns
+--decompose-three-fields --physical-volume` accepts candidate, same-mesh control
+and fine-reference fields in that order, and directly integrates signed tensor
+differences/cross terms. Run `check_column_decomposition` first. See the
+[prescribed-reference report](PRESCRIBED_REFERENCE_QUALIFICATION_20261019.md)
+for exact sources, passed controls and the remaining method comparisons.
+`finite_area_shell --coarse-patches 12` selects the primary configuration's
+preconditioner for a separately labeled static traction replay. Its default
+remains zero patches; the allocation fix preserves exact load-map values.
+
 `pad_absolute_errors --data-root RUN_ROOT --output NEW_DATA_PATH` rebuilds the
 normal81-row absolute/relative table from original complete columns and rehashes
 its actual fields and qualification inputs. Submit this CPU postprocessing with

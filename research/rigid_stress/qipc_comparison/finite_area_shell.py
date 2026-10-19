@@ -32,10 +32,11 @@ def main():
     cli.add_argument("--velocity-tolerance", type=float, default=1e-10)
     cli.add_argument("--force-tolerance", type=float, default=1e-7)
     cli.add_argument("--iterations", type=int, default=8000)
+    cli.add_argument("--coarse-patches", type=int, default=0)
     cli.add_argument("--solve-pad-contact", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
-    assert args.dt > 0 and args.outer_iterations > 0
+    assert args.dt > 0 and args.outer_iterations > 0 and args.coarse_patches >= 0
     args.output.mkdir(parents=True, exist_ok=False)
     (args.output / "frames").mkdir()
     with np.load(args.mesh) as saved:
@@ -99,7 +100,7 @@ def main():
             pcg_tolerance=args.tolerance,
             pcg_velocity_tolerance=args.velocity_tolerance,
             pcg_max_iterations=args.iterations,
-            n_coarse_patches=0,
+            n_coarse_patches=args.coarse_patches,
         ),
         show_viewer=False,
     )

@@ -1,5 +1,17 @@
 # Current QIPC reference comparison
 
+The `prescribed-reference-controls-v1` packet retains209 verified payloads
+totaling2,776,889 bytes for the terminal C2 reference qualification, signed
+tensor controls, exact allocation repair and original Shell replay OOM.
+Full fields/columns remain on data. Active Shell replay/native decomposition
+contribute immutable submitted inputs only; their results and active friction
+writers are excluded. No runtime data, environment or link is migrated.
+
+The companion `prescribed-shell250-terminal-v1` adds25 verified payloads
+totaling455,148 bytes for the admitted static replay, all3 iteration records
+and frame/rest identities. Full arrays stay on data; the follow-up three-field
+comparison contributes immutable submitted inputs only.
+
 The `normal-absolute-errors-v1` packet retains84 verified payloads totaling
 1,472,625 bytes: terminal81-row dimensional normal errors,69 input identities,
 CPU-only metadata controls and immutable submission/cancellation records.

@@ -1,0 +1,12 @@
+{
+  "scheduler": "728882_0|FAILED|00:03:27|1:0|\n728882_0.batch|FAILED|00:03:27|1:0|7592K\n728882_0.0|OUT_OF_MEMORY|00:03:26|0:125|31821964K\n",
+  "before_solver_start_json_exists": false,
+  "source_points_shape": [
+    57158,
+    3
+  ],
+  "diagnosis": "Each selected barycentric row retained the complete candidate-face array. Copying only that row preserves exact mapped forces and reduces measured5000-face/200-source allocation peak from25308379 to1400691 bytes.",
+  "control": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/shell-transfer-memory-control-v1/group0/control/result.json",
+  "retry_campaign": "finite-area-prescribed-shell250-v2",
+  "physics_or_tolerance_changed": false
+}

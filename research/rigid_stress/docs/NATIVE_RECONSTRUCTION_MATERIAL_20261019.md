@@ -124,7 +124,12 @@ changes these field-contrast metrics by at most4.723e-9 in absolute relative
 units. The actual400-step dynamics take3557.36s in this one execution; this
 control supplies no primary performance comparison or statistical speedup.
 
-## Prescribed finite-area control remains spatially incomplete
+## Prescribed finite-area control at this checkpoint
+
+The later [reference qualification](PRESCRIBED_REFERENCE_QUALIFICATION_20261019.md)
+passes the fixed125um/three-wall spatial/integration gates. The measurements
+below retain this earlier checkpoint's scope, including its failed two-wall
+surface control. Same-load method comparisons remain separately required.
 
 The independent prescribed C2 pressure retains0.1N and its predeclared2mm
 radius. The verified long-index adapter control728702 agrees with the retained

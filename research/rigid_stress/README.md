@@ -1,5 +1,11 @@
 # Native rigid stress recovery
 
+The [prescribed-load reference update](docs/PRESCRIBED_REFERENCE_QUALIFICATION_20261019.md)
+passes25 fixed spatial/integration checks for the independent C2 load. Signed
+tensor controls, an exact load-map memory repair and the matching250um Shell
+static replay pass separately; native/Shell three-field comparisons remain in progress.
+Physical-pad friction qualification and final delivery remain open.
+
 The latest [dimensional normal-error audit](docs/NORMAL_ABSOLUTE_ERRORS_20261019.md)
 adds81 absolute/relative metrics across the nine admitted normal comparisons,
 including complete-column membrane and bending RMS in N/m and N. Fine friction

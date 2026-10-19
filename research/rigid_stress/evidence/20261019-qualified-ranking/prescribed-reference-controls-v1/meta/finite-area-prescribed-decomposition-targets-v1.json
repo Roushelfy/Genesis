@@ -1,0 +1,22 @@
+{
+  "scope": "Independent fixed C2 pressure,0.1N,2mm radius. Native fields have two pole sources; these are separate from full-source physical-pad histories.",
+  "field_order": [
+    "candidate",
+    "same_mesh_independent_C2_reference",
+    "qualified_fine_C2_reference"
+  ],
+  "first_difference": "Native source-profile reconstruction difference on its unchanged coarse elastic domain; same-RHS core agreement independently verified.",
+  "second_difference": "Independent prescribed-C2 discretization/geometry difference from coarse to fine domain.",
+  "decomposition": "Integrate signed tensor differences and their cross term; no subtraction of scalar RMS errors.",
+  "quadratures": [
+    9,
+    25
+  ],
+  "analytic_control": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/column-decomposition-controls-v1/group0/analytic/result.json",
+  "analytic_controls_passed": 7,
+  "sampling_field_target": 0.005,
+  "sampling_peak_target": 0.01,
+  "reference_qualification_required_before_ranks": true,
+  "physical_pad_contact_qualified_by_this": false,
+  "whole_goal_complete": false
+}
