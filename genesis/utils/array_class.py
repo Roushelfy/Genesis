@@ -1556,13 +1556,16 @@ class MPRState:
     witness_b: qd.Tensor
 
 
-def get_mpr_state(B_, save_witness=False):
+def get_mpr_state(B_):
+    # Portal surface points also determine the physical contact midpoint. Keep
+    # their arithmetic and scratch layout independent of optional contact-witness
+    # consumers, which otherwise change floating-point reassociation.
     return MPRState(
         simplex_support=get_mpr_simplex_support(B_),
         simplex_size=V(dtype=gs.qd_int, shape=(B_,)),
         portal_status=V(dtype=gs.qd_int, shape=(B_,)),
-        witness_a=V_VEC(3, dtype=gs.qd_float, shape=maybe_shape((B_,), save_witness)),
-        witness_b=V_VEC(3, dtype=gs.qd_float, shape=maybe_shape((B_,), save_witness)),
+        witness_a=V_VEC(3, dtype=gs.qd_float, shape=(B_,)),
+        witness_b=V_VEC(3, dtype=gs.qd_float, shape=(B_,)),
     )
 
 

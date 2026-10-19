@@ -130,8 +130,12 @@ def test_native_collision_witnesses_and_lifecycle(tmp_path, use_gjk, patch):
         for i_b, count in enumerate(counts):
             if i_field in (0, 1, 5):
                 np.testing.assert_array_equal(without[i_b, :count], with_witness[i_b, :count])
+            elif not use_gjk and i_field == 2:
+                # An auxiliary witness consumer must not perturb MPR contact
+                # positions and amplify one rounding unit along a rollout.
+                np.testing.assert_array_equal(without[i_b, :count], with_witness[i_b, :count])
             else:
-                # Added stores can change fast-math instruction scheduling by one FP64 rounding unit.
+                # Other optional witness stores retain their roundoff bound.
                 scale = 1.0 if i_field == 3 else 0.01
                 np.testing.assert_allclose(
                     without[i_b, :count], with_witness[i_b, :count], rtol=rounding, atol=rounding * scale
