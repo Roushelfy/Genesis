@@ -1,0 +1,526 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728396",
+      "SLURM_ARRAY_JOB_ID": "728283",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-56ea077b-99d7-8845-1f28-8cfa2174feb6, 00000000:45:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "passed": true,
+  "cases": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr",
+      "method": "dpr",
+      "checks": {
+        "complete_admitted_history": true,
+        "expected_step_count": true,
+        "every_environment_present": true,
+        "all_observations_valid": true,
+        "independent_commands_and_cadence": true,
+        "all_single_env_field_controls": true,
+        "actual_source_isolation": true,
+        "whole_interval_accounting": true
+      },
+      "fields": [
+        {
+          "env": 0,
+          "level": 0,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.4420361495986933e-11,
+          "raw_peak_relative_difference": 8.293365993949919e-13,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        },
+        {
+          "env": 0,
+          "level": 1,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.4397848240479825e-11,
+          "raw_peak_relative_difference": 3.872457909892546e-13,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        },
+        {
+          "env": 0,
+          "level": 2,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.4397848240479825e-11,
+          "raw_peak_relative_difference": 3.872457909892546e-13,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        },
+        {
+          "env": 0,
+          "level": 3,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.4397848240479825e-11,
+          "raw_peak_relative_difference": 3.872457909892546e-13,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        },
+        {
+          "env": 1,
+          "level": 0,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.448558740689361e-11,
+          "raw_peak_relative_difference": 1.3677947663381929e-12,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        },
+        {
+          "env": 1,
+          "level": 1,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.446300866784291e-11,
+          "raw_peak_relative_difference": 3.4217073618947325e-13,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        },
+        {
+          "env": 1,
+          "level": 2,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.446300866784291e-11,
+          "raw_peak_relative_difference": 3.4217073618947325e-13,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        },
+        {
+          "env": 1,
+          "level": 3,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.446300866784291e-11,
+          "raw_peak_relative_difference": 3.4217073618947325e-13,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        },
+        {
+          "env": 2,
+          "level": 0,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.4458953795733317e-11,
+          "raw_peak_relative_difference": 1.886268918838141e-12,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        },
+        {
+          "env": 2,
+          "level": 1,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.44353648224488e-11,
+          "raw_peak_relative_difference": 7.864819906444609e-13,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        },
+        {
+          "env": 2,
+          "level": 2,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.44353648224488e-11,
+          "raw_peak_relative_difference": 7.864819906444609e-13,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        },
+        {
+          "env": 2,
+          "level": 3,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.44353648224488e-11,
+          "raw_peak_relative_difference": 7.864819906444609e-13,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        },
+        {
+          "env": 3,
+          "level": 0,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.440560436724763e-11,
+          "raw_peak_relative_difference": 9.037215420448774e-13,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        },
+        {
+          "env": 3,
+          "level": 1,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.438475489023581e-11,
+          "raw_peak_relative_difference": 6.974421040695233e-13,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        },
+        {
+          "env": 3,
+          "level": 2,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.438475489023581e-11,
+          "raw_peak_relative_difference": 6.974421040695233e-13,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        },
+        {
+          "env": 3,
+          "level": 3,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": 2.438475489023581e-11,
+          "raw_peak_relative_difference": 6.974421040695233e-13,
+          "actual_motion_source_relative_error": 0.0,
+          "source_wrench_relative_error": 0.0
+        }
+      ],
+      "cost": {
+        "completed": true,
+        "mechanically_admitted": true,
+        "method": "dpr",
+        "envs": 4,
+        "output_mode": "full",
+        "stress_stride": 20,
+        "primary_timing": true,
+        "samples": [
+          {
+            "level": 0,
+            "warmup": true,
+            "steps": 200,
+            "wall_seconds": 39.24565704999259,
+            "step_latency_ms": 196.22828524996294,
+            "aggregate_env_steps_per_second": 20.384421108835813,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 207175680
+          },
+          {
+            "level": 1,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 8.469404008006677,
+            "step_latency_ms": 42.347020040033385,
+            "aggregate_env_steps_per_second": 94.45765005940301,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 207175680
+          },
+          {
+            "level": 2,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 8.520399464992806,
+            "step_latency_ms": 42.60199732496403,
+            "aggregate_env_steps_per_second": 93.89231142118469,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 207175680
+          },
+          {
+            "level": 3,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 8.49003831401933,
+            "step_latency_ms": 42.45019157009665,
+            "aggregate_env_steps_per_second": 94.22807888616774,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 207175680
+          }
+        ],
+        "measured_repeats": 3,
+        "median_latency_ms": 42.45019157009665,
+        "minimum_latency_ms": 42.347020040033385,
+        "maximum_latency_ms": 42.60199732496403,
+        "incomplete_level": null,
+        "scope": "One synchronized wall interval per complete continuous load level, including actual native/pad or Shell integration, requested recovery, host output, all per-step mechanical admission calculations, endpoint field/certificate output and step-journal I/O. Per-phase timers are disabled. Initial complete levels are warmup; measured levels are consecutive warm repeats, not independent fresh-process replicates. This is end-to-end timing of the declared admitted research workflow, not pure production-solver latency. PyTorch endpoint allocations exclude Quadrants and are not whole-device peak memory. Use this exact run's mechanical audit; separate preflights cannot admit a failed primary run."
+      },
+      "run_identity": {
+        "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+        "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+        "hostname": "rtx-209-067",
+        "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+        "environment": {
+          "SLURM_JOB_ID": "728396",
+          "SLURM_ARRAY_JOB_ID": "728283",
+          "SLURM_ARRAY_TASK_ID": "2",
+          "CUDA_VISIBLE_DEVICES": "0",
+          "GENESIS_IMAGE_VER": "1_26"
+        },
+        "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-56ea077b-99d7-8845-1f28-8cfa2174feb6, 00000000:45:00.0, 595.71.05, 97887 MiB\n"
+      },
+      "setup_seconds": 58.8222352709854
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/start.json",
+      "bytes": 3004,
+      "sha256": "5a7da5027e541165b5b22b20d268aeffc222b8d243d1a0cc9390472495cb206c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/result.json",
+      "bytes": 10117,
+      "sha256": "d133ddb40e8eafcec89411f2b4b1c3f873f22f639580de3e98c22ee790e09df2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/steps.jsonl",
+      "bytes": 2761706,
+      "sha256": "8626eef4e336c433f6f10ec759645eb943319f8aa3096915f813522364e41495"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/cost.json",
+      "bytes": 2805,
+      "sha256": "8adadd4e673f07e494597e7027576a503dc8645ffb9a39f9f8f19407dabf26ce"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env0-stress-level0.npz",
+      "bytes": 8061001,
+      "sha256": "0324f59b011c9e879707088b905ab460435400568c2b4c8fa62070996a034b3c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env0-level0.npz",
+      "bytes": 398657,
+      "sha256": "0e36a8a1bdc5c674d57ff9d873b165c17db5555073c349ab05cb0b9a46590fe6"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env0-stress-level1.npz",
+      "bytes": 8062964,
+      "sha256": "7f2390009bae2578ccf0dcdaf1c9ace43343d2836d08da05434b98249bfd648d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env0-level1.npz",
+      "bytes": 398751,
+      "sha256": "d1f299b5a8f8de8cfd9e78511e90184d1052854e0445e782c5e39bdfe2e117f3"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env0-stress-level2.npz",
+      "bytes": 8070888,
+      "sha256": "7d5672261c64b2217c4922447ce7c79790c398c801516cf6b2d1fbe42ccb07cc"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env0-level2.npz",
+      "bytes": 399034,
+      "sha256": "dd44623e79dfe0c0702f7c0b628dbd707d76c7a847d8dfb82736ae6505f3a349"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env0-stress-level3.npz",
+      "bytes": 8075020,
+      "sha256": "72906449b654de260243ae42dfb9abfe26b349b2519cdcd5bcccf4ca9a62610d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env0-level3.npz",
+      "bytes": 399048,
+      "sha256": "0356709445551761bf1aaa02af17c8883cc67858e3cc47420dfd7dbbbcee0849"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env1-stress-level0.npz",
+      "bytes": 8060119,
+      "sha256": "27caa5496db66a0ba0b347914c39503f3e3c886eda353223ad55f77f71f64931"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env1-level0.npz",
+      "bytes": 398703,
+      "sha256": "742042bad4c70809eceeedbb95a14cccee48582d3322b21333081dce45a60608"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env1-stress-level1.npz",
+      "bytes": 8065187,
+      "sha256": "3b2984723fc8eebd647f4d22a8b6168cdf1b6b0d9c2b7bd6e65141d595f42772"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env1-level1.npz",
+      "bytes": 398775,
+      "sha256": "639d4363fcbb8b3add7971623efcbe1f9b0cb4da8fa664e531be74173fd8ff66"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env1-stress-level2.npz",
+      "bytes": 8091135,
+      "sha256": "2fa514fbaf94bc6e4f86df56b00c2d961ac692f05b8650bc3c4ae7563148ad73"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env1-level2.npz",
+      "bytes": 398922,
+      "sha256": "b03a1d3d2dc2b27d126bfcaae91bf73ca080ad0f743c2d398b398169984eec5a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env1-stress-level3.npz",
+      "bytes": 8077414,
+      "sha256": "3bcd0d26d9949ed2edbaf86a162ba7682283fc5fcf0ee3d4ea3d5d8c8d47695d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env1-level3.npz",
+      "bytes": 399611,
+      "sha256": "d0a05cdbb6975dbab95e5909c55ec02a99073ab40db66615f2d6a817bdbd9b29"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env2-stress-level0.npz",
+      "bytes": 8060271,
+      "sha256": "2b7cbc3d6e06375611f120909d0f6c0a622d79b2de7dfc5daa957b2898ce23a8"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env2-level0.npz",
+      "bytes": 398639,
+      "sha256": "fa54397d8229a696ac39b3338e6b5a99dabd539035afd831c857aa9322ec14ef"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env2-stress-level1.npz",
+      "bytes": 8065845,
+      "sha256": "f5d1a18edd2d58efd49f715cc3307c7a18387b3f22a276fe257b9c4053aacc6d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env2-level1.npz",
+      "bytes": 398701,
+      "sha256": "faabcbc84b51767db66102df0cf487a1954d72a1983bbf6b46b36c6b610a9136"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env2-stress-level2.npz",
+      "bytes": 8063317,
+      "sha256": "6876df87ce130d8c114985e2014c4d68186c52ce51f47ae8192ff7fbc8ebc343"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env2-level2.npz",
+      "bytes": 399018,
+      "sha256": "53367b716fc7f50c32c122f7d96dbd70605dbde9cea5ebe1e0b9b573d7ad47f7"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env2-stress-level3.npz",
+      "bytes": 8067636,
+      "sha256": "14400a1ac1d6f50bec7265e8fbbdc970ffc5b6952b03d8eda7fa77d3e17b47ba"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env2-level3.npz",
+      "bytes": 399045,
+      "sha256": "e070e767ae9f691a156260832b4cab171d1ce7b9d11e86fb6825adac2d72e2b4"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env3-stress-level0.npz",
+      "bytes": 8062533,
+      "sha256": "797887f7ae69614aa4d256874c5a588d13edf509492733f92a3df370798888db"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env3-level0.npz",
+      "bytes": 398657,
+      "sha256": "5b5c3992c70edb5d03796c7c217af4ebeb92e80e4a92b72e11c60658ae90db4e"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env3-stress-level1.npz",
+      "bytes": 8065790,
+      "sha256": "f030af1b54d1c7d2f71e44cae7280c87c6d4ef6b183701acf4e5f2af36d8c219"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env3-level1.npz",
+      "bytes": 398682,
+      "sha256": "3fbe41705bb873ecdd2c86f3316ec973c4be4aecdca128941a0aa3c5bbbea17b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env3-stress-level2.npz",
+      "bytes": 8104174,
+      "sha256": "1dd9f6b5bcad601b121e2a289aad0bf69603497dc42ab3f7a92dc11e5f242f3a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env3-level2.npz",
+      "bytes": 398917,
+      "sha256": "18c7249656791769d497526fa7339b5803b0422c435ee3a36082a7a67c9580c5"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env3-stress-level3.npz",
+      "bytes": 8104810,
+      "sha256": "5ecb581c50808a3b1ca5e2a9e19529f65e3a954c162c0fcf9eaa9dbf207d0938"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-batch4-v1/group2/dpr/frames/env3-level3.npz",
+      "bytes": 399108,
+      "sha256": "537511f448d4fa00aedea17b90116bcb43374ba629df4157af85b09aaea56215"
+    }
+  ],
+  "scope": "Independent batched trajectories and complete endpoint tensors compared with admitted same-mesh B1 normal equilibria at0.1/0.3/1N. Actual per-environment motion forces are checked against recovery input packets; fixed0.5% field/1% peak numerical-sensitivity gates apply. This audits batch conformance and measured-history admission, not continuum stress accuracy or a sufficient number of performance repeats."
+}

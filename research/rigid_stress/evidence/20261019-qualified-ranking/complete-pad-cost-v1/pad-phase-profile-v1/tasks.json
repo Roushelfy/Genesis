@@ -1,0 +1,39 @@
+[
+  [
+    {
+      "name": "dpr",
+      "module": "research.rigid_stress.qipc_comparison.pad_phase_profile",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/phase-dpr-v1.json",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "scr",
+      "module": "research.rigid_stress.qipc_comparison.pad_phase_profile",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/phase-scr-v1.json",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shell",
+      "module": "research.rigid_stress.qipc_comparison.pad_phase_profile",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/phase-shell-v1.json",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ],
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-physical-pad"
+    }
+  ]
+]

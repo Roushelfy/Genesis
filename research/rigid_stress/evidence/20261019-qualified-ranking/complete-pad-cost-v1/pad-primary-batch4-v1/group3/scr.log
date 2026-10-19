@@ -1,0 +1,138 @@
+[38;5;226m[Genesis] [12:15:34] [WARNING] At least one of the meshes contain many faces (8992). Consider setting 'morph.decimate=True' to speed up collision detection and improve numerical stability.[0m
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/venvs/genesis-shell-contact/lib/python3.10/site-packages/quadrants/_test_tools/warnings_helper.py:11: UserWarning: cannot create weak reference to 'numpy.float64' object. Template mapper caching disabled.
+  warnings.warn(message)
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py:74: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py:82: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py:74: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py:82: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[W 10/19/26 12:15:59.419 1132176] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1042_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 210, in kernel_fit_tractions_impl:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[W 10/19/26 12:15:59.419 1132176] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1042_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 66, in func_dual_warp:
+                        operator[a, a] = 1.0
+                        ^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/19/26 12:15:59.419 1132176] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1042_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 66, in func_dual_warp:
+                        operator[a, a] = 1.0
+                        ^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/19/26 12:15:59.419 1132176] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1042_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 66, in func_dual_warp:
+                        operator[a, a] = 1.0
+                        ^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/19/26 12:15:59.419 1132176] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1042_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 67, in func_dual_warp:
+                    operator[3, 1], operator[3, 2] = -relative[2], relative[1]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/19/26 12:15:59.419 1132176] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1042_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 67, in func_dual_warp:
+                    operator[3, 1], operator[3, 2] = -relative[2], relative[1]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/19/26 12:15:59.419 1132176] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1042_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 68, in func_dual_warp:
+                    operator[4, 0], operator[4, 2] = relative[2], -relative[0]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/19/26 12:15:59.419 1132176] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1042_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 68, in func_dual_warp:
+                    operator[4, 0], operator[4, 2] = relative[2], -relative[0]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/19/26 12:15:59.419 1132176] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1042_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 69, in func_dual_warp:
+                    operator[5, 0], operator[5, 1] = -relative[1], relative[0]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/19/26 12:15:59.419 1132176] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1042_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 69, in func_dual_warp:
+                    operator[5, 0], operator[5, 1] = -relative[1], relative[0]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py:74: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py:82: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py:74: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py:82: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[W 10/19/26 12:16:00.886 1132176] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1042_1`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 210, in kernel_fit_tractions_impl:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py:74: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py:82: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py:74: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py:82: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[W 10/19/26 12:16:02.425 1132176] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1042_2`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 210, in kernel_fit_tractions_impl:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[W 10/19/26 12:16:12.737 1132176] QuadrantsWarning
+While compiling `kernel_scatter_cached_tractions_c1046_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking/genesis/engine/solvers/rigid/stress/cooperative_scatter.py", line 186, in kernel_scatter_cached_tractions:
+                cone_valid = qd.simt.subgroup.all_true(cone_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32

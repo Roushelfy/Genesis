@@ -25,6 +25,12 @@ but500-to250um Shell tangent/bending changes reach35%/56%; the fixed250um
 normal comparison is not a mesh-independent Shell accuracy claim. Fine
 reference qualification and final cost/cross-case synthesis remain open.
 
+The [complete normal cost checkpoint](COMPLETE_PAD_COST_20261019.md) finishes
+the24-row B1/B4 every-step/sparse full/max matrix,12 memory profiles and
+three separately admitted synchronized phase profiles. The aggregation
+rehashes591 audit inputs and requires exact own-run admission. Fine nonlinear
+friction spatial qualification and final cross-case conclusions remain open.
+
 ## Declared acceptance and comparison scope
 
 Reference qualification requires a refinement trend with <=2% change in the

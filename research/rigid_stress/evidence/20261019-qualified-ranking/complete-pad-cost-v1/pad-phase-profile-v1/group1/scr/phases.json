@@ -1,0 +1,194 @@
+{
+  "records": [
+    {
+      "level": null,
+      "phase": "scene_build_inclusive",
+      "calls": 2,
+      "inclusive_seconds": 57.51319242801401,
+      "exclusive_seconds": 57.51319242801401
+    },
+    {
+      "level": null,
+      "phase": "motion_host_readback",
+      "calls": 1,
+      "inclusive_seconds": 6.494700210168958e-05,
+      "exclusive_seconds": 6.494700210168958e-05
+    },
+    {
+      "level": null,
+      "phase": "stress_host_readback",
+      "calls": 2,
+      "inclusive_seconds": 0.0005194339901208878,
+      "exclusive_seconds": 0.0005194339901208878
+    },
+    {
+      "level": null,
+      "phase": "recovery_preprocessing_inclusive",
+      "calls": 1,
+      "inclusive_seconds": 21.01822586200433,
+      "exclusive_seconds": 0.226677719008876
+    },
+    {
+      "level": 0,
+      "phase": "motion_host_readback",
+      "calls": 2800,
+      "inclusive_seconds": 0.09298147488152608,
+      "exclusive_seconds": 0.09298147488152608
+    },
+    {
+      "level": 0,
+      "phase": "physical_pad_geometry",
+      "calls": 200,
+      "inclusive_seconds": 0.14037982680019923,
+      "exclusive_seconds": 0.14037982680019923
+    },
+    {
+      "level": 0,
+      "phase": "physical_pad_contact_solve",
+      "calls": 200,
+      "inclusive_seconds": 1.709583378949901,
+      "exclusive_seconds": 1.709583378949901
+    },
+    {
+      "level": 0,
+      "phase": "driver_host_readback",
+      "calls": 800,
+      "inclusive_seconds": 0.0345372318115551,
+      "exclusive_seconds": 0.0345372318115551
+    },
+    {
+      "level": 0,
+      "phase": "scene_step_inclusive",
+      "calls": 200,
+      "inclusive_seconds": 3.1368039167136885,
+      "exclusive_seconds": 3.1368039167136885
+    },
+    {
+      "level": 0,
+      "phase": "contact_packet_upload",
+      "calls": 200,
+      "inclusive_seconds": 0.046995715238153934,
+      "exclusive_seconds": 0.046995715238153934
+    },
+    {
+      "level": 0,
+      "phase": "intrinsic_contact_reconstruction",
+      "calls": 200,
+      "inclusive_seconds": 247.82239200093318,
+      "exclusive_seconds": 247.82239200093318
+    },
+    {
+      "level": 0,
+      "phase": "elastic_reconstruction",
+      "calls": 200,
+      "inclusive_seconds": 275.0956240289961,
+      "exclusive_seconds": 275.0956240289961
+    },
+    {
+      "level": 0,
+      "phase": "kernel_accept",
+      "calls": 200,
+      "inclusive_seconds": 0.09551379503682256,
+      "exclusive_seconds": 0.09551379503682256
+    },
+    {
+      "level": 0,
+      "phase": "stress_host_readback",
+      "calls": 1401,
+      "inclusive_seconds": 0.18235945687047206,
+      "exclusive_seconds": 0.18235945687047206
+    },
+    {
+      "level": 0,
+      "phase": "stress_observation_inclusive",
+      "calls": 200,
+      "inclusive_seconds": 525.2112639910483,
+      "exclusive_seconds": 1.9683789939736016
+    },
+    {
+      "level": 1,
+      "phase": "motion_host_readback",
+      "calls": 2800,
+      "inclusive_seconds": 0.09262746013700962,
+      "exclusive_seconds": 0.09262746013700962
+    },
+    {
+      "level": 1,
+      "phase": "physical_pad_geometry",
+      "calls": 200,
+      "inclusive_seconds": 0.06686686887405813,
+      "exclusive_seconds": 0.06686686887405813
+    },
+    {
+      "level": 1,
+      "phase": "physical_pad_contact_solve",
+      "calls": 200,
+      "inclusive_seconds": 0.9001383770664688,
+      "exclusive_seconds": 0.9001383770664688
+    },
+    {
+      "level": 1,
+      "phase": "driver_host_readback",
+      "calls": 800,
+      "inclusive_seconds": 0.03265097105759196,
+      "exclusive_seconds": 0.03265097105759196
+    },
+    {
+      "level": 1,
+      "phase": "scene_step_inclusive",
+      "calls": 200,
+      "inclusive_seconds": 0.2013290730828885,
+      "exclusive_seconds": 0.2013290730828885
+    },
+    {
+      "level": 1,
+      "phase": "contact_packet_upload",
+      "calls": 200,
+      "inclusive_seconds": 0.04945025281631388,
+      "exclusive_seconds": 0.04945025281631388
+    },
+    {
+      "level": 1,
+      "phase": "intrinsic_contact_reconstruction",
+      "calls": 200,
+      "inclusive_seconds": 277.17019632592564,
+      "exclusive_seconds": 277.17019632592564
+    },
+    {
+      "level": 1,
+      "phase": "elastic_reconstruction",
+      "calls": 200,
+      "inclusive_seconds": 0.4078403889143374,
+      "exclusive_seconds": 0.4078403889143374
+    },
+    {
+      "level": 1,
+      "phase": "kernel_accept",
+      "calls": 200,
+      "inclusive_seconds": 0.014509938075207174,
+      "exclusive_seconds": 0.014509938075207174
+    },
+    {
+      "level": 1,
+      "phase": "stress_host_readback",
+      "calls": 1401,
+      "inclusive_seconds": 0.16844525129999965,
+      "exclusive_seconds": 0.16844525129999965
+    },
+    {
+      "level": 1,
+      "phase": "stress_observation_inclusive",
+      "calls": 200,
+      "inclusive_seconds": 279.74435255743447,
+      "exclusive_seconds": 1.933910400402965
+    }
+  ],
+  "native_build_timings": {
+    "topology_seconds": 2.1694288079743274,
+    "operators_seconds": 2.655677168018883,
+    "factor_seconds": 2.1832995116710663e-05,
+    "inverse_seconds": 1.4970137272030115e-06,
+    "surface_inverse_seconds": 1.1004973202943802e-05
+  },
+  "primary_timing": false
+}

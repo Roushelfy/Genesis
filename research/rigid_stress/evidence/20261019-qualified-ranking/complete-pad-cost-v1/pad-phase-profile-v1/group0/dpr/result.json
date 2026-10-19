@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "checks": {
+    "own_complete_history_admitted": true,
+    "field_conformance": true,
+    "explicitly_non_primary": true,
+    "warm_phase_records": true
+  },
+  "primary_timing": false,
+  "method": "dpr",
+  "field_relative_l2": 3.313553116815395e-11,
+  "peak_relative_difference": 2.3123503112287835e-11,
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-phase-profile-v1/group0/dpr/run/result.json",
+      "bytes": 1781,
+      "sha256": "dedb33093d41ef19050ffa2d113c92fff8835d9a95e6b2dd0047cb16cf507aca"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-phase-profile-v1/group0/dpr/run/start.json",
+      "bytes": 2847,
+      "sha256": "9108880f0b5fcb58b6ab6ff34367c02d036841f8ea9e2fd173a03125f28a0761"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-phase-profile-v1/group0/dpr/run/cost.json",
+      "bytes": 2017,
+      "sha256": "7d4b40ca4cbe7432b6d9532ce75b4d28dce3a5dbc9bfc8ba0b1ae9c5d51f2dc9"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-phase-profile-v1/group0/dpr/run/steps.jsonl",
+      "bytes": 719773,
+      "sha256": "0cc5bff3047739d343b04c9b08fdfb6e1ce473ccaba0d615178c655befd3cdeb"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-phase-profile-v1/group0/dpr/audit/result.json",
+      "bytes": 3946,
+      "sha256": "f23f246d3f16ff90eb0610c9ac8bc8d286d0a8750d6b9c8b7f565ac8223c9e21"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-phase-profile-v1/group0/dpr/run/frames/stress-level1.npz",
+      "bytes": 8074892,
+      "sha256": "525e5a64fef23644274b75b0411e8c4d3adac436f0633a4a1ee01f80304a7ec2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    }
+  ],
+  "scope": "Intrusive CUDA-synchronized Python-call phase profile on its own full400-step admitted trajectory. Level0 is warmup and level1 is measured; None denotes preprocessing. Inclusive times overlap when calls nest; exclusive times subtract nested measured calls, not all uninstrumented work. Source files and solver arithmetic are unchanged; process-local wrappers are restored. Shell contact and elastic correction are one coupled nonlinear solve and are reported jointly, not split into invented costs. All timing from this process is diagnostic and cannot replace a primary wall-time run."
+}
