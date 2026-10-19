@@ -1,5 +1,10 @@
 # Goal: compare DPR, SCR and Shell with two parallel compression plates
 
+**Superseded as the active goal, 2026-10-18:** follow
+[QUALIFIED_STRESS_RANKING_GOAL.md](QUALIFIED_STRESS_RANKING_GOAL.md).
+The bounded diagnostic study below is historical. Its unsupported-quantity
+completion clause does not close the new physical error-ranking goal.
+
 User direction,2026-10-18: use a simple scene, such as two parallel planes
 squeezing the hollow egg, for the stress-error comparison. Remove the Franka
 robot, joint/controller mapping and full grasp lifecycle from the **primary

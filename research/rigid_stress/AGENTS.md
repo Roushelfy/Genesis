@@ -1,19 +1,21 @@
 # Working on native rigid stress recovery
 
-**Execution-agent handoff,2026-10-18:** the primary accuracy benchmark is now
-two parallel rigid plates compressing the hollow egg. Read
-[the new goal](docs/PARALLEL_PLATE_COMPARISON_GOAL.md) before further long jobs.
-Start with common-force quasi-static loading, then bounded friction controls.
-Full Franka reference/controller/convergence work is no longer a completion
-gate; keep its existing results and useful engineering cost evidence.
+**Execution-agent handoff, 2026-10-18:** finish qualified DPR / SCR / Shell
+stress-error rankings on the simple full-egg parallel-plate benchmark. Read
+[the active goal](docs/QUALIFIED_STRESS_RANKING_GOAL.md) before further work.
+The bounded diagnostic study is complete; the physical comparison is not.
+Its unsupported-quantity clause cannot close this new goal.
 
-Read [GOAL.md](GOAL.md), [docs/PARALLEL_PLATE_COMPARISON_GOAL.md](docs/PARALLEL_PLATE_COMPARISON_GOAL.md),
-[README.md](README.md) and [docs/RUNNING.md](docs/RUNNING.md) first.
-Compare DPR, SCR and original PR22 Shell against qualified QIPC solid FEM.
-Preserve occasional full-spatial keyframes, short-window stage profiling,
-measured tolerance selection, continuous mechanical history and failure checks.
-Assess already running work at a safe boundary without hot-editing captured
-sources or discarding evidence. Do not restart broad Franka qualification sweeps.
+Read [GOAL.md](GOAL.md),
+[docs/QUALIFIED_STRESS_RANKING_GOAL.md](docs/QUALIFIED_STRESS_RANKING_GOAL.md),
+[README.md](README.md) and [docs/RUNNING_PARALLEL_PLATES.md](docs/RUNNING_PARALLEL_PLATES.md).
+Repair SCR's two rejection mechanisms, establish a spatially resolved physical
+reference and obtain admitted Shell fields. Necessary minimal engine repairs
+in isolated pinned variants are authorized; keep original baselines and label
+all variants. Preserve complete-field keyframes, measured admission and
+uncertainty, short profiling/CPU controls and continuous mechanical history.
+Full Franka qualification remains outside this goal. Assess running jobs at
+a safe boundary without hot-editing captured sources or discarding evidence.
 
 Reuse the preceding [shell report](docs/SHELL_COMPARISON_RESULTS_20261018.md),
 [running guide](docs/RUNNING_SHELL_COMPARISON.md) and
@@ -22,11 +24,11 @@ evidence and cleanup remain accepted within scope. Pin each source; preserve
 the unmodified external baselines and distinguish diagnostic/repaired variants.
 Historical campaigns do not create unrelated active tasks.
 
-Follow the storage exception in [DATA_LOCATION.md](../../DATA_LOCATION.md):
-the user explicitly permits this task's existing home fallback within its4GB
-persistent-output bound while data remains unwritable. New submissions must
-record `--allow-home-output`; private caches stay node-local. This exception
-does not alter other projects or authorize an unbounded home-data sweep.
+Follow [DATA_LOCATION.md](../../DATA_LOCATION.md). The latest successful data
+probe restored data as the destination for new plate runs. Keep private caches
+node-local and preserve existing outputs in place. The historical authorized
+home fallback remains bounded at4GB; it is not the preferred destination and
+does not authorize an unbounded home-data sweep.
 
 Follow root CLAUDE.md and CODING_GUIDELINES.md when editing engine code.
 The feature belongs to Genesis's existing rigid solver; all production numerical
