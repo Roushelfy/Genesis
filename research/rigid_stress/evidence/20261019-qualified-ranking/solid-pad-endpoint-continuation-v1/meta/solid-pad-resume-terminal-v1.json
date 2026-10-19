@@ -1,0 +1,80 @@
+{
+  "expected": {
+    "730362_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730363_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730366_0": [
+      "COMPLETED",
+      "0:0"
+    ]
+  },
+  "observed": {
+    "730362_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730362_0.batch": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730362_0.0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730363_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730363_0.batch": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730363_0.0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730366_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730366_0.batch": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730366_0.0": [
+      "COMPLETED",
+      "0:0"
+    ]
+  },
+  "sacct": "730362_0|COMPLETED|0:0\n730362_0.batch|COMPLETED|0:0\n730362_0.0|COMPLETED|0:0\n730363_0|COMPLETED|0:0\n730363_0.batch|COMPLETED|0:0\n730363_0.0|COMPLETED|0:0\n730366_0|COMPLETED|0:0\n730366_0.batch|COMPLETED|0:0\n730366_0.0|COMPLETED|0:0\n",
+  "input_provenance_checks": 15,
+  "resumed_dynamics_equivalence_checks": 33,
+  "inherited_prefix_steps": 200,
+  "new_steps": 200,
+  "full_history_steps": 400,
+  "differences": {
+    "displacement_m_relative_l2": 3.978011992904632e-10,
+    "stress_pa_relative_l2": 4.674864947813279e-10,
+    "source_forces_n_relative_l2": 9.886057999734316e-10,
+    "maximum_nodal_velocity_difference_m_per_s": 2.46566372720387e-12,
+    "tangent_relative_l2": 5.781572426135488e-10,
+    "membrane_relative_l2": 5.537022858616411e-10,
+    "bending_relative_l2": 6.07596182071854e-10,
+    "outer_tangent_relative_l2": 5.910626799455117e-10,
+    "inner_tangent_relative_l2": 5.826286828267496e-10,
+    "raw_mises_relative_change": 4.2499381791571977e-10,
+    "raw_tension_relative_change": 4.2510706066423154e-10,
+    "common_mises": 4.0211900531003724e-10,
+    "common_tension": 4.2525368419479745e-10
+  },
+  "live_parent_rejected": true,
+  "fine_reference_resumed": false,
+  "v1_worker_matches_predeclared_contract": true,
+  "v2_changes_provenance_validation_only": true,
+  "whole_goal_complete": false
+}

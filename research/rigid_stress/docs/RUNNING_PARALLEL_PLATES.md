@@ -752,3 +752,22 @@ profiles cannot admit primary timings. Run with CPU-only Slurm and fresh data
 outputs. `--case friction --ranking QUALIFIED_FINAL_RANKING` requires actual fine
 friction admission before four timing configurations/36 metric associations are
 written; both failed every-step native modes remain separately unranked.
+
+
+### Terminal-endpoint continuation for the solid reference
+
+Follow the [continuation control](REFERENCE_ENDPOINT_CONTINUATION_20261019.md).
+`solid_pad_checkpoint --run TERMINAL_RUN --level 0 --output NEW_RECEIPT_DIR`
+performs only stdlib scheduler/file inspection; it requires an actual terminal
+Slurm state and preserves exact prefix/field/source hashes. A live parent is
+rejected. Run the physical `plate_solid_pad` driver through Slurm with all
+unchanged original arguments plus `--resume-checkpoint NEW_RECEIPT_DIR/result.json`
+and a fresh data destination. The full float64 nodal/plate state and lagged normal
+force are restored; global load/time indices continue, with copied prefix bytes
+and separate lineage/step accounting. The new segment's elapsed time is not a
+whole-history benchmark. All original physical gates and own independent momentum
+remain required. Coarse400 versus200+200 equivalence passes33 checks; tightened
+input provenance passes15. This permits a verified infrastructure fallback if
+needed after actual termination, without admitting a partial fine history or
+changing the fine spatial/time/contact targets. Existing live tasks and queued
+plans are left intact until any actual replacement is necessary.
