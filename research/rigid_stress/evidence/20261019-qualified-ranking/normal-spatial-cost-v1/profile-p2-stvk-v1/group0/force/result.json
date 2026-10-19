@@ -1,0 +1,51 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-255",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728379",
+      "SLURM_ARRAY_JOB_ID": "728379",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-e7ef1048-b6fa-60d8-77b6-c46d59dd577e, 00000000:C1:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+    "bytes": 488697,
+    "sha256": "d72934ef97cd357de7440f1cc72c2297004c830c64770d43d95ef366280882f0"
+  },
+  "frame": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-direct-control-v1/group0/reference/frames/level1.npz",
+    "bytes": 18515891,
+    "sha256": "3189592ad865a2a3df6c15002c1bc4631d745ebbc96ebaaaaf6bed1ac068723e"
+  },
+  "direct_correction_force_relative_difference": 2.776571879800606e-09,
+  "timings_seconds": {
+    "gradient_interpolation": [
+      0.21426701778545976,
+      0.20910155307501554,
+      0.21712901536375284,
+      0.2099776673130691,
+      0.20309435157105327
+    ],
+    "complete_force_energy": [
+      0.3386663137935102,
+      0.34569487208500504,
+      0.3427898306399584,
+      0.3431002520956099,
+      0.3776362231001258
+    ],
+    "direct_correction": [
+      0.3994467598386109,
+      0.41808789456263185,
+      0.41389894811436534,
+      0.38878898369148374,
+      0.3777249548584223
+    ]
+  },
+  "scope": "Intrusive CPU profile on an admitted saved state; no simulation changes and no primary trajectory timing claim."
+}

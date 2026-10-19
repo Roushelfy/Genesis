@@ -1,5 +1,9 @@
 # Common peaks, batch conformance and primary cost checkpoint
 
+The [later spatial/cost update](NORMAL_SPATIAL_COST_20261019.md) completes
+normal field/traction maps and B1 sparse primary costs. Status below describes
+this earlier checkpoint; friction spatial qualification and B4/memory remain open.
+
 The normal physical-pad comparison now has qualified common-location peak
 changes, actual four-environment motion controls and admitted single-environment
 every-step full/max wall times. These extend the

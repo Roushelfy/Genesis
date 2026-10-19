@@ -1,5 +1,11 @@
 # Current QIPC reference comparison
 
+The follow-up `normal-spatial-cost-v1` publication adds175 verified payloads
+totaling7,057,473 bytes: inspected normal field/traction figures, bounded
+plotting data, exact source, sparse primary receipts and the CPU profile.
+Larger plotting arrays and full trajectory data remain at the manifest's
+data-side paths. Active B4/memory and fine-reference writers are unaffected.
+
 The `common-peaks-batch-v1` selected publication retains897 verified small
 payloads totaling10,609,874 bytes: terminal receipts, executed source, failure
 records and editable response/peak figures. Its manifest explicitly identifies

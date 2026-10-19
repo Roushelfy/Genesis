@@ -1,0 +1,982 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-099",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728381",
+      "SLURM_ARRAY_JOB_ID": "728381",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-1ac60415-6ff6-827d-0ab8-4302df6a5e1c, 00000000:AE:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "passed": true,
+  "cases": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/dpr",
+      "method": "dpr",
+      "checks": {
+        "own_complete_history_admitted": true,
+        "warm_repeats": true,
+        "all_requested_observations_valid": true,
+        "phase_timers_disabled": true,
+        "whole_interval_accounting": true,
+        "expected_whole_history": true,
+        "admitted_configuration_equilibrium_agreement": true
+      },
+      "cost": {
+        "completed": true,
+        "mechanically_admitted": true,
+        "method": "dpr",
+        "envs": 1,
+        "output_mode": "full",
+        "stress_stride": 20,
+        "primary_timing": true,
+        "samples": [
+          {
+            "level": 0,
+            "warmup": true,
+            "steps": 200,
+            "wall_seconds": 30.35628900898155,
+            "step_latency_ms": 151.78144504490774,
+            "aggregate_env_steps_per_second": 6.588420605062291,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 51793920
+          },
+          {
+            "level": 1,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 3.3533964180387557,
+            "step_latency_ms": 16.76698209019378,
+            "aggregate_env_steps_per_second": 59.64102511833976,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 51793920
+          },
+          {
+            "level": 2,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 3.3228232160327025,
+            "step_latency_ms": 16.614116080163512,
+            "aggregate_env_steps_per_second": 60.18978049599364,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 51793920
+          },
+          {
+            "level": 3,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 3.3258525500423275,
+            "step_latency_ms": 16.629262750211637,
+            "aggregate_env_steps_per_second": 60.13495697440184,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 51793920
+          }
+        ],
+        "measured_repeats": 3,
+        "median_latency_ms": 16.629262750211637,
+        "minimum_latency_ms": 16.614116080163512,
+        "maximum_latency_ms": 16.76698209019378,
+        "incomplete_level": null,
+        "scope": "One synchronized wall interval per complete continuous load level, including actual native/pad or Shell integration, requested recovery, host output, all per-step mechanical admission calculations, endpoint field/certificate output and step-journal I/O. Per-phase timers are disabled. Initial complete levels are warmup; measured levels are consecutive warm repeats, not independent fresh-process replicates. This is end-to-end timing of the declared admitted research workflow, not pure production-solver latency. PyTorch endpoint allocations exclude Quadrants and are not whole-device peak memory. Use this exact run's mechanical audit; separate preflights cannot admit a failed primary run."
+      },
+      "fields": [
+        {
+          "level": 0,
+          "raw_peak_relative_difference": 1.9058088440715437e-12,
+          "same_mesh_tensor_relative_l2": 1.4043348592290268e-11
+        },
+        {
+          "level": 1,
+          "raw_peak_relative_difference": 1.0718093079731261e-12,
+          "same_mesh_tensor_relative_l2": 1.4008098073085147e-11
+        },
+        {
+          "level": 2,
+          "raw_peak_relative_difference": 1.0718093079731261e-12,
+          "same_mesh_tensor_relative_l2": 1.4008098073085147e-11
+        },
+        {
+          "level": 3,
+          "raw_peak_relative_difference": 1.0718093079731261e-12,
+          "same_mesh_tensor_relative_l2": 1.4008098073085147e-11
+        }
+      ],
+      "setup_seconds": 54.35698116204003,
+      "run_identity": {
+        "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+        "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+        "hostname": "rtx-209-115",
+        "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+        "environment": {
+          "SLURM_JOB_ID": "728335",
+          "SLURM_ARRAY_JOB_ID": "728245",
+          "SLURM_ARRAY_TASK_ID": "2",
+          "CUDA_VISIBLE_DEVICES": "0",
+          "GENESIS_IMAGE_VER": "1_26"
+        },
+        "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-ea9a1fb0-0ea2-7392-95c1-64a5279178e1, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+      },
+      "wall_seconds_outside_level_intervals": 0.00628638087073341
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/scr",
+      "method": "scr",
+      "checks": {
+        "own_complete_history_admitted": true,
+        "warm_repeats": true,
+        "all_requested_observations_valid": true,
+        "phase_timers_disabled": true,
+        "whole_interval_accounting": true,
+        "expected_whole_history": true,
+        "admitted_configuration_equilibrium_agreement": true
+      },
+      "cost": {
+        "completed": true,
+        "mechanically_admitted": true,
+        "method": "scr",
+        "envs": 1,
+        "output_mode": "full",
+        "stress_stride": 20,
+        "primary_timing": true,
+        "samples": [
+          {
+            "level": 0,
+            "warmup": true,
+            "steps": 200,
+            "wall_seconds": 50.12530881300336,
+            "step_latency_ms": 250.6265440650168,
+            "aggregate_env_steps_per_second": 3.990000355830558,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 51793920
+          },
+          {
+            "level": 1,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 16.54558713803999,
+            "step_latency_ms": 82.72793569019996,
+            "aggregate_env_steps_per_second": 12.08781521812421,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 51793920
+          },
+          {
+            "level": 2,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 16.52619332401082,
+            "step_latency_ms": 82.6309666200541,
+            "aggregate_env_steps_per_second": 12.102000507849624,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 51793920
+          },
+          {
+            "level": 3,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 16.56498988502426,
+            "step_latency_ms": 82.8249494251213,
+            "aggregate_env_steps_per_second": 12.073656632945603,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 51793920
+          }
+        ],
+        "measured_repeats": 3,
+        "median_latency_ms": 82.72793569019996,
+        "minimum_latency_ms": 82.6309666200541,
+        "maximum_latency_ms": 82.8249494251213,
+        "incomplete_level": null,
+        "scope": "One synchronized wall interval per complete continuous load level, including actual native/pad or Shell integration, requested recovery, host output, all per-step mechanical admission calculations, endpoint field/certificate output and step-journal I/O. Per-phase timers are disabled. Initial complete levels are warmup; measured levels are consecutive warm repeats, not independent fresh-process replicates. This is end-to-end timing of the declared admitted research workflow, not pure production-solver latency. PyTorch endpoint allocations exclude Quadrants and are not whole-device peak memory. Use this exact run's mechanical audit; separate preflights cannot admit a failed primary run."
+      },
+      "fields": [
+        {
+          "level": 0,
+          "raw_peak_relative_difference": 4.982467771696975e-10,
+          "same_mesh_tensor_relative_l2": 5.006681529778745e-10
+        },
+        {
+          "level": 1,
+          "raw_peak_relative_difference": 4.972846578965573e-10,
+          "same_mesh_tensor_relative_l2": 5.00737521916564e-10
+        },
+        {
+          "level": 2,
+          "raw_peak_relative_difference": 4.972846578965573e-10,
+          "same_mesh_tensor_relative_l2": 5.00737521916564e-10
+        },
+        {
+          "level": 3,
+          "raw_peak_relative_difference": 4.972846578965573e-10,
+          "same_mesh_tensor_relative_l2": 5.00737521916564e-10
+        }
+      ],
+      "setup_seconds": 17.17153991496889,
+      "run_identity": {
+        "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+        "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+        "hostname": "rtx-209-115",
+        "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+        "environment": {
+          "SLURM_JOB_ID": "728335",
+          "SLURM_ARRAY_JOB_ID": "728245",
+          "SLURM_ARRAY_TASK_ID": "2",
+          "CUDA_VISIBLE_DEVICES": "0",
+          "GENESIS_IMAGE_VER": "1_26"
+        },
+        "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-ea9a1fb0-0ea2-7392-95c1-64a5279178e1, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+      },
+      "wall_seconds_outside_level_intervals": 0.006249164929613471
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/shell",
+      "method": "shell",
+      "checks": {
+        "own_complete_history_admitted": true,
+        "warm_repeats": true,
+        "all_requested_observations_valid": true,
+        "phase_timers_disabled": true,
+        "whole_interval_accounting": true,
+        "expected_whole_history": true,
+        "admitted_configuration_equilibrium_agreement": true
+      },
+      "cost": {
+        "completed": true,
+        "mechanically_admitted": null,
+        "method": "shell",
+        "envs": 1,
+        "output_mode": "full",
+        "stress_stride": 20,
+        "primary_timing": true,
+        "samples": [
+          {
+            "level": 0,
+            "warmup": true,
+            "steps": 200,
+            "wall_seconds": 167.93382356502116,
+            "step_latency_ms": 839.6691178251058,
+            "aggregate_env_steps_per_second": 1.1909453125895353,
+            "torch_allocated_bytes_after_level": 16097280,
+            "torch_reserved_bytes_after_level": 29360128,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 80332800
+          },
+          {
+            "level": 1,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 91.67507715697866,
+            "step_latency_ms": 458.3753857848933,
+            "aggregate_env_steps_per_second": 2.181618016612438,
+            "torch_allocated_bytes_after_level": 16097280,
+            "torch_reserved_bytes_after_level": 29360128,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 80332800
+          },
+          {
+            "level": 2,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 62.25144554802682,
+            "step_latency_ms": 311.2572277401341,
+            "aggregate_env_steps_per_second": 3.2127767996278984,
+            "torch_allocated_bytes_after_level": 16097280,
+            "torch_reserved_bytes_after_level": 29360128,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 80332800
+          },
+          {
+            "level": 3,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 50.34170114796143,
+            "step_latency_ms": 251.70850573980715,
+            "aggregate_env_steps_per_second": 3.972849455606824,
+            "torch_allocated_bytes_after_level": 16097280,
+            "torch_reserved_bytes_after_level": 29360128,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 80332800
+          }
+        ],
+        "measured_repeats": 3,
+        "median_latency_ms": 311.2572277401341,
+        "minimum_latency_ms": 251.70850573980715,
+        "maximum_latency_ms": 458.3753857848933,
+        "incomplete_level": null,
+        "scope": "One synchronized wall interval per complete continuous load level, including actual native/pad or Shell integration, requested recovery, host output, all per-step mechanical admission calculations, endpoint field/certificate output and step-journal I/O. Per-phase timers are disabled. Initial complete levels are warmup; measured levels are consecutive warm repeats, not independent fresh-process replicates. This is end-to-end timing of the declared admitted research workflow, not pure production-solver latency. PyTorch endpoint allocations exclude Quadrants and are not whole-device peak memory. Use this exact run's mechanical audit; separate preflights cannot admit a failed primary run."
+      },
+      "fields": [
+        {
+          "level": 0,
+          "raw_peak_relative_difference": 3.9603875734428584e-11,
+          "same_mesh_tensor_relative_l2": 1.9511503161261932e-10
+        },
+        {
+          "level": 1,
+          "raw_peak_relative_difference": 1.4467736009216026e-08,
+          "same_mesh_tensor_relative_l2": 5.70052765974825e-08
+        },
+        {
+          "level": 2,
+          "raw_peak_relative_difference": 1.782346081835584e-08,
+          "same_mesh_tensor_relative_l2": 4.416734667099387e-08
+        },
+        {
+          "level": 3,
+          "raw_peak_relative_difference": 1.858539178112295e-08,
+          "same_mesh_tensor_relative_l2": 4.7394511367486596e-08
+        }
+      ],
+      "setup_seconds": 49.76803683396429,
+      "run_identity": {
+        "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+        "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+        "hostname": "rtx-209-115",
+        "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+        "environment": {
+          "SLURM_JOB_ID": "728335",
+          "SLURM_ARRAY_JOB_ID": "728245",
+          "SLURM_ARRAY_TASK_ID": "2",
+          "CUDA_VISIBLE_DEVICES": "0",
+          "GENESIS_IMAGE_VER": "1_26"
+        },
+        "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-ea9a1fb0-0ea2-7392-95c1-64a5279178e1, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+      },
+      "wall_seconds_outside_level_intervals": 0.0032576130470260978
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/dpr",
+      "method": "dpr",
+      "checks": {
+        "own_complete_history_admitted": true,
+        "warm_repeats": true,
+        "all_requested_observations_valid": true,
+        "phase_timers_disabled": true,
+        "whole_interval_accounting": true,
+        "expected_whole_history": true,
+        "admitted_configuration_equilibrium_agreement": true
+      },
+      "cost": {
+        "completed": true,
+        "mechanically_admitted": true,
+        "method": "dpr",
+        "envs": 1,
+        "output_mode": "max",
+        "stress_stride": 20,
+        "primary_timing": true,
+        "samples": [
+          {
+            "level": 0,
+            "warmup": true,
+            "steps": 200,
+            "wall_seconds": 31.145123509981204,
+            "step_latency_ms": 155.72561754990602,
+            "aggregate_env_steps_per_second": 6.421551031444944,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 0
+          },
+          {
+            "level": 1,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 3.2552215380128473,
+            "step_latency_ms": 16.276107690064237,
+            "aggregate_env_steps_per_second": 61.439750771030525,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 0
+          },
+          {
+            "level": 2,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 3.2661558279942255,
+            "step_latency_ms": 16.330779139971128,
+            "aggregate_env_steps_per_second": 61.23406552920707,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 0
+          },
+          {
+            "level": 3,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 3.268195843003923,
+            "step_latency_ms": 16.340979215019615,
+            "aggregate_env_steps_per_second": 61.19584309126726,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 0
+          }
+        ],
+        "measured_repeats": 3,
+        "median_latency_ms": 16.330779139971128,
+        "minimum_latency_ms": 16.276107690064237,
+        "maximum_latency_ms": 16.340979215019615,
+        "incomplete_level": null,
+        "scope": "One synchronized wall interval per complete continuous load level, including actual native/pad or Shell integration, requested recovery, host output, all per-step mechanical admission calculations, endpoint field/certificate output and step-journal I/O. Per-phase timers are disabled. Initial complete levels are warmup; measured levels are consecutive warm repeats, not independent fresh-process replicates. This is end-to-end timing of the declared admitted research workflow, not pure production-solver latency. PyTorch endpoint allocations exclude Quadrants and are not whole-device peak memory. Use this exact run's mechanical audit; separate preflights cannot admit a failed primary run."
+      },
+      "fields": [
+        {
+          "level": 0,
+          "raw_peak_relative_difference": 1.7527090889757346e-12,
+          "same_mesh_tensor_relative_l2": null
+        },
+        {
+          "level": 1,
+          "raw_peak_relative_difference": 2.276179245086496e-12,
+          "same_mesh_tensor_relative_l2": null
+        },
+        {
+          "level": 2,
+          "raw_peak_relative_difference": 2.276179245086496e-12,
+          "same_mesh_tensor_relative_l2": null
+        },
+        {
+          "level": 3,
+          "raw_peak_relative_difference": 2.276179245086496e-12,
+          "same_mesh_tensor_relative_l2": null
+        }
+      ],
+      "setup_seconds": 56.81294118799269,
+      "run_identity": {
+        "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+        "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+        "hostname": "rtx-209-099",
+        "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+        "environment": {
+          "SLURM_JOB_ID": "728245",
+          "SLURM_ARRAY_JOB_ID": "728245",
+          "SLURM_ARRAY_TASK_ID": "3",
+          "CUDA_VISIBLE_DEVICES": "0",
+          "GENESIS_IMAGE_VER": "1_26"
+        },
+        "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-1ac60415-6ff6-827d-0ab8-4302df6a5e1c, 00000000:AE:00.0, 595.71.05, 97887 MiB\n"
+      },
+      "wall_seconds_outside_level_intervals": 0.006215942034032196
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/scr",
+      "method": "scr",
+      "checks": {
+        "own_complete_history_admitted": true,
+        "warm_repeats": true,
+        "all_requested_observations_valid": true,
+        "phase_timers_disabled": true,
+        "whole_interval_accounting": true,
+        "expected_whole_history": true,
+        "admitted_configuration_equilibrium_agreement": true
+      },
+      "cost": {
+        "completed": true,
+        "mechanically_admitted": true,
+        "method": "scr",
+        "envs": 1,
+        "output_mode": "max",
+        "stress_stride": 20,
+        "primary_timing": true,
+        "samples": [
+          {
+            "level": 0,
+            "warmup": true,
+            "steps": 200,
+            "wall_seconds": 50.95605601000716,
+            "step_latency_ms": 254.7802800500358,
+            "aggregate_env_steps_per_second": 3.924950548777213,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 0
+          },
+          {
+            "level": 1,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 16.51616081901011,
+            "step_latency_ms": 82.58080409505055,
+            "aggregate_env_steps_per_second": 12.109351694480953,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 0
+          },
+          {
+            "level": 2,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 16.473502109001856,
+            "step_latency_ms": 82.36751054500928,
+            "aggregate_env_steps_per_second": 12.140709284318547,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 0
+          },
+          {
+            "level": 3,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 16.466095039999345,
+            "step_latency_ms": 82.33047519999673,
+            "aggregate_env_steps_per_second": 12.146170632087397,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 0
+          }
+        ],
+        "measured_repeats": 3,
+        "median_latency_ms": 82.36751054500928,
+        "minimum_latency_ms": 82.33047519999673,
+        "maximum_latency_ms": 82.58080409505055,
+        "incomplete_level": null,
+        "scope": "One synchronized wall interval per complete continuous load level, including actual native/pad or Shell integration, requested recovery, host output, all per-step mechanical admission calculations, endpoint field/certificate output and step-journal I/O. Per-phase timers are disabled. Initial complete levels are warmup; measured levels are consecutive warm repeats, not independent fresh-process replicates. This is end-to-end timing of the declared admitted research workflow, not pure production-solver latency. PyTorch endpoint allocations exclude Quadrants and are not whole-device peak memory. Use this exact run's mechanical audit; separate preflights cannot admit a failed primary run."
+      },
+      "fields": [
+        {
+          "level": 0,
+          "raw_peak_relative_difference": 5.277809300707759e-10,
+          "same_mesh_tensor_relative_l2": null
+        },
+        {
+          "level": 1,
+          "raw_peak_relative_difference": 5.268885328035822e-10,
+          "same_mesh_tensor_relative_l2": null
+        },
+        {
+          "level": 2,
+          "raw_peak_relative_difference": 5.268885328035822e-10,
+          "same_mesh_tensor_relative_l2": null
+        },
+        {
+          "level": 3,
+          "raw_peak_relative_difference": 5.268885328035822e-10,
+          "same_mesh_tensor_relative_l2": null
+        }
+      ],
+      "setup_seconds": 17.527942400978645,
+      "run_identity": {
+        "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+        "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+        "hostname": "rtx-209-099",
+        "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+        "environment": {
+          "SLURM_JOB_ID": "728245",
+          "SLURM_ARRAY_JOB_ID": "728245",
+          "SLURM_ARRAY_TASK_ID": "3",
+          "CUDA_VISIBLE_DEVICES": "0",
+          "GENESIS_IMAGE_VER": "1_26"
+        },
+        "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-1ac60415-6ff6-827d-0ab8-4302df6a5e1c, 00000000:AE:00.0, 595.71.05, 97887 MiB\n"
+      },
+      "wall_seconds_outside_level_intervals": 0.006646353984251618
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/shell",
+      "method": "shell",
+      "checks": {
+        "own_complete_history_admitted": true,
+        "warm_repeats": true,
+        "all_requested_observations_valid": true,
+        "phase_timers_disabled": true,
+        "whole_interval_accounting": true,
+        "expected_whole_history": true,
+        "admitted_configuration_equilibrium_agreement": true
+      },
+      "cost": {
+        "completed": true,
+        "mechanically_admitted": null,
+        "method": "shell",
+        "envs": 1,
+        "output_mode": "max",
+        "stress_stride": 20,
+        "primary_timing": true,
+        "samples": [
+          {
+            "level": 0,
+            "warmup": true,
+            "steps": 200,
+            "wall_seconds": 168.38914134699735,
+            "step_latency_ms": 841.9457067349867,
+            "aggregate_env_steps_per_second": 1.187725042126455,
+            "torch_allocated_bytes_after_level": 4852736,
+            "torch_reserved_bytes_after_level": 29360128,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 0
+          },
+          {
+            "level": 1,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 91.75488220702391,
+            "step_latency_ms": 458.77441103511956,
+            "aggregate_env_steps_per_second": 2.179720524829902,
+            "torch_allocated_bytes_after_level": 4852736,
+            "torch_reserved_bytes_after_level": 29360128,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 0
+          },
+          {
+            "level": 2,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 62.42168986098841,
+            "step_latency_ms": 312.10844930494204,
+            "aggregate_env_steps_per_second": 3.2040145091457015,
+            "torch_allocated_bytes_after_level": 4852736,
+            "torch_reserved_bytes_after_level": 29360128,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 0
+          },
+          {
+            "level": 3,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 50.26029398100218,
+            "step_latency_ms": 251.3014699050109,
+            "aggregate_env_steps_per_second": 3.9792843248310037,
+            "torch_allocated_bytes_after_level": 4852736,
+            "torch_reserved_bytes_after_level": 29360128,
+            "stress_observations": 10,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 0
+          }
+        ],
+        "measured_repeats": 3,
+        "median_latency_ms": 312.10844930494204,
+        "minimum_latency_ms": 251.3014699050109,
+        "maximum_latency_ms": 458.77441103511956,
+        "incomplete_level": null,
+        "scope": "One synchronized wall interval per complete continuous load level, including actual native/pad or Shell integration, requested recovery, host output, all per-step mechanical admission calculations, endpoint field/certificate output and step-journal I/O. Per-phase timers are disabled. Initial complete levels are warmup; measured levels are consecutive warm repeats, not independent fresh-process replicates. This is end-to-end timing of the declared admitted research workflow, not pure production-solver latency. PyTorch endpoint allocations exclude Quadrants and are not whole-device peak memory. Use this exact run's mechanical audit; separate preflights cannot admit a failed primary run."
+      },
+      "fields": [
+        {
+          "level": 0,
+          "raw_peak_relative_difference": 3.636968504139304e-11,
+          "same_mesh_tensor_relative_l2": null
+        },
+        {
+          "level": 1,
+          "raw_peak_relative_difference": 1.4460354802459108e-08,
+          "same_mesh_tensor_relative_l2": null
+        },
+        {
+          "level": 2,
+          "raw_peak_relative_difference": 1.7807836760752593e-08,
+          "same_mesh_tensor_relative_l2": null
+        },
+        {
+          "level": 3,
+          "raw_peak_relative_difference": 1.8531937096000206e-08,
+          "same_mesh_tensor_relative_l2": null
+        }
+      ],
+      "setup_seconds": 51.50347616799991,
+      "run_identity": {
+        "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+        "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+        "hostname": "rtx-209-099",
+        "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+        "environment": {
+          "SLURM_JOB_ID": "728245",
+          "SLURM_ARRAY_JOB_ID": "728245",
+          "SLURM_ARRAY_TASK_ID": "3",
+          "CUDA_VISIBLE_DEVICES": "0",
+          "GENESIS_IMAGE_VER": "1_26"
+        },
+        "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-1ac60415-6ff6-827d-0ab8-4302df6a5e1c, 00000000:AE:00.0, 595.71.05, 97887 MiB\n"
+      },
+      "wall_seconds_outside_level_intervals": 0.0034740599803626537
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/dpr/cost.json",
+      "bytes": 2806,
+      "sha256": "3de6a720306776c9a216041c469a40200a8bac5c2668d0eab6d155e9de75d135"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/dpr/result.json",
+      "bytes": 3131,
+      "sha256": "30815a7b2516c27362c85a82e86151a3ef051c040e643e13aa9de06eb30d5bd2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/dpr/start.json",
+      "bytes": 2789,
+      "sha256": "3b2ad852aa4077477704e69b4ee90ede18b115bbaf95e3759d1c71f0daf3d09f"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/dpr-audit/result.json",
+      "bytes": 6201,
+      "sha256": "f95785513658a0f578d007de5c1df18e1559a01edf6caaa6ed835659a8ac6e9b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/dpr/steps.jsonl",
+      "bytes": 709714,
+      "sha256": "dede128f56337617683ca47d46e2e2fce625e3f3052ba3f34b93fb5b6bb1e68a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/dpr/frames/stress-level0.npz",
+      "bytes": 8047228,
+      "sha256": "e0174807bba46eeef52bd36031501c3750054add464cd18b75c24555cb22e5fc"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/dpr/frames/stress-level1.npz",
+      "bytes": 8056030,
+      "sha256": "57726367fabb0597451a8511bb92659183ccd2bb0ef309316beeb746cc1d4d3e"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/dpr/frames/stress-level2.npz",
+      "bytes": 8056530,
+      "sha256": "7865f7ed1efbc2402eb5450f605051bff18eef779b317dd1cb8136d05190968d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/dpr/frames/stress-level3.npz",
+      "bytes": 8069539,
+      "sha256": "48ae07d424ed24390799ebf229c35de5a7d4fe8010b3fdef4c098ed88683ec3a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/scr/cost.json",
+      "bytes": 2796,
+      "sha256": "355d4d111e079dc2e4b114d3e66abc8305cb19b89317287909ebe301aad4db96"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/scr/result.json",
+      "bytes": 3130,
+      "sha256": "4e0bf8cdfc393dd84d410a81d95ec82c1cf3116fdd5a5804f78dc6d294c0bc0a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/scr/start.json",
+      "bytes": 2789,
+      "sha256": "6a83dfded3d5b1a562a275a1b23ce82d07b466aab10d42ad151e809b8e3b9b6c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/scr-audit/result.json",
+      "bytes": 6196,
+      "sha256": "7798961b5d23a5f751f70e06a8860170773ac84c8545f9292e0638585d9b8db1"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/scr/steps.jsonl",
+      "bytes": 709988,
+      "sha256": "a4c1a39c4eba479d2429606fbcb1dadccd717d2bca2c34af44483a3254df547e"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group1/native/frames/stress-level0.npz",
+      "bytes": 8346303,
+      "sha256": "ee4e5bcc5528b9fec8101a07cf0a7016725b087c4a96ebe57a45f42ba97548da"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/scr/frames/stress-level0.npz",
+      "bytes": 8324337,
+      "sha256": "1e92d0c71ce1a84dcac6dff02da6336764c702bba045bf0db9b7596e4c5d7d17"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/scr/frames/stress-level1.npz",
+      "bytes": 8323539,
+      "sha256": "f772fa256ad8742c7a8ef1324b01c7b459a5c388b399574f094d568530854679"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/scr/frames/stress-level2.npz",
+      "bytes": 8323906,
+      "sha256": "3020eef2e2fae3fadec874e9e2cc9cd2a2b955a48eb92972c0280d9fd1406069"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/scr/frames/stress-level3.npz",
+      "bytes": 8323735,
+      "sha256": "71626483d4091c8f5dfe3244eb6498faf7b0c8dfd46cc9d7dc367ee631f57488"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/shell/cost.json",
+      "bytes": 2821,
+      "sha256": "22995802701d6a2caf5e828b33dde725c28f0a727e1f652d237f7781eff410e2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/shell/result.json",
+      "bytes": 3108,
+      "sha256": "14decc805635859090020dc228cb487df92c795c5a023625d56d19a27f6f96e6"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/shell/start.json",
+      "bytes": 3760,
+      "sha256": "d79db5a99aada114b9c1077da2361fb93727b7760748718466732a2a93fae51c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/shell-audit/result.json",
+      "bytes": 13051,
+      "sha256": "d671f199aad97c6c40da907d9448c616cacb2529a207ba238f92c77eb8f76070"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/shell/steps.jsonl",
+      "bytes": 1156221,
+      "sha256": "1a5f25b2bb0dab5e3e91f6a81326650cb79fb5c3936ef8bbf2c416109a9a21ac"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level0.npz",
+      "bytes": 10468881,
+      "sha256": "bf2bc4aa431fdb09b19f682fb800aac6a768e996e7f9af1b589fefb8b91f348a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/shell/frames/level0.npz",
+      "bytes": 10468584,
+      "sha256": "67125c7a7f4f6312c1fa4b0563b371bce5c2a80d4cdc84760b479921f7e700b9"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/shell/frames/level1.npz",
+      "bytes": 10466990,
+      "sha256": "7d589c18efbcfd797b22cf653c7b0692a642e157179b39185bdf5fd5365f2017"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/shell/frames/level2.npz",
+      "bytes": 10462670,
+      "sha256": "489daa4cd0e709277b1e0be9b601f7a94c24c710b9ab73333efa63b57a360f70"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group2/shell/frames/level3.npz",
+      "bytes": 10458496,
+      "sha256": "a0f1f4ade9cf5d2df26ec8c6f071a218a03bb5591123c439e7019b3fba4a86e4"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/dpr/cost.json",
+      "bytes": 2780,
+      "sha256": "a40ba4dc71f63d3b8f7750ce8987e181bd06e328212d21a2d5a029225e2aa61e"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/dpr/result.json",
+      "bytes": 3131,
+      "sha256": "be8ec49520f39a8636340cdac02fef0f2590fce3a2a37430805a0bb856b2d37a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/dpr/start.json",
+      "bytes": 2788,
+      "sha256": "da5b06fee4eefffb9b0b07f6db73c5a5c7e6535ed849de365993a8d5072a3cca"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/dpr-audit/result.json",
+      "bytes": 6201,
+      "sha256": "1b8008a56e70a08ab1298ac4841d893a6365b8edc5d0f05eabd55f0a81a3b148"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/dpr/steps.jsonl",
+      "bytes": 709859,
+      "sha256": "1ffe122753b00321e14190cfb376be4f09e68a6ea1d688d0fd9e2e79167d56f4"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/scr/cost.json",
+      "bytes": 2774,
+      "sha256": "c2ce21f2d7827506f20860874fd4cf5645e8997d6b7ec72cdf2c0f6465a67f29"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/scr/result.json",
+      "bytes": 3130,
+      "sha256": "65afc95d0f77a6eb65a32395c73522ad997de5f8c77724af1e2f89e03f915563"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/scr/start.json",
+      "bytes": 2789,
+      "sha256": "4507d9b32ca20c9543a69fd134c7b096a8408aea4707d7d77b6be26bf20b31da"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/scr-audit/result.json",
+      "bytes": 6199,
+      "sha256": "7a27cbc2854696160dd35d11a9b8946b90e96abda392384323b3ef3978d24d69"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/scr/steps.jsonl",
+      "bytes": 709540,
+      "sha256": "ae225c91f7b7c618ad7ac3c854a70cfa8f63ce22e2e74a42c0c13e8f844de3ce"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group1/native/frames/stress-level0.npz",
+      "bytes": 8346303,
+      "sha256": "ee4e5bcc5528b9fec8101a07cf0a7016725b087c4a96ebe57a45f42ba97548da"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/shell/cost.json",
+      "bytes": 2790,
+      "sha256": "368cbd559699ff9cc0061fa6f5372ae3dc6a3da03679e1a039ca3b74cc684f9f"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/shell/result.json",
+      "bytes": 3094,
+      "sha256": "7e122a732ddd5c99ba6c9355581ac6e3d5ed668074e03b339af47cad5a261d88"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/shell/start.json",
+      "bytes": 3759,
+      "sha256": "201b953bb4d130181851309c7193ad0b5f88eb48cf5e62cc3f2dac11a2df8f98"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/shell-audit/result.json",
+      "bytes": 13034,
+      "sha256": "81972a4382bbcd0c0c8972a0ae7f6232021f03b0c57178faae9ab593ab0d539c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group3/shell/steps.jsonl",
+      "bytes": 1155277,
+      "sha256": "6ff4ebc27956e5747c6c2d1263362b5b2c2c7003546da2c0ca50d7b1056bcbd6"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level0.npz",
+      "bytes": 10468881,
+      "sha256": "bf2bc4aa431fdb09b19f682fb800aac6a768e996e7f9af1b589fefb8b91f348a"
+    }
+  ],
+  "scope": "B1 primary timings of the exact admitted complete physical-pad workflow, with3 or more consecutive warm repeated levels. Each primary run supplies its own history/field evidence. Full frames and max-only peaks retain0.5% field/1% peak sensitivity checks against the original same-mesh equilibrium. Cross-run bitwise equality is not an observer identity test: the separate same-frozen-state control retains its stricter1e-8 threshold. Includes journal, endpoint output and mechanical checking, so not pure production-solver latency. Batched primary cost, whole-device memory peaks and independent process repeats remain separately reported."
+}

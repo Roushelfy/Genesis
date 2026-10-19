@@ -32,6 +32,17 @@ The JSON contains `module` and `args`, without `--output`; audit its `run/`
 subdirectory separately. Captured task files in the checkpoint specify every
 parameter and engine source. Profile admission cannot replace primary admission.
 
+For common-scale surface maps, add `--export-surface-fields` to
+`contact_fem_exact_columns`. The retained representative0.1N map campaign uses
+one centroid per fine reference face solely for display; retain the separate
+9/25-point peak controls. `pad_spatial_figure --data-root RUN_ROOT --fields
+SURFACE_EXPORT_CAMPAIGN --style STYLE_FILE --output NEW_DATA_PATH` reproduces
+the complete outer/inner maps and actual upper/lower pressure samples. It
+checks identical material positions, shared reference tensors, actual reactions
+and inclusion of every force-bearing point in the view. `profile_p2_stvk
+--mesh MESH --frame ADMITTED_FRAME --output NEW_DATA_PATH` provides the retained
+intrusive nonlinear-force CPU profile; execute through the same Slurm workflow.
+
 `plate_solid_pad --elasticity stvk --contact-solver modal --warm-contact`
 selects the verified full-compliance modal iteration. It does not fix or
 discard rigid or elastic modes. Reproduce `check_matrix_free_pad`, the
