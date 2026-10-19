@@ -1,0 +1,5 @@
+# fine-parent-admission-guard-v1
+
+Explicit admission preflight passes all ten checks on the admitted400-step coarse parent and intentionally rejects the old125um physical-history failure despite its successful process/scheduler receipt. Pending unguarded analyses were cancelled before execution. Six-parent preflight and replacement field plans are immutable inputs only; new fine histories/fields remain pending. No physical gate, existing payload, tolerance or source is changed by the guard.
+
+Manifest records encoded and original SHA-256/size. Gzip uses mtime0 and an empty filename. Decode to a separate working directory when replaying; immutable archive bytes stay unchanged. Large trajectory/field arrays remain at the explicit data-side locations in the receipts. The original1ff39b077 engine can be reconstructed from the public-base overlay in [the source packet](../native-public-source-overlay-v1/README.md). Captured worker modules retain publication-time variants. Live fine histories and pending cadence-campaign outputs are excluded.

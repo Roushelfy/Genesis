@@ -22,6 +22,7 @@ from genesis.utils.array_class import DataKind
 from genesis.utils.misc import qd_to_numpy, qd_to_torch, tensor_to_array
 
 from .artifacts import file_id, runtime_identity, write_json
+from .native_observation_cadence import ObservationCadence, sampled
 
 
 @dataclass
@@ -71,7 +72,7 @@ def checked_step(workload, output, phase, tick, check_every_step=False):
             receipt["state"] = file_id(path)
             receipt["array_shapes"] = {name: list(value.shape) for name, value in arrays.items()}
             receipt["scope"] = (
-                "State at the observed exception, including all environments and separately preserved first-failure records. Only check-every-step capture precedes the next controller mutation; delayed checking can leave current contact flags/certificates invalidated by a radius change. Tensor dimensions retain native order; vectors/matrices append component axes. No error is cleared, force changed, environment dropped or continuation attempted after detection."
+                "State at the observed exception, including all environments and separately preserved first-failure records. Only check-every-step capture precedes subsequent workload advancement; delayed periodic checking can observe contact flags/certificates rewritten by later physical steps. Tensor dimensions retain native order; vectors/matrices append component axes. No error is cleared, force changed, environment dropped or continuation attempted after detection."
             )
         except Exception as capture_error:
             receipt["capture_error"] = repr(capture_error)
@@ -188,6 +189,12 @@ def main():
     cli.add_argument("--steps", type=int, default=1200)
     cli.add_argument("--warmup", type=int, default=900)
     cli.add_argument("--field-stride", type=int, default=120)
+    cli.add_argument("--stress-stride", type=int, default=1)
+    cli.add_argument(
+        "--audit-held-output",
+        action="store_true",
+        help="Check full-field holding and partial reset on every unsampled step",
+    )
     cli.add_argument("--replay", action="store_true")
     cli.add_argument("--mechanics-only", action="store_true", help="Build stress but leave manual updates unrequested")
     cli.add_argument("--rigid-post-fusion", choices=("auto", "on", "off"), default="auto")
@@ -202,8 +209,14 @@ def main():
     )
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
-    if min(args.envs, args.steps, args.field_stride, args.repetitions) < 1 or args.warmup < 0:
+    if min(args.envs, args.steps, args.field_stride, args.stress_stride, args.repetitions) < 1 or args.warmup < 0:
         cli.error("Counts must be positive, with nonnegative warmup.")
+    if args.stress_stride > 1 and (args.method == "rigid" or args.mechanics_only or args.replay):
+        cli.error("Sparse observation requires an observed stress scene, without replay.")
+    if args.stress_stride > args.steps:
+        cli.error("The recorded window must contain a requested observation.")
+    if args.audit_held_output and (args.stress_stride == 1 or args.output_mode != "full"):
+        cli.error("Held-field controls require sparse full output.")
     if args.replay and (args.method == "rigid" or args.mechanics_only):
         cli.error("Recovery replay requires a stress method.")
     args.output.mkdir(parents=True, exist_ok=False)
@@ -231,7 +244,7 @@ def main():
         conditions=args.conditions,
         history_size=0,
         output_mode=args.output_mode,
-        stress_update_mode="manual" if args.mechanics_only else "every_step",
+        stress_update_mode="manual" if args.mechanics_only or args.stress_stride > 1 else "every_step",
         fused_rigid_post={"auto": None, "on": True, "off": False}[args.rigid_post_fusion],
         contact_model="intrinsic" if args.method == "scr" else "pressure",
         contact_block_size=args.contact_block_size,
@@ -240,6 +253,7 @@ def main():
         use_gjk_collision=False,
         enable_contact_patch=False,
     )
+    cadence = ObservationCadence(workload, args.stress_stride)
     solver = workload.scene.rigid_solver
     entry = solver.stress_recovery.links[0] if workload.stress else None
     observed_stress = workload.stress and not args.mechanics_only
@@ -268,6 +282,16 @@ def main():
         errno_view = qd_to_torch(solver._errno, copy=False)
         errors = errno_view.new_empty((args.steps, args.envs))
         field_ticks = sorted({0, args.steps - 1, *range(args.field_stride - 1, args.steps, args.field_stride)})
+        observation_mask = np.array(
+            [observed_stress and sampled(tick, args.stress_stride) for tick in range(args.steps)]
+        )
+        if args.stress_stride > 1:
+            field_ticks = sorted({args.stress_stride - 1, *[tick for tick in field_ticks if observation_mask[tick]]})
+        held_field_checks = 0
+        expected_field = expected_vm = None
+        if args.audit_held_output:
+            tensor, vm = workload.link.get_stress_field(copy=False)
+            expected_field, expected_vm = tensor.clone(), vm.clone()
         tensors, mises = [], []
         for tick in range(args.steps):
             checked_step(workload, args.output, "recording", tick + 1, args.check_every_step)
@@ -279,6 +303,18 @@ def main():
             if observed_stress:
                 peaks[tick].copy_(workload.link.get_max_stress(copy=False))
                 validity[tick].copy_(qd_to_torch(entry.state.step_valid, copy=False))
+                if args.audit_held_output:
+                    tensor, vm = workload.link.get_stress_field(copy=False)
+                    if observation_mask[tick]:
+                        expected_field.copy_(tensor)
+                        expected_vm.copy_(vm)
+                    else:
+                        if tick in resets:
+                            expected_field[resets[tick]] = float("nan")
+                            expected_vm[resets[tick]] = float("nan")
+                        torch.testing.assert_close(tensor, expected_field, rtol=0, atol=0, equal_nan=True)
+                        torch.testing.assert_close(vm, expected_vm, rtol=0, atol=0, equal_nan=True)
+                        held_field_checks += 1
                 if args.output_mode == "full" and tick in field_ticks:
                     tensor, vm = workload.link.get_stress_field(copy=False)
                     assert tensor.is_cuda and vm.is_cuda
@@ -290,17 +326,29 @@ def main():
         solver.check_errno()
         assert torch.isfinite(states).all() and (errors == 0).all()
         if observed_stress:
-            assert validity.all() and torch.isfinite(peaks).all() and (peaks >= 0).all()
+            assert (
+                validity[observation_mask].all()
+                and torch.isfinite(peaks[observation_mask]).all()
+                and (peaks[observation_mask] >= 0).all()
+            )
         arrays = {
             "motion": tensor_to_array(states),
             "contact_counts": tensor_to_array(counts),
             "errno": tensor_to_array(errors),
             "field_ticks": np.array(field_ticks),
+            "fresh_observation_mask": observation_mask,
+            "controller_delays": workload.delays,
         }
         checks = {"finite_motion": True, "every_step_errno_zero": True, "all_environments_retained": True}
         if observed_stress:
             arrays.update(peak_pa=tensor_to_array(peaks), valid=tensor_to_array(validity))
-            checks.update(every_step_valid=True, finite_nonnegative_peaks=True)
+            checks.update(requested_steps_valid=True, finite_nonnegative_requested_peaks=True)
+            if args.stress_stride == 1:
+                checks["every_step_valid"] = True
+                checks["finite_nonnegative_peaks"] = True
+            if args.audit_held_output:
+                assert held_field_checks == int((~observation_mask).sum())
+                checks["all_unsampled_fields_held_or_partial_reset"] = True
         if tensors:
             tensor, vm = torch.stack(tensors), torch.stack(mises)
             assert tensor.shape == (len(field_ticks), args.envs, 480, 4, 6)
@@ -386,6 +434,8 @@ def main():
             args.output / "result.json",
             {
                 "identity": runtime_identity(),
+                "gpu_name": torch.cuda.get_device_name(),
+                "gpu_uuid": str(torch.cuda.get_device_properties(gs.device).uuid),
                 "passed": True,
                 "checks": checks,
                 "method": args.method,
@@ -397,6 +447,9 @@ def main():
                 "envs": args.envs,
                 "steps": args.steps,
                 "warmup": args.warmup,
+                "stress_stride": args.stress_stride,
+                "manual_requests_issued": cadence.requests,
+                "held_field_checks": held_field_checks,
                 "dt_s": 0.01,
                 "substeps": 1,
                 "resets": workload.reset_count,

@@ -1,0 +1,78 @@
+[
+  [
+    {
+      "name": "dpr-full-s10",
+      "module": "research.rigid_stress.qipc_comparison.native_production_controls",
+      "args": [
+        "--method",
+        "dpr",
+        "--envs",
+        "8",
+        "--conditions",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+        "--output-mode",
+        "full",
+        "--stress-stride",
+        "10",
+        "--audit-held-output",
+        "--field-stride",
+        "100",
+        "--steps",
+        "1200",
+        "--warmup",
+        "900",
+        "--check-every-step"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "scr-full-s50",
+      "module": "research.rigid_stress.qipc_comparison.native_production_controls",
+      "args": [
+        "--method",
+        "scr",
+        "--envs",
+        "8",
+        "--conditions",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+        "--output-mode",
+        "full",
+        "--stress-stride",
+        "50",
+        "--audit-held-output",
+        "--field-stride",
+        "100",
+        "--steps",
+        "1200",
+        "--warmup",
+        "900",
+        "--check-every-step"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "dpr-full-s10",
+      "module": "research.rigid_stress.qipc_comparison.native_sparse_production",
+      "args": [
+        "--method",
+        "dpr",
+        "--envs",
+        "8",
+        "--conditions",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+        "--output-mode",
+        "full",
+        "--stress-stride",
+        "10",
+        "--steps",
+        "1200",
+        "--warmup",
+        "900",
+        "--repetitions",
+        "3"
+      ]
+    }
+  ]
+]

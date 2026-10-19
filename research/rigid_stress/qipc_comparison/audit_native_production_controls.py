@@ -87,6 +87,7 @@ def main():
             start = json.loads((root / "start.json").read_text())
             receipts.append(file_id(root / "start.json"))
             assert start["args"]["envs"] == batch and start["args"]["steps"] == 1200 and start["args"]["warmup"] == 900
+            assert start["args"].get("stress_stride", 1) == 1, "Every-step audit cannot admit sparse observations"
             method = mode.split("-")[0]
             assert start["args"]["method"] == method
             path = root / "trajectory.npz"
