@@ -311,3 +311,40 @@ zero and12 coarse patches on the same initially touching0.001N first step,
 plus one hold step, against the failed48-patch control. This bounded check
 addresses the elastic-only coarse operator versus contact-updated block
 preconditioning; it changes no material, contact equation or admission gate.
+
+## Optional coarse-space compilation repair
+
+The zero-patch control failed during compilation: `func_pcg_norm_scales`
+and `func_pcg_advance` unconditionally read `coarse_vec.shape[0]` although
+that optional tensor is unallocated. An isolated variant at
+`.worktrees/shell-zero-coarse` guards those accesses with the existing static
+`has_coarse_space` condition. It changes no equations, tolerances or default
+preconditioner. The exact source/test diff against9a58a7359 is retained in
+[`shell_zero_coarse.patch`](../shell_comparison/patches/shell_zero_coarse.patch).
+Apply it with `git apply` to that pinned Shell revision to reproduce the variant.
+
+`shell-zero-coarse-tests-v1` (`727547`) runs the same existing40-step impact
+momentum/contact regression, parametrized over zero/default12 coarse patches
+and unbatched/two-environment scenes. Original source fails both zero-patch
+cases during compilation; repaired source passes all four cases (113.87s).
+The original assertions and tolerances are unchanged. Ruff and diff checks
+pass. This is an observable optional-configuration repair, not evidence of
+high-stiffness stress qualification.
+
+`land-shell-zero-fixed-v1` (`727549`) now compiles and reaches its first
+physical step, but hits the linear cap with11 contact Newton iterations and
+44000 accumulated PCG iterations; equation residual is0.861. The12-patch
+control also failed at its first step, with9 Newton iterations and36000 PCG
+iterations. Disabling the coarse correction alone therefore does not resolve
+the stiff contact solve. The next numerical investigation should capture the
+first failed inner system before scratch reset, compare its true residual and
+operator with an independent frozen-system solve, and then repair the measured
+conditioning/operator defect. More tolerance sweeps alone are unsupported.
+
+The first repaired-source pilot's `start.json` inherited a hardcoded9a58
+variant description. Its captured `source.json`/`source.patch` correctly
+identify the modified implementation; use those receipts for provenance.
+The driver now hashes the loaded solver file and uses a neutral captured-source
+description for subsequent variants. Historical receipts remain unmodified.
+All runtime assets, fields, test logs and failure captures in this section
+remain below the qualified-stage data root. The overall goal stays in progress.

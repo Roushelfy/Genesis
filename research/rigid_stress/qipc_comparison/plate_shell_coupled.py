@@ -118,7 +118,8 @@ def main():
             "midpoint": file_id(midpoint),
             "setup_seconds": time.perf_counter() - started,
             "mass_kg": float(masses.sum()),
-            "variant": "Pinned existing shell_contact_consistency 9a58a7359, unchanged constitutive model; not original PR22.",
+            "variant": "Captured coupled-contact Shell source, identified by source.json and source.patch; unchanged constitutive model, separate from original PR22.",
+            "solver_source": file_id(Path(shell.__file__)),
             "force_observer": "Fresh membrane and hinge forces into observer-owned storage; no cache or velocity writes.",
         },
     )
