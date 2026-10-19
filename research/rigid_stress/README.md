@@ -1,5 +1,13 @@
 # Native rigid stress recovery
 
+The latest [accuracy/throughput protocol](docs/ACCURACY_AND_THROUGHPUT_PROTOCOL.md) separates
+physical accuracy validation, GPU-resident stress-module replay and actual
+native end-to-end throughput. Production tuning proceeds independently of
+fine-reference convergence. Paired pure-rigid/max/full timings exclude
+research-only audits and exports, retain runtime validity, and inherit error
+claims only from matching configurations. Existing pad workflow costs keep
+their documented research scope.
+
 The [prescribed-load reference update](docs/PRESCRIBED_REFERENCE_QUALIFICATION_20261019.md)
 passes25 fixed spatial/integration checks for the independent C2 load. Signed
 tensor controls, an exact load-map memory repair and the matching250um Shell

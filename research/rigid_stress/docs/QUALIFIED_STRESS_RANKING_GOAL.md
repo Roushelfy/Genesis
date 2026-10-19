@@ -147,10 +147,19 @@ will win, and do not force one universal order when metrics disagree.
 
 ## Cost, stability and delivery
 
-Profile short admitted workloads before long jobs. Reuse accepted assets,
-environments and captures; run focused CPU checks before the minimal GPU
-qualification. This stage requires physical reference qualification; earlier
-throughput-first guidance does not waive that requirement.
+**User update, 2026-10-19:** apply the
+[separate accuracy/throughput protocol](ACCURACY_AND_THROUGHPUT_PROTOCOL.md).
+Accuracy verification and performance timing are independent execution tracks.
+Measure/tune low-resolution native module and production scene throughput now;
+fine-reference convergence does not gate those iterations. Keep research
+workflow cost, production cost and GPU module cost separately named, and join
+physical errors to throughput only for matching configurations.
+
+
+Profile short valid workloads before long jobs. Reuse accepted assets,
+environments and captures, and verify numerical consistency for performance
+changes. Physical error claims still require reference qualification; they
+can remain pending while independently validated performance work proceeds.
 
 Measure actual compared configurations on matched hardware with warm repeats:
 step latency, aggregate env-step/s, memory, preprocessing/factorization, contact,

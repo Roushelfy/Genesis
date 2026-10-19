@@ -2,6 +2,14 @@
 
 Follow [docs/QUALIFIED_STRESS_RANKING_GOAL.md](docs/QUALIFIED_STRESS_RANKING_GOAL.md).
 
+**2026-10-19 priority update:** follow the
+[separate accuracy/throughput protocol](docs/ACCURACY_AND_THROUGHPUT_PROTOCOL.md).
+Advance native production throughput and tuning now, independently of costly
+reference qualification. Measure contact-replay module throughput and actual
+pure-rigid / rigid-plus-max / rigid-plus-full scene throughput separately.
+Join errors and speed only for matching configurations; retain production
+validity checks and all failed every-step friction observations.
+
 Finish measured DPR / SCR / Shell stress-error rankings, uncertainty, speed
 and stability on the simple full-hollow-egg parallel-plate benchmark. Repair
 SCR's balanced-load acceptance and shear fit, obtain an admitted Shell
