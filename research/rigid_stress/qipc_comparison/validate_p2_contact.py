@@ -63,15 +63,38 @@ def main():
     faces = np.array([[2, 0, 1]])
     weights = np.array([[0.2, 0.3, 0.5], [0.4, 0.5, 0.1]])
     basis = np.broadcast_to(np.eye(3)[:, :2], (2, 3, 2))
-    for layers in (1, 2, 4):
-        coordinates, tets, _, _ = make_mesh(outer, outer + [0, 0, 1], faces, layers)
+    for depths in (
+        np.linspace(0, 1, 2),
+        np.linspace(0, 1, 3),
+        np.linspace(0, 1, 5),
+        np.array([0.0, 0.05, 0.15, 0.4, 1.0]),
+    ):
+        layers = len(depths) - 1
+        coordinates, tets, _, volume = make_mesh(outer, outer + [0, 0, 1], faces, layers, depths)
+        np.testing.assert_allclose(volume.sum(), 0.5, atol=1e-14)
         values = 2 + coordinates[tets, 0] - 3 * coordinates[tets, 1] + 5 * coordinates[tets, 2]
         tensors = values[..., None, None] * np.eye(3)
-        field = ColumnField(tensors, np.zeros(2, dtype=int), weights, layers, 1, tets, 3, np.sort(faces, axis=1))
+        field = ColumnField(
+            tensors, np.zeros(2, dtype=int), weights, layers, 1, tets, 3, np.sort(faces, axis=1), depths
+        )
         for depth in np.linspace(0, 1, 37):
             actual = field.sample(np.full(2, depth), basis)
             expected = (2 + weights[:, 1] - 3 * weights[:, 2] + 5 * depth)[:, None, None] * np.eye(2)
             np.testing.assert_allclose(actual, expected, atol=1e-13)
+        membrane, bending, square = np.zeros(2), np.zeros(2), np.zeros(2)
+        breaks = field.breaks()
+        for lower, upper in zip(breaks[:-1], breaks[1:]):
+            for offset in (-1 / np.sqrt(3), 1 / np.sqrt(3)):
+                depth = (lower + upper) / 2 + offset * (upper - lower) / 2
+                value = field.sample(depth, basis)[:, 0, 0]
+                width = (upper - lower) / 2
+                membrane += width * value
+                bending += width * value * (0.5 - depth)
+                square += width * value**2
+        constant = 2 + weights[:, 1] - 3 * weights[:, 2]
+        np.testing.assert_allclose(membrane, constant + 2.5, atol=1e-13)
+        np.testing.assert_allclose(bending, -5 / 12, atol=1e-13)
+        np.testing.assert_allclose(square, constant**2 + 5 * constant + 25 / 3, atol=1e-13)
     write_json(
         args.output / "result.json",
         {"identity": runtime_identity(), "controls": rows, "quadratic_gap_extrema_passed": True},

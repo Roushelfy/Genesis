@@ -224,3 +224,28 @@ elastic factorization. A passing condensed replay must be followed by
 `plate_contact_fem --contact-operator <retained-contact-operator.npz>` with the
 same mesh/order and continuous-contact option; only this full solve checks
 elastic equations and gaps across the entire outer surface.
+
+
+For isolated wall resolution, `prepare_contact_reference --cases 5e-5:0.002:4
+--wall-depths 0 0.05 0.15 0.4 1` keeps the outer surface and grades the500um
+wall. The depth array must contain exactly layers+1 strictly increasing values
+with endpoints0/1. Omitting it preserves uniform layering. Run
+`validate_p2_contact` first; `contact_fem_exact_columns` reads the stored depth
+array and integrates each actual layer rather than assuming uniform spacing.
+Older mesh files without this metadata retain uniform-layer interpretation.
+
+A cached `--contact-operator` may cover a superset of the requested candidate
+nodes. Mesh/order and all selected node/sign/rigid/gap entries must match
+exactly. A reduced search window still requires the full elastic rerun and
+whole-boundary gap admission; it must not be interpreted as an imposed contact
+radius or tuned against reference stress errors.
+
+
+For the declared0.1N land case, paired1ms and0.125ms controls establish that
+`--tolerance 1e-4 --velocity-tolerance 1e-10` matches1e-6 complete fields to
+within5e-8 relatively. Use the1e-4 setting for the next timestep controls;
+retain1e-6 in commands reproducing the original baseline. This result does not
+relax the mechanical or complete-field gates and does not admit the current
+timestep-sensitive field for a physical ranking. `compare_coupled_shell` also
+saves complete per-face squared differences and reference densities for later
+maps; regional summaries are diagnostic only and never exclude faces.

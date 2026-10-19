@@ -563,3 +563,94 @@ full displacements or gaps outside candidate faces. The full two-layer rerun
 `contact-p2-wall-repair-v1` (`727608`) reuses that operator but independently
 refactors elasticity, checks the complete boundary and retains the complete
 stress field before any admission claim.
+
+
+## Full two-layer repair and isolated contact refinements
+
+The full `contact-p2-wall-repair-v1` rerun (`727608`) completes successfully.
+It passes the unchanged discrete contact/elastic gates: rank49/49,
+15 constraint-generation rounds, equation residual4.443e-12, wrench error
+8.886e-16 and whole-surface minimum gap-1.702e-15m. This supersedes the failed
+solver status of `727596` only for the separately retained repaired run.
+The complete one-to-two-layer comparison remains unresolved: tangent13.072%,
+membrane2.092%, bending5.090%, raw von Mises0.429% and raw tension18.016%.
+Fully closed quadratic-face area remains zero on both poles. Passing algebraic
+checks therefore does not establish a finite-area physical reference.
+
+`contact-targeted-mesh-v1` (`727611`) validates optional graded wall depths,
+including positive prism volume, affine stress at37 depths, and exact analytic
+membrane, bending and squared-stress column integrals. Uniform default meshes
+retain their former construction; new mesh receipts store the depth fractions.
+The same independent ordered/unordered elasticity controls remain below8.5e-14
+stress error and5.2e-14 equation error.
+
+`contact-p2-targeted-v1` (`727612`) separates two controls against the accepted
+discrete two-layer field. `surface25` halves the local surface size from50um
+to25um while retaining global2mm resolution and two uniform wall layers.
+`graded50` retains the50um surface and uses wall fractions
+[0,0.05,0.15,0.4,1], corresponding to25/50/125/300um layer depths. Both keep
+the same declared smooth geometry, material and0.1N load. Their120um candidate
+radius only bounds the contact search; complete-boundary gap checks remain
+mandatory. No field/peak convergence is inferred before their results.
+
+The contact-operator reader additionally permits a verified subset of cached
+candidate nodes on an identical mesh and element order. It checks node IDs,
+signs, rigid coordinates and initial gaps exactly before extracting the
+compliance submatrix. `contact-p2-cache-subset-v1` (`727621`) tests200um to120um
+search-window reduction on the already solved two-layer mesh and compares the
+complete field after a fresh elastic factorization. This is a solver-search
+control, not a fitted physical pressure footprint.
+
+
+The subset control `727621` completes with all original algebraic/global-gap
+gates satisfied: rank50/50, equation residual4.427e-12, minimum full-boundary
+gap-1.648e-15m. Against the200um search, complete tangent/membrane/bending
+changes are8.82e-7/4.26e-7/5.92e-7; raw von Mises changes1.40e-6. These are
+well below the0.5%/1% solver targets and do not resolve spatial uncertainty.
+The retained physical point supports still have zero fully closed-face area.
+
+## Eighth-step field audit
+
+The1e-4 arm of `land-shell-eighth-dt-v1` completes all1600 steps and passes its
+401-observation last50ms mechanical window (`727622`). Maximum equation
+residual relative to contact-force norm is2.349e-9; maximum plate speed is
+2.47e-13m/s. Against the quarter-step1e-6 field, tangent/membrane/bending change
+is0.6175%/0.2001%/1.1023%, so the0.5% full-field target still fails.
+The same-dt1e-6 arm must be checked separately before isolating this as pure
+timestep sensitivity.
+
+`compare_coupled_shell` now retains complete per-face squared error/reference
+densities, areas and centroids for each field metric, without changing its
+full-domain metrics or acceptance. The replay `land-shell-difference-map-v1`
+(`727624`) reproduces all old scalar metrics exactly. Its diagnostic regions
+locate98.17% of squared tangent difference and99.06% of squared bending
+difference between0.5mm and4mm polar radius. The rest of the surface remains
+in every reported metric; this localization is not a trimmed comparison.
+
+`land-shell-sixteenth-dt-v1` (`727625`) tests0.0625ms with1e-4 relative PCG,
+unchanged1e-10 absolute velocity tolerance, unchanged contact model and the
+same50ms ramp/150ms hold. It retains every step and runs its mechanical-window
+and complete-field comparisons after successful completion. No admission is
+inferred from submission or from essentially unchanged raw peaks.
+
+
+The paired audit `land-shell-eighth-paired-audit-v1` (`727627`) now completes:
+both1600-step histories pass their401-sample equilibrium windows with no solver
+failure. At fixed0.125ms, changing relative PCG1e-6 to1e-4 changes complete
+tangent/membrane/bending fields by3.52e-8/2.70e-8/4.98e-8 and raw peaks by at
+most2.44e-9. The same-relative1e-6 quarter-to-eighth comparison reproduces
+0.6175%/0.2001%/1.1023%, separating the observed timestep dependence from the
+negligible relative-PCG effect. The1ms and0.125ms paired controls both support
+using1e-4 for this0.1N land case with absolute velocity tolerance1e-10; they do
+not establish a universal tolerance for other loads or materials.
+
+This supports the user's distinction between inner and outer accuracy.
+For a Newton linearization, the PCG residual is the error in satisfying the
+current linear Newton equation; tightening it beyond what changes the accepted
+nonlinear solution needlessly increases work. Conversely, a small Newton
+increment alone is not a force-residual guarantee. In the pinned Shell source,
+the absolute velocity tolerance participates in both the linear error bound
+and contact-model/Newton termination. QIPC's quadratic-form relative test and
+its separate Newton displacement test have different units/normalizations;
+the same printed tolerance cannot be equated across these solvers. The actual
+coupled residual and measured complete-field sensitivities remain the checks.
