@@ -249,3 +249,25 @@ relax the mechanical or complete-field gates and does not admit the current
 timestep-sensitive field for a physical ranking. `compare_coupled_shell` also
 saves complete per-face squared differences and reference densities for later
 maps; regional summaries are diagnostic only and never exclude faces.
+
+
+## Independent finite-area load control
+
+`finite_area_reference --mesh <land-mesh.npz> --radius 0.002 --loads 0.1
+--quadrature-orders 8 10 --output <fresh-data-output>` integrates the prescribed
+C2 axial pressure profile with independent P2 facet functions. It saves full
+fields under `order-8/` and `order-10/`, including quadrature positions, physical
+point forces, area weights and traction densities. Run `validate_p2_contact`
+first. Use `contact_fem_exact_columns` on those directories for quadrature,
+wall and surface sensitivity. This prescribed-traction control does not solve
+plate contact and cannot close the end-to-end goal by itself.
+
+`audit_contact_qp --field <retained-contact-load.npz> --load 0.1
+--solver-path <isolated-clarabel-0.11.1-install> --output <fresh-data-output>`
+checks a retained contact QP independently. It requires pinned Clarabel0.11.1,
+installed without modifying active environments, and uses the existing
+physical-reference NumPy/SciPy environment. Its positive certificate covers
+only the retained finite constraint set; inspect exact candidate-face gaps and
+perform a full elastic/global-boundary rerun before physical admission.
+`AlmostSolved` is retained as a failed certificate. Execute both modules through
+the established Slurm/gs-srun wrapper with explicit data-side outputs.

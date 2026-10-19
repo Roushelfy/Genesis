@@ -654,3 +654,87 @@ and contact-model/Newton termination. QIPC's quadratic-form relative test and
 its separate Newton displacement test have different units/normalizations;
 the same printed tolerance cannot be equated across these solvers. The actual
 coupled residual and measured complete-field sensitivities remain the checks.
+
+
+## Shell timestep sensitivity now passes at0.0625ms
+
+`land-shell-sixteenth-dt-v1` (`727625`) completes all3200 steps, with1e-4
+relative PCG and the same1e-10 absolute velocity tolerance. All801 samples in
+the final50ms pass the mechanical gates. Maximum residual relative to contact
+force is2.532e-9, maximum plate speed4.36e-13m/s and maximum kinetic energy
+9.85e-21J. Against0.125ms, complete tangent/membrane/bending changes are
+0.01608%/0.01013%/0.02528%; both raw peaks change by less than4.4e-8 relatively.
+This passes the0.5%/1% timestep targets after the retained coarser failing
+steps. It does not establish continuum accuracy or the three-method ranking.
+
+## Retained hard-contact failures and independent QP certificate
+
+Both `contact-p2-targeted-v1` arms (`727612`) finish but fail discrete contact
+admission. The25um surface arm reaches40 rounds with rank154/156 and minimum
+scaled gap-9.89e-6. The graded-wall arm stops at18 rounds with a full-rank76/76
+basis but exhausted inner active-set iterations and minimum scaled gap-1.01e-6.
+Their full-field differences are diagnostic only, despite nonzero closed-face
+areas in some patches. The original full-surface and force/equation thresholds
+are unchanged.
+
+Two experimental active-basis variants are retained in the immutable analysis
+captures `contact-p2-basis-control-v1` (`727632`) and
+`contact-p2-scaled-basis-v1` (`727644`). A null-direction reduction fixes a small
+constructed redundant multiplier basis (old rank8/11) but cycles on the actual
+fine problem. Additional diagonal equilibration also makes the previously
+passing two-layer control fail. Neither experimental implementation is retained
+in the active source; `plate_contact_fem` and `quadratic_contact` are restored
+to the preceding validated commit. These failures cannot be hidden behind the
+passing constructed regression.
+
+`audit_contact_qp` instead asks pinned Clarabel0.11.1 to solve the *retained*
+convex QP independently, with explicit primal/dual/complementarity checks.
+It does not modify the contact driver or waive its original rank/gap gates.
+The interface follows the [official quadratic-program specification](https://clarabel.org/stable/python/getting_started_py/).
+`contact-independent-qp-v1` (`727698`) reports `AlmostSolved` for the two-layer
+and25um retained systems, which remain rejected by this audit. The graded-wall
+system returns `Solved`, with wrench error2.65e-15, stationarity7.01e-12 and
+maximum complementarity9.19e-14. Its fixed-QP certificate passes, but its exact
+candidate-face gap remains-3.89e-8 scaled and therefore needs additional
+geometric constraints. This is not a full elasticity or outside-candidate
+boundary check. All three complete raw results and solution arrays are retained.
+
+## Independent prescribed finite-area reference
+
+`finite_area_reference` implements the early same-traction comparison required
+by the goal, separately from the unsolved hard-contact benchmark. On the
+declared polar-land geometry, each pole receives0.1N axial inward traction
+proportional to max(1-rho^2/a^2,0)^3 with **a=2mm declared before evaluating
+stress**. Each pole is normalized independently; the shape is C2 at its edge.
+Independent P2 facet integration retains both physical quadrature point forces
+and consistent nodal forces, preserving force, moment and rigid virtual work.
+No footprint is fitted to stress. The full egg remains free; reported mass-mode
+corrections are only roundoff-sized.
+
+The augmented `validate_p2_contact` checks exact P2 virtual work for a quadratic
+displacement and equality of eighth/tenth-order integration for an unclipped
+polynomial load. `finite-area-pilot-v1` (`727643`) and the post-rollback control
+`finite-area-controls-v1` (`727697`) pass this and all preceding independent
+elasticity/gap/column controls. The one-layer land reference passes equation
+residual7.83e-12 and wrench error1.61e-16. Changing surface quadrature8 to10
+changes full tangent stress1.11e-7, membrane5.46e-8 and bending1.43e-7 relatively;
+raw peaks change by at most2.42e-7. The tenth-order peak is323363Pa von Mises
+and260528Pa tension.
+
+The two-layer arm of `finite-area-refinement-v1` (`727663_0`) also passes,
+with1.49e-11 equation residual and329658Pa/265657Pa raw peaks. The one-to-two
+comparison (`727697`) changes complete tangent2.685%, membrane1.590%, bending
+1.288% and raw peaks1.910%/1.930%. Complete-field wall convergence is not yet
+qualified at the2% target. The simultaneous250um/global1.5mm two-layer arm
+(`727663_1`,245760 tetrahedra) fails in SuperLU factorization with `MemoryError`;
+its128GB allocation and 43,882,352KiB recorded peak RSS are retained, with no
+field or admission inferred.
+
+`finite-area-isolated-mesh-v1` (`727702`) and
+`finite-area-isolated-refinement-v1` (`727703`) keep global2mm resolution fixed:
+one arm increases wall layers2 to3 on the same9880-vertex surface; the other
+halves local size500 to250um on a16738-vertex surface and retains two layers.
+They measure quadrature and complete-field differences separately. These jobs
+remain pending verification; they are not a completed reference qualification.
+The two additional native pilot meshes prepared by `727697` remain data-side
+assets only (4498/7432 outer vertices); no DPR/SCR result is inferred from them.

@@ -9,6 +9,15 @@ changes are isolated in the `stress_qualified_ranking` worktree under the
 existing workspace; private compilation caches remain compute-node-local.
 Existing home fallback evidence remains in place. No migration is performed.
 
+The optional independent QP audit uses Clarabel0.11.1 installed with
+`--no-deps --target` at
+`/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/assets/clarabel-0.11.1/`.
+Existing environments are unchanged. Wheel/install receipts and logs are under
+`runs/20261019-qualified-ranking/clarabel-install-v2/`; the earlier login-node
+attempt failed before installation because that container's interpreter is
+unavailable on the login host. Scientific execution and the successful install
+use the existing rtx-mid / GENESIS_IMAGE_VER=1_26 workflow.
+
 ## Parallel-plate benchmark storage, 2026-10-18
 
 The updated goal is pinned at fork commit `914a558df`. A new exclusive-create,
