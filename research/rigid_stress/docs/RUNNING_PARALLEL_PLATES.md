@@ -118,3 +118,42 @@ contains small receipts, exact task lists, failure arrays and editable figures,
 plus a SHA256 manifest linking external full fields and source inventories.
 The old home fallback remains in place under its previously authorized bound;
 this workflow neither migrates it nor writes new runtime outputs there.
+
+## Exact material-column metrics and the declared polar-land control
+
+The additional geometry and its limitations are recorded in
+[qualified-stage progress](QUALIFIED_STRESS_PROGRESS_20261019.md).
+It has2mm flat polar regions, a C2 height transition ending at4mm, and500um
+normal-offset wall. Its contact support must independently pass qualification.
+The original smooth geometry remains a separate benchmark.
+
+```bash
+qualified_root=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking
+python3 -m research.rigid_stress.shell_comparison.submit \
+  --source "$plate_source" --python "$plate_analysis_python" \
+  --tasks "$qualified_root/meta/land-mesh-tasks.json" \
+  --output "$qualified_root/reproduce-land-mesh-v1" \
+  --minutes 5 --concurrency 1 --node-local-cache
+
+python3 -m research.rigid_stress.shell_comparison.submit \
+  --source "$plate_source" \
+  --python /mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python \
+  --tasks "$qualified_root/meta/contact-active-set-tasks.json" \
+  --output "$qualified_root/reproduce-contact-active-set-v1" \
+  --minutes 8 --concurrency 2 --node-local-cache
+
+python3 -m research.rigid_stress.shell_comparison.submit \
+  --source "$plate_source" --python "$plate_analysis_python" \
+  --tasks "$qualified_root/meta/contact-active-set-fields-tasks.json" \
+  --output "$qualified_root/reproduce-contact-active-set-fields-v1" \
+  --minutes 5 --concurrency 1 --node-local-cache
+```
+
+The first command generates new assets. The other task lists intentionally
+reuse the recorded input meshes/operators and field runs; change their paths
+explicitly when analyzing new results. `contact_fem_exact_columns` integrates
+P1 stresses across the union of tetrahedron depth partitions. It keeps angular
+quadrature and geometric refinement uncertainty separate and retains all raw
+peaks. Optional stored material directions support the declared land geometry.
+`plate_contact_fem` records SLSQP and active-set status separately and admits
+only the final primal/dual/complementarity and full physical equation checks.

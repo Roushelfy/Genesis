@@ -9,10 +9,13 @@ from scipy.spatial import cKDTree
 from .artifacts import file_id, runtime_identity, write_json
 
 
-def material_faces(outer, faces, directions):
-    unit = outer.copy()
-    unit[:, 2] /= 0.03
-    unit[:, :2] /= (0.022 * (1 - 0.18 * unit[:, 2]))[:, None]
+def material_faces(outer, faces, directions, material_unit=None):
+    if material_unit is None:
+        unit = outer.copy()
+        unit[:, 2] /= 0.03
+        unit[:, :2] /= (0.022 * (1 - 0.18 * unit[:, 2]))[:, None]
+    else:
+        unit = material_unit.copy()
     unit /= np.linalg.norm(unit, axis=1)[:, None]
     triangles = unit[faces]
     centers = triangles.mean(axis=1)

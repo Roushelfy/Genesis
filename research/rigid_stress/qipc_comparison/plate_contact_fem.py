@@ -4,13 +4,62 @@ import argparse
 import json
 import resource
 import time
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
-from scipy.optimize import minimize
+from scipy.linalg import lstsq
+from scipy.optimize import linprog, minimize
 
 from .artifacts import file_id, runtime_identity, write_json
 from .p1_elastic import FreeElasticP1
+
+
+@dataclass
+class ContactMinimum:
+    force: np.ndarray
+    coordinates: np.ndarray
+    active: np.ndarray
+    rank: int
+    iterations: int
+    converged: bool
+
+
+def active_contact_minimum(matrix, gap, rigid, target, initial):
+    """Minimize the convex complementary energy with feasible primal active-set steps."""
+    alpha = initial.copy()
+    if alpha.min() < 0 or np.linalg.norm(rigid.T @ alpha - target) > 1e-10:
+        feasible = linprog(np.zeros(len(gap)), A_eq=rigid.T, b_eq=target, bounds=(0, None), method="highs")
+        if not feasible.success:
+            raise ValueError(f"No nonnegative balanced contact load: {feasible.message}")
+        alpha = feasible.x
+    active = alpha > 0
+    coordinate = np.zeros(len(target))
+    converged = False
+    for iteration in range(5 * len(gap) + 20):
+        reduced = np.block([[matrix[np.ix_(active, active)], rigid[active]], [rigid[active].T, np.zeros((4, 4))]])
+        solution, _, rank, _ = lstsq(reduced, np.r_[-gap[active], target], cond=1e-13, lapack_driver="gelsy")
+        candidate = np.zeros_like(alpha)
+        candidate[active] = solution[:-4]
+        coordinate = solution[-4:]
+        negative = active & (candidate < -1e-12)
+        if negative.any():
+            indices = np.flatnonzero(negative)
+            fractions = alpha[indices] / (alpha[indices] - candidate[indices])
+            leaving = indices[fractions.argmin()]
+            fraction = fractions.min()
+            alpha += fraction * (candidate - alpha)
+            alpha[leaving] = 0
+            active[leaving] = False
+            continue
+        alpha = candidate
+        dual = matrix @ alpha + gap + rigid @ coordinate
+        inactive = np.flatnonzero(~active)
+        if not len(inactive) or dual[inactive].min() >= -1e-10:
+            converged = True
+            break
+        active[inactive[dual[inactive].argmin()]] = True
+    return ContactMinimum(alpha, coordinate, active, rank, iteration + 1, converged)
 
 
 def main():
@@ -104,15 +153,9 @@ def main():
                 constraints={"type": "eq", "fun": lambda x: rigid.T @ x - target, "jac": lambda x: rigid.T},
                 options={"ftol": 1e-12, "maxiter": 1000},
             )
-            alpha = fitted.x
-            active = alpha > 1e-9
-            # Solve the identified active equations without relying on optimizer
-            # success flags. Keep every multiplier, including any negative one.
-            reduced = np.block([[matrix[np.ix_(active, active)], rigid[active]], [rigid[active].T, np.zeros((4, 4))]])
-            polished, _, rank, _ = np.linalg.lstsq(reduced, np.r_[-gap[active], target], rcond=1e-13)
-            alpha = np.zeros_like(alpha)
-            alpha[active] = polished[:-4]
-            coordinate = polished[-4:] * displacement_scale
+            minimum = active_contact_minimum(matrix, gap, rigid, target, fitted.x)
+            alpha, active, rank = minimum.force, minimum.active, minimum.rank
+            coordinate = minimum.coordinates * displacement_scale
             forces = np.zeros_like(vertices)
             forces[nodes, 2] = alpha * load * sign
             tensor, elastic, correction, residual = model.solve(forces)
@@ -132,7 +175,8 @@ def main():
             minimum_gap = min(all_bottom_gap.min(), all_top_gap.min())
             contact_error = np.abs(actual_gap[active]).max() / displacement_scale
             admitted = bool(
-                rank == len(polished)
+                minimum.converged
+                and rank == active.sum() + 4
                 and reaction_error < 1e-8
                 and equation_error < 1e-7
                 and balance_correction < 1e-8
@@ -181,11 +225,13 @@ def main():
                 "linear_contact_equations_admitted": admitted,
                 "physical_reference_qualified": False,
                 "optimizer_success": bool(fitted.success),
-                "final_solver": "Direct active KKT solve, admitted only with full rank and complete primal/dual/complementarity checks; SLSQP supplies the initial active set.",
+                "final_solver": "Feasible primal active-set KKT solve with blocking steps and inactive-gap admission; SLSQP supplies a feasible initial point when available.",
+                "active_set_converged": minimum.converged,
+                "active_set_iterations": minimum.iterations,
                 "optimizer_message": str(fitted.message),
                 "optimizer_iterations": fitted.nit,
                 "active_kkt_rank": int(rank),
-                "active_kkt_dimension": len(polished),
+                "active_kkt_dimension": int(active.sum() + 4),
                 "force_moment_constraint_relative_error": float(reaction_error),
                 "equation_relative_residual": float(equation_error),
                 "balance_correction_relative": float(balance_correction),
