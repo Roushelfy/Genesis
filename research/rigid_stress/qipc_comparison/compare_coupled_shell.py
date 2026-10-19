@@ -46,20 +46,48 @@ def main():
                     "raw_tension": float(np.linalg.eigvalsh(tensor)[..., -1].max()),
                 }
             )
-    for path, actual in zip(args.frames, values[1:]):
+    for index, (path, actual) in enumerate(zip(args.frames, values[1:])):
         reference = values[0]
         errors = {}
+        densities = {}
         for key in ("tangent", "membrane", "bending"):
             # Simpson weights integrate exactly the square of the linear fiber field.
             weights = area[:, None] * np.array([1, 4, 1])[None] / 6 if key == "tangent" else area
             numerator = np.sum(weights * np.sum((actual[key] - reference[key]) ** 2, axis=(-2, -1)))
             denominator = np.sum(weights * np.sum(reference[key] ** 2, axis=(-2, -1)))
             errors[key + "_relative_l2"] = float(np.sqrt(numerator / denominator))
+            squared_difference = np.sum((actual[key] - reference[key]) ** 2, axis=(-2, -1))
+            squared_reference = np.sum(reference[key] ** 2, axis=(-2, -1))
+            if key == "tangent":
+                squared_difference = squared_difference @ (np.array([1, 4, 1]) / 6)
+                squared_reference = squared_reference @ (np.array([1, 4, 1]) / 6)
+            densities[key + "_squared_difference"] = squared_difference
+            densities[key + "_squared_reference"] = squared_reference
         for key in ("raw_vm", "raw_tension"):
             errors[key + "_relative_change"] = abs(actual[key] / reference[key] - 1)
+        difference_path = args.output / f"difference-{index}.npz"
+        np.savez_compressed(difference_path, centroids_m=triangle.mean(axis=1), area_m2=area, **densities)
+        radius = np.linalg.norm(triangle.mean(axis=1)[:, :2], axis=1)
+        regions = []
+        for lower, upper in ((0, 0.0005), (0.0005, 0.002), (0.002, 0.004), (0.004, np.inf)):
+            selected = (radius >= lower) & (radius < upper)
+            fractions = {}
+            for key, density in densities.items():
+                total = float(area @ density)
+                fractions[key + "_fraction"] = float(area[selected] @ density[selected] / total) if total else None
+            regions.append(
+                {
+                    "polar_radius_min_m": lower,
+                    "polar_radius_max_m": upper if np.isfinite(upper) else None,
+                    "area_fraction": float(area[selected].sum() / area.sum()),
+                    **fractions,
+                }
+            )
         rows.append(
             {
                 "frame": file_id(path),
+                "complete_surface_difference": file_id(difference_path),
+                "regions_diagnostic_only": regions,
                 **errors,
                 "raw_vm_pa": actual["raw_vm"],
                 "raw_tension_pa": actual["raw_tension"],

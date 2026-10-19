@@ -58,6 +58,7 @@ def refine_contact_surface(minimum_size, global_size, refinement_radius=0.0):
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--cases", nargs="+", default=["5e-5:0.002:4", "2.5e-5:0.0015:6", "1.25e-5:0.001:8"])
+    cli.add_argument("--wall-depths", type=float, nargs="+")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -82,7 +83,8 @@ def main():
         unit, faces = refine_contact_surface(float(minimum), float(global_size))
         outer = transform_shell("egg", unit)
         inner = transform_shell("egg", 0.92 * unit)
-        vertices, tetrahedra, boundary, volumes = make_mesh(outer, inner, faces, int(layers))
+        depths = np.linspace(0, 1, int(layers) + 1) if args.wall_depths is None else np.asarray(args.wall_depths)
+        vertices, tetrahedra, boundary, volumes = make_mesh(outer, inner, faces, int(layers), depths)
         boundary_edges, counts = np.unique(
             np.sort(boundary[:, [[0, 1], [1, 2], [2, 0]]].reshape(-1, 2), axis=1), axis=0, return_counts=True
         )
@@ -100,12 +102,14 @@ def main():
             inner_vertices=inner,
             mid_vertices=(outer + inner) / 2,
             mid_faces=faces,
+            wall_depths=depths,
         )
         polar_distance = np.linalg.norm(outer[:, :2], axis=1)
         meshes.append(
             {
                 "input": file_id(path),
                 "specification": specification,
+                "wall_depths": depths.tolist(),
                 "outer_vertices": len(outer),
                 "surface_faces": len(faces),
                 "tetrahedra": len(tetrahedra),

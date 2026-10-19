@@ -123,9 +123,11 @@ def main():
         assert previous["mesh"]["sha256"] == file_id(args.mesh)["sha256"]
         assert previous.get("element_order", 1) == args.element_order
         with np.load(args.contact_operator) as saved:
+            selected = np.searchsorted(saved["nodes"], nodes)
+            assert (selected < len(saved["nodes"])).all(), "Cached operator does not cover the requested candidate set"
             for key, expected in (("nodes", nodes), ("sign", sign), ("rigid", rigid), ("initial_gap_m", initial_gap)):
-                np.testing.assert_array_equal(saved[key], expected)
-            compliance[:] = saved["compliance_m_per_n"]
+                np.testing.assert_array_equal(saved[key][selected], expected)
+            compliance[:] = saved["compliance_m_per_n"][np.ix_(selected, selected)]
     with (args.output / "steps.jsonl").open("w", buffering=1) as journal:
         for first in range(0, len(nodes), 16) if args.contact_operator is None else ():
             selected = slice(first, first + 16)

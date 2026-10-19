@@ -20,15 +20,22 @@ class ColumnField:
     tetrahedra: np.ndarray
     n_surface_vertices: int
     sorted_faces: np.ndarray
+    wall_depths: np.ndarray | None = None
+
+    def __post_init__(self):
+        if self.wall_depths is None:
+            self.wall_depths = np.linspace(0, 1, self.layers + 1)
+        assert self.wall_depths.shape == (self.layers + 1,)
+        assert self.wall_depths[0] == 0 and self.wall_depths[-1] == 1 and np.all(np.diff(self.wall_depths) > 0)
 
     def breaks(self):
         boundaries = [np.zeros(len(self.selected))]
         for layer in range(self.layers):
             boundaries.extend(
                 (
-                    (layer + self.weights[:, 2]) / self.layers,
-                    (layer + self.weights[:, 1:].sum(axis=1)) / self.layers,
-                    np.full(len(self.selected), (layer + 1) / self.layers),
+                    self.wall_depths[layer] + np.diff(self.wall_depths)[layer] * self.weights[:, 2],
+                    self.wall_depths[layer] + np.diff(self.wall_depths)[layer] * self.weights[:, 1:].sum(axis=1),
+                    np.full(len(self.selected), self.wall_depths[layer + 1]),
                 )
             )
         result = np.array(boundaries)
@@ -36,8 +43,8 @@ class ColumnField:
         return result
 
     def sample(self, depth, basis):
-        layer = np.minimum((depth * self.layers).astype(int), self.layers - 1)
-        local = depth * self.layers - layer
+        layer = np.clip(np.searchsorted(self.wall_depths, depth, side="right") - 1, 0, self.layers - 1)
+        local = (depth - self.wall_depths[layer]) / np.diff(self.wall_depths)[layer]
         kind = (local >= self.weights[:, 2]).astype(int) + (local >= self.weights[:, 1:].sum(axis=1))
         elements = (3 * layer + kind) * self.n_faces + self.selected
         tensor = self.stress[elements]
@@ -106,6 +113,7 @@ def main():
                     saved[key] for key in ("vertices", "tetrahedra", "outer_vertices", "mid_faces")
                 )
                 material_unit = saved["material_unit"] if "material_unit" in saved else None
+                wall_depths = saved["wall_depths"] if "wall_depths" in saved else None
             path = run / f"load-{load:g}.npz"
             with np.load(path) as saved:
                 stress = saved["stress_pa"]
@@ -121,6 +129,7 @@ def main():
                     tets,
                     len(outer),
                     np.sort(faces, axis=1),
+                    wall_depths,
                 )
             )
             dev = stress - np.trace(stress, axis1=-2, axis2=-1)[..., None, None] * np.eye(3) / 3

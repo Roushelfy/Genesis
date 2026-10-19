@@ -31,8 +31,11 @@ def subdivide(outer, inner, faces):
     return outer, inner, faces
 
 
-def make_mesh(outer, inner, faces, layers):
-    vertices = np.concatenate([outer * (1 - depth) + inner * depth for depth in np.linspace(0, 1, layers + 1)])
+def make_mesh(outer, inner, faces, layers, wall_depths=None):
+    depths = np.linspace(0, 1, layers + 1) if wall_depths is None else np.asarray(wall_depths, dtype=float)
+    assert depths.shape == (layers + 1,) and depths[0] == 0 and depths[-1] == 1
+    assert np.all(np.diff(depths) > 0)
+    vertices = np.concatenate([outer * (1 - depth) + inner * depth for depth in depths])
     count = len(outer)
     sorted_faces = np.sort(faces, axis=1)
     tets = []
