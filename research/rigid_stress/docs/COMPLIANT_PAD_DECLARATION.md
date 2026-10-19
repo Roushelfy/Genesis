@@ -108,3 +108,56 @@ The force-per-area spring convention is documented in
 [Spring Foundation and Thin Elastic Layer](https://doc.comsol.com/6.3/doc/com.comsol.help.sme/sme_ug_theory.06.068.html).
 This declaration specifies the benchmark's ideal constitutive law; no COMSOL
 implementation or result is used as numerical ground truth.
+
+The native extension will use the same per-reference-area pad law at material
+face centroids, attached to the actual rigid egg pose. A research boundary
+condition solves its six rigid velocities and the upper plate velocity jointly
+with frozen world point Jacobians, lagged normal friction bounds and unchanged
+physical smoothing. Its mass/inertia and plate damping come from the native
+scene. Quadrants performs the small Newton solve. Equal/opposite contact
+wrenches are then applied through native external-wrench APIs, and the native
+solver advances positions and velocities. No prescribed reference reactions,
+vertex pins, velocity clearing or recovered-elastic feedback are introduced.
+Each actual native step must agree with the predicted velocity and final gap
+law within independently recorded tolerances; frozen-Jacobian and timestep
+errors remain explicit. First qualify analytic pad controls and native motion
+before coupling the resulting measured sources to DPR/SCR. This is a declared
+benchmark boundary condition, not a claim that the default native collider
+implements this pad law or that its timing matches the original hard contact.
+
+For native observations, preserve the measured centroid-force field and reduce
+each connected active support by the existing nonnegative wrench-preserving
+compression routine. Selected sources stay on the actual outer facets and
+retain their force directions, source normals and friction bounds. Use the
+previously declared2mm radius in both DPR and SCR; do not fit it to the result.
+Apply the unchanged native load reconstruction and elastic kernels to those
+live sources at observation times. Record compression error, source count,
+local acceptance, full elastic residual and all timing/transfer costs. Source
+compression is an explicit additional interface reduction, not a claim that
+the default native collider emitted these points. Sparse observations do not
+measure every-step recovery cost.
+
+The velocity-based pad solve requires the native semi-implicit position update,
+so this variant explicitly selects `gs.integrator.Euler` (including the existing
+implicit joint damping). The default free-body midpoint update is retained as
+a negative control: mixing it with a backward-velocity gap prediction can pass
+a settled endpoint while violating the pressure law during loading. Check the
+actual gap, friction, momentum and predicted velocity on every step, separately
+from the final equilibrium windows; no endpoint can qualify a failed history.
+
+The live observation uses a separate native model with the same material mesh
+and current measured source packet. It never steps that observer scene or
+feeds elastic displacement back into the rigid motion. This keeps the native
+API's rejection of unspecified external wrenches intact. It is a research
+adapter with host source compression and transfers, not a new production
+external-load API; account for its setup, memory and observation costs explicitly.
+
+The original wrench-only source compression fails the shear field timestep gate:
+nearby full load fields can select different sparse supports. Retain it under
+`--source-reduction wrench`. The additional `--source-reduction none` control
+passes every nonzero centroid force and its original position to the unchanged
+recovery kernels, retaining2mm radius and the actual friction coefficient.
+Its observer owns a contact buffer sized for all outer centroids; the buffer
+does not change collision geometry or manufacture contacts. Measure its source
+count, memory and runtime separately. No fitted kernel radius, relaxed field
+gate or discarded physical force is part of this control.

@@ -1,0 +1,296 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-115",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728094",
+      "SLURM_ARRAY_JOB_ID": "728094",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-4fdce966-62a0-70f5-3ac5-820ab2d1e6e6, 00000000:C0:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "cases": [
+    {
+      "run": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group0/native/result.json",
+        "bytes": 3806,
+        "sha256": "3369ef001ee89ca60a38cb4cb785080b018158cd50dec12abc42799fe477c3db"
+      },
+      "journal": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group0/native/steps.jsonl",
+        "bytes": 809732,
+        "sha256": "39493c83bf93549dd8e4bf2c9710d05556a1afc98b64f84c5cc4727dfe75ad2f"
+      },
+      "steps": 1000,
+      "mechanical_history_passed": true,
+      "all_windows_passed": true,
+      "motion_maximum_absolute_differences": {
+        "compression_coordinate_m": 0.0,
+        "plate_speed_m_per_s": 0.0,
+        "upper_reaction_n": 0.0,
+        "lower_reaction_n": 0.0
+      },
+      "fields": [
+        {
+          "step": 200,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group0/native/frames/stress-level0.npz",
+            "bytes": 8063756,
+            "sha256": "766599921fcf6ddf42193da28d9009021f97ed95b114b69753c24b734cf3c857"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group0/native/frames/level0.npz",
+            "bytes": 398636,
+            "sha256": "97b0f87d28617ec92522831da0bbf9b34bff2ad1cb3e40f4357d72b0dc75a9f9"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 2.4133668647075384e-18,
+          "recovered_surface_relative_wrench_error": 9.900763410005208e-17,
+          "body_correction_force_n": [
+            2.143418439808437e-34,
+            6.556889121787488e-35,
+            -4.227362070730607e-14
+          ],
+          "frozen_point_relative_moment_error": 2.428903084502487e-23,
+          "adapter_passed": true
+        },
+        {
+          "step": 400,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group0/native/frames/stress-level1.npz",
+            "bytes": 8091357,
+            "sha256": "b7c582abb501fc04c3f656fa88d0678a5c72b4c20c1933bf4aa1d7ad2e884511"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group0/native/frames/level1.npz",
+            "bytes": 399179,
+            "sha256": "921adfdfd0b8dda3a66a3503169cb355878f39e9c05ff527ceb13795079b2773"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 3.0323457762387597e-16,
+          "recovered_surface_relative_wrench_error": 5.620971870916269e-16,
+          "body_correction_force_n": [
+            -3.26038786563916e-34,
+            -1.9128231823755673e-34,
+            -8.285737433849576e-15
+          ],
+          "frozen_point_relative_moment_error": 4.236255920501967e-24,
+          "adapter_passed": true
+        },
+        {
+          "step": 600,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group0/native/frames/stress-level2.npz",
+            "bytes": 8106857,
+            "sha256": "f3a104445c9ff30628f3ca870c509015497185ef64259f7344fa6da201915be5"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group0/native/frames/level2.npz",
+            "bytes": 399807,
+            "sha256": "5d75ddabf64688ab5242d9e32a538daaad34ae788d32034023ccb8fd2a3cc147"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 6.028276042016483e-16,
+          "recovered_surface_relative_wrench_error": 5.554600253062781e-16,
+          "body_correction_force_n": [
+            1.2573675323570598e-33,
+            -3.799609164880421e-34,
+            2.2618106874780583e-14
+          ],
+          "frozen_point_relative_moment_error": 7.797372726836365e-20,
+          "adapter_passed": true
+        },
+        {
+          "step": 800,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group0/native/frames/stress-level3.npz",
+            "bytes": 8082988,
+            "sha256": "85e412af8076c0713c85e951fcd1af0d0cb119abdb48e9325dfcdcc0b4f1b750"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group0/native/frames/level3.npz",
+            "bytes": 400436,
+            "sha256": "612aeabcbbc0bcc1aa2bcd18df6f914bbceac168b1905200bd65ef2e73a714a5"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 3.657230782309773e-17,
+          "recovered_surface_relative_wrench_error": 3.039363973199503e-16,
+          "body_correction_force_n": [
+            -6.204876318174215e-34,
+            3.201870287487288e-34,
+            2.0872610032797407e-14
+          ],
+          "frozen_point_relative_moment_error": 7.037184084326138e-23,
+          "adapter_passed": true
+        },
+        {
+          "step": 1000,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group0/native/frames/stress-level4.npz",
+            "bytes": 8073676,
+            "sha256": "da34e49dcd9011aa11201f1d3fe0a831703b7a4f8a8e13cec34b294f3ea0beae"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group0/native/frames/level4.npz",
+            "bytes": 399665,
+            "sha256": "b454c9bc353b89cab09380ee01ee98ab2a54d04c28133f471f9164abbc540c21"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 1.2150183682287946e-16,
+          "recovered_surface_relative_wrench_error": 2.6435587959415717e-16,
+          "body_correction_force_n": [
+            -1.466789197795743e-34,
+            1.1439139604034775e-34,
+            8.299721293618399e-16
+          ],
+          "frozen_point_relative_moment_error": 5.325634648338403e-23,
+          "adapter_passed": true
+        }
+      ]
+    },
+    {
+      "run": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group1/native/result.json",
+        "bytes": 3810,
+        "sha256": "23bdb308a3dad916bec0e654bf50404f391f35291cd1cd06351d23593a20cbe8"
+      },
+      "journal": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group1/native/steps.jsonl",
+        "bytes": 809722,
+        "sha256": "5c264d4f07e72dc6f6ab87e7ea3dd01765b9bba51f4c6b1a937bb62b50382f1a"
+      },
+      "steps": 1000,
+      "mechanical_history_passed": true,
+      "all_windows_passed": true,
+      "motion_maximum_absolute_differences": {
+        "compression_coordinate_m": 5.692061405548898e-19,
+        "plate_speed_m_per_s": 4.594471145133863e-16,
+        "upper_reaction_n": 5.595524044110789e-14,
+        "lower_reaction_n": 4.951594689828198e-14
+      },
+      "fields": [
+        {
+          "step": 200,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group1/native/frames/stress-level0.npz",
+            "bytes": 8347527,
+            "sha256": "06d013ee61e5396e3d18978b879a22fb939a0ef0bccdf5781ccc7295c9fcd968"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group1/native/frames/level0.npz",
+            "bytes": 398705,
+            "sha256": "6266096cd61ac35795964f82c1101601132f959d8dd302d71a570013c81f4d1f"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 5.046284029048119e-17,
+          "recovered_surface_relative_wrench_error": 7.264283498815157e-10,
+          "body_correction_force_n": [
+            2.3588751902301762e-11,
+            -2.225057894305955e-12,
+            -1.427341315602694e-10
+          ],
+          "frozen_point_relative_moment_error": 1.8636140894218064e-24,
+          "adapter_passed": true
+        },
+        {
+          "step": 400,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group1/native/frames/stress-level1.npz",
+            "bytes": 8352306,
+            "sha256": "adc071915f25f8e9d81e658caaacfedf796fb7008fa7374bd36e5d62102f03ce"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group1/native/frames/level1.npz",
+            "bytes": 399217,
+            "sha256": "509e5fe7eeb28ea0b2db0808a351d89ad5ba18490da35cf7ca1232bba050d2c5"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 8.858214652628288e-17,
+          "recovered_surface_relative_wrench_error": 3.868552951815447e-12,
+          "body_correction_force_n": [
+            -1.0706212653169598e-13,
+            4.9070640053487064e-14,
+            2.331822616370143e-12
+          ],
+          "frozen_point_relative_moment_error": 4.690356367085084e-23,
+          "adapter_passed": true
+        },
+        {
+          "step": 600,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group1/native/frames/stress-level2.npz",
+            "bytes": 8360882,
+            "sha256": "bcc24a39613e6b31e9296872ad33d220e8be0c24cb55c48575a29d565932dc79"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group1/native/frames/level2.npz",
+            "bytes": 400553,
+            "sha256": "e925b00e2a202e3cb42d483cea2e88fc46235c2579bc6af21a4ed45eca8ab025"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 2.416295149084333e-16,
+          "recovered_surface_relative_wrench_error": 2.0524225134376702e-11,
+          "body_correction_force_n": [
+            -2.91873491359776e-12,
+            5.755697542051116e-13,
+            4.0886342025439386e-11
+          ],
+          "frozen_point_relative_moment_error": 8.469234341835367e-22,
+          "adapter_passed": true
+        },
+        {
+          "step": 800,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group1/native/frames/stress-level3.npz",
+            "bytes": 8356996,
+            "sha256": "96abf8b6736f4cfff57240a385b98f3391761404e1e32e30cf23e26af7e17aa1"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group1/native/frames/level3.npz",
+            "bytes": 400926,
+            "sha256": "8a90dbf26db0168c14c2a5a65f5e05d45de7f8ac5ac3d55b6b45a1b95617470c"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 9.74160690183546e-17,
+          "recovered_surface_relative_wrench_error": 3.444907046883071e-14,
+          "body_correction_force_n": [
+            1.8237287011340838e-15,
+            -1.1159689926649976e-15,
+            2.802440792460215e-14
+          ],
+          "frozen_point_relative_moment_error": 3.579151759266649e-23,
+          "adapter_passed": true
+        },
+        {
+          "step": 1000,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group1/native/frames/stress-level4.npz",
+            "bytes": 8344257,
+            "sha256": "f5f9caef581fb8ff59295eab4c7f5372a023357889f711cece4444fc744297c3"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group1/native/frames/level4.npz",
+            "bytes": 400706,
+            "sha256": "a87b2905d588a6376e9642ec9e09ad5f2d194b36d20875d53f79c7e1e645eb71"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 2.287730030782058e-16,
+          "recovered_surface_relative_wrench_error": 2.1998072028766767e-14,
+          "body_correction_force_n": [
+            -5.361806450918101e-16,
+            2.8234958554150954e-16,
+            1.9601295672164854e-14
+          ],
+          "frozen_point_relative_moment_error": 8.10099649142737e-24,
+          "adapter_passed": true
+        }
+      ]
+    }
+  ],
+  "passed": true,
+  "physical_accuracy_qualified": false
+}
