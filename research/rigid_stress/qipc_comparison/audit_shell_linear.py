@@ -49,12 +49,17 @@ def main():
     hinge_matrix = saved["hinge_scale"][:, None, None] * hinge_gradient[:, :, None] * hinge_gradient[:, None, :]
     contact_faces = faces[saved["contact_faces"]]
     bary, hessian, jacobian = (saved[key] for key in ("contact_bary", "contact_hessian", "contact_jacobian"))
-    contact_matrix = np.einsum("fa,fij,fb->faibj", bary, hessian, bary).reshape(-1, 9, 9)
+    shell_jacobian = (
+        saved["contact_shell_jacobian"]
+        if "contact_shell_jacobian" in saved.files
+        else bary[:, :, None, None] * np.eye(3)
+    )
+    contact_matrix = np.einsum("faij,fik,fbkl->fajbl", shell_jacobian, hessian, shell_jacobian).reshape(-1, 9, 9)
     matrix = sparse.diags(np.repeat(mass, 3), format="csr")
     matrix += scatter_blocks(faces, face_matrix, len(rhs))
     matrix += scatter_blocks(saved["hinge_vertices"], hinge_matrix, len(rhs))
     matrix += scatter_blocks(contact_faces, contact_matrix, len(rhs))
-    coupling_values = np.einsum("fa,fij,fkj->faik", bary, hessian, jacobian)
+    coupling_values = np.einsum("faij,fik,flk->fajl", shell_jacobian, hessian, jacobian)
     dofs = (3 * contact_faces[:, :, None] + np.arange(3)).reshape(len(contact_faces), 9)
     n_rigid = jacobian.shape[1]
     coupling = sparse.coo_matrix(

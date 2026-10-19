@@ -1,0 +1,64 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-115",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "727928",
+      "SLURM_ARRAY_JOB_ID": "727928",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-eec6c32a-fe0b-5322-8219-698fede93860, 00000000:45:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "capture": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/shell-linear-capture-v1/group1/floating/frozen-linear.npz",
+    "bytes": 5502352,
+    "sha256": "7bde59c1f7363892764a9cc48eb725aa7ce029da12fb238dd09d17c88c3e2caa"
+  },
+  "captured_solver": {
+    "field": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/shell-linear-capture-v1/group1/floating/frozen-linear.npz",
+      "bytes": 5502352,
+      "sha256": "7bde59c1f7363892764a9cc48eb725aa7ce029da12fb238dd09d17c88c3e2caa"
+    },
+    "contact_newton_iterations": [
+      1
+    ],
+    "linear_iterations": [
+      2037
+    ],
+    "linear_mode": [
+      1
+    ],
+    "status": [
+      0
+    ],
+    "relative_threshold": [
+      4.4303640946645305e-28
+    ],
+    "velocity_threshold": [
+      7.485182002301228e-17
+    ],
+    "last_checked_residual": [
+      4.4303640946645615e-16
+    ],
+    "scope": "Diagnostic first Newton linear system. The source pin stops before contact line search; its returned physical state is not an admitted trajectory. Cached tangents, RHS and PCG iterate are retained."
+  },
+  "unknowns": 29641,
+  "nonzeros": 1057852,
+  "symmetry_relative": 5.860246062844862e-17,
+  "minimum_rigid_inertia_eigenvalue": 0.10000000000002274,
+  "direct_relative_residual": 1.2553768537165676e-11,
+  "iterate_true_relative_residual": 2.83737876133238e-05,
+  "iterate_recursive_relative_residual": 2.837378757166425e-05,
+  "recursive_true_disagreement_relative": 4.78049846053805e-12,
+  "true_block_norm_squared": 3.9101310434886388e-25,
+  "true_mass_velocity_bound_squared": 6.900563330083103e-17,
+  "mass_rms_solution_error_m_per_s": 3.672413955305651e-13,
+  "elapsed_seconds": 2.275297505024355,
+  "physical_accuracy_qualified": false,
+  "scope": "Independent NumPy differentiation of cached plane-stress membrane tangents, hinge rank-one terms and contact Jacobians, assembled as a sparse joint system. Its shell RHS equals the captured reduced RHS; the auxiliary rigid RHS is zero, reproducing the same Schur-complement equation. This diagnoses a frozen linear solve only, not a completed nonlinear or physical trajectory."
+}

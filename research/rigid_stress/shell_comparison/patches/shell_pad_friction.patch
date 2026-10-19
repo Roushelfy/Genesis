@@ -1,0 +1,163 @@
+diff --git a/genesis/engine/solvers/shell_solver.py b/genesis/engine/solvers/shell_solver.py
+index 61c2e7e29..3dce87903 100644
+--- a/genesis/engine/solvers/shell_solver.py
++++ b/genesis/engine/solvers/shell_solver.py
+@@ -3351,14 +3351,18 @@ def func_contact_add_to_verts(
+ 
+ 
+ @qd.func
+-def func_contact_stick_velocity(stiffness: float, friction_bound: float):
++def func_contact_stick_velocity(stiffness: float, friction_bound: float, static_config: qd.template()):
+     """Slip velocity below which a contact sticks, at least FRICTION_STICK_VELOCITY.
+ 
+     It widens to 2 * friction_bound / stiffness, so that the stuck friction is no stiffer than the normal penalty,
+     which keeps the linear system of the contacts as well conditioned as their normal stiffness alone, and the creep of
+-    a held contact proportional to its penetration.
++    a held contact proportional to its penetration. Physical pads instead retain the fixed physical slip speed: their
++    dt-squared stiffness would otherwise make widening grow inversely with the substep duration.
+     """
+-    return qd.max(FRICTION_STICK_VELOCITY, 2.0 * friction_bound / qd.max(stiffness, NORM_FLOOR))
++    eps = gs.qd_float(FRICTION_STICK_VELOCITY)
++    if qd.static(not static_config.has_physical_pad):
++        eps = qd.max(eps, 2.0 * friction_bound / qd.max(stiffness, NORM_FLOOR))
++    return eps
+ 
+ 
+ @qd.func
+@@ -3369,6 +3373,7 @@ def func_contact_potential(
+     normal: qd.types.vector(3),
+     stiffness: float,
+     friction_bound: float,
++    static_config: qd.template(),
+ ):
+     """Contact potential of a relative velocity over the substep, in J, and the impulse it applies to the sheet.
+ 
+@@ -3384,7 +3389,7 @@ def func_contact_potential(
+     penetration = qd.max(-(gap + dt * vel_normal), 0.0)
+     potential = 0.5 * stiffness / (dt * dt) * penetration * penetration
+     impulse = (stiffness / dt) * penetration * normal
+-    eps = func_contact_stick_velocity(stiffness, friction_bound)
++    eps = func_contact_stick_velocity(stiffness, friction_bound, static_config)
+     if slip < eps:
+         potential += friction_bound * slip * slip * (1.0 / eps - slip / (3.0 * eps * eps))
+         impulse -= friction_bound * (2.0 / eps - slip / (eps * eps)) * vel_tangent
+@@ -3402,6 +3407,7 @@ def func_contact_hessian(
+     normal: qd.types.vector(3),
+     stiffness: float,
+     friction_bound: float,
++    static_config: qd.template(),
+ ):
+     """Hessian of the contact potential of func_contact_potential with respect to the relative velocity, in kg.
+ 
+@@ -3415,7 +3421,7 @@ def func_contact_hessian(
+     hessian = qd.Matrix.zero(gs.qd_float, 3, 3)
+     if gap + dt * vel_normal < 0.0:
+         hessian += stiffness * normal.outer_product(normal)
+-    eps = func_contact_stick_velocity(stiffness, friction_bound)
++    eps = func_contact_stick_velocity(stiffness, friction_bound, static_config)
+     projector = qd.Matrix.identity(gs.qd_float, 3) - normal.outer_product(normal)
+     direction = vel_tangent / qd.max(slip, NORM_FLOOR)
+     if slip < eps:
+@@ -3714,7 +3720,7 @@ def func_contact_linearize(
+                     normal = shell_contact.contacts_normal[i_c, i_b]
+                     stiffness = shell_contact.contacts_stiffness[i_c, i_b]
+                     friction_bound = shell_contact.contacts_friction_bound[i_c, i_b]
+-                    impulse = func_contact_potential(dt, vel, gap, normal, stiffness, friction_bound)[1]
++                    impulse = func_contact_potential(dt, vel, gap, normal, stiffness, friction_bound, static_config)[1]
+                     # Mismatch of the impulse against the linear model of the previous iterate, along the step it took
+                     model = shell_contact.contacts_impulse[i_c, i_b] - shell_contact.envs_step[i_b] * (
+                         shell_contact.contacts_hessian[i_c, i_b] @ shell_contact.contacts_dir[i_c, i_b]
+@@ -3727,7 +3733,7 @@ def func_contact_linearize(
+                         shell_contact.envs_dir_prev_max[i_b],
+                         func_bound_bits(shell_contact.contacts_dir[i_c, i_b].norm()),
+                     )
+-                    hessian = func_contact_hessian(dt, vel, gap, normal, stiffness, friction_bound)
++                    hessian = func_contact_hessian(dt, vel, gap, normal, stiffness, friction_bound, static_config)
+                     shell_contact.contacts_impulse[i_c, i_b] = impulse
+                     shell_contact.contacts_hessian[i_c, i_b] = hessian
+                     if qd.static(static_config.has_fixed_point_sums):
+@@ -4540,8 +4546,12 @@ def func_contact_line_search_points(
+                         if i_pass >= N_LINE_SEARCH_LEVELS:
+                             step_length = shell_contact.envs_line_bracket[i_b, 5]
+                         vel_step = vel + step_length * direction
+-                        impulse = func_contact_potential(dt, vel_step, gap, normal, stiffness, friction_bound)[1]
+-                        hessian = func_contact_hessian(dt, vel_step, gap, normal, stiffness, friction_bound)
++                        impulse = func_contact_potential(
++                            dt, vel_step, gap, normal, stiffness, friction_bound, static_config
++                        )[1]
++                        hessian = func_contact_hessian(
++                            dt, vel_step, gap, normal, stiffness, friction_bound, static_config
++                        )
+                         shell_contact.envs_line_slope[i_b, j] += func_to_fixed(
+                             -impulse.dot(direction), scale_slope, static_config
+                         )
+@@ -4874,6 +4884,7 @@ def kernel_shell_rigid_contact_finalize(
+                 shell_contact.contacts_normal[i_c, i_b],
+                 shell_contact.contacts_stiffness[i_c, i_b],
+                 shell_contact.contacts_friction_bound[i_c, i_b],
++                static_config,
+             )[1]
+             shell_contact.contacts_impulse[i_c, i_b] = impulse
+             shell_state.contacts_friction_bound_prev[i_c, i_b] = dyn_info.geoms.coup_friction[i_g] * qd.max(
+diff --git a/tests/deformable/test_shell.py b/tests/deformable/test_shell.py
+index c71748f2e..15268bae9 100644
+--- a/tests/deformable/test_shell.py
++++ b/tests/deformable/test_shell.py
+@@ -245,12 +245,14 @@ def test_tearing_at_tensile_strength(grid_sheet_path, show_viewer):
+ 
+ 
+ @pytest.mark.required
++@pytest.mark.parametrize("tangent_ratio", [0.0, 0.1], ids=["normal", "sustained_shear"])
+ @pytest.mark.parametrize("precision", ["64"])
+ @pytest.mark.parametrize("n_envs", [0, 2])
+ @pytest.mark.parametrize("dt", [1e-3, 2e-3])
+ @pytest.mark.use_deterministic_algorithms(False)
+-def test_physical_pad_compliance(n_envs, dt, grid_sheet_path, asset_tmp_path, show_viewer):
++def test_physical_pad_compliance(n_envs, dt, tangent_ratio, grid_sheet_path, asset_tmp_path, show_viewer):
+     size, thickness, density, gravity, stiffness = 0.15, 0.002, 1000.0, 9.81, 1e6
++    friction, slip_speed = 0.3, 1e-4
+     path = grid_sheet_path(4, 4, size, size)
+     mesh = trimesh.load(path, process=False)
+     corners = mesh.vertices[mesh.faces]
+@@ -264,17 +266,21 @@ def test_physical_pad_compliance(n_envs, dt, grid_sheet_path, asset_tmp_path, sh
+         jacobians=np.broadcast_to(np.eye(3) / 3, (len(corners), 3, 3, 3)),
+     )
+     scene = gs.Scene(
+-        sim_options=gs.options.SimOptions(dt=dt, gravity=(0.0, 0.0, -gravity)),
++        sim_options=gs.options.SimOptions(dt=dt, gravity=(tangent_ratio * gravity, 0.0, -gravity)),
+         shell_options=gs.options.ShellOptions(
+             contact_pad_stiffness=stiffness,
+             contact_pad_geometry=str(geometry),
+             pcg_tolerance=1e-6,
+-            pcg_velocity_tolerance=1e-10,
++            # The regularized friction slope amplifies velocity error into force;
++            # resolve it below the independent unloaded-direction force check.
++            pcg_velocity_tolerance=1e-12 if tangent_ratio else 1e-10,
+             n_coarse_patches=0,
+         ),
+         show_viewer=show_viewer,
+     )
+-    plane = scene.add_entity(morph=gs.morphs.Plane(), material=gs.materials.Rigid(coup_friction=0.0))
++    plane = scene.add_entity(
++        morph=gs.morphs.Plane(), material=gs.materials.Rigid(coup_friction=friction if tangent_ratio else 0.0)
++    )
+     sheet = scene.add_entity(
+         morph=gs.morphs.Mesh(file=path, decimate=False),
+         material=gs.materials.Shell(rho=density, E=1e6, thickness=thickness, damping=0),
+@@ -284,10 +290,14 @@ def test_physical_pad_compliance(n_envs, dt, grid_sheet_path, asset_tmp_path, sh
+         scene.step()
+     compression = density * thickness * gravity / stiffness
+     assert_allclose(sheet.get_verts_pos()[..., 2], -compression, atol=1e-8)
+-    assert_allclose(sheet.get_verts_vel(), 0, atol=1e-7)
++    # Force balance with the declared smooth friction law determines this speed, not a solver tolerance.
++    terminal_speed = slip_speed * (1 - np.sqrt(1 - tangent_ratio / friction))
++    assert_allclose(sheet.get_verts_vel()[..., 0], terminal_speed, atol=1e-7)
++    assert_allclose(sheet.get_verts_vel()[..., 1:], 0, atol=1e-7)
+     contact = tensor_to_array(sheet.get_verts_contact_force()).sum(axis=-2)
+     assert_allclose(contact[..., 2], density * thickness * size**2 * gravity, rtol=1e-5)
+-    assert_allclose(contact[..., :2], 0, atol=1e-10)
++    assert_allclose(contact[..., 0], -density * thickness * size**2 * gravity * tangent_ratio, rtol=1e-5, atol=1e-10)
++    assert_allclose(contact[..., 1], 0, atol=1e-10)
+     ground = tensor_to_array(plane.get_links_net_contact_force()).sum(axis=-2)
+     assert_allclose(ground + contact, 0, atol=1e-10)
+     assert_equal(scene.sim.shell_solver.get_envs_solver_failure(), 0)

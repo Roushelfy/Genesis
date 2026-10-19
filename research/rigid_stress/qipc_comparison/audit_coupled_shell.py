@@ -76,7 +76,11 @@ def main():
                 observed["equation_residual_relative"] = residual_norm / row["contact_force_norm_n"]
                 # Older journals did not retain the inertia resultant. Bound it from
                 # m a = f_internal + f_contact - residual without assuming equilibrium.
-                bound = np.linalg.norm(np.array(row["internal_force_resultant_n"]) + row["contact_force_resultant_n"])
+                bound = np.linalg.norm(
+                    np.array(row["internal_force_resultant_n"])
+                    + row["contact_force_resultant_n"]
+                    + row.get("body_force_resultant_n", [0.0, 0.0, 0.0])
+                )
                 bound += np.sqrt(len(rest)) * residual_norm
                 inertia_bounds.append(float(bound))
                 if "egg_inertia_resultant_norm_n" not in observed:
@@ -84,6 +88,21 @@ def main():
                 check = equilibrium(observed, endpoint["command_force_n"])
                 if start.get("physical_pad_geometry") is not None:
                     check["physical_pad_law_and_transfer"] = row["physical_pad"]["normal_law_and_transfer_passed"]
+                if start["args"].get("gravity_x", 0.0):
+                    friction = row["physical_pad"]["friction"]
+                    check["physical_friction_law"] = friction["lagged_law_passed"]
+                    body = np.array(row["body_force_resultant_n"])
+                    if np.linalg.norm(body) > 0:
+                        check["sustained_tangential_balance"] = bool(
+                            np.linalg.norm(np.array(friction["tangential_resultant_n"]) + body[:2])
+                            <= 0.01 * np.linalg.norm(body)
+                            and friction["sum_tangential_force_norms_n"] >= 0.99 * np.linalg.norm(body)
+                        )
+                        check["instantaneous_friction_cone"] = friction["instantaneous_cone_excess_n"] <= 1e-7
+                        check["external_moment_balance"] = bool(
+                            np.linalg.norm(row["external_moment_about_mass_center_nm"])
+                            <= 0.01 * endpoint["command_force_n"] * 0.03
+                        )
                 checks.append(check)
             failures = sum(any(row["solver_failure_flags"]) for row in level_rows)
             windows.append(

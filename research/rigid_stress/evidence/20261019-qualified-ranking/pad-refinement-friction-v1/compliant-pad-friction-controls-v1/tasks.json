@@ -1,0 +1,32 @@
+[
+  [
+    {
+      "name": "tests",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-pad-friction",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-pad-friction/tests/deformable/test_shell.py",
+        "--select",
+        "physical_pad_compliance or rigid_contact_conserves_momentum or state_restore_reproduces_contact",
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-pad-friction"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "negative",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-physical-pad",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-pad-friction/tests/deformable/test_shell.py",
+        "--select",
+        "physical_pad_compliance and sustained_shear and 0.001",
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-physical-pad"
+      ]
+    }
+  ]
+]

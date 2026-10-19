@@ -1,0 +1,53 @@
+{
+  "completed": false,
+  "steps_returned": 40,
+  "elapsed_seconds_including_observation_IO": 35.827089714002796,
+  "last_observation": {
+    "step": 39,
+    "time_s": 0.039,
+    "level": 0,
+    "command_force_n": 0.07800000000000001,
+    "compression_coordinate_m": 2.9450615229675243e-05,
+    "plate_speed_m_per_s": 0.001509490987349079,
+    "upper_reaction_n": -0.0,
+    "lower_reaction_n": 0.0,
+    "egg_inertia_resultant_norm_n": 6.273791442082825e-10,
+    "egg_kinetic_j": 9.610396891577133e-09,
+    "equation_residual_relative": 5.985204480831319e-08,
+    "static_residual_relative": 6.658795579256554e-08,
+    "solver_failure_flags": [
+      0
+    ],
+    "last_pcg_iterations": [
+      7382
+    ],
+    "contact_force_norm_n": 0.0,
+    "residual_force_scale_n": 0.07800000000000001,
+    "internal_force_resultant_n": [
+      2.261821987449685e-25,
+      -1.075981031172493e-24,
+      -3.7604406128484907e-23
+    ],
+    "contact_force_resultant_n": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "physical_pad": {
+      "normal_law_relative_error": 0.0,
+      "nodal_transfer_relative_error": 0.0,
+      "normal_forces_n": [
+        0.0,
+        0.0
+      ],
+      "compressed_projected_area_m2": [
+        0.0,
+        0.0
+      ],
+      "minimum_body_gap_m": 1.702349891191668e-07,
+      "normal_law_and_transfer_passed": true
+    }
+  },
+  "physical_accuracy_qualified": false,
+  "scope": "Actual end-position elastic/contact/inertial force check with zero shell damping. The engine linearizes elasticity each substep; this residual measures its remaining nonlinear time discretization error as well as contact balance. No velocity clearing."
+}
