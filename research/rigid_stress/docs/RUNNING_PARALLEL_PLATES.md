@@ -344,3 +344,36 @@ identity is required for this control. The result includes a separate
 gap, plate coordinates and complete affine envelope gaps. Omitting the flag
 retains the prescribed-traction elasticity replay. Both are explicitly static
 relaxation methods and require separate dynamic history qualification.
+
+For continuous physical-pad Shell runs, apply
+[`shell_physical_pad.patch`](../shell_comparison/patches/shell_physical_pad.patch)
+on isolated source `a86ba81d06d16dcea7bba6904a617c8140b83958` (the resulting
+committed variant is `41b2a57be`). Run `prepare_shell_pad --mesh <land-mesh>
+--output <geometry-output>` through Slurm. Then run `plate_shell_coupled
+--mesh <same-mesh> --pad-geometry <geometry-output/pad-geometry.npz>
+--loads 0.1 0.3 1 0.3 0.1 --dt 0.001 --ramp 0.05 --hold 0.15
+--record-stride 1 --tolerance 1e-4 --velocity-tolerance 1e-10
+--iterations 8000 --coarse-patches 0 --floating-sums --output <fresh-output>`
+using that isolated engine. Run `audit_coupled_shell --runs <fresh-output>`
+to check each equilibrium window, including actual pad pressure and transpose
+force transfer. This history never clears velocity. Existing diagnostic
+half-thickness envelope gaps are distinct from physical pad compression;
+use `physical_pad` and the saved per-face pad gaps for the pad law.
+
+Use `compliant_plate_reference --fixed-point` to avoid forming the dense
+normal-contact compliance matrix for this soft pad. The method repeatedly
+applies the complete free-body elastic factor and solves the four free
+rigid/plate coordinates. The force-change criterion is1e-10; an iteration cap
+is a failure. Fresh full elastic and pad-law checks remain mandatory. On the
+coarse mesh, independent Clarabel comparisons at orders0/6/10 agree in
+complete stress to about5e-11 (`727876`). This verifies the solver, not mesh
+accuracy or universal fixed-point convergence. The default condensed QP
+remains available as an independent control.
+
+`--quadrature-orders 0` means one explicit face centroid. Order1 from the
+quadrature library actually has three points per triangle. To isolate
+continuous/static Shell error, use the order0 reference field with
+`finite_area_shell --solve-pad-contact`, then compare its frame against
+the continuous frame using `compare_coupled_shell`. High-order reference
+fields separately measure centroid quadrature error; do not attribute that
+difference to timestep or nonlinear convergence.

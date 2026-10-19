@@ -1002,3 +1002,123 @@ are much larger than the change caused by solving Shell's own pad pressure.
 This observation does not waive reference refinement or justify changing the
 native radius to fit the pad stress. The small DPR/SCR separation cannot yet
 support a distinct order, and the different metrics need not share one rank.
+
+## Continuous physical-pad Shell and independent reference acceleration
+
+The [selected metadata and regression packet](../evidence/20261019-qualified-ranking/pad-history-controls-v1/manifest.json)
+publishes byte-verified result/test receipts. Full fields and captured sources
+remain at their hashed data paths. The two continuous-history engine inventories
+were verified file by file against the committed variant (809 files each).
+
+The isolated engine variant `41b2a57be` implements the declared work-conjugate
+centroid pad map in coupled contact, preserving the original constitutive
+kernels and default contact path. Its incremental patch is published with
+the running instructions. A free flat-sheet regression checks the analytic
+gravity compression19.62um, reaction0.44145N, velocity, action/reaction and
+solver flags for1/2ms steps and unbatched/two-environment cases. Initial runs
+`727824` and `727838` exposed a compile-time configuration error and invalid
+zero-size optional arrays; the final bounded static flag and `maybe_shape`
+allocation repair passes all10 selected tests in `727844`, including the
+original momentum and state-restore controls. The intentional negative source
+in `727865` changes `dt^2*k_A*area` to `dt*k_A*area`; the regression fails its
+compression assertion (about0.02um actual versus19.62um required), not a build
+or import check. That wrong variant is retained only as negative evidence.
+
+`compliant-pad-shell-history-v1` (`727845`) completes200 continuous steps at
+0.1N, dt1ms, PCG1e-4 and velocity tolerance1e-10. The final51-sample window
+passes actual reactions, inertia, kinetic energy, plate speed, elastic
+equations, pad pressure law and transpose transfer. Net compression is
+15.932436um after removing44um initial clearance; raw Mises/tension peaks
+are221467.666/162352.434Pa. The contact-scaled residual is about3.76e-9.
+No velocity clearing occurs. These are admitted discrete normal histories,
+not a claim of continuum stress accuracy.
+
+`compliant-pad-shell-stability-v1` (`727859`) passes the101-sample window at
+dt0.5ms and all five51-sample windows of the continuous0.1/0.3/1/0.3/0.1N
+cycle. Halving dt changes tangent/membrane/bending by
+8.37e-10/8.99e-10/7.47e-10. The independent repeat differs by at most3.59e-10
+in those fields; returning to0.1N after the cycle differs by at most5.88e-9.
+All histories return without solver failure. Observed wall times include
+intrusive per-step diagnostics/IO and are not matched primary cost results.
+
+Quadrature correction: the misleadingly named
+`compliant-pad-centroid-control-v1` (`727828`) used library `intorder=1`, which
+has three points per face (1152 total), not one centroid. Its immutable
+receipt is preserved. `compliant-pad-explicit-centroid-v1` (`727854`) uses the
+new explicit order0 rule (384 points), passes the discrete equations and
+gives solid travel15.944876um. Against tenth order, complete tangent/membrane/
+bending differences are1.92951%/0.76688%/2.87692%; raw peak changes are
+1.59848%/3.38211%. One-point integration therefore still exceeds the2%
+bending target on this coarse geometry.
+
+`compliant-pad-matched-centroid-shell-v1` (`727906`) solves static Shell with
+the same explicit centroid rule and gives travel15.932436um, three relaxation
+iterations and force residual4.84e-9. Its continuous/static tangent/membrane/
+bending differences are1.14e-9/6.10e-10/1.60e-9; peak differences stay below
+2.74e-9. The earlier0.68um travel difference against high-order static Shell
+was a quadrature difference, not a dynamic-coupling defect.
+
+`compliant-pad-fixed-point-control-v1` (`727876`) verifies a faster reference
+path against independent condensed Clarabel for orders0/6/10. It applies the
+full elastic factor at every iterate, retaining free-body projection, the
+same pad law, force/moment checks, global omitted-face checks and a fresh
+final elastic solve. All three converge in five iterations; full-field
+differences are below5.12e-11 and raw peak differences below5.83e-11. Total
+runtime45.48s includes40.88s factorization; each contact solve takes about
+0.50s. No numerical or physical acceptance threshold is relaxed.
+
+The original500um/two-layer condensed QP (`727803_1`) has completed its
+sixth-order solve: pad-law residual1.08e-9, elastic residual7.73e-10 and
+travel13.452449um. Its QP alone took1165.75s. The tenth-order solve remained
+live when an extension of its50-minute allocation was requested; Slurm denied
+the time-limit change. It subsequently timed out at50m04s with no tenth-order
+field; the admitted sixth-order field and all partial receipts remain intact. `727904` instead applies the independently checked fixed-point
+method to500um and250um two-layer meshes at0.1/0.3/1N, orders0/6/10. Submission
+is not admission; inspect all equation, search-extent and quadrature gates.
+
+Separately, the250um prescribed-traction two-to-three-wall comparison
+(`727797_1`) changes tangent/membrane/bending by1.58954%/0.18889%/0.27831%,
+with raw Mises/tension changes0.61784%/0.00160%. Its301248-tet factor took
+2105.67s and peak process RSS was23,747,416KiB. The125um surface refinement
+is still a distinct running control. Neither this wall result nor discrete
+pad admission proves complete reference convergence. Actual native pad
+response, sustained friction, qualified rankings and matched costs remain
+required before completion.
+
+The refined continuous Shell campaign `727908` stopped during geometry
+preparation, before any scene step: world-coordinate centroid subtraction
+introduced a1.23e-13/2.18e-13 rigid-translation defect on500/250um faces, exceeding
+the unchanged1e-13 off-diagonal threshold. `prepare_shell_pad` now constructs
+and recenters lever arms in local face coordinates before forming the rotational
+Gram matrix. This avoids cancellation without changing the physical map or
+loosening admission. `727910` retries both geometry controls and the full load
+cycles with the revised captured helper; its results must still be inspected.
+
+The125um/two-layer prescribed-traction reference (`727797_0`) has now completed
+in60m55s. Its factor took3567.63s, peak process RSS was32,884,204KiB and elastic
+residual3.49e-10. Refining250um to125um changes complete tangent by2.02054%,
+membrane1.33411% and bending0.80678%, with raw peaks0.00754%/0.40296%. The
+tangent change narrowly exceeds the predeclared2% target; it is not rounded
+into a pass. The trend improves from3.0699% at500-to250um, but surface and
+wall uncertainties still need joint qualification. Both revised fine Shell
+geometry controls pass their unchanged rigid-motion/virtual-work assertions;
+the continuous load cycles are running.
+
+The500um/two-layer fixed-point arm (`727904_0`) completes all nine
+load/order combinations, with5–6 iterations per contact solve (2.29–2.81s),
+434.03s factorization and492.49s total. Fresh elastic residuals stay below
+7.74e-10; all pad-law, wrench and omitted-boundary checks pass. Sixth-to-tenth
+order tangent/membrane/bending changes stay below0.0181% across0.1/0.3/1N.
+The independent same-mesh condensed-QP comparison (`727915`) agrees in complete
+fields within1.19e-10 and raw peaks within1.42e-10. This validates the fast
+path with the CHOLMOD factor at the larger mesh, separately from spatial
+convergence. The next pad reference pair (`727916`) reuses the already measured
+125um/two-layer and250um/three-layer geometries, so surface and wall effects
+can be checked independently for all three loads without another dense QP.
+
+The250um continuous Shell arm (`727910_1`) fails at step40 before carrying
+normal load: the elastic PCG reaches its8000-product cap, despite small
+observed force residuals. Its rejected full state is retained, and this
+history is not admitted. The same-tolerance0.5ms400-step control (`727914`)
+tests whether reducing the mass/stiffness conditioning burden resolves the
+cap; no solver-failure flag is waived. The500um full load cycle remains live.

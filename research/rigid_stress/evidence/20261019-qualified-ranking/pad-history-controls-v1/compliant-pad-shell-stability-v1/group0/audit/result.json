@@ -1,0 +1,100 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-113",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "727860",
+      "SLURM_ARRAY_JOB_ID": "727859",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-4d15444c-fb29-f665-9616-e2238ca38c67, 00000000:C0:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "runs": [
+    {
+      "result": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-shell-stability-v1/group0/half-dt/result.json",
+        "bytes": 2471,
+        "sha256": "b10c9be7d6d62b33cc3d1a50c588a3752e40389721953ef5c6b56e7c00a9a4db"
+      },
+      "completed": true,
+      "first_carried_time_s": 0.064,
+      "first_zero_reaction_after_carry_s": null,
+      "maximum_equation_residual_last_50ms": 8.320353900058967e-10,
+      "fields": [
+        {
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-shell-stability-v1/group0/half-dt/frames/level0.npz",
+            "bytes": 2795650,
+            "sha256": "d357e46f3cf85ad8558c4b63865db8e9960fc3eb315b106f4a18ba5dcab929fd"
+          },
+          "minimum_position_m": [
+            -0.022080810792647947,
+            -0.022077135173986687,
+            -0.02977941903088945
+          ],
+          "maximum_position_m": [
+            0.022080810792618415,
+            0.02207713517397344,
+            0.029720318241842115
+          ],
+          "mass_center_displacement_m": [
+            -1.4577029186940112e-14,
+            -6.4047249790757354e-15,
+            -2.960026415206214e-05
+          ],
+          "maximum_displacement_m": 2.974193947971604e-05,
+          "rotation_rad": 2.8817474254688297e-07,
+          "rotation_matrix": [
+            [
+              0.9999999999999585,
+              -2.885791489640198e-07,
+              8.631802288635801e-14
+            ],
+            [
+              2.885791488548919e-07,
+              0.9999999999999586,
+              1.0646494992345206e-13
+            ],
+            [
+              -8.631805360985709e-14,
+              -1.0646492501416192e-13,
+              1.0
+            ]
+          ],
+          "maximum_corotated_displacement_m": 2.494513769955853e-07,
+          "lower_vertical_half_thickness_envelope_gap_m": -7.419030889448813e-06,
+          "upper_vertical_half_thickness_envelope_gap_m": -8.250677969757819e-06,
+          "contact_force_l2_n": 0.022070625063801145,
+          "equation_residual_l2_n": 8.153523138865941e-11
+        }
+      ],
+      "equilibrium_windows": [
+        {
+          "level": 0,
+          "command_force_n": 0.1,
+          "samples": 101,
+          "failed_steps_in_level": 0,
+          "maximum_equation_residual_contact_relative": 3.769877066119403e-09,
+          "maximum_inertia_resultant_bound_n": 5.624869934348303e-09,
+          "maximum_plate_speed_m_per_s": 1.9620026456531175e-10,
+          "maximum_kinetic_j": 4.0610585615549645e-18,
+          "checks": {
+            "both_plate_reactions": true,
+            "plate_velocity": true,
+            "egg_inertial_resultant": true,
+            "egg_kinetic": true,
+            "equation_residual": true,
+            "physical_pad_law_and_transfer": true
+          },
+          "mechanical_window_passed": true,
+          "physical_accuracy_qualified": false
+        }
+      ]
+    }
+  ],
+  "scope": "End-position envelope gaps use vertical half-thickness offsets, a conservative diagnostic rather than exact face-offset distances. Zero reaction with overlap requires contact/solver investigation; it cannot be admitted from a zero failure flag."
+}

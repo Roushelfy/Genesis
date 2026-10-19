@@ -81,7 +81,10 @@ def main():
                 inertia_bounds.append(float(bound))
                 if "egg_inertia_resultant_norm_n" not in observed:
                     observed["egg_inertia_resultant_norm_n"] = float(bound)
-                checks.append(equilibrium(observed, endpoint["command_force_n"]))
+                check = equilibrium(observed, endpoint["command_force_n"])
+                if start.get("physical_pad_geometry") is not None:
+                    check["physical_pad_law_and_transfer"] = row["physical_pad"]["normal_law_and_transfer_passed"]
+                checks.append(check)
             failures = sum(any(row["solver_failure_flags"]) for row in level_rows)
             windows.append(
                 {

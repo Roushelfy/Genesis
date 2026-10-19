@@ -1,0 +1,56 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-113",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "727797",
+      "SLURM_ARRAY_JOB_ID": "727797",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-d8d5fbad-c538-deb8-82e9-71c84c380193, 00000000:45:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-final-refinement-mesh-v1/group0/meshes/land-contact-1.npz",
+    "bytes": 3293703,
+    "sha256": "bf492c1c110fdf83c7feea93334e369808b52b6ca37bc178415904e3e65645fb"
+  },
+  "radius_m": 0.002,
+  "mass_kg": 0.0074808521262096075,
+  "through_wall_ordering": true,
+  "cholespy_binary": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/assets/cholespy-2.2.0/cholespy/_cholespy_core.cpython-310-x86_64-linux-gnu.so",
+    "bytes": 844761,
+    "sha256": "e52583cfee48fa82807bc469833e9919c4d2b8d3d3c8b90ebc5b10a386bc4b92"
+  },
+  "factor_seconds": 2105.6730576220143,
+  "total_seconds": 2117.9913148189953,
+  "peak_rss_kib": 23747416,
+  "cases": [
+    {
+      "quadrature_order": 10,
+      "load_n": 0.1,
+      "pressure_shape_integrals_m2": [
+        3.141592657283671e-06,
+        3.1415926512145495e-06
+      ],
+      "force_moment_relative_error": 2.626954101296597e-15,
+      "balance_correction_relative": 1.0738244631796596e-16,
+      "equation_relative_residual": 8.420494008025936e-10,
+      "elastic_equations_admitted": true,
+      "raw_maximum_mises_pa": 329896.49274309,
+      "raw_maximum_tension_pa": 265249.0666286594,
+      "maximum_displacement_gradient": 0.0001277652447357572,
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-next-refinement-v1/group1/surface250wall3/order-10/load-0.1.npz",
+        "bytes": 73791608,
+        "sha256": "7badcb11216581da8e636972e5dfd311389678ffab0d0a8b431d12e3c49358bb"
+      }
+    }
+  ],
+  "physical_reference_qualified": false,
+  "scope": "Free full solid under independently prescribed finite-area traction. All six factorization gauges are removed; no egg vertices are physically pinned. Retained quadrature point forces and consistent nodal forces preserve force, moment and rigid virtual work. Quadrature, surface and wall convergence still require measured controls. This is a same-traction elasticity benchmark, not a solved plate-contact state or an end-to-end ranking."
+}

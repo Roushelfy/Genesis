@@ -52,6 +52,27 @@ The same affine face map checks every omitted boundary face at its vertices.
 Original hard-contact Shell histories remain separate, and this static control
 cannot qualify continuous dynamics or sustained friction on its own.
 
+The continuous Shell variant uses the same fixed linear map at one outer-face
+centroid per triangle, with the original projected face area. Its isolated
+engine source is `41b2a57be`, based on the optional-coarse repair `a86ba81d0`;
+the [incremental patch](../shell_comparison/patches/shell_physical_pad.patch)
+includes the engine and observable regression. Both the point velocity and
+the transpose force transfer use this map, including the offset moment, in
+the effective compliance, Newton products and preconditioner. The stored
+incremental stiffness is `dt^2 * k_A * area`; nonlinear impulse acceptance
+uses effective contact mass rather than the physical spring stiffness.
+Relative PCG tolerance remains1e-4 in benchmark trajectories, with absolute
+velocity tolerance1e-10 and independent actual-equation admission.
+
+This is an explicitly small-deformation, fixed-topology envelope reduction.
+The variant requires floating reductions; original contact remains the default.
+One centroid is a quadrature approximation, not equivalent to high-order
+solid contact integration. In the reference CLI, order0 explicitly selects
+one centroid, whereas the library's order1 uses three points. Continuous
+trajectories, matched-centroid static controls and high-order reference
+comparisons must retain those distinctions. Normal histories do not yet
+qualify sustained friction or a spatially resolved reference.
+
 The force-per-area spring convention is documented in
 [Spring Foundation and Thin Elastic Layer](https://doc.comsol.com/6.3/doc/com.comsol.help.sme/sme_ug_theory.06.068.html).
 This declaration specifies the benchmark's ideal constitutive law; no COMSOL

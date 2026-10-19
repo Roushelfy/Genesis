@@ -1,0 +1,26 @@
+[
+  [
+    {
+      "name": "static",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-zero-coarse",
+      "module": "research.rigid_stress.qipc_comparison.finite_area_shell",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--field",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-explicit-centroid-v1/group0/reference/order-0/load-0.1.npz",
+        "--solve-pad-contact"
+      ]
+    },
+    {
+      "name": "dynamic-comparison",
+      "module": "research.rigid_stress.qipc_comparison.compare_coupled_shell",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-matched-centroid-shell-v1/group0/static/frames/level0.npz",
+        "--frames",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-shell-history-v1/group0/shell/frames/level0.npz"
+      ]
+    }
+  ]
+]

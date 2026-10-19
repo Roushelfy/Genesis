@@ -17,6 +17,7 @@ from ..shell_comparison.observation import FullField
 from .artifacts import file_id, runtime_identity, write_json
 from .plates import configure_native_plate, control_native_plate, force_history, parser, plate_xml
 from .shell_linear_capture import capture, contact_diagnostics
+from .shell_pad_audit import ShellPadAudit
 
 
 @qd.kernel
@@ -62,6 +63,8 @@ def main():
     cli.add_argument("--midpoint-mesh", type=Path)
     cli.add_argument("--floating-sums", action="store_true")
     cli.add_argument("--capture-first-linear", action="store_true")
+    cli.add_argument("--pad-geometry", type=Path)
+    cli.add_argument("--pad-stiffness", type=float, default=1e9)
     args = cli.parse_args()
     if args.capture_first_linear:
         assert (
@@ -82,6 +85,17 @@ def main():
     gs.init(
         backend=gs.cuda, precision="64", logging_level="warning", use_deterministic_algorithms=not args.floating_sums
     )
+    shell_options = gs.options.ShellOptions(
+        pcg_tolerance=args.tolerance,
+        pcg_velocity_tolerance=args.velocity_tolerance,
+        pcg_max_iterations=args.iterations,
+        contact_stiffness=args.contact_stiffness,
+        n_coarse_patches=args.coarse_patches,
+    )
+    if args.pad_geometry is not None:
+        assert args.floating_sums and args.pad_stiffness == 1e9
+        shell_options.contact_pad_geometry = str(args.pad_geometry)
+        shell_options.contact_pad_stiffness = args.pad_stiffness
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=args.dt, gravity=(0.0, 0.0, 0.0)),
         rigid_options=gs.options.RigidOptions(
@@ -91,13 +105,7 @@ def main():
             use_gjk_collision=False,
             enable_contact_patch=False,
         ),
-        shell_options=gs.options.ShellOptions(
-            pcg_tolerance=args.tolerance,
-            pcg_velocity_tolerance=args.velocity_tolerance,
-            pcg_max_iterations=args.iterations,
-            contact_stiffness=args.contact_stiffness,
-            n_coarse_patches=args.coarse_patches,
-        ),
+        shell_options=shell_options,
         show_viewer=False,
     )
     plate = scene.add_entity(
@@ -117,6 +125,9 @@ def main():
     rest = tensor_to_array(egg.get_verts_pos())[0]
     faces = tensor_to_array(egg.get_faces())[0]
     masses = np.bincount(faces.reshape(-1), weights=np.repeat(egg.topology.faces_mass / 3, 3), minlength=len(rest))
+    pad_audit = (
+        ShellPadAudit.load(args.pad_geometry, faces, args.pad_stiffness, lower, upper) if args.pad_geometry else None
+    )
     np.savez_compressed(args.output / "rest.npz", vertices=rest, faces=faces, masses_kg=masses)
     write_json(
         args.output / "start.json",
@@ -130,6 +141,8 @@ def main():
             "mass_kg": float(masses.sum()),
             "variant": "Captured coupled-contact Shell source, identified by source.json and source.patch; unchanged constitutive model, separate from original PR22.",
             "solver_source": file_id(Path(shell.__file__)),
+            "physical_pad_geometry": file_id(args.pad_geometry) if args.pad_geometry is not None else None,
+            "physical_pad_stiffness_n_per_m3": args.pad_stiffness if args.pad_geometry is not None else None,
             "force_observer": "Fresh membrane and hinge forces into observer-owned storage; no cache or velocity writes.",
         },
     )
@@ -180,6 +193,11 @@ def main():
                     "internal_force_resultant_n": internal.sum(axis=0).tolist(),
                     "contact_force_resultant_n": contact.sum(axis=0).tolist(),
                 }
+                pad_arrays = {}
+                if pad_audit is not None:
+                    row["physical_pad"], pad_arrays = pad_audit.evaluate(
+                        solver, positions, contact, row["compression_coordinate_m"], args.dt
+                    )
                 if failed:
                     row["failed_solve_counters"] = {
                         "contact_newton_iterations": qd_to_numpy(
@@ -198,7 +216,12 @@ def main():
                     }
                 if endpoint or failed:
                     row["contact_iteration_audit"] = contact_diagnostics(
-                        solver, scene.rigid_solver, args.dt, args.velocity_tolerance, args.contact_stiffness
+                        solver,
+                        scene.rigid_solver,
+                        args.dt,
+                        args.velocity_tolerance,
+                        args.contact_stiffness,
+                        physical_pad=pad_audit is not None,
                     )
                     field.update(solver)
                     tensors = tensor_to_array(field.tensors)[:, 0].reshape(-1, 3, 3, 3)
@@ -217,6 +240,7 @@ def main():
                         equation_residual_n=residual,
                         membrane_n_per_m=tensor_to_array(field.membrane)[:, 0],
                         bending_n=tensor_to_array(field.bending)[:, 0],
+                        **pad_arrays,
                     )
                 assert np.isfinite(positions).all() and np.isfinite(velocity).all()
                 journal.write(json.dumps(row, allow_nan=False) + "\n")

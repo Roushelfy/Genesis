@@ -1,0 +1,31 @@
+[
+  [
+    {
+      "name": "reference",
+      "module": "research.rigid_stress.qipc_comparison.compliant_plate_reference",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--qp-solver-path",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/assets/clarabel-0.11.1",
+        "--quadrature-orders",
+        "0"
+      ]
+    },
+    {
+      "name": "centroid-comparison",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-explicit-centroid-v1/group0/reference/order-0",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-boundary-control-v1/group0/pad/order-10",
+        "--surface-quadrature",
+        "9",
+        "--physical-volume"
+      ]
+    }
+  ]
+]

@@ -72,7 +72,7 @@ def capture(solver, rigid_solver, output):
     )
 
 
-def contact_diagnostics(solver, rigid_solver, dt, velocity_tolerance, contact_stiffness):
+def contact_diagnostics(solver, rigid_solver, dt, velocity_tolerance, contact_stiffness, physical_pad=False):
     """Read contact velocity consistency and express its stopping budget in force units."""
     state, contact = solver.shell_state, solver._shell_contact
     geom = qd_to_numpy(contact.contacts_geom, transpose=True)[0]
@@ -80,6 +80,13 @@ def contact_diagnostics(solver, rigid_solver, dt, velocity_tolerance, contact_st
     corners = qd_to_numpy(state.corners_vert, transpose=True)[0].reshape(-1, 3)
     bary = qd_to_numpy(contact.contacts_bary, transpose=True)[0, slots]
     shell_change = np.einsum("fa,fai->fi", bary, qd_to_numpy(state.verts_dv, transpose=True)[0, corners[slots // 2]])
+    if physical_pad:
+        pad_jacobian = qd_to_numpy(contact.faces_pad_jacobian, transpose=True).transpose(1, 0, 2, 3)
+        shell_change = np.einsum(
+            "fkij,fkj->fi",
+            pad_jacobian[slots // 2],
+            qd_to_numpy(state.verts_dv, transpose=True)[0, corners[slots // 2]],
+        )
     links = qd_to_numpy(rigid_solver.dyn_info.geoms.link_idx, transpose=True)[geom[slots]]
     trees = qd_to_numpy(rigid_solver.rigid_info.links_tree_idx, transpose=True)[links]
     starts = qd_to_numpy(rigid_solver.rigid_info.trees_dof_start, transpose=True)
@@ -95,6 +102,8 @@ def contact_diagnostics(solver, rigid_solver, dt, velocity_tolerance, contact_st
     cached = qd_to_numpy(contact.contacts_vel_change, transpose=True)[0, slots]
     stiffness = qd_to_numpy(contact.contacts_stiffness, transpose=True)[0, slots]
     force_budget = velocity_tolerance * stiffness / (contact_stiffness * dt)
+    if physical_pad:
+        force_budget = velocity_tolerance * qd_to_numpy(contact.contacts_velocity_mass, transpose=True)[0, slots] / dt
     return {
         "contact_slots": len(slots),
         "newton_iterations": qd_to_numpy(contact.envs_n_newton_iterations, transpose=True).tolist(),
