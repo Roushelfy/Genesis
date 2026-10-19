@@ -1,0 +1,36 @@
+[
+  [
+    {
+      "name": "parents",
+      "module": "research.rigid_stress.qipc_comparison.require_solid_pad_admission",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial500-v2/group0/reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial250-cache-v1/group0/reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-wall250x3-cache-v1/group0/reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group0/reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group1/reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-time-contact-v1/group0/reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-time-contact-v1/group1/reference",
+        "--expected-steps",
+        "400",
+        "400",
+        "400",
+        "400",
+        "400",
+        "400",
+        "800"
+      ]
+    },
+    {
+      "name": "qualification",
+      "module": "research.rigid_stress.qipc_comparison.qualify_friction_reference",
+      "args": [
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking",
+        "--parent-admission",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/canonical-friction-reference-qualification-v1/group0/parents/result.json"
+      ]
+    }
+  ]
+]

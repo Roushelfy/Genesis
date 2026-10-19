@@ -1700,3 +1700,14 @@ Conformance729467 and primary729470 complete all26 cases each; independent729473
 Spatial comparisons only consume the two q10 fine histories and two250um baselines, so their four-parent preflight729487 waits for729312 independently of the slower q6/half-dt controls. The pending spatial job729479 dependency is updated to729487 with a before/after scheduler journal; its captured worker/source and original archived submission are unchanged. Time/contact729480 still requires the complete six-parent gate729478. Final friction qualification still requires both tracks.
 
 The [terminal cadence packet](../evidence/20261019-qualified-ranking/native-observation-cadence-v1/README.md) retains312 payloads/879,107 bytes and26 external trajectory identities. No live fine output is frozen or admitted; the goal remains in progress.
+
+
+## Explicit complete friction-reference qualification
+
+[Gate controls729509](FRICTION_REFERENCE_QUALIFICATION_PIPELINE_20261019.md) pass19 actual-data/negative-contract checks, retain the known2.749% surface rejection despite passing peaks, reject an incomplete parent matrix without accepted fine frames, and admit the required historical500um parent through all ten physical-history/frame checks. A new qualifier requires all seven parents, fourteen own-admitted endpoints and36 exact ordered spatial/time/contact/integration comparisons under the original targets. Its eighteen uncertainty summaries remain observed conditional envelopes, with no continuum/statistical-bound claim.
+
+Qualification729513 waits afterany on both fine field arrays and runs its own seven-parent preflight. Only complete qualification success enables18 source-pinned DPR/SCR/Shell field tasks729518 at both0.1N normal/friction endpoints and final actual-force data extraction729519. This prepares the necessary comparisons rather than declaring them complete. Fine histories and final ranks/figures remain open.
+
+The CPU-only plotting reader control729516 passes all five checks and retains1600 history rows/eight traction arrays on data. Only optional GPU-inventory metadata changes; scientific extraction and all force samples remain unchanged. No original reference, material/load parameter, physical gate or tolerance is modified.
+
+The [qualification-pipeline packet](../evidence/20261019-qualified-ranking/friction-qualification-pipeline-v1/README.md) retains92 payloads/503,395 bytes for terminal controls and immutable queued inputs. Original arrays, candidate fields and live fine histories stay on data; no final qualified field or ranking is fabricated from the controls.

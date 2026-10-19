@@ -1,0 +1,61 @@
+{
+  "required_parents": {
+    "surface500": [
+      "solid-pad-stvk-spatial500-v2/group0/reference",
+      400,
+      0.001,
+      10
+    ],
+    "surface250": [
+      "solid-pad-stvk-spatial250-cache-v1/group0/reference",
+      400,
+      0.001,
+      10
+    ],
+    "wall250": [
+      "solid-pad-stvk-wall250x3-cache-v1/group0/reference",
+      400,
+      0.001,
+      10
+    ],
+    "surface125": [
+      "solid-pad-stvk-canonical125-reference-v1/group0/reference",
+      400,
+      0.001,
+      10
+    ],
+    "final125": [
+      "solid-pad-stvk-canonical125-reference-v1/group1/reference",
+      400,
+      0.001,
+      10
+    ],
+    "contact125": [
+      "solid-pad-stvk-canonical125-time-contact-v1/group0/reference",
+      400,
+      0.001,
+      6
+    ],
+    "halfdt125": [
+      "solid-pad-stvk-canonical125-time-contact-v1/group1/reference",
+      800,
+      0.0005,
+      10
+    ]
+  },
+  "spatial_field_target": 0.02,
+  "spatial_raw_and_common_peak_target": 0.05,
+  "fine_control_field_target": 0.005,
+  "fine_control_raw_and_common_peak_target": 0.01,
+  "required_comparison_count": 36,
+  "required_endpoint_frame_count": 14,
+  "spatial_campaign": "stvk-canonical125-fields-v2",
+  "time_contact_campaign": "stvk-canonical125-time-contact-fields-v2",
+  "normalization": "Exact ordered actual/reference frames and their own admitted level0/1 identities. Reference denominator preserved.",
+  "uncertainty": "Sum observed spatial/time/contact/angular/depth changes, conditional numerical envelope rather than continuum/statistical bound.",
+  "method_errors_and_ranks_require_qualification_success": true,
+  "source": {
+    "path": "research/rigid_stress/qipc_comparison/qualify_friction_reference.py",
+    "sha256": "48942c80f4a51c8d5578d44858d8c0cb795760103f896ed58e1ddc026b5cda5f"
+  }
+}

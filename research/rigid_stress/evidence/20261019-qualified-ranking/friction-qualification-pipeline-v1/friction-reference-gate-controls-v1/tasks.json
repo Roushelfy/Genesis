@@ -1,0 +1,36 @@
+[
+  [
+    {
+      "name": "gates",
+      "module": "research.rigid_stress.qipc_comparison.check_friction_reference_gates",
+      "args": [
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "incomplete-parent-matrix",
+      "module": "research.rigid_stress.qipc_comparison.qualify_friction_reference",
+      "args": [
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking",
+        "--parent-admission",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-parent-admission-controls-v1/group0/positive/result.json"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "surface500-parent",
+      "module": "research.rigid_stress.qipc_comparison.require_solid_pad_admission",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial500-v2/group0/reference",
+        "--expected-steps",
+        "400"
+      ]
+    }
+  ]
+]
