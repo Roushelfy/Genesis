@@ -1,0 +1,43 @@
+         19561 function calls in 4.799 seconds
+
+   Ordered by: cumulative time
+   List reduced from 113 to 35 due to restriction <35>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       15    0.000    0.000    3.320    0.221 /mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/assembly/basis/abstract_basis.py:271(interpolate)
+       30    0.984    0.033    3.311    0.110 /mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/assembly/basis/abstract_basis.py:299(linear_combination)
+     1270    0.001    0.000    3.070    0.002 /usr/local/lib/python3.10/dist-packages/numpy/_core/einsumfunc.py:1057(einsum)
+     1270    3.069    0.002    3.069    0.002 {built-in method numpy._core._multiarray_umath.c_einsum}
+        5    0.003    0.001    1.998    0.400 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/profile-p2-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/profile_p2_stvk.py:43(<lambda>)
+        5    0.060    0.012    1.995    0.399 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/profile-p2-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/p2_stvk.py:46(force_correction)
+        5    0.002    0.000    1.748    0.350 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/profile-p2-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/profile_p2_stvk.py:42(<lambda>)
+        5    0.001    0.000    1.746    0.349 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/profile-p2-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/p2_stvk.py:39(force_energy)
+        5    0.000    0.000    1.054    0.211 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/profile-p2-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/profile_p2_stvk.py:41(<lambda>)
+       10    0.000    0.000    1.026    0.103 /mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/assembly/__init__.py:69(asm)
+       10    0.000    0.000    1.025    0.103 /mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/assembly/__init__.py:63(_sum)
+       10    0.000    0.000    1.004    0.100 {built-in method builtins.sum}
+       10    0.000    0.000    1.004    0.100 /mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/assembly/__init__.py:93(<lambda>)
+       10    0.000    0.000    1.004    0.100 /mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/assembly/form/form.py:86(coo_data)
+       10    0.011    0.001    1.004    0.100 /mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/assembly/form/linear_form.py:18(_assemble)
+      300    0.082    0.000    0.981    0.003 /mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/assembly/form/linear_form.py:48(_kernel)
+      300    0.001    0.000    0.761    0.003 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/profile-p2-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/p2_stvk.py:20(piola_force)
+      300    0.001    0.000    0.760    0.003 /mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/helpers.py:113(ddot)
+      535    0.235    0.000    0.235    0.000 {built-in method numpy.array}
+     1065    0.001    0.000    0.232    0.000 /mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/element/discrete_field.py:65(get)
+        5    0.081    0.016    0.162    0.032 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/profile-p2-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/p2_stvk.py:29(tensors)
+      345    0.141    0.000    0.141    0.000 {method 'reduce' of 'numpy.ufunc' objects}
+      305    0.001    0.000    0.139    0.000 /usr/local/lib/python3.10/dist-packages/numpy/_core/fromnumeric.py:2338(sum)
+      305    0.001    0.000    0.138    0.000 /usr/local/lib/python3.10/dist-packages/numpy/_core/fromnumeric.py:69(_wrapreduction)
+       10    0.097    0.010    0.106    0.011 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/profile-p2-stvk-v1/analysis-source/research/rigid_stress/qipc_comparison/p2_stvk.py:58(material)
+       10    0.000    0.000    0.021    0.002 /mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/assembly/form/coo_data.py:177(todefault)
+       10    0.000    0.000    0.021    0.002 /mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/assembly/form/coo_data.py:102(toarray)
+       10    0.000    0.000    0.013    0.001 /mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/scipy/sparse/_coo.py:287(toarray)
+       10    0.011    0.001    0.011    0.001 {built-in method scipy.sparse._sparsetools.coo_todense}
+       15    0.000    0.000    0.008    0.001 /mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/element/discrete_field.py:70(astuple)
+      150    0.000    0.000    0.008    0.000 /mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/element/discrete_field.py:72(<genexpr>)
+       50    0.007    0.000    0.007    0.000 {built-in method numpy.zeros}
+       10    0.000    0.000    0.007    0.001 /mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/scipy/sparse/_coo.py:30(__init__)
+       10    0.000    0.000    0.006    0.001 /mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/scipy/sparse/_coo.py:202(_check)
+       20    0.000    0.000    0.003    0.000 {method 'max' of 'numpy.ndarray' objects}
+
+

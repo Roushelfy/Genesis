@@ -138,6 +138,9 @@ def main():
     cli.add_argument("--shell-indices", type=int, nargs="*", default=[])
     cli.add_argument("--surface-quadrature", type=int, choices=(1, 3, 9, 25), default=1)
     cli.add_argument("--physical-volume", action="store_true")
+    cli.add_argument(
+        "--export-surface-fields", action="store_true", help="Retain unsmoothed common outer/inner tensors for maps"
+    )
     cli.add_argument("--depth-quadrature", type=int, choices=(2, 4, 8), default=2)
     cli.add_argument(
         "--common-peaks", action="store_true", help="Also evaluate shared tangent peaks and 3D-only components"
@@ -312,14 +315,26 @@ def main():
                 )
             error_square, reference_square = error_by_column.sum(), reference_by_column.sum()
             surface_errors = {}
+            surface_fields = {}
             for name, depth in (("outer", 0.0), ("inner", 1.0)):
                 a, r = (field.sample(np.full(len(direction), depth), basis) for field in (actual, reference))
+                if args.export_surface_fields:
+                    surface_fields[name + "_tangent_pa"] = np.stack((a, r))
                 if args.common_peaks:
                     common.update_peaks((a, r), np.full(len(direction), depth))
                 numerator = np.einsum("qij,qij,q->", a - r, a - r, area)
                 denominator = np.einsum("qij,qij,q->", r, r, area)
                 surface_errors[name + "_tangent_relative_l2"] = float(np.sqrt(numerator / denominator))
                 surface_errors[name + "_tangent_rms_error_pa"] = float(np.sqrt(numerator / area.sum()))
+            if args.export_surface_fields:
+                np.savez_compressed(
+                    args.output / f"surface-fields-{load:g}-{index}.npz",
+                    outer_rest_position_m=common_outer,
+                    inner_rest_position_m=common_inner,
+                    direction=direction,
+                    basis=basis,
+                    **surface_fields,
+                )
             regions = []
             for lower, upper in ((0.0, 0.0005), (0.0005, 0.002), (0.002, float("inf"))):
                 selected = (polar_radius >= lower) & (polar_radius < upper)

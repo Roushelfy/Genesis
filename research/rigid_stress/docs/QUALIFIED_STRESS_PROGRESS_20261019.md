@@ -14,6 +14,10 @@ figure. Transient half-dt/contact controls and direct constitutive-correction
 equivalence pass. Fine sustained-friction spatial qualification, the remaining
 sparse/B4 cost/memory matrix and full stress/traction maps remain in progress.
 
+The [later spatial/cost checkpoint](NORMAL_SPATIAL_COST_20261019.md) completes
+the normal full-surface/actual-traction maps and B1 sparse full/max primary
+audits. B4/memory and sustained-friction spatial qualification remain open.
+
 ## Declared acceptance and comparison scope
 
 Reference qualification requires a refinement trend with <=2% change in the

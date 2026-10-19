@@ -1,0 +1,69 @@
+{
+  "completed": true,
+  "mechanically_admitted": null,
+  "method": "shell",
+  "envs": 1,
+  "output_mode": "full",
+  "stress_stride": 20,
+  "primary_timing": true,
+  "samples": [
+    {
+      "level": 0,
+      "warmup": true,
+      "steps": 200,
+      "wall_seconds": 167.93382356502116,
+      "step_latency_ms": 839.6691178251058,
+      "aggregate_env_steps_per_second": 1.1909453125895353,
+      "torch_allocated_bytes_after_level": 16097280,
+      "torch_reserved_bytes_after_level": 29360128,
+      "stress_observations": 10,
+      "all_stress_observations_valid": true,
+      "field_host_bytes": 80332800
+    },
+    {
+      "level": 1,
+      "warmup": false,
+      "steps": 200,
+      "wall_seconds": 91.67507715697866,
+      "step_latency_ms": 458.3753857848933,
+      "aggregate_env_steps_per_second": 2.181618016612438,
+      "torch_allocated_bytes_after_level": 16097280,
+      "torch_reserved_bytes_after_level": 29360128,
+      "stress_observations": 10,
+      "all_stress_observations_valid": true,
+      "field_host_bytes": 80332800
+    },
+    {
+      "level": 2,
+      "warmup": false,
+      "steps": 200,
+      "wall_seconds": 62.25144554802682,
+      "step_latency_ms": 311.2572277401341,
+      "aggregate_env_steps_per_second": 3.2127767996278984,
+      "torch_allocated_bytes_after_level": 16097280,
+      "torch_reserved_bytes_after_level": 29360128,
+      "stress_observations": 10,
+      "all_stress_observations_valid": true,
+      "field_host_bytes": 80332800
+    },
+    {
+      "level": 3,
+      "warmup": false,
+      "steps": 200,
+      "wall_seconds": 50.34170114796143,
+      "step_latency_ms": 251.70850573980715,
+      "aggregate_env_steps_per_second": 3.972849455606824,
+      "torch_allocated_bytes_after_level": 16097280,
+      "torch_reserved_bytes_after_level": 29360128,
+      "stress_observations": 10,
+      "all_stress_observations_valid": true,
+      "field_host_bytes": 80332800
+    }
+  ],
+  "measured_repeats": 3,
+  "median_latency_ms": 311.2572277401341,
+  "minimum_latency_ms": 251.70850573980715,
+  "maximum_latency_ms": 458.3753857848933,
+  "incomplete_level": null,
+  "scope": "One synchronized wall interval per complete continuous load level, including actual native/pad or Shell integration, requested recovery, host output, all per-step mechanical admission calculations, endpoint field/certificate output and step-journal I/O. Per-phase timers are disabled. Initial complete levels are warmup; measured levels are consecutive warm repeats, not independent fresh-process replicates. This is end-to-end timing of the declared admitted research workflow, not pure production-solver latency. PyTorch endpoint allocations exclude Quadrants and are not whole-device peak memory. Use this exact run's mechanical audit; separate preflights cannot admit a failed primary run."
+}

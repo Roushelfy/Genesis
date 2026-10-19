@@ -19,13 +19,18 @@ tracks the verified SCR repair and explicitly identified coupled Shell controls.
 The [normal-pad qualification](docs/NORMAL_PAD_QUALIFICATION_20261019.md) now
 passes its reference-change gates and reports conditional metric-specific
 comparisons. Independent friction refinement and matched primary cost/batching
-remain open. Partial successes do not close the goal.
+qualification are tracked in the updates below. Partial successes do not close
+the goal.
 
 The [common-peak/batch update](docs/COMMON_PEAK_BATCH_RESULTS_20261019.md)
 adds qualified common peaks, actual B4 motion/source conformance, B1 every-step
 full/max primary times and an inspected force/closure figure. The sparse/B4
-cost matrix, process memory, friction spatial qualification and field/traction
-maps remain incomplete.
+cost matrix and spatial deliverables are updated in the later checkpoint below.
+
+The subsequent [normal spatial/cost update](docs/NORMAL_SPATIAL_COST_20261019.md)
+completes the inspected normal stress/actual-pressure maps and B1 every-step/
+sparse full/max cost matrix. Fine sustained-friction spatial qualification,
+the complete B4/memory matrix and final cross-case comparison remain open.
 
 The [plate report](docs/PARALLEL_PLATE_RESULTS_20261018.md) records verified
 mechanical equilibria, the SCR cancellation-sensitive admission failure,

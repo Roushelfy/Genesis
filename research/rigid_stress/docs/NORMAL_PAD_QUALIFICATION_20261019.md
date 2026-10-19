@@ -9,6 +9,9 @@ field/traction maps are still required. The later
 [common-peak and batch checkpoint](COMMON_PEAK_BATCH_RESULTS_20261019.md)
 adds common-peak convergence, time/contact controls, actual B4 conformance,
 admitted B1 every-step full/max timing and the force/closure response figure.
+The subsequent [spatial/cost update](NORMAL_SPATIAL_COST_20261019.md) completes
+normal field/traction maps and B1 sparse timing; fine friction and B4/memory
+remain outstanding.
 
 The physical case remains the full free hollow egg,500um wall,E=10GPa,nu=0.3,
 rho=2000kg/m3, with the explicitly declared1e9N/m3 compliant pad. Native DPR
