@@ -138,6 +138,7 @@ def main():
     cli.add_argument("--shell-indices", type=int, nargs="*", default=[])
     cli.add_argument("--surface-quadrature", type=int, choices=(1, 3, 9, 25), default=1)
     cli.add_argument("--physical-volume", action="store_true")
+    cli.add_argument("--decompose-three-fields", action="store_true")
     cli.add_argument(
         "--export-surface-fields", action="store_true", help="Retain unsmoothed common outer/inner tensors for maps"
     )
@@ -149,6 +150,7 @@ def main():
     args = cli.parse_args()
     depth_nodes, depth_weights = np.polynomial.legendre.leggauss(args.depth_quadrature)
     assert len(args.meshes) == len(args.runs)
+    assert not args.decompose_three_fields or (len(args.runs) == 3 and args.physical_volume)
     assert all(0 <= index < len(args.runs) for index in args.shell_indices)
     assert all(not run.is_file() or len(args.loads) == 1 for run in args.runs)
     assert not args.physical_volume or len(args.runs) - 1 not in args.shell_indices
@@ -232,24 +234,30 @@ def main():
                 )
             dev = stress - np.trace(stress, axis1=-2, axis2=-1)[..., None, None] * np.eye(3) / 3
             mises = np.sqrt(1.5 * (dev * dev).sum(axis=(-2, -1)))
-            if index in args.shell_indices:
-                face, fiber = np.unravel_index(mises.argmax(), mises.shape)
-                tri = midpoint[faces[face]]
-                normal_raw = np.cross(tri[1] - tri[0], tri[2] - tri[0])
-                normal_raw /= np.linalg.norm(normal_raw)
-                peak_position = tri.mean(axis=0) + (fiber - 1) * 0.00025 * normal_raw
-            elif stress.ndim == 3:
-                peak_position = vertices[tets[mises.argmax()]].mean(axis=0)
-            else:
-                element, corner = np.unravel_index(mises.argmax(), mises.shape)
-                peak_position = vertices[tets[element, corner]]
+            tension = np.linalg.eigvalsh(stress)[..., -1]
+            peak_positions = {}
+            for name, magnitudes in (("mises", mises), ("tension", tension)):
+                if index in args.shell_indices:
+                    face, fiber = np.unravel_index(magnitudes.argmax(), magnitudes.shape)
+                    tri = midpoint[faces[face]]
+                    normal_raw = np.cross(tri[1] - tri[0], tri[2] - tri[0])
+                    normal_raw /= np.linalg.norm(normal_raw)
+                    peak_position = tri.mean(axis=0) + (fiber - 1) * 0.00025 * normal_raw
+                elif stress.ndim == 3:
+                    peak_position = vertices[tets[magnitudes.argmax()]].mean(axis=0)
+                else:
+                    element, corner = np.unravel_index(magnitudes.argmax(), magnitudes.shape)
+                    peak_position = vertices[tets[element, corner]]
+                peak_positions[name] = peak_position.tolist()
             raw.append(
                 {
                     "mesh": file_id(mesh),
                     "field": file_id(path),
                     "raw_maximum_mises_pa": float(mises.max()),
-                    "raw_maximum_tension_pa": float(np.linalg.eigvalsh(stress)[..., -1].max()),
-                    "raw_peak_position_m": peak_position.tolist(),
+                    "raw_maximum_tension_pa": float(tension.max()),
+                    "raw_peak_position_m": peak_positions["mises"],
+                    "raw_mises_peak_position_m": peak_positions["mises"],
+                    "raw_tension_peak_position_m": peak_positions["tension"],
                 }
             )
         comparisons = []
@@ -387,7 +395,14 @@ def main():
                 membrane_n_per_m=membrane,
                 bending_n=bending,
             )
-        rows.append({"load_n": load, "raw": raw, "adjacent_comparisons": comparisons})
+        decomposition = {}
+        if args.decompose_three_fields:
+            from .column_decomposition import integrate
+
+            decomposition["three_field_decomposition"] = integrate(
+                fields, basis, area, column_angular_weights, depth_nodes, depth_weights
+            )
+        rows.append({"load_n": load, "raw": raw, "adjacent_comparisons": comparisons, **decomposition})
     write_json(
         args.output / "result.json",
         {

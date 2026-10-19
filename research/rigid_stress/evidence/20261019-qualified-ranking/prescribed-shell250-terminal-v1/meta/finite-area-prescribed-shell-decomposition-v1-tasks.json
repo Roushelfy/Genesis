@@ -1,0 +1,54 @@
+[
+  [
+    {
+      "name": "shell-q9",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-prescribed-shell250-v2/group0/shell/frames/level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-cholesky-refinement-v1/group0/surface250/order-10/load-0.1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-prescribed-final125-v1/group0/reference/order-10/load-0.1.npz",
+        "--loads",
+        "0.1",
+        "--shell-indices",
+        "0",
+        "--surface-quadrature",
+        "9",
+        "--depth-quadrature",
+        "2",
+        "--physical-volume",
+        "--common-peaks",
+        "--decompose-three-fields"
+      ]
+    },
+    {
+      "name": "shell-q25",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-prescribed-shell250-v2/group0/shell/frames/level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-cholesky-refinement-v1/group0/surface250/order-10/load-0.1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-prescribed-final125-v1/group0/reference/order-10/load-0.1.npz",
+        "--loads",
+        "0.1",
+        "--shell-indices",
+        "0",
+        "--surface-quadrature",
+        "25",
+        "--depth-quadrature",
+        "2",
+        "--physical-volume",
+        "--common-peaks",
+        "--decompose-three-fields"
+      ]
+    }
+  ]
+]

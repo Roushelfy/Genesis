@@ -1,5 +1,14 @@
 # Qualified stress comparison: in progress
 
+The [prescribed-reference qualification](PRESCRIBED_REFERENCE_QUALIFICATION_20261019.md)
+now passes25 checks with31 rehashed inputs (728896). Separate signed tensor
+controls pass7 cases (728884); an exact load-map allocation repair passes its
+before/after control (728885) after the retained250um Shell OOM (728882).
+The corrected Shell replay728888 subsequently passes its static equations and
+has its own terminal companion. Native/Shell three-field comparisons (728893/
+728918) and fine nonlinear friction histories remain active; their outputs are
+not included or treated as admitted final comparisons.
+
 The [dimensional normal update](NORMAL_ABSOLUTE_ERRORS_20261019.md) completes
 81 absolute/relative metrics from retained full-column data (728856), with69
 rehashed inputs. CPU-only postprocessing now uses the same rtx-mid/container

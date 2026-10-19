@@ -1,0 +1,48 @@
+{
+  "scheduler": "728727_0|COMPLETED|0:0\n",
+  "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-prescribed-final125-v1/group0/reference/result.json",
+  "result_sha256": "e9a75979b3221452b8da5ff6edfb884db2af848a3c6e4d15099d01bb9064ed90",
+  "admitted_cases": [
+    {
+      "quadrature_order": 8,
+      "load_n": 0.1,
+      "pressure_shape_integrals_m2": [
+        3.1415926547338524e-06,
+        3.141592652296774e-06
+      ],
+      "force_moment_relative_error": 3.249218385667496e-17,
+      "balance_correction_relative": 2.128419506796864e-16,
+      "equation_relative_residual": 6.006797187476162e-11,
+      "elastic_equations_admitted": true,
+      "raw_maximum_mises_pa": 329385.0104635206,
+      "raw_maximum_tension_pa": 265587.78370179754,
+      "maximum_displacement_gradient": 0.00012744101113315291,
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-prescribed-final125-v1/group0/reference/order-8/load-0.1.npz",
+        "bytes": 161742828,
+        "sha256": "bdc53813396eaac4a8533f41f8cd943910be108b5c19adf728dc303d5008e07f"
+      }
+    },
+    {
+      "quadrature_order": 10,
+      "load_n": 0.1,
+      "pressure_shape_integrals_m2": [
+        3.141592653581644e-06,
+        3.141592653905735e-06
+      ],
+      "force_moment_relative_error": 1.430011843531545e-15,
+      "balance_correction_relative": 2.125294145942809e-16,
+      "equation_relative_residual": 6.005615785745524e-11,
+      "elastic_equations_admitted": true,
+      "raw_maximum_mises_pa": 329385.0105421682,
+      "raw_maximum_tension_pa": 265587.7837991838,
+      "maximum_displacement_gradient": 0.00012744101117234766,
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-prescribed-final125-v1/group0/reference/order-10/load-0.1.npz",
+        "bytes": 163152791,
+        "sha256": "98aecbb3ffafc01e7c2c493465f6e9fc96df53b8474c22cb10cb576d43879f81"
+      }
+    }
+  ],
+  "scope": "Terminal two-order prescribed125um/three-wall linear reference; spatial qualification is still pending."
+}
