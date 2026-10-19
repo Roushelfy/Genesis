@@ -63,6 +63,13 @@ including eight independently rehashed endpoint fields. Normal material-model
 contrasts at0.3/1N and fine spatial/method comparisons remain pending;
 fixed tasks and unchanged acceptance bands are retained separately.
 
+The [250um nonlinear checkpoint](docs/FRICTION_SPATIAL250_20261019.md) adds a
+completed two-wall trajectory with passing mechanical/momentum checks and
+q9/q25 surface-refinement comparisons. The largest field change remains2.749%,
+above the2% target. Audited plotting inputs retain complete histories and actual
+contact forces; final fine-reference qualification and friction figures remain
+pending. See the [figure contract](docs/FRICTION_FIGURE_PLAN.md).
+
 The [plate report](docs/PARALLEL_PLATE_RESULTS_20261018.md) records verified
 mechanical equilibria, the SCR cancellation-sensitive admission failure,
 original Shell contact-split imbalance and unresolved QIPC point-contact fields.

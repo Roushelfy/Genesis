@@ -1,5 +1,13 @@
 # Reproducing the parallel-plate comparison
 
+For completed250um nonlinear mechanics and500-to250um surface controls, see the
+[spatial checkpoint](FRICTION_SPATIAL250_20261019.md). `friction_plot_data
+--data-root RUN_ROOT --reference-run ADMITTED_REFERENCE_RUN --output NEW_DATA_PATH`
+prepares actual complete force histories and unsmoothed contact samples through
+Slurm. Its own-history/data checks do not qualify reference resolution or native
+every-step stress. Final rendering requires the matching fine spatial admission;
+the executed500um reader control is preparatory only.
+
 For the completed coarse nonlinear time/contact sampling controls, see the
 [q9/q25 report](FRICTION_COMMON_CONTROLS_20261019.md).
 `audit_stvk_time_contact --data-root RUN_ROOT --output NEW_DATA_PATH` rehashes
