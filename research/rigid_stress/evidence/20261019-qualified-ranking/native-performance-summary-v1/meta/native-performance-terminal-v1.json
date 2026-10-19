@@ -1,0 +1,40 @@
+{
+  "accounting": "730460_0|COMPLETED|0:0|00:08:03\n730460_0.batch|COMPLETED|0:0|00:08:03\n730460_0.0|COMPLETED|0:0|00:08:02\n730461_0|COMPLETED|0:0|00:07:58\n730461_0.batch|COMPLETED|0:0|00:07:58\n730461_0.0|COMPLETED|0:0|00:07:57\n730463_0|COMPLETED|0:0|00:01:03\n730463_0.batch|COMPLETED|0:0|00:01:03\n730463_0.0|COMPLETED|0:0|00:01:02\n730464_0|FAILED|1:0|00:00:34\n730464_0.batch|FAILED|1:0|00:00:34\n730464_0.0|FAILED|1:0|00:00:33\n730471_0|FAILED|1:0|00:00:40\n730471_0.batch|FAILED|1:0|00:00:40\n730471_0.0|FAILED|1:0|00:00:39\n730473_0|COMPLETED|0:0|00:01:41\n730473_0.batch|COMPLETED|0:0|00:01:41\n730473_0.0|COMPLETED|0:0|00:01:40\n730498_0|COMPLETED|0:0|00:00:39\n730498_0.batch|COMPLETED|0:0|00:00:39\n730498_0.0|COMPLETED|0:0|00:00:38\n",
+  "expected": {
+    "730471_0": [
+      "FAILED",
+      "1:0"
+    ],
+    "730473_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730460_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730461_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730463_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730464_0": [
+      "FAILED",
+      "1:0"
+    ],
+    "730498_0": [
+      "COMPLETED",
+      "0:0"
+    ]
+  },
+  "scene_checks": 14454,
+  "scene_rows": 61,
+  "scene_receipts": 4267,
+  "module_rows": 4,
+  "module_memory_checks": 170,
+  "module_memory_rows": 4,
+  "whole_goal_complete": false
+}

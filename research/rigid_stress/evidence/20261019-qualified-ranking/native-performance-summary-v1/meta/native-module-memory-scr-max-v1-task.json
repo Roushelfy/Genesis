@@ -1,0 +1,23 @@
+{
+  "name": "scr-max",
+  "module": "research.rigid_stress.qipc_comparison.native_production_controls",
+  "args": [
+    "--method",
+    "scr",
+    "--envs",
+    "8",
+    "--conditions",
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+    "--output-mode",
+    "max",
+    "--steps",
+    "1200",
+    "--warmup",
+    "900",
+    "--field-stride",
+    "120",
+    "--replay",
+    "--repetitions",
+    "1"
+  ]
+}

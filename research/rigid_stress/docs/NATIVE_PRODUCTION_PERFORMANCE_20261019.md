@@ -1,5 +1,10 @@
 # Native scene and module performance, 2026-10-19
 
+The [current source-bound summary](NATIVE_PERFORMANCE_SUMMARY_20261019.md)
+joins61 admitted repaired-source scene/cadence configurations with their exact
+conformance and20 separate memory profiles. This page retains the original
+engine's measurements and failures; its rates are not the current recommendation.
+
 The [subsequent MPR contact report](NATIVE_CONTACT_CONSISTENCY_20261019.md)
 localizes and repairs the motion discrepancy below:349 B1/B8/B32 checks and
 three focused regressions pass on engine1ff39b077. This report retains the
