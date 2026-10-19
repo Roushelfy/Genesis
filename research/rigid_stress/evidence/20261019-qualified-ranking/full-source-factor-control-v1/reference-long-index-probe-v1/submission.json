@@ -1,0 +1,15 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--partition=rtx-mid",
+    "--gres=gpu:1",
+    "--cpus-per-task=2",
+    "--mem=8G",
+    "--time=5",
+    "--job-name=reference-index-probe",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/reference-long-index-probe-v1/probe.log",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/reference-long-index-probe-v1/job.sh"
+  ],
+  "job": "728125"
+}

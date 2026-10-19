@@ -1369,3 +1369,53 @@ variant enters any ranking or cost comparison; submission is not qualification.
 
 Selected completed receipts, negative controls and executed adapter sources are
 published in the [native pad checkpoint](../evidence/20261019-qualified-ranking/native-pad-history-v1/README.md).
+
+## Full source fields and the joint-reference index limit
+
+The full-source histories (`728100`) finish400/800 steps for both methods at
+1/0.5ms. Every mechanical history/window passes, and all eight complete fields
+are accepted with zero errno. Each observation retains166 actual nonzero
+centroid forces in an8992-slot observer-owned input buffer. No physical source
+is dropped or replaced by an LP representative.
+
+The matching complete-field comparisons (`728122`) pass. In sustained shear,
+DPR tangent/membrane/bending changes are2.4593e-7/1.9673e-7/3.1343e-7; SCR
+changes are2.4519e-7/1.9688e-7/3.1189e-7. All raw-peak changes are below4.81e-8.
+Normal complete-field changes are below2.43e-11. This isolates the earlier
+2% shear sensitivity to sparse source representation, without changing PCG,
+Newton, timestep targets or the physical friction law. The full-source normal
+five-load cycles (`728127_0/1`) also pass1000 steps and all five windows;
+identical-configuration repeats, their field checks and the matched three-load
+normal comparisons remain distinct from these completed mechanical controls.
+
+The first joint125um/three-layer reference (`728080`) failed after20m35s with
+`CHOLMOD error: problem too large`, then `invalid xtype` and a segmentation
+fault. Slurm reports failed exit11:0 and maximum step RSS67,400,120KiB, not an
+OOM exit. It produced no usable reference field. The installed Cholespy2.2.0
+binary exports the32-bit CHOLMOD entrypoints. Its
+[pinned source](https://raw.githubusercontent.com/rgl-epfl/cholespy/v2.2.0/src/cholesky_solver.cpp)
+uses integer-index factorization and only checks the not-positive-definite
+failure before proceeding. This supports an index-capacity failure; it is
+not evidence of failed continuum convergence or inadequate Newton tolerance.
+
+The read-only compute-environment probe (`728125`) finds an existing
+CVXOPT1.3.2 installation. Its
+[pinned CHOLMOD binding](https://raw.githubusercontent.com/cvxopt/cvxopt/1.3.2/src/C/cholmod.c)
+selects the long-index interface on this64-bit platform. The new optional
+`--cvxopt-factor` uses that existing dependency, the supplied through-wall
+mesh ordering, supernodal factorization and no diagonal shift. It restores
+process-local CHOLMOD options after factorization; no active environment,
+system package, physical parameter or old default factor is changed.
+
+Independent controls (`728133`) verify8-byte indices, vector and three-column
+solutions against SuperLU (relative differences below9.95e-14), residuals
+below4.17e-12, and rejection of an indefinite matrix. The complete coarse
+physical reference at contact orders0/6/10 passes all equation gates. Against
+the original factor, tangent/membrane/bending changes are below5.86e-13 and
+raw peaks below6.34e-13. Only after these controls, joint refinement `728139`
+is submitted with this adapter and192GB, including joint wall/surface field
+comparisons. Its completion and spatial qualification remain open.
+
+The completed full-source and factor controls, including the failed joint
+factor log, are retained in the
+[full-source/factor packet](../evidence/20261019-qualified-ranking/full-source-factor-control-v1/README.md).

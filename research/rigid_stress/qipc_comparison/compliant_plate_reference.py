@@ -12,6 +12,7 @@ from skfem import FacetBasis
 
 from .artifacts import file_id, runtime_identity, write_json
 from .contact_qp import solve_contact_qp
+from .cvxopt_factor import CvxoptCholeskyFactor
 from .p2_elastic import FreeElasticP2, quadratic_triangle_minimum, CholeskyFactor
 from .pad_elastic_fixed_point import solve_pad_fixed_point
 
@@ -82,6 +83,7 @@ def main():
     cli.add_argument("--mesh", type=Path, required=True)
     cli.add_argument("--qp-solver-path", type=Path, required=True)
     cli.add_argument("--cholespy-path", type=Path)
+    cli.add_argument("--cvxopt-factor", action="store_true")
     cli.add_argument("--candidate-radius", type=float, default=0.003)
     cli.add_argument("--pad-stiffness", type=float, default=1e9)
     cli.add_argument("--quadrature-orders", type=int, nargs="+", default=[4, 6])
@@ -89,6 +91,7 @@ def main():
     cli.add_argument("--fixed-point", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
+    assert not (args.cvxopt_factor and args.cholespy_path), "Select one explicit CHOLMOD adapter"
     assert args.pad_stiffness > 0 and args.candidate_radius > 0 and min(args.loads) > 0
     assert len(set(args.quadrature_orders)) == len(args.quadrature_orders)
     assert min(args.quadrature_orders) >= 0, "Order zero requests one explicit face-centroid point"
@@ -107,6 +110,7 @@ def main():
             "quadrature_orders": args.quadrature_orders,
             "loads_n": args.loads,
             "full_elastic_fixed_point": args.fixed_point,
+            "cvxopt_long_index_factor": args.cvxopt_factor,
         },
     )
     model = FreeElasticP2(
@@ -118,6 +122,7 @@ def main():
         column_faces=faces,
         through_wall_ordering=True,
         cholespy_path=args.cholespy_path,
+        cvxopt_factor=args.cvxopt_factor,
     )
     factor_seconds = time.perf_counter() - start
     outer_nodes, _, quadratic_faces = model.surface(faces)
@@ -329,6 +334,9 @@ def main():
             "peak_rss_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
             "cholespy_binary": file_id(Path(model.factor.module_path))
             if isinstance(model.factor, CholeskyFactor)
+            else None,
+            "cvxopt_binary": file_id(Path(model.factor.module_path))
+            if isinstance(model.factor, CvxoptCholeskyFactor)
             else None,
             "cases": records,
             "physical_reference_qualified": False,

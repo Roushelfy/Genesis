@@ -15,6 +15,10 @@ of existing terminal receipts and executed research source, copied with size
 and SHA256 verification. Full native/Shell/FEM fields, step journals, large
 assets and active joint-refinement outputs remain under the data-side run root.
 This small publication is not a runtime data destination or a migration.
+The adjacent `full-source-factor-control-v1` adds about0.9MB of verified
+terminal receipts, failed-factor logs and exact factor-control source. Its
+CVXOPT adapter reuses an existing data-side environment; no new dependency
+installation, active-environment edit or data migration is involved.
 
 The optional independent QP audit uses Clarabel0.11.1 installed with
 `--no-deps --target` at
