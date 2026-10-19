@@ -55,7 +55,9 @@ def main():
     cli.add_argument("--warm-contact", action="store_true")
     cli.add_argument("--constitutive-correction", choices=("subtracted", "direct"), default="subtracted")
     cli.add_argument("--cache-constitutive-evaluations", action="store_true")
+    cli.add_argument("--reuse-contact-velocity", action="store_true")
     args = cli.parse_args()
+    assert not args.reuse_contact_velocity or args.contact_solver == "modal"
     assert not args.empty and not args.shear_distance and args.plate_offset_x == 0
     assert args.record_stride == 1 and (not args.gravity_x or args.friction == 0.3)
     args.output.mkdir(parents=True, exist_ok=False)

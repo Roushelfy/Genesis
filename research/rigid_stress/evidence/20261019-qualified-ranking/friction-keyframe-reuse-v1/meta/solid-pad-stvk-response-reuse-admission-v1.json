@@ -1,0 +1,94 @@
+{
+  "passed": true,
+  "targets": {
+    "complete_history_required": true,
+    "current_momentum_audit_required": true,
+    "maximum_complete_field_relative_difference": 1e-08,
+    "maximum_raw_peak_relative_difference": 1e-08,
+    "scope": "Optional reuse of already evaluated full dynamic compliance response. All constitutive/contact/equation thresholds unchanged. Comparison against admitted cached reference400-step history. No speedup claim from a single execution."
+  },
+  "comparisons": [
+    {
+      "level": 0,
+      "fields": {
+        "tangent_relative_l2": 5.012448373538263e-10,
+        "outer_tangent_relative_l2": 5.015219166613052e-10,
+        "inner_tangent_relative_l2": 5.006067462506358e-10,
+        "membrane_relative_l2": 4.894498883742111e-10,
+        "bending_relative_l2": 5.117659951585424e-10
+      },
+      "raw_peaks": {
+        "raw_mises_relative_change": 1.7101564608879016e-10,
+        "raw_tension_relative_change": 9.425304980936744e-11
+      },
+      "common_tangent_peaks": {
+        "mises": 1.0925618967922259e-10,
+        "tension": 8.568992925544581e-11
+      },
+      "full3d_only_components": {
+        "normal_stress": 1.2232864239250452e-09,
+        "transverse_shear_vector": 9.647075529499183e-10
+      }
+    },
+    {
+      "level": 1,
+      "fields": {
+        "tangent_relative_l2": 4.980229140902537e-10,
+        "outer_tangent_relative_l2": 4.911755900102415e-10,
+        "inner_tangent_relative_l2": 4.929459368381718e-10,
+        "membrane_relative_l2": 4.955269533990341e-10,
+        "bending_relative_l2": 4.955586509846363e-10
+      },
+      "raw_peaks": {
+        "raw_mises_relative_change": 1.3934831066819697e-10,
+        "raw_tension_relative_change": 7.075562358238585e-11
+      },
+      "common_tangent_peaks": {
+        "mises": 7.682872418337393e-11,
+        "tension": 1.0093885432674315e-10
+      },
+      "full3d_only_components": {
+        "normal_stress": 1.1790757067424028e-09,
+        "transverse_shear_vector": 8.860198570520076e-10
+      }
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/solid-pad-stvk-response-reuse-control-v1-targets.json",
+      "bytes": 430,
+      "sha256": "7d4efc5c1679e407477ed81323246fd7f213b509c4236c671c1b3c11b19dc701"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-response-reuse-control-v1/group0/analytic/result.json",
+      "bytes": 1509,
+      "sha256": "b7a16f1a00219d42dd184160ba8c24cbebb9e2fedccea3e3f7a504631592e68b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-response-reuse-control-v1/group0/contact-analytic/result.json",
+      "bytes": 12601,
+      "sha256": "e5a1b86a94c94641493d5f057dedd9fc87b20245b14d2acd2115e78e723d0b07"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-response-reuse-control-v1/group0/moment/result.json",
+      "bytes": 3309,
+      "sha256": "6ca9e0b0a443a8e415d9ce12dda67b476a3c3ead5f05c368bf6b0bcbe67f4f6c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-response-reuse-control-v1/group0/reference/result.json",
+      "bytes": 1427,
+      "sha256": "058f5e78550281293fab7a00cd660ebddf387c687b40b8f54c6851fe6d16d054"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-response-reuse-control-v1/group0/equivalence-level0/result.json",
+      "bytes": 9052,
+      "sha256": "18bb18d4a851a3b3dfe993922c014c15996667ada5301b190b28a196dc83d24f"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-response-reuse-control-v1/group0/equivalence-level1/result.json",
+      "bytes": 9057,
+      "sha256": "656f753c163ba43b4284a33f58b081c39a30c9704c904a710ac83742611ea3a7"
+    }
+  ],
+  "scope": "Metadata-only verification of completed Slurm analytic, full-history, current-momentum and field controls. Reuse avoids one redundant factor solve; no physical or solver acceptance threshold changes. This is not spatial-reference qualification or a repeated timing claim."
+}

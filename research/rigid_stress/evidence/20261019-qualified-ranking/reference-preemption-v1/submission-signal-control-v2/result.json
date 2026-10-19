@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "case": "success",
+      "process_exit": 0,
+      "recorded_exit": 0
+    },
+    {
+      "case": "failure",
+      "process_exit": 7,
+      "recorded_exit": 7
+    },
+    {
+      "case": "term",
+      "process_exit": 143,
+      "recorded_exit": 143
+    },
+    {
+      "case": "interrupt",
+      "process_exit": 130,
+      "recorded_exit": 130
+    },
+    {
+      "case": "hangup",
+      "process_exit": 129,
+      "recorded_exit": 129
+    },
+    {
+      "case": "external_process_group_TERM",
+      "process_exit": 143,
+      "recorded_exit": 143
+    },
+    {
+      "case": "existing_destination",
+      "process_exit": 1,
+      "original_receipt_unchanged": true
+    }
+  ],
+  "source_sha256": "1bd8f93f771261856bb1950e3bc6d406c5cf6667a18b4e60a9f8eb50207cb3bc",
+  "scope": "Stdlib/shell orchestration controls only; no scientific workload executed."
+}

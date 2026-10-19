@@ -1,0 +1,30 @@
+[
+  [
+    {
+      "name": "dpr",
+      "module": "research.rigid_stress.qipc_comparison.inspect_pad_rejection",
+      "args": [
+        "--frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-dpr-rejection-capture-v1/group0/dpr/frames/rejected-stress.npz",
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--radius",
+        "0.002"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "scr",
+      "module": "research.rigid_stress.qipc_comparison.inspect_pad_rejection",
+      "args": [
+        "--frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-scr-rejection-capture-v1/group0/capture/input.npz",
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--radius",
+        "0.002"
+      ]
+    }
+  ]
+]

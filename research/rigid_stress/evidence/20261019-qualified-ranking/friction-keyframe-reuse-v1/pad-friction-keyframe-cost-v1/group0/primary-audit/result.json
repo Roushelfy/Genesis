@@ -1,0 +1,229 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-201",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728544",
+      "SLURM_ARRAY_JOB_ID": "728543",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-221a0c23-5646-a371-f3de-57b941cc013a, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "passed": true,
+  "cases": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-keyframe-cost-v1/group0/dpr",
+      "method": "dpr",
+      "sustained_friction": true,
+      "checks": {
+        "own_complete_history_admitted": true,
+        "warm_repeats": true,
+        "all_requested_observations_valid": true,
+        "phase_timers_disabled": true,
+        "whole_interval_accounting": true,
+        "expected_whole_history": true,
+        "measured_blocks_after_friction_warmup": true,
+        "admitted_configuration_equilibrium_agreement": true
+      },
+      "cost": {
+        "completed": true,
+        "mechanically_admitted": true,
+        "method": "dpr",
+        "envs": 1,
+        "output_mode": "full",
+        "stress_stride": 200,
+        "primary_timing": true,
+        "intrusive_memory_profile": false,
+        "intrusive_phase_profile": false,
+        "samples": [
+          {
+            "level": 0,
+            "warmup": true,
+            "steps": 200,
+            "wall_seconds": 15.688129286048934,
+            "step_latency_ms": 78.44064643024467,
+            "aggregate_env_steps_per_second": 12.748492592922156,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 1,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 5179392
+          },
+          {
+            "level": 1,
+            "warmup": true,
+            "steps": 200,
+            "wall_seconds": 14.70862049702555,
+            "step_latency_ms": 73.54310248512775,
+            "aggregate_env_steps_per_second": 13.597468235749572,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 1,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 5179392
+          },
+          {
+            "level": 2,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 15.23253170098178,
+            "step_latency_ms": 76.1626585049089,
+            "aggregate_env_steps_per_second": 13.129793781233976,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 1,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 5179392
+          },
+          {
+            "level": 3,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 15.021881618071347,
+            "step_latency_ms": 75.10940809035674,
+            "aggregate_env_steps_per_second": 13.313911338470387,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 1,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 5179392
+          },
+          {
+            "level": 4,
+            "warmup": false,
+            "steps": 200,
+            "wall_seconds": 15.184992984053679,
+            "step_latency_ms": 75.9249649202684,
+            "aggregate_env_steps_per_second": 13.170898413323428,
+            "torch_allocated_bytes_after_level": 69632,
+            "torch_reserved_bytes_after_level": 2097152,
+            "stress_observations": 1,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 5179392
+          }
+        ],
+        "measured_repeats": 3,
+        "median_latency_ms": 75.9249649202684,
+        "minimum_latency_ms": 75.10940809035674,
+        "maximum_latency_ms": 76.1626585049089,
+        "incomplete_level": null,
+        "scope": "One synchronized wall interval per complete continuous load level, including actual native/pad or Shell integration, requested recovery, host output, all per-step mechanical admission calculations, endpoint field/certificate output and step-journal I/O. Per-phase timers are disabled. Initial complete levels are warmup; measured levels are consecutive warm repeats, not independent fresh-process replicates. This is end-to-end timing of the declared admitted research workflow, not pure production-solver latency. PyTorch endpoint allocations exclude Quadrants and are not whole-device peak memory. Use this exact run's mechanical audit; separate preflights cannot admit a failed primary run."
+      },
+      "fields": [
+        {
+          "level": 0,
+          "baseline_level": 0,
+          "raw_peak_relative_difference": 2.275957200481571e-13,
+          "same_mesh_tensor_relative_l2": 6.073132521553904e-12
+        },
+        {
+          "level": 1,
+          "baseline_level": 1,
+          "raw_peak_relative_difference": 2.1940227412642344e-12,
+          "same_mesh_tensor_relative_l2": 5.569988368636925e-12
+        },
+        {
+          "level": 2,
+          "baseline_level": 1,
+          "raw_peak_relative_difference": 1.3032133864943063e-05,
+          "same_mesh_tensor_relative_l2": 0.00023789621257916597
+        },
+        {
+          "level": 3,
+          "baseline_level": 1,
+          "raw_peak_relative_difference": 2.599945966808015e-05,
+          "same_mesh_tensor_relative_l2": 0.0004745502464989735
+        },
+        {
+          "level": 4,
+          "baseline_level": 1,
+          "raw_peak_relative_difference": 3.890228431568943e-05,
+          "same_mesh_tensor_relative_l2": 0.000709968625772048
+        }
+      ],
+      "setup_seconds": 52.27823629800696,
+      "run_identity": {
+        "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+        "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+        "hostname": "rtx-209-201",
+        "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+        "environment": {
+          "SLURM_JOB_ID": "728544",
+          "SLURM_ARRAY_JOB_ID": "728543",
+          "SLURM_ARRAY_TASK_ID": "0",
+          "CUDA_VISIBLE_DEVICES": "0",
+          "GENESIS_IMAGE_VER": "1_26"
+        },
+        "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-221a0c23-5646-a371-f3de-57b941cc013a, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+      },
+      "wall_seconds_outside_level_intervals": 0.008204241748899221
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-keyframe-cost-v1/group0/dpr/cost.json",
+      "bytes": 3297,
+      "sha256": "62c1af64abb9ac509491a7678b6f7c63e5769797a137be53621c49591625f8c3"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-keyframe-cost-v1/group0/dpr/result.json",
+      "bytes": 4080,
+      "sha256": "16f7a0d409e264707f6d48fee276b6714d8f66aceeb71351c89a496967eec007"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-keyframe-cost-v1/group0/dpr/start.json",
+      "bytes": 2888,
+      "sha256": "60ca2b227b139502b9e83052db04896d632e0533aac28d9e3c1bd9cc1297672a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-keyframe-cost-v1/group0/dpr-audit/result.json",
+      "bytes": 7458,
+      "sha256": "ce9a4c1ddbbbe72f430a4f1b6b08a70d3fd4ba07693b861314b9dd9738c34195"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-keyframe-cost-v1/group0/dpr/steps.jsonl",
+      "bytes": 914574,
+      "sha256": "1879f6ab41e1280f3c9ef38ecc4e10bf1c735ac3287e451658958375b347cbb5"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/stress-level0.npz",
+      "bytes": 8216729,
+      "sha256": "8318dec452e952e6df53e28b4ddf963057279a2b058ef11d5903b8f2f3df30aa"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-keyframe-cost-v1/group0/dpr/frames/stress-level0.npz",
+      "bytes": 8215540,
+      "sha256": "0e35addd5e9d909b9ecb58077c08d5bad493234ee907e61db94563361aef6323"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/stress-level1.npz",
+      "bytes": 8178882,
+      "sha256": "5a954243d3030a05bd96540fa94490eee78265088911af9c74197fd20506f867"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-keyframe-cost-v1/group0/dpr/frames/stress-level1.npz",
+      "bytes": 8178726,
+      "sha256": "bb039f42b890e8b184b5faaeca81fdc3b13dfbb43440cfc2859b0805b4d013bb"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-keyframe-cost-v1/group0/dpr/frames/stress-level2.npz",
+      "bytes": 8202230,
+      "sha256": "8844b58ee0bbf974bdb23b3427e62a7baecdddca628c6bdb037d9579657e6608"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-keyframe-cost-v1/group0/dpr/frames/stress-level3.npz",
+      "bytes": 8181406,
+      "sha256": "139e10c51fba7a130b61a6e32edc595c4135295f7514297afa488c7af4172228"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-keyframe-cost-v1/group0/dpr/frames/stress-level4.npz",
+      "bytes": 8163713,
+      "sha256": "355c698e0ea381787590144a23854a75f46f8799d7023a53cb58b34c851d1d45"
+    }
+  ],
+  "scope": "B1 primary timings of the exact admitted complete normal or sustained-friction physical-pad workflow, with3 or more consecutive warm repeated levels. Friction timing excludes both the initial normal level and the tangential ramp level; each endpoint compares with its matching admitted normal/friction same-mesh baseline. Each primary run supplies its own history/field evidence. Full frames and max-only peaks retain0.5% field/1% peak sensitivity checks. Cross-run bitwise equality is not an observer identity test: the separate same-frozen-state control retains its stricter1e-8 threshold. Includes journal, endpoint output and mechanical checking, so not pure production-solver latency. Batched primary cost, whole-device memory peaks and independent process repeats remain separately reported."
+}

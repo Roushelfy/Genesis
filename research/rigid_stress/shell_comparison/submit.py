@@ -85,6 +85,21 @@ def capture_source(source, output, stem):
     )
 
 
+def workload_preamble(run):
+    return [
+        "#!/usr/bin/env bash",
+        "set -euo pipefail",
+        f"task_run={shlex.quote(str(run))}",
+        'test ! -e "$task_run"',
+        'mkdir -p "$task_run"',
+        "task_scratch=''",
+        'trap \'task_status=$?; printf "%s\\n" "$task_status" > "$task_run/returncode.txt"; if test -n "$task_scratch"; then rm -rf -- "$task_scratch"; fi; exit "$task_status"\' EXIT',
+        "trap 'exit 143' TERM",
+        "trap 'exit 130' INT",
+        "trap 'exit 129' HUP",
+    ]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, required=True)
@@ -135,15 +150,7 @@ def main():
         capture_source(Path(extra).resolve(), output, f"extra-source{index}")
     for group_id, group in enumerate(groups):
         run = output / f"group{group_id}"
-        lines = [
-            "#!/usr/bin/env bash",
-            "set -euo pipefail",
-            f"task_run={shlex.quote(str(run))}",
-            'test ! -e "$task_run"',
-            'mkdir -p "$task_run"',
-            "task_scratch=''",
-            'trap \'task_status=$?; printf "%s\\n" "$task_status" > "$task_run/returncode.txt"; if test -n "$task_scratch"; then rm -rf -- "$task_scratch"; fi; exit "$task_status"\' EXIT',
-        ]
+        lines = workload_preamble(run)
         if args.node_local_cache:
             lines.extend(
                 (
@@ -214,6 +221,9 @@ def main():
         "--parsable",
         f"--array=0-{len(groups) - 1}" + (f"%{args.concurrency}" if args.concurrency is not None else ""),
         "--partition=rtx-mid",
+        # This runner requires fresh output directories and has no restart
+        # protocol. Requeueing would fail its guard and overwrite Slurm logs.
+        "--no-requeue",
         "--gres=gpu:1",
         f"--cpus-per-task={args.cpus}",
         f"--mem={args.memory_gb}G",

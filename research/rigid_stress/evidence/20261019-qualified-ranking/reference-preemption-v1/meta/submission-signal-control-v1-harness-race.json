@@ -1,0 +1,6 @@
+{
+  "initial_test_harness": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/submission-signal-control-v1",
+  "five_self_exit_cases_passed": true,
+  "external_term_test": "The initial test echoed readiness in the parent before forking the foreground sleep. Early group TERM could precede that fork, so communicate timed out at5s; the recorded shell eventually returned143. This was a test synchronization race.",
+  "correction": "The v2 test waits for readiness emitted by the foreground Python child before sending group TERM. All seven v2 cases pass."
+}
