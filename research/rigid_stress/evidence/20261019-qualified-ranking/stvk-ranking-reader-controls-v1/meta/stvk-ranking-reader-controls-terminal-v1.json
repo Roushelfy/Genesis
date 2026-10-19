@@ -1,0 +1,61 @@
+{
+  "expected": {
+    "729545_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729549_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729572_0": [
+      "FAILED",
+      "1:0"
+    ]
+  },
+  "observed": {
+    "729545_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729545_0.batch": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729545_0.0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729549_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729549_0.batch": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729549_0.0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729572_0": [
+      "FAILED",
+      "1:0"
+    ],
+    "729572_0.batch": [
+      "FAILED",
+      "1:0"
+    ],
+    "729572_0.0": [
+      "FAILED",
+      "1:0"
+    ]
+  },
+  "sacct": "729545_0|COMPLETED|0:0\n729545_0.batch|COMPLETED|0:0\n729545_0.0|COMPLETED|0:0\n729549_0|COMPLETED|0:0\n729549_0.batch|COMPLETED|0:0\n729549_0.0|COMPLETED|0:0\n729572_0|FAILED|1:0\n729572_0.batch|FAILED|1:0\n729572_0.0|FAILED|1:0\n",
+  "passed": true,
+  "dimensional_error_controls": 99,
+  "candidate_admission_controls": 30,
+  "vector_bound_cases": 2400,
+  "unqualified_reference_rejected_without_error_rows_or_ranks": true,
+  "actual_fine_errors_and_ranks_pending": true
+}

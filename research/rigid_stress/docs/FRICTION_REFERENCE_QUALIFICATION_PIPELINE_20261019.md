@@ -68,7 +68,7 @@ separately queued for the fine reference after qualification.
 |729487 /729479 | q10 reference729312, then explicit four-parent admission | Fine spatial fields; pending. |
 |729478 /729480 |729312 and729314, then explicit six-parent admission | Fine time/contact fields; pending. |
 |729513 | afterany on729479/729480 | Seven-parent preflight followed by36-comparison qualification; pending. |
-|729518 | successful qualification729513 |18 DPR/SCR/Shell q1/q9/q25 comparisons across both0.1N endpoints; pending. |
+|729539 | successful qualification729513 |18 DPR/SCR/Shell q1/q9/q25 comparisons with complete surface exports; pending replacement of cancelled729518. |
 |729519 | successful qualification729513 | Complete actual-force histories and traction data for the final figures; pending. |
 
 `afterany` allows qualification to report failed or missing upstream evidence;
@@ -101,3 +101,5 @@ retains92 compact payloads/503,395 bytes: exact worker variants, actual terminal
 positive/negative controls, target contract and immutable queued task inputs.
 Eight traction arrays and one complete force-history CSV remain on data with
 hashes. Live fine results and pending method/figure outputs are excluded.
+
+The [dimensional-error/ranking audit](STVK_METHOD_RANKING_PIPELINE_20261019.md) adds independent complete-array reductions, original candidate admission and conditional per-metric intervals. Its controls pass; final54 error rows remain pending on the qualified fine data.

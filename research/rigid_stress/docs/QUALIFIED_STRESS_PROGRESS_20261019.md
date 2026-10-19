@@ -1711,3 +1711,12 @@ Qualification729513 waits afterany on both fine field arrays and runs its own se
 The CPU-only plotting reader control729516 passes all five checks and retains1600 history rows/eight traction arrays on data. Only optional GPU-inventory metadata changes; scientific extraction and all force samples remain unchanged. No original reference, material/load parameter, physical gate or tolerance is modified.
 
 The [qualification-pipeline packet](../evidence/20261019-qualified-ranking/friction-qualification-pipeline-v1/README.md) retains92 payloads/503,395 bytes for terminal controls and immutable queued inputs. Original arrays, candidate fields and live fine histories stay on data; no final qualified field or ranking is fabricated from the controls.
+
+
+## Independent dimensional-error and ranking preparation
+
+[Reader729545](STVK_METHOD_RANKING_PIPELINE_20261019.md) passes99 checks, reproduces all81 published dimensional normal-error rows, directly reintegrates full surface/resultant arrays and independently checks raw invariants/retained peak samples.2400 independently perturbed vector norms verify the conditional interval mathematics, without claiming physical/statistical bounds. Candidate reader729549 passes30 original-history/window/frame checks for all six requested fields and preserves the actual failed every-step DPR/SCR cost runs. Negative729572 admits no rows/ranks from an unqualified reference.
+
+Pending729518 is cancelled before execution; replacement729539 retains18 comparisons and additionally exports q9/q25 full surface tensors for independent outer/inner errors. Final audit729835 waits on those fields, requires explicit fine-reference success and writes54 dimensional rows/eighteen per-metric ranking records only after every original admission, field/mesh identity, full-array and integration check passes. Contract/source hashes are fixed before fine results; interval overlap remains unresolved. Live fine data, final errors/ranks and final figures are still pending.
+
+The [ranking-reader packet](../evidence/20261019-qualified-ranking/stvk-ranking-reader-controls-v1/README.md) preserves83 payloads/492,556 bytes. The queued rank worker's three core module hashes match the predeclared contract. Raw original arrays, both physical every-step failures and all active fine outputs remain in place on data; no final physical rank is claimed from the controls.
