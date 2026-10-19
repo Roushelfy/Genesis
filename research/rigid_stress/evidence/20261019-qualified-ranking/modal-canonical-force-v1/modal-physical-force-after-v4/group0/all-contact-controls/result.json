@@ -1,0 +1,490 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-191",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729265",
+      "SLURM_ARRAY_JOB_ID": "729265",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "cases": [
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.001,
+      "speed_scale": 0.0,
+      "friction": 0.0,
+      "maximum_velocity_error": 4.4181238528784306e-17,
+      "maximum_condensed_velocity_difference": 4.426728481267538e-17,
+      "newton_iterations": 3,
+      "warm_newton_iterations": 3,
+      "modal_fixed_point_iterations": 5,
+      "modal_full_velocity_error": 7.228999300210037e-15,
+      "modal_physical_momentum_residual": 2.9130677229958498e-15,
+      "pcg_iterations": [
+        2,
+        2
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.001,
+      "speed_scale": 0.0,
+      "friction": 0.3,
+      "maximum_velocity_error": 3.731010726065742e-16,
+      "maximum_condensed_velocity_difference": 3.731179756113954e-16,
+      "newton_iterations": 6,
+      "warm_newton_iterations": 1,
+      "modal_fixed_point_iterations": 1,
+      "modal_full_velocity_error": 1.194790794079026e-16,
+      "modal_physical_momentum_residual": 6.785568488819785e-17,
+      "pcg_iterations": [
+        5,
+        5,
+        4,
+        5,
+        5
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.001,
+      "speed_scale": 1e-05,
+      "friction": 0.0,
+      "maximum_velocity_error": 4.4230366439725055e-17,
+      "maximum_condensed_velocity_difference": 4.4265941823509736e-17,
+      "newton_iterations": 3,
+      "warm_newton_iterations": 3,
+      "modal_fixed_point_iterations": 4,
+      "modal_full_velocity_error": 7.157994222307604e-15,
+      "modal_physical_momentum_residual": 1.9034769034653635e-15,
+      "pcg_iterations": [
+        2,
+        2
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.001,
+      "speed_scale": 1e-05,
+      "friction": 0.3,
+      "maximum_velocity_error": 4.8914458638041336e-17,
+      "maximum_condensed_velocity_difference": 1.1851908614680245e-14,
+      "newton_iterations": 6,
+      "warm_newton_iterations": 5,
+      "modal_fixed_point_iterations": 16,
+      "modal_full_velocity_error": 2.71381902410342e-15,
+      "modal_physical_momentum_residual": 1.4685708340822096e-15,
+      "pcg_iterations": [
+        4,
+        5,
+        5,
+        5,
+        5
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.001,
+      "speed_scale": 0.001,
+      "friction": 0.0,
+      "maximum_velocity_error": 8.673617379884035e-19,
+      "maximum_condensed_velocity_difference": 4.336808689942018e-19,
+      "newton_iterations": 3,
+      "warm_newton_iterations": 3,
+      "modal_fixed_point_iterations": 5,
+      "modal_full_velocity_error": 4.692427002517263e-16,
+      "modal_physical_momentum_residual": 1.9766039364757111e-16,
+      "pcg_iterations": [
+        2,
+        3
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.001,
+      "speed_scale": 0.001,
+      "friction": 0.3,
+      "maximum_velocity_error": 4.336808689942018e-19,
+      "maximum_condensed_velocity_difference": 7.047314121155779e-19,
+      "newton_iterations": 4,
+      "warm_newton_iterations": 4,
+      "modal_fixed_point_iterations": 6,
+      "modal_full_velocity_error": 2.549392988382415e-15,
+      "modal_physical_momentum_residual": 7.537788364841057e-16,
+      "pcg_iterations": [
+        3,
+        3,
+        2
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.002,
+      "speed_scale": 0.0,
+      "friction": 0.0,
+      "maximum_velocity_error": 7.703256435509509e-17,
+      "maximum_condensed_velocity_difference": 7.706347269363398e-17,
+      "newton_iterations": 3,
+      "warm_newton_iterations": 3,
+      "modal_fixed_point_iterations": 7,
+      "modal_full_velocity_error": 1.0499549363621186e-15,
+      "modal_physical_momentum_residual": 4.469649051216074e-16,
+      "pcg_iterations": [
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.002,
+      "speed_scale": 0.0,
+      "friction": 0.3,
+      "maximum_velocity_error": 2.353945218001169e-15,
+      "maximum_condensed_velocity_difference": 2.354011054121651e-15,
+      "newton_iterations": 8,
+      "warm_newton_iterations": 1,
+      "modal_fixed_point_iterations": 1,
+      "modal_full_velocity_error": 2.573624906937466e-16,
+      "modal_physical_momentum_residual": 2.420137562837373e-16,
+      "pcg_iterations": [
+        5,
+        5,
+        5,
+        5,
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.002,
+      "speed_scale": 1e-05,
+      "friction": 0.0,
+      "maximum_velocity_error": 7.630072788866737e-17,
+      "maximum_condensed_velocity_difference": 7.64836870052743e-17,
+      "newton_iterations": 3,
+      "warm_newton_iterations": 3,
+      "modal_fixed_point_iterations": 6,
+      "modal_full_velocity_error": 6.161453183599341e-16,
+      "modal_physical_momentum_residual": 2.5029832997129e-16,
+      "pcg_iterations": [
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.002,
+      "speed_scale": 1e-05,
+      "friction": 0.3,
+      "maximum_velocity_error": 6.144885219151047e-17,
+      "maximum_condensed_velocity_difference": 1.1415191979603084e-15,
+      "newton_iterations": 8,
+      "warm_newton_iterations": 5,
+      "modal_fixed_point_iterations": 22,
+      "modal_full_velocity_error": 1.8132332657919137e-15,
+      "modal_physical_momentum_residual": 1.4279742251169003e-15,
+      "pcg_iterations": [
+        4,
+        5,
+        5,
+        5,
+        5,
+        6,
+        5
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.002,
+      "speed_scale": 0.001,
+      "friction": 0.0,
+      "maximum_velocity_error": 7.166576360129184e-17,
+      "maximum_condensed_velocity_difference": 7.182839392716467e-17,
+      "newton_iterations": 3,
+      "warm_newton_iterations": 3,
+      "modal_fixed_point_iterations": 7,
+      "modal_full_velocity_error": 1.4512046078718477e-15,
+      "modal_physical_momentum_residual": 6.240954532745143e-16,
+      "pcg_iterations": [
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 18,
+      "contact_velocity_dofs": 12,
+      "dt": 0.002,
+      "speed_scale": 0.001,
+      "friction": 0.3,
+      "maximum_velocity_error": 4.5077331624343575e-15,
+      "maximum_condensed_velocity_difference": 4.507624742217109e-15,
+      "newton_iterations": 4,
+      "warm_newton_iterations": 4,
+      "modal_fixed_point_iterations": 8,
+      "modal_full_velocity_error": 2.3016527919694774e-15,
+      "modal_physical_momentum_residual": 7.422402453334607e-16,
+      "pcg_iterations": [
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.001,
+      "speed_scale": 0.0,
+      "friction": 0.0,
+      "maximum_velocity_error": 9.75781955236954e-19,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 3,
+      "warm_newton_iterations": 3,
+      "modal_fixed_point_iterations": 4,
+      "modal_full_velocity_error": 5.421010862427522e-20,
+      "modal_physical_momentum_residual": 6.370196912354422e-20,
+      "pcg_iterations": [
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.001,
+      "speed_scale": 0.0,
+      "friction": 0.3,
+      "maximum_velocity_error": 2.5776906650842868e-17,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 7,
+      "warm_newton_iterations": 1,
+      "modal_fixed_point_iterations": 1,
+      "modal_full_velocity_error": 1.3552527156068805e-19,
+      "modal_physical_momentum_residual": 1.307294663579596e-19,
+      "pcg_iterations": [
+        4,
+        4,
+        5,
+        4,
+        4,
+        6
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.001,
+      "speed_scale": 1e-05,
+      "friction": 0.0,
+      "maximum_velocity_error": 9.520650327138336e-19,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 3,
+      "warm_newton_iterations": 2,
+      "modal_fixed_point_iterations": 4,
+      "modal_full_velocity_error": 1.1858461261560205e-20,
+      "modal_physical_momentum_residual": 5.721759609435465e-20,
+      "pcg_iterations": [
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.001,
+      "speed_scale": 1e-05,
+      "friction": 0.3,
+      "maximum_velocity_error": 1.2269535244708663e-14,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 6,
+      "warm_newton_iterations": 5,
+      "modal_fixed_point_iterations": 9,
+      "modal_full_velocity_error": 5.584678803660734e-17,
+      "modal_physical_momentum_residual": 5.113972028511095e-17,
+      "pcg_iterations": [
+        4,
+        4,
+        6,
+        5,
+        5
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.001,
+      "speed_scale": 0.001,
+      "friction": 0.0,
+      "maximum_velocity_error": 2.200930410145574e-17,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 3,
+      "warm_newton_iterations": 3,
+      "modal_fixed_point_iterations": 4,
+      "modal_full_velocity_error": 2.168404344971009e-19,
+      "modal_physical_momentum_residual": 6.252587110204346e-20,
+      "pcg_iterations": [
+        3,
+        2
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.001,
+      "speed_scale": 0.001,
+      "friction": 0.3,
+      "maximum_velocity_error": 5.908901840045999e-18,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 4,
+      "warm_newton_iterations": 4,
+      "modal_fixed_point_iterations": 4,
+      "modal_full_velocity_error": 1.6819499352310752e-14,
+      "modal_physical_momentum_residual": 4.663411048743675e-15,
+      "pcg_iterations": [
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.002,
+      "speed_scale": 0.0,
+      "friction": 0.0,
+      "maximum_velocity_error": 6.394700307471579e-14,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 3,
+      "warm_newton_iterations": 3,
+      "modal_fixed_point_iterations": 4,
+      "modal_full_velocity_error": 1.0842021724855044e-19,
+      "modal_physical_momentum_residual": 1.2740393824708844e-19,
+      "pcg_iterations": [
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.002,
+      "speed_scale": 0.0,
+      "friction": 0.3,
+      "maximum_velocity_error": 1.3972872338341435e-14,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 8,
+      "warm_newton_iterations": 1,
+      "modal_fixed_point_iterations": 1,
+      "modal_full_velocity_error": 7.589415207398531e-19,
+      "modal_physical_momentum_residual": 1.4695460119037634e-18,
+      "pcg_iterations": [
+        4,
+        5,
+        5,
+        5,
+        5,
+        5,
+        6
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.002,
+      "speed_scale": 1e-05,
+      "friction": 0.0,
+      "maximum_velocity_error": 6.352776581153817e-14,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 3,
+      "warm_newton_iterations": 3,
+      "modal_fixed_point_iterations": 4,
+      "modal_full_velocity_error": 1.4230153513872246e-19,
+      "modal_physical_momentum_residual": 1.0641061982320711e-19,
+      "pcg_iterations": [
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.002,
+      "speed_scale": 1e-05,
+      "friction": 0.3,
+      "maximum_velocity_error": 7.957027506506897e-18,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 8,
+      "warm_newton_iterations": 7,
+      "modal_fixed_point_iterations": 9,
+      "modal_full_velocity_error": 1.8605400558960664e-14,
+      "modal_physical_momentum_residual": 2.903951815494704e-14,
+      "pcg_iterations": [
+        4,
+        5,
+        5,
+        6,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.002,
+      "speed_scale": 0.001,
+      "friction": 0.0,
+      "maximum_velocity_error": 4.242014183496179e-14,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 3,
+      "warm_newton_iterations": 3,
+      "modal_fixed_point_iterations": 4,
+      "modal_full_velocity_error": 2.168404344971009e-19,
+      "modal_physical_momentum_residual": 2.78905074777996e-19,
+      "pcg_iterations": [
+        3,
+        3
+      ]
+    },
+    {
+      "body_dofs": 8,
+      "contact_velocity_dofs": 18,
+      "dt": 0.002,
+      "speed_scale": 0.001,
+      "friction": 0.3,
+      "maximum_velocity_error": 2.1403018246601846e-14,
+      "maximum_condensed_velocity_difference": null,
+      "newton_iterations": 4,
+      "warm_newton_iterations": 4,
+      "modal_fixed_point_iterations": 5,
+      "modal_full_velocity_error": 2.552385386378475e-14,
+      "modal_physical_momentum_residual": 8.545429497197696e-15,
+      "pcg_iterations": [
+        3,
+        4,
+        4
+      ]
+    }
+  ],
+  "passed": true
+}

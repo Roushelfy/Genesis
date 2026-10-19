@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "/mnt/home/zhaofeng/.local/share/uv/python/cpython-3.10-linux-x86_64-gnu/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/mnt/home/zhaofeng/.local/share/uv/python/cpython-3.10-linux-x86_64-gnu/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v1/analysis-source/research/rigid_stress/qipc_comparison/finite_area_shell.py", line 263, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v1/analysis-source/research/rigid_stress/qipc_comparison/finite_area_shell.py", line 69, in main
+    np.testing.assert_allclose(wrench(midpoint, force), 0, atol=1e-12)
+  File "/mnt/data/zhaofeng/venvs/genesis-shell-contact/lib/python3.10/site-packages/numpy/testing/_private/utils.py", line 1715, in assert_allclose
+    assert_array_compare(compare, actual, desired, err_msg=str(err_msg),
+  File "/mnt/data/zhaofeng/venvs/genesis-shell-contact/lib/python3.10/site-packages/numpy/testing/_private/utils.py", line 921, in assert_array_compare
+    raise AssertionError(msg)
+AssertionError: 
+Not equal to tolerance rtol=1e-07, atol=1e-12
+
+Mismatched elements: 1 / 6 (16.7%)
+Max absolute difference among violations: 8.17637894e-12
+Max relative difference among violations: inf
+ ACTUAL: array([-5.426305e-22, -3.214631e-22,  8.176379e-12,  9.060596e-20,
+       -2.286327e-21, -1.914888e-22])
+ DESIRED: array(0)
+

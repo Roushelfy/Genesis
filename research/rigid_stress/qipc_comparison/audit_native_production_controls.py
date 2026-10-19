@@ -26,12 +26,18 @@ def main():
     cli.add_argument("--output", type=Path, required=True)
     cli.add_argument("--baseline-campaign", type=Path, help="Also compare stress outputs to the original pinned cohort")
     cli.add_argument("--batches", type=int, nargs="+", default=[1, 8, 32])
+    cli.add_argument("--methods", nargs="+", choices=("rigid", "dpr", "scr"), default=["rigid", "dpr", "scr"])
+    cli.add_argument(
+        "--require-diverse", action="store_true", help="Require distinct authored conditions for every environment"
+    )
     cli.add_argument(
         "--group-indices", type=int, nargs="+", help="Explicit source groups for a separately pinned variant"
     )
     args = cli.parse_args()
+    assert "rigid" in args.methods and len(args.methods) == len(set(args.methods))
+    modes = tuple(mode for mode in MODES if mode.split("-")[0] in args.methods)
     args.output.mkdir(parents=True, exist_ok=False)
-    receipts, checks, cases = [], [], {}
+    receipts, checks, cases, diversity = [], [], {}, []
 
     def check(label, passed, **details):
         checks.append({"name": label, "passed": bool(passed), **details})
@@ -76,7 +82,7 @@ def main():
         [(1, 8, 32).index(batch) for batch in args.batches] if args.group_indices is None else args.group_indices
     )
     for group, batch in zip(group_indices, args.batches):
-        for mode in MODES:
+        for mode in modes:
             root = args.campaign / f"group{group}" / mode
             start = json.loads((root / "start.json").read_text())
             receipts.append(file_id(root / "start.json"))
@@ -118,7 +124,17 @@ def main():
                 )
             cases[batch, mode] = data
         baseline = cases[batch, "rigid-max"]
-        for mode in MODES[1:]:
+        bank = Path(start["conditions"]["path"])
+        assert file_id(bank) == start["conditions"]
+        receipts.append(file_id(bank))
+        with np.load(bank) as saved:
+            authored = np.column_stack((saved["position"], saved["quaternion"], saved["radius"], saved["friction"]))
+        selected = authored[np.arange(batch) % len(authored)]
+        distinct = len(np.unique(selected, axis=0))
+        diversity.append({"batch": batch, "bank_conditions": len(authored), "distinct_authored_conditions": distinct})
+        if args.require_diverse:
+            check(f"B{batch}/distinct_authored_conditions", distinct == batch, actual=distinct, required=batch)
+        for mode in modes[1:]:
             data = cases[batch, mode]
             compare_motion(f"B{batch}/{mode}-vs-rigid", data["motion"], baseline["motion"])
             check(
@@ -126,6 +142,8 @@ def main():
                 np.array_equal(data["contact_counts"], baseline["contact_counts"]),
             )
         for method in ("dpr", "scr"):
+            if method not in args.methods:
+                continue
             compare_peak(
                 f"B{batch}/{method}/max-vs-full",
                 cases[batch, method + "-max"]["peak_pa"],
@@ -136,7 +154,7 @@ def main():
         # only condition0; compare that condition in B8, not the other seven.
         ids = np.array([0]) if reference_batch == 1 else np.arange(batch)
         reference_ids = ids % reference_batch
-        for mode in MODES:
+        for mode in modes:
             a, b = cases[batch, mode], cases[reference_batch, mode]
             label = f"B{batch}-vs-B{reference_batch}/{mode}"
             compare_motion(label, a["motion"][:, ids], b["motion"][:, reference_ids])
@@ -159,7 +177,7 @@ def main():
         assert all(batch in (1, 8, 32) for batch in args.batches), "Original baseline covers only B1/B8/B32"
         for batch in args.batches:
             group = (1, 8, 32).index(batch)
-            for mode in MODES[1:]:
+            for mode in modes[1:]:
                 path = args.baseline_campaign / f"group{group}" / mode / "trajectory.npz"
                 receipts.append(file_id(path))
                 with np.load(path) as saved:
@@ -188,6 +206,9 @@ def main():
             "recorded_scene_steps_per_case": 1200,
             "case_count": len(cases),
             "batches": args.batches,
+            "methods": args.methods,
+            "unaudited_methods": [method for method in ("dpr", "scr") if method not in args.methods],
+            "condition_diversity": diversity,
             "replay_timing_admitted": False,
             "physical_reference_qualified": False,
             "scope": "Complete motion/errno/peak paths and11 full-field snapshots per full-output run. Condition-matched batches and pure-rigid comparisons use fixed predeclared thresholds. Replay timing and physical continuum accuracy are separate claims.",

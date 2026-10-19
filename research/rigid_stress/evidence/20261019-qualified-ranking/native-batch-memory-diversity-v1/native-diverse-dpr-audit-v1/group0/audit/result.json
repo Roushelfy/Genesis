@@ -1,0 +1,304 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-191",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729283",
+      "SLURM_ARRAY_JOB_ID": "729281",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "passed": true,
+  "checks": [
+    {
+      "name": "B128/rigid-max/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B128/rigid-max/errno",
+      "passed": true
+    },
+    {
+      "name": "B128/rigid-max/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr-max/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr-max/errno",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr-max/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr-max/every_step_valid",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr-max/peaks_finite_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr-full/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr-full/errno",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr-full/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr-full/every_step_valid",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr-full/peaks_finite_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr-full/full_finite",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr-full/independent_mises",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr-full/full_max_reduction",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr-max-vs-rigid/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B128/dpr-max-vs-rigid/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B128/dpr-max-vs-rigid/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B128/dpr-max-vs-rigid/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B128/dpr-max-vs-rigid/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B128/dpr-max-vs-rigid/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B128/dpr-max/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr-full-vs-rigid/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B128/dpr-full-vs-rigid/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B128/dpr-full-vs-rigid/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B128/dpr-full-vs-rigid/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B128/dpr-full-vs-rigid/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B128/dpr-full-vs-rigid/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B128/dpr-full/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B128/dpr/max-vs-full",
+      "passed": true,
+      "maximum_absolute_error_pa": 3.236753400415182e-06,
+      "maximum_budget_ratio": 0.0011917515650834533,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-conformance128-512-v1/group0/rigid-max/start.json",
+      "bytes": 1798,
+      "sha256": "ab738f327ef8d8731af838423d92e85b6219b0b30df8511075b95a0fd579bdec"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-conformance128-512-v1/group0/rigid-max/trajectory.npz",
+      "bytes": 28676903,
+      "sha256": "1eb21b793d3dbd1af500da2bdc05bbb01ea063044e32c79b892428c560842084"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-conformance128-512-v1/group0/dpr-max/start.json",
+      "bytes": 1794,
+      "sha256": "ab5562cab543dea3fe5ffa9ca137c58689847a1fce00f938744f332c050a5234"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-conformance128-512-v1/group0/dpr-max/trajectory.npz",
+      "bytes": 29675264,
+      "sha256": "3ae4e7e460e5fb88d65a6391105f4ff5b68c0550bda29e9aca444c317be5f672"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-conformance128-512-v1/group0/dpr-full/start.json",
+      "bytes": 1796,
+      "sha256": "555917b4bcc5cafe38d7b3890d2bb9ed5ca9aa354a74c9cd4462f9dc91a1ca7c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-conformance128-512-v1/group0/dpr-full/trajectory.npz",
+      "bytes": 160671162,
+      "sha256": "37914cb11637191ff129bc909f0581f91bd8e3167509542725ebcddecb61071b"
+    }
+  ],
+  "recorded_scene_steps_per_case": 1200,
+  "case_count": 3,
+  "batches": [
+    128
+  ],
+  "methods": [
+    "rigid",
+    "dpr"
+  ],
+  "unaudited_methods": [
+    "scr"
+  ],
+  "replay_timing_admitted": false,
+  "physical_reference_qualified": false,
+  "scope": "Complete motion/errno/peak paths and11 full-field snapshots per full-output run. Condition-matched batches and pure-rigid comparisons use fixed predeclared thresholds. Replay timing and physical continuum accuracy are separate claims."
+}

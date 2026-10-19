@@ -1,0 +1,389 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-191",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729409",
+      "SLURM_ARRAY_JOB_ID": "729409",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "passed": true,
+  "rows": [
+    {
+      "batch": 2048,
+      "mode": "rigid",
+      "sampled_process_peak_mib": 4004,
+      "sample_count": 443,
+      "process_max_rss_kib": 2907080,
+      "torch_peak_allocated_bytes": 7485952,
+      "native_buffer_bytes": 0,
+      "memory_gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+      "primary_gpu_uuid": "GPU-027c68d1-0fe4-6722-f1a4-bb03814e3794",
+      "same_physical_gpu_as_primary": false,
+      "primary_env_scene_steps_per_s": 443437.68868289946
+    },
+    {
+      "batch": 2048,
+      "mode": "dpr-max",
+      "sampled_process_peak_mib": 4724,
+      "sample_count": 482,
+      "process_max_rss_kib": 2861512,
+      "torch_peak_allocated_bytes": 7485952,
+      "native_buffer_bytes": 516429942,
+      "memory_gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+      "primary_gpu_uuid": "GPU-027c68d1-0fe4-6722-f1a4-bb03814e3794",
+      "same_physical_gpu_as_primary": false,
+      "primary_env_scene_steps_per_s": 207430.10922491457
+    },
+    {
+      "batch": 2048,
+      "mode": "dpr-full",
+      "sampled_process_peak_mib": 4948,
+      "sample_count": 405,
+      "process_max_rss_kib": 2752332,
+      "torch_peak_allocated_bytes": 7485952,
+      "native_buffer_bytes": 736630902,
+      "memory_gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+      "primary_gpu_uuid": "GPU-027c68d1-0fe4-6722-f1a4-bb03814e3794",
+      "same_physical_gpu_as_primary": false,
+      "primary_env_scene_steps_per_s": 203983.0882602886
+    },
+    {
+      "batch": 2048,
+      "mode": "scr-max",
+      "sampled_process_peak_mib": 6422,
+      "sample_count": 729,
+      "process_max_rss_kib": 2829316,
+      "torch_peak_allocated_bytes": 7485952,
+      "native_buffer_bytes": 2167891566,
+      "memory_gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+      "primary_gpu_uuid": "GPU-027c68d1-0fe4-6722-f1a4-bb03814e3794",
+      "same_physical_gpu_as_primary": false,
+      "primary_env_scene_steps_per_s": 80556.67358692914
+    },
+    {
+      "batch": 2048,
+      "mode": "scr-full",
+      "sampled_process_peak_mib": 6870,
+      "sample_count": 709,
+      "process_max_rss_kib": 2815284,
+      "torch_peak_allocated_bytes": 7485952,
+      "native_buffer_bytes": 2388092526,
+      "memory_gpu_uuid": "GPU-46c3f10c-d08c-0f25-24da-234c496d71fb",
+      "primary_gpu_uuid": "GPU-027c68d1-0fe4-6722-f1a4-bb03814e3794",
+      "same_physical_gpu_as_primary": false,
+      "primary_env_scene_steps_per_s": 80287.68730933165
+    },
+    {
+      "batch": 8192,
+      "mode": "rigid",
+      "sampled_process_peak_mib": 9340,
+      "sample_count": 644,
+      "process_max_rss_kib": 3788708,
+      "torch_peak_allocated_bytes": 29489664,
+      "native_buffer_bytes": 0,
+      "memory_gpu_uuid": "GPU-a42d9ecc-899d-13f4-6348-ff0be2cd2bfd",
+      "primary_gpu_uuid": "GPU-b42a18b2-46a1-13c7-9b93-1611106f37bb",
+      "same_physical_gpu_as_primary": false,
+      "primary_env_scene_steps_per_s": 783736.979073238
+    },
+    {
+      "batch": 8192,
+      "mode": "dpr-max",
+      "sampled_process_peak_mib": 12108,
+      "sample_count": 979,
+      "process_max_rss_kib": 4617556,
+      "torch_peak_allocated_bytes": 29489664,
+      "native_buffer_bytes": 1924472949,
+      "memory_gpu_uuid": "GPU-a42d9ecc-899d-13f4-6348-ff0be2cd2bfd",
+      "primary_gpu_uuid": "GPU-b42a18b2-46a1-13c7-9b93-1611106f37bb",
+      "same_physical_gpu_as_primary": false,
+      "primary_env_scene_steps_per_s": 280707.70930872805
+    },
+    {
+      "batch": 8192,
+      "mode": "dpr-full",
+      "sampled_process_peak_mib": 12940,
+      "sample_count": 879,
+      "process_max_rss_kib": 4458752,
+      "torch_peak_allocated_bytes": 29489664,
+      "native_buffer_bytes": 2805276789,
+      "memory_gpu_uuid": "GPU-a42d9ecc-899d-13f4-6348-ff0be2cd2bfd",
+      "primary_gpu_uuid": "GPU-b42a18b2-46a1-13c7-9b93-1611106f37bb",
+      "same_physical_gpu_as_primary": false,
+      "primary_env_scene_steps_per_s": 275221.62792385387
+    },
+    {
+      "batch": 8192,
+      "mode": "scr-max",
+      "sampled_process_peak_mib": 21902,
+      "sample_count": 1690,
+      "process_max_rss_kib": 4675520,
+      "torch_peak_allocated_bytes": 29489664,
+      "native_buffer_bytes": 8452226670,
+      "memory_gpu_uuid": "GPU-a42d9ecc-899d-13f4-6348-ff0be2cd2bfd",
+      "primary_gpu_uuid": "GPU-b42a18b2-46a1-13c7-9b93-1611106f37bb",
+      "same_physical_gpu_as_primary": false,
+      "primary_env_scene_steps_per_s": 110557.52658676614
+    },
+    {
+      "batch": 8192,
+      "mode": "scr-full",
+      "sampled_process_peak_mib": 20270,
+      "sample_count": 1685,
+      "process_max_rss_kib": 4651020,
+      "torch_peak_allocated_bytes": 29489664,
+      "native_buffer_bytes": 9333030510,
+      "memory_gpu_uuid": "GPU-a42d9ecc-899d-13f4-6348-ff0be2cd2bfd",
+      "primary_gpu_uuid": "GPU-b42a18b2-46a1-13c7-9b93-1611106f37bb",
+      "same_physical_gpu_as_primary": false,
+      "primary_env_scene_steps_per_s": 110004.62441144441
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/source.json",
+      "bytes": 154944,
+      "sha256": "1f6609f96449f6a3b62f4aca4bdd6f892778c911384510f763fc65ea3068a62d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-scaling2048-8192-v1/source.json",
+      "bytes": 154944,
+      "sha256": "1f6609f96449f6a3b62f4aca4bdd6f892778c911384510f763fc65ea3068a62d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-scaling2048-8192-audit-v1/group0/audit/result.json",
+      "bytes": 17640,
+      "sha256": "3b47601e8e998c21e6407f84897f63d0e8cc01b7aaffb6535b093f8010a5fa16"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-b2048-b8192-audit-v1/group0/audit/result.json",
+      "bytes": 40271,
+      "sha256": "5f74a0d2a3749c922e4b8cce3935e606c7dea3b0895705d0bea4e84b2ca0ec98"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/rigid.returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/rigid/result.json",
+      "bytes": 67156,
+      "sha256": "12f8d9a4ae8f0e3021c11de65846d58c8c9413862f907586755a8d170c05c8c7"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/rigid/benchmark.json",
+      "bytes": 26333244,
+      "sha256": "7ffe953f3dcf52b12d550255d71eb560c06ea438cafadc06e4c2fb748ceea866"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-scaling2048-8192-v1/group0/rigid.json",
+      "bytes": 26334048,
+      "sha256": "e9c4e6b287fc63ffff7cf0d78a296d1f263704474b4ad500226e689f2f37f926"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/dpr-max.returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/dpr-max/result.json",
+      "bytes": 72915,
+      "sha256": "72cd21692b39dabae6c2ba2ae45ae0129f3888635194bfceee74e4016a078c92"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/dpr-max/benchmark.json",
+      "bytes": 63557872,
+      "sha256": "ec51dc06c493cc0c08cfdfa716702fded948d3155d9b070c064b8d4973c11f60"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-scaling2048-8192-v1/group0/dpr-max.json",
+      "bytes": 63631052,
+      "sha256": "23d90ea59b6682cd4e15f65cae3e26855e3fee458088229b0b5ac3bac2caf0c6"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/dpr-full.returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/dpr-full/result.json",
+      "bytes": 61597,
+      "sha256": "500efc91a4e1de3514dd21787ef59a155358eccfcbff3ac21c89ef4440831c02"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/dpr-full/benchmark.json",
+      "bytes": 63568918,
+      "sha256": "7bd1663221771895f89a405881fe6a92c00cf0f794b006a10752615de0113939"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-scaling2048-8192-v1/group0/dpr-full.json",
+      "bytes": 63668112,
+      "sha256": "0f76bbe54e83248acf2e98050769d5db4e19da67f657c613587df8b4614b5215"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/scr-max.returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/scr-max/result.json",
+      "bytes": 109292,
+      "sha256": "fd1c4d41864caddd4cca6b0513085c3f64016866fa626869175a24be306841da"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/scr-max/benchmark.json",
+      "bytes": 64014357,
+      "sha256": "14a1c5e8ad1ca13caf330e07e026aa98021c87b412cb022bb8271fff9beabdd5"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-scaling2048-8192-v1/group0/scr-max.json",
+      "bytes": 64054092,
+      "sha256": "2318c8cc2ca23e6633c8484dbf6020fd3bc7287202a10508eaa6903c737a1e4a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/scr-full.returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/scr-full/result.json",
+      "bytes": 106307,
+      "sha256": "bda14d4974f1722059357259c170a525a43f145a65e8f53fce11e3bc861bdfd8"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group0/scr-full/benchmark.json",
+      "bytes": 64016922,
+      "sha256": "102f595f797aff23c41cc0acbaab59e1f0c033823a17b28ae11f25dcc1eac945"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-scaling2048-8192-v1/group0/scr-full.json",
+      "bytes": 64052427,
+      "sha256": "05ed2f0607df0273d6039eba5aec40eb7ffef7b4f919f4edac55bb8c7d06c508"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/rigid.returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/rigid/result.json",
+      "bytes": 96846,
+      "sha256": "16b4e8bb4f394ce3a8593402992b22c2dba4dc77ea914ea506d2f07146477fb6"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/rigid/benchmark.json",
+      "bytes": 105242942,
+      "sha256": "ef1caea07b153c1d6e17eacdc4a66a8fd32dede2e12da74274bd8c48bf6135eb"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-scaling2048-8192-v1/group1/rigid.json",
+      "bytes": 105243744,
+      "sha256": "2f579d6d16172b64712b9192d199b22c804ba214db441157f52509a9f76e48e4"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/dpr-max.returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/dpr-max/result.json",
+      "bytes": 147168,
+      "sha256": "49453f826693b1b8c25394cf0ca7bb180d68a229faf77f9a95660258e63b81fe"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/dpr-max/benchmark.json",
+      "bytes": 254686415,
+      "sha256": "1067d13a5f507b1ab71ab22c946eadb207cab4e10254ab21f47d62c1b0ba8518"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-scaling2048-8192-v1/group1/dpr-max.json",
+      "bytes": 254820855,
+      "sha256": "d656884d738cf81826e65116513b86f30d6aeb8bdb9da671e78c36923de980f0"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/dpr-full.returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/dpr-full/result.json",
+      "bytes": 132202,
+      "sha256": "22a37b4ff387cb77ca152f81d9c1534242520b9f31c47b4fd59684bf886703fb"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/dpr-full/benchmark.json",
+      "bytes": 254692336,
+      "sha256": "17298f63e71e8958f37b5b5bb0dd26e1dd1473e5bec41891682cd97d3ae14246"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-scaling2048-8192-v1/group1/dpr-full.json",
+      "bytes": 254866632,
+      "sha256": "110b4e28ce4b8dd55200285bb1397bc6d741fc39d43401c8b7f9d337b7846428"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/scr-max.returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/scr-max/result.json",
+      "bytes": 252799,
+      "sha256": "22df0181bc225d0b4a3c875fedc7924a33e28b9a3d156f7f2047d11c77c156ec"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/scr-max/benchmark.json",
+      "bytes": 255642575,
+      "sha256": "8f9780d90d6b7237b0720a81b7dd50d3f3ed4bd371aa98cac18565dfa60ce5fe"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-scaling2048-8192-v1/group1/scr-max.json",
+      "bytes": 255809088,
+      "sha256": "81d2adf0b348c2f866364cc6c2bcf875438ea0601002eb8b2a84057830029569"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/scr-full.returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/scr-full/result.json",
+      "bytes": 251997,
+      "sha256": "e2b480ca9e3a6f36e5428c2066ed6f98835a9de631abdc6eacb3725caa93ea31"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-memory2048-8192-v1/group1/scr-full/benchmark.json",
+      "bytes": 255654123,
+      "sha256": "93eaf55a041b2eeb3abdfa16dbc372c8de657fa4ea1dde7cba70d97fc7e3bdcc"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-scaling2048-8192-v1/group1/scr-full.json",
+      "bytes": 255826231,
+      "sha256": "83233007b7c49ae71f526c1380928a93b19075dd6de44046b9a0fedcfa1eac24"
+    }
+  ],
+  "conformance_checks": 159,
+  "source_revision": "1ff39b0775200120737225fdfb8631c9b1fc5fa7",
+  "source_files_rehashed": 858,
+  "physical_error_qualified": false,
+  "whole_goal_complete": false,
+  "scope": "Configuration-matched separate timing, complete conformance and fresh-process GPU memory. Sampled NVIDIA process peaks include non-Torch allocations but can miss brief peaks at requested0.1s cadence plus command latency. Profile rates are intrusive diagnostics; displayed throughput is exclusively from the primary timing audit. This repeated-condition bank is not diverse-input capacity or physical accuracy qualification."
+}

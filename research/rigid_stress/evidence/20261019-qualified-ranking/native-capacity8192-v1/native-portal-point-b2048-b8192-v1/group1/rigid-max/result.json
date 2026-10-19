@@ -1,0 +1,49 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-255",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729291",
+      "SLURM_ARRAY_JOB_ID": "729291",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-f30bd82d-756d-28ed-24af-a6dec8bbf9bc, 00000000:C0:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "passed": true,
+  "checks": {
+    "finite_motion": true,
+    "every_step_errno_zero": true,
+    "all_environments_retained": true
+  },
+  "method": "rigid",
+  "observed_stress": false,
+  "effective_rigid_post_fusion": false,
+  "output_mode": "max",
+  "envs": 8192,
+  "steps": 1200,
+  "warmup": 900,
+  "dt_s": 0.01,
+  "substeps": 1,
+  "resets": 8192,
+  "conditions": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+    "bytes": 5226,
+    "sha256": "1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa"
+  },
+  "trajectory": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-b2048-b8192-v1/group1/rigid-max/trajectory.npz",
+    "bytes": 15527284,
+    "sha256": "b8d8307fa1fc82b14a793f85c0bce02bbed246f2fa4f39897211f1f288cc0fd3"
+  },
+  "stress_configuration": null,
+  "intrinsic_workspace_contacts": null,
+  "replay": null,
+  "physical_reference_qualified": false,
+  "scope": "Intrusive motion/output control; recording cost is not primary production throughput."
+}

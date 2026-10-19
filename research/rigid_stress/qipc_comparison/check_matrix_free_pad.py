@@ -66,9 +66,22 @@ def main():
                     np.testing.assert_allclose(result["velocity"], expected, rtol=0, atol=1e-11)
                     np.testing.assert_allclose(warm_result["velocity"], expected, rtol=0, atol=1e-11)
                     np.testing.assert_allclose(modal_result["velocity"], expected, rtol=0, atol=1e-11)
-                    direct_body = free + factor.solve(jacobian.T @ (dt * modal_result["force"]).reshape(-1))
+                    # Preserve the original algebraic response-reuse identity
+                    # for its actual RHS. The canonical physical force is
+                    # evaluated at the returned full velocity, with a separate
+                    # independently recomputed momentum bound below.
+                    direct_body = free + factor.solve(jacobian.T @ modal_result["response_impulse"].reshape(-1))
                     np.testing.assert_allclose(modal_result["full_velocity"], direct_body, rtol=0, atol=1e-14)
                     np.testing.assert_allclose(modal_result["full_velocity"], expected_body, rtol=0, atol=1e-11)
+                    physical_velocity = (modal.jacobian @ modal_result["full_velocity"]).reshape(-1, 3)
+                    _, physical_impulse, _ = potential(physical_velocity, gap, sign, area, previous, dt, 1e9, friction)
+                    np.testing.assert_array_equal(modal_result["force"], physical_impulse / dt)
+                    momentum = operator @ (
+                        modal_result["full_velocity"] - free
+                    ) - jacobian.T @ physical_impulse.reshape(-1)
+                    momentum_norm = np.sqrt(momentum @ factor.solve(momentum))
+                    assert momentum_norm <= modal_result["whitened_momentum_tolerance"]
+                    np.testing.assert_allclose(modal_result["force"], impulse / dt, rtol=1e-8, atol=1e-10)
                     np.testing.assert_allclose(result["force"], impulse / dt, rtol=1e-8, atol=1e-10)
                     assert result["point_equation_residual"] <= 1e-11
                     condensed_error = None
@@ -93,10 +106,14 @@ def main():
                             "modal_full_velocity_error": float(
                                 np.max(np.abs(modal_result["full_velocity"] - expected_body))
                             ),
+                            "modal_physical_momentum_residual": float(momentum_norm),
                             "pcg_iterations": result["linear_iterations"],
                         }
                     )
-    write_json(args.output / "result.json", {"identity": runtime_identity(), "cases": rows, "passed": True})
+    write_json(
+        args.output / "result.json",
+        {"identity": runtime_identity(require_gpu_inventory=False), "cases": rows, "passed": True},
+    )
 
 
 if __name__ == "__main__":

@@ -1,0 +1,35 @@
+{
+  "scope": "Canonical full-velocity physical force evaluation variant with unchanged material/mesh/pad/friction/loading/timestep and all prior gates. New400-step125um two/three-wall references and exact fine q6/half-dt controls. Original rejected/preempted outputs stay in place; no live source is edited.",
+  "coarse_control_receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-physical-force-coarse-v1/group0/detachment-controls/result.json",
+      "sha256": "92bf335cc4b206a3410c343431a7bd492d5055187955cccdc22d2cb820f1685b",
+      "bytes": 7491
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-physical-force-coarse-v1/group0/contact-analytic/result.json",
+      "sha256": "a9d8e884a3b28c228942bc264ae4c4e165690ad88e06e085c6259c305a3fa2ba",
+      "bytes": 14234
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-physical-force-coarse-v1/group0/analytic/result.json",
+      "sha256": "4db82ca5e410a7a782279465175f5cec21590b9240b1dac9eb2b6240a5a8cd1f",
+      "bytes": 1579
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-physical-force-coarse-v1/group0/reference/result.json",
+      "sha256": "728bbeeebccf9e4d465e384c5c595d86513c3933bf7ad9db16c921595cf9d386",
+      "bytes": 1427
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-physical-force-coarse-v1/group0/moment/result.json",
+      "sha256": "8b8185476d8c2486e70017fb7bf5b18c1a2edf05ca33abb5c03bf83ab042599c",
+      "bytes": 3378
+    }
+  ],
+  "coarse_field_target": 1e-08,
+  "fine_field_target": 0.02,
+  "fine_raw_peak_target": 0.05,
+  "newton_or_force_gates_relaxed": false,
+  "engine": "1ff39b0775200120737225fdfb8631c9b1fc5fa7"
+}
