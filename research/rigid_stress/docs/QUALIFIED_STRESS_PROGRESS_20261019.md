@@ -856,6 +856,19 @@ initializer; the actual loaded extension hash is preserved in
 directly. [Cholespy's primary documentation](https://github.com/rgl-epfl/cholespy)
 describes the bundled CHOLMOD CPU factor/solve and double-precision interface.
 
+The250um CHOLMOD retry (`727759`) subsequently completes in15m01s. Factorization
+takes860.91s, measured process peak RSS is14,159,820KiB and the elastic residual
+is3.25e-10. Its complete field is retained with SHA256
+`ac36659dad010246bafef5a5da33eb2e7210091ee5a4fa00c22f67f353f4df92`.
+At fixed two-layer thickness,500-to250um changes complete tangent/membrane/
+bending by3.070%/2.434%/1.613%, while raw Mises/tension change0.549%/0.152%.
+The memory obstruction is resolved, but surface qualification still fails the
+predeclared2% field target. The next controlled meshes (`727791`) retain the
+same geometry/global spacing:125um/two layers has440112 tetrahedra, and
+250um/three layers has301248. Their two isolated factor/comparison jobs
+`finite-area-next-refinement-v1` (`727797`) use the validated optional backend;
+submission alone supplies no new convergence evidence.
+
 `finite-area-angular-control-v1` (`727758`) passes independent triangle
 quadrature moments and exact Shell/solid fiber controls. Increasing9 to25
 points per reference face changes the reported relative tangent errors by
@@ -864,3 +877,128 @@ and bending by6.43e-5. The25-point differences against the three-layer reference
 are9.514%/9.480%/32.322% tangent,7.404%/7.431%/8.390% membrane and
 9.077%/8.999%/43.419% bending. Raw peaks remain unchanged. These are convergence
 checks of comparison metrics, separately from reference surface discretization.
+
+## Physical integration measure and direct contact controls
+
+The optional `contact_fem_exact_columns --physical-volume` integrates the
+piecewise affine reference tetrahedra's actual Jacobian, including changes
+within each material column. It verifies the total against the independent
+sum of tetrahedron volumes. Analytic tapered/sheared prisms with both uniform
+and graded wall partitions pass at1/3/9/25 angular points (`727771`). The
+three-layer reference volume is3.7403704039650184e-6m3. With25 angular points,
+DPR/SCR/Shell tangent differences become9.5318%/9.4972%/32.4403%; all spatial
+points and raw extrema remain included. The old normalized-area results stay
+available for provenance. Membrane/bending resultants still use the explicitly
+declared500um normal-material coordinate and physical midpoint areas.
+
+`contact_qp` now exposes the independently certified dual and whitened-primal
+forms for direct use. Eight-spring analytic controls check exact forces and
+free rigid coordinates, including duplicate constraints whose multiplier
+split is nonunique (`727769`). Replaying the retained coarse operator agrees
+with its earlier certificate. `plate_contact_fem --qp-solver-path` starts from
+the original candidate constraints, refines exact quadratic gaps and freshly
+checks the complete elastic solution. It does not rely on a previously fitted
+contact solution or remove any hard-contact admission gate.
+
+The direct hard polar-land pilot (`727770`) passes discrete contact and elastic
+equations at0.1N: residual9.83e-13, force-weighted complementarity7.55e-13 and
+plate travel2.526e-7m. However, both fully closed quadratic-face areas are zero;
+99% force radii are2.036mm/1.871mm and the load is concentrated near a ring.
+Flattening the polar geometry has not itself produced resolved area contact.
+Keep this case distinct from prescribed distributed pressure.
+
+The original hard smooth-egg refinement also remains unqualified. At25 angular
+points,50-to25um changes complete tangent stress11.440% with raw peaks changing
+14.83%/18.24% (`727765`). A strict solved contact certificate resolves the
+optimization failure, not the spatial field error.
+
+## Predeclared physical compliant-pad case
+
+The additional [pad declaration](COMPLIANT_PAD_DECLARATION.md) fixes the
+compression-only stiffness at1e9N/m3 before stress evaluation. This authorized
+alternative retains the full free egg and solves plate travel and footprint.
+It preserves the failed hard-contact spatial qualification and the separate
+same-traction controls. A fixed physical series compliance is not a Newton or
+PCG tolerance and must not change with timestep or mesh.
+
+The independent QP extension adds positive diagonal pad compliance to the
+complementary energy, or equivalent unit-energy pad coordinates to the primal
+form. Analytic eight-spring controls cover compliance0.01/3/100 in both forms
+and pass (`727801`); all prior hard-contact and duplicate-constraint controls
+also pass. The P2 pilot uses positive projected-area facet quadrature, checks
+consistent force/moment transfer and the actual compression-only pad law, and
+checks exact quadratic gaps across every omitted boundary face. Negative
+distance into the pad is physical compression, so the hard-gap gate is not
+misapplied to this changed model. Quadrature, spatial convergence and matched
+Shell contact histories remain required; a pilot submission does not qualify
+the physical reference or close the ranking goal.
+
+The pilot (`727801`) passes both fourth- and sixth-order quadrature solves.
+At fourth order its pad-law/elastic residuals are1.30e-11/3.47e-12, plate travel
+15.207um, and lower/upper compressed projected areas16.001/14.806mm2. Exact
+minimum gap on every omitted face is positive104.87um. These checks confirm
+discrete area compression in this declared pad model, separate from the hard
+land's narrow-ring support.
+
+`compliant-pad-boundary-control-v1` (`727802`) removes theoretical zero
+off-boundary shape functions by mesh topology, rather than admitting interior
+nodes through floating-point basis roundoff. Candidate coordinates reduce from
+1416 to834; old/new full fields agree within1.98e-14. All fourth/sixth/tenth
+order pad solves pass. Fourth-to-sixth changes complete tangent/membrane/bending
+by0.2327%/0.0951%/0.3525%; sixth-to-tenth changes0.08334%/0.03772%/0.1248%.
+The latter raw Mises/tension changes are0.01243%/0.00728%. Tenth order gives
+plate travel15.264um, raw peaks203474Pa/126406Pa and compressed areas
+15.616/14.366mm2. The measured process RSS is3,482,900KiB and the three-order
+reference takes168.71s. This qualifies the bounded coarse quadrature sensitivity,
+not surface/wall uncertainty or a primary timing comparison. The500um/two-layer
+pad refinement (`727803`) is a separately captured spatial control.
+
+`finite_area_shell --solve-pad-contact` uses the separately declared static
+Shell kinematics to compute pad pressure from the current Shell deformation.
+It imports only reference quadrature geometry, area, stiffness and target load
+for the contact solve; it does not impose the solid's fitted pressure. The
+four-coordinate spring-energy solve has analytic uniform/asymmetric controls,
+and the displacement/force transfer checks nonrigid virtual work. An omitted
+face check uses the same affine outer-envelope map as the pressure law.
+This prospective variant retains the original Shell constitutive kernels,
+relative PCG1e-4, absolute velocity1e-10 and actual final force residual; it is
+velocity-cleared static relaxation and is not a dynamic-history qualification.
+
+The analytic pad/kinematic controls (`727812`) pass, including recovery of all
+four coordinates for asymmetric gaps and rigid-motion reproduction at the
+offset outer envelope. The paired Shell run (`727813`) then completes both
+branches in3 pseudo-steps without a solver failure. The self-consistent pad
+branch has final actual elastic-plus-pad force residual5.79e-9, force/moment
+error1.25e-15, plate travel15.254um and minimum omitted-face gap104.85um. Both
+plate reactions are0.1N. Its fixed-map static pad equations are admitted. The
+separate same-traction replay has force residual3.66e-9. Their local summed
+deformed moment drift is about6.80e-10Nm; its net is below3.7e-17Nm.
+
+`compliant-pad-coarse-fields-v1` (`727815`) compares complete physical-volume
+fields for both Shell branches and the retained native DPR/SCR results against
+the coarse pad solid. The native fields use the same unchanged0.1N axial
+point-source pair,2mm radius and exact4498-vertex mesh, so their valid earlier
+results are reused rather than recomputed. They remain declared source-wrench
+reconstructions, not a new native pad-contact trajectory. The paired Shell
+comparison separates elastic-model differences from pad-pressure response.
+This is a coarse control; spatial reference uncertainty, continuous histories,
+sustained friction and matched admitted cost/stability remain open.
+
+The completed coarse comparison (`727815`, nine angular integration points)
+measures the following differences against the same-mesh pad solid. These are
+**provisional coarse differences**, not qualified continuum ranks:
+
+| Method | Complete tangent | Membrane | Bending | Raw Mises | Raw tension |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| DPR, fixed2mm source radius | 33.635% | 8.720% | 52.845% | 73.533% | 124.264% |
+| SCR, fixed2mm source radius | 33.427% | 8.997% | 52.434% | 65.285% | 120.307% |
+| Static Shell, solved pad | 31.484% | 11.821% | 48.017% | 6.392% | 24.220% |
+| Static Shell, solid-traction replay | 31.481% | 11.821% | 48.013% | 6.364% | 24.173% |
+
+The paired solved-pad versus replay Shell field differs by0.01125% tangent,
+0.00287% membrane and0.01701% bending; raw peak changes are0.02630%/0.03771%.
+For this coarse soft-pad case, elastic/thin-surface and source-profile errors
+are much larger than the change caused by solving Shell's own pad pressure.
+This observation does not waive reference refinement or justify changing the
+native radius to fit the pad stress. The small DPR/SCR separation cannot yet
+support a distinct order, and the different metrics need not share one rank.

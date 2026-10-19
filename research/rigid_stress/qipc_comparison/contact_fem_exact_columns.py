@@ -48,6 +48,7 @@ class ColumnField:
     n_surface_vertices: int
     sorted_faces: np.ndarray
     wall_depths: np.ndarray | None = None
+    volumes: np.ndarray | None = None
 
     def __post_init__(self):
         if self.wall_depths is None:
@@ -69,11 +70,21 @@ class ColumnField:
         assert np.diff(result, axis=0).min() >= -1e-12
         return result
 
-    def sample(self, depth, basis):
+    def locate(self, depth):
         layer = np.clip(np.searchsorted(self.wall_depths, depth, side="right") - 1, 0, self.layers - 1)
         local = (depth - self.wall_depths[layer]) / np.diff(self.wall_depths)[layer]
         kind = (local >= self.weights[:, 2]).astype(int) + (local >= self.weights[:, 1:].sum(axis=1))
         elements = (3 * layer + kind) * self.n_faces + self.selected
+        return layer, local, kind, elements
+
+    def volume_density(self, depth):
+        """Physical volume per normalized triangle-area weight and wall-depth increment."""
+        assert self.volumes is not None
+        layer, _, _, elements = self.locate(depth)
+        return 3 * self.volumes[elements] / np.diff(self.wall_depths)[layer]
+
+    def sample(self, depth, basis):
+        layer, local, kind, elements = self.locate(depth)
         tensor = self.stress[elements]
         if self.stress.ndim == 4:
             # Barycentric weights in the sorted-column prism, in its actual tetrahedron ordering.
@@ -111,11 +122,13 @@ def main():
     cli.add_argument("--loads", type=float, nargs="+", default=[0.1])
     cli.add_argument("--shell-indices", type=int, nargs="*", default=[])
     cli.add_argument("--surface-quadrature", type=int, choices=(1, 3, 9, 25), default=1)
+    cli.add_argument("--physical-volume", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     assert len(args.meshes) == len(args.runs)
     assert all(0 <= index < len(args.runs) for index in args.shell_indices)
     assert all(not run.is_file() or len(args.loads) == 1 for run in args.runs)
+    assert not args.physical_volume or len(args.runs) - 1 not in args.shell_indices
     args.output.mkdir(parents=True, exist_ok=False)
     with np.load(args.meshes[-1]) as saved:
         outer, inner, faces = (saved[key] for key in ("outer_vertices", "inner_vertices", "mid_faces"))
@@ -137,6 +150,7 @@ def main():
     triangle = ((outer + inner) / 2)[faces]
     area = np.linalg.norm(np.cross(triangle[:, 1] - triangle[:, 0], triangle[:, 2] - triangle[:, 0]), axis=1) / 2
     area = (area[:, None] * angular_weights).reshape(-1)
+    column_angular_weights = np.tile(angular_weights, len(faces))
     rows = []
     for load in args.loads:
         fields, raw = [], []
@@ -164,6 +178,10 @@ def main():
             else:
                 with np.load(path) as saved:
                     stress = saved["stress_pa"]
+                volumes = None
+                if args.physical_volume and index == len(args.runs) - 1:
+                    volumes = np.linalg.det(vertices[tets[:, 1:]] - vertices[tets[:, :1]]) / 6
+                    assert volumes.min() > 0
                 fields.append(
                     ColumnField(
                         stress,
@@ -175,6 +193,7 @@ def main():
                         len(outer),
                         np.sort(faces, axis=1),
                         wall_depths,
+                        volumes,
                     )
                 )
             dev = stress - np.trace(stress, axis1=-2, axis2=-1)[..., None, None] * np.eye(3) / 3
@@ -201,12 +220,16 @@ def main():
             )
         comparisons = []
         for index, (actual, reference) in enumerate(zip(fields[:-1], fields[1:])):
-            breaks = np.sort(np.concatenate((actual.breaks(), reference.breaks())), axis=0)
+            partitions = [actual.breaks(), reference.breaks()]
+            if args.physical_volume:
+                partitions.append(fields[-1].breaks())
+            breaks = np.sort(np.concatenate(partitions), axis=0)
             np.testing.assert_allclose(np.diff(breaks, axis=0).sum(axis=0), 1, rtol=0, atol=1e-13)
             membrane = np.zeros((2, len(direction), 2, 2))
             bending = np.zeros_like(membrane)
             error_by_column = np.zeros(len(direction))
             reference_by_column = np.zeros(len(direction))
+            integration_measure = 0.0
             for lower, upper in zip(breaks[:-1], breaks[1:]):
                 midpoint = (lower + upper) / 2
                 width = upper - lower
@@ -214,11 +237,16 @@ def main():
                     depth = midpoint + offset * width / 2
                     a, r = actual.sample(depth, basis), reference.sample(depth, basis)
                     weight = width * area / 2
+                    if args.physical_volume:
+                        weight = width / 2 * column_angular_weights * fields[-1].volume_density(depth)
+                    integration_measure += weight.sum()
                     error_by_column += np.einsum("qij,qij,q->q", a - r, a - r, weight)
                     reference_by_column += np.einsum("qij,qij,q->q", r, r, weight)
                     values = np.stack((a, r))
                     membrane += values * width[None, :, None, None] / 2 * 0.0005
                     bending += values * (width / 2 * (0.5 - depth))[None, :, None, None] * 0.0005**2
+            if args.physical_volume:
+                np.testing.assert_allclose(integration_measure, fields[-1].volumes.sum(), rtol=1e-9, atol=1e-18)
             differences = []
             for values in (membrane, bending):
                 difference = values[0] - values[1]
@@ -258,7 +286,9 @@ def main():
                     "coarse_index": index,
                     "fine_index": index + 1,
                     "tangent_relative_l2": float(np.sqrt(error_square / reference_square)),
-                    "tangent_rms_error_pa": float(np.sqrt(error_square / area.sum())),
+                    "tangent_rms_error_pa": float(np.sqrt(error_square / integration_measure)),
+                    "integration_measure": float(integration_measure),
+                    "integration_measure_unit": "m3" if args.physical_volume else "m2",
                     **surface_errors,
                     "membrane_relative_l2": differences[0],
                     "bending_relative_l2": differences[1],
@@ -273,8 +303,10 @@ def main():
             np.savez_compressed(
                 args.output / f"columns-{load:g}-{index}.npz",
                 direction=direction,
-                error_square_pa2_m2=error_by_column,
-                reference_square_pa2_m2=reference_by_column,
+                **{
+                    f"error_square_pa2_m{3 if args.physical_volume else 2}": error_by_column,
+                    f"reference_square_pa2_m{3 if args.physical_volume else 2}": reference_by_column,
+                },
                 area_m2=area,
                 basis=basis,
                 membrane_n_per_m=membrane,
@@ -288,10 +320,13 @@ def main():
             "cases": rows,
             "shell_indices": args.shell_indices,
             "surface_quadrature_points_per_face": args.surface_quadrature,
+            "physical_volume_weighting": args.physical_volume,
             "physical_reference_qualified": False,
             "scope": "Exact integration of piecewise-constant P1 or piecewise-linear P2 stress along material columns, including unioned "
             "tetrahedron partitions for squared field differences and analytic membrane/bending moments. "
             "Shell uses its complete linear fiber field after rigid corotation in the same material basis. "
+            "Optional physical volume weights use exact reference-tetrahedron Jacobians, including every reference partition. "
+            "Membrane and bending retain the declared 500um normal-material thickness and physical mid-surface area weights. "
             "Angular material rays and the declared finest-face area quadrature retain surface sampling uncertainty. "
             "All faces, raw peaks and both boundary fibers are retained. This field comparison does not establish mechanical admission.",
         },

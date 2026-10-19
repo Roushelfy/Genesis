@@ -306,3 +306,41 @@ independent reference to double-precision CPU CHOLMOD; pass the same option to
 optional research dependency does not change native Quadrants recovery or
 active environments. Installation receipts, exact task lists and failed
 factorizations remain under the qualified-ranking data root.
+
+Use `contact_fem_exact_columns --physical-volume` for the complete stress
+tensor metric weighted by actual reference tetrahedron volume. The final mesh
+must be a solid; angular quadrature and through-wall tetrahedron partitions
+remain explicit. The comparator checks its integrated volume against the full
+tetrahedron sum. Membrane/bending resultants retain the declared normal500um
+material coordinate and physical midpoint area measure.
+
+`plate_contact_fem --element-order 2 --continuous-quadratic-contact
+--qp-solver-path <isolated-clarabel-0.11.1-install> --qp-rounds 40` directly
+solves hard contact from the original candidate constraints with the certified
+primal formulation. Run `validate_p2_contact --contact-solver-path <install>`
+first. A passing discrete contact state still needs spatial convergence and
+an actual finite-area footprint; the hard-land pilot concentrates force near
+a ring despite passing equilibrium.
+
+For the separately [declared physical pad](COMPLIANT_PAD_DECLARATION.md), run
+`compliant_plate_reference --mesh <land-mesh> --qp-solver-path <install>
+--pad-stiffness 1e9 --candidate-radius 0.003 --loads 0.1
+--quadrature-orders 4 6 --output <fresh-data-output>` through the same Slurm
+wrapper. The optional `--cholespy-path` uses the already validated factor.
+Pad stiffness is force per area per compression in N/m3. It is held fixed while
+mesh, quadrature and timestep change. Full fields, positive quadrature forces,
+actual pad gaps, projected areas, forces/moments, elastic and constitutive
+residuals are retained under each `order-N/`. An excluded boundary with
+compression fails the search-region check. This compression-only spring model
+has its own admission checks and must not be labeled a hard-contact result.
+
+`finite_area_shell --mesh <same-pad-solid-mesh> --field <pad/order-10/load-0.1.npz>
+--solve-pad-contact` recomputes pressure and free rigid/plate coordinates from
+the current Shell displacement. Run `validate_p2_contact` controls first.
+The source field supplies shared quadrature geometry, areas and declared
+stiffness/load; the pad solve does not replay its pressures. Exact source mesh
+identity is required for this control. The result includes a separate
+`static_pad_equations_admitted` check and `pad-contact.npz` with actual pressure,
+gap, plate coordinates and complete affine envelope gaps. Omitting the flag
+retains the prescribed-traction elasticity replay. Both are explicitly static
+relaxation methods and require separate dynamic history qualification.
