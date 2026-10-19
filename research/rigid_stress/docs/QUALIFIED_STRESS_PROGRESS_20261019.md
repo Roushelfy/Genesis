@@ -516,3 +516,50 @@ raw extrema are retained at every tetrahedron corner. The separate P1-four-
 layer/P2-one-layer comparison changes tangent stress32.08%, membrane24.52% and
 bending23.42%, so no cross-order agreement is claimed. Spatial/contact and wall
 convergence, finite-deformation checks and all three-method ranks remain open.
+
+
+## Completed load cycle, relative tolerance and next reference control
+
+`land-shell-unload-audit-v1` (`727603`) verifies all five51-observation
+mechanical windows of the continuous0.1/0.3/1/0.3/0.1N history. All1000 steps
+returned without solver failure. Returning to0.1N changes the complete tangent
+field6.80e-10, membrane5.71e-10 and bending8.91e-10 relative to the independent
+initial0.1N run. These are reproducible mechanical/stress-history controls, not
+continuum accuracy ranks.
+
+`land-shell-relative-control-v1` (`727604`) changes only relative PCG tolerance
+from1e-6 to1e-4, retaining absolute velocity tolerance1e-10, dt1ms and the same
+land geometry/load history. `land-shell-final-controls-v1` (`727607`) verifies
+its mechanical window and reports tangent/membrane/bending differences
+6.86e-10/6.97e-10/6.58e-10, with raw peak changes below8e-11. This controlled
+case provides no accuracy justification for1e-6 relative PCG;1e-4 is sufficient
+here. The first-linear and nonlinear-budget controls explain why its absolute
+contact/velocity criterion still matters. This does not equate Shell's norm
+ratio with QIPC's quadratic-form ratio or establish adequacy for every case.
+
+The quarter-dt run (`727591`) completes800 steps and passes its own50ms
+mechanical window. Against half-dt, complete tangent/membrane/bending changes
+are0.8379%/0.2852%/1.4903%. The trend improves but still fails the predeclared
+0.5% field target; essentially identical raw peaks cannot waive it.
+`land-shell-eighth-dt-v1` (`727609`) continues the same physical history at
+0.125ms with paired1e-4/1e-6 relative tolerances, so timestep and inner-solve
+sensitivity can be separated.
+
+`contact-p2-wall-v1` (`727596_0`) reaches small equation/gap residuals but fails
+its active-set convergence/rank gate: neighboring faces generated duplicate
+edge-point constraints. Its13.07% complete tangent difference from one wall
+layer is diagnostic only;97.74% of the squared discrepancy lies inside0.5mm
+of a pole, while the full comparison domain remains unchanged. No qualified
+wall-refinement result is inferred from that rejected solve.
+
+Constraint generation now deduplicates new interpolation rows and removes a
+redundant generated active row before retrying a rank-deficient inner solve.
+Every retry still checks the original primal/dual/rank and exact face-gap
+criteria. The cheap condensed-operator replays in
+`contact-p2-constraint-control-v1` (`727605`) pass both one- and two-layer
+controls (rank31/31 and49/49; minimum scaled gaps-5.82e-9 and-8.52e-9).
+They reuse the exact saved elasticity operator and do not pretend to recompute
+full displacements or gaps outside candidate faces. The full two-layer rerun
+`contact-p2-wall-repair-v1` (`727608`) reuses that operator but independently
+refactors elasticity, checks the complete boundary and retains the complete
+stress field before any admission claim.
