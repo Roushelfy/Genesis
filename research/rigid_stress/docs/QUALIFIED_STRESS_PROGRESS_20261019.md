@@ -218,3 +218,96 @@ Remaining required work includes finite-area independent reference qualification
 Shell coupling, sustained nonzero tangential loading, common-field rankings
 with uncertainty, and admitted matched every-step/sparse cost and stability.
 This progress record does not close any of those requirements.
+
+
+## Exact thickness integration and contact active sets
+
+`contact-exact-columns-v1` (`727505`) integrates each P1 tensor exactly along
+shared material columns. It partitions the wall at the union of tetrahedron
+crossings and integrates tensor squared differences and membrane/bending
+moments analytically. Angular centroid quadrature and the declared common
+material measure remain separate discretizations. At0.1N the coarse/medium
+and medium/fine tangent changes are31.833% and25.048%; medium/fine membrane
+and bending changes are8.590% and8.392%. Thus the earlier thickness-sampling
+alias did not explain the missing spatial qualification.
+
+`reference-regions-land-v1/group0/exact` (`727520_0`) retains the full metric
+and adds diagnostic error contributions. For medium/fine, polar radii below
+0.5mm contain57.27% of squared error and26.30% of reference squared norm;
+0.5–2mm contain21.37% and31.83%; the remaining surface contains21.36% and
+41.87%. No region is excluded from admission, and no raw peak is trimmed.
+The fine1N cached-operator continuation (`contact-fine-reuse-v1`, `727504`)
+completed: equation residual3.63e-11,457/211 positive bottom/top nodes,
+plate travel6.074um and raw von Mises40.789MPa. These are discrete equation
+results, not continuum qualification.
+
+An additional declared geometry, permitted by the goal, is recorded in
+`land-mesh-v2` (`727523`): the complete egg has a2mm-radius flat region at
+each pole and a quintic C2 height blend back to the original egg at4mm.
+Its inner surface is the500um analytic-normal offset. Numerical derivative
+normal validation gives1.56e-9 and the minimum meridian offset Jacobian is
+0.667, with closed positive-volume meshes. The two generated meshes have
+9880/20482 outer vertices and237072/737280 tetrahedra. Their masses are
+7.480741/7.485734g. Material directions are stored explicitly because the
+original inverse egg map does not apply to the modified polar height.
+The first mesh launch (`727520_1`) retained a syntax failure; the corrected
+source passed Ruff and the independent geometry checks before use.
+
+`land-fem-pilot-v1` (`727527`) exposed an invalid SLSQP active-set guess at
+0.1N: a one-shot KKT solve produced negative compression fraction-36.52,
+which the existing gate rejected. The independent FEM now uses feasible
+primal active-set steps, removes blocking tensile variables, admits new
+negative-gap variables and checks complete KKT conditions with the existing
+physical gates. SLSQP provides a feasible starting point when available;
+otherwise a nonnegative force/moment-feasible LP starts the solve. The first
+LP-only implementation cycled on a degenerate smooth-case start and remained
+rejected (`contact-active-set-v1`, `727529`); its output is preserved.
+
+The corrected `contact-active-set-v2` (`727532`) admits all three land loads
+and reproduces the admitted smooth0.1N raw peak14.330180MPa to about2e-14
+relative. Land raw peaks are108.206kPa,321.385kPa and1.015694MPa. Crucially,
+the load-bearing nodes form an unresolved annular band around the flat cap:
+fully active triangle area remains zero. This pilot therefore does not qualify
+finite-area contact, and a blind medium/fine sweep is deferred. A resolved
+annular refinement or an explicitly matched physical compliant-pad model is
+still required. The original smooth hard-plate campaign remains separate.
+
+## Shell first-contact controls on refined geometry
+
+`shell-smooth-tolerances-v1` (`727506`) used relative PCG1e-6 and velocity
+bounds1e-7/1e-8 on the original refined smooth geometry. Both first failed at
+step46, during top contact, with equation residual14.99 and failure flag1.
+Their first rejected complete fields are retained. Absolute-velocity tolerance
+alone does not repair that contact solve.
+
+`land-shell-pilot-v1` (`727528`) uses the same additional land geometry and
+unchanged pinned Shell9a58a7359, nominal500um wall, E10GPa, nu0.3 and rho2000.
+Its mass is7.485182g,0.0594% above the coarse solid volume mass; this finite
+geometry difference is explicit. Tight1e-8/1e-9 settings first fail at step46,
+with equation residual0.0017925 and9970 accumulated PCG iterations. The shared
+failure bit alone does not distinguish an inner cap from a contact-Newton cap.
+The observer now records both counters and the last checked linear residual
+at the first failure; it does not change solver state or continuation policy.
+`land-shell-inner-v1` (`727531`) was rejected before stepping because its hold
+was zero. The corrected `land-shell-entry-v2` (`727536`) compares20um clearance
+and an initially touching free egg, with relative1e-6, velocity1e-7 and4000
+inner iterations. No failed history is admitted by changing its thresholds.
+
+`contact-active-set-fields-v1` (`727539`) verifies complete common material
+fields on the same meshes. The original smooth0.1N tangent difference is
+1.16e-12; the previously admitted land0.3/1N differences are2.30e-14/2.17e-14.
+Membrane, bending and unsmoothed peaks agree at comparable roundoff levels.
+The formerly rejected land0.1N now passes all existing discrete gates.
+
+Both `land-shell-entry-v2` runs failed:20um clearance at step47 (equation
+residual5.18e-4), and initially touching at step1 (residual1.016). Both report
+7 contact Newton iterations, below the32-iteration outer cap, while total
+linear iterations are11014/28000. The sticky cap is therefore an inner-solve
+failure. The last-linear scratch counter and residual threshold have already
+been reset by the final preparation pass; their recorded zeros are not proof
+of a zero-residual solve. Read-only first-cap instrumentation would be needed
+for that residual history. `land-shell-precondition-v1` (`727543`) compares
+zero and12 coarse patches on the same initially touching0.001N first step,
+plus one hold step, against the failed48-patch control. This bounded check
+addresses the elastic-only coarse operator versus contact-updated block
+preconditioning; it changes no material, contact equation or admission gate.

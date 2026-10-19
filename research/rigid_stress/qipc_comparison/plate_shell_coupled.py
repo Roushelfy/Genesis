@@ -165,6 +165,22 @@ def main():
                     "internal_force_resultant_n": internal.sum(axis=0).tolist(),
                     "contact_force_resultant_n": contact.sum(axis=0).tolist(),
                 }
+                if failed:
+                    row["failed_solve_counters"] = {
+                        "contact_newton_iterations": qd_to_numpy(
+                            solver._shell_contact.envs_n_newton_iterations, transpose=True
+                        ).tolist(),
+                        "last_linear_iterations": qd_to_numpy(
+                            solver._shell_scratch.envs_n_solve_iterations, transpose=True
+                        ).tolist(),
+                        "linear_mode": qd_to_numpy(solver._shell_scratch.envs_pcg_mode, transpose=True).tolist(),
+                        "last_checked_residual": qd_to_numpy(
+                            solver._shell_scratch.envs_residual_checked, transpose=True
+                        ).tolist(),
+                        "relative_residual_threshold": qd_to_numpy(
+                            solver._shell_scratch.envs_residual_threshold, transpose=True
+                        ).tolist(),
+                    }
                 if endpoint or failed:
                     field.update(solver)
                     tensors = tensor_to_array(field.tensors)[:, 0].reshape(-1, 3, 3, 3)

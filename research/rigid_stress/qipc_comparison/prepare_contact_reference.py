@@ -12,7 +12,7 @@ from .artifacts import file_id, runtime_identity, write_json
 from .prepare_inputs import make_mesh, mass_properties
 
 
-def refine_contact_surface(minimum_size, global_size):
+def refine_contact_surface(minimum_size, global_size, refinement_radius=0.0):
     sphere = trimesh.creation.icosphere(subdivisions=1)
     unit, faces = sphere.vertices.copy(), sphere.faces.copy()
     for _ in range(24):
@@ -24,7 +24,9 @@ def refine_contact_surface(minimum_size, global_size):
         midpoint /= np.linalg.norm(midpoint, axis=1)[:, None]
         mapped = transform_shell("egg", midpoint)
         polar_distance = np.linalg.norm(mapped[:, :2], axis=1)
-        target = np.minimum(global_size, np.maximum(minimum_size, 0.2 * polar_distance))
+        target = np.minimum(
+            global_size, np.maximum(minimum_size, 0.2 * np.maximum(polar_distance - refinement_radius, 0))
+        )
         selected = np.linalg.norm(outer[edges[:, 0]] - outer[edges[:, 1]], axis=1) > target
         if not selected.any():
             return unit, faces
