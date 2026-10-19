@@ -1,0 +1,36 @@
+[
+  [
+    {
+      "name": "capture",
+      "module": "research.rigid_stress.qipc_comparison.plate_shell_coupled",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-pad-linear-capture",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+        "--pad-geometry",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-shell-spatial-v2/group1/geometry/pad-geometry.npz",
+        "--loads",
+        "0.1",
+        "--dt",
+        "0.001",
+        "--ramp",
+        "0.05",
+        "--hold",
+        "0.15",
+        "--record-stride",
+        "1",
+        "--tolerance",
+        "1e-4",
+        "--velocity-tolerance",
+        "1e-10",
+        "--iterations",
+        "8000",
+        "--coarse-patches",
+        "0",
+        "--floating-sums",
+        "--capture-linear-step",
+        "40"
+      ]
+    }
+  ]
+]

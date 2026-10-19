@@ -1122,3 +1122,87 @@ observed force residuals. Its rejected full state is retained, and this
 history is not admitted. The same-tolerance0.5ms400-step control (`727914`)
 tests whether reducing the mass/stiffness conditioning burden resolves the
 cap; no solver-failure flag is waived. The500um full load cycle remains live.
+
+## Refined pad fields and captured linear failure
+
+The500um Shell cycle (`727910_0`) completes1000 steps and all five equilibrium
+windows at0.1/0.3/1/0.3/0.1N pass. The250um half-step control (`727914`)
+instead reaches the same8000-product cap at step76 (38ms); timestep reduction
+alone does not repair this configuration. Neither failed trajectory is admitted.
+
+The250um/two-layer P2 pad reference (`727904_1`) completes all nine load/order
+cases, with860.21s factorization and965.34s total runtime. Sixth-to-tenth-order
+complete tangent changes are0.003398%/0.001514%/0.001121% at0.1/0.3/1N.
+However,500-to250um refinement (`727919_0`) changes the complete tangent field
+by2.74744%/2.49180%/2.24491%, exceeding the2% target at every load. Membrane
+changes are1.90867%/1.76231%/1.58020%; bending changes are2.39301%/1.96504%/
+1.69874%. Raw Mises/tensile changes stay below2.529%. The125um/two-layer and
+250um/three-layer controls (`727916`) remain necessary; quadrature convergence
+is not spatial convergence.
+
+The isolated first-linear capture uses the simulator's real substep index,
+not a Python call counter that includes build-time warmup. The initial capture
+attempt (`727918`) hit a compiled graph-layout mismatch; the second (`727922`)
+captured an already overwritten cache. Both are retained as invalid diagnostic
+attempts. The corrected step40 capture (`727926`) retains8000 iterations and
+the failure flag, with NPZ SHA256
+`134d58c15cca05532d06a6379f149f0709556f78657d08dc35f4c92d75f8a75a`.
+Its diagnostic source is separate from the continuous trajectory engine.
+
+Independent sparse assembly/direct solution (`727928_0`) of the50215-unknown
+system gives relative residual1.10e-12 and symmetry defect8.51e-17. Captured
+PCG's true and recursive relative Euclidean residuals are both0.0546659,
+with relative disagreement1.78e-7. Its actual mass-weighted RMS velocity
+error is1.7883e-10m/s, exceeding the unchanged1e-10m/s target. This is a real
+unconverged linear iterate, not merely a recursive-residual reporting artifact.
+The generalized full point-Jacobian auditor also reproduces the earlier
+floating-sum frozen-system control (`727928_1`). A bounded200-step pair
+(`727949`) tests the existing12-patch coarse preconditioner on250/500um meshes
+without changing tolerances, caps, physics or acceptance gates.
+
+## Sustained-friction regression
+
+The [pad declaration](COMPLIANT_PAD_DECLARATION.md) now fixes the sustained
+friction extension before evaluating its stress fields: mu0.3, slip smoothing
+speed1e-4m/s and a1m/s2 horizontal body acceleration after normal equilibrium.
+The free egg has no pinned vertices. The physical-pad branch previously
+widened smoothing as2*mu*compression/dt, which changed its physical creep law
+under timestep refinement. The isolated friction variant retains fixed slip
+speed for physical pads and leaves original contact's widening unchanged.
+
+The analytical free-sheet test checks compression, terminal creep velocity,
+normal/tangential forces and action/reaction at1/2ms with unbatched/two-env
+scenes. The original engine fails both1ms sustained-shear negative controls
+(`727924_1`): velocity is about0.00216m/s instead of1.835034e-5m/s. The repaired
+engine (`727924_0`) passes10 cases but fails all four shear cases on the
+unloaded y-force gate1e-10N, with discrepancies1.16e-10 to1.01e-9N. It is not
+reported as passing. Since the fixed friction slope converts velocity error
+into force, `727947` tightens only this analytic shear test's absolute velocity
+tolerance from1e-10 to1e-12m/s, retaining every force assertion and the original
+relative PCG tolerance. Both positive and old-engine negative tests rerun.
+Benchmark trajectory tolerances remain unchanged; full friction admission,
+native pad histories, qualified rankings and matched costs remain open.
+
+The tightened analytic control (`727947_0`) now completes all14 selected tests
+in232.08s, including the unchanged momentum and state-restore regressions.
+Both old-engine negative controls (`727947_1`) still fail on the analytic
+terminal creep velocity. The friction engine is pinned at `4ce5542f9` and its
+incremental patch is retained. Actual400-step1ms and800-step0.5ms free-egg
+normal-then-horizontal-load histories (`727954`) use the unchanged benchmark
+PCG1e-4/absolute-velocity1e-10 tolerances. Their observer independently checks
+the lagged friction law, current cone, nodal transpose transfer, body-force
+balance and external moment; submission is not qualification.
+
+The500um12-patch control (`727949_1`) completes200 steps and passes its final
+51-sample equilibrium window. Maximum contact-relative equation residual is
+9.17e-9, plate speed2.06e-11m/s and kinetic energy5.20e-20J. The250um arm also
+completes200 steps and passes all51 final-window samples: maximum contact-relative
+equation residual3.86e-8, plate speed9.65e-12m/s and kinetic energy7.29e-21J,
+without solver flags. Its observed trajectory runtime is166.93s including
+observation/IO, versus55.83s for500um; these are diagnostic timings, not matched
+warm costs. A complete-field comparison (`727958`) checks500um preconditioner
+invariance and250um Shell versus500um/solid fields. The full250um five-load
+cycle and same-tolerance half-step control (`727956`) remain required beyond
+this first admitted hold.
+Selected unchanged receipts and the independent linear audit are in the
+[refinement/friction packet](../evidence/20261019-qualified-ranking/pad-refinement-friction-v1/README.md).

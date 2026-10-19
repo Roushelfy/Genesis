@@ -63,9 +63,21 @@ def main():
     cli.add_argument("--midpoint-mesh", type=Path)
     cli.add_argument("--floating-sums", action="store_true")
     cli.add_argument("--capture-first-linear", action="store_true")
+    cli.add_argument("--capture-linear-step", type=int, choices=(40,))
     cli.add_argument("--pad-geometry", type=Path)
     cli.add_argument("--pad-stiffness", type=float, default=1e9)
+    cli.add_argument("--gravity-x", type=float, default=0.0)
+    cli.add_argument("--gravity-start", type=float, default=0.2)
+    cli.add_argument("--gravity-ramp", type=float, default=0.05)
     args = cli.parse_args()
+    if args.gravity_x:
+        assert args.pad_geometry is not None and args.friction == 0.3 and args.record_stride == 1
+        assert args.gravity_x == 1.0 and args.gravity_start >= 0 and args.gravity_ramp > 0
+    if args.capture_linear_step is not None:
+        assert not args.capture_first_linear and args.pad_geometry is not None
+        assert file_id(Path(shell.__file__))["sha256"] == (
+            "5097b1c56547b907df2638ed2283797093552d8d850c893dd08e516a78010ca6"
+        ), "Substep40 capture requires the isolated physical-pad diagnostic source"
     if args.capture_first_linear:
         assert (
             file_id(Path(shell.__file__))["sha256"]
@@ -152,12 +164,23 @@ def main():
         try:
             for step, (level, within, force, endpoint) in enumerate(force_history(args)):
                 previous_velocity = tensor_to_array(egg.get_verts_vel())[0]
+                gravity_x = args.gravity_x * min(
+                    max(((step + 1) * args.dt - args.gravity_start) / args.gravity_ramp, 0), 1
+                )
+                if args.gravity_x:
+                    solver.set_gravity((gravity_x, 0.0, 0.0))
                 control_native_plate(plate, args, force, step + 1)
                 scene.step()
                 scene.rigid_solver.check_errno()
                 executed += 1
                 if args.capture_first_linear:
                     capture(solver, scene.rigid_solver, args.output)
+                    return
+                if args.capture_linear_step == step + 1:
+                    assert qd_to_numpy(solver._shell_scratch.envs_n_solve_iterations, transpose=True)[0] > 0, (
+                        "Capture must precede the next Newton preparation; zero iterations indicates a wrong capture point"
+                    )
+                    capture(solver, scene.rigid_solver, args.output, physical_pad=True, step=step + 1)
                     return
                 failure_flags = tensor_to_array(solver.get_envs_solver_failure())
                 failed = bool(failure_flags.any())
@@ -170,7 +193,8 @@ def main():
                 observe_elastic_force(internal_buffer, solver.shell_state, solver.shell_info)
                 internal = qd_to_numpy(internal_buffer, transpose=True)[0]
                 inertia = masses[:, None] * (velocity - previous_velocity) / args.dt
-                residual = internal + contact - inertia
+                body_force = masses[:, None] * np.array([gravity_x, 0.0, 0.0])
+                residual = internal + contact + body_force - inertia
                 scale = max(np.linalg.norm(contact), abs(force))
                 from_upper = positions[:, 2] > (lower + upper) / 2
                 row = {
@@ -185,18 +209,33 @@ def main():
                     "egg_inertia_resultant_norm_n": float(np.linalg.norm(inertia.sum(axis=0))),
                     "egg_kinetic_j": (0.5 * masses[:, None] * velocity**2).sum().item(),
                     "equation_residual_relative": float(np.linalg.norm(residual) / scale) if scale else None,
-                    "static_residual_relative": float(np.linalg.norm(internal + contact) / scale) if scale else None,
+                    "static_residual_relative": float(np.linalg.norm(internal + contact + body_force) / scale)
+                    if scale
+                    else None,
                     "solver_failure_flags": failure_flags.tolist(),
                     "last_pcg_iterations": tensor_to_array(solver.get_envs_pcg_iterations()).tolist(),
                     "contact_force_norm_n": float(np.linalg.norm(contact)),
                     "residual_force_scale_n": float(scale),
                     "internal_force_resultant_n": internal.sum(axis=0).tolist(),
                     "contact_force_resultant_n": contact.sum(axis=0).tolist(),
+                    "body_force_resultant_n": body_force.sum(axis=0).tolist(),
+                    "mass_center_velocity_m_per_s": (masses @ velocity / masses.sum()).tolist(),
+                    "external_moment_about_mass_center_nm": np.cross(
+                        positions - masses @ positions / masses.sum(), contact + body_force
+                    )
+                    .sum(axis=0)
+                    .tolist(),
                 }
                 pad_arrays = {}
                 if pad_audit is not None:
                     row["physical_pad"], pad_arrays = pad_audit.evaluate(
-                        solver, positions, contact, row["compression_coordinate_m"], args.dt
+                        solver,
+                        positions,
+                        contact,
+                        row["compression_coordinate_m"],
+                        args.dt,
+                        velocity=velocity if args.gravity_x else None,
+                        friction=args.friction,
                     )
                 if failed:
                     row["failed_solve_counters"] = {
@@ -236,6 +275,7 @@ def main():
                         vm_pa=vm,
                         contact_forces_world_n=contact,
                         internal_forces_world_n=internal,
+                        body_forces_world_n=body_force,
                         inertial_forces_world_n=inertia,
                         equation_residual_n=residual,
                         membrane_n_per_m=tensor_to_array(field.membrane)[:, 0],

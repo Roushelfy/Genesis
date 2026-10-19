@@ -1,0 +1,100 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-115",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "727950",
+      "SLURM_ARRAY_JOB_ID": "727949",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-eec6c32a-fe0b-5322-8219-698fede93860, 00000000:45:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "runs": [
+    {
+      "result": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-coarse-space-v1/group0/hold/result.json",
+        "bytes": 2822,
+        "sha256": "486aff63951ffa316daef3a24caa687c2c9eab08840980179a693c0aad023fc2"
+      },
+      "completed": true,
+      "first_carried_time_s": 0.061,
+      "first_zero_reaction_after_carry_s": null,
+      "maximum_equation_residual_last_50ms": 2.065946699085831e-09,
+      "fields": [
+        {
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-coarse-space-v1/group0/hold/frames/level0.npz",
+            "bytes": 10468756,
+            "sha256": "459b26edb01d0c28de1bef05ab827f43cd4a39b34175f10b70a2a581bfc1f3ba"
+          },
+          "minimum_position_m": [
+            -0.022093097662623424,
+            -0.022088250824310814,
+            -0.02977821124275109
+          ],
+          "maximum_position_m": [
+            0.02209309766026742,
+            0.022088250824374215,
+            0.029721540161074922
+          ],
+          "mass_center_displacement_m": [
+            2.262088295342979e-16,
+            1.2233857708245893e-15,
+            -2.8386431218609007e-05
+          ],
+          "maximum_displacement_m": 2.8515568548706816e-05,
+          "rotation_rad": 2.1073424255447017e-08,
+          "rotation_matrix": [
+            [
+              1.0,
+              6.0472274634684865e-09,
+              3.6738320336836146e-10
+            ],
+            [
+              -6.047227450685948e-09,
+              0.9999999999999997,
+              -9.970749367523923e-12
+            ],
+            [
+              -3.67383203430493e-10,
+              9.970747139422344e-12,
+              0.9999999999999999
+            ]
+          ],
+          "maximum_corotated_displacement_m": 2.4073163363766414e-07,
+          "lower_vertical_half_thickness_envelope_gap_m": -6.2112427510890855e-06,
+          "upper_vertical_half_thickness_envelope_gap_m": -6.574197411460736e-06,
+          "contact_force_l2_n": 0.005352529086826918,
+          "equation_residual_l2_n": 1.9769613557176843e-10
+        }
+      ],
+      "equilibrium_windows": [
+        {
+          "level": 0,
+          "command_force_n": 0.1,
+          "samples": 51,
+          "failed_steps_in_level": 0,
+          "maximum_equation_residual_contact_relative": 3.859758005324129e-08,
+          "maximum_inertia_resultant_bound_n": 2.672832048577344e-08,
+          "maximum_plate_speed_m_per_s": 9.645746641174337e-12,
+          "maximum_kinetic_j": 7.292588870891168e-21,
+          "checks": {
+            "both_plate_reactions": true,
+            "plate_velocity": true,
+            "egg_inertial_resultant": true,
+            "egg_kinetic": true,
+            "equation_residual": true,
+            "physical_pad_law_and_transfer": true
+          },
+          "mechanical_window_passed": true,
+          "physical_accuracy_qualified": false
+        }
+      ]
+    }
+  ],
+  "scope": "End-position envelope gaps use vertical half-thickness offsets, a conservative diagnostic rather than exact face-offset distances. Zero reaction with overlap requires contact/solver investigation; it cannot be admitted from a zero failure flag."
+}

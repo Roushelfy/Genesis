@@ -1,0 +1,82 @@
+diff --git a/genesis/engine/solvers/shell_solver.py b/genesis/engine/solvers/shell_solver.py
+index 61c2e7e29..4b4f44c29 100644
+--- a/genesis/engine/solvers/shell_solver.py
++++ b/genesis/engine/solvers/shell_solver.py
+@@ -552,7 +552,12 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
+             self._contact_stiffness,
+             self._contact_pad_stiffness if self._contact_pad_stiffness is not None else 0.0,
+         )
+-        kernel_shell_rigid_contact_solve(
++        contact_solve = (
++            kernel_shell_rigid_contact_capture
++            if self._sim.cur_substep_global == 39
++            else kernel_shell_rigid_contact_solve
++        )
++        contact_solve(
+             self._substep_dt,
+             self._shell_contact.newton_flag,
+             self._shell_scratch.pcg_flag,
+@@ -4747,6 +4752,63 @@ def func_contact_continue(newton_flag: qd.types.ndarray(qd.i32, ndim=0), shell_s
+         newton_flag[()] = qd.i32(shell_scratch.n_envs_needs_solve[None] > 0)
+ 
+ 
++@qd.kernel(graph=True)
++def kernel_shell_rigid_contact_capture(
++    dt: float,
++    newton_flag: qd.types.ndarray(qd.i32, ndim=0),
++    pcg_flag: qd.types.ndarray(qd.i32, ndim=0),
++    line_flag: qd.types.ndarray(qd.i32, ndim=0),
++    shell_state: array_class.ShellState,
++    shell_scratch: array_class.ShellScratch,
++    shell_contact: array_class.ShellContactScratch,
++    dyn_state: array_class.DynState,
++    shell_info: array_class.ShellInfo,
++    dyn_info: array_class.DynInfo,
++    rigid_info: array_class.RigidInfo,
++    shell_static_config: qd.template(),
++    rigid_config: qd.template(),
++    max_newton_iterations: int,
++    max_iterations: int,
++    contact_stiffness: float,
++    tolerance: float,
++    velocity_tolerance: float,
++    errno: qd.Tensor,
++):
++    """Diagnostic substep40 only: retain its first linear system before line search."""
++    for _ in range(1):
++        newton_flag[()] = 1
++    while qd.graph.do_while(newton_flag):
++        func_contact_linearize(
++            dt,
++            shell_scratch,
++            shell_contact,
++            shell_static_config,
++            contact_stiffness,
++            velocity_tolerance,
++            max_newton_iterations,
++        )
++        func_contact_assemble(shell_state, shell_scratch, shell_contact, dyn_info, rigid_info, shell_static_config)
++        func_pcg_prepare(shell_state, shell_scratch, shell_static_config, tolerance, velocity_tolerance)
++        while qd.graph.do_while(pcg_flag):
++            func_system_contact_product(
++                shell_state, shell_scratch, shell_contact, shell_info, dyn_info, rigid_info, shell_static_config
++            )
++            func_contact_schur_product(
++                shell_state, shell_scratch, shell_contact, dyn_info, rigid_info, shell_static_config
++            )
++            func_pcg_residual(shell_state, shell_scratch, shell_info, shell_static_config)
++            if qd.static(shell_static_config.has_fixed_point_sums):
++                func_pcg_norms(shell_state, shell_scratch, shell_info, shell_static_config)
++            if qd.static(shell_static_config.has_coarse_space):
++                func_pcg_coarse_solve(shell_state, shell_scratch, shell_info, shell_static_config)
++            func_pcg_decide(
++                pcg_flag, shell_state, shell_scratch, shell_info, shell_static_config, max_iterations, errno
++            )
++            func_pcg_advance(shell_state, shell_scratch, shell_info, shell_static_config)
++        for _ in range(1):
++            newton_flag[()] = 0
++
++
+ @qd.kernel(graph=True)
+ def kernel_shell_rigid_contact_solve(
+     dt: float,

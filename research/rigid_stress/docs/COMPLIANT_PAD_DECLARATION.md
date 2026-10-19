@@ -73,6 +73,37 @@ trajectories, matched-centroid static controls and high-order reference
 comparisons must retain those distinctions. Normal histories do not yet
 qualify sustained friction or a spatially resolved reference.
 
+For the sustained-friction extension, fix Coulomb coefficient0.3 and smoothed
+slip speed `epsilon=1e-4m/s` before evaluating fields. The isolated engine pin
+is `4ce5542f9`, based on normal-pad pin `41b2a57be`; its
+[incremental patch](../shell_comparison/patches/shell_pad_friction.patch)
+includes the analytical regression. Retain the existing
+potential shape: tangential traction magnitude is `mu*p*(2*s-s^2)` for
+`s=|v_t|/epsilon < 1`, and `mu*p` otherwise, opposing slip. The normal pressure
+bound is lagged by one substep as in the original coupled solver; verify its
+equilibrium consistency and timestep dependence separately. The physical-pad
+branch must keep epsilon independent of dt. Its old stiffness-based widening
+would give `epsilon=max(1e-4, 2*mu*compression/dt)`, since pad stiffness is
+stored as `dt^2*k_A*area`; that is a different, timestep-dependent friction law.
+Keep the original hard-contact rule unchanged and identify the new pad variant.
+
+Use uniform horizontal gravity `g_x=1m/s^2` on the free egg, starting from the
+normal0.1N hold, with stationary horizontal plate coordinates. This supplies
+a sustained tangential load without vertex pins or an artificial torque
+constraint. Apply the same mass-proportional body load in each reference and
+recovery method, and verify net force/moment, local friction law, actual
+nonzero shear reactions and inertial terms. Small steady creep is expected
+under the declared smooth friction law; it is not zero-velocity equilibrium.
+Admit its measured stationary response only with explicit drift/rotation,
+kinetic and timestep checks. Extend to other loads after the first admitted
+case. This declaration does not claim that the friction extension has passed.
+
+A free flat sheet with horizontal/vertical gravity ratio `r < mu` supplies an
+analytic control: normal compression is `rho*h*g_z/k_A`, horizontal reaction
+is `-mass*g_x`, and steady slip speed is
+`epsilon*(1-sqrt(1-r/mu))`, independent of timestep. Compare1ms and2ms with
+the same physical data, retaining the old widening rule as a negative control.
+
 The force-per-area spring convention is documented in
 [Spring Foundation and Thin Elastic Layer](https://doc.comsol.com/6.3/doc/com.comsol.help.sme/sme_ug_theory.06.068.html).
 This declaration specifies the benchmark's ideal constitutive law; no COMSOL

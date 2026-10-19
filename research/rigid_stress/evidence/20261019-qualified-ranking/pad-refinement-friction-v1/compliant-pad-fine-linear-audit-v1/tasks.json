@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "name": "fine",
+      "module": "research.rigid_stress.qipc_comparison.audit_shell_linear",
+      "args": [
+        "--field",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-linear-capture-v3/group0/capture/frozen-linear.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "original-control",
+      "module": "research.rigid_stress.qipc_comparison.audit_shell_linear",
+      "args": [
+        "--field",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/shell-linear-capture-v1/group1/floating/frozen-linear.npz"
+      ]
+    }
+  ]
+]

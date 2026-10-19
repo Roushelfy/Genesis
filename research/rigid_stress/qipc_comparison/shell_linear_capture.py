@@ -7,7 +7,7 @@ from genesis.utils.misc import qd_to_numpy
 from .artifacts import file_id, write_json
 
 
-def capture(solver, rigid_solver, output):
+def capture(solver, rigid_solver, output, physical_pad=False, step=1):
     state, scratch, info = solver.shell_state, solver._shell_scratch, solver.shell_info
     contact = solver._shell_contact
     corners = qd_to_numpy(state.corners_vert, transpose=True)[0]
@@ -30,6 +30,10 @@ def capture(solver, rigid_solver, output):
         if tree >= 0:
             global_jacobian[index, starts[tree] : starts[tree] + counts[tree]] = jacobian[index, : counts[tree]]
     entity = qd_to_numpy(info.faces_entity, transpose=True)
+    bary = qd_to_numpy(contact.contacts_bary, transpose=True)[0, slots]
+    shell_jacobian = bary[:, :, None, None] * np.eye(3)
+    if physical_pad:
+        shell_jacobian = qd_to_numpy(contact.faces_pad_jacobian, transpose=True).transpose(1, 0, 2, 3)[slots // 2]
     path = output / "frozen-linear.npz"
     np.savez_compressed(
         path,
@@ -50,7 +54,8 @@ def capture(solver, rigid_solver, output):
         hinge_gradient=qd_to_numpy(scratch.hinges_grad, transpose=True)[0],
         hinge_scale=qd_to_numpy(scratch.hinges_stiffness, transpose=True)[0],
         contact_faces=slots // 2,
-        contact_bary=qd_to_numpy(contact.contacts_bary, transpose=True)[0, slots],
+        contact_bary=bary,
+        contact_shell_jacobian=shell_jacobian,
         contact_hessian=qd_to_numpy(contact.contacts_hessian, transpose=True)[0, slots],
         contact_jacobian=global_jacobian,
         schur_inverse=inverse,
@@ -59,6 +64,8 @@ def capture(solver, rigid_solver, output):
         output / "frozen-linear.json",
         {
             "field": file_id(path),
+            "step": step,
+            "physical_pad": physical_pad,
             "contact_newton_iterations": qd_to_numpy(contact.envs_n_newton_iterations, transpose=True).tolist(),
             "linear_iterations": qd_to_numpy(scratch.envs_n_solve_iterations, transpose=True).tolist(),
             "linear_mode": qd_to_numpy(scratch.envs_pcg_mode, transpose=True).tolist(),
@@ -66,7 +73,7 @@ def capture(solver, rigid_solver, output):
             "relative_threshold": qd_to_numpy(scratch.envs_residual_threshold, transpose=True).tolist(),
             "velocity_threshold": qd_to_numpy(scratch.envs_vel_error_threshold, transpose=True).tolist(),
             "last_checked_residual": qd_to_numpy(scratch.envs_residual_checked, transpose=True).tolist(),
-            "scope": "Diagnostic first Newton linear system. The source pin stops before contact line search; "
+            "scope": "Diagnostic first Newton linear system of the selected substep. The source pin stops before contact line search; "
             "its returned physical state is not an admitted trajectory. Cached tangents, RHS and PCG iterate are retained.",
         },
     )

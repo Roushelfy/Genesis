@@ -1,0 +1,106 @@
+[
+  [
+    {
+      "name": "geometry",
+      "module": "research.rigid_stress.qipc_comparison.prepare_shell_pad",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-land-mesh-v1/group0/meshes/land-contact-1.npz"
+      ]
+    },
+    {
+      "name": "cycle",
+      "module": "research.rigid_stress.qipc_comparison.plate_shell_coupled",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-physical-pad",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-land-mesh-v1/group0/meshes/land-contact-1.npz",
+        "--pad-geometry",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-shell-spatial-v2/group0/geometry/pad-geometry.npz",
+        "--loads",
+        "0.1",
+        "0.3",
+        "1",
+        "0.3",
+        "0.1",
+        "--dt",
+        "0.001",
+        "--ramp",
+        "0.05",
+        "--hold",
+        "0.15",
+        "--record-stride",
+        "1",
+        "--tolerance",
+        "1e-4",
+        "--velocity-tolerance",
+        "1e-10",
+        "--iterations",
+        "8000",
+        "--coarse-patches",
+        "0",
+        "--floating-sums"
+      ]
+    },
+    {
+      "name": "audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_coupled_shell",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-shell-spatial-v2/group0/cycle"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "geometry",
+      "module": "research.rigid_stress.qipc_comparison.prepare_shell_pad",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz"
+      ]
+    },
+    {
+      "name": "cycle",
+      "module": "research.rigid_stress.qipc_comparison.plate_shell_coupled",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-physical-pad",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+        "--pad-geometry",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-shell-spatial-v2/group1/geometry/pad-geometry.npz",
+        "--loads",
+        "0.1",
+        "0.3",
+        "1",
+        "0.3",
+        "0.1",
+        "--dt",
+        "0.001",
+        "--ramp",
+        "0.05",
+        "--hold",
+        "0.15",
+        "--record-stride",
+        "1",
+        "--tolerance",
+        "1e-4",
+        "--velocity-tolerance",
+        "1e-10",
+        "--iterations",
+        "8000",
+        "--coarse-patches",
+        "0",
+        "--floating-sums"
+      ]
+    },
+    {
+      "name": "audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_coupled_shell",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-shell-spatial-v2/group1/cycle"
+      ]
+    }
+  ]
+]
