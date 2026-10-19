@@ -1,4 +1,4 @@
-"""Integrate P1 contact-field differences exactly through each shared material column."""
+"""Integrate affine P1/P2 contact-field differences exactly through shared material columns."""
 
 import argparse
 from dataclasses import dataclass
@@ -17,6 +17,9 @@ class ColumnField:
     weights: np.ndarray
     layers: int
     n_faces: int
+    tetrahedra: np.ndarray
+    n_surface_vertices: int
+    sorted_faces: np.ndarray
 
     def breaks(self):
         boundaries = [np.zeros(len(self.selected))]
@@ -37,7 +40,34 @@ class ColumnField:
         local = depth * self.layers - layer
         kind = (local >= self.weights[:, 2]).astype(int) + (local >= self.weights[:, 1:].sum(axis=1))
         elements = (3 * layer + kind) * self.n_faces + self.selected
-        return basis.transpose(0, 2, 1) @ self.stress[elements] @ basis
+        tensor = self.stress[elements]
+        if self.stress.ndim == 4:
+            # Barycentric weights in the sorted-column prism, in its actual tetrahedron ordering.
+            node = self.tetrahedra[elements]
+            column = node % self.n_surface_vertices
+            lower_rank = (column[:, :, None] == self.sorted_faces[self.selected, None, :]).argmax(axis=2)
+            local_vertex = node // self.n_surface_vertices - layer[:, None]
+            w0, w1, w2 = self.weights.T
+            bary = np.zeros_like(node, dtype=float)
+            for corner in range(4):
+                rank, upper = lower_rank[:, corner], local_vertex[:, corner]
+                bary[:, corner] = np.where(
+                    kind == 0,
+                    np.where(upper == 1, local, np.where(rank == 0, w0, np.where(rank == 1, w1, w2 - local))),
+                    np.where(
+                        kind == 1,
+                        np.where(
+                            rank == 0, w0, np.where(rank == 2, w2, np.where(upper == 1, local - w2, w1 + w2 - local))
+                        ),
+                        np.where(
+                            upper == 0, 1 - local, np.where(rank == 0, local - w1 - w2, np.where(rank == 1, w1, w2))
+                        ),
+                    ),
+                )
+            np.testing.assert_allclose(bary.sum(axis=1), 1, atol=1e-10)
+            assert bary.min() >= -1e-9
+            tensor = np.einsum("qc,qcij->qij", bary, tensor)
+        return basis.transpose(0, 2, 1) @ tensor @ basis
 
 
 def main():
@@ -81,17 +111,32 @@ def main():
                 stress = saved["stress_pa"]
             selected, weights = material_faces(outer, faces, direction, material_unit)
             weights = np.take_along_axis(weights, np.argsort(faces[selected], axis=1), axis=1)
-            fields.append(ColumnField(stress, selected, weights, len(vertices) // len(outer) - 1, len(faces)))
-            dev = stress - np.trace(stress, axis1=-2, axis2=-1)[:, None, None] * np.eye(3) / 3
-            mises = np.sqrt(1.5 * (dev * dev).sum(axis=(1, 2)))
-            peak = mises.argmax()
+            fields.append(
+                ColumnField(
+                    stress,
+                    selected,
+                    weights,
+                    len(vertices) // len(outer) - 1,
+                    len(faces),
+                    tets,
+                    len(outer),
+                    np.sort(faces, axis=1),
+                )
+            )
+            dev = stress - np.trace(stress, axis1=-2, axis2=-1)[..., None, None] * np.eye(3) / 3
+            mises = np.sqrt(1.5 * (dev * dev).sum(axis=(-2, -1)))
+            if stress.ndim == 3:
+                peak_position = vertices[tets[mises.argmax()]].mean(axis=0)
+            else:
+                element, corner = np.unravel_index(mises.argmax(), mises.shape)
+                peak_position = vertices[tets[element, corner]]
             raw.append(
                 {
                     "mesh": file_id(mesh),
                     "field": file_id(path),
-                    "raw_maximum_mises_pa": float(mises[peak]),
-                    "raw_maximum_tension_pa": float(np.linalg.eigvalsh(stress)[:, -1].max()),
-                    "raw_peak_position_m": vertices[tets[peak]].mean(axis=0).tolist(),
+                    "raw_maximum_mises_pa": float(mises.max()),
+                    "raw_maximum_tension_pa": float(np.linalg.eigvalsh(stress)[..., -1].max()),
+                    "raw_peak_position_m": peak_position.tolist(),
                 }
             )
         comparisons = []
@@ -105,13 +150,15 @@ def main():
             for lower, upper in zip(breaks[:-1], breaks[1:]):
                 midpoint = (lower + upper) / 2
                 width = upper - lower
-                a, r = actual.sample(midpoint, basis), reference.sample(midpoint, basis)
-                weight = width * area
-                error_by_column += np.einsum("qij,qij,q->q", a - r, a - r, weight)
-                reference_by_column += np.einsum("qij,qij,q->q", r, r, weight)
-                values = np.stack((a, r))
-                membrane += values * width[None, :, None, None] * 0.0005
-                bending += values * (width * (0.5 - midpoint))[None, :, None, None] * 0.0005**2
+                for offset in (-1 / np.sqrt(3), 1 / np.sqrt(3)):
+                    depth = midpoint + offset * width / 2
+                    a, r = actual.sample(depth, basis), reference.sample(depth, basis)
+                    weight = width * area / 2
+                    error_by_column += np.einsum("qij,qij,q->q", a - r, a - r, weight)
+                    reference_by_column += np.einsum("qij,qij,q->q", r, r, weight)
+                    values = np.stack((a, r))
+                    membrane += values * width[None, :, None, None] / 2 * 0.0005
+                    bending += values * (width / 2 * (0.5 - depth))[None, :, None, None] * 0.0005**2
             differences = []
             for values in (membrane, bending):
                 difference = values[0] - values[1]
@@ -169,7 +216,7 @@ def main():
             "identity": runtime_identity(),
             "cases": rows,
             "physical_reference_qualified": False,
-            "scope": "Exact integration of piecewise-constant P1 stress along material columns, including unioned "
+            "scope": "Exact integration of piecewise-constant P1 or piecewise-linear P2 stress along material columns, including unioned "
             "tetrahedron partitions for squared field differences and analytic membrane/bending moments. "
             "Angular material rays, geometry mapping and finest-face centroid area quadrature remain "
             "unchanged from the midpoint control. No polar trim, peak smoothing or selected depth samples.",

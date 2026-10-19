@@ -68,14 +68,30 @@ def main():
     cli.add_argument("--loads", type=float, nargs="+", default=[0.1, 0.3, 1.0])
     cli.add_argument("--candidate-radius", type=float, default=0.0002)
     cli.add_argument("--column-ordering", action="store_true")
+    cli.add_argument("--element-order", type=int, choices=(1, 2), default=1)
+    cli.add_argument("--continuous-quadratic-contact", action="store_true")
     cli.add_argument("--contact-operator", type=Path)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
+    assert not args.continuous_quadratic_contact or args.element_order == 2
     args.output.mkdir(parents=True, exist_ok=False)
     start = time.perf_counter()
     with np.load(args.mesh) as saved:
         vertices, tets, outer, faces = (saved[key] for key in ("vertices", "tetrahedra", "outer_vertices", "mid_faces"))
     center = vertices.mean(axis=0)
+    model_class = FreeElasticP1
+    if args.element_order == 2:
+        from .p2_elastic import FreeElasticP2, quadratic_triangle_minimum
+
+        model_class = FreeElasticP2
+    write_json(args.output / "assembly.json", {"element_order": args.element_order, "mesh": file_id(args.mesh)})
+    model = model_class(vertices, tets, 1e10, 0.3, 2000.0, column_faces=faces if args.column_ordering else None)
+    outer_nodes = np.arange(len(outer))
+    if args.element_order == 2:
+        outer_nodes, faces, quadratic_faces = model.surface(faces)
+        vertices = model.vertices
+        outer = vertices[outer_nodes]
+
     radius = np.linalg.norm(outer[:, :2], axis=1)
     nodes = np.flatnonzero(radius <= args.candidate_radius)
     sign = np.where(outer[nodes, 2] < 0, 1.0, -1.0)
@@ -97,14 +113,15 @@ def main():
             "candidate_nodes": len(nodes),
             "tetrahedra": len(tets),
             "loads_n": args.loads,
+            "element_order": args.element_order,
         },
     )
-    model = FreeElasticP1(vertices, tets, 1e10, 0.3, 2000.0, column_faces=faces if args.column_ordering else None)
     factor_seconds = time.perf_counter() - start
     compliance = np.empty((len(nodes), len(nodes)))
     if args.contact_operator is not None:
         previous = json.loads((args.contact_operator.parent / "start.json").read_text())
         assert previous["mesh"]["sha256"] == file_id(args.mesh)["sha256"]
+        assert previous.get("element_order", 1) == args.element_order
         with np.load(args.contact_operator) as saved:
             for key, expected in (("nodes", nodes), ("sign", sign), ("rigid", rigid), ("initial_gap_m", initial_gap)):
                 np.testing.assert_array_equal(saved[key], expected)
@@ -113,12 +130,12 @@ def main():
         for first in range(0, len(nodes), 16) if args.contact_operator is None else ():
             selected = slice(first, first + 16)
             force = np.zeros((3 * len(vertices), len(nodes[selected])))
-            force[3 * nodes[selected] + 2, np.arange(len(nodes[selected]))] = sign[selected]
+            force[3 * outer_nodes[nodes[selected]] + 2, np.arange(len(nodes[selected]))] = sign[selected]
             corrected = force - model.mass_modes @ np.linalg.solve(model.gram, model.rigid_modes.T @ force)
             displacement = np.zeros_like(force)
             displacement[model.free] = model.factor.solve(corrected[model.free] / model.young)
             displacement -= model.rigid_modes @ np.linalg.solve(model.gram, model.mass_modes.T @ displacement)
-            compliance[:, selected] = sign[:, None] * displacement[3 * nodes + 2]
+            compliance[:, selected] = sign[:, None] * displacement[3 * outer_nodes[nodes] + 2]
             journal.write(
                 json.dumps(
                     {"condensed_columns": min(first + 16, len(nodes)), "elapsed_seconds": time.perf_counter() - start}
@@ -153,34 +170,58 @@ def main():
                 constraints={"type": "eq", "fun": lambda x: rigid.T @ x - target, "jac": lambda x: rigid.T},
                 options={"ftol": 1e-12, "maxiter": 1000},
             )
-            minimum = active_contact_minimum(matrix, gap, rigid, target, fitted.x)
-            alpha, active, rank = minimum.force, minimum.active, minimum.rank
+            interpolation = np.eye(len(nodes))
+            constraint_rounds, continuous_converged = 0, True
+            if args.continuous_quadratic_contact:
+                from .quadratic_contact import quadratic_contact_minimum
+
+                candidate_map = np.full(len(vertices), -1, dtype=int)
+                candidate_map[outer_nodes[nodes]] = np.arange(len(nodes))
+                candidate_faces = candidate_map[quadratic_faces]
+                candidate_faces = candidate_faces[(candidate_faces >= 0).all(axis=1)]
+                continuous = quadratic_contact_minimum(
+                    matrix, gap, rigid, target, fitted.x, candidate_faces, active_contact_minimum, journal
+                )
+                minimum, interpolation = continuous.minimum, continuous.interpolation
+                constraint_rounds, continuous_converged = continuous.rounds, continuous.converged
+            else:
+                minimum = active_contact_minimum(matrix, gap, rigid, target, fitted.x)
+            alpha = interpolation.T @ minimum.force
+            active = alpha > 0 if args.continuous_quadratic_contact else minimum.active
+            rank = minimum.rank
             coordinate = minimum.coordinates * displacement_scale
             forces = np.zeros_like(vertices)
-            forces[nodes, 2] = alpha * load * sign
+            forces[outer_nodes[nodes], 2] = alpha * load * sign
             tensor, elastic, correction, residual = model.solve(forces)
             displacement = elastic.copy()
             displacement[:, 2] += coordinate[0]
             displacement += np.cross(np.array([coordinate[1] / lever, coordinate[2] / lever, 0.0]), vertices - center)
-            all_bottom_gap = outer[:, 2] + displacement[: len(outer), 2] - outer[:, 2].min()
-            all_top_gap = outer[:, 2].max() + coordinate[3] - outer[:, 2] - displacement[: len(outer), 2]
+            all_bottom_gap = outer[:, 2] + displacement[outer_nodes, 2] - outer[:, 2].min()
+            all_top_gap = outer[:, 2].max() + coordinate[3] - outer[:, 2] - displacement[outer_nodes, 2]
             actual_gap = np.where(top, all_top_gap[nodes], all_bottom_gap[nodes])
             eig = np.linalg.eigvalsh(tensor)
-            dev = tensor - np.trace(tensor, axis1=-2, axis2=-1)[:, None, None] * np.eye(3) / 3
-            mises = np.sqrt(1.5 * (dev * dev).sum(axis=(1, 2)))
-            gradient = np.einsum("tai,taj->tij", displacement[tets], model.gradients)
+            dev = tensor - np.trace(tensor, axis1=-2, axis2=-1)[..., None, None] * np.eye(3) / 3
+            mises = np.sqrt(1.5 * (dev * dev).sum(axis=(-2, -1)))
+            gradient = model.displacement_gradient(displacement)
             reaction_error = np.linalg.norm(rigid.T @ alpha - target)
             equation_error = np.linalg.norm(residual) / np.linalg.norm(forces)
             balance_correction = np.linalg.norm(correction) / np.linalg.norm(forces)
             minimum_gap = min(all_bottom_gap.min(), all_top_gap.min())
-            contact_error = np.abs(actual_gap[active]).max() / displacement_scale
+            if args.element_order == 2:
+                local_faces = np.searchsorted(outer_nodes, quadratic_faces)
+                minimum_gap = min(
+                    quadratic_triangle_minimum(all_bottom_gap[local_faces]).min(),
+                    quadratic_triangle_minimum(all_top_gap[local_faces]).min(),
+                )
+            contact_error = np.abs((interpolation @ actual_gap)[minimum.active]).max() / displacement_scale
             admitted = bool(
                 minimum.converged
-                and rank == active.sum() + 4
+                and continuous_converged
+                and rank == minimum.active.sum() + 4
                 and reaction_error < 1e-8
                 and equation_error < 1e-7
                 and balance_correction < 1e-8
-                and alpha.min() >= -1e-10
+                and minimum.force.min() >= -1e-10
                 and minimum_gap >= -1e-7 * displacement_scale
                 and contact_error < 1e-7
             )
@@ -188,6 +229,9 @@ def main():
             np.savez_compressed(
                 path,
                 vertices_m=vertices,
+                outer_nodes=outer_nodes,
+                outer_subtriangles=faces,
+                element_order=args.element_order,
                 tetrahedra=tets,
                 displacement_m=displacement,
                 elastic_displacement_m=elastic,
@@ -199,6 +243,9 @@ def main():
                 equation_residual_n=residual,
                 candidate_nodes=nodes,
                 contact_alpha=alpha,
+                contact_constraint_interpolation=interpolation,
+                contact_compressive_multipliers=minimum.force,
+                contact_constraint_points_m=interpolation @ outer[nodes],
                 rigid_coordinates_m=coordinate,
             )
             footprints = []
@@ -212,14 +259,35 @@ def main():
                     ).sum()
                     / 2
                 )
-                footprints.append(
-                    {
-                        "upper": upper,
-                        "positive_force_nodes": int((chosen & (alpha > 0)).sum()),
-                        "maximum_radius_m": float(radius[nodes[chosen]].max()),
-                        "fully_active_face_area_m2": float(area),
-                    }
-                )
+                footprint = {
+                    "upper": upper,
+                    "positive_force_nodes": int((chosen & (alpha > 0)).sum()),
+                    "maximum_radius_m": float(radius[nodes[chosen]].max()),
+                    "fully_active_face_area_m2": float(area),
+                }
+                if args.continuous_quadratic_contact:
+                    # P2 shape functions can give negative consistent nodal forces;
+                    # their sign is not the physical multiplier's sign or support.
+                    footprint["fully_positive_nodal_force_face_area_m2"] = footprint.pop("fully_active_face_area_m2")
+                    point = interpolation @ outer[nodes]
+                    point_top = point[:, 2] > center[2]
+                    carried = (point_top == upper) & (minimum.force > 0)
+                    footprint["compressive_constraint_points"] = int(carried.sum())
+                    footprint["maximum_constraint_radius_m"] = float(np.linalg.norm(point[carried, :2], axis=1).max())
+                    gaps = (all_top_gap if upper else all_bottom_gap)[local_faces]
+                    closed = -quadratic_triangle_minimum(-gaps) <= 1e-7 * displacement_scale
+                    triangle = vertices[quadratic_faces[:, :3]]
+                    closed &= (triangle[:, :, 2].mean(axis=1) > center[2]) == upper
+                    footprint["fully_closed_quadratic_face_area_m2"] = float(
+                        np.linalg.norm(
+                            np.cross(
+                                triangle[closed, 1] - triangle[closed, 0], triangle[closed, 2] - triangle[closed, 0]
+                            ),
+                            axis=1,
+                        ).sum()
+                        / 2
+                    )
+                footprints.append(footprint)
             row = {
                 "load_n": load,
                 "linear_contact_equations_admitted": admitted,
@@ -231,17 +299,19 @@ def main():
                 "optimizer_message": str(fitted.message),
                 "optimizer_iterations": fitted.nit,
                 "active_kkt_rank": int(rank),
-                "active_kkt_dimension": int(active.sum() + 4),
+                "active_kkt_dimension": int(minimum.active.sum() + 4),
+                "continuous_constraint_rounds": constraint_rounds,
+                "continuous_constraints_converged": continuous_converged,
                 "force_moment_constraint_relative_error": float(reaction_error),
                 "equation_relative_residual": float(equation_error),
                 "balance_correction_relative": float(balance_correction),
-                "minimum_compression_fraction": float(alpha.min()),
+                "minimum_compression_fraction": float(minimum.force.min()),
                 "minimum_global_gap_m": float(minimum_gap),
                 "active_contact_gap_relative": float(contact_error),
                 "plate_travel_m": float(-coordinate[3]),
-                "raw_maximum_tension_pa": float(eig[:, -1].max()),
+                "raw_maximum_tension_pa": float(eig[..., -1].max()),
                 "raw_maximum_mises_pa": float(mises.max()),
-                "maximum_displacement_gradient": float(np.linalg.norm(gradient, axis=(1, 2)).max()),
+                "maximum_displacement_gradient": float(np.linalg.norm(gradient, axis=(-2, -1)).max()),
                 "deformed_total_moment_nm": np.cross(vertices + displacement, forces).sum(axis=0).tolist(),
                 "footprints": footprints,
                 "solve_seconds": time.perf_counter() - solve_start,
@@ -261,9 +331,16 @@ def main():
             "peak_rss_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
             "compliance_reciprocity_error": float(reciprocity),
             "cases": rows,
-            "scope": "Independent small-strain P1 elastic, frictionless nodal complementarity control. "
+            "element_order": args.element_order,
+            "continuous_quadratic_contact": args.continuous_quadratic_contact,
+            "scope": "Independent small-strain affine-tetrahedron elasticity, frictionless nodal complementarity control. "
+            "P1 stress is constant per tetrahedron; P2 stress is linear and retained at all four corners, "
+            "including raw extrema. P2 contact includes original vertices and affine edge midpoints; "
+            "its gap admission checks exact quadratic minima across every outer triangle. "
             "No physical egg vertex pins: factorization gauges are removed, balance corrections "
             "are measured, vertical translation and two tilts are solved as physical unknowns. "
+            "With continuous P2 constraints, consistent nodal load signs are separate from the nonnegative "
+            "physical point multipliers; positive-nodal-force and fully-closed-face areas are separate diagnostics. "
             "Full-surface gap is checked beyond the candidate patch. This is not yet a qualified "
             "finite-deformation or continuum contact reference. Footprint area counts only faces "
             "with all three nodes active, not an interpolated pressure-support assertion.",

@@ -461,3 +461,58 @@ peaks**. This configuration is mechanically settled but not yet admitted for
 timestep-independent stress ranking. `land-shell-quarter-dt-v1` tests the next
 half-step on the same physical history; its result must not be inferred from
 the passing peak comparison.
+
+
+## Quadratic independent elasticity and continuous surface-gap constraints
+
+The independent reference now has an explicit `--element-order 2` option using
+scikit-fem affine P2 tetrahedra, consistent mass and all six rigid gauge modes.
+The existing P1 path remains the default. Ordered and unordered constant-stress
+and exact pure-bending controls (`727567`, repeated with column interpolation
+controls in `727571`) have stress errors below8.5e-14, equation errors below
+5.2e-14 and negligible balancing corrections. The gap oracle is checked on
+quadratic faces whose six nodal gaps are positive but whose interior penetrates.
+Prism-column interpolation is checked at37 depths for1/2/4 layers, including
+orientation changes. `contact-order-controls-v1` reruns the original P1 case;
+`contact-p2-continuous-v1/group1/p1-unchanged` retains its complete-field
+comparison, so the new optional order does not silently replace old results.
+
+`contact-p2-pilot-v1` (`727567`) uses the original coarse projected surface with
+one quadratic wall layer. Nodal contact alone has1.24e-12 equation residual but
+2.014e-9m penetration inside a quadratic triangle and is **rejected**. The
+optional `--continuous-quadratic-contact` path repeatedly adds the exact
+most-penetrating point of every affected face, using the same P2 interpolation
+for the gap and the dual compressive force. All added compliance rows are exact
+interpolations of the retained nodal operator; no additional elasticity solve
+or fitted pressure radius is introduced.
+
+The first constraint-generation run (`727572_0`) reduces penetration to
+1.166e-15m but fails the unchanged full-rank gate (rank31/dimension32).
+`contact-p2-continuous-v2` (`727580`) removes one near-coincident generated
+constraint, solves again and rechecks the entire quadratic boundary. Round13
+has rank31/dimension31,1.31e-12 equation residual,1.19e-15 relative wrench
+error, nonnegative physical multipliers and minimum gap-1.164e-15m. It passes
+all algebraic/contact gates without changing thresholds. The raw von Mises
+peak is17.07148MPa, raw tensile peak7.52946MPa and plate travel0.782235um.
+The failed nodal and rank-deficient variants remain separate retained runs.
+
+`contact-p2-support-v1` (`727602`) independently verifies the P2 dual load
+transfer, including moment error below1e-22Nm. Physical load support is defined
+by the nonnegative *constraint-point* multipliers, not by signs of consistent
+P2 nodal forces. The latter can be negative and cannot identify pressure
+support. The older P2 pilot's `fully_active_face_area_m2` is only the area of
+subtriangles whose nodal force weights are positive; it is not a resolved
+pressure-footprint measurement. Current output names this distinction explicitly.
+The support audit finds19 lower and8 upper compressive points, maximum radii
+31.86um and8.436um respectively; fully closed quadratic-face area is2.429e-9m²
+below and **zero above**. Both reactions equal0.1N. This is not a resolved
+finite-area continuum reference despite passing the discrete equations.
+
+`contact-p2-wall-v1` (`727596`) isolates one-to-two quadratic wall layers on the
+same projected surface and uses exact two-point Gauss integration on the
+unioned tetrahedral column intervals. This integrates squared linear stresses
+and their membrane/bending moments exactly through the retained affine elements;
+raw extrema are retained at every tetrahedron corner. The separate P1-four-
+layer/P2-one-layer comparison changes tangent stress32.08%, membrane24.52% and
+bending23.42%, so no cross-order agreement is claimed. Spatial/contact and wall
+convergence, finite-deformation checks and all three-method ranks remain open.
