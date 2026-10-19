@@ -52,6 +52,16 @@ full-field equivalence controls. See the
 for true250um Shell friction timestep/mesh controls and complete B1/B4 memory
 receipts. Runtime outputs and logs remain on data.
 
+The separately validated `--reuse-contact-velocity` option requires the modal
+solver and avoids a duplicate factor solve by reusing its full compliance
+response. Retain the complete physical equation/momentum and field-equivalence
+gates; see the [control and friction cost report](FRICTION_KEYFRAME_COST_REUSE_20261019.md).
+For the matched friction keyframe cost, captured tasks use five0.1N levels,
+`--primary-cost --cost-warm-levels 2 --stress-stride 200 --stress-output full`.
+Every-step native failures remain distinct configurations. `inspect_pad_rejection`
+accepts an optional `--mesh` and `--radius` for a conservative source-cone
+certificate, including immutable before-call inputs with unknown native status.
+
 `pad_cost_matrix --data-root RUN_ROOT --batch-sizes 1 4 --output NEW_DATA_PATH`
 joins the completed primary/memory cases only after verifying their exact
 own-run audits, source receipts and physical/hardware configuration match.
@@ -161,6 +171,12 @@ into home. Task JSON includes exact absolute paths, modules and arguments.
 Use fresh output names. The helper rejects existing destinations; change a
 suffix for another rerun. It owns cache/log paths and removes private node-local
 caches. No `--allow-home-output` is needed for these data-side destinations.
+The helper explicitly disables Slurm requeue because it has no scientific
+restart protocol. After preemption, preserve partial outputs and submit unchanged
+tasks to a fresh destination. TERM/INT/HUP produce143/130/129 shell receipts;
+always require terminal scheduler status, final results and the own-run audits,
+not a returncode file alone. `shell_comparison.check_submission_signals --output
+NEW_DATA_PATH` runs the stdlib/shell orchestration controls without scientific work.
 
 ```bash
 python3 -m research.rigid_stress.shell_comparison.submit \

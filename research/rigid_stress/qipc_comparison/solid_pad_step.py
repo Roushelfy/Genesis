@@ -30,7 +30,14 @@ def advance(
             reference.total_mass,
         )
         generalized_force = jacobian.T @ result["force"].reshape(-1)
-        velocity = factor.solve(corrected_rhs + args.dt * generalized_force)
+        # The modal solver already evaluates A^-1 J^T impulse for its full
+        # compliance check. Reuse that response by linear superposition;
+        # the driver still checks the actual complete physical equation.
+        velocity = (
+            result["full_velocity"]
+            if args.reuse_contact_velocity
+            else factor.solve(corrected_rhs + args.dt * generalized_force)
+        )
         displacement = old_displacement + args.dt * velocity
         if nonlinear is None:
             internal = stiffness @ displacement[:-1]

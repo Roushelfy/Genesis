@@ -50,6 +50,13 @@ friction cost. Spatial changes still exceed target, and DPR every-step
 observation rejects lagged tangential forces at zero-normal-force sources.
 The failure is retained; earlier endpoint-only fields do not admit that run.
 
+The [keyframe cost and response-reuse update](docs/FRICTION_KEYFRAME_COST_REUSE_20261019.md)
+adds admitted1000-step friction costs with full-field observation every200 steps
+for all three methods. Both native every-step configurations fail during initial
+contact; actual SCR inputs have a separately certified surface-cone incompatibility.
+Optional reference response reuse passes complete-history and field controls.
+Fine nonlinear spatial qualification and the final friction comparison remain open.
+
 The [plate report](docs/PARALLEL_PLATE_RESULTS_20261018.md) records verified
 mechanical equilibria, the SCR cancellation-sensitive admission failure,
 original Shell contact-split imbalance and unresolved QIPC point-contact fields.

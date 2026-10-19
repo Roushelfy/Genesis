@@ -66,6 +66,9 @@ def main():
                     np.testing.assert_allclose(result["velocity"], expected, rtol=0, atol=1e-11)
                     np.testing.assert_allclose(warm_result["velocity"], expected, rtol=0, atol=1e-11)
                     np.testing.assert_allclose(modal_result["velocity"], expected, rtol=0, atol=1e-11)
+                    direct_body = free + factor.solve(jacobian.T @ (dt * modal_result["force"]).reshape(-1))
+                    np.testing.assert_allclose(modal_result["full_velocity"], direct_body, rtol=0, atol=1e-14)
+                    np.testing.assert_allclose(modal_result["full_velocity"], expected_body, rtol=0, atol=1e-11)
                     np.testing.assert_allclose(result["force"], impulse / dt, rtol=1e-8, atol=1e-10)
                     assert result["point_equation_residual"] <= 1e-11
                     condensed_error = None
@@ -87,6 +90,9 @@ def main():
                             "newton_iterations": result["iterations"],
                             "warm_newton_iterations": warm_result["iterations"],
                             "modal_fixed_point_iterations": modal_result["fixed_point_iterations"],
+                            "modal_full_velocity_error": float(
+                                np.max(np.abs(modal_result["full_velocity"] - expected_body))
+                            ),
                             "pcg_iterations": result["linear_iterations"],
                         }
                     )

@@ -1,0 +1,972 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-235",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728575",
+      "SLURM_ARRAY_JOB_ID": "728575",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-cc6a07a8-8e1f-6e00-cdc3-60c5570ff28b, 00000000:C0:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "frame": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-scr-rejection-capture-v1/group0/capture/input.npz",
+    "bytes": 6059,
+    "sha256": "d62a5cb07aacdadb8178018bc8b6ac81325f7948a3c77b36bf663ff4f7f8ea4f"
+  },
+  "source_count": 46,
+  "native_status_observed": false,
+  "friction": 0.3,
+  "unsigned_source_force_sum_n": 1.7641148829647226e-20,
+  "net_source_force_n": [
+    -1.1835031201218682e-20,
+    -1.3082131649541831e-20,
+    0.0
+  ],
+  "maximum_cone_excess_n": 4.333969211666778e-22,
+  "rejected_sources": [
+    {
+      "source_index": 0,
+      "status": null,
+      "position_material_m": [
+        -0.00020093096980200434,
+        0.0015805011244552584,
+        0.03
+      ],
+      "force_material_n": [
+        -2.425119994220906e-22,
+        -2.6806637423201015e-22,
+        0.0
+      ],
+      "force_norm_n": 3.61485339754735e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.61485339754735e-22,
+      "cone_excess_n": 3.61485339754735e-22,
+      "local_roundoff_allowance_n": 1.2842539112324935e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 1,
+      "status": null,
+      "position_material_m": [
+        -0.00020089211088671576,
+        0.0009563025171538484,
+        0.03
+      ],
+      "force_material_n": [
+        -2.4266476583604136e-22,
+        -2.682352382007613e-22,
+        0.0
+      ],
+      "force_norm_n": 3.61713051452225e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.61713051452225e-22,
+      "cone_excess_n": 3.61713051452225e-22,
+      "local_roundoff_allowance_n": 1.2850629056949891e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 2,
+      "status": null,
+      "position_material_m": [
+        -0.0008033589682138528,
+        0.000704620171487045,
+        0.03
+      ],
+      "force_material_n": [
+        -2.426870995146607e-22,
+        -2.6825992526063886e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6174634175300565e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6174634175300565e-22,
+      "cone_excess_n": 3.6174634175300565e-22,
+      "local_roundoff_allowance_n": 1.285181176601944e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 3,
+      "status": null,
+      "position_material_m": [
+        -0.00020085763590121052,
+        0.00033217436327516366,
+        0.03
+      ],
+      "force_material_n": [
+        -2.427225407292582e-22,
+        -2.682991010454172e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6179916998225055e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6179916998225055e-22,
+      "cone_excess_n": 3.6179916998225055e-22,
+      "local_roundoff_allowance_n": 1.2853688601746091e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 4,
+      "status": null,
+      "position_material_m": [
+        -0.0004017497467879263,
+        0.0006644495398387043,
+        0.03
+      ],
+      "force_material_n": [
+        -2.4285696365860985e-22,
+        -2.684476886096235e-22,
+        0.0
+      ],
+      "force_norm_n": 3.619995391120391e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.619995391120391e-22,
+      "cone_excess_n": 3.619995391120391e-22,
+      "local_roundoff_allowance_n": 1.2860807143228183e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 5,
+      "status": null,
+      "position_material_m": [
+        -0.0010044355550397495,
+        0.0010371812384009818,
+        0.03
+      ],
+      "force_material_n": [
+        -2.4323870859385203e-22,
+        -2.6886965940247364e-22,
+        0.0
+      ],
+      "force_norm_n": 3.625685633167981e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.625685633167981e-22,
+      "cone_excess_n": 3.625685633167981e-22,
+      "local_roundoff_allowance_n": 1.2881022943986342e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 6,
+      "status": null,
+      "position_material_m": [
+        -0.00040182308068872013,
+        0.0012890052771280301,
+        0.03
+      ],
+      "force_material_n": [
+        -2.432820552786642e-22,
+        -2.6891757368572675e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6263317534063167e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6263317534063167e-22,
+      "cone_excess_n": 3.6263317534063167e-22,
+      "local_roundoff_allowance_n": 1.2883318424195226e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 7,
+      "status": null,
+      "position_material_m": [
+        -0.0008037573034158273,
+        0.001329713366726823,
+        0.03
+      ],
+      "force_material_n": [
+        -2.434167127511286e-22,
+        -2.6906642050770995e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6283389407743763e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6283389407743763e-22,
+      "cone_excess_n": 3.6283389407743763e-22,
+      "local_roundoff_allowance_n": 1.2890449386213647e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 8,
+      "status": null,
+      "position_material_m": [
+        -0.00020085763590121052,
+        -0.00033217436327516366,
+        0.03
+      ],
+      "force_material_n": [
+        -2.427225407292582e-22,
+        -2.682991010454172e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6179916998225055e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6179916998225055e-22,
+      "cone_excess_n": 3.6179916998225055e-22,
+      "local_roundoff_allowance_n": 1.2853688601746091e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 9,
+      "status": null,
+      "position_material_m": [
+        -0.0008033589682138528,
+        -0.000704620171487045,
+        0.03
+      ],
+      "force_material_n": [
+        -2.426870995146607e-22,
+        -2.6825992526063886e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6174634175300565e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6174634175300565e-22,
+      "cone_excess_n": 3.6174634175300565e-22,
+      "local_roundoff_allowance_n": 1.285181176601944e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 10,
+      "status": null,
+      "position_material_m": [
+        -0.00020089211088671576,
+        -0.0009563025171538484,
+        0.03
+      ],
+      "force_material_n": [
+        -2.4266476583604136e-22,
+        -2.682352382007613e-22,
+        0.0
+      ],
+      "force_norm_n": 3.61713051452225e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.61713051452225e-22,
+      "cone_excess_n": 3.61713051452225e-22,
+      "local_roundoff_allowance_n": 1.2850629056949891e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 11,
+      "status": null,
+      "position_material_m": [
+        -0.0004017497467879263,
+        -0.0006644495398387043,
+        0.03
+      ],
+      "force_material_n": [
+        -2.4285696365860985e-22,
+        -2.684476886096235e-22,
+        0.0
+      ],
+      "force_norm_n": 3.619995391120391e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.619995391120391e-22,
+      "cone_excess_n": 3.619995391120391e-22,
+      "local_roundoff_allowance_n": 1.2860807143228183e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 12,
+      "status": null,
+      "position_material_m": [
+        -0.00020093096980200434,
+        -0.0015805011244552584,
+        0.03
+      ],
+      "force_material_n": [
+        -2.425119994220906e-22,
+        -2.6806637423201015e-22,
+        0.0
+      ],
+      "force_norm_n": 3.61485339754735e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.61485339754735e-22,
+      "cone_excess_n": 3.61485339754735e-22,
+      "local_roundoff_allowance_n": 1.2842539112324935e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 13,
+      "status": null,
+      "position_material_m": [
+        -0.0010044355550397495,
+        -0.0010371812384009818,
+        0.03
+      ],
+      "force_material_n": [
+        -2.4323870859385203e-22,
+        -2.6886965940247364e-22,
+        0.0
+      ],
+      "force_norm_n": 3.625685633167981e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.625685633167981e-22,
+      "cone_excess_n": 3.625685633167981e-22,
+      "local_roundoff_allowance_n": 1.2881022943986342e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 14,
+      "status": null,
+      "position_material_m": [
+        -0.00040182308068872013,
+        -0.0012890052771280301,
+        0.03
+      ],
+      "force_material_n": [
+        -2.432820552786642e-22,
+        -2.6891757368572675e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6263317534063167e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6263317534063167e-22,
+      "cone_excess_n": 3.6263317534063167e-22,
+      "local_roundoff_allowance_n": 1.2883318424195226e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 15,
+      "status": null,
+      "position_material_m": [
+        -0.0008037573034158273,
+        -0.001329713366726823,
+        0.03
+      ],
+      "force_material_n": [
+        -2.434167127511286e-22,
+        -2.6906642050770995e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6283389407743763e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6283389407743763e-22,
+      "cone_excess_n": 3.6283389407743763e-22,
+      "local_roundoff_allowance_n": 1.2890449386213647e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 16,
+      "status": null,
+      "position_material_m": [
+        -0.001004343295368349,
+        0.00037234499492350435,
+        0.03
+      ],
+      "force_material_n": [
+        -2.8963029615434184e-22,
+        -3.2014969792362948e-22,
+        0.0
+      ],
+      "force_norm_n": 4.31719280935011e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 4.31719280935011e-22,
+      "cone_excess_n": 4.31719280935011e-22,
+      "local_roundoff_allowance_n": 1.53377499477973e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 17,
+      "status": null,
+      "position_material_m": [
+        -0.001004343295368349,
+        -0.00037234499492350435,
+        0.03
+      ],
+      "force_material_n": [
+        -2.8963029615434184e-22,
+        -3.2014969792362948e-22,
+        0.0
+      ],
+      "force_norm_n": 4.31719280935011e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 4.31719280935011e-22,
+      "cone_excess_n": 4.31719280935011e-22,
+      "local_roundoff_allowance_n": 1.53377499477973e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 18,
+      "status": null,
+      "position_material_m": [
+        -0.00040171527180242104,
+        0.0,
+        0.03
+      ],
+      "force_material_n": [
+        -2.8966708514936584e-22,
+        -3.201903635093787e-22,
+        0.0
+      ],
+      "force_norm_n": 4.317741181488279e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 4.317741181488279e-22,
+      "cone_excess_n": 4.317741181488279e-22,
+      "local_roundoff_allowance_n": 1.5339698156993646e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 19,
+      "status": null,
+      "position_material_m": [
+        -0.0008035917098436329,
+        0.0,
+        0.03
+      ],
+      "force_material_n": [
+        -2.898995112376525e-22,
+        -3.2044728118319445e-22,
+        0.0
+      ],
+      "force_norm_n": 4.3212056955614955e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 4.3212056955614955e-22,
+      "cone_excess_n": 4.3212056955614955e-22,
+      "local_roundoff_allowance_n": 1.5352006583531958e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 20,
+      "status": null,
+      "position_material_m": [
+        -0.001406775979488015,
+        -0.0003724674394322948,
+        0.03
+      ],
+      "force_material_n": [
+        -2.9058546743857633e-22,
+        -3.212055190934909e-22,
+        0.0
+      ],
+      "force_norm_n": 4.33143047251846e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 4.33143047251846e-22,
+      "cone_excess_n": 4.33143047251846e-22,
+      "local_roundoff_allowance_n": 1.538833228848965e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 21,
+      "status": null,
+      "position_material_m": [
+        -0.001406775979488015,
+        0.0003724674394322948,
+        0.03
+      ],
+      "force_material_n": [
+        -2.9058546743857633e-22,
+        -3.212055190934909e-22,
+        0.0
+      ],
+      "force_norm_n": 4.33143047251846e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 4.33143047251846e-22,
+      "cone_excess_n": 4.33143047251846e-22,
+      "local_roundoff_allowance_n": 1.538833228848965e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 22,
+      "status": null,
+      "position_material_m": [
+        -0.0016084570780829652,
+        0.0,
+        0.03
+      ],
+      "force_material_n": [
+        -2.9075578546787386e-22,
+        -3.213937841553804e-22,
+        0.0
+      ],
+      "force_norm_n": 4.333969211666778e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 4.333969211666778e-22,
+      "cone_excess_n": 4.333969211666778e-22,
+      "local_roundoff_allowance_n": 1.5397351701788787e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 23,
+      "status": null,
+      "position_material_m": [
+        0.00020093096980200434,
+        -0.0015805011244552584,
+        0.03
+      ],
+      "force_material_n": [
+        -2.425119994220906e-22,
+        -2.6806637423201015e-22,
+        0.0
+      ],
+      "force_norm_n": 3.61485339754735e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.61485339754735e-22,
+      "cone_excess_n": 3.61485339754735e-22,
+      "local_roundoff_allowance_n": 1.2842539112324935e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 24,
+      "status": null,
+      "position_material_m": [
+        0.00020089211088671576,
+        -0.0009563025171538484,
+        0.03
+      ],
+      "force_material_n": [
+        -2.4266476583604136e-22,
+        -2.682352382007613e-22,
+        0.0
+      ],
+      "force_norm_n": 3.61713051452225e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.61713051452225e-22,
+      "cone_excess_n": 3.61713051452225e-22,
+      "local_roundoff_allowance_n": 1.2850629056949891e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 25,
+      "status": null,
+      "position_material_m": [
+        0.0008033589682138528,
+        -0.000704620171487045,
+        0.03
+      ],
+      "force_material_n": [
+        -2.426870995146607e-22,
+        -2.6825992526063886e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6174634175300565e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6174634175300565e-22,
+      "cone_excess_n": 3.6174634175300565e-22,
+      "local_roundoff_allowance_n": 1.285181176601944e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 26,
+      "status": null,
+      "position_material_m": [
+        0.00020085763590121052,
+        -0.00033217436327516366,
+        0.03
+      ],
+      "force_material_n": [
+        -2.427225407292582e-22,
+        -2.682991010454172e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6179916998225055e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6179916998225055e-22,
+      "cone_excess_n": 3.6179916998225055e-22,
+      "local_roundoff_allowance_n": 1.2853688601746091e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 27,
+      "status": null,
+      "position_material_m": [
+        0.0004017497467879263,
+        -0.0006644495398387043,
+        0.03
+      ],
+      "force_material_n": [
+        -2.4285696365860985e-22,
+        -2.684476886096235e-22,
+        0.0
+      ],
+      "force_norm_n": 3.619995391120391e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.619995391120391e-22,
+      "cone_excess_n": 3.619995391120391e-22,
+      "local_roundoff_allowance_n": 1.2860807143228183e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 28,
+      "status": null,
+      "position_material_m": [
+        0.0010044355550397495,
+        -0.0010371812384009818,
+        0.03
+      ],
+      "force_material_n": [
+        -2.4323870859385203e-22,
+        -2.6886965940247364e-22,
+        0.0
+      ],
+      "force_norm_n": 3.625685633167981e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.625685633167981e-22,
+      "cone_excess_n": 3.625685633167981e-22,
+      "local_roundoff_allowance_n": 1.2881022943986342e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 29,
+      "status": null,
+      "position_material_m": [
+        0.00040182308068872013,
+        -0.0012890052771280301,
+        0.03
+      ],
+      "force_material_n": [
+        -2.432820552786642e-22,
+        -2.6891757368572675e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6263317534063167e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6263317534063167e-22,
+      "cone_excess_n": 3.6263317534063167e-22,
+      "local_roundoff_allowance_n": 1.2883318424195226e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 30,
+      "status": null,
+      "position_material_m": [
+        0.0008037573034158273,
+        -0.001329713366726823,
+        0.03
+      ],
+      "force_material_n": [
+        -2.434167127511286e-22,
+        -2.6906642050770995e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6283389407743763e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6283389407743763e-22,
+      "cone_excess_n": 3.6283389407743763e-22,
+      "local_roundoff_allowance_n": 1.2890449386213647e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 31,
+      "status": null,
+      "position_material_m": [
+        0.00020085763590121052,
+        0.00033217436327516366,
+        0.03
+      ],
+      "force_material_n": [
+        -2.427225407292582e-22,
+        -2.682991010454172e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6179916998225055e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6179916998225055e-22,
+      "cone_excess_n": 3.6179916998225055e-22,
+      "local_roundoff_allowance_n": 1.2853688601746091e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 32,
+      "status": null,
+      "position_material_m": [
+        0.0008033589682138528,
+        0.000704620171487045,
+        0.03
+      ],
+      "force_material_n": [
+        -2.426870995146607e-22,
+        -2.6825992526063886e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6174634175300565e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6174634175300565e-22,
+      "cone_excess_n": 3.6174634175300565e-22,
+      "local_roundoff_allowance_n": 1.285181176601944e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 33,
+      "status": null,
+      "position_material_m": [
+        0.00020089211088671576,
+        0.0009563025171538484,
+        0.03
+      ],
+      "force_material_n": [
+        -2.4266476583604136e-22,
+        -2.682352382007613e-22,
+        0.0
+      ],
+      "force_norm_n": 3.61713051452225e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.61713051452225e-22,
+      "cone_excess_n": 3.61713051452225e-22,
+      "local_roundoff_allowance_n": 1.2850629056949891e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 34,
+      "status": null,
+      "position_material_m": [
+        0.0004017497467879263,
+        0.0006644495398387043,
+        0.03
+      ],
+      "force_material_n": [
+        -2.4285696365860985e-22,
+        -2.684476886096235e-22,
+        0.0
+      ],
+      "force_norm_n": 3.619995391120391e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.619995391120391e-22,
+      "cone_excess_n": 3.619995391120391e-22,
+      "local_roundoff_allowance_n": 1.2860807143228183e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 35,
+      "status": null,
+      "position_material_m": [
+        0.00020093096980200434,
+        0.0015805011244552584,
+        0.03
+      ],
+      "force_material_n": [
+        -2.425119994220906e-22,
+        -2.6806637423201015e-22,
+        0.0
+      ],
+      "force_norm_n": 3.61485339754735e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.61485339754735e-22,
+      "cone_excess_n": 3.61485339754735e-22,
+      "local_roundoff_allowance_n": 1.2842539112324935e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 36,
+      "status": null,
+      "position_material_m": [
+        0.0010044355550397495,
+        0.0010371812384009818,
+        0.03
+      ],
+      "force_material_n": [
+        -2.4323870859385203e-22,
+        -2.6886965940247364e-22,
+        0.0
+      ],
+      "force_norm_n": 3.625685633167981e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.625685633167981e-22,
+      "cone_excess_n": 3.625685633167981e-22,
+      "local_roundoff_allowance_n": 1.2881022943986342e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 37,
+      "status": null,
+      "position_material_m": [
+        0.00040182308068872013,
+        0.0012890052771280301,
+        0.03
+      ],
+      "force_material_n": [
+        -2.432820552786642e-22,
+        -2.6891757368572675e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6263317534063167e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6263317534063167e-22,
+      "cone_excess_n": 3.6263317534063167e-22,
+      "local_roundoff_allowance_n": 1.2883318424195226e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 38,
+      "status": null,
+      "position_material_m": [
+        0.0008037573034158273,
+        0.001329713366726823,
+        0.03
+      ],
+      "force_material_n": [
+        -2.434167127511286e-22,
+        -2.6906642050770995e-22,
+        0.0
+      ],
+      "force_norm_n": 3.6283389407743763e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 3.6283389407743763e-22,
+      "cone_excess_n": 3.6283389407743763e-22,
+      "local_roundoff_allowance_n": 1.2890449386213647e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 39,
+      "status": null,
+      "position_material_m": [
+        0.001004343295368349,
+        -0.00037234499492350435,
+        0.03
+      ],
+      "force_material_n": [
+        -2.8963029615434184e-22,
+        -3.2014969792362948e-22,
+        0.0
+      ],
+      "force_norm_n": 4.31719280935011e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 4.31719280935011e-22,
+      "cone_excess_n": 4.31719280935011e-22,
+      "local_roundoff_allowance_n": 1.53377499477973e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 40,
+      "status": null,
+      "position_material_m": [
+        0.001004343295368349,
+        0.00037234499492350435,
+        0.03
+      ],
+      "force_material_n": [
+        -2.8963029615434184e-22,
+        -3.2014969792362948e-22,
+        0.0
+      ],
+      "force_norm_n": 4.31719280935011e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 4.31719280935011e-22,
+      "cone_excess_n": 4.31719280935011e-22,
+      "local_roundoff_allowance_n": 1.53377499477973e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 41,
+      "status": null,
+      "position_material_m": [
+        0.00040171527180242104,
+        0.0,
+        0.03
+      ],
+      "force_material_n": [
+        -2.8966708514936584e-22,
+        -3.201903635093787e-22,
+        0.0
+      ],
+      "force_norm_n": 4.317741181488279e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 4.317741181488279e-22,
+      "cone_excess_n": 4.317741181488279e-22,
+      "local_roundoff_allowance_n": 1.5339698156993646e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 42,
+      "status": null,
+      "position_material_m": [
+        0.0008035917098436329,
+        0.0,
+        0.03
+      ],
+      "force_material_n": [
+        -2.898995112376525e-22,
+        -3.2044728118319445e-22,
+        0.0
+      ],
+      "force_norm_n": 4.3212056955614955e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 4.3212056955614955e-22,
+      "cone_excess_n": 4.3212056955614955e-22,
+      "local_roundoff_allowance_n": 1.5352006583531958e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 43,
+      "status": null,
+      "position_material_m": [
+        0.001406775979488015,
+        0.0003724674394322948,
+        0.03
+      ],
+      "force_material_n": [
+        -2.9058546743857633e-22,
+        -3.212055190934909e-22,
+        0.0
+      ],
+      "force_norm_n": 4.33143047251846e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 4.33143047251846e-22,
+      "cone_excess_n": 4.33143047251846e-22,
+      "local_roundoff_allowance_n": 1.538833228848965e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 44,
+      "status": null,
+      "position_material_m": [
+        0.001406775979488015,
+        -0.0003724674394322948,
+        0.03
+      ],
+      "force_material_n": [
+        -2.9058546743857633e-22,
+        -3.212055190934909e-22,
+        0.0
+      ],
+      "force_norm_n": 4.33143047251846e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 4.33143047251846e-22,
+      "cone_excess_n": 4.33143047251846e-22,
+      "local_roundoff_allowance_n": 1.538833228848965e-36,
+      "recomputed_input_admitted": false
+    },
+    {
+      "source_index": 45,
+      "status": null,
+      "position_material_m": [
+        0.0016084570780829652,
+        0.0,
+        0.03
+      ],
+      "force_material_n": [
+        -2.9075578546787386e-22,
+        -3.213937841553804e-22,
+        0.0
+      ],
+      "force_norm_n": 4.333969211666778e-22,
+      "compression_n": 0.0,
+      "tangent_norm_n": 4.333969211666778e-22,
+      "cone_excess_n": 4.333969211666778e-22,
+      "local_roundoff_allowance_n": 1.5397351701788787e-36,
+      "recomputed_input_admitted": false
+    }
+  ],
+  "field_finite": null,
+  "scattered_force_finite": null,
+  "rhs_finite": null,
+  "residual_finite": null,
+  "surface_force_cone_certificate": {
+    "mesh": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+      "bytes": 488697,
+      "sha256": "d72934ef97cd357de7440f1cc72c2297004c830c64770d43d95ef366280882f0"
+    },
+    "radius_m": 0.002,
+    "candidate_faces": 228,
+    "minimum_downward_force_per_unit_compression": 0.7001040441199416,
+    "necessary_force_cone_condition_defect_n": 1.1829767285104921e-20,
+    "roundoff_allowance_n": 1.253479015136863e-34,
+    "infeasibility_proven_on_conservative_support": true,
+    "scope": "Independent necessary-condition certificate using inward normals of the declared P1 outer triangles and a conservative Euclidean superset of geodesic-radius support. It does not identify a native solver status, assume native fit convergence, or alter any source. Failure to prove infeasibility is not proof of feasibility."
+  },
+  "scope": "Read-only inspection of actual captured sources, with the existing per-source16-epsilon friction-cone test reproduced in NumPy. No input force, normal, physical law, acceptance tolerance or solver is changed. This inspection cannot admit a rejected trajectory."
+}

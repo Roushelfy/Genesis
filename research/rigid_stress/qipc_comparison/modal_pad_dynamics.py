@@ -69,7 +69,8 @@ class ModalPadDynamics:
                 raise RuntimeError("Modal pad Newton iteration limit exhausted")
             newton_iterations.append(inner + 1)
             impulse = current.reshape(-1)
-            response = self.compliance(impulse)
+            body_response = self.factor.solve(self.jacobian.T @ impulse)
+            response = self.jacobian @ body_response
             actual = (free + response).reshape(-1, 3)
             actual_impulse = potential(actual, gap, self.sign, self.area, previous_normal, dt, stiffness, friction)[1]
             defect = impulse - actual_impulse.reshape(-1)
@@ -85,6 +86,7 @@ class ModalPadDynamics:
                         self.previous_impulse = impulse.copy()
                     return {
                         "velocity": velocity,
+                        "full_velocity": free_velocity + body_response,
                         "force": current / dt,
                         "iterations": sum(newton_iterations),
                         "fixed_point_iterations": outer + 1,

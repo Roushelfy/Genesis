@@ -1,5 +1,18 @@
 # Current QIPC reference comparison
 
+The `friction-keyframe-reuse-v1` packet retains329 verified payloads totaling
+6,028,562 bytes for terminal matched friction keyframe costs, original/captured
+SCR every-step failures, actual source-cone inspection and validated reference
+response reuse. The small before-call source packet is included; the rejected
+full field and other large runtime files remain on data with manifest hashes.
+Active250um/125um reference writers are excluded. No migration is performed.
+
+The later `reference-preemption-v1` packet adds59 verified payloads totaling
+473,402 bytes for preempted125um partial histories, scheduler duplicate records,
+signal-exit controls and immutable retry submission receipts. New execution uses
+`solid-pad-stvk-final125-reference-v2/` on data; the originalv1 outputs remain
+unchanged. Active retry outputs are not copied into the publication.
+
 The `friction-reference-observation-v1` packet retains205 verified payloads
 totaling2,289,881 bytes from terminal nonlinear reference/field comparisons,
 captured DPR observation rejection and admitted Shell friction cost. The
