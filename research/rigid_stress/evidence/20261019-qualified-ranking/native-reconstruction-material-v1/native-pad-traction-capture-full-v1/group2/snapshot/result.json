@@ -1,0 +1,95 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-191",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728772",
+      "SLURM_ARRAY_JOB_ID": "728762",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-46c3f10c-d08c-0f25-24da-234c496d71fb, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "passed": true,
+  "cases": [
+    {
+      "level": 0,
+      "load_n": 0.1,
+      "original": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/stress-level0.npz",
+        "bytes": 8216729,
+        "sha256": "8318dec452e952e6df53e28b4ddf963057279a2b058ef11d5903b8f2f3df30aa"
+      },
+      "physical_state": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/level0.npz",
+        "bytes": 400182,
+        "sha256": "39777d31094153aac88b6811af8dcdcd32b5f943093e948db0da8226a7ad306c"
+      },
+      "replay": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-traction-capture-full-v1/group2/snapshot/replayed-level0.npz",
+        "bytes": 8223656,
+        "sha256": "4df29c09813ae1c5990685705caa44ab967c3a3c7cb26e1cf6f446bbb526e7e6"
+      },
+      "equivalence": {
+        "stress_pa": 5.543964432410707e-12,
+        "forces_n": 2.11424525466343e-16,
+        "rhs_n": 2.1340429104084444e-16
+      },
+      "quadrature": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-traction-capture-full-v1/group2/snapshot/reconstruction-level0.npz",
+        "bytes": 99292889,
+        "sha256": "85a9b64238a79bd96fbb59262bb24ddf03473b83ae4476823393440f060a720f"
+      },
+      "capture_checks": {
+        "samples": 2405189,
+        "signed_p2_scatter_relative_error": 2.796439057886714e-15,
+        "force_relative_error": 8.896996148010105e-15,
+        "moment_relative_error": 5.29198881208113e-17,
+        "native_force_and_stress_unchanged": true,
+        "passed": true
+      }
+    },
+    {
+      "level": 1,
+      "load_n": 0.1,
+      "original": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/stress-level1.npz",
+        "bytes": 8178882,
+        "sha256": "5a954243d3030a05bd96540fa94490eee78265088911af9c74197fd20506f867"
+      },
+      "physical_state": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/level1.npz",
+        "bytes": 446510,
+        "sha256": "122b2c8470e7de08e40ee4887779aebe970f5bfebfb455ac6261f99de16d4275"
+      },
+      "replay": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-traction-capture-full-v1/group2/snapshot/replayed-level1.npz",
+        "bytes": 8176062,
+        "sha256": "1a60bf26a37e7025a9b224c81c6ae89431ccad7882c0dbda456db72560e487e2"
+      },
+      "equivalence": {
+        "stress_pa": 5.714977025525636e-12,
+        "forces_n": 2.2476589092265576e-16,
+        "rhs_n": 2.2921752239115594e-16
+      },
+      "quadrature": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-traction-capture-full-v1/group2/snapshot/reconstruction-level1.npz",
+        "bytes": 99388055,
+        "sha256": "4af3ea6e3292a7b31a8f1e107a4eaeacd6136f7b1be080881673757d7b6ffbb0"
+      },
+      "capture_checks": {
+        "samples": 2405189,
+        "signed_p2_scatter_relative_error": 3.0257678379402454e-15,
+        "force_relative_error": 1.1628273066745588e-14,
+        "moment_relative_error": 1.015584393456039e-16,
+        "native_force_and_stress_unchanged": true,
+        "passed": true
+      }
+    }
+  ],
+  "whole_goal_complete": false,
+  "scope": "Read-only diagnostic of native reconstruction quadrature, using actual native sample/force/shape functions. Saved full-source inputs are replayed through unchanged production recovery and must match original admitted fields and loads. Exported samples reproduce complete signed P2 nodal loads and wrench, with unchanged native force/stress arrays. Sample forces are integrated forces, not pressure obtained by dividing nodal forces by an arbitrary dual area. This supplies actual reconstructed boundary-load evidence, not a new mechanical history, primary timing or continuum-accuracy qualification."
+}

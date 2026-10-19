@@ -1,5 +1,13 @@
 # Current QIPC reference comparison
 
+The `native-reconstruction-material-v1` packet retains362 verified payloads
+totaling4,010,250 bytes for terminal native quadrature/core and normal material
+controls, prescribed-C2 common sampling and retained diagnostic failures.
+All original/replayed/independent fields, quadrature arrays and full journals
+stay on data. The active finer prescribed reference contributes immutable
+submission receipts only; its output and active friction writers are excluded.
+No runtime data, environment or compatibility link is migrated.
+
 The `friction-spatial250-v1` packet retains97 verified payloads totaling
 1,088,827 bytes for terminal250um nonlinear mechanics,500-to250um spatial
 comparisons and a500um plotting-data control. Full fields, complete journals,
