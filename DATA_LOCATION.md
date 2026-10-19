@@ -1,5 +1,12 @@
 # Current QIPC reference comparison
 
+The `friction-reference-observation-v1` packet retains205 verified payloads
+totaling2,289,881 bytes from terminal nonlinear reference/field comparisons,
+captured DPR observation rejection and admitted Shell friction cost. The
+manifest identifies terminal leaves selected from an active cost array; its
+SCR writer and fine-reference jobs remain untouched. Large fields and the
+rejected source/field NPZ remain on data with hashes and paths retained.
+
 The `complete-pad-cost-v1` packet adds222 verified payloads totaling2,345,974
 bytes for terminal B4 primary costs, the audited complete B1/B4 cost/memory
 aggregation and separate solver-phase profiles. Premature-analysis failure

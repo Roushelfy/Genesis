@@ -43,6 +43,8 @@ def write_cost(args, rows, completed, admitted=None, primary=None):
         physics = sum(row["timing"]["physics_seconds"] for row in selected)
         observation = sum(row.get("stress", {}).get("observation_seconds_excluding_frame_IO", 0) for row in selected)
         observed = [row["stress"] for row in selected if "stress" in row]
+        peaks = [row["raw_vm_peak_pa"] for row in observed]
+        complete_peaks = bool(peaks) and all(value is not None for value in peaks)
         samples.append(
             {
                 "level": level,
@@ -59,8 +61,8 @@ def write_cost(args, rows, completed, admitted=None, primary=None):
                 ),
                 "field_host_bytes": sum(row["field_host_bytes"] for row in observed),
                 "residual_host_bytes": sum(row.get("residual_host_bytes", 0) for row in observed),
-                "raw_vm_peak_min_pa": min((row["raw_vm_peak_pa"] for row in observed), default=None),
-                "raw_vm_peak_max_pa": max((row["raw_vm_peak_pa"] for row in observed), default=None),
+                "raw_vm_peak_min_pa": min(peaks) if complete_peaks else None,
+                "raw_vm_peak_max_pa": max(peaks) if complete_peaks else None,
             }
         )
     write_json(

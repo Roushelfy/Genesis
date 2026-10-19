@@ -31,6 +31,14 @@ three separately admitted synchronized phase profiles. The aggregation
 rehashes591 audit inputs and requires exact own-run admission. Fine nonlinear
 friction spatial qualification and final cross-case conclusions remain open.
 
+The [friction reference/observation update](FRICTION_REFERENCE_OBSERVATION_20261019.md)
+retains the completed500um StVK history and physical momentum audit, its
+still-too-large spatial changes, and a small same-mesh0.1N linear/StVK contrast.
+DPR every-step friction observation rejects eight zero-normal-force sources
+with tiny lagged tangential forces; the rejection is captured without loosening
+acceptance. Shell's own1000-step friction cost passes. Finer independent
+surface/wall controls and the remaining case-specific comparison remain open.
+
 ## Declared acceptance and comparison scope
 
 Reference qualification requires a refinement trend with <=2% change in the

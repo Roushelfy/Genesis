@@ -1,6 +1,7 @@
 """Observe native DPR/SCR from the current rigid-pad trajectory's actual loads."""
 
 from dataclasses import dataclass
+from pathlib import Path
 from time import perf_counter
 
 import numpy as np
@@ -34,6 +35,7 @@ class NativePadRecovery:
     radius: float
     source_reduction: str
     phase_timing: bool = True
+    failure_path: Path | None = None
 
     @classmethod
     def allocate(cls, args, outer, faces, points, xml):
@@ -105,6 +107,7 @@ class NativePadRecovery:
             args.radius,
             args.source_reduction,
             not getattr(args, "primary_cost", False),
+            args.output / "frames" / "rejected-stress.npz",
         )
 
     def sample(self, force_world, rotation, angular_world, friction, load, path=None):
@@ -192,9 +195,14 @@ class NativePadRecovery:
             and error_code == 0
             and np.isfinite(stress).all()
             and np.isfinite(peak)
+            and np.isfinite(rhs).all()
+            and np.isfinite(residual).all()
         )
         observation_seconds = clock() - started
+        if not valid and path is None:
+            path = self.failure_path
         if path is not None:
+            path.parent.mkdir(parents=True, exist_ok=True)
             np.savez_compressed(
                 path,
                 vertices_m=self.coordinates,
@@ -210,7 +218,16 @@ class NativePadRecovery:
                 source_components=components,
                 original_contact_points_m=self.points,
                 original_contact_forces_n=force,
+                original_contact_forces_world_n=force_world,
+                rotation_material_to_world=rotation,
+                angular_velocity_world_rad_per_s=angular_world,
+                source_normals_material=(normals @ rotation)[selected],
+                friction=friction,
+                native_valid=valid,
+                errno=error_code,
+                contact_status=status[:count],
             )
+        relative_residual = float(np.linalg.norm(residual) / max(np.linalg.norm(rhs), 1e-30))
         return {
             "native_valid": valid,
             "errno": error_code,
@@ -223,10 +240,12 @@ class NativePadRecovery:
             "observation_seconds_including_IO": clock() - started,
             "phase_timing_enabled": self.phase_timing,
             "output_mode": entry.output_mode,
-            "raw_vm_peak_pa": peak,
+            # Nonfinite values remain in the rejected NPZ, while the strict
+            # journal records missing diagnostics and reaches the rejection.
+            "raw_vm_peak_pa": peak if np.isfinite(peak) else None,
             "field_host_bytes": voigt.nbytes,
             "residual_host_bytes": residual.nbytes + rhs.nbytes,
             "contact_status": status[:count].tolist(),
-            "elastic_equation_relative_residual": float(np.linalg.norm(residual) / max(np.linalg.norm(rhs), 1e-30)),
+            "elastic_equation_relative_residual": relative_residual if np.isfinite(relative_residual) else None,
             "field": file_id(path) if path is not None else None,
         }
