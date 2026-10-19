@@ -736,3 +736,19 @@ ranked/extracted fields, meshes and candidate histories. Normal-only admission
 is an intentional rejected input. There is no admission-bypass flag. Use the
 same Slurm CPU-only workflow and fresh data-side outputs; retain per-figure
 export QA and inspect all final previews before publishing final artwork.
+
+
+### Matched reference-case error and workflow cost associations
+
+Follow the [matched cost/error report](MATCHED_PAD_ERROR_COST_20261019.md).
+`pad_cost_accuracy --data-root RUN_ROOT --case normal --output NEW_DATA_PATH`
+requires the original normal qualification,81-row dimensional audit, complete
+24-case primary cost matrix and their exact own-run receipts. It verifies
+runtime-library byte identity, captured64-bit worker selection, mass, mesh,
+assets and physical/solver parameters. Full output associates nine reference-case
+metrics; max output associates raw Mises magnitude only. Error-time and timed
+horizons remain explicit. Sparse memory is left empty; separate sampled process
+profiles cannot admit primary timings. Run with CPU-only Slurm and fresh data
+outputs. `--case friction --ranking QUALIFIED_FINAL_RANKING` requires actual fine
+friction admission before four timing configurations/36 metric associations are
+written; both failed every-step native modes remain separately unranked.

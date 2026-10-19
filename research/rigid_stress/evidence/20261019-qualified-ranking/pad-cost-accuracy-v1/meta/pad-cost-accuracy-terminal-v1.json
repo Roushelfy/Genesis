@@ -1,0 +1,50 @@
+{
+  "expected": {
+    "730051_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730051_1": [
+      "FAILED",
+      "1:0"
+    ]
+  },
+  "observed": {
+    "730051_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730051_0.batch": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730051_0.0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "730051_1": [
+      "FAILED",
+      "1:0"
+    ],
+    "730051_1.batch": [
+      "FAILED",
+      "1:0"
+    ],
+    "730051_1.0": [
+      "FAILED",
+      "1:0"
+    ]
+  },
+  "sacct": "730051_0|COMPLETED|0:0\n730051_0.batch|COMPLETED|0:0\n730051_0.0|COMPLETED|0:0\n730051_1|FAILED|1:0\n730051_1.batch|FAILED|1:0\n730051_1.0|FAILED|1:0\n",
+  "normal_checks": 478,
+  "normal_configurations": 24,
+  "normal_metric_associations": 120,
+  "changed_configuration_rejections": 15,
+  "constructor_provenance_comparisons": 28,
+  "runtime_source_files_rehashed": 1649,
+  "unqualified_friction_rejected_without_csv": true,
+  "final_friction_job": "730062",
+  "fine_friction_reference_and_final_associations_pending": true,
+  "source_contract_matched_queued_worker": true,
+  "whole_goal_complete": false
+}

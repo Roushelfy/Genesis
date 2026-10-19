@@ -487,3 +487,13 @@ no live fine output is moved or frozen. Full plotted arrays, CSV and SVG/PDF/PNG
 exports stay on data. Small selected previews, source, QA and exact external
 hashes may be retained as repository deliverables; node-local private caches
 and original engine sources/environments/compatibility links are preserved.
+
+
+Matched normal error/cost consolidation uses `pad-cost-accuracy-controls-v1`
+under the ranking data root (478 checks,24 configurations,120 applicable metric
+associations); its negative friction input writes no CSV. Final guarded friction
+work uses `pad-friction-cost-accuracy-v1`. Full original fields, histories,
+source trees and sampled-memory data stay in place; compact CSV/metadata/source
+receipts may be published. The read-only constructor provenance audit and denied
+half-dt walltime-extension journal are under `meta/`. No active data, runtime,
+environment or compatibility path is migrated.
