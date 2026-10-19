@@ -5,6 +5,26 @@ Read the [results](PARALLEL_PLATE_RESULTS_20261018.md) and
 The baseline is a full free hollow egg under common normal force. A passing
 discrete equation check does not qualify its continuum contact field.
 
+The later [native physical-pad checkpoint](../evidence/20261019-qualified-ranking/native-pad-history-v1/README.md)
+uses `qipc_comparison.plate_native_pad` with its captured tasks, after the
+[physical-pad declaration](COMPLIANT_PAD_DECLARATION.md). Select the existing
+`Euler` semi-implicit integrator explicitly when reconstructing the variant.
+`approximate_implicitfast` is the retained failing gap-prediction control.
+`--method rigid/dpr/scr` chooses no observation or the corresponding independent
+native observer; `--source-reduction wrench/none` distinguishes sparse wrench
+compression from all actual centroid sources. Keep the radius, friction,
+gravity ramp, mass and timestep recorded in each task. In particular, changing
+friction while the actual shear is zero can still change SCR's reconstruction;
+that is a parameter study, not a repeat.
+
+Run `qipc_comparison.audit_native_pad --runs ... --compare-motion` on matched
+histories to audit the source interface and absence of observation feedback.
+Use `compare_native_pad_sources` to separate actual-force changes from sparse
+packet changes, and `contact_fem_exact_columns --physical-volume` for complete
+field differences. A passing endpoint or source-wrench check cannot override
+a failed complete history or field-sensitivity gate. These research adapters
+do not implement a new default native collider or a production external-load API.
+
 ## Existing cluster paths and pinned inputs
 
 Run submission commands from the task checkout; the helper captures analysis

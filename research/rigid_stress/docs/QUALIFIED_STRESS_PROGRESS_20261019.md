@@ -1243,6 +1243,129 @@ solid-reference spatial qualification, native contact-response or cost work.
 The250um half-step arm (`727956_1`) now completes400 steps and passes its
 50ms mechanical window; complete tangent/membrane/bending changes against
 the1ms hold are3.48e-8/2.67e-8/4.46e-8, with peaks below1.85e-8. The full
-five-load cycle remains running. Sustained friction, motion decomposition
+five-load cycle subsequently completed all1000 steps and all five mechanical
+windows (`727956_0`). Sustained friction, motion decomposition
 and preconditioner invariance receipts are published in the
 [continuous friction checkpoint](../evidence/20261019-qualified-ranking/pad-friction-history-v1/README.md).
+
+## Reference refinement, repeated shear and native pad integration
+
+Both finer independent P2 references (`727916`) completed all nine normal
+cases. Surface250-to125um at two wall layers (`728064`) changes the complete
+physical-volume-weighted tangential field by1.6974%/1.6071%/1.4781% at
+0.1/0.3/1N; raw Mises changes are0.3961%/0.2823%/0.1812% and tension changes
+0.4461%/0.2594%/0.0840%. At250um, increasing two to three wall layers (`728001`)
+changes tangent fields by1.3093%/1.2555%/1.1683%, with raw peaks below0.203%.
+Order6-to10 contact quadrature changes tangent fields by at most6.63e-6 at
+125um/two layers and3.43e-5 at250um/three layers. These are separate uncertainty
+components; passing adjacent pairs does not establish a bound on their joint
+effect or the continuum limit. The660168-element125um/three-layer mesh
+(`728043`, SHA256`3d580636702bf2d986f52734f9fbfbc09eed439f73d912a263235f2a24d79bf7`)
+is now used by the joint reference `728080`, with unchanged material, pad law
+and qualification targets.
+
+The longer Shell sustained-friction cycle (`727962_0`) completed1200 steps
+and all six windows. Repeating the initial shear state changes the complete
+tangent field by2.20e-9; returning to0.1N after0.3/1N changes it by0.0361%,
+bending by0.0453%, and either raw peak by less than0.0081%. The500um friction
+arm also passed both windows. These quantify small history changes while
+retaining free creep; they do not establish the independent friction reference.
+
+The new research boundary condition `rigid_pad_coupling.py` solves seven
+velocities in Quadrants and applies actual equal/opposite pad wrenches through
+the native API. Analytical tests (`728008`, extended by `728021_0`) check
+normal balance, the declared steady slip at1/2ms, and an independent asymmetric
+seven-coordinate linear solve. All five controls pass; the asymmetric solution
+differs by1.54e-17. The first two launches failed before physics on array-shape
+and kernel-argument declarations; their logs remain retained.
+
+The first complete native journals (`728021`) hit a result-summary key error;
+the corrected runs (`728065`) then exposed a more important whole-history
+defect. Their final windows passed, but the default free-body midpoint position
+update did not match the pad's backward-velocity gap prediction. The maximum
+normal-law error reached0.8103 during loading. Explicit pose refresh alone did
+not fix it: the matched negative control (`728081_2`) retains82 failed steps
+despite passing both endpoint windows. Thus these histories are not admitted.
+
+The declared native variant now explicitly selects the existing `Euler`
+semi-implicit position update and retains implicit plate damping. No engine
+source or physical tolerance changes. Normal and sustained-friction controls
+(`728081_0/1`) each complete400 steps with all per-step pressure, friction,
+linear/angular momentum and velocity-prediction gates passing. Maximum
+normal-law error is1.98e-11; in shear the maximum friction error is1.36e-8 and
+velocity-prediction error1.99e-12m/s. The angular/moment and velocity checks
+retain their predeclared thresholds, rather than using endpoint-only admission.
+
+The first attempt to attach observation directly (`728073`) was rejected by
+the native guard against unspecified link wrenches. That guard is preserved.
+The research adapter now feeds the complete actual surface-source packet to
+a separate native observer model, with no observation feedback to the motion.
+Both DPR and SCR (`728084`) finish the same400-step normal-then-shear history,
+pass all mechanical gates and accept both complete fields with zero errno.
+The compressed sources number6 in normal loading and10 in shear, with
+within-support wrench defects below6.55e-17 and elastic residual ratios below
+1.21e-10. Original centroid forces are retained alongside the reduced packet;
+source reduction and the independent observer's costs are explicit limitations
+of this research adapter, not an extension of the default collider contract.
+
+The five-load native cycles (`728087_0/1`) also complete1000 steps, pass every
+mechanical history/window and accept all ten DPR/SCR fields. They additionally
+check the frozen-point moment difference on every step. The same-law half-dt
+normal/shear controls and complete-field comparisons remain separate checks.
+The coarse native volume mass is0.007472791737kg versus the coarse Shell
+mass0.007480995019kg; this finite-geometry/thin-shell difference is disclosed,
+not hidden by rescaling density or the horizontal body load.
+
+The common125um/two-layer reference comparison (`728090`, matched friction0
+native fields corrected in `728107`) is provisional:
+
+| Method | Complete tangent | Membrane | Bending | Raw Mises | Raw tension |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| DPR, declared2mm |23.6521%|12.1940%|34.8693%|16.8924%|54.2730%|
+| SCR, declared2mm |20.6355%|11.2977%|29.8730%|7.0888%|45.1667%|
+| Shell250um, repaired pad |26.0000%|5.7665%|42.0390%|0.3865%|14.6697%|
+
+All entries are errors at0.1N, with complete common material columns and physical
+volume weights; raw peaks are unsmoothed and retain each method's sampling.
+The earlier native fields in `728090` used friction0.3 while Shell used0.
+That difference matters for SCR's admissible reconstructed tractions even at
+zero applied shear: its earlier tangent/membrane/bending errors were
+23.5095%/12.3258%/34.5306%, with Mises/tension12.2664%/51.5813%. The table now
+uses the actual friction0 cycle fields for both native methods.
+Reference uncertainty and the source-reduction sensitivity below still prevent
+a final resolved ordering. The low Shell Mises difference does not imply a low
+complete-field error. Final qualification still requires joint reference
+uncertainty, the independent sustained-friction comparison, recovery-radius
+controls, matched costs/batching and publication figures. The goal remains open.
+
+Both half-dt native arms (`728087_2/3`) finish800 steps with all mechanical gates
+passing. The source-adapter audit (`728094`) verifies unchanged motion with
+and without observers, complete-source wrench preservation below9.70e-16,
+and endpoint frozen-point moment error below2.88e-8 relative to load times
+0.03m. SCR reconstructed-surface wrench differences are below7.36e-10.
+
+Complete fields expose a separate adapter defect (`728095`). Normal timestep
+changes are below2.51e-11 and load-cycle return changes below1.06e-9, but the
+shear tangent field changes2.0498%/2.0271% for DPR/SCR and bending2.8932%/2.8551%.
+Both fail the unchanged0.5% field target. Source diagnostics (`728098`) show
+actual full centroid forces change only5.06e-7, while the wrench-only LP
+switches one selected support point and changes its sparse load field17.33%.
+Conserving six wrench components alone therefore does not give a continuous
+stress observation of this already known distributed load.
+
+The directory named `repeat` in `728095` was intended as a repeat check, but its
+configuration changes friction0.3 to0. Its7.07095% SCR tangent change is a
+friction-parameter sensitivity, not nondeterminism or a same-configuration
+repeat failure. Identical source positions and force differences2.85e-15 in
+`728098` support that distinction. Preserve the original output/name and audit
+the actual task arguments; do not use that pair to qualify repeatability.
+
+The new explicit `--source-reduction none` control (`728100`) supplies every
+nonzero actual centroid force through an observer-owned native contact buffer.
+It keeps physical motion,2mm radius, friction, solver tolerances and acceptance
+unchanged. The previous LP version remains a documented failed shear adapter.
+Full-source histories and their field sensitivity must pass before this new
+variant enters any ranking or cost comparison; submission is not qualification.
+
+Selected completed receipts, negative controls and executed adapter sources are
+published in the [native pad checkpoint](../evidence/20261019-qualified-ranking/native-pad-history-v1/README.md).

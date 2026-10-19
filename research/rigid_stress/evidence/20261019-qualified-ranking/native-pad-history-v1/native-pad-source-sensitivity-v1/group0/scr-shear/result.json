@@ -1,0 +1,67 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-115",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728098",
+      "SLURM_ARRAY_JOB_ID": "728098",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-0e801d13-8bfc-bee9-537b-2029e61d0347, 00000000:21:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "reference": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-live-recovery-v2/group1/native/frames/stress-level1.npz",
+    "bytes": 8254138,
+    "sha256": "bc19c3028b6c19134119a318fb699cf27f03981bdc362682436a689dafd7254f"
+  },
+  "cases": [
+    {
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group3/native/frames/stress-level1.npz",
+        "bytes": 8202865,
+        "sha256": "91abd61c91df1aef5964e3b32e5883657b3ca098a68243b69c6f7b7863d0f30f"
+      },
+      "original_force_relative_difference": 5.064218178088026e-07,
+      "compressed_force_relative_difference": 0.17331354584823233,
+      "reference_source_indices": [
+        2140,
+        2149,
+        6245,
+        6252,
+        6255,
+        3150,
+        3800,
+        3820,
+        8346,
+        8394
+      ],
+      "actual_source_indices": [
+        2140,
+        2149,
+        6245,
+        6252,
+        6672,
+        3150,
+        3800,
+        3820,
+        8346,
+        8394
+      ],
+      "rotation_difference_norm": 5.057262096987097e-09,
+      "velocity_difference_m_per_s": [
+        2.818131419548989e-13,
+        -5.048934710752657e-21,
+        3.524809550952806e-16
+      ],
+      "angular_velocity_difference_rad_per_s": [
+        1.7154304811982498e-19,
+        -1.3654541191817097e-10,
+        -6.408164487900714e-17
+      ]
+    }
+  ]
+}

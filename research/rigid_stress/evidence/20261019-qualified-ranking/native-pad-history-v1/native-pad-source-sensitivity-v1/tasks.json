@@ -1,0 +1,46 @@
+[
+  [
+    {
+      "name": "dpr-normal",
+      "module": "research.rigid_stress.qipc_comparison.compare_native_pad_sources",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-live-recovery-v2/group0/native/frames/stress-level0.npz",
+        "--frames",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group2/native/frames/stress-level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group0/native/frames/stress-level0.npz"
+      ]
+    },
+    {
+      "name": "dpr-shear",
+      "module": "research.rigid_stress.qipc_comparison.compare_native_pad_sources",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-live-recovery-v2/group0/native/frames/stress-level1.npz",
+        "--frames",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group2/native/frames/stress-level1.npz"
+      ]
+    },
+    {
+      "name": "scr-normal",
+      "module": "research.rigid_stress.qipc_comparison.compare_native_pad_sources",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-live-recovery-v2/group1/native/frames/stress-level0.npz",
+        "--frames",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group3/native/frames/stress-level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group1/native/frames/stress-level0.npz"
+      ]
+    },
+    {
+      "name": "scr-shear",
+      "module": "research.rigid_stress.qipc_comparison.compare_native_pad_sources",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-live-recovery-v2/group1/native/frames/stress-level1.npz",
+        "--frames",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-history-sensitivity-v1/group3/native/frames/stress-level1.npz"
+      ]
+    }
+  ]
+]

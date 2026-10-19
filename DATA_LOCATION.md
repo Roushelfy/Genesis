@@ -9,6 +9,13 @@ changes are isolated in the `stress_qualified_ranking` worktree under the
 existing workspace; private compilation caches remain compute-node-local.
 Existing home fallback evidence remains in place. No migration is performed.
 
+The selected `native-pad-history-v1` publication under
+`research/rigid_stress/evidence/20261019-qualified-ranking/` contains about3.5MB
+of existing terminal receipts and executed research source, copied with size
+and SHA256 verification. Full native/Shell/FEM fields, step journals, large
+assets and active joint-refinement outputs remain under the data-side run root.
+This small publication is not a runtime data destination or a migration.
+
 The optional independent QP audit uses Clarabel0.11.1 installed with
 `--no-deps --target` at
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/assets/clarabel-0.11.1/`.
