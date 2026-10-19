@@ -1,5 +1,12 @@
 # Current QIPC reference comparison
 
+The `friction-spatial250-v1` packet retains97 verified payloads totaling
+1,088,827 bytes for terminal250um nonlinear mechanics,500-to250um spatial
+comparisons and a500um plotting-data control. Full fields, complete journals,
+prepared CSV/NPZ and active finer-reference/material outputs remain on data.
+Only terminal receipts, source, logs and hashes are copied into the publication;
+there is no runtime-data, environment or compatibility-link migration.
+
 The `friction-common-controls-v1` packet retains88 verified payloads totaling
 1,012,437 bytes for completed coarse nonlinear time/contact controls using
 q9/q25 common sampling. Eight full endpoint fields remain on data with verified

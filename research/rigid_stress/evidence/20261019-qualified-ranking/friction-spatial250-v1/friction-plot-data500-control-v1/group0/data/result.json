@@ -1,0 +1,507 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728644",
+      "SLURM_ARRAY_JOB_ID": "728644",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-3536a1e6-ce95-c58e-fc60-6f3fb8fdc4f0, 00000000:46:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "passed": true,
+  "checks": {
+    "dpr_own_history_and_traction_totals": true,
+    "scr_own_history_and_traction_totals": true,
+    "shell_own_history_and_traction_totals": true,
+    "reference_own_history_and_traction_totals": true,
+    "native_dpr_scr_actual_contact_data_agree": true
+  },
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/start.json",
+      "bytes": 2679,
+      "sha256": "dcb87467e155cff23b2326dacb3698194ba3973b0e2d3e6500ecdd22cf0ce6ab"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/result.json",
+      "bytes": 1863,
+      "sha256": "47a8285a1ee2c8c289443ca465928a98bb6fb6ea85404cd889cc649d7fdbdac6"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/steps.jsonl",
+      "bytes": 343639,
+      "sha256": "7e2cc7d89df8bb129423257fb43911ce062a1f37ec2df6c006dc96ec966d4229"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/level0.npz",
+      "bytes": 400182,
+      "sha256": "39777d31094153aac88b6811af8dcdcd32b5f943093e948db0da8226a7ad306c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/level1.npz",
+      "bytes": 446510,
+      "sha256": "122b2c8470e7de08e40ee4887779aebe970f5bfebfb455ac6261f99de16d4275"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group3/native/start.json",
+      "bytes": 2679,
+      "sha256": "9ae9d13f2866501b1513ec6392fbe6de16fd339017e52ccf7dfaa82989dce61d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group3/native/result.json",
+      "bytes": 1861,
+      "sha256": "43b72a155fcaa0e4e43f3e2789158f9069b77182851aa716d039a709ef93f79a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group3/native/steps.jsonl",
+      "bytes": 343678,
+      "sha256": "1bd1336d58d5e7e86803131fbda994b594c2d3b72c635c4a43aa310cdd511c80"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group3/native/frames/level0.npz",
+      "bytes": 400225,
+      "sha256": "80616eb0ffe3028ba5d05641179ccbec9165a401db3c13444a5fd89e8522de68"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group3/native/frames/level1.npz",
+      "bytes": 446511,
+      "sha256": "b17a9cc48a5d54a911acf9b9cdf36b15fd773e350770639ef2e63a31e9eeb53b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group0/fine/start.json",
+      "bytes": 3809,
+      "sha256": "77dd7b7342ff4e2761e4090a3c91ad8480bbe4701d79f8e0ea48b4cd8a5bf038"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group0/fine/result.json",
+      "bytes": 3572,
+      "sha256": "06ec1e53612f172a233d9278d25fd502246f404252ae74eb617989436c386354"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group0/audit/result.json",
+      "bytes": 7590,
+      "sha256": "5a00551bd4b9546bcf2d26108d770d4a1ae8522f69b6eacf833aae884d59e454"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group0/fine/steps.jsonl",
+      "bytes": 704097,
+      "sha256": "3dd2cb93a2ae4bf493ca3a7ffb7851b4f04da05d00d71289bb006b3cbcaf910a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group0/fine/frames/level0.npz",
+      "bytes": 11109712,
+      "sha256": "a3d66cccc93de147a603c67eaddb91859f2931764e4917f145a0e49251d48f9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group0/fine/frames/level1.npz",
+      "bytes": 11102073,
+      "sha256": "62e19cf0a6d74b9c4118d941ecd0001ab40e6ac64fefd2fce0dbb488793311a7"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial500-v2/group0/reference/start.json",
+      "bytes": 2460,
+      "sha256": "41c0ebe0c86ff16c0686cab7464fdce48fd9a5d5147268c4d31051870d3c0524"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial500-v2/group0/reference/result.json",
+      "bytes": 1427,
+      "sha256": "cf7dfaa3c59224018af4fa964751f16ed7cc7165fe49431c297c8a40939434a4"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial500-v2/group0/moment/result.json",
+      "bytes": 3273,
+      "sha256": "780a9914bf2c8938e1f1d29429f94f2723dd67423ce5d4b00be4f150e0ddf7cb"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial500-v2/group0/reference/steps.jsonl",
+      "bytes": 535029,
+      "sha256": "2a3e45f1064449a32653d6ab77854d80075c9420a376a977e91018ccde34e6fc"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial500-v2/group0/reference/frames/level0.npz",
+      "bytes": 78126527,
+      "sha256": "ae0bc9364bf412cd612efd4760706b906e0151ceebb6fe6ce62eeecce042a42e"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial500-v2/group0/reference/frames/level1.npz",
+      "bytes": 77563886,
+      "sha256": "8af0049a1657ca4078b1f75c5048f2dc34d7dad9a83d0495b5311010445a661f"
+    }
+  ],
+  "trajectory_rows": 1600,
+  "traction": [
+    {
+      "method": "dpr",
+      "level": 0,
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/level0.npz",
+        "bytes": 400182,
+        "sha256": "39777d31094153aac88b6811af8dcdcd32b5f943093e948db0da8226a7ad306c"
+      },
+      "output": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/friction-plot-data500-control-v1/group0/data/traction-dpr-level0.npz",
+        "bytes": 361221,
+        "sha256": "f11014d007e8055e9aad2435e4c8baf7fb58e9ad0aff3978dac0a193fd61e275"
+      },
+      "point_count": 8992,
+      "active_point_count": 166,
+      "complete_active_xy_extent_m": 0.00202250500788182,
+      "maximum_normal_density_pa": 8230.668458309592,
+      "maximum_tangent_density_pa": 2.5465825782281586e-14,
+      "maximum_current_cone_excess_n": 0.0,
+      "lower_upper_resultants_n": [
+        [
+          3.0173847029181063e-19,
+          -6.744690885697945e-20,
+          0.09999999999684782
+        ],
+        [
+          -3.019621682923947e-19,
+          6.74205809497983e-20,
+          -0.09999999999680556
+        ]
+      ],
+      "lower_upper_world_moments_nm": [
+        [
+          3.6156584012788894e-23,
+          8.470329472543003e-22,
+          -1.0609754871132725e-35
+        ],
+        [
+          -9.892093979542955e-22,
+          -2.456395547037471e-20,
+          -9.571830093555108e-36
+        ]
+      ],
+      "maximum_application_to_final_point_distance_m": 3.8163916471496116e-17
+    },
+    {
+      "method": "dpr",
+      "level": 1,
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/level1.npz",
+        "bytes": 446510,
+        "sha256": "122b2c8470e7de08e40ee4887779aebe970f5bfebfb455ac6261f99de16d4275"
+      },
+      "output": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/friction-plot-data500-control-v1/group0/data/traction-dpr-level1.npz",
+        "bytes": 395160,
+        "sha256": "4ff2dc902fa4a65a9d4b26815af781e66981f886320bff2303040a4eae03a815"
+      },
+      "point_count": 8992,
+      "active_point_count": 166,
+      "complete_active_xy_extent_m": 0.0020237013397477444,
+      "maximum_normal_density_pa": 8234.723490327695,
+      "maximum_tangent_density_pa": 294.4802622704629,
+      "maximum_current_cone_excess_n": 0.0,
+      "lower_upper_resultants_n": [
+        [
+          -0.003978567958687373,
+          -1.339894092718106e-16,
+          0.0999999998952525
+        ],
+        [
+          -0.003494223784278002,
+          1.3398550766452173e-16,
+          -0.09999999989529441
+        ]
+      ],
+      "lower_upper_world_moments_nm": [
+        [
+          -1.3908729617978868e-18,
+          0.00011940150830986993,
+          8.952097936293982e-20
+        ],
+        [
+          -2.59064459690822e-18,
+          -0.00010458445097122045,
+          -8.533136779388308e-20
+        ]
+      ],
+      "maximum_application_to_final_point_distance_m": 6.866763956262144e-09
+    },
+    {
+      "method": "scr",
+      "level": 0,
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group3/native/frames/level0.npz",
+        "bytes": 400225,
+        "sha256": "80616eb0ffe3028ba5d05641179ccbec9165a401db3c13444a5fd89e8522de68"
+      },
+      "output": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/friction-plot-data500-control-v1/group0/data/traction-scr-level0.npz",
+        "bytes": 361159,
+        "sha256": "87ddc93bf1dcc292d41eb71b337b46c66fc56345aee3e84deb59edb3ec31a112"
+      },
+      "point_count": 8992,
+      "active_point_count": 166,
+      "complete_active_xy_extent_m": 0.00202250500788182,
+      "maximum_normal_density_pa": 8230.668458309592,
+      "maximum_tangent_density_pa": 5.73119983554381e-14,
+      "maximum_current_cone_excess_n": 0.0,
+      "lower_upper_resultants_n": [
+        [
+          -6.515463494451953e-19,
+          2.420742502269366e-19,
+          0.0999999999968478
+        ],
+        [
+          6.527664050000641e-19,
+          -2.423785618560666e-19,
+          -0.09999999999680556
+        ]
+      ],
+      "lower_upper_world_moments_nm": [
+        [
+          4.028445101594197e-21,
+          1.9905274260476058e-20,
+          -7.606917817758728e-36
+        ],
+        [
+          6.3825725877187784e-21,
+          1.2705494208814505e-20,
+          -6.81639786683074e-36
+        ]
+      ],
+      "maximum_application_to_final_point_distance_m": 3.8163916471493035e-17
+    },
+    {
+      "method": "scr",
+      "level": 1,
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group3/native/frames/level1.npz",
+        "bytes": 446511,
+        "sha256": "b17a9cc48a5d54a911acf9b9cdf36b15fd773e350770639ef2e63a31e9eeb53b"
+      },
+      "output": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/friction-plot-data500-control-v1/group0/data/traction-scr-level1.npz",
+        "bytes": 395158,
+        "sha256": "159273ac36a31907ba9333c017d6eaf9f53c646e1db68d68e24dd4772c7a7009"
+      },
+      "point_count": 8992,
+      "active_point_count": 166,
+      "complete_active_xy_extent_m": 0.0020237013397477444,
+      "maximum_normal_density_pa": 8234.723490327666,
+      "maximum_tangent_density_pa": 294.4802622704643,
+      "maximum_current_cone_excess_n": 0.0,
+      "lower_upper_resultants_n": [
+        [
+          -0.003978567958687392,
+          -1.4458203120249833e-16,
+          0.09999999989525196
+        ],
+        [
+          -0.0034942237842779866,
+          1.4458730241068647e-16,
+          -0.09999999989529398
+        ]
+      ],
+      "lower_upper_world_moments_nm": [
+        [
+          -1.0772251127702603e-18,
+          0.00011940150830986932,
+          8.654591070014352e-20
+        ],
+        [
+          -2.9060186478589724e-18,
+          -0.00010458445097121994,
+          -8.795201069608299e-20
+        ]
+      ],
+      "maximum_application_to_final_point_distance_m": 6.866763956262144e-09
+    },
+    {
+      "method": "shell",
+      "level": 0,
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group0/fine/frames/level0.npz",
+        "bytes": 11109712,
+        "sha256": "a3d66cccc93de147a603c67eaddb91859f2931764e4917f145a0e49251d48f9d"
+      },
+      "output": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/friction-plot-data500-control-v1/group0/data/traction-shell-level0.npz",
+        "bytes": 1802995,
+        "sha256": "e9252735d04934f37859008dcb774eaa6837ff9acef84911ea70b446ade3ecc2"
+      },
+      "point_count": 33472,
+      "active_point_count": 3098,
+      "complete_active_xy_extent_m": 0.002347585289828537,
+      "maximum_normal_density_pa": 6572.171541295667,
+      "maximum_tangent_density_pa": 2.0141914698012864e-06,
+      "maximum_current_cone_excess_n": 0.0,
+      "lower_upper_resultants_n": [
+        [
+          9.355966570671303e-13,
+          3.0428756623176184e-11,
+          0.10000000000000597
+        ],
+        [
+          -7.913274003582111e-13,
+          -3.0459544927991317e-11,
+          -0.09999999999998131
+        ]
+      ],
+      "lower_upper_world_moments_nm": [
+        [
+          1.1062706485710136e-13,
+          5.52814492102616e-14,
+          -3.1048613251053246e-17
+        ],
+        [
+          -1.075915630579885e-13,
+          -5.603769290459467e-14,
+          -2.8870207681567814e-17
+        ]
+      ],
+      "maximum_application_to_final_point_distance_m": 0.0
+    },
+    {
+      "method": "shell",
+      "level": 1,
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group0/fine/frames/level1.npz",
+        "bytes": 11102073,
+        "sha256": "62e19cf0a6d74b9c4118d941ecd0001ab40e6ac64fefd2fce0dbb488793311a7"
+      },
+      "output": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/friction-plot-data500-control-v1/group0/data/traction-shell-level1.npz",
+        "bytes": 1805956,
+        "sha256": "a42fc7680653c554570e591a7981d83d1c14f1575b9f57d42690824528ad906e"
+      },
+      "point_count": 33472,
+      "active_point_count": 3098,
+      "complete_active_xy_extent_m": 0.002348790610520109,
+      "maximum_normal_density_pa": 6576.3072990545,
+      "maximum_tangent_density_pa": 247.6331427350074,
+      "maximum_current_cone_excess_n": 0.0,
+      "lower_upper_resultants_n": [
+        [
+          -0.003985023593223769,
+          -3.4033062916446356e-12,
+          0.09999999992025732
+        ],
+        [
+          -0.0035001936793366733,
+          3.4037351606099236e-12,
+          -0.0999999999203259
+        ]
+      ],
+      "lower_upper_world_moments_nm": [
+        [
+          1.270053047056124e-13,
+          0.00011960505832145856,
+          1.0607391507328435e-14
+        ],
+        [
+          -1.2273415102688402e-13,
+          -0.00010474943343806723,
+          2.1272056650226724e-15
+        ]
+      ],
+      "maximum_application_to_final_point_distance_m": 0.0
+    },
+    {
+      "method": "reference",
+      "level": 0,
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial500-v2/group0/reference/frames/level0.npz",
+        "bytes": 78126527,
+        "sha256": "ae0bc9364bf412cd612efd4760706b906e0151ceebb6fe6ce62eeecce042a42e"
+      },
+      "output": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/friction-plot-data500-control-v1/group0/data/traction-reference-level0.npz",
+        "bytes": 2085795,
+        "sha256": "5a13cc03df66183da8f464937a169555325560930771082f3a252c2be032bbab"
+      },
+      "point_count": 35400,
+      "active_point_count": 19126,
+      "complete_active_xy_extent_m": 0.002369182448797105,
+      "maximum_normal_density_pa": 6829.818208839999,
+      "maximum_tangent_density_pa": 2.0568305121345697e-05,
+      "maximum_current_cone_excess_n": 0.0,
+      "lower_upper_resultants_n": [
+        [
+          -9.391524660412786e-12,
+          2.4888048982965953e-11,
+          0.100000000054279
+        ],
+        [
+          4.483007411772218e-11,
+          -5.507895369135665e-11,
+          -0.09999999994346669
+        ]
+      ],
+      "lower_upper_world_moments_nm": [
+        [
+          6.925585634607473e-13,
+          2.911013879823346e-13,
+          -2.861814689120205e-13
+        ],
+        [
+          1.2134888501010494e-12,
+          1.3428243032641038e-12,
+          -2.658965980330359e-13
+        ]
+      ],
+      "maximum_application_to_final_point_distance_m": 0.0
+    },
+    {
+      "method": "reference",
+      "level": 1,
+      "input": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial500-v2/group0/reference/frames/level1.npz",
+        "bytes": 77563886,
+        "sha256": "8af0049a1657ca4078b1f75c5048f2dc34d7dad9a83d0495b5311010445a661f"
+      },
+      "output": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/friction-plot-data500-control-v1/group0/data/traction-reference-level1.npz",
+        "bytes": 2191513,
+        "sha256": "2ad6f7fa0874b5286670cab9f55bfe99ddbd59512ea8ed1879355b3661790316"
+      },
+      "point_count": 35400,
+      "active_point_count": 19126,
+      "complete_active_xy_extent_m": 0.002370387022412691,
+      "maximum_normal_density_pa": 6833.335596040764,
+      "maximum_tangent_density_pa": 253.7968840151634,
+      "maximum_current_cone_excess_n": 0.0,
+      "lower_upper_resultants_n": [
+        [
+          -0.00398265364075724,
+          7.011483854510473e-11,
+          0.09999999989076744
+        ],
+        [
+          -0.003498087175378781,
+          3.3029187287029744e-11,
+          -0.09999999988783735
+        ]
+      ],
+      "lower_upper_world_moments_nm": [
+        [
+          2.044197806461418e-12,
+          0.0001195335806312238,
+          -1.352823798459786e-13
+        ],
+        [
+          -1.4059319021769509e-12,
+          -0.00010468849106254799,
+          -1.0955316827440597e-13
+        ]
+      ],
+      "maximum_application_to_final_point_distance_m": 0.0
+    }
+  ],
+  "force_history": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/friction-plot-data500-control-v1/group0/data/force-history.csv",
+    "bytes": 321693,
+    "sha256": "ae3e41f1cefe633a9cf81cea652f82bb7dfb108d9f5ab6f852a01edfa97e4c04"
+  },
+  "spatial_reference_qualified": false,
+  "whole_goal_complete": false,
+  "scope": "Data preparation only, with no rendered figure or accuracy qualification. Actual complete400-step mechanics and all unsmoothed point forces are retained. Native points are the actual prior-point wrench locations, with final points preserved separately; Shell/P2 use their recorded current contact points. Densities divide actual forces by declared projected reference areas, not deformed surface area. All nonzero force samples, including tiny residues, are kept. Requested native equilibrium observations do not admit its failed every-step mode. Final plots require a separate matching spatial qualification and common-field inputs."
+}
