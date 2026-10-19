@@ -10,6 +10,7 @@ from .artifacts import runtime_identity, write_json
 from .p2_elastic import FreeElasticP2, quadratic_triangle_minimum
 from .contact_fem_exact_columns import ColumnField
 from .prepare_inputs import make_mesh
+from .finite_area_reference import finite_area_load
 
 
 def main():
@@ -19,6 +20,20 @@ def main():
     args.output.mkdir(parents=True, exist_ok=False)
     mesh = MeshTet().refined(1)
     vertices = mesh.p.T * np.array([0.002, 0.002, 0.0005])
+    load_model = FreeElasticP2(vertices - [0.001, 0.001, 0.00025], mesh.t.T, 1e10, 0.3, 2000)
+    loads = []
+    for order in (8, 10):
+        force, points, point_force, _, _, _ = finite_area_load(load_model, len(vertices), 0.003, order)
+
+        def virtual_displacement(coordinates):
+            x, y, z = coordinates.T
+            return x**2 + 2 * x * y + 3 * z**2 + x * z
+
+        nodal_work = virtual_displacement(load_model.vertices) @ force[:, 2]
+        quadrature_work = virtual_displacement(points) @ point_force[:, 2]
+        np.testing.assert_allclose(nodal_work, quadrature_work, rtol=1e-12, atol=1e-18)
+        loads.append(force)
+    np.testing.assert_allclose(loads[0], loads[1], rtol=1e-11, atol=1e-13)
     rows = []
     for ordered in (False, True):
         model = FreeElasticP2(vertices, mesh.t.T, 1e10, 0.3, 2000.0, column_faces=np.empty((0, 3)) if ordered else None)
@@ -97,7 +112,12 @@ def main():
         np.testing.assert_allclose(square, constant**2 + 5 * constant + 25 / 3, atol=1e-13)
     write_json(
         args.output / "result.json",
-        {"identity": runtime_identity(), "controls": rows, "quadratic_gap_extrema_passed": True},
+        {
+            "identity": runtime_identity(),
+            "controls": rows,
+            "quadratic_gap_extrema_passed": True,
+            "finite_area_polynomial_virtual_work_and_quadrature_passed": True,
+        },
     )
 
 
