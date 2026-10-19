@@ -1,0 +1,26 @@
+{
+  "purpose": "Source-matched repaired-engine B8 resident module replay plus separate intrusive total process memory; no physical-pad error inheritance.",
+  "engine_revision": "1ff39b0775200120737225fdfb8631c9b1fc5fa7",
+  "engine_source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-witness-consistency",
+  "reference_jobs_unchanged": [
+    729312,
+    729314
+  ],
+  "horizon": {
+    "batch": 8,
+    "warmup": 900,
+    "recorded_steps": 1200,
+    "primary_warm_repeats": 3,
+    "memory_diagnostic_repeats": 1,
+    "dt_s": 0.01,
+    "substeps": 1,
+    "cadence": "every-step"
+  },
+  "conformance": "Existing complete-history peak/field/validity/reset controls and independent retained-history audit; unchanged tolerances.",
+  "memory": "Fresh process with same configuration and full history, NVIDIA0.1s requested sampling plus actual gaps; never primary timing or a capacity limit.",
+  "workers": {
+    "native_production_controls.py": "7bac41ab19e0056ec801f4226b1115c6c130cac795981a24f6a5213d27fe4ecf",
+    "native_module_memory.py": "aad9990eecd36a839c3647d218aa0d028d7a8f73bcf73d96303825fb53d71dcb",
+    "native_module_replay_audit.py": "602fe18b59860e3f0449620e88d14d9da5e93e571eddbb5c5e74fa351d83a488"
+  }
+}

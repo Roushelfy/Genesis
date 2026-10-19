@@ -1,5 +1,15 @@
 # Rigid-stress data and artifact locations
 
+The native-performance-summary-v1 packet adds203 compact payloads/1,464,777
+bytes for the61-row source-bound scene summary, four current-source B8 module
+modes and four separate process-memory runs. It retains original reader failures,
+exact worker/source/configuration receipts, B8 comment-only reconstruction and
+actual sample gaps. Sixteen full histories/trajectories remain under the existing
+20261019-qualified-ranking data root with hashes. Original sparse/large-batch
+arrays, source checkouts, environments, active fine outputs and compatibility
+links remain in place. New job outputs/logs are explicitly on data and private
+caches node-local. Sampled process peaks are not maximum-capacity measurements.
+
 The canonical-force/batch checkpoint adds `modal-canonical-force-v1`
 (143 payloads,1,162,186 bytes) and `native-batch-memory-diversity-v1`
 (413,3,964,315 bytes). They retain terminal controls, original failures,

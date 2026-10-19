@@ -1799,3 +1799,44 @@ the remaining final friction/ranking/figure requirements.
 
 
 The [endpoint-continuation packet](../evidence/20261019-qualified-ranking/solid-pad-endpoint-continuation-v1/README.md) retains99 compact payloads/496,923 bytes with exact original/encoded hashes, executed control variants and source/proof lineage. Three full state/column arrays stay on data with external hashes. No live fine field is frozen or admitted by this packet.
+
+
+## Source-bound scene tables and current-source module follow-up
+
+[Scene summary730473](NATIVE_PERFORMANCE_SUMMARY_20261019.md) passes14,454 checks
+and rehashes4,267 distinct files. All35 canonical/scaling and26 cadence primary
+rows bind their actual complete conformance, unchanged normalized stress options,
+condition banks, source/worker inventories and own-cohort rigid baselines.
+Twenty separate fresh-process memory profiles bind exact primary configurations.
+Actual maximum observed sample gaps extend to34.513s despite the requested0.1s;
+all counts/first/last times/gaps remain explicit. These are sampled peaks and
+tested operating points, not located memory limits. Policy descriptors in the
+original rigid/live benchmark do not mean inference ran; setup scopes and
+scene/module/policy counts are kept distinct.
+
+The earliest repaired B8 control retains its old revision and actual two-file
+patch. Reconstructing its exact old array_class bytes and checking whole-module
+AST equality proves that its only difference from canonical1ff is three comments;
+the other857 captured files match exactly. Original unrepaired timings and32/259
+failed motion checks are not admitted by that equivalence. Reader730471's
+rigid-only missing-options KeyError is retained;730473 permits omission only for
+pure rigid and still requires complete stress-link options for every live case.
+
+Four current-source B8 replay modes730460 and four separate process-memory
+modes730461 complete in8m03s/7m58s with unchanged1200-frame/24-buffer/reset
+numerical contracts. Replay audit730463 passes; association730498 passes170
+checks, rehashing858 engine/asset files and293 captured workers per campaign.
+DPR max/full medians are8232.96/8087.35 env-updates/s; SCR966.09/965.15.
+Sampled process peaks3514/3528/3548/3560MiB include the1,240,128,000-byte input
+history and retain actual gaps up to14.936s. Different primary/profile GPU UUIDs
+and all sampling limits remain explicit. Reader730464's missing per-task receipt
+assumption fails before publishing rows;730498 binds the actual successful group
+receipt to its exact sole audit task, with no numerical rerun or changed gate.
+
+Initial60min limits were reduced to30min before execution based on the old
+four-mode job's actual8m19s; original submissions and scheduler changes remain
+retained. No live fine writer, loading, tolerance or dependency is changed.
+Fine friction, final rankings/figures and full matched delivery remain open.
+
+
+The [performance summary packet](../evidence/20261019-qualified-ranking/native-performance-summary-v1/README.md) retains203 compact payloads/1,464,777 bytes with exact original/encoded hashes, both failed metadata readers, source/worker variants, actual terminal receipts and CSV tables. Sixteen full replay histories/trajectories stay on data with external hashes. Live fine outputs and final friction products are excluded.
