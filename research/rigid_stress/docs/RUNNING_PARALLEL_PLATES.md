@@ -25,6 +25,15 @@ field differences. A passing endpoint or source-wrench check cannot override
 a failed complete history or field-sensitivity gate. These research adapters
 do not implement a new default native collider or a production external-load API.
 
+For the joint refined independent reference, `compliant_plate_reference
+--cvxopt-factor` selects the verified existing CVXOPT1.3.2 long-index CHOLMOD
+interface. Do not combine it with `--cholespy-path`. The default remains
+unchanged for historical reruns. First reproduce `check_cvxopt_factor` and the
+captured coarse field control from the
+[factor packet](../evidence/20261019-qualified-ranking/full-source-factor-control-v1/README.md).
+The larger reference also needs its separately recorded memory allocation;
+a successful small control is not proof of a completed large reference.
+
 ## Existing cluster paths and pinned inputs
 
 Run submission commands from the task checkout; the helper captures analysis

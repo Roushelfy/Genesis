@@ -42,6 +42,7 @@ class FreeElasticP2:
         column_faces=None,
         through_wall_ordering=False,
         cholespy_path=None,
+        cvxopt_factor=False,
     ):
         self.reference = SkfemElasticReference(vertices, tetrahedra, young, poisson, density)
         reference = self.reference
@@ -91,7 +92,11 @@ class FreeElasticP2:
             dofs = (3 * np.asarray(order)[:, None] + np.arange(3)).reshape(-1)
             self.free = dofs[np.isin(dofs, self.free)]
         matrix = (self.stiffness[self.free][:, self.free] / young).tocsc()
-        if cholespy_path is not None:
+        if cvxopt_factor:
+            from .cvxopt_factor import CvxoptCholeskyFactor
+
+            self.factor = CvxoptCholeskyFactor(matrix)
+        elif cholespy_path is not None:
             self.factor = CholeskyFactor(matrix, cholespy_path)
         elif column_faces is None:
             self.factor = splu(matrix)
