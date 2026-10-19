@@ -1,0 +1,46 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-210-029",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729048",
+      "SLURM_ARRAY_JOB_ID": "729048",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-03ec8bc3-12fe-0bac-58bd-7864979f88ce, 00000000:46:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "check_completed": true,
+  "bitwise_identical": false,
+  "cases": [
+    {
+      "geometry_scale": 0.001,
+      "cases": 128,
+      "different_positions": 81,
+      "maximum_absolute_difference_m": 1.0842021724855044e-19
+    },
+    {
+      "geometry_scale": 1.0,
+      "cases": 128,
+      "different_positions": 80,
+      "maximum_absolute_difference_m": 2.220446049250313e-16
+    },
+    {
+      "geometry_scale": 1000.0,
+      "cases": 128,
+      "different_positions": 81,
+      "maximum_absolute_difference_m": 2.2737367544323206e-13
+    }
+  ],
+  "portals": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/mpr-witness-normalization-v1/group0/baseline/portals.npz",
+    "bytes": 89167,
+    "sha256": "504a8b9487ed0c9462378a9c2ab0f06e1c88e1015e9c29d7b22b0c96099bd426"
+  },
+  "scope": "Same raw simplex/support arrays and actual MPR position routine with optional witness buffers off/on. Synthetic nondegenerate portals exercise three geometry scales; this local control does not alone establish the cause of complete-scene trajectory differences."
+}

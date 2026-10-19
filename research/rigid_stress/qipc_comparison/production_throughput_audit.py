@@ -23,6 +23,7 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--campaign", type=Path, required=True)
     cli.add_argument("--output", type=Path, required=True)
+    cli.add_argument("--batches", type=int, nargs="+", default=[1, 8, 32])
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     receipts = []
@@ -32,7 +33,7 @@ def main():
         return json.loads(path.read_text())
 
     source = read(args.campaign / "source.json")
-    assert len(source["files"]) >= 858 and source["revision"] == "92692aa612666b015ac4b506a39b9e7d3dfdf998"
+    assert len(source["files"]) >= 858 and len(source["revision"]) == 40
     source_files = {r["path"]: r for r in source["files"]}
     for row in source["files"]:
         ident = file_id(Path(source["source"]) / row["path"])
@@ -41,10 +42,11 @@ def main():
     assert patch["sha256"] == source["patch_sha256"] and patch["bytes"] == 0
     receipts.append(patch)
     tasks = read(args.campaign / "tasks.json")
-    assert len(tasks) == 3 and all(len(g) == 5 for g in tasks)
+    assert len(tasks) == len(args.batches) and all(len(g) == 5 for g in tasks)
+    assert len(set(args.batches)) == len(args.batches) and min(args.batches) > 0
     rows, comparisons = [], []
     bank_hashes = set()
-    for group, batch in enumerate((1, 8, 32)):
+    for group, batch in enumerate(args.batches):
         folder = args.campaign / f"group{group}"
         code = folder / "returncode.txt"
         assert code.read_text().strip() == "0"
@@ -134,7 +136,7 @@ def main():
             "warm_repeats_not_independent_process_repeats": True,
             "physical_reference_qualified": False,
             "whole_goal_complete": False,
-            "scope": "Terminal15-task fixed-horizon scene timing receipts and zero invalid-step counters. Complete separate conformance is not inferred. Native buffer bytes are logical allocations; Torch peak is not total process GPU peak. Different batch groups need not share a physical GPU. No policy throughput or physical-error claim.",
+            "scope": "Terminal fixed-horizon scene timing receipts and zero invalid-step counters. Complete separate conformance is not inferred. Native buffer bytes are logical allocations; Torch peak is not total process GPU peak. Different batch groups need not share a physical GPU. No policy throughput or physical-error claim.",
         },
     )
 

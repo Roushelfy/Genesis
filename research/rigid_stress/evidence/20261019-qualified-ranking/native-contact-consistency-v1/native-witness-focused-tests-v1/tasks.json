@@ -1,0 +1,34 @@
+[
+  [
+    {
+      "name": "before",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput",
+      "args": [
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-witness-consistency/tests/rigid/test_stress_witness.py",
+        "--backend",
+        "gpu",
+        "--select",
+        "native_collision_witnesses_and_lifecycle and False-False",
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput"
+      ]
+    },
+    {
+      "name": "after",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-witness-consistency",
+      "args": [
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-witness-consistency/tests/rigid/test_stress_witness.py",
+        "--backend",
+        "gpu",
+        "--select",
+        "native_collision_witnesses_and_lifecycle",
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-witness-consistency"
+      ]
+    }
+  ]
+]

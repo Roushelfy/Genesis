@@ -1,5 +1,12 @@
 # Native scene and module performance, 2026-10-19
 
+The [subsequent MPR contact report](NATIVE_CONTACT_CONSISTENCY_20261019.md)
+localizes and repairs the motion discrepancy below:349 B1/B8/B32 checks and
+three focused regressions pass on engine1ff39b077. This report retains the
+original engine timings/failures. Repaired-source timings and larger memory/
+conformance are separate; older rates are not relabeled as measurements of
+the repaired engine.
+
 All15 fixed-horizon production timing processes completed, and their independent
 timing/source audit passes. Complete motion/output conformance does not:
 32 of259 checks fail, all involving egg motion relative to pure rigid at B8/B32.

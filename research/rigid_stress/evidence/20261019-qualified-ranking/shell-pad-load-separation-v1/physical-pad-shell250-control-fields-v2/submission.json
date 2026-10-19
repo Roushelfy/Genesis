@@ -1,0 +1,20 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-4%3",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=none",
+    "--cpus-per-task=2",
+    "--mem=32G",
+    "--time=45",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/logs/%A_%a.log",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/job.sh"
+  ],
+  "job": "729086",
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "allow_home_output": false
+}

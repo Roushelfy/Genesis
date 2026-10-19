@@ -18,6 +18,7 @@ import genesis as gs
 from examples.rigid.franka_egg_stress import FrankaEgg
 from examples.speed_benchmark.rigid_stress import restore_frame
 from genesis.engine.solvers.base_solver import StateChange
+from genesis.utils.array_class import DataKind
 from genesis.utils.misc import qd_to_torch, tensor_to_array
 
 from .artifacts import file_id, runtime_identity, write_json
@@ -98,6 +99,38 @@ def restore(workload, buffers, tick, resets):
     restore_frame(workload)
 
 
+def capture_physics(workload, path):
+    solver = workload.scene.rigid_solver
+    arrays, inventory, configs = {}, [], {}
+    for item in solver.data:
+        if item.name.startswith("stress.") or item.kind == DataKind.SCRATCH:
+            continue
+        if item.kind == DataKind.CONFIG:
+            configs[item.name] = {
+                key: value.item() if isinstance(value, np.generic) else value for key, value in vars(item.value).items()
+            }
+        elif 0 not in item.value.shape:
+            array = tensor_to_array(qd_to_torch(item.value, copy=False))
+            arrays[item.name] = array
+            inventory.append(
+                {"name": item.name, "kind": item.kind.name, "shape": list(array.shape), "dtype": str(array.dtype)}
+            )
+    np.savez_compressed(path, **arrays)
+    write_json(
+        path.with_suffix(".json"),
+        {
+            "arrays": inventory,
+            "configs": configs,
+            "gs_use_ndarray": gs.use_ndarray,
+            "gs_use_zerocopy": gs.use_zerocopy,
+            "gs_use_deterministic_algorithms": gs.use_deterministic_algorithms,
+            "rigid_options": solver._options.model_dump(mode="json"),
+            "observed_link_index": workload.link.idx,
+            "snapshot": file_id(path),
+        },
+    )
+
+
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--method", choices=("rigid", "dpr", "scr"), required=True)
@@ -111,6 +144,9 @@ def main():
     cli.add_argument("--mechanics-only", action="store_true", help="Build stress but leave manual updates unrequested")
     cli.add_argument("--rigid-post-fusion", choices=("auto", "on", "off"), default="auto")
     cli.add_argument("--repetitions", type=int, default=3)
+    cli.add_argument("--contact-block-size", type=int, default=16)
+    cli.add_argument("--deterministic", choices=("auto", "on", "off"), default="auto")
+    cli.add_argument("--construction-snapshots", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     if min(args.envs, args.steps, args.field_stride, args.repetitions) < 1 or args.warmup < 0:
@@ -126,7 +162,13 @@ def main():
             "conditions": file_id(args.conditions),
         },
     )
-    gs.init(backend=gs.gpu, precision="64", seed=623016, logging_level="warning")
+    gs.init(
+        backend=gs.gpu,
+        precision="64",
+        seed=623016,
+        logging_level="warning",
+        use_deterministic_algorithms={"auto": None, "on": True, "off": False}[args.deterministic],
+    )
     workload = FrankaEgg(
         args.envs,
         level=1,
@@ -139,6 +181,7 @@ def main():
         stress_update_mode="manual" if args.mechanics_only else "every_step",
         fused_rigid_post={"auto": None, "on": True, "off": False}[args.rigid_post_fusion],
         contact_model="intrinsic" if args.method == "scr" else "pressure",
+        contact_block_size=args.contact_block_size,
         intrinsic_load_partition="body_source_prior",
         egg_geometry="mesh64",
         use_gjk_collision=False,
@@ -147,12 +190,16 @@ def main():
     solver = workload.scene.rigid_solver
     entry = solver.stress_recovery.links[0] if workload.stress else None
     observed_stress = workload.stress and not args.mechanics_only
+    if args.construction_snapshots:
+        capture_physics(workload, args.output / "constructed.npz")
     with torch.inference_mode():
         for _ in range(args.warmup):
             workload.step()
         qd.sync()
         solver.check_errno()
         workload.restart()
+        if args.construction_snapshots:
+            capture_physics(workload, args.output / "restarted.npz")
         buffers = replay_buffers(workload, args.steps) if args.replay else []
         resets = {0: torch.arange(args.envs, dtype=gs.tc_int, device=gs.device)}
         for tick in range(1, args.steps):
@@ -172,6 +219,8 @@ def main():
         for tick in range(args.steps):
             workload.step()
             states[tick].copy_(motion(workload))
+            if args.construction_snapshots and tick + 1 in (108, 109, 110, 120, args.steps):
+                capture_physics(workload, args.output / f"step{tick + 1}.npz")
             counts[tick].copy_(contact_counts)
             errors[tick].copy_(errno_view)
             if observed_stress:
@@ -301,6 +350,9 @@ def main():
                 "conditions": file_id(args.conditions),
                 "trajectory": file_id(args.output / "trajectory.npz"),
                 "stress_configuration": entry.options.model_dump(mode="json") if entry is not None else None,
+                "intrinsic_workspace_contacts": entry.intrinsic.contacts.valid.shape[0]
+                if entry is not None and entry.intrinsic is not None
+                else None,
                 "replay": replay_result,
                 "physical_reference_qualified": False,
                 "scope": "Intrusive motion/output control; recording cost is not primary production throughput.",

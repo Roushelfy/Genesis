@@ -1,0 +1,78 @@
+[
+  [
+    {
+      "name": "bank.json",
+      "module": "examples.speed_benchmark.rigid_stress",
+      "args": [
+        "--scope",
+        "rigid",
+        "--envs",
+        "128",
+        "--level",
+        "1",
+        "--warmup",
+        "0",
+        "--steps",
+        "1",
+        "--repetitions",
+        "1",
+        "--minimum-seconds",
+        "0",
+        "--varied",
+        "--seed",
+        "623016",
+        "--egg-geometry",
+        "mesh64",
+        "--collision-method",
+        "mpr",
+        "--contact-patch",
+        "off",
+        "--history",
+        "0",
+        "--compact-log",
+        "--source-revision",
+        "1ff39b0775200120737225fdfb8631c9b1fc5fa7",
+        "--save-conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-independent-condition-banks-v1/group0/conditions.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "bank.json",
+      "module": "examples.speed_benchmark.rigid_stress",
+      "args": [
+        "--scope",
+        "rigid",
+        "--envs",
+        "512",
+        "--level",
+        "1",
+        "--warmup",
+        "0",
+        "--steps",
+        "1",
+        "--repetitions",
+        "1",
+        "--minimum-seconds",
+        "0",
+        "--varied",
+        "--seed",
+        "623016",
+        "--egg-geometry",
+        "mesh64",
+        "--collision-method",
+        "mpr",
+        "--contact-patch",
+        "off",
+        "--history",
+        "0",
+        "--compact-log",
+        "--source-revision",
+        "1ff39b0775200120737225fdfb8631c9b1fc5fa7",
+        "--save-conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-independent-condition-banks-v1/group1/conditions.npz"
+      ]
+    }
+  ]
+]

@@ -1,0 +1,1786 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-191",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729071",
+      "SLURM_ARRAY_JOB_ID": "729071",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "trace_summary_completed": true,
+  "scene_steps": 60,
+  "scopes": [
+    {
+      "name": "native_scene_step",
+      "calls": 60,
+      "inclusive_host_us": 806726.179,
+      "host_us_per_scene_step": 13445.436316666666
+    },
+    {
+      "name": "SCR.contact_pipeline",
+      "calls": 60,
+      "inclusive_host_us": 444177.4820000001,
+      "host_us_per_scene_step": 7402.958033333334
+    },
+    {
+      "name": "SCR.capacity_check_and_growth",
+      "calls": 120,
+      "inclusive_host_us": 205451.60900000008,
+      "host_us_per_scene_step": 3424.193483333335
+    },
+    {
+      "name": "SCR.device_scalar_readback",
+      "calls": 180,
+      "inclusive_host_us": 217634.407,
+      "host_us_per_scene_step": 3627.240116666667
+    }
+  ],
+  "kernels": [
+    {
+      "name": "kernel_fit_tractions_impl_c1032_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 236951.5130000001,
+      "gpu_us_per_scene_step": 3949.1918833333348
+    },
+    {
+      "name": "kernel_scatter_cached_tractions_c1036_0_kernel_5_range_for",
+      "calls": 60,
+      "sum_gpu_us": 103906.03099999999,
+      "gpu_us_per_scene_step": 1731.7671833333332
+    },
+    {
+      "name": "kernel_resolve_sources_c746_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 41953.35600000001,
+      "gpu_us_per_scene_step": 699.2226000000002
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_11_range_for",
+      "calls": 60,
+      "sum_gpu_us": 33803.86500000001,
+      "gpu_us_per_scene_step": 563.3977500000002
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_12_sweep_links_by_level_range_for",
+      "calls": 60,
+      "sum_gpu_us": 10236.007000000003,
+      "gpu_us_per_scene_step": 170.6001166666667
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_10_range_for",
+      "calls": 60,
+      "sum_gpu_us": 9443.340999999999,
+      "gpu_us_per_scene_step": 157.38901666666663
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_23_island_tiled_factor_solve_range_for",
+      "calls": 60,
+      "sum_gpu_us": 4056.1879999999983,
+      "gpu_us_per_scene_step": 67.6031333333333
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_15_island_tiled_factor_solve_range_for",
+      "calls": 60,
+      "sum_gpu_us": 4034.23,
+      "gpu_us_per_scene_step": 67.23716666666667
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_1_islands_linesearch_range_for",
+      "calls": 60,
+      "sum_gpu_us": 3979.796999999999,
+      "gpu_us_per_scene_step": 66.32994999999998
+    },
+    {
+      "name": "kernel_fan_frontier_samples_c1030_0_kernel_4_range_for",
+      "calls": 60,
+      "sum_gpu_us": 3779.257000000002,
+      "gpu_us_per_scene_step": 62.987616666666696
+    },
+    {
+      "name": "kernel_surface_pack_c870_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 3434.644000000001,
+      "gpu_us_per_scene_step": 57.24406666666668
+    },
+    {
+      "name": "kernel_snapshot_source_priors_c780_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 2443.644,
+      "gpu_us_per_scene_step": 40.727399999999996
+    },
+    {
+      "name": "kernel_surface_apply_packed_c872_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 2372.952,
+      "gpu_us_per_scene_step": 39.549200000000006
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_25_add_collision_constraints_range_for",
+      "calls": 60,
+      "sum_gpu_us": 2039.7419999999993,
+      "gpu_us_per_scene_step": 33.995699999999985
+    },
+    {
+      "name": "kernel_full_residual_impl_c866_0_kernel_3_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1926.5289999999998,
+      "gpu_us_per_scene_step": 32.10881666666666
+    },
+    {
+      "name": "kernel_peak_impl_c868_0_kernel_3_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1892.574,
+      "gpu_us_per_scene_step": 31.5429
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_25_wrap_cone_hessian_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1887.611,
+      "gpu_us_per_scene_step": 31.460183333333337
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_19_wrap_cone_hessian_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1878.494000000001,
+      "gpu_us_per_scene_step": 31.30823333333335
+    },
+    {
+      "name": "kernel_bind_source_vertices_c790_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1783.1640000000002,
+      "gpu_us_per_scene_step": 29.719400000000004
+    },
+    {
+      "name": "kernel_partition_source_priors_c782_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1536.3829999999994,
+      "gpu_us_per_scene_step": 25.606383333333323
+    },
+    {
+      "name": "kernel_full_residual_impl_c866_1_kernel_1_range_for",
+      "calls": 180,
+      "sum_gpu_us": 1499.579,
+      "gpu_us_per_scene_step": 24.99298333333333
+    },
+    {
+      "name": "kernel_full_residual_impl_c866_1_kernel_4_range_for",
+      "calls": 180,
+      "sum_gpu_us": 1499.1269999999993,
+      "gpu_us_per_scene_step": 24.98544999999999
+    },
+    {
+      "name": "kernel_full_residual_impl_c866_1_kernel_3_range_for",
+      "calls": 180,
+      "sum_gpu_us": 1487.3580000000022,
+      "gpu_us_per_scene_step": 24.789300000000036
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_13_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1315.0419999999997,
+      "gpu_us_per_scene_step": 21.917366666666663
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_13_wrap_cone_hessian_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1298.4309999999998,
+      "gpu_us_per_scene_step": 21.640516666666663
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_17_wrap_cone_hessian_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1293.9790000000003,
+      "gpu_us_per_scene_step": 21.566316666666673
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_3_sweep_links_by_level_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1281.2130000000004,
+      "gpu_us_per_scene_step": 21.353550000000006
+    },
+    {
+      "name": "kernel_footprint_ports_c764_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1276.5110000000002,
+      "gpu_us_per_scene_step": 21.275183333333338
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_1_sweep_links_by_level_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1262.2669999999996,
+      "gpu_us_per_scene_step": 21.037783333333326
+    },
+    {
+      "name": "kernel_resolve_stress_contacts_c902_0_kernel_5_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1258.11,
+      "gpu_us_per_scene_step": 20.9685
+    },
+    {
+      "name": "kernel_fan_frontier_c1028_0_kernel_5_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1177.7899999999997,
+      "gpu_us_per_scene_step": 19.62983333333333
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_21_sort_contacts_and_build_islands_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1168.1909999999998,
+      "gpu_us_per_scene_step": 19.469849999999997
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_24_factor_mass_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1165.051,
+      "gpu_us_per_scene_step": 19.417516666666664
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_19_sweep_links_by_level_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1130.4629999999997,
+      "gpu_us_per_scene_step": 18.841049999999996
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_29_range_for",
+      "calls": 60,
+      "sum_gpu_us": 1107.8670000000002,
+      "gpu_us_per_scene_step": 18.464450000000003
+    },
+    {
+      "name": "kernel_apply_inverse_c832_0_kernel_2_range_for",
+      "calls": 120,
+      "sum_gpu_us": 999.580000000001,
+      "gpu_us_per_scene_step": 16.659666666666684
+    },
+    {
+      "name": "kernel_apply_inverse_c832_0_kernel_1_range_for",
+      "calls": 120,
+      "sum_gpu_us": 998.4330000000004,
+      "gpu_us_per_scene_step": 16.640550000000008
+    },
+    {
+      "name": "kernel_refresh_refined_source_priors_c784_0_kernel_1_range_for",
+      "calls": 120,
+      "sum_gpu_us": 993.4110000000004,
+      "gpu_us_per_scene_step": 16.556850000000008
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 989.4040000000001,
+      "gpu_us_per_scene_step": 16.490066666666667
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_28_add_joint_limit_constraints_range_for",
+      "calls": 60,
+      "sum_gpu_us": 843.04,
+      "gpu_us_per_scene_step": 14.050666666666666
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_17_sweep_links_by_level_range_for",
+      "calls": 60,
+      "sum_gpu_us": 801.0250000000002,
+      "gpu_us_per_scene_step": 13.35041666666667
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_21_sweep_links_by_level_range_for",
+      "calls": 60,
+      "sum_gpu_us": 738.7479999999998,
+      "gpu_us_per_scene_step": 12.312466666666664
+    },
+    {
+      "name": "kernel_balance_impl_c856_0_kernel_3_range_for",
+      "calls": 60,
+      "sum_gpu_us": 647.103,
+      "gpu_us_per_scene_step": 10.78505
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_17_update_cartesian_space_com_range_for",
+      "calls": 60,
+      "sum_gpu_us": 639.4220000000003,
+      "gpu_us_per_scene_step": 10.657033333333338
+    },
+    {
+      "name": "kernel_footprint_ports_c764_0_kernel_3_range_for",
+      "calls": 60,
+      "sum_gpu_us": 594.4949999999999,
+      "gpu_us_per_scene_step": 9.908249999999999
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_16_update_cartesian_space_com_sum_range_for",
+      "calls": 60,
+      "sum_gpu_us": 556.3210000000001,
+      "gpu_us_per_scene_step": 9.27201666666667
+    },
+    {
+      "name": "kernel_associate_c728_0_kernel_3_range_for",
+      "calls": 60,
+      "sum_gpu_us": 548.4140000000001,
+      "gpu_us_per_scene_step": 9.140233333333335
+    },
+    {
+      "name": "kernel_fit_tractions_impl_c1032_1_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 543.388,
+      "gpu_us_per_scene_step": 9.056466666666667
+    },
+    {
+      "name": "kernel_fit_tractions_impl_c1032_2_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 543.1370000000001,
+      "gpu_us_per_scene_step": 9.052283333333333
+    },
+    {
+      "name": "kernel_associate_c728_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 542.5610000000001,
+      "gpu_us_per_scene_step": 9.042683333333336
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_5_range_for",
+      "calls": 60,
+      "sum_gpu_us": 541.9230000000001,
+      "gpu_us_per_scene_step": 9.032050000000002
+    },
+    {
+      "name": "kernel_fit_tractions_impl_c752_2_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 541.506,
+      "gpu_us_per_scene_step": 9.0251
+    },
+    {
+      "name": "kernel_search_wrench_certificate_impl_c756_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 540.731,
+      "gpu_us_per_scene_step": 9.012183333333333
+    },
+    {
+      "name": "kernel_fit_tractions_impl_c752_1_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 540.67,
+      "gpu_us_per_scene_step": 9.011166666666666
+    },
+    {
+      "name": "kernel_search_wrench_certificate_impl_c756_1_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 540.4429999999999,
+      "gpu_us_per_scene_step": 9.007383333333332
+    },
+    {
+      "name": "kernel_fit_tractions_impl_c752_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 539.1969999999997,
+      "gpu_us_per_scene_step": 8.986616666666661
+    },
+    {
+      "name": "kernel_fan_frontier_c1028_0_kernel_2_range_for",
+      "calls": 60,
+      "sum_gpu_us": 533.793,
+      "gpu_us_per_scene_step": 8.89655
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_11_range_for",
+      "calls": 60,
+      "sum_gpu_us": 528.4850000000001,
+      "gpu_us_per_scene_step": 8.808083333333336
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_15_range_for",
+      "calls": 60,
+      "sum_gpu_us": 526.2070000000004,
+      "gpu_us_per_scene_step": 8.770116666666674
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_19_range_for",
+      "calls": 60,
+      "sum_gpu_us": 526.0780000000004,
+      "gpu_us_per_scene_step": 8.767966666666673
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_23_add_frictionloss_constraints_range_for",
+      "calls": 60,
+      "sum_gpu_us": 525.8570000000002,
+      "gpu_us_per_scene_step": 8.764283333333337
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_3_collision_clear_range_for",
+      "calls": 60,
+      "sum_gpu_us": 525.1210000000002,
+      "gpu_us_per_scene_step": 8.75201666666667
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_17_range_for",
+      "calls": 60,
+      "sum_gpu_us": 524.801,
+      "gpu_us_per_scene_step": 8.746683333333333
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_17_island_hessian_assemble_range_for",
+      "calls": 60,
+      "sum_gpu_us": 524.5739999999998,
+      "gpu_us_per_scene_step": 8.742899999999997
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_4_mass_mat_range_for",
+      "calls": 60,
+      "sum_gpu_us": 524.3209999999998,
+      "gpu_us_per_scene_step": 8.73868333333333
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_13_range_for",
+      "calls": 60,
+      "sum_gpu_us": 522.7810000000001,
+      "gpu_us_per_scene_step": 8.713016666666668
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_22_range_for",
+      "calls": 60,
+      "sum_gpu_us": 521.9170000000003,
+      "gpu_us_per_scene_step": 8.698616666666672
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_26_add_collision_count_range_for",
+      "calls": 60,
+      "sum_gpu_us": 521.7590000000004,
+      "gpu_us_per_scene_step": 8.69598333333334
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_26_range_for",
+      "calls": 60,
+      "sum_gpu_us": 520.9290000000005,
+      "gpu_us_per_scene_step": 8.682150000000009
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_9_impint_order_1_corr_range_for",
+      "calls": 60,
+      "sum_gpu_us": 520.9250000000006,
+      "gpu_us_per_scene_step": 8.682083333333344
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_5_init_broad_pairs_range_for",
+      "calls": 60,
+      "sum_gpu_us": 520.3250000000004,
+      "gpu_us_per_scene_step": 8.67208333333334
+    },
+    {
+      "name": "kernel_commit_intrinsic_contacts_c1034_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 520.2870000000003,
+      "gpu_us_per_scene_step": 8.671450000000004
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_28_clear_links_constrained_range_for",
+      "calls": 60,
+      "sum_gpu_us": 520.0620000000005,
+      "gpu_us_per_scene_step": 8.667700000000007
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_1_crb_initialize_range_for",
+      "calls": 60,
+      "sum_gpu_us": 519.4910000000001,
+      "gpu_us_per_scene_step": 8.658183333333335
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_8_armature_range_for",
+      "calls": 60,
+      "sum_gpu_us": 519.07,
+      "gpu_us_per_scene_step": 8.651166666666667
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_7_traverse_valid_range_for",
+      "calls": 60,
+      "sum_gpu_us": 518.9770000000001,
+      "gpu_us_per_scene_step": 8.649616666666669
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_15_range_for",
+      "calls": 60,
+      "sum_gpu_us": 518.8469999999999,
+      "gpu_us_per_scene_step": 8.647449999999997
+    },
+    {
+      "name": "kernel_fan_frontier_c1028_0_kernel_4_range_for",
+      "calls": 60,
+      "sum_gpu_us": 514.3679999999999,
+      "gpu_us_per_scene_step": 8.572799999999999
+    },
+    {
+      "name": "kernel_refine_failed_disks_c768_0_kernel_4_range_for",
+      "calls": 60,
+      "sum_gpu_us": 513.1500000000001,
+      "gpu_us_per_scene_step": 8.552500000000002
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_6_mass_mat_assemble_range_for",
+      "calls": 60,
+      "sum_gpu_us": 506.17599999999965,
+      "gpu_us_per_scene_step": 8.436266666666661
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_9_island_hessian_assemble_range_for",
+      "calls": 60,
+      "sum_gpu_us": 504.289,
+      "gpu_us_per_scene_step": 8.404816666666667
+    },
+    {
+      "name": "kernel_full_residual_impl_c866_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 504.22200000000004,
+      "gpu_us_per_scene_step": 8.4037
+    },
+    {
+      "name": "kernel_balance_impl_c856_0_kernel_5_range_for",
+      "calls": 60,
+      "sum_gpu_us": 503.7740000000003,
+      "gpu_us_per_scene_step": 8.396233333333338
+    },
+    {
+      "name": "kernel_capture_contact_failure_impl_c762_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 503.0060000000002,
+      "gpu_us_per_scene_step": 8.383433333333336
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_14_update_cartesian_space_com_inertial_range_for",
+      "calls": 60,
+      "sum_gpu_us": 502.9410000000001,
+      "gpu_us_per_scene_step": 8.38235
+    },
+    {
+      "name": "kernel_balance_impl_c856_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 502.30100000000004,
+      "gpu_us_per_scene_step": 8.371683333333333
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_11_update_gradient_no_solve_range_for",
+      "calls": 60,
+      "sum_gpu_us": 501.8839999999998,
+      "gpu_us_per_scene_step": 8.36473333333333
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_10_range_for",
+      "calls": 60,
+      "sum_gpu_us": 501.75799999999975,
+      "gpu_us_per_scene_step": 8.36263333333333
+    },
+    {
+      "name": "kernel_direct_init_c858_0_kernel_3_range_for",
+      "calls": 60,
+      "sum_gpu_us": 501.09299999999973,
+      "gpu_us_per_scene_step": 8.351549999999996
+    },
+    {
+      "name": "kernel_accept_impl_c886_0_kernel_3_range_for",
+      "calls": 60,
+      "sum_gpu_us": 500.9599999999996,
+      "gpu_us_per_scene_step": 8.349333333333327
+    },
+    {
+      "name": "kernel_capture_rigid_sources_c744_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 500.95899999999955,
+      "gpu_us_per_scene_step": 8.34931666666666
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_6_range_for",
+      "calls": 60,
+      "sum_gpu_us": 500.8679999999999,
+      "gpu_us_per_scene_step": 8.347799999999998
+    },
+    {
+      "name": "kernel_peak_impl_c868_0_kernel_4_range_for",
+      "calls": 60,
+      "sum_gpu_us": 500.7749999999996,
+      "gpu_us_per_scene_step": 8.346249999999992
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_7_range_for",
+      "calls": 60,
+      "sum_gpu_us": 500.76599999999974,
+      "gpu_us_per_scene_step": 8.346099999999996
+    },
+    {
+      "name": "kernel_full_residual_impl_c866_0_kernel_4_range_for",
+      "calls": 60,
+      "sum_gpu_us": 500.7039999999995,
+      "gpu_us_per_scene_step": 8.345066666666659
+    },
+    {
+      "name": "kernel_resolve_stress_contacts_c902_0_kernel_4_range_for",
+      "calls": 60,
+      "sum_gpu_us": 500.5419999999997,
+      "gpu_us_per_scene_step": 8.342366666666662
+    },
+    {
+      "name": "kernel_select_failed_fans_c774_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 500.4099999999997,
+      "gpu_us_per_scene_step": 8.340166666666661
+    },
+    {
+      "name": "kernel_resolve_stress_contacts_c902_0_kernel_2_range_for",
+      "calls": 60,
+      "sum_gpu_us": 500.0649999999996,
+      "gpu_us_per_scene_step": 8.33441666666666
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_22_check_early_exit_scan_values_range_for",
+      "calls": 60,
+      "sum_gpu_us": 500.03099999999966,
+      "gpu_us_per_scene_step": 8.333849999999995
+    },
+    {
+      "name": "kernel_surface_apply_packed_c872_0_kernel_2_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.9379999999996,
+      "gpu_us_per_scene_step": 8.332299999999993
+    },
+    {
+      "name": "kernel_pack_intrinsic_contacts_c796_0_kernel_7_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.8729999999998,
+      "gpu_us_per_scene_step": 8.331216666666664
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_8_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.8079999999997,
+      "gpu_us_per_scene_step": 8.330133333333329
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_7_snapshot_prev_active_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.78199999999987,
+      "gpu_us_per_scene_step": 8.329699999999997
+    },
+    {
+      "name": "kernel_peak_impl_c868_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.77199999999976,
+      "gpu_us_per_scene_step": 8.329533333333329
+    },
+    {
+      "name": "kernel_direct_init_c858_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.74599999999975,
+      "gpu_us_per_scene_step": 8.329099999999995
+    },
+    {
+      "name": "kernel_pack_intrinsic_contacts_c796_0_kernel_5_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.7419999999998,
+      "gpu_us_per_scene_step": 8.32903333333333
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_1_from_warmstart_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.7129999999997,
+      "gpu_us_per_scene_step": 8.328549999999995
+    },
+    {
+      "name": "kernel_pack_intrinsic_contacts_c796_0_kernel_4_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.70999999999964,
+      "gpu_us_per_scene_step": 8.328499999999995
+    },
+    {
+      "name": "kernel_fan_frontier_samples_c1030_0_kernel_2_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.6799999999997,
+      "gpu_us_per_scene_step": 8.327999999999996
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_21_update_gradient_no_solve_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.67399999999975,
+      "gpu_us_per_scene_step": 8.327899999999996
+    },
+    {
+      "name": "kernel_load_intrinsic_contacts_c802_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.6469999999997,
+      "gpu_us_per_scene_step": 8.327449999999995
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_3_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.5819999999998,
+      "gpu_us_per_scene_step": 8.326366666666663
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_26_assign_search_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.55099999999976,
+      "gpu_us_per_scene_step": 8.325849999999996
+    },
+    {
+      "name": "kernel_solve_cooperative_c826_1_kernel_2_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.52199999999993,
+      "gpu_us_per_scene_step": 8.325366666666666
+    },
+    {
+      "name": "kernel_pack_intrinsic_contacts_c796_0_kernel_2_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.48799999999983,
+      "gpu_us_per_scene_step": 8.324799999999998
+    },
+    {
+      "name": "kernel_scatter_cached_tractions_c1036_0_kernel_3_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.45799999999974,
+      "gpu_us_per_scene_step": 8.324299999999996
+    },
+    {
+      "name": "kernel_load_intrinsic_contacts_c802_0_kernel_3_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.41899999999976,
+      "gpu_us_per_scene_step": 8.323649999999995
+    },
+    {
+      "name": "kernel_accept_impl_c886_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.4179999999998,
+      "gpu_us_per_scene_step": 8.32363333333333
+    },
+    {
+      "name": "kernel_refine_failed_samples_c778_0_kernel_3_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.3629999999999,
+      "gpu_us_per_scene_step": 8.322716666666665
+    },
+    {
+      "name": "kernel_bind_traction_support_impl_c800_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.3589999999998,
+      "gpu_us_per_scene_step": 8.322649999999998
+    },
+    {
+      "name": "kernel_inputs_c970_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.1349999999999,
+      "gpu_us_per_scene_step": 8.318916666666665
+    },
+    {
+      "name": "kernel_begin_step_c884_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.10699999999997,
+      "gpu_us_per_scene_step": 8.31845
+    },
+    {
+      "name": "kernel_commit_body_partition_c806_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.10699999999997,
+      "gpu_us_per_scene_step": 8.31845
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_7_update_constraint_qfrc_range_for",
+      "calls": 60,
+      "sum_gpu_us": 499.0989999999999,
+      "gpu_us_per_scene_step": 8.318316666666664
+    },
+    {
+      "name": "kernel_resolve_stress_contacts_c902_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 498.5290000000001,
+      "gpu_us_per_scene_step": 8.308816666666669
+    },
+    {
+      "name": "kernel_refine_failed_disks_c768_0_kernel_2_range_for",
+      "calls": 60,
+      "sum_gpu_us": 498.1450000000002,
+      "gpu_us_per_scene_step": 8.30241666666667
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_3_snapshot_prev_active_range_for",
+      "calls": 60,
+      "sum_gpu_us": 498.04900000000015,
+      "gpu_us_per_scene_step": 8.30081666666667
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_3_init_ma_range_for",
+      "calls": 60,
+      "sum_gpu_us": 497.9169999999999,
+      "gpu_us_per_scene_step": 8.298616666666666
+    },
+    {
+      "name": "kernel_certify_continuous_force_c760_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 496.9229999999999,
+      "gpu_us_per_scene_step": 8.282049999999998
+    },
+    {
+      "name": "kernel_refine_failed_charts_c776_0_kernel_2_range_for",
+      "calls": 60,
+      "sum_gpu_us": 496.673,
+      "gpu_us_per_scene_step": 8.277883333333333
+    },
+    {
+      "name": "kernel_solve_cooperative_c826_1_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 496.13099999999986,
+      "gpu_us_per_scene_step": 8.268849999999997
+    },
+    {
+      "name": "kernel_fan_frontier_samples_c1030_0_kernel_5_range_for",
+      "calls": 60,
+      "sum_gpu_us": 495.83499999999987,
+      "gpu_us_per_scene_step": 8.263916666666665
+    },
+    {
+      "name": "kernel_certify_continuous_wrench_impl_c758_1_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 495.00800000000004,
+      "gpu_us_per_scene_step": 8.250133333333334
+    },
+    {
+      "name": "kernel_certify_continuous_wrench_impl_c758_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 494.97799999999984,
+      "gpu_us_per_scene_step": 8.24963333333333
+    },
+    {
+      "name": "kernel_refine_failed_samples_c778_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 494.88299999999987,
+      "gpu_us_per_scene_step": 8.248049999999997
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_19_islands_update_search_direction_range_for",
+      "calls": 60,
+      "sum_gpu_us": 484.25600000000037,
+      "gpu_us_per_scene_step": 8.07093333333334
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_5_update_constraint_forces_range_for",
+      "calls": 60,
+      "sum_gpu_us": 483.04100000000005,
+      "gpu_us_per_scene_step": 8.050683333333334
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_11_update_constraint_qfrc_range_for",
+      "calls": 60,
+      "sum_gpu_us": 482.56,
+      "gpu_us_per_scene_step": 8.042666666666667
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_27_certify_converged_range_for",
+      "calls": 60,
+      "sum_gpu_us": 482.5319999999998,
+      "gpu_us_per_scene_step": 8.042199999999998
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_9_update_constraint_forces_range_for",
+      "calls": 60,
+      "sum_gpu_us": 482.3069999999998,
+      "gpu_us_per_scene_step": 8.038449999999996
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_15_init_improved_range_for",
+      "calls": 60,
+      "sum_gpu_us": 482.303,
+      "gpu_us_per_scene_step": 8.038383333333334
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_5_init_jaref_parallel_range_for",
+      "calls": 60,
+      "sum_gpu_us": 479.39200000000017,
+      "gpu_us_per_scene_step": 7.98986666666667
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_13_update_constraint_cost_range_for",
+      "calls": 60,
+      "sum_gpu_us": 478.94300000000015,
+      "gpu_us_per_scene_step": 7.982383333333336
+    },
+    {
+      "name": "kernel_scatter_cached_tractions_c1036_0_kernel_1_range_for",
+      "calls": 60,
+      "sum_gpu_us": 471.1649999999998,
+      "gpu_us_per_scene_step": 7.852749999999997
+    },
+    {
+      "name": "kernel_refine_failed_charts_c776_0_kernel_3_range_for",
+      "calls": 60,
+      "sum_gpu_us": 470.84699999999975,
+      "gpu_us_per_scene_step": 7.847449999999996
+    },
+    {
+      "name": "kernel_footprint_ports_c764_0_kernel_4_range_for",
+      "calls": 60,
+      "sum_gpu_us": 468.19199999999984,
+      "gpu_us_per_scene_step": 7.803199999999998
+    },
+    {
+      "name": "void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1} const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1} const&)::{lambda(int)#1})",
+      "calls": 180,
+      "sum_gpu_us": 272.29099999999994,
+      "gpu_us_per_scene_step": 4.538183333333333
+    },
+    {
+      "name": "void at::native::vectorized_elementwise_kernel<2, at::native::FillFunctor<double>, std::array<char*, 1ul> >(int, at::native::FillFunctor<double>, std::array<char*, 1ul>)",
+      "calls": 240,
+      "sum_gpu_us": 245.1540000000002,
+      "gpu_us_per_scene_step": 4.085900000000003
+    },
+    {
+      "name": "kernel_full_residual_impl_c866_1_kernel_0_serial",
+      "calls": 180,
+      "sum_gpu_us": 234.68400000000025,
+      "gpu_us_per_scene_step": 3.9114000000000044
+    },
+    {
+      "name": "kernel_full_residual_impl_c866_1_kernel_2_serial",
+      "calls": 180,
+      "sum_gpu_us": 230.84300000000016,
+      "gpu_us_per_scene_step": 3.847383333333336
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_16_serial",
+      "calls": 60,
+      "sum_gpu_us": 205.03099999999998,
+      "gpu_us_per_scene_step": 3.417183333333333
+    },
+    {
+      "name": "void at::native::vectorized_elementwise_kernel<4, at::native::FillFunctor<int>, std::array<char*, 1ul> >(int, at::native::FillFunctor<int>, std::array<char*, 1ul>)",
+      "calls": 180,
+      "sum_gpu_us": 183.61500000000004,
+      "gpu_us_per_scene_step": 3.060250000000001
+    },
+    {
+      "name": "void at::native::elementwise_kernel<128, 2, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1} const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1} const&)::{lambda(int)#1})",
+      "calls": 120,
+      "sum_gpu_us": 166.78100000000012,
+      "gpu_us_per_scene_step": 2.7796833333333355
+    },
+    {
+      "name": "kernel_apply_inverse_c832_0_kernel_0_serial",
+      "calls": 120,
+      "sum_gpu_us": 156.77000000000004,
+      "gpu_us_per_scene_step": 2.612833333333334
+    },
+    {
+      "name": "kernel_refresh_refined_source_priors_c784_0_kernel_0_serial",
+      "calls": 120,
+      "sum_gpu_us": 142.35799999999992,
+      "gpu_us_per_scene_step": 2.372633333333332
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_22_serial",
+      "calls": 60,
+      "sum_gpu_us": 123.58600000000004,
+      "gpu_us_per_scene_step": 2.0597666666666674
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_2_serial",
+      "calls": 60,
+      "sum_gpu_us": 114.74800000000009,
+      "gpu_us_per_scene_step": 1.912466666666668
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_23_serial",
+      "calls": 60,
+      "sum_gpu_us": 111.35999999999991,
+      "gpu_us_per_scene_step": 1.8559999999999985
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_20_serial",
+      "calls": 60,
+      "sum_gpu_us": 109.85599999999994,
+      "gpu_us_per_scene_step": 1.8309333333333322
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_20_check_early_exit_reset_flag_range_for",
+      "calls": 60,
+      "sum_gpu_us": 108.60600000000001,
+      "gpu_us_per_scene_step": 1.8101
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_22_serial",
+      "calls": 60,
+      "sum_gpu_us": 107.04000000000008,
+      "gpu_us_per_scene_step": 1.7840000000000014
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_16_serial",
+      "calls": 60,
+      "sum_gpu_us": 105.05799999999999,
+      "gpu_us_per_scene_step": 1.7509666666666666
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_6_serial",
+      "calls": 60,
+      "sum_gpu_us": 105.05200000000008,
+      "gpu_us_per_scene_step": 1.750866666666668
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_27_serial",
+      "calls": 60,
+      "sum_gpu_us": 104.832,
+      "gpu_us_per_scene_step": 1.7471999999999999
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_12_serial",
+      "calls": 60,
+      "sum_gpu_us": 104.12699999999995,
+      "gpu_us_per_scene_step": 1.7354499999999993
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_14_serial",
+      "calls": 60,
+      "sum_gpu_us": 103.32799999999993,
+      "gpu_us_per_scene_step": 1.7221333333333322
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_27_serial",
+      "calls": 60,
+      "sum_gpu_us": 103.00299999999993,
+      "gpu_us_per_scene_step": 1.7167166666666656
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_5_serial",
+      "calls": 60,
+      "sum_gpu_us": 102.90999999999993,
+      "gpu_us_per_scene_step": 1.7151666666666654
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_20_serial",
+      "calls": 60,
+      "sum_gpu_us": 102.49499999999993,
+      "gpu_us_per_scene_step": 1.708249999999999
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_25_serial",
+      "calls": 60,
+      "sum_gpu_us": 100.76599999999999,
+      "gpu_us_per_scene_step": 1.6794333333333331
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_14_serial",
+      "calls": 60,
+      "sum_gpu_us": 99.94000000000007,
+      "gpu_us_per_scene_step": 1.6656666666666677
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_18_serial",
+      "calls": 60,
+      "sum_gpu_us": 99.22900000000007,
+      "gpu_us_per_scene_step": 1.6538166666666678
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_4_serial",
+      "calls": 60,
+      "sum_gpu_us": 98.78400000000005,
+      "gpu_us_per_scene_step": 1.6464000000000008
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_16_serial",
+      "calls": 60,
+      "sum_gpu_us": 97.02700000000002,
+      "gpu_us_per_scene_step": 1.617116666666667
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_24_serial",
+      "calls": 60,
+      "sum_gpu_us": 97.02,
+      "gpu_us_per_scene_step": 1.617
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_8_serial",
+      "calls": 60,
+      "sum_gpu_us": 96.25699999999995,
+      "gpu_us_per_scene_step": 1.6042833333333324
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_11_serial",
+      "calls": 60,
+      "sum_gpu_us": 95.39099999999998,
+      "gpu_us_per_scene_step": 1.5898499999999995
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_7_serial",
+      "calls": 60,
+      "sum_gpu_us": 95.04199999999999,
+      "gpu_us_per_scene_step": 1.5840333333333332
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 94.71999999999997,
+      "gpu_us_per_scene_step": 1.5786666666666662
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_18_serial",
+      "calls": 60,
+      "sum_gpu_us": 94.49399999999999,
+      "gpu_us_per_scene_step": 1.5748999999999997
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_2_serial",
+      "calls": 60,
+      "sum_gpu_us": 94.49299999999992,
+      "gpu_us_per_scene_step": 1.574883333333332
+    },
+    {
+      "name": "kernel_substep_dynamics_c896_1_kernel_10_serial",
+      "calls": 60,
+      "sum_gpu_us": 93.98799999999997,
+      "gpu_us_per_scene_step": 1.5664666666666662
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_24_serial",
+      "calls": 60,
+      "sum_gpu_us": 93.62899999999998,
+      "gpu_us_per_scene_step": 1.560483333333333
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_9_range_for",
+      "calls": 60,
+      "sum_gpu_us": 93.47299999999997,
+      "gpu_us_per_scene_step": 1.5578833333333328
+    },
+    {
+      "name": "kernel_associate_c728_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 93.34299999999998,
+      "gpu_us_per_scene_step": 1.5557166666666662
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 91.46000000000006,
+      "gpu_us_per_scene_step": 1.5243333333333344
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_18_serial",
+      "calls": 60,
+      "sum_gpu_us": 90.78200000000004,
+      "gpu_us_per_scene_step": 1.513033333333334
+    },
+    {
+      "name": "_qd_graph_do_while_cond",
+      "calls": 60,
+      "sum_gpu_us": 90.53200000000004,
+      "gpu_us_per_scene_step": 1.5088666666666672
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_14_serial",
+      "calls": 60,
+      "sum_gpu_us": 88.54499999999994,
+      "gpu_us_per_scene_step": 1.475749999999999
+    },
+    {
+      "name": "kernel_fan_frontier_samples_c1030_0_kernel_3_serial",
+      "calls": 60,
+      "sum_gpu_us": 86.42699999999998,
+      "gpu_us_per_scene_step": 1.4404499999999996
+    },
+    {
+      "name": "kernel_resolve_sources_c746_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 86.39799999999997,
+      "gpu_us_per_scene_step": 1.4399666666666662
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_23_check_early_exit_set_counter_range_for",
+      "calls": 60,
+      "sum_gpu_us": 86.17499999999995,
+      "gpu_us_per_scene_step": 1.4362499999999991
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 84.672,
+      "gpu_us_per_scene_step": 1.4112
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_9_serial",
+      "calls": 60,
+      "sum_gpu_us": 84.349,
+      "gpu_us_per_scene_step": 1.4058166666666667
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_10_serial",
+      "calls": 60,
+      "sum_gpu_us": 84.197,
+      "gpu_us_per_scene_step": 1.4032833333333334
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_12_range_for",
+      "calls": 60,
+      "sum_gpu_us": 83.87400000000004,
+      "gpu_us_per_scene_step": 1.3979000000000006
+    },
+    {
+      "name": "kernel_substep_collision_c898_0_kernel_19_range_for",
+      "calls": 60,
+      "sum_gpu_us": 83.45100000000005,
+      "gpu_us_per_scene_step": 1.3908500000000008
+    },
+    {
+      "name": "kernel_solve_cooperative_c826_1_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 83.358,
+      "gpu_us_per_scene_step": 1.3893
+    },
+    {
+      "name": "kernel_fan_frontier_c1028_0_kernel_3_serial",
+      "calls": 60,
+      "sum_gpu_us": 83.23600000000003,
+      "gpu_us_per_scene_step": 1.3872666666666673
+    },
+    {
+      "name": "kernel_refine_failed_disks_c768_0_kernel_3_serial",
+      "calls": 60,
+      "sum_gpu_us": 82.66200000000002,
+      "gpu_us_per_scene_step": 1.3777000000000004
+    },
+    {
+      "name": "kernel_refine_failed_samples_c778_0_kernel_2_serial",
+      "calls": 60,
+      "sum_gpu_us": 82.595,
+      "gpu_us_per_scene_step": 1.3765833333333333
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_13_serial",
+      "calls": 60,
+      "sum_gpu_us": 82.46200000000002,
+      "gpu_us_per_scene_step": 1.374366666666667
+    },
+    {
+      "name": "kernel_footprint_ports_c764_0_kernel_2_serial",
+      "calls": 60,
+      "sum_gpu_us": 82.14099999999999,
+      "gpu_us_per_scene_step": 1.3690166666666665
+    },
+    {
+      "name": "kernel_scatter_cached_tractions_c1036_0_kernel_4_serial",
+      "calls": 60,
+      "sum_gpu_us": 81.953,
+      "gpu_us_per_scene_step": 1.3658833333333333
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_14_serial",
+      "calls": 60,
+      "sum_gpu_us": 81.853,
+      "gpu_us_per_scene_step": 1.3642166666666666
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_8_serial",
+      "calls": 60,
+      "sum_gpu_us": 81.79000000000003,
+      "gpu_us_per_scene_step": 1.3631666666666673
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_18_serial",
+      "calls": 60,
+      "sum_gpu_us": 81.65899999999999,
+      "gpu_us_per_scene_step": 1.3609833333333332
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_4_serial",
+      "calls": 60,
+      "sum_gpu_us": 81.63199999999996,
+      "gpu_us_per_scene_step": 1.3605333333333327
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_12_serial",
+      "calls": 60,
+      "sum_gpu_us": 81.63099999999997,
+      "gpu_us_per_scene_step": 1.3605166666666662
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_20_serial",
+      "calls": 60,
+      "sum_gpu_us": 81.60199999999999,
+      "gpu_us_per_scene_step": 1.3600333333333332
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_15_serial",
+      "calls": 60,
+      "sum_gpu_us": 81.568,
+      "gpu_us_per_scene_step": 1.3594666666666666
+    },
+    {
+      "name": "kernel_balance_impl_c856_0_kernel_2_serial",
+      "calls": 60,
+      "sum_gpu_us": 80.317,
+      "gpu_us_per_scene_step": 1.3386166666666666
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_2_serial",
+      "calls": 60,
+      "sum_gpu_us": 80.02999999999994,
+      "gpu_us_per_scene_step": 1.3338333333333323
+    },
+    {
+      "name": "kernel_full_residual_impl_c866_0_kernel_2_serial",
+      "calls": 60,
+      "sum_gpu_us": 79.74299999999995,
+      "gpu_us_per_scene_step": 1.3290499999999992
+    },
+    {
+      "name": "kernel_peak_impl_c868_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 79.42199999999994,
+      "gpu_us_per_scene_step": 1.323699999999999
+    },
+    {
+      "name": "kernel_surface_apply_packed_c872_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 79.39099999999993,
+      "gpu_us_per_scene_step": 1.3231833333333323
+    },
+    {
+      "name": "kernel_full_residual_impl_c866_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 78.85199999999998,
+      "gpu_us_per_scene_step": 1.3141999999999996
+    },
+    {
+      "name": "kernel_direct_init_c858_0_kernel_2_serial",
+      "calls": 60,
+      "sum_gpu_us": 78.40399999999998,
+      "gpu_us_per_scene_step": 1.306733333333333
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_8_serial",
+      "calls": 60,
+      "sum_gpu_us": 78.14699999999998,
+      "gpu_us_per_scene_step": 1.3024499999999997
+    },
+    {
+      "name": "kernel_peak_impl_c868_0_kernel_2_serial",
+      "calls": 60,
+      "sum_gpu_us": 77.727,
+      "gpu_us_per_scene_step": 1.29545
+    },
+    {
+      "name": "void at::native::vectorized_elementwise_kernel<4, at::native::CUDAFunctorOnSelf_add<int>, std::array<char*, 2ul> >(int, at::native::CUDAFunctorOnSelf_add<int>, std::array<char*, 2ul>)",
+      "calls": 60,
+      "sum_gpu_us": 77.49900000000001,
+      "gpu_us_per_scene_step": 1.2916500000000002
+    },
+    {
+      "name": "void at::native::elementwise_kernel<128, 2, at::native::gpu_kernel_impl_nocast<at::native::neg_kernel_cuda(at::TensorIteratorBase&)::{lambda()#2}::operator()() const::{lambda()#7}::operator()() const::{lambda(float)#1}>(at::TensorIteratorBase&, at::native::neg_kernel_cuda(at::TensorIteratorBase&)::{lambda()#2}::operator()() const::{lambda()#7}::operator()() const::{lambda(float)#1} const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl_nocast<at::native::neg_kernel_cuda(at::TensorIteratorBase&)::{lambda()#2}::operator()() const::{lambda()#7}::operator()() const::{lambda(float)#1}>(at::TensorIteratorBase&, at::native::neg_kernel_cuda(at::TensorIteratorBase&)::{lambda()#2}::operator()() const::{lambda()#7}::operator()() const::{lambda(float)#1} const&)::{lambda(int)#1})",
+      "calls": 60,
+      "sum_gpu_us": 77.38199999999999,
+      "gpu_us_per_scene_step": 1.2896999999999998
+    },
+    {
+      "name": "kernel_balance_impl_c856_0_kernel_4_serial",
+      "calls": 60,
+      "sum_gpu_us": 76.89500000000002,
+      "gpu_us_per_scene_step": 1.2815833333333337
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_16_serial",
+      "calls": 60,
+      "sum_gpu_us": 76.70800000000003,
+      "gpu_us_per_scene_step": 1.278466666666667
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_21_serial",
+      "calls": 60,
+      "sum_gpu_us": 76.67100000000003,
+      "gpu_us_per_scene_step": 1.2778500000000006
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_4_serial",
+      "calls": 60,
+      "sum_gpu_us": 75.96600000000002,
+      "gpu_us_per_scene_step": 1.2661000000000004
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_10_serial",
+      "calls": 60,
+      "sum_gpu_us": 75.80800000000002,
+      "gpu_us_per_scene_step": 1.263466666666667
+    },
+    {
+      "name": "kernel_scatter_cached_tractions_c1036_0_kernel_2_serial",
+      "calls": 60,
+      "sum_gpu_us": 75.58500000000001,
+      "gpu_us_per_scene_step": 1.2597500000000001
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_6_serial",
+      "calls": 60,
+      "sum_gpu_us": 75.45700000000004,
+      "gpu_us_per_scene_step": 1.2576166666666673
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_6_serial",
+      "calls": 60,
+      "sum_gpu_us": 74.72200000000002,
+      "gpu_us_per_scene_step": 1.245366666666667
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_18_serial",
+      "calls": 60,
+      "sum_gpu_us": 74.59299999999999,
+      "gpu_us_per_scene_step": 1.2432166666666664
+    },
+    {
+      "name": "kernel_fan_frontier_samples_c1030_0_kernel_1_serial",
+      "calls": 60,
+      "sum_gpu_us": 74.56099999999999,
+      "gpu_us_per_scene_step": 1.2426833333333331
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 73.79399999999998,
+      "gpu_us_per_scene_step": 1.2298999999999998
+    },
+    {
+      "name": "kernel_pack_intrinsic_contacts_c796_0_kernel_3_serial",
+      "calls": 60,
+      "sum_gpu_us": 73.62899999999999,
+      "gpu_us_per_scene_step": 1.2271499999999997
+    },
+    {
+      "name": "kernel_refine_failed_samples_c778_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 73.537,
+      "gpu_us_per_scene_step": 1.2256166666666668
+    },
+    {
+      "name": "kernel_fit_tractions_impl_c1032_2_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 73.44200000000002,
+      "gpu_us_per_scene_step": 1.2240333333333338
+    },
+    {
+      "name": "kernel_fit_tractions_impl_c752_2_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 73.438,
+      "gpu_us_per_scene_step": 1.2239666666666666
+    },
+    {
+      "name": "kernel_fit_tractions_impl_c752_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 73.41099999999999,
+      "gpu_us_per_scene_step": 1.2235166666666664
+    },
+    {
+      "name": "kernel_fit_tractions_impl_c752_1_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 73.40899999999999,
+      "gpu_us_per_scene_step": 1.2234833333333333
+    },
+    {
+      "name": "kernel_fit_tractions_impl_c1032_1_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 73.40599999999999,
+      "gpu_us_per_scene_step": 1.2234333333333332
+    },
+    {
+      "name": "kernel_fit_tractions_impl_c1032_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 73.28500000000001,
+      "gpu_us_per_scene_step": 1.2214166666666668
+    },
+    {
+      "name": "kernel_bind_traction_support_impl_c800_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 73.24600000000001,
+      "gpu_us_per_scene_step": 1.2207666666666668
+    },
+    {
+      "name": "kernel_capture_rigid_sources_c744_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 73.21799999999998,
+      "gpu_us_per_scene_step": 1.2202999999999995
+    },
+    {
+      "name": "kernel_certify_continuous_wrench_impl_c758_1_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 73.057,
+      "gpu_us_per_scene_step": 1.2176166666666668
+    },
+    {
+      "name": "kernel_footprint_ports_c764_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 72.82899999999998,
+      "gpu_us_per_scene_step": 1.2138166666666663
+    },
+    {
+      "name": "kernel_fan_frontier_c1028_0_kernel_1_serial",
+      "calls": 60,
+      "sum_gpu_us": 72.609,
+      "gpu_us_per_scene_step": 1.2101499999999998
+    },
+    {
+      "name": "kernel_select_failed_fans_c774_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 72.41199999999998,
+      "gpu_us_per_scene_step": 1.2068666666666663
+    },
+    {
+      "name": "kernel_pack_intrinsic_contacts_c796_0_kernel_6_serial",
+      "calls": 60,
+      "sum_gpu_us": 72.38099999999997,
+      "gpu_us_per_scene_step": 1.2063499999999996
+    },
+    {
+      "name": "kernel_load_intrinsic_contacts_c802_0_kernel_2_serial",
+      "calls": 60,
+      "sum_gpu_us": 72.31699999999998,
+      "gpu_us_per_scene_step": 1.205283333333333
+    },
+    {
+      "name": "kernel_step_2_c894_0_kernel_2_serial",
+      "calls": 60,
+      "sum_gpu_us": 72.28999999999998,
+      "gpu_us_per_scene_step": 1.204833333333333
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_2_serial",
+      "calls": 60,
+      "sum_gpu_us": 72.25699999999998,
+      "gpu_us_per_scene_step": 1.204283333333333
+    },
+    {
+      "name": "kernel_bind_source_vertices_c790_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 72.25099999999998,
+      "gpu_us_per_scene_step": 1.204183333333333
+    },
+    {
+      "name": "kernel_certify_continuous_wrench_impl_c758_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 72.19199999999996,
+      "gpu_us_per_scene_step": 1.2031999999999994
+    },
+    {
+      "name": "func_solve_init_c690_0_kernel_4_serial",
+      "calls": 60,
+      "sum_gpu_us": 72.16099999999997,
+      "gpu_us_per_scene_step": 1.2026833333333329
+    },
+    {
+      "name": "kernel_refine_failed_charts_c776_0_kernel_1_serial",
+      "calls": 60,
+      "sum_gpu_us": 72.15999999999995,
+      "gpu_us_per_scene_step": 1.2026666666666659
+    },
+    {
+      "name": "kernel_snapshot_source_priors_c780_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 72.15799999999997,
+      "gpu_us_per_scene_step": 1.2026333333333328
+    },
+    {
+      "name": "kernel_search_wrench_certificate_impl_c756_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 72.12799999999999,
+      "gpu_us_per_scene_step": 1.202133333333333
+    },
+    {
+      "name": "kernel_commit_intrinsic_contacts_c1034_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 72.125,
+      "gpu_us_per_scene_step": 1.2020833333333334
+    },
+    {
+      "name": "kernel_associate_c728_0_kernel_2_serial",
+      "calls": 60,
+      "sum_gpu_us": 72.03099999999996,
+      "gpu_us_per_scene_step": 1.200516666666666
+    },
+    {
+      "name": "kernel_certify_continuous_force_c760_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 71.99800000000002,
+      "gpu_us_per_scene_step": 1.199966666666667
+    },
+    {
+      "name": "kernel_search_wrench_certificate_impl_c756_1_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 71.939,
+      "gpu_us_per_scene_step": 1.1989833333333333
+    },
+    {
+      "name": "kernel_refine_failed_disks_c768_0_kernel_1_serial",
+      "calls": 60,
+      "sum_gpu_us": 71.93499999999999,
+      "gpu_us_per_scene_step": 1.1989166666666664
+    },
+    {
+      "name": "kernel_scatter_cached_tractions_c1036_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 71.92999999999998,
+      "gpu_us_per_scene_step": 1.198833333333333
+    },
+    {
+      "name": "kernel_commit_body_partition_c806_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 71.26699999999997,
+      "gpu_us_per_scene_step": 1.1877833333333327
+    },
+    {
+      "name": "kernel_capture_contact_failure_impl_c762_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 71.13699999999999,
+      "gpu_us_per_scene_step": 1.1856166666666665
+    },
+    {
+      "name": "kernel_pack_intrinsic_contacts_c796_0_kernel_1_serial",
+      "calls": 60,
+      "sum_gpu_us": 71.04099999999998,
+      "gpu_us_per_scene_step": 1.1840166666666663
+    },
+    {
+      "name": "kernel_load_intrinsic_contacts_c802_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 70.94499999999998,
+      "gpu_us_per_scene_step": 1.1824166666666662
+    },
+    {
+      "name": "kernel_partition_source_priors_c782_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 70.94299999999998,
+      "gpu_us_per_scene_step": 1.1823833333333331
+    },
+    {
+      "name": "kernel_begin_step_c884_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 70.81399999999998,
+      "gpu_us_per_scene_step": 1.180233333333333
+    },
+    {
+      "name": "kernel_surface_pack_c870_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 70.749,
+      "gpu_us_per_scene_step": 1.17915
+    },
+    {
+      "name": "kernel_fan_frontier_c1028_0_kernel_0_range_for",
+      "calls": 60,
+      "sum_gpu_us": 70.66,
+      "gpu_us_per_scene_step": 1.1776666666666666
+    },
+    {
+      "name": "kernel_inputs_c970_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 70.62599999999996,
+      "gpu_us_per_scene_step": 1.1770999999999994
+    },
+    {
+      "name": "kernel_refine_failed_charts_c776_0_kernel_0_range_for",
+      "calls": 60,
+      "sum_gpu_us": 69.72600000000001,
+      "gpu_us_per_scene_step": 1.1621000000000001
+    },
+    {
+      "name": "kernel_fan_frontier_samples_c1030_0_kernel_0_range_for",
+      "calls": 60,
+      "sum_gpu_us": 69.442,
+      "gpu_us_per_scene_step": 1.1573666666666667
+    },
+    {
+      "name": "kernel_refine_failed_disks_c768_0_kernel_0_range_for",
+      "calls": 60,
+      "sum_gpu_us": 68.93000000000002,
+      "gpu_us_per_scene_step": 1.1488333333333336
+    },
+    {
+      "name": "kernel_pack_intrinsic_contacts_c796_0_kernel_0_range_for",
+      "calls": 60,
+      "sum_gpu_us": 68.929,
+      "gpu_us_per_scene_step": 1.1488166666666666
+    },
+    {
+      "name": "kernel_resolve_stress_contacts_c902_0_kernel_3_serial",
+      "calls": 60,
+      "sum_gpu_us": 68.50900000000001,
+      "gpu_us_per_scene_step": 1.141816666666667
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_12_serial",
+      "calls": 60,
+      "sum_gpu_us": 68.25600000000001,
+      "gpu_us_per_scene_step": 1.1376000000000002
+    },
+    {
+      "name": "kernel_balance_impl_c856_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 67.99799999999999,
+      "gpu_us_per_scene_step": 1.1332999999999998
+    },
+    {
+      "name": "_kernel_solve_graph_c696_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 67.55600000000001,
+      "gpu_us_per_scene_step": 1.1259333333333335
+    },
+    {
+      "name": "kernel_resolve_stress_contacts_c902_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 67.13599999999997,
+      "gpu_us_per_scene_step": 1.118933333333333
+    },
+    {
+      "name": "kernel_accept_impl_c886_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 66.78699999999998,
+      "gpu_us_per_scene_step": 1.1131166666666663
+    },
+    {
+      "name": "kernel_accept_impl_c886_0_kernel_2_serial",
+      "calls": 60,
+      "sum_gpu_us": 66.144,
+      "gpu_us_per_scene_step": 1.1024
+    },
+    {
+      "name": "kernel_direct_init_c858_0_kernel_0_serial",
+      "calls": 60,
+      "sum_gpu_us": 65.85600000000001,
+      "gpu_us_per_scene_step": 1.0976000000000001
+    }
+  ],
+  "copies_and_sync": [
+    {
+      "name": "cuda_runtime/cudaMemcpyAsync",
+      "calls": 246,
+      "sum_inclusive_us": 233026.785
+    },
+    {
+      "name": "gpu_memcpy/Memcpy HtoD (Pageable -> Device)",
+      "calls": 3300,
+      "sum_inclusive_us": 2006.4429999999923
+    },
+    {
+      "name": "cuda_runtime/cudaStreamSynchronize",
+      "calls": 246,
+      "sum_inclusive_us": 1780.8490000000006
+    },
+    {
+      "name": "gpu_memcpy/Memcpy DtoH (Device -> Pageable)",
+      "calls": 246,
+      "sum_inclusive_us": 151.00600000000006
+    },
+    {
+      "name": "cuda_runtime/cudaDeviceSynchronize",
+      "calls": 1,
+      "sum_inclusive_us": 18.359
+    }
+  ],
+  "trace": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-scr-changing-trace-v1/group0/trace/trace.json",
+    "bytes": 18529440,
+    "sha256": "65b930865ed4d2b23363a8862ca4454132680237f75b5da4170510908d0a4492"
+  },
+  "original_worker_metadata_failed": true,
+  "scope": "Original trace completed after scientific runtime checks, then its worker failed to JSON-encode a NumPy scalar in static config. This independent parse retains that failure, checks all60 observed steps and summarizes raw profiler events. Inclusive host scopes are nested and GPU/copy events can overlap; do not sum them or treat these observer times as admitted production throughput."
+}

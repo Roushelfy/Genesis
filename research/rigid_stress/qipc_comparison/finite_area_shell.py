@@ -19,6 +19,7 @@ from ..shell_comparison.prescribed import add_prescribed_force
 from .artifacts import file_id, runtime_identity, write_json
 from .plate_shell_coupled import observe_elastic_force
 from .shell_load_replay import ShellLoadTransfer, wrench
+from .static_inertia_relief import StaticInertiaRelief
 from .pad_equilibrium import normal_pad_equilibrium, shell_pad_boundary_gaps
 
 
@@ -34,6 +35,11 @@ def main():
     cli.add_argument("--iterations", type=int, default=8000)
     cli.add_argument("--coarse-patches", type=int, default=0)
     cli.add_argument("--solve-pad-contact", action="store_true")
+    cli.add_argument(
+        "--inertia-relief",
+        action="store_true",
+        help="Apply and record the free-reference six-mode mass correction, bounded by1e-8 of load norm",
+    )
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     assert args.dt > 0 and args.outer_iterations > 0 and args.coarse_patches >= 0
@@ -66,7 +72,8 @@ def main():
     source_work = np.sum(point_forces * (translation + np.cross(rotation, points)))
     shell_work = np.sum(force * (translation + np.cross(rotation, midpoint)))
     np.testing.assert_allclose(source_work, shell_work, atol=1e-12)
-    np.testing.assert_allclose(wrench(midpoint, force), 0, atol=1e-12)
+    if not args.inertia_relief:
+        np.testing.assert_allclose(wrench(midpoint, force), 0, atol=1e-12)
     pad_coordinates = None
     pad_receipt = None
     if args.solve_pad_contact:
@@ -115,6 +122,12 @@ def main():
     np.testing.assert_array_equal(actual_faces, faces)
     masses = np.bincount(faces.reshape(-1), weights=np.repeat(egg.topology.faces_mass / 3, 3), minlength=len(rest))
     np.savez_compressed(args.output / "rest.npz", vertices=rest, faces=faces, masses_kg=masses)
+    relief = StaticInertiaRelief.build(rest, masses) if args.inertia_relief else None
+    correction = np.zeros_like(force)
+    if relief is not None:
+        force, correction = relief.apply(force)
+        assert np.linalg.norm(correction) <= 1e-8 * np.linalg.norm(force + correction)
+        np.testing.assert_allclose(wrench(rest, force), 0, atol=1e-12)
     force_view = torch.as_tensor(force[:, None], dtype=gs.tc_float, device=gs.device)
     state, scratch, info, config = solver.shell_state, solver.shell_scratch, solver.shell_info, solver._static_config
     internal_buffer = array_class.V(dtype=gs.qd_vec3, shape=state.verts_pos.shape)
@@ -144,6 +157,10 @@ def main():
                 )
                 point_forces[:, 2] = point_sign * compressive_force
                 force, defect = transfer.apply(points, point_forces)
+                if relief is not None:
+                    force, correction = relief.apply(force)
+                    assert np.linalg.norm(correction) <= 1e-8 * np.linalg.norm(force + correction)
+                    np.testing.assert_allclose(wrench(rest, force), 0, atol=1e-12)
                 force_view.copy_(torch.as_tensor(force[:, None], dtype=gs.tc_float, device=gs.device))
             egg.set_verts_vel(0.0)
             shell.kernel_shell_compute_forces(args.dt, solver._gravity, state, scratch, info, config)
@@ -172,6 +189,10 @@ def main():
                 )
                 point_forces[:, 2] = point_sign * compressive_force
                 force, defect = transfer.apply(points, point_forces)
+                if relief is not None:
+                    force, correction = relief.apply(force)
+                    assert np.linalg.norm(correction) <= 1e-8 * np.linalg.norm(force + correction)
+                    np.testing.assert_allclose(wrench(rest, force), 0, atol=1e-12)
                 pad_gap = initial_gap + elastic_gap + pad_rigid @ pad_coordinates
                 pad_receipt = {
                     "force_moment_relative_error": pad_balance,
@@ -191,6 +212,9 @@ def main():
                     "solver_failure_flags": flags.tolist(),
                     "pcg_iterations": tensor_to_array(solver.get_envs_pcg_iterations()).tolist(),
                     "pad_contact": pad_receipt,
+                    "inertia_relief_relative_correction": float(
+                        np.linalg.norm(correction) / np.linalg.norm(force + correction)
+                    ),
                 }
             )
             journal.write(json.dumps(rows[-1], allow_nan=False) + "\n")
@@ -208,6 +232,8 @@ def main():
         membrane_n_per_m=tensor_to_array(observation.membrane)[:, 0],
         bending_n=tensor_to_array(observation.bending)[:, 0],
         applied_force_n=force,
+        mapped_contact_force_n=force + correction,
+        inertia_relief_correction_n=correction,
         internal_forces_world_n=internal,
         equation_residual_n=residual,
     )
@@ -253,6 +279,11 @@ def main():
             "seconds_including_observation": time.perf_counter() - started,
             "deformed_moment_drift": transfer.deformed_moment_drift(points, point_forces, current),
             "physical_accuracy_qualified": False,
+            "inertia_relief_enabled": args.inertia_relief,
+            "inertia_relief_relative_correction": float(
+                np.linalg.norm(correction) / np.linalg.norm(force + correction)
+            ),
+            "inertia_relief_scope": "Optional six-mode mass-weighted correction, identical in form to the free solid reference. Actual mapped point tractions remain unchanged and saved separately; correction is explicit body loading and must stay below1e-8 of mapped load norm. Original zero-wrench1e-12 and static residual gates remain unchanged.",
             "pad_contact": pad_receipt,
             "scope": "Explicit static relaxation with velocity cleared before each pseudo-step, using unchanged pinned Shell elastic/PCG/integration kernels and an external-force adapter. This is not original scene dynamics or a continuous plate-contact history. Actual end-position elastic forces are independently observed. Source force/couple transfer preserves rest-frame wrench and rigid work; thin-shell kinematics and deformed moment drift remain measured limitations. The optional pad branch recomputes pressure and free rigid coordinates from current displacement at each iteration and retains separate contact admission.",
         },

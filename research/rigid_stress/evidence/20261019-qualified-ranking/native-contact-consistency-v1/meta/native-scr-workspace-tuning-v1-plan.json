@@ -1,0 +1,12 @@
+{
+  "baseline": "native-module-replay-v2/group0/scr-full",
+  "variants_contact_block_size": [
+    1,
+    4
+  ],
+  "native_rule": "Workspace grows to actual packed contact maximum; no source cap/truncation, same body-source-prior algorithm and all required checks.",
+  "unchanged": "Engine source, geometry/material/contact/radius, full outputs, every-step cadence, fit/elastic tolerances, frozen condition bank,1200-step horizon and900 warmup.",
+  "required": "Every source/frame retained, complete motion/peak path and11 full tensors vs block16 numerical baseline; original numerical replay criterionrtol1e-4/atol1e-3Pa, strict unchanged motion. Own warm module timing is conditional until this passes.",
+  "timing": "Three warm module repeats per variant; input restore included, recording/reference/audit excluded. New variants share one GPU; separate block16 allocation is not an isolated same-GPU speedup proof.",
+  "physical_error": "Pending for collider-load configuration; no pad-error inheritance."
+}

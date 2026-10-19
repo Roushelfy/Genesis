@@ -1,0 +1,3000 @@
+{
+  "arrays": [
+    {
+      "name": "errno",
+      "kind": "STATE",
+      "shape": [
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.n_awake_dofs",
+      "kind": "STATE",
+      "shape": [
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.qpos0",
+      "kind": "INFO",
+      "shape": [
+        16,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.qpos",
+      "kind": "STATE",
+      "shape": [
+        16,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.links_T",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        4,
+        4
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.geoms_init_AABB",
+      "kind": "CONSTANT",
+      "shape": [
+        25,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.mass_mat",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.mass_mat_L",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.mass_mat_D_inv",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.roots_link_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.links_root_end",
+      "kind": "CONSTANT",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.trees_root_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        2
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.trees_link_end",
+      "kind": "CONSTANT",
+      "shape": [
+        2
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.trees_n_links",
+      "kind": "CONSTANT",
+      "shape": [
+        2
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.trees_dof_start",
+      "kind": "CONSTANT",
+      "shape": [
+        2
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.trees_n_dofs",
+      "kind": "CONSTANT",
+      "shape": [
+        2
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.links_tree_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.trees_level_start",
+      "kind": "CONSTANT",
+      "shape": [
+        2
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.trees_n_levels",
+      "kind": "CONSTANT",
+      "shape": [
+        2
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.trees_levels_links_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        11
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.trees_levels_links_end",
+      "kind": "CONSTANT",
+      "shape": [
+        11
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.roots_level_start",
+      "kind": "CONSTANT",
+      "shape": [
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.roots_n_levels",
+      "kind": "CONSTANT",
+      "shape": [
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.roots_levels_links_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.roots_levels_links_start",
+      "kind": "CONSTANT",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.roots_levels_links_end",
+      "kind": "CONSTANT",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.links_child_start",
+      "kind": "CONSTANT",
+      "shape": [
+        14
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.links_child_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        10
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.dofs_mass_block_start",
+      "kind": "CONSTANT",
+      "shape": [
+        15
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.dofs_mass_block_end",
+      "kind": "CONSTANT",
+      "shape": [
+        15
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.dofs_mass_envelope_start",
+      "kind": "CONSTANT",
+      "shape": [
+        15
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.mass_parent_mask",
+      "kind": "CONSTANT",
+      "shape": [
+        15,
+        15
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.meaninertia",
+      "kind": "INFO",
+      "shape": [
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.gravity",
+      "kind": "INFO",
+      "shape": [
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.substep_dt",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.iterations",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.tolerance",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.ls_iterations",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.ls_tolerance",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.noslip_iterations",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.noslip_tolerance",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.impratio",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.n_equalities",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.n_candidate_equalities",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "rigid_info.hibernation_thresh_vel",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "rigid_info.EPS",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.entities.dof_start",
+      "kind": "INFO",
+      "shape": [
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.entities.dof_end",
+      "kind": "INFO",
+      "shape": [
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.entities.n_dofs",
+      "kind": "INFO",
+      "shape": [
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.entities.link_start",
+      "kind": "INFO",
+      "shape": [
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.entities.link_end",
+      "kind": "INFO",
+      "shape": [
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.entities.n_links",
+      "kind": "INFO",
+      "shape": [
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.entities.geom_start",
+      "kind": "INFO",
+      "shape": [
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.entities.geom_end",
+      "kind": "INFO",
+      "shape": [
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.entities.n_geoms",
+      "kind": "INFO",
+      "shape": [
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.entities.gravity_compensation",
+      "kind": "INFO",
+      "shape": [
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.entities.is_local_collision_mask",
+      "kind": "INFO",
+      "shape": [
+        3
+      ],
+      "dtype": "bool"
+    },
+    {
+      "name": "dyn_info.links.parent_idx",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.links.root_idx",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.links.q_start",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.links.dof_start",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.links.joint_start",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.links.q_end",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.links.dof_end",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.links.joint_end",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.links.n_dofs",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.links.pos",
+      "kind": "INFO",
+      "shape": [
+        13,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.links.quat",
+      "kind": "INFO",
+      "shape": [
+        13,
+        4
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.links.invweight",
+      "kind": "INFO",
+      "shape": [
+        13,
+        2
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.links.is_fixed",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "bool"
+    },
+    {
+      "name": "dyn_info.links.inertial_pos",
+      "kind": "INFO",
+      "shape": [
+        13,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.links.inertial_quat",
+      "kind": "INFO",
+      "shape": [
+        13,
+        4
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.links.inertial_i",
+      "kind": "INFO",
+      "shape": [
+        13,
+        3,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.links.inertial_mass",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.links.entity_idx",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.links.geom_start",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.links.geom_end",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.links.vgeom_start",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.links.vgeom_end",
+      "kind": "INFO",
+      "shape": [
+        13
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.joints.type",
+      "kind": "INFO",
+      "shape": [
+        11
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.joints.sol_params",
+      "kind": "INFO",
+      "shape": [
+        11,
+        7
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.joints.q_start",
+      "kind": "INFO",
+      "shape": [
+        11
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.joints.dof_start",
+      "kind": "INFO",
+      "shape": [
+        11
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.joints.q_end",
+      "kind": "INFO",
+      "shape": [
+        11
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.joints.dof_end",
+      "kind": "INFO",
+      "shape": [
+        11
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.joints.n_dofs",
+      "kind": "INFO",
+      "shape": [
+        11
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.joints.pos",
+      "kind": "INFO",
+      "shape": [
+        11,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.dofs.entity_idx",
+      "kind": "INFO",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.dofs.stiffness",
+      "kind": "INFO",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.dofs.invweight",
+      "kind": "INFO",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.dofs.armature",
+      "kind": "INFO",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.dofs.damping",
+      "kind": "INFO",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.dofs.frictionloss",
+      "kind": "INFO",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.dofs.motion_ang",
+      "kind": "INFO",
+      "shape": [
+        15,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.dofs.motion_vel",
+      "kind": "INFO",
+      "shape": [
+        15,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.dofs.limit",
+      "kind": "INFO",
+      "shape": [
+        15,
+        8,
+        2
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.dofs.act_gain",
+      "kind": "INFO",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.dofs.act_bias",
+      "kind": "INFO",
+      "shape": [
+        15,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.dofs.force_range",
+      "kind": "INFO",
+      "shape": [
+        15,
+        8,
+        2
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.dofs.dof_length",
+      "kind": "INFO",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.geoms.pos",
+      "kind": "INFO",
+      "shape": [
+        25,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.geoms.center",
+      "kind": "INFO",
+      "shape": [
+        25,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.geoms.quat",
+      "kind": "INFO",
+      "shape": [
+        25,
+        4
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.geoms.data",
+      "kind": "INFO",
+      "shape": [
+        25,
+        7
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.geoms.link_idx",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.type",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.friction",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.geoms.friction_torsional",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.geoms.friction_rolling",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.geoms.sol_params",
+      "kind": "INFO",
+      "shape": [
+        25,
+        7
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.geoms.vert_num",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.vert_start",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.vert_end",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.verts_state_start",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.verts_state_end",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.face_num",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.face_start",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.face_end",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.edge_num",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.edge_start",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.edge_end",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.is_convex",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "bool"
+    },
+    {
+      "name": "dyn_info.geoms.contype",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.conaffinity",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.is_fixed",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "bool"
+    },
+    {
+      "name": "dyn_info.geoms.is_decomposed",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "bool"
+    },
+    {
+      "name": "dyn_info.geoms.is_hollow",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "bool"
+    },
+    {
+      "name": "dyn_info.geoms.needs_coup",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.geoms.coup_friction",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.geoms.coup_softness",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.geoms.coup_restitution",
+      "kind": "INFO",
+      "shape": [
+        25
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.verts.init_pos",
+      "kind": "CONSTANT",
+      "shape": [
+        1413,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.verts.init_normal",
+      "kind": "CONSTANT",
+      "shape": [
+        1413,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.verts.geom_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        1413
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.verts.init_center_pos",
+      "kind": "CONSTANT",
+      "shape": [
+        1413,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.verts.verts_state_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        1413
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.verts.is_fixed",
+      "kind": "CONSTANT",
+      "shape": [
+        1413
+      ],
+      "dtype": "bool"
+    },
+    {
+      "name": "dyn_info.faces.verts_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        2726,
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.faces.geom_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        2726
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.edges.v0",
+      "kind": "CONSTANT",
+      "shape": [
+        4089
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.edges.v1",
+      "kind": "CONSTANT",
+      "shape": [
+        4089
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.edges.length",
+      "kind": "CONSTANT",
+      "shape": [
+        4089
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.vverts.init_pos",
+      "kind": "CONSTANT",
+      "shape": [
+        397502,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.vverts.init_vnormal",
+      "kind": "CONSTANT",
+      "shape": [
+        397502,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.vverts.vgeom_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        397502
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.vverts.vverts_state_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        397502
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.vfaces.vverts_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        134970,
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.vfaces.vgeom_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        134970
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.vgeoms.pos",
+      "kind": "CONSTANT",
+      "shape": [
+        60,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.vgeoms.quat",
+      "kind": "CONSTANT",
+      "shape": [
+        60,
+        4
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.vgeoms.link_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        60
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.vgeoms.vvert_num",
+      "kind": "CONSTANT",
+      "shape": [
+        60
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.vgeoms.vvert_start",
+      "kind": "CONSTANT",
+      "shape": [
+        60
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.vgeoms.vvert_end",
+      "kind": "CONSTANT",
+      "shape": [
+        60
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.vgeoms.vface_num",
+      "kind": "CONSTANT",
+      "shape": [
+        60
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.vgeoms.vface_start",
+      "kind": "CONSTANT",
+      "shape": [
+        60
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.vgeoms.vface_end",
+      "kind": "CONSTANT",
+      "shape": [
+        60
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.vgeoms.color",
+      "kind": "CONSTANT",
+      "shape": [
+        60,
+        4
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.equalities.eq_obj1id",
+      "kind": "INFO",
+      "shape": [
+        9,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.equalities.eq_obj2id",
+      "kind": "INFO",
+      "shape": [
+        9,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.equalities.eq_data",
+      "kind": "INFO",
+      "shape": [
+        9,
+        8,
+        11
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_info.equalities.eq_type",
+      "kind": "INFO",
+      "shape": [
+        9,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_info.equalities.sol_params",
+      "kind": "INFO",
+      "shape": [
+        9,
+        8,
+        7
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.entities.is_hibernated",
+      "kind": "STATE",
+      "shape": [
+        3,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_state.links.cinr_inertial",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cinr_pos",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cinr_quat",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        4
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cinr_mass",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.crb_inertial",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.crb_pos",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.crb_quat",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        4
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.crb_mass",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cdd_vel",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cdd_ang",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.pos",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.quat",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        4
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.pos_bw",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        1,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.quat_bw",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        1,
+        8,
+        4
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.i_pos",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.i_pos_bw",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.i_quat",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        4
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cd_ang",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cd_vel",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.is_constrained",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8
+      ],
+      "dtype": "bool"
+    },
+    {
+      "name": "dyn_state.links.cd_ang_bw",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        1,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cd_vel_bw",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        1,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.mass_sum",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.root_COM",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.root_COM_bw",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cacc_ang",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cacc_lin",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cfrc_ang",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cfrc_vel",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cfrc_applied_ang",
+      "kind": "STATE",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cfrc_applied_vel",
+      "kind": "STATE",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cfrc_coupling_ang",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.cfrc_coupling_vel",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.contact_force",
+      "kind": "DERIVED",
+      "shape": [
+        13,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.links.is_hibernated",
+      "kind": "STATE",
+      "shape": [
+        13,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_state.links.awake_steps",
+      "kind": "STATE",
+      "shape": [
+        13,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_state.joints.xanchor",
+      "kind": "DERIVED",
+      "shape": [
+        11,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.joints.xaxis",
+      "kind": "DERIVED",
+      "shape": [
+        11,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.force",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.qf_bias",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.qf_passive",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.qf_applied",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.pos",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.vel",
+      "kind": "STATE",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.acc",
+      "kind": "STATE",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.acc_smooth",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.acc_smooth_bw",
+      "kind": "DERIVED",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.qf_smooth",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.qf_constraint",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.cdof_ang",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.cdof_vel",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.cdofd_ang",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.cdofd_vel",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.f_vel",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.f_ang",
+      "kind": "DERIVED",
+      "shape": [
+        15,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.ctrl_force",
+      "kind": "STATE",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.ctrl_pos",
+      "kind": "STATE",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.ctrl_vel",
+      "kind": "STATE",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.dofs.ctrl_mode",
+      "kind": "STATE",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_state.dofs.is_hibernated",
+      "kind": "STATE",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_state.geoms.pos",
+      "kind": "DERIVED",
+      "shape": [
+        25,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.geoms.quat",
+      "kind": "DERIVED",
+      "shape": [
+        25,
+        8,
+        4
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.geoms.aabb_min",
+      "kind": "DERIVED",
+      "shape": [
+        25,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.geoms.aabb_max",
+      "kind": "DERIVED",
+      "shape": [
+        25,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.geoms.verts_updated",
+      "kind": "DERIVED",
+      "shape": [
+        25,
+        8
+      ],
+      "dtype": "bool"
+    },
+    {
+      "name": "dyn_state.geoms.is_hibernated",
+      "kind": "STATE",
+      "shape": [
+        25,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "dyn_state.geoms.friction_ratio",
+      "kind": "INFO",
+      "shape": [
+        25,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.free_verts.pos",
+      "kind": "DERIVED",
+      "shape": [
+        1303,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.fixed_verts.pos",
+      "kind": "DERIVED",
+      "shape": [
+        110,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.vverts.pos",
+      "kind": "DERIVED",
+      "shape": [
+        1,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.vgeoms.pos",
+      "kind": "DERIVED",
+      "shape": [
+        60,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "dyn_state.vgeoms.quat",
+      "kind": "DERIVED",
+      "shape": [
+        60,
+        8,
+        4
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.mpr.CCD_EPS",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.mpr.CCD_TOLERANCE",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.mpr.CCD_ITERATIONS",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.mpr.CCD_EXTRAPOLATION_TOL",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.max_contacts_per_pair",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.gjk.max_contact_polygon_verts",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.gjk.gjk_max_iterations",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.gjk.epa_max_iterations",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.gjk.FLOAT_MIN",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.FLOAT_MIN_SQ",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.FLOAT_MAX",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.FLOAT_MAX_SQ",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.tolerance",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.collision_eps",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.simplex_max_degeneracy_sq",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.polytope_max_faces",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.gjk.polytope_max_rel_reprojection_error",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.polytope_max_abs_reprojection_error",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.contact_face_tol",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.contact_edge_tol",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.diff_contact_eps_boundary",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.diff_contact_eps_distance",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.diff_contact_eps_affine",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.diff_contact_min_normal_norm",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.gjk.diff_contact_min_penetration",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.support_field.support_cell_start",
+      "kind": "CONSTANT",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.support_field.support_v",
+      "kind": "CONSTANT",
+      "shape": [
+        837000,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.support_field.support_vid",
+      "kind": "CONSTANT",
+      "shape": [
+        837000
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.support_field.support_res",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.sdf.geoms_info.T_mesh_to_sdf",
+      "kind": "CONSTANT",
+      "shape": [
+        25,
+        4,
+        4
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.sdf.geoms_info.sdf_res",
+      "kind": "CONSTANT",
+      "shape": [
+        25,
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.sdf.geoms_info.sdf_max",
+      "kind": "CONSTANT",
+      "shape": [
+        25
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.sdf.geoms_info.sdf_cell_size",
+      "kind": "CONSTANT",
+      "shape": [
+        25,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.sdf.geoms_info.sdf_cell_start",
+      "kind": "CONSTANT",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.sdf.geoms_info.sdf_coarse_res",
+      "kind": "CONSTANT",
+      "shape": [
+        25,
+        3
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.sdf.geoms_info.sdf_coarse_cell_start",
+      "kind": "CONSTANT",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.sdf.geoms_sdf_start",
+      "kind": "CONSTANT",
+      "shape": [
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.sdf.geoms_sdf_val",
+      "kind": "CONSTANT",
+      "shape": [
+        1234746
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.sdf.geoms_sdf_grad",
+      "kind": "CONSTANT",
+      "shape": [
+        1234746,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.sdf.geoms_sdf_closest_vert",
+      "kind": "CONSTANT",
+      "shape": [
+        1234746
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.sdf.geoms_sdf_coarse_val",
+      "kind": "CONSTANT",
+      "shape": [
+        19652
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.vert_neighbors",
+      "kind": "CONSTANT",
+      "shape": [
+        8178
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.vert_neighbor_start",
+      "kind": "CONSTANT",
+      "shape": [
+        1413
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.vert_n_neighbors",
+      "kind": "CONSTANT",
+      "shape": [
+        1413
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.verts_spatial_grid.verts_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        1413
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.verts_spatial_grid.verts_pos",
+      "kind": "CONSTANT",
+      "shape": [
+        1413,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.verts_spatial_grid.cells_vert_start",
+      "kind": "CONSTANT",
+      "shape": [
+        12825
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.verts_spatial_grid.geoms_origin",
+      "kind": "CONSTANT",
+      "shape": [
+        25,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.verts_spatial_grid.geoms_inv_cell_size",
+      "kind": "CONSTANT",
+      "shape": [
+        25,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.collision_pair_idx",
+      "kind": "CONSTANT",
+      "shape": [
+        25,
+        25
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.max_possible_pairs",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.max_collision_pairs",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.max_candidate_contacts",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.max_collision_pairs_broad",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.max_contacts",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.n_valid_pairs",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.valid_collision_pairs",
+      "kind": "CONSTANT",
+      "shape": [
+        235,
+        2
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.terrain_hf",
+      "kind": "CONSTANT",
+      "shape": [
+        1
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.terrain_rc",
+      "kind": "CONSTANT",
+      "shape": [
+        2
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_info.terrain_scale",
+      "kind": "CONSTANT",
+      "shape": [
+        2
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.terrain_xyz_maxmin",
+      "kind": "CONSTANT",
+      "shape": [
+        6
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.mc_perturbation",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.mc_tolerance",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.mpr_to_gjk_overlap_ratio",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.mpr_to_gjk_overlap_ratio_valid",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.mpr_to_gjk_penetration_ratio",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.diff_pos_tolerance",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.diff_normal_tolerance",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.contact_pruning_tolerance",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_info.prune_deep_penetration_ratio",
+      "kind": "CONSTANT",
+      "shape": [],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_state.sort_buffer.value",
+      "kind": "WARMSTART",
+      "shape": [
+        50,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_state.sort_buffer.i_g",
+      "kind": "WARMSTART",
+      "shape": [
+        50,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_state.sort_buffer.is_max",
+      "kind": "WARMSTART",
+      "shape": [
+        50,
+        8
+      ],
+      "dtype": "bool"
+    },
+    {
+      "name": "collider_state.contact_data.geom_a",
+      "kind": "STATE",
+      "shape": [
+        750,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_state.contact_data.geom_b",
+      "kind": "STATE",
+      "shape": [
+        750,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_state.contact_data.penetration",
+      "kind": "STATE",
+      "shape": [
+        750,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_state.contact_data.normal",
+      "kind": "STATE",
+      "shape": [
+        750,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_state.contact_data.pos",
+      "kind": "STATE",
+      "shape": [
+        750,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_state.contact_data.friction",
+      "kind": "STATE",
+      "shape": [
+        750,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_state.contact_data.friction_torsional",
+      "kind": "STATE",
+      "shape": [
+        750,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_state.contact_data.friction_rolling",
+      "kind": "STATE",
+      "shape": [
+        750,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_state.contact_data.sol_params",
+      "kind": "STATE",
+      "shape": [
+        750,
+        8,
+        7
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_state.contact_data.force",
+      "kind": "STATE",
+      "shape": [
+        750,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_state.contact_data.link_a",
+      "kind": "STATE",
+      "shape": [
+        750,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_state.contact_data.link_b",
+      "kind": "STATE",
+      "shape": [
+        750,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_state.contact_data.pair_idx",
+      "kind": "STATE",
+      "shape": [
+        750,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_state.contact_data.witness.point_a",
+      "kind": "STATE",
+      "shape": [
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_state.contact_data.witness.point_b",
+      "kind": "STATE",
+      "shape": [
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_state.contact_data.witness.method",
+      "kind": "STATE",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_state.contact_data.witness.vertex_a",
+      "kind": "STATE",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_state.contact_data.witness.vertex_b",
+      "kind": "STATE",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_state.n_contacts",
+      "kind": "STATE",
+      "shape": [
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_state.n_contacts_hibernated",
+      "kind": "STATE",
+      "shape": [
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "collider_state.first_time",
+      "kind": "WARMSTART",
+      "shape": [
+        8
+      ],
+      "dtype": "bool"
+    },
+    {
+      "name": "collider_state.contact_cache.normal",
+      "kind": "WARMSTART",
+      "shape": [
+        235,
+        8,
+        3
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_state.contact_cache.penetration",
+      "kind": "WARMSTART",
+      "shape": [
+        235,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "collider_state.contact_sort_idx",
+      "kind": "STATE",
+      "shape": [
+        750,
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "constraint_state.island.is_hibernated",
+      "kind": "STATE",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "constraint_state.island.hibernated_next_link",
+      "kind": "STATE",
+      "shape": [],
+      "dtype": "int32"
+    },
+    {
+      "name": "constraint_state.is_warmstart",
+      "kind": "WARMSTART",
+      "shape": [
+        8
+      ],
+      "dtype": "bool"
+    },
+    {
+      "name": "constraint_state.n_constraints",
+      "kind": "STATE",
+      "shape": [
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "constraint_state.qd_n_equalities",
+      "kind": "STATE",
+      "shape": [
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "constraint_state.n_constraints_equality",
+      "kind": "STATE",
+      "shape": [
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "constraint_state.n_constraints_frictionloss",
+      "kind": "STATE",
+      "shape": [
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "constraint_state.n_constraints_cone",
+      "kind": "STATE",
+      "shape": [
+        8
+      ],
+      "dtype": "int32"
+    },
+    {
+      "name": "constraint_state.efc_force",
+      "kind": "STATE",
+      "shape": [
+        2328,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "constraint_state.active",
+      "kind": "STATE",
+      "shape": [
+        2328,
+        8
+      ],
+      "dtype": "bool"
+    },
+    {
+      "name": "constraint_state.qfrc_constraint",
+      "kind": "STATE",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "constraint_state.qacc",
+      "kind": "STATE",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    },
+    {
+      "name": "constraint_state.qacc_ws",
+      "kind": "WARMSTART",
+      "shape": [
+        15,
+        8
+      ],
+      "dtype": "float64"
+    }
+  ],
+  "configs": {
+    "rigid_config": {
+      "prefer_decomposed_solver": 1,
+      "enable_cone_free_hessian_reuse": false,
+      "enable_torsional_friction": false,
+      "enable_rolling_friction": false,
+      "hibernation_min_steps": 10,
+      "parallel_init": true,
+      "enable_level_sweep": true,
+      "level_sweep_n_lanes_per_env": 8,
+      "broadphase_traversal": 1,
+      "enable_tiled_cholesky_mass_matrix": true,
+      "mass_matrix_fits_shared": true,
+      "cholesky_tile_size": 32,
+      "enable_register_tiled_mass": false,
+      "enable_fused_smooth_acc_solve": true,
+      "enable_tiled_island_seed": true,
+      "is_single_island": false,
+      "has_scalar_seed_factor": false,
+      "enable_cooperative_constraint_kernels": true,
+      "enable_cooperative_noslip": false,
+      "constraint_layout_batch_first": true,
+      "enable_jacobi_equilibration": false,
+      "tiled_n_dofs_per_block": 24,
+      "island_tile_cap_first": 24,
+      "island_tile_cap_last": 24,
+      "has_island_above_tile_cap": false,
+      "backend": 2,
+      "para_level": 2,
+      "requires_grad": false,
+      "use_hibernation": false,
+      "batch_links_info": false,
+      "batch_dofs_info": true,
+      "batch_joints_info": false,
+      "enable_mujoco_compatibility": false,
+      "enable_elliptic_friction": true,
+      "enable_signorini_contact": false,
+      "enable_multi_contact": true,
+      "enable_collision": true,
+      "enable_joint_limit": true,
+      "box_box_detection": false,
+      "sparse_solve": false,
+      "integrator": 2,
+      "solver_type": 1,
+      "_qd_nd_paths": []
+    },
+    "collider_config": {
+      "gpu_cores": 24064,
+      "gpu_cores_per_unit": 128,
+      "has_terrain": false,
+      "has_non_box_plane_convex_convex": true,
+      "has_convex_specialization": true,
+      "has_nonconvex_nonterrain": false,
+      "has_prunable_contacts": true,
+      "n_contacts_per_convex_pair": 5,
+      "n_contacts_per_nonconvex_pair": 40,
+      "ccd_algorithm": 0,
+      "_qd_nd_paths": []
+    },
+    "gjk_config": {
+      "enable_contact_patch": false,
+      "_qd_nd_paths": []
+    }
+  },
+  "gs_use_ndarray": true,
+  "gs_use_zerocopy": true,
+  "gs_use_deterministic_algorithms": true,
+  "rigid_options": {
+    "dt": 0.01,
+    "gravity": [
+      0.0,
+      0.0,
+      -9.81
+    ],
+    "enable_collision": true,
+    "enable_joint_limit": true,
+    "enable_self_collision": true,
+    "enable_neutral_collision": false,
+    "enable_adjacent_collision": false,
+    "disable_constraint": false,
+    "max_collision_pairs": 150,
+    "max_contacts": 750,
+    "multiplier_collision_broad_phase": 8,
+    "integrator": 2,
+    "IK_max_targets": 6,
+    "batch_links_info": false,
+    "batch_joints_info": false,
+    "batch_dofs_info": true,
+    "constraint_solver": 1,
+    "iterations": 100,
+    "tolerance": 1e-12,
+    "ls_iterations": 50,
+    "ls_tolerance": 0.01,
+    "noslip_iterations": 0,
+    "noslip_tolerance": 1e-06,
+    "friction_cone": 1,
+    "contact_resolution": 0,
+    "enable_torsional_friction": false,
+    "enable_rolling_friction": false,
+    "impratio": 100.0,
+    "contact_pruning_tolerance": null,
+    "sparse_solve": null,
+    "constraint_timeconst": 0.01,
+    "box_box_detection": false,
+    "use_hibernation": false,
+    "hibernation_thresh_vel": null,
+    "max_dynamic_constraints": 8,
+    "enable_multi_contact": true,
+    "enable_mujoco_compatibility": false,
+    "use_gjk_collision": false,
+    "enable_contact_patch": false,
+    "broadphase_traversal": null
+  },
+  "observed_link_index": 12,
+  "snapshot": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-first-contact-state-v1/group0/rigid/step1200.npz",
+    "bytes": 5103546,
+    "sha256": "49aca9eff3f490b2f1306d2e8d92522c44c06e2287b7510ecb9cfd9582e05c42"
+  }
+}

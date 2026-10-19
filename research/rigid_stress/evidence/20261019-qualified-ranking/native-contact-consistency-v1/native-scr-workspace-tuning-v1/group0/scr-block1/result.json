@@ -1,0 +1,390 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-191",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729040",
+      "SLURM_ARRAY_JOB_ID": "729040",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-45a34b48-2f59-55fc-c11c-5082d70721f8, 00000000:20:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "passed": true,
+  "checks": {
+    "finite_motion": true,
+    "every_step_errno_zero": true,
+    "all_environments_retained": true,
+    "every_step_valid": true,
+    "finite_nonnegative_peaks": true,
+    "full_tensor_shape": true,
+    "full_vm_independent": true,
+    "peak_matches_full": true
+  },
+  "method": "scr",
+  "observed_stress": true,
+  "effective_rigid_post_fusion": false,
+  "output_mode": "full",
+  "envs": 8,
+  "steps": 1200,
+  "warmup": 900,
+  "dt_s": 0.01,
+  "substeps": 1,
+  "resets": 8,
+  "conditions": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+    "bytes": 5226,
+    "sha256": "1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa"
+  },
+  "trajectory": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-scr-workspace-tuning-v1/group0/scr-block1/trajectory.npz",
+    "bytes": 10268464,
+    "sha256": "652c3187781818fbbc283e84a7b029fc0e19d02eccdaf374ed91ffe791c929f5"
+  },
+  "stress_configuration": {
+    "mesh": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+    "output_mode": "full",
+    "update_mode": "every_step",
+    "young": 10000000000.0,
+    "poisson": 0.3,
+    "density": 2000.0,
+    "contact_radius": 0.006,
+    "contact_model": "intrinsic",
+    "intrinsic_integration": "surface_fan",
+    "intrinsic_support": "contact",
+    "intrinsic_load_partition": "body_source_prior",
+    "cooperative_tractions": true,
+    "surface_fan_frontier": true,
+    "warm_start_tractions": true,
+    "contact_block_size": 1,
+    "surface_edge_subdivisions": 8,
+    "source_projection_limit": 0.0001,
+    "source_geometry_tolerance": 1e-08,
+    "source_uncertainty": 0.0,
+    "quadrature": 10,
+    "tolerance": 1e-08,
+    "absolute_tolerance": 1e-11,
+    "max_iterations": 2000,
+    "warm_start": true,
+    "history_size": 0,
+    "method": "auto",
+    "cooperative_solve": true,
+    "cooperative_pressure": true,
+    "cooperative_scatter": true,
+    "cooperative_balance": true,
+    "contact_wrench_reuse": null,
+    "face_parallel_scatter": true,
+    "scatter_tasks_per_env": 32,
+    "contact_moment_reuse": null,
+    "inverse_max_bytes": 67108864,
+    "inverse_precision": "64",
+    "surface_inverse": true,
+    "packed_surface_loads": true,
+    "packed_block_size": null,
+    "coalesced_residual": null,
+    "fused_pipeline": true,
+    "fused_rigid_post": null,
+    "cached_peak": true,
+    "cached_face_bounds": true,
+    "inverse_corrections": 2,
+    "preconditioner": "block"
+  },
+  "intrinsic_workspace_contacts": 9,
+  "replay": {
+    "repeats": [
+      {
+        "updates": 1200,
+        "seconds": 10.30977544997586,
+        "env_updates_per_second": 931.1551009602715,
+        "invalid_environment_updates": 0
+      },
+      {
+        "updates": 1200,
+        "seconds": 10.317749752022792,
+        "env_updates_per_second": 930.4354370600937,
+        "invalid_environment_updates": 0
+      },
+      {
+        "updates": 1200,
+        "seconds": 10.334190161986044,
+        "env_updates_per_second": 928.9552301169437,
+        "invalid_environment_updates": 0
+      }
+    ],
+    "input_history": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-scr-workspace-tuning-v1/group0/scr-block1/replay-inputs.npz",
+      "bytes": 6633800,
+      "sha256": "62cb04257a22a42b682abac43b5af58d6418f1d69bf4a954ee50165c1c03ba14"
+    },
+    "stress_reset_schedule": {
+      "0": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "600": [
+        0
+      ],
+      "637": [
+        1
+      ],
+      "674": [
+        2
+      ],
+      "711": [
+        3
+      ],
+      "748": [
+        4
+      ],
+      "785": [
+        5
+      ],
+      "822": [
+        6
+      ],
+      "859": [
+        7
+      ]
+    },
+    "partial_resets_replayed": true,
+    "peak_max_absolute_difference_pa": 0.0012512807734310627,
+    "complete_history_check_passed": true,
+    "recorded_device_bytes": 1240128000,
+    "buffers": [
+      {
+        "name": "n_contacts",
+        "shape": [
+          1200,
+          8
+        ],
+        "dtype": "torch.int32"
+      },
+      {
+        "name": "contact_sort_idx",
+        "shape": [
+          1200,
+          8,
+          750
+        ],
+        "dtype": "torch.int32"
+      },
+      {
+        "name": "link_a",
+        "shape": [
+          1200,
+          8,
+          750
+        ],
+        "dtype": "torch.int32"
+      },
+      {
+        "name": "link_b",
+        "shape": [
+          1200,
+          8,
+          750
+        ],
+        "dtype": "torch.int32"
+      },
+      {
+        "name": "geom_a",
+        "shape": [
+          1200,
+          8,
+          750
+        ],
+        "dtype": "torch.int32"
+      },
+      {
+        "name": "geom_b",
+        "shape": [
+          1200,
+          8,
+          750
+        ],
+        "dtype": "torch.int32"
+      },
+      {
+        "name": "pair_idx",
+        "shape": [
+          1200,
+          8,
+          750
+        ],
+        "dtype": "torch.int32"
+      },
+      {
+        "name": "position",
+        "shape": [
+          1200,
+          8,
+          750,
+          3
+        ],
+        "dtype": "torch.float64"
+      },
+      {
+        "name": "force",
+        "shape": [
+          1200,
+          8,
+          750,
+          3
+        ],
+        "dtype": "torch.float64"
+      },
+      {
+        "name": "normal",
+        "shape": [
+          1200,
+          8,
+          750,
+          3
+        ],
+        "dtype": "torch.float64"
+      },
+      {
+        "name": "friction",
+        "shape": [
+          1200,
+          8,
+          750
+        ],
+        "dtype": "torch.float64"
+      },
+      {
+        "name": "witness_method",
+        "shape": [
+          1200,
+          8,
+          750
+        ],
+        "dtype": "torch.int32"
+      },
+      {
+        "name": "witness_vertex_a",
+        "shape": [
+          1200,
+          8,
+          750
+        ],
+        "dtype": "torch.int32"
+      },
+      {
+        "name": "witness_vertex_b",
+        "shape": [
+          1200,
+          8,
+          750
+        ],
+        "dtype": "torch.int32"
+      },
+      {
+        "name": "witness_point_a",
+        "shape": [
+          1200,
+          8,
+          750,
+          3
+        ],
+        "dtype": "torch.float64"
+      },
+      {
+        "name": "witness_point_b",
+        "shape": [
+          1200,
+          8,
+          750,
+          3
+        ],
+        "dtype": "torch.float64"
+      },
+      {
+        "name": "radius",
+        "shape": [
+          1200,
+          8,
+          750
+        ],
+        "dtype": "torch.float64"
+      },
+      {
+        "name": "frame_position",
+        "shape": [
+          1200,
+          8,
+          3
+        ],
+        "dtype": "torch.float64"
+      },
+      {
+        "name": "frame_quaternion",
+        "shape": [
+          1200,
+          8,
+          4
+        ],
+        "dtype": "torch.float64"
+      },
+      {
+        "name": "omega",
+        "shape": [
+          1200,
+          8,
+          3
+        ],
+        "dtype": "torch.float64"
+      },
+      {
+        "name": "applied_angular",
+        "shape": [
+          1200,
+          8,
+          3
+        ],
+        "dtype": "torch.float64"
+      },
+      {
+        "name": "applied_linear",
+        "shape": [
+          1200,
+          8,
+          3
+        ],
+        "dtype": "torch.float64"
+      },
+      {
+        "name": "coupling_angular",
+        "shape": [
+          1200,
+          8,
+          3
+        ],
+        "dtype": "torch.float64"
+      },
+      {
+        "name": "coupling_linear",
+        "shape": [
+          1200,
+          8,
+          3
+        ],
+        "dtype": "torch.float64"
+      }
+    ],
+    "scope": "Changing recorded contact history, native association/reconstruction/recovery/acceptance and device input restore; no dynamics or host field copies. Elastic history0; existing traction warm start retained. Warm repeated histories, not independent process repeats."
+  },
+  "physical_reference_qualified": false,
+  "scope": "Intrusive motion/output control; recording cost is not primary production throughput."
+}

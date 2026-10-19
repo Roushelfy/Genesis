@@ -1,0 +1,47 @@
+{
+  "controls": {
+    "scheduler": "729070_0|COMPLETED|0:0\n",
+    "analytic_cases": 8,
+    "passed": true
+  },
+  "replacement_mapping": [
+    {
+      "new_group": 0,
+      "original_group": 0,
+      "load_n": 0.1,
+      "added_volume_carrier": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-0.1.npz"
+    },
+    {
+      "new_group": 1,
+      "original_group": 1,
+      "load_n": 0.3,
+      "added_volume_carrier": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-0.3.npz"
+    },
+    {
+      "new_group": 2,
+      "original_group": 2,
+      "load_n": 1.0,
+      "added_volume_carrier": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-1.npz"
+    },
+    {
+      "new_group": 3,
+      "original_group": 6,
+      "load_n": 0.3,
+      "added_volume_carrier": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-0.3.npz"
+    },
+    {
+      "new_group": 4,
+      "original_group": 7,
+      "load_n": 0.3,
+      "added_volume_carrier": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-0.3.npz"
+    }
+  ],
+  "reuse_terminal_original_groups": [
+    3,
+    4,
+    5
+  ],
+  "original_failure": "Last-field-is-Shell guard rejected physical-volume integration before science. Original failed inputs/receipts retained.",
+  "repair": "Append the admitted same-source P2 solid as physical volume carrier. Select the three desired Shell tensors explicitly; their stress norm stays that of the selected third Shell, not the carrier. The carriers tetrahedral breaks join the integration partition. No domain trim, norm floor or threshold relaxation.",
+  "targets": "Unchanged prior control targets and full signed tensor identity."
+}

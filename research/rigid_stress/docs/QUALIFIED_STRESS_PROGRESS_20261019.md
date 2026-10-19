@@ -1610,3 +1610,29 @@ The [production/module report](NATIVE_PRODUCTION_PERFORMANCE_20261019.md) record
 Fresh controls728988 and independent comparison728996 show bitwise rigid repeatability; manual/unrequested stress and fused-post-off trajectories exactly match original DPR, including its difference from rigid. Recovery execution is not necessary to reproduce it. Controller-only test728998 also completes: all1200 joint/phase/grip/limit outputs are bitwise identical with stress emission off/on. Construction/constraint arithmetic remains to be localized; no tolerance is relaxed.
 
 The original SCR profile used an obsolete net-force normalization and failed. Only prepare_recovery_snapshot is repaired: independently computed source-force/moment-arm scales match the production scales, preserving the1e-8 gate. Its corrected relative force error5.7256e-9 passes while the obsolete5.3393e-8 ratio reproduces rejection; all other benchmark AST is unchanged. SCR contact processing measures9.7075ms at the profiled B8 snapshot versus0.1854ms for its linear solve. No engine speedup is claimed from observer repair. Fine reference work continues independently.
+
+
+## MPR contact consistency and matched Shell controls
+
+The [native contact report](NATIVE_CONTACT_CONSISTENCY_20261019.md) records the346-array construction comparison, first upstream contact difference at step109,384-portal witness-layout controls, failed reciprocal candidate and minimal persistent-portal-point repair. Isolated engine1ff39b077 is cherry-picked as58bbcdd5b on the task branch; the analysis engine stays unchanged for live references. Combined audit729201 passes349 B1/B8/B32 checks, including complete motion, max/full, matched batches and original stress baselines. Focused job729106 passes three MPR/GJK/lifecycle cases. Original32 strict failures remain retained.
+
+The [Shell load/response report](SHELL_PAD_CONTROL_SEPARATION_20261019.md) records six admitted250um own-pad static/replay controls with explicit tiny mass-projection corrections, nine independent rigid-mass controls and eight external-volume/tensor controls. Audit729114 passes151 checks,56 rehashed receipts and complete signed tensor/resultant decompositions. The same-source250um solid control is separate from the qualified125um normal reference.
+
+B128/B512 production timings729137 and receipt audit729202 complete all ten modes with zero runtime invalid counters, using repeated frozen eight-condition inputs and repaired engine1ff39b077. These rates still need separate larger complete conformance and total-process memory; canonical B1/B8/B32 timing729194 and larger conformance729223 remain separately tracked. Diverse independent condition-bank generation729216 completes, but its one-step construction is not a complete stability or timing result. No collider error inherits the2mm full-centroid physical-pad error.
+
+## Fine-reference terminal observations remain unqualified
+
+The125um two-wall trajectory728589_0 completes400 steps. Its endpoint current-moment and source-transfer checks pass, but whole-history friction-law admission fails at step38 (0.038s): relative error4.7494312e-7 exceeds the unchanged1e-7 gate. Both settled51-sample endpoint windows pass. The moment aggregate remains rejected because it requires admitted whole history; this is not an endpoint moment defect. All transient forces and the failure are retained, without force clipping, changed normalization or tolerance relaxation. No spatial qualification is inferred from these fields. The125um three-wall parent728589_1 remains separately running.
+
+Fine125um contact-order and half-timestep controls728930_0/_1 are PREEMPTED, with cancelled worker steps. Their partial histories are incomplete and provide no passing time/contact comparison. Original output remains in place; no live output or environment is migrated. Fine friction qualification and final ranking/figures remain open.
+
+Canonical repaired-source timing729194 now completes all15 cases; independent
+receipt audit729236 is submitted. Larger complete conformance729223 and
+separate fresh-process total GPU memory729228 are in progress. Memory sampling
+starts before simulator import; its nested benchmark rates are diagnostic.
+These new pending tasks do not change any previously frozen evidence.
+
+Audit729236 completes with all15 canonical repaired-source timing receipts
+passed. The [canonical timing packet](../evidence/20261019-qualified-ranking/native-canonical-production-v1/README.md) preserves92 verified payloads; the
+[contact report](NATIVE_CONTACT_CONSISTENCY_20261019.md) now includes its
+source-matched B1/B8/B32 rates. Larger conformance/memory remains separate.

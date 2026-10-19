@@ -41,10 +41,14 @@ def summarize(energy, measure, unit):
     }
 
 
-def integrate(fields, basis, area, angular_weights, depth_nodes, depth_weights):
+def integrate(fields, basis, area, angular_weights, depth_nodes, depth_weights, *, volume_reference=None):
     """Use one union of all three partitions and the fine reference's physical volume."""
-    assert len(fields) == 3 and fields[-1].volumes is not None
-    breaks = np.sort(np.concatenate([field.breaks() for field in fields]), axis=0)
+    reference = fields[-1] if volume_reference is None else volume_reference
+    assert len(fields) == 3 and reference.volumes is not None
+    partitions = [field.breaks() for field in fields]
+    if volume_reference is not None and all(volume_reference is not field for field in fields):
+        partitions.append(volume_reference.breaks())
+    breaks = np.sort(np.concatenate(partitions), axis=0)
     np.testing.assert_allclose(np.diff(breaks, axis=0).sum(axis=0), 1, rtol=0, atol=1e-13)
     energy = np.zeros(5)
     measure = 0.0
@@ -55,12 +59,12 @@ def integrate(fields, basis, area, angular_weights, depth_nodes, depth_weights):
         for node, weight in zip(depth_nodes, depth_weights):
             depth = (lower + upper + node * width) / 2
             values = np.stack([field.sample(depth, basis) for field in fields])
-            volume_weight = width / 2 * angular_weights * fields[-1].volume_density(depth) * weight
+            volume_weight = width / 2 * angular_weights * reference.volume_density(depth) * weight
             energy += products(values, volume_weight)
             measure += volume_weight.sum()
             membrane += values * (width / 2 * 0.0005 * weight)[None, :, None, None]
             bending += values * (width / 2 * (0.5 - depth) * 0.0005**2 * weight)[None, :, None, None]
-    np.testing.assert_allclose(measure, fields[-1].volumes.sum(), rtol=1e-9, atol=1e-18)
+    np.testing.assert_allclose(measure, reference.volumes.sum(), rtol=1e-9, atol=1e-18)
     metrics = {"tangent": summarize(energy, measure, "Pa")}
     metrics["membrane"] = summarize(products(membrane, area), area.sum(), "N/m")
     metrics["bending"] = summarize(products(bending, area), area.sum(), "N")
