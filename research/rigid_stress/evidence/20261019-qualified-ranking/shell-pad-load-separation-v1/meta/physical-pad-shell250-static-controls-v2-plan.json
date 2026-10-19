@@ -1,0 +1,31 @@
+{
+  "original_failures_retained": "7289450.1N/1N fail1e-12 zero-resultant assertion before stepping; input source FE uses explicit rigid-mode mass correction.",
+  "independent_controls": {
+    "scheduler": "729031_0|COMPLETED|0:0\n",
+    "cases": 9,
+    "passed": true
+  },
+  "variant": "Optional --inertia-relief; same six-mode mass projection as existing free P2 and Shell replay. Actual point tractions remain unchanged.",
+  "guard": "Body correction norm <=1e-8 of mapped contact-load norm at every iteration; reject otherwise. Original1e-12 zero-wrench and1e-7 static-residual gates retained.",
+  "equation": "f_elastic + f_contact - f_mass_projection = 0; saved mapped_contact_force_n and inertia_relief_correction_n remain separate.",
+  "unchanged": [
+    "PAD engine41b2a57be",
+    "250um Shell mesh",
+    "12coarse patches",
+    "PCG1e-4/velocity1e-10/cap8000",
+    "material/pad/source pressure",
+    "all actual source points/forces",
+    "static pseudo-time relaxation semantics"
+  ],
+  "cases_n": [
+    0.1,
+    0.3,
+    1.0
+  ],
+  "required_comparisons": [
+    "admit every static and own-pad case with original gates",
+    "paired0.3N old/new correction-effect field check",
+    "replay versus solved-pad actual traction/field difference, without an equivalence threshold",
+    "continuous versus same-model static response at matching configuration"
+  ]
+}

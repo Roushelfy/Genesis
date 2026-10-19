@@ -1,0 +1,135 @@
+{
+  "scheduler": {
+    "729033_0": "729033_0|COMPLETED|0:0\n",
+    "729033_1": "729033_1|COMPLETED|0:0\n",
+    "729033_2": "729033_2|COMPLETED|0:0\n"
+  },
+  "parent_frames": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group0/replay/frames/level0.npz",
+      "bytes": 9098398,
+      "sha256": "fc3977c5a8538b242ebcfff9639f077f09429e5ddc6eff5223d2a7b053409f08"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group0/solved-pad/frames/level0.npz",
+      "bytes": 9120115,
+      "sha256": "193c275e003d8e36d85dcef4de12b28c3f9e76b057994ab699b560a7cbb546e8"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group1/replay/frames/level0.npz",
+      "bytes": 9129562,
+      "sha256": "6d7fd60429bf5c1628c1115ca3c196a0cf418fa46f4d200001b27a6480028613"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group1/solved-pad/frames/level0.npz",
+      "bytes": 9129689,
+      "sha256": "178b20bfb50c6e1881132b28cd68db373dc7153e64e5aec16411ea3921f74252"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group2/replay/frames/level0.npz",
+      "bytes": 9138009,
+      "sha256": "9e6ae3ff2198a6e1f4127f298e8fd0f4cfe82846f8dd4db145ce5868fb342611"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group2/solved-pad/frames/level0.npz",
+      "bytes": 9157637,
+      "sha256": "7d68d2c0752b26f200dee9d1dda5eadf067da89801bad3d5d7d27b548b607f19"
+    }
+  ],
+  "comparisons": [
+    {
+      "group": 0,
+      "family": "continuous-static-replay",
+      "load_n": 0.1,
+      "fields": [
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group0/solved-pad/frames/level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group0/replay/frames/level0.npz"
+      ]
+    },
+    {
+      "group": 1,
+      "family": "continuous-static-replay",
+      "load_n": 0.3,
+      "fields": [
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group1/solved-pad/frames/level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group1/replay/frames/level0.npz"
+      ]
+    },
+    {
+      "group": 2,
+      "family": "continuous-static-replay",
+      "load_n": 1.0,
+      "fields": [
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level2.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group2/solved-pad/frames/level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group2/replay/frames/level0.npz"
+      ]
+    },
+    {
+      "group": 3,
+      "family": "continuous-replay-solid",
+      "load_n": 0.1,
+      "fields": [
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group0/replay/frames/level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-0.1.npz"
+      ]
+    },
+    {
+      "group": 4,
+      "family": "continuous-replay-solid",
+      "load_n": 0.3,
+      "fields": [
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group1/replay/frames/level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-0.3.npz"
+      ]
+    },
+    {
+      "group": 5,
+      "family": "continuous-replay-solid",
+      "load_n": 1.0,
+      "fields": [
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level2.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group2/replay/frames/level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-1.npz"
+      ]
+    },
+    {
+      "group": 6,
+      "family": "replay-old-new",
+      "load_n": 0.3,
+      "fields": [
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v1/group1/replay/frames/level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group1/replay/frames/level0.npz"
+      ]
+    },
+    {
+      "group": 7,
+      "family": "solved-pad-old-new",
+      "load_n": 0.3,
+      "fields": [
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v1/group1/solved-pad/frames/level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group1/solved-pad/frames/level0.npz"
+      ]
+    }
+  ],
+  "same_load_scope": "Replay uses the admitted250um two-wall P2 physical-pad centroid-pressure field; its independent solid source is kept in the same-traction triple. Fine125um normal rankings remain separately qualified.",
+  "first_triple": "Continuous Shell, static self-consistent Shell pad, static prescribed-pressure Shell replay. Direct signed tensor differences and cross terms; no scalar-error subtraction. The first contrast includes static/history/contact-map differences until separately bounded.",
+  "second_triple": "Continuous Shell, same-pressure Shell replay, same-source P2 solid. The replay-solid contrast measures thin-Shell/force-transfer discretization on this coarse solid domain, not a certified continuum bound.",
+  "old_new_control": "0.3N replay and self-consistent pad cases, original versus explicit tiny mass correction; field/peak target1e-8 relative for this solver-roundoff control.",
+  "continuous_static_targets": {
+    "fields": 0.005,
+    "peaks": 0.01
+  },
+  "different_pressure_profiles_have_no_equivalence_target": true,
+  "angular_sampling": [
+    9,
+    25
+  ],
+  "depth_quadrature": 4,
+  "all_domains_complete": true,
+  "whole_goal_complete": false
+}

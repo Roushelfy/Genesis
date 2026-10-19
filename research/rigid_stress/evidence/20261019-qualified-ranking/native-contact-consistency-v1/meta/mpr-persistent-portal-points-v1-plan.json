@@ -1,0 +1,10 @@
+{
+  "failed_predecessor": "mpr-witness-normalization-v1 shared reciprocal did not change the on/off discrepancy; not promoted.",
+  "variant": "MPR always retains its two portal surface points in per-worker scratch. Optional long-lived contact witness storage remains unchanged. No new source/contact cap, geometry parameter or tolerance.",
+  "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-witness-consistency",
+  "baseline": "92692aa612666b015ac4b506a39b9e7d3dfdf998",
+  "reason": "Make MPR contact-position arithmetic independent of whether an auxiliary consumer requests contact witnesses. Existing witness-enabled arithmetic is retained.",
+  "cost": "Two3-component FP64 vectors per actual MPR worker lane, replacing scalar-disabled scratch; exact worker count, not maximum candidate-contact allocation. Must measure performance/memory separately.",
+  "required": "Same strict1200-step B8 pure rigid/max/full motion and output controls; no threshold change or production recommendation until matched validation.",
+  "source_scope": "Isolated named variant, active baseline files remain untouched."
+}

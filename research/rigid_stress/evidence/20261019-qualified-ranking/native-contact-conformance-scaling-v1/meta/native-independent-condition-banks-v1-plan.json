@@ -1,0 +1,11 @@
+{
+  "source_commit": "1ff39b0775200120737225fdfb8631c9b1fc5fa7",
+  "batches": [
+    128,
+    512
+  ],
+  "purpose": "Generate frozen independently seeded per-environment initial conditions and IK/controller targets for broader production conformance; repeated eight-condition scaling remains labeled as such.",
+  "configuration": "Existing varied=True/seed623016+i condition generator, same low-resolution geometry/material, one rigid step after bank export.",
+  "not_primary_performance": true,
+  "requires_next": "Inspect generated inputs, then run paired stability/conformance before admitting timing. Preserve any failure and all environments."
+}

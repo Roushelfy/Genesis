@@ -23,6 +23,7 @@ from .artifacts import file_id, runtime_identity, write_json
 from .common_metric import CommonColumns, corotation, field_error, resultants, tangent
 from .compare_fields import area_error, face_assignment
 from .reference_uncertainty import frame_index
+from .static_inertia_relief import StaticInertiaRelief
 
 
 def wrench(points, force):
@@ -169,14 +170,7 @@ def main():
     transfer = ShellLoadTransfer.allocate(rest, faces, (outer + inner) / 2, layers)
     controls = transfer_controls(transfer, authored, ray_count)
     lookup = face_assignment(columns, rest, faces)
-    center = shell_mass @ rest / shell_mass.sum()
-    rigid = np.zeros((len(rest), 3, 6))
-    rigid[:, :, :3] = np.eye(3)
-    for axis in range(3):
-        rigid[:, :, 3 + axis] = np.cross(np.eye(3)[axis], rest - center)
-    rigid = rigid.reshape(-1, 6)
-    mass_modes = rigid * np.repeat(shell_mass, 3)[:, None]
-    gram = rigid.T @ mass_modes
+    relief = StaticInertiaRelief.build(rest, shell_mass)
     force_view = torch.empty((len(rest), 1, 3), dtype=gs.tc_float, device=gs.device)
     observation = FullField.allocate(solver)
     files = frame_index(args.reference)
@@ -211,9 +205,7 @@ def main():
                 contact, contact_defect = transfer.apply(actual, source_contact)
                 inertia, inertia_defect = transfer.apply(actual, source_inertia)
                 reference = tangent(rotation.T @ saved["cauchy_pa"][columns.reference_elements] @ rotation, columns)
-            original_load = (contact - inertia).reshape(-1)
-            balance = mass_modes @ np.linalg.solve(gram, rigid.T @ original_load)
-            load = (original_load - balance).reshape(-1, 3)
+            load, balance = relief.apply(contact - inertia)
             force_view.copy_(torch.as_tensor(load[:, None], dtype=gs.tc_float, device=gs.device))
             entity.set_verts_pos(rest_tensor)
             entity.set_verts_vel(0.0)

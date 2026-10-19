@@ -616,3 +616,29 @@ Use the existing Slurm runner and recorded data-side tasks; CPU-only analysis
 keeps --cpu-only, while GPU diagnostics use their pinned source. The optional
 --kernel-profiler flag belongs only to separate profiling allocations and is
 recorded in submission.json; it is not enabled for primary throughput.
+
+
+For native production consistency, use `qipc_comparison.native_production_controls`
+with the exact pinned condition bank, followed by
+`qipc_comparison.audit_native_production_controls`. `--group-indices` maps
+separately captured batch groups; nonstandard batches require explicit groups.
+The larger-batch cross-check assumes the same repeated frozen condition bank.
+See the [MPR contact report](NATIVE_CONTACT_CONSISTENCY_20261019.md) for
+349 passed B1/B8/B32 checks, source1ff39b077 and retained original failures.
+`production_throughput_audit --batches ...` checks primary fixed-horizon timing
+receipts independently; it does not infer complete motion or total GPU memory.
+
+The [250um Shell separation report](SHELL_PAD_CONTROL_SEPARATION_20261019.md)
+uses `finite_area_shell --inertia-relief` for explicit mass-distributed body
+corrections while preserving point loads and the original force/static gates.
+This opt-in static relaxation is separate from physical continuous dynamics.
+`contact_fem_exact_columns --decomposition-indices i j k` selects three fields
+for a signed difference decomposition while retaining the final physical solid
+as the external volume carrier. The selected third field still sets the
+stress normalization; carrier geometry never supplies a replacement tensor.
+
+`native_production_memory --task EXACT_BENCHMARK_TASK_JSON --output NEW_DATA_DIR`
+samples NVIDIA total process memory in a separate fresh benchmark process,
+including build and warmup. Its nested timing is explicitly intrusive and
+cannot replace primary rates; compare its own runtime counters and separately
+qualified motion/output configuration. Preserve sample interval limitations.

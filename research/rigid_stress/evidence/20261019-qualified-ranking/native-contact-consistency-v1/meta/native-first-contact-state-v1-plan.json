@@ -1,0 +1,20 @@
+{
+  "trigger": "Construction probe346 arrays:340 equal; remaining six are inactive contact pair index and witness storage shapes. Configs, rigid options and deterministic solver preference match.",
+  "cases": [
+    "pure rigid",
+    "stress-built manual/unrequested"
+  ],
+  "warmup": 900,
+  "steps": 1200,
+  "snapshot_steps": [
+    "constructed",
+    "restarted",
+    108,
+    109,
+    110,
+    120,
+    1200
+  ],
+  "purpose": "Find whether first divergence is already in upstream contact geometry or appears during constraint/integration, without attributing roundoff from a proxy alone.",
+  "targets": "Keep all original strict motion thresholds; no engine or tolerance change."
+}

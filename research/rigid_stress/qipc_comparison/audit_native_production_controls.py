@@ -24,7 +24,11 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--campaign", type=Path, required=True)
     cli.add_argument("--output", type=Path, required=True)
-    cli.add_argument("--batches", type=int, nargs="+", choices=(1, 8, 32), default=[1, 8, 32])
+    cli.add_argument("--baseline-campaign", type=Path, help="Also compare stress outputs to the original pinned cohort")
+    cli.add_argument("--batches", type=int, nargs="+", default=[1, 8, 32])
+    cli.add_argument(
+        "--group-indices", type=int, nargs="+", help="Explicit source groups for a separately pinned variant"
+    )
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     receipts, checks, cases = [], [], {}
@@ -64,9 +68,14 @@ def main():
             absolute_target_pa=1e-3,
         )
 
-    assert len(args.batches) == len(set(args.batches))
-    for batch in args.batches:
-        group = (1, 8, 32).index(batch)
+    assert len(args.batches) == len(set(args.batches)) and min(args.batches) > 0
+    assert args.group_indices is None or len(args.group_indices) == len(args.batches)
+    if args.group_indices is None:
+        assert all(batch in (1, 8, 32) for batch in args.batches), "Other batches require explicit source groups"
+    group_indices = (
+        [(1, 8, 32).index(batch) for batch in args.batches] if args.group_indices is None else args.group_indices
+    )
+    for group, batch in zip(group_indices, args.batches):
         for mode in MODES:
             root = args.campaign / f"group{group}" / mode
             start = json.loads((root / "start.json").read_text())
@@ -122,9 +131,7 @@ def main():
                 cases[batch, method + "-max"]["peak_pa"],
                 cases[batch, method + "-full"]["peak_pa"],
             )
-    for batch, reference_batch in ((8, 1), (32, 8)):
-        if batch not in args.batches or reference_batch not in args.batches:
-            continue
+    for reference_batch, batch in zip(sorted(args.batches), sorted(args.batches)[1:]):
         # The frozen8-condition bank repeats by environment index. B1 covers
         # only condition0; compare that condition in B8, not the other seven.
         ids = np.array([0]) if reference_batch == 1 else np.arange(batch)
@@ -148,6 +155,28 @@ def main():
                     maximum_absolute_error_pa=float(delta.max()),
                     maximum_budget_ratio=float((delta / budget).max()),
                 )
+    if args.baseline_campaign is not None:
+        assert all(batch in (1, 8, 32) for batch in args.batches), "Original baseline covers only B1/B8/B32"
+        for batch in args.batches:
+            group = (1, 8, 32).index(batch)
+            for mode in MODES[1:]:
+                path = args.baseline_campaign / f"group{group}" / mode / "trajectory.npz"
+                receipts.append(file_id(path))
+                with np.load(path) as saved:
+                    original = {name: saved[name] for name in saved.files}
+                actual = cases[batch, mode]
+                label = f"B{batch}/{mode}/original-stress-baseline"
+                compare_motion(label, actual["motion"], original["motion"])
+                compare_peak(label + "/peak", actual["peak_pa"], original["peak_pa"])
+                if mode.endswith("full"):
+                    delta = np.abs(actual["stress_pa"] - original["stress_pa"])
+                    budget = 1e-3 + 1e-8 * np.abs(original["stress_pa"])
+                    check(
+                        label + "/tensor",
+                        (delta <= budget).all(),
+                        maximum_absolute_error_pa=float(delta.max()),
+                        maximum_budget_ratio=float((delta / budget).max()),
+                    )
     passed = all(row["passed"] for row in checks)
     write_json(
         args.output / "result.json",

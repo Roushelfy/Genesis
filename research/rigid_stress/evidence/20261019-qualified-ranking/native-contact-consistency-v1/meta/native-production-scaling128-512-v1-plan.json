@@ -1,0 +1,26 @@
+{
+  "source_commit": "1ff39b0775200120737225fdfb8631c9b1fc5fa7",
+  "variant": "Persistent per-worker MPR portal points; B8 passes89 strict checks, broader/focused checks still pending.",
+  "batches": [
+    128,
+    512
+  ],
+  "modes": [
+    "rigid",
+    "dpr-max",
+    "dpr-full",
+    "scr-max",
+    "scr-full"
+  ],
+  "same_gpu_per_batch": true,
+  "steps_per_repeat": 1200,
+  "repeats": 3,
+  "warmup": 900,
+  "dt_s": 0.01,
+  "source_bank_conditions": 8,
+  "cadence": "every scene step, GPU-resident max/full",
+  "admission": "Complete zero-invalid-step timing receipts, matching-rigid/output/batch conformance and source identity required; pending checks remain explicit.",
+  "scope": "Production-only evolving scenes, no reference/audit/export in timer, no policy inference/training claim. Separate total GPU-process memory sampling remains pending.",
+  "physical_error": "Pending for collider-load configuration; no qualified pad-error inheritance.",
+  "purpose": "Continue useful batch scaling independently of fine reference convergence; no candidate promotion inferred from rates."
+}

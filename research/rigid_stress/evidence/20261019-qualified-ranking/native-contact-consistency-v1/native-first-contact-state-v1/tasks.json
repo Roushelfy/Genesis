@@ -1,0 +1,39 @@
+[
+  [
+    {
+      "name": "rigid",
+      "module": "research.rigid_stress.qipc_comparison.native_production_controls",
+      "args": [
+        "--method",
+        "rigid",
+        "--envs",
+        "8",
+        "--conditions",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+        "--steps",
+        "1200",
+        "--warmup",
+        "900",
+        "--construction-snapshots"
+      ]
+    },
+    {
+      "name": "dpr",
+      "module": "research.rigid_stress.qipc_comparison.native_production_controls",
+      "args": [
+        "--method",
+        "dpr",
+        "--envs",
+        "8",
+        "--conditions",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+        "--steps",
+        "1200",
+        "--warmup",
+        "900",
+        "--construction-snapshots",
+        "--mechanics-only"
+      ]
+    }
+  ]
+]

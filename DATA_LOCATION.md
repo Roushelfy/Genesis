@@ -1,5 +1,26 @@
 # Current QIPC reference comparison
 
+The contact/static-control checkpoint adds three compact Git evidence packets:
+`native-contact-consistency-v1` (307 payloads,3,290,067 bytes),
+`shell-pad-load-separation-v1` (175,1,248,122 bytes) and
+`native-contact-conformance-scaling-v1` (212,7,522,851 bytes).
+They preserve source/task identities, original failures, deterministic gzip and
+both original/encoded hashes. The follow-up includes terminal B1/B8/B32
+conformance, larger timing receipts and the rejected125um two-wall history;
+active canonical timing/larger conformance contribute immutable inputs only.
+Full arrays, raw18MB trace, large reference frames, logs and all new runs remain
+under `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/`.
+The combined native audit uses data-side symlinks plus an assembly manifest to
+point to original terminal cohorts; it does not move or replace their paths.
+The isolated fixed engine is a source checkout under workspace. Active analysis
+engine/reference sources, environments, caches and compatibility links remain
+in place. New task outputs are explicitly on data and private caches node-local.
+
+The companion `native-canonical-production-v1` retains92 payloads totaling
+1,416,760 bytes for all15 repaired-source B1/B8/B32 timings and independent
+receipt audit. Separate memory jobs contribute immutable inputs only. Full
+timing JSON, source captures and runtime outputs remain at the same data root.
+
 The native-production-measurements-v1 packet retains254 payloads totaling
 4,272,574 bytes; native-module-replay-v1 retains46 totaling501,678 bytes.
 Large JSON and raw logs are losslessly gzip-encoded, with encoded and original

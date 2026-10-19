@@ -78,13 +78,28 @@ def main():
         for row in zero["metrics"].values()
     )
     cases.append({"case": "exact_zero_reference_and_error", "passed": True})
+    fields = [
+        AffineControl(1.5, 1, [0, 0.2, 1]),
+        AffineControl(0.5, 1, [0, 0.8, 1]),
+        AffineControl(0, 1, [0, 0.3, 0.4, 1]),
+    ]
+    carrier = AffineControl(42, 123, [0, 0.13, 0.37, 0.93, 1])
+    external = integrate(fields, basis, area, angular, nodes, weights, volume_reference=carrier)
+    for metric, expected in expected_first_mean_square.items():
+        np.testing.assert_allclose(
+            external["metrics"][metric]["first_difference_rms"], np.sqrt(expected), rtol=1e-12, atol=0
+        )
+    np.testing.assert_allclose(
+        external["metrics"]["tangent"]["reference_rms"], np.sqrt(14 / 5 * 38 / 3), rtol=1e-12, atol=0
+    )
+    cases.append({"case": "external_geometry_reference_does_not_supply_tensor_norm", "passed": True})
     write_json(
         args.output / "result.json",
         {
             "identity": runtime_identity(require_gpu_inventory=False),
             "passed": True,
             "cases": cases,
-            "scope": "Seven manufactured controls: nonmatching material partitions; analytic volume, membrane, bending and boundary integrals; signed cancellation/reinforcement;24-decade stress scaling; explicit zero-normalization handling. No physical reference qualification.",
+            "scope": "Eight manufactured controls, including independent external volume reference: nonmatching material partitions; analytic volume, membrane, bending and boundary integrals; signed cancellation/reinforcement;24-decade stress scaling; explicit zero-normalization handling. No physical reference qualification.",
         },
     )
 

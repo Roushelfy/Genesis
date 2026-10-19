@@ -1,0 +1,978 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-191",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729091",
+      "SLURM_ARRAY_JOB_ID": "729091",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "comparison_completed": true,
+  "steps": [
+    {
+      "step": 108,
+      "active_contacts": 8,
+      "contact_differences": [
+        {
+          "name": "geom_a",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "geom_b",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "pos",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "normal",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "penetration",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "friction",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "sol_params",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "force",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        }
+      ],
+      "different_dynamics": []
+    },
+    {
+      "step": 109,
+      "active_contacts": 9,
+      "contact_differences": [
+        {
+          "name": "geom_a",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "geom_b",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "pos",
+          "different_values": 1,
+          "maximum_absolute_difference": 1.1102230246251565e-16
+        },
+        {
+          "name": "normal",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "penetration",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "friction",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "sol_params",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "force",
+          "different_values": 6,
+          "maximum_absolute_difference": 2.393918396847994e-16
+        }
+      ],
+      "different_dynamics": [
+        {
+          "name": "rigid_info.qpos",
+          "different_values": 2,
+          "maximum_absolute_difference": 5.551115123125783e-17
+        },
+        {
+          "name": "dyn_state.links.cinr_inertial",
+          "different_values": 8,
+          "maximum_absolute_difference": 8.470329472543003e-22
+        },
+        {
+          "name": "dyn_state.links.cinr_quat",
+          "different_values": 3,
+          "maximum_absolute_difference": 1.1102230246251565e-16
+        },
+        {
+          "name": "dyn_state.links.quat",
+          "different_values": 2,
+          "maximum_absolute_difference": 5.551115123125783e-17
+        },
+        {
+          "name": "dyn_state.links.i_quat",
+          "different_values": 3,
+          "maximum_absolute_difference": 1.1102230246251565e-16
+        },
+        {
+          "name": "dyn_state.links.cd_ang",
+          "different_values": 21,
+          "maximum_absolute_difference": 1.1657341758564144e-14
+        },
+        {
+          "name": "dyn_state.links.cd_vel",
+          "different_values": 29,
+          "maximum_absolute_difference": 8.847089727481716e-17
+        },
+        {
+          "name": "dyn_state.links.cacc_ang",
+          "different_values": 31,
+          "maximum_absolute_difference": 1.1723955140041653e-12
+        },
+        {
+          "name": "dyn_state.links.cacc_lin",
+          "different_values": 28,
+          "maximum_absolute_difference": 8.881784197001252e-15
+        },
+        {
+          "name": "dyn_state.links.contact_force",
+          "different_values": 9,
+          "maximum_absolute_difference": 2.393918396847994e-16
+        },
+        {
+          "name": "dyn_state.dofs.force",
+          "different_values": 15,
+          "maximum_absolute_difference": 1.6653345369377348e-16
+        },
+        {
+          "name": "dyn_state.dofs.pos",
+          "different_values": 3,
+          "maximum_absolute_difference": 1.1102230246251565e-16
+        },
+        {
+          "name": "dyn_state.dofs.vel",
+          "different_values": 12,
+          "maximum_absolute_difference": 1.1657341758564144e-14
+        },
+        {
+          "name": "dyn_state.dofs.acc",
+          "different_values": 15,
+          "maximum_absolute_difference": 1.1723955140041653e-12
+        },
+        {
+          "name": "dyn_state.dofs.qf_constraint",
+          "different_values": 15,
+          "maximum_absolute_difference": 1.5959455978986625e-16
+        },
+        {
+          "name": "dyn_state.dofs.cdof_ang",
+          "different_values": 6,
+          "maximum_absolute_difference": 1.1102230246251565e-16
+        },
+        {
+          "name": "dyn_state.dofs.cdof_vel",
+          "different_values": 7,
+          "maximum_absolute_difference": 2.168404344971009e-19
+        },
+        {
+          "name": "dyn_state.dofs.cdofd_ang",
+          "different_values": 10,
+          "maximum_absolute_difference": 2.0328790734103208e-19
+        },
+        {
+          "name": "dyn_state.dofs.cdofd_vel",
+          "different_values": 25,
+          "maximum_absolute_difference": 9.367506770274758e-17
+        }
+      ]
+    },
+    {
+      "step": 110,
+      "active_contacts": 9,
+      "contact_differences": [
+        {
+          "name": "geom_a",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "geom_b",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "pos",
+          "different_values": 4,
+          "maximum_absolute_difference": 1.1102230246251565e-16
+        },
+        {
+          "name": "normal",
+          "different_values": 2,
+          "maximum_absolute_difference": 5.793976409762536e-16
+        },
+        {
+          "name": "penetration",
+          "different_values": 1,
+          "maximum_absolute_difference": 3.0836234444792804e-18
+        },
+        {
+          "name": "friction",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "sol_params",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "force",
+          "different_values": 6,
+          "maximum_absolute_difference": 2.636779683484747e-16
+        }
+      ],
+      "different_dynamics": [
+        {
+          "name": "rigid_info.qpos",
+          "different_values": 4,
+          "maximum_absolute_difference": 1.1102230246251565e-16
+        },
+        {
+          "name": "dyn_state.links.cinr_inertial",
+          "different_values": 5,
+          "maximum_absolute_difference": 4.011825970882184e-23
+        },
+        {
+          "name": "dyn_state.links.cinr_quat",
+          "different_values": 2,
+          "maximum_absolute_difference": 4.163336342344337e-17
+        },
+        {
+          "name": "dyn_state.links.crb_inertial",
+          "different_values": 8,
+          "maximum_absolute_difference": 8.470329472543003e-22
+        },
+        {
+          "name": "dyn_state.links.crb_quat",
+          "different_values": 3,
+          "maximum_absolute_difference": 1.1102230246251565e-16
+        },
+        {
+          "name": "dyn_state.links.cdd_vel",
+          "different_values": 18,
+          "maximum_absolute_difference": 4.822531263215524e-16
+        },
+        {
+          "name": "dyn_state.links.cdd_ang",
+          "different_values": 25,
+          "maximum_absolute_difference": 1.5881867761018131e-22
+        },
+        {
+          "name": "dyn_state.links.pos",
+          "different_values": 1,
+          "maximum_absolute_difference": 1.734723475976807e-18
+        },
+        {
+          "name": "dyn_state.links.quat",
+          "different_values": 3,
+          "maximum_absolute_difference": 1.1102230246251565e-16
+        },
+        {
+          "name": "dyn_state.links.i_pos_bw",
+          "different_values": 1,
+          "maximum_absolute_difference": 1.734723475976807e-18
+        },
+        {
+          "name": "dyn_state.links.i_quat",
+          "different_values": 2,
+          "maximum_absolute_difference": 4.163336342344337e-17
+        },
+        {
+          "name": "dyn_state.links.cd_ang",
+          "different_values": 31,
+          "maximum_absolute_difference": 1.176836406102666e-14
+        },
+        {
+          "name": "dyn_state.links.cd_vel",
+          "different_values": 31,
+          "maximum_absolute_difference": 1.5959455978986625e-16
+        },
+        {
+          "name": "dyn_state.links.root_COM",
+          "different_values": 1,
+          "maximum_absolute_difference": 1.734723475976807e-18
+        },
+        {
+          "name": "dyn_state.links.root_COM_bw",
+          "different_values": 1,
+          "maximum_absolute_difference": 1.0164395367051604e-20
+        },
+        {
+          "name": "dyn_state.links.cacc_ang",
+          "different_values": 31,
+          "maximum_absolute_difference": 5.115907697472721e-13
+        },
+        {
+          "name": "dyn_state.links.cacc_lin",
+          "different_values": 32,
+          "maximum_absolute_difference": 1.4432899320127035e-14
+        },
+        {
+          "name": "dyn_state.links.cfrc_ang",
+          "different_values": 6,
+          "maximum_absolute_difference": 9.740878893424454e-21
+        },
+        {
+          "name": "dyn_state.links.cfrc_vel",
+          "different_values": 22,
+          "maximum_absolute_difference": 1.8973538018496328e-19
+        },
+        {
+          "name": "dyn_state.links.contact_force",
+          "different_values": 9,
+          "maximum_absolute_difference": 2.636779683484747e-16
+        },
+        {
+          "name": "dyn_state.dofs.force",
+          "different_values": 14,
+          "maximum_absolute_difference": 1.734723475976807e-16
+        },
+        {
+          "name": "dyn_state.dofs.qf_bias",
+          "different_values": 5,
+          "maximum_absolute_difference": 1.8973538018496328e-19
+        },
+        {
+          "name": "dyn_state.dofs.qf_passive",
+          "different_values": 6,
+          "maximum_absolute_difference": 6.938893903907228e-18
+        },
+        {
+          "name": "dyn_state.dofs.qf_applied",
+          "different_values": 2,
+          "maximum_absolute_difference": 6.938893903907228e-17
+        },
+        {
+          "name": "dyn_state.dofs.pos",
+          "different_values": 4,
+          "maximum_absolute_difference": 2.220446049250313e-16
+        },
+        {
+          "name": "dyn_state.dofs.vel",
+          "different_values": 15,
+          "maximum_absolute_difference": 1.176836406102666e-14
+        },
+        {
+          "name": "dyn_state.dofs.acc",
+          "different_values": 14,
+          "maximum_absolute_difference": 4.902744876744691e-13
+        },
+        {
+          "name": "dyn_state.dofs.acc_smooth",
+          "different_values": 10,
+          "maximum_absolute_difference": 3.913536161803677e-15
+        },
+        {
+          "name": "dyn_state.dofs.qf_smooth",
+          "different_values": 6,
+          "maximum_absolute_difference": 8.326672684688674e-17
+        },
+        {
+          "name": "dyn_state.dofs.qf_constraint",
+          "different_values": 14,
+          "maximum_absolute_difference": 1.734723475976807e-16
+        },
+        {
+          "name": "dyn_state.dofs.cdof_ang",
+          "different_values": 6,
+          "maximum_absolute_difference": 2.220446049250313e-16
+        },
+        {
+          "name": "dyn_state.dofs.cdof_vel",
+          "different_values": 6,
+          "maximum_absolute_difference": 3.7947076036992655e-19
+        },
+        {
+          "name": "dyn_state.dofs.cdofd_ang",
+          "different_values": 17,
+          "maximum_absolute_difference": 5.759824041329242e-19
+        },
+        {
+          "name": "dyn_state.dofs.cdofd_vel",
+          "different_values": 33,
+          "maximum_absolute_difference": 1.734723475976807e-16
+        },
+        {
+          "name": "dyn_state.dofs.f_vel",
+          "different_values": 7,
+          "maximum_absolute_difference": 1.2705494208814505e-21
+        },
+        {
+          "name": "dyn_state.dofs.f_ang",
+          "different_values": 8,
+          "maximum_absolute_difference": 8.470329472543003e-22
+        }
+      ]
+    },
+    {
+      "step": 120,
+      "active_contacts": 14,
+      "contact_differences": [
+        {
+          "name": "geom_a",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "geom_b",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "pos",
+          "different_values": 15,
+          "maximum_absolute_difference": 2.220446049250313e-16
+        },
+        {
+          "name": "normal",
+          "different_values": 14,
+          "maximum_absolute_difference": 4.544975507059235e-16
+        },
+        {
+          "name": "penetration",
+          "different_values": 7,
+          "maximum_absolute_difference": 3.577867169202165e-18
+        },
+        {
+          "name": "friction",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "sol_params",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "force",
+          "different_values": 21,
+          "maximum_absolute_difference": 2.0539125955565396e-15
+        }
+      ],
+      "different_dynamics": [
+        {
+          "name": "rigid_info.qpos",
+          "different_values": 6,
+          "maximum_absolute_difference": 1.1102230246251565e-16
+        },
+        {
+          "name": "dyn_state.links.cinr_inertial",
+          "different_values": 8,
+          "maximum_absolute_difference": 1.2705494208814505e-21
+        },
+        {
+          "name": "dyn_state.links.cinr_pos",
+          "different_values": 1,
+          "maximum_absolute_difference": 2.8318702462870797e-21
+        },
+        {
+          "name": "dyn_state.links.cinr_quat",
+          "different_values": 3,
+          "maximum_absolute_difference": 2.220446049250313e-16
+        },
+        {
+          "name": "dyn_state.links.crb_inertial",
+          "different_values": 8,
+          "maximum_absolute_difference": 8.470329472543003e-22
+        },
+        {
+          "name": "dyn_state.links.crb_pos",
+          "different_values": 1,
+          "maximum_absolute_difference": 2.2654961970296637e-20
+        },
+        {
+          "name": "dyn_state.links.crb_quat",
+          "different_values": 3,
+          "maximum_absolute_difference": 1.1102230246251565e-16
+        },
+        {
+          "name": "dyn_state.links.cdd_vel",
+          "different_values": 20,
+          "maximum_absolute_difference": 7.4313906231764e-21
+        },
+        {
+          "name": "dyn_state.links.cdd_ang",
+          "different_values": 26,
+          "maximum_absolute_difference": 2.511320339710992e-21
+        },
+        {
+          "name": "dyn_state.links.pos",
+          "different_values": 2,
+          "maximum_absolute_difference": 3.469446951953614e-18
+        },
+        {
+          "name": "dyn_state.links.quat",
+          "different_values": 4,
+          "maximum_absolute_difference": 1.1102230246251565e-16
+        },
+        {
+          "name": "dyn_state.links.i_pos",
+          "different_values": 1,
+          "maximum_absolute_difference": 4.336808689942018e-19
+        },
+        {
+          "name": "dyn_state.links.i_pos_bw",
+          "different_values": 2,
+          "maximum_absolute_difference": 3.469446951953614e-18
+        },
+        {
+          "name": "dyn_state.links.i_quat",
+          "different_values": 3,
+          "maximum_absolute_difference": 2.220446049250313e-16
+        },
+        {
+          "name": "dyn_state.links.cd_ang",
+          "different_values": 31,
+          "maximum_absolute_difference": 3.3115600105854126e-17
+        },
+        {
+          "name": "dyn_state.links.cd_vel",
+          "different_values": 32,
+          "maximum_absolute_difference": 4.363913744254155e-18
+        },
+        {
+          "name": "dyn_state.links.root_COM",
+          "different_values": 2,
+          "maximum_absolute_difference": 3.469446951953614e-18
+        },
+        {
+          "name": "dyn_state.links.root_COM_bw",
+          "different_values": 2,
+          "maximum_absolute_difference": 2.710505431213761e-20
+        },
+        {
+          "name": "dyn_state.links.cacc_ang",
+          "different_values": 31,
+          "maximum_absolute_difference": 5.960509863456309e-15
+        },
+        {
+          "name": "dyn_state.links.cacc_lin",
+          "different_values": 32,
+          "maximum_absolute_difference": 1.09276736964814e-15
+        },
+        {
+          "name": "dyn_state.links.cfrc_ang",
+          "different_values": 10,
+          "maximum_absolute_difference": 8.271806125530277e-23
+        },
+        {
+          "name": "dyn_state.links.cfrc_vel",
+          "different_values": 24,
+          "maximum_absolute_difference": 1.2440796412797536e-21
+        },
+        {
+          "name": "dyn_state.links.contact_force",
+          "different_values": 12,
+          "maximum_absolute_difference": 1.4398204850607499e-15
+        },
+        {
+          "name": "dyn_state.dofs.force",
+          "different_values": 15,
+          "maximum_absolute_difference": 6.852157730108388e-16
+        },
+        {
+          "name": "dyn_state.dofs.qf_bias",
+          "different_values": 6,
+          "maximum_absolute_difference": 2.625802136488331e-20
+        },
+        {
+          "name": "dyn_state.dofs.qf_passive",
+          "different_values": 9,
+          "maximum_absolute_difference": 1.0198276684941776e-17
+        },
+        {
+          "name": "dyn_state.dofs.qf_applied",
+          "different_values": 6,
+          "maximum_absolute_difference": 4.891920202254596e-16
+        },
+        {
+          "name": "dyn_state.dofs.pos",
+          "different_values": 5,
+          "maximum_absolute_difference": 1.3530843112619095e-16
+        },
+        {
+          "name": "dyn_state.dofs.vel",
+          "different_values": 15,
+          "maximum_absolute_difference": 3.469446951953614e-17
+        },
+        {
+          "name": "dyn_state.dofs.acc",
+          "different_values": 15,
+          "maximum_absolute_difference": 6.34561847512316e-15
+        },
+        {
+          "name": "dyn_state.dofs.acc_smooth",
+          "different_values": 13,
+          "maximum_absolute_difference": 4.440892098500626e-16
+        },
+        {
+          "name": "dyn_state.dofs.qf_smooth",
+          "different_values": 11,
+          "maximum_absolute_difference": 4.891920202254596e-16
+        },
+        {
+          "name": "dyn_state.dofs.qf_constraint",
+          "different_values": 14,
+          "maximum_absolute_difference": 7.181755190543981e-16
+        },
+        {
+          "name": "dyn_state.dofs.cdof_ang",
+          "different_values": 8,
+          "maximum_absolute_difference": 1.3877787807814457e-16
+        },
+        {
+          "name": "dyn_state.dofs.cdof_vel",
+          "different_values": 7,
+          "maximum_absolute_difference": 4.2012834183813297e-19
+        },
+        {
+          "name": "dyn_state.dofs.cdofd_ang",
+          "different_values": 17,
+          "maximum_absolute_difference": 5.566700529355262e-18
+        },
+        {
+          "name": "dyn_state.dofs.cdofd_vel",
+          "different_values": 33,
+          "maximum_absolute_difference": 3.6591823321385775e-18
+        },
+        {
+          "name": "dyn_state.dofs.f_vel",
+          "different_values": 9,
+          "maximum_absolute_difference": 2.6734477397713854e-21
+        },
+        {
+          "name": "dyn_state.dofs.f_ang",
+          "different_values": 10,
+          "maximum_absolute_difference": 2.2654961970296637e-20
+        }
+      ]
+    },
+    {
+      "step": 1200,
+      "active_contacts": 19,
+      "contact_differences": [
+        {
+          "name": "geom_a",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "geom_b",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "pos",
+          "different_values": 37,
+          "maximum_absolute_difference": 1.882862834531396e-09
+        },
+        {
+          "name": "normal",
+          "different_values": 27,
+          "maximum_absolute_difference": 5.828670879282072e-16
+        },
+        {
+          "name": "penetration",
+          "different_values": 19,
+          "maximum_absolute_difference": 3.765725669062792e-09
+        },
+        {
+          "name": "friction",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "sol_params",
+          "different_values": 0,
+          "maximum_absolute_difference": 0.0
+        },
+        {
+          "name": "force",
+          "different_values": 57,
+          "maximum_absolute_difference": 4.3465740728887425e-08
+        }
+      ],
+      "different_dynamics": [
+        {
+          "name": "rigid_info.qpos",
+          "different_values": 52,
+          "maximum_absolute_difference": 2.434267923068223e-07
+        },
+        {
+          "name": "dyn_state.links.cinr_inertial",
+          "different_values": 70,
+          "maximum_absolute_difference": 4.170174227569284e-14
+        },
+        {
+          "name": "dyn_state.links.cinr_pos",
+          "different_values": 5,
+          "maximum_absolute_difference": 7.249587830494924e-19
+        },
+        {
+          "name": "dyn_state.links.cinr_quat",
+          "different_values": 30,
+          "maximum_absolute_difference": 2.298555741020447e-07
+        },
+        {
+          "name": "dyn_state.links.crb_inertial",
+          "different_values": 65,
+          "maximum_absolute_difference": 3.505631183020781e-14
+        },
+        {
+          "name": "dyn_state.links.crb_pos",
+          "different_values": 5,
+          "maximum_absolute_difference": 7.249587830494924e-19
+        },
+        {
+          "name": "dyn_state.links.crb_quat",
+          "different_values": 31,
+          "maximum_absolute_difference": 1.9867258459205228e-07
+        },
+        {
+          "name": "dyn_state.links.cdd_vel",
+          "different_values": 157,
+          "maximum_absolute_difference": 3.597486166739827e-07
+        },
+        {
+          "name": "dyn_state.links.cdd_ang",
+          "different_values": 207,
+          "maximum_absolute_difference": 2.2488724749601674e-19
+        },
+        {
+          "name": "dyn_state.links.pos",
+          "different_values": 23,
+          "maximum_absolute_difference": 1.1039977931837086e-08
+        },
+        {
+          "name": "dyn_state.links.quat",
+          "different_values": 30,
+          "maximum_absolute_difference": 2.434267923068223e-07
+        },
+        {
+          "name": "dyn_state.links.i_pos",
+          "different_values": 5,
+          "maximum_absolute_difference": 1.1102230246251565e-16
+        },
+        {
+          "name": "dyn_state.links.i_pos_bw",
+          "different_values": 23,
+          "maximum_absolute_difference": 1.1131822907906042e-08
+        },
+        {
+          "name": "dyn_state.links.i_quat",
+          "different_values": 30,
+          "maximum_absolute_difference": 2.298555741020447e-07
+        },
+        {
+          "name": "dyn_state.links.cd_ang",
+          "different_values": 217,
+          "maximum_absolute_difference": 7.013065788319395e-06
+        },
+        {
+          "name": "dyn_state.links.cd_vel",
+          "different_values": 204,
+          "maximum_absolute_difference": 1.4562074428930982e-07
+        },
+        {
+          "name": "dyn_state.links.root_COM",
+          "different_values": 20,
+          "maximum_absolute_difference": 1.1131822907906042e-08
+        },
+        {
+          "name": "dyn_state.links.root_COM_bw",
+          "different_values": 20,
+          "maximum_absolute_difference": 7.268911340896356e-11
+        },
+        {
+          "name": "dyn_state.links.cacc_ang",
+          "different_values": 245,
+          "maximum_absolute_difference": 0.00019821778410289426
+        },
+        {
+          "name": "dyn_state.links.cacc_lin",
+          "different_values": 241,
+          "maximum_absolute_difference": 6.294058535916136e-06
+        },
+        {
+          "name": "dyn_state.links.cfrc_ang",
+          "different_values": 104,
+          "maximum_absolute_difference": 4.158622561429461e-12
+        },
+        {
+          "name": "dyn_state.links.cfrc_vel",
+          "different_values": 165,
+          "maximum_absolute_difference": 7.185409714364317e-11
+        },
+        {
+          "name": "dyn_state.links.contact_force",
+          "different_values": 54,
+          "maximum_absolute_difference": 4.3465740728887425e-08
+        },
+        {
+          "name": "dyn_state.dofs.force",
+          "different_values": 91,
+          "maximum_absolute_difference": 4.344835061176333e-08
+        },
+        {
+          "name": "dyn_state.dofs.qf_bias",
+          "different_values": 48,
+          "maximum_absolute_difference": 7.185409714364317e-11
+        },
+        {
+          "name": "dyn_state.dofs.qf_passive",
+          "different_values": 56,
+          "maximum_absolute_difference": 1.0438664635372547e-16
+        },
+        {
+          "name": "dyn_state.dofs.qf_applied",
+          "different_values": 27,
+          "maximum_absolute_difference": 7.105427357601002e-15
+        },
+        {
+          "name": "dyn_state.dofs.pos",
+          "different_values": 47,
+          "maximum_absolute_difference": 6.669131014103158e-07
+        },
+        {
+          "name": "dyn_state.dofs.vel",
+          "different_values": 104,
+          "maximum_absolute_difference": 9.101662599819704e-06
+        },
+        {
+          "name": "dyn_state.dofs.acc",
+          "different_values": 115,
+          "maximum_absolute_difference": 0.00018743395366271898
+        },
+        {
+          "name": "dyn_state.dofs.acc_smooth",
+          "different_values": 102,
+          "maximum_absolute_difference": 1.5942372737498545e-06
+        },
+        {
+          "name": "dyn_state.dofs.qf_smooth",
+          "different_values": 68,
+          "maximum_absolute_difference": 7.185409714364317e-11
+        },
+        {
+          "name": "dyn_state.dofs.qf_constraint",
+          "different_values": 83,
+          "maximum_absolute_difference": 4.3465740728887425e-08
+        },
+        {
+          "name": "dyn_state.dofs.cdof_ang",
+          "different_values": 67,
+          "maximum_absolute_difference": 6.370750308959394e-07
+        },
+        {
+          "name": "dyn_state.dofs.cdof_vel",
+          "different_values": 69,
+          "maximum_absolute_difference": 1.0422701964734118e-09
+        },
+        {
+          "name": "dyn_state.dofs.cdofd_ang",
+          "different_values": 113,
+          "maximum_absolute_difference": 1.1090652364653783e-17
+        },
+        {
+          "name": "dyn_state.dofs.cdofd_vel",
+          "different_values": 227,
+          "maximum_absolute_difference": 1.8624021922743206e-07
+        },
+        {
+          "name": "dyn_state.dofs.f_vel",
+          "different_values": 64,
+          "maximum_absolute_difference": 5.929111484584643e-12
+        },
+        {
+          "name": "dyn_state.dofs.f_ang",
+          "different_values": 76,
+          "maximum_absolute_difference": 1.4384567442279786e-12
+        }
+      ]
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-first-contact-state-v1/group0/rigid/step108.npz",
+      "bytes": 5059631,
+      "sha256": "a102bcaa304140fdaa66c58cb1a63571e9e7cc6e8a3f9b61f47ad3f5e3773351"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-first-contact-state-v1/group0/dpr/step108.npz",
+      "bytes": 5060443,
+      "sha256": "2a4e735114928889ee947b5e743b85c47110d8c88c7cdbf1e2d1ed4f99b247b0"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-first-contact-state-v1/group0/rigid/step109.npz",
+      "bytes": 5060305,
+      "sha256": "eb885d19f7da86432aa735b4e819879bf795d98beea1938be335f6b39ec99db0"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-first-contact-state-v1/group0/dpr/step109.npz",
+      "bytes": 5061192,
+      "sha256": "4fa07e02314d605efc31f157dc74a11b2c2bfd46ca82b7fd5b1c428c20069024"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-first-contact-state-v1/group0/rigid/step110.npz",
+      "bytes": 5060807,
+      "sha256": "003f89ee42e72c18abb16ca4fc7a60b3d962a68fe8b7d542a911a93b4e7f8c74"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-first-contact-state-v1/group0/dpr/step110.npz",
+      "bytes": 5061701,
+      "sha256": "11c237d02dad5a9bad86ff75c6e60ae3962e1e884f9cbd485e70415c2b9647a2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-first-contact-state-v1/group0/rigid/step120.npz",
+      "bytes": 5070269,
+      "sha256": "2f0433b0f8c6b2d2dae6935dadd366d6d32957ca3f7bd5ddc2600fbda70a2d86"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-first-contact-state-v1/group0/dpr/step120.npz",
+      "bytes": 5071437,
+      "sha256": "bce1371d403cfb7cbc6b23bca6005dbf154fd73b3e54109ad33d1f68218070f0"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-first-contact-state-v1/group0/rigid/step1200.npz",
+      "bytes": 5103546,
+      "sha256": "49aca9eff3f490b2f1306d2e8d92522c44c06e2287b7510ecb9cfd9582e05c42"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-first-contact-state-v1/group0/dpr/step1200.npz",
+      "bytes": 5105122,
+      "sha256": "fc7f88a420fa8dfe26da4f833fbc110288fd375544ae61ca15a06f8519cdca4b"
+    }
+  ],
+  "scope": "Complete active contacts in the solver's sorted order, excluding inactive buffer contents. Position/normal/penetration precede the same step's constraint response; force and dynamics follow it. This locates observed differences without declaring a global causal proof or relaxing motion criteria."
+}

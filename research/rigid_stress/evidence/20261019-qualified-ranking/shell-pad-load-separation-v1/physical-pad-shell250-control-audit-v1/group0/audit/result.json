@@ -1,0 +1,1297 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-255",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729114",
+      "SLURM_ARRAY_JOB_ID": "729114",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "passed": true,
+  "checks": {
+    "q9-q25/0.1/continuous-static-replay/0/tangent": true,
+    "q9-q25/0.1/continuous-static-replay/0/membrane": true,
+    "q9-q25/0.1/continuous-static-replay/0/bending": true,
+    "q9-q25/0.1/continuous-static-replay/0/outer_tangent": true,
+    "q9-q25/0.1/continuous-static-replay/0/inner_tangent": true,
+    "q9-q25/0.1/continuous-static-replay/1/tangent": true,
+    "q9-q25/0.1/continuous-static-replay/1/membrane": true,
+    "q9-q25/0.1/continuous-static-replay/1/bending": true,
+    "q9-q25/0.1/continuous-static-replay/1/outer_tangent": true,
+    "q9-q25/0.1/continuous-static-replay/1/inner_tangent": true,
+    "q9-q25/0.1/continuous-static-replay/2/tangent": true,
+    "q9-q25/0.1/continuous-static-replay/2/membrane": true,
+    "q9-q25/0.1/continuous-static-replay/2/bending": true,
+    "q9-q25/0.1/continuous-static-replay/2/outer_tangent": true,
+    "q9-q25/0.1/continuous-static-replay/2/inner_tangent": true,
+    "q9-q25/0.1/continuous-replay-solid/0/tangent": true,
+    "q9-q25/0.1/continuous-replay-solid/0/membrane": true,
+    "q9-q25/0.1/continuous-replay-solid/0/bending": true,
+    "q9-q25/0.1/continuous-replay-solid/0/outer_tangent": true,
+    "q9-q25/0.1/continuous-replay-solid/0/inner_tangent": true,
+    "q9-q25/0.1/continuous-replay-solid/1/tangent": true,
+    "q9-q25/0.1/continuous-replay-solid/1/membrane": true,
+    "q9-q25/0.1/continuous-replay-solid/1/bending": true,
+    "q9-q25/0.1/continuous-replay-solid/1/outer_tangent": true,
+    "q9-q25/0.1/continuous-replay-solid/1/inner_tangent": true,
+    "continuous-vs-static/0.1/tangent": true,
+    "continuous-vs-static/0.1/membrane": true,
+    "continuous-vs-static/0.1/bending": true,
+    "continuous-vs-static/0.1/outer_tangent": true,
+    "continuous-vs-static/0.1/inner_tangent": true,
+    "continuous-vs-static/0.1/raw_mises_relative_change": true,
+    "continuous-vs-static/0.1/raw_tension_relative_change": true,
+    "shared-continuous-replay/0.1/tangent": true,
+    "shared-continuous-replay/0.1/membrane": true,
+    "shared-continuous-replay/0.1/bending": true,
+    "shared-continuous-replay/0.1/outer_tangent": true,
+    "shared-continuous-replay/0.1/inner_tangent": true,
+    "full-resultant-array/0.1/continuous-static-replay/membrane": true,
+    "full-resultant-array/0.1/continuous-replay-solid/membrane": true,
+    "full-resultant-array/0.1/continuous-static-replay/bending": true,
+    "full-resultant-array/0.1/continuous-replay-solid/bending": true,
+    "q9-q25/0.3/continuous-static-replay/0/tangent": true,
+    "q9-q25/0.3/continuous-static-replay/0/membrane": true,
+    "q9-q25/0.3/continuous-static-replay/0/bending": true,
+    "q9-q25/0.3/continuous-static-replay/0/outer_tangent": true,
+    "q9-q25/0.3/continuous-static-replay/0/inner_tangent": true,
+    "q9-q25/0.3/continuous-static-replay/1/tangent": true,
+    "q9-q25/0.3/continuous-static-replay/1/membrane": true,
+    "q9-q25/0.3/continuous-static-replay/1/bending": true,
+    "q9-q25/0.3/continuous-static-replay/1/outer_tangent": true,
+    "q9-q25/0.3/continuous-static-replay/1/inner_tangent": true,
+    "q9-q25/0.3/continuous-static-replay/2/tangent": true,
+    "q9-q25/0.3/continuous-static-replay/2/membrane": true,
+    "q9-q25/0.3/continuous-static-replay/2/bending": true,
+    "q9-q25/0.3/continuous-static-replay/2/outer_tangent": true,
+    "q9-q25/0.3/continuous-static-replay/2/inner_tangent": true,
+    "q9-q25/0.3/continuous-replay-solid/0/tangent": true,
+    "q9-q25/0.3/continuous-replay-solid/0/membrane": true,
+    "q9-q25/0.3/continuous-replay-solid/0/bending": true,
+    "q9-q25/0.3/continuous-replay-solid/0/outer_tangent": true,
+    "q9-q25/0.3/continuous-replay-solid/0/inner_tangent": true,
+    "q9-q25/0.3/continuous-replay-solid/1/tangent": true,
+    "q9-q25/0.3/continuous-replay-solid/1/membrane": true,
+    "q9-q25/0.3/continuous-replay-solid/1/bending": true,
+    "q9-q25/0.3/continuous-replay-solid/1/outer_tangent": true,
+    "q9-q25/0.3/continuous-replay-solid/1/inner_tangent": true,
+    "continuous-vs-static/0.3/tangent": true,
+    "continuous-vs-static/0.3/membrane": true,
+    "continuous-vs-static/0.3/bending": true,
+    "continuous-vs-static/0.3/outer_tangent": true,
+    "continuous-vs-static/0.3/inner_tangent": true,
+    "continuous-vs-static/0.3/raw_mises_relative_change": true,
+    "continuous-vs-static/0.3/raw_tension_relative_change": true,
+    "shared-continuous-replay/0.3/tangent": true,
+    "shared-continuous-replay/0.3/membrane": true,
+    "shared-continuous-replay/0.3/bending": true,
+    "shared-continuous-replay/0.3/outer_tangent": true,
+    "shared-continuous-replay/0.3/inner_tangent": true,
+    "full-resultant-array/0.3/continuous-static-replay/membrane": true,
+    "full-resultant-array/0.3/continuous-replay-solid/membrane": true,
+    "full-resultant-array/0.3/continuous-static-replay/bending": true,
+    "full-resultant-array/0.3/continuous-replay-solid/bending": true,
+    "q9-q25/1.0/continuous-static-replay/0/tangent": true,
+    "q9-q25/1.0/continuous-static-replay/0/membrane": true,
+    "q9-q25/1.0/continuous-static-replay/0/bending": true,
+    "q9-q25/1.0/continuous-static-replay/0/outer_tangent": true,
+    "q9-q25/1.0/continuous-static-replay/0/inner_tangent": true,
+    "q9-q25/1.0/continuous-static-replay/1/tangent": true,
+    "q9-q25/1.0/continuous-static-replay/1/membrane": true,
+    "q9-q25/1.0/continuous-static-replay/1/bending": true,
+    "q9-q25/1.0/continuous-static-replay/1/outer_tangent": true,
+    "q9-q25/1.0/continuous-static-replay/1/inner_tangent": true,
+    "q9-q25/1.0/continuous-static-replay/2/tangent": true,
+    "q9-q25/1.0/continuous-static-replay/2/membrane": true,
+    "q9-q25/1.0/continuous-static-replay/2/bending": true,
+    "q9-q25/1.0/continuous-static-replay/2/outer_tangent": true,
+    "q9-q25/1.0/continuous-static-replay/2/inner_tangent": true,
+    "q9-q25/1.0/continuous-replay-solid/0/tangent": true,
+    "q9-q25/1.0/continuous-replay-solid/0/membrane": true,
+    "q9-q25/1.0/continuous-replay-solid/0/bending": true,
+    "q9-q25/1.0/continuous-replay-solid/0/outer_tangent": true,
+    "q9-q25/1.0/continuous-replay-solid/0/inner_tangent": true,
+    "q9-q25/1.0/continuous-replay-solid/1/tangent": true,
+    "q9-q25/1.0/continuous-replay-solid/1/membrane": true,
+    "q9-q25/1.0/continuous-replay-solid/1/bending": true,
+    "q9-q25/1.0/continuous-replay-solid/1/outer_tangent": true,
+    "q9-q25/1.0/continuous-replay-solid/1/inner_tangent": true,
+    "continuous-vs-static/1.0/tangent": true,
+    "continuous-vs-static/1.0/membrane": true,
+    "continuous-vs-static/1.0/bending": true,
+    "continuous-vs-static/1.0/outer_tangent": true,
+    "continuous-vs-static/1.0/inner_tangent": true,
+    "continuous-vs-static/1.0/raw_mises_relative_change": true,
+    "continuous-vs-static/1.0/raw_tension_relative_change": true,
+    "shared-continuous-replay/1.0/tangent": true,
+    "shared-continuous-replay/1.0/membrane": true,
+    "shared-continuous-replay/1.0/bending": true,
+    "shared-continuous-replay/1.0/outer_tangent": true,
+    "shared-continuous-replay/1.0/inner_tangent": true,
+    "full-resultant-array/1.0/continuous-static-replay/membrane": true,
+    "full-resultant-array/1.0/continuous-replay-solid/membrane": true,
+    "full-resultant-array/1.0/continuous-static-replay/bending": true,
+    "full-resultant-array/1.0/continuous-replay-solid/bending": true,
+    "old-new/replay/9/tangent": true,
+    "old-new/replay/9/membrane": true,
+    "old-new/replay/9/bending": true,
+    "old-new/replay/9/outer_tangent": true,
+    "old-new/replay/9/inner_tangent": true,
+    "old-new/replay/9/raw_mises_relative_change": true,
+    "old-new/replay/9/raw_tension_relative_change": true,
+    "old-new/replay/25/tangent": true,
+    "old-new/replay/25/membrane": true,
+    "old-new/replay/25/bending": true,
+    "old-new/replay/25/outer_tangent": true,
+    "old-new/replay/25/inner_tangent": true,
+    "old-new/replay/25/raw_mises_relative_change": true,
+    "old-new/replay/25/raw_tension_relative_change": true,
+    "old-new/solved-pad/9/tangent": true,
+    "old-new/solved-pad/9/membrane": true,
+    "old-new/solved-pad/9/bending": true,
+    "old-new/solved-pad/9/outer_tangent": true,
+    "old-new/solved-pad/9/inner_tangent": true,
+    "old-new/solved-pad/9/raw_mises_relative_change": true,
+    "old-new/solved-pad/9/raw_tension_relative_change": true,
+    "old-new/solved-pad/25/tangent": true,
+    "old-new/solved-pad/25/membrane": true,
+    "old-new/solved-pad/25/bending": true,
+    "old-new/solved-pad/25/outer_tangent": true,
+    "old-new/solved-pad/25/inner_tangent": true,
+    "old-new/solved-pad/25/raw_mises_relative_change": true,
+    "old-new/solved-pad/25/raw_tension_relative_change": true
+  },
+  "rows": [
+    {
+      "load_n": 0.1,
+      "family": "continuous-static-replay",
+      "adjacent_pair": 0,
+      "tangent_relative_l2": 3.797554038694504e-08,
+      "tangent_rms_error_pa": 0.0003485978618420204,
+      "outer_tangent_relative_l2": 4.320464132335014e-08,
+      "outer_tangent_rms_error_pa": 0.0005596753763136256,
+      "inner_tangent_relative_l2": 4.2287675974513464e-08,
+      "inner_tangent_rms_error_pa": 0.0004898688673692462,
+      "membrane_relative_l2": 2.8857258037690956e-08,
+      "bending_relative_l2": 4.846063141970402e-08,
+      "membrane_rms_error_n_per_m": 1.0351351959641146e-07,
+      "bending_rms_error_n": 2.0144608377611176e-11,
+      "raw_mises_relative_change": 1.341673749877259e-08,
+      "raw_tension_relative_change": 9.009801127390915e-09
+    },
+    {
+      "load_n": 0.1,
+      "family": "continuous-static-replay",
+      "adjacent_pair": 1,
+      "tangent_relative_l2": 0.00013895465721091625,
+      "tangent_rms_error_pa": 1.275445978800822,
+      "outer_tangent_relative_l2": 0.0001698612830365944,
+      "outer_tangent_rms_error_pa": 2.200168442700343,
+      "inner_tangent_relative_l2": 0.00018655957943611952,
+      "inner_tangent_rms_error_pa": 2.1608945964689226,
+      "membrane_relative_l2": 3.6520577183310386e-05,
+      "bending_relative_l2": 0.00021702374637910668,
+      "membrane_rms_error_n_per_m": 0.0001309994791996637,
+      "bending_rms_error_n": 9.02009702773441e-08,
+      "raw_mises_relative_change": 0.0003057538004516136,
+      "raw_tension_relative_change": 0.000508078950726798
+    },
+    {
+      "load_n": 0.1,
+      "family": "continuous-static-replay",
+      "adjacent_pair": 2,
+      "tangent_relative_l2": 0.25966337263203854,
+      "tangent_rms_error_pa": 2372.709622269554,
+      "outer_tangent_relative_l2": 0.31896225013605234,
+      "outer_tangent_rms_error_pa": 4082.672935351256,
+      "inner_tangent_relative_l2": 0.3518132434399906,
+      "inner_tangent_rms_error_pa": 4082.441385620498,
+      "membrane_relative_l2": 0.058932427173024986,
+      "bending_relative_l2": 0.4181853567320424,
+      "membrane_rms_error_n_per_m": 0.2145218623514627,
+      "bending_rms_error_n": 0.00016784331058270266,
+      "raw_mises_relative_change": 0.012678982650417447,
+      "raw_tension_relative_change": 0.13768327236629707
+    },
+    {
+      "load_n": 0.1,
+      "family": "continuous-replay-solid",
+      "adjacent_pair": 0,
+      "tangent_relative_l2": 0.00013895207900442946,
+      "tangent_rms_error_pa": 1.2754223137926666,
+      "outer_tangent_relative_l2": 0.000169858127484725,
+      "outer_tangent_rms_error_pa": 2.20012756966843,
+      "inner_tangent_relative_l2": 0.0001865560960890605,
+      "inner_tangent_rms_error_pa": 2.1608542493269525,
+      "membrane_relative_l2": 3.6519980576514505e-05,
+      "bending_relative_l2": 0.0002170196973631526,
+      "membrane_rms_error_n_per_m": 0.00013099733916832861,
+      "bending_rms_error_n": 9.019928739621326e-08,
+      "raw_mises_relative_change": 0.0003057672212911644,
+      "raw_tension_relative_change": 0.000508069936347999
+    },
+    {
+      "load_n": 0.1,
+      "family": "continuous-replay-solid",
+      "adjacent_pair": 1,
+      "tangent_relative_l2": 0.25966337263203854,
+      "tangent_rms_error_pa": 2372.709622269554,
+      "outer_tangent_relative_l2": 0.31896225013605234,
+      "outer_tangent_rms_error_pa": 4082.672935351256,
+      "inner_tangent_relative_l2": 0.3518132434399906,
+      "inner_tangent_rms_error_pa": 4082.441385620498,
+      "membrane_relative_l2": 0.058932427173024986,
+      "bending_relative_l2": 0.4181853567320424,
+      "membrane_rms_error_n_per_m": 0.2145218623514627,
+      "bending_rms_error_n": 0.00016784331058270266,
+      "raw_mises_relative_change": 0.012678982650417447,
+      "raw_tension_relative_change": 0.13768327236629707
+    },
+    {
+      "load_n": 0.3,
+      "family": "continuous-static-replay",
+      "adjacent_pair": 0,
+      "tangent_relative_l2": 4.263127869622629e-09,
+      "tangent_rms_error_pa": 0.00011445956963281037,
+      "outer_tangent_relative_l2": 5.171540566854308e-09,
+      "outer_tangent_rms_error_pa": 0.00019399491700464752,
+      "inner_tangent_relative_l2": 5.601187498836174e-09,
+      "inner_tangent_rms_error_pa": 0.00018702208447692555,
+      "membrane_relative_l2": 1.828361921893408e-09,
+      "bending_relative_l2": 6.570175147282353e-09,
+      "membrane_rms_error_n_per_m": 1.9504815982895886e-08,
+      "bending_rms_error_n": 7.771016817806093e-12,
+      "raw_mises_relative_change": 6.11473816025665e-09,
+      "raw_tension_relative_change": 1.2972377949616032e-08
+    },
+    {
+      "load_n": 0.3,
+      "family": "continuous-static-replay",
+      "adjacent_pair": 1,
+      "tangent_relative_l2": 0.00016828135254722288,
+      "tangent_rms_error_pa": 4.517739286126555,
+      "outer_tangent_relative_l2": 0.00020759572228630136,
+      "outer_tangent_rms_error_pa": 7.786360233571415,
+      "inner_tangent_relative_l2": 0.00022834219683074645,
+      "inner_tangent_rms_error_pa": 7.6232050599778365,
+      "membrane_relative_l2": 4.7287510608955396e-05,
+      "bending_relative_l2": 0.0002691535356792767,
+      "membrane_rms_error_n_per_m": 0.0005044443302335788,
+      "bending_rms_error_n": 3.1828662999322504e-07,
+      "raw_mises_relative_change": 0.00036586161969331954,
+      "raw_tension_relative_change": 0.0006222296976490238
+    },
+    {
+      "load_n": 0.3,
+      "family": "continuous-static-replay",
+      "adjacent_pair": 2,
+      "tangent_relative_l2": 0.2519118088258583,
+      "tangent_rms_error_pa": 6731.5191110978885,
+      "outer_tangent_relative_l2": 0.31255863410681906,
+      "outer_tangent_rms_error_pa": 11572.868824071747,
+      "inner_tangent_relative_l2": 0.34636307944366995,
+      "inner_tangent_rms_error_pa": 11574.36950533565,
+      "membrane_relative_l2": 0.05759310377330985,
+      "bending_relative_l2": 0.417418596136846,
+      "membrane_rms_error_n_per_m": 0.6229226614419895,
+      "bending_rms_error_n": 0.000475852771896536,
+      "raw_mises_relative_change": 0.011459756739762739,
+      "raw_tension_relative_change": 0.14239613116636374
+    },
+    {
+      "load_n": 0.3,
+      "family": "continuous-replay-solid",
+      "adjacent_pair": 0,
+      "tangent_relative_l2": 0.00016827793508411852,
+      "tangent_rms_error_pa": 4.517647539732247,
+      "outer_tangent_relative_l2": 0.00020759149634118844,
+      "outer_tangent_rms_error_pa": 7.786201729674446,
+      "inner_tangent_relative_l2": 0.00022833749763388544,
+      "inner_tangent_rms_error_pa": 7.623048177273782,
+      "membrane_relative_l2": 4.72867593045427e-05,
+      "bending_relative_l2": 0.0002691480057563767,
+      "membrane_rms_error_n_per_m": 0.000504436315617322,
+      "bending_rms_error_n": 3.182800906010542e-07,
+      "raw_mises_relative_change": 0.00036585550271794887,
+      "raw_tension_relative_change": 0.0006222167171994197
+    },
+    {
+      "load_n": 0.3,
+      "family": "continuous-replay-solid",
+      "adjacent_pair": 1,
+      "tangent_relative_l2": 0.2519118088258583,
+      "tangent_rms_error_pa": 6731.5191110978885,
+      "outer_tangent_relative_l2": 0.31255863410681906,
+      "outer_tangent_rms_error_pa": 11572.868824071747,
+      "inner_tangent_relative_l2": 0.34636307944366995,
+      "inner_tangent_rms_error_pa": 11574.36950533565,
+      "membrane_relative_l2": 0.05759310377330985,
+      "bending_relative_l2": 0.417418596136846,
+      "membrane_rms_error_n_per_m": 0.6229226614419895,
+      "bending_rms_error_n": 0.000475852771896536,
+      "raw_mises_relative_change": 0.011459756739762739,
+      "raw_tension_relative_change": 0.14239613116636374
+    },
+    {
+      "load_n": 1.0,
+      "family": "continuous-static-replay",
+      "adjacent_pair": 0,
+      "tangent_relative_l2": 3.6591683769673054e-09,
+      "tangent_rms_error_pa": 0.0003153207459593255,
+      "outer_tangent_relative_l2": 4.415616343499698e-09,
+      "outer_tangent_rms_error_pa": 0.0005234358717027606,
+      "inner_tangent_relative_l2": 4.829599591137392e-09,
+      "inner_tangent_rms_error_pa": 0.0005060359645127654,
+      "membrane_relative_l2": 1.8202961647773273e-09,
+      "bending_relative_l2": 5.722158761798698e-09,
+      "membrane_rms_error_n_per_m": 6.383316139066191e-08,
+      "bending_rms_error_n": 2.078035198734057e-11,
+      "raw_mises_relative_change": 4.192917457679357e-09,
+      "raw_tension_relative_change": 1.0010101747504052e-08
+    },
+    {
+      "load_n": 1.0,
+      "family": "continuous-static-replay",
+      "adjacent_pair": 1,
+      "tangent_relative_l2": 0.0002120064321385208,
+      "tangent_rms_error_pa": 18.267158792270973,
+      "outer_tangent_relative_l2": 0.00026520266400690217,
+      "outer_tangent_rms_error_pa": 31.432658620557643,
+      "inner_tangent_relative_l2": 0.00029222690247875365,
+      "inner_tangent_rms_error_pa": 30.61348525589866,
+      "membrane_relative_l2": 6.508703639562331e-05,
+      "bending_relative_l2": 0.00035218833912141636,
+      "membrane_rms_error_n_per_m": 0.002282345009543583,
+      "bending_rms_error_n": 1.278672786555341e-06,
+      "raw_mises_relative_change": 0.0004551449110559158,
+      "raw_tension_relative_change": 0.0007792302442155563
+    },
+    {
+      "load_n": 1.0,
+      "family": "continuous-static-replay",
+      "adjacent_pair": 2,
+      "tangent_relative_l2": 0.23985356631616364,
+      "tangent_rms_error_pa": 20557.84473593962,
+      "outer_tangent_relative_l2": 0.3023505940577917,
+      "outer_tangent_rms_error_pa": 35302.37706417232,
+      "inner_tangent_relative_l2": 0.33730530101513156,
+      "inner_tangent_rms_error_pa": 35304.99306693956,
+      "membrane_relative_l2": 0.05551286848270483,
+      "bending_relative_l2": 0.41616438865107463,
+      "membrane_rms_error_n_per_m": 1.9704697063467493,
+      "bending_rms_error_n": 0.0014516308938313598,
+      "raw_mises_relative_change": 0.00895642963616905,
+      "raw_tension_relative_change": 0.15174221680713407
+    },
+    {
+      "load_n": 1.0,
+      "family": "continuous-replay-solid",
+      "adjacent_pair": 0,
+      "tangent_relative_l2": 0.00021200434175351566,
+      "tangent_rms_error_pa": 18.266978677948778,
+      "outer_tangent_relative_l2": 0.00026519988605515013,
+      "outer_tangent_rms_error_pa": 31.43232936892884,
+      "inner_tangent_relative_l2": 0.0002922234643422342,
+      "inner_tangent_rms_error_pa": 30.61312507912933,
+      "membrane_relative_l2": 6.50882654927204e-05,
+      "bending_relative_l2": 0.00035218419509915175,
+      "membrane_rms_error_n_per_m": 0.0022823881091188765,
+      "bending_rms_error_n": 1.2786577410586336e-06,
+      "raw_mises_relative_change": 0.0004551407162300958,
+      "raw_tension_relative_change": 0.0007792202263134929
+    },
+    {
+      "load_n": 1.0,
+      "family": "continuous-replay-solid",
+      "adjacent_pair": 1,
+      "tangent_relative_l2": 0.23985356631616364,
+      "tangent_rms_error_pa": 20557.84473593962,
+      "outer_tangent_relative_l2": 0.3023505940577917,
+      "outer_tangent_rms_error_pa": 35302.37706417232,
+      "inner_tangent_relative_l2": 0.33730530101513156,
+      "inner_tangent_rms_error_pa": 35304.99306693956,
+      "membrane_relative_l2": 0.05551286848270483,
+      "bending_relative_l2": 0.41616438865107463,
+      "membrane_rms_error_n_per_m": 1.9704697063467493,
+      "bending_rms_error_n": 0.0014516308938313598,
+      "raw_mises_relative_change": 0.00895642963616905,
+      "raw_tension_relative_change": 0.15174221680713407
+    }
+  ],
+  "signed_decompositions": [
+    {
+      "load_n": 0.1,
+      "family": "continuous-static-replay",
+      "decomposition": {
+        "metrics": {
+          "tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 0.00034859786184202046,
+            "second_difference_rms": 1.275445978800822,
+            "total_difference_rms": 1.2754223137926664,
+            "reference_rms": 9178.864562019324,
+            "first_relative_l2": 3.797832068298107e-08,
+            "second_relative_l2": 0.00013895465721091625,
+            "total_relative_l2": 0.0001389520790044294,
+            "twice_cross_mean_square": -6.048783941682786e-05,
+            "cross_correlation": -0.06802229626116892,
+            "identity_relative_defect": 1.3097205703855844e-16,
+            "zero_reference_norm": false
+          },
+          "membrane": {
+            "unit": "N/m",
+            "first_difference_rms": 1.0351351959634551e-07,
+            "second_difference_rms": 0.0001309994791996636,
+            "total_difference_rms": 0.00013099733916832886,
+            "reference_rms": 3.587004623232773,
+            "first_relative_l2": 2.8857927566052143e-08,
+            "second_relative_l2": 3.652057718331036e-05,
+            "total_relative_l2": 3.651998057651458e-05,
+            "twice_cross_mean_square": -5.713964496557872e-13,
+            "cross_correlation": -0.021068853213404525,
+            "identity_relative_defect": 4.4212991547557635e-16,
+            "zero_reference_norm": false
+          },
+          "bending": {
+            "unit": "N",
+            "first_difference_rms": 2.014460837784061e-11,
+            "second_difference_rms": 9.020097027734422e-08,
+            "total_difference_rms": 9.019928739621326e-08,
+            "reference_rms": 0.0004156271918731743,
+            "first_relative_l2": 4.846797507894429e-08,
+            "second_relative_l2": 0.00021702374637910698,
+            "total_relative_l2": 0.00021701969736315265,
+            "twice_cross_mean_square": -3.0399799491291494e-19,
+            "cross_correlation": -0.0836509129978284,
+            "identity_relative_defect": 4.792174608063793e-16,
+            "zero_reference_norm": false
+          },
+          "outer_tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 0.0005596753763136256,
+            "second_difference_rms": 2.200168442700343,
+            "total_difference_rms": 2.20012756966843,
+            "reference_rms": 12952.736511629582,
+            "first_relative_l2": 4.3209045116537524e-08,
+            "second_relative_l2": 0.0001698612830365944,
+            "total_relative_l2": 0.000169858127484725,
+            "twice_cross_mean_square": -0.00018016667586237932,
+            "cross_correlation": -0.07315640219387316,
+            "identity_relative_defect": 4.694254541344441e-16,
+            "zero_reference_norm": false
+          },
+          "inner_tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 0.0004898688673692462,
+            "second_difference_rms": 2.1608945964689226,
+            "total_difference_rms": 2.1608542493269525,
+            "reference_rms": 11582.865929480946,
+            "first_relative_l2": 4.2292544034583184e-08,
+            "second_relative_l2": 0.00018655957943611952,
+            "total_relative_l2": 0.0001865560960890605,
+            "twice_cross_mean_square": -0.00017461018574971846,
+            "cross_correlation": -0.08247572759588657,
+            "identity_relative_defect": 1.7202041645133286e-16,
+            "zero_reference_norm": false
+          }
+        },
+        "passed_tensor_identity": true,
+        "scope": "Pointwise signed tensors satisfy (field0-field2)=(field0-field1)+(field1-field2). All three differences and their signed cross product are integrated directly on one union of material partitions and the full reference volume/area. The squared total equals the two squared contributions plus twice their cross product; their RMS magnitudes are not additive error budgets. All relative values use the same fine-reference norm, with null relative values at an exactly zero reference and no arbitrary floor. Assigning physical meaning to each difference requires the separately verified field sources and admissions.",
+        "field_indices": [
+          0,
+          1,
+          2
+        ],
+        "physical_volume_reference": {
+          "mesh": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+            "bytes": 2554948,
+            "sha256": "fe33c17f40a9f0b9333339a3f33bc9942ac34dc05c7077da5ae8c085f3dd7164"
+          },
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-0.1.npz",
+            "bytes": 69587001,
+            "sha256": "1fb0edfe7f6d969a4de6845acd548566ee209ca32bb5d582a987a42081ca9b81"
+          },
+          "raw_maximum_mises_pa": 193809.01201389058,
+          "raw_maximum_tension_pa": 114127.34687644149,
+          "raw_peak_position_m": [
+            -0.00010839852273131268,
+            6.699397137822932e-05,
+            -0.03
+          ],
+          "raw_mises_peak_position_m": [
+            -0.00010839852273131268,
+            6.699397137822932e-05,
+            -0.03
+          ],
+          "raw_tension_peak_position_m": [
+            -0.00010839852273131268,
+            -6.699397137822932e-05,
+            -0.0295
+          ]
+        }
+      }
+    },
+    {
+      "load_n": 0.1,
+      "family": "continuous-replay-solid",
+      "decomposition": {
+        "metrics": {
+          "tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 1.2754223137926664,
+            "second_difference_rms": 2372.7096222695536,
+            "total_difference_rms": 2372.9761986281287,
+            "reference_rms": 9137.636926682966,
+            "first_relative_l2": 0.00013957900976217214,
+            "second_relative_l2": 0.2596633726320385,
+            "total_relative_l2": 0.2596925460781618,
+            "twice_cross_mean_square": 1263.4609429973739,
+            "cross_correlation": 0.20875323928676223,
+            "identity_relative_defect": 2.4728936140143752e-17,
+            "zero_reference_norm": false
+          },
+          "membrane": {
+            "unit": "N/m",
+            "first_difference_rms": 0.00013099733916832886,
+            "second_difference_rms": 0.2145218623514627,
+            "total_difference_rms": 0.21447125514462761,
+            "reference_rms": 3.6401328206223167,
+            "first_relative_l2": 3.5986966856317506e-05,
+            "second_relative_l2": 0.05893242717302498,
+            "total_relative_l2": 0.0589185246015176,
+            "twice_cross_mean_square": -2.1727303730784827e-05,
+            "cross_correlation": -0.3865821587600701,
+            "identity_relative_defect": 3.339199677297532e-16,
+            "zero_reference_norm": false
+          },
+          "bending": {
+            "unit": "N",
+            "first_difference_rms": 9.019928739621326e-08,
+            "second_difference_rms": 0.0001678433105827027,
+            "total_difference_rms": 0.00016786418906062983,
+            "reference_rms": 0.0004013610421329277,
+            "first_relative_l2": 0.00022473353895254225,
+            "second_relative_l2": 0.41818535673204243,
+            "total_relative_l2": 0.41823737592607324,
+            "twice_cross_mean_square": 7.0009257098029195e-12,
+            "cross_correlation": 0.23121623758746862,
+            "identity_relative_defect": 4.488235451455811e-16,
+            "zero_reference_norm": false
+          },
+          "outer_tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 2.20012756966843,
+            "second_difference_rms": 4082.672935351256,
+            "total_difference_rms": 4083.123961332434,
+            "reference_rms": 12799.862471530112,
+            "first_relative_l2": 0.0001718868132030347,
+            "second_relative_l2": 0.31896225013605234,
+            "total_relative_l2": 0.31899748691943036,
+            "twice_cross_mean_square": 3678.1459960955954,
+            "cross_correlation": 0.20474179900282297,
+            "identity_relative_defect": 2.8567116423624085e-16,
+            "zero_reference_norm": false
+          },
+          "inner_tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 2.1608542493269525,
+            "second_difference_rms": 4082.441385620498,
+            "total_difference_rms": 4082.8787927011576,
+            "reference_rms": 11604.0014460594,
+            "first_relative_l2": 0.0001862163030030263,
+            "second_relative_l2": 0.3518132434399906,
+            "total_relative_l2": 0.35185093794414013,
+            "twice_cross_mean_square": 3566.899570764358,
+            "cross_correlation": 0.20216941453249018,
+            "identity_relative_defect": 3.208830218934323e-17,
+            "zero_reference_norm": false
+          }
+        },
+        "passed_tensor_identity": true,
+        "scope": "Pointwise signed tensors satisfy (field0-field2)=(field0-field1)+(field1-field2). All three differences and their signed cross product are integrated directly on one union of material partitions and the full reference volume/area. The squared total equals the two squared contributions plus twice their cross product; their RMS magnitudes are not additive error budgets. All relative values use the same fine-reference norm, with null relative values at an exactly zero reference and no arbitrary floor. Assigning physical meaning to each difference requires the separately verified field sources and admissions."
+      }
+    },
+    {
+      "load_n": 0.3,
+      "family": "continuous-static-replay",
+      "decomposition": {
+        "metrics": {
+          "tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 0.0001144595696328104,
+            "second_difference_rms": 4.517739286126555,
+            "total_difference_rms": 4.5176475397322475,
+            "reference_rms": 26846.345229242157,
+            "first_relative_l2": 4.2635065836870885e-09,
+            "second_relative_l2": 0.00016828135254722288,
+            "total_relative_l2": 0.00016827793508411852,
+            "twice_cross_mean_square": -0.0008289772634442796,
+            "cross_correlation": -0.8015661159494303,
+            "identity_relative_defect": 1.2992759521664146e-16,
+            "zero_reference_norm": false
+          },
+          "membrane": {
+            "unit": "N/m",
+            "first_difference_rms": 1.950481598383516e-08,
+            "second_difference_rms": 0.0005044443302335747,
+            "total_difference_rms": 0.000504436315617319,
+            "reference_rms": 10.667601735373362,
+            "first_relative_l2": 1.8284162145984445e-09,
+            "second_relative_l2": 4.728751060895501e-05,
+            "total_relative_l2": 4.7286759304542406e-05,
+            "twice_cross_mean_square": -8.086171662039147e-12,
+            "cross_correlation": -0.4109205480403281,
+            "identity_relative_defect": 9.527035589637838e-17,
+            "zero_reference_norm": false
+          },
+          "bending": {
+            "unit": "N",
+            "first_difference_rms": 7.77101681756077e-12,
+            "second_difference_rms": 3.182866299932252e-07,
+            "total_difference_rms": 3.1828009060105423e-07,
+            "reference_rms": 0.0011825467170250934,
+            "first_relative_l2": 6.571424795047544e-09,
+            "second_relative_l2": 0.00026915353567927687,
+            "total_relative_l2": 0.0002691480057563767,
+            "twice_cross_mean_square": -4.162819817645289e-18,
+            "cross_correlation": -0.8415140530342154,
+            "identity_relative_defect": 1.4337956897434952e-17,
+            "zero_reference_norm": false
+          },
+          "outer_tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 0.00019399491700464752,
+            "second_difference_rms": 7.786360233571415,
+            "total_difference_rms": 7.786201729674446,
+            "reference_rms": 37507.325044169345,
+            "first_relative_l2": 5.1721874800774345e-09,
+            "second_relative_l2": 0.00020759572228630136,
+            "total_relative_l2": 0.00020759149634118844,
+            "twice_cross_mean_square": -0.0024683493909568558,
+            "cross_correlation": -0.8170559454685608,
+            "identity_relative_defect": 3.0856527519675627e-16,
+            "zero_reference_norm": false
+          },
+          "inner_tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 0.00018702208447692555,
+            "second_difference_rms": 7.6232050599778365,
+            "total_difference_rms": 7.623048177273782,
+            "reference_rms": 33385.00358577336,
+            "first_relative_l2": 5.601978864445079e-09,
+            "second_relative_l2": 0.00022834219683074645,
+            "total_relative_l2": 0.00022833749763388544,
+            "twice_cross_mean_square": -0.0023919084118297664,
+            "cross_correlation": -0.8388495098381928,
+            "identity_relative_defect": 4.935877659177899e-17,
+            "zero_reference_norm": false
+          }
+        },
+        "passed_tensor_identity": true,
+        "scope": "Pointwise signed tensors satisfy (field0-field2)=(field0-field1)+(field1-field2). All three differences and their signed cross product are integrated directly on one union of material partitions and the full reference volume/area. The squared total equals the two squared contributions plus twice their cross product; their RMS magnitudes are not additive error budgets. All relative values use the same fine-reference norm, with null relative values at an exactly zero reference and no arbitrary floor. Assigning physical meaning to each difference requires the separately verified field sources and admissions.",
+        "field_indices": [
+          0,
+          1,
+          2
+        ],
+        "physical_volume_reference": {
+          "mesh": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+            "bytes": 2554948,
+            "sha256": "fe33c17f40a9f0b9333339a3f33bc9942ac34dc05c7077da5ae8c085f3dd7164"
+          },
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-0.3.npz",
+            "bytes": 69264730,
+            "sha256": "9e03f6f662084e7318ef34e56b1b0dc094ebfa3e9e3b8f0110a78aa6799d79b7"
+          },
+          "raw_maximum_mises_pa": 548704.7630267164,
+          "raw_maximum_tension_pa": 312432.01722166874,
+          "raw_peak_position_m": [
+            -0.00010839852273131268,
+            6.699397137822932e-05,
+            -0.03
+          ],
+          "raw_mises_peak_position_m": [
+            -0.00010839852273131268,
+            6.699397137822932e-05,
+            -0.03
+          ],
+          "raw_tension_peak_position_m": [
+            -0.00010839852273131268,
+            -6.699397137822932e-05,
+            -0.0295
+          ]
+        }
+      }
+    },
+    {
+      "load_n": 0.3,
+      "family": "continuous-replay-solid",
+      "decomposition": {
+        "metrics": {
+          "tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 4.5176475397322475,
+            "second_difference_rms": 6731.519111097887,
+            "total_difference_rms": 6732.490924177517,
+            "reference_rms": 26721.7290942929,
+            "first_relative_l2": 0.00016906269514936086,
+            "second_relative_l2": 0.25191180882585823,
+            "total_relative_l2": 0.25194817672241915,
+            "twice_cross_mean_square": 13064.091917233523,
+            "cross_correlation": 0.21479482001276395,
+            "identity_relative_defect": 2.484108352995838e-16,
+            "zero_reference_norm": false
+          },
+          "membrane": {
+            "unit": "N/m",
+            "first_difference_rms": 0.000504436315617319,
+            "second_difference_rms": 0.6229226614419895,
+            "total_difference_rms": 0.6227301844597796,
+            "reference_rms": 10.815924488005594,
+            "first_relative_l2": 4.6638298573248885e-05,
+            "second_relative_l2": 0.05759310377330985,
+            "total_relative_l2": 0.05757530807009249,
+            "twice_cross_mean_square": -0.00024001395665671432,
+            "cross_correlation": -0.3819143926546069,
+            "identity_relative_defect": 1.370281157816305e-16,
+            "zero_reference_norm": false
+          },
+          "bending": {
+            "unit": "N",
+            "first_difference_rms": 3.1828009060105423e-07,
+            "second_difference_rms": 0.000475852771896536,
+            "total_difference_rms": 0.0004759292620039329,
+            "reference_rms": 0.001139989392663601,
+            "first_relative_l2": 0.0002791956597573144,
+            "second_relative_l2": 0.417418596136846,
+            "total_relative_l2": 0.4174856933466,
+            "twice_cross_mean_square": 7.270060777580684e-11,
+            "cross_correlation": 0.24000813897060538,
+            "identity_relative_defect": 8.084646132018447e-16,
+            "zero_reference_norm": false
+          },
+          "outer_tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 7.786201729674446,
+            "second_difference_rms": 11572.868824071747,
+            "total_difference_rms": 11574.51891517975,
+            "reference_rms": 37026.23303670005,
+            "first_relative_l2": 0.00021028878962536744,
+            "second_relative_l2": 0.31255863410681906,
+            "total_relative_l2": 0.31260319956683674,
+            "twice_cross_mean_square": 38134.673744655425,
+            "cross_correlation": 0.21160374883604618,
+            "identity_relative_defect": 1.0543452029820142e-17,
+            "zero_reference_norm": false
+          },
+          "inner_tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 7.623048177273782,
+            "second_difference_rms": 11574.36950533565,
+            "total_difference_rms": 11575.97682540438,
+            "reference_rms": 33416.86857596502,
+            "first_relative_l2": 0.00022811976412286087,
+            "second_relative_l2": 0.34636307944366995,
+            "total_relative_l2": 0.34641117850672476,
+            "twice_cross_mean_square": 37151.905392119246,
+            "cross_correlation": 0.2105353802810744,
+            "identity_relative_defect": 7.496716446224618e-16,
+            "zero_reference_norm": false
+          }
+        },
+        "passed_tensor_identity": true,
+        "scope": "Pointwise signed tensors satisfy (field0-field2)=(field0-field1)+(field1-field2). All three differences and their signed cross product are integrated directly on one union of material partitions and the full reference volume/area. The squared total equals the two squared contributions plus twice their cross product; their RMS magnitudes are not additive error budgets. All relative values use the same fine-reference norm, with null relative values at an exactly zero reference and no arbitrary floor. Assigning physical meaning to each difference requires the separately verified field sources and admissions."
+      }
+    },
+    {
+      "load_n": 1.0,
+      "family": "continuous-static-replay",
+      "decomposition": {
+        "metrics": {
+          "tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 0.0003153207459593255,
+            "second_difference_rms": 18.26715879227097,
+            "total_difference_rms": 18.266978677948778,
+            "reference_rms": 86163.22914361188,
+            "first_relative_l2": 3.6595743810131255e-09,
+            "second_relative_l2": 0.0002120064321385208,
+            "total_relative_l2": 0.0002120043417535157,
+            "twice_cross_mean_square": -0.006580420834552665,
+            "cross_correlation": -0.5712156843813488,
+            "identity_relative_defect": 1.4081707592800497e-17,
+            "zero_reference_norm": false
+          },
+          "membrane": {
+            "unit": "N/m",
+            "first_difference_rms": 6.383316138788554e-08,
+            "second_difference_rms": 0.0022823450095435893,
+            "total_difference_rms": 0.0022823881091188773,
+            "reference_rms": 35.06604595837852,
+            "first_relative_l2": 1.8203695239449587e-09,
+            "second_relative_l2": 6.50870363956235e-05,
+            "total_relative_l2": 6.508826549272043e-05,
+            "twice_cross_mean_square": 1.9673398404479338e-10,
+            "cross_correlation": 0.6751833787408479,
+            "identity_relative_defect": 1.7274995432804926e-17,
+            "zero_reference_norm": false
+          },
+          "bending": {
+            "unit": "N",
+            "first_difference_rms": 2.0780351985632362e-11,
+            "second_difference_rms": 1.2786727865553407e-06,
+            "total_difference_rms": 1.2786577410586336e-06,
+            "reference_rms": 0.003630650548354812,
+            "first_relative_l2": 5.723589122354048e-09,
+            "second_relative_l2": 0.0003521883391214163,
+            "total_relative_l2": 0.0003521841950991518,
+            "twice_cross_mean_square": -3.847673985477042e-17,
+            "cross_correlation": -0.7240289797259305,
+            "identity_relative_defect": 1.0002525326339039e-16,
+            "zero_reference_norm": false
+          },
+          "outer_tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 0.0005234358717027606,
+            "second_difference_rms": 31.432658620557643,
+            "total_difference_rms": 31.43232936892884,
+            "reference_rms": 118523.16317508626,
+            "first_relative_l2": 4.4163170951615946e-09,
+            "second_relative_l2": 0.00026520266400690217,
+            "total_relative_l2": 0.00026519988605515013,
+            "twice_cross_mean_square": -0.020698673675052993,
+            "cross_correlation": -0.6290250257171098,
+            "identity_relative_defect": 1.0007321851409391e-16,
+            "zero_reference_norm": false
+          },
+          "inner_tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 0.0005060359645127654,
+            "second_difference_rms": 30.61348525589866,
+            "total_difference_rms": 30.61312507912933,
+            "reference_rms": 104759.29832683495,
+            "first_relative_l2": 4.830463477657145e-09,
+            "second_relative_l2": 0.00029222690247875365,
+            "total_relative_l2": 0.0002922234643422342,
+            "twice_cross_mean_square": -0.022052658779309196,
+            "cross_correlation": -0.7117652857344452,
+            "identity_relative_defect": 2.6997303372074354e-16,
+            "zero_reference_norm": false
+          }
+        },
+        "passed_tensor_identity": true,
+        "scope": "Pointwise signed tensors satisfy (field0-field2)=(field0-field1)+(field1-field2). All three differences and their signed cross product are integrated directly on one union of material partitions and the full reference volume/area. The squared total equals the two squared contributions plus twice their cross product; their RMS magnitudes are not additive error budgets. All relative values use the same fine-reference norm, with null relative values at an exactly zero reference and no arbitrary floor. Assigning physical meaning to each difference requires the separately verified field sources and admissions.",
+        "field_indices": [
+          0,
+          1,
+          2
+        ],
+        "physical_volume_reference": {
+          "mesh": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+            "bytes": 2554948,
+            "sha256": "fe33c17f40a9f0b9333339a3f33bc9942ac34dc05c7077da5ae8c085f3dd7164"
+          },
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-1.npz",
+            "bytes": 69682921,
+            "sha256": "26ccf2e3fad9af298391c0fe44a16ddb17386f613ab327794ce571c8910fca37"
+          },
+          "raw_maximum_mises_pa": 1676709.6077409883,
+          "raw_maximum_tension_pa": 905589.2162202739,
+          "raw_peak_position_m": [
+            -0.00010839852273131268,
+            6.699397137822932e-05,
+            -0.03
+          ],
+          "raw_mises_peak_position_m": [
+            -0.00010839852273131268,
+            6.699397137822932e-05,
+            -0.03
+          ],
+          "raw_tension_peak_position_m": [
+            -0.00010839852273131268,
+            -6.699397137822932e-05,
+            -0.0295
+          ]
+        }
+      }
+    },
+    {
+      "load_n": 1.0,
+      "family": "continuous-replay-solid",
+      "decomposition": {
+        "metrics": {
+          "tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 18.266978677948778,
+            "second_difference_rms": 20557.844735939623,
+            "total_difference_rms": 20561.944774921605,
+            "reference_rms": 85709.98151781177,
+            "first_relative_l2": 0.00021312545347069797,
+            "second_relative_l2": 0.23985356631616359,
+            "total_relative_l2": 0.23990140250641093,
+            "twice_cross_mean_square": 168259.05741540025,
+            "cross_correlation": 0.22402895467715747,
+            "identity_relative_defect": 1.8849727168004804e-17,
+            "zero_reference_norm": false
+          },
+          "membrane": {
+            "unit": "N/m",
+            "first_difference_rms": 0.0022823881091188773,
+            "second_difference_rms": 1.9704697063467496,
+            "total_difference_rms": 1.969606397770538,
+            "reference_rms": 35.49572847169038,
+            "first_relative_l2": 6.430035971621758e-05,
+            "second_relative_l2": 0.055512868482704834,
+            "total_relative_l2": 0.055488547004786726,
+            "twice_cross_mean_square": -0.0034067107870920633,
+            "cross_correlation": -0.3787442179658916,
+            "identity_relative_defect": 5.187711160679103e-17,
+            "zero_reference_norm": false
+          },
+          "bending": {
+            "unit": "N",
+            "first_difference_rms": 1.2786577410586336e-06,
+            "second_difference_rms": 0.0014516308938313598,
+            "total_difference_rms": 0.0014519560986827216,
+            "reference_rms": 0.003488118958319745,
+            "first_relative_l2": 0.0003665751530660449,
+            "second_relative_l2": 0.41616438865107463,
+            "total_relative_l2": 0.416257620807216,
+            "twice_cross_mean_square": 9.42625610698259e-10,
+            "cross_correlation": 0.2539210614872309,
+            "identity_relative_defect": 7.455890104477873e-17,
+            "zero_reference_norm": false
+          },
+          "outer_tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 31.43232936892884,
+            "second_difference_rms": 35302.37706417232,
+            "total_difference_rms": 35309.38302424325,
+            "reference_rms": 116759.74103568183,
+            "first_relative_l2": 0.00026920519941306745,
+            "second_relative_l2": 0.3023505940577917,
+            "total_relative_l2": 0.30241059727472924,
+            "twice_cross_mean_square": 493715.180388158,
+            "cross_correlation": 0.222467189951095,
+            "identity_relative_defect": 1.8295219224113457e-16,
+            "zero_reference_norm": false
+          },
+          "inner_tangent": {
+            "unit": "Pa",
+            "first_difference_rms": 30.61312507912933,
+            "second_difference_rms": 35304.99306693956,
+            "total_difference_rms": 35311.887297605615,
+            "reference_rms": 104667.76822269917,
+            "first_relative_l2": 0.00029247900857114385,
+            "second_relative_l2": 0.33730530101513156,
+            "total_relative_l2": 0.3373711687677656,
+            "twice_cross_mean_square": 485911.89872206585,
+            "cross_correlation": 0.22479349613040933,
+            "identity_relative_defect": 4.2782670019767823e-16,
+            "zero_reference_norm": false
+          }
+        },
+        "passed_tensor_identity": true,
+        "scope": "Pointwise signed tensors satisfy (field0-field2)=(field0-field1)+(field1-field2). All three differences and their signed cross product are integrated directly on one union of material partitions and the full reference volume/area. The squared total equals the two squared contributions plus twice their cross product; their RMS magnitudes are not additive error budgets. All relative values use the same fine-reference norm, with null relative values at an exactly zero reference and no arbitrary floor. Assigning physical meaning to each difference requires the separately verified field sources and admissions."
+      }
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-absolute-errors-cpu-v2/group0/audit/result.json",
+      "bytes": 94816,
+      "sha256": "3ffee386820ff28deeb68ffc218fe12ff4a22cf5e6d9716ffe6b1002d8dc3e0d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/static-inertia-relief-controls-v1/group0/controls/result.json",
+      "bytes": 2952,
+      "sha256": "a422902e883c653f457539194ec330ed929f788e32ed79e330b5a8587ed455bc"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/column-external-volume-controls-v1/group0/controls/result.json",
+      "bytes": 20251,
+      "sha256": "49176f7c6b2bafe46d707a8ebdfc2031ef905814f521301ab82b59a7d2cb0d96"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group0/replay/result.json",
+      "bytes": 3195,
+      "sha256": "fef4a6910e9e58f9ac0d55dce7a3f35dad43007bcc2b1137b4c20f13a0596bb0"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group0/replay/frames/level0.npz",
+      "bytes": 9098398,
+      "sha256": "fc3977c5a8538b242ebcfff9639f077f09429e5ddc6eff5223d2a7b053409f08"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-0.1.npz",
+      "bytes": 69587001,
+      "sha256": "1fb0edfe7f6d969a4de6845acd548566ee209ca32bb5d582a987a42081ca9b81"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group0/replay/steps.jsonl",
+      "bytes": 655,
+      "sha256": "515c62189ba1e614b6266bb0ece4074574731ab0394bf2972260968a849ce11f"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group0/solved-pad/result.json",
+      "bytes": 5762,
+      "sha256": "f9e9ffaaf83f732a3983aa75503ffb4bc49e779fe8f233b00fc31e7761f6732a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group0/solved-pad/frames/level0.npz",
+      "bytes": 9120115,
+      "sha256": "193c275e003d8e36d85dcef4de12b28c3f9e76b057994ab699b560a7cbb546e8"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group0/solved-pad/steps.jsonl",
+      "bytes": 1435,
+      "sha256": "799824e42fb6236e6cd879d47ac2a926ac752e5666ebcaa96a1f432b7cccc077"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group0/continuous-static-replay-0-q9/result.json",
+      "bytes": 17910,
+      "sha256": "ac301fe93672ab6fa3dbe04e802a327f4d9fe919854f9f838665bfde5562482f"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+      "bytes": 2554948,
+      "sha256": "fe33c17f40a9f0b9333339a3f33bc9942ac34dc05c7077da5ae8c085f3dd7164"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level0.npz",
+      "bytes": 10468881,
+      "sha256": "bf2bc4aa431fdb09b19f682fb800aac6a768e996e7f9af1b589fefb8b91f348a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group0/continuous-static-replay-0-q25/result.json",
+      "bytes": 17908,
+      "sha256": "8eb64e5bdf8bff46d68050ee43b53d88040ba8ccf72287724f1bd14598abcec6"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v1/group3/continuous-replay-solid-0-q9/result.json",
+      "bytes": 13423,
+      "sha256": "4365f1b3b546f0c2059cdf124eba95a2fb7e621eb301cd46ab065ed64d1ae9cf"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v1/group3/continuous-replay-solid-0-q25/result.json",
+      "bytes": 13417,
+      "sha256": "bdd1aa401217f7ffaeb4a02bfc012372339fe544ceb4949983406556f86d28a7"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group0/continuous-static-replay-0-q25/columns-0.1-0.npz",
+      "bytes": 138344826,
+      "sha256": "f39c697c8d75b8493bac7f4b69f7c12482fac1ecc29b0aa22c52fe416b8fd1b0"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group0/continuous-static-replay-0-q25/columns-0.1-1.npz",
+      "bytes": 138238608,
+      "sha256": "ea4500a62b14bcf87d4a1b16d764cd3e955eb08c8cf681c24a56f78075007f7b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v1/group3/continuous-replay-solid-0-q25/columns-0.1-0.npz",
+      "bytes": 138284208,
+      "sha256": "1b1f7cce8c582c9cc4fbaecb52a92ecb5910806221e8a8b0fd96e456f396847d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v1/group3/continuous-replay-solid-0-q25/columns-0.1-1.npz",
+      "bytes": 142420284,
+      "sha256": "4ff92cd0361b6c7d6476c03465c981ec504fb7de6b6e865d11ec040714e73d45"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group1/replay/result.json",
+      "bytes": 3193,
+      "sha256": "269a2b95367aeb095738fd9b68ee11ffbf9b8cb5b1ce15c1d9b6912fae3e8ae8"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group1/replay/frames/level0.npz",
+      "bytes": 9129562,
+      "sha256": "6d7fd60429bf5c1628c1115ca3c196a0cf418fa46f4d200001b27a6480028613"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-0.3.npz",
+      "bytes": 69264730,
+      "sha256": "9e03f6f662084e7318ef34e56b1b0dc094ebfa3e9e3b8f0110a78aa6799d79b7"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group1/replay/steps.jsonl",
+      "bytes": 652,
+      "sha256": "68c4aba8ec085abd1bd2237ed821a51b80107061a7ee56db3be497926e8d6385"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group1/solved-pad/result.json",
+      "bytes": 5758,
+      "sha256": "cd6c235b08cedbecfe6bcd56ff025f2b83371db271e49de8f71a13d0a301f8d2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group1/solved-pad/frames/level0.npz",
+      "bytes": 9129689,
+      "sha256": "178b20bfb50c6e1881132b28cd68db373dc7153e64e5aec16411ea3921f74252"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group1/solved-pad/steps.jsonl",
+      "bytes": 1416,
+      "sha256": "0bfd4175eef4aaf772c621e92eb226d83b62b8f430775dcb23edaf0d67cb9c60"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group1/continuous-static-replay-1-q9/result.json",
+      "bytes": 17899,
+      "sha256": "add91328d10facedd6b0edfb78927b3a676eaa353c4e6920a1e818b16044f936"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level1.npz",
+      "bytes": 10473680,
+      "sha256": "25737465036239a265c3e1a5fbff2860ac8e83257e556453b69ba118edd22ba3"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group1/continuous-static-replay-1-q25/result.json",
+      "bytes": 17905,
+      "sha256": "01e484f1e099fe9a60cda7b84bfafd61dd03470bc07049d2150466e283ef4ad1"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v1/group4/continuous-replay-solid-1-q9/result.json",
+      "bytes": 13419,
+      "sha256": "19c68c81b4cf963595ba988a0a0b84f6dc51875ce05e44853f39dfdfda559019"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v1/group4/continuous-replay-solid-1-q25/result.json",
+      "bytes": 13402,
+      "sha256": "99e7d6a071d17b24c8dc66c4a4215cf445295bd4a12e80aee22b9c82bec3c186"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group1/continuous-static-replay-1-q25/columns-0.3-0.npz",
+      "bytes": 138258664,
+      "sha256": "56ae762e4f41e495a844c3be8dc78689474c810b8de35f9a4a2ae20c53c2284e"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group1/continuous-static-replay-1-q25/columns-0.3-1.npz",
+      "bytes": 138160132,
+      "sha256": "c8ecb44176ef114f1e4ae2bef4bca41b9df855e39a6af86981129b600ae30afe"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v1/group4/continuous-replay-solid-1-q25/columns-0.3-0.npz",
+      "bytes": 138217037,
+      "sha256": "b309576eabac70f4ae37e6aac0d8fa423deb00119edf4717fcd3bfd6ca4c2385"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v1/group4/continuous-replay-solid-1-q25/columns-0.3-1.npz",
+      "bytes": 142342183,
+      "sha256": "0ebfe03552e8b439230169ebb668d632f3368f8624ba130fb5856d0b7a23cccc"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group2/replay/result.json",
+      "bytes": 3190,
+      "sha256": "1ecaab672c2f6048b429cfe15c4ad544e61ae81e330e31e142022678b82daa96"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group2/replay/frames/level0.npz",
+      "bytes": 9138009,
+      "sha256": "9e6ae3ff2198a6e1f4127f298e8fd0f4cfe82846f8dd4db145ce5868fb342611"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-1.npz",
+      "bytes": 69682921,
+      "sha256": "26ccf2e3fad9af298391c0fe44a16ddb17386f613ab327794ce571c8910fca37"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group2/replay/steps.jsonl",
+      "bytes": 650,
+      "sha256": "cc3304f251366f52f2a1cc2126a6106a8524b9661d9bc3ccba4cc3a105c1c513"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group2/solved-pad/result.json",
+      "bytes": 5757,
+      "sha256": "fd6f81fe30c57b8841be5b9b8aa41238e13e8e26f45d03b44af7482390bacb03"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group2/solved-pad/frames/level0.npz",
+      "bytes": 9157637,
+      "sha256": "7d68d2c0752b26f200dee9d1dda5eadf067da89801bad3d5d7d27b548b607f19"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group2/solved-pad/steps.jsonl",
+      "bytes": 1431,
+      "sha256": "b05ccd47bea209a1af74821a8ac054352a4c0f665a771f2bbe7c771d75896232"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group2/continuous-static-replay-2-q9/result.json",
+      "bytes": 17885,
+      "sha256": "6f66992d9b94baacdb6c6a8fe5682698685b1a3d395dfe705a664211825056e2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level2.npz",
+      "bytes": 10491233,
+      "sha256": "d7c4aa7c8848a63ccf11456344146f1d1fd2ae70c8e44ce0f007357b9141a4b1"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group2/continuous-static-replay-2-q25/result.json",
+      "bytes": 17889,
+      "sha256": "6eb472c349b80cdf4f9f4a149f2afff5786933d6c46bf0b51ea6c579b5e5cd95"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v1/group5/continuous-replay-solid-2-q9/result.json",
+      "bytes": 13408,
+      "sha256": "acb41745439f7a6b74efec32b5832c6b153f7fccf0a55c44549563ae6613686c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v1/group5/continuous-replay-solid-2-q25/result.json",
+      "bytes": 13412,
+      "sha256": "8f6d40e8763a4c052e3439445f11d3fa2bd122167209293a065f13a37f0eab96"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group2/continuous-static-replay-2-q25/columns-1-0.npz",
+      "bytes": 138212938,
+      "sha256": "9ce7ebe0ce210e975f30f662cd6ff38248a4995bbe5a62a6df59193bc90b6631"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group2/continuous-static-replay-2-q25/columns-1-1.npz",
+      "bytes": 138132614,
+      "sha256": "ebe44e2253f53663c7451285b381cb3a0d4971a67e049f7d717987d70c6f8b75"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v1/group5/continuous-replay-solid-2-q25/columns-1-0.npz",
+      "bytes": 138176220,
+      "sha256": "3d7b2d00f58bc767b314db065c8dbb65f17ed4d1ab5c3cc9ac78e707d9c5dd71"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v1/group5/continuous-replay-solid-2-q25/columns-1-1.npz",
+      "bytes": 142287348,
+      "sha256": "81121d414ec12420a37cd956d81ce2fd003db85cffcd8e2ac0ef358be63203f9"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group3/replay-old-new-q9/result.json",
+      "bytes": 9349,
+      "sha256": "b00b0969e98dbdf417086395cd5e7ee421a67354481c481a4ac865134da5c110"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group3/replay-old-new-q25/result.json",
+      "bytes": 9344,
+      "sha256": "2bb2a017a0f4c0172f5d43a69057cbc0c6d4d5b826fdfbab1df24edb032cbb50"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group4/solved-pad-old-new-q9/result.json",
+      "bytes": 9359,
+      "sha256": "515a5ce40138f4f8e70dca1f5c8e9c7f7613fd5750e49d9d4f86082a6da6d50a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-control-fields-v2/group4/solved-pad-old-new-q25/result.json",
+      "bytes": 9362,
+      "sha256": "308913e3167a8b2655aafbccddb8e8a123f130cb37d81bde4babbda6e3a5544c"
+    }
+  ],
+  "whole_goal_complete": false,
+  "scope": "Matched250um physical-pad Shell controls at0.1/0.3/1N, q9/q25, exact declared P2 physical volume carrier and independent complete resultant-array cross checks. The same-traction solid is the250um two-wall centroid-pressure source, not a certified fine continuum reference. C-S measures static/history/map differences; S-R pressure-feedback differences; R-F combines Shell elasticity/discretization/transfer. Direct tensor identities hold with measured cross terms; scalar RMS values are not additive. Existing qualified125um normal ranks remain separate."
+}

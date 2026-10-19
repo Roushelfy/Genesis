@@ -1,0 +1,100 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-191",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729033",
+      "SLURM_ARRAY_JOB_ID": "729033",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-c6c2408b-e100-8660-d139-55038ccd4c23, 00000000:C0:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "source_field": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-1.npz",
+    "bytes": 69682921,
+    "sha256": "26ccf2e3fad9af298391c0fe44a16ddb17386f613ab327794ce571c8910fca37"
+  },
+  "field": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group2/solved-pad/frames/level0.npz",
+    "bytes": 9157637,
+    "sha256": "7d68d2c0752b26f200dee9d1dda5eadf067da89801bad3d5d7d27b548b607f19"
+  },
+  "load_n": 1.0,
+  "iterations": 3,
+  "last_iteration": {
+    "outer_iteration": 3,
+    "static_force_relative_residual": 1.2874729686392364e-08,
+    "solver_failure_flags": [
+      0
+    ],
+    "pcg_iterations": [
+      4809
+    ],
+    "pad_contact": {
+      "force_moment_relative_error": 6.662373036728311e-16,
+      "rigid_iterations": 2,
+      "plate_travel_m": 0.00010420650945682934,
+      "normal_forces_n": [
+        1.0000000000000013,
+        1.0000000000000013
+      ],
+      "compressed_projected_areas_m2": [
+        2.3931511909457452e-05,
+        2.1345376126561584e-05
+      ],
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group2/solved-pad/pad-contact.npz",
+        "bytes": 1521334,
+        "sha256": "74ad018c63441405a98cc1c027838d5e7ca261c7644c8c3ee9f8586ae0660546"
+      },
+      "pad_stiffness_n_per_m3": 1000000000.0,
+      "minimum_omitted_face_gap_m": 5.302365192418057e-05,
+      "static_pad_equations_admitted": true,
+      "scope": "Self-consistent static pad pressure and plate travel solved from the current Shell displacement. Input solid pressures are not used in the solve. Pad gaps use the transpose of the fixed reference-geometry force/couple map. Complete omitted-face gaps use the same affine map. This is a declared linear thin-surface kinematic reduction and velocity-cleared static relaxation, not a continuous dynamic contact history. Spatial qualification remains outstanding."
+    },
+    "inertia_relief_relative_correction": 5.748367205238583e-18
+  },
+  "static_equations_admitted": true,
+  "seconds_including_observation": 5.895729540003231,
+  "deformed_moment_drift": {
+    "net_moment_drift_nm": [
+      -5.564258967536668e-11,
+      -1.2386128455466153e-11,
+      -2.0674271946482955e-16
+    ],
+    "sum_local_moment_drift_norms_nm": 7.511349130698765e-08
+  },
+  "physical_accuracy_qualified": false,
+  "inertia_relief_enabled": true,
+  "inertia_relief_relative_correction": 5.748367205238583e-18,
+  "inertia_relief_scope": "Optional six-mode mass-weighted correction, identical in form to the free solid reference. Actual mapped point tractions remain unchanged and saved separately; correction is explicit body loading and must stay below1e-8 of mapped load norm. Original zero-wrench1e-12 and static residual gates remain unchanged.",
+  "pad_contact": {
+    "force_moment_relative_error": 6.662373036728311e-16,
+    "rigid_iterations": 2,
+    "plate_travel_m": 0.00010420650945682934,
+    "normal_forces_n": [
+      1.0000000000000013,
+      1.0000000000000013
+    ],
+    "compressed_projected_areas_m2": [
+      2.3931511909457452e-05,
+      2.1345376126561584e-05
+    ],
+    "field": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v2/group2/solved-pad/pad-contact.npz",
+      "bytes": 1521334,
+      "sha256": "74ad018c63441405a98cc1c027838d5e7ca261c7644c8c3ee9f8586ae0660546"
+    },
+    "pad_stiffness_n_per_m3": 1000000000.0,
+    "minimum_omitted_face_gap_m": 5.302365192418057e-05,
+    "static_pad_equations_admitted": true,
+    "scope": "Self-consistent static pad pressure and plate travel solved from the current Shell displacement. Input solid pressures are not used in the solve. Pad gaps use the transpose of the fixed reference-geometry force/couple map. Complete omitted-face gaps use the same affine map. This is a declared linear thin-surface kinematic reduction and velocity-cleared static relaxation, not a continuous dynamic contact history. Spatial qualification remains outstanding."
+  },
+  "scope": "Explicit static relaxation with velocity cleared before each pseudo-step, using unchanged pinned Shell elastic/PCG/integration kernels and an external-force adapter. This is not original scene dynamics or a continuous plate-contact history. Actual end-position elastic forces are independently observed. Source force/couple transfer preserves rest-frame wrench and rigid work; thin-shell kinematics and deformed moment drift remain measured limitations. The optional pad branch recomputes pressure and free rigid coordinates from current displacement at each iteration and retains separate contact admission."
+}

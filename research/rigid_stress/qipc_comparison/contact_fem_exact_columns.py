@@ -140,6 +140,12 @@ def main():
     cli.add_argument("--physical-volume", action="store_true")
     cli.add_argument("--decompose-three-fields", action="store_true")
     cli.add_argument(
+        "--decomposition-indices",
+        type=int,
+        nargs=3,
+        help="Three tensor fields, with the final solid field retained as physical volume reference",
+    )
+    cli.add_argument(
         "--export-surface-fields", action="store_true", help="Retain unsmoothed common outer/inner tensors for maps"
     )
     cli.add_argument("--depth-quadrature", type=int, choices=(2, 4, 8), default=2)
@@ -150,7 +156,13 @@ def main():
     args = cli.parse_args()
     depth_nodes, depth_weights = np.polynomial.legendre.leggauss(args.depth_quadrature)
     assert len(args.meshes) == len(args.runs)
-    assert not args.decompose_three_fields or (len(args.runs) == 3 and args.physical_volume)
+    assert not args.decompose_three_fields or (len(args.runs) >= 3 and args.physical_volume)
+    assert not args.decompose_three_fields or len(args.runs) == 3 or args.decomposition_indices is not None
+    assert args.decomposition_indices is None or (
+        args.decompose_three_fields
+        and len(set(args.decomposition_indices)) == 3
+        and all(0 <= i < len(args.runs) for i in args.decomposition_indices)
+    )
     assert all(0 <= index < len(args.runs) for index in args.shell_indices)
     assert all(not run.is_file() or len(args.loads) == 1 for run in args.runs)
     assert not args.physical_volume or len(args.runs) - 1 not in args.shell_indices
@@ -399,9 +411,20 @@ def main():
         if args.decompose_three_fields:
             from .column_decomposition import integrate
 
+            indices = args.decomposition_indices
+            chosen = fields if indices is None else [fields[i] for i in indices]
             decomposition["three_field_decomposition"] = integrate(
-                fields, basis, area, column_angular_weights, depth_nodes, depth_weights
+                chosen,
+                basis,
+                area,
+                column_angular_weights,
+                depth_nodes,
+                depth_weights,
+                volume_reference=fields[-1] if indices is not None else None,
             )
+            if indices is not None:
+                decomposition["three_field_decomposition"]["field_indices"] = indices
+                decomposition["three_field_decomposition"]["physical_volume_reference"] = raw[-1]
         rows.append({"load_n": load, "raw": raw, "adjacent_comparisons": comparisons, **decomposition})
     write_json(
         args.output / "result.json",

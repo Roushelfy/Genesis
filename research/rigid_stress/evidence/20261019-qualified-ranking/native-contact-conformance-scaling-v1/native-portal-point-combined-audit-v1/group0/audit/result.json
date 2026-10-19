@@ -1,0 +1,3599 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-029",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729201",
+      "SLURM_ARRAY_JOB_ID": "729201",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "passed": true,
+  "checks": [
+    {
+      "name": "B1/rigid-max/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B1/rigid-max/errno",
+      "passed": true
+    },
+    {
+      "name": "B1/rigid-max/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr-max/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr-max/errno",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr-max/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr-max/every_step_valid",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr-max/peaks_finite_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr-full/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr-full/errno",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr-full/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr-full/every_step_valid",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr-full/peaks_finite_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr-full/full_finite",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr-full/independent_mises",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr-full/full_max_reduction",
+      "passed": true
+    },
+    {
+      "name": "B1/scr-max/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B1/scr-max/errno",
+      "passed": true
+    },
+    {
+      "name": "B1/scr-max/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B1/scr-max/every_step_valid",
+      "passed": true
+    },
+    {
+      "name": "B1/scr-max/peaks_finite_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "B1/scr-full/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B1/scr-full/errno",
+      "passed": true
+    },
+    {
+      "name": "B1/scr-full/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B1/scr-full/every_step_valid",
+      "passed": true
+    },
+    {
+      "name": "B1/scr-full/peaks_finite_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "B1/scr-full/full_finite",
+      "passed": true
+    },
+    {
+      "name": "B1/scr-full/independent_mises",
+      "passed": true
+    },
+    {
+      "name": "B1/scr-full/full_max_reduction",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr-max-vs-rigid/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-max-vs-rigid/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-max-vs-rigid/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-max-vs-rigid/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-max-vs-rigid/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-max-vs-rigid/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-max/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr-full-vs-rigid/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-full-vs-rigid/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-full-vs-rigid/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-full-vs-rigid/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-full-vs-rigid/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-full-vs-rigid/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-full/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B1/scr-max-vs-rigid/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-max-vs-rigid/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-max-vs-rigid/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-max-vs-rigid/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-max-vs-rigid/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-max-vs-rigid/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-max/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B1/scr-full-vs-rigid/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-full-vs-rigid/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-full-vs-rigid/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-full-vs-rigid/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-full-vs-rigid/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-full-vs-rigid/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-full/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B1/dpr/max-vs-full",
+      "passed": true,
+      "maximum_absolute_error_pa": 1.172040356323123e-06,
+      "maximum_budget_ratio": 0.00036317494492306277,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B1/scr/max-vs-full",
+      "passed": true,
+      "maximum_absolute_error_pa": 0.0005255446885712445,
+      "maximum_budget_ratio": 0.1482687574524165,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B8/rigid-max/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B8/rigid-max/errno",
+      "passed": true
+    },
+    {
+      "name": "B8/rigid-max/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr-max/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr-max/errno",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr-max/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr-max/every_step_valid",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr-max/peaks_finite_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr-full/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr-full/errno",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr-full/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr-full/every_step_valid",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr-full/peaks_finite_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr-full/full_finite",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr-full/independent_mises",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr-full/full_max_reduction",
+      "passed": true
+    },
+    {
+      "name": "B8/scr-max/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B8/scr-max/errno",
+      "passed": true
+    },
+    {
+      "name": "B8/scr-max/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B8/scr-max/every_step_valid",
+      "passed": true
+    },
+    {
+      "name": "B8/scr-max/peaks_finite_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "B8/scr-full/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B8/scr-full/errno",
+      "passed": true
+    },
+    {
+      "name": "B8/scr-full/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B8/scr-full/every_step_valid",
+      "passed": true
+    },
+    {
+      "name": "B8/scr-full/peaks_finite_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "B8/scr-full/full_finite",
+      "passed": true
+    },
+    {
+      "name": "B8/scr-full/independent_mises",
+      "passed": true
+    },
+    {
+      "name": "B8/scr-full/full_max_reduction",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr-max-vs-rigid/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-max-vs-rigid/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-max-vs-rigid/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-max-vs-rigid/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-max-vs-rigid/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-max-vs-rigid/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-max/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr-full-vs-rigid/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-full-vs-rigid/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-full-vs-rigid/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-full-vs-rigid/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-full-vs-rigid/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-full-vs-rigid/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-full/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B8/scr-max-vs-rigid/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-max-vs-rigid/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-max-vs-rigid/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-max-vs-rigid/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-max-vs-rigid/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-max-vs-rigid/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-max/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B8/scr-full-vs-rigid/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-full-vs-rigid/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-full-vs-rigid/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-full-vs-rigid/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-full-vs-rigid/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-full-vs-rigid/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-full/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B8/dpr/max-vs-full",
+      "passed": true,
+      "maximum_absolute_error_pa": 4.2156316339969635e-06,
+      "maximum_budget_ratio": 0.0011076874469768208,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B8/scr/max-vs-full",
+      "passed": true,
+      "maximum_absolute_error_pa": 0.00035952968755736947,
+      "maximum_budget_ratio": 0.11841294465241327,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B32/rigid-max/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B32/rigid-max/errno",
+      "passed": true
+    },
+    {
+      "name": "B32/rigid-max/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr-max/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr-max/errno",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr-max/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr-max/every_step_valid",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr-max/peaks_finite_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr-full/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr-full/errno",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr-full/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr-full/every_step_valid",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr-full/peaks_finite_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr-full/full_finite",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr-full/independent_mises",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr-full/full_max_reduction",
+      "passed": true
+    },
+    {
+      "name": "B32/scr-max/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B32/scr-max/errno",
+      "passed": true
+    },
+    {
+      "name": "B32/scr-max/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B32/scr-max/every_step_valid",
+      "passed": true
+    },
+    {
+      "name": "B32/scr-max/peaks_finite_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "B32/scr-full/finite_motion",
+      "passed": true
+    },
+    {
+      "name": "B32/scr-full/errno",
+      "passed": true
+    },
+    {
+      "name": "B32/scr-full/unit_quaternion",
+      "passed": true
+    },
+    {
+      "name": "B32/scr-full/every_step_valid",
+      "passed": true
+    },
+    {
+      "name": "B32/scr-full/peaks_finite_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "B32/scr-full/full_finite",
+      "passed": true
+    },
+    {
+      "name": "B32/scr-full/independent_mises",
+      "passed": true
+    },
+    {
+      "name": "B32/scr-full/full_max_reduction",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr-max-vs-rigid/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-max-vs-rigid/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-max-vs-rigid/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-max-vs-rigid/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-max-vs-rigid/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-max-vs-rigid/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-max/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr-full-vs-rigid/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-full-vs-rigid/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-full-vs-rigid/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-full-vs-rigid/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-full-vs-rigid/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-full-vs-rigid/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-full/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B32/scr-max-vs-rigid/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-max-vs-rigid/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-max-vs-rigid/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-max-vs-rigid/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-max-vs-rigid/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-max-vs-rigid/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-max/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B32/scr-full-vs-rigid/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-full-vs-rigid/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-full-vs-rigid/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-full-vs-rigid/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-full-vs-rigid/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-full-vs-rigid/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-full/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B32/dpr/max-vs-full",
+      "passed": true,
+      "maximum_absolute_error_pa": 1.4140387065708637e-06,
+      "maximum_budget_ratio": 0.0005320985735562514,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B32/scr/max-vs-full",
+      "passed": true,
+      "maximum_absolute_error_pa": 0.00043545960215851665,
+      "maximum_budget_ratio": 0.21016973257073596,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B8-vs-B1/rigid-max/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/rigid-max/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/rigid-max/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/rigid-max/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/rigid-max/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/rigid-max/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/rigid-max/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B8-vs-B1/dpr-max/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/dpr-max/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/dpr-max/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/dpr-max/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/dpr-max/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/dpr-max/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/dpr-max/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B8-vs-B1/dpr-max/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 2.4107866920530796e-06,
+      "maximum_budget_ratio": 0.0006828110254185629,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B8-vs-B1/dpr-full/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/dpr-full/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/dpr-full/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/dpr-full/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/dpr-full/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/dpr-full/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/dpr-full/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B8-vs-B1/dpr-full/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 7.89732439443469e-07,
+      "maximum_budget_ratio": 0.0004364985409517188,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B8-vs-B1/dpr-full/full_tensor",
+      "passed": true,
+      "maximum_absolute_error_pa": 7.255921445903368e-07,
+      "maximum_budget_ratio": 0.0007151811287395205
+    },
+    {
+      "name": "B8-vs-B1/scr-max/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/scr-max/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/scr-max/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/scr-max/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/scr-max/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/scr-max/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/scr-max/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B8-vs-B1/scr-max/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 0.0006799409457016736,
+      "maximum_budget_ratio": 0.1918276437249761,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B8-vs-B1/scr-full/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/scr-full/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/scr-full/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/scr-full/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/scr-full/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/scr-full/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8-vs-B1/scr-full/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B8-vs-B1/scr-full/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 0.0008247242367360741,
+      "maximum_budget_ratio": 0.2326744813161089,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B8-vs-B1/scr-full/full_tensor",
+      "passed": true,
+      "maximum_absolute_error_pa": 1.7661041056271642e-06,
+      "maximum_budget_ratio": 0.0016978310630269577
+    },
+    {
+      "name": "B32-vs-B8/rigid-max/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/rigid-max/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/rigid-max/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/rigid-max/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/rigid-max/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/rigid-max/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/rigid-max/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B32-vs-B8/dpr-max/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/dpr-max/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/dpr-max/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/dpr-max/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/dpr-max/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/dpr-max/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/dpr-max/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B32-vs-B8/dpr-max/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 2.5727786123752594e-06,
+      "maximum_budget_ratio": 0.0006760160327492705,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B32-vs-B8/dpr-full/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/dpr-full/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/dpr-full/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/dpr-full/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/dpr-full/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/dpr-full/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/dpr-full/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B32-vs-B8/dpr-full/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 1.9115395843982697e-06,
+      "maximum_budget_ratio": 0.0005753255670318168,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B32-vs-B8/dpr-full/full_tensor",
+      "passed": true,
+      "maximum_absolute_error_pa": 6.26800101599656e-07,
+      "maximum_budget_ratio": 0.000603203293165093
+    },
+    {
+      "name": "B32-vs-B8/scr-max/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/scr-max/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/scr-max/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/scr-max/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/scr-max/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/scr-max/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/scr-max/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B32-vs-B8/scr-max/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 0.0007161327230278403,
+      "maximum_budget_ratio": 0.2264652198791366,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B32-vs-B8/scr-full/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/scr-full/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/scr-full/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/scr-full/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/scr-full/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/scr-full/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32-vs-B8/scr-full/same_contact_counts",
+      "passed": true
+    },
+    {
+      "name": "B32-vs-B8/scr-full/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 0.0006634811870753765,
+      "maximum_budget_ratio": 0.22538672745894758,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B32-vs-B8/scr-full/full_tensor",
+      "passed": true,
+      "maximum_absolute_error_pa": 3.901667514583096e-05,
+      "maximum_budget_ratio": 0.03493518067924721
+    },
+    {
+      "name": "B1/dpr-max/original-stress-baseline/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-max/original-stress-baseline/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-max/original-stress-baseline/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-max/original-stress-baseline/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-max/original-stress-baseline/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-max/original-stress-baseline/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-max/original-stress-baseline/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 1.8409336917102337e-06,
+      "maximum_budget_ratio": 0.0005214106357486126,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B1/dpr-full/original-stress-baseline/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-full/original-stress-baseline/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-full/original-stress-baseline/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-full/original-stress-baseline/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-full/original-stress-baseline/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-full/original-stress-baseline/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/dpr-full/original-stress-baseline/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 1.0785297490656376e-06,
+      "maximum_budget_ratio": 0.00032534270449188736,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B1/dpr-full/original-stress-baseline/tensor",
+      "passed": true,
+      "maximum_absolute_error_pa": 6.805253178754356e-07,
+      "maximum_budget_ratio": 0.0006627663846447722
+    },
+    {
+      "name": "B1/scr-max/original-stress-baseline/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-max/original-stress-baseline/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-max/original-stress-baseline/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-max/original-stress-baseline/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-max/original-stress-baseline/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-max/original-stress-baseline/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-max/original-stress-baseline/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 0.0002925089211203158,
+      "maximum_budget_ratio": 0.08507764962315739,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B1/scr-full/original-stress-baseline/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-full/original-stress-baseline/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-full/original-stress-baseline/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-full/original-stress-baseline/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-full/original-stress-baseline/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-full/original-stress-baseline/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B1/scr-full/original-stress-baseline/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 0.0002919562393799424,
+      "maximum_budget_ratio": 0.08236785533249942,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B1/scr-full/original-stress-baseline/tensor",
+      "passed": true,
+      "maximum_absolute_error_pa": 2.3194334062281996e-06,
+      "maximum_budget_ratio": 0.0020557542960358602
+    },
+    {
+      "name": "B8/dpr-max/original-stress-baseline/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-max/original-stress-baseline/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-max/original-stress-baseline/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-max/original-stress-baseline/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-max/original-stress-baseline/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-max/original-stress-baseline/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-max/original-stress-baseline/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 4.304980393499136e-06,
+      "maximum_budget_ratio": 0.0011311644743590237,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B8/dpr-full/original-stress-baseline/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-full/original-stress-baseline/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-full/original-stress-baseline/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-full/original-stress-baseline/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-full/original-stress-baseline/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-full/original-stress-baseline/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/dpr-full/original-stress-baseline/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 2.247688826173544e-06,
+      "maximum_budget_ratio": 0.000640167028571407,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B8/dpr-full/original-stress-baseline/tensor",
+      "passed": true,
+      "maximum_absolute_error_pa": 9.027207852341235e-07,
+      "maximum_budget_ratio": 0.0007443344844729128
+    },
+    {
+      "name": "B8/scr-max/original-stress-baseline/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-max/original-stress-baseline/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-max/original-stress-baseline/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-max/original-stress-baseline/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-max/original-stress-baseline/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-max/original-stress-baseline/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-max/original-stress-baseline/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 0.0002793203166220337,
+      "maximum_budget_ratio": 0.11782623325597695,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B8/scr-full/original-stress-baseline/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-full/original-stress-baseline/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-full/original-stress-baseline/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-full/original-stress-baseline/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-full/original-stress-baseline/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-full/original-stress-baseline/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B8/scr-full/original-stress-baseline/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 0.00038647273322567344,
+      "maximum_budget_ratio": 0.19478084964516593,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B8/scr-full/original-stress-baseline/tensor",
+      "passed": true,
+      "maximum_absolute_error_pa": 4.5089624109095894e-05,
+      "maximum_budget_ratio": 0.04037284468138185
+    },
+    {
+      "name": "B32/dpr-max/original-stress-baseline/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-max/original-stress-baseline/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-max/original-stress-baseline/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-max/original-stress-baseline/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-max/original-stress-baseline/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-max/original-stress-baseline/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-max/original-stress-baseline/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 2.6355846785008907e-06,
+      "maximum_budget_ratio": 0.0008095851820489547,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B32/dpr-full/original-stress-baseline/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-full/original-stress-baseline/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-full/original-stress-baseline/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-full/original-stress-baseline/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-full/original-stress-baseline/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-full/original-stress-baseline/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/dpr-full/original-stress-baseline/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 2.2430322133004665e-06,
+      "maximum_budget_ratio": 0.0010851946044672784,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B32/dpr-full/original-stress-baseline/tensor",
+      "passed": true,
+      "maximum_absolute_error_pa": 1.2591190170496702e-06,
+      "maximum_budget_ratio": 0.0008203308409767761
+    },
+    {
+      "name": "B32/scr-max/original-stress-baseline/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-max/original-stress-baseline/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-max/original-stress-baseline/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-max/original-stress-baseline/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-max/original-stress-baseline/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-max/original-stress-baseline/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-max/original-stress-baseline/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 0.0007941876829136163,
+      "maximum_budget_ratio": 0.23826246165274675,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B32/scr-full/original-stress-baseline/position_m",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-full/original-stress-baseline/quaternion_up_to_sign",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-full/original-stress-baseline/velocity_m_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-full/original-stress-baseline/angular_velocity_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-full/original-stress-baseline/robot_qpos_rad",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-10,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-full/original-stress-baseline/robot_qvel_rad_per_s",
+      "passed": true,
+      "maximum_absolute_error": 0.0,
+      "target": 1e-09,
+      "first_nonzero_step": null,
+      "first_threshold_exceeding_step": null,
+      "maximum_error_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "B32/scr-full/original-stress-baseline/peak",
+      "passed": true,
+      "maximum_absolute_error_pa": 0.0005340078205335885,
+      "maximum_budget_ratio": 0.16920354497975132,
+      "relative_target": 1e-08,
+      "absolute_target_pa": 0.001
+    },
+    {
+      "name": "B32/scr-full/original-stress-baseline/tensor",
+      "passed": true,
+      "maximum_absolute_error_pa": 5.785747634945437e-05,
+      "maximum_budget_ratio": 0.05180506493743237
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group0/rigid-max/start.json",
+      "bytes": 1816,
+      "sha256": "7652cd496ced99edbe69084f2b0326bdb6872bfddb34f368c28b8b520e287d90"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group0/rigid-max/trajectory.npz",
+      "bytes": 263807,
+      "sha256": "7933cee793fea8b7c8145659e9f8d7b888ac5cfbdf1b47f768a44e03cca0f917"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group0/dpr-max/start.json",
+      "bytes": 1812,
+      "sha256": "7585bc7b553a94e719c68965ac161e9e6089ad8758bc23b3b263ceb4a2988de9"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group0/dpr-max/trajectory.npz",
+      "bytes": 268954,
+      "sha256": "1fcaa210689369f98a0699d18bc1c9adb5be986ed5b40999183cc9ecdb15aad2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group0/dpr-full/start.json",
+      "bytes": 1814,
+      "sha256": "f8a14abd697883b32df76a6faea1f3bada756f963a17da34a01dde9f1c7bd4b4"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group0/dpr-full/trajectory.npz",
+      "bytes": 1294308,
+      "sha256": "2b577bd88b3a969b1fb43fd44bd0a76026f04d3b6243b2fc091e866027c916ac"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group0/scr-max/start.json",
+      "bytes": 1812,
+      "sha256": "e2f79e14c0804c9b16a16527ddeeb7ad1749779a84a6cc4bd0e24b5322d967e2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group0/scr-max/trajectory.npz",
+      "bytes": 271395,
+      "sha256": "bbfa3d997e5969af35383452260dfa856831d1928342601b1a780f8dacc4a002"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group0/scr-full/start.json",
+      "bytes": 1814,
+      "sha256": "8204acd99c0cfb5db552fa37e9b4684dbf6d3261daa1d4b0e886ba09ff028891"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group0/scr-full/trajectory.npz",
+      "bytes": 1296609,
+      "sha256": "9495f2db7eed68dde1c293ec2d8bec3dc0db806aa06a3a6165d8078f034c8d31"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group1/rigid-max/start.json",
+      "bytes": 1821,
+      "sha256": "0baa30e2b4d3ad1da239a4ed9de777a91cea7d43f95181f68fa3b46fcefaf610"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group1/rigid-max/trajectory.npz",
+      "bytes": 2001064,
+      "sha256": "c72fa8f2be74547ba0be5265e62b12cb91450bfd0510ffb3df95f7a43b4f6235"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group1/dpr-max/start.json",
+      "bytes": 1817,
+      "sha256": "001f05ed9baaff9560fbc40ec9bf4ffed2397f062a8bfa1d67ffc42e2f25851a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group1/dpr-max/trajectory.npz",
+      "bytes": 2069435,
+      "sha256": "650706041488e0b8a5175e6bba2d431fc18f3fc9a8db3046be953017f933a136"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group1/dpr-full/start.json",
+      "bytes": 1819,
+      "sha256": "283a9942d9034661bc7fa68051bdb353b02c732970726b185572fa7238634bd2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group1/dpr-full/trajectory.npz",
+      "bytes": 10268594,
+      "sha256": "04e351bf517dc9009c9c86ef33debb7ea46cc62a52352c836d7a5e95895749b0"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group1/scr-max/start.json",
+      "bytes": 1817,
+      "sha256": "db91a4ed38668d6ef398a4260c78d67b5f7a8d33b97f5026b8a50bce0a9148d8"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group1/scr-max/trajectory.npz",
+      "bytes": 2069527,
+      "sha256": "c44779d3ff871c90a2a244ed0d972c22dae9c973c1731a034ef44ecad00e72d8"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group1/scr-full/start.json",
+      "bytes": 1819,
+      "sha256": "2e712c07e9a6e57c867aae60425831968b11648afa3d60dcbca50560c1f582f5"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group1/scr-full/trajectory.npz",
+      "bytes": 10268723,
+      "sha256": "832be148c0167a716f60adbea0697f46a90bce88e47c527a84bbbf157d588cd2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group2/rigid-max/start.json",
+      "bytes": 1817,
+      "sha256": "62103c4e5e4da832d1c0eab5eebbc07350783f3a01e6d339fb196be8ae306475"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group2/rigid-max/trajectory.npz",
+      "bytes": 2066764,
+      "sha256": "7cfe280bfde4b31cbde8b715b42b2c91a8d618d8b56fd2ee2b8575d29f934840"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group2/dpr-max/start.json",
+      "bytes": 1813,
+      "sha256": "00c36896553cd71d6e72ef8152d1e83d15697c7c46f10961d1d11a119d00f022"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group2/dpr-max/trajectory.npz",
+      "bytes": 2161838,
+      "sha256": "5eeab2be89ee5e2c1beb402877fe2f4eac6bab14d217868547b5ab16dc2246fc"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group2/dpr-full/start.json",
+      "bytes": 1815,
+      "sha256": "04f0060a769cdb87abf4c3c6721b8aba8aa3d6440bdac5602b04e482bf7a05f2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group2/dpr-full/trajectory.npz",
+      "bytes": 34953543,
+      "sha256": "73fa87e05f488ca2fa0367182a34cf8ef01477e091aa132e3ec86f8004d65301"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group2/scr-max/start.json",
+      "bytes": 1813,
+      "sha256": "643ef5cc2fbb3da9f1f3b9e4d01625b9eabe22c51391f391dc1f581b3bfdcc91"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group2/scr-max/trajectory.npz",
+      "bytes": 2225903,
+      "sha256": "f5783d08e89c39844b89c4c54a68e3011bbc1701dee0a81e27272a61eda7b338"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group2/scr-full/start.json",
+      "bytes": 1815,
+      "sha256": "7ba7859527e0a8c5e096679e611379aedde9c0b78f32f95ca133f1d3f23dc321"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-portal-point-combined-v1/group2/scr-full/trajectory.npz",
+      "bytes": 35016714,
+      "sha256": "34ca3f24365a5d27a22cef05285b0a6acf987b0f8fafa9609d2fa93026d29c88"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group0/dpr-max/trajectory.npz",
+      "bytes": 268969,
+      "sha256": "1ccd5f7d4a507d6d0fc5e0c87932ecf0bb404e818a1bcdf695f2cb000172d15c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group0/dpr-full/trajectory.npz",
+      "bytes": 1294264,
+      "sha256": "8c53f9ac29b9e9e977759a691338066ae5afcc5b8755a578696824e68330dd72"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group0/scr-max/trajectory.npz",
+      "bytes": 271352,
+      "sha256": "086949811f05f38526d96e4b424ccfd2fc6a06da11bb01d0cfce9441986ba330"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group0/scr-full/trajectory.npz",
+      "bytes": 1296517,
+      "sha256": "7d02c3eec27e2aa7b8b95b8327c7e8deb258233413230649335e3b7dfef82c64"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group1/dpr-max/trajectory.npz",
+      "bytes": 2069416,
+      "sha256": "7ce2de0ac4ae483da0fdb62f2801d432a594d0444e38f58767653fc87ec1db4d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group1/dpr-full/trajectory.npz",
+      "bytes": 10268494,
+      "sha256": "5233c0ed37cc6493efec4998430881f04fa38b064483404d51d4c4f4a406f026"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group1/scr-max/trajectory.npz",
+      "bytes": 2069484,
+      "sha256": "c50b21de791caf3535c89740ee8c9d95c0f3e82b5cb4ccf773521bc1204b7f65"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group1/scr-full/trajectory.npz",
+      "bytes": 10268677,
+      "sha256": "986961cf0932f69466816d7cbd100d62eb8b6858696efe6328f19d459bac1c91"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group2/dpr-max/trajectory.npz",
+      "bytes": 2161780,
+      "sha256": "b85925f5babef59307afa15a93a625463c0b68a65c1c6a1d91536f266de72540"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group2/dpr-full/trajectory.npz",
+      "bytes": 34952225,
+      "sha256": "fa6dd6ed134d281406508b764c8655568302052d7f5dda95563e5f8d754367fb"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group2/scr-max/trajectory.npz",
+      "bytes": 2225557,
+      "sha256": "08f7d01eda16d4fe94b4daf2ec1c901c135cbac01be91d26946863b8227a6a32"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group2/scr-full/trajectory.npz",
+      "bytes": 35016900,
+      "sha256": "7d0f18ffbb2eae436c524574afb8789fc4c25843ecacf90e3ee10d5143e103ab"
+    }
+  ],
+  "recorded_scene_steps_per_case": 1200,
+  "case_count": 15,
+  "batches": [
+    1,
+    8,
+    32
+  ],
+  "replay_timing_admitted": false,
+  "physical_reference_qualified": false,
+  "scope": "Complete motion/errno/peak paths and11 full-field snapshots per full-output run. Condition-matched batches and pure-rigid comparisons use fixed predeclared thresholds. Replay timing and physical continuum accuracy are separate claims."
+}
