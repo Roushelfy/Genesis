@@ -1,5 +1,12 @@
 # Working on native rigid stress recovery
 
+**Latest user direction, 2026-10-19:** separate accuracy verification from
+performance timing. Read [the protocol](docs/ACCURACY_AND_THROUGHPUT_PROTOCOL.md).
+Run low-resolution native module and end-to-end throughput tuning now; do not
+wait for fine FEM convergence. Exclude research-only audits/exports from
+production timing, keep required runtime acceptance, and bind accuracy and
+speed to matching configurations. Preserve every-step friction failures.
+
 **Execution-agent handoff, 2026-10-18:** finish qualified DPR / SCR / Shell
 stress-error rankings on the simple full-egg parallel-plate benchmark. Read
 [the active goal](docs/QUALIFIED_STRESS_RANKING_GOAL.md) before further work.

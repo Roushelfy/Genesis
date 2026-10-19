@@ -5,6 +5,10 @@ It is a working completion audit, not a replacement specification or a closeout.
 Linked historical reports retain their publication-time scope; terminal result
 files and their exact source/input identities are authoritative.
 
+The [2026-10-19 accuracy/throughput protocol](ACCURACY_AND_THROUGHPUT_PROTOCOL.md)
+adds independent native production tuning now; fine-reference work does not
+block it. Historical research-workflow costs are not production throughput.
+
 | Requirement | Current evidence and limit | Required before completion |
 | --- | --- | --- |
 | SCR balanced normal/shear repair with scale, frame and rejection regressions | The [execution record](QUALIFIED_STRESS_PROGRESS_20261019.md) identifies original failures, independent CPU feasibility, before/after GPU tests, scale/frame controls, serial CPU tests and retained infeasible loads. | Recheck their terminal receipts and final engine ancestry; preserve all original failures. |
@@ -18,6 +22,7 @@ files and their exact source/input identities are authoritative.
 | Actual sustained tangential load and full history | True250um Shell and native requested endpoints have nonzero support. Both native every-step friction modes fail initial detachment; requested-keyframe mode is separately admitted. | Link final friction ranks to exact admitted endpoint fields and full mechanical histories. Report every-step failures without imputing stress values or using keyframe success to admit them. |
 | Loading/unloading, repeats, radius/tolerance sensitivity | Normal cycles, independent runs, fixed1.5/2/2.5mm radius controls, paired output modes and solver/time controls are retained. | Recheck matching configurations and label warm timing blocks versus independent process repeats. No radius selection from evaluation errors or extrapolation of coarse controls as measured fine-grid bounds. |
 | Matched cost, memory and stable modes | [Complete normal matrix](COMPLETE_PAD_COST_20261019.md):24 B1/B4 full/max every-step/sparse timings and12 memory profiles; [friction keyframe cost](FRICTION_KEYFRAME_COST_REUSE_20261019.md): admitted B1/full/stride200 modes. | Consolidate error versus cost only within matched admitted scopes; preserve failure rate, cadence, warm-repeat spread, sampled-memory limitations and separate inclusive phase profiles. |
+| Separate native module and production throughput | Existing normal/friction cost packets measure the declared research workflow. Production module/end-to-end measurements are a separate track under the new protocol. | Measure GPU-resident contact replay and actual pure-rigid / max / full scene runs with useful batch scaling, runtime validity and profile-guided tuning; exclude research-only audits and export. Join speed and errors only for matching configurations, leaving new collider/load-model error cells pending. |
 | Final full-domain figures and reproduction | Normal maps/response/errors have rendered QA. The [friction figure contract](FRICTION_FIGURE_PLAN.md) and data reader exist. | Render and inspect final friction complete-field, actual normal/tangent-load and force-response figures using qualified fine inputs; include captions, interpretation, editable exports, plotted data, hashes and runnable commands. |
 
 The prescribed-pressure case, physical compliant pads and original hard plates
