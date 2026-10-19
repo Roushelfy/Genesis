@@ -97,6 +97,11 @@ def cpu_source_prior_fit(
 
 def source_prior_fixture(case, vertices, faces):
     assets = Path(__file__).with_name("assets")
+    if case.startswith("balanced_plate_"):
+        with np.load(assets / f"{case}.npz") as saved:
+            return tuple(
+                saved[key].copy() for key in ("anchor", "point", "force", "radius", "friction", "anchor_face", "moment")
+            )
     if case == "roundoff_edge":
         with np.load(assets / "nonconvex_shared_edge_roundoff.npz") as saved:
             anchors, points, forces, radii, friction, anchor_faces = (
@@ -158,6 +163,8 @@ def source_prior_fixture(case, vertices, faces):
         "policy876",
         "policy807",
         "balanced_compression",
+        "balanced_plate_normal",
+        "balanced_plate_shear",
         "varied2048",
         "varied4096",
         "roundoff_edge",
@@ -335,7 +342,13 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, native_
         np.linalg.norm(force),
         np.linalg.norm(moment) / radii[0],
     )
-    budget_scale = np.linalg.norm(force) or scale
+    budget_scale = np.maximum(np.linalg.norm(forces, axis=1), np.linalg.norm(moments, axis=1) / radii).sum()
+    moment_budget_scale = np.sum(
+        np.linalg.norm(moments, axis=1)
+        + (radii + np.linalg.norm(anchors - points[0], axis=1)) * np.linalg.norm(forces, axis=1)
+    )
+    record_property("physical_force_scale_n", float(budget_scale))
+    record_property("physical_moment_scale_nm", float(moment_budget_scale))
     force_errors, moment_errors = [], []
     for i_b in range(n_envs):
         clouds = [[], [], [], [], [], [], [], []]
@@ -364,7 +377,7 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, native_
             np.linalg.norm(
                 np.cross(xyz - points[0], actual_force).sum(axis=0) - (moment - np.cross(points[0] - anchors[0], force))
             )
-            <= 1e-8 * budget_scale * radii[0]
+            <= 1e-8 * moment_budget_scale
         )
         compression = np.einsum("qi,qi->q", actual_force, normals)
         moment_errors.append(
@@ -373,7 +386,7 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, native_
                     np.cross(xyz - points[0], actual_force).sum(axis=0)
                     - (moment - np.cross(points[0] - anchors[0], force))
                 )
-                / (budget_scale * radii[0])
+                / moment_budget_scale
             )
         )
         tangent = np.linalg.norm(actual_force - compression[:, None] * normals, axis=1)

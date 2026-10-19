@@ -20,6 +20,7 @@ from .traction import (
     StressTractionStatus,
     func_source_traction,
     func_traction_constraint_active,
+    func_traction_error_scales,
     func_traction_geometry,
     func_traction_shape,
     func_traction_source_friction,
@@ -57,11 +58,11 @@ def kernel_commit_intrinsic_contacts(
                     raw_contacts.is_refined[i_raw, i_b] = (
                         traction_state.circle.refined[i_c, i_b] or traction_state.fan_refined[i_c, i_b]
                     )
-            force_scale = contact_state.force[i_c, i_b].norm()
-            if force_scale == 0.0:
-                force_scale = traction_state.scale[i_c, i_b]
+            force_scale, moment_scale = func_traction_error_scales(
+                i_c, i_b, traction_state.scale[i_c, i_b], contact_state, traction_state
+            )
             force_error = traction_state.force_error[i_c, i_b] * force_scale
-            moment_error = traction_state.moment_error[i_c, i_b] * force_scale * contact_state.radius[i_c, i_b]
+            moment_error = traction_state.moment_error[i_c, i_b] * moment_scale
             status = 0
             if source_state.status[i_c, i_b] != 0:
                 status = 10 + source_state.status[i_c, i_b]
@@ -105,11 +106,7 @@ def kernel_commit_intrinsic_contacts(
                         cone_valid = qd.simt.subgroup.all_true(cone_valid)
                 force_error = (total - contact_state.force[i_c, i_b]).norm()
                 moment_error = (moment - source_state.free_moment[i_c, i_b]).norm()
-                budget_scale = contact_state.force[i_c, i_b].norm()
-                if budget_scale == 0.0:
-                    budget_scale = scale
-                budget = 1e-8 * budget_scale
-                if not cone_valid or force_error > budget or moment_error > budget * contact_state.radius[i_c, i_b]:
+                if not cone_valid or force_error > 1e-8 * force_scale or moment_error > 1e-8 * moment_scale:
                     status = 40
             if lane == 0:
                 raw_contacts.center[i_raw, i_b] = contact_state.center[i_c, i_b]
@@ -175,7 +172,9 @@ def kernel_scatter_cached_tractions(
                         total += force
                         moment += (position - contact_state.position[i_c, i_b]).cross(force)
                         if traction_state.profile[i_q, i_s, i_b] > 0.0:
-                            i_face, basis = func_traction_shape(i_q, i_s, i_b, traction_state, surface_info, traction_info)
+                            i_face, basis = func_traction_shape(
+                                i_q, i_s, i_b, traction_state, surface_info, traction_info
+                            )
                             for a in qd.static(range(6)):
                                 i_node = stress_info.surface_nodes[i_face, a]
                                 for k in qd.static(range(3)):

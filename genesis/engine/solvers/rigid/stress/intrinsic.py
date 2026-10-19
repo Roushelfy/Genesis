@@ -44,6 +44,7 @@ from .traction import (
     create_traction_info,
     func_source_traction,
     func_traction_constraint_active,
+    func_traction_error_scales,
     func_traction_geometry,
     func_traction_source_friction,
     func_traction_support_range,
@@ -750,13 +751,11 @@ def kernel_commit_intrinsic_contacts_impl(
             raw_contacts.evaluations[i_raw, i_b] = traction_state.evaluations[i_c, i_b]
             certificates.ray[i_raw, i_b] = traction_state.certificate[i_c, i_b]
             certificates.margin[i_raw, i_b] = traction_state.certificate_margin[i_c, i_b]
-            force_scale = contact_state.force[i_c, i_b].norm()
-            if force_scale == 0.0:
-                force_scale = traction_state.scale[i_c, i_b]
-            raw_contacts.force_error[i_raw, i_b] = traction_state.force_error[i_c, i_b] * force_scale
-            raw_contacts.moment_error[i_raw, i_b] = (
-                traction_state.moment_error[i_c, i_b] * force_scale * contact_state.radius[i_c, i_b]
+            force_scale, moment_scale = func_traction_error_scales(
+                i_c, i_b, traction_state.scale[i_c, i_b], contact_state, traction_state
             )
+            raw_contacts.force_error[i_raw, i_b] = traction_state.force_error[i_c, i_b] * force_scale
+            raw_contacts.moment_error[i_raw, i_b] = traction_state.moment_error[i_c, i_b] * moment_scale
             status = 0
             if source_state.status[i_c, i_b] != 0:
                 status = 10 + source_state.status[i_c, i_b]
@@ -785,11 +784,7 @@ def kernel_commit_intrinsic_contacts_impl(
                 moment_error = (moment - source_state.free_moment[i_c, i_b]).norm()
                 raw_contacts.force_error[i_raw, i_b] = force_error
                 raw_contacts.moment_error[i_raw, i_b] = moment_error
-                budget_scale = contact_state.force[i_c, i_b].norm()
-                if budget_scale == 0.0:
-                    budget_scale = scale
-                budget = 1e-8 * budget_scale
-                if not cone_valid or force_error > budget or moment_error > budget * contact_state.radius[i_c, i_b]:
+                if not cone_valid or force_error > 1e-8 * force_scale or moment_error > 1e-8 * moment_scale:
                     status = 40
             raw_contacts.status[i_raw, i_b] = status
 
