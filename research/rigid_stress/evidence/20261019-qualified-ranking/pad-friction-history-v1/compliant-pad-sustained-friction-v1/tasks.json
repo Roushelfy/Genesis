@@ -1,0 +1,100 @@
+[
+  [
+    {
+      "name": "shear",
+      "module": "research.rigid_stress.qipc_comparison.plate_shell_coupled",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-pad-friction",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--pad-geometry",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-centroid-control-v1/group0/geometry/pad-geometry.npz",
+        "--loads",
+        "0.1",
+        "0.1",
+        "--dt",
+        "0.001",
+        "--ramp",
+        "0.05",
+        "--hold",
+        "0.15",
+        "--record-stride",
+        "1",
+        "--tolerance",
+        "1e-4",
+        "--velocity-tolerance",
+        "1e-10",
+        "--iterations",
+        "8000",
+        "--coarse-patches",
+        "0",
+        "--floating-sums",
+        "--friction",
+        "0.3",
+        "--gravity-x",
+        "1",
+        "--gravity-start",
+        "0.2",
+        "--gravity-ramp",
+        "0.05"
+      ]
+    },
+    {
+      "name": "audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_coupled_shell",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-sustained-friction-v1/group0/shear"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shear",
+      "module": "research.rigid_stress.qipc_comparison.plate_shell_coupled",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-pad-friction",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--pad-geometry",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-centroid-control-v1/group0/geometry/pad-geometry.npz",
+        "--loads",
+        "0.1",
+        "0.1",
+        "--dt",
+        "0.0005",
+        "--ramp",
+        "0.05",
+        "--hold",
+        "0.15",
+        "--record-stride",
+        "1",
+        "--tolerance",
+        "1e-4",
+        "--velocity-tolerance",
+        "1e-10",
+        "--iterations",
+        "8000",
+        "--coarse-patches",
+        "0",
+        "--floating-sums",
+        "--friction",
+        "0.3",
+        "--gravity-x",
+        "1",
+        "--gravity-start",
+        "0.2",
+        "--gravity-ramp",
+        "0.05"
+      ]
+    },
+    {
+      "name": "audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_coupled_shell",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-sustained-friction-v1/group1/shear"
+      ]
+    }
+  ]
+]
