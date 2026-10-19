@@ -36,6 +36,11 @@ assembled nodal force divided by an arbitrary dual area is not a substitute for
 the actual native reconstruction quadrature. Any later claim separating contact
 error from reconstruction error needs its own same-traction replay and exact
 reconstruction/source audit; these contact maps alone cannot establish it.
+The later [native reconstruction capture](NATIVE_RECONSTRUCTION_MATERIAL_20261019.md)
+now retains exact integration points, independent assembly/core checks and
+measured plate-side redistribution. Keep those reconstructed loads distinct
+from this figure's actual physical pad loads; final continuum error attribution
+still requires the separate reference and same-traction qualifications.
 
 The source CSV retains every recorded physical step, actual upper/lower and
 tangential reactions, body force, plate-gap closure, mass, inertia norm and

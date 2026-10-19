@@ -1,0 +1,28 @@
+{
+  "purpose": "Close prescribed finite-area elasticity/reconstruction spatial controls without changing the declared C2 pressure or2mm radius; distinct from end-to-end physical pads.",
+  "load_n": 0.1,
+  "radius_m": 0.002,
+  "field_target": 0.02,
+  "raw_common_peak_target": 0.05,
+  "solver_and_integration_field_target": 0.005,
+  "solver_and_integration_peak_target": 0.01,
+  "adapter_field_equivalence_target": 1e-08,
+  "adapter_raw_common_peak_equivalence_target": 1e-08,
+  "final_mesh": "125um three wall layers",
+  "planned_comparisons": [
+    "same-mesh factor adapter",
+    "125um wall2-to3",
+    "three-layer250-to125um surface",
+    "250um wall2-to125um wall3 joint",
+    "q8-to10 prescribed load integration",
+    "q9-to25 metric sampling",
+    "existing DPR/SCR/static Shell versus final reference"
+  ],
+  "changes_not_allowed": [
+    "radius retuning",
+    "pressure-profile retuning",
+    "removal of polar regions",
+    "relaxing spatial targets"
+  ],
+  "whole_goal_complete": false
+}

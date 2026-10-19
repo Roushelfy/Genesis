@@ -9,6 +9,7 @@ import numpy as np
 from skfem import FacetBasis, LinearForm, asm
 
 from .artifacts import file_id, runtime_identity, write_json
+from .cvxopt_factor import CvxoptCholeskyFactor
 from .p2_elastic import FreeElasticP2, CholeskyFactor
 
 
@@ -55,8 +56,10 @@ def main():
     cli.add_argument("--quadrature-orders", type=int, nargs="+", default=[8, 10])
     cli.add_argument("--through-wall-ordering", action="store_true")
     cli.add_argument("--cholespy-path", type=Path)
+    cli.add_argument("--cvxopt-factor", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
+    assert not (args.cvxopt_factor and args.cholespy_path), "Select one explicit CHOLMOD adapter"
     assert args.radius > 0 and min(args.loads) > 0
     assert len(set(args.quadrature_orders)) == len(args.quadrature_orders)
     args.output.mkdir(parents=True, exist_ok=False)
@@ -75,6 +78,7 @@ def main():
             "quadrature_orders": args.quadrature_orders,
             "through_wall_ordering": args.through_wall_ordering,
             "cholespy_path": str(args.cholespy_path) if args.cholespy_path is not None else None,
+            "cvxopt_long_index_factor": args.cvxopt_factor,
             "profile": "Axial inward traction proportional to max(1-rho^2/radius^2,0)^3 on each outer pole, normalized separately to the declared force. Radius is prescribed before stress evaluation.",
         },
     )
@@ -87,6 +91,7 @@ def main():
         column_faces=faces,
         through_wall_ordering=args.through_wall_ordering,
         cholespy_path=args.cholespy_path,
+        cvxopt_factor=args.cvxopt_factor,
     )
     factor_seconds = time.perf_counter() - start
     rows = []
@@ -150,6 +155,10 @@ def main():
             "cholespy_binary": file_id(Path(model.factor.module_path))
             if isinstance(model.factor, CholeskyFactor)
             else None,
+            "cvxopt_binary": file_id(Path(model.factor.module_path))
+            if isinstance(model.factor, CvxoptCholeskyFactor)
+            else None,
+            "cvxopt_index_bytes": model.factor.index_bytes if isinstance(model.factor, CvxoptCholeskyFactor) else None,
             "factor_seconds": factor_seconds,
             "total_seconds": time.perf_counter() - start,
             "peak_rss_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
@@ -158,6 +167,7 @@ def main():
             "scope": "Free full solid under independently prescribed finite-area traction. All six factorization gauges are removed; no egg vertices are physically pinned. Retained quadrature point forces and consistent nodal forces preserve force, moment and rigid virtual work. Quadrature, surface and wall convergence still require measured controls. This is a same-traction elasticity benchmark, not a solved plate-contact state or an end-to-end ranking.",
         },
     )
+    assert all(row["elastic_equations_admitted"] for row in rows), "Prescribed-traction equations failed"
 
 
 if __name__ == "__main__":

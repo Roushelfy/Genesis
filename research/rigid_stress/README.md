@@ -70,6 +70,13 @@ above the2% target. Audited plotting inputs retain complete histories and actual
 contact forces; final fine-reference qualification and friction figures remain
 pending. See the [figure contract](docs/FRICTION_FIGURE_PLAN.md).
 
+The [reconstruction/material update](docs/NATIVE_RECONSTRUCTION_MATERIAL_20261019.md)
+adds exact native quadrature and10-state independent integration/core agreement,
+measured footprint broadening and SCR plate-side redistribution, plus admitted
+500um normal material controls at0.3/1N. Prescribed-C2 spatial qualification is
+still incomplete. The [completion checklist](docs/QUALIFIED_STRESS_COMPLETION_CHECKLIST.md)
+keeps the remaining comparisons, absolute-error tables and final figures explicit.
+
 The [plate report](docs/PARALLEL_PLATE_RESULTS_20261018.md) records verified
 mechanical equilibria, the SCR cancellation-sensitive admission failure,
 original Shell contact-split imbalance and unresolved QIPC point-contact fields.

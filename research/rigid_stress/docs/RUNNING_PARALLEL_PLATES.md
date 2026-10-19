@@ -1,5 +1,17 @@
 # Reproducing the parallel-plate comparison
 
+For exact reconstructed native boundary loads, use `replay_native_pad_tractions
+--run ORIGINAL_ADMITTED_RUN --levels LEVEL ... --output NEW_DATA_PATH` in the
+native environment. Then run `audit_native_reconstruction --capture CAPTURE
+--additional-captures OTHER ... --output NEW_DATA_PATH` in the independent FEM
+environment. Both use Slurm and fresh data paths. The reader checks original
+journal/frame identities, source replay, signed P2 scatter and unchanged native
+force/stress arrays. The independent audit recomputes interpolation from geometry
+and reuses one factor for matching meshes. See the
+[reconstruction/material report](NATIVE_RECONSTRUCTION_MATERIAL_20261019.md)
+for exact successful and failed tasks, measured plate-side redistribution and
+the distinction between numerical-core and physical load-model accuracy.
+
 For completed250um nonlinear mechanics and500-to250um surface controls, see the
 [spatial checkpoint](FRICTION_SPATIAL250_20261019.md). `friction_plot_data
 --data-root RUN_ROOT --reference-run ADMITTED_REFERENCE_RUN --output NEW_DATA_PATH`

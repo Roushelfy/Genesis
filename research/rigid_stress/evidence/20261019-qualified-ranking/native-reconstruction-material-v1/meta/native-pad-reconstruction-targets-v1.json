@@ -1,0 +1,22 @@
+{
+  "native_replay_field_force_rhs_relative_target": 1e-08,
+  "captured_signed_p2_scatter_relative_target": 1e-10,
+  "captured_force_moment_relative_target": 1e-10,
+  "independent_p2_surface_integration_relative_target": 1e-10,
+  "independent_same_rhs_equation_projection_and_stress_relative_target": 1e-08,
+  "footprint_radius_m": 0.002,
+  "normal_loads_n": [
+    0.1,
+    0.3,
+    1.0
+  ],
+  "friction_endpoint": {
+    "normal_load_n": 0.1,
+    "friction": 0.3,
+    "gravity_x_m_per_s2": 1.0
+  },
+  "original_histories": "native-pad-full-source-stability-v1/groups0-3",
+  "physical_model_unchanged": true,
+  "native_production_kernels_unchanged": true,
+  "scope": "Read-only actual quadrature and same-mesh assembled-RHS controls. These thresholds were present in captured initial source. Historical schema failures are not numerical-gate failures. No primary cost, continuum rank or direct error subtraction is inferred."
+}

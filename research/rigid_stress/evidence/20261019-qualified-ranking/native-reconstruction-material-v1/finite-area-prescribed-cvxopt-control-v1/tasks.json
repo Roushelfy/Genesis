@@ -1,0 +1,32 @@
+[
+  [
+    {
+      "name": "reference",
+      "module": "research.rigid_stress.qipc_comparison.finite_area_reference",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--quadrature-orders",
+        "10",
+        "--through-wall-ordering",
+        "--cvxopt-factor"
+      ]
+    },
+    {
+      "name": "comparison",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-native-inputs-v1/group0/reference/order-10",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-prescribed-cvxopt-control-v1/group0/reference/order-10",
+        "--surface-quadrature",
+        "9",
+        "--physical-volume",
+        "--common-peaks"
+      ]
+    }
+  ]
+]
