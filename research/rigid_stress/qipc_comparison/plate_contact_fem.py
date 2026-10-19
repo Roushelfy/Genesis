@@ -1,0 +1,229 @@
+"""Solve free-body linear elastic frictionless plate contact by a condensed convex complementarity problem."""
+
+import argparse
+import json
+import resource
+import time
+from pathlib import Path
+
+import numpy as np
+from scipy.optimize import minimize
+
+from .artifacts import file_id, runtime_identity, write_json
+from .p1_elastic import FreeElasticP1
+
+
+def main():
+    cli = argparse.ArgumentParser(description=__doc__)
+    cli.add_argument("--mesh", type=Path, required=True)
+    cli.add_argument("--loads", type=float, nargs="+", default=[0.1, 0.3, 1.0])
+    cli.add_argument("--candidate-radius", type=float, default=0.0002)
+    cli.add_argument("--column-ordering", action="store_true")
+    cli.add_argument("--contact-operator", type=Path)
+    cli.add_argument("--output", type=Path, required=True)
+    args = cli.parse_args()
+    args.output.mkdir(parents=True, exist_ok=False)
+    start = time.perf_counter()
+    with np.load(args.mesh) as saved:
+        vertices, tets, outer, faces = (saved[key] for key in ("vertices", "tetrahedra", "outer_vertices", "mid_faces"))
+    center = vertices.mean(axis=0)
+    radius = np.linalg.norm(outer[:, :2], axis=1)
+    nodes = np.flatnonzero(radius <= args.candidate_radius)
+    sign = np.where(outer[nodes, 2] < 0, 1.0, -1.0)
+    top = sign < 0
+    assert top.any() and (~top).any()
+    initial_gap = np.where(top, outer[:, 2].max() - outer[nodes, 2], outer[nodes, 2] - outer[:, 2].min())
+    # These three rigid coordinates are physical unknowns. The other rigid
+    # motions do not affect frictionless horizontal-plate contact at linear order.
+    lever = 0.03
+    rigid = np.column_stack(
+        (sign, sign * (outer[nodes, 1] - center[1]) / lever, -sign * (outer[nodes, 0] - center[0]) / lever, top)
+    )
+    target = np.array([0.0, 0.0, 0.0, 1.0])
+    write_json(
+        args.output / "start.json",
+        {
+            "identity": runtime_identity(),
+            "mesh": file_id(args.mesh),
+            "candidate_nodes": len(nodes),
+            "tetrahedra": len(tets),
+            "loads_n": args.loads,
+        },
+    )
+    model = FreeElasticP1(vertices, tets, 1e10, 0.3, 2000.0, column_faces=faces if args.column_ordering else None)
+    factor_seconds = time.perf_counter() - start
+    compliance = np.empty((len(nodes), len(nodes)))
+    if args.contact_operator is not None:
+        previous = json.loads((args.contact_operator.parent / "start.json").read_text())
+        assert previous["mesh"]["sha256"] == file_id(args.mesh)["sha256"]
+        with np.load(args.contact_operator) as saved:
+            for key, expected in (("nodes", nodes), ("sign", sign), ("rigid", rigid), ("initial_gap_m", initial_gap)):
+                np.testing.assert_array_equal(saved[key], expected)
+            compliance[:] = saved["compliance_m_per_n"]
+    with (args.output / "steps.jsonl").open("w", buffering=1) as journal:
+        for first in range(0, len(nodes), 16) if args.contact_operator is None else ():
+            selected = slice(first, first + 16)
+            force = np.zeros((3 * len(vertices), len(nodes[selected])))
+            force[3 * nodes[selected] + 2, np.arange(len(nodes[selected]))] = sign[selected]
+            corrected = force - model.mass_modes @ np.linalg.solve(model.gram, model.rigid_modes.T @ force)
+            displacement = np.zeros_like(force)
+            displacement[model.free] = model.factor.solve(corrected[model.free] / model.young)
+            displacement -= model.rigid_modes @ np.linalg.solve(model.gram, model.mass_modes.T @ displacement)
+            compliance[:, selected] = sign[:, None] * displacement[3 * nodes + 2]
+            journal.write(
+                json.dumps(
+                    {"condensed_columns": min(first + 16, len(nodes)), "elapsed_seconds": time.perf_counter() - start}
+                )
+                + "\n"
+            )
+        reciprocity = np.linalg.norm(compliance - compliance.T) / np.linalg.norm(compliance)
+        assert reciprocity < 1e-7, "Free-body compliance fails reciprocity"
+        compliance = (compliance + compliance.T) / 2
+        np.linalg.cholesky(compliance)
+        np.savez_compressed(
+            args.output / "contact-operator.npz",
+            nodes=nodes,
+            sign=sign,
+            compliance_m_per_n=compliance,
+            rigid=rigid,
+            initial_gap_m=initial_gap,
+        )
+        rows = []
+        initial = np.where(top, 1 / top.sum(), 1 / (~top).sum())
+        for load in args.loads:
+            solve_start = time.perf_counter()
+            displacement_scale = load / (model.young * 5e-5)
+            matrix = compliance * load / displacement_scale
+            gap = initial_gap / displacement_scale
+            fitted = minimize(
+                lambda x: (0.5 * x @ matrix @ x + gap @ x, matrix @ x + gap),
+                initial,
+                jac=True,
+                method="SLSQP",
+                bounds=[(0, None)] * len(nodes),
+                constraints={"type": "eq", "fun": lambda x: rigid.T @ x - target, "jac": lambda x: rigid.T},
+                options={"ftol": 1e-12, "maxiter": 1000},
+            )
+            alpha = fitted.x
+            active = alpha > 1e-9
+            # Solve the identified active equations without relying on optimizer
+            # success flags. Keep every multiplier, including any negative one.
+            reduced = np.block([[matrix[np.ix_(active, active)], rigid[active]], [rigid[active].T, np.zeros((4, 4))]])
+            polished, _, rank, _ = np.linalg.lstsq(reduced, np.r_[-gap[active], target], rcond=1e-13)
+            alpha = np.zeros_like(alpha)
+            alpha[active] = polished[:-4]
+            coordinate = polished[-4:] * displacement_scale
+            forces = np.zeros_like(vertices)
+            forces[nodes, 2] = alpha * load * sign
+            tensor, elastic, correction, residual = model.solve(forces)
+            displacement = elastic.copy()
+            displacement[:, 2] += coordinate[0]
+            displacement += np.cross(np.array([coordinate[1] / lever, coordinate[2] / lever, 0.0]), vertices - center)
+            all_bottom_gap = outer[:, 2] + displacement[: len(outer), 2] - outer[:, 2].min()
+            all_top_gap = outer[:, 2].max() + coordinate[3] - outer[:, 2] - displacement[: len(outer), 2]
+            actual_gap = np.where(top, all_top_gap[nodes], all_bottom_gap[nodes])
+            eig = np.linalg.eigvalsh(tensor)
+            dev = tensor - np.trace(tensor, axis1=-2, axis2=-1)[:, None, None] * np.eye(3) / 3
+            mises = np.sqrt(1.5 * (dev * dev).sum(axis=(1, 2)))
+            gradient = np.einsum("tai,taj->tij", displacement[tets], model.gradients)
+            reaction_error = np.linalg.norm(rigid.T @ alpha - target)
+            equation_error = np.linalg.norm(residual) / np.linalg.norm(forces)
+            balance_correction = np.linalg.norm(correction) / np.linalg.norm(forces)
+            minimum_gap = min(all_bottom_gap.min(), all_top_gap.min())
+            contact_error = np.abs(actual_gap[active]).max() / displacement_scale
+            admitted = bool(
+                rank == len(polished)
+                and reaction_error < 1e-8
+                and equation_error < 1e-7
+                and balance_correction < 1e-8
+                and alpha.min() >= -1e-10
+                and minimum_gap >= -1e-7 * displacement_scale
+                and contact_error < 1e-7
+            )
+            path = args.output / f"load-{load:g}.npz"
+            np.savez_compressed(
+                path,
+                vertices_m=vertices,
+                tetrahedra=tets,
+                displacement_m=displacement,
+                elastic_displacement_m=elastic,
+                stress_pa=tensor,
+                contact_force_n=forces,
+                bottom_gap_m=all_bottom_gap,
+                top_gap_m=all_top_gap,
+                balance_correction_n=correction,
+                equation_residual_n=residual,
+                candidate_nodes=nodes,
+                contact_alpha=alpha,
+                rigid_coordinates_m=coordinate,
+            )
+            footprints = []
+            for upper in (False, True):
+                chosen = (top == upper) & active
+                selected_faces = np.isin(faces, nodes[chosen]).all(axis=1)
+                triangles = outer[faces[selected_faces]]
+                area = (
+                    np.linalg.norm(
+                        np.cross(triangles[:, 1] - triangles[:, 0], triangles[:, 2] - triangles[:, 0]), axis=1
+                    ).sum()
+                    / 2
+                )
+                footprints.append(
+                    {
+                        "upper": upper,
+                        "positive_force_nodes": int((chosen & (alpha > 0)).sum()),
+                        "maximum_radius_m": float(radius[nodes[chosen]].max()),
+                        "fully_active_face_area_m2": float(area),
+                    }
+                )
+            row = {
+                "load_n": load,
+                "linear_contact_equations_admitted": admitted,
+                "physical_reference_qualified": False,
+                "optimizer_success": bool(fitted.success),
+                "final_solver": "Direct active KKT solve, admitted only with full rank and complete primal/dual/complementarity checks; SLSQP supplies the initial active set.",
+                "optimizer_message": str(fitted.message),
+                "optimizer_iterations": fitted.nit,
+                "active_kkt_rank": int(rank),
+                "active_kkt_dimension": len(polished),
+                "force_moment_constraint_relative_error": float(reaction_error),
+                "equation_relative_residual": float(equation_error),
+                "balance_correction_relative": float(balance_correction),
+                "minimum_compression_fraction": float(alpha.min()),
+                "minimum_global_gap_m": float(minimum_gap),
+                "active_contact_gap_relative": float(contact_error),
+                "plate_travel_m": float(-coordinate[3]),
+                "raw_maximum_tension_pa": float(eig[:, -1].max()),
+                "raw_maximum_mises_pa": float(mises.max()),
+                "maximum_displacement_gradient": float(np.linalg.norm(gradient, axis=(1, 2)).max()),
+                "deformed_total_moment_nm": np.cross(vertices + displacement, forces).sum(axis=0).tolist(),
+                "footprints": footprints,
+                "solve_seconds": time.perf_counter() - solve_start,
+                "field": file_id(path),
+            }
+            rows.append(row)
+            journal.write(json.dumps(row) + "\n")
+            initial = alpha
+    write_json(
+        args.output / "result.json",
+        {
+            "mesh": file_id(args.mesh),
+            "identity": runtime_identity(),
+            "factor_seconds": factor_seconds,
+            "reused_contact_operator": file_id(args.contact_operator) if args.contact_operator is not None else None,
+            "total_seconds": time.perf_counter() - start,
+            "peak_rss_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+            "compliance_reciprocity_error": float(reciprocity),
+            "cases": rows,
+            "scope": "Independent small-strain P1 elastic, frictionless nodal complementarity control. "
+            "No physical egg vertex pins: factorization gauges are removed, balance corrections "
+            "are measured, vertical translation and two tilts are solved as physical unknowns. "
+            "Full-surface gap is checked beyond the candidate patch. This is not yet a qualified "
+            "finite-deformation or continuum contact reference. Footprint area counts only faces "
+            "with all three nodes active, not an interpolated pressure-support assertion.",
+        },
+    )
+
+
+if __name__ == "__main__":
+    main()

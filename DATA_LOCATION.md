@@ -1,5 +1,14 @@
 # Current QIPC reference comparison
 
+## Qualified ranking stage, 2026-10-19
+
+New runs, generated contact meshes, regression logs and source receipts use
+`/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/`.
+The exclusive-create/write/fsync probe succeeded before submission. Source
+changes are isolated in the `stress_qualified_ranking` worktree under the
+existing workspace; private compilation caches remain compute-node-local.
+Existing home fallback evidence remains in place. No migration is performed.
+
 ## Parallel-plate benchmark storage, 2026-10-18
 
 The updated goal is pinned at fork commit `914a558df`. A new exclusive-create,

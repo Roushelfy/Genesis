@@ -36,7 +36,7 @@ def linear_stress(displacement, tetrahedra, gradients, young, poisson):
 
 
 class FreeElasticP1:
-    def __init__(self, vertices, tetrahedra, young, poisson, density):
+    def __init__(self, vertices, tetrahedra, young, poisson, density, column_faces=None):
         self.vertices = vertices
         self.tetrahedra = tetrahedra
         self.young, self.poisson = young, poisson
@@ -55,7 +55,29 @@ class FreeElasticP1:
         _, triangular, pivot = qr(scaled.T, mode="economic", pivoting=True)
         assert np.abs(triangular.diagonal()).min() > 1e-12
         self.free = np.setdiff1d(np.arange(len(vertices) * 3), pivot[:6])
-        self.factor = splu((self.stiffness[self.free][:, self.free] / young).tocsc())
+        if column_faces is None:
+            self.factor = splu((self.stiffness[self.free][:, self.free] / young).tocsc())
+        else:
+            import pymetis
+
+            count = column_faces.max() + 1
+            rows = np.repeat(column_faces, 3, axis=1).reshape(-1)
+            columns = np.tile(column_faces, (1, 3)).reshape(-1)
+            graph = sparse.coo_matrix((np.ones(len(rows)), (rows, columns)), shape=(count, count)).tocsr()
+            graph.setdiag(0)
+            graph.eliminate_zeros()
+            _, inverse_columns = pymetis.nested_dissection(
+                adjacency=pymetis.CSRAdjacency(graph.indptr, graph.indices), options=pymetis.Options(seed=17)
+            )
+            order = np.argsort(np.asarray(inverse_columns)[np.arange(len(vertices)) % count], kind="stable")
+            dofs = (3 * order[:, None] + np.arange(3)).reshape(-1)
+            self.free = dofs[np.isin(dofs, self.free)]
+            self.factor = splu(
+                (self.stiffness[self.free][:, self.free] / young).tocsc(),
+                permc_spec="NATURAL",
+                diag_pivot_thresh=0,
+                options={"SymmetricMode": True},
+            )
 
     def solve(self, load):
         force = load.reshape(-1)

@@ -14,6 +14,10 @@ failures; it did not finish physical accuracy qualification. Diagnostic closure
 or unsupported quantities alone cannot complete the current goal.
 Full Franka physical-reference qualification remains out of scope.
 
+The [current execution record](docs/QUALIFIED_STRESS_PROGRESS_20261019.md)
+tracks the verified SCR repair, unresolved reference refinement and explicitly
+identified coupled Shell controls. Partial successes do not close the goal.
+
 The [plate report](docs/PARALLEL_PLATE_RESULTS_20261018.md) records verified
 mechanical equilibria, the SCR cancellation-sensitive admission failure,
 original Shell contact-split imbalance and unresolved QIPC point-contact fields.
