@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from .p2_elastic import quadratic_triangle_minimum
+from .p2_elastic import quadratic_triangle_minimum, quadratic_triangle_weights
 
 if TYPE_CHECKING:
     from .plate_contact_fem import ContactMinimum
@@ -89,14 +89,7 @@ def quadratic_contact_minimum(matrix, gap, rigid, target, initial, triangles, so
             break
         selected = np.flatnonzero(values < -1e-8)
         coordinates = bary[selected]
-        weights = np.column_stack(
-            (
-                coordinates * (2 * coordinates - 1),
-                4 * coordinates[:, 0] * coordinates[:, 1],
-                4 * coordinates[:, 1] * coordinates[:, 2],
-                4 * coordinates[:, 2] * coordinates[:, 0],
-            )
-        )
+        weights = quadratic_triangle_weights(coordinates)
         added = np.zeros((len(selected), len(gap)))
         added[np.arange(len(selected))[:, None], triangles[selected]] = weights
         # Neighboring faces can generate the same edge point in the same round.

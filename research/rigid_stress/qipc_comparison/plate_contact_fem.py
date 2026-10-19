@@ -71,9 +71,23 @@ def main():
     cli.add_argument("--element-order", type=int, choices=(1, 2), default=1)
     cli.add_argument("--continuous-quadratic-contact", action="store_true")
     cli.add_argument("--contact-operator", type=Path)
+    cli.add_argument("--contact-certificate", type=Path)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     assert not args.continuous_quadratic_contact or args.element_order == 2
+    certificate = None
+    if args.contact_certificate is not None:
+        assert args.continuous_quadratic_contact and args.contact_operator is not None and len(args.loads) == 1
+        certificate = json.loads((args.contact_certificate / "result.json").read_text())
+        assert certificate["candidate_face_certificate_passed"] and certificate["status"] == "Solved"
+        assert certificate["operator"]["sha256"] == file_id(args.contact_operator)["sha256"]
+        original = Path(certificate["field_input"]["path"])
+        assert file_id(original)["sha256"] == certificate["field_input"]["sha256"]
+        previous = json.loads((original.parent / "result.json").read_text())
+        assert any(
+            row["load_n"] == args.loads[0] and row["field"]["sha256"] == file_id(original)["sha256"]
+            for row in previous["cases"]
+        )
     args.output.mkdir(parents=True, exist_ok=False)
     start = time.perf_counter()
     with np.load(args.mesh) as saved:
@@ -163,18 +177,42 @@ def main():
             displacement_scale = load / (model.young * 5e-5)
             matrix = compliance * load / displacement_scale
             gap = initial_gap / displacement_scale
-            fitted = minimize(
-                lambda x: (0.5 * x @ matrix @ x + gap @ x, matrix @ x + gap),
-                initial,
-                jac=True,
-                method="SLSQP",
-                bounds=[(0, None)] * len(nodes),
-                constraints={"type": "eq", "fun": lambda x: rigid.T @ x - target, "jac": lambda x: rigid.T},
-                options={"ftol": 1e-12, "maxiter": 1000},
+            fitted = (
+                None
+                if certificate is not None
+                else minimize(
+                    lambda x: (0.5 * x @ matrix @ x + gap @ x, matrix @ x + gap),
+                    initial,
+                    jac=True,
+                    method="SLSQP",
+                    bounds=[(0, None)] * len(nodes),
+                    constraints={"type": "eq", "fun": lambda x: rigid.T @ x - target, "jac": lambda x: rigid.T},
+                    options={"ftol": 1e-12, "maxiter": 1000},
+                )
             )
             interpolation = np.eye(len(nodes))
             constraint_rounds, continuous_converged = 0, True
-            if args.continuous_quadratic_contact:
+            if certificate is not None:
+                with np.load(args.contact_operator) as saved:
+                    np.testing.assert_array_equal(saved["nodes"], nodes)
+                with np.load(args.contact_certificate / "solution.npz") as saved:
+                    interpolation = saved["interpolation"]
+                    multipliers = saved["multipliers"]
+                    coordinates = saved["coordinates_scaled"]
+                assert interpolation.shape == (len(multipliers), len(nodes))
+                np.testing.assert_allclose(interpolation.sum(axis=1), 1, rtol=0, atol=1e-12)
+                condensed_alpha = interpolation.T @ multipliers
+                condensed_gap = interpolation @ (matrix @ condensed_alpha + gap + rigid @ coordinates)
+                kkt_passed = bool(
+                    np.linalg.norm(rigid.T @ condensed_alpha - target) < 1e-8
+                    and multipliers.min() >= -1e-10
+                    and condensed_gap.min() >= -1e-10
+                    and np.max(np.abs(multipliers * condensed_gap)) < 1e-8
+                )
+                constraint_rounds = len(certificate["constraint_rounds"])
+                minimum = ContactMinimum(multipliers, coordinates, multipliers > 0, -1, constraint_rounds, kkt_passed)
+                continuous_converged = certificate["candidate_face_certificate_passed"]
+            elif args.continuous_quadratic_contact:
                 from .quadratic_contact import quadratic_contact_minimum
 
                 candidate_map = np.full(len(vertices), -1, dtype=int)
@@ -216,16 +254,21 @@ def main():
                     quadratic_triangle_minimum(all_top_gap[local_faces]).min(),
                 )
             contact_error = np.abs((interpolation @ actual_gap)[minimum.active]).max() / displacement_scale
+            complementarity = np.max(np.abs(minimum.force * (interpolation @ actual_gap))) / displacement_scale
+            contact_optimality = (
+                rank == minimum.active.sum() + 4 and contact_error < 1e-7
+                if certificate is None
+                else complementarity < 1e-8
+            )
             admitted = bool(
                 minimum.converged
                 and continuous_converged
-                and rank == minimum.active.sum() + 4
+                and contact_optimality
                 and reaction_error < 1e-8
                 and equation_error < 1e-7
                 and balance_correction < 1e-8
                 and minimum.force.min() >= -1e-10
                 and minimum_gap >= -1e-7 * displacement_scale
-                and contact_error < 1e-7
             )
             path = args.output / f"load-{load:g}.npz"
             np.savez_compressed(
@@ -294,14 +337,16 @@ def main():
                 "load_n": load,
                 "linear_contact_equations_admitted": admitted,
                 "physical_reference_qualified": False,
-                "optimizer_success": bool(fitted.success),
-                "final_solver": "Feasible primal active-set KKT solve with blocking steps and inactive-gap admission; SLSQP supplies a feasible initial point when available.",
+                "optimizer_success": bool(fitted.success) if fitted is not None else None,
+                "final_solver": "Independent primal-dual certificate replay with freshly solved elasticity, global quadratic gaps, force/moment balance and force-weighted complementarity. Multiplier uniqueness is not required."
+                if certificate is not None
+                else "Feasible primal active-set KKT solve with blocking steps and inactive-gap admission; SLSQP supplies a feasible initial point when available.",
                 "active_set_converged": minimum.converged,
                 "active_set_iterations": minimum.iterations,
-                "optimizer_message": str(fitted.message),
-                "optimizer_iterations": fitted.nit,
-                "active_kkt_rank": int(rank),
-                "active_kkt_dimension": int(minimum.active.sum() + 4),
+                "optimizer_message": str(fitted.message) if fitted is not None else None,
+                "optimizer_iterations": fitted.nit if fitted is not None else None,
+                "active_kkt_rank": int(rank) if certificate is None else None,
+                "active_kkt_dimension": int(minimum.active.sum() + 4) if certificate is None else None,
                 "continuous_constraint_rounds": constraint_rounds,
                 "continuous_constraints_converged": continuous_converged,
                 "force_moment_constraint_relative_error": float(reaction_error),
@@ -310,6 +355,7 @@ def main():
                 "minimum_compression_fraction": float(minimum.force.min()),
                 "minimum_global_gap_m": float(minimum_gap),
                 "active_contact_gap_relative": float(contact_error),
+                "force_weighted_complementarity_scaled": float(complementarity),
                 "plate_travel_m": float(-coordinate[3]),
                 "raw_maximum_tension_pa": float(eig[..., -1].max()),
                 "raw_maximum_mises_pa": float(mises.max()),
@@ -329,6 +375,12 @@ def main():
             "identity": runtime_identity(),
             "factor_seconds": factor_seconds,
             "reused_contact_operator": file_id(args.contact_operator) if args.contact_operator is not None else None,
+            "contact_certificate": file_id(args.contact_certificate / "result.json")
+            if certificate is not None
+            else None,
+            "contact_certificate_solution": file_id(args.contact_certificate / "solution.npz")
+            if certificate is not None
+            else None,
             "total_seconds": time.perf_counter() - start,
             "peak_rss_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
             "compliance_reciprocity_error": float(reciprocity),

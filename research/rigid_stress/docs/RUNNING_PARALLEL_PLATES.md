@@ -271,3 +271,38 @@ only the retained finite constraint set; inspect exact candidate-face gaps and
 perform a full elastic/global-boundary rerun before physical admission.
 `AlmostSolved` is retained as a failed certificate. Execute both modules through
 the established Slurm/gs-srun wrapper with explicit data-side outputs.
+
+Use `audit_contact_qp --form whitened-primal --constraint-rounds 20` for the
+equivalent primal energy formulation and exact candidate-face constraint
+generation. Its result separately certifies each finite QP and the candidate
+face gaps. Feed a passing run directory to `plate_contact_fem
+--contact-certificate <certificate-directory> --contact-operator <same-operator>`
+with the same mesh, load, P2 order and continuous-contact option. This performs
+a fresh full elastic solve and checks every outer face, including those outside
+the candidate set. Retained operator, source-field and load identities must
+match. Original active-set defaults remain available.
+
+For the prescribed finite-area comparison, `prepare_native_mesh --mesh <mesh>
+--output <assets>` exports the exact solid and collider. `finite_area_native
+--assets <assets> --reference <independent-run/order-10> --method pcg` runs the
+production core, DPR and SCR on that mesh with radius fixed in advance. Its
+direct-method pilot exceeded the construction budget on4498 outer vertices;
+the existing PCG path passes. `finite_area_shell --mesh <land-mesh>
+--field <independent-load.npz>` runs explicitly labeled static relaxation and
+checks actual elastic forces. It uses the pinned optional-coarse Shell repair,
+floating sums, relative1e-4 and absolute velocity1e-10 settings.
+
+`contact_fem_exact_columns --meshes <mesh-a> <mesh-b> --runs <run-a> <run-b>`
+accepts either per-load directories or explicit NPZ fields. Mark Shell positions
+in that list with `--shell-indices 0` and use its `frames/level0.npz`. The last
+mesh defines the common material surface. `--surface-quadrature 1|3|9|25`
+controls physical area integration separately from exact through-wall integration.
+Run `validate_p2_contact` before using a changed interpolation/quadrature path.
+
+`finite_area_reference --through-wall-ordering` changes only matrix permutation.
+The optional `--cholespy-path <isolated-cholespy-2.2.0-directory>` switches the
+independent reference to double-precision CPU CHOLMOD; pass the same option to
+`validate_p2_contact` and verify a same-mesh full-field control first. This
+optional research dependency does not change native Quadrants recovery or
+active environments. Installation receipts, exact task lists and failed
+factorizations remain under the qualified-ranking data root.

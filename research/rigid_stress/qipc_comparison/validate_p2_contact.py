@@ -7,8 +7,8 @@ import numpy as np
 from skfem import MeshTet
 
 from .artifacts import runtime_identity, write_json
-from .p2_elastic import FreeElasticP2, quadratic_triangle_minimum
-from .contact_fem_exact_columns import ColumnField
+from .p2_elastic import FreeElasticP2, quadratic_triangle_minimum, quadratic_triangle_weights
+from .contact_fem_exact_columns import ColumnField, ShellColumnField, surface_quadrature
 from .prepare_inputs import make_mesh
 from .finite_area_reference import finite_area_load
 
@@ -16,11 +16,24 @@ from .finite_area_reference import finite_area_load
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--output", type=Path, required=True)
+    cli.add_argument("--cholespy-path", type=Path)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
+    for count in (1, 3, 9, 25):
+        points, area = surface_quadrature(count)
+        assert points.min() >= 0 and area.min() > 0
+        np.testing.assert_allclose(points.sum(axis=1), 1, atol=1e-15)
+        np.testing.assert_allclose(area.sum(), 1, atol=1e-15)
+        np.testing.assert_allclose(area @ points, np.full(3, 1 / 3), atol=1e-15)
+        if count >= 3:
+            np.testing.assert_allclose(area @ points**2, np.full(3, 1 / 6), atol=1e-15)
+        if count >= 9:
+            np.testing.assert_allclose(area @ points**4, np.full(3, 1 / 15), atol=1e-15)
     mesh = MeshTet().refined(1)
     vertices = mesh.p.T * np.array([0.002, 0.002, 0.0005])
-    load_model = FreeElasticP2(vertices - [0.001, 0.001, 0.00025], mesh.t.T, 1e10, 0.3, 2000)
+    load_model = FreeElasticP2(
+        vertices - [0.001, 0.001, 0.00025], mesh.t.T, 1e10, 0.3, 2000, cholespy_path=args.cholespy_path
+    )
     loads = []
     for order in (8, 10):
         force, points, point_force, _, _, _ = finite_area_load(load_model, len(vertices), 0.003, order)
@@ -36,7 +49,15 @@ def main():
     np.testing.assert_allclose(loads[0], loads[1], rtol=1e-11, atol=1e-13)
     rows = []
     for ordered in (False, True):
-        model = FreeElasticP2(vertices, mesh.t.T, 1e10, 0.3, 2000.0, column_faces=np.empty((0, 3)) if ordered else None)
+        model = FreeElasticP2(
+            vertices,
+            mesh.t.T,
+            1e10,
+            0.3,
+            2000.0,
+            column_faces=np.empty((0, 3)) if ordered else None,
+            cholespy_path=args.cholespy_path,
+        )
         constant = np.array([[1e4, 2e3, -3e3], [2e3, -5e3, 1e3], [-3e3, 1e3, 7e3]])
         for bending in (False, True):
             force = (
@@ -65,6 +86,9 @@ def main():
         assert len(triangles) == 4 * len(quadratic)
         assert np.isin(quadratic, surface).all()
     samples = np.array([[0, 0], [1, 0], [0, 1], [0.5, 0], [0.5, 0.5], [0, 0.5]])
+    np.testing.assert_allclose(
+        quadratic_triangle_weights(np.column_stack((1 - samples.sum(axis=1), samples))), np.eye(6), atol=1e-15
+    )
     interior = (samples[:, 0] - 0.2) ** 2 + 2 * (samples[:, 1] - 0.3) ** 2 - 0.04
     edge = (samples[:, 0] - 0.4) ** 2 + (samples[:, 1] + 0.2) ** 2
     concave = -(samples**2).sum(axis=1)
@@ -87,15 +111,47 @@ def main():
         layers = len(depths) - 1
         coordinates, tets, _, volume = make_mesh(outer, outer + [0, 0, 1], faces, layers, depths)
         np.testing.assert_allclose(volume.sum(), 0.5, atol=1e-14)
+        solutions = []
+        for through_wall in (False, True):
+            model = FreeElasticP2(
+                coordinates * [0.002, 0.002, 0.0005],
+                tets,
+                1e10,
+                0.3,
+                2000,
+                column_faces=faces,
+                through_wall_ordering=through_wall,
+                cholespy_path=args.cholespy_path,
+            )
+            force = model.reference.pure_bending_load(0.01)
+            stress, displacement, correction, residual = model.solve(force.reshape(-1, 3))
+            expected = np.zeros_like(stress)
+            expected[..., 0, 0] = 1e8 * model.reference.corner_positions[..., 2]
+            error = np.linalg.norm(stress - expected) / np.linalg.norm(expected)
+            equilibrium = np.linalg.norm(residual) / np.linalg.norm(force)
+            assert max(error, equilibrium, np.linalg.norm(correction) / np.linalg.norm(force)) < 1e-8
+            solutions.append(displacement)
+            rows.append(
+                {
+                    "wall_depths": depths.tolist(),
+                    "through_wall_ordering": through_wall,
+                    "stress_relative_error": float(error),
+                    "equation_relative_error": float(equilibrium),
+                }
+            )
+        np.testing.assert_allclose(solutions[0], solutions[1], rtol=1e-8, atol=1e-15)
         values = 2 + coordinates[tets, 0] - 3 * coordinates[tets, 1] + 5 * coordinates[tets, 2]
         tensors = values[..., None, None] * np.eye(3)
         field = ColumnField(
             tensors, np.zeros(2, dtype=int), weights, layers, 1, tets, 3, np.sort(faces, axis=1), depths
         )
+        constant = 2 + weights[:, 1] - 3 * weights[:, 2]
+        shell = ShellColumnField((constant[:, None] + np.array([5, 2.5, 0]))[..., None, None] * np.eye(3))
         for depth in np.linspace(0, 1, 37):
             actual = field.sample(np.full(2, depth), basis)
             expected = (2 + weights[:, 1] - 3 * weights[:, 2] + 5 * depth)[:, None, None] * np.eye(2)
             np.testing.assert_allclose(actual, expected, atol=1e-13)
+            np.testing.assert_allclose(shell.sample(np.full(2, depth), basis), expected, atol=1e-13)
         membrane, bending, square = np.zeros(2), np.zeros(2), np.zeros(2)
         breaks = field.breaks()
         for lower, upper in zip(breaks[:-1], breaks[1:]):
@@ -117,6 +173,7 @@ def main():
             "controls": rows,
             "quadratic_gap_extrema_passed": True,
             "finite_area_polynomial_virtual_work_and_quadrature_passed": True,
+            "shell_and_solid_linear_fiber_mapping_passed": True,
         },
     )
 

@@ -9,7 +9,7 @@ import numpy as np
 from skfem import FacetBasis, LinearForm, asm
 
 from .artifacts import file_id, runtime_identity, write_json
-from .p2_elastic import FreeElasticP2
+from .p2_elastic import FreeElasticP2, CholeskyFactor
 
 
 @LinearForm
@@ -53,6 +53,8 @@ def main():
     cli.add_argument("--radius", type=float, default=0.002)
     cli.add_argument("--loads", type=float, nargs="+", default=[0.1])
     cli.add_argument("--quadrature-orders", type=int, nargs="+", default=[8, 10])
+    cli.add_argument("--through-wall-ordering", action="store_true")
+    cli.add_argument("--cholespy-path", type=Path)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     assert args.radius > 0 and min(args.loads) > 0
@@ -71,10 +73,21 @@ def main():
             "radius_m": args.radius,
             "loads_n": args.loads,
             "quadrature_orders": args.quadrature_orders,
+            "through_wall_ordering": args.through_wall_ordering,
+            "cholespy_path": str(args.cholespy_path) if args.cholespy_path is not None else None,
             "profile": "Axial inward traction proportional to max(1-rho^2/radius^2,0)^3 on each outer pole, normalized separately to the declared force. Radius is prescribed before stress evaluation.",
         },
     )
-    model = FreeElasticP2(vertices, tetrahedra, 1e10, 0.3, 2000, column_faces=faces)
+    model = FreeElasticP2(
+        vertices,
+        tetrahedra,
+        1e10,
+        0.3,
+        2000,
+        column_faces=faces,
+        through_wall_ordering=args.through_wall_ordering,
+        cholespy_path=args.cholespy_path,
+    )
     factor_seconds = time.perf_counter() - start
     rows = []
     for order in args.quadrature_orders:
@@ -133,6 +146,10 @@ def main():
             "mesh": file_id(args.mesh),
             "radius_m": args.radius,
             "mass_kg": float(model.reference.total_mass),
+            "through_wall_ordering": args.through_wall_ordering,
+            "cholespy_binary": file_id(Path(model.factor.module_path))
+            if isinstance(model.factor, CholeskyFactor)
+            else None,
             "factor_seconds": factor_seconds,
             "total_seconds": time.perf_counter() - start,
             "peak_rss_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
