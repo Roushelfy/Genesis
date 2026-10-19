@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-modal-v1/analysis-source/research/rigid_stress/qipc_comparison/check_matrix_free_pad.py", line 97, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-modal-v1/analysis-source/research/rigid_stress/qipc_comparison/check_matrix_free_pad.py", line 64, in main
+    modal_result = modal.solve(free, gap, previous, dt, 1e9, friction, 0.02, 0.01)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-modal-v1/analysis-source/research/rigid_stress/qipc_comparison/modal_pad_dynamics.py", line 94, in solve
+    raise RuntimeError(
+RuntimeError: Full-compliance modal iteration limit: force_error=0.3618400852752285, point_error=9.51039225464135e-05

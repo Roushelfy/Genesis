@@ -15,8 +15,11 @@ or unsupported quantities alone cannot complete the current goal.
 Full Franka physical-reference qualification remains out of scope.
 
 The [current execution record](docs/QUALIFIED_STRESS_PROGRESS_20261019.md)
-tracks the verified SCR repair, unresolved reference refinement and explicitly
-identified coupled Shell controls. Partial successes do not close the goal.
+tracks the verified SCR repair and explicitly identified coupled Shell controls.
+The [normal-pad qualification](docs/NORMAL_PAD_QUALIFICATION_20261019.md) now
+passes its reference-change gates and reports conditional metric-specific
+comparisons. Independent friction refinement and matched primary cost/batching
+remain open. Partial successes do not close the goal.
 
 The [plate report](docs/PARALLEL_PLATE_RESULTS_20261018.md) records verified
 mechanical equilibria, the SCR cancellation-sensitive admission failure,

@@ -5,6 +5,30 @@ Read the [results](PARALLEL_PLATE_RESULTS_20261018.md) and
 The baseline is a full free hollow egg under common normal force. A passing
 discrete equation check does not qualify its continuum contact field.
 
+For the latest admitted normal case, read the
+[normal-pad qualification](NORMAL_PAD_QUALIFICATION_20261019.md) and its
+[exact checkpoint](../evidence/20261019-qualified-ranking/normal-pad-reference-v1/README.md).
+`pad_normal_qualification --data-root RUN_ROOT` reconstructs the change gates,
+complete-history checks, conditional ranges and CSV from those named receipts.
+Use `contact_fem_exact_columns --physical-volume --common-peaks` for shared
+tangent-plane peaks and separate full3D-only stress components; retain raw
+peaks and independently check angular/depth and spatial resolution.
+
+`plate_solid_pad --elasticity stvk --contact-solver modal --warm-contact`
+selects the verified full-compliance modal iteration. It does not fix or
+discard rigid or elastic modes. Reproduce `check_matrix_free_pad`, the
+complete400-step dense/modal comparison and `audit_solid_pad` before new
+refinement. `--quadrature-order 6/10` and `--dt` isolate integration and time
+controls; their completed trajectories and fields must pass independently.
+
+`plate_native_pad` and `plate_shell_coupled` accept `--stress-stride 1/20`
+and `--stress-output full/max`. `--cost-warm-levels 1` records segmented
+preflight costs after the first load level. It does not produce primary
+uninstrumented throughput. Run each method's own mechanical audit and then
+`audit_pad_cost --run CAMPAIGN --data-root RUN_ROOT`; retain failures.
+Shell's optional `--paired-output-check` compares the two observers on each
+identical frozen state, outside the primary observation timing segment.
+
 The later [native physical-pad checkpoint](../evidence/20261019-qualified-ranking/native-pad-history-v1/README.md)
 uses `qipc_comparison.plate_native_pad` with its captured tasks, after the
 [physical-pad declaration](COMPLIANT_PAD_DECLARATION.md). Select the existing

@@ -2,8 +2,10 @@
 
 The active goal is fork `950ed9d3ccfaa9a0192d4675e25bbdb6f45d20c8` and
 [the qualified ranking specification](QUALIFIED_STRESS_RANKING_GOAL.md).
-No qualified physical ranking or admitted matched cost comparison exists yet.
-The preceding bounded report remains unchanged.
+The [normal-pad reference and conditional comparison](NORMAL_PAD_QUALIFICATION_20261019.md)
+now passes the declared reference-change gates. Independent sustained-friction
+refinement and matched primary cost/batching remain incomplete. The preceding
+bounded report and original failing variants remain unchanged.
 
 ## Declared acceptance and comparison scope
 

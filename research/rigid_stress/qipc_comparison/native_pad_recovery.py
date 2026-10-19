@@ -58,7 +58,7 @@ class NativePadRecovery:
                 contact_model="pressure" if args.method == "dpr" else "intrinsic",
                 contact_radius=args.radius,
                 intrinsic_load_partition="body_source_prior",
-                output_mode="full",
+                output_mode=getattr(args, "stress_output", "full"),
                 update_mode="manual",
                 fused_pipeline=False,
                 surface_inverse=False,
@@ -104,7 +104,7 @@ class NativePadRecovery:
             args.source_reduction,
         )
 
-    def sample(self, force_world, rotation, angular_world, friction, load, path):
+    def sample(self, force_world, rotation, angular_world, friction, load, path=None):
         started = perf_counter()
         force = force_world @ rotation
         if self.source_reduction == "wrench":
@@ -172,28 +172,41 @@ class NativePadRecovery:
         entry.model.recover(entry.omega, entry.state, surface_load=False)
         kernel_accept(entry.state, entry.contacts, self.errno)
         torch.cuda.synchronize()
-        stress = voigt_tensor(qd_to_numpy(entry.state.stress_tensor, transpose=True)[0])
+        voigt = (
+            qd_to_numpy(entry.state.stress_tensor, transpose=True)[0]
+            if entry.output_mode == "full"
+            else np.empty((0, 6))
+        )
+        stress = voigt_tensor(voigt)
         residual = qd_to_numpy(entry.state.residual, transpose=True)[0]
         rhs = qd_to_numpy(entry.state.rhs, transpose=True)[0]
         error_code = int(qd_to_numpy(self.errno, transpose=True)[0])
+        peak = float(qd_to_numpy(entry.state.step_peak, transpose=True)[0])
+        status = qd_to_numpy(entry.contacts.status, transpose=True)[0]
         valid = bool(
-            qd_to_numpy(entry.state.valid, transpose=True)[0] and error_code == 0 and np.isfinite(stress).all()
+            qd_to_numpy(entry.state.valid, transpose=True)[0]
+            and error_code == 0
+            and np.isfinite(stress).all()
+            and np.isfinite(peak)
         )
-        np.savez_compressed(
-            path,
-            vertices_m=self.coordinates,
-            tetrahedra=self.tetrahedra,
-            stress_pa=stress,
-            forces_n=qd_to_numpy(entry.state.force, transpose=True)[0],
-            rhs_n=rhs,
-            equation_residual_n=residual,
-            load_n=load,
-            source_points_m=self.points[selected],
-            source_forces_n=force[selected] * coefficient[:, None],
-            source_components=components,
-            original_contact_points_m=self.points,
-            original_contact_forces_n=force,
-        )
+        observation_seconds = perf_counter() - started
+        if path is not None:
+            np.savez_compressed(
+                path,
+                vertices_m=self.coordinates,
+                tetrahedra=self.tetrahedra,
+                stress_pa=stress,
+                forces_n=qd_to_numpy(entry.state.force, transpose=True)[0],
+                rhs_n=rhs,
+                equation_residual_n=residual,
+                load_n=load,
+                raw_vm_peak_pa=peak,
+                source_points_m=self.points[selected],
+                source_forces_n=force[selected] * coefficient[:, None],
+                source_components=components,
+                original_contact_points_m=self.points,
+                original_contact_forces_n=force,
+            )
         return {
             "native_valid": valid,
             "errno": error_code,
@@ -202,8 +215,13 @@ class NativePadRecovery:
             "source_reduction": self.source_reduction,
             "source_compression_wrench_error": defect,
             "source_compression_seconds": compression_seconds,
+            "observation_seconds_excluding_frame_IO": observation_seconds,
             "observation_seconds_including_IO": perf_counter() - started,
-            "contact_status": qd_to_numpy(entry.contacts.status, transpose=True)[0, :count].tolist(),
+            "output_mode": entry.output_mode,
+            "raw_vm_peak_pa": peak,
+            "field_host_bytes": voigt.nbytes,
+            "residual_host_bytes": residual.nbytes + rhs.nbytes,
+            "contact_status": status[:count].tolist(),
             "elastic_equation_relative_residual": float(np.linalg.norm(residual) / max(np.linalg.norm(rhs), 1e-30)),
-            "field": file_id(path),
+            "field": file_id(path) if path is not None else None,
         }

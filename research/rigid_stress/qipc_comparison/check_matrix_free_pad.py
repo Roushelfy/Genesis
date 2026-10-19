@@ -9,6 +9,7 @@ from scipy import linalg, sparse
 from .artifacts import runtime_identity, write_json
 from .condensed_pad_dynamics import CondensedPadDynamics, potential
 from .matrix_free_pad_dynamics import MatrixFreePadDynamics
+from .modal_pad_dynamics import ModalPadDynamics
 
 
 class DenseFactor:
@@ -34,6 +35,23 @@ def main():
         previous, gap = np.full(points, 0.005), np.full(points, -5e-6)
         factor = DenseFactor(operator)
         solver = MatrixFreePadDynamics(sparse.csc_matrix(operator), factor, sparse.csr_matrix(jacobian), sign, area)
+        warm = MatrixFreePadDynamics(
+            sparse.csc_matrix(operator), factor, sparse.csr_matrix(jacobian), sign, area, warm_start=True
+        )
+        modal = ModalPadDynamics(
+            sparse.csc_matrix(operator),
+            factor,
+            sparse.csr_matrix(jacobian),
+            np.eye(body_dofs)[:, :7],
+            sign,
+            area,
+            warm_start=True,
+        )
+        dense = (
+            CondensedPadDynamics(jacobian @ factor.solve(jacobian.T), sign, area, warm_start=True)
+            if body_dofs >= 3 * points
+            else None
+        )
         for dt in (0.001, 0.002):
             for speed in (0.0, 1e-5, 1e-3):
                 for friction in (0.0, 0.3):
@@ -42,14 +60,17 @@ def main():
                     _, impulse, _ = potential(expected, gap, sign, area, previous, dt, 1e9, friction)
                     free = expected_body - factor.solve(jacobian.T @ impulse.reshape(-1))
                     result = solver.solve(free, gap, previous, dt, 1e9, friction, 0.02, 0.01)
+                    warm_result = warm.solve(free, gap, previous, dt, 1e9, friction, 0.02, 0.01)
+                    modal_result = modal.solve(free, gap, previous, dt, 1e9, friction, 0.02, 0.01)
                     error = float(np.max(np.abs(result["velocity"] - expected)))
                     np.testing.assert_allclose(result["velocity"], expected, rtol=0, atol=1e-11)
+                    np.testing.assert_allclose(warm_result["velocity"], expected, rtol=0, atol=1e-11)
+                    np.testing.assert_allclose(modal_result["velocity"], expected, rtol=0, atol=1e-11)
                     np.testing.assert_allclose(result["force"], impulse / dt, rtol=1e-8, atol=1e-10)
                     assert result["point_equation_residual"] <= 1e-11
                     condensed_error = None
-                    if body_dofs >= 3 * points:
-                        compliance = jacobian @ factor.solve(jacobian.T)
-                        direct = CondensedPadDynamics(compliance, sign, area).solve(
+                    if dense is not None:
+                        direct = dense.solve(
                             (jacobian @ free).reshape(-1, 3), gap, previous, dt, 1e9, friction, 0.02, 0.01
                         )
                         condensed_error = float(np.max(np.abs(result["velocity"] - direct["velocity"])))
@@ -64,6 +85,8 @@ def main():
                             "maximum_velocity_error": error,
                             "maximum_condensed_velocity_difference": condensed_error,
                             "newton_iterations": result["iterations"],
+                            "warm_newton_iterations": warm_result["iterations"],
+                            "modal_fixed_point_iterations": modal_result["fixed_point_iterations"],
                             "pcg_iterations": result["linear_iterations"],
                         }
                     )

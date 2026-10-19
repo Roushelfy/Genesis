@@ -1,0 +1,372 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-099",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728139",
+      "SLURM_ARRAY_JOB_ID": "728139",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-1c31bd17-f032-1ba2-7322-1f5cfafc6866, 00000000:45:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+    "bytes": 7265913,
+    "sha256": "3d580636702bf2d986f52734f9fbfbc09eed439f73d912a263235f2a24d79bf7"
+  },
+  "pad_stiffness_n_per_m3": 1000000000.0,
+  "candidate_radius_m": 0.003,
+  "factor_seconds": 1448.9784089609748,
+  "total_seconds": 1709.4167780989956,
+  "peak_rss_kib": 53058932,
+  "cholespy_binary": null,
+  "cvxopt_binary": {
+    "path": "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/cvxopt/cholmod.cpython-310-x86_64-linux-gnu.so",
+    "bytes": 360521,
+    "sha256": "18d01de468411459e32a6d0ddb9dae38fd8922d565f4f6d3d777b4b55c5ea0d3"
+  },
+  "cases": [
+    {
+      "load_n": 0.1,
+      "quadrature_order": 6,
+      "quadrature_rule": "scikit_fem_degree",
+      "pad_equations_admitted": true,
+      "physical_reference_qualified": false,
+      "qp_status": "FixedPointConverged",
+      "qp_stationarity": null,
+      "contact_method": "full_elastic_fixed_point",
+      "fixed_point_force_change_relative": 9.894012727415703e-11,
+      "qp_complementarity": 1.4125128378311092e-20,
+      "qp_fixed_passed": true,
+      "qp_solver_version": "full-elastic-fixed-point-1",
+      "qp_solver_module": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/analysis-source/research/rigid_stress/qipc_comparison/pad_elastic_fixed_point.py",
+      "qp_iterations": 5,
+      "qp_solve_seconds": 16.80032333501731,
+      "pad_law_relative_residual": 3.1635983891668605e-12,
+      "equation_relative_residual": 9.234538083744042e-11,
+      "balance_correction_relative": 2.2188929866130882e-11,
+      "force_moment_relative_error": 9.802103345323048e-11,
+      "nodal_point_transfer_relative_error": 2.0108657459023656e-15,
+      "minimum_omitted_boundary_gap_m": 9.452748810810652e-05,
+      "compliance_reciprocity_error": null,
+      "plate_travel_m": 1.2873829123282614e-05,
+      "pad_energy_j": 6.082290232737332e-07,
+      "elastic_energy_j": 1.491337121432155e-08,
+      "raw_maximum_mises_pa": 190950.75099917044,
+      "raw_maximum_tension_pa": 113113.23580167237,
+      "maximum_displacement_gradient": 8.909773104959066e-05,
+      "footprints": [
+        {
+          "upper": false,
+          "normal_force_n": 0.10000000001290821,
+          "compressed_projected_area_m2": 1.769872403483357e-05,
+          "force_rms_radius_m": 0.0016174496888487619,
+          "force_99pct_radius_m": 0.0023178534091508286,
+          "maximum_pressure_pa": 6149.479686012044
+        },
+        {
+          "upper": true,
+          "normal_force_n": 0.10000000000392714,
+          "compressed_projected_area_m2": 1.656712262013754e-05,
+          "force_rms_radius_m": 0.0015742549883288202,
+          "force_99pct_radius_m": 0.0022467406371870194,
+          "maximum_pressure_pa": 6471.772178769267
+        }
+      ],
+      "candidate_nodes": 42718,
+      "quadrature_points": 253200,
+      "solve_seconds": 39.738897154980805,
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/group0/reference/order-6/load-0.1.npz",
+        "bytes": 224951116,
+        "sha256": "bb92c0848d9c436577feeea3418cfc2dcda220983222e6dae589e0d141af135a"
+      }
+    },
+    {
+      "load_n": 0.3,
+      "quadrature_order": 6,
+      "quadrature_rule": "scikit_fem_degree",
+      "pad_equations_admitted": true,
+      "physical_reference_qualified": false,
+      "qp_status": "FixedPointConverged",
+      "qp_stationarity": null,
+      "contact_method": "full_elastic_fixed_point",
+      "fixed_point_force_change_relative": 9.195176041814042e-11,
+      "qp_complementarity": 1.727625761857161e-20,
+      "qp_fixed_passed": true,
+      "qp_solver_version": "full-elastic-fixed-point-1",
+      "qp_solver_module": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/analysis-source/research/rigid_stress/qipc_comparison/pad_elastic_fixed_point.py",
+      "qp_iterations": 5,
+      "qp_solve_seconds": 17.4184619160078,
+      "pad_law_relative_residual": 5.542395290458201e-13,
+      "equation_relative_residual": 9.568807849958458e-11,
+      "balance_correction_relative": 3.5807954581826188e-16,
+      "force_moment_relative_error": 1.9705959489039043e-15,
+      "nodal_point_transfer_relative_error": 5.083644698144028e-16,
+      "minimum_omitted_boundary_gap_m": 8.384517772580882e-05,
+      "compliance_reciprocity_error": null,
+      "plate_travel_m": 3.5356405208932805e-05,
+      "pad_energy_j": 4.950572102805541e-06,
+      "elastic_energy_j": 1.2810929263279338e-07,
+      "raw_maximum_mises_pa": 541918.8126002994,
+      "raw_maximum_tension_pa": 310664.3920991865,
+      "maximum_displacement_gradient": 0.00025298729712749815,
+      "footprints": [
+        {
+          "upper": false,
+          "normal_force_n": 0.29999999999999877,
+          "compressed_projected_area_m2": 2.002492430023405e-05,
+          "force_rms_radius_m": 0.0017011122790717048,
+          "force_99pct_radius_m": 0.0024580805598358167,
+          "maximum_pressure_pa": 16725.529817686755
+        },
+        {
+          "upper": true,
+          "normal_force_n": 0.29999999999999905,
+          "compressed_projected_area_m2": 1.838362568598596e-05,
+          "force_rms_radius_m": 0.0016417118297227579,
+          "force_99pct_radius_m": 0.002359667659848855,
+          "maximum_pressure_pa": 17887.536947391396
+        }
+      ],
+      "candidate_nodes": 42718,
+      "quadrature_points": 253200,
+      "solve_seconds": 40.475352779001696,
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/group0/reference/order-6/load-0.3.npz",
+        "bytes": 225319195,
+        "sha256": "189f94a285fe84d64663dea5dfcf7feb04dcc46b83cd009a560369a6fd3c9cff"
+      }
+    },
+    {
+      "load_n": 1.0,
+      "quadrature_order": 6,
+      "quadrature_rule": "scikit_fem_degree",
+      "pad_equations_admitted": true,
+      "physical_reference_qualified": false,
+      "qp_status": "FixedPointConverged",
+      "qp_stationarity": null,
+      "contact_method": "full_elastic_fixed_point",
+      "fixed_point_force_change_relative": 1.9526447077770543e-12,
+      "qp_complementarity": 9.235977391335715e-21,
+      "qp_fixed_passed": true,
+      "qp_solver_version": "full-elastic-fixed-point-1",
+      "qp_solver_module": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/analysis-source/research/rigid_stress/qipc_comparison/pad_elastic_fixed_point.py",
+      "qp_iterations": 6,
+      "qp_solve_seconds": 20.36750036801095,
+      "pad_law_relative_residual": 7.68023325924805e-14,
+      "equation_relative_residual": 1.0045682031261243e-10,
+      "balance_correction_relative": 6.252378405263944e-13,
+      "force_moment_relative_error": 2.27273504324643e-12,
+      "nodal_point_transfer_relative_error": 1.1702336148722292e-15,
+      "minimum_omitted_boundary_gap_m": 5.186200163168064e-05,
+      "compliance_reciprocity_error": null,
+      "plate_travel_m": 0.0001036981747852548,
+      "pad_energy_j": 4.7545724487899326e-05,
+      "elastic_energy_j": 1.3255564658085959e-06,
+      "raw_maximum_mises_pa": 1658924.264821903,
+      "raw_maximum_tension_pa": 902484.8263587193,
+      "maximum_displacement_gradient": 0.0007726897490689637,
+      "footprints": [
+        {
+          "upper": false,
+          "normal_force_n": 0.9999999999973724,
+          "compressed_projected_area_m2": 2.3965473877012807e-05,
+          "force_rms_radius_m": 0.0018311454151258629,
+          "force_99pct_radius_m": 0.002678036122959306,
+          "maximum_pressure_pa": 48371.71034901405
+        },
+        {
+          "upper": true,
+          "normal_force_n": 0.999999999999614,
+          "compressed_projected_area_m2": 2.1372324128395352e-05,
+          "force_rms_radius_m": 0.0017457970360565199,
+          "force_99pct_radius_m": 0.002534721614681503,
+          "maximum_pressure_pa": 52926.09566639359
+        }
+      ],
+      "candidate_nodes": 42718,
+      "quadrature_points": 253200,
+      "solve_seconds": 43.16881089800154,
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/group0/reference/order-6/load-1.npz",
+        "bytes": 226289875,
+        "sha256": "b798f9808c92ad2e6a15120fc6150a3e77809bdcc9bc81023226a9ccd2227608"
+      }
+    },
+    {
+      "load_n": 0.1,
+      "quadrature_order": 10,
+      "quadrature_rule": "scikit_fem_degree",
+      "pad_equations_admitted": true,
+      "physical_reference_qualified": false,
+      "qp_status": "FixedPointConverged",
+      "qp_stationarity": null,
+      "contact_method": "full_elastic_fixed_point",
+      "fixed_point_force_change_relative": 9.89986212451965e-11,
+      "qp_complementarity": 1.2331815417680438e-20,
+      "qp_fixed_passed": true,
+      "qp_solver_version": "full-elastic-fixed-point-1",
+      "qp_solver_module": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/analysis-source/research/rigid_stress/qipc_comparison/pad_elastic_fixed_point.py",
+      "qp_iterations": 5,
+      "qp_solve_seconds": 17.12227507698117,
+      "pad_law_relative_residual": 3.2160729830240366e-12,
+      "equation_relative_residual": 9.223888012180803e-11,
+      "balance_correction_relative": 2.2199977852232438e-11,
+      "force_moment_relative_error": 9.80787130022173e-11,
+      "nodal_point_transfer_relative_error": 9.4690659544761e-15,
+      "minimum_omitted_boundary_gap_m": 9.452748957077678e-05,
+      "compliance_reciprocity_error": null,
+      "plate_travel_m": 1.287393048264377e-05,
+      "pad_energy_j": 6.082394293944931e-07,
+      "elastic_energy_j": 1.4913422570204744e-08,
+      "raw_maximum_mises_pa": 190950.71886037136,
+      "raw_maximum_tension_pa": 113113.60711022162,
+      "maximum_displacement_gradient": 8.909786502045046e-05,
+      "footprints": [
+        {
+          "upper": false,
+          "normal_force_n": 0.10000000001291613,
+          "compressed_projected_area_m2": 1.7701397744591073e-05,
+          "force_rms_radius_m": 0.001617449981769212,
+          "force_99pct_radius_m": 0.0023178901359355315,
+          "maximum_pressure_pa": 6149.638481368767
+        },
+        {
+          "upper": true,
+          "normal_force_n": 0.1000000000039302,
+          "compressed_projected_area_m2": 1.6570457804030425e-05,
+          "force_rms_radius_m": 0.0015742406226369556,
+          "force_99pct_radius_m": 0.00224690301488011,
+          "maximum_pressure_pa": 6472.059240246407
+        }
+      ],
+      "candidate_nodes": 42718,
+      "quadrature_points": 527500,
+      "solve_seconds": 39.79327419100446,
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/group0/reference/order-10/load-0.1.npz",
+        "bytes": 232811991,
+        "sha256": "723f5ec60e538070580b7ed55b373ae6f206ca8b5ac32f02d1d89fca10709d51"
+      }
+    },
+    {
+      "load_n": 0.3,
+      "quadrature_order": 10,
+      "quadrature_rule": "scikit_fem_degree",
+      "pad_equations_admitted": true,
+      "physical_reference_qualified": false,
+      "qp_status": "FixedPointConverged",
+      "qp_stationarity": null,
+      "contact_method": "full_elastic_fixed_point",
+      "fixed_point_force_change_relative": 9.20206612122385e-11,
+      "qp_complementarity": 1.1269754538505367e-20,
+      "qp_fixed_passed": true,
+      "qp_solver_version": "full-elastic-fixed-point-1",
+      "qp_solver_module": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/analysis-source/research/rigid_stress/qipc_comparison/pad_elastic_fixed_point.py",
+      "qp_iterations": 5,
+      "qp_solve_seconds": 17.101431110990234,
+      "pad_law_relative_residual": 5.512640260143436e-13,
+      "equation_relative_residual": 9.545675434291319e-11,
+      "balance_correction_relative": 2.833433445881173e-16,
+      "force_moment_relative_error": 5.109458845974716e-15,
+      "nodal_point_transfer_relative_error": 4.506362539600062e-15,
+      "minimum_omitted_boundary_gap_m": 8.384525278914978e-05,
+      "compliance_reciprocity_error": null,
+      "plate_travel_m": 3.535613837250098e-05,
+      "pad_energy_j": 4.95049218191039e-06,
+      "elastic_energy_j": 1.2810876869414425e-07,
+      "raw_maximum_mises_pa": 541917.3012489348,
+      "raw_maximum_tension_pa": 310662.2386013933,
+      "maximum_displacement_gradient": 0.0002529861864670824,
+      "footprints": [
+        {
+          "upper": false,
+          "normal_force_n": 0.29999999999999893,
+          "compressed_projected_area_m2": 2.002602721572087e-05,
+          "force_rms_radius_m": 0.0017011169570496116,
+          "force_99pct_radius_m": 0.002457923651952641,
+          "maximum_pressure_pa": 16725.848199293836
+        },
+        {
+          "upper": true,
+          "normal_force_n": 0.2999999999999989,
+          "compressed_projected_area_m2": 1.8383426372308055e-05,
+          "force_rms_radius_m": 0.001641722215149126,
+          "force_99pct_radius_m": 0.0023596442230003753,
+          "maximum_pressure_pa": 17887.76860080967
+        }
+      ],
+      "candidate_nodes": 42718,
+      "quadrature_points": 527500,
+      "solve_seconds": 40.0862581890251,
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/group0/reference/order-10/load-0.3.npz",
+        "bytes": 233391468,
+        "sha256": "a9855e0d56e0202befff5cc68f9b50c7c291e0521856d41a5e32c8dda80f59ca"
+      }
+    },
+    {
+      "load_n": 1.0,
+      "quadrature_order": 10,
+      "quadrature_rule": "scikit_fem_degree",
+      "pad_equations_admitted": true,
+      "physical_reference_qualified": false,
+      "qp_status": "FixedPointConverged",
+      "qp_stationarity": null,
+      "contact_method": "full_elastic_fixed_point",
+      "fixed_point_force_change_relative": 1.9495139802325484e-12,
+      "qp_complementarity": 7.162142073924666e-21,
+      "qp_fixed_passed": true,
+      "qp_solver_version": "full-elastic-fixed-point-1",
+      "qp_solver_module": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/analysis-source/research/rigid_stress/qipc_comparison/pad_elastic_fixed_point.py",
+      "qp_iterations": 6,
+      "qp_solve_seconds": 20.680649957008427,
+      "pad_law_relative_residual": 7.653515692083116e-14,
+      "equation_relative_residual": 1.0046367648924989e-10,
+      "balance_correction_relative": 6.23433568704235e-13,
+      "force_moment_relative_error": 2.2664810987282983e-12,
+      "nodal_point_transfer_relative_error": 3.6676088276561e-15,
+      "minimum_omitted_boundary_gap_m": 5.186211690619974e-05,
+      "compliance_reciprocity_error": null,
+      "plate_travel_m": 0.00010369865793935957,
+      "pad_energy_j": 4.7546210030780265e-05,
+      "elastic_energy_j": 1.3255589302483265e-06,
+      "raw_maximum_mises_pa": 1658921.6144312504,
+      "raw_maximum_tension_pa": 902480.6948142953,
+      "maximum_displacement_gradient": 0.0007726872045824351,
+      "footprints": [
+        {
+          "upper": false,
+          "normal_force_n": 0.9999999999973808,
+          "compressed_projected_area_m2": 2.3959010610816193e-05,
+          "force_rms_radius_m": 0.0018311482084992093,
+          "force_99pct_radius_m": 0.0026778194275839636,
+          "maximum_pressure_pa": 48372.62745893401
+        },
+        {
+          "upper": true,
+          "normal_force_n": 0.9999999999996169,
+          "compressed_projected_area_m2": 2.1365026561413733e-05,
+          "force_rms_radius_m": 0.0017457846683056194,
+          "force_99pct_radius_m": 0.0025347059308150235,
+          "maximum_pressure_pa": 52927.88749438472
+        }
+      ],
+      "candidate_nodes": 42718,
+      "quadrature_points": 527500,
+      "solve_seconds": 43.538478235015646,
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/group0/reference/order-10/load-1.npz",
+        "bytes": 236129756,
+        "sha256": "658be44510a4e61265855e440ea72b8f230bfc23eaca3e058aca0d66a9f25060"
+      }
+    }
+  ],
+  "physical_reference_qualified": false,
+  "scope": "Full free small-strain P2 solid with compression-only spring pads of predeclared physical stiffness per projected reference area. Consistent positive facet quadrature, free plate travel and body tilts, no physical vertex pins. Negative body gap is pad compression. Full omitted-boundary quadratic gaps check the search extent. This changes the physical contact law and is separate from hard contact and prescribed traction. Mesh, quadrature, nonlinear geometry and matched Shell history remain separate qualifications."
+}

@@ -35,7 +35,7 @@ def potential(velocity, gap, sign, area, previous_normal, dt, stiffness, frictio
 
 
 class CondensedPadDynamics:
-    def __init__(self, compliance, sign, area):
+    def __init__(self, compliance, sign, area, warm_start=False):
         self.sign, self.area = np.asarray(sign), np.asarray(area)
         assert compliance.shape == (3 * len(sign), 3 * len(sign))
         self.reciprocity_error = float(np.linalg.norm(compliance - compliance.T) / np.linalg.norm(compliance))
@@ -44,10 +44,11 @@ class CondensedPadDynamics:
         # A failed factor is evidence to inspect, not a reason to add jitter.
         self.lower = linalg.cholesky(self.compliance, lower=True)
         self.identity = np.eye(len(compliance))
+        self.warm_start, self.previous_coordinate = warm_start, None
 
     def solve(self, free_velocity, gap, previous_normal, dt, stiffness, friction, load, mass):
         target = linalg.solve_triangular(self.lower, free_velocity.reshape(-1), lower=True)
-        coordinate = target.copy()
+        coordinate = target.copy() if self.previous_coordinate is None else self.previous_coordinate.copy()
         tolerance = 1e-10 * dt * max(load, 1e-3) / np.sqrt(mass)
 
         def evaluate(value):
@@ -63,6 +64,8 @@ class CondensedPadDynamics:
             energy, gradient, blocks, velocity, impulse = evaluate(coordinate)
             residual = float(np.linalg.norm(gradient))
             if residual <= tolerance:
+                if self.warm_start:
+                    self.previous_coordinate = coordinate.copy()
                 return {
                     "velocity": velocity,
                     "force": impulse / dt,

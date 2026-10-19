@@ -15,6 +15,7 @@ from genesis.utils.misc import qd_to_numpy, tensor_to_array
 
 from ..shell_comparison.observation import FullField
 from .artifacts import file_id, runtime_identity, write_json
+from .pad_cost import arguments as cost_arguments, write_cost
 from .plates import configure_native_plate, control_native_plate, force_history, parser, plate_xml
 from .shell_linear_capture import capture, contact_diagnostics
 from .shell_pad_audit import ShellPadAudit
@@ -69,7 +70,13 @@ def main():
     cli.add_argument("--gravity-x", type=float, default=0.0)
     cli.add_argument("--gravity-start", type=float, default=0.2)
     cli.add_argument("--gravity-ramp", type=float, default=0.05)
+    cli.add_argument(
+        "--paired-output-check", action="store_true", help="Check full/max observers on each identical frozen state"
+    )
+    cost_arguments(cli)
     args = cli.parse_args()
+    assert args.stress_stride >= 0 and args.cost_warm_levels >= 0
+    assert not args.cost_warm_levels or args.record_stride == 1
     if args.gravity_x:
         assert args.pad_geometry is not None and args.friction == 0.3 and args.record_stride == 1
         assert args.gravity_x == 1.0 and args.gravity_start >= 0 and args.gravity_ramp > 0
@@ -132,7 +139,12 @@ def main():
     scene.build(n_envs=1)
     configure_native_plate(plate, args)
     solver = scene.sim.shell_solver
-    field = FullField.allocate(solver, "full")
+    field = FullField.allocate(solver, args.stress_output)
+    paired_field = (
+        FullField.allocate(solver, "max" if args.stress_output == "full" else "full")
+        if args.paired_output_check
+        else None
+    )
     internal_buffer = array_class.V(dtype=gs.qd_vec3, shape=solver.shell_state.verts_pos.shape)
     rest = tensor_to_array(egg.get_verts_pos())[0]
     faces = tensor_to_array(egg.get_faces())[0]
@@ -164,6 +176,7 @@ def main():
         try:
             for step, (level, within, force, endpoint) in enumerate(force_history(args)):
                 previous_velocity = tensor_to_array(egg.get_verts_vel())[0]
+                physics_started = time.perf_counter()
                 gravity_x = args.gravity_x * min(
                     max(((step + 1) * args.dt - args.gravity_start) / args.gravity_ramp, 0), 1
                 )
@@ -184,6 +197,7 @@ def main():
                     return
                 failure_flags = tensor_to_array(solver.get_envs_solver_failure())
                 failed = bool(failure_flags.any())
+                physics_seconds = time.perf_counter() - physics_started
                 if (step + 1) % args.record_stride and not endpoint and not failed:
                     continue
                 positions, velocity, contact = (
@@ -225,6 +239,7 @@ def main():
                     )
                     .sum(axis=0)
                     .tolist(),
+                    "timing": {"physics_seconds": physics_seconds},
                 }
                 pad_arrays = {}
                 if pad_audit is not None:
@@ -253,6 +268,37 @@ def main():
                             solver._shell_scratch.envs_residual_threshold, transpose=True
                         ).tolist(),
                     }
+                observe = endpoint or failed or (args.stress_stride > 0 and (step + 1) % args.stress_stride == 0)
+                field_arrays = {}
+                if observe:
+                    observation_started = time.perf_counter()
+                    field.update(solver)
+                    peak = float(tensor_to_array(field.peaks)[0])
+                    valid = np.isfinite(peak) and not failed
+                    host_bytes = 0
+                    if args.stress_output == "full":
+                        tensors = tensor_to_array(field.tensors)[:, 0].reshape(-1, 3, 3, 3)
+                        vm = tensor_to_array(field.von_mises)[:, 0].reshape(-1, 3)
+                        valid = bool(valid and np.isfinite(tensors).all() and np.isfinite(vm).all())
+                        host_bytes = tensors.nbytes + vm.nbytes
+                        field_arrays = {"cauchy_world_pa": tensors, "vm_pa": vm}
+                    row["stress"] = {
+                        "valid": bool(valid),
+                        "output_mode": args.stress_output,
+                        "raw_vm_peak_pa": peak,
+                        "field_host_bytes": host_bytes,
+                        "observation_seconds_excluding_frame_IO": time.perf_counter() - observation_started,
+                    }
+                    if paired_field is not None:
+                        paired_field.update(solver)
+                        paired_peak = float(tensor_to_array(paired_field.peaks)[0])
+                        peak_scale = max(abs(peak), abs(paired_peak), 1e-30)
+                        row["paired_output_check"] = {
+                            "paired_mode": paired_field.output_mode,
+                            "paired_vm_peak_pa": paired_peak,
+                            "relative_difference": abs(peak - paired_peak) / peak_scale,
+                            "passed": bool(np.isfinite(paired_peak) and abs(peak - paired_peak) <= 1e-8 * peak_scale),
+                        }
                 if endpoint or failed:
                     row["contact_iteration_audit"] = contact_diagnostics(
                         solver,
@@ -262,29 +308,37 @@ def main():
                         args.contact_stiffness,
                         physical_pad=pad_audit is not None,
                     )
-                    field.update(solver)
-                    tensors = tensor_to_array(field.tensors)[:, 0].reshape(-1, 3, 3, 3)
-                    vm = tensor_to_array(field.von_mises)[:, 0].reshape(-1, 3)
-                    row["raw_vm_peak_pa"] = vm.max().item()
-                    row["raw_principal_peak_pa"] = np.linalg.eigvalsh(tensors)[..., -1].max().item()
+                    row["raw_vm_peak_pa"] = peak
+                    row["raw_principal_peak_pa"] = (
+                        np.linalg.eigvalsh(tensors)[..., -1].max().item() if args.stress_output == "full" else None
+                    )
+                    if args.stress_output == "full":
+                        field_arrays.update(
+                            membrane_n_per_m=tensor_to_array(field.membrane)[:, 0],
+                            bending_n=tensor_to_array(field.bending)[:, 0],
+                        )
                     np.savez_compressed(
                         args.output / "frames" / (f"rejected-step{step + 1}.npz" if failed else f"level{level}.npz"),
                         vertices_world_m=positions,
                         velocities_m_per_s=velocity,
-                        cauchy_world_pa=tensors,
-                        vm_pa=vm,
                         contact_forces_world_n=contact,
                         internal_forces_world_n=internal,
                         body_forces_world_n=body_force,
                         inertial_forces_world_n=inertia,
                         equation_residual_n=residual,
-                        membrane_n_per_m=tensor_to_array(field.membrane)[:, 0],
-                        bending_n=tensor_to_array(field.bending)[:, 0],
+                        raw_vm_peak_pa=peak,
+                        **field_arrays,
                         **pad_arrays,
                     )
                 assert np.isfinite(positions).all() and np.isfinite(velocity).all()
                 journal.write(json.dumps(row, allow_nan=False) + "\n")
                 samples.append(row)
+                if observe:
+                    assert row["stress"]["valid"], "Shell stress observation failed; journal retained"
+                    if paired_field is not None:
+                        assert row["paired_output_check"]["passed"], (
+                            "Same-state full/max output differs; journal retained"
+                        )
                 assert not failed, "Shell solver failure: full field retained at the first failing step"
             completed = True
         finally:
@@ -301,6 +355,7 @@ def main():
                     "nonlinear time discretization error as well as contact balance. No velocity clearing.",
                 },
             )
+            write_cost(args, samples, completed)
 
 
 if __name__ == "__main__":

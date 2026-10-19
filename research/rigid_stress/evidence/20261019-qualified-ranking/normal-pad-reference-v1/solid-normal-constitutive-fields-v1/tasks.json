@@ -1,0 +1,42 @@
+[
+  [
+    {
+      "name": "normal-stvk-2",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v2/group0/reference/frames/level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/group0/reference/frames/level0.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "9",
+        "--physical-volume",
+        "--depth-quadrature",
+        "2"
+      ]
+    },
+    {
+      "name": "normal-stvk-4",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-history-v2/group0/reference/frames/level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/group0/reference/frames/level0.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "9",
+        "--physical-volume",
+        "--depth-quadrature",
+        "4"
+      ]
+    }
+  ]
+]
