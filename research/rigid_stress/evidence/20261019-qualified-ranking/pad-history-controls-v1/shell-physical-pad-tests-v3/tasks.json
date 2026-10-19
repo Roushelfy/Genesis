@@ -1,0 +1,17 @@
+[
+  [
+    {
+      "name": "tests",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-physical-pad",
+      "args": [
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-physical-pad/tests/deformable/test_shell.py",
+        "--select",
+        "physical_pad_compliance or rigid_contact_conserves_momentum or state_restore_reproduces_contact",
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-physical-pad"
+      ]
+    }
+  ]
+]

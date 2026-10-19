@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="46.532" timestamp="2026-10-19T07:27:44.786054+00:00" hostname="rtx-209-113"><testcase classname="tests.deformable.test_shell" name="test_physical_pad_compliance[0.001-0-64]" time="46.255"><failure message="AssertionError: &#10;Not equal to tolerance rtol=0, atol=1e-08&#10;None&#10;Mismatched elements: 25 / 25 (100%)&#10;Max absolute difference among violations: 1.96007766e-05&#10;Max relative difference among violations: 0.99902021&#10; ACTUAL: array([-1.949533e-08, -2.014124e-08, -1.949534e-08, -2.014125e-08,&#10;       -1.949533e-08, -2.014124e-08, -1.922344e-08, -2.014122e-08,&#10;       -1.922343e-08, -2.014124e-08, -1.949533e-08, -2.014122e-08,...&#10; DESIRED: array([-1.962e-05, -1.962e-05, -1.962e-05, -1.962e-05, -1.962e-05,&#10;       -1.962e-05, -1.962e-05, -1.962e-05, -1.962e-05, -1.962e-05,&#10;       -1.962e-05, -1.962e-05, -1.962e-05, -1.962e-05, -1.962e-05,...">n_envs = 0, dt = 0.001
+grid_sheet_path = &lt;function grid_sheet_path.&lt;locals&gt;.make at 0x71b819e07640&gt;
+asset_tmp_path = PosixPath('/tmp/gs-shell-compare.3aQfj8/tmp/pytest-of-zhaofeng/pytest-0/assets0')
+show_viewer = False
+
+    @pytest.mark.required
+    @pytest.mark.parametrize("precision", ["64"])
+    @pytest.mark.parametrize("n_envs", [0, 2])
+    @pytest.mark.parametrize("dt", [1e-3, 2e-3])
+    @pytest.mark.use_deterministic_algorithms(False)
+    def test_physical_pad_compliance(n_envs, dt, grid_sheet_path, asset_tmp_path, show_viewer):
+        size, thickness, density, gravity, stiffness = 0.15, 0.002, 1000.0, 9.81, 1e6
+        path = grid_sheet_path(4, 4, size, size)
+        mesh = trimesh.load(path, process=False)
+        corners = mesh.vertices[mesh.faces]
+        area = np.linalg.norm(np.cross(corners[:, 1] - corners[:, 0], corners[:, 2] - corners[:, 0]), axis=1) / 2
+        geometry = asset_tmp_path / "physical-pad.npz"
+        np.savez_compressed(
+            geometry,
+            corners_m=corners,
+            points_m=corners.mean(axis=1),
+            projected_area_m2=area,
+            jacobians=np.broadcast_to(np.eye(3) / 3, (len(corners), 3, 3, 3)),
+        )
+        scene = gs.Scene(
+            sim_options=gs.options.SimOptions(dt=dt, gravity=(0.0, 0.0, -gravity)),
+            shell_options=gs.options.ShellOptions(
+                contact_pad_stiffness=stiffness,
+                contact_pad_geometry=str(geometry),
+                pcg_tolerance=1e-6,
+                pcg_velocity_tolerance=1e-10,
+                n_coarse_patches=0,
+            ),
+            show_viewer=show_viewer,
+        )
+        plane = scene.add_entity(morph=gs.morphs.Plane(), material=gs.materials.Rigid(coup_friction=0.0))
+        sheet = scene.add_entity(
+            morph=gs.morphs.Mesh(file=path, decimate=False),
+            material=gs.materials.Shell(rho=density, E=1e6, thickness=thickness, damping=0),
+        )
+        scene.build(n_envs=n_envs)
+        for _ in range(160):
+            scene.step()
+        compression = density * thickness * gravity / stiffness
+&gt;       assert_allclose(sheet.get_verts_pos()[..., 2], -compression, atol=1e-8)
+
+tests/deformable/test_shell.py:286: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = tensor([-1.9495e-08, -2.0141e-08, -1.9495e-08, -2.0141e-08, -1.9495e-08,
+        -2.0141e-08, -1.9223e-08, -2.0141e-08...
+        -1.9495e-08, -2.0141e-08, -1.9495e-08, -2.0141e-08, -1.9495e-08],
+       device='cuda:0', dtype=torch.float64)
+desired = -1.9620000000000002e-05, atol = 1e-08, rtol = 0.0, tol = None
+err_msg = None
+
+    def assert_allclose(actual, desired, *, atol=None, rtol=None, tol=None, err_msg=None):
+        # Determine absolute and relative tolerance from input arguments
+        assert (tol is not None) ^ (atol is not None or rtol is not None)
+        if tol is not None:
+            atol = tol
+            rtol = tol
+        if rtol is None:
+            rtol = 0.0
+        if atol is None:
+            atol = 0.0
+    
+        # Convert input arguments as numpy arrays
+        args = [actual, desired]
+        for i, arg in enumerate(args):
+            if isinstance(arg, (GeneratorType, map)):
+                arg = tuple(arg)
+            if isinstance(arg, (tuple, list)):
+                arg = np.stack([tensor_to_array(val) for val in arg], axis=0)
+            args[i] = tensor_to_array(arg)
+    
+        # Early return without checking anything is both arrays are empty (0D arrays have size 1).
+        if all(e.size == 0 for e in args):
+            return
+    
+        # Try to make sure both arrays have the exact same shape.
+        # First, try to broadcast both matrices. Then it is does not work, squeeze them before trying again.
+        try:
+            args = np.broadcast_arrays(*args)
+        except ValueError as e:
+            try:
+                args = np.broadcast_arrays(*map(np.squeeze, args))
+            except ValueError:
+                raise e
+    
+&gt;       np.testing.assert_allclose(*args, atol=atol, rtol=rtol, err_msg=err_msg)
+E       AssertionError: 
+E       Not equal to tolerance rtol=0, atol=1e-08
+E       None
+E       Mismatched elements: 25 / 25 (100%)
+E       Max absolute difference among violations: 1.96007766e-05
+E       Max relative difference among violations: 0.99902021
+E        ACTUAL: array([-1.949533e-08, -2.014124e-08, -1.949534e-08, -2.014125e-08,
+E              -1.949533e-08, -2.014124e-08, -1.922344e-08, -2.014122e-08,
+E              -1.922343e-08, -2.014124e-08, -1.949533e-08, -2.014122e-08,...
+E        DESIRED: array([-1.962e-05, -1.962e-05, -1.962e-05, -1.962e-05, -1.962e-05,
+E              -1.962e-05, -1.962e-05, -1.962e-05, -1.962e-05, -1.962e-05,
+E              -1.962e-05, -1.962e-05, -1.962e-05, -1.962e-05, -1.962e-05,...
+
+tests/utils/assertions.py:50: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,82 @@
+{
+  "completed": false,
+  "steps_returned": 40,
+  "elapsed_seconds_including_observation_IO": 41.58853056997759,
+  "last_observation": {
+    "step": 40,
+    "time_s": 0.04,
+    "level": 0,
+    "command_force_n": 0.08000000000000002,
+    "compression_coordinate_m": 3.100536057335684e-05,
+    "plate_speed_m_per_s": 0.0015547454906767663,
+    "upper_reaction_n": -0.0,
+    "lower_reaction_n": 0.0,
+    "egg_inertia_resultant_norm_n": 5.131808159142264e-10,
+    "egg_kinetic_j": 9.610398859176886e-09,
+    "equation_residual_relative": 3.2062924341282074e-09,
+    "static_residual_relative": 3.2070170845718113e-09,
+    "solver_failure_flags": [
+      1
+    ],
+    "last_pcg_iterations": [
+      8000
+    ],
+    "contact_force_norm_n": 0.0,
+    "residual_force_scale_n": 0.08000000000000002,
+    "internal_force_resultant_n": [
+      1.2448098866642731e-24,
+      -9.34011311781678e-26,
+      5.0204370185713545e-25
+    ],
+    "contact_force_resultant_n": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "physical_pad": {
+      "normal_law_relative_error": 0.0,
+      "nodal_transfer_relative_error": 0.0,
+      "normal_forces_n": [
+        0.0,
+        0.0
+      ],
+      "compressed_projected_area_m2": [
+        0.0,
+        0.0
+      ],
+      "minimum_body_gap_m": 2.1793623364643744e-07,
+      "normal_law_and_transfer_passed": true
+    },
+    "failed_solve_counters": {
+      "contact_newton_iterations": [
+        1
+      ],
+      "last_linear_iterations": [
+        0
+      ],
+      "linear_mode": [
+        0
+      ],
+      "last_checked_residual": [
+        -1.0
+      ],
+      "relative_residual_threshold": [
+        0.0
+      ]
+    },
+    "contact_iteration_audit": {
+      "contact_slots": 1310,
+      "newton_iterations": [
+        1
+      ],
+      "contact_velocity_change_disagreement_max_m_per_s": 6.727668702988539e-22,
+      "maximum_per_contact_model_mismatch_budget_n": 1.4991524178603068e-08,
+      "sum_contact_model_mismatch_budgets_n": 1.9637128821802826e-05,
+      "scope": "Read-only identity J_shell delta_v_shell - J_rigid delta_v_rigid versus cached contact change. The force budgets convert the existing local nonlinear stopping tolerance, not measured residuals."
+    },
+    "raw_vm_peak_pa": 0.0002860139154319991,
+    "raw_principal_peak_pa": 0.0003181065956852397
+  },
+  "physical_accuracy_qualified": false,
+  "scope": "Actual end-position elastic/contact/inertial force check with zero shell damping. The engine linearizes elasticity each substep; this residual measures its remaining nonlinear time discretization error as well as contact balance. No velocity clearing."
+}

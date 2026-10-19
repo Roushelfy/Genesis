@@ -1,0 +1,30 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-113",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "727803",
+      "SLURM_ARRAY_JOB_ID": "727803",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-599bd3ea-e7c8-a9f2-946d-90c1157a6f41, 00000000:46:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-land-mesh-v1/group0/meshes/land-contact-1.npz",
+    "bytes": 1497007,
+    "sha256": "2edab70451155042fcf633bf6a333beb346d77cc35575fb51773e36247fb3edd"
+  },
+  "pad_stiffness_n_per_m3": 1000000000.0,
+  "candidate_radius_m": 0.003,
+  "quadrature_orders": [
+    6,
+    10
+  ],
+  "loads_n": [
+    0.1
+  ]
+}

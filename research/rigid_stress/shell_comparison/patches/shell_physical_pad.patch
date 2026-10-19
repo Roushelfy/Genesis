@@ -1,0 +1,496 @@
+diff --git a/genesis/engine/solvers/shell_solver.py b/genesis/engine/solvers/shell_solver.py
+index 9cb1a4bdd..61c2e7e29 100644
+--- a/genesis/engine/solvers/shell_solver.py
++++ b/genesis/engine/solvers/shell_solver.py
+@@ -152,6 +152,10 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
+         self._pcg_tolerance = options.pcg_tolerance
+         self._pcg_velocity_tolerance = options.pcg_velocity_tolerance
+         self._contact_stiffness = options.contact_stiffness
++        self._contact_pad_stiffness = options.contact_pad_stiffness
++        self._contact_pad_geometry = options.contact_pad_geometry
++        if (self._contact_pad_stiffness is None) != (self._contact_pad_geometry is None):
++            gs.raise_exception("Physical pad contact requires both stiffness and reference geometry.")
+         self._pcg_max_iterations = options.pcg_max_iterations
+         self._fracture_capacity = options.fracture_capacity
+         self._n_coarse_patches = options.n_coarse_patches
+@@ -191,6 +195,7 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
+         if self.is_active:
+             materials = [entity.material for entity in self._entities]
+             self._static_config = array_class.ShellStaticConfig(
++                has_physical_pad=self._contact_pad_stiffness is not None,
+                 has_fracture=any(material.tensile_strength is not None and material.fracture for material in materials),
+                 has_damage=any(material.tensile_strength is not None for material in materials),
+                 has_plasticity=any(
+@@ -262,12 +267,46 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
+             N_LINE_SEARCH_BRACKET,
+             self._B,
+             self._static_config.has_fixed_point_sums,
++            has_physical_pad=self._contact_pad_stiffness is not None,
+         )
+         self._shell_contact.geoms_bound_center.from_numpy(geoms_bound_center)
+         self._shell_contact.geoms_bound_radius.from_numpy(geoms_bound_radius)
+         self._shell_contact.contacts_geom.fill(-1)
+         self._shell_contact.verts_contact_force.fill(0.0)
+         self._shell_contact.dofs_dv.fill(0.0)
++        if self._contact_pad_geometry is not None:
++            if self._static_config.has_fracture or self._static_config.has_plasticity:
++                gs.raise_exception("The fixed reference pad map requires elastic, fixed-topology sheets.")
++            if self._static_config.has_fixed_point_sums:
++                gs.raise_exception("The physical pad map requires floating-point reductions.")
++            with np.load(self._contact_pad_geometry) as geometry:
++                points = geometry["points_m"]
++                corners = geometry["corners_m"]
++                jacobians = geometry["jacobians"]
++                areas = geometry["projected_area_m2"]
++            expected_shapes = ((self._n_faces, 3), (self._n_faces, 3, 3), (self._n_faces, 3, 3, 3), (self._n_faces,))
++            for value, shape in zip((points, corners, jacobians, areas), expected_shapes):
++                if value.shape != shape or not np.isfinite(value).all():
++                    gs.raise_exception("Physical pad geometry has an invalid shape or nonfinite value.")
++            if (areas < 0).any() or not (areas > 0).any():
++                gs.raise_exception("Physical pad projected areas must be nonnegative with positive total area.")
++            if not np.allclose(jacobians.sum(axis=1), np.eye(3), rtol=0, atol=1e-10):
++                gs.raise_exception("Physical pad Jacobians must preserve rigid translation.")
++            corners_idx = qd_to_torch(self._shell_state.corners_vert, transpose=True)[0].reshape(self._n_faces, 3)
++            initial_corners = qd_to_torch(self._shell_state.verts_pos, transpose=True)[:, corners_idx]
++            supplied_corners = torch.as_tensor(corners, dtype=gs.tc_float, device=gs.device)
++            if not torch.allclose(
++                initial_corners, supplied_corners[None].expand_as(initial_corners), rtol=0, atol=1e-10
++            ):
++                gs.raise_exception("Physical pad corner order and positions must match the built sheets.")
++            for axis in np.eye(3):
++                mapped = np.einsum("fkij,fkj->fi", jacobians, np.cross(axis, corners))
++                if not np.allclose(mapped, np.cross(axis, points), rtol=0, atol=1e-10):
++                    gs.raise_exception("Physical pad Jacobians must preserve infinitesimal rigid rotation.")
++            self._shell_contact.faces_pad_point.from_numpy(points)
++            self._shell_contact.faces_pad_corners.from_numpy(corners)
++            self._shell_contact.faces_pad_jacobian.from_numpy(jacobians)
++            self._shell_contact.faces_pad_area.from_numpy(areas)
+ 
+     def _init_info_and_state(self):
+         """Fill the rest mesh of every entity and the initial state of every environment."""
+@@ -511,6 +550,7 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
+             rigid_solver.rigid_config,
+             rigid_solver.collider.collider_config,
+             self._contact_stiffness,
++            self._contact_pad_stiffness if self._contact_pad_stiffness is not None else 0.0,
+         )
+         kernel_shell_rigid_contact_solve(
+             self._substep_dt,
+@@ -1522,7 +1562,9 @@ def func_pcg_norm_scales(
+     scale_rz = gs.qd_float(1.0)
+     if qd.static(static_config.has_coarse_space):
+         n_dofs = shell_scratch.coarse_vec.shape[0]
+-        e_restriction = func_exponent(shell_info.coarse_phi_max[None]) + func_bound_exponent(shell_scratch.envs_r_max[i_b])
++        e_restriction = func_exponent(shell_info.coarse_phi_max[None]) + func_bound_exponent(
++            shell_scratch.envs_r_max[i_b]
++        )
+         e_coarse = func_exponent(gs.qd_float(n_verts)) + e_restriction
+         scale_coarse = func_fixed_scale(e_restriction, n_verts, static_config)
+         e_rz = func_exponent(gs.qd_float(n_dofs)) + func_bound_exponent(shell_scratch.envs_coarse_inv_max[i_b])
+@@ -3148,6 +3190,7 @@ def func_contact_jacobian(
+     dyn_state: array_class.DynState,
+     dyn_info: array_class.DynInfo,
+     rigid_info: array_class.RigidInfo,
++    static_config: qd.template(),
+     rigid_config: qd.template(),
+ ):
+     """Write the Jacobian of the point of a contact with a movable link over the degrees of freedom of its kinematic
+@@ -3157,7 +3200,9 @@ def func_contact_jacobian(
+     i_d_start = rigid_info.trees_dof_start[i_t]
+     for k in range(rigid_info.trees_n_dofs[i_t]):
+         shell_contact.contacts_jac[i_c, k, i_b] = qd.Vector.zero(gs.qd_float, 3)
+-    offset = func_contact_point(i_c, i_b, shell_state, shell_contact) - dyn_state.links.root_COM[i_l, i_b]
++    offset = (
++        func_contact_point(i_c, i_b, shell_state, shell_contact, static_config) - dyn_state.links.root_COM[i_l, i_b]
++    )
+     i_l_ = i_l
+     for i_depth_ in range(dyn_info.links.parent_idx.shape[0]):
+         if i_l_ >= 0:
+@@ -3226,20 +3271,39 @@ def func_contact_link(
+     return dyn_info.geoms.link_idx[i_g]
+ 
+ 
++@qd.func
++def func_contact_shell_jacobian(
++    i_c: int, i_k: int, i_b: int, shell_contact: array_class.ShellContactScratch, static_config: qd.template()
++):
++    """Return the contact-point displacement derivative for one face vertex."""
++    jacobian = shell_contact.contacts_bary[i_c, i_b][i_k] * qd.Matrix.identity(gs.qd_float, 3)
++    if qd.static(static_config.has_physical_pad):
++        jacobian = shell_contact.faces_pad_jacobian[i_c // 2, i_k]
++    return jacobian
++
++
+ @qd.func
+ def func_contact_point(
+     i_c: int,
+     i_b: int,
+     shell_state: array_class.ShellState,
+     shell_contact: array_class.ShellContactScratch,
++    static_config: qd.template(),
+ ):
+-    """World position of the point of the mid-surface of a face a contact lies at, at the start of the substep."""
++    """Return the world contact point at the start of the substep."""
+     i_f = i_c // 2
+     bary = shell_contact.contacts_bary[i_c, i_b]
+     pos = qd.Vector.zero(gs.qd_float, 3)
++    if qd.static(static_config.has_physical_pad):
++        pos = shell_contact.faces_pad_point[i_f]
+     for k in qd.static(range(3)):
+         i_v = shell_state.corners_vert[3 * i_f + k, i_b]
+-        pos += bary[k] * shell_state.verts_pos[i_v, i_b]
++        if qd.static(static_config.has_physical_pad):
++            pos += shell_contact.faces_pad_jacobian[i_f, k] @ (
++                shell_state.verts_pos[i_v, i_b] - shell_contact.faces_pad_corners[i_f, k]
++            )
++        else:
++            pos += bary[k] * shell_state.verts_pos[i_v, i_b]
+     return pos
+ 
+ 
+@@ -3250,14 +3314,15 @@ def func_contact_shell_velocity(
+     vel: qd.template(),
+     shell_state: array_class.ShellState,
+     shell_contact: array_class.ShellContactScratch,
++    static_config: qd.template(),
+ ):
+     """Velocity of the face point of a contact, interpolated from given velocities of the vertices of its face."""
+     i_f = i_c // 2
+-    bary = shell_contact.contacts_bary[i_c, i_b]
+     vel_point = qd.Vector.zero(gs.qd_float, 3)
+     for k in qd.static(range(3)):
+         i_v = shell_state.corners_vert[3 * i_f + k, i_b]
+-        vel_point += bary[k] * vel[i_v, i_b]
++        jacobian = func_contact_shell_jacobian(i_c, k, i_b, shell_contact, static_config)
++        vel_point += jacobian @ vel[i_v, i_b]
+     return vel_point
+ 
+ 
+@@ -3276,12 +3341,13 @@ def func_contact_add_to_verts(
+     coordinates, as fixed-point terms of the given scale (see func_fixed_scale), into the vertex rows of dst, stored
+     component-major (see verts_Ap in ShellScratch)."""
+     i_f = i_c // 2
+-    bary = shell_contact.contacts_bary[i_c, i_b]
+     for k in qd.static(range(3)):
+         i_v = shell_state.corners_vert[3 * i_f + k, i_b]
+         if func_is_vert_free(i_v, i_b, shell_state):
++            jacobian = func_contact_shell_jacobian(i_c, k, i_b, shell_contact, static_config)
++            vertex_impulse = jacobian.transpose() @ impulse
+             for j in qd.static(range(3)):
+-                dst[i_v, j, i_b] += func_to_fixed(bary[k] * impulse[j], scale, static_config)
++                dst[i_v, j, i_b] += func_to_fixed(vertex_impulse[j], scale, static_config)
+ 
+ 
+ @qd.func
+@@ -3387,6 +3453,7 @@ def kernel_shell_rigid_contact_detect(
+     rigid_config: qd.template(),
+     collider_config: qd.template(),
+     contact_stiffness: float,
++    pad_stiffness: float,
+ ):
+     """Detect the contacts of every face with the rigid geoms at the start of the substep, and start the contact solve
+     from the warm start of the sheet and the free motion of the rigid links.
+@@ -3476,10 +3543,21 @@ def kernel_shell_rigid_contact_detect(
+                     bound_radius < 0.0
+                     or (center - bound_center).norm() <= radius + bound_radius + half_thickness + margin
+                 ):
+-                    bary, dist, normal = func_face_deepest_point(
+-                        i_g, i_b, x0, x1, x2, dyn_state, dyn_info, rigid_info, sdf_info, collider_config
+-                    )
+-                    gap = dist - half_thickness
++                    bary = qd.Vector([1.0, 1.0, 1.0], dt=gs.qd_float) / 3.0
++                    dist = gs.qd_float(0.0)
++                    normal = qd.Vector.zero(gs.qd_float, 3)
++                    offset = half_thickness
++                    if qd.static(shell_static_config.has_physical_pad):
++                        point = func_contact_point(2 * i_f, i_b, shell_state, shell_contact, shell_static_config)
++                        dist, normal = func_geom_distance(
++                            i_g, i_b, point, dyn_state, dyn_info, rigid_info, sdf_info, collider_config
++                        )
++                        offset = 0.0
++                    else:
++                        bary, dist, normal = func_face_deepest_point(
++                            i_g, i_b, x0, x1, x2, dyn_state, dyn_info, rigid_info, sdf_info, collider_config
++                        )
++                    gap = dist - offset
+                     # A contact the geom has not reached yet leaves an edge it pushes past the normal cone of the
+                     # surface to the neighbor face: linearized about the edge, its gap would close on a corner the
+                     # neighbor face covers, which brakes a geom sliding across the edge
+@@ -3512,30 +3590,46 @@ def kernel_shell_rigid_contact_detect(
+         if i_g >= 0:
+             i_f = i_c // 2
+             normal = shell_contact.contacts_normal[i_c, i_b]
+-            bary = shell_contact.contacts_bary[i_c, i_b]
+             compliance = gs.qd_float(0.0)
+             for k in qd.static(range(3)):
+                 i_v = shell_state.corners_vert[3 * i_f + k, i_b]
+                 if func_is_vert_free(i_v, i_b, shell_state) and shell_scratch.verts_mass[i_v, i_b] > 0.0:
+-                    compliance += bary[k] ** 2 * normal.dot(shell_scratch.verts_prec[i_v, i_b].inverse() @ normal)
++                    jacobian = func_contact_shell_jacobian(i_c, k, i_b, shell_contact, shell_static_config)
++                    vertex_normal = jacobian.transpose() @ normal
++                    compliance += vertex_normal.dot(shell_scratch.verts_prec[i_v, i_b].inverse() @ vertex_normal)
+             i_l = dyn_info.geoms.link_idx[i_g]
+             I_l = [i_l, i_b] if qd.static(rigid_config.batch_links_info) else i_l
+             compliance += dyn_info.links.invweight[I_l][0]
+             if compliance > 0.0:
+                 shell_contact.contacts_stiffness[i_c, i_b] = contact_stiffness / compliance
+-                vel = func_contact_shell_velocity(i_c, i_b, shell_state.verts_vel, shell_state, shell_contact)
++                if qd.static(shell_static_config.has_physical_pad):
++                    shell_contact.contacts_stiffness[i_c, i_b] = (
++                        dt * dt * pad_stiffness * shell_contact.faces_pad_area[i_f]
++                    )
++                shell_contact.contacts_velocity_mass[i_c, i_b] = 1.0 / compliance
++                vel = func_contact_shell_velocity(
++                    i_c, i_b, shell_state.verts_vel, shell_state, shell_contact, shell_static_config
++                )
+                 # The rigid point moves with the kinematic tree of its link, whose Jacobian holds over the substep
+                 i_t = rigid_info.links_tree_idx[i_l]
+                 if i_t >= 0:
+                     func_contact_jacobian(
+-                        i_c, i_b, shell_state, shell_contact, dyn_state, dyn_info, rigid_info, rigid_config
++                        i_c,
++                        i_b,
++                        shell_state,
++                        shell_contact,
++                        dyn_state,
++                        dyn_info,
++                        rigid_info,
++                        shell_static_config,
++                        rigid_config,
+                     )
+                     vel = vel - func_contact_rigid_velocity(
+                         i_c, i_b, i_t, shell_contact.dofs_schur_vec, shell_contact, rigid_info
+                     )
+                 shell_contact.contacts_vel[i_c, i_b] = vel
+                 shell_contact.contacts_vel_change[i_c, i_b] = func_contact_shell_velocity(
+-                    i_c, i_b, shell_state.verts_dv, shell_state, shell_contact
++                    i_c, i_b, shell_state.verts_dv, shell_state, shell_contact, shell_static_config
+                 )
+                 friction_bound = gs.qd_float(0.0)
+                 if shell_state.contacts_geom_prev[i_c, i_b] == i_g:
+@@ -3625,8 +3719,8 @@ def func_contact_linearize(
+                     model = shell_contact.contacts_impulse[i_c, i_b] - shell_contact.envs_step[i_b] * (
+                         shell_contact.contacts_hessian[i_c, i_b] @ shell_contact.contacts_dir[i_c, i_b]
+                     )
+-                    # The mass of the contact point, from its stiffness (see kernel_shell_rigid_contact_detect)
+-                    impulse_tolerance = velocity_tolerance * stiffness / contact_stiffness
++                    # The velocity error is bounded by the contact's effective mass, independently of pad stiffness
++                    impulse_tolerance = velocity_tolerance * shell_contact.contacts_velocity_mass[i_c, i_b]
+                     if (impulse - model).norm() > impulse_tolerance:
+                         shell_contact.envs_is_nonlinear[i_b] = True
+                     qd.atomic_max(
+@@ -3779,7 +3873,6 @@ def func_contact_assemble(
+                 if shell_contact.contacts_geom[i_c, i_b] >= 0:
+                     scale_rhs, scale_inv = func_contact_schur_scales(i_b, n_slots, shell_contact, static_config)
+                     i_f = i_c // 2
+-                    bary = shell_contact.contacts_bary[i_c, i_b]
+                     hessian = shell_contact.contacts_hessian[i_c, i_b]
+                     impulse = (
+                         shell_contact.contacts_impulse[i_c, i_b] + hessian @ shell_contact.contacts_vel_change[i_c, i_b]
+@@ -3790,8 +3883,9 @@ def func_contact_assemble(
+                     for k in qd.static(range(3)):
+                         i_v = shell_state.corners_vert[3 * i_f + k, i_b]
+                         if func_is_vert_free(i_v, i_b, shell_state):
++                            jacobian = func_contact_shell_jacobian(i_c, k, i_b, shell_contact, static_config)
+                             shell_scratch.verts_prec_sum[i_v, i_b] += func_to_fixed(
+-                                bary[k] ** 2 * hessian, scale_prec, static_config
++                                jacobian.transpose() @ hessian @ jacobian, scale_prec, static_config
+                             )
+                     i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
+                     if i_t >= 0:
+@@ -4013,12 +4107,12 @@ def func_system_contact_product(
+                     )
+                 elif shell_contact.contacts_geom[i_c, i_b] >= 0:
+                     i_f = i_c // 2
+-                    bary = shell_contact.contacts_bary[i_c, i_b]
+                     vel = qd.Vector.zero(gs.qd_float, 3)
+                     for k in qd.static(range(3)):
+                         i_v = shell_state.corners_vert[3 * i_f + k, i_b]
+                         if func_is_vert_free(i_v, i_b, shell_state):
+-                            vel += bary[k] * func_pcg_direction(i_v, i_b, shell_state, shell_scratch)
++                            jacobian = func_contact_shell_jacobian(i_c, k, i_b, shell_contact, static_config)
++                            vel += jacobian @ func_pcg_direction(i_v, i_b, shell_state, shell_scratch)
+                     impulse = shell_contact.contacts_hessian[i_c, i_b] @ vel
+                     func_contact_add_to_verts(
+                         i_c, i_b, impulse, scale, shell_scratch.verts_Ap, shell_state, shell_contact, static_config
+@@ -4170,7 +4264,7 @@ def func_contact_direction(
+                         )
+                         scale = func_fixed_scale(e_bound, n_slots, static_config)
+                         impulse = shell_contact.contacts_hessian[i_c, i_b] @ func_contact_shell_velocity(
+-                            i_c, i_b, shell_state.verts_dv, shell_state, shell_contact
++                            i_c, i_b, shell_state.verts_dv, shell_state, shell_contact, static_config
+                         )
+                         i_d_start = rigid_info.trees_dof_start[i_t]
+                         for k in range(rigid_info.trees_n_dofs[i_t]):
+@@ -4255,7 +4349,9 @@ def func_contact_direction(
+                 i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                 i_c = i_flat // n_envs_needs_solve
+                 if shell_contact.contacts_geom[i_c, i_b] >= 0:
+-                    direction = func_contact_shell_velocity(i_c, i_b, shell_scratch.verts_p, shell_state, shell_contact)
++                    direction = func_contact_shell_velocity(
++                        i_c, i_b, shell_scratch.verts_p, shell_state, shell_contact, static_config
++                    )
+                     i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
+                     if i_t >= 0:
+                         direction = direction - func_contact_rigid_velocity(
+@@ -4792,10 +4888,12 @@ def kernel_shell_rigid_contact_finalize(
+             scale = func_fixed_scale(func_bound_exponent(shell_contact.envs_force_max[i_b]), n_slots, static_config)
+             force = shell_contact.contacts_impulse[i_c, i_b] / dt
+             i_f = i_c // 2
+-            bary = shell_contact.contacts_bary[i_c, i_b]
+             for k in qd.static(range(3)):
+                 i_v = shell_state.corners_vert[3 * i_f + k, i_b]
+-                shell_contact.verts_contact_force_sum[i_v, i_b] += func_to_fixed(bary[k] * force, scale, static_config)
++                jacobian = func_contact_shell_jacobian(i_c, k, i_b, shell_contact, static_config)
++                shell_contact.verts_contact_force_sum[i_v, i_b] += func_to_fixed(
++                    jacobian.transpose() @ force, scale, static_config
++                )
+             i_l = dyn_info.geoms.link_idx[i_g]
+             shell_contact.links_contact_force_sum[i_l, i_b] += func_to_fixed(-force, scale, static_config)
+ 
+diff --git a/genesis/options/solvers.py b/genesis/options/solvers.py
+index d0430aa2b..d12f71bee 100644
+--- a/genesis/options/solvers.py
++++ b/genesis/options/solvers.py
+@@ -970,6 +970,15 @@ class ShellOptions(GravityMixin, TimeBasedMixin):
+         Maximum number of iterations of every solve of a velocity update, of which a substep with contacts runs several,
+         a safety limit for the environments whose solve does not reach its tolerance. Such an environment keeps its
+         last iterate and reports the failure (see `ShellSolver.get_envs_solver_failure`). Defaults to 1000.
++    contact_pad_stiffness : float, optional
++        Compression-only physical pad stiffness per supplied projected reference area, in N/m^3. Paired with
++        contact_pad_geometry, this selects one material quadrature point per face with fixed physical compliance.
++        Its linear reference-geometry kinematics require elastic fixed topology and floating-point reductions.
++        Defaults to None, using the ordinary contact model.
++    contact_pad_geometry : str, optional
++        NPZ containing points_m, corners_m, jacobians and projected_area_m2 in built face order. Point coordinates
++        and face-corner coordinates are in the initial world frame, and the three displacement Jacobians per face
++        must reproduce infinitesimal rigid motions. The force transfer is their transpose. Defaults to None.
+     fracture_capacity : float, optional
+         Number of vertices a fracturable sheet can create by splitting, as a fraction of its own vertex count. Each one
+         costs memory in every environment. Fracture stops in an environment that exhausted it. Defaults to 1.0.
+@@ -993,6 +1002,8 @@ class ShellOptions(GravityMixin, TimeBasedMixin):
+     pcg_tolerance: PositiveFloat = 1e-4
+     pcg_velocity_tolerance: PositiveFloat = 1e-4
+     contact_stiffness: PositiveFloat = 25.0
++    contact_pad_stiffness: PositiveFloat | None = None
++    contact_pad_geometry: str | None = None
+     pcg_max_iterations: PositiveInt = 1000
+     fracture_capacity: NonNegativeFloat = 1.0
+     n_coarse_patches: NonNegativeInt = 12
+diff --git a/genesis/utils/array_class.py b/genesis/utils/array_class.py
+index eb63aebe0..c23043afb 100644
+--- a/genesis/utils/array_class.py
++++ b/genesis/utils/array_class.py
+@@ -3408,6 +3408,7 @@ class SAPContactQueriesState:
+ 
+ @qd.data_oriented
+ class ShellStaticConfig(metaclass=AutoInitMeta):
++    has_physical_pad: bool
+     # Whether any shell entity fractures, compiling the fracture passes in
+     has_fracture: bool
+     # Whether any shell entity evaluates its damage, compiling the damage pass in
+@@ -3860,12 +3861,18 @@ class ShellContactScratch:
+ 
+     geoms_bound_center: qd.Tensor = of_kind(DataKind.CONSTANT)
+     geoms_bound_radius: qd.Tensor = of_kind(DataKind.CONSTANT)
++    # A physical pad uses fixed reference points and linear face Jacobians for consistent work transfer
++    faces_pad_point: qd.Tensor = of_kind(DataKind.CONSTANT)
++    faces_pad_corners: qd.Tensor = of_kind(DataKind.CONSTANT)
++    faces_pad_jacobian: qd.Tensor = of_kind(DataKind.CONSTANT)
++    faces_pad_area: qd.Tensor = of_kind(DataKind.CONSTANT)
+     contacts_geom: qd.Tensor
+     contacts_bary: qd.Tensor
+     contacts_normal: qd.Tensor
+     contacts_gap: qd.Tensor
+     contacts_vel: qd.Tensor
+     contacts_stiffness: qd.Tensor
++    contacts_velocity_mass: qd.Tensor
+     contacts_vel_change: qd.Tensor
+     contacts_dir: qd.Tensor
+     contacts_impulse: qd.Tensor
+@@ -3927,6 +3934,7 @@ def get_shell_contact_scratch(
+     n_line_search_bracket,
+     B,
+     has_fixed_point_sums,
++    has_physical_pad=False,
+ ):
+     # Fixed-point sums take 64-bit integers (see has_fixed_point_sums in ShellStaticConfig), and their bounds the bits
+     # of floats (see func_bound_bits in shell_solver.py)
+@@ -3935,12 +3943,17 @@ def get_shell_contact_scratch(
+     return ShellContactScratch(
+         geoms_bound_center=V(dtype=gs.qd_vec3, shape=(n_geoms,)),
+         geoms_bound_radius=V(dtype=gs.qd_float, shape=(n_geoms,)),
++        faces_pad_point=V(dtype=gs.qd_vec3, shape=maybe_shape((n_faces,), has_physical_pad)),
++        faces_pad_corners=V(dtype=gs.qd_vec3, shape=maybe_shape((n_faces, 3), has_physical_pad)),
++        faces_pad_jacobian=V_MAT(n=3, m=3, dtype=gs.qd_float, shape=maybe_shape((n_faces, 3), has_physical_pad)),
++        faces_pad_area=V(dtype=gs.qd_float, shape=maybe_shape((n_faces,), has_physical_pad)),
+         contacts_geom=V(dtype=gs.qd_int, shape=(2 * n_faces, B)),
+         contacts_bary=V(dtype=gs.qd_vec3, shape=(2 * n_faces, B)),
+         contacts_normal=V(dtype=gs.qd_vec3, shape=(2 * n_faces, B)),
+         contacts_gap=V(dtype=gs.qd_float, shape=(2 * n_faces, B)),
+         contacts_vel=V(dtype=gs.qd_vec3, shape=(2 * n_faces, B)),
+         contacts_stiffness=V(dtype=gs.qd_float, shape=(2 * n_faces, B)),
++        contacts_velocity_mass=V(dtype=gs.qd_float, shape=(2 * n_faces, B)),
+         contacts_vel_change=V(dtype=gs.qd_vec3, shape=(2 * n_faces, B)),
+         contacts_dir=V(dtype=gs.qd_vec3, shape=(2 * n_faces, B)),
+         contacts_impulse=V(dtype=gs.qd_vec3, shape=(2 * n_faces, B)),
+diff --git a/tests/deformable/test_shell.py b/tests/deformable/test_shell.py
+index d8cc2f3d3..c71748f2e 100644
+--- a/tests/deformable/test_shell.py
++++ b/tests/deformable/test_shell.py
+@@ -244,6 +244,55 @@ def test_tearing_at_tensile_strength(grid_sheet_path, show_viewer):
+     assert_equal(strips[0].get_faces()[1], strips[0].init_faces)
+ 
+ 
++@pytest.mark.required
++@pytest.mark.parametrize("precision", ["64"])
++@pytest.mark.parametrize("n_envs", [0, 2])
++@pytest.mark.parametrize("dt", [1e-3, 2e-3])
++@pytest.mark.use_deterministic_algorithms(False)
++def test_physical_pad_compliance(n_envs, dt, grid_sheet_path, asset_tmp_path, show_viewer):
++    size, thickness, density, gravity, stiffness = 0.15, 0.002, 1000.0, 9.81, 1e6
++    path = grid_sheet_path(4, 4, size, size)
++    mesh = trimesh.load(path, process=False)
++    corners = mesh.vertices[mesh.faces]
++    area = np.linalg.norm(np.cross(corners[:, 1] - corners[:, 0], corners[:, 2] - corners[:, 0]), axis=1) / 2
++    geometry = asset_tmp_path / "physical-pad.npz"
++    np.savez_compressed(
++        geometry,
++        corners_m=corners,
++        points_m=corners.mean(axis=1),
++        projected_area_m2=area,
++        jacobians=np.broadcast_to(np.eye(3) / 3, (len(corners), 3, 3, 3)),
++    )
++    scene = gs.Scene(
++        sim_options=gs.options.SimOptions(dt=dt, gravity=(0.0, 0.0, -gravity)),
++        shell_options=gs.options.ShellOptions(
++            contact_pad_stiffness=stiffness,
++            contact_pad_geometry=str(geometry),
++            pcg_tolerance=1e-6,
++            pcg_velocity_tolerance=1e-10,
++            n_coarse_patches=0,
++        ),
++        show_viewer=show_viewer,
++    )
++    plane = scene.add_entity(morph=gs.morphs.Plane(), material=gs.materials.Rigid(coup_friction=0.0))
++    sheet = scene.add_entity(
++        morph=gs.morphs.Mesh(file=path, decimate=False),
++        material=gs.materials.Shell(rho=density, E=1e6, thickness=thickness, damping=0),
++    )
++    scene.build(n_envs=n_envs)
++    for _ in range(160):
++        scene.step()
++    compression = density * thickness * gravity / stiffness
++    assert_allclose(sheet.get_verts_pos()[..., 2], -compression, atol=1e-8)
++    assert_allclose(sheet.get_verts_vel(), 0, atol=1e-7)
++    contact = tensor_to_array(sheet.get_verts_contact_force()).sum(axis=-2)
++    assert_allclose(contact[..., 2], density * thickness * size**2 * gravity, rtol=1e-5)
++    assert_allclose(contact[..., :2], 0, atol=1e-10)
++    ground = tensor_to_array(plane.get_links_net_contact_force()).sum(axis=-2)
++    assert_allclose(ground + contact, 0, atol=1e-10)
++    assert_equal(scene.sim.shell_solver.get_envs_solver_failure(), 0)
++
++
+ @pytest.mark.required
+ @pytest.mark.parametrize("precision", ["64"])
+ @pytest.mark.parametrize("n_envs", [0, 2])
