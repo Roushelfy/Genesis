@@ -1,0 +1,368 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-029",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728617",
+      "SLURM_ARRAY_JOB_ID": "728617",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-d74daa1e-6b6e-b4da-5f5f-def9418b9092, 00000000:45:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "checks": {
+    "history_solid-pad-stvk-v1_0": true,
+    "history_solid-pad-stvk-half-dt-v1_0": true,
+    "history_solid-pad-stvk-contact-quadrature-v1_0": true,
+    "history_solid-pad-stvk-contact-quadrature-v1_1": true,
+    "half-dt_0_fields": true,
+    "half-dt_0_raw_peaks": true,
+    "half-dt_0_common_peaks": true,
+    "half-dt_0_angular": true,
+    "half-dt_0_depth": true,
+    "half-dt_1_fields": true,
+    "half-dt_1_raw_peaks": true,
+    "half-dt_1_common_peaks": true,
+    "half-dt_1_angular": true,
+    "half-dt_1_depth": true,
+    "contact-orders_0_fields": true,
+    "contact-orders_0_raw_peaks": true,
+    "contact-orders_0_common_peaks": true,
+    "contact-orders_0_angular": true,
+    "contact-orders_0_depth": true,
+    "contact-orders_1_fields": true,
+    "contact-orders_1_raw_peaks": true,
+    "contact-orders_1_common_peaks": true,
+    "contact-orders_1_angular": true,
+    "contact-orders_1_depth": true
+  },
+  "passed": true,
+  "controls": [
+    {
+      "control": "half-dt",
+      "level": 0,
+      "fields": {
+        "tangent_relative_l2": 3.53198721910155e-10,
+        "membrane_relative_l2": 2.7689400012351414e-10,
+        "bending_relative_l2": 4.4178431224907133e-10,
+        "outer_tangent_relative_l2": 3.94595081624833e-10,
+        "inner_tangent_relative_l2": 3.8862009152528655e-10
+      },
+      "raw_peaks": {
+        "raw_mises_relative_change": 1.7530821239120087e-10,
+        "raw_tension_relative_change": 5.4892757006541615e-12
+      },
+      "common_tangent_peaks": {
+        "mises": 8.249349687310558e-12,
+        "tension": 1.7362283390660574e-10
+      },
+      "common_peak_q9_to_q25_relative_changes": {
+        "mises_actual": 0.0031783079099304556,
+        "mises_reference": 0.0031783079131543213,
+        "tension_actual": 0.0036525085098207954,
+        "tension_reference": 0.0036525084993518364
+      },
+      "field_contrast_q9_to_q25_absolute_changes": {
+        "tangent_relative_l2": 1.1526555924822582e-16,
+        "membrane_relative_l2": 4.241921871297871e-17,
+        "bending_relative_l2": 1.0426984677257332e-14,
+        "outer_tangent_relative_l2": 1.4897793371839122e-17,
+        "inner_tangent_relative_l2": 1.3251928273900963e-17
+      },
+      "field_contrast_depth2_to_depth4_at_q3_absolute_changes": {
+        "tangent_relative_l2": 4.2795456644719624e-18,
+        "membrane_relative_l2": 4.914471408091767e-18,
+        "bending_relative_l2": 6.077443612166435e-18,
+        "outer_tangent_relative_l2": 0.0,
+        "inner_tangent_relative_l2": 0.0
+      }
+    },
+    {
+      "control": "half-dt",
+      "level": 1,
+      "fields": {
+        "tangent_relative_l2": 2.6290746417206085e-07,
+        "membrane_relative_l2": 2.0347286321882246e-07,
+        "bending_relative_l2": 3.314657742983255e-07,
+        "outer_tangent_relative_l2": 2.9420588393757974e-07,
+        "inner_tangent_relative_l2": 2.9078477210254045e-07
+      },
+      "raw_peaks": {
+        "raw_mises_relative_change": 1.0419102913772349e-07,
+        "raw_tension_relative_change": 3.2160157870109174e-09
+      },
+      "common_tangent_peaks": {
+        "mises": 3.18211971623002e-08,
+        "tension": 1.1668603935755155e-08
+      },
+      "common_peak_q9_to_q25_relative_changes": {
+        "mises_actual": 0.0033257859837588777,
+        "mises_reference": 0.0033257774284223274,
+        "tension_actual": 0.0036226859584331805,
+        "tension_reference": 0.0036226888008140667
+      },
+      "field_contrast_q9_to_q25_absolute_changes": {
+        "tangent_relative_l2": 9.471230549819786e-14,
+        "membrane_relative_l2": 2.431359963622065e-14,
+        "bending_relative_l2": 3.512674202155499e-12,
+        "outer_tangent_relative_l2": 5.439119368048635e-15,
+        "inner_tangent_relative_l2": 1.5408355326497974e-14
+      },
+      "field_contrast_depth2_to_depth4_at_q3_absolute_changes": {
+        "tangent_relative_l2": 2.2370140136986072e-18,
+        "membrane_relative_l2": 9.075428634237794e-19,
+        "bending_relative_l2": 9.507627195574301e-18,
+        "outer_tangent_relative_l2": 0.0,
+        "inner_tangent_relative_l2": 0.0
+      }
+    },
+    {
+      "control": "contact-orders",
+      "level": 0,
+      "fields": {
+        "tangent_relative_l2": 0.000832018620697429,
+        "membrane_relative_l2": 0.0003871002702161315,
+        "bending_relative_l2": 0.0012430402260407247,
+        "outer_tangent_relative_l2": 0.0010173003026521792,
+        "inner_tangent_relative_l2": 0.0010690573549929422
+      },
+      "raw_peaks": {
+        "raw_mises_relative_change": 0.00012429496370436333,
+        "raw_tension_relative_change": 7.269363513062732e-05
+      },
+      "common_tangent_peaks": {
+        "mises": 0.00012910555191844825,
+        "tension": 7.020966565615932e-05
+      },
+      "common_peak_q9_to_q25_relative_changes": {
+        "mises_actual": 0.0034194572372070464,
+        "mises_reference": 0.0034204602492643454,
+        "tension_actual": 0.004289193356920573,
+        "tension_reference": 0.00429250759494848
+      },
+      "field_contrast_q9_to_q25_absolute_changes": {
+        "tangent_relative_l2": 1.7124142632314251e-09,
+        "membrane_relative_l2": 7.207283235391264e-10,
+        "bending_relative_l2": 3.873050680547156e-07,
+        "outer_tangent_relative_l2": 2.4621424473889042e-11,
+        "inner_tangent_relative_l2": 1.489995752647355e-10
+      },
+      "field_contrast_depth2_to_depth4_at_q3_absolute_changes": {
+        "tangent_relative_l2": 1.0752249784973245e-14,
+        "membrane_relative_l2": 1.6263032587282567e-18,
+        "bending_relative_l2": 4.786969431957999e-15,
+        "outer_tangent_relative_l2": 0.0,
+        "inner_tangent_relative_l2": 0.0
+      }
+    },
+    {
+      "control": "contact-orders",
+      "level": 1,
+      "fields": {
+        "tangent_relative_l2": 0.0008320681646578282,
+        "membrane_relative_l2": 0.0003872518856762849,
+        "bending_relative_l2": 0.0012431208564273645,
+        "outer_tangent_relative_l2": 0.0010174254560959305,
+        "inner_tangent_relative_l2": 0.0010690250892943078
+      },
+      "raw_peaks": {
+        "raw_mises_relative_change": 0.00012421858941902286,
+        "raw_tension_relative_change": 7.36265296438221e-05
+      },
+      "common_tangent_peaks": {
+        "mises": 0.00012900222012971412,
+        "tension": 7.123401919446175e-05
+      },
+      "common_peak_q9_to_q25_relative_changes": {
+        "mises_actual": 0.0033766773753473034,
+        "mises_reference": 0.0033777907373228055,
+        "tension_actual": 0.004257527648151016,
+        "tension_reference": 0.004260720362418424
+      },
+      "field_contrast_q9_to_q25_absolute_changes": {
+        "tangent_relative_l2": 1.7105387363708716e-09,
+        "membrane_relative_l2": 7.45332643476912e-10,
+        "bending_relative_l2": 3.876988180725495e-07,
+        "outer_tangent_relative_l2": 2.4479381195707806e-11,
+        "inner_tangent_relative_l2": 1.489429165939249e-10
+      },
+      "field_contrast_depth2_to_depth4_at_q3_absolute_changes": {
+        "tangent_relative_l2": 1.0750081380628274e-14,
+        "membrane_relative_l2": 6.451002926288751e-18,
+        "bending_relative_l2": 4.794775687599895e-15,
+        "outer_tangent_relative_l2": 0.0,
+        "inner_tangent_relative_l2": 0.0
+      }
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/group0/reference/result.json",
+      "bytes": 1428,
+      "sha256": "c274f94d61538018119497e14de696e3a06a0b32029a59ec5975101562ac9e9b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/group0/moment/result.json",
+      "bytes": 3237,
+      "sha256": "47ac8567da3d018df1dce34aed76ba5863f6640a01f18dc677a8186480c2ce48"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-half-dt-v1/group0/reference/result.json",
+      "bytes": 1430,
+      "sha256": "5f9636712ed27dd3936b8baf2a875b97e9b44ed2be05c95112380f78c5afc9a4"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-half-dt-v1/group0/moment/result.json",
+      "bytes": 3264,
+      "sha256": "d1c6bc3fde19b7a5c3e95d2a7a56b7a515557252e52616ffc38015181d1a75e7"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-contact-quadrature-v1/group0/reference/result.json",
+      "bytes": 1427,
+      "sha256": "06679c1794729a7b90c1427a8ae0fddeeb3d33f08bbfbb8c16c842dc3856f420"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-contact-quadrature-v1/group0/moment/result.json",
+      "bytes": 3296,
+      "sha256": "e7fae0b8a83ee518d1d085d30558199690de57c6b22b0cd774c4e4578a4e2242"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-contact-quadrature-v1/group1/reference/result.json",
+      "bytes": 1427,
+      "sha256": "099c233b2f120f2cc8b67c7b912916379f7df7d03f1f381fb2e04ecff1ea8066"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-contact-quadrature-v1/group1/moment/result.json",
+      "bytes": 3291,
+      "sha256": "7e31b9c6b58e3215d2157693688e1276a5cb0247b2d531ca496357e1cffefcea"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-contact-common-fields-v1/group0/half-dt-0-q9/result.json",
+      "bytes": 9095,
+      "sha256": "75fbe882b6c9ae91163c8c1a64fece9dcd38fa33efb64daa365b4f82d9947855"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-contact-common-fields-v1/group0/half-dt-0-q25/result.json",
+      "bytes": 9089,
+      "sha256": "b614a42b1281afeddb64d06d27bf2b45b5900c28299ed5fac0ce461cdc812f7e"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-quadrature-fields-v1/group0/half-dt-0-depth2/result.json",
+      "bytes": 9028,
+      "sha256": "8cf2c0b55b2353a9c091902587e130fd794f7d4e909d548b305dba68de2dfe03"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-quadrature-fields-v1/group0/half-dt-0-depth4/result.json",
+      "bytes": 9031,
+      "sha256": "344500d33bfb64027cee0ae1d478e0e001c994fa6fd28210a9deab0927d730e1"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-contact-common-fields-v1/group0/half-dt-1-q9/result.json",
+      "bytes": 9094,
+      "sha256": "001fa1120ec952afbbcd18a08554a8ef93ef4569ad539b540679c03dc926a38f"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-contact-common-fields-v1/group0/half-dt-1-q25/result.json",
+      "bytes": 9092,
+      "sha256": "118d337ba630f46d807ffb4f34b6e070e4191a9d2e60ec7decd5365808b00117"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-quadrature-fields-v1/group0/half-dt-1-depth2/result.json",
+      "bytes": 9030,
+      "sha256": "815cde76c42ef74ceb5be5445a7cf370cb09da7f04cf0461ae100c97bd84ca39"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-quadrature-fields-v1/group0/half-dt-1-depth4/result.json",
+      "bytes": 9024,
+      "sha256": "614c8717a7274a86455703bd7f24a68fa9ecaa167b25e12293f147ecc7df2591"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-contact-common-fields-v1/group1/contact-orders-0-q9/result.json",
+      "bytes": 8979,
+      "sha256": "f606c668a51e7a27d4c6b1dc1436e356253f0731554201bfdea60dd0b629f2e5"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-contact-common-fields-v1/group1/contact-orders-0-q25/result.json",
+      "bytes": 8993,
+      "sha256": "d2d275ae732701e96b97373123bacdafbdfe21a08ceb20b0971b31a55248c752"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-quadrature-fields-v1/group1/contact-orders-0-depth2/result.json",
+      "bytes": 8984,
+      "sha256": "1337761d5b676dcfa61ac3882087233129c6463b7e77718769b6f9b0f0cffa9c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-quadrature-fields-v1/group1/contact-orders-0-depth4/result.json",
+      "bytes": 8981,
+      "sha256": "4777f345148a147224b6de66dd260e8fdc28fa152eb69c66b4f37963795514d0"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-contact-common-fields-v1/group1/contact-orders-1-q9/result.json",
+      "bytes": 9014,
+      "sha256": "61b7d2a04513057bbee578955d164a791dc62307c3bc78a7687f21a2ffa93845"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-contact-common-fields-v1/group1/contact-orders-1-q25/result.json",
+      "bytes": 9010,
+      "sha256": "cca1ced4a6e6648cd90f2855aec9ed0b48a002f457d890fa4f0fb8527605030a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-quadrature-fields-v1/group1/contact-orders-1-depth2/result.json",
+      "bytes": 8954,
+      "sha256": "bfc48deb40e39806ccbf5f5fbc6451a29f4742bc176265a9639bb08768f8bd9e"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-time-quadrature-fields-v1/group1/contact-orders-1-depth4/result.json",
+      "bytes": 8954,
+      "sha256": "d3f842bee94fa0c47709c392569f61d90cecef5687583ee5e497c7e4a8de91d5"
+    }
+  ],
+  "verified_reference_fields": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/group0/reference/frames/level0.npz",
+      "bytes": 18583851,
+      "sha256": "77161be9d9786eb1ceddae4da92cd70b136d12c0fee252056b75562c827879b3"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-v1/group0/reference/frames/level1.npz",
+      "bytes": 18521130,
+      "sha256": "206ad9507972f76c627ee756aae6ed89a4fe33bac6494f1d385d1b22c2cb8957"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-half-dt-v1/group0/reference/frames/level0.npz",
+      "bytes": 18581398,
+      "sha256": "b89da6f8b002bf2f99ca4582b55de0eff31f2f25bdf9526a4a5a4f02bbb8e5cf"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-half-dt-v1/group0/reference/frames/level1.npz",
+      "bytes": 18523189,
+      "sha256": "152e0b389fc612656c30762240293ad580c58ece91258d33d64d4cf8675149dd"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-contact-quadrature-v1/group0/reference/frames/level0.npz",
+      "bytes": 18733191,
+      "sha256": "dc53022c2348e34f2fec4f1bfffd5d074459373f3b6ebf1a8d602758b3fcb4da"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-contact-quadrature-v1/group0/reference/frames/level1.npz",
+      "bytes": 18671675,
+      "sha256": "245812d3bfd9e75e7cb5a02cb75f4429c2a94333d2958a5ab227b6ff76891053"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-contact-quadrature-v1/group1/reference/frames/level0.npz",
+      "bytes": 18915952,
+      "sha256": "caf3a76e2bbae5755c2bd79586c2ebac1b5001bd31d7c11a9867693c4b6c3c0c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-contact-quadrature-v1/group1/reference/frames/level1.npz",
+      "bytes": 18862198,
+      "sha256": "543a76353149cceea4239df9cacc9f93b20ebb4855d1052bc135cff15981cf2f"
+    }
+  ],
+  "fine_reference_qualified": false,
+  "whole_goal_complete": false,
+  "scope": "Coarse one-wall StVK reference only: matched1/0.5ms and contact-order6/10 complete histories with independent momentum audits, re-evaluated using q9/q25 common angular sampling and depth4. Unchanged0.5% field/1% peak control targets. Earlier depth2/4 controls use q3 and remain separately identified. This neither measures fine-mesh time/contact sensitivity nor supplies a continuum bound or method error rank."
+}
