@@ -1,0 +1,196 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-233",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728860",
+      "SLURM_ARRAY_JOB_ID": "728860",
+      "SLURM_ARRAY_TASK_ID": "3",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "cases": [
+    {
+      "load_n": 0.1,
+      "raw": [
+        {
+          "mesh": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+            "bytes": 7265913,
+            "sha256": "3d580636702bf2d986f52734f9fbfbc09eed439f73d912a263235f2a24d79bf7"
+          },
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-prescribed-final125-v1/group0/reference/order-8/load-0.1.npz",
+            "bytes": 161742828,
+            "sha256": "bdc53813396eaac4a8533f41f8cd943910be108b5c19adf728dc303d5008e07f"
+          },
+          "raw_maximum_mises_pa": 329385.0104635206,
+          "raw_maximum_tension_pa": 265587.78370179754,
+          "raw_peak_position_m": [
+            -5.4199499318382553e-05,
+            3.349713275198717e-05,
+            -0.03
+          ]
+        },
+        {
+          "mesh": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+            "bytes": 7265913,
+            "sha256": "3d580636702bf2d986f52734f9fbfbc09eed439f73d912a263235f2a24d79bf7"
+          },
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-prescribed-final125-v1/group0/reference/order-10/load-0.1.npz",
+            "bytes": 163152791,
+            "sha256": "98aecbb3ffafc01e7c2c493465f6e9fc96df53b8474c22cb10cb576d43879f81"
+          },
+          "raw_maximum_mises_pa": 329385.0105421682,
+          "raw_maximum_tension_pa": 265587.7837991838,
+          "raw_peak_position_m": [
+            -5.4199499318382553e-05,
+            3.349713275198717e-05,
+            -0.03
+          ]
+        }
+      ],
+      "adjacent_comparisons": [
+        {
+          "regions_diagnostic_only": [
+            {
+              "polar_radius_min_m": 0.0,
+              "polar_radius_max_m": 0.0005,
+              "area_fraction": 0.0002098104701504751,
+              "squared_error_fraction": 0.15968936884414334,
+              "squared_reference_fraction": 0.08757524411084912
+            },
+            {
+              "polar_radius_min_m": 0.0005,
+              "polar_radius_max_m": 0.002,
+              "area_fraction": 0.0031470804187454585,
+              "squared_error_fraction": 0.5456845842635882,
+              "squared_reference_fraction": 0.406425036397147
+            },
+            {
+              "polar_radius_min_m": 0.002,
+              "polar_radius_max_m": null,
+              "area_fraction": 0.9966431091111043,
+              "squared_error_fraction": 0.2946260468922683,
+              "squared_reference_fraction": 0.5059997194920036
+            }
+          ],
+          "coarse_index": 0,
+          "fine_index": 1,
+          "tangent_relative_l2": 2.5121637321049015e-10,
+          "tangent_rms_error_pa": 2.8513103590841774e-06,
+          "integration_measure": 3.7404393124537772e-06,
+          "integration_measure_unit": "m3",
+          "outer_tangent_relative_l2": 3.091252584907197e-10,
+          "outer_tangent_rms_error_pa": 5.299550082643342e-06,
+          "inner_tangent_relative_l2": 2.996257695143554e-10,
+          "inner_tangent_rms_error_pa": 4.823121523553178e-06,
+          "common_spatial_measures": {
+            "tangent_peaks": [
+              {
+                "metric": "mises",
+                "actual": {
+                  "stress_pa": 363602.4552400235,
+                  "common_reference_rest_position_m": [
+                    -2.423233691101907e-06,
+                    1.7446999679986484e-06,
+                    -0.03
+                  ],
+                  "column_index": 530325,
+                  "wall_depth": 0.0
+                },
+                "reference": {
+                  "stress_pa": 363602.45533117966,
+                  "common_reference_rest_position_m": [
+                    -2.423233691101907e-06,
+                    1.7446999679986484e-06,
+                    -0.03
+                  ],
+                  "column_index": 530325,
+                  "wall_depth": 0.0
+                },
+                "absolute_difference_pa": 9.115616558119655e-05,
+                "relative_difference": 2.507028328457487e-10
+              },
+              {
+                "metric": "tension",
+                "actual": {
+                  "stress_pa": 265556.23845210555,
+                  "common_reference_rest_position_m": [
+                    5.4318768183551516e-05,
+                    -3.04281388905001e-05,
+                    -0.0295
+                  ],
+                  "column_index": 1672075,
+                  "wall_depth": 1.0
+                },
+                "reference": {
+                  "stress_pa": 265556.23854999547,
+                  "common_reference_rest_position_m": [
+                    5.4318768183551516e-05,
+                    -3.04281388905001e-05,
+                    -0.0295
+                  ],
+                  "column_index": 1672075,
+                  "wall_depth": 1.0
+                },
+                "absolute_difference_pa": 9.788991883397102e-05,
+                "relative_difference": 3.6862217724002587e-10
+              }
+            ],
+            "full3d_only_components": [
+              {
+                "component": "normal_stress",
+                "rms_pa": [
+                  476.3189222750843,
+                  476.3189222239803
+                ],
+                "rms_error_pa": 9.576600065109385e-07,
+                "relative_l2_error": 2.0105436963107173e-09
+              },
+              {
+                "component": "transverse_shear_vector",
+                "rms_pa": [
+                  1397.0516626275696,
+                  1397.051662533055
+                ],
+                "rms_error_pa": 9.008926656220998e-07,
+                "relative_l2_error": 6.448527923360058e-10
+              }
+            ],
+            "shell_has_no_independent_transverse_stress": [
+              false,
+              false
+            ],
+            "transverse_frobenius_energy_fraction": [
+              0.03106644636252146,
+              0.03106644635901638
+            ],
+            "scope": "Common tangent tensors embedded with zero normal stress and zero transverse shear define both peak invariants. This is distinct from each method's raw full3D peak. Identical angular rays sample every unioned tetrahedron boundary on both sides, outer/inner boundaries and depth Gauss nodes; surface/depth sampling convergence remains required. Positions are on the common reference rest columns. Normal and transverse shear components are integrated separately with the field metric weights; Shell lacks these independent 3D components and receives no transverse error rank."
+          },
+          "membrane_relative_l2": 9.38306751462006e-11,
+          "bending_relative_l2": 3.268346716806697e-10,
+          "membrane_rms_error_n_per_m": 3.6370132615563e-10,
+          "bending_rms_error_n": 1.9680277322547354e-13,
+          "raw_mises_relative_change": 2.3877111399173145e-10,
+          "raw_tension_relative_change": 3.6668190706024006e-10
+        }
+      ]
+    }
+  ],
+  "shell_indices": [],
+  "surface_quadrature_points_per_face": 25,
+  "physical_volume_weighting": true,
+  "depth_quadrature_points": 2,
+  "common_peaks_evaluated": true,
+  "physical_reference_qualified": false,
+  "scope": "Exact integration of piecewise-constant P1 or piecewise-linear P2 stress along material columns. StVK uses the exact P2 displacement gradient at each sample and constitutive Cauchy evaluation, with explicit depth-quadrature sensitivity required. Integration includes unioned tetrahedron partitions for squared field differences and analytic membrane/bending moments. Shell uses its complete linear fiber field after rigid corotation in the same material basis. Optional physical volume weights use exact reference-tetrahedron Jacobians, including every reference partition. Membrane and bending retain the declared 500um normal-material thickness and physical mid-surface area weights. Angular material rays and the declared finest-face area quadrature retain surface sampling uncertainty. All faces, raw peaks and both boundary fibers are retained. This field comparison does not establish mechanical admission."
+}

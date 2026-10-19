@@ -1,5 +1,18 @@
 # Current QIPC reference comparison
 
+The prescribed-method-ranking-v1 packet retains78 verified payloads totaling
+1,199,808 bytes for terminal C2 comparisons. The friction-wall250-reference-v1
+packet retains80 payloads totaling941,008 bytes for completed250um mechanics
+and wall comparisons plus immutable fine-control inputs. Full NPZ arrays,
+complete journals and active125um outputs remain on the existing data path.
+
+The production-throughput-pilot-inputs-v1 packet contains immutable launch,
+source and cancellation receipts only. The new isolated source checkout stays
+under workspace; all benchmark outputs/logs and the cancelled invalid-provenance
+patch stay under the existing20261019-qualified-ranking data directory. Private
+runtime caches remain node-local. No active environment or compatibility link
+is moved, and no pending throughput rate is published as admitted.
+
 The `prescribed-reference-controls-v1` packet retains209 verified payloads
 totaling2,776,889 bytes for the terminal C2 reference qualification, signed
 tensor controls, exact allocation repair and original Shell replay OOM.

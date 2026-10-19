@@ -1,0 +1,24 @@
+{
+  "campaign": "stvk-final125-time-contact-fields-v1",
+  "tasks": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/stvk-final125-time-contact-fields-v1-tasks.json",
+  "submitted": false,
+  "groups": 4,
+  "comparisons": 12,
+  "order": "control first, final q10/dt1ms baseline second, so all relative changes normalize to the actual final reference",
+  "controls": [
+    "q6 versus q10 at1ms",
+    "0.5ms versus1ms atq10"
+  ],
+  "times_s": [
+    0.2,
+    0.4
+  ],
+  "quadrature_controls": [
+    "q9/depth2 versusq9/depth4",
+    "q9/depth4 versusq25/depth4"
+  ],
+  "gate": "Require all3 parent runs to be terminal, have400/400/800 complete admitted steps, both admitted equilibrium windows and own independent current-momentum/frame hashes. No dependency environment variable or partial reference is sufficient.",
+  "field_target": 0.005,
+  "raw_common_peak_target": 0.01,
+  "whole_goal_complete": false
+}

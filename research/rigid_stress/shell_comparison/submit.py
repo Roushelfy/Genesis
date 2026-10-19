@@ -48,6 +48,7 @@ def capture_source(source, output, stem):
             (
                 "examples/rigid/franka_egg_stress.py",
                 "examples/rigid/egg_stress_controller.py",
+                "examples/speed_benchmark",
                 "examples/rigid/assets/hollow_egg",
             )
         )
@@ -56,6 +57,16 @@ def capture_source(source, output, stem):
         cwd=source,
         text=True,
     ).splitlines()
+    if not names:
+        raise RuntimeError(f"Empty tracked-source inventory; source checkout is not ready: {source}")
+    staged = subprocess.check_output(["git", "ls-files", "--stage", *paths], cwd=source, text=True).splitlines()
+    gitlinks = {row.split("\t", 1)[1]: row.split()[1] for row in staged if row.startswith("160000 ")}
+    names = [name for name in names if name not in gitlinks]
+    if not names:
+        raise RuntimeError(f"No tracked source files at {source}")
+    missing = [name for name in names if not (source / name).is_file()]
+    if missing:
+        raise RuntimeError(f"Incomplete tracked-source checkout at {source}: {missing[:10]}")
     revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=source, text=True).strip()
     rows = [
         {
@@ -64,7 +75,6 @@ def capture_source(source, output, stem):
             "sha256": hashlib.sha256((source / name).read_bytes()).hexdigest(),
         }
         for name in names
-        if (source / name).is_file()
     ]
     patch = subprocess.check_output(["git", "diff", "--binary", "HEAD", "--", *paths], cwd=source)
     (output / f"{stem}.patch").write_bytes(patch)
@@ -75,6 +85,7 @@ def capture_source(source, output, stem):
                 "revision": revision,
                 "patch_sha256": hashlib.sha256(patch).hexdigest(),
                 "files": rows,
+                "gitlinks": gitlinks,
                 "submodule_status": subprocess.check_output(["git", "submodule", "status"], cwd=source, text=True)
                 if package == "qipc"
                 else None,

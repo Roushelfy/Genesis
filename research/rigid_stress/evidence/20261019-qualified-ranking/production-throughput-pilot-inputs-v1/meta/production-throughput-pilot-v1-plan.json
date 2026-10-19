@@ -1,0 +1,39 @@
+{
+  "purpose": "Matched native evolving Franka scenes, independent of fine FEM reference qualification.",
+  "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput",
+  "source_revision": "92692aa612666b015ac4b506a39b9e7d3dfdf998",
+  "condition_bank": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+  "condition_bank_sha256": "1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa",
+  "batches": [
+    1,
+    8,
+    32
+  ],
+  "paired_scopes": [
+    "rigid",
+    "dpr-max",
+    "dpr-full",
+    "scr-max",
+    "scr-full"
+  ],
+  "warmup_steps": 900,
+  "timed_steps_per_repeat": 1200,
+  "repeats": 3,
+  "dt_s": 0.01,
+  "substeps": 1,
+  "timed_physical_seconds_per_repeat": 12,
+  "cadence": "every physical step",
+  "output_contract": "Stress buffers computed and kept on GPU; no per-step host full-field transfer.",
+  "required_runtime_acceptance": "Unchanged production checks and invalid-environment counters; any nonzero count/failure rejects a primary throughput row.",
+  "research_overhead": "Warmup quality and post-run metadata excluded; trajectory_metrics/trace disabled.",
+  "gpu_pairing": "All five scopes of each batch run sequentially within one GPU allocation; different batches may use different GPUs.",
+  "timing_units": "env scene-steps/s; no policy inference/training; recovery-only counts are separate.",
+  "physical_error": "Pending for this native-collider load configuration. Never join with compliant-pad 2mm error.",
+  "limitations": [
+    "Pilot does not establish large-batch capacity.",
+    "Full-path/motion conformance and changing-contact module replay need separate controls.",
+    "Frozen-contact recovery scope is not a history replay and is excluded from this pilot.",
+    "Warm repetitions are not independent-process repeats."
+  ],
+  "keep_failed_tasks": true
+}

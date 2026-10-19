@@ -1592,3 +1592,12 @@ The existing affine P2/column regression (`728177`) passes after adding nonlinea
 sampling; two- versus four-point depth integration changes the complete native
 DPR/SCR contrast by at most3.5e-18 absolute. New nonlinear trajectories still
 require their own measured depth-integration and physical-momentum checks.
+
+
+## Prescribed-method completion, wall reference and production-priority launch
+
+Jobs728893/728918/728933 complete the [prescribed-C2 method audit](PRESCRIBED_METHOD_RANKING_20261019.md):27 absolute/relative errors,15 signed tensor splits,12 independent complete resultant-array checks and62 rehashed receipts. Conditional ranks depend on the metric; this static prescribed-load configuration is not joined to full-source pad costs.
+
+Job728464 completes400 steps and independent momentum admission;728950 completes q9/q25 two-to-three-wall comparisons. The [250um wall report](FRICTION_WALL250_20261019.md) retains the full-history maxima and pending125um spatial/time/contact controls728589/728930.728945's0.1/1N static replay attempts fail a zero-resultant assertion and remain unresolved; the0.3N pair completed but is not yet a qualified decomposition.
+
+Remote priority commit19af6c201 is incorporated. [Production pilot728966](PRODUCTION_THROUGHPUT_PILOT_20261019.md) runs fixed-horizon paired rigid/DPR/SCR max/full at B1/B8/B32 without waiting for fine FEM. The first728958 submission was cancelled for an empty source inventory during incomplete worktree checkout. A fail-closed submitter guard and independently rehashed858-file source precede the replacement. No active result is frozen as a completed throughput measurement. The full goal and new module/production obligations remain open.

@@ -590,3 +590,14 @@ and retain the original method/material/tolerance settings. Runs728155 and
 shear; these effects are not solver uncertainty and do not authorize fitting
 radius to a reference field. Full fields and actual source packets remain
 under `native-pad-radius-v1` and `native-pad-radius-fields-v1` on data.
+
+
+## Separate native production performance and terminal C2 controls
+
+Follow [the production pilot](PRODUCTION_THROUGHPUT_PILOT_20261019.md) for the
+new fixed-horizon B1/B8/B32 paired native scene tasks and source-capture guards.
+Its default collider/error scope differs from this pad research workflow.
+The [C2 method report](PRESCRIBED_METHOD_RANKING_20261019.md) records the completed
+27-row errors and direct tensor decomposition, with exact task recipes.
+The [three-wall friction checkpoint](FRICTION_WALL250_20261019.md) records
+completed250um controls and the exact125um time/contact comparison prerequisites.

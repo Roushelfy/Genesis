@@ -65,7 +65,9 @@ def main():
     started = perf_counter()
     with np.load(args.mesh) as saved:
         vertices, tets, outer, faces = (saved[k] for k in ("vertices", "tetrahedra", "outer_vertices", "mid_faces"))
-    write_json(args.output / "building.json", {"identity": runtime_identity(), "mesh": file_id(args.mesh)})
+    write_json(
+        args.output / "building.json", {"identity": runtime_identity(require_gpu_inventory=False), "mesh": file_id(args.mesh)}
+    )
     model = FreeElasticP2(
         vertices, tets, 1e10, 0.3, 2000, column_faces=faces, through_wall_ordering=True, factorize=False
     )
@@ -125,7 +127,7 @@ def main():
     write_json(
         args.output / "start.json",
         {
-            "identity": runtime_identity(),
+            "identity": runtime_identity(require_gpu_inventory=False),
             "mesh": file_id(args.mesh),
             "args": {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
             "mass_kg": reference.total_mass,
