@@ -63,7 +63,7 @@ def main():
     write_json(
         args.output / "result.json",
         {
-            "identity": runtime_identity(),
+            "identity": runtime_identity(require_gpu_inventory=False),
             "run": file_id(args.run / "result.json"),
             "history_admitted": receipt["mechanical_history_passed"],
             "frames": rows,

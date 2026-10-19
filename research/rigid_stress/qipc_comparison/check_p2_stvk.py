@@ -114,7 +114,7 @@ def main():
     write_json(
         args.output / "result.json",
         {
-            "identity": runtime_identity(),
+            "identity": runtime_identity(require_gpu_inventory=False),
             "passed": True,
             "rigid_force_norm_n": float(np.linalg.norm(rigid_force)),
             "rigid_energy_j": rigid_energy,

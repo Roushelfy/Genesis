@@ -1,0 +1,90 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-201",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "727743",
+      "SLURM_ARRAY_JOB_ID": "727743",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-7ae01237-7fcb-e02c-fc45-3c6c1e91f0cb, 00000000:20:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "setup_seconds": 127.2532986740116,
+  "cases": [
+    {
+      "route": "core",
+      "load_n": 0.1,
+      "native_valid": true,
+      "errno": 0,
+      "contact_status": [],
+      "equation_relative_residual": 1.07361846253824e-10,
+      "balance_correction_relative": 5.8876832210611446e-18,
+      "core_maximum_stress_relative_difference": 3.132756236023474e-12,
+      "cold_seconds_including_transfers": 7.777734756004065,
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-native-pcg-v1/group0/native/core/load-0.1.npz",
+        "bytes": 9186505,
+        "sha256": "b85a9e3c4f232cc6100a4a1e1ca1da424fb8d864ad7f142cee881488ea8fd242"
+      },
+      "reference_field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-native-inputs-v1/group0/reference/order-10/load-0.1.npz",
+        "bytes": 6995112,
+        "sha256": "227022989b9328109d95a8374bc75d0be9a221fae0f95604ed2cad70204d7c6c"
+      }
+    },
+    {
+      "route": "dpr",
+      "load_n": 0.1,
+      "native_valid": true,
+      "errno": 0,
+      "contact_status": [
+        0,
+        0
+      ],
+      "equation_relative_residual": 1.0805178006402939e-10,
+      "balance_correction_relative": 9.59663852320893e-18,
+      "core_maximum_stress_relative_difference": null,
+      "cold_seconds_including_transfers": 5.679933964973316,
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-native-pcg-v1/group0/native/dpr/load-0.1.npz",
+        "bytes": 9186002,
+        "sha256": "630e10ae02bf9d1c7987cb05f2b5541b895f409f68ff593705683629f69067a1"
+      },
+      "reference_field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-native-inputs-v1/group0/reference/order-10/load-0.1.npz",
+        "bytes": 6995112,
+        "sha256": "227022989b9328109d95a8374bc75d0be9a221fae0f95604ed2cad70204d7c6c"
+      }
+    },
+    {
+      "route": "scr",
+      "load_n": 0.1,
+      "native_valid": true,
+      "errno": 0,
+      "contact_status": [
+        0,
+        0
+      ],
+      "equation_relative_residual": 1.0761089894818707e-10,
+      "balance_correction_relative": 6.553953803694313e-13,
+      "core_maximum_stress_relative_difference": null,
+      "cold_seconds_including_transfers": 24.39654594095191,
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-native-pcg-v1/group0/native/scr/load-0.1.npz",
+        "bytes": 9423120,
+        "sha256": "e2814e8e1a7f6a7ccd6d6077e15aeadb275d59ba612e8d62e8f261fa7df8de68"
+      },
+      "reference_field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-native-inputs-v1/group0/reference/order-10/load-0.1.npz",
+        "bytes": 6995112,
+        "sha256": "227022989b9328109d95a8374bc75d0be9a221fae0f95604ed2cad70204d7c6c"
+      }
+    }
+  ],
+  "physical_accuracy_qualified": false,
+  "scope": "Native Quadrants core receives exact independent P2 nodal loads. DPR/SCR receive two balanced axial point-source wrenches with radius fixed before stress evaluation; they reconstruct their own load profiles. Explicit witnesses are on the matching collider, but no actual scene contact history is claimed. Full fields and reconstructed loads separate elasticity from load-recovery error. Two stationary entities share immutable operators; no scene steps occur. Cold timings are diagnostic, not matched admitted throughput."
+}

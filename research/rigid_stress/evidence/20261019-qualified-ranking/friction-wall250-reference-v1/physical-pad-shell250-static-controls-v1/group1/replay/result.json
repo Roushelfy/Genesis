@@ -1,0 +1,54 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-233",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728947",
+      "SLURM_ARRAY_JOB_ID": "728945",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-198cd15c-a34f-a6ad-df2b-47169af599c5, 00000000:C1:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "source_field": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/order-0/load-0.3.npz",
+    "bytes": 69264730,
+    "sha256": "9e03f6f662084e7318ef34e56b1b0dc094ebfa3e9e3b8f0110a78aa6799d79b7"
+  },
+  "field": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/physical-pad-shell250-static-controls-v1/group1/replay/frames/level0.npz",
+    "bytes": 8396862,
+    "sha256": "c799e3209d3e7d407081b796c47b208129a6e52a1391189bb343518f24c207ce"
+  },
+  "load_n": 0.3,
+  "iterations": 3,
+  "last_iteration": {
+    "outer_iteration": 3,
+    "static_force_relative_residual": 1.3532423566286617e-08,
+    "solver_failure_flags": [
+      0
+    ],
+    "pcg_iterations": [
+      5142
+    ],
+    "pad_contact": null
+  },
+  "static_equations_admitted": true,
+  "seconds_including_observation": 6.654039469984127,
+  "deformed_moment_drift": {
+    "net_moment_drift_nm": [
+      -5.03175833834355e-12,
+      -1.0242057916488408e-12,
+      -1.4824635816863677e-18
+    ],
+    "sum_local_moment_drift_norms_nm": 6.5944961068112834e-09
+  },
+  "physical_accuracy_qualified": false,
+  "pad_contact": null,
+  "scope": "Explicit static relaxation with velocity cleared before each pseudo-step, using unchanged pinned Shell elastic/PCG/integration kernels and an external-force adapter. This is not original scene dynamics or a continuous plate-contact history. Actual end-position elastic forces are independently observed. Source force/couple transfer preserves rest-frame wrench and rigid work; thin-shell kinematics and deformed moment drift remain measured limitations. The optional pad branch recomputes pressure and free rigid coordinates from current displacement at each iteration and retains separate contact admission."
+}

@@ -1,5 +1,14 @@
 # Native rigid stress recovery
 
+The [native production pilot](docs/PRODUCTION_THROUGHPUT_PILOT_20261019.md) now
+implements the new separate-throughput priority with submitted paired
+B1/B8/B32 rigid/DPR/SCR max/full tests. The
+[prescribed-C2 method comparison](docs/PRESCRIBED_METHOD_RANKING_20261019.md)
+completes27 error rows and signed tensor audits; the
+[250um three-wall friction checkpoint](docs/FRICTION_WALL250_20261019.md)
+passes history/momentum and thickness controls. Final fine-friction and
+production/module performance delivery remain open.
+
 The latest [accuracy/throughput protocol](docs/ACCURACY_AND_THROUGHPUT_PROTOCOL.md) separates
 physical accuracy validation, GPU-resident stress-module replay and actual
 native end-to-end throughput. Production tuning proceeds independently of

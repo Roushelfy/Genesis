@@ -1,0 +1,51 @@
+{
+  "purpose": "Measure time/contact integration sensitivity on the exact final125um/three-layer reference; coarse controls cannot be presented as measured fine-grid bounds.",
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+    "bytes": 7265913,
+    "sha256": "3d580636702bf2d986f52734f9fbfbc09eed439f73d912a263235f2a24d79bf7"
+  },
+  "baseline": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-final125-reference-v2/group1/reference",
+  "controls": [
+    {
+      "group": 0,
+      "dt_s": 0.001,
+      "quadrature_order": 6,
+      "expected_steps": 400
+    },
+    {
+      "group": 1,
+      "dt_s": 0.0005,
+      "quadrature_order": 10,
+      "expected_steps": 800
+    }
+  ],
+  "physical_end_time_s": 0.4,
+  "observation_times_s": [
+    0.2,
+    0.4
+  ],
+  "field_target": 0.005,
+  "raw_common_peak_target": 0.01,
+  "surface_metric_quadratures": [
+    9,
+    25
+  ],
+  "depth_metric_quadrature": 4,
+  "full_mechanical_history_and_own_momentum_required": true,
+  "reference_still_requires_spatial_qualification": true,
+  "unchanged": [
+    "geometry",
+    "wall",
+    "material",
+    "free motion",
+    "pad stiffness",
+    "friction law",
+    "loading durations",
+    "solver tolerances",
+    "constitutive correction",
+    "cache and exact response reuse"
+  ],
+  "scope": "Independent controls on the fixed final mesh. Runtime metadata can omit GPU inventory because all FEM/linear algebra is CPU code; no mechanical algorithm changes.",
+  "whole_goal_complete": false
+}

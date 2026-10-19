@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "parent_revision": "61aa4274f89b41d1b50c4998e83186cc63e2bccd",
+  "modules": [
+    {
+      "module": "plate_solid_pad",
+      "old_source_sha256": "950010208ceef2918910b9a6a9d36d4146dc7a679e14608d70e75f35b0dd6560",
+      "new_source_sha256": "334778952390956e97872d228b14ebc95ba6486173c94adb307b5a671c71e1fd",
+      "normalized_scientific_ast_sha256": "317a6129d31976ce17c1a04b1a4d989d1848bc444e2451a885109df62ede29c2",
+      "only_gpu_inventory_requirement_changed": true
+    },
+    {
+      "module": "check_p2_stvk",
+      "old_source_sha256": "1e0cdf10d17fefeee0d65db6020a142e78f31bc214c42661d1ddc5255d2985c3",
+      "new_source_sha256": "e4eaee15f9f0c41dc9a103d6794effa34c1ef9a02eb1f283558177537e080aea",
+      "normalized_scientific_ast_sha256": "2c6761ed7099de8b568d912c4465313d6706cc909db5161d99836d010b43a056",
+      "only_gpu_inventory_requirement_changed": true
+    },
+    {
+      "module": "audit_solid_pad",
+      "old_source_sha256": "c81bdb3c6c066989e6aaec3e520a5a2c1a3838484e8800f83b00f977e55d5586",
+      "new_source_sha256": "b85074124e66108d0147f81b1f5c77aa16a21a0e1ab5f1ad9914e5a1d9854bcf",
+      "normalized_scientific_ast_sha256": "ae82c91586973e460c5218c4b08fe5ab948fa0643d9c410d8cc3be52424128f0",
+      "only_gpu_inventory_requirement_changed": true
+    }
+  ],
+  "scope": "AST comparison removes only runtime_identity keyword arguments. Scientific solver/check code is unchanged; existing running workers use their immutable captures."
+}

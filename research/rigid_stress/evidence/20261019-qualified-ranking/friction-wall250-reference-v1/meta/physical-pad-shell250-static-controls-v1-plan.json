@@ -1,0 +1,34 @@
+{
+  "purpose": "Match physical-pad same-traction and solved-contact controls to the actual250um normal Shell configuration, instead of extrapolating the old coarse static controls.",
+  "loads_n": [
+    0.1,
+    0.3,
+    1.0
+  ],
+  "source_reference_result": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fixed-point-refinement-v1/group1/reference/result.json",
+  "source_result_sha256": "28ad7e1dd808dee1c9a1b615b96d09b9d78cddd9cf606d43d18ecefa959d5f73",
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+    "bytes": 2554948,
+    "sha256": "fe33c17f40a9f0b9333339a3f33bc9942ac34dc05c7077da5ae8c085f3dd7164"
+  },
+  "pad_stiffness_n_per_m3": 1000000000.0,
+  "quadrature": "Explicit face centroids, matching the continuous Shell contact discretization.",
+  "two_modes": [
+    "Static Shell replay of independently solved P2 pad pressures on the same250um mesh.",
+    "Static Shell with pad pressure recomputed from its own elastic displacement, free rigid coordinates and the same centroid law."
+  ],
+  "velocity_cleared_static_controls": true,
+  "not_a_continuous_history": true,
+  "required_comparisons": [
+    "own static and full-boundary admission",
+    "paired replay versus solved-pad complete signed fields",
+    "continuous250um Shell versus matched static solved-pad state",
+    "same-traction replay and complete response versus qualified fine normal reference"
+  ],
+  "whole_goal_complete": false,
+  "material_pad_geometry_or_solver_tolerances_changed": false,
+  "continuous_vs_same_model_static_field_target": 0.005,
+  "continuous_vs_same_model_static_peak_target": 0.01,
+  "replay_vs_solved_pad_difference": "Measure the contact-feedback/load effect without forcing it below an equivalence threshold."
+}
