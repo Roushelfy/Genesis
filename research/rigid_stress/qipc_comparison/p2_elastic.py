@@ -1,16 +1,48 @@
 """Affine P2 elasticity adapter for the independent free-body contact reference."""
 
 import numpy as np
+import sys
+from importlib.metadata import version
+from importlib import import_module
 from scipy import sparse
 from scipy.sparse.linalg import splu
 
 from ..skfem_reference import SkfemElasticReference
 
 
+class CholeskyFactor:
+    """Expose the optional pinned CPU CHOLMOD solve with the reference factor interface."""
+
+    def __init__(self, matrix, package_path):
+        sys.path.insert(0, str(package_path))
+        import cholespy
+
+        assert version("cholespy") == "2.2.0"
+        self.module_path = import_module("cholespy._cholespy_core").__file__
+        self.solver = cholespy.CholeskySolverD(
+            matrix.shape[0], matrix.indptr, matrix.indices, matrix.data, cholespy.MatrixType.CSC
+        )
+
+    def solve(self, rhs):
+        solution = np.zeros_like(rhs)
+        self.solver.solve(rhs, solution)
+        return solution
+
+
 class FreeElasticP2:
     """Use scikit-fem derivatives and consistent mass, retaining all six rigid modes."""
 
-    def __init__(self, vertices, tetrahedra, young, poisson, density, column_faces=None):
+    def __init__(
+        self,
+        vertices,
+        tetrahedra,
+        young,
+        poisson,
+        density,
+        column_faces=None,
+        through_wall_ordering=False,
+        cholespy_path=None,
+    ):
         self.reference = SkfemElasticReference(vertices, tetrahedra, young, poisson, density)
         reference = self.reference
         np.testing.assert_array_equal(reference.mesh.t.T, tetrahedra)
@@ -21,26 +53,51 @@ class FreeElasticP2:
         self.stiffness = reference.stiffness
         self.rigid_modes, self.mass_modes, self.gram = reference.rigid_modes, reference.mass_modes, reference.gram
         self.free = reference.free_dofs
-        if column_faces is None:
-            self.factor = splu((self.stiffness[self.free][:, self.free] / young).tocsc())
-        else:
+        if column_faces is not None:
             import pymetis
 
             nodes = reference.scalar_basis.element_dofs.T
+            node_groups = None
+            graph_size = len(self.vertices)
+            if through_wall_ordering:
+                assert len(column_faces)
+                count = int(column_faces.max()) + 1
+                assert len(vertices) % count == 0
+                # Collapse each through-wall stack into a material column for
+                # separator ordering only. P2 edge nodes share the unordered
+                # pair of their original surface-column IDs.
+                original = np.arange(len(vertices)) % count
+                pairs = np.concatenate(
+                    (np.column_stack((original, original)), np.sort(reference.mesh.edges.T % count, axis=1))
+                )
+                groups, inverse = np.unique(pairs, axis=0, return_inverse=True)
+                node_groups = np.empty(len(self.vertices), dtype=int)
+                node_groups[: len(vertices)] = inverse[: len(vertices)]
+                node_groups[reference.scalar_basis.edge_dofs[0]] = inverse[len(vertices) :]
+                nodes = node_groups[nodes]
+                graph_size = len(groups)
             rows = np.broadcast_to(nodes[:, :, None], (len(nodes), 10, 10)).reshape(-1)
             columns = np.broadcast_to(nodes[:, None, :], (len(nodes), 10, 10)).reshape(-1)
-            graph = sparse.coo_matrix(
-                (np.ones(len(rows)), (rows, columns)), shape=(len(self.vertices), len(self.vertices))
-            ).tocsr()
+            graph = sparse.coo_matrix((np.ones(len(rows)), (rows, columns)), shape=(graph_size, graph_size)).tocsr()
             graph.setdiag(0)
             graph.eliminate_zeros()
             order, _ = pymetis.nested_dissection(
                 adjacency=pymetis.CSRAdjacency(graph.indptr, graph.indices), options=pymetis.Options(seed=17)
             )
+            if node_groups is not None:
+                rank = np.empty(graph_size, dtype=int)
+                rank[np.asarray(order)] = np.arange(graph_size)
+                order = np.argsort(rank[node_groups], kind="stable")
             dofs = (3 * np.asarray(order)[:, None] + np.arange(3)).reshape(-1)
             self.free = dofs[np.isin(dofs, self.free)]
+        matrix = (self.stiffness[self.free][:, self.free] / young).tocsc()
+        if cholespy_path is not None:
+            self.factor = CholeskyFactor(matrix, cholespy_path)
+        elif column_faces is None:
+            self.factor = splu(matrix)
+        else:
             self.factor = splu(
-                (self.stiffness[self.free][:, self.free] / young).tocsc(),
+                matrix,
                 permc_spec="NATURAL",
                 diag_pivot_thresh=0,
                 options={"SymmetricMode": True},
@@ -73,6 +130,12 @@ class FreeElasticP2:
         residual = self.stiffness @ displacement - rhs
         stress, _ = self.reference.corner_stress(displacement)
         return stress, displacement.reshape(-1, 3), correction.reshape(-1, 3), residual.reshape(-1, 3)
+
+
+def quadratic_triangle_weights(barycentric):
+    """Evaluate the six P2 face functions in vertex, ab, bc, ca order."""
+    a, b, c = barycentric.T
+    return np.column_stack((barycentric * (2 * barycentric - 1), 4 * a * b, 4 * b * c, 4 * c * a))
 
 
 def quadratic_triangle_minimum(values, return_points=False):

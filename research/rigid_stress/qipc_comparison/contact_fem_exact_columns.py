@@ -8,6 +8,33 @@ import numpy as np
 
 from .artifacts import file_id, runtime_identity, write_json
 from .contact_fem_convergence import material_faces
+from .common_metric import corotation
+
+
+def surface_quadrature(count):
+    """Return barycentric points and normalized physical-area weights on a triangle."""
+    if count == 1:
+        return np.full((1, 3), 1 / 3), np.ones(1)
+    if count == 3:
+        return np.eye(3) / 2 + 1 / 6, np.full(3, 1 / 3)
+    order = int(np.sqrt(count))
+    assert order**2 == count
+    nodes, weights = np.polynomial.legendre.leggauss(order)
+    u, v = np.meshgrid((nodes + 1) / 2, (nodes + 1) / 2, indexing="ij")
+    area = u * weights[:, None] * weights[None, :] / 2
+    return np.stack((1 - u, u * (1 - v), u * v), axis=-1).reshape(-1, 3), area.reshape(-1)
+
+
+@dataclass
+class ShellColumnField:
+    stress: np.ndarray
+
+    def breaks(self):
+        return np.stack((np.zeros(len(self.stress)), np.ones(len(self.stress))))
+
+    def sample(self, depth, basis):
+        tensor = (1 - depth[:, None, None]) * self.stress[:, 2] + depth[:, None, None] * self.stress[:, 0]
+        return basis.transpose(0, 2, 1) @ tensor @ basis
 
 
 @dataclass
@@ -82,9 +109,13 @@ def main():
     cli.add_argument("--meshes", type=Path, nargs="+", required=True)
     cli.add_argument("--runs", type=Path, nargs="+", required=True)
     cli.add_argument("--loads", type=float, nargs="+", default=[0.1])
+    cli.add_argument("--shell-indices", type=int, nargs="*", default=[])
+    cli.add_argument("--surface-quadrature", type=int, choices=(1, 3, 9, 25), default=1)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     assert len(args.meshes) == len(args.runs)
+    assert all(0 <= index < len(args.runs) for index in args.shell_indices)
+    assert all(not run.is_file() or len(args.loads) == 1 for run in args.runs)
     args.output.mkdir(parents=True, exist_ok=False)
     with np.load(args.meshes[-1]) as saved:
         outer, inner, faces = (saved[key] for key in ("outer_vertices", "inner_vertices", "mid_faces"))
@@ -94,47 +125,67 @@ def main():
         unit = outer.copy()
         unit[:, 2] /= 0.03
         unit[:, :2] /= (0.022 * (1 - 0.18 * unit[:, 2]))[:, None]
-    polar_radius = np.linalg.norm(outer[faces].mean(axis=1)[:, :2], axis=1)
-    direction = unit[faces].mean(axis=1)
+    bary, angular_weights = surface_quadrature(args.surface_quadrature)
+    polar_radius = np.linalg.norm(np.einsum("qc,fci->fqi", bary, outer[faces])[..., :2], axis=-1).reshape(-1)
+    direction = np.einsum("qc,fci->fqi", bary, unit[faces]).reshape(-1, 3)
     direction /= np.linalg.norm(direction, axis=1)[:, None]
-    normal = (outer - inner)[faces].mean(axis=1)
+    normal = np.einsum("qc,fci->fqi", bary, (outer - inner)[faces]).reshape(-1, 3)
     normal /= np.linalg.norm(normal, axis=1)[:, None]
     first = np.cross(normal, np.eye(3)[np.abs(normal).argmin(axis=1)])
     first /= np.linalg.norm(first, axis=1)[:, None]
     basis = np.stack((first, np.cross(normal, first)), axis=-1)
     triangle = ((outer + inner) / 2)[faces]
     area = np.linalg.norm(np.cross(triangle[:, 1] - triangle[:, 0], triangle[:, 2] - triangle[:, 0]), axis=1) / 2
+    area = (area[:, None] * angular_weights).reshape(-1)
     rows = []
     for load in args.loads:
         fields, raw = [], []
-        for mesh, run in zip(args.meshes, args.runs):
+        for index, (mesh, run) in enumerate(zip(args.meshes, args.runs)):
             with np.load(mesh) as saved:
                 vertices, tets, outer, faces = (
                     saved[key] for key in ("vertices", "tetrahedra", "outer_vertices", "mid_faces")
                 )
                 material_unit = saved["material_unit"] if "material_unit" in saved else None
                 wall_depths = saved["wall_depths"] if "wall_depths" in saved else None
-            path = run / f"load-{load:g}.npz"
-            with np.load(path) as saved:
-                stress = saved["stress_pa"]
+                midpoint = saved["mid_vertices"] if index in args.shell_indices else None
+            path = run if run.is_file() else run / f"load-{load:g}.npz"
             selected, weights = material_faces(outer, faces, direction, material_unit)
             weights = np.take_along_axis(weights, np.argsort(faces[selected], axis=1), axis=1)
-            fields.append(
-                ColumnField(
-                    stress,
-                    selected,
-                    weights,
-                    len(vertices) // len(outer) - 1,
-                    len(faces),
-                    tets,
-                    len(outer),
-                    np.sort(faces, axis=1),
-                    wall_depths,
+            if index in args.shell_indices:
+                with np.load(path.parent.parent / "rest.npz") as saved:
+                    rest, rest_faces, masses = saved["vertices"], saved["faces"], saved["masses_kg"]
+                np.testing.assert_allclose(rest, midpoint, atol=1e-15, rtol=0)
+                np.testing.assert_array_equal(rest_faces, faces)
+                with np.load(path) as saved:
+                    rotation = corotation(rest, saved["vertices_world_m"], masses)
+                    stress = rotation.T @ saved["cauchy_world_pa"] @ rotation
+                np.testing.assert_allclose(stress[:, 1], (stress[:, 0] + stress[:, 2]) / 2, rtol=1e-10, atol=1e-8)
+                fields.append(ShellColumnField(stress[selected]))
+            else:
+                with np.load(path) as saved:
+                    stress = saved["stress_pa"]
+                fields.append(
+                    ColumnField(
+                        stress,
+                        selected,
+                        weights,
+                        len(vertices) // len(outer) - 1,
+                        len(faces),
+                        tets,
+                        len(outer),
+                        np.sort(faces, axis=1),
+                        wall_depths,
+                    )
                 )
-            )
             dev = stress - np.trace(stress, axis1=-2, axis2=-1)[..., None, None] * np.eye(3) / 3
             mises = np.sqrt(1.5 * (dev * dev).sum(axis=(-2, -1)))
-            if stress.ndim == 3:
+            if index in args.shell_indices:
+                face, fiber = np.unravel_index(mises.argmax(), mises.shape)
+                tri = midpoint[faces[face]]
+                normal_raw = np.cross(tri[1] - tri[0], tri[2] - tri[0])
+                normal_raw /= np.linalg.norm(normal_raw)
+                peak_position = tri.mean(axis=0) + (fiber - 1) * 0.00025 * normal_raw
+            elif stress.ndim == 3:
                 peak_position = vertices[tets[mises.argmax()]].mean(axis=0)
             else:
                 element, corner = np.unravel_index(mises.argmax(), mises.shape)
@@ -180,6 +231,13 @@ def main():
                     )
                 )
             error_square, reference_square = error_by_column.sum(), reference_by_column.sum()
+            surface_errors = {}
+            for name, depth in (("outer", 0.0), ("inner", 1.0)):
+                a, r = (field.sample(np.full(len(direction), depth), basis) for field in (actual, reference))
+                numerator = np.einsum("qij,qij,q->", a - r, a - r, area)
+                denominator = np.einsum("qij,qij,q->", r, r, area)
+                surface_errors[name + "_tangent_relative_l2"] = float(np.sqrt(numerator / denominator))
+                surface_errors[name + "_tangent_rms_error_pa"] = float(np.sqrt(numerator / area.sum()))
             regions = []
             for lower, upper in ((0.0, 0.0005), (0.0005, 0.002), (0.002, float("inf"))):
                 selected = (polar_radius >= lower) & (polar_radius < upper)
@@ -188,7 +246,9 @@ def main():
                         "polar_radius_min_m": lower,
                         "polar_radius_max_m": upper if np.isfinite(upper) else None,
                         "area_fraction": float(area[selected].sum() / area.sum()),
-                        "squared_error_fraction": float(error_by_column[selected].sum() / error_square),
+                        "squared_error_fraction": float(error_by_column[selected].sum() / error_square)
+                        if error_square
+                        else None,
                         "squared_reference_fraction": float(reference_by_column[selected].sum() / reference_square),
                     }
                 )
@@ -198,6 +258,8 @@ def main():
                     "coarse_index": index,
                     "fine_index": index + 1,
                     "tangent_relative_l2": float(np.sqrt(error_square / reference_square)),
+                    "tangent_rms_error_pa": float(np.sqrt(error_square / area.sum())),
+                    **surface_errors,
                     "membrane_relative_l2": differences[0],
                     "bending_relative_l2": differences[1],
                     "raw_mises_relative_change": abs(
@@ -224,11 +286,14 @@ def main():
         {
             "identity": runtime_identity(),
             "cases": rows,
+            "shell_indices": args.shell_indices,
+            "surface_quadrature_points_per_face": args.surface_quadrature,
             "physical_reference_qualified": False,
             "scope": "Exact integration of piecewise-constant P1 or piecewise-linear P2 stress along material columns, including unioned "
             "tetrahedron partitions for squared field differences and analytic membrane/bending moments. "
-            "Angular material rays, geometry mapping and finest-face centroid area quadrature remain "
-            "unchanged from the midpoint control. No polar trim, peak smoothing or selected depth samples.",
+            "Shell uses its complete linear fiber field after rigid corotation in the same material basis. "
+            "Angular material rays and the declared finest-face area quadrature retain surface sampling uncertainty. "
+            "All faces, raw peaks and both boundary fibers are retained. This field comparison does not establish mechanical admission.",
         },
     )
 

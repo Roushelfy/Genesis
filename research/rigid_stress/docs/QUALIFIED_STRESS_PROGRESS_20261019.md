@@ -736,5 +736,131 @@ one arm increases wall layers2 to3 on the same9880-vertex surface; the other
 halves local size500 to250um on a16738-vertex surface and retains two layers.
 They measure quadrature and complete-field differences separately. These jobs
 remain pending verification; they are not a completed reference qualification.
-The two additional native pilot meshes prepared by `727697` remain data-side
-assets only (4498/7432 outer vertices); no DPR/SCR result is inferred from them.
+The follow-up results below supersede that pending status.
+
+## Finite-area full fields and independent contact certificates
+
+The three-layer finite-area reference (`727703_0`) passes equilibrium with
+relative residual2.67e-11. Two-to-three layers changes complete tangent1.535%,
+membrane0.614%, bending0.304% and raw Mises/tension0.544%/0.242%. These improve
+on the one-to-two trend and satisfy the adjacent wall targets. Surface
+qualification remains open: the isolated250um two-layer arm (`727703_1`)
+fails SuperLU factorization with `MemoryError` at41,302,968KiB recorded RSS.
+
+An optional material-column graph ordering changes only the factor permutation.
+`finite-area-ordering-control-v1` (`727740`) passes constant-stress, bending,
+uniform/graded prism and same-mesh full-egg controls. Complete field changes
+are3.27e-13/3.32e-13/3.21e-13; peaks change by at most1.24e-13. The ordered
+250um retry (`727742`) still fails SuperLU at40,333MiB. Both failed receipts
+remain on data. A separate optional CHOLMOD factor control uses the isolated
+Cholespy2.2.0 asset installed by `727753`; it preserves the physical matrices,
+six rigid gauges and all full-equation checks. Its controls are independently
+recorded under `finite-area-cholesky-control-v1` (`727755`).
+
+`prepare_native_mesh` exports the exact retained mesh, outer collider and
+volume-integrated mass/inertia. `finite-area-native-inputs-v1` (`727735`)
+prepares the4498-outer-vertex mesh and its independently integrated P2 loads.
+The direct native pilot (`727736`) times out during scene construction at15min;
+it supplies no field or timing rank. The existing native PCG route (`727743`)
+completes on the same mesh. Its core, DPR and SCR all pass native admission,
+with equation residuals about1.08e-10. Feeding the exact independent nodal
+forces to the native core changes maximum stress components by3.13e-12
+relative to the independent same-mesh solution. DPR/SCR both have contact
+status0/0, and retain their actual reconstructed loads. Radius2mm is fixed
+before field evaluation. Cold compilation/solve times remain diagnostic.
+
+`finite-area-shell-pilot-v1` (`727737`) applies those independently declared
+tractions to the matching mid-surface through force/couple transfer. Each
+quadrature point's force, moment and rigid virtual work are checked. Explicit
+velocity-cleared static relaxation converges in3 updates to actual elastic
+force residual5.31e-9, with no solver failure. This separately labeled static
+method does not qualify the original dynamic plate-contact history.
+
+The shared column comparator now accepts Shell's corotated linear fiber field,
+checks midpoint/collider identities and saves inner/outer tangent errors plus
+absolute RMS error. Complete thickness integration retains every tetrahedron
+partition and both boundary fibers. `finite-area-shell-comparison-v1`
+(`727741`) passes analytic Shell/solid fiber controls and compares one/three
+surface points per reference face. Further9/25-point positive-weight Duffy
+quadrature controls are kept separately from mesh refinement.
+
+`finite-area-three-method-fields-v1` (`727752`) gives the following **provisional
+prescribed-load differences**, using three area points per finest face:
+
+| Method/control | Tangent field | Membrane | Bending | Raw Mises | Raw tension |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| DPR versus independent same mesh | 3.039% | 1.057% | 4.064% | 9.566% | 10.003% |
+| SCR versus independent same mesh | 2.773% | 0.612% | 3.775% | 4.359% | 8.062% |
+| DPR versus three-layer reference | 9.405% | 7.159% | 8.841% | 6.526% | 6.452% |
+| SCR versus three-layer reference | 9.370% | 7.187% | 8.762% | 1.463% | 4.574% |
+| Static Shell versus three-layer reference | 32.323% | 8.250% | 43.440% | 5.801% | 12.673% |
+
+The native meshes are coarser than the Shell/reference mesh; their discretization
+error remains included in the latter rows. Reference surface uncertainty and
+angular integration still require qualification. The close DPR/SCR differences
+do not establish a separated ranking. These fields are an early same-load
+comparison and leave end-to-end contact, nonzero sustained friction, matched
+admitted cost/stability and final figures outstanding.
+
+For the original hard smooth contact, adaptive dual QP replay (`727744`) passes
+its first finite constraint set but returns `AlmostSolved` after adding exact
+gap constraints. It remains a failed certificate. The mathematically equivalent
+whitened primal form writes C=L L^T, v=L y and minimizes
+`0.5*y.T@y + target.T@q` subject to `R*(L*y+gap+Q*q)>=0`. Its Hessian avoids
+the singular multiplier-space matrix R C R^T while preserving the same contact
+problem. `contact-independent-qp-primal-v1` (`727746`) returns `Solved` for
+wall2/surface25/graded50 after1/7/3 rounds, with minimum candidate gaps
+-8.52e-9/-9.03e-9/-9.92e-9 in the unchanged scaled units. Force/moment,
+stationarity and complementarity certificates pass without accepting an
+`AlmostSolved` exit or changing the exact face-gap target.
+
+`plate_contact_fem --contact-certificate` checks source/operator/load identities,
+recomputes condensed KKT quantities and then freshly solves the complete
+elastic body. Primal-dual admission uses force-weighted complementarity, global
+quadratic gaps, nonnegative multipliers, wrench and elastic equations; multiplier
+uniqueness is unnecessary for this convex certificate. The original active-set
+path retains its existing rank and active-gap gates. Tiny positive interior-point
+multipliers can occur at open constraints, so their raw positive-count/radius
+and maximum positive-multiplier gap are diagnostics, not physical support or
+an alternative complementarity test.
+
+The full rerun `contact-primal-certificate-full-v1` (`727749`) admits wall2
+and surface25: equation residuals4.45e-12/5.68e-12, global minimum gaps
+-1.70e-15/-1.81e-15m, and force-weighted complementarity2.98e-13/1.39e-13.
+The fine field retains raw Mises20.131MPa and tension11.232MPa. The graded
+rerun also passes: equation residual2.34e-11, minimum global gap-1.98e-15m,
+complementarity4.54e-13 and raw peaks25.318MPa/9.297MPa. Passing these discrete
+equations alone does not establish a continuum reference.
+
+`contact-primal-physical-audits-v1` (`727764`) independently verifies P2
+point-to-node force/moment transfer and exact whole-face gaps. On the25um
+surface,99% of each plate force is carried within42.10um/29.82um radius,
+while at most2.73e-8 of force lies at constraints outside the existing closure
+tolerance. Raw positive radii reach119um because the interior-point solution
+retains tiny positive multipliers. They must not be mistaken for the contact
+footprint. The prior admitted coarse active-set solution and the independent
+primal replay agree to1.73e-10 in complete tangent field and1.53e-10 in raw peaks.
+The50-to25um surface change remains11.21% tangent and14.83%/18.24% raw peaks
+at three area points per face, so spatial qualification still fails. Higher
+angular quadrature and the isolated wall comparison are retained separately
+under `contact-primal-refinement-audits-v1`.
+
+The CHOLMOD same-mesh control (`727755`) completes with equation residual
+3.69e-11 and tangent/membrane/bending changes1.58e-12/1.77e-12/1.29e-12
+against SuperLU. Its measured process RSS is4,132,676KiB. The250um two-layer
+retry `finite-area-cholesky-refinement-v1` (`727759`) is a new factor-backend
+control of the same previously failed mesh and remains pending verification.
+The first control receipt's `cholespy_binary` entry identifies the package
+initializer; the actual loaded extension hash is preserved in
+`cholespy-install-v1/binary.json`, and subsequent runs record that extension
+directly. [Cholespy's primary documentation](https://github.com/rgl-epfl/cholespy)
+describes the bundled CHOLMOD CPU factor/solve and double-precision interface.
+
+`finite-area-angular-control-v1` (`727758`) passes independent triangle
+quadrature moments and exact Shell/solid fiber controls. Increasing9 to25
+points per reference face changes the reported relative tangent errors by
+3.23e-5/3.23e-5/3.13e-9 for DPR/SCR/Shell; membrane changes by at most6.20e-6
+and bending by6.43e-5. The25-point differences against the three-layer reference
+are9.514%/9.480%/32.322% tangent,7.404%/7.431%/8.390% membrane and
+9.077%/8.999%/43.419% bending. Raw peaks remain unchanged. These are convergence
+checks of comparison metrics, separately from reference surface discretization.

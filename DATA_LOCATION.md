@@ -18,6 +18,13 @@ attempt failed before installation because that container's interpreter is
 unavailable on the login host. Scientific execution and the successful install
 use the existing rtx-mid / GENESIS_IMAGE_VER=1_26 workflow.
 
+The optional independent CHOLMOD factor uses Cholespy2.2.0 installed with
+`--no-deps --only-binary=:all: --target` at
+`/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/assets/cholespy-2.2.0/`.
+The5.6MB wheel, install report and log are recorded by Slurm727753 under
+`runs/20261019-qualified-ranking/cholespy-install-v1/`. Active environments
+are unchanged; factor controls and generated fields use that same run root.
+
 ## Parallel-plate benchmark storage, 2026-10-18
 
 The updated goal is pinned at fork commit `914a558df`. A new exclusive-create,
