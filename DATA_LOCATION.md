@@ -1,5 +1,12 @@
 # Current QIPC reference comparison
 
+The `friction-common-controls-v1` packet retains88 verified payloads totaling
+1,012,437 bytes for completed coarse nonlinear time/contact controls using
+q9/q25 common sampling. Eight full endpoint fields remain on data with verified
+hashes. Pending normal-load material and fine spatial/method controls contribute
+only immutable submissions, targets or explicitly unexecuted task plans; their
+active results are excluded. No data or environment is migrated.
+
 The `friction-keyframe-reuse-v1` packet retains329 verified payloads totaling
 6,028,562 bytes for terminal matched friction keyframe costs, original/captured
 SCR every-step failures, actual source-cone inspection and validated reference

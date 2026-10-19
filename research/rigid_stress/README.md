@@ -57,6 +57,12 @@ contact; actual SCR inputs have a separately certified surface-cone incompatibil
 Optional reference response reuse passes complete-history and field controls.
 Fine nonlinear spatial qualification and the final friction comparison remain open.
 
+The [common-sampling control update](docs/FRICTION_COMMON_CONTROLS_20261019.md)
+adds24 passed checks for coarse nonlinear time/contact controls at q9/q25,
+including eight independently rehashed endpoint fields. Normal material-model
+contrasts at0.3/1N and fine spatial/method comparisons remain pending;
+fixed tasks and unchanged acceptance bands are retained separately.
+
 The [plate report](docs/PARALLEL_PLATE_RESULTS_20261018.md) records verified
 mechanical equilibria, the SCR cancellation-sensitive admission failure,
 original Shell contact-split imbalance and unresolved QIPC point-contact fields.

@@ -1,0 +1,60 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-113",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728209",
+      "SLURM_ARRAY_JOB_ID": "728209",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-adb3f72e-e837-07af-76f0-f0838bfdf2ed, 00000000:C1:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "run": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-half-dt-v1/group0/reference/result.json",
+    "bytes": 1430,
+    "sha256": "5f9636712ed27dd3936b8baf2a875b97e9b44ed2be05c95112380f78c5afc9a4"
+  },
+  "history_admitted": true,
+  "frames": [
+    {
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-half-dt-v1/group0/reference/frames/level0.npz",
+        "bytes": 18581398,
+        "sha256": "b89da6f8b002bf2f99ca4582b55de0eff31f2f25bdf9526a4a5a4f02bbb8e5cf"
+      },
+      "load_n": 0.1,
+      "maximum_nodal_displacement_m": 2.975341447650939e-05,
+      "source_force_transfer_relative_error": 5.480641981914225e-16,
+      "source_material_moment_transfer_relative_error": 1.9002155804423315e-18,
+      "complete_force_balance_relative_error": 4.7571824303499194e-14,
+      "material_moment_balance_relative_error": 1.303672076449511e-11,
+      "current_moment_balance_relative_error": 1.9941697001358777e-14,
+      "linearized_internal_current_moment_relative_error": 3.2770913110361075e-16,
+      "source_transfer_passed": true,
+      "physical_momentum_passed": true
+    },
+    {
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-half-dt-v1/group0/reference/frames/level1.npz",
+        "bytes": 18523189,
+        "sha256": "152e0b389fc612656c30762240293ad580c58ece91258d33d64d4cf8675149dd"
+      },
+      "load_n": 0.1,
+      "maximum_nodal_displacement_m": 2.9771970763032277e-05,
+      "source_force_transfer_relative_error": 1.138821235831599e-15,
+      "source_material_moment_transfer_relative_error": 3.7866436065192225e-17,
+      "complete_force_balance_relative_error": 9.563222957072236e-10,
+      "material_moment_balance_relative_error": 5.203844119869932e-06,
+      "current_moment_balance_relative_error": 4.534239922154134e-10,
+      "linearized_internal_current_moment_relative_error": 2.0565712581307519e-16,
+      "source_transfer_passed": true,
+      "physical_momentum_passed": true
+    }
+  ],
+  "passed": true,
+  "scope": "Complete nodal force and current-position moment balances, normalized by commanded load and load times0.03m, with unchanged1e-7 mechanical target. Material-frame balance alone cannot qualify finite-rotation mechanics. No pin, moment correction, force rescaling or displacement modification is applied."
+}

@@ -1,5 +1,12 @@
 # Reproducing the parallel-plate comparison
 
+For the completed coarse nonlinear time/contact sampling controls, see the
+[q9/q25 report](FRICTION_COMMON_CONTROLS_20261019.md).
+`audit_stvk_time_contact --data-root RUN_ROOT --output NEW_DATA_PATH` rehashes
+the actual endpoint fields and verifies their own histories/momentum checks,
+control magnitudes and sampling differences. Execute it through Slurm after
+the named field campaign completes; it does not qualify pending fine meshes.
+
 Read the [results](PARALLEL_PLATE_RESULTS_20261018.md) and
 [audit](PARALLEL_PLATE_AUDIT.md) before interpreting fields or rates.
 The baseline is a full free hollow egg under common normal force. A passing

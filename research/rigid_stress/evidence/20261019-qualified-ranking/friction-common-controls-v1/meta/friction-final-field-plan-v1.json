@@ -1,0 +1,54 @@
+{
+  "campaigns": [
+    {
+      "campaign": "stvk-spatial250-fields-v1",
+      "tasks": "meta/stvk-spatial250-fields-v1-tasks.json",
+      "parent_runs": [
+        "solid-pad-stvk-spatial250-cache-v1/group0/reference",
+        "solid-pad-stvk-spatial500-v2/group0/reference"
+      ],
+      "groups": 2,
+      "submitted": false
+    },
+    {
+      "campaign": "stvk-wall250-fields-v1",
+      "tasks": "meta/stvk-wall250-fields-v1-tasks.json",
+      "parent_runs": [
+        "solid-pad-stvk-spatial250-cache-v1/group0/reference",
+        "solid-pad-stvk-wall250x3-cache-v1/group0/reference"
+      ],
+      "groups": 2,
+      "submitted": false
+    },
+    {
+      "campaign": "stvk-final125-fields-v1",
+      "tasks": "meta/stvk-final125-fields-v1-tasks.json",
+      "parent_runs": [
+        "solid-pad-stvk-final125-reference-v2/group0/reference",
+        "solid-pad-stvk-final125-reference-v2/group1/reference",
+        "solid-pad-stvk-spatial250-cache-v1/group0/reference",
+        "solid-pad-stvk-wall250x3-cache-v1/group0/reference"
+      ],
+      "groups": 8,
+      "submitted": false
+    },
+    {
+      "campaign": "stvk-friction-final-method-fields-v1",
+      "tasks": "meta/stvk-friction-final-method-fields-v1-tasks.json",
+      "parent_runs": [
+        "solid-pad-stvk-final125-reference-v2/group1/reference"
+      ],
+      "groups": 3,
+      "submitted": false,
+      "scope": "Requested equilibrium fields only; q1 is complete-surface display, q9/q25 define metrics and common peaks. Never admit failed native every-step mode."
+    }
+  ],
+  "targets": {
+    "spatial_complete_fields": 0.02,
+    "spatial_raw_and_common_peaks": 0.05,
+    "solver_time_contact_fields": 0.005,
+    "solver_time_contact_peaks": 0.01
+  },
+  "execution_gate": "Verify actual terminal scheduler state plus own400-step complete history, both equilibrium windows and independent current-momentum audit before submitting dependent analyses. Task files alone are not submissions or evidence. Do not rely on SBATCH_DEPENDENCY environment variables.",
+  "scope": "Independent surface/wall/joint refinements and actual friction fields on the fixed declared full-egg/pad model. All prior failed inputs/modes retained. Thresholds and radius unchanged."
+}
