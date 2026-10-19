@@ -1,0 +1,443 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728218",
+      "SLURM_ARRAY_JOB_ID": "728218",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-56ea077b-99d7-8845-1f28-8cfa2174feb6, 00000000:45:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "passed": false,
+  "cases": [
+    {
+      "method": "dpr",
+      "checks": {
+        "both_complete_histories_admitted": true,
+        "full_max_observed_peak_agreement": true,
+        "baseline_complete_field_agreement": true
+      },
+      "full_max_peak_relative_difference": 1.3760080948792757e-10,
+      "baseline_same_mesh_all_tensor_values_relative_l2": 5.032382385537984e-11,
+      "costs": [
+        {
+          "completed": true,
+          "mechanically_admitted": true,
+          "method": "dpr",
+          "envs": 1,
+          "output_mode": "full",
+          "stress_stride": 1,
+          "samples": [
+            {
+              "level": 0,
+              "warmup": true,
+              "steps": 200,
+              "physics_seconds": 5.985772475600243,
+              "recovery_observation_seconds": 293.12392446864396,
+              "segmented_pipeline_seconds": 299.1096969442442,
+              "segmented_latency_ms": 1495.548484721221,
+              "segmented_env_steps_per_second": 0.668651006781907,
+              "stress_observations": 200,
+              "all_stress_observations_valid": true,
+              "field_host_bytes": 1035878400,
+              "residual_host_bytes": 517996800,
+              "raw_vm_peak_min_pa": 0.0,
+              "raw_vm_peak_max_pa": 196433.62519223394
+            },
+            {
+              "level": 1,
+              "warmup": false,
+              "steps": 200,
+              "physics_seconds": 1.8277096797246486,
+              "recovery_observation_seconds": 11.607112366240472,
+              "segmented_pipeline_seconds": 13.43482204596512,
+              "segmented_latency_ms": 67.1741102298256,
+              "segmented_env_steps_per_second": 14.886687692306724,
+              "stress_observations": 200,
+              "all_stress_observations_valid": true,
+              "field_host_bytes": 1035878400,
+              "residual_host_bytes": 517996800,
+              "raw_vm_peak_min_pa": 196433.62519222673,
+              "raw_vm_peak_max_pa": 196433.62519222673
+            }
+          ],
+          "primary_timing": false,
+          "scope": "Instrumented live trajectory, with existing mechanical admission after each step. Segmented wall times include actual contact/elastic mechanics, requested recovery and host output/acceptance. Mechanical diagnostics, frame/journal I/O and their extra transfers are outside these segments. This is a preflight phase-cost control, not the final uninstrumented primary wall-time benchmark or physical-accuracy qualification. Warmup levels are excluded from comparisons; use the same run's mechanical audit."
+        },
+        {
+          "completed": true,
+          "mechanically_admitted": true,
+          "method": "dpr",
+          "envs": 1,
+          "output_mode": "max",
+          "stress_stride": 1,
+          "samples": [
+            {
+              "level": 0,
+              "warmup": true,
+              "steps": 200,
+              "physics_seconds": 6.526111916638911,
+              "recovery_observation_seconds": 277.7533127660863,
+              "segmented_pipeline_seconds": 284.2794246827252,
+              "segmented_latency_ms": 1421.397123413626,
+              "segmented_env_steps_per_second": 0.7035331530701292,
+              "stress_observations": 200,
+              "all_stress_observations_valid": true,
+              "field_host_bytes": 0,
+              "residual_host_bytes": 517996800,
+              "raw_vm_peak_min_pa": 0.0,
+              "raw_vm_peak_max_pa": 196433.62520179793
+            },
+            {
+              "level": 1,
+              "warmup": false,
+              "steps": 200,
+              "physics_seconds": 2.203542199684307,
+              "recovery_observation_seconds": 11.398519181413576,
+              "segmented_pipeline_seconds": 13.602061381097883,
+              "segmented_latency_ms": 68.01030690548941,
+              "segmented_env_steps_per_second": 14.703653688692375,
+              "stress_observations": 200,
+              "all_stress_observations_valid": true,
+              "field_host_bytes": 0,
+              "residual_host_bytes": 517996800,
+              "raw_vm_peak_min_pa": 196433.62520179793,
+              "raw_vm_peak_max_pa": 196433.62521261527
+            }
+          ],
+          "primary_timing": false,
+          "scope": "Instrumented live trajectory, with existing mechanical admission after each step. Segmented wall times include actual contact/elastic mechanics, requested recovery and host output/acceptance. Mechanical diagnostics, frame/journal I/O and their extra transfers are outside these segments. This is a preflight phase-cost control, not the final uninstrumented primary wall-time benchmark or physical-accuracy qualification. Warmup levels are excluded from comparisons; use the same run's mechanical audit."
+        }
+      ]
+    },
+    {
+      "method": "scr",
+      "checks": {
+        "both_complete_histories_admitted": true,
+        "full_max_observed_peak_agreement": true,
+        "baseline_complete_field_agreement": true
+      },
+      "full_max_peak_relative_difference": 1.874791665662829e-10,
+      "baseline_same_mesh_all_tensor_values_relative_l2": 1.1218159370878127e-09,
+      "costs": [
+        {
+          "completed": true,
+          "mechanically_admitted": true,
+          "method": "scr",
+          "envs": 1,
+          "output_mode": "full",
+          "stress_stride": 1,
+          "samples": [
+            {
+              "level": 0,
+              "warmup": true,
+              "steps": 200,
+              "physics_seconds": 2.4640130694024265,
+              "recovery_observation_seconds": 497.92439552000724,
+              "segmented_pipeline_seconds": 500.38840858940966,
+              "segmented_latency_ms": 2501.9420429470483,
+              "segmented_env_steps_per_second": 0.399689514319083,
+              "stress_observations": 200,
+              "all_stress_observations_valid": true,
+              "field_host_bytes": 1035878400,
+              "residual_host_bytes": 517996800,
+              "raw_vm_peak_min_pa": 0.0,
+              "raw_vm_peak_max_pa": 193334.24585416564
+            },
+            {
+              "level": 1,
+              "warmup": false,
+              "steps": 200,
+              "physics_seconds": 2.0439563973341137,
+              "recovery_observation_seconds": 271.0694005454425,
+              "segmented_pipeline_seconds": 273.1133569427766,
+              "segmented_latency_ms": 1365.566784713883,
+              "segmented_env_steps_per_second": 0.7322966633298148,
+              "stress_observations": 200,
+              "all_stress_observations_valid": true,
+              "field_host_bytes": 1035878400,
+              "residual_host_bytes": 517996800,
+              "raw_vm_peak_min_pa": 193334.24585413598,
+              "raw_vm_peak_max_pa": 193334.24585413598
+            }
+          ],
+          "primary_timing": false,
+          "scope": "Instrumented live trajectory, with existing mechanical admission after each step. Segmented wall times include actual contact/elastic mechanics, requested recovery and host output/acceptance. Mechanical diagnostics, frame/journal I/O and their extra transfers are outside these segments. This is a preflight phase-cost control, not the final uninstrumented primary wall-time benchmark or physical-accuracy qualification. Warmup levels are excluded from comparisons; use the same run's mechanical audit."
+        },
+        {
+          "completed": true,
+          "mechanically_admitted": true,
+          "method": "scr",
+          "envs": 1,
+          "output_mode": "max",
+          "stress_stride": 1,
+          "samples": [
+            {
+              "level": 0,
+              "warmup": true,
+              "steps": 200,
+              "physics_seconds": 2.732528097461909,
+              "recovery_observation_seconds": 515.6509912288748,
+              "segmented_pipeline_seconds": 518.3835193263367,
+              "segmented_latency_ms": 2591.9175966316834,
+              "segmented_env_steps_per_second": 0.38581473473521927,
+              "stress_observations": 200,
+              "all_stress_observations_valid": true,
+              "field_host_bytes": 0,
+              "residual_host_bytes": 517996800,
+              "raw_vm_peak_min_pa": 0.0,
+              "raw_vm_peak_max_pa": 193334.24583877422
+            },
+            {
+              "level": 1,
+              "warmup": false,
+              "steps": 200,
+              "physics_seconds": 2.210055409464985,
+              "recovery_observation_seconds": 281.39685191982426,
+              "segmented_pipeline_seconds": 283.60690732928924,
+              "segmented_latency_ms": 1418.0345366464462,
+              "segmented_env_steps_per_second": 0.7052014419655328,
+              "stress_observations": 200,
+              "all_stress_observations_valid": true,
+              "field_host_bytes": 0,
+              "residual_host_bytes": 517996800,
+              "raw_vm_peak_min_pa": 193334.24583872088,
+              "raw_vm_peak_max_pa": 193334.24583872088
+            }
+          ],
+          "primary_timing": false,
+          "scope": "Instrumented live trajectory, with existing mechanical admission after each step. Segmented wall times include actual contact/elastic mechanics, requested recovery and host output/acceptance. Mechanical diagnostics, frame/journal I/O and their extra transfers are outside these segments. This is a preflight phase-cost control, not the final uninstrumented primary wall-time benchmark or physical-accuracy qualification. Warmup levels are excluded from comparisons; use the same run's mechanical audit."
+        }
+      ]
+    },
+    {
+      "method": "shell",
+      "checks": {
+        "both_complete_histories_admitted": true,
+        "full_max_observed_peak_agreement": false,
+        "baseline_complete_field_agreement": true
+      },
+      "full_max_peak_relative_difference": 1.5196537723984663e-07,
+      "baseline_same_mesh_all_tensor_values_relative_l2": 3.9284091966250666e-10,
+      "costs": [
+        {
+          "completed": true,
+          "mechanically_admitted": null,
+          "method": "shell",
+          "envs": 1,
+          "output_mode": "full",
+          "stress_stride": 1,
+          "samples": [
+            {
+              "level": 0,
+              "warmup": true,
+              "steps": 200,
+              "physics_seconds": 161.23401095648296,
+              "recovery_observation_seconds": 0.9405560954473913,
+              "segmented_pipeline_seconds": 162.17456705193035,
+              "segmented_latency_ms": 810.8728352596518,
+              "segmented_env_steps_per_second": 1.2332389944716637,
+              "stress_observations": 200,
+              "all_stress_observations_valid": true,
+              "field_host_bytes": 1606656000,
+              "residual_host_bytes": 0,
+              "raw_vm_peak_min_pa": 2.3924309980762318e-05,
+              "raw_vm_peak_max_pa": 191410.22118938164
+            },
+            {
+              "level": 1,
+              "warmup": false,
+              "steps": 200,
+              "physics_seconds": 86.49546347465366,
+              "recovery_observation_seconds": 0.42069132905453444,
+              "segmented_pipeline_seconds": 86.9161548037082,
+              "segmented_latency_ms": 434.580774018541,
+              "segmented_env_steps_per_second": 2.3010682013220767,
+              "stress_observations": 200,
+              "all_stress_observations_valid": true,
+              "field_host_bytes": 1606656000,
+              "residual_host_bytes": 0,
+              "raw_vm_peak_min_pa": 191410.21640714223,
+              "raw_vm_peak_max_pa": 191410.21978145547
+            }
+          ],
+          "primary_timing": false,
+          "scope": "Instrumented live trajectory, with existing mechanical admission after each step. Segmented wall times include actual contact/elastic mechanics, requested recovery and host output/acceptance. Mechanical diagnostics, frame/journal I/O and their extra transfers are outside these segments. This is a preflight phase-cost control, not the final uninstrumented primary wall-time benchmark or physical-accuracy qualification. Warmup levels are excluded from comparisons; use the same run's mechanical audit."
+        },
+        {
+          "completed": true,
+          "mechanically_admitted": null,
+          "method": "shell",
+          "envs": 1,
+          "output_mode": "max",
+          "stress_stride": 1,
+          "samples": [
+            {
+              "level": 0,
+              "warmup": true,
+              "steps": 200,
+              "physics_seconds": 162.5189757309854,
+              "recovery_observation_seconds": 0.6104465813841671,
+              "segmented_pipeline_seconds": 163.12942231236957,
+              "segmented_latency_ms": 815.6471115618479,
+              "segmented_env_steps_per_second": 1.2260204024815862,
+              "stress_observations": 200,
+              "all_stress_observations_valid": true,
+              "field_host_bytes": 0,
+              "residual_host_bytes": 0,
+              "raw_vm_peak_min_pa": 2.3924309980762318e-05,
+              "raw_vm_peak_max_pa": 191410.22121892794
+            },
+            {
+              "level": 1,
+              "warmup": false,
+              "steps": 200,
+              "physics_seconds": 87.1385703231208,
+              "recovery_observation_seconds": 0.17400086903944612,
+              "segmented_pipeline_seconds": 87.31257119216025,
+              "segmented_latency_ms": 436.56285596080124,
+              "segmented_env_steps_per_second": 2.290620895355764,
+              "stress_observations": 200,
+              "all_stress_observations_valid": true,
+              "field_host_bytes": 0,
+              "residual_host_bytes": 0,
+              "raw_vm_peak_min_pa": 191410.21640076482,
+              "raw_vm_peak_max_pa": 191410.21981836605
+            }
+          ],
+          "primary_timing": false,
+          "scope": "Instrumented live trajectory, with existing mechanical admission after each step. Segmented wall times include actual contact/elastic mechanics, requested recovery and host output/acceptance. Mechanical diagnostics, frame/journal I/O and their extra transfers are outside these segments. This is a preflight phase-cost control, not the final uninstrumented primary wall-time benchmark or physical-accuracy qualification. Warmup levels are excluded from comparisons; use the same run's mechanical audit."
+        }
+      ]
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group0/dpr/cost.json",
+      "bytes": 1866,
+      "sha256": "0eda01369f7a0c5648676fcc53cd5edf85b44d7dd72f4dfa5a49215326a8afc7"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group0/dpr-audit/result.json",
+      "bytes": 3926,
+      "sha256": "260d99f0a3c1fcca26e5f61dd70ab9a5d3aaa010818e0441c0e59aaa6bcd2507"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group0/dpr/steps.jsonl",
+      "bytes": 733920,
+      "sha256": "b8f4449b6ce5438b0dd4364d1cae25770dfea8a9f3c07d99dd1a8533bfcc041d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group1/dpr/cost.json",
+      "bytes": 1848,
+      "sha256": "3a4150ec7f738d4d565a9616f8b10102fc83f9670713e19bc950497c7fddcf90"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group1/dpr-audit/result.json",
+      "bytes": 3927,
+      "sha256": "bc4b123a4bbeecc541a9e50281fe37c691066d9776c9d2e1483dadf681b5f1f9"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group1/dpr/steps.jsonl",
+      "bytes": 730856,
+      "sha256": "d8d2002113ae1f7ad393529836cb7a712b8e8f0fdde3d4207937d23e59d5de91"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group0/dpr/frames/stress-level0.npz",
+      "bytes": 8079326,
+      "sha256": "ac9ff28b4f4243d5f6ee9f2548ee7958216a7668cca67a0bb03b769e59a445c4"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8086805,
+      "sha256": "2581bc9f9fcea210636dd0687b781753f9e29a42fa33a19a203ba5105a775e9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group0/scr/cost.json",
+      "bytes": 1869,
+      "sha256": "e39cd7e512bbb426133b2d1b624c6b63dfc4e935805d56c7a93dfb0c94d43243"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group0/scr-audit/result.json",
+      "bytes": 3929,
+      "sha256": "6adfbc2b47f6ee489b710e54c9eaaaec409f9226f1dfa5f2cfd52da113b27998"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group0/scr/steps.jsonl",
+      "bytes": 732834,
+      "sha256": "e7eaf1fd79a06828b51ba7b2fa6577ba3acc1c7c58d9cfb663225ca2e3d52d40"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group1/scr/cost.json",
+      "bytes": 1851,
+      "sha256": "e1d87743e23e61f9cbde3dd43d0fdd41724143a1cdf74e101886601c3eeaf9a9"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group1/scr-audit/result.json",
+      "bytes": 3928,
+      "sha256": "c509cb242022d9e445754c574d8d3c4326fb54adc0919b3a5704d71de569cad8"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group1/scr/steps.jsonl",
+      "bytes": 730020,
+      "sha256": "6d5eafa52574edb9f27b1936c01f0c351bc435cf2827e6492d2d1a9d79385ac9"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group0/scr/frames/stress-level0.npz",
+      "bytes": 8323388,
+      "sha256": "a03dd05ccddcabf47627fdbf83753419e99c31714743f98c99caca17b59d4bc5"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group1/native/frames/stress-level0.npz",
+      "bytes": 8346303,
+      "sha256": "ee4e5bcc5528b9fec8101a07cf0a7016725b087c4a96ebe57a45f42ba97548da"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group0/shell/cost.json",
+      "bytes": 1873,
+      "sha256": "cf417569fd141463d6f97af6e413c8b1f1bfb24ac3ef51e567c5bb206d437989"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group0/shell-audit/result.json",
+      "bytes": 7312,
+      "sha256": "276265df8d8e597159200f5142c090ea93b04f2600ac37a53b1a6c9d7f46ec86"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group0/shell/steps.jsonl",
+      "bytes": 648308,
+      "sha256": "da5ad526d124ae2f55bc7ad46efaa7f2b2d0a342cbd2a547b6b7af865dbc9288"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group1/shell/cost.json",
+      "bytes": 1854,
+      "sha256": "b1a9672dabf1655613903d047592d62f8606be09384eaf164beeae8fd8139d9d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group1/shell-audit/result.json",
+      "bytes": 7309,
+      "sha256": "aeebc2bffde22ae0f6ad07a506281540526af843ede10c6ddac8e152af131f86"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group1/shell/steps.jsonl",
+      "bytes": 644851,
+      "sha256": "4f4ab237a1b6cc826f88aa8f79588a9d5ce820b376c036565fb9347281fba33a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group0/shell/frames/level0.npz",
+      "bytes": 10468513,
+      "sha256": "819d1ee4599d5139bf9b568b6e79bf5fcef9c338ae77dad1940abda615785c68"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level0.npz",
+      "bytes": 10468881,
+      "sha256": "bf2bc4aa431fdb09b19f682fb800aac6a768e996e7f9af1b589fefb8b91f348a"
+    }
+  ],
+  "primary_timing": false,
+  "scope": "Matched B1 normal400-step preflight, first200 warmup, full/max modes. Each cost uses its own complete mechanical audit and all observed stress acceptance. Full/max peaks are checked across their common cadence; full fields are checked against the original same-mesh first equilibrium with the predeclared0.5% solver sensitivity target. This audit does not establish spatial accuracy, primary uninstrumented throughput, repeat dispersion or batched performance."
+}

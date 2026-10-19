@@ -16,6 +16,7 @@ from genesis.utils.misc import qd_to_numpy, tensor_to_array
 
 from .artifacts import file_id, runtime_identity, write_json
 from .native_pad_recovery import NativePadRecovery
+from .pad_cost import arguments as cost_arguments, write_cost
 from .plates import configure_native_plate, control_native_plate, equilibrium, force_history, parser, plate_xml
 from .rigid_pad_coupling import RigidPadState, carry_normal, prepare_geometry, solve
 
@@ -52,7 +53,9 @@ def main():
     cli.add_argument("--gravity-start", type=float, default=0.2)
     cli.add_argument("--gravity-ramp", type=float, default=0.05)
     cli.add_argument("--integrator", choices=("Euler", "approximate_implicitfast"), default="Euler")
+    cost_arguments(cli)
     args = cli.parse_args()
+    assert args.stress_stride >= 0 and args.cost_warm_levels >= 0
     assert not args.empty and not args.shear_distance and args.plate_offset_x == 0
     assert args.record_stride == 1 and (not args.gravity_x or args.friction == 0.3)
     args.output.mkdir(parents=True, exist_ok=False)
@@ -120,6 +123,7 @@ def main():
     with (args.output / "steps.jsonl").open("w", buffering=1) as journal:
         try:
             for step, (level, within, command, endpoint) in enumerate(force_history(args)):
+                physics_started = perf_counter()
                 position, rotation, center, velocity, angular = motion(link, center_local)
                 q, plate_velocity = (
                     tensor_to_array(v)[0, 0].item() for v in (plate.get_dofs_position(), plate.get_dofs_velocity())
@@ -165,6 +169,7 @@ def main():
                 new_q, new_plate_velocity = (
                     tensor_to_array(v)[0, 0].item() for v in (plate.get_dofs_position(), plate.get_dofs_velocity())
                 )
+                physics_seconds = perf_counter() - physics_started
                 new_world = points @ new_rotation.T + new_position
                 gap = np.where(top, upper - new_q - new_world[:, 2], new_world[:, 2] - lower)
                 normal = stiffness * area * np.maximum(-gap, 0)
@@ -213,19 +218,21 @@ def main():
                     "friction_law_relative_error": float(np.linalg.norm(force[:, :2] - expected_tangent) / scale),
                     "newton_iterations": iterations,
                     "newton_momentum_residual": solve_residual,
+                    "timing": {"physics_seconds": physics_seconds},
                 }
-                if endpoint and recovery is not None:
+                observe = endpoint or (args.stress_stride > 0 and (step + 1) % args.stress_stride == 0)
+                if observe and recovery is not None:
                     row["stress"] = recovery.sample(
                         force,
                         new_rotation,
                         new_angular,
                         args.friction,
                         command,
-                        args.output / "frames" / f"stress-level{level}.npz",
+                        args.output / "frames" / f"stress-level{level}.npz" if endpoint else None,
                     )
                 journal.write(json.dumps(row, allow_nan=False) + "\n")
                 rows.append(row)
-                if endpoint and recovery is not None:
+                if observe and recovery is not None:
                     assert row["stress"]["native_valid"], (
                         "Native recovery rejected the current pad loads; field retained"
                     )
@@ -291,6 +298,17 @@ def main():
                     "elapsed_seconds": perf_counter() - started,
                     "physical_accuracy_qualified": False,
                 },
+            )
+            write_cost(
+                args,
+                rows,
+                completed,
+                admitted=bool(
+                    completed
+                    and history
+                    and all(all(x.values()) for x in history)
+                    and all(w["mechanical_window_passed"] for w in windows)
+                ),
             )
 
 

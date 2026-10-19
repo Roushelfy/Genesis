@@ -12,6 +12,7 @@ from .compliant_plate_reference import pad_quadrature
 from .condensed_pad_dynamics import CondensedPadDynamics
 from .cvxopt_factor import CvxoptCholeskyFactor
 from .matrix_free_pad_dynamics import MatrixFreePadDynamics
+from .modal_pad_dynamics import ModalPadDynamics
 from .p2_elastic import FreeElasticP2, quadratic_triangle_minimum
 from .p2_stvk import P2StVK
 from .plates import equilibrium, force_history, parser
@@ -49,8 +50,9 @@ def main():
     cli.add_argument("--gravity-ramp", type=float, default=0.05)
     cli.add_argument("--candidate-radius", type=float, default=0.003)
     cli.add_argument("--quadrature-order", type=int, default=0)
-    cli.add_argument("--contact-solver", choices=("condensed", "matrix-free"), default="condensed")
+    cli.add_argument("--contact-solver", choices=("condensed", "matrix-free", "modal"), default="condensed")
     cli.add_argument("--elasticity", choices=("linear", "stvk"), default="linear")
+    cli.add_argument("--warm-contact", action="store_true")
     args = cli.parse_args()
     assert not args.empty and not args.shear_distance and args.plate_offset_x == 0
     assert args.record_stride == 1 and (not args.gravity_x or args.friction == 0.3)
@@ -100,9 +102,14 @@ def main():
                     )
                     + "\n"
                 )
-        contact = CondensedPadDynamics(compliance, sign, area)
+        contact = CondensedPadDynamics(compliance, sign, area, warm_start=args.warm_contact)
+    elif args.contact_solver == "matrix-free":
+        contact = MatrixFreePadDynamics(operator, factor, jacobian, sign, area, warm_start=args.warm_contact)
     else:
-        contact = MatrixFreePadDynamics(operator, factor, jacobian, sign, area)
+        modes = np.zeros((n_body + 1, 7))
+        modes[:-1, :6] = reference.rigid_modes
+        modes[-1, -1] = 1
+        contact = ModalPadDynamics(operator, factor, jacobian, modes, sign, area, warm_start=args.warm_contact)
     _, _, quadratic_faces = model.surface(faces)
     selected_keys = {tuple(sorted(face)) for face in candidate_faces}
     omitted = np.array([tuple(sorted(face)) not in selected_keys for face in quadratic_faces[:, :3]])
@@ -211,6 +218,7 @@ def main():
                     "rigid_mode_velocity": mode_velocity.tolist(),
                     "newton_iterations": result["iterations"],
                     "linear_iterations": result.get("linear_iterations"),
+                    "fixed_point_iterations": result.get("fixed_point_iterations"),
                     "constitutive_rounds": constitutive_rounds,
                     "current_moment_balance_relative_error": float(
                         np.linalg.norm(physical_moment) / (max(command, 1e-3) * 0.03)

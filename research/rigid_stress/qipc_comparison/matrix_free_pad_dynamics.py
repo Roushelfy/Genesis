@@ -12,17 +12,18 @@ from .condensed_pad_dynamics import potential
 
 
 class MatrixFreePadDynamics:
-    def __init__(self, operator, factor, jacobian, sign, area):
+    def __init__(self, operator, factor, jacobian, sign, area, warm_start=False):
         assert operator.shape[0] == jacobian.shape[1]
         self.factor, self.jacobian = factor, jacobian
         self.sign, self.area = np.asarray(sign), np.asarray(area)
+        self.warm_start, self.previous_impulse = warm_start, None
 
     def compliance(self, value):
         return self.jacobian @ self.factor.solve(self.jacobian.T @ value)
 
     def solve(self, free_velocity, gap, previous_normal, dt, stiffness, friction, load, mass):
         free = self.jacobian @ free_velocity
-        coordinate = np.zeros_like(free)
+        coordinate = np.zeros_like(free) if self.previous_impulse is None else self.previous_impulse.copy()
         tolerance = 1e-10 * dt * max(load, 1e-3) / np.sqrt(mass)
 
         def evaluate(value):
@@ -44,6 +45,8 @@ class MatrixFreePadDynamics:
             residual = np.sqrt(squared)
             contact_defect = self.jacobian @ preconditioned
             if residual <= tolerance:
+                if self.warm_start:
+                    self.previous_impulse = impulse.reshape(-1).copy()
                 return {
                     "velocity": velocity,
                     "force": impulse / dt,

@@ -1,0 +1,7 @@
+Claim anchor: normal-pad-metric-specific-conditional-ranking.
+
+Normal physical-pad benchmark: complete tangential stress (a), membrane resultant (b) and bending resultant (c) errors at0.1,0.3 and1N. The egg remains free, h=500um,E=10GPa,nu=0.3; the reference is the125um polar/three-wall P2 mesh with contact quadrature10. Native DPR/SCR use all actual sources with the predeclared2mm footprint; Shell is the explicitly repaired250um contact/elastic variant. Symbols show measured relative errors; horizontal offsets separate methods at the same load. Whiskers propagate observed independent wall/surface/joint refinement and quadrature changes through the triangle inequality, conditional on those changes bounding reference error. They are neither statistical confidence intervals nor certified continuum bounds. All normal histories and reference-change gates pass.
+
+Interpretation: native variants cluster near7.4–8.0% tangent and10.3–10.9% bending error, while Shell is near24.0–26.0% and41.7–42.0%, respectively. Membrane errors cluster near4.3–5.8% and the conditional ranges overlap. DPR/SCR remain unresolved; no universal method order follows. There are three deterministic load cases per method, without statistical replicates in this figure. Radius sensitivity is a separate parameter uncertainty.
+
+Placement: after the normal reference qualification table. Source data, executed code and qualification receipts accompany the figure. This figure does not close sustained-friction qualification or matched primary cost/batching requirements.

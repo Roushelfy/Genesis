@@ -42,6 +42,13 @@ and joint-reference jobs, new logs and all dependency assets remain on data.
 It contains retained failed attempts and explicitly partial reference controls,
 not a migration or a runtime output destination in the source checkout.
 
+The `normal-pad-reference-v1` checkpoint retains verified terminal normal
+reference/uncertainty receipts, objective transient controls, preflight cost
+and failure records, plus editable figures and executed plotting source.
+Figure staging and full fields/journals remain on data, as do ongoing
+StVK time/contact/spatial refinements and paired-output controls. No active
+writer, environment or compatibility symlink is moved or changed.
+
 ## Parallel-plate benchmark storage, 2026-10-18
 
 The updated goal is pinned at fork commit `914a558df`. A new exclusive-create,

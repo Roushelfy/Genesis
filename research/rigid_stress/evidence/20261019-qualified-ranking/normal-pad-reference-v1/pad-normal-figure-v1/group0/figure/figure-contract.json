@@ -1,0 +1,44 @@
+{
+  "claim_anchor": "normal-pad-metric-specific-conditional-ranking",
+  "main_claim": "On the declared physical-pad normal case, observed reference refinement separates native and repaired-Shell tangent/bending errors, while membrane and DPR/SCR comparisons overlap.",
+  "material_passport": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-normal-qualification-v2/group0/qualification/result.json",
+    "bytes": 42447,
+    "sha256": "c79fbba32143ca71a90475c8ad1cdb109ba86f09c9ff60608480c113db486a2b"
+  },
+  "evidence_hierarchy": "Executed source receipts, complete history admission and independent surface/wall/contact/integration changes precede this derived figure.",
+  "panels": [
+    {
+      "panel": "a",
+      "metric": "tangent_relative_l2",
+      "title": "Tangential stress",
+      "claim": "Complete physical-volume field separates the native variants from Shell."
+    },
+    {
+      "panel": "b",
+      "metric": "membrane_relative_l2",
+      "title": "Membrane resultant",
+      "claim": "Overlapping conditional ranges do not separate the methods."
+    },
+    {
+      "panel": "c",
+      "metric": "bending_relative_l2",
+      "title": "Bending resultant",
+      "claim": "The Shell discrepancy is concentrated in bending rather than membrane."
+    }
+  ],
+  "chart_choice": "Individual points with conditional ranges at three loads; no statistical aggregation. Bars would obscure overlap; a table remains available as errors.csv.",
+  "data_profile": {
+    "methods": 3,
+    "loads_n": [
+      0.1,
+      0.3,
+      1.0
+    ],
+    "metrics": 3,
+    "points": 27,
+    "missing": 0
+  },
+  "target": "Repository supplement, English,183mm by65mm; no venue-specific submission claim.",
+  "open_decisions": "Empirical refinement is not a certified continuum bound. Sustained friction, common-spatial peak convergence and primary performance remain separate."
+}

@@ -1,0 +1,79 @@
+{
+  "args": {
+    "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+    "loads": [
+      0.1,
+      0.1
+    ],
+    "dt": 0.001,
+    "ramp": 0.05,
+    "hold": 0.15,
+    "damping": 50.0,
+    "clearance": 2.2e-05,
+    "plate_offset_x": 0.0,
+    "shear_distance": 0.0,
+    "shear_start": 0.3,
+    "shear_duration": 0.1,
+    "record_stride": 1,
+    "empty": false,
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group0/shell",
+    "tolerance": 0.0001,
+    "velocity_tolerance": 1e-10,
+    "iterations": 8000,
+    "contact_stiffness": 25.0,
+    "coarse_patches": 12,
+    "friction": 0.0,
+    "midpoint_mesh": null,
+    "floating_sums": true,
+    "capture_first_linear": false,
+    "capture_linear_step": null,
+    "pad_geometry": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-shell-spatial-v2/group1/geometry/pad-geometry.npz",
+    "pad_stiffness": 1000000000.0,
+    "gravity_x": 0.0,
+    "gravity_start": 0.2,
+    "gravity_ramp": 0.05,
+    "stress_stride": 1,
+    "stress_output": "full",
+    "cost_warm_levels": 1
+  },
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-223",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728187",
+      "SLURM_ARRAY_JOB_ID": "728186",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-17f8935b-04de-40db-a824-e71bc4612a12, 00000000:AE:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "genesis_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-physical-pad/genesis/__init__.py",
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-isolated-mesh-v1/group0/meshes/land-contact-1.npz",
+    "bytes": 2554948,
+    "sha256": "fe33c17f40a9f0b9333339a3f33bc9942ac34dc05c7077da5ae8c085f3dd7164"
+  },
+  "midpoint": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-preflight-v1/group0/shell/midpoint.obj",
+    "bytes": 1663003,
+    "sha256": "979f2b73eecc9a0d69a14092651ed241c295c7ab3d78e5e3cc554e3601857c32"
+  },
+  "setup_seconds": 45.13736810395494,
+  "mass_kg": 0.007485217263905328,
+  "variant": "Captured coupled-contact Shell source, identified by source.json and source.patch; unchanged constitutive model, separate from original PR22.",
+  "solver_source": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-physical-pad/genesis/engine/solvers/shell_solver.py",
+    "bytes": 264327,
+    "sha256": "003689c4b6f4fc948a98bed9381461b136cbf0cd0ab40971bfd6b52034da4476"
+  },
+  "physical_pad_geometry": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-shell-spatial-v2/group1/geometry/pad-geometry.npz",
+    "bytes": 7643504,
+    "sha256": "2562cf540d2d46355b2e5556519fb4128dd3a7012e373948702e59c545455539"
+  },
+  "physical_pad_stiffness_n_per_m3": 1000000000.0,
+  "force_observer": "Fresh membrane and hinge forces into observer-owned storage; no cache or velocity writes."
+}

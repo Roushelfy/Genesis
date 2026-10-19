@@ -1,0 +1,44 @@
+{
+  "completed": true,
+  "mechanically_admitted": true,
+  "method": "scr",
+  "envs": 1,
+  "output_mode": "full",
+  "stress_stride": 1,
+  "samples": [
+    {
+      "level": 0,
+      "warmup": true,
+      "steps": 200,
+      "physics_seconds": 2.4640130694024265,
+      "recovery_observation_seconds": 497.92439552000724,
+      "segmented_pipeline_seconds": 500.38840858940966,
+      "segmented_latency_ms": 2501.9420429470483,
+      "segmented_env_steps_per_second": 0.399689514319083,
+      "stress_observations": 200,
+      "all_stress_observations_valid": true,
+      "field_host_bytes": 1035878400,
+      "residual_host_bytes": 517996800,
+      "raw_vm_peak_min_pa": 0.0,
+      "raw_vm_peak_max_pa": 193334.24585416564
+    },
+    {
+      "level": 1,
+      "warmup": false,
+      "steps": 200,
+      "physics_seconds": 2.0439563973341137,
+      "recovery_observation_seconds": 271.0694005454425,
+      "segmented_pipeline_seconds": 273.1133569427766,
+      "segmented_latency_ms": 1365.566784713883,
+      "segmented_env_steps_per_second": 0.7322966633298148,
+      "stress_observations": 200,
+      "all_stress_observations_valid": true,
+      "field_host_bytes": 1035878400,
+      "residual_host_bytes": 517996800,
+      "raw_vm_peak_min_pa": 193334.24585413598,
+      "raw_vm_peak_max_pa": 193334.24585413598
+    }
+  ],
+  "primary_timing": false,
+  "scope": "Instrumented live trajectory, with existing mechanical admission after each step. Segmented wall times include actual contact/elastic mechanics, requested recovery and host output/acceptance. Mechanical diagnostics, frame/journal I/O and their extra transfers are outside these segments. This is a preflight phase-cost control, not the final uninstrumented primary wall-time benchmark or physical-accuracy qualification. Warmup levels are excluded from comparisons; use the same run's mechanical audit."
+}

@@ -32,9 +32,11 @@ class ShellColumnField:
     def breaks(self):
         return np.stack((np.zeros(len(self.stress)), np.ones(len(self.stress))))
 
+    def sample_tensor(self, depth):
+        return (1 - depth[:, None, None]) * self.stress[:, 2] + depth[:, None, None] * self.stress[:, 0]
+
     def sample(self, depth, basis):
-        tensor = (1 - depth[:, None, None]) * self.stress[:, 2] + depth[:, None, None] * self.stress[:, 0]
-        return basis.transpose(0, 2, 1) @ tensor @ basis
+        return basis.transpose(0, 2, 1) @ self.sample_tensor(depth) @ basis
 
 
 @dataclass
@@ -87,7 +89,7 @@ class ColumnField:
         layer, _, _, elements = self.locate(depth)
         return 3 * self.volumes[elements] / np.diff(self.wall_depths)[layer]
 
-    def sample(self, depth, basis):
+    def sample_tensor(self, depth):
         layer, local, kind, elements = self.locate(depth)
         tensor = self.stress[elements] if self.stvk_gradient is None else self.stvk_gradient[elements]
         if self.stress.ndim == 4:
@@ -122,7 +124,10 @@ class ColumnField:
             tensor = cauchy_from_gradient(tensor, self.young, self.poisson)
             assert self.material_rotation is not None
             tensor = self.material_rotation.T @ tensor @ self.material_rotation
-        return basis.transpose(0, 2, 1) @ tensor @ basis
+        return tensor
+
+    def sample(self, depth, basis):
+        return basis.transpose(0, 2, 1) @ self.sample_tensor(depth) @ basis
 
 
 def main():
@@ -134,6 +139,9 @@ def main():
     cli.add_argument("--surface-quadrature", type=int, choices=(1, 3, 9, 25), default=1)
     cli.add_argument("--physical-volume", action="store_true")
     cli.add_argument("--depth-quadrature", type=int, choices=(2, 4, 8), default=2)
+    cli.add_argument(
+        "--common-peaks", action="store_true", help="Also evaluate shared tangent peaks and 3D-only components"
+    )
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     depth_nodes, depth_weights = np.polynomial.legendre.leggauss(args.depth_quadrature)
@@ -151,6 +159,8 @@ def main():
         unit[:, 2] /= 0.03
         unit[:, :2] /= (0.022 * (1 - 0.18 * unit[:, 2]))[:, None]
     bary, angular_weights = surface_quadrature(args.surface_quadrature)
+    common_outer = np.einsum("qc,fci->fqi", bary, outer[faces]).reshape(-1, 3)
+    common_inner = np.einsum("qc,fci->fqi", bary, inner[faces]).reshape(-1, 3)
     polar_radius = np.linalg.norm(np.einsum("qc,fci->fqi", bary, outer[faces])[..., :2], axis=-1).reshape(-1)
     direction = np.einsum("qc,fci->fqi", bary, unit[faces]).reshape(-1, 3)
     direction /= np.linalg.norm(direction, axis=1)[:, None]
@@ -241,6 +251,16 @@ def main():
             )
         comparisons = []
         for index, (actual, reference) in enumerate(zip(fields[:-1], fields[1:])):
+            if args.common_peaks:
+                from .common_column_peaks import CommonColumnMeasures
+
+                common = CommonColumnMeasures(
+                    basis,
+                    normal,
+                    common_outer,
+                    common_inner,
+                    (isinstance(actual, ShellColumnField), isinstance(reference, ShellColumnField)),
+                )
             partitions = [actual.breaks(), reference.breaks()]
             if args.physical_volume:
                 partitions.append(fields[-1].breaks())
@@ -254,13 +274,24 @@ def main():
             for lower, upper in zip(breaks[:-1], breaks[1:]):
                 midpoint = (lower + upper) / 2
                 width = upper - lower
+                if args.common_peaks:
+                    # Both one-sided traces of every unioned tetrahedron boundary.
+                    for depth in (np.nextafter(lower, upper), np.nextafter(upper, lower)):
+                        common.update_peaks([field.sample(depth, basis) for field in (actual, reference)], depth)
                 for offset, depth_weight in zip(depth_nodes, depth_weights):
                     depth = midpoint + offset * width / 2
-                    a, r = actual.sample(depth, basis), reference.sample(depth, basis)
+                    if args.common_peaks:
+                        tensors = [field.sample_tensor(depth) for field in (actual, reference)]
+                        a, r = [basis.transpose(0, 2, 1) @ tensor @ basis for tensor in tensors]
+                    else:
+                        a, r = actual.sample(depth, basis), reference.sample(depth, basis)
                     weight = width * area / 2 * depth_weight
                     if args.physical_volume:
                         weight = width / 2 * column_angular_weights * fields[-1].volume_density(depth) * depth_weight
                     integration_measure += weight.sum()
+                    if args.common_peaks:
+                        common.update_peaks((a, r), depth)
+                        common.integrate_transverse(tensors, weight)
                     error_by_column += np.einsum("qij,qij,q->q", a - r, a - r, weight)
                     reference_by_column += np.einsum("qij,qij,q->q", r, r, weight)
                     values = np.stack((a, r))
@@ -283,6 +314,8 @@ def main():
             surface_errors = {}
             for name, depth in (("outer", 0.0), ("inner", 1.0)):
                 a, r = (field.sample(np.full(len(direction), depth), basis) for field in (actual, reference))
+                if args.common_peaks:
+                    common.update_peaks((a, r), np.full(len(direction), depth))
                 numerator = np.einsum("qij,qij,q->", a - r, a - r, area)
                 denominator = np.einsum("qij,qij,q->", r, r, area)
                 surface_errors[name + "_tangent_relative_l2"] = float(np.sqrt(numerator / denominator))
@@ -311,6 +344,7 @@ def main():
                     "integration_measure": float(integration_measure),
                     "integration_measure_unit": "m3" if args.physical_volume else "m2",
                     **surface_errors,
+                    **({"common_spatial_measures": common.result()} if args.common_peaks else {}),
                     "membrane_relative_l2": differences[0],
                     "bending_relative_l2": differences[1],
                     "raw_mises_relative_change": abs(
@@ -343,6 +377,7 @@ def main():
             "surface_quadrature_points_per_face": args.surface_quadrature,
             "physical_volume_weighting": args.physical_volume,
             "depth_quadrature_points": args.depth_quadrature,
+            "common_peaks_evaluated": args.common_peaks,
             "physical_reference_qualified": False,
             "scope": "Exact integration of piecewise-constant P1 or piecewise-linear P2 stress along material columns. StVK uses the exact P2 displacement gradient at each sample and constitutive Cauchy evaluation, with explicit depth-quadrature sensitivity required. Integration includes unioned "
             "tetrahedron partitions for squared field differences and analytic membrane/bending moments. "

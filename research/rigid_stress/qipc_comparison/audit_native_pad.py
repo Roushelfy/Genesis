@@ -34,6 +34,8 @@ def main():
         for row in rows:
             if "stress" not in row:
                 continue
+            if not row["stress"].get("field"):
+                continue
             packet = run / "frames" / f"stress-level{row['level']}.npz"
             geometry = run / "frames" / f"level{row['level']}.npz"
             with np.load(packet) as saved:
@@ -71,6 +73,7 @@ def main():
                 "steps": len(rows),
                 "mechanical_history_passed": receipt["mechanical_history_passed"],
                 "all_windows_passed": all(x["mechanical_window_passed"] for x in receipt["windows"]),
+                "all_stress_observations_valid": all(row["stress"]["native_valid"] for row in rows if "stress" in row),
                 "motion_maximum_absolute_differences": dict(
                     zip(keys, np.max(np.abs(motion - baseline), axis=0).tolist())
                 )
@@ -80,7 +83,10 @@ def main():
             }
         )
     passed = all(
-        x["mechanical_history_passed"] and x["all_windows_passed"] and all(f["adapter_passed"] for f in x["fields"])
+        x["mechanical_history_passed"]
+        and x["all_windows_passed"]
+        and x["all_stress_observations_valid"]
+        and all(f["adapter_passed"] for f in x["fields"])
         for x in cases
     )
     write_json(

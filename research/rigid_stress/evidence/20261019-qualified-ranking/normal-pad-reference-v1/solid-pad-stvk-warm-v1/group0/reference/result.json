@@ -1,0 +1,54 @@
+{
+  "completed": true,
+  "steps": 400,
+  "elapsed_seconds": 1647.5785491229035,
+  "history_checks": {
+    "complete_equation": true,
+    "actual_pressure": true,
+    "actual_friction": true,
+    "point_velocity_prediction": true,
+    "complete_boundary": true,
+    "current_moment": true
+  },
+  "mechanical_history_passed": true,
+  "windows": [
+    {
+      "level": 0,
+      "samples": 51,
+      "checks": {
+        "both_plate_reactions": true,
+        "plate_velocity": true,
+        "egg_inertial_resultant": true,
+        "egg_kinetic": true,
+        "equation_residual": true,
+        "complete_equation": true,
+        "actual_pressure": true,
+        "actual_friction": true,
+        "point_velocity_prediction": true,
+        "complete_boundary": true,
+        "current_moment": true
+      },
+      "mechanical_window_passed": true
+    },
+    {
+      "level": 1,
+      "samples": 51,
+      "checks": {
+        "both_plate_reactions": true,
+        "plate_velocity": true,
+        "egg_inertial_resultant": true,
+        "egg_kinetic": true,
+        "equation_residual": true,
+        "complete_equation": true,
+        "actual_pressure": true,
+        "actual_friction": true,
+        "point_velocity_prediction": true,
+        "complete_boundary": true,
+        "current_moment": true,
+        "sustained_shear": true
+      },
+      "mechanical_window_passed": true
+    }
+  ],
+  "physical_reference_qualified": false
+}
