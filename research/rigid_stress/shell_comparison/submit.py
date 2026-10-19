@@ -110,6 +110,7 @@ def main():
     parser.add_argument("--memory-gb", type=int, default=64)
     parser.add_argument("--concurrency", type=int)
     parser.add_argument("--cpus", type=int, default=8)
+    parser.add_argument("--cpu-only", action="store_true", help="Request no GPU for CPU analysis in rtx-mid")
     parser.add_argument("--keep-going", action="store_true")
     parser.add_argument(
         "--allow-home-output", action="store_true", help="Record an explicitly user-authorized home-output exception"
@@ -224,7 +225,7 @@ def main():
         # This runner requires fresh output directories and has no restart
         # protocol. Requeueing would fail its guard and overwrite Slurm logs.
         "--no-requeue",
-        "--gres=gpu:1",
+        "--gres=none" if args.cpu_only else "--gres=gpu:1",
         f"--cpus-per-task={args.cpus}",
         f"--mem={args.memory_gb}G",
         f"--time={args.minutes}",

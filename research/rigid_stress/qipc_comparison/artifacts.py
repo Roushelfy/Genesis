@@ -22,7 +22,19 @@ def write_json(path, payload):
     Path(path).write_text(json.dumps(payload, indent=2, allow_nan=False) + "\n")
 
 
-def runtime_identity():
+def runtime_identity(*, require_gpu_inventory=True):
+    try:
+        inventory = subprocess.check_output(
+            ["nvidia-smi", "--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total", "--format=csv"],
+            text=True,
+            stderr=subprocess.STDOUT,
+        )
+        inventory_error = None
+    except (OSError, subprocess.CalledProcessError) as error:
+        if require_gpu_inventory:
+            raise
+        inventory = None
+        inventory_error = str(error)
     return {
         "python_executable": sys.executable,
         "python_version": sys.version,
@@ -38,7 +50,7 @@ def runtime_identity():
                 "GENESIS_IMAGE_VER",
             )
         },
-        "nvidia_smi_visible_inventory": subprocess.check_output(
-            ["nvidia-smi", "--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total", "--format=csv"], text=True
-        ),
+        "nvidia_smi_visible_inventory": inventory,
+        "gpu_inventory_required": require_gpu_inventory,
+        "gpu_inventory_error": inventory_error,
     }

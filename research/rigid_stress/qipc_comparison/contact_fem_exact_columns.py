@@ -302,9 +302,12 @@ def main():
                     bending += values * (width / 2 * (0.5 - depth))[None, :, None, None] * 0.0005**2 * depth_weight
             if args.physical_volume:
                 np.testing.assert_allclose(integration_measure, fields[-1].volumes.sum(), rtol=1e-9, atol=1e-18)
-            differences = []
+            differences, resultant_rms_errors = [], []
             for values in (membrane, bending):
                 difference = values[0] - values[1]
+                resultant_rms_errors.append(
+                    float(np.sqrt(np.einsum("qij,qij,q->", difference, difference, area) / area.sum()))
+                )
                 differences.append(
                     float(
                         np.sqrt(
@@ -362,6 +365,8 @@ def main():
                     **({"common_spatial_measures": common.result()} if args.common_peaks else {}),
                     "membrane_relative_l2": differences[0],
                     "bending_relative_l2": differences[1],
+                    "membrane_rms_error_n_per_m": resultant_rms_errors[0],
+                    "bending_rms_error_n": resultant_rms_errors[1],
                     "raw_mises_relative_change": abs(
                         raw[index]["raw_maximum_mises_pa"] / raw[index + 1]["raw_maximum_mises_pa"] - 1
                     ),
@@ -386,7 +391,7 @@ def main():
     write_json(
         args.output / "result.json",
         {
-            "identity": runtime_identity(),
+            "identity": runtime_identity(require_gpu_inventory=False),
             "cases": rows,
             "shell_indices": args.shell_indices,
             "surface_quadrature_points_per_face": args.surface_quadrature,

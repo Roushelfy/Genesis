@@ -1,5 +1,13 @@
 # Qualified stress comparison: in progress
 
+The [dimensional normal update](NORMAL_ABSOLUTE_ERRORS_20261019.md) completes
+81 absolute/relative metrics from retained full-column data (728856), with69
+rehashed inputs. CPU-only postprocessing now uses the same rtx-mid/container
+workflow without a GPU request; original unstarted requests remain recorded.
+Prescribed-C2 field comparisons continue as728860, while fine nonlinear friction
+histories remain active. Final reference qualification and friction deliverables
+remain required; the full goal is not complete.
+
 The active goal is fork `950ed9d3ccfaa9a0192d4675e25bbdb6f45d20c8` and
 [the qualified ranking specification](QUALIFIED_STRESS_RANKING_GOAL.md).
 The [normal-pad reference and conditional comparison](NORMAL_PAD_QUALIFICATION_20261019.md)

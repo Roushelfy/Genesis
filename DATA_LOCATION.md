@@ -1,5 +1,12 @@
 # Current QIPC reference comparison
 
+The `normal-absolute-errors-v1` packet retains84 verified payloads totaling
+1,472,625 bytes: terminal81-row dimensional normal errors,69 input identities,
+CPU-only metadata controls and immutable submission/cancellation records.
+All column/full-field arrays and active prescribed/friction outputs remain on
+data. CPU-only tasks use the same rtx-mid/container path with explicit data
+outputs and node-local caches. No runtime data or environment is migrated.
+
 The `native-reconstruction-material-v1` packet retains362 verified payloads
 totaling4,010,250 bytes for terminal native quadrature/core and normal material
 controls, prescribed-C2 common sampling and retained diagnostic failures.
