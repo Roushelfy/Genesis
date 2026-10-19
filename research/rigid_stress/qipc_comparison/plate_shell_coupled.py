@@ -16,6 +16,7 @@ from genesis.utils.misc import qd_to_numpy, tensor_to_array
 from ..shell_comparison.observation import FullField
 from .artifacts import file_id, runtime_identity, write_json
 from .pad_cost import arguments as cost_arguments, write_cost
+from .pad_primary_cost import PrimaryCost
 from .plates import configure_native_plate, control_native_plate, force_history, parser, plate_xml
 from .shell_linear_capture import capture, contact_diagnostics
 from .shell_pad_audit import ShellPadAudit
@@ -53,7 +54,7 @@ def observe_elastic_force(force: qd.Tensor, state: array_class.ShellState, info:
             force[d, i_b] += coefficient * gradient[:, 3]
 
 
-def main():
+def arguments():
     cli = parser()
     cli.add_argument("--tolerance", type=float, default=1e-8)
     cli.add_argument("--velocity-tolerance", type=float, default=1e-9)
@@ -74,7 +75,14 @@ def main():
         "--paired-output-check", action="store_true", help="Check full/max observers on each identical frozen state"
     )
     cost_arguments(cli)
-    args = cli.parse_args()
+    return cli
+
+
+def main():
+    args = arguments().parse_args()
+    assert not (args.primary_cost and args.paired_output_check), (
+        "Use paired observer instrumentation in a separate control"
+    )
     assert args.stress_stride >= 0 and args.cost_warm_levels >= 0
     assert not args.cost_warm_levels or args.record_stride == 1
     if args.gravity_x:
@@ -171,12 +179,14 @@ def main():
         },
     )
     completed, executed, samples = False, 0, []
+    primary = PrimaryCost(args)
     started = time.perf_counter()
     with (args.output / "steps.jsonl").open("w", buffering=1) as journal:
         try:
             for step, (level, within, force, endpoint) in enumerate(force_history(args)):
+                primary.begin(level, step)
                 previous_velocity = tensor_to_array(egg.get_verts_vel())[0]
-                physics_started = time.perf_counter()
+                physics_started = time.perf_counter() if not args.primary_cost else 0.0
                 gravity_x = args.gravity_x * min(
                     max(((step + 1) * args.dt - args.gravity_start) / args.gravity_ramp, 0), 1
                 )
@@ -197,7 +207,7 @@ def main():
                     return
                 failure_flags = tensor_to_array(solver.get_envs_solver_failure())
                 failed = bool(failure_flags.any())
-                physics_seconds = time.perf_counter() - physics_started
+                physics_seconds = time.perf_counter() - physics_started if not args.primary_cost else 0.0
                 if (step + 1) % args.record_stride and not endpoint and not failed:
                     continue
                 positions, velocity, contact = (
@@ -271,7 +281,7 @@ def main():
                 observe = endpoint or failed or (args.stress_stride > 0 and (step + 1) % args.stress_stride == 0)
                 field_arrays = {}
                 if observe:
-                    observation_started = time.perf_counter()
+                    observation_started = time.perf_counter() if not args.primary_cost else 0.0
                     field.update(solver)
                     peak = float(tensor_to_array(field.peaks)[0])
                     valid = np.isfinite(peak) and not failed
@@ -287,7 +297,10 @@ def main():
                         "output_mode": args.stress_output,
                         "raw_vm_peak_pa": peak,
                         "field_host_bytes": host_bytes,
-                        "observation_seconds_excluding_frame_IO": time.perf_counter() - observation_started,
+                        "observation_seconds_excluding_frame_IO": time.perf_counter() - observation_started
+                        if not args.primary_cost
+                        else 0.0,
+                        "phase_timing_enabled": not args.primary_cost,
                     }
                     if paired_field is not None:
                         paired_field.update(solver)
@@ -340,6 +353,7 @@ def main():
                             "Same-state full/max output differs; journal retained"
                         )
                 assert not failed, "Shell solver failure: full field retained at the first failing step"
+                primary.end(level, step, endpoint)
             completed = True
         finally:
             write_json(
@@ -355,7 +369,7 @@ def main():
                     "nonlinear time discretization error as well as contact balance. No velocity clearing.",
                 },
             )
-            write_cost(args, samples, completed)
+            write_cost(args, samples, completed, primary=primary)
 
 
 if __name__ == "__main__":

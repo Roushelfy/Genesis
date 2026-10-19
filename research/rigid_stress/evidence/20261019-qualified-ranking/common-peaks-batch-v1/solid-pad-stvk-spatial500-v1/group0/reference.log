@@ -1,0 +1,14 @@
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial500-v1/analysis-source/research/rigid_stress/qipc_comparison/plate_solid_pad.py", line 322, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial500-v1/analysis-source/research/rigid_stress/qipc_comparison/plate_solid_pad.py", line 152, in main
+    result, generalized_force, new_velocity, displacement, internal, constitutive_rounds = advance(
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial500-v1/analysis-source/research/rigid_stress/qipc_comparison/solid_pad_step.py", line 47, in advance
+    raise RuntimeError(f"P2 constitutive/contact coupling failed: {rounds[-1]}")
+RuntimeError: P2 constitutive/contact coupling failed: {'iteration': 20, 'force_correction_error': 1.0270401921081027e-09, 'contact_newton_iterations': 2}

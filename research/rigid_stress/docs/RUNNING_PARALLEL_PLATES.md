@@ -14,12 +14,34 @@ Use `contact_fem_exact_columns --physical-volume --common-peaks` for shared
 tangent-plane peaks and separate full3D-only stress components; retain raw
 peaks and independently check angular/depth and spatial resolution.
 
+`pad_common_peak_qualification --data-root RUN_ROOT` rebuilds the separate
+common-peak qualification. `pad_response_figure --data-root RUN_ROOT --style
+PATH_TO_RETAINED_nature_mpl_style.py` plots clearance-corrected force/closure
+and conditional peak errors. All commands require a fresh `--output` on data.
+
+For primary whole-workflow timing, add `--primary-cost --cost-warm-levels 1`
+with four repeated loads to the native/Shell drivers. Audit those exact runs
+using `audit_pad_primary_cost --runs ... --data-root RUN_ROOT`. Batch drivers
+`plate_native_pad_batch` and `plate_shell_pad_batch` additionally accept
+`--envs 1/2/4/8` and optional independent `--env-load-scales`; use
+`audit_pad_batch` on their actual histories and fields. Native batch pad
+mechanics is serial per environment; its complete cost is included.
+`pad_memory_profile --task DRIVER_TASK_JSON` runs one such driver in the same
+process with intrusive memory sampling and explicitly non-primary timing.
+The JSON contains `module` and `args`, without `--output`; audit its `run/`
+subdirectory separately. Captured task files in the checkpoint specify every
+parameter and engine source. Profile admission cannot replace primary admission.
+
 `plate_solid_pad --elasticity stvk --contact-solver modal --warm-contact`
 selects the verified full-compliance modal iteration. It does not fix or
 discard rigid or elastic modes. Reproduce `check_matrix_free_pad`, the
 complete400-step dense/modal comparison and `audit_solid_pad` before new
 refinement. `--quadrature-order 6/10` and `--dt` isolate integration and time
 controls; their completed trajectories and fields must pass independently.
+`--constitutive-correction direct` assembles the StVK nonlinear remainder
+without cancellation of full nodal forces. The default historical subtracted
+formula remains available; the direct control retains independent full-Piola
+equation/moment acceptance and unchanged convergence thresholds.
 
 `plate_native_pad` and `plate_shell_coupled` accept `--stress-stride 1/20`
 and `--stress-output full/max`. `--cost-warm-levels 1` records segmented

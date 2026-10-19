@@ -33,7 +33,9 @@ class ShellPadAudit:
                 upper,
             )
 
-    def evaluate(self, solver, positions, vertex_force, compression, dt, velocity=None, friction=0.0):
+    def evaluate(
+        self, solver, positions, vertex_force, compression, dt, velocity=None, friction=0.0, env=0, contact_data=None
+    ):
         displacement = positions[self.faces] - self.corners
         points = self.points + np.einsum("fkij,fkj->fi", self.jacobians, displacement)
         top = self.points[:, 2] > 0
@@ -41,8 +43,12 @@ class ShellPadAudit:
         gap = np.where(top, self.upper - compression - points[:, 2], points[:, 2] - self.lower)
         expected = self.stiffness * self.area * np.maximum(-gap, 0)
         contact = solver._shell_contact
-        geom = qd_to_numpy(contact.contacts_geom, transpose=True)[0]
-        impulse = qd_to_numpy(contact.contacts_impulse, transpose=True, copy=True)[0]
+        geom = qd_to_numpy(contact.contacts_geom, transpose=True)[env] if contact_data is None else contact_data[0][env]
+        impulse = (
+            qd_to_numpy(contact.contacts_impulse, transpose=True, copy=True)[env]
+            if contact_data is None
+            else contact_data[1][env].copy()
+        )
         impulse[geom < 0] = 0
         forces = impulse.reshape(-1, 2, 3).sum(axis=1) / dt
         scale = max(np.linalg.norm(forces), 1e-12)

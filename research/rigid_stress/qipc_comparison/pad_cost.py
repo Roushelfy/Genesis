@@ -5,6 +5,16 @@ from .artifacts import write_json
 
 def arguments(cli):
     cli.add_argument(
+        "--intrusive-memory-profile",
+        action="store_true",
+        help="Mark this run's wall times as intrusive diagnostics, never primary timing",
+    )
+    cli.add_argument(
+        "--primary-cost",
+        action="store_true",
+        help="Time complete levels including admission and I/O; disable phase timers",
+    )
+    cli.add_argument(
         "--stress-stride",
         type=int,
         default=0,
@@ -19,7 +29,10 @@ def arguments(cli):
     )
 
 
-def write_cost(args, rows, completed, admitted=None):
+def write_cost(args, rows, completed, admitted=None, primary=None):
+    if args.primary_cost:
+        primary.write(rows, completed, admitted)
+        return
     if not args.cost_warm_levels:
         return
     samples = []

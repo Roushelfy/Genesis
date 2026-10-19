@@ -7,6 +7,13 @@ now passes the declared reference-change gates. Independent sustained-friction
 refinement and matched primary cost/batching remain incomplete. The preceding
 bounded report and original failing variants remain unchanged.
 
+The [common-peak/batch checkpoint](COMMON_PEAK_BATCH_RESULTS_20261019.md)
+adds completed common-location peak uncertainty, actual B4 conformance,
+admitted B1 every-step full/max wall times and the inspected force/closure
+figure. Transient half-dt/contact controls and direct constitutive-correction
+equivalence pass. Fine sustained-friction spatial qualification, the remaining
+sparse/B4 cost/memory matrix and full stress/traction maps remain in progress.
+
 ## Declared acceptance and comparison scope
 
 Reference qualification requires a refinement trend with <=2% change in the
