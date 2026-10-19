@@ -1,0 +1,39 @@
+{
+  "completed": false,
+  "steps": 37,
+  "history_checks": {
+    "native_velocity_prediction": true,
+    "physical_pad_law": true,
+    "physical_friction_law": true,
+    "linear_equation": true,
+    "angular_equation": true,
+    "frozen_point_moment": true
+  },
+  "history_failed_steps": [],
+  "mechanical_history_passed": false,
+  "windows": [
+    {
+      "level": 0,
+      "samples": 37,
+      "checks": {
+        "both_plate_reactions": false,
+        "plate_velocity": false,
+        "egg_inertial_resultant": false,
+        "egg_kinetic": false,
+        "equation_residual": true,
+        "native_velocity_prediction": true,
+        "physical_pad_law": true,
+        "physical_friction_law": true,
+        "linear_equation": true,
+        "angular_equation": true,
+        "frozen_point_moment": true
+      },
+      "maximum_prediction_error_m_per_s": 1.734723475976807e-18,
+      "maximum_normal_law_error": 1.9780545444797643e-11,
+      "maximum_friction_law_error": 1.1989207712027205e-16,
+      "mechanical_window_passed": false
+    }
+  ],
+  "elapsed_seconds": 23.566830289026257,
+  "physical_accuracy_qualified": false
+}

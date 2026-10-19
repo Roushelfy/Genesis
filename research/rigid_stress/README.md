@@ -44,6 +44,12 @@ The [complete normal cost matrix](docs/COMPLETE_PAD_COST_20261019.md) now joins
 profiles, with591 verified audit inputs. Separately admitted synchronized phase
 profiles retain their own scope and do not replace primary wall times.
 
+The [friction reference/observation checkpoint](docs/FRICTION_REFERENCE_OBSERVATION_20261019.md)
+adds a complete500um nonlinear trajectory and an admitted Shell1000-step
+friction cost. Spatial changes still exceed target, and DPR every-step
+observation rejects lagged tangential forces at zero-normal-force sources.
+The failure is retained; earlier endpoint-only fields do not admit that run.
+
 The [plate report](docs/PARALLEL_PLATE_RESULTS_20261018.md) records verified
 mechanical equilibria, the SCR cancellation-sensitive admission failure,
 original Shell contact-split imbalance and unresolved QIPC point-contact fields.
