@@ -1,0 +1,7 @@
+{
+  "only_changed_function": "prepare_recovery_snapshot",
+  "all_other_ast_identical": true,
+  "unchanged_acceptance": 1e-08,
+  "independent_scale_formula": "sum max(norm(source_force), norm(anchor_moment)/radius); sum norm(anchor_moment)+(norm(center-original_point)+radius)*norm(source_force), over valid positive-radius sources.",
+  "production_engine_modified": false
+}

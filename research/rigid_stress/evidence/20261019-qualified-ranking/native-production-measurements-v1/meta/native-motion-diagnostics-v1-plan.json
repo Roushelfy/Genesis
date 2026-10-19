@@ -1,0 +1,10 @@
+{
+  "trigger": "B8 complete conformance fails16 predeclared egg-motion checks; all4 stress modes show identical maximum errors, including SCR without fused post. Robot DOFs, contact counts, max/full and B1-to-B8 condition0 checks pass.",
+  "variants": [
+    "fresh pure-rigid repeat",
+    "stress-built/manual-unrequested (same controller/radius branch but pure integration)",
+    "DPR every-step with fused post explicitly off"
+  ],
+  "unchanged": "Same B8 condition bank,1200 steps,900 warmup, engine, material, solver tolerances and original strict conformance thresholds.",
+  "purpose": "Distinguish reproducibility/construction/control from observation/post-integration effects; no threshold relaxation."
+}

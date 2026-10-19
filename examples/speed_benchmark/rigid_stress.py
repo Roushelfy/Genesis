@@ -110,19 +110,54 @@ def prepare_recovery_snapshot(workload: FrankaEgg) -> dict:
     np.testing.assert_allclose(wrench_force[valid], original_wrench_force[valid], rtol=1e-12, atol=1e-13)
     np.testing.assert_allclose(peak, original_peak, rtol=1e-4, atol=1e-3)
     conservation = "componentwise"
+    body_scales = None
     if entry.options.intrinsic_load_partition == "body_source_prior" and entry.intrinsic is not None:
         conservation = "body_aggregate"
         active = valid.any(axis=1)
         first = qd_to_numpy(entry.intrinsic.packing.indices, transpose=True)[active, 0]
-        scale = np.linalg.norm(np.where(valid[:, :, None], wrench_force, 0).sum(axis=1), axis=1)[active]
-        source_scale = qd_to_numpy(entry.intrinsic.tractions.scale, transpose=True)[active, 0]
-        scale = np.where(scale > 0, scale, source_scale)
-        loaded = scale > 0
-        radius = qd_to_numpy(entry.intrinsic.contacts.radius, transpose=True)[active, 0][loaded]
-        force_error = qd_to_numpy(entry.contacts.force_error, transpose=True)[active, first][loaded] / scale[loaded]
-        moment_error = qd_to_numpy(entry.contacts.moment_error, transpose=True)[active, first][loaded] / (
-            radius * scale[loaded]
+        priors = entry.intrinsic.tractions.priors
+        source_valid = qd_to_numpy(entry.intrinsic.contacts.valid, transpose=True)[active]
+        source_force = qd_to_numpy(priors.force, transpose=True)[active]
+        source_moment = qd_to_numpy(priors.anchor_moment, transpose=True)[active]
+        source_center = qd_to_numpy(entry.intrinsic.contacts.center, transpose=True)[active]
+        source_position = qd_to_numpy(entry.intrinsic.contacts.position, transpose=True)[active, 0]
+        radius = qd_to_numpy(entry.intrinsic.contacts.radius, transpose=True)[active]
+        force_norm = np.linalg.norm(source_force, axis=-1)
+        moment_norm = np.linalg.norm(source_moment, axis=-1)
+        positive = source_valid & (radius > 0)
+        moment_over_radius = np.divide(moment_norm, radius, out=np.zeros_like(moment_norm), where=positive)
+        scale = np.where(positive, np.maximum(force_norm, moment_over_radius), 0).sum(axis=1)
+        arm = np.linalg.norm(source_center - source_position[:, None], axis=-1) + radius
+        moment_scale = np.where(positive, moment_norm + arm * force_norm, 0).sum(axis=1)
+        # Independently rebuild the unchanged production scales before opposing
+        # sources cancel. Net force and one group's radius are not these scales.
+        np.testing.assert_allclose(
+            scale, qd_to_numpy(priors.force_scale, transpose=True)[active, 0], rtol=1e-12, atol=0
         )
+        np.testing.assert_allclose(
+            moment_scale, qd_to_numpy(priors.moment_scale, transpose=True)[active, 0], rtol=1e-12, atol=0
+        )
+        loaded = scale > 0
+        assert (moment_scale[loaded] > 0).all()
+        absolute_force_error = qd_to_numpy(entry.contacts.force_error, transpose=True)[active, first]
+        absolute_moment_error = qd_to_numpy(entry.contacts.moment_error, transpose=True)[active, first]
+        assert (absolute_force_error[~loaded] == 0).all() and (absolute_moment_error[~loaded] == 0).all()
+        force_error = absolute_force_error[loaded] / scale[loaded]
+        moment_error = absolute_moment_error[loaded] / moment_scale[loaded]
+        old_scale = np.linalg.norm(np.where(valid[:, :, None], wrench_force, 0).sum(axis=1), axis=1)[active]
+        old_scale = np.where(
+            old_scale > 0, old_scale, qd_to_numpy(entry.intrinsic.tractions.scale, transpose=True)[active, 0]
+        )
+        old_loaded = old_scale > 0
+        body_scales = {
+            "force_scale_N": scale.tolist(),
+            "moment_scale_Nm": moment_scale.tolist(),
+            "old_force_error_max": float((absolute_force_error[old_loaded] / old_scale[old_loaded]).max(initial=0)),
+            "old_moment_error_max": float(
+                (absolute_moment_error[old_loaded] / (radius[old_loaded, 0] * old_scale[old_loaded])).max(initial=0)
+            ),
+            "independent_physical_source_scales_checked": True,
+        }
     else:
         loaded = valid & (np.linalg.norm(wrench_force, axis=2) > 0)
         scale = np.linalg.norm(wrench_force[loaded], axis=1)
@@ -135,6 +170,7 @@ def prepare_recovery_snapshot(workload: FrankaEgg) -> dict:
     assert (residual <= np.maximum(entry.options.absolute_tolerance, entry.options.tolerance * rhs_norm)).all()
     return {
         "wrench_conservation": conservation,
+        "body_source_scales": body_scales,
         "nodal_force_max_difference_N": float(np.max(np.abs(force - original_force))),
         "peak_max_difference_Pa": float(np.max(np.abs(peak - original_peak))),
         "original_point_max_difference_m": float(np.max(np.abs(point[valid] - original_point[valid]), initial=0)),

@@ -1,5 +1,14 @@
 # Native rigid stress recovery
 
+The [native production/module report](docs/NATIVE_PRODUCTION_PERFORMANCE_20261019.md)
+now records15 fixed-horizon scene timings and four admitted B8 resident-history
+module timings. Full motion/output audits retain32 strict egg-motion failures
+at B8/B32, reproduced even without stress updates; the rates are measured
+baselines, not a completed production recommendation. A corrected observer-only
+profile identifies SCR contact processing as the dominant measured stage.
+Motion diagnosis, practical batch/memory tuning and fine friction qualification
+remain active under the full goal.
+
 The [native production pilot](docs/PRODUCTION_THROUGHPUT_PILOT_20261019.md) now
 implements the new separate-throughput priority with submitted paired
 B1/B8/B32 rigid/DPR/SCR max/full tests. The

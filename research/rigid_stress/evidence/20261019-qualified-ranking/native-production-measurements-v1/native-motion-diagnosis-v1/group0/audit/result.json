@@ -1,0 +1,350 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-115",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728996",
+      "SLURM_ARRAY_JOB_ID": "728996",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "diagnosis_completed": true,
+  "comparisons": [
+    {
+      "actual": "rigid-repeat",
+      "reference": "original-rigid",
+      "checks": [
+        {
+          "metric": "position_m",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-10,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "quaternion_up_to_sign",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-10,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "velocity_m_per_s",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-09,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "angular_velocity_rad_per_s",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-09,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "robot_qpos_rad",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-10,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "robot_qvel_rad_per_s",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-09,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        }
+      ],
+      "motion_targets_passed": true
+    },
+    {
+      "actual": "dpr-unrequested",
+      "reference": "rigid-repeat",
+      "checks": [
+        {
+          "metric": "position_m",
+          "maximum_absolute_difference": 3.982179395851937e-07,
+          "unchanged_target": 1e-10,
+          "passes_target": false,
+          "first_nonzero_step": 110,
+          "first_threshold_exceeding_step": 577
+        },
+        {
+          "metric": "quaternion_up_to_sign",
+          "maximum_absolute_difference": 6.921511116586565e-06,
+          "unchanged_target": 1e-10,
+          "passes_target": false,
+          "first_nonzero_step": 109,
+          "first_threshold_exceeding_step": 557
+        },
+        {
+          "metric": "velocity_m_per_s",
+          "maximum_absolute_difference": 6.135718269058375e-06,
+          "unchanged_target": 1e-09,
+          "passes_target": false,
+          "first_nonzero_step": 109,
+          "first_threshold_exceeding_step": 575
+        },
+        {
+          "metric": "angular_velocity_rad_per_s",
+          "maximum_absolute_difference": 0.0003010174665969423,
+          "unchanged_target": 1e-09,
+          "passes_target": false,
+          "first_nonzero_step": 109,
+          "first_threshold_exceeding_step": 550
+        },
+        {
+          "metric": "robot_qpos_rad",
+          "maximum_absolute_difference": 2.220446049250313e-16,
+          "unchanged_target": 1e-10,
+          "passes_target": true,
+          "first_nonzero_step": 141,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "robot_qvel_rad_per_s",
+          "maximum_absolute_difference": 2.314988478691049e-15,
+          "unchanged_target": 1e-09,
+          "passes_target": true,
+          "first_nonzero_step": 109,
+          "first_threshold_exceeding_step": null
+        }
+      ],
+      "motion_targets_passed": false
+    },
+    {
+      "actual": "dpr-post-off",
+      "reference": "rigid-repeat",
+      "checks": [
+        {
+          "metric": "position_m",
+          "maximum_absolute_difference": 3.982179395851937e-07,
+          "unchanged_target": 1e-10,
+          "passes_target": false,
+          "first_nonzero_step": 110,
+          "first_threshold_exceeding_step": 577
+        },
+        {
+          "metric": "quaternion_up_to_sign",
+          "maximum_absolute_difference": 6.921511116586565e-06,
+          "unchanged_target": 1e-10,
+          "passes_target": false,
+          "first_nonzero_step": 109,
+          "first_threshold_exceeding_step": 557
+        },
+        {
+          "metric": "velocity_m_per_s",
+          "maximum_absolute_difference": 6.135718269058375e-06,
+          "unchanged_target": 1e-09,
+          "passes_target": false,
+          "first_nonzero_step": 109,
+          "first_threshold_exceeding_step": 575
+        },
+        {
+          "metric": "angular_velocity_rad_per_s",
+          "maximum_absolute_difference": 0.0003010174665969423,
+          "unchanged_target": 1e-09,
+          "passes_target": false,
+          "first_nonzero_step": 109,
+          "first_threshold_exceeding_step": 550
+        },
+        {
+          "metric": "robot_qpos_rad",
+          "maximum_absolute_difference": 2.220446049250313e-16,
+          "unchanged_target": 1e-10,
+          "passes_target": true,
+          "first_nonzero_step": 141,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "robot_qvel_rad_per_s",
+          "maximum_absolute_difference": 2.314988478691049e-15,
+          "unchanged_target": 1e-09,
+          "passes_target": true,
+          "first_nonzero_step": 109,
+          "first_threshold_exceeding_step": null
+        }
+      ],
+      "motion_targets_passed": false
+    },
+    {
+      "actual": "dpr-post-off",
+      "reference": "original-dpr",
+      "checks": [
+        {
+          "metric": "position_m",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-10,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "quaternion_up_to_sign",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-10,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "velocity_m_per_s",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-09,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "angular_velocity_rad_per_s",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-09,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "robot_qpos_rad",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-10,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "robot_qvel_rad_per_s",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-09,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        }
+      ],
+      "motion_targets_passed": true
+    },
+    {
+      "actual": "dpr-unrequested",
+      "reference": "original-dpr",
+      "checks": [
+        {
+          "metric": "position_m",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-10,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "quaternion_up_to_sign",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-10,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "velocity_m_per_s",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-09,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "angular_velocity_rad_per_s",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-09,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "robot_qpos_rad",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-10,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        },
+        {
+          "metric": "robot_qvel_rad_per_s",
+          "maximum_absolute_difference": 0.0,
+          "unchanged_target": 1e-09,
+          "passes_target": true,
+          "first_nonzero_step": null,
+          "first_threshold_exceeding_step": null
+        }
+      ],
+      "motion_targets_passed": true
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group1/rigid-max/result.json",
+      "bytes": 1884,
+      "sha256": "47e1f78a990926a5947a15199741ac743e4959b49c4a855b77863e405e39cfc7"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group1/rigid-max/trajectory.npz",
+      "bytes": 2001090,
+      "sha256": "1fe0a0a72592ccfc5b58e53fbdbbfe670f152812b41bc0b5b6cc8a32c74a689c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group1/dpr-max/result.json",
+      "bytes": 3513,
+      "sha256": "e48fd4a699907e544aacf0d8b8bf306dbde1234a051cbe477424d226e9e30c85"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-production-controls-v1/group1/dpr-max/trajectory.npz",
+      "bytes": 2069416,
+      "sha256": "7ce2de0ac4ae483da0fdb62f2801d432a594d0444e38f58767653fc87ec1db4d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-motion-diagnostics-v1/group0/rigid-repeat/result.json",
+      "bytes": 1954,
+      "sha256": "b7f6584eba36453dfa43526d8c08001db74b16e19a0e526ebed71a3f99e7e5e3"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-motion-diagnostics-v1/group0/rigid-repeat/trajectory.npz",
+      "bytes": 2001090,
+      "sha256": "1fe0a0a72592ccfc5b58e53fbdbbfe670f152812b41bc0b5b6cc8a32c74a689c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-motion-diagnostics-v1/group0/dpr-unrequested/result.json",
+      "bytes": 3515,
+      "sha256": "5b591e69f9860ea3b21fa9824595aea01a8203527f194e7846c2079e45b36c47"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-motion-diagnostics-v1/group0/dpr-unrequested/trajectory.npz",
+      "bytes": 2001064,
+      "sha256": "c72fa8f2be74547ba0be5265e62b12cb91450bfd0510ffb3df95f7a43b4f6235"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-motion-diagnostics-v1/group0/dpr-post-off/result.json",
+      "bytes": 3585,
+      "sha256": "5f3d4eb32f2d9f5f5c79d3e45a53584bdef5fca1f428d8d97c6a1799b2df4942"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-motion-diagnostics-v1/group0/dpr-post-off/trajectory.npz",
+      "bytes": 2069402,
+      "sha256": "6cc375056031ef9ae63973569e320919ed9d04700579ee03f4b1a20405980185"
+    }
+  ],
+  "production_admitted": false,
+  "scope": "Complete1200-step B8 differences among fresh rigid repeat, stress-built unrequested/manual, fused-post-off and original native paths. No threshold change or causal conclusion beyond the measured contrasts."
+}

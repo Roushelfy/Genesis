@@ -601,3 +601,18 @@ The [C2 method report](PRESCRIBED_METHOD_RANKING_20261019.md) records the comple
 27-row errors and direct tensor decomposition, with exact task recipes.
 The [three-wall friction checkpoint](FRICTION_WALL250_20261019.md) records
 completed250um controls and the exact125um time/contact comparison prerequisites.
+
+
+## Native scene conformance and resident-history module timings
+
+See [the measured production/module report](NATIVE_PRODUCTION_PERFORMANCE_20261019.md)
+for terminal results, retained strict motion failures and exact captured tasks.
+The separate workers are native_production_controls (intrusive trajectories and
+optional device-resident replay), production_throughput_audit (fixed-horizon
+receipt audit), audit_native_production_controls (complete motion/output and
+condition-matched batches), native_module_replay_audit (source-history and
+module-time checks), native_motion_diagnosis and check_native_controller_inputs.
+Use the existing Slurm runner and recorded data-side tasks; CPU-only analysis
+keeps --cpu-only, while GPU diagnostics use their pinned source. The optional
+--kernel-profiler flag belongs only to separate profiling allocations and is
+recorded in submission.json; it is not enabled for primary throughput.
