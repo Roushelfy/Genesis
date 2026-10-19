@@ -1,0 +1,193 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-233",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728391",
+      "SLURM_ARRAY_JOB_ID": "728391",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-10687902-373e-affa-28fc-010e9cf7a3f2, 00000000:21:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "runs": [
+    {
+      "result": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group1/fine/result.json",
+        "bytes": 3569,
+        "sha256": "0583bee97f1cad34e80e26e6ceff7429ffb4c3fc6bacdcf005c95853c0d5aa44"
+      },
+      "completed": true,
+      "first_carried_time_s": 0.061,
+      "first_zero_reaction_after_carry_s": null,
+      "maximum_equation_residual_last_50ms": 2.1487568315189113e-09,
+      "fields": [
+        {
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group1/fine/frames/level0.npz",
+            "bytes": 11105137,
+            "sha256": "7cee8721db4cc6ae4297d137c7b3ff59a47fc644e19b09932b9e2906be08e3e3"
+          },
+          "minimum_position_m": [
+            -0.022093097662427293,
+            -0.02208825082088598,
+            -0.02977821124276955
+          ],
+          "maximum_position_m": [
+            0.022093097660463554,
+            0.022088250822599617,
+            0.029721540160838306
+          ],
+          "mass_center_displacement_m": [
+            -9.177510179769682e-13,
+            7.981847033752483e-13,
+            -2.8386431218608092e-05
+          ],
+          "maximum_displacement_m": 2.8515568548704438e-05,
+          "rotation_rad": 0.0,
+          "rotation_matrix": [
+            [
+              1.0000000000000002,
+              -1.1896233215518195e-10,
+              1.9992609635470795e-11
+            ],
+            [
+              1.1896231285585737e-10,
+              1.0000000000000002,
+              -1.9183294383255345e-11
+            ],
+            [
+              -1.9992609633200223e-11,
+              1.91832943864266e-11,
+              1.0
+            ]
+          ],
+          "mass_center_velocity_m_per_s": [
+            1.4471854465486383e-15,
+            -1.4449567746396494e-15,
+            -2.824211750320439e-15
+          ],
+          "angular_velocity_rad_per_s": [
+            -7.046986301135673e-13,
+            -7.309014852524709e-13,
+            1.510856877772247e-13
+          ],
+          "deformation_velocity_mass_rms_m_per_s": 1.3514839363172598e-15,
+          "maximum_corotated_displacement_m": 2.4073163364460304e-07,
+          "lower_vertical_half_thickness_envelope_gap_m": -6.211242769550013e-06,
+          "upper_vertical_half_thickness_envelope_gap_m": -6.574197174847923e-06,
+          "contact_force_l2_n": 0.005352529086824316,
+          "equation_residual_l2_n": 1.9463284032633492e-10
+        },
+        {
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-friction250-history-v1/group1/fine/frames/level1.npz",
+            "bytes": 11101282,
+            "sha256": "a2276966045e5127b21fd9d830609ead06a05f0f86f63edb5b22749214eb3abb"
+          },
+          "minimum_position_m": [
+            -0.02209195577390178,
+            -0.0220882508220699,
+            -0.029778216204277792
+          ],
+          "maximum_position_m": [
+            0.022094239548850692,
+            0.022088250823637294,
+            0.029721544677035572
+          ],
+          "mass_center_displacement_m": [
+            1.1336535567763588e-06,
+            7.951473778168676e-13,
+            -2.8386431076680332e-05
+          ],
+          "maximum_displacement_m": 2.853499442018082e-05,
+          "rotation_rad": 2.5223049023294884e-06,
+          "rotation_matrix": [
+            [
+              0.9999999999968189,
+              -1.189249505026874e-10,
+              -2.522404023420984e-06
+            ],
+            [
+              1.1892490435796769e-10,
+              1.0000000000000004,
+              -1.9189162535194213e-11
+            ],
+            [
+              2.5224040234343344e-06,
+              1.9188841789448953e-11,
+              0.9999999999968188
+            ]
+          ],
+          "mass_center_velocity_m_per_s": [
+            6.4745586700403705e-06,
+            -1.2854955026918976e-15,
+            2.684724939588545e-13
+          ],
+          "angular_velocity_rad_per_s": [
+            1.1688366015035477e-12,
+            -1.4395454042514226e-05,
+            8.292012554927998e-13
+          ],
+          "deformation_velocity_mass_rms_m_per_s": 1.4580546275423596e-11,
+          "maximum_corotated_displacement_m": 2.407329046713081e-07,
+          "lower_vertical_half_thickness_envelope_gap_m": -6.216204277792459e-06,
+          "upper_vertical_half_thickness_envelope_gap_m": -6.578713448848533e-06,
+          "contact_force_l2_n": 0.005356650409162076,
+          "equation_residual_l2_n": 2.0795819959569386e-10
+        }
+      ],
+      "equilibrium_windows": [
+        {
+          "level": 0,
+          "command_force_n": 0.1,
+          "samples": 101,
+          "failed_steps_in_level": 0,
+          "maximum_equation_residual_contact_relative": 3.828237255781232e-08,
+          "maximum_inertia_resultant_bound_n": 2.6510683147439627e-08,
+          "maximum_plate_speed_m_per_s": 4.026565256069575e-12,
+          "maximum_kinetic_j": 1.4288580684793925e-26,
+          "checks": {
+            "both_plate_reactions": true,
+            "plate_velocity": true,
+            "egg_inertial_resultant": true,
+            "egg_kinetic": true,
+            "equation_residual": true,
+            "physical_pad_law_and_transfer": true,
+            "physical_friction_law": true
+          },
+          "mechanical_window_passed": true,
+          "physical_accuracy_qualified": false
+        },
+        {
+          "level": 1,
+          "command_force_n": 0.1,
+          "samples": 101,
+          "failed_steps_in_level": 0,
+          "maximum_equation_residual_contact_relative": 4.0113814469838116e-08,
+          "maximum_inertia_resultant_bound_n": 2.7808928774917056e-08,
+          "maximum_plate_speed_m_per_s": 1.581302486024044e-12,
+          "maximum_kinetic_j": 1.5723214423403683e-13,
+          "checks": {
+            "both_plate_reactions": true,
+            "plate_velocity": true,
+            "egg_inertial_resultant": true,
+            "egg_kinetic": true,
+            "equation_residual": true,
+            "physical_pad_law_and_transfer": true,
+            "physical_friction_law": true,
+            "sustained_tangential_balance": true,
+            "instantaneous_friction_cone": true,
+            "external_moment_balance": true
+          },
+          "mechanical_window_passed": true,
+          "physical_accuracy_qualified": false
+        }
+      ]
+    }
+  ],
+  "scope": "End-position envelope gaps use vertical half-thickness offsets, a conservative diagnostic rather than exact face-offset distances. Zero reaction with overlap requires contact/solver investigation; it cannot be admitted from a zero failure flag."
+}

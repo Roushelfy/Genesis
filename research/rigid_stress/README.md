@@ -32,6 +32,13 @@ completes the inspected normal stress/actual-pressure maps and B1 every-step/
 sparse full/max cost matrix. Fine sustained-friction spatial qualification,
 the complete B4/memory matrix and final cross-case comparison remain open.
 
+The [friction resolution/memory checkpoint](docs/FRICTION_RESOLUTION_MEMORY_20261019.md)
+adds true250um Shell sustained-friction histories, exact nonlinear-reference
+caching controls and separately admitted B1/B4 full/max process memory.
+Shell timestep sensitivity is small, but500-to250um complete-field changes
+are large; the fixed250um normal comparison is not mesh-independent Shell
+accuracy. Independent friction spatial qualification remains in progress.
+
 The [plate report](docs/PARALLEL_PLATE_RESULTS_20261018.md) records verified
 mechanical equilibria, the SCR cancellation-sensitive admission failure,
 original Shell contact-split imbalance and unresolved QIPC point-contact fields.

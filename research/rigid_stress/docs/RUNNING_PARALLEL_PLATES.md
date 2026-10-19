@@ -43,6 +43,15 @@ and inclusion of every force-bearing point in the view. `profile_p2_stvk
 --mesh MESH --frame ADMITTED_FRAME --output NEW_DATA_PATH` provides the retained
 intrusive nonlinear-force CPU profile; execute through the same Slurm workflow.
 
+`plate_solid_pad --elasticity stvk --constitutive-correction direct
+--cache-constitutive-evaluations` enables the separately validated exact-state
+cache. `check_p2_stvk` tests in-place state invalidation and returned-array
+isolation; the complete cached trajectory also has its own mechanical and
+full-field equivalence controls. See the
+[friction resolution/memory report](FRICTION_RESOLUTION_MEMORY_20261019.md)
+for true250um Shell friction timestep/mesh controls and complete B1/B4 memory
+receipts. Runtime outputs and logs remain on data.
+
 `plate_solid_pad --elasticity stvk --contact-solver modal --warm-contact`
 selects the verified full-compliance modal iteration. It does not fix or
 discard rigid or elastic modes. Reproduce `check_matrix_free_pad`, the

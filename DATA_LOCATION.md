@@ -1,5 +1,11 @@
 # Current QIPC reference comparison
 
+The `friction250-cache-memory-v1` checkpoint retains257 verified small
+payloads totaling6,571,125 bytes from terminal Shell friction/field, exact
+StVK cache and process-memory controls. Full fields, journals and active fine
+reference/cost/profile writers remain under the established data-side ranking
+root. This bounded publication does not migrate runtime data or environments.
+
 The follow-up `normal-spatial-cost-v1` publication adds175 verified payloads
 totaling7,057,473 bytes: inspected normal field/traction figures, bounded
 plotting data, exact source, sparse primary receipts and the CPU profile.

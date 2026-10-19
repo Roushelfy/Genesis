@@ -1,0 +1,88 @@
+[
+  [
+    {
+      "name": "analytic",
+      "module": "research.rigid_stress.qipc_comparison.check_p2_stvk",
+      "args": []
+    },
+    {
+      "name": "reference",
+      "module": "research.rigid_stress.qipc_comparison.plate_solid_pad",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--loads",
+        "0.1",
+        "0.1",
+        "--dt",
+        "0.001",
+        "--ramp",
+        "0.05",
+        "--hold",
+        "0.15",
+        "--record-stride",
+        "1",
+        "--friction",
+        "0.3",
+        "--gravity-x",
+        "1",
+        "--elasticity",
+        "stvk",
+        "--contact-solver",
+        "modal",
+        "--warm-contact",
+        "--constitutive-correction",
+        "direct",
+        "--cache-constitutive-evaluations"
+      ]
+    },
+    {
+      "name": "moment",
+      "module": "research.rigid_stress.qipc_comparison.audit_solid_pad",
+      "args": [
+        "--run",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-cache-control-v1/group0/reference"
+      ]
+    },
+    {
+      "name": "equivalence-level0",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-cache-control-v1/group0/reference/frames/level0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-direct-control-v1/group0/reference/frames/level0.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "3",
+        "--depth-quadrature",
+        "4",
+        "--physical-volume",
+        "--common-peaks"
+      ]
+    },
+    {
+      "name": "equivalence-level1",
+      "module": "research.rigid_stress.qipc_comparison.contact_fem_exact_columns",
+      "args": [
+        "--meshes",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-cache-control-v1/group0/reference/frames/level1.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-direct-control-v1/group0/reference/frames/level1.npz",
+        "--loads",
+        "0.1",
+        "--surface-quadrature",
+        "3",
+        "--depth-quadrature",
+        "4",
+        "--physical-volume",
+        "--common-peaks"
+      ]
+    }
+  ]
+]

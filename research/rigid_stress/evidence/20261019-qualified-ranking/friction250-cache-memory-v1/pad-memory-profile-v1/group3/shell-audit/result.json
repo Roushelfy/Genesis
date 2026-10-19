@@ -1,0 +1,180 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-115",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728294",
+      "SLURM_ARRAY_JOB_ID": "728294",
+      "SLURM_ARRAY_TASK_ID": "3",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-ea9a1fb0-0ea2-7392-95c1-64a5279178e1, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "passed": true,
+  "cases": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group3/shell/run",
+      "method": "shell",
+      "checks": {
+        "complete_admitted_history": true,
+        "expected_step_count": true,
+        "every_environment_present": true,
+        "all_observations_valid": true,
+        "independent_commands_and_cadence": true,
+        "all_single_env_field_controls": true,
+        "actual_source_isolation": true,
+        "whole_interval_accounting": true
+      },
+      "fields": [
+        {
+          "env": 0,
+          "level": 0,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": null,
+          "raw_peak_relative_difference": 2.3534063586794218e-11,
+          "actual_motion_source_relative_error": null,
+          "source_wrench_relative_error": null
+        },
+        {
+          "env": 1,
+          "level": 0,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": null,
+          "raw_peak_relative_difference": 3.8143932457046503e-11,
+          "actual_motion_source_relative_error": null,
+          "source_wrench_relative_error": null
+        },
+        {
+          "env": 2,
+          "level": 0,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": null,
+          "raw_peak_relative_difference": 9.318279481362879e-11,
+          "actual_motion_source_relative_error": null,
+          "source_wrench_relative_error": null
+        },
+        {
+          "env": 3,
+          "level": 0,
+          "load_n": 0.1,
+          "same_mesh_tensor_relative_l2": null,
+          "raw_peak_relative_difference": 8.002221107972218e-11,
+          "actual_motion_source_relative_error": null,
+          "source_wrench_relative_error": null
+        }
+      ],
+      "cost": {
+        "completed": true,
+        "mechanically_admitted": true,
+        "method": "shell",
+        "envs": 4,
+        "output_mode": "max",
+        "stress_stride": 1,
+        "primary_timing": false,
+        "intrusive_memory_profile": true,
+        "samples": [
+          {
+            "level": 0,
+            "warmup": true,
+            "steps": 200,
+            "wall_seconds": 230.70851785701234,
+            "step_latency_ms": 1153.5425892850617,
+            "aggregate_env_steps_per_second": 3.4675789495376197,
+            "torch_allocated_bytes_after_level": 19363840,
+            "torch_reserved_bytes_after_level": 67108864,
+            "stress_observations": 200,
+            "all_stress_observations_valid": true,
+            "field_host_bytes": 0
+          }
+        ],
+        "measured_repeats": 0,
+        "median_latency_ms": null,
+        "minimum_latency_ms": null,
+        "maximum_latency_ms": null,
+        "incomplete_level": null,
+        "scope": "One synchronized wall interval per complete continuous load level, including actual native/pad or Shell integration, requested recovery, host output, all per-step mechanical admission calculations, endpoint field/certificate output and step-journal I/O. Per-phase timers are disabled. Initial complete levels are warmup; measured levels are consecutive warm repeats, not independent fresh-process replicates. This is end-to-end timing of the declared admitted research workflow, not pure production-solver latency. PyTorch endpoint allocations exclude Quadrants and are not whole-device peak memory. Use this exact run's mechanical audit; separate preflights cannot admit a failed primary run."
+      },
+      "run_identity": {
+        "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+        "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+        "hostname": "rtx-209-115",
+        "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+        "environment": {
+          "SLURM_JOB_ID": "728294",
+          "SLURM_ARRAY_JOB_ID": "728294",
+          "SLURM_ARRAY_TASK_ID": "3",
+          "CUDA_VISIBLE_DEVICES": "0",
+          "GENESIS_IMAGE_VER": "1_26"
+        },
+        "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-ea9a1fb0-0ea2-7392-95c1-64a5279178e1, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+      },
+      "setup_seconds": 55.97756963496795
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group3/shell/run/start.json",
+      "bytes": 3133,
+      "sha256": "424de826aabdda93c0795b00242d463c40bfbfb3e9d1ad0a1989029971e66676"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group3/shell/run/result.json",
+      "bytes": 2131,
+      "sha256": "10e1a9cb03baef1933c2c4830e96733b7214a439e83ea7ce2482b34906b5ee54"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group3/shell/run/steps.jsonl",
+      "bytes": 750283,
+      "sha256": "e84262f213e8b16af8de8aba1f402d6ddb7afaa3e423ecaf2a9181cf25bee1e4"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group3/shell/run/cost.json",
+      "bytes": 1501,
+      "sha256": "4f3291b141139bb89ef3c8014507ff5f63abb876f4f1d9dd2fe8f2a268419126"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group3/shell/run/frames/env0-level0.npz",
+      "bytes": 2929876,
+      "sha256": "f8ea796b483811789c4ce57563294f6c7a8bc08a575ee3aba70625cc3620f63c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level0.npz",
+      "bytes": 10468881,
+      "sha256": "bf2bc4aa431fdb09b19f682fb800aac6a768e996e7f9af1b589fefb8b91f348a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group3/shell/run/frames/env1-level0.npz",
+      "bytes": 2929493,
+      "sha256": "f34aaad26aac642b7cada36e32f73d9d4773c61426d644f98b706ab345a7ff09"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level0.npz",
+      "bytes": 10468881,
+      "sha256": "bf2bc4aa431fdb09b19f682fb800aac6a768e996e7f9af1b589fefb8b91f348a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group3/shell/run/frames/env2-level0.npz",
+      "bytes": 2929860,
+      "sha256": "3c0f4ee9aa46631343a62c6b4b06032d673b3a5b19175a00513948c86be5af7a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level0.npz",
+      "bytes": 10468881,
+      "sha256": "bf2bc4aa431fdb09b19f682fb800aac6a768e996e7f9af1b589fefb8b91f348a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group3/shell/run/frames/env3-level0.npz",
+      "bytes": 2930035,
+      "sha256": "ca32770429b109c7f7355631f3541d3f8eb009caf6090b441378f5733504a220"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/frames/level0.npz",
+      "bytes": 10468881,
+      "sha256": "bf2bc4aa431fdb09b19f682fb800aac6a768e996e7f9af1b589fefb8b91f348a"
+    }
+  ],
+  "scope": "Independent batched trajectories and complete endpoint tensors compared with admitted same-mesh B1 normal equilibria at0.1/0.3/1N. Actual per-environment motion forces are checked against recovery input packets; fixed0.5% field/1% peak numerical-sensitivity gates apply. This audits batch conformance and measured-history admission, not continuum stress accuracy or a sufficient number of performance repeats."
+}
