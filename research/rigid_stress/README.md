@@ -1,5 +1,11 @@
 # Native rigid stress recovery
 
+The latest [dimensional normal-error audit](docs/NORMAL_ABSOLUTE_ERRORS_20261019.md)
+adds81 absolute/relative metrics across the nine admitted normal comparisons,
+including complete-column membrane and bending RMS in N/m and N. Fine friction
+qualification, prescribed-load convergence and final cross-case delivery remain
+open; this reporting completion does not close the active goal.
+
 The feature is part of the existing native rigid solver. It reconstructs
 conditional elastic stress from changing rigid contacts, including friction,
 and supports raw global max/full output, complete numerical checks, environment

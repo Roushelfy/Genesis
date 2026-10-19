@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "case": "FileNotFoundError",
+      "cpu_optional_records_absence": true
+    },
+    {
+      "case": "FileNotFoundError",
+      "gpu_required_still_raises": true
+    },
+    {
+      "case": "CalledProcessError",
+      "cpu_optional_records_absence": true
+    },
+    {
+      "case": "CalledProcessError",
+      "gpu_required_still_raises": true
+    }
+  ],
+  "scope": "Stdlib mocked metadata controls only; no numerical workload on login."
+}

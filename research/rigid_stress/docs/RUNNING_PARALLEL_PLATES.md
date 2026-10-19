@@ -1,5 +1,14 @@
 # Reproducing the parallel-plate comparison
 
+`pad_absolute_errors --data-root RUN_ROOT --output NEW_DATA_PATH` rebuilds the
+normal81-row absolute/relative table from original complete columns and rehashes
+its actual fields and qualification inputs. Submit this CPU postprocessing with
+`shell_comparison.submit --cpu-only --cpus 1 --memory-gb 16`; the same `rtx-mid`
+partition and `GENESIS_IMAGE_VER=1_26 gs-srun` workflow remain required. Default
+submission still requests a GPU. See the [dimensional-error report](NORMAL_ABSOLUTE_ERRORS_20261019.md)
+for field/peak quadratures, units, exact receipts and scope. CPU-only common-column
+comparisons can use the same submission option with their own memory budget.
+
 For exact reconstructed native boundary loads, use `replay_native_pad_tractions
 --run ORIGINAL_ADMITTED_RUN --levels LEVEL ... --output NEW_DATA_PATH` in the
 native environment. Then run `audit_native_reconstruction --capture CAPTURE

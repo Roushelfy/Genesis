@@ -1,5 +1,10 @@
 # Normal physical-pad reference and conditional error comparison
 
+The later [dimensional-error audit](NORMAL_ABSOLUTE_ERRORS_20261019.md) supplies
+the matching absolute RMS and raw/common peak errors, including membrane N/m
+and bending N, with complete input hashes. Its81-row table preserves the
+conditional uncertainty/rank scope below and the separate q9/q25 samplings.
+
 The declared normal physical-pad case now passes its predeclared reference
 change targets. This establishes a useful, metric-specific comparison for
 three normal loads. It does not complete the

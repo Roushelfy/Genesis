@@ -1,0 +1,1322 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728217",
+      "SLURM_ARRAY_JOB_ID": "728217",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-56ea077b-99d7-8845-1f28-8cfa2174feb6, 00000000:45:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "checks": {
+    "reference_equations": true,
+    "surface_trend": true,
+    "wall_trend": true,
+    "field_change_target": true,
+    "peak_change_target": true,
+    "contact_quadrature": true,
+    "metric_quadrature": true,
+    "native_histories_and_sources": true,
+    "shell_history_and_windows": true,
+    "shell_all_steps": true
+  },
+  "shell_maximum_complete_history_equation_residual": 1.825573417643558e-06,
+  "normal_reference_change_targets_passed": true,
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/group0/reference/result.json",
+      "bytes": 18111,
+      "sha256": "38f5ea659ba2d5a78fcc80ad80b8ee46dcfd4354a35b58ae0ad13ffd5293c88b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-spatial-comparison-v1/group0/surface500to250/result.json",
+      "bytes": 12511,
+      "sha256": "9d6313d04e8898519f4123d740500ba3a1a2126f46a445c553880e46267da3c5"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-surface-final-comparison-v1/group0/surface250to125/result.json",
+      "bytes": 12647,
+      "sha256": "2ff4b54f9730b1b09da6d516f9b965ad49cf5ecd8f72cd81fcf9ae1efb2708f4"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-wall-comparison-v1/group0/wall2to3/result.json",
+      "bytes": 12562,
+      "sha256": "2a552ce2348866174b09009c4130153d16360e806bd04edab26ea66c414349c8"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/group0/wall125/result.json",
+      "bytes": 12801,
+      "sha256": "244c19a036bdf32820ea6f393364014025fe883ab31927a0497ed6d5278712a5"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/group0/surface3/result.json",
+      "bytes": 12667,
+      "sha256": "e76e8bfedd517a9f62a3ee9e1e96f469a728848793bb92391e24948db2ac4bf2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-diagonal-v1/group0/joint/result.json",
+      "bytes": 12858,
+      "sha256": "b243f9452f493774423e9cc2185f14f9c36ae74b9fc69c17ac7a53e608256ee2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-diagonal-v1/group1/joint/result.json",
+      "bytes": 12859,
+      "sha256": "c00dd1245bf23a07e99d061648ac2105814390dbc703dc774b7f627fa20cbe6b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/group0/quadrature/result.json",
+      "bytes": 12814,
+      "sha256": "8ce2fb9fcefd0efb1827021f839facc848c0a6d281e42f635e483ca0e8eda0ef"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-pad-normal-fields-v1/group3/adapter/result.json",
+      "bytes": 13294,
+      "sha256": "e7c9a877f649f020d42d2ad8d50f1473c1a5a0d6cc1d3a01f08dd0951cd2f28f"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/audit/result.json",
+      "bytes": 14112,
+      "sha256": "cbe676ab3d036d84be71be891daae6cba9fc4f2d7516a91233a86f9d85860891"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/steps.jsonl",
+      "bytes": 1409619,
+      "sha256": "b7fe7d1132ecabd2ea2519736e671a75f547adede46b2d85c78a2e79e8600cae"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-joint-normal-fields-v1/group0/dpr-0/result.json",
+      "bytes": 5509,
+      "sha256": "3127a2cec314c56ab85db805e4d97ae2c0a1b7704b2dd9f81fc56d551d19736f"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-joint-normal-fields-v1/group1/scr-0/result.json",
+      "bytes": 5510,
+      "sha256": "be01b82f40be63ad54918e61d721a4b35e78319b4401a3b8fb897a7efa85dc26"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-joint-normal-fields-v1/group2/shell-0/result.json",
+      "bytes": 5551,
+      "sha256": "5cd0a5bf4bc0cc8e16a3ae96a2f27b5526b1e318822b30d2c96affd6b45004af"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-joint-normal-fields-v1/group0/dpr-1/result.json",
+      "bytes": 5512,
+      "sha256": "2eb1705cec04cd8694cbde76711c81e0abf6daf491b0186903c9d73103121777"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-joint-normal-fields-v1/group1/scr-1/result.json",
+      "bytes": 5508,
+      "sha256": "1a4d94eeffcf9de3af112165647562d177af5229f257f1a5d1578daf020dac69"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-joint-normal-fields-v1/group2/shell-1/result.json",
+      "bytes": 5548,
+      "sha256": "bd320ec24d15565505e709d2d77e319f50527e92cf4dbdf2a983a2e48a8fc941"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-joint-normal-fields-v1/group0/dpr-2/result.json",
+      "bytes": 5508,
+      "sha256": "ab9d7428735983096b952f054cc036b77654a1e1ed844b6e984b4c1f16eae0e2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-joint-normal-fields-v1/group1/scr-2/result.json",
+      "bytes": 5505,
+      "sha256": "f87a52d085fed7bc6ea5e445011aa8711637c016ee80148b07120c1f7215b7bc"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/full-source-joint-normal-fields-v1/group2/shell-2/result.json",
+      "bytes": 5544,
+      "sha256": "07122314278fd92b876140bc0d7ecef17913f47436f9993e123b99a6d8189dfa"
+    }
+  ],
+  "changes": [
+    {
+      "load_n": 0.1,
+      "metric": "tangent_relative_l2",
+      "spatial_change": 0.01566337291815654,
+      "contact_quadrature_change": 6.697782825569079e-06,
+      "metric_quadrature_change": 5.600560086388429e-07,
+      "observed_resolution_envelope": 0.015670630756990746
+    },
+    {
+      "load_n": 0.1,
+      "metric": "membrane_relative_l2",
+      "spatial_change": 0.009340103288092889,
+      "contact_quadrature_change": 3.874827745203259e-06,
+      "metric_quadrature_change": 6.577123372562832e-07,
+      "observed_resolution_envelope": 0.009344635828175348
+    },
+    {
+      "load_n": 0.1,
+      "metric": "bending_relative_l2",
+      "spatial_change": 0.009614758295186295,
+      "contact_quadrature_change": 9.458363348370597e-06,
+      "metric_quadrature_change": 1.471267438262619e-05,
+      "observed_resolution_envelope": 0.009638929332917292
+    },
+    {
+      "load_n": 0.1,
+      "metric": "outer_tangent_relative_l2",
+      "spatial_change": 0.0073695951561387725,
+      "contact_quadrature_change": 8.926433003590549e-06,
+      "metric_quadrature_change": 1.1213417570616474e-07,
+      "observed_resolution_envelope": 0.007378633723318069
+    },
+    {
+      "load_n": 0.1,
+      "metric": "inner_tangent_relative_l2",
+      "spatial_change": 0.010277223789308204,
+      "contact_quadrature_change": 8.101317739087068e-06,
+      "metric_quadrature_change": 6.002340552195562e-08,
+      "observed_resolution_envelope": 0.010285385130452813
+    },
+    {
+      "load_n": 0.1,
+      "metric": "raw_mises_relative_change",
+      "spatial_change": 0.00453808466627903,
+      "contact_quadrature_change": 1.6830939042478121e-07,
+      "metric_quadrature_change": 0.0,
+      "observed_resolution_envelope": 0.0045382529756694545
+    },
+    {
+      "load_n": 0.1,
+      "metric": "raw_tension_relative_change",
+      "spatial_change": 0.006008068903583297,
+      "contact_quadrature_change": 3.282616112598724e-06,
+      "metric_quadrature_change": 0.0,
+      "observed_resolution_envelope": 0.0060113515196958955
+    },
+    {
+      "load_n": 0.3,
+      "metric": "tangent_relative_l2",
+      "spatial_change": 0.014842754050519574,
+      "contact_quadrature_change": 5.716995067079941e-06,
+      "metric_quadrature_change": 5.138260463100758e-07,
+      "observed_resolution_envelope": 0.014848984871632965
+    },
+    {
+      "load_n": 0.3,
+      "metric": "membrane_relative_l2",
+      "spatial_change": 0.00874360979464746,
+      "contact_quadrature_change": 3.6660207950761642e-06,
+      "metric_quadrature_change": 6.97409779853303e-07,
+      "observed_resolution_envelope": 0.00874797322522239
+    },
+    {
+      "load_n": 0.3,
+      "metric": "bending_relative_l2",
+      "spatial_change": 0.008791987858538472,
+      "contact_quadrature_change": 7.98714932573103e-06,
+      "metric_quadrature_change": 1.5783053947034456e-05,
+      "observed_resolution_envelope": 0.008815758061811238
+    },
+    {
+      "load_n": 0.3,
+      "metric": "outer_tangent_relative_l2",
+      "spatial_change": 0.006472792264227879,
+      "contact_quadrature_change": 7.4535401098747695e-06,
+      "metric_quadrature_change": 1.4997994005495202e-07,
+      "observed_resolution_envelope": 0.006480395784277808
+    },
+    {
+      "load_n": 0.3,
+      "metric": "inner_tangent_relative_l2",
+      "spatial_change": 0.009558822334029958,
+      "contact_quadrature_change": 6.766460389298277e-06,
+      "metric_quadrature_change": 6.682565561154374e-08,
+      "observed_resolution_envelope": 0.009565655620074867
+    },
+    {
+      "load_n": 0.3,
+      "metric": "raw_mises_relative_change",
+      "spatial_change": 0.00337320942461683,
+      "contact_quadrature_change": 2.788896684258191e-06,
+      "metric_quadrature_change": 0.0,
+      "observed_resolution_envelope": 0.003375998321301088
+    },
+    {
+      "load_n": 0.3,
+      "metric": "raw_tension_relative_change",
+      "spatial_change": 0.004128137753385275,
+      "contact_quadrature_change": 6.931958653533243e-06,
+      "metric_quadrature_change": 0.0,
+      "observed_resolution_envelope": 0.004135069712038808
+    },
+    {
+      "load_n": 1.0,
+      "metric": "tangent_relative_l2",
+      "spatial_change": 0.013705591697539059,
+      "contact_quadrature_change": 4.51470120863711e-06,
+      "metric_quadrature_change": 4.1342000180882854e-08,
+      "observed_resolution_envelope": 0.013710147740747877
+    },
+    {
+      "load_n": 1.0,
+      "metric": "membrane_relative_l2",
+      "spatial_change": 0.007909117134194989,
+      "contact_quadrature_change": 2.160171127973553e-06,
+      "metric_quadrature_change": 7.693016708023442e-07,
+      "observed_resolution_envelope": 0.007912046606993765
+    },
+    {
+      "load_n": 1.0,
+      "metric": "bending_relative_l2",
+      "spatial_change": 0.00816449166175875,
+      "contact_quadrature_change": 7.247675619402484e-06,
+      "metric_quadrature_change": 1.6605008699687937e-05,
+      "observed_resolution_envelope": 0.00818834434607784
+    },
+    {
+      "load_n": 1.0,
+      "metric": "outer_tangent_relative_l2",
+      "spatial_change": 0.0057580435943460195,
+      "contact_quadrature_change": 6.0506914871523995e-06,
+      "metric_quadrature_change": 2.0078623652001332e-07,
+      "observed_resolution_envelope": 0.005764295072069692
+    },
+    {
+      "load_n": 1.0,
+      "metric": "inner_tangent_relative_l2",
+      "spatial_change": 0.008845653375182203,
+      "contact_quadrature_change": 6.014023431354039e-06,
+      "metric_quadrature_change": 8.062564359374857e-08,
+      "observed_resolution_envelope": 0.008851748024257151
+    },
+    {
+      "load_n": 1.0,
+      "metric": "raw_mises_relative_change",
+      "spatial_change": 0.0023285360354077245,
+      "contact_quadrature_change": 1.5976587619537241e-06,
+      "metric_quadrature_change": 0.0,
+      "observed_resolution_envelope": 0.002330133694169678
+    },
+    {
+      "load_n": 1.0,
+      "metric": "raw_tension_relative_change",
+      "spatial_change": 0.0023730083125230728,
+      "contact_quadrature_change": 4.577986485232444e-06,
+      "metric_quadrature_change": 0.0,
+      "observed_resolution_envelope": 0.002377586299008305
+    }
+  ],
+  "errors": [
+    {
+      "load_n": 0.1,
+      "metric": "tangent_relative_l2",
+      "method": "dpr",
+      "relative_error": 0.07934075022207981,
+      "observed_resolution_envelope": 0.015670630756990746,
+      "conditional_lower": 0.06268776268310035,
+      "conditional_upper": 0.09652397251149614
+    },
+    {
+      "load_n": 0.1,
+      "metric": "tangent_relative_l2",
+      "method": "scr",
+      "relative_error": 0.07976835098826612,
+      "observed_resolution_envelope": 0.015670630756990746,
+      "conditional_lower": 0.06310876606080716,
+      "conditional_upper": 0.09695838072844809
+    },
+    {
+      "load_n": 0.1,
+      "metric": "tangent_relative_l2",
+      "method": "shell",
+      "relative_error": 0.25980257162578263,
+      "observed_resolution_envelope": 0.015670630756990746,
+      "conditional_lower": 0.24036526554562046,
+      "conditional_upper": 0.2798587657651868
+    },
+    {
+      "load_n": 0.1,
+      "metric": "membrane_relative_l2",
+      "method": "dpr",
+      "relative_error": 0.046815798299263814,
+      "observed_resolution_envelope": 0.009344635828175348,
+      "conditional_lower": 0.03712424987560674,
+      "conditional_upper": 0.05669018324489524
+    },
+    {
+      "load_n": 0.1,
+      "metric": "membrane_relative_l2",
+      "method": "scr",
+      "relative_error": 0.04809852773807826,
+      "observed_resolution_envelope": 0.009344635828175348,
+      "conditional_lower": 0.03839510364872058,
+      "conditional_upper": 0.05798501239053539
+    },
+    {
+      "load_n": 0.1,
+      "metric": "membrane_relative_l2",
+      "method": "shell",
+      "relative_error": 0.05748493690482743,
+      "observed_resolution_envelope": 0.009344635828175348,
+      "conditional_lower": 0.04769461229380051,
+      "conditional_upper": 0.06745996150626152
+    },
+    {
+      "load_n": 0.1,
+      "metric": "bending_relative_l2",
+      "method": "dpr",
+      "relative_error": 0.10303081330876059,
+      "observed_resolution_envelope": 0.009638929332917292,
+      "conditional_lower": 0.09250028031065385,
+      "conditional_upper": 0.11376632824004919
+    },
+    {
+      "load_n": 0.1,
+      "metric": "bending_relative_l2",
+      "method": "scr",
+      "relative_error": 0.10280105926998763,
+      "observed_resolution_envelope": 0.009638929332917292,
+      "conditional_lower": 0.09227271971240636,
+      "conditional_upper": 0.1135343380643669
+    },
+    {
+      "load_n": 0.1,
+      "metric": "bending_relative_l2",
+      "method": "shell",
+      "relative_error": 0.4203917245710479,
+      "observed_resolution_envelope": 0.009638929332917292,
+      "conditional_lower": 0.4068313763510692,
+      "conditional_upper": 0.43421603154726907
+    },
+    {
+      "load_n": 0.1,
+      "metric": "outer_tangent_relative_l2",
+      "method": "dpr",
+      "relative_error": 0.0755821611873556,
+      "observed_resolution_envelope": 0.007378633723318069,
+      "conditional_lower": 0.06770396470684924,
+      "conditional_upper": 0.08357748254186712
+    },
+    {
+      "load_n": 0.1,
+      "metric": "outer_tangent_relative_l2",
+      "method": "scr",
+      "relative_error": 0.07507161225438598,
+      "observed_resolution_envelope": 0.007378633723318069,
+      "conditional_lower": 0.06719715533460495,
+      "conditional_upper": 0.08306313845225248
+    },
+    {
+      "load_n": 0.1,
+      "metric": "outer_tangent_relative_l2",
+      "method": "shell",
+      "relative_error": 0.31984721941740907,
+      "observed_resolution_envelope": 0.007378633723318069,
+      "conditional_lower": 0.31017988195678975,
+      "conditional_upper": 0.3296582808489704
+    },
+    {
+      "load_n": 0.1,
+      "metric": "inner_tangent_relative_l2",
+      "method": "dpr",
+      "relative_error": 0.09877275371063367,
+      "observed_resolution_envelope": 0.010285385130452813,
+      "conditional_lower": 0.08758650761710758,
+      "conditional_upper": 0.11019150086559172
+    },
+    {
+      "load_n": 0.1,
+      "metric": "inner_tangent_relative_l2",
+      "method": "scr",
+      "relative_error": 0.09925244607385623,
+      "observed_resolution_envelope": 0.010285385130452813,
+      "conditional_lower": 0.08806131638924539,
+      "conditional_upper": 0.1106761783231291
+    },
+    {
+      "load_n": 0.1,
+      "metric": "inner_tangent_relative_l2",
+      "method": "shell",
+      "relative_error": 0.35208991571940196,
+      "observed_resolution_envelope": 0.010285385130452813,
+      "conditional_lower": 0.3383247304372455,
+      "conditional_upper": 0.3661412041466306
+    },
+    {
+      "load_n": 0.1,
+      "metric": "raw_mises_relative_change",
+      "method": "dpr",
+      "relative_error": 0.028713724519185302,
+      "observed_resolution_envelope": 0.0045382529756694545,
+      "conditional_lower": 0.024066252800132432,
+      "conditional_upper": 0.033403571351940685
+    },
+    {
+      "load_n": 0.1,
+      "metric": "raw_mises_relative_change",
+      "method": "scr",
+      "relative_error": 0.012482418325356015,
+      "observed_resolution_envelope": 0.0045382529756694545,
+      "conditional_lower": 0.00790827559443769,
+      "conditional_upper": 0.017098267564679668
+    },
+    {
+      "load_n": 0.1,
+      "metric": "raw_mises_relative_change",
+      "method": "shell",
+      "relative_error": 0.002406385984709214,
+      "observed_resolution_envelope": 0.0045382529756694545,
+      "conditional_lower": 0.0,
+      "conditional_upper": 0.006976299170849938
+    },
+    {
+      "load_n": 0.1,
+      "metric": "raw_tension_relative_change",
+      "method": "dpr",
+      "relative_error": 0.05616898127221215,
+      "observed_resolution_envelope": 0.0060113515196958955,
+      "conditional_lower": 0.04985791629164758,
+      "conditional_upper": 0.06255638118903543
+    },
+    {
+      "load_n": 0.1,
+      "metric": "raw_tension_relative_change",
+      "method": "scr",
+      "relative_error": 0.05080259390527542,
+      "observed_resolution_envelope": 0.0060113515196958955,
+      "conditional_lower": 0.04452359540269321,
+      "conditional_upper": 0.05715753948682753
+    },
+    {
+      "load_n": 0.1,
+      "metric": "raw_tension_relative_change",
+      "method": "shell",
+      "relative_error": 0.14846254993703512,
+      "observed_resolution_envelope": 0.0060113515196958955,
+      "conditional_lower": 0.14159999109567728,
+      "conditional_upper": 0.15540811426056433
+    },
+    {
+      "load_n": 0.3,
+      "metric": "tangent_relative_l2",
+      "method": "dpr",
+      "relative_error": 0.07947466158416323,
+      "observed_resolution_envelope": 0.014848984871632965,
+      "conditional_lower": 0.06368009198994734,
+      "conditional_upper": 0.0957453679764068
+    },
+    {
+      "load_n": 0.3,
+      "metric": "tangent_relative_l2",
+      "method": "scr",
+      "relative_error": 0.07923882109046644,
+      "observed_resolution_envelope": 0.014848984871632965,
+      "conditional_lower": 0.06344770224801285,
+      "conditional_upper": 0.09550597270596081
+    },
+    {
+      "load_n": 0.3,
+      "metric": "tangent_relative_l2",
+      "method": "shell",
+      "relative_error": 0.25199715894090724,
+      "observed_resolution_envelope": 0.014848984871632965,
+      "conditional_lower": 0.23367828869560417,
+      "conditional_upper": 0.27086826254528057
+    },
+    {
+      "load_n": 0.3,
+      "metric": "membrane_relative_l2",
+      "method": "dpr",
+      "relative_error": 0.045281253434511455,
+      "observed_resolution_envelope": 0.00874797322522239,
+      "conditional_lower": 0.0362164595904792,
+      "conditional_upper": 0.054506044073905156
+    },
+    {
+      "load_n": 0.3,
+      "metric": "membrane_relative_l2",
+      "method": "scr",
+      "relative_error": 0.04669806640348304,
+      "observed_resolution_envelope": 0.00874797322522239,
+      "conditional_lower": 0.037620985801760376,
+      "conditional_upper": 0.05593536066615612
+    },
+    {
+      "load_n": 0.3,
+      "metric": "membrane_relative_l2",
+      "method": "shell",
+      "relative_error": 0.056399131332317526,
+      "observed_resolution_envelope": 0.00874797322522239,
+      "conditional_lower": 0.04723792202996188,
+      "conditional_upper": 0.06572203919674001
+    },
+    {
+      "load_n": 0.3,
+      "metric": "bending_relative_l2",
+      "method": "dpr",
+      "relative_error": 0.10899326509591556,
+      "observed_resolution_envelope": 0.008815758061811238,
+      "conditional_lower": 0.09930208388751827,
+      "conditional_upper": 0.11885683627027788
+    },
+    {
+      "load_n": 0.3,
+      "metric": "bending_relative_l2",
+      "method": "scr",
+      "relative_error": 0.10719487404247124,
+      "observed_resolution_envelope": 0.008815758061811238,
+      "conditional_lower": 0.09751940846926402,
+      "conditional_upper": 0.11704245002667932
+    },
+    {
+      "load_n": 0.3,
+      "metric": "bending_relative_l2",
+      "method": "shell",
+      "relative_error": 0.41910648044358373,
+      "observed_resolution_envelope": 0.008815758061811238,
+      "conditional_lower": 0.4067053067946164,
+      "conditional_upper": 0.4317282503085643
+    },
+    {
+      "load_n": 0.3,
+      "metric": "outer_tangent_relative_l2",
+      "method": "dpr",
+      "relative_error": 0.07919080800107199,
+      "observed_resolution_envelope": 0.006480395784277808,
+      "conditional_lower": 0.0722422538196943,
+      "conditional_upper": 0.0862300083680564
+    },
+    {
+      "load_n": 0.3,
+      "metric": "outer_tangent_relative_l2",
+      "method": "scr",
+      "relative_error": 0.07679216116119941,
+      "observed_resolution_envelope": 0.006480395784277808,
+      "conditional_lower": 0.06985905107682967,
+      "conditional_upper": 0.08381571595782655
+    },
+    {
+      "load_n": 0.3,
+      "metric": "outer_tangent_relative_l2",
+      "method": "shell",
+      "relative_error": 0.3132544971988411,
+      "observed_resolution_envelope": 0.006480395784277808,
+      "conditional_lower": 0.3047988840115622,
+      "conditional_upper": 0.32182041665450123
+    },
+    {
+      "load_n": 0.3,
+      "metric": "inner_tangent_relative_l2",
+      "method": "dpr",
+      "relative_error": 0.10517858526470467,
+      "observed_resolution_envelope": 0.009565655620074867,
+      "conditional_lower": 0.09470699514426761,
+      "conditional_upper": 0.11585244548099423
+    },
+    {
+      "load_n": 0.3,
+      "metric": "inner_tangent_relative_l2",
+      "method": "scr",
+      "relative_error": 0.10502454450153353,
+      "observed_resolution_envelope": 0.009565655620074867,
+      "conditional_lower": 0.09455441392053679,
+      "conditional_upper": 0.11569691698579894
+    },
+    {
+      "load_n": 0.3,
+      "metric": "inner_tangent_relative_l2",
+      "method": "shell",
+      "relative_error": 0.3464700951579012,
+      "observed_resolution_envelope": 0.009565655620074867,
+      "conditional_lower": 0.33371226295421047,
+      "conditional_upper": 0.35947435869752387
+    },
+    {
+      "load_n": 0.3,
+      "metric": "raw_mises_relative_change",
+      "method": "dpr",
+      "relative_error": 0.0030176838854718557,
+      "observed_resolution_envelope": 0.003375998321301088,
+      "conditional_lower": 0.0,
+      "conditional_upper": 0.006415340385143764
+    },
+    {
+      "load_n": 0.3,
+      "metric": "raw_mises_relative_change",
+      "method": "scr",
+      "relative_error": 0.01277201446606302,
+      "observed_resolution_envelope": 0.003375998321301088,
+      "conditional_lower": 0.009364401939534075,
+      "conditional_upper": 0.01620271311965659
+    },
+    {
+      "load_n": 0.3,
+      "metric": "raw_mises_relative_change",
+      "method": "shell",
+      "relative_error": 0.0012878068646342555,
+      "observed_resolution_envelope": 0.003375998321301088,
+      "conditional_lower": 0.0,
+      "conditional_upper": 0.004679603519561738
+    },
+    {
+      "load_n": 0.3,
+      "metric": "raw_tension_relative_change",
+      "method": "dpr",
+      "relative_error": 0.00783690144006055,
+      "observed_resolution_envelope": 0.004135069712038808,
+      "conditional_lower": 0.003686587431990934,
+      "conditional_upper": 0.012021681643752212
+    },
+    {
+      "load_n": 0.3,
+      "metric": "raw_tension_relative_change",
+      "method": "scr",
+      "relative_error": 0.001582931545596189,
+      "observed_resolution_envelope": 0.004135069712038808,
+      "conditional_lower": 0.0,
+      "conditional_upper": 0.005741743768385937
+    },
+    {
+      "load_n": 0.3,
+      "metric": "raw_tension_relative_change",
+      "method": "shell",
+      "relative_error": 0.1496189933697607,
+      "observed_resolution_envelope": 0.004135069712038808,
+      "conditional_lower": 0.14488481484810914,
+      "conditional_upper": 0.1543924867776401
+    },
+    {
+      "load_n": 1.0,
+      "metric": "tangent_relative_l2",
+      "method": "dpr",
+      "relative_error": 0.07429152932988804,
+      "observed_resolution_envelope": 0.013710147740747877,
+      "conditional_lower": 0.059762035256485956,
+      "conditional_upper": 0.08922496451631762
+    },
+    {
+      "load_n": 1.0,
+      "metric": "tangent_relative_l2",
+      "method": "scr",
+      "relative_error": 0.07444137512238659,
+      "observed_resolution_envelope": 0.013710147740747877,
+      "conditional_lower": 0.05990985442632706,
+      "conditional_upper": 0.08937689327453742
+    },
+    {
+      "load_n": 1.0,
+      "metric": "tangent_relative_l2",
+      "method": "shell",
+      "relative_error": 0.2398494533037464,
+      "observed_resolution_envelope": 0.013710147740747877,
+      "conditional_lower": 0.22308083436571524,
+      "conditional_upper": 0.2570842642897279
+    },
+    {
+      "load_n": 1.0,
+      "metric": "membrane_relative_l2",
+      "method": "dpr",
+      "relative_error": 0.04314337650661667,
+      "observed_resolution_envelope": 0.007912046606993765,
+      "conditional_lower": 0.034954766160623485,
+      "conditional_upper": 0.0514625975842137
+    },
+    {
+      "load_n": 1.0,
+      "metric": "membrane_relative_l2",
+      "method": "scr",
+      "relative_error": 0.04576549872360323,
+      "observed_resolution_envelope": 0.007912046606993765,
+      "conditional_lower": 0.037556304881996634,
+      "conditional_upper": 0.054105631609592926
+    },
+    {
+      "load_n": 1.0,
+      "metric": "membrane_relative_l2",
+      "method": "shell",
+      "relative_error": 0.05455203169594208,
+      "observed_resolution_envelope": 0.007912046606993765,
+      "conditional_lower": 0.04627386411935032,
+      "conditional_upper": 0.06296223846817672
+    },
+    {
+      "load_n": 1.0,
+      "metric": "bending_relative_l2",
+      "method": "dpr",
+      "relative_error": 0.10516955693386336,
+      "observed_resolution_envelope": 0.00818834434607784,
+      "conditional_lower": 0.0961935467035067,
+      "conditional_upper": 0.11429377809156917
+    },
+    {
+      "load_n": 1.0,
+      "metric": "bending_relative_l2",
+      "method": "scr",
+      "relative_error": 0.10288915646169658,
+      "observed_resolution_envelope": 0.00818834434607784,
+      "conditional_lower": 0.09393166727893759,
+      "conditional_upper": 0.1119945507542344
+    },
+    {
+      "load_n": 1.0,
+      "metric": "bending_relative_l2",
+      "method": "shell",
+      "relative_error": 0.4172549689085744,
+      "observed_resolution_envelope": 0.00818834434607784,
+      "conditional_lower": 0.4057442509195261,
+      "conditional_upper": 0.4289557506502064
+    },
+    {
+      "load_n": 1.0,
+      "metric": "outer_tangent_relative_l2",
+      "method": "dpr",
+      "relative_error": 0.0744998796823644,
+      "observed_resolution_envelope": 0.005764295072069692,
+      "conditional_lower": 0.06834164321310428,
+      "conditional_upper": 0.08072952354919927
+    },
+    {
+      "load_n": 1.0,
+      "metric": "outer_tangent_relative_l2",
+      "method": "scr",
+      "relative_error": 0.07187831230164705,
+      "observed_resolution_envelope": 0.005764295072069692,
+      "conditional_lower": 0.06573510071247841,
+      "conditional_upper": 0.07809275706845074
+    },
+    {
+      "load_n": 1.0,
+      "metric": "outer_tangent_relative_l2",
+      "method": "shell",
+      "relative_error": 0.3028168577317075,
+      "observed_resolution_envelope": 0.005764295072069692,
+      "conditional_lower": 0.2953500776624328,
+      "conditional_upper": 0.3103702183237782
+    },
+    {
+      "load_n": 1.0,
+      "metric": "inner_tangent_relative_l2",
+      "method": "dpr",
+      "relative_error": 0.09894290349503707,
+      "observed_resolution_envelope": 0.008851748024257151,
+      "conditional_lower": 0.08930068827973497,
+      "conditional_upper": 0.1087573441252786
+    },
+    {
+      "load_n": 1.0,
+      "metric": "inner_tangent_relative_l2",
+      "method": "scr",
+      "relative_error": 0.09879105164155096,
+      "observed_resolution_envelope": 0.008851748024257151,
+      "conditional_lower": 0.0891501687868724,
+      "conditional_upper": 0.10860413611307317
+    },
+    {
+      "load_n": 1.0,
+      "metric": "inner_tangent_relative_l2",
+      "method": "shell",
+      "relative_error": 0.33723327064322545,
+      "observed_resolution_envelope": 0.008851748024257151,
+      "conditional_lower": 0.32550027619228805,
+      "conditional_upper": 0.34917583517662565
+    },
+    {
+      "load_n": 1.0,
+      "metric": "raw_mises_relative_change",
+      "method": "dpr",
+      "relative_error": 0.009559038878210857,
+      "observed_resolution_envelope": 0.002330133694169678,
+      "conditional_lower": 0.007212100026763096,
+      "conditional_upper": 0.011916940637290907
+    },
+    {
+      "load_n": 1.0,
+      "metric": "raw_mises_relative_change",
+      "method": "scr",
+      "relative_error": 0.024203098223093966,
+      "observed_resolution_envelope": 0.002330133694169678,
+      "conditional_lower": 0.021822116080965948,
+      "conditional_upper": 0.026595202294232696
+    },
+    {
+      "load_n": 1.0,
+      "metric": "raw_mises_relative_change",
+      "method": "shell",
+      "relative_error": 0.002126059163821914,
+      "observed_resolution_envelope": 0.002330133694169678,
+      "conditional_lower": 0.0,
+      "conditional_upper": 0.0044666006346287404
+    },
+    {
+      "load_n": 1.0,
+      "metric": "raw_tension_relative_change",
+      "method": "dpr",
+      "relative_error": 0.017003078986338904,
+      "observed_resolution_envelope": 0.002377586299008305,
+      "conditional_lower": 0.014590801796886776,
+      "conditional_upper": 0.0194268543079827
+    },
+    {
+      "load_n": 1.0,
+      "metric": "raw_tension_relative_change",
+      "method": "scr",
+      "relative_error": 0.023653837881147943,
+      "observed_resolution_envelope": 0.002377586299008305,
+      "conditional_lower": 0.02122578544547878,
+      "conditional_upper": 0.026093463641804676
+    },
+    {
+      "load_n": 1.0,
+      "metric": "raw_tension_relative_change",
+      "method": "shell",
+      "relative_error": 0.1566098513291143,
+      "observed_resolution_envelope": 0.002377586299008305,
+      "conditional_lower": 0.1538664343040275,
+      "conditional_upper": 0.15936634486619952
+    }
+  ],
+  "conditional_rankings": [
+    {
+      "load_n": 0.1,
+      "metric": "tangent_relative_l2",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "scr lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 0.1,
+      "metric": "membrane_relative_l2",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "unresolved"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "unresolved"
+        }
+      ]
+    },
+    {
+      "load_n": 0.1,
+      "metric": "bending_relative_l2",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "scr lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 0.1,
+      "metric": "outer_tangent_relative_l2",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "scr lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 0.1,
+      "metric": "inner_tangent_relative_l2",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "scr lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 0.1,
+      "metric": "raw_mises_relative_change",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "scr lower error"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "shell lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "shell lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 0.1,
+      "metric": "raw_tension_relative_change",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "scr lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 0.3,
+      "metric": "tangent_relative_l2",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "scr lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 0.3,
+      "metric": "membrane_relative_l2",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "unresolved"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "unresolved"
+        }
+      ]
+    },
+    {
+      "load_n": 0.3,
+      "metric": "bending_relative_l2",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "scr lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 0.3,
+      "metric": "outer_tangent_relative_l2",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "scr lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 0.3,
+      "metric": "inner_tangent_relative_l2",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "scr lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 0.3,
+      "metric": "raw_mises_relative_change",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "unresolved"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "shell lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 0.3,
+      "metric": "raw_tension_relative_change",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "scr lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 1.0,
+      "metric": "tangent_relative_l2",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "scr lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 1.0,
+      "metric": "membrane_relative_l2",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "unresolved"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "unresolved"
+        }
+      ]
+    },
+    {
+      "load_n": 1.0,
+      "metric": "bending_relative_l2",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "scr lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 1.0,
+      "metric": "outer_tangent_relative_l2",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "scr lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 1.0,
+      "metric": "inner_tangent_relative_l2",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "unresolved"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "scr lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 1.0,
+      "metric": "raw_mises_relative_change",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "shell lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "shell lower error"
+        }
+      ]
+    },
+    {
+      "load_n": 1.0,
+      "metric": "raw_tension_relative_change",
+      "pairs": [
+        {
+          "first": "dpr",
+          "second": "scr",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "dpr",
+          "second": "shell",
+          "relation": "dpr lower error"
+        },
+        {
+          "first": "scr",
+          "second": "shell",
+          "relation": "scr lower error"
+        }
+      ]
+    }
+  ],
+  "certified_continuum_error_bound": false,
+  "whole_goal_complete": false,
+  "scope": "Normal physical-pad benchmark only: explicit2mm full-source native variants and repaired250um Shell against125um/three-wall, contact-order10 linear P2 reference. The envelope uses observed wall/surface/joint changes plus integration effects. Conditional ranges use triangle-inequality error propagation if that observed envelope bounds reference error; they are not a proved continuum bound or statistical confidence interval. Parameter-radius sensitivity remains separate. Sustained-friction reference, matched primary performance/batching and publication figures remain required."
+}
