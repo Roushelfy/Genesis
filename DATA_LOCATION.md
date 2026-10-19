@@ -449,3 +449,17 @@ The terminal `native-observation-cadence-v1` packet adds312 compact payloads
 audit. All26 complete trajectory NPZs stay on data with exact hashes. The
 spatial-parent dependency update is retained as an explicit scheduler journal;
 no captured worker source, live reference output or previous archive is changed.
+
+Friction-reference gate controls, explicit seven-parent qualification, subsequent
+DPR/SCR/Shell method fields and force-figure data use fresh
+`friction-reference-gate-controls-v1`, `canonical-friction-reference-qualification-v1`,
+`canonical-stvk-method-fields-v1` and `canonical-friction-plot-data-v1` directories
+under the ranking run root. CPU extraction validation uses
+`friction-plot-data-cpu-control-v1`. Complete arrays and journals remain there;
+only source, configuration and selected immutable evidence enter Git.
+
+The `friction-qualification-pipeline-v1` publication retains92 compact payloads
+(503,395 bytes). Eight CPU-control traction NPZs and one complete history CSV
+remain on data with explicit hashes. Live fine-reference results and future
+qualification, method fields and final figure data are excluded from this
+immutable checkpoint.

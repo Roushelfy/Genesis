@@ -687,3 +687,22 @@ through the captured Slurm workflow, then depend field jobs on that guard's
 success. It rechecks complete history, both windows, current momentum and field
 hashes. Inspect the terminal receipts before treating downstream data as
 admitted. Preserve cancelled/failed plans and use fresh output directories.
+
+
+### Complete nonlinear friction qualification
+
+Follow the [fixed pipeline](FRICTION_REFERENCE_QUALIFICATION_PIPELINE_20261019.md).
+`require_solid_pad_admission` must bind all seven declared parent histories and
+fourteen endpoints before `qualify_friction_reference --data-root RUN_ROOT
+--parent-admission ADMISSION_JSON --output NEW_DATA_PATH` evaluates the36-field
+matrix. Its `passed` and `fine_reference_qualified` flags require every original
+spatial, control and input-identity gate. Any failed requirement exits nonzero.
+A coarse passing receipt or a successful scheduler exit alone is insufficient.
+
+The new method/data recipes depend on that explicit qualifier. They preserve
+normal/friction endpoint identities separately despite their common0.1N load.
+Final errors/ranks still require the candidates' own admitted fields, complete
+resultant-array checks and corresponding reference uncertainty. q1 display
+exports are not the numerical peak metric. Run CPU postprocessing through the
+same captured Slurm workflow, with optional GPU inventory and explicit data-side
+output/cache paths.

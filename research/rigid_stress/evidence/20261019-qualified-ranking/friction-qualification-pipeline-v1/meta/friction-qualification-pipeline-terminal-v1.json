@@ -1,0 +1,77 @@
+{
+  "expected": {
+    "729509_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729509_1": [
+      "FAILED",
+      "1:0"
+    ],
+    "729509_2": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729516_0": [
+      "COMPLETED",
+      "0:0"
+    ]
+  },
+  "observed": {
+    "729509_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729509_0.batch": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729509_0.0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729509_1": [
+      "FAILED",
+      "1:0"
+    ],
+    "729509_1.batch": [
+      "FAILED",
+      "1:0"
+    ],
+    "729509_1.0": [
+      "FAILED",
+      "1:0"
+    ],
+    "729509_2": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729509_2.batch": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729509_2.0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729516_0": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729516_0.batch": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "729516_0.0": [
+      "COMPLETED",
+      "0:0"
+    ]
+  },
+  "sacct": "729509_0|COMPLETED|0:0\n729509_0.batch|COMPLETED|0:0\n729509_0.0|COMPLETED|0:0\n729509_1|FAILED|1:0\n729509_1.batch|FAILED|1:0\n729509_1.0|FAILED|1:0\n729509_2|COMPLETED|0:0\n729509_2.batch|COMPLETED|0:0\n729509_2.0|COMPLETED|0:0\n729516_0|COMPLETED|0:0\n729516_0.batch|COMPLETED|0:0\n729516_0.0|COMPLETED|0:0\n",
+  "passed": true,
+  "gate_checks": 19,
+  "historical_parent_checks": 10,
+  "cpu_data_reader_checks": 5,
+  "incomplete_matrix_intentionally_rejected": true,
+  "fine_reference_qualified": false
+}
