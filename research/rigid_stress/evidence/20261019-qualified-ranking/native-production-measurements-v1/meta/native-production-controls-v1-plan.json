@@ -1,0 +1,42 @@
+{
+  "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput",
+  "steps": 1200,
+  "warmup": 900,
+  "dt_s": 0.01,
+  "batches": [
+    1,
+    8,
+    32
+  ],
+  "scopes": [
+    "rigid",
+    "dpr-max",
+    "dpr-full",
+    "scr-max",
+    "scr-full"
+  ],
+  "motion_compare": "All1200 recorded steps, all environments; paired same-batch and matching frozen-bank conditions across batch.",
+  "motion_absolute_targets": {
+    "position_m": 1e-10,
+    "quaternion_component_up_to_sign": 1e-10,
+    "linear_velocity_m_per_s": 1e-09,
+    "angular_velocity_rad_per_s": 1e-09,
+    "robot_qpos_rad": 1e-10,
+    "robot_qvel_rad_per_s": 1e-09
+  },
+  "max_full_peak_target": {
+    "rtol": 1e-08,
+    "atol_pa": 0.001
+  },
+  "replay_target": {
+    "rtol": 0.0001,
+    "atol_pa": 0.001,
+    "basis": "Existing independently checked frozen snapshot benchmark target, now evaluated on all1200 peaks and selected complete fields; not a physical error bound."
+  },
+  "full_output": "GPU tensors11 snapshots (step1 and every120 through1200), independent von Mises formula and max reduction, full finite tensors.",
+  "replay": "DPR/SCR full-output modes only initially, three complete1200-frame resident histories; captures all association/provenance inputs including witnesses, radius, inertial angular velocity and pre-integration frame; retains zero-load and failed states.",
+  "timing_excludes": "Intrusive original scene recording and independent conformance analysis; no production scene-rate claim.",
+  "all_failures_retained": true,
+  "physical_error_pending": true,
+  "module_max_sparse_still_pending": true
+}

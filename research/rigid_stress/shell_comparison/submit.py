@@ -124,6 +124,9 @@ def main():
     parser.add_argument("--cpu-only", action="store_true", help="Request no GPU for CPU analysis in rtx-mid")
     parser.add_argument("--keep-going", action="store_true")
     parser.add_argument(
+        "--kernel-profiler", action="store_true", help="Enable Quadrants profiling in separate diagnostic runs"
+    )
+    parser.add_argument(
         "--allow-home-output", action="store_true", help="Record an explicitly user-authorized home-output exception"
     )
     parser.add_argument(
@@ -188,6 +191,8 @@ def main():
                 f"cd {shlex.quote(str(source))}",
             ]
         )
+        if args.kernel_profiler:
+            lines.append("export QD_KERNEL_PROFILER=1")
         if args.keep_going:
             lines.append("campaign_status=0")
         for task in group:
@@ -251,6 +256,7 @@ def main():
                 "command": command,
                 "job": result,
                 "node_local_cache": args.node_local_cache,
+                "kernel_profiler": args.kernel_profiler,
                 "allow_home_output": args.allow_home_output,
             },
             indent=2,

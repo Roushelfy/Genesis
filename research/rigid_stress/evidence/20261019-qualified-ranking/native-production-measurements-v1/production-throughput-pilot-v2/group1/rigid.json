@@ -1,0 +1,7301 @@
+{
+  "scope": "rigid",
+  "envs": 8,
+  "level": 1,
+  "precision": "64",
+  "quadrature": 10,
+  "dt": 0.01,
+  "substeps": 1,
+  "varied": true,
+  "seed": 623016,
+  "load_model": "finite_pad_adaptive_q10",
+  "contact_model": "pressure",
+  "public_default_stress": false,
+  "contact_block_size": 16,
+  "intrinsic_support": "contact",
+  "surface_fan_frontier": true,
+  "intrinsic_load_partition": "body_source_prior",
+  "cooperative_tractions": true,
+  "warm_start_tractions": true,
+  "effective_contact_block_size": 16,
+  "egg_geometry": "mesh64",
+  "collision_method": "mpr",
+  "contact_patch": "off",
+  "condition_count": 8,
+  "conditions": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+  "conditions_sha256": "1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa",
+  "cooperative_solve": true,
+  "cooperative_pressure": true,
+  "cooperative_scatter": true,
+  "cooperative_balance": true,
+  "contact_wrench_reuse": "auto",
+  "packed_block_size": null,
+  "coalesced_residual": "auto",
+  "contact_moment_reuse": "auto",
+  "effective_contact_moment_reuse": [],
+  "effective_contact_wrench_reuse": [],
+  "effective_packed_block_sizes": [],
+  "face_parallel_scatter": true,
+  "scatter_tasks_per_env": 32,
+  "cached_peak": true,
+  "cached_face_bounds": true,
+  "method": "auto",
+  "inverse_precision": "64",
+  "surface_inverse": true,
+  "packed_surface_loads": true,
+  "fused_pipeline": true,
+  "output_mode": "max",
+  "reset_mode": "saved_initial_state",
+  "native_controller": true,
+  "rigid_post_fusion": "auto",
+  "effective_rigid_post_fusion": false,
+  "reset_index_cache": {
+    "enabled": true,
+    "capacity_elements": 8,
+    "stored_elements": 0,
+    "bytes": 0,
+    "selectors": 0,
+    "hits": 0,
+    "misses": 0,
+    "evictions": 0,
+    "single_selections": 8
+  },
+  "controller_buffers": {
+    "target": {
+      "shape": [
+        8,
+        9
+      ],
+      "dtype": "torch.float64",
+      "bytes": 576
+    },
+    "grip": {
+      "shape": [
+        8
+      ],
+      "dtype": "torch.float32",
+      "bytes": 32
+    },
+    "limit": {
+      "shape": [
+        8
+      ],
+      "dtype": "torch.float32",
+      "bytes": 32
+    },
+    "radius": {
+      "shape": [
+        8
+      ],
+      "dtype": "torch.float64",
+      "bytes": 64
+    },
+    "zero_action": {
+      "shape": [
+        8,
+        7
+      ],
+      "dtype": "torch.float64",
+      "bytes": 448
+    },
+    "arm_indices": {
+      "shape": [
+        7
+      ],
+      "dtype": "torch.int32",
+      "bytes": 28
+    }
+  },
+  "history": 0,
+  "host": "rtx-209-235",
+  "slurm_job_id": "728968",
+  "source_revision": "92692aa612666b015ac4b506a39b9e7d3dfdf998",
+  "arguments": {
+    "scope": "rigid",
+    "envs": 8,
+    "level": 1,
+    "steps": 1200,
+    "warmup": 900,
+    "repetitions": 3,
+    "minimum_seconds": 0.0,
+    "varied": true,
+    "seed": 623016,
+    "public_default_stress": false,
+    "contact_model": "pressure",
+    "intrinsic_support": "contact",
+    "dense_surface_fan": false,
+    "intrinsic_load_partition": "body_source_prior",
+    "contact_block_size": 16,
+    "egg_geometry": "mesh64",
+    "collision_method": "mpr",
+    "contact_patch": "off",
+    "source_revision": "92692aa612666b015ac4b506a39b9e7d3dfdf998",
+    "conditions": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+    "save_conditions": null,
+    "serial_solve": false,
+    "serial_pressure": false,
+    "serial_tractions": false,
+    "cold_tractions": false,
+    "serial_scatter": false,
+    "serial_balance": false,
+    "contact_wrench_reuse": "auto",
+    "packed_block_size": null,
+    "coalesced_residual": "auto",
+    "contact_moment_reuse": "auto",
+    "contact_warp_scatter": false,
+    "scatter_tasks_per_env": 32,
+    "uncached_peak": false,
+    "uncached_face_bounds": false,
+    "method": "auto",
+    "inverse_precision": "64",
+    "full_inverse": false,
+    "dense_surface_loads": false,
+    "history": 0,
+    "unfused_pipeline": false,
+    "policy_precision": "32",
+    "output_mode": "max",
+    "legacy_reset": false,
+    "torch_controller": false,
+    "host_reset_indices": false,
+    "rigid_post_fusion": "auto",
+    "trace": false,
+    "trace_steps": 50,
+    "trajectory_metrics": false,
+    "compact_log": true,
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/production-throughput-pilot-v2/group1/rigid.json"
+  },
+  "command": [
+    "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/examples/speed_benchmark/rigid_stress.py",
+    "--level",
+    "1",
+    "--warmup",
+    "900",
+    "--steps",
+    "1200",
+    "--repetitions",
+    "3",
+    "--minimum-seconds",
+    "0",
+    "--varied",
+    "--seed",
+    "623016",
+    "--conditions",
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+    "--egg-geometry",
+    "mesh64",
+    "--collision-method",
+    "mpr",
+    "--contact-patch",
+    "off",
+    "--history",
+    "0",
+    "--compact-log",
+    "--source-revision",
+    "92692aa612666b015ac4b506a39b9e7d3dfdf998",
+    "--envs",
+    "8",
+    "--scope",
+    "rigid",
+    "--contact-model",
+    "pressure",
+    "--intrinsic-load-partition",
+    "body_source_prior",
+    "--output-mode",
+    "max",
+    "--output",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/production-throughput-pilot-v2/group1/rigid.json"
+  ],
+  "source_sha256": {
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/examples/speed_benchmark/rigid_stress.py": "9432c0ccc7ea724358a3c2e8f057ee188b59c511a804506e53005c80f8ff1ec1",
+    "examples/rigid/egg_stress_controller.py": "2760c2d6a89dbf0a3ec28f1a7c6030d6d73b71b43c6a4b55a5d5ab745e7de33d",
+    "examples/rigid/franka_egg_stress.py": "ee11757cce9b35a4fdf00abee4b76ee3aa1dfe773c011980fe77c23ab845439c",
+    "genesis/engine/entities/rigid_entity/description.py": "3bb64792b62103e490166405ecc381aeb73f8f08b724a789f0f64e3bdeafccd6",
+    "genesis/engine/solvers/rigid/rigid_solver.py": "e700fe5b024320329625e9355f434c1f4d3d532072e6ce7e080f20916dad62f7",
+    "genesis/engine/solvers/rigid/stress/__init__.py": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+    "genesis/engine/solvers/rigid/stress/association.py": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3",
+    "genesis/engine/solvers/rigid/stress/balance.py": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712",
+    "genesis/engine/solvers/rigid/stress/boundary_certificate.py": "8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8",
+    "genesis/engine/solvers/rigid/stress/compatibility.py": "a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a",
+    "genesis/engine/solvers/rigid/stress/contact.py": "5bba6b725145f62dc0c7f730cd2129d32110a7f1c63df594bb5979261e78a3ac",
+    "genesis/engine/solvers/rigid/stress/cooperative_fit.py": "b23807e235f42ca84cfcaf959462a923bfd5c3ae6eeeed9a125206dc0b178987",
+    "genesis/engine/solvers/rigid/stress/cooperative_scatter.py": "03396b93fc12218f85c74b4b3a4bbebf21346512967ddecfab66203daaf1934b",
+    "genesis/engine/solvers/rigid/stress/data.py": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19",
+    "genesis/engine/solvers/rigid/stress/factor.py": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c",
+    "genesis/engine/solvers/rigid/stress/failure.py": "01c4ad605afb4fc69ae9a175a267c35b310f6f3cd63c6feb4d94f569ec8c6f63",
+    "genesis/engine/solvers/rigid/stress/fan_refinement.py": "94307edb615c0585cedd8e324af8601a9fab0766446d22e0191e6610f9be354a",
+    "genesis/engine/solvers/rigid/stress/footprint.py": "9c6d0539e3809f97e31d36946bae256191ac4abcb5add63c6b05f785b3f04895",
+    "genesis/engine/solvers/rigid/stress/grid.py": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+    "genesis/engine/solvers/rigid/stress/history.py": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+    "genesis/engine/solvers/rigid/stress/intrinsic.py": "a9f0b2b481f0ee7245bff2b82da5fe739741faa9622a3fa9928def41aca3ecd7",
+    "genesis/engine/solvers/rigid/stress/inverse.py": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43",
+    "genesis/engine/solvers/rigid/stress/lifecycle.py": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa",
+    "genesis/engine/solvers/rigid/stress/model.py": "6c25c7666d5a2e0cb1d2082344b267a4f5bff58f7c0cc48fbfc106df9ce9717e",
+    "genesis/engine/solvers/rigid/stress/operators.py": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+    "genesis/engine/solvers/rigid/stress/paths.py": "002b874dcad674273d4fa4637d4927987c2601a98d31841b33826c910a282c70",
+    "genesis/engine/solvers/rigid/stress/pipeline.py": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9",
+    "genesis/engine/solvers/rigid/stress/post.py": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e",
+    "genesis/engine/solvers/rigid/stress/provenance.py": "846401ff7449414c613db2e3ef4186cab100ccfd24a7483494373d94546258e1",
+    "genesis/engine/solvers/rigid/stress/recovery.py": "c848785ebb615e08f5314e4722cd16d9783680cea7719218207655ce14349f80",
+    "genesis/engine/solvers/rigid/stress/scatter.py": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399",
+    "genesis/engine/solvers/rigid/stress/solve.py": "139fa6fd6be876a12cc813c15b46bf3e377fd8e6990b3e648d012f0b3b471c06",
+    "genesis/engine/solvers/rigid/stress/source_priors.py": "052379a406f986d30931f1867ba70ed9ed3f50968556527f57a508b6ab8b2d24",
+    "genesis/engine/solvers/rigid/stress/source_vertices.py": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf",
+    "genesis/engine/solvers/rigid/stress/surface.py": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e",
+    "genesis/engine/solvers/rigid/stress/surface_frontier.py": "51c4c7b9f412a137bad0132c8ea94aa613096c59a73b7ee89477ade13ec0b5ca",
+    "genesis/engine/solvers/rigid/stress/surface_inverse.py": "5f618141c94558aa9b7fc018e35db19652e59b58aaa675dbd2d6c5ba3b831a09",
+    "genesis/engine/solvers/rigid/stress/topology.py": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2",
+    "genesis/engine/solvers/rigid/stress/traction.py": "4ae6d4532703eb9f90ebc22e32cb055fc404b869aa16155cfaec6d6e456da9b2",
+    "genesis/options/morphs.py": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f",
+    "genesis/options/rigid_stress.py": "7a112293703178e8d371edd26bfc004ebe2a8cb2a157d7f6f738806a4dfb3512"
+  },
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "gpu_uuid": "GPU-dd177447-2e7e-bc9f-1252-f29eb382db2a",
+  "gpu_total_bytes": 101975851008,
+  "quadrants": [
+    1,
+    3,
+    3
+  ],
+  "torch": "2.11.0+cu129",
+  "setup_seconds": 87.75220062301378,
+  "warmup_steps": 900,
+  "warmup_quality": [
+    {
+      "tick": 0,
+      "phase": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.032145665901256844,
+        0.031206692666509616,
+        0.03093980009207636,
+        0.030910076510411496,
+        0.03215604367541581,
+        0.0323816353504603,
+        0.0317049675153759,
+        0.030634928911013104
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "tangential_force_N": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "tick": 10,
+      "phase": [
+        0.01669449081803005,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.0295738026426317,
+        0.029631882955661045,
+        0.029627393037548844,
+        0.02962696712921744,
+        0.029574370331807303,
+        0.029586281647498117,
+        0.029547799620103187,
+        0.029622115842629873
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        6.475016160317322e-19,
+        3.2858379557801557e-19,
+        6.565377432474669e-19,
+        6.564770828594207e-19,
+        6.476070543688707e-19,
+        6.498303262585769e-19,
+        4.020502198036325e-19,
+        6.557722340048024e-19
+      ]
+    },
+    {
+      "tick": 20,
+      "phase": [
+        0.0333889816360601,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.029631872172269362,
+        0.02963280265931065,
+        0.029632728487259716,
+        0.029632721471529535,
+        0.029631880973332216,
+        0.029632066932707528,
+        0.029631474885865237,
+        0.029632641804070308
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        6.571940337836176e-19,
+        3.2864733215899374e-19,
+        6.57286721604134e-19,
+        6.572860757887773e-19,
+        6.571950320039119e-19,
+        6.572152504849175e-19,
+        4.1071925611053944e-19,
+        6.57277533392235e-19
+      ]
+    },
+    {
+      "tick": 30,
+      "phase": [
+        0.05008347245409015,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.029632802480706318,
+        0.029632817900564056,
+        0.029632816670783466,
+        0.029632816554467423,
+        0.029632802626477363,
+        0.029632805706852644,
+        0.02963279590205561,
+        0.029632815233701967
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        6.5729528566497465e-19,
+        3.2864816100085343e-19,
+        6.572963113183537e-19,
+        6.572964156271075e-19,
+        6.572953406499082e-19,
+        6.5729563531726755e-19,
+        4.108091697022662e-19,
+        6.572963909076227e-19
+      ]
+    },
+    {
+      "tick": 40,
+      "phase": [
+        0.0667779632721202,
+        0.005008347245409015,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.029632817897602647,
+        0.029632818153278884,
+        0.029632818132887758,
+        0.02963281813095911,
+        0.029632817900019655,
+        0.02963281795109491,
+        0.029632817788523624,
+        0.029632818109059388
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        6.572965108681593e-19,
+        3.2864817108560617e-19,
+        6.572964279394846e-19,
+        6.572965413643416e-19,
+        6.572965545001108e-19,
+        6.5729660909658e-19,
+        4.108102552737164e-19,
+        6.572966201015348e-19
+      ]
+    },
+    {
+      "tick": 50,
+      "phase": [
+        0.08347245409015025,
+        0.021702838063439065,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.02963281815322978,
+        0.02963281815746918,
+        0.029632818157131074,
+        0.029632818157099092,
+        0.02963281815326986,
+        0.029632818154116742,
+        0.02963281815142113,
+        0.02963281815673597
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        6.57296523782525e-19,
+        3.286481711921702e-19,
+        6.572964291714353e-19,
+        6.572965426926006e-19,
+        6.57296567295083e-19,
+        6.572966193653894e-19,
+        4.108102667064964e-19,
+        6.572966225217874e-19
+      ]
+    },
+    {
+      "tick": 60,
+      "phase": [
+        0.1001669449081803,
+        0.038397328881469114,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.029632818157468366,
+        0.02963281815753866,
+        0.029632818157533054,
+        0.029632818157532523,
+        0.02963281815746903,
+        0.029632818157483073,
+        0.029632818157438377,
+        0.029632818157526504
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        6.572965238739778e-19,
+        3.2864817119293796e-19,
+        6.572964291802853e-19,
+        6.572965427020751e-19,
+        6.572965673856918e-19,
+        6.572966194381785e-19,
+        4.108102667872042e-19,
+        6.57296622539006e-19
+      ]
+    },
+    {
+      "tick": 70,
+      "phase": [
+        0.11686143572621036,
+        0.05509181969949917,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.029632818157538647,
+        0.029632818157539813,
+        0.029632818157539702,
+        0.029632818157539695,
+        0.029632818157538657,
+        0.02963281815753889,
+        0.02963281815753815,
+        0.02963281815753961
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        6.572965238734505e-19,
+        3.2864817119742037e-19,
+        6.572964291801565e-19,
+        6.572965427020568e-19,
+        6.572965673851805e-19,
+        6.572966194378012e-19,
+        4.1081026678675415e-19,
+        6.572966225389725e-19
+      ]
+    },
+    {
+      "tick": 80,
+      "phase": [
+        0.1335559265442404,
+        0.07178631051752922,
+        0.01001669449081803,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.029632818157539813,
+        0.029632818157539816,
+        0.029632818157539827,
+        0.029632818157539827,
+        0.029632818157539813,
+        0.029632818157539806,
+        0.02963281815753978,
+        0.029632818157539816
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        6.572965238736464e-19,
+        3.2864817121071477e-19,
+        6.572964291446738e-19,
+        6.572965426933505e-19,
+        6.572965673942135e-19,
+        6.572966193932489e-19,
+        4.108102667242625e-19,
+        6.57296622538923e-19
+      ]
+    },
+    {
+      "tick": 90,
+      "phase": [
+        0.15025041736227046,
+        0.08848080133555927,
+        0.02671118530884808,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.029632818157539816,
+        0.02963281815753981,
+        0.029632818157539816,
+        0.029632818157539827,
+        0.029632818157539816,
+        0.029632818157539806,
+        0.029632818157539795,
+        0.0296328181575398
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        6.572965238732965e-19,
+        3.2864817115722144e-19,
+        6.572964290908812e-19,
+        6.572965426749883e-19,
+        6.572965673759327e-19,
+        6.572966194376858e-19,
+        4.1081026674218813e-19,
+        6.572966225388658e-19
+      ]
+    },
+    {
+      "tick": 100,
+      "phase": [
+        0.1669449081803005,
+        0.10517529215358933,
+        0.04340567612687813,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.02963281815753981,
+        0.029632818157539802,
+        0.029632818157539792,
+        0.02963281815753982,
+        0.02963281815753981,
+        0.029632818157539785,
+        0.0296328181575398,
+        0.02963281815753984
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        6.572965237214402e-19,
+        3.286481711214896e-19,
+        6.572964290191678e-19,
+        6.572965425770144e-19,
+        6.572965673226537e-19,
+        6.572966193212772e-19,
+        4.1081026675094114e-19,
+        6.57296622816083e-19
+      ]
+    },
+    {
+      "tick": 110,
+      "phase": [
+        0.18363939899833057,
+        0.12186978297161936,
+        0.06010016694490818,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.029451521307673808,
+        0.029632818157539802,
+        0.029632818157539816,
+        0.029632818157539813,
+        0.029632818157539802,
+        0.029632818157539806,
+        0.029632818157539795,
+        0.029632818157539795
+      ],
+      "finger_contacts": [
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        4,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.3277803639548137,
+        3.2864817119282683e-19,
+        6.5729642918006215e-19,
+        6.572965425589135e-19,
+        6.572965671707135e-19,
+        6.572966194376496e-19,
+        4.1081026675986513e-19,
+        6.572966225389629e-19
+      ]
+    },
+    {
+      "tick": 120,
+      "phase": [
+        0.2003338898163606,
+        0.13856427378964942,
+        0.07679465776293823,
+        0.015025041736227046,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.029459351743348565,
+        0.029632818157539813,
+        0.029632818157539827,
+        0.029632818157539802,
+        0.029632818157539806,
+        0.029632818157539823,
+        0.029632818157539792,
+        0.02963281815753982
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.11841393627748083,
+        3.286481711929731e-19,
+        6.57296429126743e-19,
+        6.572965425055505e-19,
+        6.572965673850753e-19,
+        6.572966193840664e-19,
+        4.108102667774579e-19,
+        6.572966225569746e-19
+      ]
+    },
+    {
+      "tick": 130,
+      "phase": [
+        0.21702838063439064,
+        0.15525876460767948,
+        0.09348914858096828,
+        0.03171953255425709,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.02946082165538942,
+        0.02963281815753982,
+        0.029632818157539816,
+        0.02963281815753979,
+        0.029632818157539823,
+        0.029632818157539823,
+        0.029632818157539806,
+        0.029632818157539823
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.11351783289269357,
+        3.2864817118399173e-19,
+        6.572964290729504e-19,
+        6.572965425947013e-19,
+        6.572965673314917e-19,
+        6.572966194022486e-19,
+        4.1081026678678424e-19,
+        6.5729662255697e-19
+      ]
+    },
+    {
+      "tick": 140,
+      "phase": [
+        0.2337228714524207,
+        0.17195325542570952,
+        0.11018363939899833,
+        0.048414023372287146,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.029462058300953695,
+        0.029632818157539823,
+        0.029632818157539792,
+        0.029632818157539802,
+        0.029632818157539823,
+        0.02963281815753982,
+        0.02963281815753981,
+        0.029632818157539823
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.11230753843883674,
+        3.2864817119303984e-19,
+        6.57296428858045e-19,
+        6.572965427020104e-19,
+        6.572965673143219e-19,
+        6.572966195095788e-19,
+        4.1081026678684187e-19,
+        6.572966225751538e-19
+      ]
+    },
+    {
+      "tick": 150,
+      "phase": [
+        0.25041736227045075,
+        0.18864774624373956,
+        0.12687813021702837,
+        0.0651085141903172,
+        0.00333889816360601,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.029463153826581445,
+        0.029507709358239178,
+        0.029632818157539816,
+        0.029632818157539813,
+        0.02963281815753982,
+        0.029632818157539813,
+        0.029632818157539816,
+        0.02963281815753982
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7,
+        5,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.11092619413322864,
+        0.2172897561093931,
+        6.572964291802201e-19,
+        6.572965427019683e-19,
+        6.572965672781204e-19,
+        6.572966193127662e-19,
+        4.1081026678659025e-19,
+        6.572966225570531e-19
+      ]
+    },
+    {
+      "tick": 160,
+      "phase": [
+        0.2671118530884808,
+        0.20534223706176963,
+        0.14357262103505844,
+        0.08180300500834725,
+        0.02003338898163606,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.029464175289521766,
+        0.029509749997642578,
+        0.029632818157539823,
+        0.02963281815753982,
+        0.029632818157539813,
+        0.029632818157539802,
+        0.0296328181575398,
+        0.029632818157539813
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7,
+        5,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.1094437865275499,
+        0.15747392700606772,
+        6.572964291272547e-19,
+        6.572965427021949e-19,
+        6.572965672243296e-19,
+        6.57296619169579e-19,
+        4.1081026678652525e-19,
+        6.572966225392091e-19
+      ]
+    },
+    {
+      "tick": 170,
+      "phase": [
+        0.2838063439065109,
+        0.22203672787979967,
+        0.16026711185308848,
+        0.0984974958263773,
+        0.03672787979966611,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.02946515904985077,
+        0.02951120758765207,
+        0.029632818157539823,
+        0.029632818157539823,
+        0.029632818157539802,
+        0.02963281815753979,
+        0.029632818157539816,
+        0.029632818157539802
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7,
+        5,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.10800422766057899,
+        0.14555962216673368,
+        6.572964290732902e-19,
+        6.572965427202062e-19,
+        6.5729656727812675e-19,
+        6.572966192409688e-19,
+        4.108102667866472e-19,
+        6.572966225212829e-19
+      ]
+    },
+    {
+      "tick": 180,
+      "phase": [
+        0.3005008347245409,
+        0.23873121869782973,
+        0.17696160267111855,
+        0.11519198664440734,
+        0.05342237061769616,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.029466256762801152,
+        0.029512320179195268,
+        0.02963281815753982,
+        0.029632818157539823,
+        0.02963281815753979,
+        0.029632818157539802,
+        0.029632818157539823,
+        0.02963281815753979
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7,
+        5,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.10678182066477805,
+        0.13707574172477172,
+        6.572964291088971e-19,
+        6.572965426664968e-19,
+        6.572965670811488e-19,
+        6.572966194378094e-19,
+        4.108102667688668e-19,
+        6.572966224853426e-19
+      ]
+    },
+    {
+      "tick": 190,
+      "phase": [
+        0.31719532554257096,
+        0.2554257095158598,
+        0.19365609348914858,
+        0.1318864774624374,
+        0.07011686143572621,
+        0.008347245409015025,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.030183951027401047,
+        0.029513311822803732,
+        0.0296031462086626,
+        0.02963281815753982,
+        0.029632818157539802,
+        0.029632818157539813,
+        0.02963281815753982,
+        0.029632818157539802
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        7,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.11122421205304235,
+        0.13027060407268026,
+        0.13886188797647328,
+        6.572965426486508e-19,
+        6.572965673850988e-19,
+        6.572966194376852e-19,
+        4.1081026673334503e-19,
+        6.572966225389002e-19
+      ]
+    },
+    {
+      "tick": 200,
+      "phase": [
+        0.333889816360601,
+        0.27212020033388984,
+        0.21035058430717865,
+        0.14858096828046746,
+        0.08681135225375626,
+        0.025041736227045076,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.03377774825970025,
+        0.029514260818801857,
+        0.02960362717528111,
+        0.029632818157539813,
+        0.029632818157539813,
+        0.02963281815753982,
+        0.029632818157539813,
+        0.029632818157539813
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        7,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.10978533613997075,
+        0.12466949551193862,
+        0.10768922596625864,
+        6.572965425770144e-19,
+        6.572965673851115e-19,
+        6.572966194379467e-19,
+        4.1081026671541534e-19,
+        6.572966225390037e-19
+      ]
+    },
+    {
+      "tick": 210,
+      "phase": [
+        0.35058430717863104,
+        0.2888146911519199,
+        0.2270450751252087,
+        0.1652754590984975,
+        0.10350584307178631,
+        0.041736227045075125,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.04081928697181596,
+        0.029515193500981536,
+        0.029603941180174998,
+        0.029632818157539802,
+        0.02963281815753982,
+        0.029632818157539823,
+        0.029632818157539802,
+        0.02963281815753982
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        7,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.11025633221636448,
+        0.12002158350131403,
+        0.09232550027504695,
+        6.572965426127957e-19,
+        6.572965674210638e-19,
+        6.572966194202663e-19,
+        4.108102666613707e-19,
+        6.572966225391288e-19
+      ]
+    },
+    {
+      "tick": 220,
+      "phase": [
+        0.36727879799666113,
+        0.3055091819699499,
+        0.24373956594323873,
+        0.18196994991652754,
+        0.12020033388981637,
+        0.05843071786310518,
+        0.0,
+        0.0
+      ],
+      "height_m": [
+        0.05091052544932925,
+        0.029545984472186988,
+        0.02960414138158745,
+        0.029599658030203674,
+        0.029632818157539823,
+        0.029632818157539823,
+        0.02963281815753979,
+        0.029632818157539823
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        6,
+        7,
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.11248311027392957,
+        0.11710325694419921,
+        0.08531955055711427,
+        0.1128991884134717,
+        6.572965672781222e-19,
+        6.572966195454405e-19,
+        4.1081026660783713e-19,
+        6.572966225035173e-19
+      ]
+    },
+    {
+      "tick": 230,
+      "phase": [
+        0.38397328881469117,
+        0.32220367278797996,
+        0.2604340567612688,
+        0.1986644407345576,
+        0.13689482470784642,
+        0.07512520868113523,
+        0.01335559265442404,
+        0.0
+      ],
+      "height_m": [
+        0.06334476528420721,
+        0.03095345190456851,
+        0.02960431308804212,
+        0.029599050209005544,
+        0.029632818157539823,
+        0.02963281815753982,
+        0.029632818157539802,
+        0.029632818157539823
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        7,
+        7,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.11698658294698742,
+        0.10845423401081294,
+        0.08170117250946957,
+        0.11932440628091402,
+        6.572965672423436e-19,
+        6.572966194023336e-19,
+        4.108102667867478e-19,
+        6.572966225034305e-19
+      ]
+    },
+    {
+      "tick": 240,
+      "phase": [
+        0.4006677796327212,
+        0.33889816360601005,
+        0.27712854757929883,
+        0.21535893155258765,
+        0.15358931552587646,
+        0.09181969949916528,
+        0.03005008347245409,
+        0.0
+      ],
+      "height_m": [
+        0.07731304926364586,
+        0.03558794187112516,
+        0.029604482102318523,
+        0.029599462987659003,
+        0.02963281815753982,
+        0.029632818157539813,
+        0.029632818157539813,
+        0.02963281815753982
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        7,
+        7,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.12320496396054814,
+        0.10856486385381114,
+        0.07898830739143639,
+        0.0708323158709226,
+        6.572965671709601e-19,
+        6.572966193663888e-19,
+        4.1081026678667485e-19,
+        6.57296622432132e-19
+      ]
+    },
+    {
+      "tick": 250,
+      "phase": [
+        0.41736227045075125,
+        0.3555926544240401,
+        0.2938230383973289,
+        0.2320534223706177,
+        0.17028380634390652,
+        0.10851419031719532,
+        0.04674457429048414,
+        0.0
+      ],
+      "height_m": [
+        0.09197243230737932,
+        0.04360724529960453,
+        0.029604654315811784,
+        0.029599808643848986,
+        0.029632818157539813,
+        0.029632818157539802,
+        0.02963281815753982,
+        0.029632818157539813
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        7,
+        7,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.1290931849767918,
+        0.10857047225687422,
+        0.07676966098952129,
+        0.062607972532239,
+        6.572965674213141e-19,
+        6.572966195094154e-19,
+        4.1081026678663176e-19,
+        6.572966223602405e-19
+      ]
+    },
+    {
+      "tick": 260,
+      "phase": [
+        0.4340567612687813,
+        0.3722871452420701,
+        0.31051752921535897,
+        0.24874791318864775,
+        0.18697829716193656,
+        0.12520868113522537,
+        0.06343906510851419,
+        0.001669449081803005
+      ],
+      "height_m": [
+        0.10647280682423117,
+        0.054482595832895685,
+        0.029787895973556876,
+        0.029600075928908627,
+        0.02971220347211473,
+        0.02963281815753979,
+        0.029632818157539823,
+        0.029632818157539802
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        7,
+        7,
+        9,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.13227070830982407,
+        0.1086667344010053,
+        0.1000315890031585,
+        0.061510504174758174,
+        0.18945221955844607,
+        6.572966192588998e-19,
+        4.1081026678688376e-19,
+        6.572966223243835e-19
+      ]
+    },
+    {
+      "tick": 270,
+      "phase": [
+        0.4507512520868114,
+        0.38898163606010017,
+        0.327212020033389,
+        0.2654424040066778,
+        0.20367278797996663,
+        0.14190317195325544,
+        0.08013355592654424,
+        0.018363939899833055
+      ],
+      "height_m": [
+        0.11997084976124422,
+        0.067464381381785,
+        0.03206856202581111,
+        0.029600308441826255,
+        0.029709917459349658,
+        0.029632818157539802,
+        0.029632818157539823,
+        0.02963281815753979
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        6,
+        7,
+        9,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.1311264515121884,
+        0.10884202508597964,
+        0.09582372571447832,
+        0.060917597446929636,
+        0.09999328410588666,
+        6.572966194375984e-19,
+        4.1081026678705257e-19,
+        6.572966222168897e-19
+      ]
+    },
+    {
+      "tick": 280,
+      "phase": [
+        0.4674457429048414,
+        0.4056761268781302,
+        0.34390651085141904,
+        0.28213689482470783,
+        0.22036727879799667,
+        0.15859766277128548,
+        0.09682804674457429,
+        0.035058430717863104
+      ],
+      "height_m": [
+        0.13163791497761962,
+        0.08172908073526536,
+        0.037750967069375946,
+        0.029600527004536675,
+        0.029708687211225174,
+        0.029632818157539813,
+        0.02963281815753982,
+        0.029632818157539802
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        7,
+        9,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.12562595055615805,
+        0.10889205321610917,
+        0.09540876312772992,
+        0.060499712382923954,
+        0.0849339326769961,
+        6.57296619437568e-19,
+        4.1081026671532906e-19,
+        6.572966225388433e-19
+      ]
+    },
+    {
+      "tick": 290,
+      "phase": [
+        0.48414023372287146,
+        0.4223706176961603,
+        0.3606010016694491,
+        0.2988313856427379,
+        0.2370617696160267,
+        0.17529215358931552,
+        0.11352253756260434,
+        0.05175292153589316
+      ],
+      "height_m": [
+        0.1406621003122401,
+        0.0964295890889342,
+        0.046699561950978574,
+        0.02960073945296792,
+        0.029708095283498603,
+        0.02963281815753982,
+        0.029632818157539813,
+        0.029632818157539813
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        7,
+        9,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.11734832302478339,
+        0.10881338157745203,
+        0.09611557831085578,
+        0.06016965642411211,
+        0.08174831524896375,
+        6.572966194379467e-19,
+        4.108102666436919e-19,
+        6.572966225389549e-19
+      ]
+    },
+    {
+      "tick": 300,
+      "phase": [
+        0.5008347245409015,
+        0.43906510851419034,
+        0.3772954924874791,
+        0.31552587646076796,
+        0.25375626043405675,
+        0.19198664440734559,
+        0.1302170283806344,
+        0.06844741235392321
+      ],
+      "height_m": [
+        0.14624378830833326,
+        0.11071667882131957,
+        0.058292421839025464,
+        0.030144349867954334,
+        0.029707700619133266,
+        0.029622885079150504,
+        0.029632818157539802,
+        0.02963281815753982
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        6,
+        9,
+        5,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.10881179486499544,
+        0.10858389290597403,
+        0.09827524213512387,
+        0.08928476791846941,
+        0.08011116611678916,
+        0.11315755727689147,
+        4.1081026658990215e-19,
+        6.572966225390437e-19
+      ]
+    },
+    {
+      "tick": 310,
+      "phase": [
+        0.5175292153589316,
+        0.4557595993322204,
+        0.3939899833055092,
+        0.332220367278798,
+        0.27045075125208684,
+        0.20868113522537562,
+        0.14691151919866444,
+        0.08514190317195326
+      ],
+      "height_m": [
+        0.14840053628911481,
+        0.1237508961955246,
+        0.07174875973907527,
+        0.033402212931340124,
+        0.029707364362430606,
+        0.029621655862473197,
+        0.02963281815753979,
+        0.029632818157539823
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        6,
+        9,
+        5,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.1041773800032715,
+        0.10822672945484321,
+        0.10038570297240461,
+        0.08907715966893988,
+        0.07893815775628073,
+        0.08059095145223757,
+        4.1081026651843773e-19,
+        6.572966224675706e-19
+      ]
+    },
+    {
+      "tick": 320,
+      "phase": [
+        0.5342237061769616,
+        0.4724540901502504,
+        0.41068447412353926,
+        0.34891485809682804,
+        0.2871452420701169,
+        0.2253756260434057,
+        0.1636060100166945,
+        0.10183639398998331
+      ],
+      "height_m": [
+        0.1490840554065694,
+        0.13470880301830912,
+        0.08623435229286598,
+        0.04011112838455468,
+        0.02970704545397048,
+        0.02962146400461678,
+        0.029632818157539802,
+        0.029632818157539823
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        6,
+        9,
+        5,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.10165866134574326,
+        0.10780877434724856,
+        0.1001006937647159,
+        0.08922731190196559,
+        0.07804992212041512,
+        0.07961563982421531,
+        4.1081026678669623e-19,
+        6.57296622432132e-19
+      ]
+    },
+    {
+      "tick": 330,
+      "phase": [
+        0.5509181969949917,
+        0.48914858096828046,
+        0.4273789649415693,
+        0.36560934891485813,
+        0.3038397328881469,
+        0.24207011686143573,
+        0.18030050083472454,
+        0.11853088480801335
+      ],
+      "height_m": [
+        0.14929968027540771,
+        0.14278306328264417,
+        0.10089958294767934,
+        0.0499285777919045,
+        0.029718023547349915,
+        0.029621534179601484,
+        0.029549643894691755,
+        0.02963281815753982
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        6,
+        9,
+        5,
+        2,
+        1
+      ],
+      "tangential_force_N": [
+        0.10028782290900012,
+        0.10739992309689209,
+        0.09935845319142773,
+        0.09058109776591575,
+        0.08617455681019517,
+        0.07923689083976437,
+        0.11894974153591752,
+        6.572966223244619e-19
+      ]
+    },
+    {
+      "tick": 340,
+      "phase": [
+        0.5676126878130218,
+        0.5058430717863105,
+        0.44407345575959933,
+        0.3823038397328882,
+        0.32053422370617696,
+        0.2587646076794658,
+        0.1969949916527546,
+        0.13522537562604342
+      ],
+      "height_m": [
+        0.14936698285682787,
+        0.14721131916311114,
+        0.11489711282460861,
+        0.062165740617370416,
+        0.030874855323039973,
+        0.0296216760405093,
+        0.029552280627269722,
+        0.029632818157539813
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        6,
+        8,
+        5,
+        7,
+        1
+      ],
+      "tangential_force_N": [
+        0.0995018239553191,
+        0.10742490743882174,
+        0.09844124259004879,
+        0.09366870979370867,
+        0.09795545547105336,
+        0.07899485200796814,
+        0.17329354255173862,
+        6.572966224316239e-19
+      ]
+    },
+    {
+      "tick": 350,
+      "phase": [
+        0.5843071786310517,
+        0.5225375626043406,
+        0.4607679465776294,
+        0.3989983305509182,
+        0.337228714524207,
+        0.27545909849749584,
+        0.21368948247078465,
+        0.15191986644407346
+      ],
+      "height_m": [
+        0.14938727323671264,
+        0.1487405897477316,
+        0.12739208553873455,
+        0.07601940220822591,
+        0.03516308002944297,
+        0.02962183673347586,
+        0.029552652448861794,
+        0.029632818157539802
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        6,
+        8,
+        5,
+        7,
+        1
+      ],
+      "tangential_force_N": [
+        0.09901916136313751,
+        0.10817010458986953,
+        0.09737376521771805,
+        0.0959763049910013,
+        0.09808675122827354,
+        0.0788075614846227,
+        0.10467479566554885,
+        6.572966223602451e-19
+      ]
+    },
+    {
+      "tick": 360,
+      "phase": [
+        0.6010016694490818,
+        0.5392320534223707,
+        0.47746243739565947,
+        0.41569282136894825,
+        0.3539232053422371,
+        0.2921535893155259,
+        0.2303839732888147,
+        0.1686143572621035
+      ],
+      "height_m": [
+        0.14939266466665507,
+        0.1492242967668405,
+        0.1375666622721124,
+        0.09064814822791592,
+        0.042862710234494415,
+        0.029622001551810617,
+        0.029553334492410006,
+        0.02963281815753979
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        6,
+        8,
+        5,
+        7,
+        1
+      ],
+      "tangential_force_N": [
+        0.09869373492580116,
+        0.10840473316000226,
+        0.09614827451243899,
+        0.09514696198737112,
+        0.09853360732738631,
+        0.07865264725075939,
+        0.08846610553340438,
+        6.572966219665376e-19
+      ]
+    },
+    {
+      "tick": 370,
+      "phase": [
+        0.6176961602671118,
+        0.5559265442404007,
+        0.4941569282136895,
+        0.4323873121869783,
+        0.37061769616026713,
+        0.3088480801335559,
+        0.24707846410684475,
+        0.18530884808013356
+      ],
+      "height_m": [
+        0.14939172229252637,
+        0.14937650147686618,
+        0.1446179692079254,
+        0.10520166471040586,
+        0.053484771811324563,
+        0.02973455690602333,
+        0.029553967861149028,
+        0.029582977993382584
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        6,
+        8,
+        5,
+        7,
+        5
+      ],
+      "tangential_force_N": [
+        0.0983146718252143,
+        0.1084660812201528,
+        0.09480193790653951,
+        0.09403213053258078,
+        0.1011959118327842,
+        0.09710322111154403,
+        0.08538066572216482,
+        0.2569031704691265
+      ]
+    },
+    {
+      "tick": 380,
+      "phase": [
+        0.6343906510851419,
+        0.5726210350584308,
+        0.5108514190317196,
+        0.4490818030050084,
+        0.38731218697829717,
+        0.325542570951586,
+        0.2637729549248748,
+        0.2020033388981636
+      ],
+      "height_m": [
+        0.1493884887602976,
+        0.14942360378625597,
+        0.14795767648747563,
+        0.11883554084930142,
+        0.06629275290429718,
+        0.03170907773920071,
+        0.029554534304513918,
+        0.02958344082085018
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        6,
+        8,
+        4,
+        7,
+        5
+      ],
+      "tangential_force_N": [
+        0.09818580522217277,
+        0.10847181652701024,
+        0.09427136744617173,
+        0.09286484319249586,
+        0.10731858812983204,
+        0.09536976922000763,
+        0.08390640151905591,
+        0.1208359946765537
+      ]
+    },
+    {
+      "tick": 390,
+      "phase": [
+        0.651085141903172,
+        0.5893155258764607,
+        0.5275459098497496,
+        0.4657762938230384,
+        0.4040066777963272,
+        0.34223706176961605,
+        0.28046744574290483,
+        0.21869782971619367
+      ],
+      "height_m": [
+        0.14938513370579756,
+        0.14943739038801646,
+        0.14904150819453763,
+        0.1307198475001115,
+        0.08046756101039115,
+        0.03704266097346609,
+        0.029555059000227098,
+        0.02958370313226702
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        6,
+        8,
+        4,
+        7,
+        5
+      ],
+      "tangential_force_N": [
+        0.09812138357977512,
+        0.10845984742429104,
+        0.0943203855532854,
+        0.08825904664463409,
+        0.11491699575489231,
+        0.09512503697169389,
+        0.08288191711791495,
+        0.1091160358792871
+      ]
+    },
+    {
+      "tick": 400,
+      "phase": [
+        0.667779632721202,
+        0.6060100166944908,
+        0.5442404006677797,
+        0.48247078464106846,
+        0.4207011686143573,
+        0.3589315525876461,
+        0.2971619365609349,
+        0.2353923205342237
+      ],
+      "height_m": [
+        0.14938164235712914,
+        0.14944043656182393,
+        0.1493845571119073,
+        0.14004167045319135,
+        0.09516326309557022,
+        0.04568661492199207,
+        0.029555560915830965,
+        0.029584083064054634
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        6,
+        8,
+        4,
+        7,
+        5
+      ],
+      "tangential_force_N": [
+        0.09805772388730258,
+        0.10842987243939864,
+        0.09427004989722093,
+        0.08678813890851104,
+        0.11953009619183952,
+        0.09469486719827361,
+        0.08207370743823003,
+        0.10278111997636305
+      ]
+    },
+    {
+      "tick": 410,
+      "phase": [
+        0.6844741235392321,
+        0.6227045075125209,
+        0.5609348914858097,
+        0.4991652754590985,
+        0.43739565943238734,
+        0.3756260434056761,
+        0.31385642737896496,
+        0.25208681135225375
+      ],
+      "height_m": [
+        0.1493778916591159,
+        0.14943819297931157,
+        0.14949252653130288,
+        0.14600097371064785,
+        0.1095301756650235,
+        0.05704700264651381,
+        0.029951111044215942,
+        0.029584523688025374
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        6,
+        8,
+        4,
+        6,
+        5
+      ],
+      "tangential_force_N": [
+        0.0979679818380281,
+        0.10842018028054053,
+        0.0942002281630185,
+        0.08431567279060637,
+        0.11912978859321934,
+        0.09430427981012401,
+        0.09870267602311866,
+        0.09823686061618657
+      ]
+    },
+    {
+      "tick": 420,
+      "phase": [
+        0.7011686143572621,
+        0.6393989983305509,
+        0.5776293823038398,
+        0.5158597662771286,
+        0.4540901502504174,
+        0.39232053422370616,
+        0.330550918196995,
+        0.2687813021702838
+      ],
+      "height_m": [
+        0.149374130671931,
+        0.14943492228343533,
+        0.14952589158141316,
+        0.1484161758139726,
+        0.122727578222803,
+        0.07035259840093791,
+        0.03287256352235316,
+        0.029584989346242235
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        6,
+        8,
+        4,
+        6,
+        5
+      ],
+      "tangential_force_N": [
+        0.20038251722898032,
+        0.10840907058343241,
+        0.09412745538997144,
+        0.08363872665195812,
+        0.11728214296793152,
+        0.09404294976974305,
+        0.09847010709360254,
+        0.09465673051894156
+      ]
+    },
+    {
+      "tick": 430,
+      "phase": [
+        0.7178631051752922,
+        0.656093489148581,
+        0.5943238731218699,
+        0.5325542570951586,
+        0.4707846410684474,
+        0.40901502504173626,
+        0.34724540901502504,
+        0.2854757929883139
+      ],
+      "height_m": [
+        0.14915707256846306,
+        0.14943176188031232,
+        0.14953558666003383,
+        0.14918379434799275,
+        0.13393032683828934,
+        0.084772570379699,
+        0.03924037264676641,
+        0.029585463461708907
+      ],
+      "finger_contacts": [
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        4,
+        4,
+        6,
+        6,
+        8,
+        4,
+        6,
+        5
+      ],
+      "tangential_force_N": [
+        0.06372678321813485,
+        0.10839713278328143,
+        0.09405635403228083,
+        0.08338266236903308,
+        0.11384816299816454,
+        0.09388053186212766,
+        0.09853775172588043,
+        0.09174493349094812
+      ]
+    },
+    {
+      "tick": 440,
+      "phase": [
+        0.7345575959933223,
+        0.672787979966611,
+        0.6110183639398998,
+        0.5492487479131887,
+        0.48747913188647746,
+        0.4257095158597663,
+        0.3639398998330551,
+        0.3021702838063439
+      ],
+      "height_m": [
+        0.14883109145299728,
+        0.14942855557927856,
+        0.14953709248408187,
+        0.14942646128159426,
+        0.1423295739408538,
+        0.09945807392224242,
+        0.048773049266371785,
+        0.029588598277521114
+      ],
+      "finger_contacts": [
+        [
+          3,
+          2
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        5,
+        4,
+        6,
+        6,
+        8,
+        4,
+        6,
+        5
+      ],
+      "tangential_force_N": [
+        0.07079201285513488,
+        0.10838770078976098,
+        0.093965636314273,
+        0.083259181177329,
+        0.10719178624319808,
+        0.09374805370104838,
+        0.0993496311179812,
+        0.08906539992341947
+      ]
+    },
+    {
+      "tick": 450,
+      "phase": [
+        0.7512520868113522,
+        0.6894824707846411,
+        0.6277128547579299,
+        0.5659432387312188,
+        0.5041736227045075,
+        0.44240400667779634,
+        0.3806343906510852,
+        0.31886477462437396
+      ],
+      "height_m": [
+        0.14876755096956296,
+        0.14942520103101456,
+        0.14953455430192847,
+        0.14950255759242995,
+        0.14714082184633773,
+        0.11356105614153655,
+        0.06080173429183192,
+        0.03051270575087989
+      ],
+      "finger_contacts": [
+        [
+          4,
+          2
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        6,
+        8,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.06921622432888051,
+        0.10838021836907134,
+        0.0938765398613963,
+        0.08318946875814465,
+        0.1005993618400683,
+        0.09360244610094726,
+        0.10131205680241243,
+        0.09996064032083263
+      ]
+    },
+    {
+      "tick": 460,
+      "phase": [
+        0.7679465776293823,
+        0.7061769616026712,
+        0.6444073455759599,
+        0.5826377295492488,
+        0.5208681135225376,
+        0.4590984974958264,
+        0.3973288814691152,
+        0.335559265442404
+      ],
+      "height_m": [
+        0.14876163018503646,
+        0.149415191528277,
+        0.14953167931136557,
+        0.14952580296771634,
+        0.14885656442403236,
+        0.12624496097947782,
+        0.07453025657240159,
+        0.03445235711044761
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9,
+        3,
+        6,
+        6,
+        8,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.17587482825072076,
+        0.06920176935781636,
+        0.09382547036516156,
+        0.08313905113743389,
+        0.09797041773581297,
+        0.09344818602034283,
+        0.10403028796771101,
+        0.10060563951718678
+      ]
+    },
+    {
+      "tick": 470,
+      "phase": [
+        0.7846410684474123,
+        0.7228714524207012,
+        0.66110183639399,
+        0.5993322203672788,
+        0.5375626043405676,
+        0.47579298831385647,
+        0.41402337228714525,
+        0.3522537562604341
+      ],
+      "height_m": [
+        0.14875805539918643,
+        0.14286577363855388,
+        0.14952891422232137,
+        0.14953228479668337,
+        0.1493996886673451,
+        0.13668984123866113,
+        0.08911970242095749,
+        0.0418250215569502
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9,
+        2,
+        6,
+        6,
+        8,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.09929250652418072,
+        0.09242174873466898,
+        0.09378622530043794,
+        0.08309662502635348,
+        0.09706271005550526,
+        0.09331174329168192,
+        0.10646152085033253,
+        0.10072281959258919
+      ]
+    },
+    {
+      "tick": 480,
+      "phase": [
+        0.8013355592654424,
+        0.7395659432387313,
+        0.6777963272120201,
+        0.6160267111853088,
+        0.5542570951585977,
+        0.4924874791318865,
+        0.4307178631051753,
+        0.36894824707846413
+      ],
+      "height_m": [
+        0.14875606075186038,
+        0.1297065851056845,
+        0.14952607081065852,
+        0.14953209996332456,
+        0.1495709954096889,
+        0.14409107033410423,
+        0.10372006219426627,
+        0.052184783086284645
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9,
+        0,
+        6,
+        6,
+        8,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.08333024990437007,
+        0.0,
+        0.09374613611364399,
+        0.08305451128735916,
+        0.09672670381274935,
+        0.09319270489563745,
+        0.10589025416243217,
+        0.10084945593972082
+      ]
+    },
+    {
+      "tick": 490,
+      "phase": [
+        0.8180300500834725,
+        0.7562604340567612,
+        0.6944908180300501,
+        0.6327212020033389,
+        0.5709515859766278,
+        0.5091819699499165,
+        0.44741235392320533,
+        0.38564273789649417
+      ],
+      "height_m": [
+        0.1487546165330632,
+        0.053115669265155215,
+        0.14952310674026145,
+        0.14952931637018338,
+        0.14962443520085017,
+        0.14778024919698937,
+        0.11748588106968492,
+        0.06480920976350989
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9,
+        0,
+        6,
+        6,
+        8,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.07672408360953382,
+        0.0,
+        0.09370261175329454,
+        0.08299335937828611,
+        0.09655733852501577,
+        0.09379939204277288,
+        0.10451724350057917,
+        0.10094125899267538
+      ]
+    },
+    {
+      "tick": 500,
+      "phase": [
+        0.8347245409015025,
+        0.7729549248747913,
+        0.7111853088480802,
+        0.649415692821369,
+        0.5876460767946577,
+        0.5258764607679466,
+        0.4641068447412354,
+        0.4023372287145242
+      ],
+      "height_m": [
+        0.14875344467728782,
+        0.01955133664897714,
+        0.14852037815911448,
+        0.1495265717931534,
+        0.14964051867714936,
+        0.14899544323360134,
+        0.12958519752557335,
+        0.07888387652750226
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9,
+        1,
+        2,
+        6,
+        8,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.07396258848072589,
+        0.0037118691028530993,
+        0.05812034178984202,
+        0.0829612832327482,
+        0.09643704766712091,
+        0.09455346162181377,
+        0.10299756274923678,
+        0.10090014042641593
+      ]
+    },
+    {
+      "tick": 510,
+      "phase": [
+        0.8514190317195326,
+        0.7896494156928214,
+        0.7278797996661102,
+        0.666110183639399,
+        0.6043405676126878,
+        0.5425709515859767,
+        0.48080133555926546,
+        0.41903171953255425
+      ],
+      "height_m": [
+        0.14875239213947059,
+        0.021335406401001122,
+        0.11955622853824396,
+        0.14952392425717,
+        0.14964468050914587,
+        0.1493796218321779,
+        0.13920284336993402,
+        0.09356409785628884
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9,
+        1,
+        0,
+        6,
+        8,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.0727548554689778,
+        0.01844272043400732,
+        0.0,
+        0.08293946817821368,
+        0.0963294104728783,
+        0.09476006376090851,
+        0.10064053129737424,
+        0.1006478286848249
+      ]
+    },
+    {
+      "tick": 520,
+      "phase": [
+        0.8681135225375626,
+        0.8063439065108514,
+        0.7445742904841403,
+        0.6828046744574291,
+        0.6210350584307179,
+        0.5592654424040067,
+        0.4974958263772955,
+        0.43572621035058434
+      ],
+      "height_m": [
+        0.1487513885514445,
+        0.02120308508934719,
+        0.026380833424530105,
+        0.1495211959345354,
+        0.14964320973300363,
+        0.14950029355982855,
+        0.14553708680646482,
+        0.10799986021152598
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9,
+        1,
+        1,
+        6,
+        8,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.07220159743287403,
+        0.00567388543371982,
+        0.14380008799766172,
+        0.08291722580480146,
+        0.09625495411546178,
+        0.09480145260901036,
+        0.09800195334584551,
+        0.10015959978992535
+      ]
+    },
+    {
+      "tick": 530,
+      "phase": [
+        0.8848080133555927,
+        0.8230383973288815,
+        0.7612687813021703,
+        0.6994991652754591,
+        0.6377295492487479,
+        0.5759599332220368,
+        0.5141903171953256,
+        0.4524207011686144
+      ],
+      "height_m": [
+        0.1487504043258184,
+        0.02139053044347174,
+        0.022221128136059438,
+        0.14951839058404548,
+        0.14964043666961538,
+        0.14953740450423952,
+        0.14823830912956132,
+        0.1213491079638986
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9,
+        1,
+        1,
+        6,
+        8,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.07192953791155074,
+        0.00410616587552306,
+        0.02062052061968094,
+        0.08289256870432611,
+        0.09615774589209658,
+        0.0947920362126673,
+        0.09730133355914737,
+        0.0994507704539412
+      ]
+    },
+    {
+      "tick": 540,
+      "phase": [
+        0.9015025041736228,
+        0.8397328881469115,
+        0.7779632721202003,
+        0.7161936560934892,
+        0.654424040066778,
+        0.5926544240400667,
+        0.5308848080133556,
+        0.4691151919866444
+      ],
+      "height_m": [
+        0.14781878293950412,
+        0.0207080009279585,
+        0.02314082406303059,
+        0.14424092127121643,
+        0.14963782173991896,
+        0.14954802433833855,
+        0.14909893487161896,
+        0.13278512164592068
+      ],
+      "finger_contacts": [
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        2,
+        1,
+        1,
+        1,
+        8,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.0036017898841133045,
+        0.008668942185078223,
+        0.0165998129122976,
+        0.044981355671491655,
+        0.09605532729646474,
+        0.09476679931516813,
+        0.09713706775578161,
+        0.09859107284156125
+      ]
+    },
+    {
+      "tick": 550,
+      "phase": [
+        0.9181969949916527,
+        0.8564273789649416,
+        0.7946577629382304,
+        0.7328881469115193,
+        0.671118530884808,
+        0.6093489148580968,
+        0.5475792988313857,
+        0.48580968280467446
+      ],
+      "height_m": [
+        0.08946129717680043,
+        0.020588368403367273,
+        0.020596027006789575,
+        0.10445392532404836,
+        0.149635232234418,
+        0.14954975712257998,
+        0.1493708013384489,
+        0.14149792523002927
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        0,
+        1,
+        1,
+        0,
+        8,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.0,
+        0.011734887887812505,
+        0.01137533535364656,
+        0.0,
+        0.09595810805670635,
+        0.09480070659860751,
+        0.09701899435798389,
+        0.09768064747511834
+      ]
+    },
+    {
+      "tick": 560,
+      "phase": [
+        0.9348914858096828,
+        0.8731218697829717,
+        0.8113522537562604,
+        0.7495826377295493,
+        0.6878130217028381,
+        0.6260434056761269,
+        0.5642737896494157,
+        0.5025041736227045
+      ],
+      "height_m": [
+        0.027296304814383606,
+        0.020342068914705816,
+        0.02277669101950722,
+        0.026771272746689556,
+        0.14963253341139862,
+        0.14954692354311372,
+        0.14945606572491046,
+        0.14669246739095348
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        8,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.007501330564067871,
+        0.014103825900534573,
+        0.012151947664253754,
+        0.007526545048294931,
+        0.0958650434208351,
+        0.09472523871727861,
+        0.09692261064867551,
+        0.0969987308156965
+      ]
+    },
+    {
+      "tick": 570,
+      "phase": [
+        0.9515859766277129,
+        0.8898163606010017,
+        0.8280467445742905,
+        0.7662771285475793,
+        0.7045075125208682,
+        0.6427378964941569,
+        0.5809682804674458,
+        0.5191986644407346
+      ],
+      "height_m": [
+        0.027566568031585973,
+        0.020560926110034256,
+        0.02129294602053829,
+        0.025165706422197294,
+        0.14959357988146643,
+        0.14954340455683413,
+        0.14948219089955422,
+        0.14861532366926222
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        4,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.004693744373599965,
+        0.01089499765741787,
+        0.0066073640352517305,
+        0.005905994091859677,
+        0.06730051005848467,
+        0.0946671116579586,
+        0.09683644293258703,
+        0.0980937845227897
+      ]
+    },
+    {
+      "tick": 580,
+      "phase": [
+        0.9682804674457429,
+        0.9065108514190318,
+        0.8447412353923206,
+        0.7829716193656093,
+        0.7212020033388982,
+        0.659432387312187,
+        0.5976627712854758,
+        0.5358931552587646
+      ],
+      "height_m": [
+        0.021715265631957366,
+        0.020306174569454563,
+        0.021570058865958877,
+        0.020455035220728446,
+        0.13423132289714654,
+        0.14953982460306547,
+        0.14948957954998807,
+        0.1492238676030014
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.0076388961793235274,
+        0.02432967248014255,
+        0.0002283604479910087,
+        0.026491471606513946,
+        0.050485563796618504,
+        0.09463233072555514,
+        0.09675634797808022,
+        0.09847678911841942
+      ]
+    },
+    {
+      "tick": 590,
+      "phase": [
+        0.984974958263773,
+        0.9232053422370617,
+        0.8614357262103506,
+        0.7996661101836394,
+        0.7378964941569283,
+        0.6761268781302171,
+        0.6143572621035058,
+        0.5525876460767947
+      ],
+      "height_m": [
+        0.02263359748467296,
+        0.020211912051190186,
+        0.020959286431339763,
+        0.021804013111251987,
+        0.04546694368815302,
+        0.14953602167149657,
+        0.14948991808787024,
+        0.1494151826454753
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        3,
+        1,
+        1,
+        0,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.007436717032877981,
+        0.003806329245501442,
+        0.00844968053380174,
+        0.01862848824464355,
+        0.0,
+        0.09460841128528247,
+        0.09665118158097818,
+        0.0985581797864189
+      ]
+    },
+    {
+      "tick": 600,
+      "phase": [
+        0.0,
+        0.9398998330550918,
+        0.8781302170283807,
+        0.8163606010016695,
+        0.7545909849749582,
+        0.6928213689482471,
+        0.6310517529215359,
+        0.5692821368948248
+      ],
+      "height_m": [
+        0.032145665901256844,
+        0.020247548858704074,
+        0.021074017769399604,
+        0.02143273795543171,
+        0.02657526331100382,
+        0.1495319793888904,
+        0.14948712886287943,
+        0.14947414417231
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        0,
+        3,
+        2,
+        1,
+        1,
+        4,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        0.0,
+        6.40583791871964e-05,
+        0.0038706866701647647,
+        0.005448126928782288,
+        0.0032772897025267456,
+        0.09458907654953105,
+        0.09656416820419472,
+        0.09853904777025829
+      ]
+    },
+    {
+      "tick": 610,
+      "phase": [
+        0.01669449081803005,
+        0.9565943238731219,
+        0.8948247078464107,
+        0.8330550918196995,
+        0.7712854757929883,
+        0.7095158597662772,
+        0.6477462437395659,
+        0.5859766277128547
+      ],
+      "height_m": [
+        0.0295738026426317,
+        0.020249628883275958,
+        0.021429371124284585,
+        0.02299974778779851,
+        0.021588980172109886,
+        0.1493141381575481,
+        0.14948418942649447,
+        0.1494911270949151
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        3,
+        1,
+        1,
+        1,
+        2,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        6.475016160317322e-19,
+        2.095893964867753e-06,
+        0.006780275184121181,
+        0.01359087622994877,
+        0.015361278046086418,
+        0.06273337103556366,
+        0.09651078207239358,
+        0.09848752533971598
+      ]
+    },
+    {
+      "tick": 620,
+      "phase": [
+        0.0333889816360601,
+        0.9732888146911519,
+        0.9115191986644408,
+        0.8497495826377296,
+        0.7879799666110184,
+        0.7262103505843072,
+        0.664440734557596,
+        0.6026711185308848
+      ],
+      "height_m": [
+        0.029631872172269362,
+        0.02024975362720978,
+        0.020967655392485886,
+        0.023278098521196056,
+        0.02384828508526065,
+        0.13665966454628226,
+        0.14948125458708114,
+        0.1494947722923265
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        3,
+        1,
+        1,
+        1,
+        1,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        6.571940337836176e-19,
+        9.899878170523812e-08,
+        0.014199929338086783,
+        0.0043452363240404305,
+        0.016069936092173186,
+        0.070085777065684,
+        0.09646537069183517,
+        0.09839992266555955
+      ]
+    },
+    {
+      "tick": 630,
+      "phase": [
+        0.05008347245409015,
+        0.989983305509182,
+        0.9282136894824708,
+        0.8664440734557596,
+        0.8046744574290484,
+        0.7429048414023373,
+        0.6811352253756261,
+        0.6193656093489148
+      ],
+      "height_m": [
+        0.029632802480706318,
+        0.02024976098180937,
+        0.02118435788404471,
+        0.02094310557730613,
+        0.021456138922298282,
+        0.07179685141047903,
+        0.14947815166652786,
+        0.1494923562300237
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        3,
+        2,
+        1,
+        1,
+        0,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        6.5729528566497465e-19,
+        5.094686718878387e-09,
+        0.0031403666899635636,
+        0.011335401383228907,
+        0.009654641232296667,
+        0.0,
+        0.09641857284631503,
+        0.09834223754109457
+      ]
+    },
+    {
+      "tick": 640,
+      "phase": [
+        0.0667779632721202,
+        0.005008347245409015,
+        0.9449081803005008,
+        0.8831385642737897,
+        0.8213689482470785,
+        0.7595993322203674,
+        0.6978297161936561,
+        0.6360601001669449
+      ],
+      "height_m": [
+        0.029632817897602647,
+        0.02961662268823315,
+        0.020932062569495976,
+        0.021083979868159748,
+        0.023263421637073733,
+        0.024944082092917444,
+        0.1494748959876498,
+        0.14948800572468862
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        2,
+        1,
+        1,
+        1,
+        6,
+        4
+      ],
+      "tangential_force_N": [
+        6.572965108681593e-19,
+        1.6043114420850251e-18,
+        0.0036426966557341718,
+        0.014000065129361035,
+        0.011570835285873254,
+        0.02378820104662012,
+        0.09636852878098359,
+        0.09832920134085368
+      ]
+    },
+    {
+      "tick": 650,
+      "phase": [
+        0.08347245409015025,
+        0.021702838063439065,
+        0.9616026711185309,
+        0.8998330550918198,
+        0.8380634390651085,
+        0.7762938230383973,
+        0.7145242070116862,
+        0.652754590984975
+      ],
+      "height_m": [
+        0.02963281815322978,
+        0.0296325448706574,
+        0.02031401699205612,
+        0.021011862550985198,
+        0.022731466127656023,
+        0.023502309682614738,
+        0.14916181574786772,
+        0.1494835046715405
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        4
+      ],
+      "tangential_force_N": [
+        6.57296523782525e-19,
+        3.286305906751939e-19,
+        0.01241643926092694,
+        0.007494994474266519,
+        0.012200322109839923,
+        0.009555676954386628,
+        0.06485086241649768,
+        0.09828169720439014
+      ]
+    },
+    {
+      "tick": 660,
+      "phase": [
+        0.1001669449081803,
+        0.038397328881469114,
+        0.9782971619365609,
+        0.9165275459098498,
+        0.8547579298831386,
+        0.7929883138564274,
+        0.7312186978297163,
+        0.669449081803005
+      ],
+      "height_m": [
+        0.029632818157468366,
+        0.029632813626859086,
+        0.02027316352586547,
+        0.021087288996389567,
+        0.02086133608096995,
+        0.021837385906851844,
+        0.13978038793463282,
+        0.14947879324959384
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        2,
+        1,
+        1,
+        1,
+        3,
+        4
+      ],
+      "tangential_force_N": [
+        6.572965238739778e-19,
+        3.286479455957771e-19,
+        0.0058054460177332625,
+        0.005342694211708475,
+        0.030159550557442905,
+        0.05045446236361977,
+        0.1447212458908395,
+        0.09822531074541485
+      ]
+    },
+    {
+      "tick": 670,
+      "phase": [
+        0.11686143572621036,
+        0.05509181969949917,
+        0.994991652754591,
+        0.9332220367278798,
+        0.8714524207011687,
+        0.8096828046744574,
+        0.7479131886477463,
+        0.6861435726210351
+      ],
+      "height_m": [
+        0.029632818157538647,
+        0.02963281808241624,
+        0.020250238060534317,
+        0.020132020537560306,
+        0.02052596654655083,
+        0.021867939407043985,
+        0.1394419138066358,
+        0.14947378474038503
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        2,
+        1,
+        1,
+        1,
+        3,
+        4
+      ],
+      "tangential_force_N": [
+        6.572965238734505e-19,
+        3.286481685395679e-19,
+        0.009596058289026158,
+        0.024888457261908067,
+        0.017923430305735778,
+        0.010064619777030239,
+        0.07682861534130964,
+        0.09816555330701429
+      ]
+    },
+    {
+      "tick": 680,
+      "phase": [
+        0.1335559265442404,
+        0.07178631051752922,
+        0.01001669449081803,
+        0.9499165275459098,
+        0.8881469115191987,
+        0.8263772954924875,
+        0.7646076794657763,
+        0.7028380634390651
+      ],
+      "height_m": [
+        0.029632818157539813,
+        0.029632818156294198,
+        0.02960447717012182,
+        0.020383274859457574,
+        0.02154409076174116,
+        0.02175939323668699,
+        0.13882292031531668,
+        0.14946577808322173
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        4,
+        3
+      ],
+      "tangential_force_N": [
+        6.572965238736464e-19,
+        3.286481711669479e-19,
+        6.526649361990971e-19,
+        0.015382531279072638,
+        0.004423450926703985,
+        0.010377855573342806,
+        0.2139562414847122,
+        0.08328942922787833
+      ]
+    },
+    {
+      "tick": 690,
+      "phase": [
+        0.15025041736227046,
+        0.08848080133555927,
+        0.02671118530884808,
+        0.9666110183639399,
+        0.9048414023372288,
+        0.8430717863105176,
+        0.7813021702838063,
+        0.7195325542570952
+      ],
+      "height_m": [
+        0.029632818157539816,
+        0.02963281815751918,
+        0.029632355883959103,
+        0.02051279343565211,
+        0.021488523738094966,
+        0.022188506760361562,
+        0.138820529079068,
+        0.14324501273638213
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        4,
+        0
+      ],
+      "tangential_force_N": [
+        6.572965238732965e-19,
+        3.286481711927922e-19,
+        6.572409513362726e-19,
+        0.010638944640035572,
+        0.0073968978480098094,
+        0.009467053626069262,
+        0.07375569510855881,
+        0.0
+      ]
+    },
+    {
+      "tick": 700,
+      "phase": [
+        0.1669449081803005,
+        0.10517529215358933,
+        0.04340567612687813,
+        0.98330550918197,
+        0.9215358931552587,
+        0.8597662771285476,
+        0.7979966611018364,
+        0.7362270450751253
+      ],
+      "height_m": [
+        0.02963281815753981,
+        0.02963281815753949,
+        0.029632810494593497,
+        0.020319555210943935,
+        0.021474483336407068,
+        0.02045152949621932,
+        0.13881746364164194,
+        0.10285631220998906
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1,
+        1,
+        1,
+        2,
+        2,
+        1,
+        4,
+        0
+      ],
+      "tangential_force_N": [
+        6.572965237214402e-19,
+        3.2864817119290734e-19,
+        6.572957329630993e-19,
+        0.005729815930649632,
+        0.007831025222718625,
+        0.011050431867858139,
+        0.07355927974415533,
+        0.0
+      ]
+    },
+    {
+      "tick": 710,
+      "phase": [
+        0.18363939899833057,
+        0.12186978297161936,
+        0.06010016694490818,
+        1.0,
+        0.9382303839732888,
+        0.8764607679465777,
+        0.8146911519198665,
+        0.7529215358931552
+      ],
+      "height_m": [
+        0.029451521307673808,
+        0.02963281815753981,
+        0.029632818030480117,
+        0.020305941164889544,
+        0.02145146671538937,
+        0.0203258755756546,
+        0.13881494159407173,
+        0.02362420525256489
+      ],
+      "finger_contacts": [
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        4,
+        1,
+        1,
+        3,
+        3,
+        2,
+        4,
+        1
+      ],
+      "tangential_force_N": [
+        0.3277803639548137,
+        3.2864817119292453e-19,
+        6.572964213143226e-19,
+        0.000520997440177329,
+        0.0052777852061221394,
+        0.02160246274278404,
+        0.0735442275232062,
+        0.0035758633866896125
+      ]
+    },
+    {
+      "tick": 720,
+      "phase": [
+        0.2003338898163606,
+        0.13856427378964942,
+        0.07679465776293823,
+        0.015025041736227046,
+        0.9549248747913189,
+        0.8931552587646077,
+        0.8313856427378965,
+        0.7696160267111853
+      ],
+      "height_m": [
+        0.029459351743348565,
+        0.029632818157539785,
+        0.02963281815543304,
+        0.029623986614393624,
+        0.021444933123195998,
+        0.02024200605844667,
+        0.13881271726399844,
+        0.02483054549279298
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7,
+        1,
+        1,
+        1,
+        3,
+        2,
+        4,
+        2
+      ],
+      "tangential_force_N": [
+        0.11841393627748083,
+        3.286481712105531e-19,
+        6.572964291107359e-19,
+        6.560205553310056e-19,
+        0.002752495673487179,
+        0.010486123336039321,
+        0.07352957002476351,
+        0.0071213001896893715
+      ]
+    },
+    {
+      "tick": 730,
+      "phase": [
+        0.21702838063439064,
+        0.15525876460767948,
+        0.09348914858096828,
+        0.03171953255425709,
+        0.9716193656093489,
+        0.9098497495826378,
+        0.8480801335559266,
+        0.7863105175292154
+      ],
+      "height_m": [
+        0.02946082165538942,
+        0.0296328181575398,
+        0.0296328181575049,
+        0.02963267247252496,
+        0.02140585411415725,
+        0.02023689130830644,
+        0.13881062616145184,
+        0.023268580793333337
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7,
+        1,
+        1,
+        1,
+        1,
+        3,
+        4,
+        1
+      ],
+      "tangential_force_N": [
+        0.11351783289269357,
+        3.286481711929591e-19,
+        6.572964291800544e-19,
+        6.5728034636116915e-19,
+        0.007803313562478487,
+        0.0015910239381009216,
+        0.07351518362503984,
+        0.004306149745231425
+      ]
+    },
+    {
+      "tick": 740,
+      "phase": [
+        0.2337228714524207,
+        0.17195325542570952,
+        0.11018363939899833,
+        0.048414023372287146,
+        0.988313856427379,
+        0.9265442404006679,
+        0.8647746243739566,
+        0.8030050083472454
+      ],
+      "height_m": [
+        0.029462058300953695,
+        0.029632818157539816,
+        0.029632818157539254,
+        0.029632815742123796,
+        0.021450734119083544,
+        0.020248961888982914,
+        0.13880859001027718,
+        0.020829743470888066
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7,
+        1,
+        1,
+        1,
+        3,
+        3,
+        4,
+        1
+      ],
+      "tangential_force_N": [
+        0.11230753843883674,
+        3.286481711928977e-19,
+        6.572964291801872e-19,
+        6.5729634424076495e-19,
+        0.0063746895623200146,
+        3.0587876484737216e-05,
+        0.07350092060434084,
+        0.006210552570079745
+      ]
+    },
+    {
+      "tick": 750,
+      "phase": [
+        0.25041736227045075,
+        0.18864774624373956,
+        0.12687813021702837,
+        0.0651085141903172,
+        0.00333889816360601,
+        0.9432387312186978,
+        0.8814691151919867,
+        0.8196994991652755
+      ],
+      "height_m": [
+        0.029463153826581445,
+        0.02950769626771219,
+        0.029632818157539792,
+        0.02963281811748957,
+        0.02823204367541581,
+        0.02024971349494698,
+        0.1388065755362046,
+        0.02216722905756466
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7,
+        5,
+        1,
+        1,
+        0,
+        3,
+        4,
+        1
+      ],
+      "tangential_force_N": [
+        0.11092619413322864,
+        0.21728849388716193,
+        6.572964291088221e-19,
+        6.572965405705939e-19,
+        0.0,
+        7.140142615654045e-07,
+        0.07348672468272961,
+        0.009759147000804366
+      ]
+    },
+    {
+      "tick": 760,
+      "phase": [
+        0.2671118530884808,
+        0.20534223706176963,
+        0.14357262103505844,
+        0.08180300500834725,
+        0.02003338898163606,
+        0.9599332220367279,
+        0.8981636060100168,
+        0.8363939899833055
+      ],
+      "height_m": [
+        0.029464175289521766,
+        0.029509726604023557,
+        0.029632818157539816,
+        0.029632818156875754,
+        0.02960756249572162,
+        0.020249758618769622,
+        0.13880456943974823,
+        0.020551960399649998
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7,
+        5,
+        1,
+        1,
+        1,
+        3,
+        4,
+        1
+      ],
+      "tangential_force_N": [
+        0.1094437865275499,
+        0.15748090360777928,
+        6.572964291801376e-19,
+        6.572965426858921e-19,
+        6.536701907216986e-19,
+        3.44274250719937e-08,
+        0.07347257516320457,
+        0.010676310418074089
+      ]
+    },
+    {
+      "tick": 770,
+      "phase": [
+        0.2838063439065109,
+        0.22203672787979967,
+        0.16026711185308848,
+        0.0984974958263773,
+        0.03672787979966611,
+        0.9766277128547579,
+        0.9148580968280468,
+        0.8530884808013356
+      ],
+      "height_m": [
+        0.02946515904985077,
+        0.029511181172651706,
+        0.029632818157539827,
+        0.029632818157528818,
+        0.029632405478477217,
+        0.020249761274200806,
+        0.09892935723710904,
+        0.022401687537939946
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7,
+        5,
+        1,
+        1,
+        1,
+        3,
+        0,
+        1
+      ],
+      "tangential_force_N": [
+        0.10800422766057899,
+        0.14556688445300578,
+        6.572964291535967e-19,
+        6.57296542702045e-19,
+        6.572543441575949e-19,
+        1.8094286497876346e-09,
+        0.0,
+        0.01011849306747831
+      ]
+    },
+    {
+      "tick": 780,
+      "phase": [
+        0.3005008347245409,
+        0.23873121869782973,
+        0.17696160267111855,
+        0.11519198664440734,
+        0.05342237061769616,
+        0.993322203672788,
+        0.9315525876460768,
+        0.8697829716193657
+      ],
+      "height_m": [
+        0.029466256762801152,
+        0.029512292991023314,
+        0.029632818157539816,
+        0.029632818157539625,
+        0.029632811316506098,
+        0.020249761429567848,
+        0.021947283449891036,
+        0.02114137190623913
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7,
+        5,
+        1,
+        1,
+        1,
+        3,
+        0,
+        1
+      ],
+      "tangential_force_N": [
+        0.10678182066477805,
+        0.13708261192172233,
+        6.57296429010405e-19,
+        6.5729654263198825e-19,
+        6.5729606666635265e-19,
+        9.658512712142367e-11,
+        0.0,
+        0.006596266447516226
+      ]
+    },
+    {
+      "tick": 790,
+      "phase": [
+        0.31719532554257096,
+        0.2554257095158598,
+        0.19365609348914858,
+        0.1318864774624374,
+        0.07011686143572621,
+        0.008347245409015025,
+        0.9482470784641068,
+        0.8864774624373957
+      ],
+      "height_m": [
+        0.030183951027401047,
+        0.029513284558255533,
+        0.029603128969011253,
+        0.029632818157539823,
+        0.02963281804410824,
+        0.02923562269831055,
+        0.01971684220332146,
+        0.020880377561494235
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        7,
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "tangential_force_N": [
+        0.11122421205304235,
+        0.13027705317581886,
+        0.13886205203149576,
+        6.572965426931843e-19,
+        6.572965623662461e-19,
+        6.307081662775392e-19,
+        0.0,
+        0.010025971565089982
+      ]
+    },
+    {
+      "tick": 800,
+      "phase": [
+        0.333889816360601,
+        0.27212020033388984,
+        0.21035058430717865,
+        0.14858096828046746,
+        0.08681135225375626,
+        0.025041736227045076,
+        0.9649415692821369,
+        0.9031719532554258
+      ],
+      "height_m": [
+        0.03377774825970025,
+        0.029514233692615265,
+        0.029603602638386125,
+        0.029632818157539834,
+        0.029632818155659008,
+        0.029626966528874896,
+        0.02504785745968689,
+        0.020796052741527123
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        7,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.10978533613997075,
+        0.12467555455374503,
+        0.10769163687887687,
+        6.572965426930022e-19,
+        6.572965673563731e-19,
+        6.56563946111745e-19,
+        0.01239727366670428,
+        0.007438278675490142
+      ]
+    },
+    {
+      "tick": 810,
+      "phase": [
+        0.35058430717863104,
+        0.2888146911519199,
+        0.2270450751252087,
+        0.1652754590984975,
+        0.10350584307178631,
+        0.041736227045075125,
+        0.981636060100167,
+        0.9198664440734557
+      ],
+      "height_m": [
+        0.04081928697181596,
+        0.029515166578133464,
+        0.02960391440248409,
+        0.02963281815753982,
+        0.029632818157508643,
+        0.029632721461642916,
+        0.025307526488599096,
+        0.020236018298812778
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        7,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.11025633221636448,
+        0.1200272866883397,
+        0.0923263600663666,
+        6.572965426127078e-19,
+        6.572965673855491e-19,
+        6.572875735778242e-19,
+        0.010983459538256895,
+        0.015687698140645037
+      ]
+    },
+    {
+      "tick": 820,
+      "phase": [
+        0.36727879799666113,
+        0.3055091819699499,
+        0.24373956594323873,
+        0.18196994991652754,
+        0.12020033388981637,
+        0.05843071786310518,
+        0.998330550918197,
+        0.9365609348914858
+      ],
+      "height_m": [
+        0.05091052544932925,
+        0.02954595775858935,
+        0.029604113978187,
+        0.029599654534495673,
+        0.029632818157539317,
+        0.02963281655430351,
+        0.020076522332191916,
+        0.020151708809194507
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        6,
+        7,
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.11248311027392957,
+        0.11710672041134246,
+        0.08531982684138835,
+        0.11289790721157819,
+        6.572965673851804e-19,
+        6.572965159252828e-19,
+        0.008903343108874159,
+        0.012068823030368459
+      ]
+    },
+    {
+      "tick": 830,
+      "phase": [
+        0.38397328881469117,
+        0.32220367278797996,
+        0.2604340567612688,
+        0.1986644407345576,
+        0.13689482470784642,
+        0.07512520868113523,
+        0.01335559265442404,
+        0.9532554257095159
+      ],
+      "height_m": [
+        0.06334476528420721,
+        0.030953424642558222,
+        0.0296042855794063,
+        0.029599029760778734,
+        0.0296328181575398,
+        0.029632818130956393,
+        0.029429334130701486,
+        0.020683796381793195
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        7,
+        7,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.11698658294698742,
+        0.10845400024113784,
+        0.0817015751481533,
+        0.11932845028274242,
+        6.572965673853739e-19,
+        6.572966184908887e-19,
+        3.945720950917152e-19,
+        0.010236800200365768
+      ]
+    },
+    {
+      "tick": 840,
+      "phase": [
+        0.4006677796327212,
+        0.33889816360601005,
+        0.27712854757929883,
+        0.21535893155258765,
+        0.15358931552587646,
+        0.09181969949916528,
+        0.03005008347245409,
+        0.9699499165275459
+      ],
+      "height_m": [
+        0.07731304926364586,
+        0.03558791428453025,
+        0.02960445465595571,
+        0.029599437435036426,
+        0.029632818157539795,
+        0.029632818157099047,
+        0.029629765474638515,
+        0.020340542454664448
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        7,
+        7,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.12320496396054814,
+        0.108564597344664,
+        0.07898880246965126,
+        0.07083366022362261,
+        6.57296567348834e-19,
+        6.5729661943483425e-19,
+        4.1059088387448564e-19,
+        0.011928502179856398
+      ]
+    },
+    {
+      "tick": 850,
+      "phase": [
+        0.41736227045075125,
+        0.3555926544240401,
+        0.2938230383973289,
+        0.2320534223706177,
+        0.17028380634390652,
+        0.10851419031719532,
+        0.04674457429048414,
+        0.986644407345576
+      ],
+      "height_m": [
+        0.09197243230737932,
+        0.04360721761319858,
+        0.029604626985298473,
+        0.029599781548389537,
+        0.029632818157539785,
+        0.029632818157532523,
+        0.029632767630769764,
+        0.02019289248623101
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        7,
+        7,
+        1,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.1290931849767918,
+        0.10857021195802702,
+        0.07677019814098343,
+        0.06260940204382204,
+        6.572965672687873e-19,
+        6.572966194378819e-19,
+        4.108075928887289e-19,
+        0.012617084241145476
+      ]
+    },
+    {
+      "tick": 860,
+      "phase": [
+        0.4340567612687813,
+        0.3722871452420701,
+        0.31051752921535897,
+        0.24874791318864775,
+        0.18697829716193656,
+        0.12520868113522537,
+        0.06343906510851419,
+        0.001669449081803005
+      ],
+      "height_m": [
+        0.10647280682423117,
+        0.05448256811688936,
+        0.029787868704047014,
+        0.02960004843515927,
+        0.02971220021594194,
+        0.029632818157539695,
+        0.029632817319773786,
+        0.029163428911013103
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        7,
+        7,
+        9,
+        1,
+        1,
+        0
+      ],
+      "tangential_force_N": [
+        0.13227070830982407,
+        0.10866648343839108,
+        0.10003080742456484,
+        0.06151170603028169,
+        0.18945379468947535,
+        6.57296619437772e-19,
+        4.1081023761795855e-19,
+        0.0
+      ]
+    },
+    {
+      "tick": 870,
+      "phase": [
+        0.4507512520868114,
+        0.38898163606010017,
+        0.327212020033389,
+        0.2654424040066778,
+        0.20367278797996663,
+        0.14190317195325544,
+        0.08013355592654424,
+        0.018363939899833055
+      ],
+      "height_m": [
+        0.11997084976124422,
+        0.06746435365767015,
+        0.03206853426051459,
+        0.029600280918161023,
+        0.029709902054556033,
+        0.029632818157539827,
+        0.029632818143648737,
+        0.029625730359128324
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        5,
+        6,
+        7,
+        9,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.1311264515121884,
+        0.10884178265335182,
+        0.09582367564136479,
+        0.06091867356622141,
+        0.09999277171184766,
+        6.572966194200945e-19,
+        4.108102665543322e-19,
+        6.563206753316506e-19
+      ]
+    },
+    {
+      "tick": 880,
+      "phase": [
+        0.4674457429048414,
+        0.4056761268781302,
+        0.34390651085141904,
+        0.28213689482470783,
+        0.22036727879799667,
+        0.15859766277128548,
+        0.09682804674457429,
+        0.035058430717863104
+      ],
+      "height_m": [
+        0.13163791497761962,
+        0.08172905300121569,
+        0.03775093912721604,
+        0.029600499569293448,
+        0.029708668056462353,
+        0.029632818157539827,
+        0.029632818157309504,
+        0.029632701118674457
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        7,
+        9,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.12562595055615805,
+        0.10889192510582588,
+        0.09540859937829593,
+        0.0605006942377145,
+        0.08493431898663235,
+        6.572966194200078e-19,
+        4.1081026678699335e-19,
+        6.572842957383058e-19
+      ]
+    },
+    {
+      "tick": 890,
+      "phase": [
+        0.48414023372287146,
+        0.4223706176961603,
+        0.3606010016694491,
+        0.2988313856427379,
+        0.2370617696160267,
+        0.17529215358931552,
+        0.11352253756260434,
+        0.05175292153589316
+      ],
+      "height_m": [
+        0.1406621003122401,
+        0.09642956134984626,
+        0.04669953395122908,
+        0.02960071214381018,
+        0.029708074985357522,
+        0.02963281815753982,
+        0.029632818157536014,
+        0.029632816217036305
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6,
+        4,
+        6,
+        7,
+        9,
+        1,
+        1,
+        1
+      ],
+      "tangential_force_N": [
+        0.11734832302478339,
+        0.10881325153455669,
+        0.09611540579701056,
+        0.06017056227459004,
+        0.08174826397423139,
+        6.572966194022505e-19,
+        4.108102667867621e-19,
+        6.572964744265383e-19
+      ]
+    }
+  ],
+  "trajectory_metrics": null,
+  "policy": {
+    "layers": [
+      26,
+      128,
+      128,
+      7
+    ],
+    "seed": 99173,
+    "dtype": "float32",
+    "residual_scale_rad": 0.0001,
+    "scope": "inference rollout",
+    "control_error_budget_rad": 1e-09,
+    "warmup_reference_max_error_rad": 0.0
+  },
+  "repeats": [
+    {
+      "steps": 1200,
+      "seconds": 3.2189846839755774,
+      "transitions_per_second": 2982.3068273017093,
+      "attempted_transitions_per_second": 2982.3068273017093,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "failed_steps_per_environment": null,
+      "batch_steps_per_second": 372.78835341271366,
+      "resets": 8
+    },
+    {
+      "steps": 1200,
+      "seconds": 3.214220274006948,
+      "transitions_per_second": 2986.7274740422004,
+      "attempted_transitions_per_second": 2986.7274740422004,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "failed_steps_per_environment": null,
+      "batch_steps_per_second": 373.34093425527504,
+      "resets": 8
+    },
+    {
+      "steps": 1200,
+      "seconds": 3.2379939319798723,
+      "transitions_per_second": 2964.798638189565,
+      "attempted_transitions_per_second": 2964.798638189565,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "failed_steps_per_environment": null,
+      "batch_steps_per_second": 370.5998297736956,
+      "resets": 8
+    }
+  ],
+  "egg_position_m": [
+    [
+      0.6008761426005559,
+      0.0271314945534155,
+      0.02261458703531482
+    ],
+    [
+      0.6074220710311287,
+      0.06816618686660247,
+      0.02000301825422941
+    ],
+    [
+      0.6154385060433945,
+      0.0691644053408391,
+      0.020480574378433446
+    ],
+    [
+      0.6273627326556648,
+      0.006329474491064239,
+      0.021375985820236976
+    ],
+    [
+      0.6515093764746541,
+      0.022154767039896377,
+      0.026396980637184736
+    ],
+    [
+      0.6519526114775199,
+      0.014930352353798887,
+      0.14953236707388742
+    ],
+    [
+      0.6536181874378648,
+      0.0011632393675243388,
+      0.14948739974442302
+    ],
+    [
+      0.6507765243791171,
+      0.0028686336752341483,
+      0.14947089343647718
+    ]
+  ],
+  "torch_peak_allocated_bytes": 1286144,
+  "saved_reset_state_bytes": 10368,
+  "device_free_bytes": 99544989696,
+  "reset_index_cache_at_end": {
+    "enabled": true,
+    "capacity_elements": 8,
+    "stored_elements": 0,
+    "bytes": 0,
+    "selectors": 0,
+    "hits": 0,
+    "misses": 0,
+    "evictions": 0,
+    "single_selections": 32
+  }
+}

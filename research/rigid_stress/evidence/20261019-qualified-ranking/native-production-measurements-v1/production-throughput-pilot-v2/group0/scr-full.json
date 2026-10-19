@@ -1,0 +1,8373 @@
+{
+  "scope": "live",
+  "envs": 1,
+  "level": 1,
+  "precision": "64",
+  "quadrature": 10,
+  "dt": 0.01,
+  "substeps": 1,
+  "varied": true,
+  "seed": 623016,
+  "load_model": "intrinsic_surface_fan_q10_squared_coordinates_ports8_adjacent_unfolding_verified_single_face_disks_failed_disk_nine_panel_refinement_failed_wrench_fan_partition_body_source_prior",
+  "contact_model": "intrinsic",
+  "public_default_stress": false,
+  "contact_block_size": 16,
+  "intrinsic_support": "contact",
+  "surface_fan_frontier": true,
+  "intrinsic_load_partition": "body_source_prior",
+  "cooperative_tractions": true,
+  "warm_start_tractions": true,
+  "effective_contact_block_size": 16,
+  "egg_geometry": "mesh64",
+  "collision_method": "mpr",
+  "contact_patch": "off",
+  "condition_count": 8,
+  "conditions": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+  "conditions_sha256": "1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa",
+  "cooperative_solve": true,
+  "cooperative_pressure": true,
+  "cooperative_scatter": true,
+  "cooperative_balance": true,
+  "contact_wrench_reuse": "auto",
+  "packed_block_size": null,
+  "coalesced_residual": "auto",
+  "contact_moment_reuse": "auto",
+  "effective_contact_moment_reuse": [
+    false
+  ],
+  "effective_contact_wrench_reuse": [
+    false
+  ],
+  "effective_packed_block_sizes": [
+    0
+  ],
+  "face_parallel_scatter": true,
+  "scatter_tasks_per_env": 32,
+  "cached_peak": true,
+  "cached_face_bounds": true,
+  "method": "auto",
+  "inverse_precision": "64",
+  "surface_inverse": true,
+  "packed_surface_loads": true,
+  "fused_pipeline": true,
+  "output_mode": "full",
+  "reset_mode": "saved_initial_state",
+  "native_controller": true,
+  "rigid_post_fusion": "auto",
+  "effective_rigid_post_fusion": false,
+  "reset_index_cache": {
+    "enabled": true,
+    "capacity_elements": 1,
+    "stored_elements": 0,
+    "bytes": 0,
+    "selectors": 0,
+    "hits": 0,
+    "misses": 0,
+    "evictions": 0,
+    "single_selections": 1
+  },
+  "controller_buffers": {
+    "target": {
+      "shape": [
+        1,
+        9
+      ],
+      "dtype": "torch.float64",
+      "bytes": 72
+    },
+    "grip": {
+      "shape": [
+        1
+      ],
+      "dtype": "torch.float32",
+      "bytes": 4
+    },
+    "limit": {
+      "shape": [
+        1
+      ],
+      "dtype": "torch.float32",
+      "bytes": 4
+    },
+    "radius": {
+      "shape": [
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 8
+    },
+    "zero_action": {
+      "shape": [
+        1,
+        7
+      ],
+      "dtype": "torch.float64",
+      "bytes": 56
+    },
+    "arm_indices": {
+      "shape": [
+        7
+      ],
+      "dtype": "torch.int32",
+      "bytes": 28
+    }
+  },
+  "history": 0,
+  "host": "rtx-209-223",
+  "slurm_job_id": "728967",
+  "source_revision": "92692aa612666b015ac4b506a39b9e7d3dfdf998",
+  "arguments": {
+    "scope": "live",
+    "envs": 1,
+    "level": 1,
+    "steps": 1200,
+    "warmup": 900,
+    "repetitions": 3,
+    "minimum_seconds": 0.0,
+    "varied": true,
+    "seed": 623016,
+    "public_default_stress": false,
+    "contact_model": "intrinsic",
+    "intrinsic_support": "contact",
+    "dense_surface_fan": false,
+    "intrinsic_load_partition": "body_source_prior",
+    "contact_block_size": 16,
+    "egg_geometry": "mesh64",
+    "collision_method": "mpr",
+    "contact_patch": "off",
+    "source_revision": "92692aa612666b015ac4b506a39b9e7d3dfdf998",
+    "conditions": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+    "save_conditions": null,
+    "serial_solve": false,
+    "serial_pressure": false,
+    "serial_tractions": false,
+    "cold_tractions": false,
+    "serial_scatter": false,
+    "serial_balance": false,
+    "contact_wrench_reuse": "auto",
+    "packed_block_size": null,
+    "coalesced_residual": "auto",
+    "contact_moment_reuse": "auto",
+    "contact_warp_scatter": false,
+    "scatter_tasks_per_env": 32,
+    "uncached_peak": false,
+    "uncached_face_bounds": false,
+    "method": "auto",
+    "inverse_precision": "64",
+    "full_inverse": false,
+    "dense_surface_loads": false,
+    "history": 0,
+    "unfused_pipeline": false,
+    "policy_precision": "32",
+    "output_mode": "full",
+    "legacy_reset": false,
+    "torch_controller": false,
+    "host_reset_indices": false,
+    "rigid_post_fusion": "auto",
+    "trace": false,
+    "trace_steps": 50,
+    "trajectory_metrics": false,
+    "compact_log": true,
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/production-throughput-pilot-v2/group0/scr-full.json"
+  },
+  "command": [
+    "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/examples/speed_benchmark/rigid_stress.py",
+    "--level",
+    "1",
+    "--warmup",
+    "900",
+    "--steps",
+    "1200",
+    "--repetitions",
+    "3",
+    "--minimum-seconds",
+    "0",
+    "--varied",
+    "--seed",
+    "623016",
+    "--conditions",
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+    "--egg-geometry",
+    "mesh64",
+    "--collision-method",
+    "mpr",
+    "--contact-patch",
+    "off",
+    "--history",
+    "0",
+    "--compact-log",
+    "--source-revision",
+    "92692aa612666b015ac4b506a39b9e7d3dfdf998",
+    "--envs",
+    "1",
+    "--scope",
+    "live",
+    "--contact-model",
+    "intrinsic",
+    "--intrinsic-load-partition",
+    "body_source_prior",
+    "--output-mode",
+    "full",
+    "--output",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/production-throughput-pilot-v2/group0/scr-full.json"
+  ],
+  "source_sha256": {
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/examples/speed_benchmark/rigid_stress.py": "9432c0ccc7ea724358a3c2e8f057ee188b59c511a804506e53005c80f8ff1ec1",
+    "examples/rigid/egg_stress_controller.py": "2760c2d6a89dbf0a3ec28f1a7c6030d6d73b71b43c6a4b55a5d5ab745e7de33d",
+    "examples/rigid/franka_egg_stress.py": "ee11757cce9b35a4fdf00abee4b76ee3aa1dfe773c011980fe77c23ab845439c",
+    "genesis/engine/entities/rigid_entity/description.py": "3bb64792b62103e490166405ecc381aeb73f8f08b724a789f0f64e3bdeafccd6",
+    "genesis/engine/solvers/rigid/rigid_solver.py": "e700fe5b024320329625e9355f434c1f4d3d532072e6ce7e080f20916dad62f7",
+    "genesis/engine/solvers/rigid/stress/__init__.py": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+    "genesis/engine/solvers/rigid/stress/association.py": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3",
+    "genesis/engine/solvers/rigid/stress/balance.py": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712",
+    "genesis/engine/solvers/rigid/stress/boundary_certificate.py": "8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8",
+    "genesis/engine/solvers/rigid/stress/compatibility.py": "a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a",
+    "genesis/engine/solvers/rigid/stress/contact.py": "5bba6b725145f62dc0c7f730cd2129d32110a7f1c63df594bb5979261e78a3ac",
+    "genesis/engine/solvers/rigid/stress/cooperative_fit.py": "b23807e235f42ca84cfcaf959462a923bfd5c3ae6eeeed9a125206dc0b178987",
+    "genesis/engine/solvers/rigid/stress/cooperative_scatter.py": "03396b93fc12218f85c74b4b3a4bbebf21346512967ddecfab66203daaf1934b",
+    "genesis/engine/solvers/rigid/stress/data.py": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19",
+    "genesis/engine/solvers/rigid/stress/factor.py": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c",
+    "genesis/engine/solvers/rigid/stress/failure.py": "01c4ad605afb4fc69ae9a175a267c35b310f6f3cd63c6feb4d94f569ec8c6f63",
+    "genesis/engine/solvers/rigid/stress/fan_refinement.py": "94307edb615c0585cedd8e324af8601a9fab0766446d22e0191e6610f9be354a",
+    "genesis/engine/solvers/rigid/stress/footprint.py": "9c6d0539e3809f97e31d36946bae256191ac4abcb5add63c6b05f785b3f04895",
+    "genesis/engine/solvers/rigid/stress/grid.py": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+    "genesis/engine/solvers/rigid/stress/history.py": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+    "genesis/engine/solvers/rigid/stress/intrinsic.py": "a9f0b2b481f0ee7245bff2b82da5fe739741faa9622a3fa9928def41aca3ecd7",
+    "genesis/engine/solvers/rigid/stress/inverse.py": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43",
+    "genesis/engine/solvers/rigid/stress/lifecycle.py": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa",
+    "genesis/engine/solvers/rigid/stress/model.py": "6c25c7666d5a2e0cb1d2082344b267a4f5bff58f7c0cc48fbfc106df9ce9717e",
+    "genesis/engine/solvers/rigid/stress/operators.py": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+    "genesis/engine/solvers/rigid/stress/paths.py": "002b874dcad674273d4fa4637d4927987c2601a98d31841b33826c910a282c70",
+    "genesis/engine/solvers/rigid/stress/pipeline.py": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9",
+    "genesis/engine/solvers/rigid/stress/post.py": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e",
+    "genesis/engine/solvers/rigid/stress/provenance.py": "846401ff7449414c613db2e3ef4186cab100ccfd24a7483494373d94546258e1",
+    "genesis/engine/solvers/rigid/stress/recovery.py": "c848785ebb615e08f5314e4722cd16d9783680cea7719218207655ce14349f80",
+    "genesis/engine/solvers/rigid/stress/scatter.py": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399",
+    "genesis/engine/solvers/rigid/stress/solve.py": "139fa6fd6be876a12cc813c15b46bf3e377fd8e6990b3e648d012f0b3b471c06",
+    "genesis/engine/solvers/rigid/stress/source_priors.py": "052379a406f986d30931f1867ba70ed9ed3f50968556527f57a508b6ab8b2d24",
+    "genesis/engine/solvers/rigid/stress/source_vertices.py": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf",
+    "genesis/engine/solvers/rigid/stress/surface.py": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e",
+    "genesis/engine/solvers/rigid/stress/surface_frontier.py": "51c4c7b9f412a137bad0132c8ea94aa613096c59a73b7ee89477ade13ec0b5ca",
+    "genesis/engine/solvers/rigid/stress/surface_inverse.py": "5f618141c94558aa9b7fc018e35db19652e59b58aaa675dbd2d6c5ba3b831a09",
+    "genesis/engine/solvers/rigid/stress/topology.py": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2",
+    "genesis/engine/solvers/rigid/stress/traction.py": "4ae6d4532703eb9f90ebc22e32cb055fc404b869aa16155cfaec6d6e456da9b2",
+    "genesis/options/morphs.py": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f",
+    "genesis/options/rigid_stress.py": "7a112293703178e8d371edd26bfc004ebe2a8cb2a157d7f6f738806a4dfb3512"
+  },
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "gpu_uuid": "GPU-17f8935b-04de-40db-a824-e71bc4612a12",
+  "gpu_total_bytes": 101975851008,
+  "quadrants": [
+    1,
+    3,
+    3
+  ],
+  "torch": "2.11.0+cu129",
+  "setup_seconds": 21.488440335029736,
+  "warmup_steps": 900,
+  "warmup_quality": [
+    {
+      "tick": 0,
+      "phase": [
+        0.0
+      ],
+      "height_m": [
+        0.032145665901256844
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        0
+      ],
+      "tangential_force_N": [
+        0
+      ],
+      "contacts": [
+        0
+      ],
+      "maximum_stress_Pa": [
+        0.0
+      ],
+      "residual_N": [
+        0.0
+      ],
+      "rhs_N": [
+        0.0
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        0
+      ],
+      "contact_wrench_force_error_N": [
+        0.0
+      ],
+      "contact_wrench_moment_error_Nm": [
+        0.0
+      ],
+      "contact_radius_range_m": [],
+      "contact_friction_range": []
+    },
+    {
+      "tick": 10,
+      "phase": [
+        0.01669449081803005
+      ],
+      "height_m": [
+        0.0295738026426317
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.475016160317322e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12806.84382974779
+      ],
+      "residual_N": [
+        9.346710747126799e-13
+      ],
+      "rhs_N": [
+        0.03627799717783287
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        1.3877787807814457e-17
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.8940232492426095e-21
+      ],
+      "contact_radius_range_m": [
+        0.007009601483930215,
+        0.007009601483930215
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 20,
+      "phase": [
+        0.0333889816360601
+      ],
+      "height_m": [
+        0.029631872172269362
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.571940337836176e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12927.874903999134
+      ],
+      "residual_N": [
+        9.39307722460902e-13
+      ],
+      "rhs_N": [
+        0.03668819112486506
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        1.3877787807814457e-17
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.8940232492426095e-21
+      ],
+      "contact_radius_range_m": [
+        0.007116796018990444,
+        0.007116796018990444
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 30,
+      "phase": [
+        0.05008347245409015
+      ],
+      "height_m": [
+        0.029632802480706318
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.5729528566497465e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12820.136045569992
+      ],
+      "residual_N": [
+        8.967063854585761e-13
+      ],
+      "rhs_N": [
+        0.036449116013983054
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        2.7755575615628914e-17
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.8940232492426095e-21
+      ],
+      "contact_radius_range_m": [
+        0.007221620722962559,
+        0.007221620722962559
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 40,
+      "phase": [
+        0.0667779632721202
+      ],
+      "height_m": [
+        0.029632817897602647
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.572965108681593e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12713.61928248877
+      ],
+      "residual_N": [
+        8.910691638146667e-13
+      ],
+      "rhs_N": [
+        0.03621192036066776
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        1.3877787807814457e-17
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.3881317890172014e-21
+      ],
+      "contact_radius_range_m": [
+        0.007322923280110164,
+        0.007322923280110164
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 50,
+      "phase": [
+        0.08347245409015025
+      ],
+      "height_m": [
+        0.02963281815322978
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.57296523782525e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12611.94632509124
+      ],
+      "residual_N": [
+        8.54673138950358e-13
+      ],
+      "rhs_N": [
+        0.03598658853171173
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        2.7755575615628914e-17
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.3881317890172014e-21
+      ],
+      "contact_radius_range_m": [
+        0.007419590092909816,
+        0.007419590092909816
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 60,
+      "phase": [
+        0.1001669449081803
+      ],
+      "height_m": [
+        0.029632818157468366
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.572965238739778e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12516.287034289315
+      ],
+      "residual_N": [
+        8.643855828107922e-13
+      ],
+      "rhs_N": [
+        0.035775637103351514
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        2.7755575615628914e-17
+      ],
+      "contact_wrench_moment_error_Nm": [
+        2.964615315390051e-21
+      ],
+      "contact_radius_range_m": [
+        0.007510558523592409,
+        0.007510558523592409
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 70,
+      "phase": [
+        0.11686143572621036
+      ],
+      "height_m": [
+        0.029632818157538647
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.572965238734505e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12427.707746844986
+      ],
+      "residual_N": [
+        9.046738176424769e-13
+      ],
+      "rhs_N": [
+        0.03558124603749227
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        2.7755575615628914e-17
+      ],
+      "contact_wrench_moment_error_Nm": [
+        6.776263578034403e-21
+      ],
+      "contact_radius_range_m": [
+        0.007594828575494759,
+        0.007594828575494759
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 80,
+      "phase": [
+        0.1335559265442404
+      ],
+      "height_m": [
+        0.029632818157539813
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.572965238736464e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12347.071316737483
+      ],
+      "residual_N": [
+        8.314257540213923e-13
+      ],
+      "rhs_N": [
+        0.035405139180186174
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        5.551115123125783e-17
+      ],
+      "contact_wrench_moment_error_Nm": [
+        8.470329472543003e-22
+      ],
+      "contact_radius_range_m": [
+        0.007671473885810824,
+        0.007671473885810824
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 90,
+      "phase": [
+        0.15025041736227046
+      ],
+      "height_m": [
+        0.029632818157539816
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.572965238732965e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12275.27555556114
+      ],
+      "residual_N": [
+        8.747451470946199e-13
+      ],
+      "rhs_N": [
+        0.03524905439114674
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        1.3877787807814457e-17
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.6940658945086007e-21
+      ],
+      "contact_radius_range_m": [
+        0.007739651908901536,
+        0.007739651908901536
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 100,
+      "phase": [
+        0.1669449081803005
+      ],
+      "height_m": [
+        0.02963281815753981
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.572965237214402e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12213.061579629692
+      ],
+      "residual_N": [
+        9.41713511449319e-13
+      ],
+      "rhs_N": [
+        0.035114381168406435
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        1.3877787807814457e-17
+      ],
+      "contact_wrench_moment_error_Nm": [
+        6.352747104407253e-22
+      ],
+      "contact_radius_range_m": [
+        0.007798613178220298,
+        0.007798613178220298
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 110,
+      "phase": [
+        0.18363939899833057
+      ],
+      "height_m": [
+        0.02945152130767381
+      ],
+      "finger_contacts": [
+        [
+          0,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        4
+      ],
+      "tangential_force_N": [
+        0.3277803639548143
+      ],
+      "contacts": [
+        4
+      ],
+      "maximum_stress_Pa": [
+        54606.61372187644
+      ],
+      "residual_N": [
+        5.725818344712287e-12
+      ],
+      "rhs_N": [
+        0.18988190073365568
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        5
+      ],
+      "contact_wrench_force_error_N": [
+        2.1366881619646865e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        6.54926235604409e-15
+      ],
+      "contact_radius_range_m": [
+        0.007847709545039763,
+        0.007847709545039763
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 120,
+      "phase": [
+        0.2003338898163606
+      ],
+      "height_m": [
+        0.02945935174334857
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7
+      ],
+      "tangential_force_N": [
+        0.11841393627747991
+      ],
+      "contacts": [
+        7
+      ],
+      "maximum_stress_Pa": [
+        56529.28840869732
+      ],
+      "residual_N": [
+        7.950308519705463e-12
+      ],
+      "rhs_N": [
+        0.17807964307982896
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.0036290604317483e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.369021569162448e-13
+      ],
+      "contact_radius_range_m": [
+        0.007886401303413315,
+        0.007886401303413315
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 130,
+      "phase": [
+        0.21702838063439064
+      ],
+      "height_m": [
+        0.029460821655389425
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7
+      ],
+      "tangential_force_N": [
+        0.11351783289269574
+      ],
+      "contacts": [
+        7
+      ],
+      "maximum_stress_Pa": [
+        56257.76523573007
+      ],
+      "residual_N": [
+        8.21079471060903e-12
+      ],
+      "rhs_N": [
+        0.17808119204875913
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        3.951606744125936e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        5.2441140307310256e-14
+      ],
+      "contact_radius_range_m": [
+        0.00791426312304806,
+        0.00791426312304806
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 140,
+      "phase": [
+        0.2337228714524207
+      ],
+      "height_m": [
+        0.0294620583009537
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7
+      ],
+      "tangential_force_N": [
+        0.11230753843884
+      ],
+      "contacts": [
+        7
+      ],
+      "maximum_stress_Pa": [
+        56075.78407614279
+      ],
+      "residual_N": [
+        8.761072659720071e-12
+      ],
+      "rhs_N": [
+        0.17813828032473775
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        2.523364002155883e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.7656110322786263e-14
+      ],
+      "contact_radius_range_m": [
+        0.007930988724870526,
+        0.007930988724870526
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 150,
+      "phase": [
+        0.25041736227045075
+      ],
+      "height_m": [
+        0.029463153826581448
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7
+      ],
+      "tangential_force_N": [
+        0.11092619413322628
+      ],
+      "contacts": [
+        7
+      ],
+      "maximum_stress_Pa": [
+        55929.801415350754
+      ],
+      "residual_N": [
+        8.22427598388132e-12
+      ],
+      "rhs_N": [
+        0.1781294192236278
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        5.502038116895563e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        4.52961805576903e-15
+      ],
+      "contact_radius_range_m": [
+        0.007936394247887547,
+        0.007936394247887547
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 160,
+      "phase": [
+        0.2671118530884808
+      ],
+      "height_m": [
+        0.02946417528952177
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7
+      ],
+      "tangential_force_N": [
+        0.10944378652754383
+      ],
+      "contacts": [
+        7
+      ],
+      "maximum_stress_Pa": [
+        55813.44365652088
+      ],
+      "residual_N": [
+        7.730074217065912e-12
+      ],
+      "rhs_N": [
+        0.17811568158284863
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        9.275744051012055e-14
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.3098590134446293e-15
+      ],
+      "contact_radius_range_m": [
+        0.007930420270331157,
+        0.007930420270331157
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 170,
+      "phase": [
+        0.2838063439065109
+      ],
+      "height_m": [
+        0.029465159049850774
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7
+      ],
+      "tangential_force_N": [
+        0.10800422766057413
+      ],
+      "contacts": [
+        7
+      ],
+      "maximum_stress_Pa": [
+        55727.23167192184
+      ],
+      "residual_N": [
+        8.496005652690025e-12
+      ],
+      "rhs_N": [
+        0.1781442379488836
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        2.4053854647689184e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        4.959513896786306e-15
+      ],
+      "contact_radius_range_m": [
+        0.007913132462869498,
+        0.007913132462869498
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 180,
+      "phase": [
+        0.3005008347245409
+      ],
+      "height_m": [
+        0.029466256762801155
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7
+      ],
+      "tangential_force_N": [
+        0.1067818206647814
+      ],
+      "contacts": [
+        7
+      ],
+      "maximum_stress_Pa": [
+        55667.35030093261
+      ],
+      "residual_N": [
+        7.630616612514998e-12
+      ],
+      "rhs_N": [
+        0.17823290129375077
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        3.952232133292456e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        4.7426048568045836e-14
+      ],
+      "contact_radius_range_m": [
+        0.007884720866703077,
+        0.007884720866703077
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 190,
+      "phase": [
+        0.31719532554257096
+      ],
+      "height_m": [
+        0.03018395102740105
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.11122421205304353
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        54345.43107703821
+      ],
+      "residual_N": [
+        6.879380173651418e-12
+      ],
+      "rhs_N": [
+        0.16763297651648795
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        2.1373060334988676e-10
+      ],
+      "contact_wrench_moment_error_Nm": [
+        5.834140209128295e-12
+      ],
+      "contact_radius_range_m": [
+        0.007845497804482168,
+        0.007845497804482168
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 200,
+      "phase": [
+        0.333889816360601
+      ],
+      "height_m": [
+        0.03377774825970025
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.10978533613996636
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        54256.08649971179
+      ],
+      "residual_N": [
+        7.659360598783179e-12
+      ],
+      "rhs_N": [
+        0.16792210826150944
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        2.0171235488163464e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.2628181771096863e-14
+      ],
+      "contact_radius_range_m": [
+        0.0077958944470101635,
+        0.0077958944470101635
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 210,
+      "phase": [
+        0.35058430717863104
+      ],
+      "height_m": [
+        0.04081928697181596
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.11025633221636878
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        54147.60198052612
+      ],
+      "residual_N": [
+        7.201229682132115e-12
+      ],
+      "rhs_N": [
+        0.16823626131883
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.3107167111174987e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.993741840971945e-14
+      ],
+      "contact_radius_range_m": [
+        0.0077364560734743855,
+        0.0077364560734743855
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 220,
+      "phase": [
+        0.36727879799666113
+      ],
+      "height_m": [
+        0.05091052544932925
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.11248311027392763
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        53987.10028221085
+      ],
+      "residual_N": [
+        7.547281600357316e-12
+      ],
+      "rhs_N": [
+        0.16867180048394617
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        5.989930260723163e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        4.8734537799887743e-14
+      ],
+      "contact_radius_range_m": [
+        0.007667836077307639,
+        0.007667836077307639
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 230,
+      "phase": [
+        0.38397328881469117
+      ],
+      "height_m": [
+        0.06334476528420721
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.11698658294699005
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        53810.101454570184
+      ],
+      "residual_N": [
+        7.623152332404729e-12
+      ],
+      "rhs_N": [
+        0.1693485474385944
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        2.074566973612293e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.716821954590902e-14
+      ],
+      "contact_radius_range_m": [
+        0.0075907887835728,
+        0.0075907887835728
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 240,
+      "phase": [
+        0.4006677796327212
+      ],
+      "height_m": [
+        0.07731304926364586
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.12320496396055794
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        53678.64313982573
+      ],
+      "residual_N": [
+        6.988018160396221e-12
+      ],
+      "rhs_N": [
+        0.17028775043682803
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.501950780882902e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        4.7316491124733526e-14
+      ],
+      "contact_radius_range_m": [
+        0.007506161156827393,
+        0.007506161156827393
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 250,
+      "phase": [
+        0.41736227045075125
+      ],
+      "height_m": [
+        0.09197243230737932
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.1290931849767955
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        53649.84182335305
+      ],
+      "residual_N": [
+        7.298654038312041e-12
+      ],
+      "rhs_N": [
+        0.17137308684134916
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.0506124660088082e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.8991839411920105e-14
+      ],
+      "contact_radius_range_m": [
+        0.007414883490621867,
+        0.007414883490621867
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 260,
+      "phase": [
+        0.4340567612687813
+      ],
+      "height_m": [
+        0.10647280682423117
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.13227070830984802
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        53761.22236939854
+      ],
+      "residual_N": [
+        7.372995650850647e-12
+      ],
+      "rhs_N": [
+        0.17241742712280414
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        4.950059868100426e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        8.84140867602803e-15
+      ],
+      "contact_radius_range_m": [
+        0.007317959180979914,
+        0.007317959180979914
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 270,
+      "phase": [
+        0.4507512520868114
+      ],
+      "height_m": [
+        0.11997084976124422
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.1311264515121929
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        54029.763451916304
+      ],
+      "residual_N": [
+        6.60732565026446e-12
+      ],
+      "rhs_N": [
+        0.17327750357816038
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        3.270053748586989e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        2.029153625572379e-14
+      ],
+      "contact_radius_range_m": [
+        0.0072164536962788135,
+        0.0072164536962788135
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 280,
+      "phase": [
+        0.4674457429048414
+      ],
+      "height_m": [
+        0.13163791497761962
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.12562595055615514
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        54452.782905595996
+      ],
+      "residual_N": [
+        7.085406826105319e-12
+      ],
+      "rhs_N": [
+        0.1739350538734236
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.7416135418400377e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.5470752291360035e-14
+      ],
+      "contact_radius_range_m": [
+        0.0071114828647815586,
+        0.0071114828647815586
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 290,
+      "phase": [
+        0.48414023372287146
+      ],
+      "height_m": [
+        0.1406621003122401
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.11734832302477831
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        55005.49304440238
+      ],
+      "residual_N": [
+        7.543921668114542e-12
+      ],
+      "rhs_N": [
+        0.17450235001748282
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        9.907281616665173e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.7712793924959183e-14
+      ],
+      "contact_radius_range_m": [
+        0.007004200608573436,
+        0.007004200608573436
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 300,
+      "phase": [
+        0.5008347245409015
+      ],
+      "height_m": [
+        0.14624378830833326
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.10881179486499946
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        55633.72115105508
+      ],
+      "residual_N": [
+        6.0565399902317724e-12
+      ],
+      "rhs_N": [
+        0.17514253714684724
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        4.1777855840156204e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        5.938132090357943e-14
+      ],
+      "contact_radius_range_m": [
+        0.006895786258741303,
+        0.006895786258741303
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 310,
+      "phase": [
+        0.5175292153589316
+      ],
+      "height_m": [
+        0.14840053628911481
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.1041773800032692
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        56252.27736817729
+      ],
+      "residual_N": [
+        7.502256300513229e-12
+      ],
+      "rhs_N": [
+        0.1760174596476922
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        7.340823619503413e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        5.4527762120779484e-14
+      ],
+      "contact_radius_range_m": [
+        0.0067874315912370975,
+        0.0067874315912370975
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 320,
+      "phase": [
+        0.5342237061769616
+      ],
+      "height_m": [
+        0.1490840554065694
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.1016586613457493
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        56754.22564700871
+      ],
+      "residual_N": [
+        8.276686240856253e-12
+      ],
+      "rhs_N": [
+        0.1769455363083513
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        5.004735824471559e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.2786901555302812e-14
+      ],
+      "contact_radius_range_m": [
+        0.006680327725937588,
+        0.006680327725937588
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 330,
+      "phase": [
+        0.5509181969949917
+      ],
+      "height_m": [
+        0.14929968027540771
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.1002878229089986
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        57165.042185225415
+      ],
+      "residual_N": [
+        7.761334175942275e-12
+      ],
+      "rhs_N": [
+        0.17784588518577862
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        2.9814620851309747e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.432726249004693e-14
+      ],
+      "contact_radius_range_m": [
+        0.00657565203291621,
+        0.00657565203291621
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 340,
+      "phase": [
+        0.5676126878130218
+      ],
+      "height_m": [
+        0.14936698285682787
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.0995018239553185
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        57513.62038475534
+      ],
+      "residual_N": [
+        6.753267766427948e-12
+      ],
+      "rhs_N": [
+        0.1786923252417645
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        3.9505658114602746e-14
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.3166853443574049e-14
+      ],
+      "contact_radius_range_m": [
+        0.006474555189863588,
+        0.006474555189863588
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 350,
+      "phase": [
+        0.5843071786310517
+      ],
+      "height_m": [
+        0.14938727323671264
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.09901916136313738
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        57817.6681000942
+      ],
+      "residual_N": [
+        6.530967693710102e-12
+      ],
+      "rhs_N": [
+        0.17947942296865368
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        9.17533598161845e-14
+      ],
+      "contact_wrench_moment_error_Nm": [
+        2.8879099577794213e-15
+      ],
+      "contact_radius_range_m": [
+        0.006378148532931751,
+        0.006378148532931751
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 360,
+      "phase": [
+        0.6010016694490818
+      ],
+      "height_m": [
+        0.14939266466665507
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.09869373492580616
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        58086.48364815795
+      ],
+      "residual_N": [
+        6.692699237498266e-12
+      ],
+      "rhs_N": [
+        0.18020567461658368
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        2.5881130789669e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        6.4588220672716046e-15
+      ],
+      "contact_radius_range_m": [
+        0.006287491840051534,
+        0.006287491840051534
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 370,
+      "phase": [
+        0.6176961602671118
+      ],
+      "height_m": [
+        0.14939172229252637
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.09831467182521898
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        58285.14304016458
+      ],
+      "residual_N": [
+        6.541662742420064e-12
+      ],
+      "rhs_N": [
+        0.18081742721927782
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        7.473627581394489e-14
+      ],
+      "contact_wrench_moment_error_Nm": [
+        7.377798272317569e-15
+      ],
+      "contact_radius_range_m": [
+        0.006203581681018581,
+        0.006203581681018581
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 380,
+      "phase": [
+        0.6343906510851419
+      ],
+      "height_m": [
+        0.1493884887602976
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.09818580522217296
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        58479.269213036096
+      ],
+      "residual_N": [
+        6.951426508673883e-12
+      ],
+      "rhs_N": [
+        0.18141862201194603
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        7.904327684201006e-14
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.162492296145639e-15
+      ],
+      "contact_radius_range_m": [
+        0.0061273404624129545,
+        0.0061273404624129545
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 390,
+      "phase": [
+        0.651085141903172
+      ],
+      "height_m": [
+        0.14938513370579756
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.09812138357977301
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        58662.300322085604
+      ],
+      "residual_N": [
+        7.657887014644004e-12
+      ],
+      "rhs_N": [
+        0.1819640509146521
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        7.108792331460864e-14
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.3682015291846278e-15
+      ],
+      "contact_radius_range_m": [
+        0.006059606287779266,
+        0.006059606287779266
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 400,
+      "phase": [
+        0.667779632721202
+      ],
+      "height_m": [
+        0.14938164235712914
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.09805772388730168
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        58827.10259952298
+      ],
+      "residual_N": [
+        6.7952213033527764e-12
+      ],
+      "rhs_N": [
+        0.18244074743603655
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        2.2634773203131396e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        5.156072198493103e-15
+      ],
+      "contact_radius_range_m": [
+        0.006001123744532168,
+        0.006001123744532168
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 410,
+      "phase": [
+        0.6844741235392321
+      ],
+      "height_m": [
+        0.1493778916591159
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.09796798183802417
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        58970.74326732474
+      ],
+      "residual_N": [
+        6.796524348021994e-12
+      ],
+      "rhs_N": [
+        0.18284835335903485
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        8.271715442168077e-14
+      ],
+      "contact_wrench_moment_error_Nm": [
+        2.0284183039488427e-15
+      ],
+      "contact_radius_range_m": [
+        0.005952535718864843,
+        0.005952535718864843
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 420,
+      "phase": [
+        0.7011686143572621
+      ],
+      "height_m": [
+        0.149374130671931
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.2003825172289792
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        41626.7432108226
+      ],
+      "residual_N": [
+        4.591509954313427e-12
+      ],
+      "rhs_N": [
+        0.13358032810001605
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        4
+      ],
+      "contact_wrench_force_error_N": [
+        9.041864993829362e-14
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.569255609685879e-15
+      ],
+      "contact_radius_range_m": [
+        0.005914376328637447,
+        0.005914376328637447
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 430,
+      "phase": [
+        0.7178631051752922
+      ],
+      "height_m": [
+        0.14915707256846306
+      ],
+      "finger_contacts": [
+        [
+          2,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        4
+      ],
+      "tangential_force_N": [
+        0.0637267832181349
+      ],
+      "contacts": [
+        4
+      ],
+      "maximum_stress_Pa": [
+        13910.559780140724
+      ],
+      "residual_N": [
+        1.4993026419188596e-12
+      ],
+      "rhs_N": [
+        0.055187446571486845
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        4
+      ],
+      "contact_wrench_force_error_N": [
+        1.0145237431930645e-10
+      ],
+      "contact_wrench_moment_error_Nm": [
+        4.403766014561035e-12
+      ],
+      "contact_radius_range_m": [
+        0.005887065051932761,
+        0.005887065051932761
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 440,
+      "phase": [
+        0.7345575959933223
+      ],
+      "height_m": [
+        0.14883109145299728
+      ],
+      "finger_contacts": [
+        [
+          3,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        5
+      ],
+      "tangential_force_N": [
+        0.07079201285513517
+      ],
+      "contacts": [
+        5
+      ],
+      "maximum_stress_Pa": [
+        14275.462362772594
+      ],
+      "residual_N": [
+        1.713672958064747e-12
+      ],
+      "rhs_N": [
+        0.055257965927609884
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        4
+      ],
+      "contact_wrench_force_error_N": [
+        4.249924945699975e-14
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.6057914755785673e-16
+      ],
+      "contact_radius_range_m": [
+        0.0058709021158226075,
+        0.0058709021158226075
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 450,
+      "phase": [
+        0.7512520868113522
+      ],
+      "height_m": [
+        0.14876755096956296
+      ],
+      "finger_contacts": [
+        [
+          4,
+          2
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.06921622432888085
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        14326.411358717516
+      ],
+      "residual_N": [
+        1.6029755513518282e-12
+      ],
+      "rhs_N": [
+        0.05337060512088866
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        4
+      ],
+      "contact_wrench_force_error_N": [
+        3.787134273014417e-15
+      ],
+      "contact_wrench_moment_error_Nm": [
+        6.833338611742352e-17
+      ],
+      "contact_radius_range_m": [
+        0.005866065196035323,
+        0.005866065196035323
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 460,
+      "phase": [
+        0.7679465776293823
+      ],
+      "height_m": [
+        0.14876163018503646
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9
+      ],
+      "tangential_force_N": [
+        0.17587482825072087
+      ],
+      "contacts": [
+        9
+      ],
+      "maximum_stress_Pa": [
+        45393.51846971707
+      ],
+      "residual_N": [
+        6.4252517419343465e-12
+      ],
+      "rhs_N": [
+        0.17245639390765627
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        3
+      ],
+      "contact_wrench_force_error_N": [
+        2.183312545697758e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.209372243603966e-14
+      ],
+      "contact_radius_range_m": [
+        0.005872607463804171,
+        0.005872607463804171
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 470,
+      "phase": [
+        0.7846410684474123
+      ],
+      "height_m": [
+        0.14875805539918643
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9
+      ],
+      "tangential_force_N": [
+        0.09929250652418306
+      ],
+      "contacts": [
+        9
+      ],
+      "maximum_stress_Pa": [
+        49181.05335394822
+      ],
+      "residual_N": [
+        7.070066143829053e-12
+      ],
+      "rhs_N": [
+        0.1780104636246376
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        3
+      ],
+      "contact_wrench_force_error_N": [
+        1.022457259711963e-15
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.1622380533816443e-17
+      ],
+      "contact_radius_range_m": [
+        0.0058904570013672474,
+        0.0058904570013672474
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 480,
+      "phase": [
+        0.8013355592654424
+      ],
+      "height_m": [
+        0.14875606075186038
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9
+      ],
+      "tangential_force_N": [
+        0.08333024990436162
+      ],
+      "contacts": [
+        9
+      ],
+      "maximum_stress_Pa": [
+        49767.368841358824
+      ],
+      "residual_N": [
+        6.98717531014531e-12
+      ],
+      "rhs_N": [
+        0.17923221659775043
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.1544022429429437e-11
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.5683121616416717e-13
+      ],
+      "contact_radius_range_m": [
+        0.00591941759254419,
+        0.00591941759254419
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 490,
+      "phase": [
+        0.8180300500834725
+      ],
+      "height_m": [
+        0.1487546165330632
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9
+      ],
+      "tangential_force_N": [
+        0.07672408360953273
+      ],
+      "contacts": [
+        9
+      ],
+      "maximum_stress_Pa": [
+        50036.55717356892
+      ],
+      "residual_N": [
+        6.687997398206884e-12
+      ],
+      "rhs_N": [
+        0.1801482005332456
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.7908184183772585e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        2.6049561580694106e-14
+      ],
+      "contact_radius_range_m": [
+        0.005959170879699017,
+        0.005959170879699017
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 500,
+      "phase": [
+        0.8347245409015025
+      ],
+      "height_m": [
+        0.14875344467728782
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9
+      ],
+      "tangential_force_N": [
+        0.07396258848072473
+      ],
+      "contacts": [
+        9
+      ],
+      "maximum_stress_Pa": [
+        50149.62173406193
+      ],
+      "residual_N": [
+        8.04975070216798e-12
+      ],
+      "rhs_N": [
+        0.1805522017342334
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        7.285208566787171e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        9.969508690491578e-15
+      ],
+      "contact_radius_range_m": [
+        0.006009279863378108,
+        0.006009279863378108
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 510,
+      "phase": [
+        0.8514190317195326
+      ],
+      "height_m": [
+        0.14875239213947059
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9
+      ],
+      "tangential_force_N": [
+        0.07275485546896225
+      ],
+      "contacts": [
+        9
+      ],
+      "maximum_stress_Pa": [
+        50170.05203359476
+      ],
+      "residual_N": [
+        7.287504550272493e-12
+      ],
+      "rhs_N": [
+        0.18061461798105646
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.4127719393739571e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.4660259508604735e-14
+      ],
+      "contact_radius_range_m": [
+        0.006069193706152493,
+        0.006069193706152493
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 520,
+      "phase": [
+        0.8681135225375626
+      ],
+      "height_m": [
+        0.1487513885514445
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9
+      ],
+      "tangential_force_N": [
+        0.07220159743287644
+      ],
+      "contacts": [
+        9
+      ],
+      "maximum_stress_Pa": [
+        50134.19528006707
+      ],
+      "residual_N": [
+        7.226643514671808e-12
+      ],
+      "rhs_N": [
+        0.18046177806504812
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.3498743239632366e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.534843011248432e-15
+      ],
+      "contact_radius_range_m": [
+        0.006138253787856878,
+        0.006138253787856878
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 530,
+      "phase": [
+        0.8848080133555927
+      ],
+      "height_m": [
+        0.1487504043258184
+      ],
+      "finger_contacts": [
+        [
+          5,
+          4
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        9
+      ],
+      "tangential_force_N": [
+        0.07192953791155517
+      ],
+      "contacts": [
+        9
+      ],
+      "maximum_stress_Pa": [
+        50062.91494951257
+      ],
+      "residual_N": [
+        6.7731979674207895e-12
+      ],
+      "rhs_N": [
+        0.1801725270664154
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.8080360944288612e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        6.725745444861959e-15
+      ],
+      "contact_radius_range_m": [
+        0.006215700945661421,
+        0.006215700945661421
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 540,
+      "phase": [
+        0.9015025041736228
+      ],
+      "height_m": [
+        0.14781878293950412
+      ],
+      "finger_contacts": [
+        [
+          1,
+          1
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        2
+      ],
+      "tangential_force_N": [
+        0.0036017898841132403
+      ],
+      "contacts": [
+        9
+      ],
+      "maximum_stress_Pa": [
+        813.0158550342403
+      ],
+      "residual_N": [
+        8.811240938717008e-14
+      ],
+      "rhs_N": [
+        0.002819906388252321
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        5
+      ],
+      "contact_wrench_force_error_N": [
+        4.3418998426197457e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        4.602472739312626e-15
+      ],
+      "contact_radius_range_m": [
+        0.00630068381938769,
+        0.00630068381938769
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 550,
+      "phase": [
+        0.9181969949916527
+      ],
+      "height_m": [
+        0.08946129717680042
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        0
+      ],
+      "tangential_force_N": [
+        0
+      ],
+      "contacts": [
+        0
+      ],
+      "maximum_stress_Pa": [
+        0.015162290620700746
+      ],
+      "residual_N": [
+        4.4188836735976745e-18
+      ],
+      "rhs_N": [
+        6.08159884907547e-08
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        0
+      ],
+      "contact_wrench_force_error_N": [
+        0.0
+      ],
+      "contact_wrench_moment_error_Nm": [
+        0.0
+      ],
+      "contact_radius_range_m": [],
+      "contact_friction_range": []
+    },
+    {
+      "tick": 560,
+      "phase": [
+        0.9348914858096828
+      ],
+      "height_m": [
+        0.027296304814383002
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        0.007501330564068301
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        10628.550854730302
+      ],
+      "residual_N": [
+        7.190072898326442e-13
+      ],
+      "rhs_N": [
+        0.029256096779424225
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.6118847485906061e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        2.4388536028262744e-15
+      ],
+      "contact_radius_range_m": [
+        0.006489447350706272,
+        0.006489447350706272
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 570,
+      "phase": [
+        0.9515859766277129
+      ],
+      "height_m": [
+        0.027566568031583246
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        0.004693744373614161
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12535.441516898429
+      ],
+      "residual_N": [
+        8.890732535597212e-13
+      ],
+      "rhs_N": [
+        0.0354110850953366
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.1490584513914984e-11
+      ],
+      "contact_wrench_moment_error_Nm": [
+        7.08221619663613e-14
+      ],
+      "contact_radius_range_m": [
+        0.006591152970837429,
+        0.006591152970837429
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 580,
+      "phase": [
+        0.9682804674457429
+      ],
+      "height_m": [
+        0.021715265631936827
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        0.00763889617931623
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        10732.92721220039
+      ],
+      "residual_N": [
+        6.863646439763302e-13
+      ],
+      "rhs_N": [
+        0.02789576828488658
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.2438326604067823e-11
+      ],
+      "contact_wrench_moment_error_Nm": [
+        4.905169519609929e-14
+      ],
+      "contact_radius_range_m": [
+        0.006696267042414677,
+        0.006696267042414677
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 590,
+      "phase": [
+        0.984974958263773
+      ],
+      "height_m": [
+        0.02263359748469106
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        0.007436717032623353
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        13913.167691224053
+      ],
+      "residual_N": [
+        9.932974903581188e-13
+      ],
+      "rhs_N": [
+        0.0322667976216855
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        4.950252147163614e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        2.4242089008346832e-14
+      ],
+      "contact_radius_range_m": [
+        0.006803634068744915,
+        0.006803634068744915
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 600,
+      "phase": [
+        0.0
+      ],
+      "height_m": [
+        0.032145665901256844
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        0
+      ],
+      "tangential_force_N": [
+        0
+      ],
+      "contacts": [
+        0
+      ],
+      "maximum_stress_Pa": [
+        0.0
+      ],
+      "residual_N": [
+        0.0
+      ],
+      "rhs_N": [
+        0.0
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        0
+      ],
+      "contact_wrench_force_error_N": [
+        0.0
+      ],
+      "contact_wrench_moment_error_Nm": [
+        0.0
+      ],
+      "contact_radius_range_m": [],
+      "contact_friction_range": []
+    },
+    {
+      "tick": 610,
+      "phase": [
+        0.01669449081803005
+      ],
+      "height_m": [
+        0.0295738026426317
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.475016160317322e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12806.843843636307
+      ],
+      "residual_N": [
+        9.629271477792975e-13
+      ],
+      "rhs_N": [
+        0.03627799718661392
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        1.4641774478176727e-10
+      ],
+      "contact_wrench_moment_error_Nm": [
+        2.7151221825891487e-13
+      ],
+      "contact_radius_range_m": [
+        0.007009601483930215,
+        0.007009601483930215
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 620,
+      "phase": [
+        0.0333889816360601
+      ],
+      "height_m": [
+        0.029631872172269362
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.571940337836176e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12927.87491797388
+      ],
+      "residual_N": [
+        9.934577969336647e-13
+      ],
+      "rhs_N": [
+        0.03668819113374546
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        1.4906794499590086e-10
+      ],
+      "contact_wrench_moment_error_Nm": [
+        2.869545209566997e-13
+      ],
+      "contact_radius_range_m": [
+        0.007116796018990444,
+        0.007116796018990444
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 630,
+      "phase": [
+        0.05008347245409015
+      ],
+      "height_m": [
+        0.029632802480706318
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.5729528566497465e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12820.13605938641
+      ],
+      "residual_N": [
+        9.598576555325286e-13
+      ],
+      "rhs_N": [
+        0.03644911602280568
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        1.490572887337169e-10
+      ],
+      "contact_wrench_moment_error_Nm": [
+        2.9086794675539715e-13
+      ],
+      "contact_radius_range_m": [
+        0.007221620722962559,
+        0.007221620722962559
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 640,
+      "phase": [
+        0.0667779632721202
+      ],
+      "height_m": [
+        0.029632817897602647
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.572965108681593e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12713.6192961471
+      ],
+      "residual_N": [
+        9.507342507645e-13
+      ],
+      "rhs_N": [
+        0.03621192036943305
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        1.490159676784093e-10
+      ],
+      "contact_wrench_moment_error_Nm": [
+        2.9448136428370034e-13
+      ],
+      "contact_radius_range_m": [
+        0.007322923280110164,
+        0.007322923280110164
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 650,
+      "phase": [
+        0.08347245409015025
+      ],
+      "height_m": [
+        0.02963281815322978
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.57296523782525e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12611.946338600961
+      ],
+      "residual_N": [
+        9.626216871586115e-13
+      ],
+      "rhs_N": [
+        0.03598658854042266
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        1.48981981389317e-10
+      ],
+      "contact_wrench_moment_error_Nm": [
+        2.979961934817842e-13
+      ],
+      "contact_radius_range_m": [
+        0.007419590092909816,
+        0.007419590092909816
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 660,
+      "phase": [
+        0.1001669449081803
+      ],
+      "height_m": [
+        0.029632818157468366
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.572965238739778e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12516.287047656115
+      ],
+      "residual_N": [
+        1.008958540627398e-12
+      ],
+      "rhs_N": [
+        0.0357756371120115
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        1.4895506321522712e-10
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.013701067432824e-13
+      ],
+      "contact_radius_range_m": [
+        0.007510558523592409,
+        0.007510558523592409
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 670,
+      "phase": [
+        0.11686143572621036
+      ],
+      "height_m": [
+        0.029632818157538647
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.572965238734505e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12427.707760081896
+      ],
+      "residual_N": [
+        8.910685402330711e-13
+      ],
+      "rhs_N": [
+        0.03558124604610524
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        1.4893421447091962e-10
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.045533263591894e-13
+      ],
+      "contact_radius_range_m": [
+        0.007594828575494759,
+        0.007594828575494759
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 680,
+      "phase": [
+        0.1335559265442404
+      ],
+      "height_m": [
+        0.029632818157539813
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.572965238736464e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12347.071329853854
+      ],
+      "residual_N": [
+        9.256617694844477e-13
+      ],
+      "rhs_N": [
+        0.03540513918875664
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        1.4891907065456e-10
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.0751172727094966e-13
+      ],
+      "contact_radius_range_m": [
+        0.007671473885810824,
+        0.007671473885810824
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 690,
+      "phase": [
+        0.15025041736227046
+      ],
+      "height_m": [
+        0.029632818157539816
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.572965238732965e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12275.275568572104
+      ],
+      "residual_N": [
+        9.466316449825091e-13
+      ],
+      "rhs_N": [
+        0.03524905439967943
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        1.4890857216429982e-10
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.101951422471823e-13
+      ],
+      "contact_radius_range_m": [
+        0.007739651908901536,
+        0.007739651908901536
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 700,
+      "phase": [
+        0.1669449081803005
+      ],
+      "height_m": [
+        0.02963281815753981
+      ],
+      "finger_contacts": [
+        [
+          0,
+          0
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        1
+      ],
+      "tangential_force_N": [
+        6.572965237214402e-19
+      ],
+      "contacts": [
+        1
+      ],
+      "maximum_stress_Pa": [
+        12213.06159254645
+      ],
+      "residual_N": [
+        1.028550539560653e-12
+      ],
+      "rhs_N": [
+        0.03511438117690665
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        1
+      ],
+      "contact_wrench_force_error_N": [
+        1.4890206792555382e-10
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.1256578111845727e-13
+      ],
+      "contact_radius_range_m": [
+        0.007798613178220298,
+        0.007798613178220298
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 710,
+      "phase": [
+        0.18363939899833057
+      ],
+      "height_m": [
+        0.02945152130767381
+      ],
+      "finger_contacts": [
+        [
+          0,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        4
+      ],
+      "tangential_force_N": [
+        0.3277803639548143
+      ],
+      "contacts": [
+        4
+      ],
+      "maximum_stress_Pa": [
+        54606.613721883434
+      ],
+      "residual_N": [
+        5.8813451342652494e-12
+      ],
+      "rhs_N": [
+        0.1898819007336596
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        5
+      ],
+      "contact_wrench_force_error_N": [
+        2.3233536382669284e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        6.761426070136437e-15
+      ],
+      "contact_radius_range_m": [
+        0.007847709545039763,
+        0.007847709545039763
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 720,
+      "phase": [
+        0.2003338898163606
+      ],
+      "height_m": [
+        0.02945935174334857
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7
+      ],
+      "tangential_force_N": [
+        0.11841393627747991
+      ],
+      "contacts": [
+        7
+      ],
+      "maximum_stress_Pa": [
+        56529.28840864695
+      ],
+      "residual_N": [
+        7.17530302139994e-12
+      ],
+      "rhs_N": [
+        0.17807964307976198
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        9.382233121555507e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        5.337199136636629e-14
+      ],
+      "contact_radius_range_m": [
+        0.007886401303413315,
+        0.007886401303413315
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 730,
+      "phase": [
+        0.21702838063439064
+      ],
+      "height_m": [
+        0.029460821655389425
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7
+      ],
+      "tangential_force_N": [
+        0.11351783289269574
+      ],
+      "contacts": [
+        7
+      ],
+      "maximum_stress_Pa": [
+        56257.76523572891
+      ],
+      "residual_N": [
+        8.106581443850423e-12
+      ],
+      "rhs_N": [
+        0.17808119204876166
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        2.4011720618422956e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.136157268186054e-14
+      ],
+      "contact_radius_range_m": [
+        0.00791426312304806,
+        0.00791426312304806
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 740,
+      "phase": [
+        0.2337228714524207
+      ],
+      "height_m": [
+        0.0294620583009537
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7
+      ],
+      "tangential_force_N": [
+        0.11230753843884
+      ],
+      "contacts": [
+        7
+      ],
+      "maximum_stress_Pa": [
+        56075.78407613244
+      ],
+      "residual_N": [
+        7.383043475921068e-12
+      ],
+      "rhs_N": [
+        0.17813828032474477
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        9.413015894971987e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.778008914894082e-14
+      ],
+      "contact_radius_range_m": [
+        0.007930988724870526,
+        0.007930988724870526
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 750,
+      "phase": [
+        0.25041736227045075
+      ],
+      "height_m": [
+        0.029463153826581448
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7
+      ],
+      "tangential_force_N": [
+        0.11092619413322628
+      ],
+      "contacts": [
+        7
+      ],
+      "maximum_stress_Pa": [
+        55929.8014153353
+      ],
+      "residual_N": [
+        8.4024849282197e-12
+      ],
+      "rhs_N": [
+        0.17812941922361322
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        2.6784231069512716e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        8.615304151613156e-15
+      ],
+      "contact_radius_range_m": [
+        0.007936394247887547,
+        0.007936394247887547
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 760,
+      "phase": [
+        0.2671118530884808
+      ],
+      "height_m": [
+        0.02946417528952177
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7
+      ],
+      "tangential_force_N": [
+        0.10944378652754383
+      ],
+      "contacts": [
+        7
+      ],
+      "maximum_stress_Pa": [
+        55813.4436565252
+      ],
+      "residual_N": [
+        9.665418403435837e-12
+      ],
+      "rhs_N": [
+        0.17811568158284938
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        7.909788238689306e-14
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.704999724395309e-15
+      ],
+      "contact_radius_range_m": [
+        0.007930420270331157,
+        0.007930420270331157
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 770,
+      "phase": [
+        0.2838063439065109
+      ],
+      "height_m": [
+        0.029465159049850774
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7
+      ],
+      "tangential_force_N": [
+        0.10800422766057413
+      ],
+      "contacts": [
+        7
+      ],
+      "maximum_stress_Pa": [
+        55727.231671907335
+      ],
+      "residual_N": [
+        9.003909650081905e-12
+      ],
+      "rhs_N": [
+        0.17814423794889422
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        3.655607438171632e-14
+      ],
+      "contact_wrench_moment_error_Nm": [
+        8.179613497397147e-15
+      ],
+      "contact_radius_range_m": [
+        0.007913132462869498,
+        0.007913132462869498
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 780,
+      "phase": [
+        0.3005008347245409
+      ],
+      "height_m": [
+        0.029466256762801155
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        7
+      ],
+      "tangential_force_N": [
+        0.1067818206647814
+      ],
+      "contacts": [
+        7
+      ],
+      "maximum_stress_Pa": [
+        55667.350300947124
+      ],
+      "residual_N": [
+        8.10541969557604e-12
+      ],
+      "rhs_N": [
+        0.17823290129376126
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        2.0650880057868947e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        8.705511898039248e-14
+      ],
+      "contact_radius_range_m": [
+        0.007884720866703077,
+        0.007884720866703077
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 790,
+      "phase": [
+        0.31719532554257096
+      ],
+      "height_m": [
+        0.03018395102740105
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.11122421205304353
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        54345.431078624795
+      ],
+      "residual_N": [
+        7.874492568896506e-12
+      ],
+      "rhs_N": [
+        0.16763297651954626
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.4004125974751697e-10
+      ],
+      "contact_wrench_moment_error_Nm": [
+        6.44387511633582e-12
+      ],
+      "contact_radius_range_m": [
+        0.007845497804482168,
+        0.007845497804482168
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 800,
+      "phase": [
+        0.333889816360601
+      ],
+      "height_m": [
+        0.03377774825970025
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.10978533613996636
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        54256.08649970181
+      ],
+      "residual_N": [
+        7.1078013349477645e-12
+      ],
+      "rhs_N": [
+        0.1679221082614691
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        2.7933638396285646e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        7.273923971672325e-14
+      ],
+      "contact_radius_range_m": [
+        0.0077958944470101635,
+        0.0077958944470101635
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 810,
+      "phase": [
+        0.35058430717863104
+      ],
+      "height_m": [
+        0.04081928697181596
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.11025633221636878
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        54147.60198056412
+      ],
+      "residual_N": [
+        7.410709444359902e-12
+      ],
+      "rhs_N": [
+        0.1682362613188283
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.1922525353055154e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        2.4511045031092005e-14
+      ],
+      "contact_radius_range_m": [
+        0.0077364560734743855,
+        0.0077364560734743855
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 820,
+      "phase": [
+        0.36727879799666113
+      ],
+      "height_m": [
+        0.05091052544932925
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.11248311027392763
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        53987.10028218861
+      ],
+      "residual_N": [
+        8.605755948481325e-12
+      ],
+      "rhs_N": [
+        0.16867180048392666
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.4541297381688283e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        3.678782423343444e-14
+      ],
+      "contact_radius_range_m": [
+        0.007667836077307639,
+        0.007667836077307639
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 830,
+      "phase": [
+        0.38397328881469117
+      ],
+      "height_m": [
+        0.06334476528420721
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.11698658294699005
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        53810.10145457816
+      ],
+      "residual_N": [
+        7.398825240104809e-12
+      ],
+      "rhs_N": [
+        0.16934854743862462
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        4.907567478156709e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        4.154695528951419e-14
+      ],
+      "contact_radius_range_m": [
+        0.0075907887835728,
+        0.0075907887835728
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 840,
+      "phase": [
+        0.4006677796327212
+      ],
+      "height_m": [
+        0.07731304926364586
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.12320496396055794
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        53678.643139752974
+      ],
+      "residual_N": [
+        7.837585411531215e-12
+      ],
+      "rhs_N": [
+        0.17028775043683014
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        2.2616867438751124e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        9.570370470456492e-14
+      ],
+      "contact_radius_range_m": [
+        0.007506161156827393,
+        0.007506161156827393
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 850,
+      "phase": [
+        0.41736227045075125
+      ],
+      "height_m": [
+        0.09197243230737932
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.1290931849767955
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        53649.841823367584
+      ],
+      "residual_N": [
+        6.6944524188563525e-12
+      ],
+      "rhs_N": [
+        0.17137308684139363
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        5.258338887803689e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.8198212749584484e-14
+      ],
+      "contact_radius_range_m": [
+        0.007414883490621867,
+        0.007414883490621867
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 860,
+      "phase": [
+        0.4340567612687813
+      ],
+      "height_m": [
+        0.10647280682423117
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.13227070830984802
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        53761.22236938163
+      ],
+      "residual_N": [
+        6.436247627973858e-12
+      ],
+      "rhs_N": [
+        0.1724174271227958
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        3.268249271717893e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.3147591902285968e-14
+      ],
+      "contact_radius_range_m": [
+        0.007317959180979914,
+        0.007317959180979914
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 870,
+      "phase": [
+        0.4507512520868114
+      ],
+      "height_m": [
+        0.11997084976124422
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.1311264515121929
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        54029.76345194383
+      ],
+      "residual_N": [
+        7.112734010183789e-12
+      ],
+      "rhs_N": [
+        0.1732775035781586
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        4.304950324602846e-13
+      ],
+      "contact_wrench_moment_error_Nm": [
+        1.2127228375897496e-14
+      ],
+      "contact_radius_range_m": [
+        0.0072164536962788135,
+        0.0072164536962788135
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 880,
+      "phase": [
+        0.4674457429048414
+      ],
+      "height_m": [
+        0.13163791497761962
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.12562595055615514
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        54452.78290558147
+      ],
+      "residual_N": [
+        6.560353311934069e-12
+      ],
+      "rhs_N": [
+        0.17393505387342964
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.7909130307303103e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        4.954479847419581e-14
+      ],
+      "contact_radius_range_m": [
+        0.0071114828647815586,
+        0.0071114828647815586
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    },
+    {
+      "tick": 890,
+      "phase": [
+        0.48414023372287146
+      ],
+      "height_m": [
+        0.1406621003122401
+      ],
+      "finger_contacts": [
+        [
+          3,
+          3
+        ]
+      ],
+      "nonzero_egg_contacts": [
+        6
+      ],
+      "tangential_force_N": [
+        0.11734832302477831
+      ],
+      "contacts": [
+        6
+      ],
+      "maximum_stress_Pa": [
+        55005.49304438165
+      ],
+      "residual_N": [
+        6.963017024104361e-12
+      ],
+      "rhs_N": [
+        0.17450235001747896
+      ],
+      "corrections": [
+        0
+      ],
+      "fallbacks": [
+        0
+      ],
+      "contact_integration_retries": [
+        0
+      ],
+      "contact_fit_iterations_max": [
+        2
+      ],
+      "contact_wrench_force_error_N": [
+        1.1124434108493853e-12
+      ],
+      "contact_wrench_moment_error_Nm": [
+        2.9645491138948006e-14
+      ],
+      "contact_radius_range_m": [
+        0.007004200608573436,
+        0.007004200608573436
+      ],
+      "contact_friction_range": [
+        0.7191016138165071,
+        0.7191016138165071
+      ]
+    }
+  ],
+  "trajectory_metrics": null,
+  "policy": {
+    "layers": [
+      26,
+      128,
+      128,
+      7
+    ],
+    "seed": 99173,
+    "dtype": "float32",
+    "residual_scale_rad": 0.0001,
+    "scope": "inference rollout",
+    "control_error_budget_rad": 1e-09,
+    "warmup_reference_max_error_rad": 0.0
+  },
+  "repeats": [
+    {
+      "steps": 1200,
+      "seconds": 10.475098218070343,
+      "transitions_per_second": 114.55739841464288,
+      "attempted_transitions_per_second": 114.55739841464288,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "failed_steps_per_environment": [
+        0
+      ],
+      "batch_steps_per_second": 114.55739841464288,
+      "resets": 1
+    },
+    {
+      "steps": 1200,
+      "seconds": 10.533349358011037,
+      "transitions_per_second": 113.92387731708068,
+      "attempted_transitions_per_second": 113.92387731708068,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "failed_steps_per_environment": [
+        0
+      ],
+      "batch_steps_per_second": 113.92387731708068,
+      "resets": 1
+    },
+    {
+      "steps": 1200,
+      "seconds": 10.541780742816627,
+      "transitions_per_second": 113.83276025900113,
+      "attempted_transitions_per_second": 113.83276025900113,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "failed_steps_per_environment": [
+        0
+      ],
+      "batch_steps_per_second": 113.83276025900113,
+      "resets": 1
+    }
+  ],
+  "egg_position_m": [
+    [
+      0.6008761425998982,
+      0.027131494553530252,
+      0.022614587035412467
+    ]
+  ],
+  "dofs": 2430,
+  "tetrahedra": 480,
+  "method_selected": "inverse",
+  "surface_inverse_selected": true,
+  "build_timings_including_JIT": {
+    "topology_seconds": 0.05111547093838453,
+    "operators_seconds": 0.5663930759765208,
+    "factor_seconds": 13.341545165982097,
+    "inverse_seconds": 0.16177304298616946,
+    "surface_inverse_seconds": 0.1200355610344559
+  },
+  "maximum_stress_Pa": [
+    14272.111037607643
+  ],
+  "stress_configurations": [
+    {
+      "mesh": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+      "output_mode": "full",
+      "update_mode": "every_step",
+      "young": 10000000000.0,
+      "poisson": 0.3,
+      "density": 2000.0,
+      "contact_radius": 0.006,
+      "contact_model": "intrinsic",
+      "intrinsic_integration": "surface_fan",
+      "intrinsic_support": "contact",
+      "intrinsic_load_partition": "body_source_prior",
+      "cooperative_tractions": true,
+      "surface_fan_frontier": true,
+      "warm_start_tractions": true,
+      "contact_block_size": 16,
+      "surface_edge_subdivisions": 8,
+      "source_projection_limit": 0.0001,
+      "source_geometry_tolerance": 1e-08,
+      "source_uncertainty": 0.0,
+      "quadrature": 10,
+      "tolerance": 1e-08,
+      "absolute_tolerance": 1e-11,
+      "max_iterations": 2000,
+      "warm_start": true,
+      "history_size": 0,
+      "method": "auto",
+      "cooperative_solve": true,
+      "cooperative_pressure": true,
+      "cooperative_scatter": true,
+      "cooperative_balance": true,
+      "contact_wrench_reuse": null,
+      "face_parallel_scatter": true,
+      "scatter_tasks_per_env": 32,
+      "contact_moment_reuse": null,
+      "inverse_max_bytes": 67108864,
+      "inverse_precision": "64",
+      "surface_inverse": true,
+      "packed_surface_loads": true,
+      "packed_block_size": null,
+      "coalesced_residual": null,
+      "fused_pipeline": true,
+      "fused_rigid_post": null,
+      "cached_peak": true,
+      "cached_face_bounds": true,
+      "inverse_corrections": 2,
+      "preconditioner": "block"
+    }
+  ],
+  "native_buffers": [
+    {
+      "name": "stress.0.info.vertices",
+      "shape": [
+        810,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 19440,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.elements",
+      "shape": [
+        480,
+        10
+      ],
+      "dtype": "torch.int32",
+      "bytes": 19200,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.surface_nodes",
+      "shape": [
+        80,
+        6
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1920,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.surface_owners",
+      "shape": [
+        80
+      ],
+      "dtype": "torch.int32",
+      "bytes": 320,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.surface_opposite_vertices",
+      "shape": [
+        80
+      ],
+      "dtype": "torch.int32",
+      "bytes": 320,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.surface_neighbors",
+      "shape": [
+        80,
+        3
+      ],
+      "dtype": "torch.int32",
+      "bytes": 960,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.edges",
+      "shape": [
+        6,
+        2
+      ],
+      "dtype": "torch.int32",
+      "bytes": 48,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.gradients",
+      "shape": [
+        480,
+        4,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 46080,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.corner_gradients",
+      "shape": [
+        480,
+        4,
+        7,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 322560,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.corner_nodes",
+      "shape": [
+        480,
+        4,
+        7
+      ],
+      "dtype": "torch.int32",
+      "bytes": 53760,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.volumes",
+      "shape": [
+        480
+      ],
+      "dtype": "torch.float64",
+      "bytes": 3840,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.row_start",
+      "shape": [
+        811
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3244,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.columns",
+      "shape": [
+        20274
+      ],
+      "dtype": "torch.int32",
+      "bytes": 81096,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.element_entries",
+      "shape": [
+        480,
+        10,
+        10
+      ],
+      "dtype": "torch.int32",
+      "bytes": 192000,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.stiffness",
+      "shape": [
+        20274,
+        3,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1459728,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.mass",
+      "shape": [
+        20274
+      ],
+      "dtype": "torch.float64",
+      "bytes": 162192,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.modes",
+      "shape": [
+        810,
+        3,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 116640,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.mass_modes",
+      "shape": [
+        810,
+        3,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 116640,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.relief",
+      "shape": [
+        810,
+        3,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 116640,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.centrifugal",
+      "shape": [
+        810,
+        3,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 116640,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.centrifugal_wrench",
+      "shape": [
+        6,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 288,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.gram",
+      "shape": [
+        6,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 288,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.gram_inverse",
+      "shape": [
+        6,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 288,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.pins",
+      "shape": [
+        6
+      ],
+      "dtype": "torch.int32",
+      "bytes": 24,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.is_free",
+      "shape": [
+        810,
+        3
+      ],
+      "dtype": "torch.int32",
+      "bytes": 9720,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.diagonal_inverse",
+      "shape": [
+        810,
+        3,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 58320,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.scalar_diagonal_inverse",
+      "shape": [
+        810,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 19440,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.mass_properties",
+      "shape": [
+        4
+      ],
+      "dtype": "torch.float64",
+      "bytes": 32,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.order",
+      "shape": [
+        810
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3240,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.row_start",
+      "shape": [
+        811
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3244,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.columns",
+      "shape": [
+        66669
+      ],
+      "dtype": "torch.int32",
+      "bytes": 266676,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.sources",
+      "shape": [
+        66669
+      ],
+      "dtype": "torch.int32",
+      "bytes": 266676,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.column_start",
+      "shape": [
+        811
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3244,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.rows",
+      "shape": [
+        66669
+      ],
+      "dtype": "torch.int32",
+      "bytes": 266676,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.transpose_entries",
+      "shape": [
+        66669
+      ],
+      "dtype": "torch.int32",
+      "bytes": 266676,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.lower",
+      "shape": [
+        66669,
+        3,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 4800168,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.diagonal",
+      "shape": [
+        810,
+        3,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 58320,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.diagonal_inverse",
+      "shape": [
+        810,
+        3,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 58320,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.valid",
+      "shape": [],
+      "dtype": "torch.bool",
+      "bytes": 1,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.inverse.blocks",
+      "shape": [
+        810,
+        810,
+        3,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 47239200,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface_inverse.nodes",
+      "shape": [
+        162
+      ],
+      "dtype": "torch.int32",
+      "bytes": 648,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface_inverse.force_blocks",
+      "shape": [
+        810,
+        162,
+        3,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 9447840,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface_inverse.centrifugal",
+      "shape": [
+        810,
+        3,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 116640,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.gauss",
+      "shape": [
+        10
+      ],
+      "dtype": "torch.float64",
+      "bytes": 80,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.gauss_weights",
+      "shape": [
+        10
+      ],
+      "dtype": "torch.float64",
+      "bytes": 80,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.positions",
+      "shape": [
+        8000,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 192000,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.weights",
+      "shape": [
+        8000
+      ],
+      "dtype": "torch.float64",
+      "bytes": 64000,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.shape",
+      "shape": [
+        100,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 4800,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.face_origin",
+      "shape": [
+        80,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1920,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.face_edges",
+      "shape": [
+        80,
+        2,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 3840,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.face_dual",
+      "shape": [
+        80,
+        2,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 3840,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.face_normal",
+      "shape": [
+        80,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1920,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.face_bounds_low",
+      "shape": [
+        80,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1920,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.face_bounds_high",
+      "shape": [
+        80,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1920,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.grid.bounds",
+      "shape": [
+        2,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 48,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.grid.cell_size",
+      "shape": [],
+      "dtype": "torch.float64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.grid.starts",
+      "shape": [
+        4097
+      ],
+      "dtype": "torch.int32",
+      "bytes": 16388,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.grid.samples",
+      "shape": [
+        8000
+      ],
+      "dtype": "torch.int32",
+      "bytes": 32000,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.state.force",
+      "shape": [
+        810,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 19440,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.rhs",
+      "shape": [
+        810,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 19440,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.displacement",
+      "shape": [
+        810,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 19440,
+      "alias_of": null,
+      "kind": 4
+    },
+    {
+      "name": "stress.0.state.residual",
+      "shape": [
+        810,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 19440,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.boundary_columns",
+      "shape": [
+        162,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 648,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.boundary_count",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.wrench",
+      "shape": [
+        1,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 48,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.rhs_norm_squared",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.residual_norm_squared",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.residual_preconditioned",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.next_residual_preconditioned",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.direction_product",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.active",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.iterations",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.peak",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.step_peak",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 5
+    },
+    {
+      "name": "stress.0.state.step_valid",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.bool",
+      "bytes": 1,
+      "alias_of": null,
+      "kind": 5
+    },
+    {
+      "name": "stress.0.state.stress_tensor",
+      "shape": [
+        480,
+        4,
+        1,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 92160,
+      "alias_of": null,
+      "kind": 5
+    },
+    {
+      "name": "stress.0.state.von_mises",
+      "shape": [
+        480,
+        4,
+        1,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 15360,
+      "alias_of": null,
+      "kind": 5
+    },
+    {
+      "name": "stress.0.state.valid",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.bool",
+      "bytes": 1,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.corrections",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.fallbacks",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.invalid_steps",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.int64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.invalid_reported",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.bool",
+      "bytes": 1,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.position",
+      "shape": [
+        750,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 18000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.center",
+      "shape": [
+        750,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 18000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.anchor_face",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.is_refined",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.bool",
+      "bytes": 750,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.force",
+      "shape": [
+        750,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 18000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.normal",
+      "shape": [
+        750,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 18000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.friction",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.radius",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6000,
+      "alias_of": null,
+      "kind": 2
+    },
+    {
+      "name": "stress.0.contacts.valid",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.bool",
+      "bytes": 750,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.coefficient",
+      "shape": [
+        750,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 18000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.weight_sum",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.status",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.force_error",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.moment_error",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.candidate_count",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.evaluations",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.active_count",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.frame_position",
+      "shape": [
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 24,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.frame_quaternion",
+      "shape": [
+        1,
+        4
+      ],
+      "dtype": "torch.float64",
+      "bytes": 32,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.scatter.count",
+      "shape": [],
+      "dtype": "torch.int64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.scatter.overflow_calls",
+      "shape": [],
+      "dtype": "torch.int64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.scatter.affine_pressure",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.bool",
+      "bytes": 1,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.paths.positions",
+      "shape": [
+        882,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 21168,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.paths.face_ports",
+      "shape": [
+        80,
+        24
+      ],
+      "dtype": "torch.int32",
+      "bytes": 7680,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.paths.starts",
+      "shape": [
+        883
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3532,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.paths.neighbors",
+      "shape": [
+        35520
+      ],
+      "dtype": "torch.int32",
+      "bytes": 142080,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.paths.lengths",
+      "shape": [
+        35520
+      ],
+      "dtype": "torch.float64",
+      "bytes": 284160,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.paths.distances",
+      "shape": [
+        882,
+        882
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6223392,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.vertices.geom",
+      "shape": [
+        42
+      ],
+      "dtype": "torch.int32",
+      "bytes": 168,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.vertices.positions",
+      "shape": [
+        42,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1008,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.vertices.reference_vertex",
+      "shape": [
+        42
+      ],
+      "dtype": "torch.int32",
+      "bytes": 168,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.vertices.reference_face",
+      "shape": [
+        42
+      ],
+      "dtype": "torch.int32",
+      "bytes": 168,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.vertices.barycentric",
+      "shape": [
+        42,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1008,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.vertices.offset",
+      "shape": [
+        42
+      ],
+      "dtype": "torch.float64",
+      "bytes": 336,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.vertices.status",
+      "shape": [
+        42
+      ],
+      "dtype": "torch.int32",
+      "bytes": 168,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.traction_info.positions",
+      "shape": [
+        8000,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 192000,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.traction_info.inward_normals",
+      "shape": [
+        8000,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 192000,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.traction_info.face_origin",
+      "shape": [
+        80,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1920,
+      "alias_of": "stress.0.surface.face_origin",
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.traction_info.face_edges",
+      "shape": [
+        80,
+        2,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 3840,
+      "alias_of": "stress.0.surface.face_edges",
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.traction_info.face_dual",
+      "shape": [
+        80,
+        2,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 3840,
+      "alias_of": "stress.0.surface.face_dual",
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.traction_info.gauss",
+      "shape": [
+        10
+      ],
+      "dtype": "torch.float64",
+      "bytes": 80,
+      "alias_of": "stress.0.surface.gauss",
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.geom",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.pair",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.method",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.vertex",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.has_vertex_ambiguity",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.bool",
+      "bytes": 750,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.witness",
+      "shape": [
+        750,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 18000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.witness_face",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.witness_barycentric",
+      "shape": [
+        750,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 18000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.uncertainty",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.free_moment",
+      "shape": [
+        750,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 18000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.anchor_moment",
+      "shape": [
+        750,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 18000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.barycentric",
+      "shape": [
+        750,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 18000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.status",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.failure.contact",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.failure.status",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.failure.radius",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.failure.friction",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.failure.position",
+      "shape": [
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 24,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.failure.anchor",
+      "shape": [
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 24,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.failure.force",
+      "shape": [
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 24,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.failure.free_moment",
+      "shape": [
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 24,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.failure.group_count",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.failure.target_force",
+      "shape": [
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 24,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.failure.target_moment",
+      "shape": [
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 24,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.position",
+      "shape": [
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 384,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.center",
+      "shape": [
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 384,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.anchor_face",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.is_refined",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.bool",
+      "bytes": 16,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.force",
+      "shape": [
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 384,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.normal",
+      "shape": [
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 384,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.friction",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.radius",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 2
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.valid",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.bool",
+      "bytes": 16,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.coefficient",
+      "shape": [
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 384,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.weight_sum",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.status",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.force_error",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.moment_error",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.candidate_count",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.evaluations",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.active_pairs",
+      "shape": [
+        0,
+        2
+      ],
+      "dtype": "i32",
+      "bytes": 0,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.active_count",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.frame_position",
+      "shape": [
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 24,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.frame_quaternion",
+      "shape": [
+        1,
+        4
+      ],
+      "dtype": "torch.float64",
+      "bytes": 32,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.geom",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.pair",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.method",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.vertex",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.has_vertex_ambiguity",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.bool",
+      "bytes": 16,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.witness",
+      "shape": [
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 384,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.witness_face",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.witness_barycentric",
+      "shape": [
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 384,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.uncertainty",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.free_moment",
+      "shape": [
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 384,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.anchor_moment",
+      "shape": [
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 384,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.barycentric",
+      "shape": [
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 384,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.status",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.footprints.port_distance",
+      "shape": [
+        882,
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 112896,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.footprints.seed_distance",
+      "shape": [
+        24,
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 3072,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.footprints.port_heap",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.footprints.heap_position",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.footprints.heap_count",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.footprints.status",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.footprints.candidates",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.footprints.samples",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.footprints.maximum_distance",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.profile",
+      "shape": [
+        1019,
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 130432,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.dual",
+      "shape": [
+        16,
+        1,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 768,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.weight_sum",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.scale",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.status",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.force_error",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.moment_error",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.evaluations",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.certificate",
+      "shape": [
+        16,
+        1,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 768,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.certificate_margin",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.sample_positions",
+      "shape": [
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 24,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.sample_barycentric",
+      "shape": [
+        1019,
+        16,
+        1,
+        2
+      ],
+      "dtype": "torch.float64",
+      "bytes": 260864,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.sample_normals",
+      "shape": [
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 24,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.sample_faces",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.sample_shape",
+      "shape": [
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 48,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.sample_count",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.sample_indices",
+      "shape": [
+        1019,
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 65216,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.fan_barycentric",
+      "shape": [
+        80,
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 30720,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.fan_coordinate_power",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.fan_refined",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.bool",
+      "bytes": 16,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.circle.face",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.circle.radius",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.circle.refined",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.bool",
+      "bytes": 16,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.circle.focus",
+      "shape": [
+        16,
+        1,
+        2
+      ],
+      "dtype": "torch.float64",
+      "bytes": 256,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.support.start",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.support.end",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.support.valid",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.bool",
+      "bytes": 16,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.support.center",
+      "shape": [
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 384,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.support.radius",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.support.friction",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.frontier.indices",
+      "shape": [
+        80,
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 5120,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.frontier.count",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.frontier.maximum",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.priors.force",
+      "shape": [
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 384,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.priors.anchor_moment",
+      "shape": [
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 384,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.priors.weight_sum",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.priors.group_scale",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.priors.force_scale",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.priors.moment_scale",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.acceptance.force",
+      "shape": [
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 384,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.acceptance.moment",
+      "shape": [
+        16,
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 384,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.acceptance.cone_valid",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.bool",
+      "bytes": 16,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.capacity_maximum",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.packing.indices",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.packing.count",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.packing.maximum",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.packing.block_start",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.packing.block_end",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.certificates.ray",
+      "shape": [
+        750,
+        1,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 36000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.certificates.margin",
+      "shape": [
+        750,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.wrench_search.triangles",
+      "shape": [
+        37,
+        16,
+        1,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 28416,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.wrench_search.depths",
+      "shape": [
+        37,
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 2368,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.wrench_search.bound",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.float64",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.wrench_search.visited",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.wrench_search.evaluations",
+      "shape": [
+        16,
+        1
+      ],
+      "dtype": "torch.int32",
+      "bytes": 64,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.omega",
+      "shape": [
+        1,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 24,
+      "alias_of": null,
+      "kind": 6
+    }
+  ],
+  "native_logical_buffer_bytes": 74253239,
+  "native_buffer_bytes": 74243559,
+  "native_allocation_count": 240,
+  "torch_peak_allocated_bytes": 1286144,
+  "saved_reset_state_bytes": 1296,
+  "device_free_bytes": 99419160576,
+  "reset_index_cache_at_end": {
+    "enabled": true,
+    "capacity_elements": 1,
+    "stored_elements": 0,
+    "bytes": 0,
+    "selectors": 0,
+    "hits": 0,
+    "misses": 0,
+    "evictions": 0,
+    "single_selections": 4
+  }
+}

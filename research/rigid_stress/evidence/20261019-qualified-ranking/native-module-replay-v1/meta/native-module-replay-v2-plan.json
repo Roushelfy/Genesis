@@ -1,0 +1,32 @@
+{
+  "source": "92692aa612666b015ac4b506a39b9e7d3dfdf998",
+  "batch": 8,
+  "modes": [
+    "dpr-max",
+    "dpr-full",
+    "scr-max",
+    "scr-full"
+  ],
+  "same_gpu_all_modes": true,
+  "complete_recorded_steps": 1200,
+  "warmup": 900,
+  "repeats": 3,
+  "full_fields_at_steps": [
+    1,
+    120,
+    240,
+    360,
+    480,
+    600,
+    720,
+    840,
+    960,
+    1080,
+    1200
+  ],
+  "input_restore": "All24 device-resident association/provenance/frame/radius/unsupported-force buffers. Explicit stress reset at0 and actual partial-reset ticks, indices resident on GPU.",
+  "v1_difference": "v1 scene controls remain valid, but its preliminary replay omitted explicit partial stress resets and did not retain raw input buffers. v2 closes both replay obligations, using unchanged engine and comparison tolerances.",
+  "raw_inputs": "Compressed replay-inputs.npz on data with exact hash, outside timing.",
+  "admission": "All1200 replay peaks and11 full tensors when applicable vs original recorded scene; rtol1e-4, atol1e-3Pa, unchanged original frozen-snapshot benchmark criterion. Every runtime errno/invalid update remains enforced.",
+  "scope": "Module-only timing includes input-restore dispatch/device copies and required native recovery checks, excludes dynamics/controller, source capture and archival. Warm repeated recorded histories; not independently evolving scenes or a physical accuracy claim."
+}

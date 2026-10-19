@@ -1,5 +1,13 @@
 # Current QIPC reference comparison
 
+The native-production-measurements-v1 packet retains254 payloads totaling
+4,272,574 bytes; native-module-replay-v1 retains46 totaling501,678 bytes.
+Large JSON and raw logs are losslessly gzip-encoded, with encoded and original
+hashes/sizes in the manifest. Full scene trajectories and all24-buffer replay
+histories remain under the established data run directory with exact identities.
+The completed controller-only probe is retained with terminal receipts. No active
+reference output, environment, cache or compatibility symlink is migrated.
+
 The prescribed-method-ranking-v1 packet retains78 verified payloads totaling
 1,199,808 bytes for terminal C2 comparisons. The friction-wall250-reference-v1
 packet retains80 payloads totaling941,008 bytes for completed250um mechanics

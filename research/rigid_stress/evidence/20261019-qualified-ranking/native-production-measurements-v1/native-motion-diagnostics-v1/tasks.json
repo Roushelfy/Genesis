@@ -1,0 +1,67 @@
+[
+  [
+    {
+      "name": "rigid-repeat",
+      "module": "research.rigid_stress.qipc_comparison.native_production_controls",
+      "args": [
+        "--method",
+        "rigid",
+        "--envs",
+        "8",
+        "--conditions",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+        "--output-mode",
+        "max",
+        "--steps",
+        "1200",
+        "--warmup",
+        "900",
+        "--field-stride",
+        "120"
+      ]
+    },
+    {
+      "name": "dpr-unrequested",
+      "module": "research.rigid_stress.qipc_comparison.native_production_controls",
+      "args": [
+        "--method",
+        "dpr",
+        "--envs",
+        "8",
+        "--conditions",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+        "--output-mode",
+        "max",
+        "--steps",
+        "1200",
+        "--warmup",
+        "900",
+        "--field-stride",
+        "120",
+        "--mechanics-only"
+      ]
+    },
+    {
+      "name": "dpr-post-off",
+      "module": "research.rigid_stress.qipc_comparison.native_production_controls",
+      "args": [
+        "--method",
+        "dpr",
+        "--envs",
+        "8",
+        "--conditions",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+        "--output-mode",
+        "max",
+        "--steps",
+        "1200",
+        "--warmup",
+        "900",
+        "--field-stride",
+        "120",
+        "--rigid-post-fusion",
+        "off"
+      ]
+    }
+  ]
+]
