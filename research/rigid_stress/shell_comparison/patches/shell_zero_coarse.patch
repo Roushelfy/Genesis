@@ -1,0 +1,70 @@
+diff --git a/genesis/engine/solvers/shell_solver.py b/genesis/engine/solvers/shell_solver.py
+index 564b30147..9cb1a4bdd 100644
+--- a/genesis/engine/solvers/shell_solver.py
++++ b/genesis/engine/solvers/shell_solver.py
+@@ -1512,18 +1512,21 @@ def func_pcg_norm_scales(
+     n_dofs * inv_max * c for inv_max the largest entry of the coarse inverse, and a share of r^T z their product.
+     """
+     n_verts = shell_state.verts_pos.shape[0]
+-    n_dofs = shell_scratch.coarse_vec.shape[0]
+-    e_restriction = func_exponent(shell_info.coarse_phi_max[None]) + func_bound_exponent(shell_scratch.envs_r_max[i_b])
+-    e_coarse = func_exponent(gs.qd_float(n_verts)) + e_restriction
+     scale_residual = func_fixed_scale(
+         func_bound_exponent(shell_scratch.envs_residual_term_max[i_b]), n_verts, static_config
+     )
+     scale_vel_error = func_fixed_scale(
+         func_bound_exponent(shell_scratch.envs_vel_error_term_max[i_b]), n_verts, static_config
+     )
+-    scale_coarse = func_fixed_scale(e_restriction, n_verts, static_config)
+-    e_rz = func_exponent(gs.qd_float(n_dofs)) + func_bound_exponent(shell_scratch.envs_coarse_inv_max[i_b])
+-    scale_rz = func_fixed_scale(e_rz + 2 * e_coarse, n_dofs, static_config)
++    scale_coarse = gs.qd_float(1.0)
++    scale_rz = gs.qd_float(1.0)
++    if qd.static(static_config.has_coarse_space):
++        n_dofs = shell_scratch.coarse_vec.shape[0]
++        e_restriction = func_exponent(shell_info.coarse_phi_max[None]) + func_bound_exponent(shell_scratch.envs_r_max[i_b])
++        e_coarse = func_exponent(gs.qd_float(n_verts)) + e_restriction
++        scale_coarse = func_fixed_scale(e_restriction, n_verts, static_config)
++        e_rz = func_exponent(gs.qd_float(n_dofs)) + func_bound_exponent(shell_scratch.envs_coarse_inv_max[i_b])
++        scale_rz = func_fixed_scale(e_rz + 2 * e_coarse, n_dofs, static_config)
+     return scale_residual, scale_vel_error, scale_coarse, scale_rz
+ 
+ 
+@@ -2019,7 +2022,6 @@ def func_pcg_advance(
+     _G = qd.static(static_config.grid_dim)
+     for i_lane in range(_G):
+         n_verts = shell_state.verts_pos.shape[0]
+-        n_dofs = shell_scratch.coarse_vec.shape[0]
+         n_envs_solving = shell_scratch.n_envs_solving[None]
+         n_items = n_verts * n_envs_solving
+         for i_chunk_ in range((n_items + _G - 1) // _G):
+@@ -2028,6 +2030,7 @@ def func_pcg_advance(
+                 i_b = shell_scratch.envs_solving_idx[i_flat % n_envs_solving]
+                 i_v = i_flat // n_envs_solving
+                 if qd.static(static_config.has_coarse_space):
++                    n_dofs = shell_scratch.coarse_vec.shape[0]
+                     for i_d_ in range((n_dofs + n_verts - 1) // n_verts):
+                         i_d = i_d_ * n_verts + i_v
+                         if i_d < n_dofs:
+diff --git a/tests/deformable/test_shell.py b/tests/deformable/test_shell.py
+index 9d69f5509..d8cc2f3d3 100644
+--- a/tests/deformable/test_shell.py
++++ b/tests/deformable/test_shell.py
+@@ -395,7 +395,8 @@ def test_rigid_contact_forces(n_envs, grid_sheet_path, lever_mjcf, show_viewer):
+ @pytest.mark.required
+ @pytest.mark.parametrize("precision", ["64"])
+ @pytest.mark.parametrize("n_envs", [0, 2])
+-def test_rigid_contact_conserves_momentum(n_envs, grid_sheet_path, show_viewer):
++@pytest.mark.parametrize("n_coarse_patches", [0, 12], ids=["no_coarse", "coarse"])
++def test_rigid_contact_conserves_momentum(n_envs, n_coarse_patches, grid_sheet_path, show_viewer):
+     # Without gravity, a fast ball hits a free sheet off its center: the contact impulses on the ball and the sheet are
+     # opposite, so that the momentum of the pair is conserved through the impact, up to the residual of the linear
+     # solves, which the tight tolerances bring to the floating-point floor. The ball, which crosses the thickness of the
+@@ -410,6 +411,7 @@ def test_rigid_contact_conserves_momentum(n_envs, grid_sheet_path, show_viewer):
+         shell_options=gs.options.ShellOptions(
+             pcg_tolerance=1e-10,
+             pcg_velocity_tolerance=1e-10,
++            n_coarse_patches=n_coarse_patches,
+         ),
+         viewer_options=gs.options.ViewerOptions(
+             camera_pos=(0.4, -0.4, 0.3),
