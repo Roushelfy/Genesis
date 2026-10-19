@@ -740,18 +740,16 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
         Particle diameter in meters. Defaults to 0.02.
     pressure_solver : str, optional
         Pressure solver type. Current supported pressure solvers are 'WCSPH' and 'DFSPH'. Defaults to 'WCSPH'.
-    lower_bound : tuple, shape (3,), optional
-        Lower bound of the simulation domain. Defaults to (-100.0, -100.0, 0.0).
-    upper_bound : tuple, shape (3,), optional
-        Upper bound of the simulation domain. Defaults to (100.0, 100.0, 100.0).
+    boundary : Boundary
+        Simulation domain boundary; should have the same methods as `CubeBoundary`. Defaults to CubeBoundary((-100.0, -100.0, 0.0), (100.0, 100.0, 100.0)).
     hash_grid_res : tuple, optional
         Size of the spatially-repetitive spatial hashing grid in meters. If none, it will be computed automatically. Defaults to None.
     hash_grid_cell_size : float, optional
         Size of the lattic cell of the spatial hashing grid in meters. This should be at least 2 * `particle_size`. If none, it will be computed automatically. Defaults to None.
     max_divergence_error : float, optional
-        Maximum divergence error for DFSPH. Defaults to 0.1.
+        Maximum divergence error for DFSPH. Defaults to 0.1%.
     max_density_error_percent : float, optional
-        Maximum density error *percent* for DFSPH, so 0.1 means 0.1%. Defaults to 0.05.
+        Maximum density error for DFSPH. Defaults to 0.05%.
     max_divergence_solver_iterations : int, optional
         Maximum number of iterations for the divergence solver. Defaults to 100.
     max_density_solver_iterations : int, optional
@@ -761,16 +759,15 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     particle_size: PositiveFloat = 0.02
     pressure_solver: Literal["WCSPH", "DFSPH"] = "WCSPH"
 
-    lower_bound: Vec3FType = (-100.0, -100.0, 0.0)
-    upper_bound: Vec3FType = (100.0, 100.0, 100.0)
+    boundary: any = gs.engine.boundaries.CubeBoundary((-100.0, -100.0, 0.0), (100.0, 100.0, 100.0))
 
     # spatial hashing
     hash_grid_res: Vec3FType | None = None  # size of the spatially-repetitive hash grid in meters
     hash_grid_cell_size: PositiveFloat | None = None  # size of the cubic cell in meters
 
     # DFSPH parameters
-    max_divergence_error: PositiveFloat = 0.1
-    max_density_error_percent: PositiveFloat = 0.05  # This is percent
+    max_divergence_error: PositiveFloat = 0.1 * 0.01
+    max_density_error: PositiveFloat = 0.05 * 0.01
     max_divergence_solver_iterations: PositiveInt = 100
     max_density_solver_iterations: PositiveInt = 100
 
