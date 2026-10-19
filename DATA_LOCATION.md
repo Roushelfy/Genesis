@@ -430,3 +430,16 @@ and validation are recorded in that run root's `publication-attempt-migration.js
 The `native-capacity8192-v1` packet retains164 compact payloads totaling1,291,101 bytes for terminal B2048/B8192 timing, complete conformance and separate memory. Full arrays and large raw benchmark JSON stay on data. The public-source overlay packet adds3 payloads/45,790 bytes and reconstructs858 exact source files from a public commit without relying on a private Git object. Temporary source validation was removed after verification; no active source or data was moved.
 
 The publication-index repair explicitly tracks169 previously ignored, manifest-listed tiny logs (24,922 bytes) in the20261019 qualified-ranking evidence. Their original bytes, existing manifests and hashes are preserved. Final verification reads all5,865 manifest-listed payloads directly from the Git tree, including encoded and recorded decoded hashes; raw datasets and active jobs remain on data. The repair inventory and portable reader are in `research/rigid_stress/evidence/20261019-qualified-ranking/publication-index-repair-v1/`.
+
+Native observation-cadence pilots, paired primary/conformance runs and their
+complete GPU-recorded control arrays use the same data-side ranking run root in
+`native-sparse-observation-pilot-v1` and `native-observation-cadence-*`. Guarded
+fine-field plans and explicit parent-admission records remain there as well;
+only source, documentation and selected compact immutable receipts are published.
+Cancelled pending analysis plans are retained in place, with no live source,
+reference data, environment or cache migration.
+
+The selected `native-observation-cadence-pilot-v1` and
+`fine-parent-admission-guard-v1` publications retain66/84 exact compact payloads
+(390,160/502,986 bytes). Two pilot trajectory NPZs remain on data with explicit
+hashes; new fine and paired-cadence outputs are excluded while active.

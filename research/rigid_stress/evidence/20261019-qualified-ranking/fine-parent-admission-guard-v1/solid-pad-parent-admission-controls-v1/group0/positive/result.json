@@ -1,0 +1,71 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-191",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729477",
+      "SLURM_ARRAY_JOB_ID": "729476",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "passed": true,
+  "runs": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-physical-force-coarse-v1/group0/reference",
+      "expected_steps": 400,
+      "checks": {
+        "parent_terminal_success_receipt": true,
+        "complete_history": true,
+        "all_history_gates": true,
+        "both_complete_equilibrium_windows": true,
+        "independent_current_momentum": true,
+        "audit_binds_actual_result": true,
+        "exact_two_endpoint_fields": true,
+        "audited_endpoint_bytes_unchanged": true,
+        "complete_sequential_journal": true,
+        "original_mechanical_targets_every_step": true
+      },
+      "passed": true
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-physical-force-coarse-v1/group0/returncode.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-physical-force-coarse-v1/group0/reference/result.json",
+      "bytes": 1427,
+      "sha256": "728bbeeebccf9e4d465e384c5c595d86513c3933bf7ad9db16c921595cf9d386"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-physical-force-coarse-v1/group0/moment/result.json",
+      "bytes": 3378,
+      "sha256": "8b8185476d8c2486e70017fb7bf5b18c1a2edf05ca33abb5c03bf83ab042599c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-physical-force-coarse-v1/group0/reference/frames/level0.npz",
+      "bytes": 18234913,
+      "sha256": "e4bddac403b504fae72e3fd71e2e200e548c99e02df90acc61332f6035a585f3"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-physical-force-coarse-v1/group0/reference/frames/level1.npz",
+      "bytes": 18345836,
+      "sha256": "4fa84cd679d5c840797322726ca261494400dceaddb7b8ccb8b1de512a72c499"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-physical-force-coarse-v1/group0/reference/steps.jsonl",
+      "bytes": 567577,
+      "sha256": "bd0fabbebd144eaef1da82452d235857652722d34c66bbe3b96833624b89a392"
+    }
+  ],
+  "scope": "Explicit preflight for immutable complete parent trajectories; scheduler dependencies alone do not establish physical admission. Rechecks unchanged whole-history equations/laws/current moment, both windows and independently audited endpoint bytes. No spatial qualification or error rank is inferred."
+}

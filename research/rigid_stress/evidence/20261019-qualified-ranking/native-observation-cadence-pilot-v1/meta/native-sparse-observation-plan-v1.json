@@ -1,0 +1,30 @@
+{
+  "source_engine": "1ff39b0775200120737225fdfb8631c9b1fc5fa7",
+  "cadences": [
+    1,
+    10,
+    50
+  ],
+  "dt_s": 0.01,
+  "substeps": 1,
+  "history": 0,
+  "conditions": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-production-throughput/research/rigid_stress/evidence/20261017-throughput/source-recipes-v1/inputs/conditions.npz",
+  "freshness": "Explicit requested-tick mask. step_valid alone does not denote a fresh observation. Requests after input mutations, before first physical substep.",
+  "predeclared_motion_targets": {
+    "position_and_qpos": 1e-10,
+    "velocity_and_qvel": 1e-09
+  },
+  "cadence_vs_every_step_field_and_peak_target": {
+    "rtol": 0.0001,
+    "atol_pa": 0.001,
+    "basis": "Existing independently admitted standalone changing-history replay budget; original runtime acceptance unchanged."
+  },
+  "max_vs_full_target": {
+    "rtol": 1e-08,
+    "atol_pa": 0.001
+  },
+  "held_fields": "Every unsampled full-output state bitwise held; reset environments NaN. Peak holding/reset audited from complete independent saved histories.",
+  "primary_timing": "No intrusive conformance, per-step field readback, policy or I/O. Native acceptance and callback request dispatch retained. Fixed1200 steps,900 warmup,3 within-process repeats.",
+  "physical_errors_pending": true,
+  "failed_every_step_runs_preserved": true
+}

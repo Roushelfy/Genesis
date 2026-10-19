@@ -120,6 +120,7 @@ def main():
     parser.add_argument("--minutes", type=int, default=60)
     parser.add_argument("--memory-gb", type=int, default=64)
     parser.add_argument("--concurrency", type=int)
+    parser.add_argument("--dependency", help="Explicit Slurm dependency, e.g. afterok:12345 or afterany:12345:12346")
     parser.add_argument("--cpus", type=int, default=8)
     parser.add_argument("--cpu-only", action="store_true", help="Request no GPU for CPU analysis in rtx-mid")
     parser.add_argument("--keep-going", action="store_true")
@@ -249,12 +250,15 @@ def main():
         f"--output={output}/logs/%A_%a.log",
         str(job),
     ]
+    if args.dependency:
+        command.insert(-1, f"--dependency={args.dependency}")
     result = subprocess.check_output(command, text=True).strip()
     (output / "submission.json").write_text(
         json.dumps(
             {
                 "command": command,
                 "job": result,
+                "dependency": args.dependency,
                 "node_local_cache": args.node_local_cache,
                 "kernel_profiler": args.kernel_profiler,
                 "allow_home_output": args.allow_home_output,

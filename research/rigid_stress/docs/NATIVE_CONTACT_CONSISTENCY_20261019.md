@@ -165,7 +165,7 @@ control fails only that gate. Both SCR max/full variants reject during warmup,
 so these banks do not qualify general SCR stability or a complete timing window.
 The fresh after-step captures locate the first rejected max-output states at
 warmup767/environment9 and645/environment330. Ordinary delayed checking reported
-770/647 after a controller radius mutation had cleared current contact diagnostics;
+770/647 after further physical steps had rewritten current contact diagnostics;
 those earlier snapshots are retained but are not the certificate inputs.
 
 Independent closest-triangle geometry and longest-edge binary subdivision verify
@@ -227,3 +227,5 @@ differs. This avoids relying on the private isolated commit's availability.
 Reexecutions use their actual local SCM identity and preserve original receipts.
 
 The [capacity8192 packet](../evidence/20261019-qualified-ranking/native-capacity8192-v1/README.md) retains terminal source/configuration/timing/conformance/memory receipts and both CSV tables. Large raw benchmark JSON and complete trajectory arrays remain on data with exact identities.
+
+Source review correction: the radius setter only updates radii; it does not itself clear contact flags or certificates. Periodic error polling occurs every ten physical substeps, allowing later physical steps to replace current diagnostics before the exception is raised. The after-every-step captures and independent certificates remain valid; archived earlier wording is retained as historical evidence. Sparse observation must track freshness separately from `step_valid`, which is also true for reset/held states.

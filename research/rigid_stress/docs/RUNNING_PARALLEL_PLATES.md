@@ -665,3 +665,25 @@ admit failed SCR cases. `--require-diverse` checks distinct authored conditions,
 with the repeated-eight-case negative control retained. `audit_native_production_memory`
 binds separate sampled process peaks to source-matched primary timing and
 complete conformance; its CSV never substitutes intrusive profile rates.
+
+
+### Sparse native observations and explicit parent admission
+
+The [cadence report](NATIVE_OBSERVATION_CADENCE_20261019.md) describes the fixed
+1/10/50-step pilot and B8/B128 paired campaigns. Captured recipes are in
+`meta/native-observation-cadence-{conformance,primary}-v1-tasks.json`;
+`native_sparse_production` times GPU-output scenes and
+`audit_native_observation_cadence` checks their separate complete controls.
+Request manual updates after all step inputs. Track an explicit fresh-sample
+mask: `step_valid` and held outputs do not establish a newly computed observation.
+
+The submitter accepts an explicit `--dependency afterany:JOB_A:JOB_B` for a
+terminal-result audit, or `afterok:JOB` for a successful prerequisite. Every
+submission records the exact Slurm dependency. Physical-parent admission must
+also pass an explicit content guard: `audit_solid_pad` can write a failed
+physical result while exiting successfully. Use
+`require_solid_pad_admission --runs RUN_A RUN_B --expected-steps 400 800`
+through the captured Slurm workflow, then depend field jobs on that guard's
+success. It rechecks complete history, both windows, current momentum and field
+hashes. Inspect the terminal receipts before treating downstream data as
+admitted. Preserve cancelled/failed plans and use fresh output directories.
