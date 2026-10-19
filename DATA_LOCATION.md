@@ -1,5 +1,11 @@
 # Current QIPC reference comparison
 
+The `complete-pad-cost-v1` packet adds222 verified payloads totaling2,345,974
+bytes for terminal B4 primary costs, the audited complete B1/B4 cost/memory
+aggregation and separate solver-phase profiles. Premature-analysis failure
+records are retained; full fields/journals and fine-reference writers stay on
+data. No live data, environment or compatibility link is moved.
+
 The `friction250-cache-memory-v1` checkpoint retains257 verified small
 payloads totaling6,571,125 bytes from terminal Shell friction/field, exact
 StVK cache and process-memory controls. Full fields, journals and active fine

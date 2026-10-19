@@ -4,6 +4,7 @@ from .artifacts import write_json
 
 
 def arguments(cli):
+    cli.add_argument("--intrusive-phase-profile", action="store_true")
     cli.add_argument(
         "--intrusive-memory-profile",
         action="store_true",

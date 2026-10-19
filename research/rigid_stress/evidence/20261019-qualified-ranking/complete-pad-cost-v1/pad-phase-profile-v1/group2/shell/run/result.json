@@ -1,0 +1,91 @@
+{
+  "completed": true,
+  "steps_returned": 400,
+  "elapsed_seconds_including_observation_IO": 260.0392955500283,
+  "last_observation": {
+    "step": 400,
+    "time_s": 0.4,
+    "level": 1,
+    "command_force_n": 0.1,
+    "compression_coordinate_m": 5.703403633654579e-05,
+    "plate_speed_m_per_s": 1.3857511002826685e-16,
+    "upper_reaction_n": 0.09999999999999995,
+    "lower_reaction_n": 0.09999999999998091,
+    "egg_inertia_resultant_norm_n": 1.852446275565286e-15,
+    "egg_kinetic_j": 3.2837734284188275e-22,
+    "equation_residual_relative": 2.026310912278686e-09,
+    "static_residual_relative": 2.0264547284388595e-09,
+    "solver_failure_flags": [
+      0
+    ],
+    "last_pcg_iterations": [
+      683
+    ],
+    "contact_force_norm_n": 0.005352529086827116,
+    "residual_force_scale_n": 0.1,
+    "internal_force_resultant_n": [
+      1.2182927819917805e-17,
+      -3.547927336537575e-18,
+      -9.763240563231967e-17
+    ],
+    "contact_force_resultant_n": [
+      -1.9852334701272664e-22,
+      2.248897290378544e-23,
+      -1.924358059241047e-14
+    ],
+    "body_force_resultant_n": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "mass_center_velocity_m_per_s": [
+      7.746955541609757e-15,
+      1.9302334259181465e-15,
+      9.656249096981242e-16
+    ],
+    "external_moment_about_mass_center_nm": [
+      1.1703040057917896e-13,
+      3.3636418930652415e-12,
+      -3.4475415328098906e-17
+    ],
+    "timing": {
+      "physics_seconds": 0.0
+    },
+    "physical_pad": {
+      "normal_law_relative_error": 5.121791997909474e-13,
+      "nodal_transfer_relative_error": 9.148646486971356e-17,
+      "normal_forces_n": [
+        0.09999999999998091,
+        0.09999999999999996
+      ],
+      "compressed_projected_area_m2": [
+        1.745338674062738e-05,
+        1.6386722544011786e-05
+      ],
+      "minimum_body_gap_m": -6.5721715199161534e-06,
+      "normal_law_and_transfer_passed": true
+    },
+    "stress": {
+      "valid": true,
+      "output_mode": "full",
+      "raw_vm_peak_pa": 191410.2172378111,
+      "field_host_bytes": 8033280,
+      "observation_seconds_excluding_frame_IO": 0.0,
+      "phase_timing_enabled": false
+    },
+    "contact_iteration_audit": {
+      "contact_slots": 3098,
+      "newton_iterations": [
+        1
+      ],
+      "contact_velocity_change_disagreement_max_m_per_s": 2.1684043449710127e-19,
+      "maximum_per_contact_model_mismatch_budget_n": 5.1757818370646036e-05,
+      "sum_contact_model_mismatch_budgets_n": 0.0761863526173018,
+      "scope": "Read-only identity J_shell delta_v_shell - J_rigid delta_v_rigid versus cached contact change. The force budgets convert the existing local nonlinear stopping tolerance, not measured residuals."
+    },
+    "raw_vm_peak_pa": 191410.2172378111,
+    "raw_principal_peak_pa": 129906.74164887508
+  },
+  "physical_accuracy_qualified": false,
+  "scope": "Actual end-position elastic/contact/inertial force check with zero shell damping. The engine linearizes elasticity each substep; this residual measures its remaining nonlinear time discretization error as well as contact balance. No velocity clearing."
+}

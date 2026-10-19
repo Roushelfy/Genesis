@@ -68,8 +68,12 @@ class PrimaryCost:
                 "envs": getattr(self.args, "envs", 1),
                 "output_mode": self.args.stress_output,
                 "stress_stride": self.args.stress_stride,
-                "primary_timing": not getattr(self.args, "intrusive_memory_profile", False),
+                "primary_timing": not (
+                    getattr(self.args, "intrusive_memory_profile", False)
+                    or getattr(self.args, "intrusive_phase_profile", False)
+                ),
                 "intrusive_memory_profile": getattr(self.args, "intrusive_memory_profile", False),
+                "intrusive_phase_profile": getattr(self.args, "intrusive_phase_profile", False),
                 "samples": self.samples,
                 "measured_repeats": len(measured),
                 "median_latency_ms": median(latency) if latency else None,

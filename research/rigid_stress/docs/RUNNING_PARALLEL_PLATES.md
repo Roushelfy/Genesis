@@ -52,6 +52,15 @@ full-field equivalence controls. See the
 for true250um Shell friction timestep/mesh controls and complete B1/B4 memory
 receipts. Runtime outputs and logs remain on data.
 
+`pad_cost_matrix --data-root RUN_ROOT --batch-sizes 1 4 --output NEW_DATA_PATH`
+joins the completed primary/memory cases only after verifying their exact
+own-run audits, source receipts and physical/hardware configuration match.
+`pad_phase_profile --task DRIVER_TASK_JSON --data-root RUN_ROOT --output
+NEW_DATA_PATH` produces a separate synchronized phase profile and verifies
+its own400-step history and complete endpoint field. See the
+[complete cost report](COMPLETE_PAD_COST_20261019.md) for phase boundaries,
+warm-repeat dispersion and the retained premature-dependency failures.
+
 `plate_solid_pad --elasticity stvk --contact-solver modal --warm-contact`
 selects the verified full-compliance modal iteration. It does not fix or
 discard rigid or elastic modes. Reproduce `check_matrix_free_pad`, the

@@ -1,0 +1,23 @@
+[
+  {
+    "campaign": "pad-cost-matrix-full-v1",
+    "job": "728451",
+    "scheduler_receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-matrix-full-v1/scheduler-dependency.txt",
+    "actual_dependency": "(null)",
+    "terminal_groups": {
+      "group0": "1"
+    },
+    "reason": "SBATCH_DEPENDENCY environment was not adopted by submission environment. Analysis started before upstream completion; retain failures and any partial analysis as unqualified. Original simulations unaffected. Submit fresh analysis only after verified parent completion."
+  },
+  {
+    "campaign": "stvk-spatial500-fields-v1",
+    "job": "728452",
+    "scheduler_receipt": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/stvk-spatial500-fields-v1/scheduler-dependency.txt",
+    "actual_dependency": "(null)",
+    "terminal_groups": {
+      "group0": "0",
+      "group1": "1"
+    },
+    "reason": "SBATCH_DEPENDENCY environment was not adopted by submission environment. Analysis started before upstream completion; retain failures and any partial analysis as unqualified. Original simulations unaffected. Submit fresh analysis only after verified parent completion."
+  }
+]
