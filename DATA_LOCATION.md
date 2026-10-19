@@ -443,3 +443,9 @@ The selected `native-observation-cadence-pilot-v1` and
 `fine-parent-admission-guard-v1` publications retain66/84 exact compact payloads
 (390,160/502,986 bytes). Two pilot trajectory NPZs remain on data with explicit
 hashes; new fine and paired-cadence outputs are excluded while active.
+
+The terminal `native-observation-cadence-v1` packet adds312 compact payloads
+(879,107 bytes) for26 source-matched primary/control cases and the521-check
+audit. All26 complete trajectory NPZs stay on data with exact hashes. The
+spatial-parent dependency update is retained as an explicit scheduler journal;
+no captured worker source, live reference output or previous archive is changed.
