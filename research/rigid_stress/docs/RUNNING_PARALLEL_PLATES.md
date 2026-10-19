@@ -191,3 +191,26 @@ checks50ms mechanical windows; `compare_coupled_shell` compares complete
 same-mesh fields for timestep/repeat/history sensitivity, with0.5% field and1%
 raw-peak targets. Passing these checks does not qualify a continuum reference
 or complete the three-method ranking.
+
+
+## Quadratic contact reference controls
+
+`validate_p2_contact` checks independent constant-stress/pure-bending solutions,
+quadratic face-gap extrema and P2 prism-column interpolation. Run it first in
+the existing physical-reference environment through Slurm. `plate_contact_fem
+--element-order 2 --continuous-quadratic-contact` then uses quadratic elasticity
+and exact surface-gap constraint generation. Omitting both options preserves
+the P1 reference. `--column-ordering` uses the existing pymetis dependency;
+`--contact-operator` accepts only a matching mesh hash and element order.
+The retained `contact-p2-pilot-v1` nodal run and
+`contact-p2-continuous-v1` rank-deficient run are failed controls, not references.
+
+`audit_quadratic_contact --mesh <mesh.npz> --field <load-0.1.npz> --load 0.1
+--output <fresh-data-output>` verifies dual point-force transfer and exact
+whole-triangle gaps. Consistent P2 nodal force signs must not be interpreted as
+physical pressure support. `contact_fem_exact_columns` accepts P1 constant
+or P2 corner-linear tensors and integrates through the same declared material
+columns; stress values at all four tetrahedron corners retain unsmoothed P2
+extrema. All commands require explicit data-side output paths and the existing
+Slurm submission wrapper. The current task lists, sources, logs and fields are
+under `20261019-qualified-ranking/contact-p2-*`.

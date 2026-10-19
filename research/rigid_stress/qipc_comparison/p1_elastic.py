@@ -79,6 +79,9 @@ class FreeElasticP1:
                 options={"SymmetricMode": True},
             )
 
+    def displacement_gradient(self, displacement):
+        return np.einsum("tai,taj->tij", displacement[self.tetrahedra], self.gradients)
+
     def solve(self, load):
         force = load.reshape(-1)
         correction = self.mass_modes @ np.linalg.solve(self.gram, self.rigid_modes.T @ force)
