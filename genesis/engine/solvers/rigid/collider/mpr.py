@@ -11,9 +11,6 @@ from .contact import func_compute_geom_pair_scale
 class MPR:
     def __init__(self, rigid_solver):
         self._solver = rigid_solver
-        self._save_witness = any(
-            link.stress_options is not None for entity in rigid_solver.entities for link in entity.links
-        )
 
         self._mpr_info = array_class.get_mpr_info(
             # Dimensionless, every site scaling it by the magnitudes of its own operands so the degeneracy tests
@@ -31,11 +28,11 @@ class MPR:
             # EXTRAPOLATED -> refine with GJK).
             CCD_EXTRAPOLATION_TOL=1.0,
         )
-        self.mpr_state = array_class.get_mpr_state(self._solver._B, self._save_witness)
+        self.mpr_state = array_class.get_mpr_state(self._solver._B)
         # The scratch states of the split narrowphase, at the smallest size until 'activate' sizes them when it runs
         # FIXME: quadrants#856 - see the scratch states of GJK in gjk.py.
-        self.contact0_mpr_state = array_class.get_mpr_state(1, self._save_witness)
-        self.multicontact_mpr_state = array_class.get_mpr_state(1, self._save_witness)
+        self.contact0_mpr_state = array_class.get_mpr_state(1)
+        self.multicontact_mpr_state = array_class.get_mpr_state(1)
 
     def activate(self, n_contact0_threads, n_multicontact_threads):
         """Allocate the scratch states the split narrowphase runs MPR on.
@@ -43,8 +40,8 @@ class MPR:
         The split narrowphase runs MPR on one state per thread of its contact0 pass (n_contact0_threads) and of its
         multicontact pass (n_multicontact_threads), while the other passes run it on one state per environment.
         """
-        self.contact0_mpr_state = array_class.get_mpr_state(n_contact0_threads, self._save_witness)
-        self.multicontact_mpr_state = array_class.get_mpr_state(n_multicontact_threads, self._save_witness)
+        self.contact0_mpr_state = array_class.get_mpr_state(n_contact0_threads)
+        self.multicontact_mpr_state = array_class.get_mpr_state(n_multicontact_threads)
 
 
 @qd.kernel
