@@ -142,6 +142,24 @@ relaxation was used to fix it. At0.1/0.3/1N, common tangent changes are31.2/28.6
 membrane changes8.36/8.27/8.17%, and bending changes7.66/7.29/6.78%. Raw von-Mises
 changes are10.9/38.4/7.77%. Spatial qualification plainly remains open.
 
+The ordered fine run finished0.1N and0.3N before its15-minute limit; both
+complete fields and the condensed contact operator are retained and hashed.
+`contact-fine-reuse-v1` (`727504`) verifies that cached operator's mesh identity,
+nodes, signs, rigid coordinates and gaps before solving the remaining1N case.
+At0.1N, the fine-grid equation residual is1.63e-11, with123 lower and37 upper
+force-bearing nodes and nonzero fully active face areas on both sides. Raw
+von-Mises peaks across the three grids are14.330/16.078/18.933MPa. This is
+finite-area discrete contact, not a converged continuum peak.
+
+`contact-convergence-three-v1` (`727500`) gives a25.2--25.3% medium-to-fine
+tangent difference at0.1N, far above2%. Through-wall midpoint sampling also
+changes some membrane comparisons appreciably between32 and64 samples. The
+next comparison should integrate P1 material-column intervals exactly: within
+each sorted-vertex reference prism, the three tetrahedra occupy depth intervals
+`[0,w_c]`, `[w_c,w_b+w_c]` and `[w_b+w_c,1]`. Union the intervals from both
+meshes for the complete-field error; integrate membrane/bending analytically.
+Do not hide this sampling uncertainty behind a spatial convergence claim.
+
 An existing, independently developed Shell contact repair is available at
 `9a58a7359`, pinned in the detached `shell-qualified-contact` worktree. It joins
 shell elasticity, contact and articulated rigid response in an implicit solve;
@@ -174,6 +192,18 @@ failure, not the rigid tipping observed on the coarse mesh. Future failure
 captures must stop and retain the full state at the first solver failure.
 Geometry matching, spatial refinement and original feature-test verification
 remain necessary before any qualified Shell ranking.
+
+The horizontal control also rolls during its first second; its corotated
+deformation is about2.2nm. Extending the continuous history to5s in
+`shell-side-steady-v1` (`727498`) reaches upper/lower reaction0.1N, plate speed
+3.9e-14m/s, kinetic energy4.6e-17J and dynamic/static equation residuals about
+7.3e-9, with zero solver-failure flags. The raw peak is12.363kPa. This is the
+first promising sustained coupled-Shell configuration on the original coarse
+geometry, pending the full-window audit (`727503`), dt sensitivity, geometry
+matching and refined-field comparison. The initial pose and settling history
+must remain explicit. `shell-smooth-failure-v2` (`727502`) is a short10-step
+capture with a5ms ramp, using the revised observer that saves the complete
+first failed state and stops; it is not an exact replay of the old ramp.
 
 ## Tolerances and remaining work
 
