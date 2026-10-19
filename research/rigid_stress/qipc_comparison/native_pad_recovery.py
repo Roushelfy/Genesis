@@ -33,6 +33,7 @@ class NativePadRecovery:
     tetrahedra: np.ndarray
     radius: float
     source_reduction: str
+    phase_timing: bool = True
 
     @classmethod
     def allocate(cls, args, outer, faces, points, xml):
@@ -64,14 +65,15 @@ class NativePadRecovery:
                 surface_inverse=False,
             )
         )
-        scene.build(n_envs=1)
+        envs = getattr(args, "envs", 1)
+        scene.build(n_envs=envs)
         entry = scene.rigid_solver.stress_recovery.links[0]
         if args.source_reduction == "none":
             # Own a research input buffer large enough for every physical
             # centroid. Do not manufacture collider geometry to obtain capacity.
             entry.contacts = create_contacts(
                 len(points),
-                1,
+                envs,
                 args.radius,
                 args.method == "dpr" and entry.options.cooperative_pressure,
                 args.method == "dpr" and entry.options.cooperative_scatter,
@@ -102,10 +104,12 @@ class NativePadRecovery:
             tetrahedra,
             args.radius,
             args.source_reduction,
+            not getattr(args, "primary_cost", False),
         )
 
     def sample(self, force_world, rotation, angular_world, friction, load, path=None):
-        started = perf_counter()
+        clock = perf_counter if self.phase_timing else lambda: 0.0
+        started = clock()
         force = force_world @ rotation
         if self.source_reduction == "wrench":
             selected, coefficient, components, defect = compress(self.points, force, self.adjacency, 0.06)
@@ -132,7 +136,7 @@ class NativePadRecovery:
                 "radius_m": np.array(self.radius),
             }
         )
-        compression_seconds = perf_counter() - started
+        compression_seconds = clock() - started
         if entry.intrinsic is not None:
             sources = entry.intrinsic.raw_sources
             sources.geom.fill(entry.link.geoms[0].idx)
@@ -189,7 +193,7 @@ class NativePadRecovery:
             and np.isfinite(stress).all()
             and np.isfinite(peak)
         )
-        observation_seconds = perf_counter() - started
+        observation_seconds = clock() - started
         if path is not None:
             np.savez_compressed(
                 path,
@@ -216,7 +220,8 @@ class NativePadRecovery:
             "source_compression_wrench_error": defect,
             "source_compression_seconds": compression_seconds,
             "observation_seconds_excluding_frame_IO": observation_seconds,
-            "observation_seconds_including_IO": perf_counter() - started,
+            "observation_seconds_including_IO": clock() - started,
+            "phase_timing_enabled": self.phase_timing,
             "output_mode": entry.output_mode,
             "raw_vm_peak_pa": peak,
             "field_host_bytes": voigt.nbytes,

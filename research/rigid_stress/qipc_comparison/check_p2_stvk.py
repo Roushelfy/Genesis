@@ -55,6 +55,13 @@ def main():
     linear = reference.stiffness @ small
     linear_error = np.linalg.norm(small_force - linear) / np.linalg.norm(linear)
     assert linear_error < 1e-7
+    correction = model.force_correction(displacement)
+    correction_error = np.linalg.norm(correction - (reference.stiffness @ displacement - force)) / np.linalg.norm(force)
+    assert correction_error < 1e-11
+    shifted_displacement = displacement + np.tile(translation, len(rest))
+    shifted_correction = model.force_correction(shifted_displacement)
+    correction_translation_error = np.linalg.norm(shifted_correction - correction) / np.linalg.norm(correction)
+    assert correction_translation_error < 1e-9
     np.testing.assert_allclose(
         cauchy_from_gradient(np.broadcast_to(deformation - np.eye(3), tensor.shape), 1e10, 0.3),
         tensor,
@@ -103,6 +110,8 @@ def main():
             "physical_moment_nm": float(moment),
             "energy_gradient_relative_error": float(gradient_error),
             "small_strain_linear_force_relative_error": float(linear_error),
+            "direct_correction_full_force_relative_error": float(correction_error),
+            "direct_correction_translation_relative_error": float(correction_translation_error),
             "nonlinear_column_sampling_relative_error": column_error,
         },
     )

@@ -1,0 +1,230 @@
+[
+  [
+    {
+      "name": "dpr",
+      "module": "research.rigid_stress.qipc_comparison.pad_memory_profile",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/memory-b1-full-dpr-v1.json"
+      ]
+    },
+    {
+      "name": "dpr-audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_pad_batch",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group0/dpr/run",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    },
+    {
+      "name": "scr",
+      "module": "research.rigid_stress.qipc_comparison.pad_memory_profile",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/memory-b1-full-scr-v1.json"
+      ]
+    },
+    {
+      "name": "scr-audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_pad_batch",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group0/scr/run",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    },
+    {
+      "name": "shell",
+      "module": "research.rigid_stress.qipc_comparison.pad_memory_profile",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/memory-b1-full-shell-v1.json"
+      ],
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-physical-pad"
+    },
+    {
+      "name": "shell-audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_pad_batch",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group0/shell/run",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "dpr",
+      "module": "research.rigid_stress.qipc_comparison.pad_memory_profile",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/memory-b1-max-dpr-v1.json"
+      ]
+    },
+    {
+      "name": "dpr-audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_pad_batch",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group1/dpr/run",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    },
+    {
+      "name": "scr",
+      "module": "research.rigid_stress.qipc_comparison.pad_memory_profile",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/memory-b1-max-scr-v1.json"
+      ]
+    },
+    {
+      "name": "scr-audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_pad_batch",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group1/scr/run",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    },
+    {
+      "name": "shell",
+      "module": "research.rigid_stress.qipc_comparison.pad_memory_profile",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/memory-b1-max-shell-v1.json"
+      ],
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-physical-pad"
+    },
+    {
+      "name": "shell-audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_pad_batch",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group1/shell/run",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "dpr",
+      "module": "research.rigid_stress.qipc_comparison.pad_memory_profile",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/memory-b4-full-dpr-v1.json"
+      ]
+    },
+    {
+      "name": "dpr-audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_pad_batch",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group2/dpr/run",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    },
+    {
+      "name": "scr",
+      "module": "research.rigid_stress.qipc_comparison.pad_memory_profile",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/memory-b4-full-scr-v1.json"
+      ]
+    },
+    {
+      "name": "scr-audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_pad_batch",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group2/scr/run",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    },
+    {
+      "name": "shell",
+      "module": "research.rigid_stress.qipc_comparison.pad_memory_profile",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/memory-b4-full-shell-v1.json"
+      ],
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-physical-pad"
+    },
+    {
+      "name": "shell-audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_pad_batch",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group2/shell/run",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "dpr",
+      "module": "research.rigid_stress.qipc_comparison.pad_memory_profile",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/memory-b4-max-dpr-v1.json"
+      ]
+    },
+    {
+      "name": "dpr-audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_pad_batch",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group3/dpr/run",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    },
+    {
+      "name": "scr",
+      "module": "research.rigid_stress.qipc_comparison.pad_memory_profile",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/memory-b4-max-scr-v1.json"
+      ]
+    },
+    {
+      "name": "scr-audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_pad_batch",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group3/scr/run",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    },
+    {
+      "name": "shell",
+      "module": "research.rigid_stress.qipc_comparison.pad_memory_profile",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/memory-b4-max-shell-v1.json"
+      ],
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/shell-physical-pad"
+    },
+    {
+      "name": "shell-audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_pad_batch",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-memory-profile-v1/group3/shell/run",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    }
+  ]
+]

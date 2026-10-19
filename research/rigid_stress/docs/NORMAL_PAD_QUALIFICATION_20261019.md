@@ -4,8 +4,11 @@ The declared normal physical-pad case now passes its predeclared reference
 change targets. This establishes a useful, metric-specific comparison for
 three normal loads. It does not complete the
 [active goal](QUALIFIED_STRESS_RANKING_GOAL.md): independent sustained-friction
-spatial/timestep qualification, common-peak convergence, matched primary cost,
-batching and the remaining field/traction/response figures are still required.
+spatial qualification, complete matched sparse/batched costs, memory and
+field/traction maps are still required. The later
+[common-peak and batch checkpoint](COMMON_PEAK_BATCH_RESULTS_20261019.md)
+adds common-peak convergence, time/contact controls, actual B4 conformance,
+admitted B1 every-step full/max timing and the force/closure response figure.
 
 The physical case remains the full free hollow egg,500um wall,E=10GPa,nu=0.3,
 rho=2000kg/m3, with the explicitly declared1e9N/m3 compliant pad. Native DPR
@@ -84,8 +87,9 @@ tensile peaks at identical angular/material columns, including both one-sided
 tetrahedron traces and both wall boundaries. It separately integrates true3D
 normal/transverse shear components and assigns Shell no unsupported transverse
 error rank. Its analytic invariant, rotation and component tests pass. The
-0.1N9/25-point sampling comparison is a separate control; the complete common
-peak spatial-uncertainty campaign remains outstanding.
+9/25-point sampling and complete common-peak spatial-uncertainty campaign now
+pass, as documented in the later checkpoint. Raw and common Mises rankings
+differ; retain both definitions and their conditional uncertainty.
 
 ## Objective transient reference and measured cost preflight
 

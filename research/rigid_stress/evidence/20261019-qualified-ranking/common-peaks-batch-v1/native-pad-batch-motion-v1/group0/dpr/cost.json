@@ -1,0 +1,43 @@
+{
+  "completed": true,
+  "mechanically_admitted": true,
+  "method": "dpr",
+  "envs": 4,
+  "output_mode": "full",
+  "stress_stride": 20,
+  "primary_timing": true,
+  "samples": [
+    {
+      "level": 0,
+      "warmup": true,
+      "steps": 200,
+      "wall_seconds": 47.25984512400464,
+      "step_latency_ms": 236.2992256200232,
+      "aggregate_env_steps_per_second": 16.927689836919438,
+      "torch_allocated_bytes_after_level": 69632,
+      "torch_reserved_bytes_after_level": 2097152,
+      "stress_observations": 10,
+      "all_stress_observations_valid": true,
+      "field_host_bytes": 207175680
+    },
+    {
+      "level": 1,
+      "warmup": false,
+      "steps": 200,
+      "wall_seconds": 9.634888963017147,
+      "step_latency_ms": 48.174444815085735,
+      "aggregate_env_steps_per_second": 83.03157442402757,
+      "torch_allocated_bytes_after_level": 69632,
+      "torch_reserved_bytes_after_level": 2097152,
+      "stress_observations": 10,
+      "all_stress_observations_valid": true,
+      "field_host_bytes": 207175680
+    }
+  ],
+  "measured_repeats": 1,
+  "median_latency_ms": 48.174444815085735,
+  "minimum_latency_ms": 48.174444815085735,
+  "maximum_latency_ms": 48.174444815085735,
+  "incomplete_level": null,
+  "scope": "One synchronized wall interval per complete continuous load level, including actual native/pad or Shell integration, requested recovery, host output, all per-step mechanical admission calculations, endpoint field/certificate output and step-journal I/O. Per-phase timers are disabled. Initial complete levels are warmup; measured levels are consecutive warm repeats, not independent fresh-process replicates. This is end-to-end timing of the declared admitted research workflow, not pure production-solver latency. PyTorch endpoint allocations exclude Quadrants and are not whole-device peak memory. Use this exact run's mechanical audit; separate preflights cannot admit a failed primary run."
+}

@@ -43,6 +43,25 @@ class P2StVK:
         energy = 0.5 * np.sum(np.einsum("ijeq,ijeq->eq", strain, stress) * self.reference.basis.dx)
         return force, float(energy)
 
+    def force_correction(self, displacement):
+        """Assemble K u - f(u) without subtracting two complete nodal forces.
+
+        With E=sym(G)+Q, Q=G.T G/2, P=C:sym(G)+C:Q+G(C:E).
+        The first term integrates to K u; assemble the negative remainder.
+        """
+        gradient = self.reference.basis.interpolate(displacement).grad
+        quadratic = 0.5 * np.einsum("kieq,kjeq->ijeq", gradient, gradient)
+        linear = (gradient + gradient.swapaxes(0, 1)) / 2
+        lame, shear = self.reference.lame
+        identity = np.eye(3)[:, :, None, None]
+
+        def material(strain):
+            return 2 * shear * strain + lame * np.einsum("iieq->eq", strain)[None, None] * identity
+
+        quadratic_stress = material(quadratic)
+        nonlinear_piola = quadratic_stress + np.einsum("ikeq,kjeq->ijeq", gradient, material(linear) + quadratic_stress)
+        return -asm(piola_force, self.reference.basis, piola=nonlinear_piola)
+
     def corner_stress(self, displacement):
         gradient = self.reference.corner_basis.interpolate(displacement).grad
         _, _, piola = self.tensors(gradient)

@@ -1,0 +1,85 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-099",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728215",
+      "SLURM_ARRAY_JOB_ID": "728215",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-1ac60415-6ff6-827d-0ab8-4302df6a5e1c, 00000000:AE:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "cases": [
+    {
+      "run": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-sparse-preflight-v1/group1/scr/result.json",
+        "bytes": 1779,
+        "sha256": "01d95b89ce1654a79ca7a97ba8ff34a58338362fe094ffd491c8b7afe2a43985"
+      },
+      "journal": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-sparse-preflight-v1/group1/scr/steps.jsonl",
+        "bytes": 358452,
+        "sha256": "4b880dcddce1d1ffe17ba34626ebdc2b07ea6d00a3075e539d36472f70a412da"
+      },
+      "steps": 400,
+      "mechanical_history_passed": true,
+      "all_windows_passed": true,
+      "all_stress_observations_valid": true,
+      "motion_maximum_absolute_differences": null,
+      "fields": [
+        {
+          "step": 200,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-sparse-preflight-v1/group1/scr/frames/stress-level0.npz",
+            "bytes": 3001085,
+            "sha256": "ce410682a13c651eaff622eac5cacfef1a7719e2c20adbe3e845274431e9f685"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-sparse-preflight-v1/group1/scr/frames/level0.npz",
+            "bytes": 398646,
+            "sha256": "1ec3a36ee090660d27c35e439674e1967f5c766439f7a715a25a90fc11561b40"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 0.0,
+          "recovered_surface_relative_wrench_error": 4.76594541136262e-10,
+          "body_correction_force_n": [
+            -1.223085879319955e-17,
+            -7.698448831740757e-18,
+            -9.536127667036581e-11
+          ],
+          "frozen_point_relative_moment_error": 2.513351823342871e-23,
+          "adapter_passed": true
+        },
+        {
+          "step": 400,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-sparse-preflight-v1/group1/scr/frames/stress-level1.npz",
+            "bytes": 3000275,
+            "sha256": "a64abe28c65f03cfe70ebb3ff2cb8778025c72030e90325785dac5015dc74c45"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-cost-sparse-preflight-v1/group1/scr/frames/level1.npz",
+            "bytes": 398689,
+            "sha256": "11b885e512a4172c09e635720f117b767705f7ab7772327786aca5de7e834720"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 0.0,
+          "recovered_surface_relative_wrench_error": 4.766260508821578e-10,
+          "body_correction_force_n": [
+            -1.155532918072337e-17,
+            -7.368257425375148e-18,
+            -9.532098069851776e-11
+          ],
+          "frozen_point_relative_moment_error": 4.4769259259608184e-23,
+          "adapter_passed": true
+        }
+      ]
+    }
+  ],
+  "passed": true,
+  "physical_accuracy_qualified": false
+}

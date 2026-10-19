@@ -1,0 +1,60 @@
+{
+  "claim_anchor": "normal-pad-response-and-common-peaks",
+  "main_claim": "Native rigid mechanics changes force/closure; common-location peak errors have metric/load-dependent ordering, including an unresolved0.1N Mises comparison.",
+  "panels": [
+    "Measured equilibrium force versus plate-gap closure",
+    "Common tangent Mises peak error",
+    "Common tangent tensile peak error"
+  ],
+  "chart_choice": "Connected equilibrium observations show response; point/range plots retain conditional uncertainty without statistical aggregation.",
+  "material_passport": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-normal-qualification-v2/group0/qualification/result.json",
+      "bytes": 42447,
+      "sha256": "c79fbba32143ca71a90475c8ad1cdb109ba86f09c9ff60608480c113db486a2b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-common-peak-qualification-v2/group0/qualification/result.json",
+      "bytes": 29634,
+      "sha256": "cfb7688967540c5796bebb1fd91887b21a8dfb678828547c967381fa6e0e4633"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/start.json",
+      "bytes": 2712,
+      "sha256": "6b9f459304ab061ad1a7ec664e357ad1389bd099bdd88ef966cca1366dbd150b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group0/native/steps.jsonl",
+      "bytes": 812948,
+      "sha256": "50da588583875f166f751d460acee521edd203f95636748e102741fec1394dd3"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group1/native/start.json",
+      "bytes": 2713,
+      "sha256": "f56515ea76807f969beaa98ef9b3944d56a1691daf908798a18304254a4c341a"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group1/native/steps.jsonl",
+      "bytes": 812884,
+      "sha256": "b5fe0a5934b7584a2cd706ea351707a6a7958850049e53371f65e00ffd5666ba"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/start.json",
+      "bytes": 3664,
+      "sha256": "c8ffa32f25b968d8d28f517b0b47cf7aaaf7f452eccd0db02cb53aae348b902c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-fine-coarse-history-v1/group0/cycle/steps.jsonl",
+      "bytes": 1409619,
+      "sha256": "b7fe7d1132ecabd2ea2519736e671a75f547adede46b2d85c78a2e79e8600cae"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-reference-v2/group0/reference/result.json",
+      "bytes": 18111,
+      "sha256": "38f5ea659ba2d5a78fcc80ad80b8ee46dcfd4354a35b58ae0ad13ffd5293c88b"
+    }
+  ],
+  "target": "English repository supplement,183mm by75mm, editable SVG and PDF with raster preview.",
+  "missing_materials": "None for these normal-case panels. Full spatial maps and friction comparison are separate deliverables.",
+  "limits": "Peak intervals assume the observed refinement envelope bounds unresolved error. Response connecting lines are guides, not resolved transient paths. Plate-gap closure includes physical pad compression, not just egg deformation."
+}

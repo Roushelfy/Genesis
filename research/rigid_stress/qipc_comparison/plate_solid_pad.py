@@ -53,6 +53,7 @@ def main():
     cli.add_argument("--contact-solver", choices=("condensed", "matrix-free", "modal"), default="condensed")
     cli.add_argument("--elasticity", choices=("linear", "stvk"), default="linear")
     cli.add_argument("--warm-contact", action="store_true")
+    cli.add_argument("--constitutive-correction", choices=("subtracted", "direct"), default="subtracted")
     args = cli.parse_args()
     assert not args.empty and not args.shear_distance and args.plate_offset_x == 0
     assert args.record_stride == 1 and (not args.gravity_x or args.friction == 0.3)

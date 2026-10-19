@@ -21,6 +21,12 @@ passes its reference-change gates and reports conditional metric-specific
 comparisons. Independent friction refinement and matched primary cost/batching
 remain open. Partial successes do not close the goal.
 
+The [common-peak/batch update](docs/COMMON_PEAK_BATCH_RESULTS_20261019.md)
+adds qualified common peaks, actual B4 motion/source conformance, B1 every-step
+full/max primary times and an inspected force/closure figure. The sparse/B4
+cost matrix, process memory, friction spatial qualification and field/traction
+maps remain incomplete.
+
 The [plate report](docs/PARALLEL_PLATE_RESULTS_20261018.md) records verified
 mechanical equilibria, the SCR cancellation-sensitive admission failure,
 original Shell contact-split imbalance and unresolved QIPC point-contact fields.

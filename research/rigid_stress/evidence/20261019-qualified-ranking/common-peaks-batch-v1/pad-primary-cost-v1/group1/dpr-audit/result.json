@@ -1,0 +1,131 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-115",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728247",
+      "SLURM_ARRAY_JOB_ID": "728245",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-ea9a1fb0-0ea2-7392-95c1-64a5279178e1, 00000000:AD:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "cases": [
+    {
+      "run": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group1/dpr/result.json",
+        "bytes": 3130,
+        "sha256": "54507d58d8ba729e3448ff96ae8f912b01281eda4d03a4dd56b66819640055bf"
+      },
+      "journal": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group1/dpr/steps.jsonl",
+        "bytes": 1463908,
+        "sha256": "cf73c37e33b7f35cb3325e752e030aa943156d6afdc0574ddd16cb4cd62cd777"
+      },
+      "steps": 800,
+      "mechanical_history_passed": true,
+      "all_windows_passed": true,
+      "all_stress_observations_valid": true,
+      "motion_maximum_absolute_differences": null,
+      "fields": [
+        {
+          "step": 200,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group1/dpr/frames/stress-level0.npz",
+            "bytes": 2773497,
+            "sha256": "0a1fd4d0d0a834045d71641e28389c22c0a9fce58d64c46953322bd853f0af2f"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group1/dpr/frames/level0.npz",
+            "bytes": 398683,
+            "sha256": "5df857e10a977dd36b3e7979a32b6e128b45678667e038c2e93056ff5bc402e6"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 0.0,
+          "recovered_surface_relative_wrench_error": 2.098602823038739e-17,
+          "body_correction_force_n": [
+            2.758178108059492e-35,
+            3.477314327823874e-35,
+            -4.2311026449755316e-14
+          ],
+          "frozen_point_relative_moment_error": 6.656735431295102e-24,
+          "adapter_passed": true
+        },
+        {
+          "step": 400,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group1/dpr/frames/stress-level1.npz",
+            "bytes": 2760801,
+            "sha256": "32f58b2dd87750ab9347b787906955a9d83ec26ae018bb2fb5ea2d5f5bb64132"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group1/dpr/frames/level1.npz",
+            "bytes": 398735,
+            "sha256": "5192bb31dfc56bc4739ee966f41290294f983c7dc85be24bc7abfe2a53f904bc"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 0.0,
+          "recovered_surface_relative_wrench_error": 1.624352436881544e-16,
+          "body_correction_force_n": [
+            -2.6613467609105063e-35,
+            -4.796062869103012e-36,
+            -1.6286368829624324e-14
+          ],
+          "frozen_point_relative_moment_error": 9.21923556243549e-23,
+          "adapter_passed": true
+        },
+        {
+          "step": 600,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group1/dpr/frames/stress-level2.npz",
+            "bytes": 2769847,
+            "sha256": "18e4f16c30a6e7b0888b13f796ef3321f7162e0fd90f6f31e8f5ddc7657a50e3"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group1/dpr/frames/level2.npz",
+            "bytes": 398919,
+            "sha256": "e460b714ed409eb0c3240bf78faba4f4643c0c56a6c64e3497f92bf16b4e236f"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 0.0,
+          "recovered_surface_relative_wrench_error": 2.0816764670503786e-16,
+          "body_correction_force_n": [
+            1.2857300069904938e-34,
+            1.5314487339306614e-35,
+            5.590602987007352e-15
+          ],
+          "frozen_point_relative_moment_error": 3.939020065976192e-23,
+          "adapter_passed": true
+        },
+        {
+          "step": 800,
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group1/dpr/frames/stress-level3.npz",
+            "bytes": 2790591,
+            "sha256": "615d5de30653c71be2989eabce4ca37de2f288bdbc8bf521f2a8000a72cae7cf"
+          },
+          "geometry": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-primary-cost-v1/group1/dpr/frames/level3.npz",
+            "bytes": 399114,
+            "sha256": "c01ef2e0136d8d94e11e8965484a8c9debe2673adeaaf231431f258942564143"
+          },
+          "native_valid": true,
+          "complete_source_compression_relative_wrench_error": 0.0,
+          "recovered_surface_relative_wrench_error": 1.4210662872949568e-16,
+          "body_correction_force_n": [
+            9.564666924854785e-36,
+            7.252754226825435e-36,
+            7.984655034022033e-15
+          ],
+          "frozen_point_relative_moment_error": 2.085169415009684e-23,
+          "adapter_passed": true
+        }
+      ]
+    }
+  ],
+  "passed": true,
+  "physical_accuracy_qualified": false
+}

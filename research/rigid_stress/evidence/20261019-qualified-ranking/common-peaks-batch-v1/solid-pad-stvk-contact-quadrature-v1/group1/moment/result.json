@@ -1,0 +1,60 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-187",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "728226",
+      "SLURM_ARRAY_JOB_ID": "728226",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-a7b4dc1b-18e1-b2c4-b1eb-bb305d634fde, 00000000:45:00.0, 595.71.05, 97887 MiB\n"
+  },
+  "run": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-contact-quadrature-v1/group1/reference/result.json",
+    "bytes": 1427,
+    "sha256": "099c233b2f120f2cc8b67c7b912916379f7df7d03f1f381fb2e04ecff1ea8066"
+  },
+  "history_admitted": true,
+  "frames": [
+    {
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-contact-quadrature-v1/group1/reference/frames/level0.npz",
+        "bytes": 18915952,
+        "sha256": "caf3a76e2bbae5755c2bd79586c2ebac1b5001bd31d7c11a9867693c4b6c3c0c"
+      },
+      "load_n": 0.1,
+      "maximum_nodal_displacement_m": 2.940717726914826e-05,
+      "source_force_transfer_relative_error": 1.444970445380056e-15,
+      "source_material_moment_transfer_relative_error": 9.366651628242009e-18,
+      "complete_force_balance_relative_error": 4.3662808013627004e-14,
+      "material_moment_balance_relative_error": 1.0811374302867195e-11,
+      "current_moment_balance_relative_error": 8.032496654131039e-15,
+      "linearized_internal_current_moment_relative_error": 2.2537845608781287e-16,
+      "source_transfer_passed": true,
+      "physical_momentum_passed": true
+    },
+    {
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-contact-quadrature-v1/group1/reference/frames/level1.npz",
+        "bytes": 18862198,
+        "sha256": "543a76353149cceea4239df9cacc9f93b20ebb4855d1052bc135cff15981cf2f"
+      },
+      "load_n": 0.1,
+      "maximum_nodal_displacement_m": 2.942600621567642e-05,
+      "source_force_transfer_relative_error": 9.88999822829793e-16,
+      "source_material_moment_transfer_relative_error": 5.197884361823123e-18,
+      "complete_force_balance_relative_error": 9.562991871735016e-11,
+      "material_moment_balance_relative_error": 5.206613168347271e-06,
+      "current_moment_balance_relative_error": 3.15917525378091e-10,
+      "linearized_internal_current_moment_relative_error": 6.137998367963966e-16,
+      "source_transfer_passed": true,
+      "physical_momentum_passed": true
+    }
+  ],
+  "passed": true,
+  "scope": "Complete nodal force and current-position moment balances, normalized by commanded load and load times0.03m, with unchanged1e-7 mechanical target. Material-frame balance alone cannot qualify finite-rotation mechanics. No pin, moment correction, force rescaling or displacement modification is applied."
+}

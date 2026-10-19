@@ -1,5 +1,13 @@
 # Current QIPC reference comparison
 
+The `common-peaks-batch-v1` selected publication retains897 verified small
+payloads totaling10,609,874 bytes: terminal receipts, executed source, failure
+records and editable response/peak figures. Its manifest explicitly identifies
+completed leaves selected from ongoing cost/memory arrays; other active output
+is not copied or claimed complete. Full fields, journals, process-memory staging
+and ongoing fine StVK runs remain under the established data-side ranking root.
+No live writer, environment or compatibility link is moved or changed.
+
 ## Qualified ranking stage, 2026-10-19
 
 New runs, generated contact meshes, regression logs and source receipts use

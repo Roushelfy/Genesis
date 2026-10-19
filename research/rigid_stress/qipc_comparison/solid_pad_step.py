@@ -7,9 +7,14 @@ def advance(
     factor, jacobian, contact, mode, rhs, old_displacement, gap, previous_normal, args, command, reference, nonlinear
 ):
     stiffness = reference.stiffness
+    direct = getattr(args, "constitutive_correction", "subtracted") == "direct"
     correction = np.zeros_like(old_displacement[:-1])
     if nonlinear is not None:
-        correction = stiffness @ old_displacement[:-1] - nonlinear.force_energy(old_displacement[:-1])[0]
+        correction = (
+            nonlinear.force_correction(old_displacement[:-1])
+            if direct
+            else stiffness @ old_displacement[:-1] - nonlinear.force_energy(old_displacement[:-1])[0]
+        )
     rounds = []
     for iteration in range(20 if nonlinear is not None else 1):
         corrected_rhs = rhs + np.r_[args.dt * correction, 0.0]
@@ -31,8 +36,12 @@ def advance(
             internal = stiffness @ displacement[:-1]
             error = 0.0
         else:
-            internal, _ = nonlinear.force_energy(displacement[:-1])
-            updated = stiffness @ displacement[:-1] - internal
+            if direct:
+                updated = nonlinear.force_correction(displacement[:-1])
+                internal = None
+            else:
+                internal, _ = nonlinear.force_energy(displacement[:-1])
+                updated = stiffness @ displacement[:-1] - internal
             error = float(np.linalg.norm(updated - correction) / max(command, 1e-3))
             correction = updated
         rounds.append(
@@ -43,5 +52,12 @@ def advance(
             }
         )
         if error <= 1e-9:
+            if internal is None:
+                # Independently reassemble complete Piola force for the actual
+                # equation and current-position moment admission in the driver.
+                internal, _ = nonlinear.force_energy(displacement[:-1])
+                rounds[-1]["direct_vs_subtracted_correction_relative"] = float(
+                    np.linalg.norm(correction - (stiffness @ displacement[:-1] - internal)) / max(command, 1e-3)
+                )
             return result, generalized_force, velocity, displacement, internal, rounds
     raise RuntimeError(f"P2 constitutive/contact coupling failed: {rounds[-1]}")
