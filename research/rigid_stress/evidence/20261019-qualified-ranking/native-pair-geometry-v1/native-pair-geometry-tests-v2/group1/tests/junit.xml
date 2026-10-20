@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="4" time="186.181" timestamp="2026-10-20T19:11:59.378015+00:00" hostname="rtx-209-191"><testcase classname="tests.rigid.test_stress_pair_geometry" name="test_pair_boundary_primitives_and_material_frame" time="59.011" /><testcase classname="tests.rigid.test_stress_pair_geometry" name="test_pair_material_visibility_and_current_velocity[u]" time="73.801"><failure message="AttributeError: 'RigidEntity' object has no attribute 'set_vel'. Did you mean: 'get_vel'?">nonconvex_material_mesh = (array([[0.   , 0.   , 0.   ],
+       [0.   , 0.   , 0.001],
+       [0.   , 0.001, 0.   ],
+       [0.   , 0.001, 0.001...5, 24],
+       [24, 26, 27],
+       [29, 27, 26],
+       [26, 28, 29],
+       [31, 29, 28],
+       [28, 30, 31]]), 'u')
+asset_tmp_path = PosixPath('/tmp/gs-shell-compare.iGNx5z/tmp/pytest-of-zhaofeng/pytest-0/assets0')
+
+    @pytest.mark.required
+    @pytest.mark.precision("64")
+    def test_pair_material_visibility_and_current_velocity(nonconvex_material_mesh, asset_tmp_path):  # noqa: F811
+        vertices, tets, faces, shape = nonconvex_material_mesh
+        elastic = asset_tmp_path / "pair-elastic.npz"
+        collision = asset_tmp_path / "pair-material.obj"
+        np.savez(elastic, vertices=vertices, tetrahedra=tets, surface_triangles=faces)
+        topology = build_surface_topology(tets, faces)
+        corners = vertices[faces]
+        normals = np.cross(corners[:, 1] - corners[:, 0], corners[:, 2] - corners[:, 0])
+        flipped = np.einsum("ij,ij-&gt;i", normals, vertices[topology.opposite_vertices] - corners[:, 0]) &gt; 0
+        oriented = faces.copy()
+        oriented[flipped] = oriented[flipped, ::-1]
+        trimesh.Trimesh(vertices, oriented, process=False).export(collision)
+        scene = gs.Scene(
+            sim_options=gs.options.SimOptions(
+                gravity=(0.0, 0.0, 0.0),
+            ),
+            show_viewer=False,
+        )
+        observed = scene.add_entity(
+            morph=gs.morphs.URDF(
+                file=mesh_urdf(collision),
+                align=False,
+                convexify=False,
+                decimate=False,
+                preserve_mesh_precision=True,
+            ),
+        )
+        observed.base_link.configure_stress_recovery(
+            gs.options.RigidStressOptions(
+                mesh=elastic,
+                method="pcg",
+                update_mode="manual",
+                quadrature=2,
+            )
+        )
+        pad = scene.add_entity(
+            morph=gs.morphs.Box(
+                pos=(0.0015, 0.0015, 0.0065),
+                size=(0.02, 0.02, 0.001),
+            ),
+        )
+        scene.build(n_envs=2)
+        solver = scene.rigid_solver
+        entry = solver.stress_recovery.links[0]
+        sources = create_sources(*entry.contacts.valid.shape)
+        associate(scene, entry, sources)
+        query = np.array([[0.0015, 0.0015, 0.0016], [0.0015, 0.0015, 0.0015]])
+        closest, direction = np.array([0.0015, 0.0015, 0.002]), np.array([0, 0, -1])
+        if shape == "u":
+            query = np.array([[0.0016, 0.002, 0.0005], [0.0015, 0.002, 0.0005]])
+            closest, direction = np.array([0.002, 0.002, 0.0005]), np.array([-1, 0, 0])
+        queried = np.empty((2, 7))
+        flags = np.empty(2, dtype=gs.np_int)
+        geom_indices = np.full(2, observed.base_link.geoms[0].idx, dtype=gs.np_int)
+        kernel_boundary_queries(
+            query, geom_indices, queried, flags, float(np.finfo(gs.np_float).eps), solver.dyn_info, solver.dyn_state
+        )
+        np.testing.assert_array_equal(flags, [PairGeometryStatus.SUCCESS, PairGeometryStatus.AMBIGUOUS])
+        np.testing.assert_allclose(queried[0, :3], closest, rtol=0, atol=1e-12)
+        np.testing.assert_allclose(queried[0, 3:6], direction, rtol=0, atol=1e-12)
+        np.testing.assert_allclose(queried[0, 6], 0.0004, rtol=0, atol=1e-12)
+        pairs = StressPairState(
+            environment=V(dtype=gs.qd_int, shape=(2,)),
+            opponent_link=V(dtype=gs.qd_int, shape=(2,)),
+            source_count=V(dtype=gs.qd_int, shape=(2,)),
+            force=V_VEC(3, dtype=gs.qd_float, shape=(2,)),
+            moment=V_VEC(3, dtype=gs.qd_float, shape=(2,)),
+        )
+        pairs.environment.from_numpy(np.arange(2, dtype=gs.np_int))
+        pairs.opponent_link.fill(pad.base_link.idx)
+        samples_shape = (entry.surface.info.positions.shape[0], 2)
+        samples = StressPairSamples(
+            opponent_position=V_VEC(3, dtype=gs.qd_float, shape=samples_shape),
+            normal=V_VEC(3, dtype=gs.qd_float, shape=samples_shape),
+            relative_velocity=V_VEC(3, dtype=gs.qd_float, shape=samples_shape),
+            gap=V(dtype=gs.qd_float, shape=samples_shape),
+            projected_area=V(dtype=gs.qd_float, shape=samples_shape),
+            opponent_geom=V(dtype=gs.qd_int, shape=samples_shape),
+            opponent_face=V(dtype=gs.qd_int, shape=samples_shape),
+            status=V(dtype=gs.qd_int, shape=samples_shape),
+        )
+        epsilon = float(np.finfo(gs.np_float).eps)
+        kernel_pair_samples(
+            entry.link.idx, epsilon, entry.contacts, entry.surface.info, solver.dyn_info, solver.dyn_state, pairs, samples
+        )
+        status = qd_to_numpy(samples.status, transpose=True, copy=True)
+        np.testing.assert_array_equal(qd_to_numpy(samples.opponent_geom, transpose=True), pad.base_link.geoms[0].idx)
+        gap = qd_to_numpy(samples.gap, transpose=True, copy=True)
+        position = qd_to_numpy(entry.surface.info.positions, transpose=True, copy=True)
+        n_quad = entry.surface.info.shape.shape[0]
+        normal = np.repeat(qd_to_numpy(entry.surface.info.face_normal, transpose=True), n_quad, axis=0)
+        facing = normal[:, 2] &gt; 0.5
+        visible = facing &amp; np.isclose(position[:, 2], vertices[:, 2].max(), rtol=0, atol=1e-12)
+        expected = np.full(len(position), PairGeometryStatus.BACK_FACING)
+        expected[facing &amp; ~visible] = PairGeometryStatus.OCCLUDED
+        expected[visible] = PairGeometryStatus.SUCCESS
+        np.testing.assert_array_equal(status, np.tile(expected, (2, 1)))
+        np.testing.assert_allclose(gap, np.tile(0.006 - position[:, 2], (2, 1)), rtol=0, atol=1e-12)
+        if shape == "cavity":
+            assert (status == PairGeometryStatus.OCCLUDED).any()
+        area = qd_to_numpy(samples.projected_area, transpose=True, copy=True)
+        weights = qd_to_numpy(entry.surface.info.weights, transpose=True)
+        np.testing.assert_allclose(area[:, visible], np.tile(weights[visible], (2, 1)), rtol=1e-12, atol=1e-18)
+        np.testing.assert_array_equal(area[:, ~visible], 0)
+        baseline = scene.get_state()
+        pad.set_pos((0.0015, 0.0015, 0.0055), envs_idx=[0])
+&gt;       pad.set_vel((0.02, 0.0, 0.0), envs_idx=[0])
+E       AttributeError: 'RigidEntity' object has no attribute 'set_vel'. Did you mean: 'get_vel'?
+
+tests/rigid/test_stress_pair_geometry.py:279: AttributeError</failure></testcase><testcase classname="tests.rigid.test_stress_pair_geometry" name="test_pair_material_visibility_and_current_velocity[cavity]" time="9.990"><failure message="AttributeError: 'RigidEntity' object has no attribute 'set_vel'. Did you mean: 'get_vel'?">nonconvex_material_mesh = (array([[0.   , 0.   , 0.   ],
+       [0.   , 0.   , 0.001],
+       [0.   , 0.   , 0.002],
+       [0.   , 0.   , 0.003...],
+       [56, 60, 61],
+       [62, 58, 57],
+       [57, 61, 62],
+       [63, 59, 58],
+       [58, 62, 63]]), 'cavity')
+asset_tmp_path = PosixPath('/tmp/gs-shell-compare.iGNx5z/tmp/pytest-of-zhaofeng/pytest-0/assets0')
+
+    @pytest.mark.required
+    @pytest.mark.precision("64")
+    def test_pair_material_visibility_and_current_velocity(nonconvex_material_mesh, asset_tmp_path):  # noqa: F811
+        vertices, tets, faces, shape = nonconvex_material_mesh
+        elastic = asset_tmp_path / "pair-elastic.npz"
+        collision = asset_tmp_path / "pair-material.obj"
+        np.savez(elastic, vertices=vertices, tetrahedra=tets, surface_triangles=faces)
+        topology = build_surface_topology(tets, faces)
+        corners = vertices[faces]
+        normals = np.cross(corners[:, 1] - corners[:, 0], corners[:, 2] - corners[:, 0])
+        flipped = np.einsum("ij,ij-&gt;i", normals, vertices[topology.opposite_vertices] - corners[:, 0]) &gt; 0
+        oriented = faces.copy()
+        oriented[flipped] = oriented[flipped, ::-1]
+        trimesh.Trimesh(vertices, oriented, process=False).export(collision)
+        scene = gs.Scene(
+            sim_options=gs.options.SimOptions(
+                gravity=(0.0, 0.0, 0.0),
+            ),
+            show_viewer=False,
+        )
+        observed = scene.add_entity(
+            morph=gs.morphs.URDF(
+                file=mesh_urdf(collision),
+                align=False,
+                convexify=False,
+                decimate=False,
+                preserve_mesh_precision=True,
+            ),
+        )
+        observed.base_link.configure_stress_recovery(
+            gs.options.RigidStressOptions(
+                mesh=elastic,
+                method="pcg",
+                update_mode="manual",
+                quadrature=2,
+            )
+        )
+        pad = scene.add_entity(
+            morph=gs.morphs.Box(
+                pos=(0.0015, 0.0015, 0.0065),
+                size=(0.02, 0.02, 0.001),
+            ),
+        )
+        scene.build(n_envs=2)
+        solver = scene.rigid_solver
+        entry = solver.stress_recovery.links[0]
+        sources = create_sources(*entry.contacts.valid.shape)
+        associate(scene, entry, sources)
+        query = np.array([[0.0015, 0.0015, 0.0016], [0.0015, 0.0015, 0.0015]])
+        closest, direction = np.array([0.0015, 0.0015, 0.002]), np.array([0, 0, -1])
+        if shape == "u":
+            query = np.array([[0.0016, 0.002, 0.0005], [0.0015, 0.002, 0.0005]])
+            closest, direction = np.array([0.002, 0.002, 0.0005]), np.array([-1, 0, 0])
+        queried = np.empty((2, 7))
+        flags = np.empty(2, dtype=gs.np_int)
+        geom_indices = np.full(2, observed.base_link.geoms[0].idx, dtype=gs.np_int)
+        kernel_boundary_queries(
+            query, geom_indices, queried, flags, float(np.finfo(gs.np_float).eps), solver.dyn_info, solver.dyn_state
+        )
+        np.testing.assert_array_equal(flags, [PairGeometryStatus.SUCCESS, PairGeometryStatus.AMBIGUOUS])
+        np.testing.assert_allclose(queried[0, :3], closest, rtol=0, atol=1e-12)
+        np.testing.assert_allclose(queried[0, 3:6], direction, rtol=0, atol=1e-12)
+        np.testing.assert_allclose(queried[0, 6], 0.0004, rtol=0, atol=1e-12)
+        pairs = StressPairState(
+            environment=V(dtype=gs.qd_int, shape=(2,)),
+            opponent_link=V(dtype=gs.qd_int, shape=(2,)),
+            source_count=V(dtype=gs.qd_int, shape=(2,)),
+            force=V_VEC(3, dtype=gs.qd_float, shape=(2,)),
+            moment=V_VEC(3, dtype=gs.qd_float, shape=(2,)),
+        )
+        pairs.environment.from_numpy(np.arange(2, dtype=gs.np_int))
+        pairs.opponent_link.fill(pad.base_link.idx)
+        samples_shape = (entry.surface.info.positions.shape[0], 2)
+        samples = StressPairSamples(
+            opponent_position=V_VEC(3, dtype=gs.qd_float, shape=samples_shape),
+            normal=V_VEC(3, dtype=gs.qd_float, shape=samples_shape),
+            relative_velocity=V_VEC(3, dtype=gs.qd_float, shape=samples_shape),
+            gap=V(dtype=gs.qd_float, shape=samples_shape),
+            projected_area=V(dtype=gs.qd_float, shape=samples_shape),
+            opponent_geom=V(dtype=gs.qd_int, shape=samples_shape),
+            opponent_face=V(dtype=gs.qd_int, shape=samples_shape),
+            status=V(dtype=gs.qd_int, shape=samples_shape),
+        )
+        epsilon = float(np.finfo(gs.np_float).eps)
+        kernel_pair_samples(
+            entry.link.idx, epsilon, entry.contacts, entry.surface.info, solver.dyn_info, solver.dyn_state, pairs, samples
+        )
+        status = qd_to_numpy(samples.status, transpose=True, copy=True)
+        np.testing.assert_array_equal(qd_to_numpy(samples.opponent_geom, transpose=True), pad.base_link.geoms[0].idx)
+        gap = qd_to_numpy(samples.gap, transpose=True, copy=True)
+        position = qd_to_numpy(entry.surface.info.positions, transpose=True, copy=True)
+        n_quad = entry.surface.info.shape.shape[0]
+        normal = np.repeat(qd_to_numpy(entry.surface.info.face_normal, transpose=True), n_quad, axis=0)
+        facing = normal[:, 2] &gt; 0.5
+        visible = facing &amp; np.isclose(position[:, 2], vertices[:, 2].max(), rtol=0, atol=1e-12)
+        expected = np.full(len(position), PairGeometryStatus.BACK_FACING)
+        expected[facing &amp; ~visible] = PairGeometryStatus.OCCLUDED
+        expected[visible] = PairGeometryStatus.SUCCESS
+        np.testing.assert_array_equal(status, np.tile(expected, (2, 1)))
+        np.testing.assert_allclose(gap, np.tile(0.006 - position[:, 2], (2, 1)), rtol=0, atol=1e-12)
+        if shape == "cavity":
+            assert (status == PairGeometryStatus.OCCLUDED).any()
+        area = qd_to_numpy(samples.projected_area, transpose=True, copy=True)
+        weights = qd_to_numpy(entry.surface.info.weights, transpose=True)
+        np.testing.assert_allclose(area[:, visible], np.tile(weights[visible], (2, 1)), rtol=1e-12, atol=1e-18)
+        np.testing.assert_array_equal(area[:, ~visible], 0)
+        baseline = scene.get_state()
+        pad.set_pos((0.0015, 0.0015, 0.0055), envs_idx=[0])
+&gt;       pad.set_vel((0.02, 0.0, 0.0), envs_idx=[0])
+E       AttributeError: 'RigidEntity' object has no attribute 'set_vel'. Did you mean: 'get_vel'?
+
+tests/rigid/test_stress_pair_geometry.py:279: AttributeError</failure></testcase><testcase classname="tests.rigid.test_stress_pair_geometry" name="test_pair_grouping_preserves_partitioned_wrench_and_isolation" time="43.157" /></testsuite></testsuites>

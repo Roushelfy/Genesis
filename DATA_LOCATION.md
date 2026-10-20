@@ -705,3 +705,12 @@ compact payloads (481,066 bytes) and98 externally hashed arrays, including48
 new full fields and the small frame/material operator controls. Large physical
 compliances and source maps are reused in place. All new numerical arrays and
 job logs stay on data, with private process caches on the compute nodes.
+
+`native-pair-geometry-tests-v1/v2/v3` retain the current-geometry component
+controls under the same run root. The `native-pair-geometry-v1` packet contains88
+compact payloads (468,439 bytes): terminal CPU/GPU outcomes, both earlier setup
+failures, exact engine/test sources and source-bound receipts. The source
+checkout is isolated at `.worktrees/automatic-pad-geometry`. Durable job logs
+stay on data; generated test assets and private compilation caches use
+compute-node scratch. No existing environment, data or compatibility link
+was moved.

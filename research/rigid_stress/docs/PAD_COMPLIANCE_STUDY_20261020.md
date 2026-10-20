@@ -282,3 +282,37 @@ the small public material/pad configuration and production lifecycle integration
 remain required. Current call times include compilation and research checks;
 they establish no controlled native throughput. Measure module and actual-scene
 costs, including prediction/preprocessing, after those components are connected.
+
+## Current opposing-geometry component
+
+`StressPairGeometry` groups the observed link's sources by opposing rigid link,
+so two collision geoms on one link do not become two independent pressure
+models. It sums complete forces and moments, including supplied free moments,
+in the observed material frame. Invalid source provenance excludes that
+environment and remains visible; valid environments retain their complete loads.
+Splitting a source into coincident half loads leaves the pair wrench unchanged.
+
+The native query reads current geom poses and returns nearest opposing points,
+signed gaps, material-frame normals, relative point velocities and projected
+quadrature areas. It handles planes, boxes, spheres, capsules, cylinders and
+triangle meshes. Material-boundary intersection tests identify self-occlusion;
+back-facing, ambiguous and unsupported queries have zero candidate area.
+The geometric gap is not interpreted as physical pad indentation.
+
+Four controls pass on each of CPU and GPU: primitive/mesh distance and live rigid transforms,
+U-shaped and cavity nearest-boundary queries, material occlusion with
+selected-environment motion/velocity/reset, and split-source grouping with
+invalid-source isolation. Distances and velocities use absolute tolerances
+of1e-12; split-source force and moment use1e-14N and1e-16Nm.
+The [geometry packet](../evidence/20261019-qualified-ranking/native-pair-geometry-v1/README.md)
+retains each test outcome, execution identity and source. The earlier unsupported
+Mesh option and nonexistent velocity-setter test setup failures remain retained.
+
+This component is not connected to the pressure solver or public recovery
+lifecycle. It reports the nearest boundary: an occluded nearest component can
+hide a farther accessible component, so these outputs do not establish complete
+physical support. Composite interior distances remain ambiguous; ellipsoid
+and terrain queries are unsupported. Moving pressure, friction history,
+current-geometry elastic maps and controlled production cost remain unverified.
+The next integration must resolve accessible support and feed the coupled
+pressure stage before a public automatic configuration can be admitted.

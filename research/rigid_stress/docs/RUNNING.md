@@ -91,6 +91,7 @@ python -m pytest -n 0 --backend cpu -q \
   -o cache_dir="$task_run/pytest-cache" --basetemp "$task_run/pytest-tmp" \
   tests/rigid/test_stress.py::test_native_full_field_same_state_and_invalid_solve \
   tests/rigid/test_stress_independent_fem.py \
+  tests/rigid/test_stress_pair_geometry.py \
   tests/rigid/test_stress_intrinsic_lifecycle.py
 ```
 
@@ -98,6 +99,13 @@ Use `--backend cuda` in a GPU allocation for the corresponding device check.
 `scripts/check_nonconvex_final.sh` accepts an explicit test selection and
 captures source hashes, logs and JUnit results under its fresh run directory.
 Unchanged physics does not require repeating historical convergence campaigns.
+
+`test_stress_pair_geometry.py` checks the current-geometry component with
+analytic primitive/nonconvex distances, material visibility, current relative
+velocity, link-pair wrench grouping and partial reset. The
+[retained CPU/GPU runs](../evidence/20261019-qualified-ranking/native-pair-geometry-v1/README.md)
+include the exact source patch and test files. These are component checks;
+they do not validate an automatic pressure law or measure production throughput.
 
 ## Evidence and historical tools
 

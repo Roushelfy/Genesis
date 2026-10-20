@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="4" time="9.604" timestamp="2026-10-20T19:08:06.011815+00:00" hostname="rtx-210-029"><testcase classname="tests.rigid.test_stress_pair_geometry" name="test_pair_boundary_primitives_and_material_frame" time="7.575"><failure message="genesis.GenesisException: Validation error for &lt;gs.morphs.Mesh&gt;: Unrecognized attribute 'preserve_mesh_precision'.">asset_tmp_path = PosixPath('/tmp/gs-shell-compare.wVq659/tmp/pytest-of-zhaofeng/pytest-0/assets0')
+
+    @pytest.mark.required
+    @pytest.mark.precision("64")
+    def test_pair_boundary_primitives_and_material_frame(asset_tmp_path):
+        mesh = trimesh.creation.box(extents=(0.004, 0.006, 0.008))
+        path = asset_tmp_path / "query-box.obj"
+        mesh.export(path)
+        xml = ET.Element("mujoco")
+        body = ET.SubElement(ET.SubElement(xml, "worldbody"), "body", pos="0.16 0 0")
+        ET.SubElement(body, "freejoint")
+        ET.SubElement(body, "geom", type="capsule", size="0.001 0.002")
+        scene = gs.Scene(
+            show_viewer=False,
+        )
+        entities = [
+            scene.add_entity(
+                morph=gs.morphs.Box(
+                    size=(0.004, 0.006, 0.008),
+                ),
+            ),
+            scene.add_entity(
+                morph=gs.morphs.Sphere(
+                    pos=(0.04, 0.0, 0.0),
+                    radius=0.002,
+                ),
+            ),
+            scene.add_entity(
+                morph=gs.morphs.Cylinder(
+                    pos=(0.08, 0.0, 0.0),
+                    radius=0.002,
+                    height=0.004,
+                ),
+            ),
+            scene.add_entity(
+&gt;               morph=gs.morphs.Mesh(
+                    file=path,
+                    pos=(0.12, 0.0, 0.0),
+                    convexify=False,
+                    decimate=False,
+                    preserve_mesh_precision=True,
+                ),
+            ),
+            scene.add_entity(
+                morph=gs.morphs.MJCF(
+                    file=ET.tostring(xml, encoding="unicode"),
+                ),
+            ),
+        ]
+
+tests/rigid/test_stress_pair_geometry.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+genesis/options/morphs.py:668: in __init__
+    super().__init__(**kwargs)
+genesis/utils/misc.py:129: in new_init
+    original_init(self, *args, **kwargs)
+genesis/options/options.py:35: in __init__
+    self._validation_error(e)
+genesis/options/options.py:110: in _validation_error
+    gs.raise_exception_from(trace_msg, None)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+msg = "Validation error for &lt;gs.morphs.Mesh&gt;: Unrecognized attribute 'preserve_mesh_precision'."
+cause = None
+
+    def raise_exception_from(msg="Something went wrong.", cause=None) -&gt; NoReturn:
+&gt;       raise gs.GenesisException(msg) from cause
+E       genesis.GenesisException: Validation error for &lt;gs.morphs.Mesh&gt;: Unrecognized attribute 'preserve_mesh_precision'.
+
+genesis/utils/misc.py:47: GenesisException</failure></testcase><testcase classname="tests.rigid.test_stress_pair_geometry" name="test_pair_material_visibility_and_current_velocity[u]" time="0.564"><failure message="genesis.GenesisException: Validation error for &lt;gs.morphs.Mesh&gt;: Unrecognized attribute 'preserve_mesh_precision'.">nonconvex_material_mesh = (array([[0.   , 0.   , 0.   ],
+       [0.   , 0.   , 0.001],
+       [0.   , 0.001, 0.   ],
+       [0.   , 0.001, 0.001...5, 24],
+       [24, 26, 27],
+       [29, 27, 26],
+       [26, 28, 29],
+       [31, 29, 28],
+       [28, 30, 31]]), 'u')
+asset_tmp_path = PosixPath('/tmp/gs-shell-compare.wVq659/tmp/pytest-of-zhaofeng/pytest-0/assets0')
+
+    @pytest.mark.required
+    @pytest.mark.precision("64")
+    def test_pair_material_visibility_and_current_velocity(nonconvex_material_mesh, asset_tmp_path):  # noqa: F811
+        vertices, tets, faces, shape = nonconvex_material_mesh
+        elastic = asset_tmp_path / "pair-elastic.npz"
+        collision = asset_tmp_path / "pair-material.obj"
+        np.savez(elastic, vertices=vertices, tetrahedra=tets, surface_triangles=faces)
+        topology = build_surface_topology(tets, faces)
+        corners = vertices[faces]
+        normals = np.cross(corners[:, 1] - corners[:, 0], corners[:, 2] - corners[:, 0])
+        flipped = np.einsum("ij,ij-&gt;i", normals, vertices[topology.opposite_vertices] - corners[:, 0]) &gt; 0
+        oriented = faces.copy()
+        oriented[flipped] = oriented[flipped, ::-1]
+        trimesh.Trimesh(vertices, oriented, process=False).export(collision)
+        scene = gs.Scene(
+            sim_options=gs.options.SimOptions(
+                gravity=(0.0, 0.0, 0.0),
+            ),
+            show_viewer=False,
+        )
+        observed = scene.add_entity(
+&gt;           morph=gs.morphs.Mesh(
+                file=collision,
+                convexify=False,
+                decimate=False,
+                preserve_mesh_precision=True,
+            ),
+        )
+
+tests/rigid/test_stress_pair_geometry.py:183: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+genesis/options/morphs.py:668: in __init__
+    super().__init__(**kwargs)
+genesis/utils/misc.py:129: in new_init
+    original_init(self, *args, **kwargs)
+genesis/options/options.py:35: in __init__
+    self._validation_error(e)
+genesis/options/options.py:110: in _validation_error
+    gs.raise_exception_from(trace_msg, None)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+msg = "Validation error for &lt;gs.morphs.Mesh&gt;: Unrecognized attribute 'preserve_mesh_precision'."
+cause = None
+
+    def raise_exception_from(msg="Something went wrong.", cause=None) -&gt; NoReturn:
+&gt;       raise gs.GenesisException(msg) from cause
+E       genesis.GenesisException: Validation error for &lt;gs.morphs.Mesh&gt;: Unrecognized attribute 'preserve_mesh_precision'.
+
+genesis/utils/misc.py:47: GenesisException</failure></testcase><testcase classname="tests.rigid.test_stress_pair_geometry" name="test_pair_material_visibility_and_current_velocity[cavity]" time="0.583"><failure message="genesis.GenesisException: Validation error for &lt;gs.morphs.Mesh&gt;: Unrecognized attribute 'preserve_mesh_precision'.">nonconvex_material_mesh = (array([[0.   , 0.   , 0.   ],
+       [0.   , 0.   , 0.001],
+       [0.   , 0.   , 0.002],
+       [0.   , 0.   , 0.003...],
+       [56, 60, 61],
+       [62, 58, 57],
+       [57, 61, 62],
+       [63, 59, 58],
+       [58, 62, 63]]), 'cavity')
+asset_tmp_path = PosixPath('/tmp/gs-shell-compare.wVq659/tmp/pytest-of-zhaofeng/pytest-0/assets0')
+
+    @pytest.mark.required
+    @pytest.mark.precision("64")
+    def test_pair_material_visibility_and_current_velocity(nonconvex_material_mesh, asset_tmp_path):  # noqa: F811
+        vertices, tets, faces, shape = nonconvex_material_mesh
+        elastic = asset_tmp_path / "pair-elastic.npz"
+        collision = asset_tmp_path / "pair-material.obj"
+        np.savez(elastic, vertices=vertices, tetrahedra=tets, surface_triangles=faces)
+        topology = build_surface_topology(tets, faces)
+        corners = vertices[faces]
+        normals = np.cross(corners[:, 1] - corners[:, 0], corners[:, 2] - corners[:, 0])
+        flipped = np.einsum("ij,ij-&gt;i", normals, vertices[topology.opposite_vertices] - corners[:, 0]) &gt; 0
+        oriented = faces.copy()
+        oriented[flipped] = oriented[flipped, ::-1]
+        trimesh.Trimesh(vertices, oriented, process=False).export(collision)
+        scene = gs.Scene(
+            sim_options=gs.options.SimOptions(
+                gravity=(0.0, 0.0, 0.0),
+            ),
+            show_viewer=False,
+        )
+        observed = scene.add_entity(
+&gt;           morph=gs.morphs.Mesh(
+                file=collision,
+                convexify=False,
+                decimate=False,
+                preserve_mesh_precision=True,
+            ),
+        )
+
+tests/rigid/test_stress_pair_geometry.py:183: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+genesis/options/morphs.py:668: in __init__
+    super().__init__(**kwargs)
+genesis/utils/misc.py:129: in new_init
+    original_init(self, *args, **kwargs)
+genesis/options/options.py:35: in __init__
+    self._validation_error(e)
+genesis/options/options.py:110: in _validation_error
+    gs.raise_exception_from(trace_msg, None)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+msg = "Validation error for &lt;gs.morphs.Mesh&gt;: Unrecognized attribute 'preserve_mesh_precision'."
+cause = None
+
+    def raise_exception_from(msg="Something went wrong.", cause=None) -&gt; NoReturn:
+&gt;       raise gs.GenesisException(msg) from cause
+E       genesis.GenesisException: Validation error for &lt;gs.morphs.Mesh&gt;: Unrecognized attribute 'preserve_mesh_precision'.
+
+genesis/utils/misc.py:47: GenesisException</failure></testcase><testcase classname="tests.rigid.test_stress_pair_geometry" name="test_pair_grouping_preserves_partitioned_wrench_and_isolation" time="0.560"><failure message="genesis.GenesisException: Validation error for &lt;gs.morphs.Mesh&gt;: Unrecognized attribute 'preserve_mesh_precision'.">asset_tmp_path = PosixPath('/tmp/gs-shell-compare.wVq659/tmp/pytest-of-zhaofeng/pytest-0/assets0')
+
+    @pytest.mark.required
+    @pytest.mark.precision("64")
+    def test_pair_grouping_preserves_partitioned_wrench_and_isolation(asset_tmp_path):
+        vertices = np.array([[-2, -2, 0], [2, -2, 0], [0, 2, 0], [0, 0, 3]]) * 0.001
+        tets = np.array([[0, 1, 2, 3]])
+        faces = np.array([[0, 2, 1], [0, 1, 3], [0, 3, 2], [1, 2, 3]])
+        elastic = asset_tmp_path / "pair-group-elastic.npz"
+        collision = asset_tmp_path / "pair-group.obj"
+        np.savez(elastic, vertices=vertices, tetrahedra=tets, surface_triangles=faces)
+        trimesh.Trimesh(vertices, faces, process=False).export(collision)
+        root = ET.Element("robot", name="two_pad_components")
+        link = ET.SubElement(root, "link", name="pad")
+        for x in (-0.005, 0.005):
+            child = ET.SubElement(link, "collision")
+            ET.SubElement(child, "origin", xyz=f"{x} 0 -0.001")
+            ET.SubElement(ET.SubElement(child, "geometry"), "box", size="0.01 0.02 0.002")
+        scene = gs.Scene(
+            sim_options=gs.options.SimOptions(
+                gravity=(0.0, 0.0, 0.0),
+            ),
+            rigid_options=gs.options.RigidOptions(
+                use_gjk_collision=True,
+                enable_contact_patch=True,
+            ),
+            show_viewer=False,
+        )
+        observed = scene.add_entity(
+&gt;           morph=gs.morphs.Mesh(
+                file=collision,
+                pos=(0.0, 0.0, -0.0001),
+                convexify=True,
+                decimate=False,
+                preserve_mesh_precision=True,
+            ),
+        )
+
+tests/rigid/test_stress_pair_geometry.py:313: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+genesis/options/morphs.py:668: in __init__
+    super().__init__(**kwargs)
+genesis/utils/misc.py:129: in new_init
+    original_init(self, *args, **kwargs)
+genesis/options/options.py:35: in __init__
+    self._validation_error(e)
+genesis/options/options.py:110: in _validation_error
+    gs.raise_exception_from(trace_msg, None)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+msg = "Validation error for &lt;gs.morphs.Mesh&gt;: Unrecognized attribute 'preserve_mesh_precision'."
+cause = None
+
+    def raise_exception_from(msg="Something went wrong.", cause=None) -&gt; NoReturn:
+&gt;       raise gs.GenesisException(msg) from cause
+E       genesis.GenesisException: Validation error for &lt;gs.morphs.Mesh&gt;: Unrecognized attribute 'preserve_mesh_precision'.
+
+genesis/utils/misc.py:47: GenesisException</failure></testcase></testsuite></testsuites>
