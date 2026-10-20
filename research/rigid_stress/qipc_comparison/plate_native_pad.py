@@ -49,7 +49,8 @@ def arguments():
     cli.add_argument("--method", choices=("rigid", "dpr", "scr"), default="rigid")
     cli.add_argument("--radius", type=float, default=0.002)
     cli.add_argument("--source-reduction", choices=("wrench", "none"), default="wrench")
-    cli.add_argument("--load-transfer", choices=("fixed_radius", "resolved_outer_p2"), default="fixed_radius")
+    cli.add_argument("--load-transfer", choices=("fixed_radius", "resolved_outer_p2", "resolved_boundary_p2"),
+                     default="fixed_radius")
     cli.add_argument("--source-roundoff", action="store_true",
                      help="Reconcile only cone conflicts below the aggregate physical-force roundoff budget")
     cli.add_argument("--friction", type=float, choices=(0.0, 0.3), default=0.0)
@@ -66,10 +67,10 @@ def main():
     assert args.stress_stride >= 0 and args.cost_warm_levels >= 0
     assert not args.empty and not args.shear_distance and args.plate_offset_x == 0
     assert args.record_stride == 1 and (not args.gravity_x or args.friction == 0.3)
-    if args.load_transfer == "resolved_outer_p2" and (args.method != "dpr" or args.source_reduction != "none"):
-        raise ValueError("Resolved outer transfer requires DPR with complete physical centroid sources")
-    if args.source_roundoff and (args.load_transfer != "fixed_radius" or args.source_reduction != "none"):
-        raise ValueError("Source roundoff reconciliation requires fixed-radius complete centroid sources")
+    if args.load_transfer != "fixed_radius" and (args.method != "dpr" or args.source_reduction != "none"):
+        raise ValueError("Resolved transfer requires DPR with complete physical centroid sources")
+    if args.source_roundoff and (args.load_transfer == "resolved_outer_p2" or args.source_reduction != "none"):
+        raise ValueError("Source reconciliation requires complete sources and fixed or native resolved transfer")
     args.output.mkdir(parents=True, exist_ok=False)
     (args.output / "frames").mkdir()
     assets = json.loads((args.assets / "result.json").read_text())

@@ -278,9 +278,19 @@ A useful engineering approximation still needs
 an admissible stress budget, source-prior control and its own matched native
 history/cost evidence.
 
-The resolved-pressure transfer should be generalized using actual boundary
-and source provenance, including legitimate inner/nonconvex contacts. Sparse
-collider sources still need the physical support/pressure model, including
+The native `load_transfer="resolved"` implementation now uses actual boundary
+and source provenance, including legitimate inner/nonconvex contacts.
+Its independent quadratic-work, force/moment, release and failure-isolation
+controls pass on both nonconvex and cavity meshes. Native max/full scene
+observation, checkpoint, partial reset and subsequent unaffected-environment
+updates pass on both CPU and GPU; six manual-pressure regressions remain
+passing. The [implementation packet](../evidence/20261019-qualified-ranking/native-resolved-boundary-v1/README.md)
+retains all tests and their initial setup/API failures.
+On the actual retained normal/friction pad loads,
+complete-field differences from the existing independent CPU resolved transfer
+are1.13e-11/1.25e-11. These are numerical conformance results, not new physical
+error measurements. Sparse collider sources still need the physical
+support/pressure model, including
 the [measured compliance limits](PAD_COMPLIANCE_STUDY_20261020.md).
-Native Quadrants integration, moving/friction validation, thickness cases,
-batch/reset checks and measured incremental production costs remain open.
+Automatic Quadrants pressure prediction, moving/friction and thickness
+validation, and measured incremental production costs remain open.

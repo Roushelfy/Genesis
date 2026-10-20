@@ -15,6 +15,7 @@ import genesis as gs
 from genesis.engine.solvers.rigid.stress.contact import create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
 from genesis.engine.solvers.rigid.stress.intrinsic import IntrinsicContacts
 from genesis.engine.solvers.rigid.stress.recovery import StressLink, kernel_accept, kernel_begin_step
+from genesis.engine.solvers.rigid.stress.resolved import ResolvedContacts
 from genesis.utils.misc import qd_to_numpy, qd_to_torch
 
 from .artifacts import file_id, write_json
@@ -43,12 +44,12 @@ class NativePadRecovery:
 
     @classmethod
     def allocate(cls, args, outer, faces, points, xml, load_transfer="fixed_radius", source_roundoff=False):
-        if load_transfer not in ("fixed_radius", "resolved_outer_p2"):
+        if load_transfer not in ("fixed_radius", "resolved_outer_p2", "resolved_boundary_p2"):
             raise ValueError("Unknown pad load transfer")
-        if load_transfer == "resolved_outer_p2" and (args.method != "dpr" or args.source_reduction != "none"):
-            raise ValueError("Resolved outer transfer requires DPR with complete physical centroid sources")
-        if source_roundoff and (load_transfer != "fixed_radius" or args.source_reduction != "none"):
-            raise ValueError("Source roundoff reconciliation requires fixed-radius complete centroid sources")
+        if load_transfer != "fixed_radius" and (args.method != "dpr" or args.source_reduction != "none"):
+            raise ValueError("Resolved transfer requires DPR with complete physical centroid sources")
+        if source_roundoff and (load_transfer == "resolved_outer_p2" or args.source_reduction != "none"):
+            raise ValueError("Source reconciliation requires complete sources and fixed or native resolved transfer")
         # The motion scene accepts external wrenches; the independent observer
         # receives their complete surface-source packet. Keep the native guard
         # against observing an unspecified external wrench intact.
@@ -69,6 +70,7 @@ class NativePadRecovery:
                 method="pcg",
                 max_iterations=10000,
                 contact_model="pressure" if args.method == "dpr" else "intrinsic",
+                load_transfer="resolved" if load_transfer == "resolved_boundary_p2" else "patch",
                 contact_radius=args.radius,
                 intrinsic_load_partition="body_source_prior",
                 output_mode=getattr(args, "stress_output", "full"),
@@ -99,6 +101,8 @@ class NativePadRecovery:
                     entry.options,
                     entry.intrinsic.paths,
                 )
+            if entry.resolved is not None:
+                entry.resolved = ResolvedContacts(entry.link, entry.contacts, entry.model.info, entry.options)
         pairs = trimesh.Trimesh(outer, faces, process=False).face_adjacency
         adjacency = sparse.coo_matrix(
             (np.ones(len(pairs)), (pairs[:, 0], pairs[:, 1])), shape=(len(faces), len(faces))
@@ -122,8 +126,14 @@ class NativePadRecovery:
             source_roundoff,
         )
 
+    @property
+    def load_transfer(self):
+        if self.entry.resolved is not None:
+            return "resolved_boundary_p2"
+        return "resolved_outer_p2" if self.distributed is not None else "fixed_radius"
+
     def sample(self, force_world, rotation, angular_world, friction, load, path=None, *, physical_law_admitted=False):
-        if self.distributed is not None and not physical_law_admitted:
+        if self.load_transfer != "fixed_radius" and not physical_law_admitted:
             raise ValueError("Resolved pressure transfer requires separate physical law and momentum admission")
         clock = perf_counter if self.phase_timing else lambda: 0.0
         started = clock()
@@ -173,8 +183,9 @@ class NativePadRecovery:
         compression_seconds = clock() - started
         if self.distributed is not None:
             self.distributed.scatter(selected, entry.contacts, entry.state)
-        elif entry.intrinsic is not None:
-            sources = entry.intrinsic.raw_sources
+        elif entry.intrinsic is not None or entry.resolved is not None:
+            transfer = entry.intrinsic if entry.intrinsic is not None else entry.resolved
+            sources = transfer.raw_sources
             sources.geom.fill(entry.link.geoms[0].idx)
             sources.method.fill(0)
             sources.vertex.fill(-1)
@@ -187,14 +198,15 @@ class NativePadRecovery:
             witness.fill_(float("nan"))
             pair[0, :count] = torch.as_tensor(components, dtype=gs.tc_int, device=gs.device)
             witness[0, :count] = contacts.position[0, :count]
-            entry.intrinsic.scatter(
+            extra = (self.errno,) if entry.intrinsic is not None else ()
+            transfer.scatter(
                 entry.contacts,
                 entry.state,
                 entry.model.info,
                 entry.surface.info,
                 entry.options,
                 np.finfo(gs.np_float).eps.item(),
-                self.errno,
+                *extra,
             )
         else:
             kernel_anchor(np.finfo(gs.np_float).eps.item(), entry.contacts, entry.surface.info)
@@ -260,7 +272,7 @@ class NativePadRecovery:
                 native_valid=valid,
                 errno=error_code,
                 contact_status=status[:count],
-                load_transfer="resolved_outer_p2" if self.distributed is not None else "fixed_radius",
+                load_transfer=self.load_transfer,
             )
         relative_residual = float(np.linalg.norm(residual) / max(np.linalg.norm(rhs), 1e-30))
         return {
@@ -269,7 +281,7 @@ class NativePadRecovery:
             "source_count": count,
             "source_capacity": entry.contacts.valid.shape[0],
             "source_reduction": self.source_reduction,
-            "load_transfer": "resolved_outer_p2" if self.distributed is not None else "fixed_radius",
+            "load_transfer": self.load_transfer,
             "source_roundoff": None if roundoff is None else {
                 "corrected_sources": roundoff.corrected_sources,
                 "force_change_bound_n": roundoff.force_change_bound_n,

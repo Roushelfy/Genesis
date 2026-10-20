@@ -659,3 +659,14 @@ v3 reader. The historical moment-anchor metadata wording is corrected in the
 reader/report without altering frozen observations. Compact evidence and
 publication figures stay in Git:499 payloads total12,408,095 bytes. The98
 externally hashed arrays remain on data.
+
+The `native-resolved-boundary-v1` packet adds126 compact payloads
+(525,480 bytes) and8 externally hashed arrays for the production
+resolved-boundary transfer. The isolated engine source lives in
+`.worktrees/resolved-boundary-production`; its original baseline remains
+unchanged. GPU/CPU virtual-work and lifecycle tests, manual-pressure
+regressions, actual normal/friction field comparisons and earlier failed test
+setups are retained. Test fixtures and private caches stayed in each job's
+node-local scratch; durable receipts/fields stay under the existing data run.
+The separate `native-resolved-history-v1` trajectory and its dependent
+admission are excluded from this packet while running.
