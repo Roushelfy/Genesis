@@ -8,6 +8,14 @@ the spring-pad study. Expensive automatic region/contact solves are optional
 reference work unless they show very accurate physical stress and a worthwhile
 measured accuracy/cost advantage. They are not a prerequisite or default fallback.
 
+**Latest follow-up:** prioritize the
+[contact-input overhead optimization plan](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md#immediate-priority-reduce-contact-input-overhead).
+Profile the added work, reuse collision features and continuous-contact caches,
+precompute fixed geometry, fuse/reuse native work, improve grouping and tune
+large batches. Verify equivalent validity/numerics and report matched inclusive
+input/module/scene costs; B4 research timings are not a production speed limit.
+Implement and measure applicable optimizations now on low-resolution scenes.
+
 Target a rigid Franka gripping a hollow egg. Only rest shape/material is fixed;
 preserve arbitrary moving convex/nonconvex and asymmetric normal/friction contacts,
 global maximum/full output, batching, isolation and partial resets. Keep the

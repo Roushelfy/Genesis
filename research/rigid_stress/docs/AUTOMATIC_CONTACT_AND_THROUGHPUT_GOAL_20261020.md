@@ -80,6 +80,75 @@ failure behavior. Keep every-step and sparse output distinct. Existing manual
 radius and resolved-pressure routes remain labelled controls; resolved transfer
 alone does not estimate unknown collider pressure.
 
+## Immediate priority: reduce contact-input overhead
+
+The user explicitly requests profiling and optimization of the current cheap
+input path. Fixed-shape curvature lookup should be inexpensive. Do not treat
+the research adapter's repeated geometric reconstruction as an inherent Hertz
+cost or as a production performance limit.
+
+The [direct-normal-root pilot](HARD_CONTACT_ESTIMATES_20261020.md#direct-planar-normal-roots),
+executed before this update, measures4.025ms per B4 scene step versus2.249ms
+for paired pure rigid, approximately1.777ms added. It includes contact-input
+preparation and audits but no recovered elastic stress. Only1381/2808 loaded
+environment steps pass geometric checks. These are preserved diagnostic
+measurements, not usable stress throughput or a forecast of large-batch cost.
+The separate approximately21us supplied-region Hertz lookup is a component
+measurement on a different workload; it does not attribute the1.777ms.
+
+First profile the actual added work, then implement and measure all applicable
+optimizations below. These are directions to investigate, not a prescribed
+architecture or a demand to keep a variant that fails to help.
+
+| Direction | Practical implementation opportunities |
+| --- | --- |
+| Reuse rigid collision results | Carry current geom/pair, material witness and available face/vertex/barycentric provenance into the estimator. Query cached curvature at an identified feature instead of rediscovering it with a full mesh scan. Measure a declared witness-based cheap estimate where appropriate; changing the physical center model requires its own error comparison. |
+| Exploit continuous contact | Cache each region's material feature, center, frame and region identity. Try the previous face and its adjacency first, updating barycentric coordinates and curvature locally. Search more broadly for new contacts, invalid candidates, topology/feature transitions or discontinuous motion. Report cache hit rate, local work, fallback frequency and tail cost. |
+| Precompute fixed geometry | Cache face/vertex curvature, barycentric transforms, normal-field inverses, adjacency and useful spatial/normal search acceleration once per shared shape. Reuse across environments; benchmark preparation time and memory separately. Avoid rebuilding shape-only data or repeatedly inverting fixed small matrices per query. |
+| Fuse work and reuse intermediates | Reduce repeated coordinate transforms, contact-array passes, temporary writes and Quadrants dispatch between association, provenance, feature/curvature query, Hertz estimation and reduction. Keep production inputs and outputs GPU-resident; reuse buffers. Put detailed research auditing/readback in separate runs while retaining required runtime acceptance. |
+| Parallelize grouping and load reduction | Profile the current per-environment serial and worst-case quadratic source comparisons. Test appropriate feature/region keys, segmented or small-group reductions and parallelism over contacts as well as environments. Operate on actual active counts where useful; active compaction must earn its own overhead. Preserve separate physical regions and force/moment under source splitting. |
+| Tune useful batch sizes | Sweep from small batches toward the best valid aggregate throughput and practical memory limit. Measure homogeneous replay separately from independently evolving Franka environments. Amortize fixed costs and inspect utilization/layout/dispatch; B4 timings alone cannot predict RL throughput. |
+
+Only shape/material is fixed. Temporal caching must preserve arbitrary changing,
+asymmetric convex/nonconvex contacts and normal/friction loads; contact positions,
+symmetry and contact count are not preprocessing assumptions. A normal-direction
+lookup alone must not jump to a different nonconvex surface. Preserve material
+surface/component identity, current-pair and finite-face checks, with a controlled
+search on cache failure. Invalidate the affected environment's geometric cache
+and friction history appropriately on release, reset, pair/feature change and
+other invalidating events. Shared immutable shape data may persist. Reusing
+geometry does not justify discarding frictional memory or retaining stale loads.
+
+Separate the following phases in a deliberately instrumented run: contact
+association/provenance; geometric search or cached local update; curvature/frame
+evaluation; region grouping and force/moment reduction; normal/tangential law
+and lookup; traction transfer; elastic recovery; max/full output; history and
+fallback work; and research-only audit. Account for CPU dispatch, synchronization,
+copies and GPU launches, noting that one Quadrants kernel call may launch several
+GPU tasks. Distinguish inclusive and exclusive timing and do not sum overlapping
+or independently sampled phases into a fabricated total.
+
+Use matched warmed inclusive wall-clock runs as the primary performance result.
+Compare current baseline and optimized variants on the same inputs and actual
+low-resolution moving scene, with pure rigid/max/full and normal/friction cases.
+Retain equivalent validity and numerical outputs for implementation-only changes;
+separately label and validate any model approximation. Include new contact,
+continuous movement, release, invalidation, nonconvex/disconnected regions,
+source splitting, environment isolation and partial reset in compact checks.
+Batch mode, precision and caching changes need focused numerical conformance,
+not an unrelated high-resolution FEM convergence campaign.
+
+Publish phase costs, inclusive added cost and aggregate env-step/s, scaling,
+memory, cache/fallback statistics, validity/failure counts and numerical
+differences, with source/configuration identities and runnable commands. State
+what improved and what did not help; do not promise a speedup factor before
+measurement. Distinguish input-only, complete stress-module and complete scene
+results. A rejected or omitted contact/environment does not count as a useful
+stress update. Deliver the useful optimized path inside the existing rigid
+solver, entirely in Quadrants, rather than closing with a research-only lookup
+microbenchmark. Continue compact hard-contact accuracy work alongside this
+low-resolution throughput priority.
+
 ## Expensive models require strong physical evidence
 
 The coupled pressure/Newton-PCG work is an optional offline reference or research
