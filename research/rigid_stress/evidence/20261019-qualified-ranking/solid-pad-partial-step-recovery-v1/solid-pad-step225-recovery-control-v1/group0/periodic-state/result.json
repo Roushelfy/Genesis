@@ -1,0 +1,134 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-029",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "731101",
+      "SLURM_ARRAY_JOB_ID": "731101",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "passed": true,
+  "checks": {
+    "complete_own_history": true,
+    "positive_explicit_stride": true,
+    "all_expected_physical_steps_saved": true,
+    "step250/exact_clock_and_plate": true,
+    "step250/complete_finite_fp64_body_state": true,
+    "step250/recorded_physical_point_force": true,
+    "step250/full_force_and_current_moment": true,
+    "step275/exact_clock_and_plate": true,
+    "step275/complete_finite_fp64_body_state": true,
+    "step275/recorded_physical_point_force": true,
+    "step275/full_force_and_current_moment": true,
+    "step300/exact_clock_and_plate": true,
+    "step300/complete_finite_fp64_body_state": true,
+    "step300/recorded_physical_point_force": true,
+    "step300/full_force_and_current_moment": true,
+    "step325/exact_clock_and_plate": true,
+    "step325/complete_finite_fp64_body_state": true,
+    "step325/recorded_physical_point_force": true,
+    "step325/full_force_and_current_moment": true,
+    "step350/exact_clock_and_plate": true,
+    "step350/complete_finite_fp64_body_state": true,
+    "step350/recorded_physical_point_force": true,
+    "step350/full_force_and_current_moment": true,
+    "step375/exact_clock_and_plate": true,
+    "step375/complete_finite_fp64_body_state": true,
+    "step375/recorded_physical_point_force": true,
+    "step375/full_force_and_current_moment": true,
+    "step400/exact_clock_and_plate": true,
+    "step400/complete_finite_fp64_body_state": true,
+    "step400/recorded_physical_point_force": true,
+    "step400/full_force_and_current_moment": true,
+    "endpoint_identical/vertices_m": true,
+    "endpoint_identical/tetrahedra": true,
+    "endpoint_identical/load_n": true,
+    "endpoint_identical/displacement_m": true,
+    "endpoint_identical/velocity_m_per_s": true,
+    "endpoint_identical/source_points_m": true,
+    "endpoint_identical/source_forces_n": true,
+    "endpoint_identical/projected_area_m2": true,
+    "endpoint_identical/forces_n": true,
+    "endpoint_identical/body_forces_n": true,
+    "endpoint_identical/inertial_forces_n": true,
+    "endpoint_identical/young_pa": true,
+    "endpoint_identical/poisson": true
+  },
+  "saved_steps": [
+    250,
+    275,
+    300,
+    325,
+    350,
+    375,
+    400
+  ],
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-step225-recovery-control-v1/group0/reference/start.json",
+      "bytes": 3826,
+      "sha256": "fd2b3cb64f4537c76909728acfb61341c89e91cfe0cca4603fa7e56893595d23"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-step225-recovery-control-v1/group0/reference/result.json",
+      "bytes": 1576,
+      "sha256": "616cbbb21e5930df1ef50d02aebc307e7f22da160bcd3b710ef07e2c09870937"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-step225-recovery-control-v1/group0/reference/steps.jsonl",
+      "bytes": 567624,
+      "sha256": "db8c6622ac9cc79cd2078908d330750e8febe34742c27192f879f0afb13416c4"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-step225-recovery-control-v1/group0/reference/checkpoints/step250.npz",
+      "bytes": 4210169,
+      "sha256": "c0d9589551f3ba7d6b2fa4627b1ff299ade054847036a72f993369bb59feebcd"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-step225-recovery-control-v1/group0/reference/checkpoints/step275.npz",
+      "bytes": 4186981,
+      "sha256": "70028ac9b551b6f71f5ddcbf4e1c01e1001fbcdd101114302e4360cc0a6cd59e"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-step225-recovery-control-v1/group0/reference/checkpoints/step300.npz",
+      "bytes": 4188323,
+      "sha256": "cee065eec615dad43c83c64d1928a627f1dc37e28bf88ce201f9d8409163ab4d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-step225-recovery-control-v1/group0/reference/checkpoints/step325.npz",
+      "bytes": 4188527,
+      "sha256": "c61d13e9aaa1fe6d5571a8431ef1d5326525a756ef4dbd0c3d5335e1ed069a80"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-step225-recovery-control-v1/group0/reference/checkpoints/step350.npz",
+      "bytes": 4190755,
+      "sha256": "0ca51e2e699ce7ca24c49f2f7e467821295fa08f3dcb1aeaaee9024f6488ba69"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-step225-recovery-control-v1/group0/reference/checkpoints/step375.npz",
+      "bytes": 4188232,
+      "sha256": "29d02886c0e91aee8884e9936df3d2cfa75db3c2efb8dcf3fa9b956757f7ebff"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-step225-recovery-control-v1/group0/reference/checkpoints/step400.npz",
+      "bytes": 4187632,
+      "sha256": "69353a7ac80fc7f7403198643fdcf1fb15f85e9012c1d6eeb09c6678d0f7b000"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-step225-recovery-control-v1/group0/reference/frames/level1.npz",
+      "bytes": 18345801,
+      "sha256": "0220107b290448761e693b6cf7c5b46545e67403e726abbd92ef55f70a0d01be"
+    }
+  ],
+  "upstream_returncodes_preserved": {},
+  "scope": "Complete periodic state packing, physical clock/plate/force/current-moment checks and exact final endpoint-array identity. Trajectory equivalence uses the separate full-array/common-field audit. Preparation and restoration of a non-endpoint checkpoint require their own terminal provenance controls.",
+  "whole_goal_complete": false
+}

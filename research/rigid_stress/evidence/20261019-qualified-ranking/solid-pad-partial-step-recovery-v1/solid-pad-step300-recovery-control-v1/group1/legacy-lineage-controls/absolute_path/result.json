@@ -1,0 +1,43 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-201",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "731095",
+      "SLURM_ARRAY_JOB_ID": "731095",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "passed": false,
+  "fine_reference_qualified": false,
+  "checks": {
+    "explicit_relative_continuation_parent_map": false,
+    "complete_input_contract": false
+  },
+  "error": "explicit_relative_continuation_parent_map",
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-step300-recovery-control-v1/group1/legacy-lineage-controls/absolute_path.json",
+      "bytes": 34,
+      "sha256": "3ea12cffed333d356cd3fb1b1f40957b18e198d0a1f7d47a6f4c5cae07584a3d"
+    }
+  ],
+  "verified_inputs": [],
+  "parent_overrides": {
+    "final125": "/absolute/run"
+  },
+  "continued_parent_lineage": {},
+  "comparisons": [],
+  "reference_envelopes": [],
+  "accepted_reference_frames": [],
+  "certified_continuum_error_bound": false,
+  "whole_goal_complete": false,
+  "scope": "Declared0.1N normal/sustained-friction StVK compliant-pad reference only. All seven complete physical histories, independently bound endpoint frames, isolated surface/wall trends, joint changes, fine q6/q10 and1/0.5ms controls, q9/q25 and depth2/4 controls must pass unchanged2%/5% spatial and0.5%/1% control targets. Envelopes sum observed changes; they are conditional numerical sensitivity summaries, not statistical intervals or certified continuum bounds. No method errors/ranks, Shell mesh independence or failed every-step native stress are admitted here."
+}
