@@ -975,6 +975,11 @@ class SPHLegacySolver(GravityMixin, TimeBasedMixin, Solver):
         return self._particle_size / 2.0
 
     @property
+    def n_boundary_particles(self):
+        # This solver couples with rigid geoms through their signed distance field, without boundary particles.
+        return 0
+
+    @property
     def support_radius(self):
         return self._support_radius
 

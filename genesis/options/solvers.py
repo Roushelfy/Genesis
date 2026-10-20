@@ -777,6 +777,13 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
         Whether DFSPH starts each pressure solve from half the pressure of the previous substep. This reduces the
         number of solver iterations for fluid at rest or in slow motion, but it can carry pressure spikes from
         violent impacts over to the next substep. Defaults to True.
+    boundary_offset : float, optional
+        Distance in meters by which the boundary particles sampled on rigid geoms are moved inside the geom, along its
+        surface normal. Fluid particles rest about one particle spacing away from the boundary particles. With half
+        the particle size, fluid touches the geom surface and fluid sampled flush against a geom starts at rest. A
+        smaller offset leaves a visible gap between fluid and geom, and fluid sampled flush against the geom starts
+        compressed and gets pushed away. Keep the offset below half the thickness of the thinnest coupled geom, or its
+        two faces cross each other. Only used by the default solver. Defaults to half the particle size.
     """
 
     particle_size: PositiveFloat = 0.02
@@ -799,6 +806,7 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     min_density_solver_iterations: PositiveInt = 1
     skip_divergence_solver: StrictBool = False
     warm_start: StrictBool = True
+    boundary_offset: NonNegativeFloat | None = None
 
     _support_radius: float = PrivateAttr(default=0.0)
     _hash_grid_res: np.ndarray = PrivateAttr(default=None)
@@ -822,6 +830,9 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
             gs.raise_exception("Pressure solver 'WCSPH' requires `use_legacy_solver=True`.")
 
         self._support_radius = 2 * self.particle_size
+
+        if self.boundary_offset is None:
+            self.boundary_offset = 0.5 * self.particle_size
 
         if self.hash_grid_cell_size < self._support_radius:
             gs.raise_exception("`hash_grid_cell_size` should not be smaller than 2 * `particle_size`.")

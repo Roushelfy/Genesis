@@ -109,6 +109,8 @@ class RasterizerContext:
         self.lights = options.lights
         self.visualize_mpm_boundary = options.visualize_mpm_boundary
         self.visualize_sph_boundary = options.visualize_sph_boundary
+        self.visualize_sph_boundary_particles = options.visualize_sph_boundary_particles
+        self.sph_boundary_particles_color = options.sph_boundary_particles_color
         self.visualize_pbd_boundary = options.visualize_pbd_boundary
         self.particle_size_scale = options.particle_size_scale
         self.contact_force_scale = options.contact_force_scale
@@ -128,6 +130,7 @@ class RasterizerContext:
         self.vverts_nodes = dict()
         self._per_env_vverts_entity_uids: set = set()
         self.static_nodes = dict()  # used across all frames
+        self.sph_boundary_particles_nodes = dict()  # env_idx -> node drawing the SPH boundary particles
         self.dynamic_nodes = dict()  # nodes that live within single frame
         self.external_nodes = dict()  # nodes added by external user
         self.seg_node_map = dict()
@@ -762,6 +765,20 @@ class RasterizerContext:
                             sph_entity, pyrender.Mesh.from_trimesh(mesh, smooth=True, poses=tfs, envs=env_i), i_b=idx
                         )
 
+            if self.visualize_sph_boundary_particles and self.sim.sph_solver.n_boundary_particles > 0:
+                boundaries_pos = qd_to_numpy(self.sim.sph_solver.boundary_particles.pos, transpose=True)
+                for env_i, idx in enumerate(self.rendered_envs_idx):
+                    mesh = mu.create_sphere(
+                        self.sim.sph_solver.boundary_particle_radius * self.particle_size_scale,
+                        subdivisions=1,
+                        color=self.sph_boundary_particles_color,
+                    )
+                    tfs = np.tile(np.eye(4), (self.sim.sph_solver.n_boundary_particles, 1, 1))
+                    tfs[:, :3, 3] = boundaries_pos[idx]
+                    self.sph_boundary_particles_nodes[idx] = self.add_node(
+                        pyrender.Mesh.from_trimesh(mesh, smooth=True, poses=tfs, envs=env_i)
+                    )
+
             # boundary
             if self.visualize_sph_boundary:
                 for env_i in range(len(self.rendered_envs_idx)):
@@ -803,6 +820,16 @@ class RasterizerContext:
 
                         node = self.static_nodes[(idx, sph_entity.uid)]
                         self.jit.update_buffer(node, "model", tfs.transpose((0, 2, 1)))
+
+            if self.sph_boundary_particles_nodes:
+                boundaries_pos = qd_to_numpy(self.sim.sph_solver.boundary_particles.pos, transpose=True)
+                # Boundary particles of a geom absent from an environment are collapsed to a point, which hides them.
+                boundaries_active = qd_to_numpy(self.sim.sph_solver.boundary_particles.active, transpose=True)
+                for idx, node in self.sph_boundary_particles_nodes.items():
+                    tfs = np.tile(np.eye(4), (self.sim.sph_solver.n_boundary_particles, 1, 1))
+                    tfs[:, :3, 3] = boundaries_pos[idx]
+                    tfs[~boundaries_active[idx].astype(np.bool_), :3, :3] = 0.0
+                    self.jit.update_buffer(node, "model", tfs.transpose((0, 2, 1)))
 
     def on_pbd(self):
         if self.sim.pbd_solver.is_active:

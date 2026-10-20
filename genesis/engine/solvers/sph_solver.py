@@ -50,13 +50,14 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         # A particle with fewer neighbors sits at a free surface, where the divergence estimate is unreliable.
         self._df_min_div_neighbors = 20
 
-        self._particle_volume = 0.8 * self._particle_size**3  # 0.8 is an empirical value
+        self._particle_volume = 0.75 * self._particle_size**3  # 0.8 overpressurizes by a little when using normal smapling
 
         # Boundary particles sampled on the surface of the rigid geoms. The spacing is the one of the regular triangle
         # sampling of Akinci et al. 2012 boundaries, denser than the fluid so that the fluid cannot leak through.
         self._boundary_spacing = 0.75 * self._particle_size
         # Upper bound on the number of boundary particles, which grows with the area of the simulation domain.
         self._max_n_boundary_particles = 5_000_000
+        self._boundary_offset = options.boundary_offset
         self._n_boundary_particles = 0
         self._has_boundary = False
 
@@ -199,6 +200,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                                     plane_pos, plane_normal, area_lower, area_upper
                                 )
                                 verts = gu.inv_transform_by_trans_quat(verts, link_pos, link_quat)
+                                # The winding of the cut polygon is arbitrary, so its face normal may point inward.
+                                surface_normal = gu.transform_by_quat(geom.data[:3], geom.init_quat)
                             else:
                                 verts = gu.transform_by_trans_quat(geom.init_verts, geom.init_pos, geom.init_quat)
                                 faces = geom.init_faces
@@ -218,9 +221,12 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                                 )
                             # Furthest point sampling only spaces the samples evenly given enough candidates. Holes
                             # in the sampling lower the boundary density locally, and fluid leaks through them.
-                            pos_local = sample_mesh_point_cloud(
-                                verts, faces, n_points, n_candidates=16 * n_points, seed=0
+                            pos_local, normals_local = sample_mesh_point_cloud(
+                                verts, faces, n_points, n_candidates=16 * n_points, seed=0, return_normals=True
                             )
+                            if geom.type == gs.GEOM_TYPE.PLANE:
+                                normals_local = surface_normal
+                            pos_local = pos_local - self._boundary_offset * normals_local
 
                             # A fixed link never moves, so the samples outside the boundary area can be dropped.
                             if link.is_fixed:
@@ -1105,6 +1111,14 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
     @property
     def particle_radius(self):
         return self._particle_size / 2.0
+
+    @property
+    def n_boundary_particles(self):
+        return self._n_boundary_particles
+
+    @property
+    def boundary_particle_radius(self):
+        return self._boundary_spacing / 2.0
 
     @property
     def support_radius(self):

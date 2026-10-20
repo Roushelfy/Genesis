@@ -5,7 +5,15 @@ from pydantic import Field, StrictBool, StrictInt, model_validator
 
 import genesis as gs
 from genesis.datatypes import List
-from genesis.typing import IArrayType, PositiveFloat, PositiveInt, PositiveVec2IType, UnitIntervalVec3Type, Vec3FType
+from genesis.typing import (
+    IArrayType,
+    PositiveFloat,
+    PositiveInt,
+    PositiveVec2IType,
+    UnitIntervalVec3Type,
+    UnitIntervalVec4Type,
+    Vec3FType,
+)
 from genesis.utils.serialization import ignore_invalid_load
 
 from .options import Options
@@ -165,6 +173,13 @@ class VisOptions(Options):
         Whether to visualize the boundary of the MPM Solver.
     visualize_sph_boundary : bool
         Whether to visualize the boundary of the SPH Solver.
+    visualize_sph_boundary_particles : bool
+        Whether to draw the particles sampled on the surface of rigid geoms, which the fluid sees as their boundary.
+        This shows where fluid can leak through gaps in the sampling, at the cost of one sphere per boundary particle
+        and per rendered environment. Defaults to False.
+    sph_boundary_particles_color : tuple of float, shape (4,)
+        The RGBA color of the SPH boundary particles drawn with `visualize_sph_boundary_particles`. Defaults to
+        (1.0, 0.5, 0.0, 1.0).
     visualize_pbd_boundary : bool
         Whether to visualize the boundary of the PBD Solver.
     segmentation_level : str
@@ -201,6 +216,8 @@ class VisOptions(Options):
     ambient_light: UnitIntervalVec3Type = (0.1, 0.1, 0.1)
     visualize_mpm_boundary: StrictBool = False
     visualize_sph_boundary: StrictBool = False
+    visualize_sph_boundary_particles: StrictBool = False
+    sph_boundary_particles_color: UnitIntervalVec4Type = (1.0, 0.5, 0.0, 1.0)
     visualize_pbd_boundary: StrictBool = False
     segmentation_level: Literal["entity", "link", "geom"] = "link"
     render_particle_as: Literal["sphere", "tet"] = "sphere"
