@@ -795,3 +795,12 @@ UNINTERRUPTED_CONTROL` with a fresh contract declaring the inherited/new step
 counts and preserving the existing numerical limits. Reuse the captured Slurm
 tasks in the [continuation record](REFERENCE_ENDPOINT_CONTINUATION_20261019.md);
 do not run scientific integration or conformance checks on the login node.
+
+For a parent that was itself continued, the selected state must be newer than
+its recorded inherited prefix. A copied inherited endpoint contributes no new
+state: preparation and validation refuse it before model setup, and `--latest`
+does not fall back to that nonadvancing endpoint. Reuse the existing terminal
+ancestor receipt if an intermediate attempt has no newer complete checkpoint;
+keep that attempt's original records/cost separate. Actual old/new metadata
+controls pass20 checks, including all three original fine inputs and both
+validated225/300-step receipts. See the [forward-prefix control](REFERENCE_ENDPOINT_CONTINUATION_20261019.md#refuse-a-repeated-inherited-prefix-before-expensive-setup).

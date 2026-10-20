@@ -88,8 +88,18 @@ def complete_state_archive(path):
         return False
 
 
-def select_saved_state(run, configuration, lines, *, level=None, step=None):
+def inherited_prefix_steps(start):
+    provenance = start.get("resume_provenance")
+    if provenance is None:
+        return 0
+    prefix = provenance["prefix_steps"]
+    assert isinstance(prefix, int) and prefix > 0, "Invalid inherited-prefix provenance"
+    return prefix
+
+
+def select_saved_state(run, configuration, lines, *, level=None, step=None, minimum_steps=0):
     """Select by declared global step; latest skips unfinished compressed writes."""
+    assert isinstance(minimum_steps, int) and minimum_steps >= 0
     count = round((configuration["ramp"] + configuration["hold"]) / configuration["dt"])
     total = len(configuration["loads"]) * count
     if level is not None:
@@ -110,12 +120,13 @@ def select_saved_state(run, configuration, lines, *, level=None, step=None):
                 candidates.append((int(number), "step", path))
         candidates.sort(key=lambda row: row[0], reverse=True)
         selected = next(
-            (row for row in candidates if 0 < row[0] < total and row[0] <= len(lines)
+            (row for row in candidates if minimum_steps < row[0] < total and row[0] <= len(lines)
              and complete_state_archive(row[2])), None
         )
-        assert selected is not None, "No complete saved state with remaining steps"
+        assert selected is not None, "No complete state newer than the inherited prefix; use its terminal ancestor receipt"
         prefix_steps, kind, state_path = selected
-    assert 0 < prefix_steps < total and complete_state_archive(state_path)
+    assert minimum_steps < prefix_steps < total, "Selected state does not advance the inherited prefix; use its terminal ancestor receipt"
+    assert complete_state_archive(state_path)
     assert len(lines) >= prefix_steps and all(line.endswith(b"\n") for line in lines[:prefix_steps])
     return prefix_steps, kind, state_path
 
@@ -154,6 +165,9 @@ def validate_checkpoint(args, step_checks):
         "Incomplete numerical module coverage"
     )
     start = json.loads(Path(proof["start"]["path"]).read_text())
+    assert prefix_steps > inherited_prefix_steps(start), (
+        "Selected state does not advance the inherited prefix; use its terminal ancestor receipt"
+    )
     expected = {
         key: value for key, value in start["args"].items()
         if key not in ("output", "resume_checkpoint", "checkpoint_stride")
@@ -283,11 +297,13 @@ def main():
         proof.update({"job": job, "scheduler_output": output, "terminal_scheduler_state": state})
         assert state in TERMINAL, "Parent scheduler job is still live; no continuation receipt admitted"
         start, journal = args.run / "start.json", args.run / "steps.jsonl"
-        configuration = json.loads(start.read_text())["args"]
+        saved_start = json.loads(start.read_text())
+        configuration = saved_start["args"]
         count = round((configuration["ramp"] + configuration["hold"]) / configuration["dt"])
         lines = journal.read_bytes().splitlines(keepends=True)
         prefix_steps, kind, state_path = select_saved_state(
-            args.run, configuration, lines, level=args.level, step=args.step
+            args.run, configuration, lines, level=args.level, step=args.step,
+            minimum_steps=inherited_prefix_steps(saved_start),
         )
         prefix = b"".join(lines[:prefix_steps])
         frames = [
