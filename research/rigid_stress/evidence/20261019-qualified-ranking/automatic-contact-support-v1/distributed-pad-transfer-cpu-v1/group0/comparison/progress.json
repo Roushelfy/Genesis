@@ -1,0 +1,86 @@
+{
+  "cases": [
+    {
+      "level": 0,
+      "original": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/stress-level0.npz",
+        "bytes": 8216729,
+        "sha256": "8318dec452e952e6df53e28b4ddf963057279a2b058ef11d5903b8f2f3df30aa"
+      },
+      "force_relative_error": 3.2526065175597284e-17,
+      "moment_relative_error": 2.402659231834752e-18,
+      "virtual_work_relative_error": 3.598196032044659e-18,
+      "cpu_native_same_load_stress_relative_error": 1.051698035247882e-11,
+      "transfer_induced_stress_relative_change": 0.08697944076784206,
+      "variants": {
+        "fixed_radius": {
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/distributed-pad-transfer-cpu-v1/group0/comparison/frames/fixed_radius-level0.npz",
+            "bytes": 10198120,
+            "sha256": "5793620fee95dd528f9c945a4d8b4cec5d63b725a50f8ce67c20dd2dd9142cf1"
+          },
+          "elastic_equation_relative_residual": 4.8642237850411125e-12,
+          "raw_peaks": {
+            "raw_vm_pa": 196433.62519870943,
+            "raw_tensile_pa": 119467.08318981773
+          },
+          "mass_projected_force_norm_n": 3.362673393296905e-17
+        },
+        "distributed_outer": {
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/distributed-pad-transfer-cpu-v1/group0/comparison/frames/distributed_outer-level0.npz",
+            "bytes": 10133953,
+            "sha256": "c068c421c23f6ba2dec6c782cb3f4e38361f7fea4abd47fb77a6ff4ef07c2503"
+          },
+          "elastic_equation_relative_residual": 2.214996040044771e-12,
+          "raw_peaks": {
+            "raw_vm_pa": 207101.87458243524,
+            "raw_tensile_pa": 131070.66761298472
+          },
+          "mass_projected_force_norm_n": 4.726530816662061e-17
+        }
+      }
+    },
+    {
+      "level": 1,
+      "original": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native/frames/stress-level1.npz",
+        "bytes": 8178882,
+        "sha256": "5a954243d3030a05bd96540fa94490eee78265088911af9c74197fd20506f867"
+      },
+      "force_relative_error": 1.4738110453287682e-16,
+      "moment_relative_error": 1.0151430439117835e-18,
+      "virtual_work_relative_error": 2.2495841225838782e-17,
+      "cpu_native_same_load_stress_relative_error": 1.0175314319806565e-11,
+      "transfer_induced_stress_relative_change": 0.08699039060364214,
+      "variants": {
+        "fixed_radius": {
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/distributed-pad-transfer-cpu-v1/group0/comparison/frames/fixed_radius-level1.npz",
+            "bytes": 10292041,
+            "sha256": "906e047c1cfbeebd2487bb1bf71ca7184315e963787502e1fbeeb90dbc638fc9"
+          },
+          "elastic_equation_relative_residual": 4.587372003932119e-12,
+          "raw_peaks": {
+            "raw_vm_pa": 196439.11970067545,
+            "raw_tensile_pa": 119476.56548223356
+          },
+          "mass_projected_force_norm_n": 1.822211713065161e-18
+        },
+        "distributed_outer": {
+          "field": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/distributed-pad-transfer-cpu-v1/group0/comparison/frames/distributed_outer-level1.npz",
+            "bytes": 10228481,
+            "sha256": "4bfe703f9dfec6706e91d8b81262769767616534d729a66325d1ca06cdb8ea73"
+          },
+          "elastic_equation_relative_residual": 2.0240386138494736e-12,
+          "raw_peaks": {
+            "raw_vm_pa": 207399.52319378423,
+            "raw_tensile_pa": 131075.2452717871
+          },
+          "mass_projected_force_norm_n": 3.493039657512783e-18
+        }
+      }
+    }
+  ]
+}

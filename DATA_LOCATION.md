@@ -1,5 +1,13 @@
 # Rigid-stress data and artifact locations
 
+New automatic-contact support/pressure studies, paired independent P2 fields and
+figure renders use the established data run root. The automatic-contact-support-v1
+packet and its exact-size figure companion retain compact executed
+sources/receipts, original failed readers and publication artwork; full runtime maps, quadrature and stress arrays remain
+hashed on data. The style helper is copied into that run's meta directory and
+private job caches are node-local. Existing native baselines, fine writers,
+environments and compatibility links are preserved in place.
+
 The solid-pad-forward-prefix-guard-v1 packet adds44 compact payloads/253,293
 bytes for the actual old/new inherited-prefix counterexample,20 passing metadata
 controls and unchanged restoration/physics-source inspection. Seven existing
