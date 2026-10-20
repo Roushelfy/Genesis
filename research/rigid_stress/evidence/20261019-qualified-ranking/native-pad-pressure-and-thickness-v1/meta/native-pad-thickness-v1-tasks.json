@@ -1,0 +1,50 @@
+[
+  [
+    {
+      "name": "gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_pad_newton",
+      "args": [
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-thickness-inputs-v1/group0/inputs",
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_pad_newton",
+      "args": [
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-thickness-inputs-v1/group0/inputs",
+        "--backend",
+        "cpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_pad_newton",
+      "args": [
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-thickness-inputs-v1/group1/inputs",
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_pad_newton",
+      "args": [
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-thickness-inputs-v1/group1/inputs",
+        "--backend",
+        "cpu"
+      ]
+    }
+  ]
+]

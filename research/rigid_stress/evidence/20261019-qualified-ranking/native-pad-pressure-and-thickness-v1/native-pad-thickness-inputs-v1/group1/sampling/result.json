@@ -1,0 +1,119 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "732806",
+      "SLURM_ARRAY_JOB_ID": "732806",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "passed": true,
+  "study": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-thickness-study-v1/group1/study/result.json",
+    "bytes": 48180,
+    "sha256": "9776569dda009e61588b30b0115dd2b22f329d3e1ec84d964791235daaef2d0e"
+  },
+  "rows": [
+    {
+      "case": 0,
+      "mode": "coupled",
+      "parameters": {
+        "young_pa": 10000000000.0,
+        "pad_stiffness_n_per_m3": 1000000000.0,
+        "load_n": 0.1,
+        "stiffness_gradient": 0
+      },
+      "cell_average_pressure_relative_l2": 0.09592178184589398,
+      "complete_stress_volume_relative_l2": 0.03071641912746827,
+      "raw_mises_peak_relative_change": 0.0404363036824229,
+      "raw_tensile_peak_relative_change": 0.029259011836318072,
+      "quadrature_points_per_cell": 12
+    },
+    {
+      "case": 0,
+      "mode": "rigid",
+      "parameters": {
+        "young_pa": 10000000000.0,
+        "pad_stiffness_n_per_m3": 1000000000.0,
+        "load_n": 0.1,
+        "stiffness_gradient": 0
+      },
+      "cell_average_pressure_relative_l2": 0.09583367063701757,
+      "complete_stress_volume_relative_l2": 0.030711826641288995,
+      "raw_mises_peak_relative_change": 0.040466698136005785,
+      "raw_tensile_peak_relative_change": 0.029228528772603957,
+      "quadrature_points_per_cell": 12
+    },
+    {
+      "case": 0,
+      "mode": "diagonal",
+      "parameters": {
+        "young_pa": 10000000000.0,
+        "pad_stiffness_n_per_m3": 1000000000.0,
+        "load_n": 0.1,
+        "stiffness_gradient": 0
+      },
+      "cell_average_pressure_relative_l2": 0.09583124500718346,
+      "complete_stress_volume_relative_l2": 0.030710127127197444,
+      "raw_mises_peak_relative_change": 0.04045581206271809,
+      "raw_tensile_peak_relative_change": 0.02921885878603203,
+      "quadrature_points_per_cell": 12
+    },
+    {
+      "case": 1,
+      "mode": "coupled",
+      "parameters": {
+        "young_pa": 10000000000.0,
+        "pad_stiffness_n_per_m3": 10000000000.0,
+        "load_n": 0.1,
+        "stiffness_gradient": 0
+      },
+      "cell_average_pressure_relative_l2": 0.050567555844520454,
+      "complete_stress_volume_relative_l2": 0.02883156756786588,
+      "raw_mises_peak_relative_change": 0.032007172417596985,
+      "raw_tensile_peak_relative_change": 0.00887689867950514,
+      "quadrature_points_per_cell": 12
+    },
+    {
+      "case": 1,
+      "mode": "rigid",
+      "parameters": {
+        "young_pa": 10000000000.0,
+        "pad_stiffness_n_per_m3": 10000000000.0,
+        "load_n": 0.1,
+        "stiffness_gradient": 0
+      },
+      "cell_average_pressure_relative_l2": 0.04995328080342974,
+      "complete_stress_volume_relative_l2": 0.028803131095890517,
+      "raw_mises_peak_relative_change": 0.03226370411929258,
+      "raw_tensile_peak_relative_change": 0.0092141596089923,
+      "quadrature_points_per_cell": 12
+    },
+    {
+      "case": 1,
+      "mode": "diagonal",
+      "parameters": {
+        "young_pa": 10000000000.0,
+        "pad_stiffness_n_per_m3": 10000000000.0,
+        "load_n": 0.1,
+        "stiffness_gradient": 0
+      },
+      "cell_average_pressure_relative_l2": 0.050012481527821784,
+      "complete_stress_volume_relative_l2": 0.028800381253286066,
+      "raw_mises_peak_relative_change": 0.032196241586132546,
+      "raw_tensile_peak_relative_change": 0.008941391554219358,
+      "quadrature_points_per_cell": 12
+    }
+  ],
+  "physical_reference_qualified": false,
+  "whole_goal_complete": false,
+  "scope": "Explicit centroid versus degree6 contact quadrature on the same coarse mesh and physical model. Pressure compares integrated face averages, not unmatched point locations. Complete stress uses exact physical-volume integration of its affine tensor. Changes are sensitivity measurements, not continuum bounds or new acceptance thresholds."
+}

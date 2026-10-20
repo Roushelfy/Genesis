@@ -7,10 +7,10 @@ link/1e10N/m3 pad. A diagonal compliance approximation barely improves that case
 The useful next integration therefore needs both an inexpensive validated regime
 and a route that retains regional elastic coupling when it matters.
 
-This is a static normal, coarse linear-elastic study on the original full hollow
-egg with500um wall thickness. It extends the [first geometric study](AUTOMATIC_CONTACT_PROGRESS_20261020.md)
+This is a static normal, coarse linear-elastic study on the full hollow egg,
+initially with500um walls and now with250/1000um thickness controls. It extends the [first geometric study](AUTOMATIC_CONTACT_PROGRESS_20261020.md)
 and [resolved-pressure transfer](RESOLVED_PAD_AND_SOURCE_INPUTS_20261020.md).
-It does not supply moving/friction validation, thickness independence or an
+It does not supply moving/friction validation, spatial convergence or an
 automatic production model. The [extended goal](AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md)
 remains active.
 
@@ -100,8 +100,8 @@ cases. These single-process research call measurements include current CPU
 solver work, have no independent timing repeats and are not production rates.
 The diagonal model pays substantial extra work for little measured accuracy gain.
 
-The coupled solve has now been reduced and checked below. Extend the
-physical study to thickness, changing nonconvex/asymmetric geometry and
+The coupled solve and thickness contrast have now been checked below. Extend the
+physical study to changing nonconvex/asymmetric geometry and
 friction/unloading. Then integrate the useful model into the existing native
 Quadrants feature, preserving supported batching, output, isolation and resets,
 and measure paired module/scene costs including prediction. No Gaussian radius
@@ -170,6 +170,81 @@ Each solver also passes four prescribed normal load/upper-gap tilt states,
 including loading and unloading, against the full QP. Previous pressure is only
 an initial guess; cold/warm results agree, and return to the original load/gap
 recovers pressure within1.75e-11. These controls use a fixed candidate region.
-They do not establish general moving/nonconvex search, tangential history,
-thickness independence or automatic native integration. Those remain the next
-physical and production work.
+They do not establish general moving/nonconvex search, tangential history
+or automatic native integration. Those remain physical and production work.
+
+## Physical thickness controls
+
+Two new meshes retain the original outer vertices/faces and wall layer count,
+but change the actual inward offset to250um and1000um. Each rebuilds mass,
+stiffness and the full834-node normal compliance with the same free-link
+projection and gauge. The24 new rigid/diagonal/coupled fields cover both pad
+stiffnesses at centroid/degree6 quadrature. All own-model pad-law, force/moment,
+complete elasticity and exact omitted-face compression checks pass.
+
+At10GPa and0.1N, the degree6 rigid-versus-coupled errors are:
+
+| Wall thickness (um) | Pad stiffness (N/m3) | Pressure L2 error | Complete stress L2 error |
+| ---: | ---: | ---: | ---: |
+| 250 | 1e9 | 2.095% | 0.851% |
+| 500 | 1e9 | 0.355% | 0.104% |
+| 1000 | 1e9 | 0.0656% | 0.0142% |
+| 250 | 1e10 | 15.515% | 5.624% |
+| 500 | 1e10 | 2.694% | 0.696% |
+| 1000 | 1e10 | 0.489% | 0.0965% |
+
+Each error compares models on its own physical thickness; fields on different
+domains are not subtracted. The diagonal250um/hard-pad result remains close to
+rigid, with15.183% pressure and5.507% stress errors. The maximum displacement
+gradient across these six coupled cases is5.53e-4. This supports the small-strain
+scope but does not establish spatial convergence or a universal model-selection
+threshold.
+
+![Coupled upper-pad pressures across three physical wall thicknesses](../evidence/20261019-qualified-ranking/native-pad-pressure-and-thickness-v1/pad-thickness-figure-v1/group0/figure/pad-thickness-pressure-preview.png)
+
+The thin wall concentrates hard-pad pressure toward the finite-land edge;
+the soft-pad row changes less. Each row shares a kPa scale and every positive
+degree6 quadrature pressure is shown without smoothing or clipping. The gaps
+between samples are quadrature spacing. The183×142mm editable SVG and preview
+were inspected before final PDF/600dpi PNG export; final SVG/preview bytes match
+the inspected draft. PDF page size and embedded fonts were checked, without
+claiming a separate PDF-render inspection.
+
+Source sampling remains a separate error: centroid-to-degree6 coupled stress
+changes are2.84%/2.41% at250um and3.07%/2.88% at1000um for the soft/hard pads.
+Corresponding integrated face-average pressure changes are9.89%/7.51% and
+9.59%/5.06%. These are sampling contrasts on fixed meshes, not pressure-model
+errors or continuum bounds.
+
+## Quadrants pressure stage and independent full fields
+
+The reduced Newton solve now runs entirely in Quadrants: batched gradients,
+matrix-free Hessian products, diagonal-preconditioned CG and line search.
+It retains the outer gradient target1e-10, inner relative PCG target1e-6
+and separate physical admission. No per-environment dense Hessian is stored.
+The initial elastic coordinates are zero; cold initialization uses only the
+separately solved rigid-pad pose, not the coupled reference solution.
+
+CPU/GPU tests cover48 pressure cases across the three physical thicknesses,
+two source quadratures andB8/B2 batches. Independent full-C pad-law residuals
+are at most7.87e-12, with force/moment errors below1e-8. Unchanged warm requests
+take zero Newton updates and preserve pressure exactly. Separated zero-load
+release, invalid-spring failure isolation and selected-environment recovery
+all pass exactly.
+
+The actual native forces then drive48 independent complete elastic solves.
+The largest complete stress and raw peak differences from the corresponding
+full-QP references are1.50e-10 and2.26e-10; CPU/GPU normalized-force differences
+are below2.02e-15. These establish numerical conformance for supplied operators
+and inputs. The [terminal packet](../evidence/20261019-qualified-ranking/native-pad-pressure-and-thickness-v1/README.md)
+retains the thickness fields, sampling controls, inspected maps, captured
+workers and final-source equivalence checks.
+
+Geometry, compliance/factor preparation and cold rigid guesses are still CPU
+validation inputs. This research core is not a public automatic contact model.
+Native geometry/operator preparation, physical region grouping, moving/nonconvex
+and friction history, the small public material/pad configuration and production
+lifecycle integration remain required. Current call times include compilation
+and research checks; they establish no controlled native throughput. Measure
+module and actual-scene costs, including prediction/preprocessing, after those
+components are connected.

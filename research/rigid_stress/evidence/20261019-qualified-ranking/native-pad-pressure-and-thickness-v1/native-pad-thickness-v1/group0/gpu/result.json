@@ -1,0 +1,87 @@
+{
+  "passed": true,
+  "backend": "gpu",
+  "rows": [
+    {
+      "order": 0,
+      "pressure_relative_errors": [
+        8.681373970700406e-13,
+        4.117548238209705e-13
+      ],
+      "independent_pad_law_errors": [
+        4.302888648514547e-16,
+        2.7424633814852986e-14
+      ],
+      "wrench_errors": [
+        2.6763007010678357e-16,
+        1.3205577023488869e-13
+      ],
+      "maximum_gradient": 1.4244263239081477e-13,
+      "newton_updates": [
+        2,
+        2
+      ],
+      "pcg_iterations": [
+        12,
+        18
+      ],
+      "cold_compile_and_solve_seconds": 0.7993327370495535,
+      "warm_unchanged_exact": true,
+      "release_exact": true,
+      "failure_isolation_exact": true,
+      "partial_recovery_preserves_others_exact": true,
+      "pressure": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-thickness-v1/group0/gpu/q0-pressure.npz",
+        "bytes": 16226,
+        "sha256": "b92cc1cc4a62905136a8d42a4db797ccf755b6a72df1ad3a88e8c7fa11a67970"
+      },
+      "inputs": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-thickness-inputs-v1/group0/inputs/q0.npz",
+        "bytes": 7675231,
+        "sha256": "968e63270ac30a9ceed19bcd8107b8aa45e713f3ef1e0af0221c1362814d09b8"
+      }
+    },
+    {
+      "order": 6,
+      "pressure_relative_errors": [
+        1.9022470495057956e-09,
+        9.795074414498034e-11
+      ],
+      "independent_pad_law_errors": [
+        4.6518419026304885e-12,
+        2.4068722327022146e-15
+      ],
+      "wrench_errors": [
+        8.237964761035827e-12,
+        2.019055706420373e-15
+      ],
+      "maximum_gradient": 8.453103735778077e-11,
+      "newton_updates": [
+        2,
+        3
+      ],
+      "pcg_iterations": [
+        13,
+        31
+      ],
+      "cold_compile_and_solve_seconds": 0.022223269974347204,
+      "warm_unchanged_exact": true,
+      "release_exact": true,
+      "failure_isolation_exact": true,
+      "partial_recovery_preserves_others_exact": true,
+      "pressure": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-thickness-v1/group0/gpu/q6-pressure.npz",
+        "bytes": 40558,
+        "sha256": "62718c62c1d41f30597915eb18c8c3069db0e1c332846cc73c8805c9b6d7ac0b"
+      },
+      "inputs": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-thickness-inputs-v1/group0/inputs/q6.npz",
+        "bytes": 28121250,
+        "sha256": "678b94d378cad4b4568db89928e39fc9f93199ccf06090551092db3a7e8ffcff"
+      }
+    }
+  ],
+  "production_automatic_model_admitted": false,
+  "whole_goal_complete": false,
+  "scope": "Native nonlinear pressure and matrix-free linear solves match every supplied independent normal pad case. Warm repeat, exact separation release, invalid-input isolation and selective recovery pass. Physical operators and initial rigid guesses remain CPU-prepared validation inputs. Dynamic geometry selection, friction integration, production lifecycle wiring and controlled throughput remain required."
+}

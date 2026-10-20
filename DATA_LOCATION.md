@@ -685,3 +685,15 @@ load/tilt control captures. Existing physical reference fields and the
 834-node compliance are reused in place. Job logs and generated arrays stayed
 on data; CPU process caches stayed node-local. No production environment,
 original reference or live source was migrated or overwritten.
+
+The native pressure-stage and physical thickness campaigns use
+`native-pad-newton-{inputs,fields}-v1`, `native-pad-newton-v1`,
+`pad-thickness-study-v1`, `native-pad-thickness-{inputs,fields}-v1`,
+`native-pad-thickness-v1` and the draft/final `pad-thickness-figure-*-v1`
+outputs under the same ranking run root. Their
+`native-pad-pressure-and-thickness-v1` packet retains301 selected payloads
+(4,900,765 bytes) and120 externally hashed arrays. New meshes,834-node
+compliances,48 native pressure/full-field checks and24 physical thickness
+fields remain on data. Inspected SVG/PDF/PNG publication deliverables stay in
+Git with their compact records. Original source checkouts, active environments,
+historical arrays and compatibility links remain in place.

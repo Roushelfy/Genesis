@@ -1,0 +1,76 @@
+{
+  "passed": true,
+  "thickness_m": 0.001,
+  "layers": 1,
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-thickness-study-v1/group1/preparation/mesh.npz",
+    "bytes": 488678,
+    "sha256": "f164a1af1a13d636e6966ec61bd1485c4c808ec1797936873116582b401137df"
+  },
+  "operator": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-thickness-study-v1/group1/preparation/contact-operator.npz",
+    "bytes": 5048236,
+    "sha256": "96b4c080dbea7949befd9bdd0753043416326a8ac4000134282868926aa94f97"
+  },
+  "baseline": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-thickness-study-v1/group1/preparation/baseline.npz",
+    "bytes": 7125728,
+    "sha256": "c50db5cad9c8ba15c7c93630e28c9a67470b3743551783db60dbf5134b8b0415"
+  },
+  "base_mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+    "bytes": 488697,
+    "sha256": "d72934ef97cd357de7440f1cc72c2297004c830c64770d43d95ef366280882f0"
+  },
+  "factor_and_mesh_seconds": 36.214250806951895,
+  "condensation_seconds": 64.61710192193277,
+  "reciprocity_relative_error": 7.640633941640333e-16,
+  "equation_relative_error": 1.1859756076799122e-12,
+  "balance_correction_relative": 1.6970872896820468e-17,
+  "mass_properties": {
+    "mass_kg": 0.014639080007879501,
+    "com_m": [
+      9.393384349071125e-19,
+      -8.781774675139786e-18,
+      -0.0019574470518727506
+    ],
+    "exact_volume_inertia_kg_m2": [
+      [
+        6.2550646818646366e-06,
+        -2.0018685276675943e-11,
+        -3.111900107921892e-22
+      ],
+      [
+        -2.0018685276699982e-11,
+        6.255248322497405e-06,
+        1.7789479313175384e-22
+      ],
+      [
+        -3.413885654989103e-22,
+        1.6348537148456545e-22,
+        4.75303718275507e-06
+      ]
+    ],
+    "lumped_inertia_kg_m2": [
+      [
+        6.266752599869413e-06,
+        -1.1104875129031328e-10,
+        -5.068917625890272e-13
+      ],
+      [
+        -1.1104875129031452e-10,
+        6.266968868565252e-06,
+        -1.3827532664156305e-12
+      ],
+      [
+        -5.068917625739053e-13,
+        -1.3827532664152427e-12,
+        4.762439480250613e-06
+      ]
+    ],
+    "lumped_inertia_relative_difference": 0.0018956809492586054
+  },
+  "total_seconds": 102.86915440496523,
+  "physical_reference_qualified": false,
+  "whole_goal_complete": false
+}
