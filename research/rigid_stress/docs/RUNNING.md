@@ -103,9 +103,12 @@ Unchanged physics does not require repeating historical convergence campaigns.
 `test_stress_pair_geometry.py` checks the current-geometry component with
 analytic primitive/nonconvex distances, material visibility, current relative
 velocity, link-pair wrench grouping and partial reset. The
-[retained CPU/GPU runs](../evidence/20261019-qualified-ranking/native-pair-geometry-v1/README.md)
+[retained CPU/GPU runs](../evidence/20261019-qualified-ranking/native-pair-accessible-v1/README.md)
 include the exact source patch and test files. These are component checks;
 they do not validate an automatic pressure law or measure production throughput.
+The accessible-boundary case compares primitive/mesh representations and
+reversed component ordering, rejects transverse blockers and checks common
+rigid transforms. The primitive case also checks eighteen open-segment queries.
 
 ## Evidence and historical tools
 

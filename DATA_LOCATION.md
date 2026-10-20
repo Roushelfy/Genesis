@@ -714,3 +714,11 @@ checkout is isolated at `.worktrees/automatic-pad-geometry`. Durable job logs
 stay on data; generated test assets and private compilation caches use
 compute-node scratch. No existing environment, data or compatibility link
 was moved.
+
+`native-pair-accessible-baseline-v1` and `native-pair-accessible-tests-v1/v2`
+retain the extended visibility controls under the same ranking run root.
+Their `native-pair-accessible-v1` packet contains79 compact payloads
+(486,468 bytes), including the actual baseline miss, the first mesh-candidate
+failure and ten final passing CPU/GPU cases. The source remains isolated in
+`.worktrees/automatic-pad-geometry`; test assets and private compiler caches
+use node scratch, and durable outputs remain on data. No migration is performed.
