@@ -1,0 +1,83 @@
+{
+  "recorded_at_UTC": "2026-10-20T01:33:42.039345+00:00",
+  "parent": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-time-contact-v1/group1/reference",
+  "parent_actual_state": "JobId=729314 ArrayJobId=729314 ArrayTaskId=1 ArrayTaskThrottle=2 JobName=shell22-compare UserId=zhaofeng(2157) GroupId=zhaofeng(2157) MCS_label=N/A Priority=1 Nice=0 Account=root QOS=normal JobState=RUNNING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=06:26:27 TimeLimit=15:00:00 TimeMin=N/A SubmitTime=2026-10-19T19:07:13 EligibleTime=2026-10-19T19:07:15 AccrueTime=2026-10-19T19:07:15 StartTime=2026-10-19T19:07:15 EndTime=2026-10-20T10:07:15 Deadline=N/A PreemptEligibleTime=2026-10-19T19:07:15 PreemptTime=None SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-19T19:07:15 Scheduler=Main Partition=rtx-mid AllocNode:Sid=cpu-207-159:3982005 ReqNodeList=(null) ExcNodeList=(null) NodeList=rtx-209-067 BatchHost=rtx-209-067 NumNodes=1 NumCPUs=4 NumTasks=1 CPUs/Task=4 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=4,mem=128G,node=1,billing=4,gres/gpu=1 AllocTRES=cpu=4,mem=128G,node=1,billing=4,gres/gpu=1 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=4 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) LicensesAlloc=(null) Network=(null) Command=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-time-contact-v1/job.sh WorkDir=/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking StdErr=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-time-contact-v1/logs/729314_1.log StdIn=/dev/null StdOut=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-time-contact-v1/logs/729314_1.log TresPerNode=gres/gpu:1 TresPerTask=cpu=4 \n",
+  "complete_journal_records_at_observation": 402,
+  "normal_phase_endpoint": {
+    "step": 400,
+    "time_s": 0.2,
+    "level": 0,
+    "compression_coordinate_m": 5.6873988374765186e-05,
+    "plate_speed_m_per_s": 7.275779371346269e-13
+  },
+  "next_phase_first_record": {
+    "step": 401,
+    "time_s": 0.2005,
+    "level": 1,
+    "body_force_n": [
+      7.48087862490779e-05,
+      0.0,
+      0.0
+    ]
+  },
+  "normal_endpoint_file": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-time-contact-v1/group1/reference/frames/level0.npz",
+    "bytes": 431741947,
+    "sha256": "13a3a3a13b861b8b670496ffb303d8181aee47472c88c58f22822e910bfc430d"
+  },
+  "zip_directory_complete": true,
+  "member_names": [
+    "vertices_m.npy",
+    "tetrahedra.npy",
+    "stress_pa.npy",
+    "load_n.npy",
+    "displacement_m.npy",
+    "velocity_m_per_s.npy",
+    "source_points_m.npy",
+    "source_forces_n.npy",
+    "projected_area_m2.npy",
+    "forces_n.npy",
+    "body_forces_n.npy",
+    "inertial_forces_n.npy",
+    "equation_residual_n.npy",
+    "internal_forces_n.npy",
+    "source_points_current_m.npy",
+    "stvk_gradient.npy",
+    "young_pa.npy",
+    "poisson.npy",
+    "rotation_material_to_world.npy"
+  ],
+  "full_state_array_headers": {
+    "displacement_m.npy": {
+      "descr": "<f8",
+      "fortran_order": false,
+      "shape": [
+        1026942,
+        3
+      ]
+    },
+    "velocity_m_per_s.npy": {
+      "descr": "<f8",
+      "fortran_order": false,
+      "shape": [
+        1026942,
+        3
+      ]
+    },
+    "source_forces_n.npy": {
+      "descr": "<f8",
+      "fortran_order": false,
+      "shape": [
+        527500,
+        3
+      ]
+    }
+  },
+  "frame_size_and_mtime_stable_during_hash": true,
+  "scope": "Read-only metadata observation of the first400-step phase and its saved normal endpoint in the original still-running800-step half-dt parent. The next physical phase has started. Scientific whole-history/current-momentum/field qualification remains pending. No data is moved, no parent writer is changed, and no resume is prepared.",
+  "whole800_step_parent_admitted": false,
+  "fine_reference_qualified": false,
+  "accepted_reference_frames": [],
+  "resume_prepared": false,
+  "whole_goal_complete": false
+}

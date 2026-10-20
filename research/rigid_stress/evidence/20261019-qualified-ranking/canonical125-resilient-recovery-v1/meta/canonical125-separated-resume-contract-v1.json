@@ -1,0 +1,90 @@
+{
+  "created_at_UTC": "2026-10-20T02:06:32.558155+00:00",
+  "actual_sinfo_snapshot": "rtx-209-067|mix-|96/32/0/128|978944|542116\nrtx-209-099|alloc|128/0/0/128|978944|39498\nrtx-209-113|alloc|128/0/0/128|978944|37799\nrtx-209-115|alloc|128/0/0/128|978944|182077\nrtx-209-187|alloc|128/0/0/128|978944|2413\nrtx-209-191|mix-|120/8/0/128|978944|77284\nrtx-209-201|mix-|120/8/0/128|978944|572804\nrtx-209-223|alloc|128/0/0/128|978944|631406\nrtx-209-231|mix-|112/16/0/128|978944|153828\nrtx-209-233|mix|120/8/0/128|978944|116791\nrtx-209-235|mix|104/24/0/128|978944|420059\nrtx-209-255|mix|120/8/0/128|978944|222339\nrtx-210-023|alloc|128/0/0/128|978944|772804\nrtx-210-029|mix|114/14/0/128|978944|363903\n",
+  "control_job": "730971",
+  "control_requirement": "Every array element must succeed: coarse full-history/full-array/common-field equivalence and periodic state packing, three actual fine input controls and continued-parent metadata controls.",
+  "plans": [
+    {
+      "role": "final",
+      "campaign": "solid-pad-stvk-canonical125-final-resume-v3",
+      "tasks": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/solid-pad-stvk-canonical125-final-resume-v3-tasks.json",
+      "proof": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-final-resume-preparation-v1/result.json",
+      "inherited_steps": 200,
+      "newly_required_steps": 200,
+      "allowed_node_pool": [
+        "rtx-209-099",
+        "rtx-209-187",
+        "rtx-209-223",
+        "rtx-209-235",
+        "rtx-210-029"
+      ],
+      "excluded_nodes": [
+        "rtx-209-067",
+        "rtx-209-113",
+        "rtx-209-115",
+        "rtx-209-191",
+        "rtx-209-201",
+        "rtx-209-231",
+        "rtx-209-233",
+        "rtx-209-255",
+        "rtx-210-023"
+      ]
+    },
+    {
+      "role": "contact",
+      "campaign": "solid-pad-stvk-canonical125-contact-resume-v1",
+      "tasks": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/solid-pad-stvk-canonical125-contact-resume-v1-tasks.json",
+      "proof": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-contact-resume-preparation-v1/result.json",
+      "inherited_steps": 200,
+      "newly_required_steps": 200,
+      "allowed_node_pool": [
+        "rtx-209-113",
+        "rtx-209-191",
+        "rtx-209-231",
+        "rtx-209-255"
+      ],
+      "excluded_nodes": [
+        "rtx-209-067",
+        "rtx-209-099",
+        "rtx-209-115",
+        "rtx-209-187",
+        "rtx-209-201",
+        "rtx-209-223",
+        "rtx-209-233",
+        "rtx-209-235",
+        "rtx-210-023",
+        "rtx-210-029"
+      ]
+    },
+    {
+      "role": "halfdt",
+      "campaign": "solid-pad-stvk-canonical125-halfdt-resume-v1",
+      "tasks": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/solid-pad-stvk-canonical125-halfdt-resume-v1-tasks.json",
+      "proof": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-halfdt-resume-preparation-v1/result.json",
+      "inherited_steps": 400,
+      "newly_required_steps": 400,
+      "allowed_node_pool": [
+        "rtx-209-115",
+        "rtx-209-201",
+        "rtx-209-233",
+        "rtx-210-023"
+      ],
+      "excluded_nodes": [
+        "rtx-209-067",
+        "rtx-209-099",
+        "rtx-209-113",
+        "rtx-209-187",
+        "rtx-209-191",
+        "rtx-209-223",
+        "rtx-209-231",
+        "rtx-209-235",
+        "rtx-209-255",
+        "rtx-210-029"
+      ]
+    }
+  ],
+  "numerical_parameters_unchanged": true,
+  "checkpoint_stride": 25,
+  "job_scoped_placement_only": true,
+  "whole_goal_complete": false
+}

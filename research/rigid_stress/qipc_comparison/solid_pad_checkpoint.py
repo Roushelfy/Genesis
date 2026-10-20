@@ -60,7 +60,7 @@ def physical_arguments(args):
     return {
         key: str(value) if isinstance(value, Path) else value
         for key, value in vars(args).items()
-        if key not in ("output", "resume_checkpoint")
+        if key not in ("output", "resume_checkpoint", "checkpoint_stride")
     }
 
 
@@ -85,7 +85,10 @@ def validate_checkpoint(args, step_checks):
         "Incomplete numerical module coverage"
     )
     start = json.loads(Path(proof["start"]["path"]).read_text())
-    expected = {key: value for key, value in start["args"].items() if key not in ("output", "resume_checkpoint")}
+    expected = {
+        key: value for key, value in start["args"].items()
+        if key not in ("output", "resume_checkpoint", "checkpoint_stride")
+    }
     assert physical_arguments(args) == expected, "Checkpoint physical/solver arguments differ"
     assert start["mesh"] == file_id(args.mesh)
     assert args.contact_solver == "modal" and args.warm_contact and args.elasticity == "stvk"

@@ -61,17 +61,21 @@ The only reader change makes GPU inventory optional for this CPU analysis;
 the physical extraction and its acceptance are unchanged. Final extraction is
 separately queued for the fine reference after qualification.
 
-## Queued execution and reproduction
+## Current replacement queue and reproduction
 
-| Job | Prerequisite | Work and publication-time state |
+| Job | Prerequisite | Current captured work |
 | --- | --- | --- |
-|730607 /729479_0/_1 |20-check admission of terminal250/125um two-wall parents | Both q9/q25 surface comparisons complete; component730622_0 passes65 checks. |
-|729487 /729479_2–7 | q10 reference729312, then explicit four-parent admission | Wall/surface3/joint fields retain original dependencies; pending. |
-|730699 /729480_0/_1 | Actual successful729312_1/729314_0, then strict two-parent admission | Original fine contact-order fields may run before the separate800-step parent; pending. |
-|729478 /729480_2/_3 |729312 and729314, then explicit six-parent admission | Fine half-dt fields retain their original gate; pending. |
-|729513 | afterany on729479/729480 | Seven-parent preflight followed by36-comparison qualification; pending. |
-|729539 | successful qualification729513 |18 DPR/SCR/Shell q1/q9/q25 comparisons with complete surface exports; pending replacement of cancelled729518. |
-|729519 | successful qualification729513 | Complete actual-force histories and traction data for the final figures; pending. |
+|730607 /729479_0/_1 |20-check admission of terminal250/125um two-wall parents | Both q9/q25 surface comparisons complete; component730622_0 passes65 checks and is reused unchanged. |
+|730978 /730979 /730980 | Independent periodic-state/control reinspection730990 passes99 checks | CPU final-q10/contact-q6/half-dt continuations inherit200/200/400 steps; running in disjoint node pools. |
+|731010 /731011 |730978, then strict four-parent admission | Six wall/surface3/joint field groups; two completed surface2 groups are linked into the explicit eight-group view. |
+|731014 /731016_0/_1 |730978 and730979, then strict pair admission | Fine contact-order q9/depth2, q9/depth4, q25/depth4; pending. |
+|731013 /731016_2/_3 | All three continued parents, then strict six-parent admission | Half-dt fields retain full-history admission; pending. |
+|731019 | afterany on731011/731016 | Seven-parent content guard, explicit continuation lineage,36 comparisons/18 envelopes; pending. |
+|731020 | Successful qualification731019 |18 DPR/SCR/Shell q1/q9/q25 fields with complete surface exports; pending. |
+|731021 | Successful qualification731019 | Full histories and actual force/traction data from the same fine reference; pending. |
+|731022 | afterany on731020 |54 dimensional error rows/18 conditional metric rankings or ties; pending. |
+|731023 | afterany on731022/731021 | Guarded final figures with an explicit matching fields campaign; pending. |
+|731025 | afterany on731022 | Four admitted friction cost configurations/36 applicable error associations; pending. |
 
 `afterany` allows qualification to report failed or missing upstream evidence;
 the explicit content checks establish admission. Downstream method/data work
@@ -117,7 +121,10 @@ parent-row guard. Coarse trends, wall/joint and fine time/contact/depth evidence
 still gate the full36-comparison decision and18 conditional envelopes.
 
 
-## Independent contact-order readiness, 2026-10-20
+## Historical independent contact-order readiness, 2026-10-20
+
+This publication-time queue is superseded by the node-wide preemptions and
+replacement queue above. Its captured commands and original journal remain intact.
 
 The original contact-order tasks729480_0/_1 use only the125um/three-wall
 q6 and q10 parents, each400 steps. Guard730699 now waits on the actual
@@ -141,3 +148,44 @@ before/after scheduler journal, unchanged worker hash and original field capture
 Live fields and histories are excluded. Reproduce the guard using its captured
 task JSON through shell_comparison.submit with explicit fresh data outputs,
 --cpu-only, node-local private caches and the established rtx-mid/container path.
+
+
+## Explicit continued-parent inputs after actual preemption
+
+The three original remaining parents stop at321/342/418 complete records after
+actual Slurm preemption onrtx-209-067. Only complete200/200/400-step normal
+endpoints have full saved state. Original journals and frames stay untouched.
+Three fresh continuations retain full body/plate state, lagged normal force,
+absolute physical time and all original mechanical/constitutive parameters.
+Each still needs its complete400/400/800-step own history and momentum audit.
+
+The original PARENTS defaults remain unchanged. --parent-overrides accepts
+explicit relative paths for named continuations. The current map is
+meta/canonical125-resilient-parent-overrides-v1.json. Every override must bind
+the correct original terminal job/submission, source modules, unchanged prefix
+and copied endpoint bytes, actual mass/mesh and separate inherited/new step
+accounting.26 controls pass, including wrong-parent/provenance/accounting and
+invalid-path rejection. An incomplete parent set produces no accepted frames.
+The periodic output option is bookkeeping and retains the same physical problem.
+
+The data-side stvk-canonical125-resilient-fields-v1/assembly.json records
+relative links: groups0/1 reuse the two completed original comparisons, while
+groups2–7 map the six fresh affected computations. Raw ordered field identities
+are checked independently. Fine contact and half-dt tasks use the three explicit
+continued paths. All spatial/control/peak/uncertainty targets remain unchanged.
+
+Current immutable recipes are the *resilient*-tasks.json files named in
+meta/canonical125-resilient-dag-contract-v1.json. The original numerical targets
+remain in meta/friction-reference-qualification-contract-v1.json; current worker
+hashes are in each new analysis-files.json. Use captured task JSON through the
+existing Slurm/container runner with fresh explicit data outputs. The figure
+entry additionally accepts --fields-campaign so the new q1 arrays match its
+qualified ranking; the actual normal-only negative exits1 with no figures.
+
+The [recovery packet](../evidence/20261019-qualified-ranking/canonical125-resilient-recovery-v1/README.md)
+retains794 payloads/5,326,422 bytes and18 externally hashed arrays on data. It
+includes original preemptions, both superseded recovery attempts, failed JSON
+postprocessing and read-only reinspection, tested source variants and the exact
+replacement graph. Live scientific outputs and final scientific products are
+excluded. Full qualification, method ranks, inspected final figures and matched
+friction delivery remain pending.

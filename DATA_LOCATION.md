@@ -1,5 +1,15 @@
 # Rigid-stress data and artifact locations
 
+The canonical125-resilient-recovery-v1 packet adds794 payloads/5,326,422 bytes
+for terminal preemptions, exact saved-prefix preparations, completed periodic
+state/control reinspection and immutable replacement launch/source receipts.
+Eighteen arrays remain externally hashed on data. New full-state checkpoints,
+continued histories, fields and logs use the established data run root; live
+scientific outputs are excluded from the archive. New relative data-side assembly
+links reuse two completed comparison groups without moving original files or
+replacing tracked paths. Node exclusions are per-job options; existing shared
+configuration, environments and compatibility links stay intact.
+
 The contact125-pair-scheduling-v1 packet adds23 payloads/165,478 bytes for
 immutable pending contact-order launch/source receipts and the exact per-element
 scheduler update. It includes no live history, field or new scientific result.

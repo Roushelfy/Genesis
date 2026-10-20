@@ -1,0 +1,24 @@
+[
+  [
+    {
+      "name": "admission",
+      "module": "research.rigid_stress.qipc_comparison.require_solid_pad_admission",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group0/reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-final-resume-v2/group0/reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-time-contact-v1/group0/reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-time-contact-v1/group1/reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-spatial250-cache-v1/group0/reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-wall250x3-cache-v1/group0/reference",
+        "--expected-steps",
+        "400",
+        "400",
+        "400",
+        "800",
+        "400",
+        "400"
+      ]
+    }
+  ]
+]

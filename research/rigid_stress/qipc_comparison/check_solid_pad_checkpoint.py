@@ -15,6 +15,7 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--checkpoint", type=Path, required=True)
     cli.add_argument("--live-rejection", type=Path, required=True)
+    cli.add_argument("--expected-prefix-steps", type=int, default=200)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -26,7 +27,7 @@ def main():
     context = validate_checkpoint(base, step_checks)
     checks = {
         "actual_terminal_endpoint_receipt": proof["passed"],
-        "exact_complete200_step_prefix": len(context[1]) == proof["prefix_steps"] == 200,
+        "exact_complete_declared_prefix": len(context[1]) == proof["prefix_steps"] == args.expected_prefix_steps,
         "all_original_prefix_mechanical_gates": all(all(step_checks(row).values()) for row in context[1]),
     }
     for key, value in (("dt", 0.002), ("gravity_x", 0.0), ("candidate_radius", 0.004), ("loads", [0.1, 0.3])):
@@ -89,7 +90,7 @@ def main():
             "passed": all(checks.values()),
             "checks": checks,
             "receipts": [file_id(args.checkpoint), file_id(args.live_rejection)],
-            "scope": "Actual terminal coarse200-step prefix and changed configuration/receipt controls only. Full resumed dynamics and endpoint field equivalence require separate execution. No live fine run is resumed, cancelled or admitted here.",
+            "scope": "Actual declared terminal prefix and changed configuration/receipt controls only. Full resumed dynamics and endpoint field equivalence require separate execution. No live fine run is resumed, cancelled or admitted here.",
             "whole_goal_complete": False,
         },
     )

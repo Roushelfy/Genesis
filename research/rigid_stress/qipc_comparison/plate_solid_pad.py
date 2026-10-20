@@ -57,18 +57,22 @@ def main():
     cli.add_argument("--constitutive-correction", choices=("subtracted", "direct"), default="subtracted")
     cli.add_argument("--cache-constitutive-evaluations", action="store_true")
     cli.add_argument("--reuse-contact-velocity", action="store_true")
+    cli.add_argument("--checkpoint-stride", type=int, default=0, help="Save complete physical states between endpoints")
     cli.add_argument(
         "--resume-checkpoint",
         type=Path,
         help="Terminal-parent endpoint receipt; preserves the complete recorded prefix",
     )
     args = cli.parse_args()
+    assert args.checkpoint_stride >= 0
     assert not args.reuse_contact_velocity or args.contact_solver == "modal"
     assert not args.empty and not args.shear_distance and args.plate_offset_x == 0
     assert args.record_stride == 1 and (not args.gravity_x or args.friction == 0.3)
     checkpoint = validate_checkpoint(args, step_checks) if args.resume_checkpoint is not None else None
     args.output.mkdir(parents=True, exist_ok=False)
     (args.output / "frames").mkdir()
+    if args.checkpoint_stride:
+        (args.output / "checkpoints").mkdir()
     started = perf_counter()
     with np.load(args.mesh) as saved:
         vertices, tets, outer, faces = (saved[k] for k in ("vertices", "tetrahedra", "outer_vertices", "mid_faces"))
@@ -302,6 +306,19 @@ def main():
                         internal_forces_n=internal.reshape(-1, 3),
                         source_points_current_m=points + point_map @ displacement[:-1].reshape(-1, 3),
                         **extra,
+                    )
+                if args.checkpoint_stride and (step + 1) % args.checkpoint_stride == 0:
+                    np.savez_compressed(
+                        args.output / "checkpoints" / f"step{step + 1}.npz",
+                        step=step + 1, time_s=(step + 1) * args.dt, level=level,
+                        compression_coordinate_m=displacement[-1], plate_speed_m_per_s=new_velocity[-1],
+                        vertices_m=model.vertices, tetrahedra=tets, load_n=command,
+                        displacement_m=displacement[:-1].reshape(-1, 3),
+                        velocity_m_per_s=new_velocity[:-1].reshape(-1, 3),
+                        source_points_m=points, source_forces_n=force, projected_area_m2=area,
+                        forces_n=generalized_force[:-1].reshape(-1, 3),
+                        body_forces_n=body.reshape(-1, 3), inertial_forces_n=inertial.reshape(-1, 3),
+                        young_pa=reference.young, poisson=reference.poisson,
                     )
                 previous_normal = sign * force[:, 2]
                 velocity = new_velocity

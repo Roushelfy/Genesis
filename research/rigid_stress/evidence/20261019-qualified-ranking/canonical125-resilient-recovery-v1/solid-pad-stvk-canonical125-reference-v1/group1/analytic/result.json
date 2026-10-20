@@ -1,0 +1,32 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729312",
+      "SLURM_ARRAY_JOB_ID": "729312",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-17819d06-c563-257f-30fe-100c9f111279, 00000000:20:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": null
+  },
+  "passed": true,
+  "rigid_force_norm_n": 1.0922941634005036e-09,
+  "rigid_energy_j": 5.937151055975155e-27,
+  "rigid_maximum_stress_pa": 3.20770018233186e-05,
+  "force_covariance_error": 1.17587905008816e-12,
+  "stress_covariance_error": 2.7841107438630585e-12,
+  "energy_covariance_error": 1.4743761767022079e-12,
+  "physical_moment_nm": 1.6184142622847344e-16,
+  "energy_gradient_relative_error": 1.4633406064388333e-12,
+  "small_strain_linear_force_relative_error": 1.4095210119900593e-08,
+  "direct_correction_full_force_relative_error": 4.0426953795517663e-16,
+  "direct_correction_translation_relative_error": 2.970961742557696e-12,
+  "exact_cache_state_mutation_and_return_alias_controls_passed": true,
+  "nonlinear_column_sampling_relative_error": 6.458727258387539e-16
+}

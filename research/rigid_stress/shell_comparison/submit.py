@@ -122,6 +122,7 @@ def main():
     parser.add_argument("--concurrency", type=int)
     parser.add_argument("--dependency", help="Explicit Slurm dependency, e.g. afterok:12345 or afterany:12345:12346")
     parser.add_argument("--cpus", type=int, default=8)
+    parser.add_argument("--exclude-nodes", help="Job-specific Slurm exclusion list; leaves cluster configuration unchanged")
     parser.add_argument("--cpu-only", action="store_true", help="Request no GPU for CPU analysis in rtx-mid")
     parser.add_argument("--keep-going", action="store_true")
     parser.add_argument(
@@ -252,6 +253,8 @@ def main():
     ]
     if args.dependency:
         command.insert(-1, f"--dependency={args.dependency}")
+    if args.exclude_nodes:
+        command.insert(-1, f"--exclude={args.exclude_nodes}")
     result = subprocess.check_output(command, text=True).strip()
     (output / "submission.json").write_text(
         json.dumps(
@@ -259,6 +262,7 @@ def main():
                 "command": command,
                 "job": result,
                 "dependency": args.dependency,
+                "exclude_nodes": args.exclude_nodes,
                 "node_local_cache": args.node_local_cache,
                 "kernel_profiler": args.kernel_profiler,
                 "allow_home_output": args.allow_home_output,

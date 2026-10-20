@@ -1,0 +1,16 @@
+{
+  "created_at_UTC": "2026-10-20T02:01:37.658598+00:00",
+  "reason": "All remaining original fine parents and the first corrected initialization were preempted onrtx-209-067. Exclude only this node at job scope and validate periodic state output before relaunching all three CPU references.",
+  "actual_accounting": "729312_0|COMPLETED|0:0|04:43:58|2026-10-19T23:51:10\n729312_0.batch|COMPLETED|0:0|04:43:58|2026-10-19T23:51:10\n729312_0.0|COMPLETED|0:0|04:43:57|2026-10-19T23:51:10\n729312_1|PREEMPTED|0:0|06:26:42|2026-10-20T01:33:55\n729312_1.batch|CANCELLED|0:15|06:26:43|2026-10-20T01:33:56\n729312_1.0|CANCELLED|0:9|06:27:19|2026-10-20T01:34:32\n729314_0|PREEMPTED|0:0|06:45:48|2026-10-20T01:53:03\n729314_0.batch|CANCELLED|0:15|06:45:49|2026-10-20T01:53:04\n729314_0.0|CANCELLED|0:9|06:46:25|2026-10-20T01:53:40\n729314_1|PREEMPTED|0:0|06:46:43|2026-10-20T01:53:58\n729314_1.batch|CANCELLED|0:15|06:46:44|2026-10-20T01:53:59\n729314_1.0|CANCELLED|0:9|06:47:21|2026-10-20T01:54:36\n730903_0|PREEMPTED|0:0|00:13:33|2026-10-20T01:53:58\n730903_0.batch|CANCELLED|0:15|00:13:34|2026-10-20T01:53:59\n730903_0.0|CANCELLED|0:9|00:14:09|2026-10-20T01:54:35\n",
+  "task_file": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/solid-pad-periodic-checkpoint-control-v1-tasks.json",
+  "checkpoint_stride": 25,
+  "minimum_new_state": "Complete FP64 body displacement/velocity, point forces, fixed geometry/quadrature, plate/time metadata and actual body/inertial force arrays; no altered mechanical integration or source reduction.",
+  "inherited_steps_by_case": {
+    "final": 200,
+    "contact": 200,
+    "halfdt": 400
+  },
+  "targets_reused_without_change": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/solid-pad-resume-contract-v1.json",
+  "scope": "Coarse200 inherited+200 new dynamics/common-field equivalence, periodic packing and actual fine200/200/400 prefix controls; full fine continuation and qualification remain pending.",
+  "whole_goal_complete": false
+}

@@ -1,0 +1,24 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0%1",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=none",
+    "--cpus-per-task=2",
+    "--mem=8G",
+    "--time=30",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/canonical125-resilient-parent-admission-v1/logs/%A_%a.log",
+    "--dependency=afterok:730978:730979:730980",
+    "--exclude=rtx-209-067",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/canonical125-resilient-parent-admission-v1/job.sh"
+  ],
+  "job": "731013",
+  "dependency": "afterok:730978:730979:730980",
+  "exclude_nodes": "rtx-209-067",
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "allow_home_output": false
+}
