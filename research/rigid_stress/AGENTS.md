@@ -1,22 +1,14 @@
 # Working on native rigid stress recovery
 
-**Latest error direction, 2026-10-20:** read the
-[engineering error-budget clarification](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md#error-judgments-and-practical-acceptance-budgets).
-Quantify load correction versus complete/maximum stress error before choosing
-practical recovery tolerances. A certified exact-model conflict may still admit
-a useful separately labelled nearby-load approximation. Preserve strict tests
-and original certificates; reuse the completed bounded-roundoff controls and
-prioritize correcting DPR's wrong-boundary spreading. This clarification
-supersedes blanket fatal-rejection wording for the separate engineering study.
-
-**Latest user direction, 2026-10-20:** follow the
-[automatic contact-region and throughput goal](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md).
-Finish current fixed-radius rankings, run a compact CPU comparison of physical
-region predictors and shell/pad compliance, address the distinct current SCR
-failure classes, and profile/tune native throughput in parallel. Prefer DPR for
-first integration, keep production in Quadrants and preserve changing nonconvex
-normal/friction contacts. Validated recovery infrastructure is available; focus
-on actual results instead of expanding generic orchestration/audit frameworks.
+**Highest-priority user direction, 2026-10-20:** follow the
+[cheap hard-contact goal](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md)
+and [GOAL.md](GOAL.md). Prioritize inexpensive Hertz/thin-shell approximations
+and measured native throughput. Do not assume or further develop a deformable
+gripper pad. Keep the coupled pressure/Newton-PCG path optional unless independently
+verified physical accuracy and measured cost justify it; no default heavy
+fallback or prerequisite integration. Preserve prior pad evidence as historical
+scope, not hard-contact accuracy. This overrides earlier pad/coupled-integration
+priorities while retaining practical stress-error budgets and strict baselines.
 
 **Latest user direction, 2026-10-19:** separate accuracy verification from
 performance timing. Read [the protocol](docs/ACCURACY_AND_THROUGHPUT_PROTOCOL.md).

@@ -1,53 +1,35 @@
-# Active goal: qualified stress-error rankings
+# Active goal: cheap hard-contact stress estimates and maximum throughput
 
-**2026-10-20 error-budget clarification:** follow the
-[error judgments and practical acceptance budgets](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md#error-judgments-and-practical-acceptance-budgets).
-Prioritize DPR boundary/load fidelity and CPU stress-sensitivity measurements for
-nearby feasible SCR loads. Exact infeasibility is not an engineering-error rank.
-Preserve strict results while evaluating explicitly labelled approximations whose
-load and stress corrections are bounded; do not blindly retain1e-8 or loosen tests.
+Follow [the current hard-contact goal](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md).
 
-**2026-10-20 priority update:** execute the
-[contact-region, SCR robustness and throughput goals](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md).
-Finish the existing fixed-radius comparison while independently testing automatic
-physical contact regions on CPU and optimizing low-resolution native throughput.
-Prioritize DPR for practical integration; diagnose certified SCR incompatibility
-separately from detachment roundoff/input-law failures. Migrate useful validated
-contact models into the existing Quadrants rigid feature. Keep current baselines,
-running captures and all previous accuracy/performance requirements.
+**Latest user priority, 2026-10-20:** implement inexpensive Hertz/thin-shell
+contact approximations first. Do not assume a deformable gripper pad or extend
+the spring-pad study. Expensive automatic region/contact solves are optional
+reference work unless they show very accurate physical stress and a worthwhile
+measured accuracy/cost advantage. They are not a prerequisite or default fallback.
 
-Follow [docs/QUALIFIED_STRESS_RANKING_GOAL.md](docs/QUALIFIED_STRESS_RANKING_GOAL.md).
+Target a rigid Franka gripping a hollow egg. Only rest shape/material is fixed;
+preserve arbitrary moving convex/nonconvex and asymmetric normal/friction contacts,
+global maximum/full output, batching, isolation and partial resets. Keep the
+feature inside the Genesis rigid solver, entirely in Quadrants.
 
-**2026-10-19 priority update:** follow the
-[separate accuracy/throughput protocol](docs/ACCURACY_AND_THROUGHPUT_PROTOCOL.md).
-Advance native production throughput and tuning now, independently of costly
-reference qualification. Measure contact-replay module throughput and actual
-pure-rigid / rigid-plus-max / rigid-plus-full scene throughput separately.
-Join errors and speed only for matching configurations; retain production
-validity checks and all failed every-step friction observations.
+Run compact CPU comparisons and low-resolution native performance work in
+parallel. Predict a physically motivated pressure/support estimate cheaply,
+retain boundary/load fidelity and justified engineering stress-error budgets,
+and measure actual module and paired pure-rigid/max/full scene throughput.
+Do not infer physical accuracy from numerical-core agreement or global wrench
+balance. Match error and speed to the actual configuration.
 
-Finish measured DPR / SCR / Shell stress-error rankings, uncertainty, speed
-and stability on the simple full-hollow-egg parallel-plate benchmark. Repair
-SCR's balanced-load acceptance and shear fit, obtain an admitted Shell
-configuration with consistent contact/elastic coupling, and establish a
-spatially resolved finite-area-contact reference using QIPC/independent FEM.
-Keep original external baselines and label every repaired variant.
+Reuse the completed fixed-radius/soft-pad comparison as historical evidence,
+without inheriting its errors for hard contact or rerunning completed matrices.
+Keep the separate [accuracy/throughput protocol](docs/ACCURACY_AND_THROUGHPUT_PROTOCOL.md)
+and [engineering error judgments](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md#error-judgments-and-practical-acceptance-budgets).
+The [prior ranking goal](docs/QUALIFIED_STRESS_RANKING_GOAL.md) retains its original
+scope; its soft-pad/coupled-integration requirements do not override this update.
 
-The preceding [bounded plate report](docs/PARALLEL_PLATE_RESULTS_20261018.md)
-localizes the blockers but does not establish physical accuracy. Its
-unsupported-quantity completion clause is superseded for this stage.
-Completion requires actual qualified comparisons, with ties where uncertainty
-prevents separation, and matched admitted cost/stability evidence. Diagnosis
-or another closeout report alone is insufficient; remaining blockers keep
-the goal in progress.
-
-Retain full-spatial fields at selected equilibria, short profiling and CPU
-controls before expensive runs, same-load versus contact-error separation,
-and exact sources/inputs/failure records. Distinguish every-step stress cost
-from sparse observation. Production recovery stays in the existing rigid
-solver and Quadrants, preserving arbitrary moving convex/nonconvex contacts,
-friction, max/full output, batching and partial resets.
-
-Reuse [plate reproduction instructions](docs/RUNNING_PARALLEL_PLATES.md) and
-the existing diagnostic packet. Full Franka physical qualification remains
-out of scope; keep its useful throughput/application evidence separately.
+Deliver a useful cheap native estimator, applicable regimes, complete/peak stress
+errors and stability, batch scaling and measured overhead with recommended settings.
+Preserve original baselines, failures and source identities. Full Franka physical
+reference qualification is not revived; use small discriminating hard-contact
+controls and retain the Franka scene for throughput. Keep active entrypoints and
+documentation concise. Follow existing data storage/reproduction instructions.

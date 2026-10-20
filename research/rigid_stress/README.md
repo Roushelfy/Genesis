@@ -11,6 +11,13 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current goal and verified scope
 
+**Latest user priority:** implement
+[cheap Hertz/thin-shell hard-contact estimates](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md)
+and maximize native throughput. Do not assume or extend a deformable gripper pad.
+Coupled automatic contact solves remain optional references unless they prove
+very accurate physical stress and a worthwhile measured cost. The pad studies
+below are historical evidence, not the current implementation target.
+
 The [2026-10-20 next goals](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md)
 add automatic physical contact-region prediction, distinct SCR failure handling
 and continued native throughput optimization. CPU investigation and production
@@ -35,8 +42,8 @@ rankings, matching costs and four visually inspected figures.
 The [eight-case compliance study](docs/PAD_COMPLIANCE_STUDY_20261020.md) now
 separates model and source-sampling error. Rigid prediction is close in the
 nominal soft-pad regime; pressure error reaches24.47% for the flexible-link/stiff-pad
-case, and diagonal compliance adds little accuracy. Full coupling, quadrature
-and native cost remain central to the next implementation. Exact elimination
+case, and diagonal compliance adds little accuracy. These pad results remain historical controls;
+current implementation prioritizes cheap hard-contact estimates. Exact elimination
 of pad variables now reproduces all16 coupled reference fields; paired CPU
 solves fall from23.5–24.6s to0.060–0.093s, with fixed preprocessing separate.
 Fixed/adaptive PCG controls retain the same outer/physical checks; the tested
