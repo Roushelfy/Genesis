@@ -899,3 +899,20 @@ both complete endpoint fields and matching physical settings. The companion
 `audit_native_pad` admission and exact captured task/source recipes. Per-step
 correction magnitudes are available; intermediate complete source arrays are
 not, so this reader claims no new event-specific correction-stress bound.
+
+## Reduced coupled pad solve
+
+`check_reduced_pad_equilibrium --study STUDY --qp-solver-path CLARABEL`
+reuses the completed eight-case compliance study, its operator and16 coupled
+reference fields. `--paired-repeats 3 --changing-load-controls` adds paired
+full-QP/direct-Newton CPU calls and four normal load/upper-gap tilt states.
+`--linear-solver pcg-fixed|pcg-adaptive` changes only the inner linear solve;
+direct Newton is the default and all final admission targets stay fixed.
+The adaptive option is the explicitly recorded square-root-gradient heuristic.
+
+`compare_reduced_pad_equilibrium --direct DIRECT --fixed FIXED --adaptive ADAPTIVE`
+remeasures complete fields, pressure, peaks and warm-start return-to-load closure.
+The [terminal packet](../evidence/20261019-qualified-ranking/reduced-pad-equilibrium-v1/README.md)
+contains the exact captured commands and sources. Run these CPU validation
+workers through the existing CPU-only Slurm helper with fresh data-side outputs.
+They do not enable an automatic pressure model in the production engine.

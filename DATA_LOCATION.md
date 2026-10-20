@@ -675,3 +675,13 @@ independent mechanical/source admission and the endpoint/every-step comparison.
 Intermediate correction magnitudes are recorded, but complete original source
 arrays were captured only at endpoint keyframes. No new intermediate-event
 stress bound is inferred from absent arrays.
+
+The completed reduced pad, PCG forcing and independent comparison campaigns
+use `reduced-pad-equilibrium-v1`, `reduced-pad-pcg-v1` and
+`reduced-pad-comparison-v1` under the same data run root. Their
+`reduced-pad-equilibrium-v1` packet keeps89 compact payloads (536,562 bytes)
+and78 externally hashed arrays, including48 new complete fields and12
+load/tilt control captures. Existing physical reference fields and the
+834-node compliance are reused in place. Job logs and generated arrays stayed
+on data; CPU process caches stayed node-local. No production environment,
+original reference or live source was migrated or overwritten.

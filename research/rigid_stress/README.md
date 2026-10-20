@@ -36,7 +36,12 @@ The [eight-case compliance study](docs/PAD_COMPLIANCE_STUDY_20261020.md) now
 separates model and source-sampling error. Rigid prediction is close in the
 nominal soft-pad regime; pressure error reaches24.47% for the flexible-link/stiff-pad
 case, and diagonal compliance adds little accuracy. Full coupling, quadrature
-and native cost remain central to the next implementation.
+and native cost remain central to the next implementation. Exact elimination
+of pad variables now reproduces all16 coupled reference fields; paired CPU
+solves fall from23.5–24.6s to0.060–0.093s, with fixed preprocessing separate.
+Fixed/adaptive PCG controls retain the same outer/physical checks; the tested
+adaptive heuristic increases total iterations. This CPU improvement does not
+yet supply the automatic native model.
 
 The [engineering load-sensitivity study](docs/ENGINEERING_LOAD_SENSITIVITY_20261020.md)
 adds18 qualified resolved-transfer errors: corrected-boundary tangential error
