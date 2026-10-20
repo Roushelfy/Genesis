@@ -1,0 +1,220 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "environment": 330,
+      "sources": [
+        {
+          "source_index": 0,
+          "force_scale_n": 0.0736491253493926,
+          "radius_m": 0.005623592811854342,
+          "friction": 0.713472763041482,
+          "points": 16,
+          "maximum_surface_path_m": 0.005609608118295597,
+          "minimum_prior_weight": 2.175765698577988e-07,
+          "original_force_n": [
+            -0.0005706764540440876,
+            0.051717877605957495,
+            0.05243213832231663
+          ],
+          "original_anchor_moment_nm": [
+            1.1071098554320295e-05,
+            1.1358443706747313e-09,
+            1.1937853395817034e-07
+          ]
+        },
+        {
+          "source_index": 1,
+          "force_scale_n": 0.07290599567636093,
+          "radius_m": 0.005623592811854342,
+          "friction": 0.713472763041482,
+          "points": 16,
+          "maximum_surface_path_m": 0.0056098780003460665,
+          "minimum_prior_weight": 2.0928509131104249e-07,
+          "original_force_n": [
+            -0.0005663046918052396,
+            0.05129461830645562,
+            0.05180565256178737
+          ],
+          "original_anchor_moment_nm": [
+            1.1001542596194998e-05,
+            1.2998150631692148e-09,
+            1.1897450117890239e-07
+          ]
+        }
+      ],
+      "sampled_minimax": [
+        {
+          "status": "Solved",
+          "iterations": 10,
+          "seconds": 0.00043533899588510394,
+          "accepted": true,
+          "continuous_infeasibility_claim": false,
+          "primal_residual": 3.098655206591014e-12,
+          "dual_residual": 5.129602927847631e-12,
+          "relative_gap": 9.455278722697007e-13,
+          "sampled_minimax_budget": 0.1808174221603714,
+          "actual_normalized_force_change": 0.18081742216827476,
+          "actual_normalized_moment_change": 0.1639496888347478,
+          "force_change_n": [
+            0.005096356262221734,
+            0.0069320648155925015,
+            -0.010164512655473277
+          ],
+          "anchor_moment_change_nm": [
+            4.103732185733538e-06,
+            3.879573299754448e-05,
+            -5.5578175731750477e-05
+          ],
+          "numerical_cone_projection_n": 1.911830619432226e-13,
+          "minimum_compression_n": 0.0003535241904537435,
+          "maximum_cone_excess_n": -4.5993912022349964e-18,
+          "unsigned_point_force_change_n": 0.08708269265369503,
+          "weighted_point_change_relative": 12.724144427516775
+        },
+        {
+          "status": "Solved",
+          "iterations": 9,
+          "seconds": 0.0003539170138537884,
+          "accepted": true,
+          "continuous_infeasibility_claim": false,
+          "primal_residual": 2.1727074902188917e-11,
+          "dual_residual": 4.214755196418336e-11,
+          "relative_gap": 8.292626600088866e-12,
+          "sampled_minimax_budget": 0.17326055903960286,
+          "actual_normalized_force_change": 0.17326055910021831,
+          "actual_normalized_moment_change": 0.15736620712905866,
+          "force_change_n": [
+            -0.004653252665634955,
+            0.006628430583841995,
+            -0.009693907399765108
+          ],
+          "anchor_moment_change_nm": [
+            2.827599623126683e-06,
+            -3.714175734534641e-05,
+            5.268030330351277e-05
+          ],
+          "numerical_cone_projection_n": 1.9852918586461298e-12,
+          "minimum_compression_n": 0.0003404322398794547,
+          "maximum_cone_excess_n": -4.552982720612888e-18,
+          "unsigned_point_force_change_n": 0.08888341843603469,
+          "weighted_point_change_relative": 12.630511303175407
+        }
+      ],
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nearby-scr-loads-q81-v4/group1/study/env330-baseline.npz",
+        "bytes": 176227,
+        "sha256": "12e5989cb6cbd04125611d4f4e3498c552e94dfc63e16f2a636fdce4be3bd7c9"
+      },
+      "baseline_contact_only_raw_peaks": {
+        "mises": {
+          "pa": 39415.16017745532,
+          "position_m": [
+            0.0,
+            -0.022,
+            0.0
+          ]
+        },
+        "tension": {
+          "pa": 16067.601372955623,
+          "position_m": [
+            0.0,
+            -0.021504299889924583,
+            -6.543241452995498e-05
+          ]
+        },
+        "spectral_norm_max_pa": 41844.23876172777
+      },
+      "baseline_equation_relative_residual": 1.714816631091679e-11,
+      "baseline_complete_stress_rms_pa": 4944.786125106203,
+      "budgets": [
+        {
+          "budget": 0.0,
+          "sources": [
+            {
+              "status": "PrimalInfeasible",
+              "iterations": 10,
+              "seconds": 0.00042451004264876246,
+              "accepted": false,
+              "continuous_infeasibility_claim": false
+            },
+            {
+              "status": "PrimalInfeasible",
+              "iterations": 10,
+              "seconds": 0.0003901399904862046,
+              "accepted": false,
+              "continuous_infeasibility_claim": false
+            }
+          ],
+          "accepted": false
+        },
+        {
+          "budget": 0.001,
+          "sources": [
+            {
+              "status": "PrimalInfeasible",
+              "iterations": 11,
+              "seconds": 0.00046046701027080417,
+              "accepted": false,
+              "continuous_infeasibility_claim": false
+            },
+            {
+              "status": "PrimalInfeasible",
+              "iterations": 11,
+              "seconds": 0.00044495397014543414,
+              "accepted": false,
+              "continuous_infeasibility_claim": false
+            }
+          ],
+          "accepted": false
+        },
+        {
+          "budget": 0.01,
+          "sources": [
+            {
+              "status": "PrimalInfeasible",
+              "iterations": 11,
+              "seconds": 0.0004459560150280595,
+              "accepted": false,
+              "continuous_infeasibility_claim": false
+            },
+            {
+              "status": "PrimalInfeasible",
+              "iterations": 11,
+              "seconds": 0.00043360801646485925,
+              "accepted": false,
+              "continuous_infeasibility_claim": false
+            }
+          ],
+          "accepted": false
+        },
+        {
+          "budget": 0.1,
+          "sources": [
+            {
+              "status": "PrimalInfeasible",
+              "iterations": 12,
+              "seconds": 0.0004960690275765955,
+              "accepted": false,
+              "continuous_infeasibility_claim": false
+            },
+            {
+              "status": "PrimalInfeasible",
+              "iterations": 12,
+              "seconds": 0.0004408170352689922,
+              "accepted": false,
+              "continuous_infeasibility_claim": false
+            }
+          ],
+          "accepted": false
+        }
+      ],
+      "resultants": []
+    }
+  ],
+  "setup_seconds": 0.5591887260088697,
+  "negative_orientation_tetrahedra": 240,
+  "whole_goal_complete": false,
+  "production_approximation_admitted": false,
+  "scope": "Sampled circular-cone nearest-prior loads on original intrinsic supports. Strict input remains rejected. Minimax is a sampled diagnostic, not a continuous minimum. Budget grid is predeclared sensitivity hypotheses, not recommended defaults. Full linear correction includes consistent-mass equilibrium correction; absolute baseline/candidate peaks omit unchanged unrecorded inertial loads. Delta VM maximum and delta spectral maximum bound any fixed-state change of global VM and tensile maxima respectively, but do not bound the change of peak location or continuum discretization error."
+}

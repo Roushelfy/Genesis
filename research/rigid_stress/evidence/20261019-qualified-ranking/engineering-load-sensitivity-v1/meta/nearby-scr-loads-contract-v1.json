@@ -1,0 +1,16 @@
+{
+  "budgets": [
+    0,
+    0.001,
+    0.01,
+    0.1
+  ],
+  "meaning": "Per-source force norm and anchor moment norm scaled by original source force and original support radius. Predeclared sensitivity grid, not recommended defaults.",
+  "numerical_tolerance": 1e-11,
+  "independent_kkt_tolerance": 1e-08,
+  "inertial_scope": "The unrecorded unchanged inertial term cancels in the complete linear correction. Absolute baseline/candidate stresses use explicitly contact-only free-link response; not actual dynamic total stresses.",
+  "strict_inputs_preserved": true,
+  "source_prior": "Gaussian compact profile of explicit on-surface path upper bound; unconstrained minimum weighted correction preserves each original source wrench. This reference transfer is diagnostic, not a physical truth or an admitted strict solution.",
+  "sampled_minimax_not_continuous_minimum": true,
+  "tasks_sha256": "1bd15293548325704555a5fa86ac6d6f135c6d4bbff068cd4edd805478ba44f3"
+}

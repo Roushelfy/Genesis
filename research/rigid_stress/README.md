@@ -22,7 +22,7 @@ now measures distributed-source double spreading: the retained2mm DPR baseline
 places about42% of normal load on the inner boundary. Conservative outer P2
 transfer preserves force/moment/work and changes complete stress by8.70% on
 the same linear elastic mesh. This is a transfer contrast, with inspected
-pressure maps; automatic native recovery and final physical errors remain open.
+pressure maps; its physical error is now measured separately below.
 
 The [native transfer and source-input study](docs/RESOLVED_PAD_AND_SOURCE_INPUTS_20261020.md)
 adds400-step Quadrants resolved-pressure conformance and complete1000-step
@@ -37,6 +37,15 @@ separates model and source-sampling error. Rigid prediction is close in the
 nominal soft-pad regime; pressure error reaches24.47% for the flexible-link/stiff-pad
 case, and diagonal compliance adds little accuracy. Full coupling, quadrature
 and native cost remain central to the next implementation.
+
+The [engineering load-sensitivity study](docs/ENGINEERING_LOAD_SENSITIVITY_20261020.md)
+adds18 qualified resolved-transfer errors: corrected-boundary tangential error
+is10.56%, versus7.94% for fixed-radius DPR, with metric-specific conditional
+rankings. The two SCR failures reject the predeclared source-local budgets;
+a separately unbudgeted projection changes complete stress by29.81%/33.51%.
+Refined sampling, actual corrections, peak locations and unsuccessful numerical
+attempts are retained. Cooperative aggregate budgets, signed transfer attribution
+and native automatic integration remain open.
 
 The [active goal](docs/QUALIFIED_STRESS_RANKING_GOAL.md) is qualified DPR/SCR/Shell
 stress-error comparisons on a free full hollow egg between parallel plates.
