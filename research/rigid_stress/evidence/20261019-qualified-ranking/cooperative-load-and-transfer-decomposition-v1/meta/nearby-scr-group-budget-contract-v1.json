@@ -1,0 +1,20 @@
+{
+  "budgets": [
+    0,
+    0.001,
+    0.01,
+    0.1
+  ],
+  "quadratures": [
+    225,
+    625
+  ],
+  "force_scale": "sum of original source force magnitudes, before cancellation",
+  "moment_scale": "captured group radius times force scale, around captured first-failure wrench origin",
+  "objective": "Sum of squared per-source normalized weighted prior changes, multiplied by one common positive factor. Every original source, support, friction and unconstrained wrench-preserving baseline stays explicit.",
+  "source_changes": "Recompute individual force/moment and unsigned point-force corrections, not only aggregate wrench.",
+  "acceptance": "Load-budget conformance alone never admits engineering stress. Compute actual complete field/resultant/peak correction including mass equilibrium response.",
+  "strict_failure_preserved": true,
+  "unbudgeted_control": "Exact pointwise cone projection with primal, polar, complementarity checks; no numerical optimizer failure accepted.",
+  "same_original_inertia_limitation": true
+}

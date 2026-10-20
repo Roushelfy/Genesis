@@ -1,0 +1,236 @@
+{
+  "environment": 9,
+  "minimax": [
+    {
+      "status": "Solved",
+      "iterations": 11,
+      "seconds": 0.0032511429744772613,
+      "accepted": true,
+      "continuous_infeasibility_claim": false,
+      "primal_residual": 3.7141769389963266e-12,
+      "dual_residual": 7.046631230482388e-12,
+      "relative_gap": 1.5258269816676786e-12,
+      "sampled_minimax_budget": 0.30051253969499,
+      "actual_normalized_force_change": 0.30051253971962427,
+      "actual_normalized_moment_change": 0.24953451228178133,
+      "force_change_n": [
+        -0.0005774435555567982,
+        0.00814456827560011,
+        -0.04729536480192281
+      ],
+      "anchor_moment_change_nm": [
+        -0.00017109746170812073,
+        0.00011676729381629577,
+        -6.829216981837504e-05
+      ],
+      "numerical_cone_projection_n": 4.955574391612575e-13,
+      "minimum_compression_n": 0.00021737650743020528,
+      "maximum_cone_excess_n": -2.3549542735029125e-18,
+      "unsigned_point_force_change_n": 0.24022827978595265,
+      "weighted_point_change_relative": 20.773916579224977
+    }
+  ],
+  "budgets": [
+    {
+      "budget": 0.0,
+      "variant": "budget0",
+      "sources": [
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 12,
+          "seconds": 0.0037407909985631704,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        }
+      ],
+      "accepted": false,
+      "physically_evaluable": false,
+      "engineering_stress_accepted": false
+    },
+    {
+      "budget": 0.001,
+      "variant": "budget0.001",
+      "sources": [
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 13,
+          "seconds": 0.003925903991330415,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        }
+      ],
+      "accepted": false,
+      "physically_evaluable": false,
+      "engineering_stress_accepted": false
+    },
+    {
+      "budget": 0.01,
+      "variant": "budget0.01",
+      "sources": [
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 13,
+          "seconds": 0.003940399037674069,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        }
+      ],
+      "accepted": false,
+      "physically_evaluable": false,
+      "engineering_stress_accepted": false
+    },
+    {
+      "budget": 0.1,
+      "variant": "budget0.1",
+      "sources": [
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 13,
+          "seconds": 0.003864183963742107,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        }
+      ],
+      "accepted": false,
+      "physically_evaluable": false,
+      "engineering_stress_accepted": false
+    },
+    {
+      "budget": null,
+      "variant": "unbudgeted-projection",
+      "sources": [
+        {
+          "status": "AnalyticProjection",
+          "iterations": 0,
+          "seconds": 0.00012549699749797583,
+          "projection_optimality": {
+            "primal_cone_excess": 3.469446951953614e-18,
+            "dual_polar_excess": 4.336808689942018e-18,
+            "weighted_complementarity": 2.5745919906724002e-17
+          },
+          "accepted": true,
+          "continuous_infeasibility_claim": false,
+          "sampled_minimax_budget": null,
+          "actual_normalized_force_change": 0.3677160443723576,
+          "actual_normalized_moment_change": 0.1392879456976601,
+          "force_change_n": [
+            0.009909251510160005,
+            0.028174353655054295,
+            -0.05056679829675891
+          ],
+          "anchor_moment_change_nm": [
+            -8.792037488513446e-05,
+            8.050663654336403e-05,
+            2.472413209359489e-05
+          ],
+          "numerical_cone_projection_n": 6.20048660302409e-17,
+          "minimum_compression_n": 0.0,
+          "maximum_cone_excess_n": 0.0,
+          "unsigned_point_force_change_n": 0.06527370745481706,
+          "weighted_point_change_relative": 0.7864230727954502
+        }
+      ],
+      "accepted": false,
+      "physically_evaluable": true,
+      "engineering_stress_accepted": false,
+      "individual_source_corrections": [
+        {
+          "force_change_n": [
+            0.004467750415790298,
+            0.02104555032193032,
+            -0.04079525672370977
+          ],
+          "anchor_moment_change_nm": [
+            -8.244576508050493e-05,
+            2.417488386535997e-05,
+            9.209951556170332e-07
+          ],
+          "relative_force_change": 0.3679634790074538,
+          "scaled_anchor_moment_change": 0.12525542425142838,
+          "unsigned_point_force_change_n": 0.04894266283355759,
+          "weighted_prior_change_relative": 0.6304481334981483,
+          "minimum_compression_n": 0.0,
+          "maximum_cone_excess_n": 0.0
+        },
+        {
+          "force_change_n": [
+            0.005441501094369717,
+            0.00712880333312396,
+            -0.009771541573049151
+          ],
+          "anchor_moment_change_nm": [
+            -2.2149284582364148e-05,
+            8.20294056490646e-06,
+            -1.9729787756602632e-05
+          ],
+          "relative_force_change": 0.3858982349469566,
+          "scaled_anchor_moment_change": 0.1636125878129753,
+          "unsigned_point_force_change_n": 0.016331044621259467,
+          "weighted_prior_change_relative": 0.7324299499114264,
+          "minimum_compression_n": 0.0,
+          "maximum_cone_excess_n": 0.0
+        }
+      ],
+      "field": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nearby-scr-group-budget-v1/group0/study/env9-unbudgeted-projection.npz",
+        "bytes": 345873,
+        "sha256": "ff5bcf84594b4957978e9a75a18d6bd4ebe25cdd152ce1292fe4fdec17315f76"
+      },
+      "complete_stress_rms_change_pa": 1931.8211974187075,
+      "complete_stress_relative_change": 0.29856230956877444,
+      "total_force_change_n": [
+        0.009909251510160026,
+        0.028174353655054343,
+        -0.05056679829675892
+      ],
+      "total_origin_moment_change_nm": [
+        0.0009378600398276557,
+        -0.0002140834142857541,
+        6.160271470270595e-05
+      ],
+      "equilibrium_correction_norm_n": 0.0038972997405004738,
+      "two_elastic_solves_seconds": 0.017093961010687053,
+      "linear_superposition_error": 4.3708530559057996e-13,
+      "equation_relative_residual": 2.3324231695473002e-11,
+      "delta_equation_relative_residual": 2.0785120534522342e-11,
+      "contact_only_raw_peaks": {
+        "mises": {
+          "pa": 48950.60227574895,
+          "position_m": [
+            0.0,
+            -0.02175214994496229,
+            -3.271620726497749e-05
+          ]
+        },
+        "tension": {
+          "pa": 25209.35979501503,
+          "position_m": [
+            -0.006026919037269016,
+            -0.01577867888701408,
+            0.014776536189979395
+          ]
+        },
+        "spectral_norm_max_pa": 59811.5839496979
+      },
+      "delta_raw_peaks": {
+        "mises": {
+          "pa": 12852.842621387466,
+          "position_m": [
+            0.0,
+            -0.022,
+            0.0
+          ]
+        },
+        "tension": {
+          "pa": 8455.847265796689,
+          "position_m": [
+            -0.007241685102661702,
+            -0.018958977734592108,
+            -0.014836011969334149
+          ]
+        },
+        "spectral_norm_max_pa": 15491.327614713358
+      }
+    }
+  ]
+}

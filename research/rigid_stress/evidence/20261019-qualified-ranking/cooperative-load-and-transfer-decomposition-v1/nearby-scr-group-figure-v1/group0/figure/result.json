@@ -1,0 +1,81 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "732541",
+      "SLURM_ARRAY_JOB_ID": "732541",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "passed": true,
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nearby-scr-group-comparison-v1/group0/comparison/result.json",
+      "bytes": 74240,
+      "sha256": "6db74d8718b255a7a7c6d6e17fc3a57240dc5a15320f6bd418aa553da6945eed"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-capture-v2/group0/scr-max/rejected-state.npz",
+      "bytes": 192719,
+      "sha256": "3bea6c60a11c6a57128fc99a2a7e9a39e1ca059f8dbe37c0a634cf66008af042"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nearby-scr-fit-accuracy-v1/group0/study/env9-budget0.01.npz",
+      "bytes": 371283,
+      "sha256": "164e489c872e1f082129f9ac596bfc28fbc66f2ab49fadc918380554b5cd6e06"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-capture-v2/group1/scr-max/rejected-state.npz",
+      "bytes": 637615,
+      "sha256": "fc9db961e3e390f9dad2ca33ef84dc09bfd5b4b36527e76f3d73791d70781d90"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nearby-scr-fit-accuracy-v1/group2/study/env330-budget0.001.npz",
+      "bytes": 379504,
+      "sha256": "4b10779170c4244d2313ee8d4ab2accede445e66b89c2b43db93d7c2a027a746"
+    }
+  ],
+  "style": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/contact-region-nature-style-v1.py",
+    "bytes": 7459,
+    "sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1"
+  },
+  "size_mm": [
+    183,
+    125
+  ],
+  "display_samples": 12960,
+  "exports": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nearby-scr-group-figure-v1/group0/figure/scr-group-correction.svg",
+      "bytes": 2487613,
+      "sha256": "635150b573b362340b946d51dbe6352445265921a28701c9dc7cd2e5051fda6c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nearby-scr-group-figure-v1/group0/figure/scr-group-correction.pdf",
+      "bytes": 1297380,
+      "sha256": "f47ef4d4552bc5f2855d429184aa5bc9cfcb5c384085f1913cb43ec4083098cb"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nearby-scr-group-figure-v1/group0/figure/scr-group-correction.png",
+      "bytes": 3607070,
+      "sha256": "b4bfa7177f0bda4fc6b5448195ffb1e67c8e6d897c9a1ac485e11b4692d475a4"
+    }
+  ],
+  "preview": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nearby-scr-group-figure-v1/group0/figure/scr-group-correction-preview.png",
+    "bytes": 575120,
+    "sha256": "3d62b9e625a53d6c268b6c3a73d8f5ec07ee126909d22c28de0603b3927f045e"
+  },
+  "rendered_text_issues": [],
+  "visual_inspection_pending": true,
+  "whole_goal_complete": false
+}

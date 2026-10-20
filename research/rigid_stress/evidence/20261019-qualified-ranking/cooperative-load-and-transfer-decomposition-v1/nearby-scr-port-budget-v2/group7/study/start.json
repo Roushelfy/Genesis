@@ -1,0 +1,55 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-233",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "732509",
+      "SLURM_ARRAY_JOB_ID": "732509",
+      "SLURM_ARRAY_TASK_ID": "7",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "state": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-capture-v2/group1/scr-max/rejected-state.npz",
+    "bytes": 637615,
+    "sha256": "fc9db961e3e390f9dad2ca33ef84dc09bfd5b4b36527e76f3d73791d70781d90"
+  },
+  "certificate": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-audit-v5/group1/audit/result.json",
+    "bytes": 3110,
+    "sha256": "373fc838a6e133d16eec8ed7c53afedf91dc0c216739b605225c1754f3dbaa0d"
+  },
+  "mesh": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-witness-consistency/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+    "bytes": 3573,
+    "sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4"
+  },
+  "quadrature": 625,
+  "budgets": [
+    0.0,
+    0.001,
+    0.01,
+    0.1
+  ],
+  "solver_version": "0.11.1",
+  "path_edge_subdivisions": 16,
+  "path_scope": "Centroid/edge-midpoint paths if0; mesh-identified edge-port paths plus exact adjacent-facet unfolding otherwise. These are surface-contained upper bounds, not Euclidean shortcuts or enlarged radii.",
+  "unbudgeted_diagnostic_solver": "analytic",
+  "budget_scope_name": "group",
+  "budget_scope": "Aggregate: norm(delta F)/sum(norm(F_source)) and norm(delta M_origin)/(captured_group_radius*sum(norm(F_source))). Individual-source changes are measured separately; local priors remain in the objective.",
+  "source_prior_objective": "Sum of normalized per-source weighted squared distances, up to a common positive factor; no radius, boundary or friction changes.",
+  "cone_row_scaling": "Positive sqrt(profile_weight) removed by cone homogeneity; same physical feasible set and objective.",
+  "extra_diagnostic": "Unbudgeted nearest-prior cone projection, independently checked against its closed form. Measures stress sensitivity beyond the unchanged budget grid; never accepted as an engineering approximation.",
+  "numerical_acceptance": {
+    "kkt": 1e-08,
+    "actual_budget_allowance": 1e-09,
+    "cone_rounding": 1e-13
+  },
+  "inertia_scope": "Captured omega/applied loads are unavailable. Complete correction response is exact for this linear transfer at any unchanged inertial state, including the changed consistent-mass equilibrium projection. Baseline/candidate absolute stresses are explicitly contact-only free-link responses, not the actual dynamic total stress."
+}

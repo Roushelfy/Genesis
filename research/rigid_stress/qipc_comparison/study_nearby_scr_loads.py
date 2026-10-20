@@ -22,6 +22,7 @@ from .attribute_native_wrench_conflict import surface_graph
 from .compare_distributed_pad_transfer import field_norm
 from .contact_fem_exact_columns import surface_quadrature
 from .p2_elastic import FreeElasticP2, quadratic_triangle_weights
+from .surface_port_paths import SurfacePortPaths, analytic_controls
 
 
 @dataclass
@@ -36,18 +37,26 @@ class Source:
     baseline: np.ndarray
     force_scale: float
     radius: float
-    friction: float
+    friction: np.ndarray
     anchor: np.ndarray
     path_upper: np.ndarray
 
 
+def wrench_matrix(position, anchor, radius):
+    arm = (position - anchor) / radius
+    skew = np.cross(arm[:, None], np.eye(3)[None]).transpose(0, 2, 1)
+    return np.concatenate((np.tile(np.eye(3), (1, len(position))), skew.transpose(1, 0, 2).reshape(3, -1)))
+
+
 def source_transfer(vertices, triangles, normals, nodes, graph, centers, components,
-                    anchor, face, force, point, free_moment, radius, friction, count):
+                    anchor, face, force, point, free_moment, radius, friction, count, port_paths=None):
     bary, quadrature = surface_quadrature(count)
     samples = np.einsum("qc,fci->fqi", bary, triangles)
     upper = dijkstra(graph, directed=False, indices=face)[:, None]
     upper = upper + np.linalg.norm(anchor - centers[face]) + np.linalg.norm(samples - centers[:, None], axis=-1)
     upper[face] = np.linalg.norm(samples[face] - anchor, axis=1)
+    if port_paths is not None:
+        upper = port_paths.distances(anchor, face, bary)
     selected = (components[:, None] == components[face]) & (upper < radius * (1 - 1e-10))
     facet, sample = np.nonzero(selected)
     assert len(facet) >= 3, f"Only {len(facet)} points at q{count}; unresolved sampling, no enlarged support"
@@ -56,9 +65,7 @@ def source_transfer(vertices, triangles, normals, nodes, graph, centers, compone
     weight = area[facet] * quadrature[sample] * np.exp(-0.5 * (distance / 0.45)**2) * (1 - distance**2)**2
     weight /= weight.sum()
     position = samples[selected]
-    arm = (position - anchor) / radius
-    skew = np.cross(arm[:, :, None].transpose(0, 2, 1), np.eye(3)[None]).transpose(0, 2, 1)
-    wrench = np.concatenate((np.tile(np.eye(3), (1, len(facet))), skew.transpose(1, 0, 2).reshape(3, -1)))
+    wrench = wrench_matrix(position, anchor, radius)
     scale = np.linalg.norm(force)
     assert scale > 0
     target = np.r_[force, (np.cross(point - anchor, force) + free_moment) / radius] / scale
@@ -69,7 +76,41 @@ def source_transfer(vertices, triangles, normals, nodes, graph, centers, compone
     shape = quadratic_triangle_weights(bary[sample])
     np.testing.assert_allclose(np.einsum("qc,qci->qi", shape, vertices[nodes[facet]]), position, rtol=0, atol=1e-13)
     return Source(position, normals[facet], nodes[facet], shape, weight, wrench, target,
-                  baseline.reshape(-1, 3), scale, radius, friction, anchor, upper[selected])
+                  baseline.reshape(-1, 3), scale, radius, np.full(len(facet), friction), anchor, upper[selected])
+
+
+def combine_sources(sources, anchor, radius, force, moment):
+    """Fit a joint wrench while retaining the sum of normalized local-prior objectives."""
+    scale = sum(source.force_scale for source in sources)
+    position = np.concatenate([source.position for source in sources])
+    baseline = np.concatenate([source.baseline * source.force_scale / scale for source in sources])
+    # A common factor in the objective does not affect its minimizer. Squared
+    # scale fractions preserve each original source's normalized prior penalty.
+    weight = np.concatenate([source.weight * (source.force_scale / scale)**2 for source in sources])
+    weight /= weight.sum()
+    wrench = wrench_matrix(position, anchor, radius)
+    target = np.r_[force, moment / radius] / scale
+    np.testing.assert_allclose(wrench @ baseline.reshape(-1), target, rtol=0, atol=1e-11)
+    return Source(position, np.concatenate([s.normal for s in sources]),
+                  np.concatenate([s.nodes for s in sources]), np.concatenate([s.shape for s in sources]),
+                  weight, wrench, target, baseline, scale, radius,
+                  np.concatenate([s.friction for s in sources]), anchor,
+                  np.concatenate([s.path_upper for s in sources]))
+
+
+def source_correction(source, force):
+    normalized = force / source.force_scale
+    delta = source.wrench @ normalized.reshape(-1) - source.target
+    pressure = np.einsum("qi,qi->q", force, source.normal)
+    excess = np.linalg.norm(force - pressure[:, None] * source.normal, axis=1) - source.friction * pressure
+    assert max(excess.max(), -pressure.min()) <= 1e-13 * source.force_scale
+    return {"force_change_n": (delta[:3] * source.force_scale).tolist(),
+            "anchor_moment_change_nm": (delta[3:] * source.radius * source.force_scale).tolist(),
+            "relative_force_change": float(np.linalg.norm(delta[:3])),
+            "scaled_anchor_moment_change": float(np.linalg.norm(delta[3:])),
+            "unsigned_point_force_change_n": float(np.linalg.norm(force - source.baseline * source.force_scale, axis=1).sum()),
+            "weighted_prior_change_relative": float(np.linalg.norm((normalized - source.baseline) / np.sqrt(source.weight[:, None]))),
+            "minimum_compression_n": float(pressure.min()), "maximum_cone_excess_n": float(excess.max())}
 
 
 def closed_form_projection(source):
@@ -95,7 +136,7 @@ def closed_form_projection(source):
     return force, checks
 
 
-def nearby(source, budget, clarabel, *, minimax=False, analytic=False):
+def nearby(source, budget, clarabel, *, minimax=False, analytic=False, fit_tolerance=1e-11):
     root = np.repeat(np.sqrt(source.weight), 3)
     target = source.baseline.reshape(-1) / root
     n = len(target)
@@ -103,9 +144,12 @@ def nearby(source, budget, clarabel, *, minimax=False, analytic=False):
     first = np.cross(source.normal, axis)
     first /= np.linalg.norm(first, axis=1)[:, None]
     second = np.cross(source.normal, first)
-    blocks = np.stack((source.friction * source.normal, first, second), axis=1)
+    blocks = np.stack((source.friction[:, None] * source.normal, first, second), axis=1)
     cones = [clarabel.SecondOrderConeT(3) for _ in source.weight]
-    cone_matrix = sparse.block_diag(list(-blocks), format="csc") @ sparse.diags(root)
+    # Every point cone is homogeneous: B(sqrt(w)*y) in K iff B*y in K.
+    # Removing the positive per-point row scale preserves the problem and
+    # avoids tiny profile weights degrading cone/KKT conditioning.
+    cone_matrix = sparse.block_diag(list(-blocks), format="csc")
     wrench = source.wrench * root[None]
     matrices, right = [cone_matrix], [np.zeros(n)]
     if minimax:
@@ -129,7 +173,8 @@ def nearby(source, budget, clarabel, *, minimax=False, analytic=False):
     settings = clarabel.DefaultSettings()
     settings.verbose = False
     settings.max_iter = 200
-    settings.tol_gap_abs = settings.tol_gap_rel = settings.tol_feas = 1e-11
+    tolerance = fit_tolerance if budget is not None and budget > 0 else 1e-11
+    settings.tol_gap_abs = settings.tol_gap_rel = settings.tol_feas = tolerance
     settings.iterative_refinement_abstol = settings.iterative_refinement_reltol = 1e-13
     if budget is None and not minimax:
         # A quadratic objective gap controls coordinate error only through
@@ -267,6 +312,9 @@ def main():
     cli.add_argument("--qp-solver-path", type=Path, required=True)
     cli.add_argument("--quadrature", type=int, choices=(9, 25, 81, 225, 625), required=True)
     cli.add_argument("--diagnostic-solver", choices=("clarabel", "analytic"), default="clarabel")
+    cli.add_argument("--budget-scope", choices=("source", "group"), default="source")
+    cli.add_argument("--path-subdivisions", type=int, choices=(0, 8, 16), default=0)
+    cli.add_argument("--fit-tolerance", type=float, choices=(1e-9, 1e-10, 1e-11), default=1e-11)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -284,8 +332,16 @@ def main():
     write_json(args.output / "start.json", {"identity": runtime_identity(require_gpu_inventory=False),
         "state": state, "certificate": file_id(args.certificate), "mesh": file_id(mesh),
         "quadrature": args.quadrature, "budgets": budgets, "solver_version": clarabel.__version__,
+        "path_edge_subdivisions": args.path_subdivisions,
+        "positive_budget_solver_target": args.fit_tolerance,
+        "path_scope": "Centroid/edge-midpoint paths if0; mesh-identified edge-port paths plus exact adjacent-facet unfolding otherwise. These are surface-contained upper bounds, not Euclidean shortcuts or enlarged radii.",
         "unbudgeted_diagnostic_solver": args.diagnostic_solver,
-        "budget_scope": "Per source: norm(delta F)/norm(F) and norm(delta M_anchor)/(R norm(F)); no radius/friction changes.",
+        "budget_scope_name": args.budget_scope,
+        "budget_scope": ("Per source: norm(delta F)/norm(F) and norm(delta M_anchor)/(R norm(F))."
+                         if args.budget_scope == "source" else
+                         "Aggregate: norm(delta F)/sum(norm(F_source)) and norm(delta M_about_captured_failure_position)/(captured_group_radius*sum(norm(F_source))). Individual-source changes are measured separately; local priors remain in the objective."),
+        "source_prior_objective": "Sum of normalized per-source weighted squared distances, up to a common positive factor; no radius, boundary or friction changes.",
+        "cone_row_scaling": "Positive sqrt(profile_weight) removed by cone homogeneity; same physical feasible set and objective.",
         "extra_diagnostic": "Unbudgeted nearest-prior cone projection, independently checked against its closed form. Measures stress sensitivity beyond the unchanged budget grid; never accepted as an engineering approximation.",
         "numerical_acceptance": {"kkt": 1e-8, "actual_budget_allowance": 1e-9, "cone_rounding": 1e-13},
         "inertia_scope": "Captured omega/applied loads are unavailable. Complete correction response is exact for this linear transfer at any unchanged inertial state, including the changed consistent-mass equilibrium projection. Baseline/candidate absolute stresses are explicitly contact-only free-link responses, not the actual dynamic total stress."})
@@ -310,6 +366,8 @@ def main():
     normals *= np.where(np.einsum("fi,fi->f", normals, opposite - triangles[:, 0]) >= 0, 1, -1)[:, None]
     graph, centers = surface_graph(model.vertices, faces)
     _, components = connected_components(graph, directed=False)
+    path_controls = analytic_controls() if args.path_subdivisions else {}
+    port_paths = SurfacePortPaths.build(model.vertices, faces, args.path_subdivisions) if args.path_subdivisions else None
     signed_volumes = np.linalg.det(vertices[tets[:, 1:]] - vertices[tets[:, :1]]) / 6
     # Original Franka assets retain mixed tetrahedral orientations. Physical
     # integration uses |det J|; preserve vertex ordering used by stress samples.
@@ -323,8 +381,12 @@ def main():
         sources = [source_transfer(model.vertices, triangles, normals, nodes, graph, centers, components,
             data["contacts.center"][i, env], data["contacts.anchor_face"][i, env],
             data["contacts.force"][i, env], data["contacts.position"][i, env], data["sources.free_moment"][i, env],
-            data["contacts.radius"][i, env], data["contacts.friction"][i, env], args.quadrature) for i in source_indices]
-        minimax = [nearby(s, None, clarabel, minimax=True)[1] for s in sources]
+            data["contacts.radius"][i, env], data["contacts.friction"][i, env], args.quadrature, port_paths) for i in source_indices]
+        optimization_sources = sources if args.budget_scope == "source" else [combine_sources(
+            sources, data["failure.position"][env], data["failure.radius"][env],
+            data["failure.target_force"][env], data["failure.target_moment"][env])]
+        offsets = np.cumsum([len(s.weight) for s in sources])[:-1]
+        minimax = [nearby(s, None, clarabel, minimax=True)[1] for s in optimization_sources]
         baseline = scatter(model, sources, [s.baseline * s.force_scale for s in sources])
         expected_force = sum(s.force_scale * s.target[:3] for s in sources)
         expected_moment = sum(s.force_scale * (s.radius * s.target[3:] + np.cross(s.anchor, s.target[:3])) for s in sources)
@@ -338,23 +400,30 @@ def main():
         source_rows = []
         for i, source in zip(source_indices, sources):
             source_rows.append({"source_index": int(i), "force_scale_n": float(source.force_scale),
-                "radius_m": float(source.radius), "friction": float(source.friction),
+                "radius_m": float(source.radius), "friction": float(source.friction[0]),
+                "sampled_facets": len(np.unique(source.nodes, axis=0)),
                 "points": len(source.weight), "maximum_surface_path_m": float(source.path_upper.max()),
                 "minimum_prior_weight": float(source.weight.min()),
                 "original_force_n": (source.force_scale * source.target[:3]).tolist(),
                 "original_anchor_moment_nm": (source.force_scale * source.radius * source.target[3:]).tolist()})
         budget_rows = []
         for budget in [*budgets, None]:
-            pairs = [nearby(s, budget, clarabel, analytic=args.diagnostic_solver == "analytic") for s in sources]
+            pairs = [nearby(s, budget, clarabel, analytic=args.diagnostic_solver == "analytic",
+                            fit_tolerance=args.fit_tolerance) for s in optimization_sources]
             evaluable = all(pair[1]["accepted"] for pair in pairs)
             name = f"budget{budget:g}" if budget is not None else "unbudgeted-projection"
             row = {"budget": budget, "variant": name, "sources": [pair[1] for pair in pairs],
-                   "accepted": evaluable and budget is not None, "physically_evaluable": evaluable}
+                   "accepted": evaluable and budget is not None, "physically_evaluable": evaluable,
+                   "engineering_stress_accepted": False}
             if evaluable:
                 assert budget != 0, "A strict constructive result contradicts the retained continuous certificate"
-                load = scatter(model, sources, [pair[0] for pair in pairs])
+                forces = [pair[0] for pair in pairs] if args.budget_scope == "source" else np.split(pairs[0][0], offsets)
+                row["individual_source_corrections"] = [source_correction(s, f) for s, f in zip(sources, forces)]
+                load = scatter(model, sources, forces)
+                solve_started = perf_counter()
                 stress, displacement, correction, residual = model.solve(load)
                 delta, _, delta_correction, delta_residual = model.solve(load - baseline)
+                solve_seconds = perf_counter() - solve_started
                 np.testing.assert_allclose(correction - base_correction, delta_correction, rtol=1e-8, atol=1e-13)
                 linear_error = field_norm(stress - base_stress - delta, volumes) / base_norm
                 equation = np.linalg.norm(residual) / np.linalg.norm(load - correction)
@@ -365,13 +434,14 @@ def main():
                     baseline_stress_pa=base_stress, delta_stress_pa=delta, forces_n=load,
                     baseline_forces_n=baseline, equilibrium_correction_n=correction,
                     delta_equilibrium_correction_n=delta_correction, displacement_p2_m=displacement,
-                    source_point_forces_n=np.concatenate([pair[0] for pair in pairs]))
+                    source_point_forces_n=np.concatenate(forces))
                 delta_load = load - baseline
                 row.update(field=file_id(path), complete_stress_rms_change_pa=float(field_norm(delta, volumes) / np.sqrt(volumes.sum())),
                     complete_stress_relative_change=float(field_norm(delta, volumes) / base_norm),
                     total_force_change_n=delta_load.sum(axis=0).tolist(),
                     total_origin_moment_change_nm=np.cross(model.vertices, delta_load).sum(axis=0).tolist(),
                     equilibrium_correction_norm_n=float(np.linalg.norm(delta_correction)),
+                    two_elastic_solves_seconds=solve_seconds,
                     linear_superposition_error=float(linear_error), equation_relative_residual=float(equation),
                     delta_equation_relative_residual=float(delta_equation), contact_only_raw_peaks=raw_peaks(stress, vertices, tets),
                     delta_raw_peaks=raw_peaks(delta, vertices, tets))
@@ -404,6 +474,7 @@ def main():
             "baseline_complete_stress_rms_pa": float(base_norm / np.sqrt(volumes.sum())),
             "budgets": budget_rows, "resultants": resultant_rows})
     write_json(args.output / "result.json", {"passed": bool(rows), "rows": rows, "setup_seconds": setup_seconds,
+        "path_controls": path_controls,
         "negative_orientation_tetrahedra": int(np.count_nonzero(signed_volumes < 0)),
         "whole_goal_complete": False, "production_approximation_admitted": False,
         "scope": "Sampled circular-cone nearest-prior loads on original intrinsic supports. Strict input remains rejected. Minimax is a sampled diagnostic, not a continuous minimum. Budget grid is predeclared sensitivity hypotheses, not recommended defaults. Full linear correction includes consistent-mass equilibrium correction; absolute baseline/candidate peaks omit unchanged unrecorded inertial loads. Delta VM maximum and delta spectral maximum bound any fixed-state change of global VM and tensile maxima respectively, but do not bound the change of peak location or continuum discretization error."})
