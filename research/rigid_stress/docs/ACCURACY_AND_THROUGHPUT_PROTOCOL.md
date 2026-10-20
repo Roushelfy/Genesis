@@ -69,6 +69,15 @@ from the production rigid solver's batching behavior.
 
 ## Join accuracy and speed by the actual configuration
 
+The [2026-10-20 error-budget clarification](AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md#error-judgments-and-practical-acceptance-budgets)
+authorizes a separately labelled engineering approximation with measured
+load/stress corrections. Keep exact solver convergence, load-model allowance
+and physical-reference error separate. Preserve strict tests and certificates;
+do not count rejected raw inputs as exact-model successes. Record the actual
+approximation budget and correction in matching error/cost results. Near-zero
+normalization needs justified absolute scales, and a transfer-induced field
+change is not a measured improvement against physical truth.
+
 A valid error-versus-performance row binds algorithm/variant, material and
 geometry, recovery mesh, source/contact representation, reconstruction radius,
 precision, solver tolerances, timestep/history policy, output mode and cadence.

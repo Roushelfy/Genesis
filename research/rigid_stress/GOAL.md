@@ -1,5 +1,12 @@
 # Active goal: qualified stress-error rankings
 
+**2026-10-20 error-budget clarification:** follow the
+[error judgments and practical acceptance budgets](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md#error-judgments-and-practical-acceptance-budgets).
+Prioritize DPR boundary/load fidelity and CPU stress-sensitivity measurements for
+nearby feasible SCR loads. Exact infeasibility is not an engineering-error rank.
+Preserve strict results while evaluating explicitly labelled approximations whose
+load and stress corrections are bounded; do not blindly retain1e-8 or loosen tests.
+
 **2026-10-20 priority update:** execute the
 [contact-region, SCR robustness and throughput goals](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md).
 Finish the existing fixed-radius comparison while independently testing automatic
