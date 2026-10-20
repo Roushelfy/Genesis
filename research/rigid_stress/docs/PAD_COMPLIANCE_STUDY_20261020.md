@@ -1,0 +1,110 @@
+# Physical pressure with local and coupled compliance
+
+The eight-case CPU study now predicts pressure and support using the declared
+pad law and measured elastic operators. A rigid-gap model is close for the
+original10GPa link/1e9N/m3 pad, but its pressure error reaches24.47% for a1GPa
+link/1e10N/m3 pad. A diagonal compliance approximation barely improves that case.
+The useful next integration therefore needs both an inexpensive validated regime
+and a route that retains regional elastic coupling when it matters.
+
+This is a static normal, coarse linear-elastic study on the original full hollow
+egg with500um wall thickness. It extends the [first geometric study](AUTOMATIC_CONTACT_PROGRESS_20261020.md)
+and [resolved-pressure transfer](RESOLVED_PAD_AND_SOURCE_INPUTS_20261020.md).
+It does not supply moving/friction validation, thickness independence or an
+automatic production model. The [extended goal](AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md)
+remains active.
+
+## Model contrast and numerical checks
+
+One full elastic factor and the existing834-node contact compliance are reused.
+All six free-link rigid modes are retained through mass projection and gauge
+alignment; there are no physical pins. Coupled compliance includes interactions
+between opposite pads and surface regions. Rigid and diagonal models solve their
+own approximate pad laws. Their residual against full elasticity is measured
+separately and must not be interpreted as an admitted full physical solution.
+The asymmetric case declares a smooth physical stiffness factor
+`1+0.5*tanh(x/1mm)` on the pads, rather than a numerical contact penalty.
+
+The48 saved fields cover eight cases, three models and centroid/degree6 contact
+quadrature. All declared-model force/moment, pad-law, equilibrium and balance
+checks pass. The coupled full-elastic pad-law residual stays below2.75e-9.
+Independent full-elastic fixed-point pressure agrees with the condensed solution
+to4.69e-11 in nodal force; splitting every source into two half-area samples
+changes nodal force by1.54e-11. The original cached nominal complete stress is
+reproduced within5.69e-13.
+
+A separate actual search control starts at1mm. All three models detect omitted
+compression (about21um) using exact quadratic minima on omitted boundary faces,
+then expand to3mm and pass containment. The search extent is numerical and does
+not prescribe the pressure-bearing support. The eight primary cases all fit
+inside the3mm search. Smaller footprints are not artificially expanded.
+
+The [terminal packet](../evidence/20261019-qualified-ranking/pad-compliance-study-v1/README.md) retains actual sources, full controls,
+[32 model-error rows](../evidence/20261019-qualified-ranking/pad-compliance-study-v1/meta/pad-compliance-model-errors-v1.csv),
+24 separate quadrature comparisons and externally hashed fields.
+
+## Errors against coupled pressure at degree6 quadrature
+
+Each entry is pressure area-weighted L2 error / complete stress physical-volume
+L2 error. Values compare models at the same quadrature and mesh, with coupled
+pressure as the declared discrete physical solution; they are not continuum
+stress errors.
+
+| Link E (GPa) | Pad stiffness (N/m3) | Load (N) | Pad | Rigid pressure / stress | Diagonal pressure / stress |
+| ---: | ---: | ---: | --- | ---: | ---: |
+| 10 | 1e+09 | 0.1 | Uniform | 0.355% / 0.104% | 0.347% / 0.102% |
+| 10 | 1e+08 | 0.1 | Uniform | 0.054% / 0.020% | 0.053% / 0.019% |
+| 10 | 1e+10 | 0.1 | Uniform | 2.694% / 0.696% | 2.636% / 0.681% |
+| 1 | 1e+08 | 0.1 | Uniform | 0.536% / 0.197% | 0.528% / 0.194% |
+| 1 | 1e+09 | 0.1 | Uniform | 3.525% / 1.040% | 3.448% / 1.018% |
+| 1 | 1e+10 | 0.1 | Uniform | 24.472% / 6.684% | 23.914% / 6.535% |
+| 10 | 1e+09 | 0.3 | Uniform | 0.446% / 0.147% | 0.437% / 0.144% |
+| 1 | 1e+09 | 0.1 | Gradient | 3.523% / 1.113% | 3.426% / 1.078% |
+
+For the nominal case, both rigid and coupled models identify the same sampled
+upper/lower areas,14.098/15.704mm2, but their pressure fields still differ.
+For the flexible-link/stiff-pad case, upper support areas differ by less than1%
+(11.295 versus11.379mm2), while the two-sided pressure error is24.47%. A correct
+radius or area alone therefore cannot establish a correct pressure field.
+The coupled upper peak is11.702kPa versus9.303kPa for the rigid predictor.
+The inherited distribution key `maximum_cell_average_pressure_pa` stores
+quadrature-point law pressure in these study records; the separate quadrature
+comparison explicitly integrates actual face-average pressures.
+In the gradient-pad case, the coupled force centroid moves0.3395mm in x;
+the rigid estimate is0.3488mm. The complete records retain both sides and axes.
+
+![Predicted upper-pad pressures under two stiffness combinations](../evidence/20261019-qualified-ranking/pad-compliance-study-v1/pad-compliance-figure-v1/group0/figure/pad-compliance-pressure-preview.png)
+
+The upper row shows close nominal pressure patterns. The lower row shows the
+coupled flexible-link/stiff-pad pressure concentrating toward the finite-land
+edge; the diagonal model stays close to the rigid prediction. Each row shares
+a kPa scale, all panels use common physical coordinates, and every positive
+quadrature pressure is shown without smoothing or clipping. The complete lower
+pad, tensors and errors remain in the saved data. The183×142mm SVG/PDF/600dpi PNG
+and150dpi preview pass direct visual review and text/size/font checks.
+
+## Sampling and cost limits that affect the next implementation
+
+Changing centroid to degree6 source quadrature changes the coupled complete
+stress by1.94–2.82% across the eight cases. The nominal change is2.677%, much
+larger than its0.104% rigid-versus-coupled model difference. Face-average pressure
+changes range3.74–10.44%; these compare integrated cell averages, not unmatched
+point samples. Source sampling must therefore be controlled independently of
+pressure-model selection. Neither quadrature alone establishes spatial convergence.
+
+The reused834×834 operator occupies5,564,448 bytes. Its original construction
+cost is not remeasured here. The new full elastic factor setup takes46.78s.
+Exploratory degree6 contact calls take about0.009s for rigid equilibrium,
+0.165–0.202s for diagonal compliance and23.64–25.65s for the selected coupled
+cases. These single-process research call measurements include current CPU
+solver work, have no independent timing repeats and are not production rates.
+The diagonal model pays substantial extra work for little measured accuracy gain.
+
+Next reduce the coupled solve to the already condensed elastic coordinates,
+reuse its factors/previous state, and validate pressure, force/moment and complete
+stress against these actual coupled cases before measuring speed. Extend the
+physical study to thickness, changing nonconvex/asymmetric geometry and
+friction/unloading. Then integrate the useful model into the existing native
+Quadrants feature, preserving supported batching, output, isolation and resets,
+and measure paired module/scene costs including prediction. No Gaussian radius
+fit or loose solver tolerance replaces these checks.

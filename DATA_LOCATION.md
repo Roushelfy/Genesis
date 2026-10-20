@@ -627,3 +627,12 @@ stay on data. Visual review is a separate immutable companion receipt.
 The new CPU compliance study uses `pad-compliance-study-v1` and explicit
 `meta/pad-compliance-cases-v1.json`; it reuses the existing data-side operator
 and environment and writes new operators/fields/logs only in that campaign.
+
+
+The completed compliance study/control/figure campaigns use
+`pad-compliance-study-v1`, `pad-compliance-controls-v1` and
+`pad-compliance-figure-v1`. Their terminal packet retains91 selected payloads
+(3,764,739 bytes), including reviewed pressure-map exports, and58 externally
+hashed arrays. Actual undersized-search states stay alongside the accepted
+expanded states. The cached834-node operator is reused in place; no original
+data, environment or compatibility link is migrated.

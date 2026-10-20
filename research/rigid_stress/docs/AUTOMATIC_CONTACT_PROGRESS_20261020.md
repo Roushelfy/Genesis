@@ -18,6 +18,11 @@ These retain their research scope and do not supply a production automatic model
 Existing fixed-radius rankings and their running fine-reference
 histories continue independently, without source edits or restarts.
 
+The [subsequent compliance study](PAD_COMPLIANCE_STUDY_20261020.md) measures
+eight stiffness/load/asymmetry cases, actual search expansion and source-partition
+controls. It distinguishes small nominal rigid-gap error from substantial
+strong-compliance pressure error and separately measures contact quadrature.
+
 ## Physical support and pressure together
 
 `study_contact_regions` solves the declared independent-column law

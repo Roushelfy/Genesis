@@ -32,6 +32,12 @@ force-only continuous certificate. The [final fixed-radius comparison](docs/QUAL
 now includes qualified fine references,54 dimensional errors,18 conditional
 rankings, matching costs and four visually inspected figures.
 
+The [eight-case compliance study](docs/PAD_COMPLIANCE_STUDY_20261020.md) now
+separates model and source-sampling error. Rigid prediction is close in the
+nominal soft-pad regime; pressure error reaches24.47% for the flexible-link/stiff-pad
+case, and diagonal compliance adds little accuracy. Full coupling, quadrature
+and native cost remain central to the next implementation.
+
 The [active goal](docs/QUALIFIED_STRESS_RANKING_GOAL.md) is qualified DPR/SCR/Shell
 stress-error comparisons on a free full hollow egg between parallel plates.
 The [accuracy/throughput protocol](docs/ACCURACY_AND_THROUGHPUT_PROTOCOL.md)

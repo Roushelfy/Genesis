@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "actual_scheduler_accounting": "732366_0|COMPLETED|0:0|00:05:20|2026-10-20T15:23:31|rtx-209-067\n732366_0.batch|COMPLETED|0:0|00:05:20|2026-10-20T15:23:31|rtx-209-067\n732366_0.0|COMPLETED|0:0|00:05:19|2026-10-20T15:23:31|rtx-209-067\n732372_0|COMPLETED|0:0|00:01:32|2026-10-20T15:27:55|rtx-210-029\n732372_0.batch|COMPLETED|0:0|00:01:32|2026-10-20T15:27:55|rtx-210-029\n732372_0.0|COMPLETED|0:0|00:01:31|2026-10-20T15:27:55|rtx-210-029\n732372_1|COMPLETED|0:0|00:00:42|2026-10-20T15:27:06|rtx-210-029\n732372_1.batch|COMPLETED|0:0|00:00:42|2026-10-20T15:27:06|rtx-210-029\n732372_1.0|COMPLETED|0:0|00:00:42|2026-10-20T15:27:06|rtx-210-029\n732375_0|COMPLETED|0:0|00:00:33|2026-10-20T15:28:44|rtx-210-029\n732375_0.batch|COMPLETED|0:0|00:00:33|2026-10-20T15:28:44|rtx-210-029\n732375_0.0|COMPLETED|0:0|00:00:32|2026-10-20T15:28:44|rtx-210-029\n",
+  "captured_imports": {
+    "pad-compliance-study-v1": [
+      "research/rigid_stress/qipc_comparison/artifacts.py",
+      "research/rigid_stress/qipc_comparison/compare_distributed_pad_transfer.py",
+      "research/rigid_stress/qipc_comparison/compliant_plate_reference.py",
+      "research/rigid_stress/qipc_comparison/contact_qp.py",
+      "research/rigid_stress/qipc_comparison/cvxopt_factor.py",
+      "research/rigid_stress/qipc_comparison/p2_elastic.py",
+      "research/rigid_stress/qipc_comparison/pad_elastic_fixed_point.py",
+      "research/rigid_stress/qipc_comparison/pad_equilibrium.py",
+      "research/rigid_stress/qipc_comparison/study_contact_regions.py",
+      "research/rigid_stress/qipc_comparison/study_pad_compliance.py",
+      "research/rigid_stress/skfem_reference.py"
+    ],
+    "pad-compliance-controls-v1": [
+      "research/rigid_stress/qipc_comparison/artifacts.py",
+      "research/rigid_stress/qipc_comparison/compare_distributed_pad_transfer.py",
+      "research/rigid_stress/qipc_comparison/compare_pad_compliance.py",
+      "research/rigid_stress/qipc_comparison/compliant_plate_reference.py",
+      "research/rigid_stress/qipc_comparison/contact_qp.py",
+      "research/rigid_stress/qipc_comparison/cvxopt_factor.py",
+      "research/rigid_stress/qipc_comparison/p2_elastic.py",
+      "research/rigid_stress/qipc_comparison/pad_elastic_fixed_point.py",
+      "research/rigid_stress/qipc_comparison/pad_equilibrium.py",
+      "research/rigid_stress/qipc_comparison/study_contact_regions.py",
+      "research/rigid_stress/qipc_comparison/study_pad_compliance.py",
+      "research/rigid_stress/skfem_reference.py"
+    ],
+    "pad-compliance-figure-v1": [
+      "research/rigid_stress/qipc_comparison/artifacts.py",
+      "research/rigid_stress/qipc_comparison/plot_pad_compliance.py"
+    ]
+  },
+  "material_load_asymmetry_cases": 8,
+  "actual_model_fields": 48,
+  "model_error_rows": 32,
+  "separate_quadrature_sensitivity_rows": 24,
+  "independent_controls": {
+    "full_elastic_fixed_point_force_relative_error": 4.6809226616916494e-11,
+    "split_source_nodal_force_relative_error": 1.531921054127271e-11,
+    "fixed_point_iterations": 5,
+    "same_nominal_baseline_stress_relative_error": 5.68477236552269e-13
+  },
+  "actual_small_search_refusals_and_expansion": true,
+  "visual_qa": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/pad-compliance-figure-visual-qa-v1.json",
+    "bytes": 1106,
+    "sha256": "317485838e238ebc1453968fedcb1625eb73996f38c95969908589dd58cc89bd"
+  },
+  "physical_reference_qualified": false,
+  "production_automatic_model_admitted": false,
+  "thickness_and_moving_friction_studies_complete": false,
+  "whole_goal_complete": false
+}
