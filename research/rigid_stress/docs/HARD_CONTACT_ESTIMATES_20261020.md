@@ -262,6 +262,101 @@ the explicit contact-plane versus reference-facet cone comparison. Their sources
 receipts, failures and data-side full-array hashes are retained in the
 [transfer packet](../evidence/20261019-qualified-ranking/hard-hertz-transfer-v1/README.md).
 
+## A cheap normal near-field tensor
+
+The [elliptic tensor evaluator](../qipc_comparison/hertz_stress.py) differentiates
+the Newton potential of the Hertz pressure disk. Its confocal coordinate solves
+x²/(a²+lambda)+y²/(b²+lambda)+z²/lambda=1. Three differentiated potential
+integrals use Carlson RD; swapping the order of a depth integral reduces the
+remaining planar components to one-dimensional quadratic-root integrals. A
+Gauss rule after s=lambda+(lambda+b²)*tan(theta)² resolves both their contact-edge endpoint
+and the far field.
+The zero-depth branch imposes the exact pressure and zero tangential traction.
+No finite sampling depth replaces the actual surface value.
+
+This computes all six normal-load tensor components for an elliptical footprint,
+including surface, edge and symmetry axis. Coordinates are principal-frame
+lengths with positive depth into material. It is a half-space particular field;
+its use on a finite shell still requires a boundary correction. Carlson's
+[duplication method](https://dlmf.nist.gov/19.36) gives a compact native evaluation;
+[Greenwood's elliptic-contact analysis](https://doi.org/10.1177/03093247211060288)
+provides the related mechanics context. Circular axis/surface controls use
+[independently documented Hertz relations](https://contactengineering.github.io/ContactMechanics/source/ContactMechanics.ReferenceSolutions.html).
+
+CPU controls cover axis ratios1,0.73,0.25 and0.05, surface/edge/axis and near/far
+positions. Circular axis and surface formulas agree for nu=0,0.3,0.49, including
+the surface-center and contact-edge limits. For nu=0.3 the circular control
+recovers the axial von-Mises maximum0.620041*p0 at z/a=0.480864 and the edge
+tension0.133333*p0. These controls are independent of the potential quadrature.
+A separate pressure-area integration differentiates Boussinesq displacement;
+its finest positive-depth complete-tensor differences range from1.2e-13 to
+4.60e-7 relative. The original q=0.05 pressure quadrature failed at0.724%;
+refining only that independent reference to256/512 radial points reduced its
+successive change to0.03151% and its final difference to0.00004594%.
+The original failed allocation and its first three completed cases are retained.
+
+Against a192-point potential rule, the48-point rule's largest sampled tensor
+error is8.38e-6*p0 across these controls. Sixteen points give at most1.84e-4*p0
+on these sampled sets. These are numerical evaluation errors for the same
+Hertz pressure law. They do not independently qualify pressure on a thin shell,
+a friction history or a global maximum after arbitrary field superposition.
+
+The [native implementation](../qipc_comparison/native_hertz_stress.py) constructs
+its Gauss rule and evaluates shared Carlson duplication entirely in Quadrants.
+Final16-point CPU/GPU checks cover37 region configurations and77 probes each
+(2,849 full tensors per backend), q=0.05–1, nu=0–0.49 and varying physical
+scale/pressure. Same-order implementation difference is at most1.23e-8*p0;
+comparison with192-point evaluation is at most0.0001805*p0 (0.01805% of peak
+pressure), within the predeclared0.1% numerical evaluation budget. This is an
+absolute tensor scale, not0.01805% relative accuracy at every near-zero tensor.
+Surface traction, closed-form axial compression, release, invalid depth/NaN/
+Poisson inputs, unaffected-region isolation and exact recovery all pass.
+
+Four additional far probes extend to200 major-axis lengths. Their tensor-relative
+difference is at most1.01e-8 with the scaled integration map. The original
+fixed-b² map and48-point/16-point measurements remain archived. No physical
+pressure radius or solver tolerance changes with the integration map/order.
+
+Matched warmed timings use seven groups of ten complete resident tensor updates,
+77 probes per supplied region, on RTX PRO6000 Blackwell GPUs of the same model
+in separate allocations. Each CPU control requests one core. Required point
+status checks and all tensor writes are included. Ellipse estimation, boundary
+transfer, shell recovery/correction, peak reduction, input copies, imports/JIT
+and moving-scene dynamics are excluded.
+
+| Regions | GPU16 points | GPU48 points | CPU16 points |
+| ---: | ---: | ---: | ---: |
+|1 |0.1113ms |0.1842ms |0.03673ms |
+|128 |0.1130ms |0.1924ms |2.632ms |
+|512 |0.1726ms |0.3152ms |10.509ms |
+
+Sixteen integration points reduce measured GPU time by39.6–45.2% on this
+matched workload, so16 is the component's default. These costs are for the
+full supplied probe tensors; they are not max/full simulator overhead.
+
+Executed campaigns are hard-hertz-nearfield-v1/733454 (the retained q=0.05
+reference-resolution failure), v2/733465 (that reference alone) and v3/733537
+(final integration map, all four ratios). Native-stress-v1/733478 and v2/733521
+retain two initialization/type errors. V3/733524 validates48 points; v4/733532
+validates16 points; final v5/733538 includes the distant probes and matched16/48
+GPU controls. Exact sources, failures, terminal accounting and array hashes
+are retained in the [near-field packet](../evidence/20261019-qualified-ranking/hard-hertz-stress-v1/README.md).
+
+The retained0.2N coarse-egg normal case now has a concrete scale comparison:
+
+| Quantity | Elliptic half-space local candidate | Coarse complete P2 shell field |
+| --- | ---: | ---: |
+| Von-Mises maximum |16.502MPa on the symmetry axis |0.08571MPa |
+| Tensile maximum |3.7146MPa on the sampled contact edge |0.03020MPa |
+
+The supplied ellipse has semiaxes69.93um and51.14um, p0=26.702MPa and an axial
+von-Mises peak at28.22um depth. The coarse values are only0.519% and0.813% of
+the corresponding local candidates. The complete P2 field, not just a selected
+corner, is used for the coarse maxima. The domains differ: a local elastic
+half-space versus a faceted finite shell with inertial relief. This table is a
+scale-gap diagnosis, not a measured shell error. It rules out using same-load
+coarse-core agreement alone to claim contact-peak resolution.
+
 ## Remaining work
 
 Next connect cached rest-curvature/current physical-region inputs to the cheap
@@ -280,3 +375,13 @@ elastic near field. Before claiming damage-relevant global peaks, test a cheap
 Hertz near-field stress estimate/correction alongside the coarse shell response
 and check its overlap/double-counting and full-output meaning against a matched
 reference. Repeating a point-load peak convergence sweep is not the next step.
+
+The next finite-domain control should solve a smooth residual field after
+subtracting the known Hertz boundary traction from the target traction, then
+add the particular Hertz stress back at the actual material queries. Compare
+that decomposition with independent resolved-pressure elasticity on a small
+flat-faced finite body before applying it to a hollow polar-land egg. Preserve
+inertial relief and inspect boundary-integration error. Directly adding a Hertz
+field to the original coarse loaded solution would count part of the load twice.
+General curved/nonconvex use also needs a valid local domain or a controlled
+cutoff and its equilibrium residual; the half-space formula alone supplies neither.

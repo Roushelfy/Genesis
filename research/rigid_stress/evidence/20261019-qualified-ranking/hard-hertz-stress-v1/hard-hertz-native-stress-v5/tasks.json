@@ -1,0 +1,34 @@
+[
+  [
+    {
+      "name": "check",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_stress",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "check",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_stress",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "check",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_stress",
+      "args": [
+        "--backend",
+        "gpu",
+        "--order",
+        "48"
+      ]
+    }
+  ]
+]

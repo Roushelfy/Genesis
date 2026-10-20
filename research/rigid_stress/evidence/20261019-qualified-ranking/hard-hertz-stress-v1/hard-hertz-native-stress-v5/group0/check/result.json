@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "backend": "gpu",
+  "regions": 37,
+  "probes_per_region": 77,
+  "quadrature_order": 16,
+  "maximum_implementation_tensor_difference_over_peak_pressure": 1.2272683671336624e-08,
+  "maximum_high_order_tensor_difference_over_peak_pressure": 0.00018041102088490587,
+  "maximum_far_field_tensor_relative_difference": 1.0003658539929773e-08,
+  "release_invalid_input_isolation_and_recovery": true,
+  "benchmark": [
+    {
+      "regions": 1,
+      "probes_per_region": 77,
+      "median_seconds": 0.0001113187987357378,
+      "p90_seconds": 0.00011201633606106043
+    },
+    {
+      "regions": 128,
+      "probes_per_region": 77,
+      "median_seconds": 0.00011303690262138843,
+      "p90_seconds": 0.00011363106314092875
+    },
+    {
+      "regions": 512,
+      "probes_per_region": 77,
+      "median_seconds": 0.00017264760099351407,
+      "p90_seconds": 0.00017318764002993703
+    }
+  ],
+  "arrays": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-native-stress-v5/group0/check/tensors.npz",
+    "bytes": 249193,
+    "sha256": "667e80bdde248e88c967061969f56c629ff55af2395383aad9ca4bcea39aca9e"
+  },
+  "scope": "Native normal elliptic half-space tensors at supplied principal-frame probes, including surface/edge/axis and near/far points. Timing excludes ellipse estimation, shell coupling, max reduction and moving-scene input preparation. No tangential history or global shell-peak admission.",
+  "whole_goal_complete": false
+}

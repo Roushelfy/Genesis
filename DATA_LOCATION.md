@@ -741,3 +741,11 @@ executed sources/receipts form the `hard-hertz-transfer-v1` publication packet.
 The existing `rigid-stress-physical` environment is reused unchanged; private
 caches remain node-local. No pad campaign, shared configuration or data migration
 is introduced.
+
+Normal near-field tensor studies use hard-hertz-nearfield-v1 through v3 and
+hard-hertz-native-stress-v1 through v5 under the same20261019 ranking data root.
+Full pressure-integral and native/reference tensor arrays stay on data. The
+hard-hertz-stress-v1 packet retains compact captured sources, configuration,
+original reference/initialization failures and terminal receipts. Existing
+coarse-shell arrays are reused by hash, with no migration or duplication of
+large data in home. Private caches remain compute-node local.

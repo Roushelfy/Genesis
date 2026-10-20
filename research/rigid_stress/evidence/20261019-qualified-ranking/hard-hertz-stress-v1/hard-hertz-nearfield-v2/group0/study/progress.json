@@ -1,0 +1,50 @@
+{
+  "rows": [
+    {
+      "axis_ratio": 0.05,
+      "independent_radial_orders": [
+        256,
+        512
+      ],
+      "orders": {
+        "16": {
+          "tensor_relative_l2": 0.00016925330835191712,
+          "maximum_tensor_absolute_over_peak_pressure": 0.0002724548793201136
+        },
+        "32": {
+          "tensor_relative_l2": 3.768831983045645e-06,
+          "maximum_tensor_absolute_over_peak_pressure": 1.608871517870669e-05
+        },
+        "48": {
+          "tensor_relative_l2": 3.5458032244006977e-07,
+          "maximum_tensor_absolute_over_peak_pressure": 2.5975568697982176e-06
+        },
+        "96": {
+          "tensor_relative_l2": 1.88861921139988e-09,
+          "maximum_tensor_absolute_over_peak_pressure": 2.4855680483067626e-08
+        }
+      },
+      "independent_pressure_integration_relative_errors": [
+        0.0003155103280686465,
+        4.5938466779994407e-07
+      ],
+      "independent_integration_change": 0.0003150554446159471,
+      "searched_axis_von_mises_over_peak_pressure": 0.5643386605539453,
+      "searched_axis_von_mises_depth_over_major_axis": 0.035739175292557226,
+      "edge_tensile_over_peak_pressure": 0.05399243803687261,
+      "edge_tensile_location_over_major_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-nearfield-v2/group0/study/ratio-0.05.npz",
+        "bytes": 28657,
+        "sha256": "27ffe468d90cfe1c92b0889aa95e3685c7bb9dc9e07a58716a560526e0452069"
+      }
+    }
+  ],
+  "checks": {
+    "circular_axis_and_surface_three_poisson_values": true
+  }
+}
