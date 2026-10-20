@@ -1,0 +1,168 @@
+{
+  "execution_completed": true,
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "733785",
+      "SLURM_ARRAY_JOB_ID": "733785",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-c76298f5-14a5-a899-a833-a3a917a745f8, 00000000:21:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": null
+  },
+  "inputs_result": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-live-v2/group0/inputs/result.json",
+    "bytes": 9246,
+    "sha256": "6fe3dbe8e3fa89a8245e4f37c628dd854409397e3b0e4969c1e65469fb065182"
+  },
+  "rigid_result": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-live-v2/group0/rigid/result.json",
+    "bytes": 1351,
+    "sha256": "4807eefdbd3fbbba940c9bde609c20d66257e092a7cebeed57e4fcd69fab952e"
+  },
+  "trajectory": {
+    "position": {
+      "maximum_absolute_difference": 0.0,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    "quaternion": {
+      "maximum_absolute_difference": 0.0,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    "joints": {
+      "maximum_absolute_difference": 0.0,
+      "tolerance": 1e-08,
+      "passed": true
+    }
+  },
+  "motion_matches": true,
+  "source_status_counts": [
+    887,
+    0,
+    8016,
+    0,
+    990,
+    0
+  ],
+  "loaded_environment_steps": [
+    699,
+    701,
+    704,
+    704
+  ],
+  "invalid_environment_steps": [
+    489,
+    477,
+    480,
+    480
+  ],
+  "valid_loaded_environment_steps": [
+    210,
+    224,
+    224,
+    224
+  ],
+  "timing": {
+    "inputs": {
+      "scene_step_seconds": [
+        0.0064767651764365535,
+        0.006486747826501313,
+        0.006482464991697473
+      ],
+      "median_scene_step_seconds": 0.006482464991697473
+    },
+    "rigid": {
+      "scene_step_seconds": [
+        0.002213571030491342,
+        0.002206277349937914,
+        0.002206046090254353
+      ],
+      "median_scene_step_seconds": 0.002206277349937914
+    }
+  },
+  "incremental_scene_step_seconds": 0.0042761876417595586,
+  "sampled_axes_m": [
+    [
+      4.74076484762303e-05,
+      4.6863046476311164e-05
+    ],
+    [
+      4.740764847652108e-05,
+      4.68630464765986e-05
+    ],
+    [
+      4.74076484764979e-05,
+      4.686304647657569e-05
+    ],
+    [
+      4.74076484764957e-05,
+      4.6863046476573514e-05
+    ],
+    [
+      4.740764847652587e-05,
+      4.6863046476603336e-05
+    ],
+    [
+      4.7407648476526135e-05,
+      4.68630464766036e-05
+    ],
+    [
+      4.740764847652886e-05,
+      4.686304647660629e-05
+    ],
+    [
+      4.7407648476527036e-05,
+      4.686304647660449e-05
+    ],
+    [
+      4.7407648476526446e-05,
+      4.6863046476603905e-05
+    ],
+    [
+      4.74076484762303e-05,
+      4.6863046476311164e-05
+    ],
+    [
+      4.740762973521394e-05,
+      4.686302795058487e-05
+    ],
+    [
+      4.740764847652929e-05,
+      4.686304647660672e-05
+    ],
+    [
+      4.7407648463395145e-05,
+      4.686304646362345e-05
+    ],
+    [
+      4.735004046859561e-05,
+      4.6806100248730485e-05
+    ]
+  ],
+  "sampled_moment_over_force_major_axis": [
+    3.973672121574615e-17,
+    1.9868355115742258e-17,
+    3.973671547961436e-17,
+    3.9736722342644434e-17,
+    1.9868355115642482e-17,
+    3.9736715475178945e-17,
+    3.9736722329462205e-17,
+    3.973671547409705e-17,
+    3.9736722339199503e-17,
+    3.973672121574615e-17,
+    1.9666025923402507e-13,
+    1.9868355116701916e-17,
+    3.9736716033173007e-17,
+    4.199744997076431e-17
+  ],
+  "scope": "Full audit history, matched rigid trajectories and complete-run input-stage cost. Region validity is not physical pressure/stress admission. Nonzero region moment is retained; a centered Hertz pressure alone cannot represent an arbitrary wrench. Failed environment steps exclude a valid-throughput claim.",
+  "whole_goal_complete": false
+}

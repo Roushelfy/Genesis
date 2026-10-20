@@ -1,5 +1,16 @@
 # Rigid-stress data and artifact locations
 
+The hard-hertz-inputs-v1 packet retains270 compact payloads/1,680,227 bytes
+for native curvature, twelve CPU/GPU region/source controls, and same-substep
+moving Franka input pilots with matched rigid baselines. Original option,
+compilation and NaN-acceptance failures are preserved. Its182 externally hashed
+artifacts include full arrays, trajectories and generated control meshes under
+the existing20261019-qualified-ranking data root. Compact histories remain with
+the receipts; private compiler caches were node-local. The isolated engine
+checkout is in workspace. No existing output, environment or compatibility link
+is moved; live region rejection is retained rather than counted as usable stress
+throughput.
+
 New automatic-contact support/pressure studies, paired independent P2 fields and
 figure renders use the established data run root. The automatic-contact-support-v1
 packet and its exact-size figure companion retain compact executed

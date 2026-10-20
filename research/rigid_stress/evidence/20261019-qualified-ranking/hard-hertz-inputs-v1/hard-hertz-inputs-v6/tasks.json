@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "name": "regions",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_regions",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "regions",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_regions",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    }
+  ]
+]
