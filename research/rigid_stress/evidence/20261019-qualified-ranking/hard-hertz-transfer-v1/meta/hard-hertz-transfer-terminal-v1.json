@@ -1,0 +1,114 @@
+{
+  "passed": true,
+  "superseding_goal_commit": "75d534428e83072ac6fdcb17c5bcde64d01009e9",
+  "scheduler_accounting": "733285_0|FAILED|1:0|00:00:59|2026-10-20T20:34:39|rtx-209-231\n733285_0.batch|FAILED|1:0|00:00:59|2026-10-20T20:34:39|rtx-209-231\n733285_0.0|FAILED|1:0|00:00:58|2026-10-20T20:34:39|rtx-209-231\n733285_1|FAILED|1:0|00:00:58|2026-10-20T20:34:39|rtx-209-231\n733285_1.batch|FAILED|1:0|00:00:58|2026-10-20T20:34:39|rtx-209-231\n733285_1.0|FAILED|1:0|00:00:58|2026-10-20T20:34:39|rtx-209-231\n733299_0|FAILED|1:0|00:01:04|2026-10-20T20:36:56|rtx-210-029\n733299_0.batch|FAILED|1:0|00:01:04|2026-10-20T20:36:56|rtx-210-029\n733299_0.0|FAILED|1:0|00:01:03|2026-10-20T20:36:56|rtx-210-029\n733299_1|FAILED|1:0|00:01:04|2026-10-20T20:36:57|rtx-210-029\n733299_1.batch|FAILED|1:0|00:01:04|2026-10-20T20:36:57|rtx-210-029\n733299_1.0|FAILED|1:0|00:01:04|2026-10-20T20:36:57|rtx-210-029\n733327_0|COMPLETED|0:0|00:01:37|2026-10-20T20:41:07|rtx-209-255\n733327_0.batch|COMPLETED|0:0|00:01:37|2026-10-20T20:41:07|rtx-209-255\n733327_0.0|COMPLETED|0:0|00:01:36|2026-10-20T20:41:07|rtx-209-255\n733327_1|COMPLETED|0:0|00:00:59|2026-10-20T20:40:30|rtx-209-231\n733327_1.batch|COMPLETED|0:0|00:00:59|2026-10-20T20:40:30|rtx-209-231\n733327_1.0|COMPLETED|0:0|00:00:59|2026-10-20T20:40:30|rtx-209-231\n733351_0|COMPLETED|0:0|00:00:51|2026-10-20T20:44:36|rtx-210-029\n733351_0.batch|COMPLETED|0:0|00:00:51|2026-10-20T20:44:36|rtx-210-029\n733351_0.0|COMPLETED|0:0|00:00:50|2026-10-20T20:44:36|rtx-210-029\n733392_0|COMPLETED|0:0|00:01:39|2026-10-20T20:50:00|rtx-209-223\n733392_0.batch|COMPLETED|0:0|00:01:39|2026-10-20T20:50:00|rtx-209-223\n733392_0.0|COMPLETED|0:0|00:01:38|2026-10-20T20:50:00|rtx-209-223\n733392_1|COMPLETED|0:0|00:01:00|2026-10-20T20:49:22|rtx-209-231\n733392_1.batch|COMPLETED|0:0|00:01:00|2026-10-20T20:49:22|rtx-209-231\n733392_1.0|COMPLETED|0:0|00:01:00|2026-10-20T20:49:22|rtx-209-231\n733398_0|COMPLETED|0:0|00:00:34|2026-10-20T20:50:20|rtx-210-029\n733398_0.batch|COMPLETED|0:0|00:00:34|2026-10-20T20:50:20|rtx-210-029\n733398_0.0|COMPLETED|0:0|00:00:33|2026-10-20T20:50:20|rtx-210-029\n",
+  "current_sources_match_executed": [
+    {
+      "module": "native_hertz_transfer",
+      "sha256": "39b1b01b1c7266cbbe4d46390304ba3168ba1a667e837e9b419036d1f380d5d5"
+    },
+    {
+      "module": "check_hertz_transfer",
+      "sha256": "22cb734bc3cc0e40826c2beaa3d56563a50405fc96ba95925c54ab6593e62228"
+    },
+    {
+      "module": "study_hertz_wrench",
+      "sha256": "108f8fcbb02c76dde8697249ec5c12bbd71250fd7969cddfee87417395bc9fa7"
+    }
+  ],
+  "native_cases_per_backend": 7,
+  "maximum_same_load_tensor_relative_error": 1.4114177522439372e-11,
+  "maximum_dense_rule_tensor_relative_difference": 0.0019887355307119277,
+  "additional_final_source_controls": [
+    "invalid environment index",
+    "failed region rejects shared environment",
+    "shear with zero normal load"
+  ],
+  "benchmarks": {
+    "gpu": [
+      {
+        "regions_and_environments": 1,
+        "samples_per_region": 96,
+        "median_seconds": 0.00017282338812947274,
+        "p90_seconds": 0.0001783542986959219
+      },
+      {
+        "regions_and_environments": 128,
+        "samples_per_region": 96,
+        "median_seconds": 0.00017266757786273956,
+        "p90_seconds": 0.00018103028647601605
+      },
+      {
+        "regions_and_environments": 512,
+        "samples_per_region": 96,
+        "median_seconds": 0.00019553322345018388,
+        "p90_seconds": 0.00019870375283062458
+      }
+    ],
+    "cpu": [
+      {
+        "regions_and_environments": 1,
+        "samples_per_region": 96,
+        "median_seconds": 0.00017472259933128952,
+        "p90_seconds": 0.00017957640113309026
+      },
+      {
+        "regions_and_environments": 128,
+        "samples_per_region": 96,
+        "median_seconds": 0.0032068668049760165,
+        "p90_seconds": 0.003237663602922112
+      },
+      {
+        "regions_and_environments": 512,
+        "samples_per_region": 96,
+        "median_seconds": 0.012584254797548055,
+        "p90_seconds": 0.012918326954822987
+      }
+    ]
+  },
+  "timing_scope": "Resident supplied-region estimate, 96-point topology walk, full-wrench check, nodal zero/scatter. Homogeneous coarse egg vertex; excludes elasticity, input/grouping/curvature preparation, JIT, copies and actual scene dynamics.",
+  "wrench_candidate": {
+    "passed": true,
+    "metrics": {
+      "prior": {
+        "minimum_sample_compression_n": 5.2389471341545244e-05,
+        "contact_plane_minimum_compression_n": 6.61545071836371e-05,
+        "contact_plane_maximum_required_mu": 0.19999999999999987,
+        "contact_plane_cone_violations": 0,
+        "maximum_required_local_mu": 0.811359437820619,
+        "declared_mu_cone_excess_sum_n": 0.025028785703656603,
+        "cone_violations": 60,
+        "balance_correction_norm_n": 0.011120246856331995,
+        "raw_tensile_max_pa": 31231.475653641763,
+        "raw_von_mises_max_pa": 93450.51271879574
+      },
+      "corrected": {
+        "minimum_sample_compression_n": 4.6049890232800535e-05,
+        "contact_plane_minimum_compression_n": 4.8353132899884324e-05,
+        "contact_plane_maximum_required_mu": 0.24829055585890275,
+        "contact_plane_cone_violations": 0,
+        "maximum_required_local_mu": 0.8275833428550448,
+        "declared_mu_cone_excess_sum_n": 0.025476318259712964,
+        "cone_violations": 60,
+        "balance_correction_norm_n": 0.011120789162921228,
+        "raw_tensile_max_pa": 31235.373728436833,
+        "raw_von_mises_max_pa": 93452.3479958555
+      }
+    },
+    "prior_moment_error_nm": 7.951374762687088e-07,
+    "sample_correction_l1_n": 0.02171701153317176,
+    "sample_correction_weighted_relative": 0.12196405249802539,
+    "complete_tensor_relative_change": 0.000958213943166448,
+    "arrays": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-wrench-v2/group0/study/correction.npz",
+      "bytes": 194017,
+      "sha256": "b3221e89a73712b75ff255fa4c0f875426457e155dba30417fc0f3eae7be6067"
+    },
+    "strict_original_preserved": true,
+    "engineering_admitted": false,
+    "scope": "One unconstrained 6x6 weighted minimum-force correction on the retained faceted egg. Full wrench, separate mu=0.5 reference-facet/contact-plane cone diagnostics, independent mass-relieved complete P2 response and raw peaks are measured. This is a load-model sensitivity, not hard-contact physical accuracy or accepted friction/history behavior."
+  },
+  "physical_scope": "Same-load P2 implementation controls and finite pressure-integration sensitivity. Separate reference-facet versus fixed contact-plane cone diagnostics are different traction-frame models. No independent hard-shell, friction-history or global-peak accuracy claim.",
+  "whole_goal_complete": false,
+  "next": "Assess cheap Hertz near-field stress against the coarse shell field before claiming global peaks; resolve overlap and full-output semantics. Connect cached rest-curvature/current physical-region inputs, declare and test a cheap tangential history law, then measure matching moving-scene pure-rigid/max/full throughput. Do not resume soft-pad or dense elastic-basis expansion."
+}

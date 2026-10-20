@@ -27,6 +27,16 @@ costs about21us for1–8192 supplied regions on the measured GPU. These are
 half-space/component results; shell/friction accuracy, automatic physical-region
 inputs, public lifecycle integration and actual scene throughput remain open.
 
+The [finite-footprint transfer](docs/HARD_CONTACT_ESTIMATES_20261020.md#finite-footprints-on-the-witnessed-mesh)
+now passes seven CPU/GPU cases and independent same-load complete P2 fields.
+It maps96 physical-ellipse samples through actual boundary adjacency, including
+small footprints, inner cavities and coarse egg vertices. Dense-rule stress
+sensitivity is at most0.199% in these controls. Estimate plus transfer costs
+0.173–0.196ms on GPU for1–512 supplied regions. Coarse curved tangential loads
+retain a measured moment/cone conflict; a separately measured6x6 correction
+is not engineering-admitted. Live grouping/curvature and public scene integration
+remain required.
+
 The [first CPU contact-region study](docs/AUTOMATIC_CONTACT_PROGRESS_20261020.md)
 now measures distributed-source double spreading: the retained2mm DPR baseline
 places about42% of normal load on the inner boundary. Conservative outer P2

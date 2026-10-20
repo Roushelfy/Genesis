@@ -731,3 +731,13 @@ data. Private caches use node scratch. Only concise captured source/receipts
 and inspected SVG/PDF/PNG publication figures enter the `hard-hertz-v1` packet.
 The source checkouts and existing environments/symlinks remain in place; no
 new soft-pad campaign or data migration is performed.
+
+
+Finite Hertz footprint transfer uses `hard-hertz-transfer-v1` through `v4`
+and `hard-hertz-wrench-v1`/`v2` under the same20261019 ranking data root. Original
+import/geometry failures remain intact. Complete meshes, mapped samples and
+full independent/native tensor arrays stay on data with exact hashes; compact
+executed sources/receipts form the `hard-hertz-transfer-v1` publication packet.
+The existing `rigid-stress-physical` environment is reused unchanged; private
+caches remain node-local. No pad campaign, shared configuration or data migration
+is introduced.

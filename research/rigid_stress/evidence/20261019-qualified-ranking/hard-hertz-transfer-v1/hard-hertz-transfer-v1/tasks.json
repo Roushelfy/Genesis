@@ -1,0 +1,26 @@
+[
+  [
+    {
+      "name": "check",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_transfer",
+      "args": [
+        "--backend",
+        "gpu",
+        "--egg",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-pad-geometry/examples/rigid/assets/hollow_egg/level1/elastic.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "check",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_transfer",
+      "args": [
+        "--backend",
+        "cpu",
+        "--egg",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-pad-geometry/examples/rigid/assets/hollow_egg/level1/elastic.npz"
+      ]
+    }
+  ]
+]
