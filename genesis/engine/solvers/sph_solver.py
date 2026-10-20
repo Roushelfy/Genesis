@@ -1,13 +1,21 @@
+import math
+
 import numpy as np
+
+import trimesh
 
 import quadrants as qd
 
 import genesis as gs
 import genesis.utils.geom as gu
 from genesis.engine.boundaries import CubeBoundary
+from genesis.engine.couplers import LegacyCoupler
 from genesis.engine.entities import SPHEntity
 from genesis.engine.materials import SPH
 from genesis.engine.states.solvers import SPHSolverState
+from genesis.utils import array_class
+from genesis.utils.misc import tensor_to_array
+from genesis.utils.point_cloud import sample_mesh_point_cloud
 
 from .base_solver import GravityMixin, Solver, TimeBasedMixin
 
@@ -43,6 +51,14 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self._df_min_div_neighbors = 20
 
         self._particle_volume = 0.8 * self._particle_size**3  # 0.8 is an empirical value
+
+        # Boundary particles sampled on the surface of the rigid geoms. The spacing is the one of the regular triangle
+        # sampling of Akinci et al. 2012 boundaries, denser than the fluid so that the fluid cannot leak through.
+        self._boundary_spacing = 0.75 * self._particle_size
+        # Upper bound on the number of boundary particles, which grows with the area of the simulation domain.
+        self._max_n_boundary_particles = 5_000_000
+        self._n_boundary_particles = 0
+        self._has_boundary = False
 
         # spatial hasher
         self.sh = gu.SpatialHasher(
@@ -116,6 +132,27 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self.envs_n_active = qd.field(gs.qd_int, shape=(self._B,))
         self.envs_solver_error = qd.field(gs.qd_float, shape=(self._B,))
 
+        if self._has_boundary:
+            # Boundary particles, sampled on the rigid geoms and moved with their link. They carry the static
+            # sampling data as well, so that their hashed (reordered) copy is self-contained.
+            struct_boundary_particle_state = qd.types.struct(
+                pos_local=gs.qd_vec3,  # position in link frame
+                link_idx=gs.qd_int,
+                is_fixed=gs.qd_bool,  # whether the link is fixed wrt the world
+                pos=gs.qd_vec3,
+                vel=gs.qd_vec3,
+                # Akinci et al. 2012 volume 1 / sum_l W_bl, which weighs a boundary particle by its sampling density.
+                volume=gs.qd_float,
+                reordered_idx=gs.qd_int,
+                active=gs.qd_bool,
+            )
+            self.boundary_particles = struct_boundary_particle_state.field(
+                shape=(self._n_boundary_particles, self._B), needs_grad=False, layout=qd.Layout.SOA
+            )
+            self.boundary_particles_reordered = struct_boundary_particle_state.field(
+                shape=(self._n_boundary_particles, self._B), needs_grad=False, layout=qd.Layout.SOA
+            )
+
     def init_ckpt(self):
         self._ckpt = dict()
 
@@ -134,11 +171,94 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
 
         if self.is_active:
             self.sh.build(self._B)
+
+            # Sample the boundary particles of the rigid geoms coupled with the fluid, in link frame.
+            boundaries_pos_local, boundaries_link_idx, boundaries_is_fixed, boundaries_active = [], [], [], []
+            rigid_solver = self.sim.rigid_solver
+            if isinstance(self._coupler, LegacyCoupler) and self._coupler.options.rigid_sph and rigid_solver.is_active:
+                # Fluid stays within the domain, so boundary particles further away than the support radius are
+                # never anyone's neighbor.
+                area_lower = self._lower_bound - self._support_radius
+                area_upper = self._upper_bound + self._support_radius
+                n_boundary_particles = 0
+                for entity in rigid_solver.entities:
+                    for link in entity.links:
+                        link_pos = np.atleast_2d(tensor_to_array(link.get_pos(relative=False)))[0]
+                        link_quat = np.atleast_2d(tensor_to_array(link.get_quat(relative=False)))[0]
+                        for geom in link.geoms:
+                            if not geom.needs_coup:
+                                continue
+                            if geom.type == gs.GEOM_TYPE.PLANE:
+                                # A plane collides as an infinite half-space while its mesh is a large finite quad,
+                                # so it is sampled over its cut through the boundary area instead.
+                                plane_pos = gu.transform_by_trans_quat(geom.init_pos, link_pos, link_quat)
+                                plane_normal = gu.transform_by_quat(
+                                    gu.transform_by_quat(geom.data[:3], geom.init_quat), link_quat
+                                )
+                                verts, faces = gu.plane_aabb_intersection(
+                                    plane_pos, plane_normal, area_lower, area_upper
+                                )
+                                verts = gu.inv_transform_by_trans_quat(verts, link_pos, link_quat)
+                            else:
+                                verts = gu.transform_by_trans_quat(geom.init_verts, geom.init_pos, geom.init_quat)
+                                faces = geom.init_faces
+                            if len(faces) == 0:
+                                continue
+
+                            # Number of points of a regular triangular lattice with the boundary spacing.
+                            area = trimesh.Trimesh(vertices=verts, faces=faces, process=False).area
+                            n_points = math.ceil(2.0 * area / (math.sqrt(3.0) * self._boundary_spacing**2))
+                            n_boundary_particles += n_points
+                            if n_boundary_particles > self._max_n_boundary_particles:
+                                gs.raise_exception(
+                                    f"Sampling the SPH boundary of geom {geom.idx} of entity {entity.idx} requires "
+                                    f"{n_points} particles, which brings the total above "
+                                    f"{self._max_n_boundary_particles}. Please tighten the SPH domain "
+                                    "(`lower_bound` / `upper_bound`) around the fluid, or shrink the geom."
+                                )
+                            # Furthest point sampling only spaces the samples evenly given enough candidates. Holes
+                            # in the sampling lower the boundary density locally, and fluid leaks through them.
+                            pos_local = sample_mesh_point_cloud(
+                                verts, faces, n_points, n_candidates=16 * n_points, seed=0
+                            )
+
+                            # A fixed link never moves, so the samples outside the boundary area can be dropped.
+                            if link.is_fixed:
+                                pos_world = gu.transform_by_trans_quat(pos_local, link_pos, link_quat)
+                                is_inside = np.all((pos_world > area_lower) & (pos_world < area_upper), axis=1)
+                                pos_local = pos_local[is_inside]
+
+                            if geom.active_envs_mask is None:
+                                active = np.ones((self._B, len(pos_local)), dtype=gs.np_int)
+                            else:
+                                envs_active = tensor_to_array(geom.active_envs_mask, dtype=gs.np_int)
+                                active = np.tile(envs_active[:, None], (1, len(pos_local)))
+                            boundaries_pos_local.append(pos_local)
+                            boundaries_link_idx.append(np.full(len(pos_local), link.idx, dtype=gs.np_int))
+                            boundaries_is_fixed.append(np.full(len(pos_local), link.is_fixed, dtype=gs.np_int))
+                            boundaries_active.append(active)
+            self._n_boundary_particles = sum(len(pos_local) for pos_local in boundaries_pos_local)
+            self._has_boundary = self._n_boundary_particles > 0
+            if self._has_boundary:
+                gs.logger.info(f"SPH boundary sampled with ~<{self._n_boundary_particles}>~ particles.")
+                self.sh_boundary = gu.SpatialHasher(cell_size=self.sh.cell_size, grid_res=self.sh.grid_res)
+                self.sh_boundary.build(self._B)
+
             self.init_particle_fields()
             self.init_ckpt()
 
             for entity in self.entities:
                 entity._add_to_solver()
+
+            if self._has_boundary:
+                self._kernel_add_boundary_particles(
+                    np.concatenate(boundaries_pos_local),
+                    np.concatenate(boundaries_link_idx),
+                    np.concatenate(boundaries_is_fixed),
+                    np.concatenate(boundaries_active, axis=1),
+                )
+                self._kernel_update_boundary_particles(rigid_solver.dyn_state.links)
+                self._kernel_compute_boundary_volume()
 
             # The explicit viscosity term in [_task_compute_non_pressure_forces] is only stable below this timestep.
             viscosity_max = max(entity.material.viscosity for entity in self.entities)
@@ -198,27 +318,12 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
 
                 self.particles_reordered[reordered_idx, i_b] = self.particles[i_p, i_b]
 
-        # worry about walls later
-        # if qd.static(self._coupler._rigid_sph):
-        #     for i_p, i_g, i_b in qd.ndrange(self._n_particles, self._coupler.rigid_solver.n_geoms, self._B):
-        #         if self.particles[i_p, i_b].active:
-        #             self._coupler.sph_rigid_normal_reordered[self.particles[i_p, i_b].reordered_idx, i_g, i_b] = (
-        #                 self._coupler.sph_rigid_normal[i_p, i_g, i_b]
-        #             )
-
     @qd.kernel
     def _kernel_copy_from_reordered(self, f: qd.i32):
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             if self.particles[i_p, i_b].active:
                 # only need to copy back dynamic state, i.e. self.particles
                 self.particles[i_p, i_b] = self.particles_reordered[self.particles[i_p, i_b].reordered_idx, i_b]
-
-        if qd.static(self._coupler._rigid_sph):
-            for i_p, i_g, i_b in qd.ndrange(self._n_particles, self._coupler.rigid_solver.n_geoms, self._B):
-                if self.particles[i_p, i_b].active:
-                    self._coupler.sph_rigid_normal[i_p, i_g, i_b] = self._coupler.sph_rigid_normal_reordered[
-                        self.particles[i_p, i_b].reordered_idx, i_g, i_b
-                    ]
 
     @qd.func
     def _task_compute_non_pressure_forces(self, i, j, ret: qd.template(), i_b):
@@ -285,6 +390,117 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 self.particles_reordered[i_p, i_b].pos = corrected_pos
 
     # ------------------------------------------------------------------------------------
+    # ------------------------------------ boundary --------------------------------------
+    # ------------------------------------------------------------------------------------
+    # Particle-based rigid boundaries (Akinci et al. 2012, "Versatile Rigid-Fluid Coupling for Incompressible SPH"),
+    # entering the DFSPH solve as in Bender et al. 2023, "Consistent SPH Rigid-Fluid Coupling" (BWJ23). Boundary
+    # particles only add constant contributions to the density constraints of the fluid particles, so they never
+    # need a pressure value of their own.
+
+    @qd.kernel
+    def _kernel_add_boundary_particles(
+        self,
+        pos_local: qd.types.ndarray(),
+        link_idx: qd.types.ndarray(),
+        is_fixed: qd.types.ndarray(),
+        active: qd.types.ndarray(),
+    ):
+        for i_bp, i_b in qd.ndrange(self._n_boundary_particles, self._B):
+            for i in qd.static(range(3)):
+                self.boundary_particles[i_bp, i_b].pos_local[i] = pos_local[i_bp, i]
+            self.boundary_particles[i_bp, i_b].link_idx = link_idx[i_bp]
+            self.boundary_particles[i_bp, i_b].is_fixed = qd.cast(is_fixed[i_bp], gs.qd_bool)
+            self.boundary_particles[i_bp, i_b].active = qd.cast(active[i_b, i_bp], gs.qd_bool)
+
+    @qd.kernel
+    def _kernel_update_boundary_particles(self, links_state: array_class.LinksState):
+        for i_bp, i_b in qd.ndrange(self._n_boundary_particles, self._B):
+            if self.boundary_particles[i_bp, i_b].active:
+                i_l = self.boundary_particles[i_bp, i_b].link_idx
+                pos = gu.qd_transform_by_trans_quat(
+                    self.boundary_particles[i_bp, i_b].pos_local, links_state.pos[i_l, i_b], links_state.quat[i_l, i_b]
+                )
+                self.boundary_particles[i_bp, i_b].pos = pos
+                self.boundary_particles[i_bp, i_b].vel = self.sim.rigid_solver._func_vel_at_point(
+                    i_l, i_b, pos, links_state
+                )
+
+        self.sh_boundary.compute_reordered_idx(
+            self._n_boundary_particles,
+            self.boundary_particles.pos,
+            self.boundary_particles.active,
+            self.boundary_particles.reordered_idx,
+        )
+
+        self.boundary_particles_reordered.active.fill(False)
+        for i_bp, i_b in qd.ndrange(self._n_boundary_particles, self._B):
+            if self.boundary_particles[i_bp, i_b].active:
+                i_r = self.boundary_particles[i_bp, i_b].reordered_idx
+                self.boundary_particles_reordered[i_r, i_b] = self.boundary_particles[i_bp, i_b]
+
+    @qd.func
+    def _task_compute_boundary_volume(self, i, j, ret: qd.template(), i_b):
+        # The sampling of a moving link is rigid, so only its own particles count and its volumes stay valid as it
+        # moves. The fixed links never move with respect to each other, so they form a single boundary.
+        is_same_boundary = self.boundary_particles_reordered[j, i_b].link_idx == ret.link_idx
+        if ret.is_fixed and self.boundary_particles_reordered[j, i_b].is_fixed:
+            is_same_boundary = True
+        if is_same_boundary:
+            x_ij = self.boundary_particles_reordered[i, i_b].pos - self.boundary_particles_reordered[j, i_b].pos
+            ret.sum_w += self.cubic_kernel(x_ij.norm())
+
+    @qd.kernel
+    def _kernel_compute_boundary_volume(self):
+        for i_bp, i_b in qd.ndrange(self._n_boundary_particles, self._B):
+            if self.boundary_particles[i_bp, i_b].active:
+                i_r = self.boundary_particles[i_bp, i_b].reordered_idx
+                ret = qd.Struct(
+                    sum_w=self.cubic_kernel(0.0),
+                    link_idx=self.boundary_particles[i_bp, i_b].link_idx,
+                    is_fixed=self.boundary_particles[i_bp, i_b].is_fixed,
+                )
+                self.sh_boundary.for_all_neighbors(
+                    i_r,
+                    self.boundary_particles_reordered.pos,
+                    self._support_radius,
+                    ret,
+                    self._task_compute_boundary_volume,
+                    i_b,
+                )
+                self.boundary_particles[i_bp, i_b].volume = 1.0 / ret.sum_w
+
+    @qd.func
+    def _task_compute_boundary_density_and_factor(self, i, j, ret: qd.template(), i_b):
+        V_b = self.boundary_particles_reordered[j, i_b].volume
+        x_ib = self.particles_reordered[i, i_b].pos - self.boundary_particles_reordered[j, i_b].pos
+        ret.density_norm += V_b * self.cubic_kernel(x_ib.norm())
+        # BWJ23 eq. (32): boundary particles carry no constraint of their own, so they only enter the gradient of
+        # the constraint of particle i, and not the sum of squared neighbor gradients.
+        ret.grad_p_i += V_b * self.cubic_kernel_derivative(x_ib)
+        ret.n_neighbors += 1
+
+    @qd.func
+    def _task_compute_boundary_density_change(self, i, j, ret: qd.template(), i_b):
+        V_b = self.boundary_particles_reordered[j, i_b].volume
+        v_ib = self.particles_reordered[i, i_b].vel - self.boundary_particles_reordered[j, i_b].vel
+        x_ib = self.particles_reordered[i, i_b].pos - self.boundary_particles_reordered[j, i_b].pos
+        ret += V_b * v_ib.dot(self.cubic_kernel_derivative(x_ib))
+
+    @qd.func
+    def _task_compute_boundary_pressure_acc(self, i, j, ret: qd.template(), i_b):
+        # BWJ23 eq. (33): a single term of the fluid particle pressure, with no pressure value at the boundary.
+        V_b = self.boundary_particles_reordered[j, i_b].volume
+        x_ib = self.particles_reordered[i, i_b].pos - self.boundary_particles_reordered[j, i_b].pos
+        ret.acc -= ret.p_rho2_i * V_b * self.cubic_kernel_derivative(x_ib)
+
+    @qd.func
+    def _task_compute_boundary_predicted_source(self, i, j, ret: qd.template(), i_b):
+        # BWJ23 eq. (34): the pressure acceleration of a boundary particle is zero.
+        V_b = self.boundary_particles_reordered[j, i_b].volume
+        x_ib = self.particles_reordered[i, i_b].pos - self.boundary_particles_reordered[j, i_b].pos
+        ret += V_b * self.particles_reordered[i, i_b].pressure_acc.dot(self.cubic_kernel_derivative(x_ib))
+
+    # ------------------------------------------------------------------------------------
     # ------------------------------------- DFSPH ----------------------------------------
     # ------------------------------------------------------------------------------------
     # See https://github.com/InteractiveComputerGraphics/SPlisHSPlasH/blob/master/SPlisHSPlasH/DFSPH/TimeStepDFSPH.cpp for reference.
@@ -324,9 +540,17 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     i_b,
                 )
 
-                # TODO: Boundary handling. Add the boundary contributions to `density_norm` (V_b * W_ib) and
-                # `grad_p_i` (V_b * grad W_ib), leaving `sum_grad_p_k` untouched, and count boundary neighbors in
-                # `n_neighbors`.
+                if qd.static(self._has_boundary):
+                    self.sh_boundary.for_all_neighbors_of_pos(
+                        i_p,
+                        self.particles_reordered[i_p, i_b].pos,
+                        -1,
+                        self.boundary_particles_reordered.pos,
+                        self._support_radius,
+                        ret,
+                        self._task_compute_boundary_density_and_factor,
+                        i_b,
+                    )
 
                 sum_grad_p_k = ret.sum_grad_p_k + ret.grad_p_i.norm_sqr()
                 factor = gs.qd_float(0.0)
@@ -366,8 +590,18 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             i_p, self.particles_reordered.pos, self._support_radius, ret, self._task_compute_pressure_acc, i_b
         )
 
-        # TODO: Boundary handling. If |p_rho2_i| > eps, add -p_rho2_i * V_b * grad W_ib for each boundary neighbor
-        # and, when applying the final pressure, the reaction force m_i * p_rho2_i * V_b * grad W_ib to the boundary.
+        if qd.static(self._has_boundary):
+            if qd.abs(ret.p_rho2_i) > self._df_eps:
+                self.sh_boundary.for_all_neighbors_of_pos(
+                    i_p,
+                    self.particles_reordered[i_p, i_b].pos,
+                    -1,
+                    self.boundary_particles_reordered.pos,
+                    self._support_radius,
+                    ret,
+                    self._task_compute_boundary_pressure_acc,
+                    i_b,
+                )
 
         self.particles_reordered[i_p, i_b].pressure_acc = ret.acc
 
@@ -393,7 +627,17 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     i_b,
                 )
 
-                # TODO: Boundary handling. Add V_b * (v_i - v_b) . grad W_ib for each boundary neighbor.
+                if qd.static(self._has_boundary):
+                    self.sh_boundary.for_all_neighbors_of_pos(
+                        i_p,
+                        self.particles_reordered[i_p, i_b].pos,
+                        -1,
+                        self.boundary_particles_reordered.pos,
+                        self._support_radius,
+                        density_change,
+                        self._task_compute_boundary_density_change,
+                        i_b,
+                    )
 
                 factor = self.particles_reordered[i_p, i_b].alpha_factor_adj
                 if qd.static(is_divergence):
@@ -464,7 +708,17 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     i_b,
                 )
 
-                # TODO: Boundary handling. Add V_b * a_i . grad W_ib for each boundary neighbor.
+                if qd.static(self._has_boundary):
+                    self.sh_boundary.for_all_neighbors_of_pos(
+                        i_p,
+                        self.particles_reordered[i_p, i_b].pos,
+                        -1,
+                        self.boundary_particles_reordered.pos,
+                        self._support_radius,
+                        predicted_source,
+                        self._task_compute_boundary_predicted_source,
+                        i_b,
+                    )
 
                 self.particles_reordered[i_p, i_b].predicted_source = predicted_source
 
@@ -605,6 +859,10 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
 
     def substep_pre_coupling(self, f):
         if self.is_active:
+            # The rigid solver runs its substep before this one, so the fluid sees the boundary at the end of the
+            # substep, with the velocity it reaches there.
+            if self._has_boundary:
+                self._kernel_update_boundary_particles(self.sim.rigid_solver.dyn_state.links)
             self._kernel_reorder_particles(f)
             self._kernel_compute_density_and_factor(f)
             if not self._df_skip_div:

@@ -42,7 +42,13 @@ class LegacyCoupler(RBC):
 
     def build(self) -> None:
         self._rigid_mpm = self.rigid_solver.is_active and self.mpm_solver.is_active and self.options.rigid_mpm
-        self._rigid_sph = self.rigid_solver.is_active and self.sph_solver.is_active and self.options.rigid_sph
+        # The default SPH solver couples with rigid geoms through boundary particles of its own.
+        self._rigid_sph = (
+            self.rigid_solver.is_active
+            and self.sph_solver.is_active
+            and self.options.rigid_sph
+            and self.sph_solver._options.use_legacy_solver
+        )
         self._rigid_pbd = self.rigid_solver.is_active and self.pbd_solver.is_active and self.options.rigid_pbd
         self._rigid_fem = self.rigid_solver.is_active and self.fem_solver.is_active and self.options.rigid_fem
         self._mpm_sph = self.mpm_solver.is_active and self.sph_solver.is_active and self.options.mpm_sph

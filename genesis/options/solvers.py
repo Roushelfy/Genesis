@@ -741,8 +741,9 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     use_legacy_solver : bool, optional
         Whether to use the legacy SPH solver. The legacy solver offers the weakly compressible 'WCSPH' pressure solver
         and two-way coupling with rigid, MPM and FEM entities, but its 'DFSPH' pressure solver lets the fluid compress
-        noticeably. The default solver enforces incompressibility accurately, but it only offers 'DFSPH' and has no
-        coupling with other entities yet. Defaults to False.
+        noticeably. The default solver enforces incompressibility accurately, but it only offers 'DFSPH', and its
+        coupling with rigid entities is one-way (the fluid does not push rigid entities back) and with MPM and FEM
+        entities absent so far. Defaults to False.
     pressure_solver : str, optional
         Pressure solver type, either 'WCSPH' (legacy solver only) or 'DFSPH'. Defaults to 'WCSPH' for the legacy
         solver and 'DFSPH' otherwise.

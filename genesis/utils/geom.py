@@ -1364,6 +1364,42 @@ def inv_transform_by_trans_quat(pos, trans, quat):
     return inv_transform_by_quat(pos - trans, quat)
 
 
+def plane_aabb_intersection(point, normal, lower, upper):
+    """
+    Triangulate the convex polygon cut out of a plane by an axis-aligned box.
+
+    The plane goes through `point` with unit `normal`, and the box spans `lower` to `upper`. The polygon vertices are
+    the crossings of the plane with the 12 box edges, ordered by angle around their centroid and fan-triangulated.
+
+    Returns the polygon vertices of shape (V, 3) and the triangle indices of shape (V - 2, 3). Both are empty when the
+    plane misses the box.
+    """
+    corner_bits = (np.arange(8)[:, None] >> np.arange(3)) & 1
+    corners = lower + (upper - lower) * corner_bits
+    # Each box edge joins a corner to the corner differing in a single bit.
+    edges_start = np.array([i for i in range(8) for k in range(3) if not (i >> k) & 1])
+    edges_end = np.array([i | (1 << k) for i in range(8) for k in range(3) if not (i >> k) & 1])
+
+    dist = (corners - point) @ normal
+    dist_start, dist_end = dist[edges_start], dist[edges_end]
+    is_crossing = dist_start * dist_end < 0.0
+    t = dist_start[is_crossing] / (dist_start[is_crossing] - dist_end[is_crossing])
+    verts = corners[edges_start[is_crossing]] + t[:, None] * (
+        corners[edges_end[is_crossing]] - corners[edges_start[is_crossing]]
+    )
+    verts = np.concatenate((verts, corners[np.abs(dist) < gs.EPS]), axis=0)
+    if len(verts) < 3:
+        return np.zeros((0, 3), dtype=gs.np_float), np.zeros((0, 3), dtype=gs.np_int)
+
+    axis_u = np.cross(normal, np.eye(3)[np.argmin(np.abs(normal))])
+    axis_u /= np.linalg.norm(axis_u)
+    axis_v = np.cross(normal, axis_u)
+    offsets = verts - verts.mean(axis=0)
+    verts = verts[np.argsort(np.arctan2(offsets @ axis_v, offsets @ axis_u))]
+    faces = np.stack((np.zeros(len(verts) - 2), np.arange(1, len(verts) - 1), np.arange(2, len(verts))), axis=1)
+    return verts.astype(gs.np_float), faces.astype(gs.np_int)
+
+
 def transform_pos_quat_by_trans_quat(pos, quat, t_trans, t_quat):
     new_pos = t_trans + transform_by_quat(pos, t_quat)
     new_quat = transform_quat_by_quat(quat, t_quat)
@@ -2495,13 +2531,34 @@ class SpatialHasher:
         Returns:
             None
         """
-        base = self.pos_to_grid(pos[i_p, i_b])
+        self.for_all_neighbors_of_pos(i_p, pos[i_p, i_b], i_p, pos, task_range, ret, task, i_b)
+
+    @qd.func
+    def for_all_neighbors_of_pos(
+        self, i_p, pos_i, i_skip, pos, task_range, ret: qd.template(), task: qd.template(), i_b
+    ):
+        """
+        Iterates over all hashed elements within task_range of a query position and performs a task on each of them.
+
+        The query may come from another point set than the hashed one, which lets a point set look up its neighbors
+        in a second set hashed by its own SpatialHasher.
+
+        Parameters:
+            i_p (int)    : Index of the querying element, passed through to the task.
+            pos_i        : Position of the querying element.
+            i_skip (int) : Index of a hashed element to exclude, -1 to exclude none.
+            pos          : Template for the positions of the hashed elements, in hashed (reordered) order.
+            task_range   : Range within which the task should be performed.
+            ret          : Template for the return value of the task.
+            task         : Template for the task, called as task(i_p, j_p, ret, i_b) with j_p a hashed element.
+        """
+        base = self.pos_to_grid(pos_i)
         for offset in qd.grouped(qd.ndrange((-1, 2), (-1, 2), (-1, 2))):
             slot_idx = self.grid_to_slot(base + offset)
             for j_p in range(
                 self.slot_start[slot_idx, i_b], self.slot_size[slot_idx, i_b] + self.slot_start[slot_idx, i_b]
             ):
-                if i_p != j_p and (pos[i_p, i_b] - pos[j_p, i_b]).norm() < task_range:
+                if j_p != i_skip and (pos_i - pos[j_p, i_b]).norm() < task_range:
                     task(i_p, j_p, ret, i_b)
 
     @qd.func
