@@ -732,3 +732,96 @@ retains the corrected domain, transformed quadrature and mixed candidate; both
 finished with exit0. Use the captured `study_hard_edge` tasks with a fresh data
 output directory to reproduce them. Full force/stress arrays remain on data;
 both source variants and their results are in the retained packet above.
+
+
+## Elliptic tangential stress and the cost of discarding history
+
+The new [tangential evaluator](../qipc_comparison/native_hertz_tangential.py)
+computes all six independent half-space stress components for the declared
+traction `q(x,y)=t*p_Hertz(x,y)`, where t is a two-component vector in the
+ellipse frame. It supports both tangent directions, surface/edge/axis limits
+and positive depth. This solves the response to supplied traction; it does
+not infer a friction coefficient, stick/slip state or contact history.
+
+The derivation starts from the harmonic-potential tangential stress relations
+in [Willert2023, equation12](https://arxiv.org/html/2310.03508v1).
+The elliptical Newton potential is integrated in depth. Integration by parts
+removes the apparent `Q^(-3/2)` endpoint singularity before evaluation,
+so no artificial minimum depth or widened contact radius is needed. The
+normal and tangential evaluators share the same bounded confocal-coordinate
+solve. Depth is positive into material, and surface stress satisfies
+`sigma_xz=-q_x`, `sigma_yz=-q_y`, `sigma_zz=0` for this tangential contribution.
+
+An independent check differentiates the Cerruti point-force displacement by
+complex step, then integrates the actual elliptical traction using a separate
+radial/angular rule. For axis ratios1,0.4 and0.05, six positive-depth tensors
+per ratio agree with the refined point-force integral to2.20e-14,1.94e-14 and
+5.12e-9 relative sample norm. The two point-force quadratures differ by at most
+5.66e-5; this is measured integration sensitivity, not a universal error bound.
+The full surface/depth implementation is also checked against a192-point
+potential evaluation, exact surface traction and a circular-axis shear identity.
+
+The native16-point evaluator passes2923 tensors on each CPU/GPU backend across
+37 axis/material/traction-direction combinations. The largest implementation
+difference is1.13e-8 of peak normal pressure; the largest16-versus192-point
+tensor discrepancy is0.48396% of peak normal pressure, below the predeclared
+0.5% component budget. This absolute pressure scale avoids a meaningless
+relative error near zero stress. Far-field relative difference is below2e-9.
+Release, invalid source/probe/Poisson/tangent inputs, zero tangential load,
+environment isolation and recovery pass. The shared-root extraction also
+reruns the unchanged normal tensor accuracy controls.
+
+| Supplied regions | Probes/region | GPU tangential update | CPU tangential update |
+| ---: | ---: | ---: | ---: |
+| 1 | 79 | 0.303ms | 0.0565ms |
+| 128 | 79 | 0.290ms | 5.029ms |
+| 512 | 79 | 0.460ms | 20.105ms |
+
+These medians use seven groups of ten resident updates on the retained
+RTX PRO6000 Blackwell/one-thread CPU setup. Dispatch and group synchronization
+are included; uploads, JIT, normal-stress evaluation, friction history, elastic
+boundary correction, reductions and scene work are excluded. This is the
+cost of one supplied traction basis, not a complete frictional observation.
+
+A separate control measures the simplest friction approximation, `t=Q/Fn`,
+against a constant-normal-load collinear Cattaneo-Mindlin loading/reversal cycle.
+The comparator uses differences of Hertz traction disks and retains turning
+points. Its elastic-decoupling and unidirectional assumptions follow the
+[Hertz-Mindlin superposition framework](https://arxiv.org/html/2108.04617v1);
+it is an analytical approximate contact model, not an independently qualified
+coupled compressible-material/rigid-indenter solution. The normal footprint
+stays circular, mu=0.4, and Q/(mu*Fn) first rises to0.6, reverses to-0.6 and
+returns to0.6. Force balance follows analytically from each disk's cubic radius.
+
+| State | Q/(mu Fn) | Proportional total sampled tensor error | Sampled tensile-peak error | Sampled VM-peak error |
+| --- | ---: | ---: | ---: | ---: |
+| First loading | 0.15 | 4.635% | 28.621% | 0.0364% |
+| First loading | 0.60 | 10.893% | 14.441% | 1.988% |
+| Unloading | 0.30 | 7.433% | 27.514% | 0.530% |
+| Unloading | 0 | 8.494% | 47.760% | 0.0081% |
+| Unloading | -0.30 | 10.529% | 27.415% | 0.689% |
+| Unloading | -0.60 | 10.893% | 14.441% | 1.988% |
+
+At zero resultant tangential force, residual self-equilibrated tangential
+stress remains. A memoryless proportional law deletes it entirely. The
+von-Mises maximum changes little in that sample while the tensile maximum
+changes substantially, so one damage measure cannot stand in for the other.
+Reloading retains the corresponding reversed residual field. These results
+rule out treating proportional traction as a generally accurate history model.
+The evaluator can supply traction-basis superpositions for a cheap memory law;
+that law and its variable-normal-load/direction/region lifecycle remain open.
+
+The fixed observation set is21x21x11, with the true surface plus ten depths
+from0.03a to2a, and x/y spanning[-1.5a,1.5a]. Norms are unweighted sample norms;
+reported peaks and positions are maxima on this set, not searched continuum
+maxima or complete-volume errors. No finite-shell or actual scene accuracy
+follows. Full fields, original sources and all eight cycle states are retained.
+
+Executed campaigns: `hard-tangential-v1` (job733930), and native CPU/GPU
+`hard-native-tangential-v1`/`v2` (jobs733932/733942). The original native test
+failed because NumPy advanced indexing transposed the two leading axes of its
+surface-traction assertion. The assertion now indexes the selected probe array
+explicitly and normalizes its tolerance per region; the numerical kernel was
+unchanged. The final task list runs tangential and normal controls sequentially.
+See the [retained tangential packet](../evidence/20261019-qualified-ranking/hard-hertz-tangential-v1/README.md)
+for executed variants, task arguments, terminal state and data-side field hashes.

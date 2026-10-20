@@ -1,0 +1,5 @@
+# Elliptic tangential stress and friction-history discrepancy
+
+Elliptic tangential traction response is checked against independent Cerruti point-force integration. Native CPU/GPU controls cover2923 tensors each, finite surface/edge/axis limits, two traction components, release/refusal/isolation/recovery, and shared normal-root regression. GPU supplied-basis update costs0.290-0.460ms for79 probes at1-512 regions;16-point error is at most0.484% of normal peak pressure on the checked set. A separate constant-normal-load collinear Cattaneo-Mindlin cycle exposes47.76% sampled tensile-peak error when a proportional law discards history. This is not a native history law, coupled friction qualification, complete-volume/continuum-peak shell accuracy or scene throughput.
+
+The manifest retains exact executed sources, original failed assertion and final controls, terminal scheduler state and full result tables. Complete tensor/cycle arrays remain hashed on data. Private compiler caches were node-local. The history comparison uses the stated Cattaneo-Mindlin approximation, not a qualified coupled rigid-indenter friction reference.

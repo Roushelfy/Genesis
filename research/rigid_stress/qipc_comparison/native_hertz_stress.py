@@ -78,7 +78,7 @@ def func_hertz_integrals(argument: qd.types.vector(3)):
 
 
 @qd.func
-def func_hertz_tensor(point: qd.types.vector(3), ratio: float, poisson: float, quadrature: qd.template()):
+def func_hertz_coordinate(point: qd.types.vector(3), ratio: float):
     bb = ratio * ratio
     squared = point * point
     coefficient = 1 + bb - squared[0] - squared[1]
@@ -109,6 +109,16 @@ def func_hertz_tensor(point: qd.types.vector(3), ratio: float, poisson: float, q
                         coordinate = proposal
         argument = qd.Vector([1 + coordinate, bb + coordinate, coordinate])
         is_resolved = qd.abs((squared / argument).sum() - 1) < 1e-9
+    return coordinate, is_resolved
+
+
+@qd.func
+def func_hertz_tensor(point: qd.types.vector(3), ratio: float, poisson: float, quadrature: qd.template()):
+    bb = ratio * ratio
+    squared = point * point
+    coefficient = 1 + bb - squared[0] - squared[1]
+    constant = bb - bb * squared[0] - squared[1]
+    coordinate, is_resolved = func_hertz_coordinate(point, ratio)
     q0 = qd.max(constant, 0)
     if coordinate > 0:
         q0 = (1 + coordinate) * (bb + coordinate) * squared[2] / coordinate

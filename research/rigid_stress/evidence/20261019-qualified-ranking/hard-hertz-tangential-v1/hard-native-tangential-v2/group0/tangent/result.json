@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "backend": "gpu",
+  "tangential": true,
+  "regions": 37,
+  "probes_per_region": 79,
+  "quadrature_order": 16,
+  "maximum_implementation_tensor_difference_over_peak_pressure": 1.1235610418383165e-08,
+  "maximum_high_order_tensor_difference_over_peak_pressure": 0.004839562624406001,
+  "maximum_far_field_tensor_relative_difference": 1.989092735549431e-09,
+  "release_invalid_input_isolation_and_recovery": true,
+  "benchmark": [
+    {
+      "regions": 1,
+      "probes_per_region": 79,
+      "median_seconds": 0.00030296489130705596,
+      "p90_seconds": 0.000304454977158457
+    },
+    {
+      "regions": 128,
+      "probes_per_region": 79,
+      "median_seconds": 0.0002899835002608597,
+      "p90_seconds": 0.0002909003850072622
+    },
+    {
+      "regions": 512,
+      "probes_per_region": 79,
+      "median_seconds": 0.0004598580999299884,
+      "p90_seconds": 0.00046125477645546196
+    }
+  ],
+  "arrays": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-tangential-v2/group0/tangent/tensors.npz",
+    "bytes": 256514,
+    "sha256": "6cee13d70cceaf2786d8d7fd651e0ba9d1999517085593cef66e3776ec8c43fd"
+  },
+  "scope": "Native elliptic half-space tensors for the selected normal or proportional tangential traction at supplied principal-frame probes, including surface/edge/axis and near/far points. Timing excludes ellipse estimation, friction law/history, shell coupling, max reduction and moving-scene input preparation. No physical contact-law or global shell-peak admission.",
+  "whole_goal_complete": false
+}
