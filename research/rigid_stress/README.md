@@ -52,11 +52,13 @@ maps remain supplied inputs; public automatic integration and controlled
 module/scene throughput remain open.
 
 The [current opposing-geometry component](docs/PAD_COMPLIANCE_STUDY_20261020.md#current-opposing-geometry-component)
-passes four focused cases on each of CPU/GPU. It preserves link-pair wrenches
-when collision sources are split, queries current primitive/nonconvex boundaries,
-and checks material occlusion, relative velocity, environment isolation and
-partial reset. This component is not yet connected to pressure prediction;
-nearest-surface queries do not establish complete accessible contact support.
+passes five focused cases on each of CPU/GPU. It preserves link-pair wrenches
+when collision sources are split and selects farther accessible boundaries
+when the nearest surface is occluded. Analytic/mesh blockers and incident-face
+constraints prevent false contact through material or artificial triangulation
+edges. Current poses, velocity, environment isolation and partial resets pass.
+This component is not yet connected to pressure prediction; composite interior
+union distances, unsupported shapes and complete physical support remain open.
 
 The [engineering load-sensitivity study](docs/ENGINEERING_LOAD_SENSITIVITY_20261020.md)
 adds18 qualified resolved-transfer errors: corrected-boundary tangential error

@@ -1,0 +1,40 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/genesis-shell-contact/bin/python",
+    "python_version": "3.10.20 (main, Jun  2 2026, 22:25:53) [Clang 22.1.3 ]",
+    "hostname": "rtx-209-115",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "733115",
+      "SLURM_ARRAY_JOB_ID": "733115",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-ea9a1fb0-0ea2-7392-95c1-64a5279178e1, 00000000:AD:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "engine_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/__init__.py",
+  "tests": [
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-pad-geometry/tests/rigid/test_stress_pair_geometry.py",
+      "bytes": 27124,
+      "sha256": "f8ddcdbea456fdfee0eaea8c0a47ad7cf1cd011a78aa170fad79138176abb2f4"
+    }
+  ],
+  "pytest_arguments": [
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-pad-geometry/tests/rigid/test_stress_pair_geometry.py",
+    "-k",
+    "pair_accessible",
+    "--backend",
+    "cpu",
+    "-n",
+    "0",
+    "-v",
+    "--import-mode=importlib",
+    "-p",
+    "no:cacheprovider",
+    "--junitxml=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pair-accessible-baseline-v1/group0/tests/junit.xml"
+  ]
+}

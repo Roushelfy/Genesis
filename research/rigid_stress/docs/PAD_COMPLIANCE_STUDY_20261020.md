@@ -292,14 +292,18 @@ in the observed material frame. Invalid source provenance excludes that
 environment and remains visible; valid environments retain their complete loads.
 Splitting a source into coincident half loads leaves the pair wrench unchanged.
 
-The native query reads current geom poses and returns nearest opposing points,
+The native query reads current geom poses and returns opposing candidate points,
 signed gaps, material-frame normals, relative point velocities and projected
 quadrature areas. It handles planes, boxes, spheres, capsules, cylinders and
-triangle meshes. Material-boundary intersection tests identify self-occlusion;
-back-facing, ambiguous and unsupported queries have zero candidate area.
+triangle meshes. Distance selection follows material-facing and two-link
+visibility checks. Mesh candidates must satisfy the distance derivative
+constraint along every incident triangle; an artificial triangulation edge
+cannot supply a normal tangent to the underlying planar surface. Back-facing,
+occluded, ambiguous and unsupported queries have zero candidate area.
 The geometric gap is not interpreted as physical pad indentation.
 
-Four controls pass on each of CPU and GPU: primitive/mesh distance and live rigid transforms,
+The initial nearest-only version passed four controls on both CPU and GPU:
+primitive/mesh distance and live rigid transforms,
 U-shaped and cavity nearest-boundary queries, material occlusion with
 selected-environment motion/velocity/reset, and split-source grouping with
 invalid-source isolation. Distances and velocities use absolute tolerances
@@ -308,11 +312,28 @@ The [geometry packet](../evidence/20261019-qualified-ranking/native-pair-geometr
 retains each test outcome, execution identity and source. The earlier unsupported
 Mesh option and nonexistent velocity-setter test setup failures remain retained.
 
+The extended U-shaped control exposes a missing case in that published baseline:
+all16 selected samples in two environments are classified as occluded even
+though a farther pad is accessible through the opening. The first candidate
+search fixes that omission but falsely admits contact against a triangulated
+transverse blocker. The incident-triangle constraint removes those artificial
+edge candidates. Both failed versions and their exact sources remain retained.
+
+The final CPU and GPU runs each pass all five cases. Three accessible representations
+(two boxes, their reversed order and one mesh) agree on target points, gaps,
+normals and projected areas. Analytic and mesh transverse blockers both prevent
+the apparent route to the farther pad. A common rigid transform of the material
+and pads preserves those results in the material frame; the untouched environment
+and partial reset also pass. Six primitive/mesh types each pass crossing, clear
+and endpoint-only segment controls. The
+[accessible-boundary packet](../evidence/20261019-qualified-ranking/native-pair-accessible-v1/README.md)
+retains all ten passing cases, both failed versions and the executed sources.
+
 This component is not connected to the pressure solver or public recovery
-lifecycle. It reports the nearest boundary: an occluded nearest component can
-hide a farther accessible component, so these outputs do not establish complete
-physical support. Composite interior distances remain ambiguous; ellipsoid
-and terrain queries are unsupported. Moving pressure, friction history,
-current-geometry elastic maps and controlled production cost remain unverified.
-The next integration must resolve accessible support and feed the coupled
-pressure stage before a public automatic configuration can be admitted.
+lifecycle. It searches primitive closest points and stationary triangle
+candidates, rather than solving a general visibility-constrained surface
+minimization. Mesh segment tests conservatively include edge intersections.
+Composite interior union distances remain ambiguous; ellipsoid and terrain
+queries are unsupported. These controls do not qualify overlapping triangle
+soups, pressure support or friction history. Native vector elastic maps,
+pressure/lifecycle integration and controlled production cost remain required.
