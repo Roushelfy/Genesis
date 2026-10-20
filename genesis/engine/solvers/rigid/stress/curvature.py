@@ -29,6 +29,8 @@ class StressCurvatureInfo:
     status: qd.Tensor
     vertices_tensor: qd.Tensor
     vertices_weight: qd.Tensor
+    normal_inverse: qd.Tensor
+    normal_inverse_valid: qd.Tensor
 
 
 class StressCurvature:
@@ -52,6 +54,8 @@ class StressCurvature:
             status=V(dtype=gs.qd_int, shape=(n_faces,)),
             vertices_tensor=V_MAT(3, 3, dtype=gs.qd_float, shape=dyn_info.verts.geom_idx.shape),
             vertices_weight=V(dtype=gs.qd_float, shape=dyn_info.verts.geom_idx.shape),
+            normal_inverse=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_faces,)),
+            normal_inverse_valid=V(dtype=gs.qd_bool, shape=(n_faces,)),
         )
         kernel_mesh_curvature(dyn_info, self.info, epsilon)
         kernel_vertex_curvature(dyn_info, self.info)
@@ -67,6 +71,11 @@ def kernel_mesh_curvature(dyn_info: array_class.DynInfo, curvature_info: StressC
         normals = qd.Matrix.rows(
             [dyn_info.verts.init_normal[i_a], dyn_info.verts.init_normal[i_b], dyn_info.verts.init_normal[i_c]]
         )
+        is_invertible = qd.abs(normals.determinant()) > 128.0 * epsilon * normals.norm() ** 3
+        curvature_info.normal_inverse_valid[i_f] = is_invertible
+        curvature_info.normal_inverse[i_f] = qd.Matrix.zero(gs.qd_float, 3, 3)
+        if is_invertible:
+            curvature_info.normal_inverse[i_f] = normals.transpose().inverse()
         is_valid = True
         for i in qd.static(range(3)):
             length = normals[i, :].norm()

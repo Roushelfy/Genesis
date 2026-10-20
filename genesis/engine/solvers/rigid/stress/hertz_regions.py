@@ -12,6 +12,7 @@ from genesis.utils.array_class import DataKind, V, V_MAT, V_VEC
 
 from .contact import StressContactState
 from .curvature import CurvatureStatus, StressCurvatureInfo, func_surface_curvature
+from .normal_roots import func_normal_root
 from .pair_geometry import PairGeometryStatus, func_opponent_boundary
 from .provenance import StressSourceState
 
@@ -48,8 +49,9 @@ class StressHertzRegionState:
 class StressHertzRegions:
     """Find local geometric minima before combining solved contact forces.
 
-    Six bounded two-dimensional Newton updates use current poses and signed
-    rest curvature. Converged roots on the same link pair are coalesced by
+    Planar opponents use direct inversion of the fixed normal field. Other
+    pairs use six bounded two-dimensional Newton updates with signed rest
+    curvature. Converged roots on the same link pair are coalesced by
     their geometric resolution, independently of source force or Hertz radius.
     Separate minima remain separate regions. All original forces and moments
     are retained; a pressure law still must represent their spatial wrench.
@@ -83,6 +85,7 @@ class StressHertzRegions:
 
     def update(self, link, contacts, sources, dyn_state, collider, dyn_info, curvature_info, epsilon):
         kernel_hertz_roots(link, dyn_state, collider, contacts, sources, self.state, dyn_info, curvature_info, epsilon)
+        kernel_hertz_planar(dyn_state, collider, contacts, sources, self.state, dyn_info, curvature_info, epsilon)
         kernel_hertz_regions(contacts, sources, self.state, epsilon)
 
 
@@ -142,8 +145,11 @@ def kernel_hertz_roots(
                     contact_state.frame_quaternion[i_b],
                 )
                 status = HertzRegionStatus.ITERATIONS
+                is_planar = (
+                    dyn_info.geoms.type[i_ga] == gs.GEOM_TYPE.MESH or dyn_info.geoms.type[i_ga] == gs.GEOM_TYPE.SPHERE
+                ) and (dyn_info.geoms.type[i_gb] == gs.GEOM_TYPE.PLANE or dyn_info.geoms.type[i_gb] == gs.GEOM_TYPE.BOX)
                 i_box_face = -1
-                for i_iteration in range(6):
+                for i_iteration in range(qd.select(is_planar, 0, 6)):
                     if status == HertzRegionStatus.ITERATIONS:
                         positions = qd.Matrix.zero(gs.qd_float, 2, 3)
                         normals = qd.Matrix.zero(gs.qd_float, 2, 3)
@@ -222,6 +228,95 @@ def kernel_hertz_roots(
         region_state.curvature[i_c, i_b], region_state.gap[i_c, i_b] = curvature, gap
         region_state.normal_residual[i_c, i_b], region_state.geometry_kind[i_c, i_b] = residual, geometry_kind
         region_state.opponent_link[i_c, i_b], region_state.status[i_c, i_b] = i_opponent, status
+
+
+@qd.kernel
+def kernel_hertz_planar(
+    dyn_state: array_class.DynState,
+    collider_state: array_class.ColliderState,
+    contact_state: StressContactState,
+    source_state: StressSourceState,
+    region_state: StressHertzRegionState,
+    dyn_info: array_class.DynInfo,
+    curvature_info: StressCurvatureInfo,
+    epsilon: float,
+):
+    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+        if region_state.status[i_c, i_b] == HertzRegionStatus.ITERATIONS:
+            i_own = source_state.geom[i_c, i_b]
+            i_contact = collider_state.contact_sort_idx[i_c, i_b]
+            i_other = collider_state.contact_data.geom_a[i_contact, i_b]
+            if i_other == i_own:
+                i_other = collider_state.contact_data.geom_b[i_contact, i_b]
+            own_kind, other_kind = dyn_info.geoms.type[i_own], dyn_info.geoms.type[i_other]
+            is_planar = (own_kind == gs.GEOM_TYPE.MESH or own_kind == gs.GEOM_TYPE.SPHERE) and (
+                other_kind == gs.GEOM_TYPE.PLANE or other_kind == gs.GEOM_TYPE.BOX
+            )
+            if is_planar:
+                seed = geom.qd_transform_by_trans_quat(
+                    source_state.witness[i_c, i_b],
+                    contact_state.frame_position[i_b],
+                    contact_state.frame_quaternion[i_b],
+                )
+                local_normal = qd.Vector([dyn_info.geoms.data[i_other][i] for i in qd.static(range(3))]).normalized()
+                plane_point = dyn_state.geoms.pos[i_other, i_b]
+                i_box_axis = -1
+                if other_kind == gs.GEOM_TYPE.BOX:
+                    position, boundary_normal, boundary_gap, i_f, boundary_status = func_opponent_boundary(
+                        i_own, i_b, seed, dyn_state, dyn_info, epsilon
+                    )
+                    own_normal, own_tensor, curvature_status = func_surface_curvature(
+                        i_own, i_f, i_b, position, dyn_state, dyn_info, curvature_info, epsilon
+                    )
+                    opposed = geom.qd_inv_transform_by_quat(-own_normal, dyn_state.geoms.quat[i_other, i_b])
+                    i_box_axis = 0
+                    for i in qd.static(range(1, 3)):
+                        if qd.abs(opposed[i]) > qd.abs(opposed[i_box_axis]):
+                            i_box_axis = i
+                    local_normal = qd.Vector.zero(gs.qd_float, 3)
+                    local_normal[i_box_axis] = qd.select(opposed[i_box_axis] >= 0.0, 1.0, -1.0)
+                    plane_point += geom.qd_transform_by_quat(
+                        0.5 * dyn_info.geoms.data[i_other][i_box_axis] * local_normal,
+                        dyn_state.geoms.quat[i_other, i_b],
+                    )
+                normal = -geom.qd_transform_by_quat(local_normal, dyn_state.geoms.quat[i_other, i_b])
+                center, operator, i_face, residual, geometry_kind = func_normal_root(
+                    i_own, i_b, normal, seed, dyn_state, dyn_info, curvature_info, epsilon
+                )
+                status = gs.qd_int(HertzRegionStatus.SUCCESS)
+                if geometry_kind >= CurvatureStatus.AMBIGUOUS:
+                    status = HertzRegionStatus.GEOMETRY
+                elif residual >= 1e-7:
+                    status = HertzRegionStatus.ITERATIONS
+                i_axis = 0
+                for i in qd.static(range(1, 3)):
+                    if qd.abs(normal[i]) < qd.abs(normal[i_axis]):
+                        i_axis = i
+                unit = qd.Vector.zero(gs.qd_float, 3)
+                unit[i_axis] = 1.0
+                tangent = normal.cross(unit).normalized()
+                frame = qd.Matrix.rows([tangent, normal.cross(tangent)])
+                curvature = frame @ operator @ frame.transpose()
+                if status == HertzRegionStatus.SUCCESS:
+                    if curvature.trace() <= 0.0 or curvature.determinant() <= 128.0 * epsilon * curvature.trace() ** 2:
+                        status = HertzRegionStatus.CURVATURE
+                    if i_box_axis >= 0:
+                        local_center = geom.qd_inv_transform_by_trans_quat(
+                            center, dyn_state.geoms.pos[i_other, i_b], dyn_state.geoms.quat[i_other, i_b]
+                        )
+                        half = 0.5 * qd.Vector([dyn_info.geoms.data[i_other][i] for i in qd.static(range(3))])
+                        for i in qd.static(range(3)):
+                            if i != i_box_axis and qd.abs(local_center[i]) >= half[i] - 128.0 * epsilon * half.norm():
+                                status = HertzRegionStatus.GEOMETRY
+                                geometry_kind = CurvatureStatus.AMBIGUOUS
+                region_state.center[i_c, i_b] = center
+                region_state.normal[i_c, i_b] = normal
+                region_state.tangent[i_c, i_b] = tangent
+                region_state.curvature[i_c, i_b] = curvature
+                region_state.gap[i_c, i_b] = (plane_point - center).dot(normal)
+                region_state.normal_residual[i_c, i_b] = residual
+                region_state.geometry_kind[i_c, i_b] = geometry_kind
+                region_state.status[i_c, i_b] = status
 
 
 @qd.func
