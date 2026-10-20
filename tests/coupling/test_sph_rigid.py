@@ -25,6 +25,7 @@ def test_rigid_flotation_follows_density_ratio(n_envs, pressure_solver, show_vie
         ),
         sph_options=gs.options.SPHOptions(
             particle_size=0.02,
+            use_legacy_solver=True,
             pressure_solver=pressure_solver,
             lower_bound=(-0.25, -0.25, 0.0),
             upper_bound=(0.25, 0.25, 1.0),
@@ -109,6 +110,7 @@ def test_coupling_force_wakes_hibernated_link(n_envs, show_viewer):
         ),
         sph_options=gs.options.SPHOptions(
             particle_size=0.02,
+            use_legacy_solver=True,
             lower_bound=(-0.55, -0.25, 0.0),
             upper_bound=(0.55, 0.25, 1.0),
         ),

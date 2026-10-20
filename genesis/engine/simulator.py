@@ -21,6 +21,7 @@ from .solvers import (
     PBDSolver,
     RigidSolver,
     SFSolver,
+    SPHLegacySolver,
     SPHSolver,
     ToolSolver,
 )
@@ -74,7 +75,10 @@ class Simulator(RBC):
         self.rigid_solver = RigidSolver(self.scene, self, options.rigid)
         self.kinematic_solver = KinematicSolver(self.scene, self, options.kinematic)
         self.mpm_solver = MPMSolver(self.scene, self, options.mpm)
-        self.sph_solver = SPHSolver(self.scene, self, options.sph)
+        if options.sph.use_legacy_solver:
+            self.sph_solver = SPHLegacySolver(self.scene, self, options.sph)
+        else:
+            self.sph_solver = SPHSolver(self.scene, self, options.sph)
         self.pbd_solver = PBDSolver(self.scene, self, options.pbd)
         self.fem_solver = FEMSolver(self.scene, self, options.fem)
         self.sf_solver = SFSolver(self.scene, self, options.sf)

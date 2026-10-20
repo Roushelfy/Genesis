@@ -21,6 +21,7 @@ def main():
             upper_bound=(1.0, 1.0, 1.0),
         ),
         sph_options=gs.options.SPHOptions(
+            use_legacy_solver=True,
             lower_bound=(-0.03, -0.03, -0.08),
             upper_bound=(1.03, 1.03, 1.0),
         ),

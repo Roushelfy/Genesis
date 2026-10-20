@@ -325,7 +325,7 @@ class Raytracer:
                     str(sph_entity.uid),
                     self.sim.sph_solver,
                     self.sim.sph_solver.particle_radius,
-                    sph_entity.material.rho,
+                    sph_entity.material.rest_density,
                 )
 
         # PBD entities

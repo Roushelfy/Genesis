@@ -17,6 +17,7 @@ def main():
             substeps=10,
         ),
         sph_options=gs.options.SPHOptions(
+            use_legacy_solver=True,
             lower_bound=(0.0, -1.0, 0.0),
             upper_bound=(1.0, 1.0, 2.4),
         ),
@@ -39,7 +40,7 @@ def main():
     water = scene.add_entity(
         material=gs.materials.SPH.Liquid(
             sampler="regular",
-            mu=0.01,
+            viscosity=0.01,
         ),
         morph=gs.morphs.Box(
             pos=(0.5, 0.0, 0.6),

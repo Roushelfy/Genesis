@@ -738,8 +738,14 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     ----------
     particle_size : float, optional
         Particle diameter in meters. Defaults to 0.02.
+    use_legacy_solver : bool, optional
+        Whether to use the legacy SPH solver. The legacy solver offers the weakly compressible 'WCSPH' pressure solver
+        and two-way coupling with rigid, MPM and FEM entities, but its 'DFSPH' pressure solver lets the fluid compress
+        noticeably. The default solver enforces incompressibility accurately, but it only offers 'DFSPH' and has no
+        coupling with other entities yet. Defaults to False.
     pressure_solver : str, optional
-        Pressure solver type. Current supported pressure solvers are 'WCSPH' and 'DFSPH'. Defaults to 'WCSPH'.
+        Pressure solver type, either 'WCSPH' (legacy solver only) or 'DFSPH'. Defaults to 'WCSPH' for the legacy
+        solver and 'DFSPH' otherwise.
     lower_bound : tuple, shape (3,), optional
         Lower bound of the simulation domain. Defaults to (-100.0, -100.0, 0.0).
     upper_bound : tuple, shape (3,), optional
@@ -763,7 +769,8 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     """
 
     particle_size: PositiveFloat = 0.02
-    pressure_solver: Literal["WCSPH", "DFSPH"] = "WCSPH"
+    use_legacy_solver: StrictBool = False
+    pressure_solver: Literal["WCSPH", "DFSPH"] | None = None
 
     lower_bound: Vec3FType = (-100.0, -100.0, 0.0)
     upper_bound: Vec3FType = (100.0, 100.0, 100.0)
@@ -794,6 +801,11 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     def model_post_init(self, context: Any) -> None:
         if not np.all(np.array(self.upper_bound) > np.array(self.lower_bound)):
             gs.raise_exception("Invalid pair of upper_bound and lower_bound.")
+
+        if self.pressure_solver is None:
+            self.pressure_solver = "WCSPH" if self.use_legacy_solver else "DFSPH"
+        elif self.pressure_solver == "WCSPH" and not self.use_legacy_solver:
+            gs.raise_exception("Pressure solver 'WCSPH' requires `use_legacy_solver=True`.")
 
         self._support_radius = 2 * self.particle_size
 

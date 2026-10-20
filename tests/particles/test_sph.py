@@ -22,6 +22,7 @@ def create_sph_scene(show_viewer, particle_size=0.01, pressure_solver="WCSPH"):
         ),
         sph_options=gs.options.SPHOptions(
             particle_size=particle_size,
+            use_legacy_solver=True,
             pressure_solver=pressure_solver,
             lower_bound=(-0.5, -0.5, 0.0),
             upper_bound=(0.5, 0.5, 1),
@@ -90,7 +91,7 @@ def get_sph_density_pressure(scene, n_particles):
     densities = sph_solver.particles_reordered.rho.to_numpy()[:n_particles, 0]
 
     # Get material properties for pressure computation
-    rho0 = sph_solver.particles_info[0].rho
+    rho0 = sph_solver.particles_info[0].rest_density
     stiffness = sph_solver.particles_info[0].stiffness
     exponent = sph_solver.particles_info[0].exponent
 
@@ -111,7 +112,7 @@ def test_initial_density_regular_sampler(show_viewer, pressure_solver, tol):
     scene, _ = create_sph_scene(show_viewer, pressure_solver=pressure_solver)
     sph_solver = scene.sph_solver
     n_particles = sph_solver.n_particles
-    rho0 = sph_solver.particles_info[0].rho
+    rho0 = sph_solver.particles_info[0].rest_density
 
     # Get initial density values
     densities, _ = get_sph_density_pressure(scene, n_particles)
@@ -150,7 +151,7 @@ def test_initial_pressure_regular_sampler(show_viewer, pressure_solver, tol):
     scene, _ = create_sph_scene(show_viewer, pressure_solver=pressure_solver)
     sph_solver = scene.sph_solver
     n_particles = sph_solver.n_particles
-    rho0 = sph_solver.particles_info[0].rho
+    rho0 = sph_solver.particles_info[0].rest_density
     stiffness = sph_solver.particles_info[0].stiffness
 
     # Get initial pressure values
@@ -231,7 +232,7 @@ def test_density_consistency_different_particle_sizes(show_viewer, pressure_solv
 
     sph_solver = scene.sph_solver
     n_particles = sph_solver.n_particles
-    rho0 = sph_solver.particles_info[0].rho
+    rho0 = sph_solver.particles_info[0].rest_density
 
     # Get density values
     densities, pressures = get_sph_density_pressure(scene, n_particles)
@@ -289,6 +290,7 @@ def test_pressure_carries_column_weight(show_viewer, pressure_solver):
         ),
         sph_options=gs.options.SPHOptions(
             particle_size=0.02,
+            use_legacy_solver=True,
             pressure_solver=pressure_solver,
             lower_bound=(-0.15, -0.15, 0.0),
             upper_bound=(0.15, 0.15, 1.0),

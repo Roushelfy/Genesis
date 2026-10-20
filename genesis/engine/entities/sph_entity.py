@@ -73,6 +73,8 @@ class SPHEntity(ParticleEntity):
             self._n_particles,
             self._solver.entities.index(self),
             self._material.rest_density,
+            self._material.stiffness,
+            self._material.exponent,
             self._material.viscosity,
             self._material.surface_tension,
             self._particles,

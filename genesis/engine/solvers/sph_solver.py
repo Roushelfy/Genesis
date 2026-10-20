@@ -35,7 +35,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self._df_max_div_iters = options.max_divergence_solver_iterations
         self._df_max_den_iters = options.max_density_solver_iterations
         self._df_min_div_iters = 1
-        self._df_min_den_iters = 2
+        self._df_min_den_iters = 1
         self._df_warm_start = options.warm_start
         self._df_eps = 1e-5
         # A particle with fewer neighbors sits at a free surface, where the divergence estimate is unreliable.
@@ -706,6 +706,9 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         n_particles: qd.i32,
         material_idx: qd.i32,
         mat_rest_density: qd.f32,
+        # The stiffness and exponent of the equation of state only apply to the legacy 'WCSPH' pressure solver.
+        mat_stiffness: qd.f32,
+        mat_exponent: qd.f32,
         mat_viscosity: qd.f32,
         mat_surface_tension: qd.f32,
         pos: qd.types.ndarray(),
