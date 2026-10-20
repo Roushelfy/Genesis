@@ -9,11 +9,13 @@ results, rather than build another framework or expose many tuning options.
 
 ## 1. Finish the current comparison independently
 
-Complete the running fine-reference histories, qualification, DPR/SCR/Shell
-error rankings, inspected figures and configuration-matched cost/stability
-summary. Reuse validated continuation and analysis infrastructure; prioritize
+Reuse the [published fixed-radius comparison](QUALIFIED_FRICTION_RESULTS_20261020.md):
+its declared0.1N normal/friction pad reference,54 dimensional errors,18 rankings,
+inspected figures and matched research costs are now complete. Preserve this
+baseline and close only remaining scope/configuration consolidation; do not
+rerun the completed matrix to adopt the new error-budget study. Prioritize new
 scientific results over expanding generic scheduling, recovery or audit tools.
-Do not hot-edit submitted sources or restart valid work to adopt this goal.
+Do not hot-edit submitted sources or restart valid work.
 
 Retain fixed-radius/manual configurations and original/repaired Shell variants
 as named baselines. Automatic contact regions are a separate comparison and
@@ -40,10 +42,101 @@ not impossibility of real physical contact.
 
 Align source generation and recovery with a consistent declared friction law.
 If that changes the old law, label the variant and preserve its baseline.
-Derive roundoff budgets from meaningful physical scales, with bounded effects
-on force, moment and stress; do not normalize solely by the tiny residual or
-globally loosen tolerances. Keep genuinely infeasible loads rejected.
-A larger patch or diagnostic DPR fallback does not itself admit an SCR result.
+Keep exact-model infeasibility diagnostics and the original strict path.
+Separately investigate the error-budgeted approximation authorized below:
+strict infeasibility alone does not decide its engineering usefulness.
+A larger patch or diagnostic DPR fallback does not itself admit physical accuracy.
+
+## Error judgments and practical acceptance budgets
+
+User clarification, 2026-10-20: distinguish mathematical exactness from useful
+stress accuracy. A1e-8 load-fitting requirement can be unnecessarily expensive
+or reject useful observations when the application tolerates substantially
+larger stress errors. This is a hypothesis to measure, not a chosen new default.
+Keep solver convergence, permitted load-model discrepancy and physical stress
+error as three separate quantities.
+
+**Tiny detachment residues:** scaling an allowance by the residual itself made
+the earlier approximately1.76e-20N shear conflict with an approximately1e-34N
+roundoff allowance. This is an inappropriate engineering scale for a0.1N task.
+Use declared physical force/moment scales and justified absolute-plus-relative
+budgets, including meaningful zero-load residual/stress checks. A diagnostic
+relative elastic residual near1e17 at a zero/tiny RHS does not alone establish
+a bad stress field, and finiteness alone does not establish a good one.
+
+The [new bounded-input results](RESOLVED_PAD_AND_SOURCE_INPUTS_20261020.md)
+already supply positive controls: source reconciliation changes the captured
+inputs by approximately3.8e-21N/1.8e-20N and its independent linear P2 stress
+perturbations are below8e-15Pa. Both labelled research variants complete1000
+every-step observations. Reuse these results and original failures; do not
+repeat unchanged controls. These correction-response results do not bound
+arbitrary continuum placement, prove the general SCR model, or establish
+production batching/throughput.
+
+**Certified diverse-bank conflicts:** exact continuous force/wrench infeasibility
+does not imply that every nearby admissible load has unacceptable stress error.
+Conversely, a small required wrench change does not establish a small stress
+change. The earlier proportional-budget estimates of about0.135% and0.000371%
+only make one historical certificate inconclusive; they are not measured minimum
+load corrections, guaranteed sufficient budgets or recommended tolerances.
+Later env330 force-only evidence is stronger than its earlier wrench witness.
+Measured source/anchor normal differences are about16–18degrees, a geometry/model
+mismatch that must not be dismissed as roundoff.
+Retain the complete diagnoses and do not select acceptance from those estimates.
+
+Prioritize a compact CPU study on the retained first-failure states:
+
+- Find a nearby surface traction distribution satisfying the declared unilateral
+  and friction cones. Measure changes to individual sources, total force and
+  moment, using physically scaled force/moment arms and explicit locality.
+- Compare a small set of justified approximation budgets against the strict
+  baseline; solve the approximation problem to its own numerical convergence.
+  Do not treat a failed optimizer or exhausted iteration cap as an accepted
+  engineering approximation.
+- Compute the stress response of the actual load correction with the same
+  declared transfer, geometry/material and free-link balance/inertial treatment.
+  Include any equilibrium correction. Examine complete weighted stress tensors,
+  membrane/bending and raw tensile/von-Mises maxima/locations, using absolute
+  error near zero and relative error at meaningful scales.
+- Preserve source priors and local compression. A budget based only on tiny net
+  force or aggregate wrench can hide substantial self-equilibrated stress.
+- Check representative changing/asymmetric normal/friction inputs and measure
+  cost. Choose practical budgets from stress sensitivity, applicable physical
+  reference error and the intended RL accuracy, rather than retuning until a
+  failed example passes.
+
+A useful explicitly labelled engineering approximation is allowed to adjust
+observation loads within a demonstrated error budget. Preserve original loads,
+certificates and tests, expose correction magnitude/quality, and keep this
+separate from strict/raw acceptance. Reject corrections that exceed the admitted
+budget or remain physically/numerically unresolved. Never relabel the original
+exactly infeasible input as feasible, change rigid dynamics through an observer,
+or silently enlarge radius/friction to conceal the conflict.
+
+**DPR load fidelity:** prioritize correcting the observed approximately42%
+inner-boundary transfer in the declared external-pad case. Global force/moment
+conservation did not prevent a wrong pressure distribution. Already resolved
+pressure samples should use conservative work-conjugate transfer to their actual
+contacted boundary, without a second finite disk. Generalize by boundary/source
+provenance, not a universal outer-surface rule that forbids legitimate inner or
+nonconvex contacts. Sparse collider points still need a physical footprint model.
+
+The measured8.70% complete-stress change and increased peaks after conservative
+transfer are differences between load models on one mesh, not an8.70% accuracy
+improvement or proof that larger/smaller stress is more correct. CPU/native
+same-load agreement verifies implementation only. Compare against qualified
+same-problem reference fields before assigning physical error/rank, and do not
+subtract scalar error norms as an attribution. Keep source sampling, pressure
+reconstruction, elasticity discretization and model reduction contributions
+distinct, with signed cross terms where an actual decomposition is available.
+
+This clarification takes precedence over blanket wording in earlier goals or
+reports that every finite incompatibility must remain a fatal engineering
+failure. Original strict tests and immutable results stay unchanged. Do not
+globally relax their assertions; develop and validate the separately identified
+approximation. New physical/load settings require their own matched error and
+cost evidence, while pure implementation optimizations need focused consistency
+checks rather than another expensive convergence campaign.
 
 ## 3. CPU study: determine contact support and pressure from physics
 

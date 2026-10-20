@@ -1,5 +1,14 @@
 # Working on native rigid stress recovery
 
+**Latest error direction, 2026-10-20:** read the
+[engineering error-budget clarification](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md#error-judgments-and-practical-acceptance-budgets).
+Quantify load correction versus complete/maximum stress error before choosing
+practical recovery tolerances. A certified exact-model conflict may still admit
+a useful separately labelled nearby-load approximation. Preserve strict tests
+and original certificates; reuse the completed bounded-roundoff controls and
+prioritize correcting DPR's wrong-boundary spreading. This clarification
+supersedes blanket fatal-rejection wording for the separate engineering study.
+
 **Latest user direction, 2026-10-20:** follow the
 [automatic contact-region and throughput goal](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md).
 Finish current fixed-radius rankings, run a compact CPU comparison of physical
