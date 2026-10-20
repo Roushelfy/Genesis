@@ -67,7 +67,8 @@ separately queued for the fine reference after qualification.
 | --- | --- | --- |
 |730607 /729479_0/_1 |20-check admission of terminal250/125um two-wall parents | Both q9/q25 surface comparisons complete; component730622_0 passes65 checks. |
 |729487 /729479_2–7 | q10 reference729312, then explicit four-parent admission | Wall/surface3/joint fields retain original dependencies; pending. |
-|729478 /729480 |729312 and729314, then explicit six-parent admission | Fine time/contact fields; pending. |
+|730699 /729480_0/_1 | Actual successful729312_1/729314_0, then strict two-parent admission | Original fine contact-order fields may run before the separate800-step parent; pending. |
+|729478 /729480_2/_3 |729312 and729314, then explicit six-parent admission | Fine half-dt fields retain their original gate; pending. |
 |729513 | afterany on729479/729480 | Seven-parent preflight followed by36-comparison qualification; pending. |
 |729539 | successful qualification729513 |18 DPR/SCR/Shell q1/q9/q25 comparisons with complete surface exports; pending replacement of cancelled729518. |
 |729519 | successful qualification729513 | Complete actual-force histories and traction data for the final figures; pending. |
@@ -114,3 +115,29 @@ were released after20-check pair admission; the other six source/task/dependency
 contracts remain unchanged. Expected rejection controls preserve the complete
 parent-row guard. Coarse trends, wall/joint and fine time/contact/depth evidence
 still gate the full36-comparison decision and18 conditional envelopes.
+
+
+## Independent contact-order readiness, 2026-10-20
+
+The original contact-order tasks729480_0/_1 use only the125um/three-wall
+q6 and q10 parents, each400 steps. Guard730699 now waits on the actual
+729314_0/729312_1 task successes and then runs the exact existing ten-check
+per-parent history/momentum/endpoint admission worker. Only these two pending
+array-element dependencies change. Their original q9/depth2, q9/depth4 and
+q25/depth4 commands, captures, thresholds and output paths remain byte-identical.
+This lets independent contact controls proceed without waiting for the800-step
+half-dt control; it does not accept partial histories or infer admission from
+scheduler success. A failed content check prevents either field task from running.
+
+The other two time-control tasks retain729478. The seven-parent preflight and
+all36 comparisons,18 envelopes, final method/data/rank/figure/cost gates retain
+their original dependencies and requirements. The guard and both selected
+field tasks remain pending at publication; all three physical writers remain
+running. There is no new scientific result or qualified-reference claim.
+
+The [contact-order scheduling packet](../evidence/20261019-qualified-ranking/contact125-pair-scheduling-v1/README.md)
+retains23 payloads/165,478 bytes: immutable launch/source/task receipts, the
+before/after scheduler journal, unchanged worker hash and original field captures.
+Live fields and histories are excluded. Reproduce the guard using its captured
+task JSON through shell_comparison.submit with explicit fresh data outputs,
+--cpu-only, node-local private caches and the established rtx-mid/container path.

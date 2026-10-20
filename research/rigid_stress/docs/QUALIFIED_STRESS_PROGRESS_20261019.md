@@ -1910,3 +1910,23 @@ pending on the other three fine histories and original full-matrix pipeline.
 The [surface component packet](../evidence/20261019-qualified-ranking/surface125-component-v1/README.md)
 retains104 payloads/457,365 bytes plus hashes of four complete columns on data.
 All live dynamics and unexecuted array groups remain excluded from publication.
+
+
+## Release contact-order controls on their own complete parents, 2026-10-20
+
+All three remaining fine histories are authoritatively RUNNING. Their normal/
+friction prefixes are diagnostics only. The original contact-order groups0/1
+of729480 depend only on the400-step125um/three-wall q6/q10 pair, while the
+original combined gate also waits for the separate800-step half-dt history.
+New guard730699 is afterok on729314_0/729312_1 and reuses the exact original
+strict whole-history/current-momentum/two-frame admission module. Only the two
+original field-element dependencies now point to this guard; no field command,
+source, output, physics parameter or target changes and no task is resubmitted.
+Five scheduling/hash checks pass. The two half-dt groups and all final
+qualification/method/data/rank/figure/cost dependencies remain unchanged.
+
+The [immutable scheduling packet](../evidence/20261019-qualified-ranking/contact125-pair-scheduling-v1/README.md)
+retains23 payloads/165,478 bytes and excludes live outputs. Guard and selected
+fields remain pending, with no new scientific result or accepted reference frame.
+The complete reference, method ranks, final friction figures and consolidated
+matched delivery remain required. This scheduling advance does not close them.
