@@ -1,5 +1,14 @@
 # Working on native rigid stress recovery
 
+**Latest user direction, 2026-10-20:** follow the
+[automatic contact-region and throughput goal](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md).
+Finish current fixed-radius rankings, run a compact CPU comparison of physical
+region predictors and shell/pad compliance, address the distinct current SCR
+failure classes, and profile/tune native throughput in parallel. Prefer DPR for
+first integration, keep production in Quadrants and preserve changing nonconvex
+normal/friction contacts. Validated recovery infrastructure is available; focus
+on actual results instead of expanding generic orchestration/audit frameworks.
+
 **Latest user direction, 2026-10-19:** separate accuracy verification from
 performance timing. Read [the protocol](docs/ACCURACY_AND_THROUGHPUT_PROTOCOL.md).
 Run low-resolution native module and end-to-end throughput tuning now; do not

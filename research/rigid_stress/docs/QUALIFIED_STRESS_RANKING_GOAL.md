@@ -1,5 +1,12 @@
 # Goal: complete qualified DPR / SCR / Shell stress-error rankings
 
+**User extension, 2026-10-20:** the
+[next contact-region and throughput goals](AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md)
+add CPU-validated automatic support/pressure prediction, explicit current SCR
+failure attribution/repair and profile-driven native optimization. Finish this
+existing fixed-radius comparison independently; preserve its baselines, pending
+reference qualification and all acceptance targets.
+
 User direction, 2026-10-18: finish the error comparison, rather than close
 another diagnostic campaign. The primary application benchmark remains two
 parallel rigid plates squeezing a full hollow egg. Deliver measured stress
