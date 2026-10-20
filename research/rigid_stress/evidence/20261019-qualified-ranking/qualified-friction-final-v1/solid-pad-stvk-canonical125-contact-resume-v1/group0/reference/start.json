@@ -1,0 +1,83 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-191",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "730979",
+      "SLURM_ARRAY_JOB_ID": "730979",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+    "bytes": 7265913,
+    "sha256": "3d580636702bf2d986f52734f9fbfbc09eed439f73d912a263235f2a24d79bf7"
+  },
+  "args": {
+    "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+    "loads": [
+      0.1,
+      0.1
+    ],
+    "dt": 0.001,
+    "ramp": 0.05,
+    "hold": 0.15,
+    "damping": 50.0,
+    "clearance": 2.2e-05,
+    "plate_offset_x": 0.0,
+    "shear_distance": 0.0,
+    "shear_start": 0.3,
+    "shear_duration": 0.1,
+    "record_stride": 1,
+    "empty": false,
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-contact-resume-v1/group0/reference",
+    "friction": 0.3,
+    "gravity_x": 1.0,
+    "gravity_start": 0.2,
+    "gravity_ramp": 0.05,
+    "candidate_radius": 0.003,
+    "quadrature_order": 6,
+    "contact_solver": "modal",
+    "elasticity": "stvk",
+    "warm_contact": true,
+    "constitutive_correction": "direct",
+    "cache_constitutive_evaluations": true,
+    "reuse_contact_velocity": true,
+    "checkpoint_stride": 25
+  },
+  "resume_provenance": {
+    "receipt": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-contact-resume-preparation-v1/result.json",
+      "bytes": 11413,
+      "sha256": "64c8be234a8ecd9f76938b970897f5d0c0db969de16c6131ae6b2f622a28f963"
+    },
+    "terminal_parent_job": "729314_0",
+    "parent_state": "PREEMPTED",
+    "prefix_steps": 200,
+    "prefix_sha256": "cf6d0b83d1ac6ad465e2dc5aeb1df355300caa814eae2c6701e9f06aca8c5466",
+    "selected_frame": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-time-contact-v1/group0/reference/frames/level0.npz",
+      "bytes": 419712800,
+      "sha256": "a9e87bc2c004eb981b5ea1e29213e07ec6a2a3a6b9ea30ddab06aaf5674b2e23"
+    },
+    "physical_state": "Exact saved full body displacement/velocity, journal plate displacement/velocity and lagged normal point force. Global load/time indices continue unchanged.",
+    "algorithmic_warm_start": "Physical point force times dt; solver caches are rebuilt and original convergence gates remain mandatory.",
+    "new_segment_elapsed_is_whole_trajectory_cost": false
+  },
+  "mass_kg": 0.007480878624907549,
+  "body_dofs": 3080826,
+  "dynamic_dofs": 3080827,
+  "fixed_dynamic_dofs": 0,
+  "contact_points": 253200,
+  "factor_seconds": 1995.2633542310214,
+  "setup_seconds": 1999.287505401997,
+  "compliance_reciprocity_error": null,
+  "scope": "Independent affine-geometry P2 solid with explicit linear/StVK constitutive choice, full consistent inertia and free rigid modes; fixed reference-area physical pad, lagged smooth Coulomb friction. Spatial/kinematic qualification remains separate."
+}

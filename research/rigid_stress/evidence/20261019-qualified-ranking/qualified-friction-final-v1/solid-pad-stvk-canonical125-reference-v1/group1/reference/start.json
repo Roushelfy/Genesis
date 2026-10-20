@@ -1,0 +1,63 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "729312",
+      "SLURM_ARRAY_JOB_ID": "729312",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-17819d06-c563-257f-30fe-100c9f111279, 00000000:20:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": null
+  },
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+    "bytes": 7265913,
+    "sha256": "3d580636702bf2d986f52734f9fbfbc09eed439f73d912a263235f2a24d79bf7"
+  },
+  "args": {
+    "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-joint-refinement-mesh-v1/group0/meshes/land-contact-0.npz",
+    "loads": [
+      0.1,
+      0.1
+    ],
+    "dt": 0.001,
+    "ramp": 0.05,
+    "hold": 0.15,
+    "damping": 50.0,
+    "clearance": 2.2e-05,
+    "plate_offset_x": 0.0,
+    "shear_distance": 0.0,
+    "shear_start": 0.3,
+    "shear_duration": 0.1,
+    "record_stride": 1,
+    "empty": false,
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-reference-v1/group1/reference",
+    "friction": 0.3,
+    "gravity_x": 1.0,
+    "gravity_start": 0.2,
+    "gravity_ramp": 0.05,
+    "candidate_radius": 0.003,
+    "quadrature_order": 10,
+    "contact_solver": "modal",
+    "elasticity": "stvk",
+    "warm_contact": true,
+    "constitutive_correction": "direct",
+    "cache_constitutive_evaluations": true,
+    "reuse_contact_velocity": true
+  },
+  "mass_kg": 0.007480878624907549,
+  "body_dofs": 3080826,
+  "dynamic_dofs": 3080827,
+  "fixed_dynamic_dofs": 0,
+  "contact_points": 527500,
+  "factor_seconds": 1960.3542128190165,
+  "setup_seconds": 1962.898245064076,
+  "compliance_reciprocity_error": null,
+  "scope": "Independent affine-geometry P2 solid with explicit linear/StVK constitutive choice, full consistent inertia and free rigid modes; fixed reference-area physical pad, lagged smooth Coulomb friction. Spatial/kinematic qualification remains separate."
+}

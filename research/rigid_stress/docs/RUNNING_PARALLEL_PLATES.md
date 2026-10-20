@@ -804,3 +804,30 @@ ancestor receipt if an intermediate attempt has no newer complete checkpoint;
 keep that attempt's original records/cost separate. Actual old/new metadata
 controls pass20 checks, including all three original fine inputs and both
 validated225/300-step receipts. See the [forward-prefix control](REFERENCE_ENDPOINT_CONTINUATION_20261019.md#refuse-a-repeated-inherited-prefix-before-expensive-setup).
+
+
+## Completed fixed-radius friction comparison
+
+The [final report](QUALIFIED_FRICTION_RESULTS_20261020.md) links the54-row error
+CSV, conditional reference envelopes, matching costs, four inspected figures
+and complete source/receipt packet. Its captured `tasks.json` files preserve
+commands for qualification, field extraction, ranking, plotting and cost joining;
+use fresh outputs and the recorded immutable inputs when rerunning. Large arrays
+remain at their hashed data-side paths.
+
+For example, the existing CPU Slurm helper can replay the final ranking task:
+
+```bash
+python3 -m research.rigid_stress.shell_comparison.submit \
+  --source /mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-witness-consistency \
+  --output /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/REPLAY_ID \
+  --tasks research/rigid_stress/evidence/20261019-qualified-ranking/qualified-friction-final-v1/canonical-stvk-resilient-method-ranking-v1/tasks.json \
+  --python /mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python \
+  --cpu-only --node-local-cache --cpus 4 --memory-gb 32 --minutes 30
+```
+
+Run from the task worktree. Replace `REPLAY_ID` with a new directory. The helper
+captures current analysis code; exact historical replay uses the packet's captured
+analysis sources and recorded engine identity. Never overwrite the archived or
+original runtime records. The fixed-radius result does not include the separate
+research-only `--load-transfer resolved_outer_p2` or `--source-roundoff` variants.

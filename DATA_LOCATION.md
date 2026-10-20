@@ -615,3 +615,15 @@ outputs are relocated. Three terminal publication packets retain554 compact
 payloads (3,638,756 bytes) and78 externally hashed arrays, including the completed
 main/contact125um reference checkpoints. Earlier archives and captured sources
 remain immutable; all full fields, trajectories, caches and logs stay on data.
+
+
+The completed fixed-radius friction chain remains under its existing
+`solid-pad-stvk-canonical125-halfdt-resume-v1`, resilient spatial/control/field,
+qualification/ranking/figure and matching-cost directories in the20261019 ranking
+run root. `qualified-friction-final-v1` retains519 compact/export payloads
+(14,050,058 bytes) and152 externally hashed arrays. Selected final SVG/PDF/PNG
+and CSV deliverables may remain in Git; all complete fields and original logs
+stay on data. Visual review is a separate immutable companion receipt.
+The new CPU compliance study uses `pad-compliance-study-v1` and explicit
+`meta/pad-compliance-cases-v1.json`; it reuses the existing data-side operator
+and environment and writes new operators/fields/logs only in that campaign.
