@@ -1,5 +1,12 @@
 # Goal: complete qualified DPR / SCR / Shell stress-error rankings
 
+**User clarification, 2026-10-20:** apply the
+[practical error-budget judgments](AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md#error-judgments-and-practical-acceptance-budgets).
+Retain original strict results and evaluate explicitly labelled nearby-load
+approximations through measured stress error. Do not equate exact infeasibility
+with unacceptable engineering error, or same-load implementation agreement with
+physical accuracy. Correct observed boundary/load-transfer errors first.
+
 **User extension, 2026-10-20:** the
 [next contact-region and throughput goals](AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md)
 add CPU-validated automatic support/pressure prediction, explicit current SCR
