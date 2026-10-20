@@ -1,0 +1,166 @@
+# Cheap hard-contact estimates: first executed controls
+
+The new priority in remote commit `75d534428` is active: inexpensive Hertz/thin-shell
+estimates and native throughput. Further soft-pad, vector-compliance and coupled
+Newton-PCG integration is superseded. Existing evidence stays unchanged.
+
+This study supports retaining both principal curvatures in a cheap estimate.
+Replacing them by one equivalent circular curvature produces58.21% pressure
+error in the rotated elliptical half-space control. A native elliptic lookup
+costs approximately21us per update for1–8192 supplied regions on the measured GPU.
+One explicit far-field correction also improves a symmetric two-region example.
+These are local hard-contact component results, not a finished egg estimator.
+
+## Physical comparison
+
+The deformable material has E=10GPa, nu=0.3 and reduced modulus
+E*=E/(1-nu²); the opposing quadratic obstacle is rigid. The total normal load
+is0.1N. An independent square-cell Boussinesq boundary-element solve minimizes
+complementary energy under nonnegative cell forces and the total-force equality.
+It determines support and pressure without a prescribed Hertz footprint.
+The influence matrix integrates1/(pi*E*distance) over each constant-pressure
+square. Active-set completion requires force balance, nonnegative force/gap
+and complementarity, and loaded cells may not touch the search boundary.
+
+The cases are circular curvature(50,50)/m, curvature(20,80)/m rotated0.43rad,
+and the minimum of two circular quadratic gaps. The latter has two known
+symmetric regions, each carrying0.05N; their initial centers are separated by
+three isolated-contact radii. All cases retain36² and54² reference grids.
+Analytical estimates use8x8 Gauss cell averages and a reported quadrature-only
+load normalization, never a fit to the reference distribution.
+
+| Case / estimate | Pressure L2 error,36² →54² | Subsurface sampled tensor error,36² →54² |
+| --- | ---: | ---: |
+| Circular Hertz | 1.903% →1.162% | 0.2014% →0.0808% |
+| Rotated elliptical Hertz | 3.591% →2.407% | 0.3949% →0.1835% |
+| Equivalent circle for elliptical obstacle | 58.040% →58.212% | 25.279% →25.330% |
+| Independent Hertz for two regions | 9.678% →9.628% | 5.390% →5.360% |
+| One interaction correction for two regions | 3.172% →2.501% | 0.6776% →0.4120% |
+
+Pressure error is the relative area-weighted L2 norm of cell-average pressure
+on the same grid. Subsurface stress uses Boussinesq displacement differentiated
+by complex step and isotropic Hooke's law, with a separate on-axis point-force
+identity check. The15x15x9 observation grid is fixed across both reference
+resolutions, at depths0.4a–2a. The tensor metric is an unweighted sample norm,
+not a complete-volume norm. Cell resultants are point sources for this
+subsurface evaluation; its shallowest depth exceeds two coarse-grid cell widths.
+Surface peaks, global continuum maxima, shell membrane/bending and friction
+are **not qualified** by these sampled tensors. The retained original tables
+also include sampled tensile/von-Mises maxima and locations; their variation
+is not a global peak-error bound.
+
+The ellipse semi-axes are85.51um and34.19um; the equivalent-circle radius is
+55.46um. Keeping ellipticity has a clear advantage larger than the observed
+36²→54² differences. For the circular control the54² indentation differs
+from Hertz by0.0163%. For the two-region case independent Hertz misses
+approximately14.16% of the indentation scale through neglected interaction.
+Reference-grid differences are reported sensitivity, not certified continuum
+uncertainty or shell accuracy.
+
+## A bounded inexpensive interaction candidate
+
+For each known region, approximate another region's surface displacement by
+`w_j(x)=F_j/(pi*E*|x-c_j|)`. Evaluate its gradient and Hessian at the original
+region center. Replace the relative curvature K by K+H and shift the center
+by `-(K+H)^-1 grad(w)`, then evaluate Hertz once. No additional contact solve,
+iteration or fitted coefficient is introduced. This is a point-resultant
+far-field Taylor approximation, not a general shell correction.
+
+The two centers move outwards by1.868um. On54², pressure error drops from9.628%
+to2.501% and sampled tensor error from5.360% to0.4120%. The unchanged reference
+solves/fields are reused. This positive control assumes known symmetric load
+allocation and keeps aggregate moment by symmetry. Arbitrary load allocation,
+current-source moment fidelity, nearby/merging islands and shell interactions
+remain open; this correction is not a production default.
+
+## Native implementation and measured cost
+
+[`native_hertz.py`](../qipc_comparison/native_hertz.py) is a Quadrants component
+with total force, reduced modulus and a symmetric2x2 relative-curvature input
+per supplied physical region. It uses the tangent-frame eigenvectors and a
+shared257-row table for ellipse aspect ratio b/a in[0.05,1]. Numerical table
+construction uses256 transformed angular quadrature points in Quadrants;
+each update performs eight lookup comparisons and interpolation. Production
+geometry preparation, source grouping and the pressure scatter are not yet
+connected, so this component remains in the research package.
+
+The table follows the elastic half-space potential integrals. With a>=b,
+q=b/a and s=tan²(theta), its dimensionless curvature integrals are
+
+```text
+Jx(q) = 2 integral[0,pi/2] cos²(theta) / sqrt(q²cos²(theta)+sin²(theta)) dtheta
+Jy(q) = 2 integral[0,pi/2] cos²(theta) / (q²cos²(theta)+sin²(theta))^(3/2) dtheta
+kx/ky = Jx/Jy
+a³ = 3 Fn Jx/(2 pi E* kx)
+p(x,y) = 3 Fn/(2 pi a b) * sqrt(max(1-x²/a²-y²/b²,0))
+```
+
+The circular limit recovers the [standard Hertz force/modulus relation](https://docs.software.vt.edu/abaqusv2025/English/SIMACAEANLRefMap/simaanl-c-demanalysis.htm).
+Independent SciPy adaptive integrals/root solves check101 rotated and
+force/material-scaled cases per CPU/GPU backend. Maximum relative differences
+are2.10e-6 for axes,2.24e-7 for indentation and4.16e-6 for peak pressure.
+Direct pressure sampling, zero/invalid loads, unsupported curvature and
+independent-region isolation pass. Nonpositive curvature, out-of-table aspect
+ratio and invalid inputs remain explicit statuses, with no invented radius.
+This does not yet test live collider source splitting or environment lifecycle.
+
+| Supplied regions/update | GPU median | CPU median | Logical tensor storage |
+| ---: | ---: | ---: | ---: |
+| 1 | 21.32us | 16.69us | 6,268B |
+| 128 | 20.58us | 25.46us | 18,968B |
+| 512 | 20.64us | 49.25us | 57,368B |
+| 8192 | 21.01us | 531.08us | 825,368B |
+
+Hardware: NVIDIA RTX PRO6000 Blackwell Server Edition; CPU uses the engine's
+default one Quadrants thread. Each number is the median of21 groups of100
+resident updates, synchronized at the group boundary. Dispatch is included;
+input transfers, JIT/imports, pressure-sample evaluation, geometry, grouping,
+elasticity and output are excluded. These are estimator-module measurements,
+not scene throughput or the cost of a complete observation. P90 timings are
+retained in the receipts. Table/allocation preparation with warm kernels is
+1.84–2.26ms; storage counts logical tensors, not allocator/driver overhead.
+
+## Pressure maps and reproducibility
+
+![Hard-contact pressure controls](../evidence/20261019-qualified-ranking/hard-hertz-v1/hard-hertz-figure-v1/group0/figure/hard-hertz.png)
+
+Caption: constant-cell pressure on the54² grid. Panels a–c compare the rotated
+elliptical obstacle's independent BEM solution, equivalent-circle estimate and
+elliptic Hertz estimate. Panels d–f compare the nonconvex two-region solution,
+independent Hertz regions and one far-field correction. All maps share the
+MPa color scale and show the complete nonzero support. Error labels compare
+cell-average pressure with the corresponding BEM reference. No smoothing or
+statistical error bars are applied. The [SVG](../evidence/20261019-qualified-ranking/hard-hertz-v1/hard-hertz-figure-v1/group0/figure/hard-hertz.svg)
+and [PDF](../evidence/20261019-qualified-ranking/hard-hertz-v1/hard-hertz-figure-v1/group0/figure/hard-hertz.pdf)
+retain editable text; the rendered preview has been inspected.
+
+The figure supports retaining elliptical geometry and testing cheap interaction
+corrections before a coupled solver. The circular replacement loses the long
+axis and loads regions outside the elliptical support. The local correction
+improves the two-island example without representing arbitrary nonconvex contact.
+
+Executed campaigns under the existing data run root:
+
+- `hard-hertz-v1`, job733211: native GPU/CPU controls and six independent BEM cases.
+- `hard-hertz-interaction-v1`, job733223: two reused-reference correction comparisons.
+- `hard-hertz-figure-v1`, job733233: pressure maps and editable exports.
+
+All allocations completed with exit0. Each campaign retains exact task arguments,
+captured analysis sources, engine identity, logs and results. Use the archived
+`tasks.json` with the existing `research.rigid_stress.shell_comparison.submit`
+entrypoint and a fresh explicit data-side output directory; its `--cpu-only`
+mode still runs numerical work in Slurm `rtx-mid`. Original arrays stay on data
+with manifest hashes; no live source, environment or old evidence was migrated.
+
+## Remaining work
+
+Next connect cached rest-curvature/current physical-region inputs to the cheap
+native route and actual witnessed-boundary pressure integration. Keep sparse
+collider samples distinct from physical regions and preserve complete force
+and moment under source splitting. Compare a declared inexpensive tangential
+law with monotonic/unloading controls, then test hollow-shell thickness/global
+response against a matched targeted hard-contact reference. The observed
+51um circular footprint also makes mesh/transfer resolution a concrete issue;
+do not enlarge it to a numerical disk. Run matched max/full and pure-rigid
+moving-scene timing as soon as the native route is connected. No further
+soft-pad campaign or dense elastic-basis preparation is required by this goal.

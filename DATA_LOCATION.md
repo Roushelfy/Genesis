@@ -722,3 +722,12 @@ Their `native-pair-accessible-v1` packet contains79 compact payloads
 failure and ten final passing CPU/GPU cases. The source remains isolated in
 `.worktrees/automatic-pad-geometry`; test assets and private compiler caches
 use node scratch, and durable outputs remain on data. No migration is performed.
+
+
+Cheap hard-contact estimates use `hard-hertz-v1`, `hard-hertz-interaction-v1`
+and `hard-hertz-figure-v1` under the established20261019 ranking data run root.
+Complete BEM pressures, sampled tensors and native comparison arrays stay on
+data. Private caches use node scratch. Only concise captured source/receipts
+and inspected SVG/PDF/PNG publication figures enter the `hard-hertz-v1` packet.
+The source checkouts and existing environments/symlinks remain in place; no
+new soft-pad campaign or data migration is performed.

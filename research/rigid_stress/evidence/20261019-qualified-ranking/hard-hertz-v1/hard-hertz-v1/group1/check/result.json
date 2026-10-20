@@ -1,0 +1,49 @@
+{
+  "passed": true,
+  "backend": "cpu",
+  "cases": 101,
+  "errors": {
+    "axes_max_relative": 2.092305283252216e-06,
+    "indentation_max_relative": 2.2361316021068944e-07,
+    "peak_pressure_max_relative": 4.153359857927974e-06,
+    "direction_outer_product_max_absolute": 2.7755575615628914e-16
+  },
+  "zero_invalid_unsupported_isolation_controls": true,
+  "benchmark": [
+    {
+      "regions": 1,
+      "median_seconds_per_update": 1.6687929746694864e-05,
+      "p90_seconds_per_update": 1.7068680026568473e-05,
+      "preparation_seconds_warm_kernel": 0.002100928977597505,
+      "logical_tensor_bytes": 6268
+    },
+    {
+      "regions": 128,
+      "median_seconds_per_update": 2.5455490103922784e-05,
+      "p90_seconds_per_update": 2.5752540095709265e-05,
+      "preparation_seconds_warm_kernel": 0.00205174001166597,
+      "logical_tensor_bytes": 18968
+    },
+    {
+      "regions": 512,
+      "median_seconds_per_update": 4.924963985104114e-05,
+      "p90_seconds_per_update": 4.9451040104031564e-05,
+      "preparation_seconds_warm_kernel": 0.001984169997740537,
+      "logical_tensor_bytes": 57368
+    },
+    {
+      "regions": 8192,
+      "median_seconds_per_update": 0.0005310813605319709,
+      "p90_seconds_per_update": 0.0005316690896870568,
+      "preparation_seconds_warm_kernel": 0.002263445989228785,
+      "logical_tensor_bytes": 825368
+    }
+  ],
+  "arrays": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-v1/group1/check/hertz.npz",
+    "bytes": 11241,
+    "sha256": "77359068a319909dfaa515edaaf6bbb88212edac60db830b573999ea28059f46"
+  },
+  "scope": "Supplied total physical-region force, tangent curvature and reduced modulus. Analytical ellipse/integral controls, pressure evaluation and resident estimation timing only; no collider grouping, shell or friction accuracy, public integration or scene throughput is claimed.",
+  "whole_goal_complete": false
+}

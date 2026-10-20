@@ -1,0 +1,5 @@
+# Cheap hard-contact estimates
+
+Cheap hard-contact results under the superseding remote goal75d534428. Six independent unilateral square-cell Boussinesq contact solves on two grids; circular/rotated elliptical/two-region cases. Two reused-reference far-field correction comparisons. Native Quadrants elliptic lookup validates101 cases on each CPU/GPU backend, with explicit invalid/unloaded/unsupported/isolation controls and resident lookup timing for1/128/512/8192 supplied physical regions. Inspected six-panel pressure maps and editable exports retained. These are half-space normal-contact components, not hollow-shell/friction/global-peak qualification, automatic source grouping, production lifecycle or actual scene throughput. Prior pad results remain unchanged historical evidence; no new pad or dense elastic-basis campaign is required.
+
+The manifest records exact encoded/original payload hashes and external array identities. Executed workers, task arguments, engine inventory, logs, terminal accounting and visual inspection are retained. Full numerical arrays stay on data and private caches use compute-node scratch.

@@ -18,11 +18,14 @@ Coupled automatic contact solves remain optional references unless they prove
 very accurate physical stress and a worthwhile measured cost. The pad studies
 below are historical evidence, not the current implementation target.
 
-The [2026-10-20 next goals](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md)
-add automatic physical contact-region prediction, distinct SCR failure handling
-and continued native throughput optimization. CPU investigation and production
-tuning proceed alongside completion of the existing fixed-radius comparison;
-these are goals, not newly validated results.
+The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
+now compare independent half-space contact with circular/elliptic Hertz and a
+cheap two-region interaction correction. Ellipticity reduces the rotated-case
+pressure error from58.21% to2.41%; one correction reduces the two-region error
+from9.63% to2.50%. A Quadrants lookup passes101 cases per CPU/GPU backend and
+costs about21us for1–8192 supplied regions on the measured GPU. These are
+half-space/component results; shell/friction accuracy, automatic physical-region
+inputs, public lifecycle integration and actual scene throughput remain open.
 
 The [first CPU contact-region study](docs/AUTOMATIC_CONTACT_PROGRESS_20261020.md)
 now measures distributed-source double spreading: the retained2mm DPR baseline
