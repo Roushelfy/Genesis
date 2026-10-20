@@ -759,9 +759,19 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     max_density_error : float, optional
         Maximum density error for DFSPH. Defaults to 0.05%.
     max_divergence_solver_iterations : int, optional
-        Maximum number of iterations for the divergence solver. Defaults to 100.
+        Maximum number of iterations for the divergence solver. Defaults to 10.
     max_density_solver_iterations : int, optional
-        Maximum number of iterations for the density solver. Defaults to 100.
+        Maximum number of iterations for the density solver. Defaults to 10.
+    min_divergence_solver_iterations : int, optional
+        Minimum number of iterations for the DFSPH divergence solver. More iterations cost time but reduce the
+        velocity divergence left over when the error tolerance is met early. Defaults to 1.
+    min_density_solver_iterations : int, optional
+        Minimum number of iterations for the DFSPH density solver. More iterations cost time but reduce the density
+        error left over when the error tolerance is met early. Defaults to 1.
+    skip_divergence_solver : bool, optional
+        Whether to skip the DFSPH divergence solver, leaving incompressibility to the density solver alone. This
+        saves time per substep, but the fluid becomes noisier and less stable, and the density solver may need more
+        iterations to compensate. Only applies to the default (non-legacy) solver. Defaults to False.
     warm_start : bool, optional
         Whether DFSPH starts each pressure solve from half the pressure of the previous substep. This reduces the
         number of solver iterations for fluid at rest or in slow motion, but it can carry pressure spikes from
@@ -784,6 +794,9 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     max_density_error: PositiveFloat = 0.05 * 0.01
     max_divergence_solver_iterations: PositiveInt = 10
     max_density_solver_iterations: PositiveInt = 10
+    min_divergence_solver_iterations: PositiveInt = 1
+    min_density_solver_iterations: PositiveInt = 1
+    skip_divergence_solver: StrictBool = False
     warm_start: StrictBool = True
 
     _support_radius: float = PrivateAttr(default=0.0)

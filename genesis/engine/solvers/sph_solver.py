@@ -34,8 +34,9 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self._df_max_error_den = options.max_density_error
         self._df_max_div_iters = options.max_divergence_solver_iterations
         self._df_max_den_iters = options.max_density_solver_iterations
-        self._df_min_div_iters = 1
-        self._df_min_den_iters = 1
+        self._df_min_div_iters = options.min_divergence_solver_iterations
+        self._df_min_den_iters = options.min_density_solver_iterations
+        self._df_skip_div = options.skip_divergence_solver
         self._df_warm_start = options.warm_start
         self._df_eps = 1e-5
         # A particle with fewer neighbors sits at a free surface, where the divergence estimate is unreliable.
@@ -606,7 +607,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         if self.is_active:
             self._kernel_reorder_particles(f)
             self._kernel_compute_density_and_factor(f)
-            self._pressure_solve(is_divergence=True)
+            if not self._df_skip_div:
+                self._pressure_solve(is_divergence=True)
             self._kernel_compute_non_pressure_forces(f, self._sim.cur_t)
             self._pressure_solve(is_divergence=False)
 
