@@ -40,8 +40,13 @@ and native cost remain central to the next implementation. Exact elimination
 of pad variables now reproduces all16 coupled reference fields; paired CPU
 solves fall from23.5–24.6s to0.060–0.093s, with fixed preprocessing separate.
 Fixed/adaptive PCG controls retain the same outer/physical checks; the tested
-adaptive heuristic increases total iterations. This CPU improvement does not
-yet supply the automatic native model.
+adaptive heuristic increases total iterations. New250/1000um physical controls
+show15.52% versus0.49% rigid-pressure error with the hard pad. The reduced
+pressure stage now runs in Quadrants:48 CPU/GPU cases and48 independent complete
+fields pass, with at most1.50e-10 stress difference from the full-QP references.
+Warm repeats, release, failure isolation and partial recovery pass atB8/B2.
+Geometry/operators and cold guesses remain CPU-prepared; public automatic
+integration and controlled module/scene throughput remain open.
 
 The [engineering load-sensitivity study](docs/ENGINEERING_LOAD_SENSITIVITY_20261020.md)
 adds18 qualified resolved-transfer errors: corrected-boundary tangential error

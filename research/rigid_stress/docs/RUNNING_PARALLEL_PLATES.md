@@ -916,3 +916,30 @@ The [terminal packet](../evidence/20261019-qualified-ranking/reduced-pad-equilib
 contains the exact captured commands and sources. Run these CPU validation
 workers through the existing CPU-only Slurm helper with fresh data-side outputs.
 They do not enable an automatic pressure model in the production engine.
+
+## Native pressure stage and physical thickness controls
+
+`prepare_pad_thickness --mesh ORIGINAL --thickness 0.00025|0.001
+--qp-solver-path CLARABEL --output NEW_DATA_PATH` preserves the outer surface
+and rebuilds the actual inward wall, mass, full elastic factor and normal
+compliance. Run the existing `study_pad_compliance` on its saved baseline with
+the captured two-case stiffness list, then `compare_pad_compliance` for the
+separate centroid/degree6 sampling contrast.
+
+`prepare_pad_newton_inputs --study STUDY --output NEW_DATA_PATH` exports the
+validated operator, source geometry, rigid cold guesses and independent full-QP
+references. `check_native_pad_newton --inputs INPUTS --backend cpu|gpu --output
+NEW_DATA_PATH` runs the Quadrants numerical stage, exact warm/release/isolation
+controls and independent physical checks. `check_native_pad_fields --inputs
+INPUTS --gpu GPU_RESULT_DIR --cpu CPU_RESULT_DIR --output NEW_DATA_PATH`
+reconstructs complete CPU elastic fields from the actual native forces.
+All numerical workers run through the existing Slurm helper with explicit
+data-side outputs and private node-local caches.
+
+The [terminal packet](../evidence/20261019-qualified-ranking/native-pad-pressure-and-thickness-v1/README.md)
+binds exact commands, captured source, the three thicknesses and both backends.
+`plot_pad_thickness --studies THIN ORIGINAL THICK --style STYLE --contract
+CONTRACT --output NEW_DATA_PATH` creates the editable SVG/preview first.
+Final export additionally requires `--accepted-svg INSPECTED_SVG` and verifies
+byte equality before PDF/600dpi PNG export. The core and input builders remain
+research tools; CPU-prepared geometry/operators are not production preprocessing.

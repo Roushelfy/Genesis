@@ -1,0 +1,64 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "732781",
+      "SLURM_ARRAY_JOB_ID": "732781",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-thickness-study-v1/group1/preparation/mesh.npz",
+    "bytes": 488678,
+    "sha256": "f164a1af1a13d636e6966ec61bd1485c4c808ec1797936873116582b401137df"
+  },
+  "seed_operator": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-thickness-study-v1/group1/preparation/contact-operator.npz",
+    "bytes": 5048236,
+    "sha256": "96b4c080dbea7949befd9bdd0753043416326a8ac4000134282868926aa94f97"
+  },
+  "baseline_frame": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-thickness-study-v1/group1/preparation/baseline.npz",
+    "bytes": 7125728,
+    "sha256": "c50db5cad9c8ba15c7c93630e28c9a67470b3743551783db60dbf5134b8b0415"
+  },
+  "cases": [
+    {
+      "young_pa": 10000000000.0,
+      "pad_stiffness_n_per_m3": 1000000000.0,
+      "load_n": 0.1,
+      "stiffness_gradient": 0
+    },
+    {
+      "young_pa": 10000000000.0,
+      "pad_stiffness_n_per_m3": 10000000000.0,
+      "load_n": 0.1,
+      "stiffness_gradient": 0
+    }
+  ],
+  "search_radii_m": [
+    0.003,
+    0.0045,
+    0.006
+  ],
+  "quadrature_orders": [
+    0,
+    6
+  ],
+  "targets": {
+    "wrench": 1e-08,
+    "own_pad_law": 1e-07,
+    "elastic_equation": 1e-07,
+    "omitted_gap_scaled": -1e-08,
+    "baseline_field_relative": 1e-06
+  },
+  "scope": "Static linear elasticity and physical normal spring pads; no friction, continuum qualification or production timing."
+}

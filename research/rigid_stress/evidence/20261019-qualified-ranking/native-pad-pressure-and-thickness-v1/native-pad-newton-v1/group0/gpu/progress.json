@@ -1,0 +1,142 @@
+{
+  "rows": [
+    {
+      "order": 0,
+      "pressure_relative_errors": [
+        3.946338768183869e-11,
+        1.0584878319066932e-12,
+        5.802379714018379e-13,
+        1.0607403962739013e-11,
+        2.2904469152791447e-13,
+        2.0928469145226377e-12,
+        9.573156409239305e-10,
+        2.134998187681933e-11
+      ],
+      "independent_pad_law_errors": [
+        2.7247881999354678e-15,
+        4.2864478982812183e-16,
+        1.1625046776258108e-14,
+        5.932524200289256e-16,
+        2.5698455975412105e-14,
+        3.671690346512291e-15,
+        5.625465333134555e-14,
+        7.869443375564482e-12
+      ],
+      "wrench_errors": [
+        1.521070921782367e-14,
+        4.444418388355564e-16,
+        5.621871045537372e-14,
+        3.559466221376123e-15,
+        1.9379032352734877e-13,
+        2.8547919876545884e-15,
+        8.481220133203885e-14,
+        9.47975228583632e-12
+      ],
+      "maximum_gradient": 6.971227172870487e-11,
+      "newton_updates": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        2,
+        2
+      ],
+      "pcg_iterations": [
+        11,
+        9,
+        13,
+        11,
+        14,
+        38,
+        11,
+        18
+      ],
+      "cold_compile_and_solve_seconds": 0.8218981059617363,
+      "warm_unchanged_exact": true,
+      "release_exact": true,
+      "failure_isolation_exact": true,
+      "partial_recovery_preserves_others_exact": true,
+      "pressure": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-newton-v1/group0/gpu/q0-pressure.npz",
+        "bytes": 62872,
+        "sha256": "7a8a6fb9b42ccc871a80bd4af09922e347a5939868fd4309711ae71269752744"
+      },
+      "inputs": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-newton-inputs-v1/group0/inputs/q0.npz",
+        "bytes": 7618473,
+        "sha256": "0de5ea6c632a0aa542adcdf20cef8415c70317d3c5669219f74fb11f4e5cdd82"
+      }
+    },
+    {
+      "order": 6,
+      "pressure_relative_errors": [
+        1.320943923348755e-10,
+        3.3233779330657794e-11,
+        4.861127307905766e-10,
+        4.762037576497903e-10,
+        1.5452063068799902e-11,
+        6.695221771943722e-11,
+        2.510521905709547e-10,
+        2.750450708253669e-09
+      ],
+      "independent_pad_law_errors": [
+        4.014243884099828e-15,
+        4.386624970418927e-16,
+        5.008538745082909e-16,
+        1.3280926739163582e-14,
+        6.293175333725472e-16,
+        2.451838111050964e-15,
+        3.6418826009858145e-15,
+        4.227354202902951e-12
+      ],
+      "wrench_errors": [
+        2.206670253914398e-14,
+        5.569250045138243e-16,
+        8.128528149006995e-16,
+        4.21414592330539e-14,
+        1.6327352656759761e-16,
+        4.1009980379538705e-15,
+        1.2117075124111145e-14,
+        5.546139241935422e-12
+      ],
+      "maximum_gradient": 3.5601430595431265e-11,
+      "newton_updates": [
+        2,
+        2,
+        3,
+        2,
+        3,
+        3,
+        2,
+        2
+      ],
+      "pcg_iterations": [
+        11,
+        10,
+        20,
+        12,
+        21,
+        38,
+        11,
+        18
+      ],
+      "cold_compile_and_solve_seconds": 0.02853032504208386,
+      "warm_unchanged_exact": true,
+      "release_exact": true,
+      "failure_isolation_exact": true,
+      "partial_recovery_preserves_others_exact": true,
+      "pressure": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-newton-v1/group0/gpu/q6-pressure.npz",
+        "bytes": 179988,
+        "sha256": "e6fe4fe90ad831581b28b827aeeb32abdabd41ef8aa8626c6cbbbe5055216825"
+      },
+      "inputs": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-newton-inputs-v1/group0/inputs/q6.npz",
+        "bytes": 28288022,
+        "sha256": "2c0ec717be5fcb8873057d291d09ba5ba76a74bb309cd98cb6d5ff870aef41af"
+      }
+    }
+  ]
+}

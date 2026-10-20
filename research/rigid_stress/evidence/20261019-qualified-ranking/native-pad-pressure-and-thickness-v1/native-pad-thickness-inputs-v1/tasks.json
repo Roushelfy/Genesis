@@ -1,0 +1,38 @@
+[
+  [
+    {
+      "name": "inputs",
+      "module": "research.rigid_stress.qipc_comparison.prepare_pad_newton_inputs",
+      "args": [
+        "--study",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-thickness-study-v1/group0/study"
+      ]
+    },
+    {
+      "name": "sampling",
+      "module": "research.rigid_stress.qipc_comparison.compare_pad_compliance",
+      "args": [
+        "--study",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-thickness-study-v1/group0/study"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "inputs",
+      "module": "research.rigid_stress.qipc_comparison.prepare_pad_newton_inputs",
+      "args": [
+        "--study",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-thickness-study-v1/group1/study"
+      ]
+    },
+    {
+      "name": "sampling",
+      "module": "research.rigid_stress.qipc_comparison.compare_pad_compliance",
+      "args": [
+        "--study",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-thickness-study-v1/group1/study"
+      ]
+    }
+  ]
+]

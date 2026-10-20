@@ -1,0 +1,91 @@
+{
+  "claim_anchor": "pad-thickness-coupling",
+  "main_claim": "Wall thickness changes coupled physical pressure at fixed outer geometry and load, so curvature and pad stiffness alone cannot define the useful rigid-gap regime.",
+  "purpose": "Repository supplement for automatic physical support/pressure validation.",
+  "audience": "Engineering researchers, English labels.",
+  "material_passport": [
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-thickness-study-v1/group0/study/result.json",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-thickness-study-v1/group1/study/result.json",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-compliance-study-v1/group0/study/result.json"
+  ],
+  "panels": [
+    {
+      "panel": "a",
+      "thickness_um": 250,
+      "pad_stiffness_n_per_m3": 1000000000.0,
+      "role": "Coupled upper-pad pressure at this physical thickness and pad stiffness",
+      "plot_type": "Unsmoothed physical quadrature scatter",
+      "x": "material x (mm)",
+      "y": "material y (mm)",
+      "color_role": "normal pressure (kPa), sequential viridis and luminance",
+      "pairing": "identical outer coordinates and force; distinct inward wall thickness"
+    },
+    {
+      "panel": "b",
+      "thickness_um": 500,
+      "pad_stiffness_n_per_m3": 1000000000.0,
+      "role": "Coupled upper-pad pressure at this physical thickness and pad stiffness",
+      "plot_type": "Unsmoothed physical quadrature scatter",
+      "x": "material x (mm)",
+      "y": "material y (mm)",
+      "color_role": "normal pressure (kPa), sequential viridis and luminance",
+      "pairing": "identical outer coordinates and force; distinct inward wall thickness"
+    },
+    {
+      "panel": "c",
+      "thickness_um": 1000,
+      "pad_stiffness_n_per_m3": 1000000000.0,
+      "role": "Coupled upper-pad pressure at this physical thickness and pad stiffness",
+      "plot_type": "Unsmoothed physical quadrature scatter",
+      "x": "material x (mm)",
+      "y": "material y (mm)",
+      "color_role": "normal pressure (kPa), sequential viridis and luminance",
+      "pairing": "identical outer coordinates and force; distinct inward wall thickness"
+    },
+    {
+      "panel": "d",
+      "thickness_um": 250,
+      "pad_stiffness_n_per_m3": 10000000000.0,
+      "role": "Coupled upper-pad pressure at this physical thickness and pad stiffness",
+      "plot_type": "Unsmoothed physical quadrature scatter",
+      "x": "material x (mm)",
+      "y": "material y (mm)",
+      "color_role": "normal pressure (kPa), sequential viridis and luminance",
+      "pairing": "identical outer coordinates and force; distinct inward wall thickness"
+    },
+    {
+      "panel": "e",
+      "thickness_um": 500,
+      "pad_stiffness_n_per_m3": 10000000000.0,
+      "role": "Coupled upper-pad pressure at this physical thickness and pad stiffness",
+      "plot_type": "Unsmoothed physical quadrature scatter",
+      "x": "material x (mm)",
+      "y": "material y (mm)",
+      "color_role": "normal pressure (kPa), sequential viridis and luminance",
+      "pairing": "identical outer coordinates and force; distinct inward wall thickness"
+    },
+    {
+      "panel": "f",
+      "thickness_um": 1000,
+      "pad_stiffness_n_per_m3": 10000000000.0,
+      "role": "Coupled upper-pad pressure at this physical thickness and pad stiffness",
+      "plot_type": "Unsmoothed physical quadrature scatter",
+      "x": "material x (mm)",
+      "y": "material y (mm)",
+      "color_role": "normal pressure (kPa), sequential viridis and luminance",
+      "pairing": "identical outer coordinates and force; distinct inward wall thickness"
+    }
+  ],
+  "recommended_chart": "Two by three pressure maps with shared physical axes and a shared color scale within each pad-stiffness row.",
+  "alternatives": [
+    "Within-thickness model-error table (also exported).",
+    "A single radial curve would conceal geometric and sampling asymmetry."
+  ],
+  "source_gaps": [],
+  "missing_materials": [],
+  "can_proceed_without_more_materials": true,
+  "uncertainty": "Deterministic coarse linear-elastic discrete models; no statistical confidence interval or continuum bound.",
+  "exports": "183x142mm editable SVG draft and150dpi preview, then PDF and600dpi PNG after source review.",
+  "interpretation": "Compare the pressure concentrations across thickness while keeping support extent and actual pressure scales visible. Use the paired model-error table to quantify the rigid/diagonal approximations.",
+  "unresolved": "Moving nonconvex search, friction history and native geometry/operator preparation remain outside these static controls."
+}
