@@ -289,7 +289,22 @@ retains all tests and their initial setup/API failures.
 On the actual retained normal/friction pad loads,
 complete-field differences from the existing independent CPU resolved transfer
 are1.13e-11/1.25e-11. These are numerical conformance results, not new physical
-error measurements. Sparse collider sources still need the physical
+error measurements.
+
+The separate [continuous-history packet](../evidence/20261019-qualified-ranking/native-resolved-history-v1/README.md)
+now retains all400 admitted normal/friction observations and mechanical windows.
+Endpoint complete stresses differ from the earlier resolved research adapter
+by3.14e-11/3.23e-11. The largest every-step peak difference is1.12e-5Pa;
+the largest fraction of the predeclared1e-6Pa+1e-8-relative allowance is0.0369.
+The explicit bounded-input variant corrects only observations37/38, with force
+change bounds5.15e-21N/2.21e-20N, below2.63e-16N/2.70e-16N physical budgets.
+The per-step correction magnitudes and endpoint original/corrected source
+arrays are retained. Complete intermediate-event source arrays were not
+captured, so the earlier exact P2 correction-response bounds are separate
+controls and are not assigned to these new event states. Research workflow
+times include host validation/readback and do not measure native throughput.
+
+Sparse collider sources still need the physical
 support/pressure model, including
 the [measured compliance limits](PAD_COMPLIANCE_STUDY_20261020.md).
 Automatic Quadrants pressure prediction, moving/friction and thickness
