@@ -71,8 +71,8 @@ class StressPairGeometry:
     Groups use link pairs, so collision decomposition cannot duplicate support.
     Separate support islands can coexist in one pair. The pressure model must
     retain their coupling and separately enforce physical and load acceptance.
-    Queries report the nearest opposing boundary and its visibility. A blocked
-    nearest boundary does not exclude a farther accessible contact surface.
+    Distance selection follows material-facing and visibility checks, including
+    opposing-link occlusion. Mesh queries examine each boundary triangle.
     """
 
     def __init__(self, contacts: StressContactState):
@@ -249,9 +249,10 @@ def func_closest_face(
 
 
 @qd.func
-def func_opponent_boundary(
+def func_opponent_candidate(
     i_g: int,
     i_b: int,
+    i_f: int,
     point: qd.types.vector(3),
     dyn_state: array_class.DynState,
     dyn_info: array_class.DynInfo,
@@ -331,39 +332,21 @@ def func_opponent_boundary(
             else:
                 status = PairGeometryStatus.AMBIGUOUS
     elif kind == gs.GEOM_TYPE.MESH:
-        minimum = gs.qd_float(float("inf"))
-        ambiguous = False
-        scale = (dyn_state.geoms.aabb_max[i_g, i_b] - dyn_state.geoms.aabb_min[i_g, i_b]).norm()
-        tolerance = 128.0 * epsilon * scale
-        for i_f in range(dyn_info.geoms.face_start[i_g], dyn_info.geoms.face_end[i_g]):
-            indices = dyn_info.faces.verts_idx[i_f]
-            i_a, i_c, i_d = indices[0], indices[1], indices[2]
-            first, second, third = (
-                dyn_info.verts.init_pos[i_a],
-                dyn_info.verts.init_pos[i_c],
-                dyn_info.verts.init_pos[i_d],
-            )
-            cross = (second - first).cross(third - first)
-            if cross.norm() > 0.0:
-                candidate = func_closest_face(local, first, second, third)
-                delta = local - candidate
-                distance = delta.norm()
-                face_normal = cross.normalized()
-                candidate_normal = face_normal
-                if distance > tolerance:
-                    candidate_normal = qd.select(delta.dot(face_normal) >= 0.0, 1.0, -1.0) * delta / distance
-                if distance < minimum - tolerance:
-                    minimum, closest, normal, face = distance, candidate, candidate_normal, i_f
-                    ambiguous = False
-                elif qd.abs(distance - minimum) <= tolerance:
-                    ambiguous = ambiguous or (candidate - closest).norm() > tolerance
-                    ambiguous = ambiguous or (candidate_normal - normal).norm() > 128.0 * epsilon
-        if face < 0:
-            status = PairGeometryStatus.UNSUPPORTED
-        elif ambiguous:
-            status = PairGeometryStatus.AMBIGUOUS
+        indices = dyn_info.faces.verts_idx[i_f]
+        i_a, i_c, i_d = indices[0], indices[1], indices[2]
+        first, second, third = dyn_info.verts.init_pos[i_a], dyn_info.verts.init_pos[i_c], dyn_info.verts.init_pos[i_d]
+        cross = (second - first).cross(third - first)
+        if cross.norm() > 0.0:
+            closest = func_closest_face(local, first, second, third)
+            delta = local - closest
+            distance = delta.norm()
+            normal = cross.normalized()
+            scale = (dyn_state.geoms.aabb_max[i_g, i_b] - dyn_state.geoms.aabb_min[i_g, i_b]).norm()
+            if distance > 128.0 * epsilon * scale:
+                normal = qd.select(delta.dot(normal) >= 0.0, 1.0, -1.0) * delta / distance
+            gap, face = delta.dot(normal), i_f
         else:
-            gap = (local - closest).dot(normal)
+            status = PairGeometryStatus.UNSUPPORTED
     else:
         status = PairGeometryStatus.UNSUPPORTED
     world_point = geom.qd_transform_by_trans_quat(
@@ -371,6 +354,49 @@ def func_opponent_boundary(
     )
     world_normal = geom.qd_transform_by_quat(normal, dyn_state.geoms.quat[i_g, i_b])
     return world_point, world_normal, gap, face, status
+
+
+@qd.func
+def func_opponent_boundary(
+    i_g: int,
+    i_b: int,
+    point: qd.types.vector(3),
+    dyn_state: array_class.DynState,
+    dyn_info: array_class.DynInfo,
+    epsilon: float,
+):
+    closest, normal = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
+    minimum, gap, face = gs.qd_float(float("inf")), gs.qd_float(float("nan")), -1
+    status = gs.qd_int(PairGeometryStatus.UNSUPPORTED)
+    count = 1
+    is_mesh = dyn_info.geoms.type[i_g] == gs.GEOM_TYPE.MESH
+    if is_mesh:
+        count = dyn_info.geoms.face_end[i_g] - dyn_info.geoms.face_start[i_g]
+    for index in range(count):
+        i_f = -1
+        if is_mesh:
+            i_f = dyn_info.geoms.face_start[i_g] + index
+        candidate, direction, distance, candidate_face, flag = func_opponent_candidate(
+            i_g, i_b, i_f, point, dyn_state, dyn_info, epsilon
+        )
+        if not is_mesh:
+            closest, normal, gap, face, status = candidate, direction, distance, candidate_face, flag
+        elif flag == PairGeometryStatus.SUCCESS:
+            size = (dyn_state.geoms.aabb_max[i_g, i_b] - dyn_state.geoms.aabb_min[i_g, i_b]).norm()
+            tolerance = 128.0 * epsilon * size
+            if qd.abs(distance) < minimum - tolerance:
+                minimum, closest, normal, gap, face, status = (
+                    qd.abs(distance),
+                    candidate,
+                    direction,
+                    distance,
+                    candidate_face,
+                    flag,
+                )
+            elif qd.abs(qd.abs(distance) - minimum) <= tolerance:
+                if (candidate - closest).norm() > tolerance or (direction - normal).norm() > 128.0 * epsilon:
+                    status = PairGeometryStatus.AMBIGUOUS
+    return closest, normal, gap, face, status
 
 
 @qd.func
@@ -397,6 +423,151 @@ def func_material_occluded(
     return blocked
 
 
+@qd.func
+def func_mesh_candidate_stationary(
+    i_g: int,
+    i_b: int,
+    point: qd.types.vector(3),
+    candidate: qd.types.vector(3),
+    dyn_state: array_class.DynState,
+    dyn_info: array_class.DynInfo,
+    epsilon: float,
+):
+    """Check the distance derivative along every incident material triangle."""
+    local = geom.qd_inv_transform_by_trans_quat(point, dyn_state.geoms.pos[i_g, i_b], dyn_state.geoms.quat[i_g, i_b])
+    target = geom.qd_inv_transform_by_trans_quat(
+        candidate, dyn_state.geoms.pos[i_g, i_b], dyn_state.geoms.quat[i_g, i_b]
+    )
+    delta = local - target
+    scale = qd.max(delta.norm(), (dyn_state.geoms.aabb_max[i_g, i_b] - dyn_state.geoms.aabb_min[i_g, i_b]).norm())
+    tolerance = 256.0 * epsilon * scale
+    stationary = True
+    for i_f in range(dyn_info.geoms.face_start[i_g], dyn_info.geoms.face_end[i_g]):
+        indices = dyn_info.faces.verts_idx[i_f]
+        i_a, i_c, i_d = indices[0], indices[1], indices[2]
+        first, second, third = dyn_info.verts.init_pos[i_a], dyn_info.verts.init_pos[i_c], dyn_info.verts.init_pos[i_d]
+        edge_a, edge_b = second - first, third - first
+        cross = edge_a.cross(edge_b)
+        relative = target - first
+        if cross.norm() > 0.0 and qd.abs(relative.dot(cross)) <= tolerance * cross.norm():
+            gram = qd.Matrix([[edge_a.dot(edge_a), edge_a.dot(edge_b)], [edge_a.dot(edge_b), edge_b.dot(edge_b)]])
+            uv = gram.inverse() @ qd.Vector([edge_a.dot(relative), edge_b.dot(relative)])
+            if uv[0] >= -256.0 * epsilon and uv[1] >= -256.0 * epsilon and uv.sum() <= 1.0 + 256.0 * epsilon:
+                bound = tolerance * qd.max(edge_a.norm(), edge_b.norm())
+                # An artificial triangulation edge cannot supply a normal
+                # with a component tangent to the underlying smooth surface.
+                if (
+                    qd.max(delta.dot(first - target), qd.max(delta.dot(second - target), delta.dot(third - target)))
+                    > bound
+                ):
+                    stationary = False
+    return stationary
+
+
+@qd.func
+def func_opponent_occluded(
+    link: int,
+    i_b: int,
+    point: qd.types.vector(3),
+    target: qd.types.vector(3),
+    dyn_state: array_class.DynState,
+    dyn_info: array_class.DynInfo,
+    epsilon: float,
+):
+    """Test the open segment against the opposing link's collision geometry."""
+    blocked = False
+    for i_g in range(dyn_info.geoms.type.shape[0]):
+        if (
+            not blocked
+            and dyn_info.geoms.link_idx[i_g] == link
+            and (dyn_info.geoms.contype[i_g] != 0 or dyn_info.geoms.conaffinity[i_g] != 0)
+        ):
+            local = geom.qd_inv_transform_by_trans_quat(
+                point, dyn_state.geoms.pos[i_g, i_b], dyn_state.geoms.quat[i_g, i_b]
+            )
+            end = geom.qd_inv_transform_by_trans_quat(
+                target, dyn_state.geoms.pos[i_g, i_b], dyn_state.geoms.quat[i_g, i_b]
+            )
+            segment = end - local
+            kind = dyn_info.geoms.type[i_g]
+            scale = segment.norm()
+            if kind != gs.GEOM_TYPE.PLANE:
+                scale = qd.max(scale, (dyn_state.geoms.aabb_max[i_g, i_b] - dyn_state.geoms.aabb_min[i_g, i_b]).norm())
+            tolerance = 128.0 * epsilon * scale
+            lower, upper = gs.qd_float(128.0 * epsilon), gs.qd_float(1.0 - 128.0 * epsilon)
+            if kind == gs.GEOM_TYPE.PLANE:
+                normal = qd.Vector([dyn_info.geoms.data[i_g][a] for a in qd.static(range(3))]).normalized()
+                blocked = qd.min(local.dot(normal), end.dot(normal)) < -tolerance
+            elif kind == gs.GEOM_TYPE.BOX:
+                half = 0.5 * qd.Vector([dyn_info.geoms.data[i_g][a] for a in qd.static(range(3))])
+                for a in qd.static(range(3)):
+                    if qd.abs(segment[a]) > tolerance:
+                        first = (-half[a] + tolerance - local[a]) / segment[a]
+                        last = (half[a] - tolerance - local[a]) / segment[a]
+                        lower, upper = qd.max(lower, qd.min(first, last)), qd.min(upper, qd.max(first, last))
+                    elif qd.abs(local[a]) >= half[a] - tolerance:
+                        upper = -1.0
+                blocked = lower < upper
+            elif kind == gs.GEOM_TYPE.SPHERE or kind == gs.GEOM_TYPE.CAPSULE or kind == gs.GEOM_TYPE.CYLINDER:
+                radius = dyn_info.geoms.data[i_g][0] - tolerance
+                half = gs.qd_float(0.0)
+                if kind != gs.GEOM_TYPE.SPHERE:
+                    half = 0.5 * dyn_info.geoms.data[i_g][1]
+                    if qd.abs(segment[2]) > tolerance:
+                        first = (-half + tolerance - local[2]) / segment[2]
+                        last = (half - tolerance - local[2]) / segment[2]
+                        lower, upper = qd.max(lower, qd.min(first, last)), qd.min(upper, qd.max(first, last))
+                    elif qd.abs(local[2]) >= half - tolerance:
+                        upper = -1.0
+                    if lower < upper:
+                        square = segment[0] ** 2 + segment[1] ** 2
+                        fraction = lower
+                        if square > 0.0:
+                            fraction = qd.max(
+                                lower, qd.min(upper, -(local[0] * segment[0] + local[1] * segment[1]) / square)
+                            )
+                        radial = local + fraction * segment
+                        blocked = radial[0] ** 2 + radial[1] ** 2 < radius**2
+                if kind != gs.GEOM_TYPE.CYLINDER and segment.norm_sqr() > 0.0:
+                    count = 1
+                    if kind == gs.GEOM_TYPE.CAPSULE:
+                        count = 2
+                    for cap in range(count):
+                        center = qd.Vector([0.0, 0.0, qd.select(cap == 0, -half, half)])
+                        fraction = qd.max(
+                            128.0 * epsilon,
+                            qd.min(1.0 - 128.0 * epsilon, -(local - center).dot(segment) / segment.norm_sqr()),
+                        )
+                        blocked = blocked or (local + fraction * segment - center).norm_sqr() < radius**2
+            elif kind == gs.GEOM_TYPE.MESH:
+                for i_f in range(dyn_info.geoms.face_start[i_g], dyn_info.geoms.face_end[i_g]):
+                    indices = dyn_info.faces.verts_idx[i_f]
+                    i_a, i_c, i_d = indices[0], indices[1], indices[2]
+                    first, second, third = (
+                        dyn_info.verts.init_pos[i_a],
+                        dyn_info.verts.init_pos[i_c],
+                        dyn_info.verts.init_pos[i_d],
+                    )
+                    edge_a, edge_b = second - first, third - first
+                    cross = edge_a.cross(edge_b)
+                    denominator = segment.dot(cross)
+                    if qd.abs(denominator) > 128.0 * epsilon * segment.norm() * cross.norm():
+                        fraction = (first - local).dot(cross) / denominator
+                        if fraction > lower and fraction < upper:
+                            relative = local + fraction * segment - first
+                            gram = qd.Matrix(
+                                [[edge_a.dot(edge_a), edge_a.dot(edge_b)], [edge_a.dot(edge_b), edge_b.dot(edge_b)]]
+                            )
+                            uv = gram.inverse() @ qd.Vector([edge_a.dot(relative), edge_b.dot(relative)])
+                            if (
+                                uv[0] >= -128.0 * epsilon
+                                and uv[1] >= -128.0 * epsilon
+                                and uv.sum() <= 1.0 + 128.0 * epsilon
+                            ):
+                                blocked = True
+    return blocked
+
+
 @qd.kernel
 def kernel_pair_samples(
     link: int,
@@ -420,54 +591,104 @@ def kernel_pair_samples(
         status = gs.qd_int(PairGeometryStatus.UNSUPPORTED)
         inside_count, component_count = 0, 0
         found, unresolved = False, False
+        material_normal = geom.qd_transform_by_quat(surface_info.face_normal[own_face], quaternion)
         for opponent in range(dyn_info.geoms.type.shape[0]):
             if dyn_info.geoms.link_idx[opponent] == other_link and (
                 dyn_info.geoms.contype[opponent] != 0 or dyn_info.geoms.conaffinity[opponent] != 0
             ):
                 component_count += 1
-                candidate, direction, distance, candidate_face, candidate_status = func_opponent_boundary(
-                    opponent, i_b, point, dyn_state, dyn_info, epsilon
-                )
-                inside_count += gs.qd_int(distance < 0)
-                if candidate_status == PairGeometryStatus.SUCCESS:
-                    size = surface_info.face_edges[own_face][0, :].norm()
-                    if dyn_info.geoms.type[opponent] != gs.GEOM_TYPE.PLANE:
-                        size = qd.max(
-                            size,
-                            (dyn_state.geoms.aabb_max[opponent, i_b] - dyn_state.geoms.aabb_min[opponent, i_b]).norm(),
-                        )
+                is_mesh = dyn_info.geoms.type[opponent] == gs.GEOM_TYPE.MESH
+                count = 1
+                if is_mesh:
+                    count = dyn_info.geoms.face_end[opponent] - dyn_info.geoms.face_start[opponent]
+                size = surface_info.face_edges[own_face][0, :].norm()
+                if dyn_info.geoms.type[opponent] != gs.GEOM_TYPE.PLANE:
+                    size = qd.max(
+                        size, (dyn_state.geoms.aabb_max[opponent, i_b] - dyn_state.geoms.aabb_min[opponent, i_b]).norm()
+                    )
+                nearest = gs.qd_float(float("inf"))
+                nearest_gap = gs.qd_float(float("nan"))
+                nearest_found, sign_ambiguous = False, False
+                # The first pass establishes the material side. The second
+                # selects an accessible candidate on that side, never a mesh's
+                # hidden back face interpreted as negative penetration.
+                for query in range(2 * count):
+                    candidate_face = -1
+                    if is_mesh:
+                        candidate_face = dyn_info.geoms.face_start[opponent] + query % count
+                    candidate, direction, distance, candidate_face, candidate_status = func_opponent_candidate(
+                        opponent, i_b, candidate_face, point, dyn_state, dyn_info, epsilon
+                    )
                     tolerance = 128.0 * epsilon * qd.max(size, qd.abs(distance))
-                    if not found or distance < gap - tolerance:
-                        target, normal, gap, face, status = (
-                            candidate,
-                            direction,
-                            distance,
-                            candidate_face,
-                            candidate_status,
+                    if query < count:
+                        if candidate_status == PairGeometryStatus.SUCCESS:
+                            if qd.abs(distance) < nearest - tolerance:
+                                nearest, nearest_gap = qd.abs(distance), distance
+                                nearest_found, sign_ambiguous = True, False
+                            elif qd.abs(qd.abs(distance) - nearest) <= tolerance:
+                                sign_ambiguous = sign_ambiguous or distance * nearest_gap < -(tolerance**2)
+                        elif not is_mesh:
+                            unresolved = True
+                    elif nearest_found and not sign_ambiguous and candidate_status == PairGeometryStatus.SUCCESS:
+                        admitted = (nearest_gap >= 0.0 and distance >= -tolerance) or (
+                            nearest_gap < 0.0 and distance <= tolerance
                         )
-                        selected_geom = opponent
-                        found = True
-                    elif qd.abs(distance - gap) <= tolerance:
-                        if (candidate - target).norm() > tolerance or (direction - normal).norm() > 128.0 * epsilon:
-                            status = PairGeometryStatus.AMBIGUOUS
-                else:
-                    # Without a valid distance, an unresolved primitive could be
-                    # closer than the other components. Never silently omit it.
+                        projection = -direction.dot(material_normal)
+                        if (
+                            admitted
+                            and is_mesh
+                            and projection > 128.0 * epsilon
+                            and (not found or qd.abs(distance) <= qd.abs(gap) + tolerance)
+                        ):
+                            admitted = func_mesh_candidate_stationary(
+                                opponent, i_b, point, candidate, dyn_state, dyn_info, epsilon
+                            )
+                        if admitted:
+                            if projection <= 128.0 * epsilon:
+                                candidate_status = PairGeometryStatus.BACK_FACING
+                            elif distance > 0.0 and (not found or qd.abs(distance) <= qd.abs(gap) + tolerance):
+                                candidate_local = geom.qd_inv_transform_by_trans_quat(
+                                    candidate, contact_state.frame_position[i_b], quaternion
+                                )
+                                if func_material_occluded(own_face, local, candidate_local, surface_info, epsilon):
+                                    candidate_status = PairGeometryStatus.OCCLUDED
+                                elif func_opponent_occluded(
+                                    other_link, i_b, point, candidate, dyn_state, dyn_info, epsilon
+                                ):
+                                    candidate_status = PairGeometryStatus.OCCLUDED
+                            eligible = candidate_status == PairGeometryStatus.SUCCESS
+                            replace = not found and qd.abs(distance) < qd.abs(gap) - tolerance
+                            replace = replace or (
+                                eligible and (not found or qd.abs(distance) < qd.abs(gap) - tolerance)
+                            )
+                            if replace:
+                                target, normal, gap, face, status = (
+                                    candidate,
+                                    direction,
+                                    distance,
+                                    candidate_face,
+                                    candidate_status,
+                                )
+                                selected_geom = opponent
+                                found = eligible
+                            elif eligible and found and qd.abs(qd.abs(distance) - qd.abs(gap)) <= tolerance:
+                                if (candidate - target).norm() > tolerance or (
+                                    direction - normal
+                                ).norm() > 128.0 * epsilon:
+                                    status = PairGeometryStatus.AMBIGUOUS
+                if not nearest_found or sign_ambiguous:
                     unresolved = True
+                elif nearest_gap < 0.0:
+                    inside_count += 1
         if unresolved:
             status = PairGeometryStatus.UNSUPPORTED
         if inside_count and component_count > 1:
-            # Even touching components can hide their closest internal face.
-            # min(component SDF) is not an exact interior union distance.
+            # Component interiors can hide union-boundary intersections that
+            # are not the closest point of any original component face.
             status = PairGeometryStatus.AMBIGUOUS
         normal = geom.qd_inv_transform_by_quat(normal, quaternion)
         target_local = geom.qd_inv_transform_by_trans_quat(target, contact_state.frame_position[i_b], quaternion)
         projection = -normal.dot(surface_info.face_normal[own_face])
-        if status == PairGeometryStatus.SUCCESS:
-            if projection <= 128.0 * epsilon:
-                status = PairGeometryStatus.BACK_FACING
-            elif gap > 0.0 and func_material_occluded(own_face, local, target_local, surface_info, epsilon):
-                status = PairGeometryStatus.OCCLUDED
         samples.opponent_position[i_s, i_p] = target_local
         samples.normal[i_s, i_p] = normal
         samples.gap[i_s, i_p] = gap
