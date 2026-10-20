@@ -1,0 +1,17 @@
+[
+  [
+    {
+      "name": "control",
+      "module": "research.rigid_stress.qipc_comparison.check_reduced_pad_equilibrium",
+      "args": [
+        "--study",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-compliance-study-v1/group0/study",
+        "--qp-solver-path",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/assets/clarabel-0.11.1",
+        "--paired-repeats",
+        "3",
+        "--changing-load-controls"
+      ]
+    }
+  ]
+]

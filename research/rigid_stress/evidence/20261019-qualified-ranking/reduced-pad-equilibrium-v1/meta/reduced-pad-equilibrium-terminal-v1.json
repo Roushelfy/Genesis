@@ -1,0 +1,99 @@
+{
+  "passed": true,
+  "actual_scheduler_accounting": "732687_0|COMPLETED|0:0|00:06:52|2026-10-20T17:48:20|rtx-209-099|\n732687_0.batch|COMPLETED|0:0|00:06:52|2026-10-20T17:48:20|rtx-209-099|7812K\n732687_0.0|COMPLETED|0:0|00:06:51|2026-10-20T17:48:20|rtx-209-099|7948940K\n732701_0|COMPLETED|0:0|00:03:16|2026-10-20T17:47:35|rtx-209-099|\n732701_0.batch|COMPLETED|0:0|00:03:16|2026-10-20T17:47:35|rtx-209-099|7752K\n732701_0.0|COMPLETED|0:0|00:03:15|2026-10-20T17:47:35|rtx-209-099|7949160K\n732701_1|COMPLETED|0:0|00:03:19|2026-10-20T17:47:39|rtx-209-099|\n732701_1.batch|COMPLETED|0:0|00:03:19|2026-10-20T17:47:39|rtx-209-099|7728K\n732701_1.0|COMPLETED|0:0|00:03:19|2026-10-20T17:47:39|rtx-209-099|7949152K\n732719_0|COMPLETED|0:0|00:00:55|2026-10-20T17:49:15|rtx-209-099|\n732719_0.batch|COMPLETED|0:0|00:00:55|2026-10-20T17:49:15|rtx-209-099|7848K\n732719_0.0|COMPLETED|0:0|00:00:55|2026-10-20T17:49:15|rtx-209-099|3866.50M\n",
+  "captured_imports": {
+    "reduced-pad-equilibrium-v1": [
+      "research/rigid_stress/qipc_comparison/artifacts.py",
+      "research/rigid_stress/qipc_comparison/check_reduced_pad_equilibrium.py",
+      "research/rigid_stress/qipc_comparison/compare_distributed_pad_transfer.py",
+      "research/rigid_stress/qipc_comparison/compliant_plate_reference.py",
+      "research/rigid_stress/qipc_comparison/contact_qp.py",
+      "research/rigid_stress/qipc_comparison/cvxopt_factor.py",
+      "research/rigid_stress/qipc_comparison/p2_elastic.py",
+      "research/rigid_stress/qipc_comparison/pad_elastic_fixed_point.py",
+      "research/rigid_stress/qipc_comparison/pad_equilibrium.py",
+      "research/rigid_stress/qipc_comparison/reduced_pad_equilibrium.py",
+      "research/rigid_stress/skfem_reference.py"
+    ],
+    "reduced-pad-pcg-v1": [
+      "research/rigid_stress/qipc_comparison/artifacts.py",
+      "research/rigid_stress/qipc_comparison/check_reduced_pad_equilibrium.py",
+      "research/rigid_stress/qipc_comparison/compare_distributed_pad_transfer.py",
+      "research/rigid_stress/qipc_comparison/compliant_plate_reference.py",
+      "research/rigid_stress/qipc_comparison/contact_qp.py",
+      "research/rigid_stress/qipc_comparison/cvxopt_factor.py",
+      "research/rigid_stress/qipc_comparison/p2_elastic.py",
+      "research/rigid_stress/qipc_comparison/pad_elastic_fixed_point.py",
+      "research/rigid_stress/qipc_comparison/pad_equilibrium.py",
+      "research/rigid_stress/qipc_comparison/reduced_pad_equilibrium.py",
+      "research/rigid_stress/skfem_reference.py"
+    ],
+    "reduced-pad-comparison-v1": [
+      "research/rigid_stress/qipc_comparison/artifacts.py",
+      "research/rigid_stress/qipc_comparison/compare_distributed_pad_transfer.py",
+      "research/rigid_stress/qipc_comparison/compare_reduced_pad_equilibrium.py",
+      "research/rigid_stress/qipc_comparison/cvxopt_factor.py",
+      "research/rigid_stress/qipc_comparison/p2_elastic.py",
+      "research/rigid_stress/skfem_reference.py"
+    ]
+  },
+  "new_complete_fields": 48,
+  "retained_coupled_reference_fields": 16,
+  "newton_updates": [
+    24,
+    36,
+    74
+  ],
+  "pcg_iterations": [
+    0,
+    268,
+    304
+  ],
+  "paired_cpu_timings": [
+    {
+      "case": 0,
+      "repeats": 3,
+      "full_qp_median_seconds": 23.46736005495768,
+      "reduced_with_initialization_median_seconds": 0.060011267953086644,
+      "ratio": 391.0492288432084
+    },
+    {
+      "case": 5,
+      "repeats": 3,
+      "full_qp_median_seconds": 23.63786582899047,
+      "reduced_with_initialization_median_seconds": 0.09237674198811874,
+      "ratio": 255.8854677082107
+    },
+    {
+      "case": 7,
+      "repeats": 3,
+      "full_qp_median_seconds": 24.583446730975993,
+      "reduced_with_initialization_median_seconds": 0.09285490802722052,
+      "ratio": 264.7511828213682
+    }
+  ],
+  "changing_load_controls": [
+    {
+      "mode": "direct",
+      "states": 4,
+      "return_to_initial_load_pressure_relative": 1.1813449387243079e-15,
+      "scope": "Fixed candidate-region normal load/tilt change with full QP controls; no friction or general moving search."
+    },
+    {
+      "mode": "pcg-fixed",
+      "states": 4,
+      "return_to_initial_load_pressure_relative": 4.365574173104962e-15,
+      "scope": "Fixed candidate-region normal load/tilt change with full QP controls; no friction or general moving search."
+    },
+    {
+      "mode": "pcg-adaptive",
+      "states": 4,
+      "return_to_initial_load_pressure_relative": 1.7405143390989756e-11,
+      "scope": "Fixed candidate-region normal load/tilt change with full QP controls; no friction or general moving search."
+    }
+  ],
+  "direct_v1_setup_metadata": "operator_setup_seconds repeats the last setup duration on reused cases; actual rebuilds are cases0,3,6,7 at each quadrature. Later captured workers report zero on reuse. Do not sum v1 repeated entries.",
+  "production_model_admitted": false,
+  "production_tolerance_changed": false,
+  "whole_goal_complete": false
+}

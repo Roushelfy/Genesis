@@ -100,11 +100,76 @@ cases. These single-process research call measurements include current CPU
 solver work, have no independent timing repeats and are not production rates.
 The diagonal model pays substantial extra work for little measured accuracy gain.
 
-Next reduce the coupled solve to the already condensed elastic coordinates,
-reuse its factors/previous state, and validate pressure, force/moment and complete
-stress against these actual coupled cases before measuring speed. Extend the
+The coupled solve has now been reduced and checked below. Extend the
 physical study to thickness, changing nonconvex/asymmetric geometry and
 friction/unloading. Then integrate the useful model into the existing native
 Quadrants feature, preserving supported batching, output, isolation and resets,
 and measure paired module/scene costs including prediction. No Gaussian radius
 fit or loose solver tolerance replaces these checks.
+
+## Exact pad elimination and inner/outer solver accuracy
+
+The [completed reduced-solve packet](../evidence/20261019-qualified-ranking/reduced-pad-equilibrium-v1/README.md)
+retains48 new fields: direct reduced Newton, fixed-PCG Newton and an adaptive-PCG
+control each replay the16 coupled cases above. It reuses the original16 coupled
+reference fields and changes only the numerical formulation. Eliminating each
+independent compression-only pad spring analytically leaves a piecewise
+quadratic energy in the834 elastic coordinates and four free plate/link
+coordinates. At degree6 quadrature, this reduces5446 unknowns to838. Regional
+elastic coupling, free-link balance and the physical pad law are preserved.
+
+The direct solve differs from the original coupled reference by at most
+1.51e-10 in complete stress and2.28e-10 in area-weighted pressure. Full elastic
+pad-law, force/moment, equilibrium and exact omitted-face checks retain their
+original limits. Independent remeasurement bounds both PCG variants' complete
+stress differences from direct Newton by8.21e-12 and their raw tensile/von-Mises
+peak differences by1.17e-11. These are implementation checks on the same
+discrete physical problem, not new continuum errors or ranks.
+
+Three paired calls per case on one allocated CPU core on `rtx-209-099` give:
+
+| Degree6 case | Full QP median (s) | Reduced Newton including cold initialization (s) | Ratio |
+| --- | ---: | ---: | ---: |
+| Nominal10GPa link /1e9N/m3 pad | 23.467 | 0.0600 | 391 |
+| Flexible1GPa link /1e10N/m3 pad | 23.638 | 0.0924 | 256 |
+| Gradient pad /1GPa link | 24.583 | 0.0929 | 265 |
+
+Both paths reuse the saved elastic compliance. Reduced Newton also caches its
+factor and quadrature map. Actual factor/map rebuilds take0.014–0.021s at
+centroid quadrature and0.083–0.090s at degree6; the independent full FEM setup
+takes43.71s in this process. Stored compliance, its factor and the mapped factor
+together occupy13,690,944/41,873,472 bytes at the two quadratures. Those counts
+exclude interpolation, solve workspace and full FEM storage. The captured
+direct-v1 metadata repeats the last setup duration on reused cases; only
+cases0,3,6,7 at each quadrature are actual rebuilds. Later workers record zero
+on reuse. The paired calls are repetitions inside one process, not independent
+process samples, native throughput or end-to-end scene rates.
+
+PCG is an inner linear solve. Inexact Newton controls that solve through a
+relative linear-residual forcing term while separately checking the nonlinear
+residual; see [Eisenstat and Walker](https://epubs.siam.org/doi/10.1137/0917003).
+Here every variant keeps the dimensionless outer gradient target1e-10,
+independent pad-law target1e-7 and force/moment target1e-8. Fixed inner1e-6
+therefore does not impose a1e-6 final nonlinear residual. The tested adaptive
+rule is explicitly `min(0.1, sqrt(current_gradient_norm))`, not the paper's
+Eisenstat-Walker update.
+
+| Solver, over16 fields | Newton updates | Total PCG iterations |
+| --- | ---: | ---: |
+| Direct reduced Newton | 24 | — |
+| Fixed inner1e-6 PCG | 36 | 268 |
+| Tested adaptive PCG | 74 | 304 |
+
+All pass the same final checks. The tested looser early solves increase total
+iterations and supply no reason to change a default; cross-job PCG wall times
+are not a paired speed experiment. No production tolerance is changed.
+This keeps numerical convergence distinct from load-model discrepancy and
+physical stress accuracy.
+
+Each solver also passes four prescribed normal load/upper-gap tilt states,
+including loading and unloading, against the full QP. Previous pressure is only
+an initial guess; cold/warm results agree, and return to the original load/gap
+recovers pressure within1.75e-11. These controls use a fixed candidate region.
+They do not establish general moving/nonconvex search, tangential history,
+thickness independence or automatic native integration. Those remain the next
+physical and production work.
