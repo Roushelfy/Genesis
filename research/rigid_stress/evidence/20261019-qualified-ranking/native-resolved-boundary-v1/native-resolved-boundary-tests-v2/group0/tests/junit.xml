@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="114.791" timestamp="2026-10-20T17:08:07.113764+00:00" hostname="rtx-209-099"><testcase classname="tests.rigid.test_stress_resolved" name="test_resolved_native_observation_reset_and_checkpoint[max]" time="95.458" /><testcase classname="tests.rigid.test_stress_resolved" name="test_resolved_native_observation_reset_and_checkpoint[full]" time="19.206"><failure message="AssertionError">show_viewer = False, output_mode = 'full'
+
+    @pytest.mark.required
+    @pytest.mark.precision("64")
+    @pytest.mark.parametrize("output_mode", ("max", "full"))
+    def test_resolved_native_observation_reset_and_checkpoint(show_viewer, output_mode):
+        assets = Path(__file__).resolve().parents[2] / "examples/rigid/assets/hollow_egg/level1"
+        scene = gs.Scene(
+            rigid_options=gs.options.RigidOptions(
+                use_gjk_collision=True,
+                enable_contact_patch=True,
+            ),
+            show_viewer=show_viewer,
+        )
+        scene.add_entity(
+            morph=gs.morphs.Plane(),
+        )
+        egg = scene.add_entity(
+            morph=gs.morphs.URDF(
+                file=assets / "egg_shell.urdf",
+                pos=(0.0, 0.0, 0.031),
+                align=False,
+                convexify=True,
+                decimate=False,
+                preserve_mesh_precision=True,
+            ),
+        )
+        link = egg.base_link
+        link.configure_stress_recovery(
+            gs.options.RigidStressOptions.dpr(
+                mesh=assets / "elastic.npz",
+                output_mode=output_mode,
+                load_transfer="resolved",
+            )
+        )
+        scene.build(n_envs=3)
+        # These points are an explicitly declared discrete load baseline. This
+        # lifecycle test makes no physical pressure-resolution or accuracy claim.
+        for _ in range(8):
+            scene.step()
+        peak = tensor_to_array(link.get_max_stress())
+        assert np.isfinite(peak).all() and (peak &gt; 0).all()
+        if output_mode == "full":
+            tensor, mises = (tensor_to_array(value) for value in link.get_stress_field())
+&gt;           assert_allclose(mises.max(axis=(1, 2)), peak)
+
+tests/rigid/test_stress_resolved.py:163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = array([22560.774966, 22560.774966, 22560.774966])
+desired = array([22560.774966, 22560.774966, 22560.774966]), atol = None
+rtol = None, tol = None, err_msg = None
+
+    def assert_allclose(actual, desired, *, atol=None, rtol=None, tol=None, err_msg=None):
+        # Determine absolute and relative tolerance from input arguments
+&gt;       assert (tol is not None) ^ (atol is not None or rtol is not None)
+E       AssertionError
+
+tests/utils/assertions.py:18: AssertionError</failure></testcase></testsuite></testsuites>

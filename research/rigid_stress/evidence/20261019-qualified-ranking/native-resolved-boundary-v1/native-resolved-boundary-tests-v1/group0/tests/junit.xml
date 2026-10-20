@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="4" time="12.788" timestamp="2026-10-20T17:05:46.825020+00:00" hostname="rtx-210-029"><testcase classname="tests.rigid.test_stress_resolved" name="test_resolved_boundary_work_release_and_failure_isolation[u]" time="6.811" /><testcase classname="tests.rigid.test_stress_resolved" name="test_resolved_boundary_work_release_and_failure_isolation[cavity]" time="3.399" /><testcase classname="tests.rigid.test_stress_resolved" name="test_resolved_native_observation_reset_and_checkpoint[max]" time="1.826"><failure message="genesis.GenesisException: Validation error for &lt;gs.materials.Rigid&gt;: Invalid attribute 'friction': input should be greater than or equal to 0.01. Got 0.0.">show_viewer = False, output_mode = 'max'
+
+    @pytest.mark.required
+    @pytest.mark.precision("64")
+    @pytest.mark.parametrize("output_mode", ("max", "full"))
+    def test_resolved_native_observation_reset_and_checkpoint(show_viewer, output_mode):
+        assets = Path(__file__).resolve().parents[2] / "examples/rigid/assets/hollow_egg/level1"
+        scene = gs.Scene(
+            rigid_options=gs.options.RigidOptions(
+                use_gjk_collision=True,
+                enable_contact_patch=True,
+            ),
+            show_viewer=show_viewer,
+        )
+        scene.add_entity(
+            morph=gs.morphs.Plane(),
+&gt;           material=gs.materials.Rigid(
+                friction=0.0,
+            ),
+        )
+
+tests/rigid/test_stress_resolved.py:135: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+genesis/options/options.py:35: in __init__
+    self._validation_error(e)
+genesis/options/options.py:110: in _validation_error
+    gs.raise_exception_from(trace_msg, None)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+msg = "Validation error for &lt;gs.materials.Rigid&gt;: Invalid attribute 'friction': input should be greater than or equal to 0.01. Got 0.0."
+cause = None
+
+    def raise_exception_from(msg="Something went wrong.", cause=None) -&gt; NoReturn:
+&gt;       raise gs.GenesisException(msg) from cause
+E       genesis.GenesisException: Validation error for &lt;gs.materials.Rigid&gt;: Invalid attribute 'friction': input should be greater than or equal to 0.01. Got 0.0.
+
+genesis/utils/misc.py:47: GenesisException</failure></testcase><testcase classname="tests.rigid.test_stress_resolved" name="test_resolved_native_observation_reset_and_checkpoint[full]" time="0.592"><failure message="genesis.GenesisException: Validation error for &lt;gs.materials.Rigid&gt;: Invalid attribute 'friction': input should be greater than or equal to 0.01. Got 0.0.">show_viewer = False, output_mode = 'full'
+
+    @pytest.mark.required
+    @pytest.mark.precision("64")
+    @pytest.mark.parametrize("output_mode", ("max", "full"))
+    def test_resolved_native_observation_reset_and_checkpoint(show_viewer, output_mode):
+        assets = Path(__file__).resolve().parents[2] / "examples/rigid/assets/hollow_egg/level1"
+        scene = gs.Scene(
+            rigid_options=gs.options.RigidOptions(
+                use_gjk_collision=True,
+                enable_contact_patch=True,
+            ),
+            show_viewer=show_viewer,
+        )
+        scene.add_entity(
+            morph=gs.morphs.Plane(),
+&gt;           material=gs.materials.Rigid(
+                friction=0.0,
+            ),
+        )
+
+tests/rigid/test_stress_resolved.py:135: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+genesis/options/options.py:35: in __init__
+    self._validation_error(e)
+genesis/options/options.py:110: in _validation_error
+    gs.raise_exception_from(trace_msg, None)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+msg = "Validation error for &lt;gs.materials.Rigid&gt;: Invalid attribute 'friction': input should be greater than or equal to 0.01. Got 0.0."
+cause = None
+
+    def raise_exception_from(msg="Something went wrong.", cause=None) -&gt; NoReturn:
+&gt;       raise gs.GenesisException(msg) from cause
+E       genesis.GenesisException: Validation error for &lt;gs.materials.Rigid&gt;: Invalid attribute 'friction': input should be greater than or equal to 0.01. Got 0.0.
+
+genesis/utils/misc.py:47: GenesisException</failure></testcase></testsuite></testsuites>

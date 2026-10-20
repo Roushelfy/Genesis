@@ -47,8 +47,17 @@ loads within1%/0.1% aggregate budgets, with8.76%/14.66% complete-stress changes
 and measured individual-source redistribution. The earlier29.81%/33.51%
 unbudgeted changes apply only to the narrower centroid-path diagnostic.
 Numerical/path sensitivity, a matched source-local control and inspected maps
-are retained. No production tolerance is relaxed; useful native automatic
-integration and matching physical/cost validation remain open.
+are retained. No production tolerance is relaxed.
+
+Native DPR now provides `load_transfer="resolved"` for already integrated
+pressure samples. It uses the witnessed material boundary, including cavities
+and nonconvex faces, with conservative P2 work transfer. Nonconvex/cavity work
+and isolation controls, native max/full checkpoint/reset controls and six
+manual-pressure regressions pass. The retained normal/friction complete fields
+agree with independent CPU resolved transfer to1.26e-11. This removes a second
+disk from a declared resolved input; automatic physical support/pressure
+prediction, its material/pad configuration and matched production costs remain
+open.
 
 The [active goal](docs/QUALIFIED_STRESS_RANKING_GOAL.md) is qualified DPR/SCR/Shell
 stress-error comparisons on a free full hollow egg between parallel plates.

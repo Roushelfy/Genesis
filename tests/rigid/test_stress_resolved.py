@@ -164,6 +164,9 @@ def test_resolved_native_observation_reset_and_checkpoint(show_viewer, output_mo
     checkpoint = scene.get_state()
     scene.step()
     position, next_peak = tensor_to_array(egg.get_pos()), tensor_to_array(link.get_max_stress())
+    scene.step()
+    following_position = tensor_to_array(egg.get_pos(envs_idx=[0, 2]))
+    following_peak = tensor_to_array(link.get_max_stress(envs_idx=[0, 2]))
     scene.reset(state=checkpoint)
     if output_mode == "full":
         assert all(np.isnan(tensor_to_array(value)).all() for value in link.get_stress_field())
@@ -174,3 +177,7 @@ def test_resolved_native_observation_reset_and_checkpoint(show_viewer, output_mo
     scene.reset(envs_idx=[1])
     assert_equal(tensor_to_array(link.get_max_stress(envs_idx=[0, 2])), before[[0, 2]])
     assert_equal(tensor_to_array(link.get_max_stress(envs_idx=[1])), 0)
+    scene.step()
+    assert_allclose(tensor_to_array(egg.get_pos(envs_idx=[0, 2])), following_position, rtol=0, atol=1e-15)
+    assert_allclose(tensor_to_array(link.get_max_stress(envs_idx=[0, 2])), following_peak, rtol=1e-8, atol=1e-6)
+    assert np.isfinite(tensor_to_array(link.get_max_stress(envs_idx=[1]))).all()

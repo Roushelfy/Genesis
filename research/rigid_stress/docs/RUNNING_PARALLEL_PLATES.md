@@ -872,3 +872,21 @@ retains same-path source-local controls. Use the successful
 from `resolved-pad-decomposition-v2`. The
 [new packet](../evidence/20261019-qualified-ranking/cooperative-load-and-transfer-decomposition-v1/README.md)
 contains their captured recipes, actual failures and inspected figure exports.
+
+## Native resolved-boundary transfer
+
+Use an engine containing `RigidStressOptions.load_transfer` for the current
+pad worker. Historical engine-only baselines use their captured analysis
+sources. `--load-transfer resolved_boundary_p2` calls the production boundary
+resolver and conservative P2 scatter; `resolved_outer_p2` retains the original
+research centroid adapter. Both require complete physical sources and separate
+physical-law/history admission. The new route also supports the existing
+explicit `--source-roundoff` variant, with original inputs and measured
+corrections retained. This does not change rigid dynamics or production defaults.
+
+`check_resolved_boundary_native --run RUN --cpu CPU` reuses the actual qualified
+normal/friction endpoint loads and independent same-load CPU fields. The
+`native-resolved-physical-fields-v1` output retains complete fields and source
+diagnostics. The engine's `tests/rigid/test_stress_resolved.py` covers quadratic
+virtual work on nonconvex/cavity surfaces, source moment rejection, release,
+batch isolation and public max/full checkpoint/reset behavior.

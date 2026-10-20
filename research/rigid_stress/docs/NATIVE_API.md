@@ -28,12 +28,29 @@ options and return ordinary `RigidStressOptions` with all effective fields.
 | Constructor | Exact serialized load configuration |
 | --- | --- |
 | `.dpr(mesh=...)` | `contact_model="pressure"` |
+| `.dpr(mesh=..., load_transfer="resolved")` | Pressure-mode samples transferred conservatively to their witnessed boundary |
 | `.scr(mesh=...)` | `contact_model="intrinsic", intrinsic_load_partition="body_source_prior"` |
 
 The preset constructors fix those identifying fields. Use the main
 `RigidStressOptions(...)` constructor for other explicit load-law variants.
 The presets retain the existing solver and defaults. Historical identifiers in
 receipts remain unchanged, and the names do not express an accuracy ranking.
+
+Use `load_transfer="resolved"` only when the producer has already integrated
+the physical pressure/traction samples. Native Quadrants source association
+retains geom/pair witnesses, material face and barycentric coordinates, including
+inner and nonconvex boundaries. Signed P2 shape functions preserve virtual work,
+force and original-point moment without a second disk. The supplied normal and
+friction input contract, boundary ambiguity/projection checks, original-wrench
+budget and complete elastic acceptance remain active. A free moment that this
+point sample cannot represent is rejected.
+
+This option does not determine support or pressure from sparse collider points.
+It has no reconstruction radius; `set_stress_contact_radius()` rejects changes
+for this route. The default `load_transfer="patch"` retains the manual finite
+footprint. Resolved transfer uses the ordinary max/full observation, update,
+checkpoint and reset lifecycle; physical automatic pressure prediction and its
+material/pad inputs remain a separate integration requirement.
 
 ```python
 gs.init(backend=gs.gpu, precision="64")
