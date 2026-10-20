@@ -1,0 +1,40 @@
+[
+  [
+    {
+      "name": "tangent",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_stress",
+      "args": [
+        "--backend",
+        "gpu",
+        "--tangential"
+      ]
+    },
+    {
+      "name": "normal",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_stress",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "tangent",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_stress",
+      "args": [
+        "--backend",
+        "cpu",
+        "--tangential"
+      ]
+    },
+    {
+      "name": "normal",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_stress",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    }
+  ]
+]

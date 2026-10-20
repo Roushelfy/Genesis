@@ -71,6 +71,15 @@ pressure candidate. Its offline fitting, half-space samples and sharp-edge
 limits remain distinct from native runtime and complete shell accuracy.
 Friction history and useful public max/full integration remain open.
 
+The [elliptic tangential evaluator](docs/HARD_CONTACT_ESTIMATES_20261020.md#elliptic-tangential-stress-and-the-cost-of-discarding-history)
+now passes independent Cerruti integration and2923 native CPU/GPU tensors per
+backend, including surface limits. Its GPU cost is0.290–0.460ms for79 probes on
+1–512 supplied regions. A separate reversal control rejects a memoryless
+proportional-friction law: at zero tangential resultant it loses residual local
+stress and incurs47.76% sampled tensile-peak error against the declared
+Cattaneo-Mindlin approximation. The tensor kernel is reusable for traction
+superposition; a cheap native history law and shell/scene integration remain open.
+
 The [first CPU contact-region study](docs/AUTOMATIC_CONTACT_PROGRESS_20261020.md)
 now measures distributed-source double spreading: the retained2mm DPR baseline
 places about42% of normal load on the inner boundary. Conservative outer P2

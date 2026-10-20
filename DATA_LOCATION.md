@@ -1,5 +1,15 @@
 # Rigid-stress data and artifact locations
 
+The `hard-hertz-tangential-v1` packet retains87 compact payloads/395,654 bytes
+for independent elliptic tangential stress controls, a loading/reversal comparison
+and native CPU/GPU accuracy/timing. Its five full tensor/cycle arrays remain
+externally hashed under the established20261019-qualified-ranking data root in
+`hard-tangential-v1` and `hard-native-tangential-v2`. The original native assertion
+failure remains in `hard-native-tangential-v1`; no failed output was overwritten.
+Private compiler caches were node-local. Source/docs remain in workspace;
+existing data, environments and compatibility links were preserved. Supplied
+traction-kernel timing does not include a friction-history law or scene output.
+
 The `hard-normal-roots-and-edge-v1` packet retains96 compact payloads/677,074
 bytes and67 externally hashed arrays/meshes for direct planar normal roots,
 matched live Franka input/rigid timing and original/corrected straight-edge
