@@ -240,11 +240,45 @@ and inputs. The [terminal packet](../evidence/20261019-qualified-ranking/native-
 retains the thickness fields, sampling controls, inspected maps, captured
 workers and final-source equivalence checks.
 
-Geometry, compliance/factor preparation and cold rigid guesses are still CPU
-validation inputs. This research core is not a public automatic contact model.
-Native geometry/operator preparation, physical region grouping, moving/nonconvex
-and friction history, the small public material/pad configuration and production
-lifecycle integration remain required. Current call times include compilation
-and research checks; they establish no controlled native throughput. Measure
-module and actual-scene costs, including prediction/preprocessing, after those
-components are connected.
+That first pressure-stage packet supplies CPU geometry, compliance/factors and
+cold rigid guesses. The following component checks remove two of those supplied
+inputs and independently validate native compliance construction on a small mesh.
+
+## Native preparation components
+
+`NativePadCompliance` now uses the existing native elastic factor to solve
+balanced unit loads in supplied nodal directions. It then removes rigid
+displacement using the consistent mass gauge before extracting the contact
+compliance. Four CPU/GPU controls on a compact two-tetrahedron mesh include
+six arbitrary directions, translated/rotated geometry and a change from10GPa
+to2GPa. Relative compliance error against independent complete FEM is at most
+4.16e-14; the frame/material scaling error stays below1.44e-14. These controls
+verify the numerical operator, not large-mesh preparation cost.
+
+`NativePadBasis` factors compliance and assembles the sparse work-conjugate map
+in Quadrants. The original834-node matrices for all three thicknesses reproduce
+their independent elastic maps within1.88e-14. Native opposing-pad cold starts
+put both candidate regions in compression, with zero elastic coordinates;
+they use no CPU rigid-equilibrium solve. All48 pressure cases pass the same
+outer1e-10, pad-law1e-7 and wrench1e-8 targets, with measured full-C pad-law
+residuals below3.75e-13. Warm repeat, separated release, failure isolation and
+partial recovery remain exact. For the original eight cases, this conservative
+cold start takes4–7 Newton updates, versus2–3 with supplied rigid guesses.
+Include that extra solve work when measuring end-to-end cost.
+
+All48 actual pressures from this preparation variant also pass independent
+complete elastic reconstruction. Maximum complete stress and raw peak relative
+differences from the full-QP references are1.51e-10 and2.31e-10; CPU/GPU force
+differences stay below1.08e-14. The
+[native-preparation packet](../evidence/20261019-qualified-ranking/native-pad-preparation-v1/README.md)
+retains these fields, operator controls and the exact captured sources.
+
+The large physical834-node compliances and geometry interpolation remain supplied
+validation inputs. Compact native condensation and the large mapped-pressure
+checks are distinct controls, not one demonstrated large-mesh preparation chain.
+This research core is not a public automatic contact model. Native current-geometry
+production, physical region grouping, moving/nonconvex and friction history,
+the small public material/pad configuration and production lifecycle integration
+remain required. Current call times include compilation and research checks;
+they establish no controlled native throughput. Measure module and actual-scene
+costs, including prediction/preprocessing, after those components are connected.

@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "backend": "gpu",
+  "rows": [
+    {
+      "young_pa": 10000000000.0,
+      "relative_compliance_error": 2.0178013307114866e-14,
+      "relative_factor_error": 2.0229499934124253e-14,
+      "frame_material_error": 0.0,
+      "native_reciprocity_error": 3.9068369989346625e-16,
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-compliance-v1/group0/gpu/compliance0.npz",
+        "bytes": 1692,
+        "sha256": "6d83760d68909e759a5da2c989909eb86111b0648d686192856d692b7d5f249a"
+      }
+    },
+    {
+      "young_pa": 2000000000.0,
+      "relative_compliance_error": 3.730988787187285e-14,
+      "relative_factor_error": 3.7304620440874245e-14,
+      "frame_material_error": 1.438319564567398e-14,
+      "native_reciprocity_error": 3.918986539951112e-16,
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-compliance-v1/group0/gpu/compliance1.npz",
+        "bytes": 1719,
+        "sha256": "9b46600350606e5b839613f8eee7c6f79bb922a44155d61ba1ddad5b84985153"
+      }
+    }
+  ],
+  "scope": "Native balanced unit-load condensation and mass-gauge alignment agree with independent complete elasticity for six arbitrary nodal directions, including a translated/rotated material-scaled control. This validates operator construction on a compact mesh, not large-mesh preprocessing cost or automatic contact geometry.",
+  "whole_goal_complete": false
+}

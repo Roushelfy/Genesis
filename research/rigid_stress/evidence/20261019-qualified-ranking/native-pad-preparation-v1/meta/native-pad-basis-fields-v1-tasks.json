@@ -1,0 +1,44 @@
+[
+  [
+    {
+      "name": "fields",
+      "module": "research.rigid_stress.qipc_comparison.check_native_pad_fields",
+      "args": [
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-newton-inputs-v1/group0/inputs",
+        "--gpu",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-basis-v1/group0/gpu",
+        "--cpu",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-basis-v1/group1/cpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "fields",
+      "module": "research.rigid_stress.qipc_comparison.check_native_pad_fields",
+      "args": [
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-thickness-inputs-v1/group0/inputs",
+        "--gpu",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-basis-v1/group2/gpu",
+        "--cpu",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-basis-v1/group3/cpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "fields",
+      "module": "research.rigid_stress.qipc_comparison.check_native_pad_fields",
+      "args": [
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-thickness-inputs-v1/group1/inputs",
+        "--gpu",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-basis-v1/group4/gpu",
+        "--cpu",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-basis-v1/group5/cpu"
+      ]
+    }
+  ]
+]

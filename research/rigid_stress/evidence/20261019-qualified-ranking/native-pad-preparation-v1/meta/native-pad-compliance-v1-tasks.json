@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "name": "gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_pad_compliance",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_pad_compliance",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    }
+  ]
+]

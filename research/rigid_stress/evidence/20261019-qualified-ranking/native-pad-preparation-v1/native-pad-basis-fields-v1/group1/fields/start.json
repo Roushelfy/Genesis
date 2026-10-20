@@ -1,0 +1,47 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "732893",
+      "SLURM_ARRAY_JOB_ID": "732889",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-thickness-inputs-v1/group0/inputs/result.json",
+      "bytes": 2516,
+      "sha256": "890e55197e5c16ed3323faa4aedad1ec5a6d62258f62aff7cab699fa62351e49"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-basis-v1/group2/gpu/result.json",
+      "bytes": 3507,
+      "sha256": "3f65ecdd202333288397f6ff494f43005c06204fa708ce9b4af7b2cf073564b7"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-basis-v1/group3/cpu/result.json",
+      "bytes": 3508,
+      "sha256": "b21460bca6a56caf6ddc58ed70ad787c6446fc14d517ac7512d5c1bf126d158c"
+    }
+  ],
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-thickness-study-v1/group0/preparation/mesh.npz",
+    "bytes": 488688,
+    "sha256": "96de40782febe6bb105693c6be47b31a05005c61315c988ca9dedaf28c2e5e20"
+  },
+  "targets": {
+    "complete_field_relative": 1e-06,
+    "peak_relative": 1e-06,
+    "elastic_equation": 1e-07,
+    "balance": 1e-08,
+    "backend_force_relative": 1e-10
+  }
+}

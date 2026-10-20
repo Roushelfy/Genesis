@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "backend": "cpu",
+  "native_basis_and_cold_initialization": true,
+  "rows": [
+    {
+      "order": 0,
+      "native_mapping_relative_error": 9.188817165916548e-15,
+      "pressure_relative_errors": [
+        1.4418824657961378e-12,
+        4.0949878400468807e-13
+      ],
+      "independent_pad_law_errors": [
+        3.5702207897986446e-16,
+        2.44097316505944e-16
+      ],
+      "wrench_errors": [
+        4.454459343027959e-16,
+        4.444375603347736e-16
+      ],
+      "maximum_gradient": 6.416750133421098e-16,
+      "newton_updates": [
+        5,
+        6
+      ],
+      "pcg_iterations": [
+        24,
+        35
+      ],
+      "cold_compile_and_solve_seconds": 0.5850737240398303,
+      "warm_unchanged_exact": true,
+      "release_exact": true,
+      "failure_isolation_exact": true,
+      "partial_recovery_preserves_others_exact": true,
+      "pressure": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-basis-v1/group5/cpu/q0-pressure.npz",
+        "bytes": 16189,
+        "sha256": "86b65cca9bdf69609ac8faa4673e6497cecb7346abfa32b5bb3c7d4e7cae986e"
+      },
+      "inputs": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-thickness-inputs-v1/group1/inputs/q0.npz",
+        "bytes": 7589179,
+        "sha256": "1bb94e351c70396d635897546cc2a5c4e9340b8daf26da3f24bbe93612fb9034"
+      }
+    },
+    {
+      "order": 6,
+      "native_mapping_relative_error": 7.999347516750342e-15,
+      "pressure_relative_errors": [
+        2.5226946323823004e-10,
+        3.5545218319268654e-11
+      ],
+      "independent_pad_law_errors": [
+        8.287565033195876e-14,
+        2.9996564891603675e-16
+      ],
+      "wrench_errors": [
+        1.3800122286052796e-13,
+        4.645130037570349e-16
+      ],
+      "maximum_gradient": 4.287854828689759e-12,
+      "newton_updates": [
+        5,
+        6
+      ],
+      "pcg_iterations": [
+        25,
+        35
+      ],
+      "cold_compile_and_solve_seconds": 1.114595179038588,
+      "warm_unchanged_exact": true,
+      "release_exact": true,
+      "failure_isolation_exact": true,
+      "partial_recovery_preserves_others_exact": true,
+      "pressure": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-basis-v1/group5/cpu/q6-pressure.npz",
+        "bytes": 38708,
+        "sha256": "5ea1f09e856fd4be2b4a1d6f5b1085122ff5c337fb402ef46a91aa86ea7183ef"
+      },
+      "inputs": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-thickness-inputs-v1/group1/inputs/q6.npz",
+        "bytes": 27919956,
+        "sha256": "cf2140bbbcf376b9e10d48cb833ed1d22e7acdfa03f24503aa0b399cde68bb8a"
+      }
+    }
+  ],
+  "production_automatic_model_admitted": false,
+  "whole_goal_complete": false,
+  "scope": "Native nonlinear pressure and matrix-free linear solves match every supplied independent normal pad case. Warm repeat, exact separation release, invalid-input isolation and selective recovery pass. Compliance and geometry remain CPU-prepared validation inputs. The explicit native-preparation variant factors compliance, builds the sparse map and initializes cold opposing pads on device. Dynamic geometry selection, friction integration, production lifecycle wiring and controlled throughput remain required."
+}

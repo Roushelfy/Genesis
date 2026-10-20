@@ -45,8 +45,11 @@ show15.52% versus0.49% rigid-pressure error with the hard pad. The reduced
 pressure stage now runs in Quadrants:48 CPU/GPU cases and48 independent complete
 fields pass, with at most1.50e-10 stress difference from the full-QP references.
 Warm repeats, release, failure isolation and partial recovery pass atB8/B2.
-Geometry/operators and cold guesses remain CPU-prepared; public automatic
-integration and controlled module/scene throughput remain open.
+Subsequent native factor/map construction and cold initialization also pass all48
+pressure cases and their independent complete fields. Compact native compliance
+construction matches independent FEM to4.16e-14 under frame/material changes. Large physical compliances and geometry
+maps remain supplied inputs; public automatic integration and controlled
+module/scene throughput remain open.
 
 The [engineering load-sensitivity study](docs/ENGINEERING_LOAD_SENSITIVITY_20261020.md)
 adds18 qualified resolved-transfer errors: corrected-boundary tangential error
