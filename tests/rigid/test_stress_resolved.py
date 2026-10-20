@@ -132,9 +132,6 @@ def test_resolved_native_observation_reset_and_checkpoint(show_viewer, output_mo
     )
     scene.add_entity(
         morph=gs.morphs.Plane(),
-        material=gs.materials.Rigid(
-            friction=0.0,
-        ),
     )
     egg = scene.add_entity(
         morph=gs.morphs.URDF(
@@ -144,9 +141,6 @@ def test_resolved_native_observation_reset_and_checkpoint(show_viewer, output_mo
             convexify=True,
             decimate=False,
             preserve_mesh_precision=True,
-        ),
-        material=gs.materials.Rigid(
-            friction=0.0,
         ),
     )
     link = egg.base_link
