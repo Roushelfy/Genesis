@@ -86,8 +86,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             rest_volume=gs.qd_float,
             mass=gs.qd_float,
             rest_density=gs.qd_float,  # mass / rest_volume
-            viscosity_coeff=gs.qd_float,  # viscosity
-            surface_coeff=gs.qd_float,  # surface tension
+            viscosity=gs.qd_float,
+            surface_tension=gs.qd_float,
         )
 
         # single frame particle state for rendering
@@ -138,6 +138,16 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
 
             for entity in self.entities:
                 entity._add_to_solver()
+
+            # The explicit viscosity term in [_task_compute_non_pressure_forces] is only stable below this timestep.
+            viscosity_max = max(entity.material.viscosity for entity in self.entities)
+            stable_dt = 0.01 * self._support_radius**2 / viscosity_max if viscosity_max > 0.0 else float("inf")
+            if self.substep_dt > stable_dt:
+                gs.logger.warning(
+                    f"Current timestep ({self.substep_dt:.4g}) is larger than the stable timestep "
+                    f"({stable_dt:.4g}) for SPH solver. "
+                    "Please consider reducing the timestep, liquid viscosity, or increasing the particle size."
+                )
 
         # Kernels of this solver take the solver itself, so gravity has to be a field for them.
         self._build_gravity(as_field=True)
@@ -209,13 +219,47 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                         self.particles[i_p, i_b].reordered_idx, i_g, i_b
                     ]
 
+    @qd.func
+    def _task_compute_non_pressure_forces(self, i, j, ret: qd.template(), i_b):
+        i_m_i = self.particles_reordered[i, i_b].material
+        i_m_j = self.particles_reordered[j, i_b].material
+        mass_i = self.materials[i_m_i].mass
+        mass_j = self.materials[i_m_j].mass
+
+        x_ij = self.particles_reordered[i, i_b].pos - self.particles_reordered[j, i_b].pos
+        dist = x_ij.norm()
+
+        # Surface tension (cohesion). The kernel is evaluated no closer than one particle size so that the attraction
+        # vanishes as particles touch instead of peaking at the kernel center.
+        effective_dist = qd.max(dist, self._particle_size)
+        ret -= self.materials[i_m_i].surface_tension / mass_i * mass_j * x_ij * self.cubic_kernel(effective_dist)
+
+        # Viscosity, using the 2 * (d + 2) Laplacian approximation in 3D with a regularized denominator.
+        v_ij = (self.particles_reordered[i, i_b].vel - self.particles_reordered[j, i_b].vel).dot(x_ij)
+        rho_j = self.particles_reordered[j, i_b].density_norm * self.materials[i_m_j].rest_density
+        ret += (
+            2.0
+            * (3.0 + 2.0)
+            * self.materials[i_m_i].viscosity
+            * (mass_j / rho_j)
+            * v_ij
+            / (dist**2 + 0.01 * self._support_radius**2)
+            * self.cubic_kernel_derivative(x_ij)
+        )
+
     @qd.kernel
     def _kernel_compute_non_pressure_forces(self, f: qd.i32, t: qd.f32):
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             if self.particles_reordered[i_p, i_b].active:
                 acc = self._gravity[i_b]
-
-                # TODO: Viscosity and surface tension accelerations go here.
+                self.sh.for_all_neighbors(
+                    i_p,
+                    self.particles_reordered.pos,
+                    self._support_radius,
+                    acc,
+                    self._task_compute_non_pressure_forces,
+                    i_b,
+                )
 
                 for i_ff in qd.static(range(len(self._ffs))):
                     acc += self._ffs[i_ff].get_acc(
@@ -661,9 +705,9 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         particle_start: qd.i32,
         n_particles: qd.i32,
         material_idx: qd.i32,
-        mat_rho: qd.f32,
-        mat_mu: qd.f32,
-        mat_gamma: qd.f32,
+        mat_rest_density: qd.f32,
+        mat_viscosity: qd.f32,
+        mat_surface_tension: qd.f32,
         pos: qd.types.ndarray(),
     ):
         for i_p_, i_b in qd.ndrange(n_particles, self._B):
@@ -677,10 +721,10 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             self.particles[i_p, i_b].pressure_density2_norm_d = 0.0
 
         self.materials[material_idx].rest_volume = self._particle_volume
-        self.materials[material_idx].mass = self._particle_volume * mat_rho
-        self.materials[material_idx].rest_density = mat_rho
-        self.materials[material_idx].viscosity_coeff = mat_mu
-        self.materials[material_idx].surface_coeff = mat_gamma
+        self.materials[material_idx].mass = self._particle_volume * mat_rest_density
+        self.materials[material_idx].rest_density = mat_rest_density
+        self.materials[material_idx].viscosity = mat_viscosity
+        self.materials[material_idx].surface_tension = mat_surface_tension
 
     # ----------------------------------------------------------------------
 
