@@ -749,3 +749,12 @@ hard-hertz-stress-v1 packet retains compact captured sources, configuration,
 original reference/initialization failures and terminal receipts. Existing
 coarse-shell arrays are reused by hash, with no migration or duplication of
 large data in home. Private caches remain compute-node local.
+
+Finite-box particular/residual controls use `hard-hertz-residual-v1` through
+`v3`, and native combined-field controls use `hard-hertz-box-v1` through `v4`
+under the same20261019 ranking data root. Complete meshes, pressures, nodal
+loads/displacements, volume-weighted tensors and peak probes remain on data.
+The two initial8GB failures and native initialization/reference-comparison
+failures are preserved beside final results. The compact `hard-hertz-residual-v1`
+publication packet captures executed sources, logs and hashes; no runtime
+dataset or environment is relocated into home. Private caches stay node-local.

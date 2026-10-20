@@ -1,0 +1,26 @@
+[
+  [
+    {
+      "name": "check",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_box",
+      "args": [
+        "--backend",
+        "gpu",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v1/group0/study/coarse.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "check",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_box",
+      "args": [
+        "--backend",
+        "cpu",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v1/group0/study/coarse.npz"
+      ]
+    }
+  ]
+]
