@@ -1,5 +1,13 @@
 # Separate accuracy validation and production throughput
 
+**Latest scope, 2026-10-20:** apply the
+[cheap hard-contact priority](AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md).
+Hertz/thin-shell estimates and their module/scene throughput come first.
+No deformable-pad assumption or further pad campaign is required. An expensive
+coupled automatic contact solve is optional only after strong physical
+accuracy/cost evidence, not a prerequisite to performance work. Earlier
+soft-pad errors remain attached to that physical model.
+
 User direction, 2026-10-19: test accuracy and performance separately. Continue
 the [qualified error comparison](QUALIFIED_STRESS_RANKING_GOAL.md), while moving
 production throughput measurement and optimization forward now. Expensive

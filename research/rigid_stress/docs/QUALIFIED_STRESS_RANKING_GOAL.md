@@ -1,5 +1,14 @@
 # Goal: complete qualified DPR / SCR / Shell stress-error rankings
 
+**Latest priority, 2026-10-20:** the
+[cheap hard-contact goal](AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md)
+and [GOAL.md](../GOAL.md) now govern active work. Prioritize inexpensive
+Hertz/thin-shell estimates with hard gripper contact and native throughput.
+Soft-pad research is historical; completing or extending a coupled-pad runtime
+is no longer required. Expensive contact prediction requires independent
+evidence of very accurate physical stress and a worthwhile measured cost tradeoff.
+The completed comparison below retains its declared scope and evidence.
+
 **User clarification, 2026-10-20:** apply the
 [practical error-budget judgments](AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md#error-judgments-and-practical-acceptance-budgets).
 Retain original strict results and evaluate explicitly labelled nearby-load
