@@ -1886,3 +1886,27 @@ terminal accounting, complete captured research import cone and strict
 admission. Two full endpoints and the mesh remain externally hashed on data.
 All live group1 and other fine outputs are excluded; final friction reference
 uncertainty, method errors/ranks and figures remain pending.
+
+
+## Ready two-wall surface refinement, 2026-10-20
+
+Pair guard730607 passes20 original complete-parent checks. Only pending array
+729479_0/_1 dependencies change to this already successful guard; their original
+q9/q25/depth4 tasks, inputs, outputs and sources stay byte-identical. The other
+six groups retain729487 and all later full-qualification gates stay intact.
+Both early groups complete in13m33s/13m38s. A transient satisfied-dependency
+postcondition is resolved by actual running handles, with no task resubmission.
+
+Component730622_0 passes65 checks. Maximum q25 complete-field change is1.69784%;
+raw/common peaks change at most0.45060%. q9/q25 field-contrast and common-peak
+value changes remain below original angular targets. The original numerical gate
+functions' AST is unchanged; a CLI makes the ready component inspectable while
+always returning fine_reference_qualified=false and accepted_reference_frames=[].
+Both failed-row and empty-check-dictionary parent controls exit1 as expected.
+Cancelled730619 never executes. Complete coarse/wall/joint/time/contact/depth
+qualification, full reference uncertainty and final error/rank/figure work remain
+pending on the other three fine histories and original full-matrix pipeline.
+
+The [surface component packet](../evidence/20261019-qualified-ranking/surface125-component-v1/README.md)
+retains104 payloads/457,365 bytes plus hashes of four complete columns on data.
+All live dynamics and unexecuted array groups remain excluded from publication.

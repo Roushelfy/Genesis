@@ -1,10 +1,11 @@
-# Nonlinear250um reference and plotting-data checkpoint
+# Nonlinear surface-refinement and plotting-data checkpoints
 
 The250um, two-wall-layer nonlinear trajectory passes its complete mechanical
 history and independent current-position momentum checks. Its500-to250um field
 changes still exceed the predeclared2% target at both the normal and sustained
-friction endpoints. Passing peaks do not override this failure. The final
-friction reference and three-method ranking remain in progress.
+friction endpoints. Passing peaks do not override this failure. The new250-to125um two-wall component below passes its original field/peak/angular
+targets at both endpoints. The complete friction reference and three-method
+ranking remain in progress.
 
 The [packet](../evidence/20261019-qualified-ranking/friction-spatial250-v1/README.md)
 contains97 verified metadata/source/log payloads totaling1,088,827 bytes.
@@ -77,7 +78,7 @@ completed500um reference and must be rerun against the eventually qualified
 fine reference. Finite-mesh masses and continued frictional creep remain visible;
 one nominal body-force curve must not hide their small actual load differences.
 
-## Remaining work and reproduction
+## Historical queued state and reproduction at the250um checkpoint
 
 The250um three-wall reference (728464),125um two-/three-wall references
 (728589), and500um0.3/1N normal material controls (728615) remain active at this
@@ -97,3 +98,61 @@ Source, small documentation and this selected evidence packet remain in the
 workspace. All full fields, journals, CSV/NPZ intermediates and active outputs
 stay under the established data root. No environment, live writer or
 compatibility symlink is migrated. The overall goal is not complete.
+
+
+## Admitted250→125um two-wall component, 2026-10-20
+
+The completed125um/two-wall/q10 parent729312_0 and its250um counterpart pass
+all20 checks in pair preflight730607. Only array tasks729479_0/_1 depend on
+these two terminal parents. Their dependencies were changed to this guard;
+both execute the original captured field commands and finish in13m33s/13m38s.
+Tasks2–7 retain their original729487 dependency. Source/task/output bytes,
+original tolerances and all later full-qualification dependencies are unchanged.
+Slurm clears an already satisfied dependency immediately; actual running task
+handles and unchanged captured hashes verified the release without resubmission.
+
+The q9/q25, depth4 comparisons retain physical-volume weighting, every material
+column and both raw/full3D and common tangent peak definitions. Component reader
+730622_0 passes65 source/input/physics/metric checks. The following numbers are
+percent changes at q25, normalized by the125um result:
+
+| Endpoint | Tangent | Membrane | Bending | Outer | Inner | Raw VM | Raw tension | Common VM | Common tension |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Normal | 1.69784 | 0.99740 | 1.05716 | 0.70005 | 1.02777 | 0.39608 | 0.44612 | 0.39636 | 0.44873 |
+| Sustained friction | 1.69776 | 0.99731 | 1.05719 | 0.70006 | 1.02774 | 0.39229 | 0.45060 | 0.39636 | 0.44931 |
+
+All five compatible field changes pass2%; all raw/common peak changes pass5%.
+The largest complete-field change is1.69784%, compared with the earlier table's
+2.74909%500→250um tangent change. The new result is an observed isolated surface
+refinement change, not an absolute continuum-error bound. Common and raw peak
+locations remain in their own receipts, with no trimming, smoothing or replacement
+by averages. Full3D-only components retain their separate definitions.
+
+q9→q25 changes field-contrast values by at most6.4595e-5 in absolute relative-error
+units (0.00646 percentage points), below the original0.005 target. Common peak
+values change by at most0.01255%, below1%. The scalar numerical gate AST is
+identical to its preceding implementation; only a separate CLI for inspecting
+this ready component is added. The first unused reader730619 was cancelled
+before execution, then the parent-row guard additionally required passed=true
+and all ten actual checks. Two deliberately inconsistent parent receipts—one
+with a failed row and one with an empty check dictionary—both exit1 without
+producing accepted fields. Original parents and field results remain unchanged.
+
+The reader always writes fine_reference_qualified=false and no accepted reference
+frames. The full seven-parent qualifier still requires the coarse trends,
+125um wall/surface3/joint comparisons, fine time/contact/depth controls and all
+36 comparisons before constructing its18 envelopes. No final method rank or
+friction figure is admitted by this isolated surface result.
+
+Reproduce using the packet's captured surface2-component-assessment-v2/tasks.json
+through shell_comparison.submit with an immutable engine, fresh explicit data
+outputs, --cpu-only and the established rtx-mid / GENESIS_IMAGE_VER=1_26 gs-srun
+workflow. Its arguments bind --data-root and --surface-pair-admission; the default
+--spatial-campaign is the unchanged stvk-canonical125-fields-v2. The original
+field array tasks and both exact scheduler-dependency journals are retained.
+
+The [surface125 component packet](../evidence/20261019-qualified-ranking/surface125-component-v1/README.md)
+retains104 payloads/457,365 bytes, expected negative outcomes and exact original/
+encoded hashes. Four complete column arrays remain on data with external hashes.
+Live physical references, remaining field tasks and final scientific products
+are excluded. The whole goal remains in progress.

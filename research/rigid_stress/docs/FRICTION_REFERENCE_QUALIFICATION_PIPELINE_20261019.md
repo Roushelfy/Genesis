@@ -65,7 +65,8 @@ separately queued for the fine reference after qualification.
 
 | Job | Prerequisite | Work and publication-time state |
 | --- | --- | --- |
-|729487 /729479 | q10 reference729312, then explicit four-parent admission | Fine spatial fields; pending. |
+|730607 /729479_0/_1 |20-check admission of terminal250/125um two-wall parents | Both q9/q25 surface comparisons complete; component730622_0 passes65 checks. |
+|729487 /729479_2–7 | q10 reference729312, then explicit four-parent admission | Wall/surface3/joint fields retain original dependencies; pending. |
 |729478 /729480 |729312 and729314, then explicit six-parent admission | Fine time/contact fields; pending. |
 |729513 | afterany on729479/729480 | Seven-parent preflight followed by36-comparison qualification; pending. |
 |729539 | successful qualification729513 |18 DPR/SCR/Shell q1/q9/q25 comparisons with complete surface exports; pending replacement of cancelled729518. |
@@ -103,3 +104,13 @@ Eight traction arrays and one complete force-history CSV remain on data with
 hashes. Live fine results and pending method/figure outputs are excluded.
 
 The [dimensional-error/ranking audit](STVK_METHOD_RANKING_PIPELINE_20261019.md) adds independent complete-array reductions, original candidate admission and conditional per-metric intervals. Its controls pass; final54 error rows remain pending on the qualified fine data.
+
+
+The [completed250→125um surface component](FRICTION_SPATIAL250_20261019.md)
+passes its original2% complete-field/5% peak and angular targets at both endpoints.
+The new CLI produces no accepted reference frames and cannot substitute for
+this full qualifier. Only the two independently ready original array elements
+were released after20-check pair admission; the other six source/task/dependency
+contracts remain unchanged. Expected rejection controls preserve the complete
+parent-row guard. Coarse trends, wall/joint and fine time/contact/depth evidence
+still gate the full36-comparison decision and18 conditional envelopes.

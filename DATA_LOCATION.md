@@ -1,5 +1,12 @@
 # Rigid-stress data and artifact locations
 
+The surface125-component-v1 packet adds104 payloads/457,365 bytes for terminal
+q9/q25 two-wall250→125um comparisons,65 component checks, two rejected metadata
+controls and the exact per-array-element scheduler update. Four complete column
+arrays remain in their existing data-side outputs with hashes. No scientific
+output is moved; active fine writers and the six still-pending field groups
+remain in place. Temporary caches stay private and node-local.
+
 The canonical125-surface-terminal-v1 packet adds64 payloads/341,005 bytes for
 the actual terminal400-step125um/two-wall physical parent and its10-check strict
 admission. Two complete endpoint fields and the mesh remain on data with external
