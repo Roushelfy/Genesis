@@ -1,5 +1,11 @@
 # Rigid-stress data and artifact locations
 
+The contact125-pair-scheduling-v1 packet adds23 payloads/165,478 bytes for
+immutable pending contact-order launch/source receipts and the exact per-element
+scheduler update. It includes no live history, field or new scientific result.
+New guard outputs/logs stay under the established data run root; its temporary
+caches are private and node-local. No scientific data, environment or link moves.
+
 The surface125-component-v1 packet adds104 payloads/457,365 bytes for terminal
 q9/q25 two-wall250→125um comparisons,65 component checks, two rejected metadata
 controls and the exact per-array-element scheduler update. Four complete column
