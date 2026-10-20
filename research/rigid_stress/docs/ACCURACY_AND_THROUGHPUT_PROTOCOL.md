@@ -75,6 +75,27 @@ is already a measured bottleneck, so removing logs alone is not a demonstrated
 solution. Keep the research adapter's serial per-environment pad work separate
 from the production rigid solver's batching behavior.
 
+## Contact-input optimization follow-up
+
+Apply the [current optimization plan](AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md#immediate-priority-reduce-contact-input-overhead).
+Measure association/provenance, geometric search versus cached update, curvature,
+grouping/wrench reduction, normal/tangential estimates, transfer, recovery,
+max/full reduction, history/fallback and audits separately, alongside matched
+inclusive wall time and dispatch/synchronization/copy accounting. Do not infer
+phase attribution from the supplied-region21us lookup or B4 total alone.
+
+Benchmark collision-feature reuse, fixed-shape precomputation, continuous-contact
+local caches with controlled search, fusion/buffer reuse, appropriate parallel
+grouping/reductions and useful batch scaling. Report ablations or measured
+before/after results, cache hit/fallback rates, tail cost, memory, validity and
+numerical differences. Required nonconvex identity, finite-face checks,
+force/moment accounting, friction history and per-environment reset semantics
+remain part of the optimized contract. Implementation-only changes use equivalent
+inputs and acceptance; a changed contact-center/load model is a separate
+approximation with corresponding error evidence. Input-only cost is not
+complete max/full stress throughput. Low-resolution tuning remains the immediate
+priority; unrelated fine FEM convergence is not a prerequisite.
+
 ## Join accuracy and speed by the actual configuration
 
 The [2026-10-20 error-budget clarification](AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md#error-judgments-and-practical-acceptance-budgets)

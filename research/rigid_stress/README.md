@@ -18,6 +18,14 @@ Coupled automatic contact solves remain optional references unless they prove
 very accurate physical stress and a worthwhile measured cost. The pad studies
 below are historical evidence, not the current implementation target.
 
+The immediate performance priority is the
+[contact-input optimization plan](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md#immediate-priority-reduce-contact-input-overhead):
+profile added work, reuse collision features and continuous-contact caches,
+precompute fixed geometry, fuse native work, improve grouping and tune useful
+batch sizes. The B4 input pilot includes repeated geometry searches and audits,
+not just curvature lookup; its added1.777ms is not an inherent Hertz cost.
+Report matched validity/numerics and input/module/full-scene measurements.
+
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
 cheap two-region interaction correction. Ellipticity reduces the rotated-case

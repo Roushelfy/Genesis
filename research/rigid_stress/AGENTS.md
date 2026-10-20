@@ -10,6 +10,15 @@ fallback or prerequisite integration. Preserve prior pad evidence as historical
 scope, not hard-contact accuracy. This overrides earlier pad/coupled-integration
 priorities while retaining practical stress-error budgets and strict baselines.
 
+**Latest throughput follow-up:** execute the
+[contact-input optimization plan](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md#immediate-priority-reduce-contact-input-overhead).
+Profile before attributing costs; reuse collision provenance, continuous-contact
+local caches and fixed-geometry preprocessing. Measure fusion, grouping and
+batch-scaling improvements with equivalent validity/numerics and complete
+max/full scene accounting. Preserve nonconvex identity and history/reset
+invalidation. Keep research audits outside production timing and low-resolution
+performance work active without waiting for broad physical convergence sweeps.
+
 **Latest user direction, 2026-10-19:** separate accuracy verification from
 performance timing. Read [the protocol](docs/ACCURACY_AND_THROUGHPUT_PROTOCOL.md).
 Run low-resolution native module and end-to-end throughput tuning now; do not
