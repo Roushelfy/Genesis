@@ -1,0 +1,40 @@
+[
+  [
+    {
+      "name": "study",
+      "module": "research.rigid_stress.qipc_comparison.study_contact_regions",
+      "args": [
+        "--solid-frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-physical-force-coarse-v1/group0/reference/frames/level0.npz",
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--native-run",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group2/native",
+        "--capture",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-traction-capture-full-v1/group2/snapshot",
+        "--levels",
+        "0",
+        "1"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "study",
+      "module": "research.rigid_stress.qipc_comparison.study_contact_regions",
+      "args": [
+        "--solid-frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-physical-force-coarse-v1/group0/reference/frames/level0.npz",
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--native-run",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-full-source-stability-v1/group3/native",
+        "--capture",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-traction-capture-full-v1/group3/snapshot",
+        "--levels",
+        "0",
+        "1"
+      ]
+    }
+  ]
+]

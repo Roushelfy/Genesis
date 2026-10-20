@@ -1,0 +1,60 @@
+{
+  "recorded_at_UTC": "2026-10-20T05:51:20.633051+00:00",
+  "passed": true,
+  "actual_scheduler_accounting": "731382_0|FAILED|1:0|00:00:44|2026-10-20T05:36:25|rtx-209-099\n731382_0.batch|FAILED|1:0|00:00:44|2026-10-20T05:36:25|rtx-209-099\n731382_0.0|FAILED|1:0|00:00:43|2026-10-20T05:36:25|rtx-209-099\n731382_1|FAILED|1:0|00:00:40|2026-10-20T05:36:22|rtx-209-099\n731382_1.batch|FAILED|1:0|00:00:40|2026-10-20T05:36:22|rtx-209-099\n731382_1.0|FAILED|1:0|00:00:40|2026-10-20T05:36:22|rtx-209-099\n731396_0|FAILED|1:0|00:00:40|2026-10-20T05:37:25|rtx-209-099\n731396_0.batch|FAILED|1:0|00:00:40|2026-10-20T05:37:25|rtx-209-099\n731396_0.0|FAILED|1:0|00:00:39|2026-10-20T05:37:25|rtx-209-099\n731396_1|FAILED|1:0|00:00:42|2026-10-20T05:37:28|rtx-209-099\n731396_1.batch|FAILED|1:0|00:00:42|2026-10-20T05:37:28|rtx-209-099\n731396_1.0|FAILED|1:0|00:00:42|2026-10-20T05:37:28|rtx-209-099\n731399_0|FAILED|1:0|00:00:46|2026-10-20T05:38:58|rtx-209-099\n731399_0.batch|FAILED|1:0|00:00:46|2026-10-20T05:38:58|rtx-209-099\n731399_0.0|FAILED|1:0|00:00:45|2026-10-20T05:38:58|rtx-209-099\n731399_1|COMPLETED|0:0|00:00:39|2026-10-20T05:38:52|rtx-209-099\n731399_1.batch|COMPLETED|0:0|00:00:39|2026-10-20T05:38:52|rtx-209-099\n731399_1.0|COMPLETED|0:0|00:00:39|2026-10-20T05:38:52|rtx-209-099\n731403_0|COMPLETED|0:0|00:00:45|2026-10-20T05:41:09|rtx-209-099\n731403_0.batch|COMPLETED|0:0|00:00:45|2026-10-20T05:41:09|rtx-209-099\n731403_0.0|COMPLETED|0:0|00:00:44|2026-10-20T05:41:09|rtx-209-099\n731403_1|COMPLETED|0:0|00:00:40|2026-10-20T05:41:05|rtx-209-099\n731403_1.batch|COMPLETED|0:0|00:00:40|2026-10-20T05:41:05|rtx-209-099\n731403_1.0|COMPLETED|0:0|00:00:40|2026-10-20T05:41:05|rtx-209-099\n731405_0|COMPLETED|0:0|00:01:10|2026-10-20T05:44:24|rtx-209-099\n731405_0.batch|COMPLETED|0:0|00:01:10|2026-10-20T05:44:24|rtx-209-099\n731405_0.0|COMPLETED|0:0|00:01:09|2026-10-20T05:44:24|rtx-209-099\n731411_0|COMPLETED|0:0|00:00:39|2026-10-20T05:46:33|rtx-209-099\n731411_0.batch|COMPLETED|0:0|00:00:39|2026-10-20T05:46:33|rtx-209-099\n731411_0.0|COMPLETED|0:0|00:00:38|2026-10-20T05:46:33|rtx-209-099\n",
+  "captured_research_imports": {
+    "automatic-contact-support-cpu-v1": [
+      "research/rigid_stress/qipc_comparison/artifacts.py",
+      "research/rigid_stress/qipc_comparison/study_contact_regions.py"
+    ],
+    "automatic-contact-support-cpu-v2": [
+      "research/rigid_stress/qipc_comparison/artifacts.py",
+      "research/rigid_stress/qipc_comparison/study_contact_regions.py"
+    ],
+    "automatic-contact-support-cpu-v3": [
+      "research/rigid_stress/qipc_comparison/artifacts.py",
+      "research/rigid_stress/qipc_comparison/study_contact_regions.py"
+    ],
+    "automatic-contact-support-cpu-v4": [
+      "research/rigid_stress/qipc_comparison/artifacts.py",
+      "research/rigid_stress/qipc_comparison/study_contact_regions.py"
+    ],
+    "distributed-pad-transfer-cpu-v1": [
+      "research/rigid_stress/qipc_comparison/artifacts.py",
+      "research/rigid_stress/qipc_comparison/compare_distributed_pad_transfer.py",
+      "research/rigid_stress/qipc_comparison/cvxopt_factor.py",
+      "research/rigid_stress/qipc_comparison/p2_elastic.py",
+      "research/rigid_stress/skfem_reference.py"
+    ],
+    "contact-region-figure-v1": [
+      "research/rigid_stress/qipc_comparison/artifacts.py",
+      "research/rigid_stress/qipc_comparison/plot_contact_region_study.py"
+    ]
+  },
+  "successful_cpu_support_jobs": [
+    "731403_0",
+    "731403_1"
+  ],
+  "paired_elastic_job": "731405_0",
+  "inspected_pressure_figure_job": "731411_0",
+  "original_failures_retained": [
+    "prefix_cumsum_force_error",
+    "old_frame_rotation_member_absent",
+    "outer_only_matching_refuses_inner_DPR_facets"
+  ],
+  "native_engine_and_original_histories_unchanged": true,
+  "same_load_cpu_native_stress_maximum_relative_difference": 1.051698035247882e-11,
+  "conservative_transfer_stress_changes": [
+    0.08697944076784206,
+    0.08699039060364214
+  ],
+  "pdf_embedded_truetype_marker_present": true,
+  "visual_qa": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/contact-region-figure-visual-qa-v1.json",
+    "bytes": 836,
+    "sha256": "c0b72ea0dfc05ea8cd7942bca9822dad9fcb221a98620f042ee9cfe311aab016"
+  },
+  "fine_reference_qualified": false,
+  "automatic_native_model_admitted": false,
+  "whole_goal_complete": false
+}

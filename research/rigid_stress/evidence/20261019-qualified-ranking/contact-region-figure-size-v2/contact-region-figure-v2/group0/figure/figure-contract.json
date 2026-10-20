@@ -1,0 +1,60 @@
+{
+  "claim_anchor": "fixed-radius-distributed-pad-double-spreading",
+  "main_claim": "The saved fixed-radius reconstruction redistributes an already physical pressure field; DPR also loads the disconnected inner boundary.",
+  "material_passport": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-contact-support-cpu-v4/group0/study/result.json",
+      "bytes": 38447,
+      "sha256": "72b4ac99fa52e045d76113e2b131b31fca36611fb76e91060bb76f28c110f0e9"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-contact-support-cpu-v4/group1/study/result.json",
+      "bytes": 38393,
+      "sha256": "211cb92d93ee08851df29a661e2521838dd07a66eba24c0f9cfc306b70e2c826"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+      "bytes": 488697,
+      "sha256": "d72934ef97cd357de7440f1cc72c2297004c830c64770d43d95ef366280882f0"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-contact-support-cpu-v4/group0/study/dpr-level0-face-maps.npz",
+      "bytes": 424276,
+      "sha256": "c0d34bc4247917bbd9c4519d4ee6b646495fa7b5193ef084339848a53cc37026"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-contact-support-cpu-v4/group1/study/scr-level0-face-maps.npz",
+      "bytes": 409825,
+      "sha256": "6719a3e99fc3f36c493697349abc8c017d00184030e3c1da81b6bd319d477e80"
+    }
+  ],
+  "panels": [
+    "Measured outer physical pressure",
+    "DPR remaining outer pressure",
+    "DPR inner-boundary transfer",
+    "SCR outer redistribution"
+  ],
+  "style": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/contact-region-nature-style-v1.py",
+    "bytes": 7459,
+    "sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1"
+  },
+  "size_mm": [
+    183,
+    145
+  ],
+  "level": 0,
+  "full_nonzero_support_visible": true,
+  "symmetric_polar_limits_mm": [
+    -5.0,
+    5.0
+  ],
+  "common_pressure_scale_kpa": [
+    0,
+    9.0
+  ],
+  "uncertainty": "One paired saved normal endpoint; no statistical error bars or continuum qualification.",
+  "dpr_scr_original_force_relative_difference": 1.112678087280516e-16,
+  "no_interpolation_or_smoothing": true,
+  "cell_averages_on_actual_parent_facets": true
+}

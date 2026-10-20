@@ -1,5 +1,14 @@
 # Qualified stress comparison: in progress
 
+The [2026-10-20 CPU contact-region study](AUTOMATIC_CONTACT_PROGRESS_20261020.md)
+implements the remote extension308c7848a independently of current fine histories.
+Actual source quadrature exposes about42% DPR inner-boundary transfer and
+19–20% SCR normal load outside originally active faces. The paired independent
+P2 control matches old native stress to1.06e-11, then measures an8.70% complete-
+stress change from conservative outer transfer. The inspected pressure figure,
+original failures and complete fields are retained. This does not admit an
+automatic native model, change the fixed-radius baselines or close the goal.
+
 The [prescribed-reference qualification](PRESCRIBED_REFERENCE_QUALIFICATION_20261019.md)
 now passes25 checks with31 rehashed inputs (728896). Separate signed tensor
 controls pass7 cases (728884); an exact load-map allocation repair passes its

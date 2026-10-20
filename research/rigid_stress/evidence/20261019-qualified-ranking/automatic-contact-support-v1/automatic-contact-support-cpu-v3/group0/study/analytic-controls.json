@@ -1,0 +1,92 @@
+{
+  "passed": true,
+  "quadratic_cases": [
+    {
+      "curvatures_per_m": [
+        50.0,
+        50.0
+      ],
+      "orientation_rad": 0.0,
+      "load_n": 0.1,
+      "stiffness_n_per_m3": 1000000000.0,
+      "analytic_axes_m": [
+        0.0012632375554921295,
+        0.0012632375554921295
+      ],
+      "indentation_relative_error": 4.378808097893483e-06,
+      "area_relative_error": 0.00034776810659264967,
+      "axes_relative_error": 6.6546066451733665e-06,
+      "split_source_force_relative_error": 0.0
+    },
+    {
+      "curvatures_per_m": [
+        50.0,
+        50.0
+      ],
+      "orientation_rad": 0.0,
+      "load_n": 1.0,
+      "stiffness_n_per_m3": 1000000000.0,
+      "analytic_axes_m": [
+        0.002246389334919555,
+        0.002246389334919555
+      ],
+      "indentation_relative_error": 9.416655852856337e-07,
+      "area_relative_error": 0.0007374365462462507,
+      "axes_relative_error": 1.377336328212131e-06,
+      "split_source_force_relative_error": 3.7882148522067185e-16
+    },
+    {
+      "curvatures_per_m": [
+        25.0,
+        100.0
+      ],
+      "orientation_rad": 0.43,
+      "load_n": 0.3,
+      "stiffness_n_per_m3": 1000000000.0,
+      "analytic_axes_m": [
+        0.0023511500146824677,
+        0.0011755750073412338
+      ],
+      "indentation_relative_error": 2.3227227846644993e-06,
+      "area_relative_error": 0.00020556271951632787,
+      "axes_relative_error": 6.0009448243913965e-06,
+      "split_source_force_relative_error": 0.0
+    },
+    {
+      "curvatures_per_m": [
+        25.0,
+        100.0
+      ],
+      "orientation_rad": 0.43,
+      "load_n": 0.3,
+      "stiffness_n_per_m3": 2000000000.0,
+      "analytic_axes_m": [
+        0.0019770736190702055,
+        0.0009885368095351027
+      ],
+      "indentation_relative_error": 5.002011378429927e-06,
+      "area_relative_error": 0.0006172275011882,
+      "axes_relative_error": 1.0400978628255508e-05,
+      "split_source_force_relative_error": 0.0
+    }
+  ],
+  "nonconvex_loading_unloading": [
+    {
+      "load_n": 0.1,
+      "connected_regions": 2,
+      "indentation_m": 2.820978990112995e-05
+    },
+    {
+      "load_n": 10.0,
+      "connected_regions": 1,
+      "indentation_m": 0.0002949173980694693
+    },
+    {
+      "load_n": 0.1,
+      "connected_regions": 2,
+      "indentation_m": 2.820978990112995e-05
+    }
+  ],
+  "nonpositive_curvature_refused": true,
+  "scope": "Rigid-link independent-column pad only. Hertz is inapplicable to this declared pad law; shell compliance and tangential history are not supplied by these formulas."
+}

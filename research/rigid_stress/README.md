@@ -17,6 +17,13 @@ and continued native throughput optimization. CPU investigation and production
 tuning proceed alongside completion of the existing fixed-radius comparison;
 these are goals, not newly validated results.
 
+The [first CPU contact-region study](docs/AUTOMATIC_CONTACT_PROGRESS_20261020.md)
+now measures distributed-source double spreading: the retained2mm DPR baseline
+places about42% of normal load on the inner boundary. Conservative outer P2
+transfer preserves force/moment/work and changes complete stress by8.70% on
+the same linear elastic mesh. This is a transfer contrast, with inspected
+pressure maps; automatic native recovery and final physical errors remain open.
+
 The [active goal](docs/QUALIFIED_STRESS_RANKING_GOAL.md) is qualified DPR/SCR/Shell
 stress-error comparisons on a free full hollow egg between parallel plates.
 The [accuracy/throughput protocol](docs/ACCURACY_AND_THROUGHPUT_PROTOCOL.md)
