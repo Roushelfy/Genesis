@@ -1,0 +1,121 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-201",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "731096",
+      "SLURM_ARRAY_JOB_ID": "731095",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "passed": true,
+  "checks": {
+    "actual_step300_partial_level": true,
+    "minimal_state_selected": true,
+    "only_completed_level_frame_inherited": true,
+    "partial_phase_has_no_false_equilibrium_requirement": true,
+    "state_hash/rejected": true,
+    "state_path/rejected": true,
+    "missing_state_binding/rejected": true,
+    "missing_completed_frame/rejected": true,
+    "shifted_step/rejected": true,
+    "live_state/rejected": true,
+    "latest/exact_valid_selection": true,
+    "endpoint/exact_valid_selection": true,
+    "truncated/not_prepared": true,
+    "final/not_prepared": true
+  },
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-step300-preparation-v1/result.json",
+      "bytes": 11986,
+      "sha256": "617db561cf26a7832fcddcb250a8f3f59fcd4de96afc76fd676cdc857fb85f1d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-periodic-checkpoint-control-v1/submission.json",
+      "bytes": 751,
+      "sha256": "ff106ed0cdffcd5d0c792df21acd37cd81cb31dcc41117f869a6208c067a2d1b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-periodic-checkpoint-control-v1/group0/reference/start.json",
+      "bytes": 3825,
+      "sha256": "7ac87e6cc300333224d4cc19e555993ab7b068324685eb5dc7a522d1bc99c799"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-periodic-checkpoint-control-v1/group0/reference/steps.jsonl",
+      "bytes": 567566,
+      "sha256": "cf24a32a0e18080f3de46ae6b52d5254e13092f15315dc4e1f30942a8c0c53fd"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-periodic-checkpoint-control-v1/group0/reference/checkpoints/step300.npz",
+      "bytes": 4187728,
+      "sha256": "7d7bd6869a8ed002cfb93ceaa8fc84a7c3c8fa802fd1c526ef9aaa1b47bf8aa2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-periodic-checkpoint-control-v1/group0/reference/frames/level0.npz",
+      "bytes": 18234913,
+      "sha256": "e4bddac403b504fae72e3fd71e2e200e548c99e02df90acc61332f6035a585f3"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-periodic-checkpoint-control-v1/analysis-source/research/rigid_stress/qipc_comparison/solid_pad_step.py",
+      "bytes": 3080,
+      "sha256": "346a02331f469f645549a9f3b8672359a90b9b466e1199e27dfc1a069309b069"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-periodic-checkpoint-control-v1/analysis-source/research/rigid_stress/qipc_comparison/modal_pad_dynamics.py",
+      "bytes": 7277,
+      "sha256": "4f39528f327c26367fb4db7a06df35e80a3e706369f15547b3c6df1e66cd0fdf"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-periodic-checkpoint-control-v1/analysis-source/research/rigid_stress/qipc_comparison/condensed_pad_dynamics.py",
+      "bytes": 5077,
+      "sha256": "60e9517dcf75353979c56bce6f3e18b198175cc920d593e5d9586de2fa432060"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-periodic-checkpoint-control-v1/analysis-source/research/rigid_stress/qipc_comparison/matrix_free_pad_dynamics.py",
+      "bytes": 5512,
+      "sha256": "4b43560c1d5f0349dea656411ab54cedda92ced7eab97980548cf4eba6f51ac9"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-periodic-checkpoint-control-v1/analysis-source/research/rigid_stress/qipc_comparison/p2_elastic.py",
+      "bytes": 8981,
+      "sha256": "c0ec32cd2437a23db9ba652fc1c15977bcf2ef9b809132df9261ff51d1ac6ade"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-periodic-checkpoint-control-v1/analysis-source/research/rigid_stress/qipc_comparison/p2_stvk.py",
+      "bytes": 4374,
+      "sha256": "c90811dde5b3704e43277ef71cf48f6ae03e48ba2941912c860018ece5e8185b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-periodic-checkpoint-control-v1/analysis-source/research/rigid_stress/qipc_comparison/compliant_plate_reference.py",
+      "bytes": 18355,
+      "sha256": "0708dcdc9ea0132bd622de2d55eaa50a54fdd9d3a5a0642133efd38ec25e5d60"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-periodic-checkpoint-control-v1/analysis-source/research/rigid_stress/qipc_comparison/cvxopt_factor.py",
+      "bytes": 1631,
+      "sha256": "8e6bd7d0a22765d157ba58e64c0e8d7ed3380b206538af385e083a80e846da05"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-periodic-checkpoint-control-v1/analysis-source/research/rigid_stress/qipc_comparison/plates.py",
+      "bytes": 4993,
+      "sha256": "5201f49658f66110e76ff45382974b5f56b06df1d30c11b1c6d5ae2161527865"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-periodic-checkpoint-control-v1/analysis-source/research/rigid_stress/skfem_reference.py",
+      "bytes": 7865,
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    }
+  ],
+  "scope": "Actual terminal step300 partial-level state and original complete-prefix mechanics; changed binding controls; endpoint/latest selection over actual saved states with a private truncated newest file and excluded final state. Full restoration/conformance and multihop lineage require separate actual dynamics controls.",
+  "fine_reference_qualified": false,
+  "accepted_reference_frames": [],
+  "whole_goal_complete": false
+}

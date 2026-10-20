@@ -1,5 +1,14 @@
 # Rigid-stress data and artifact locations
 
+The solid-pad-partial-step-recovery-v1 packet adds205 compact payloads/1,066,370
+bytes for terminal step300/225 recovery, complete400-step controls, exact captured
+worker variants and ancestry/negative checks. Twenty-four full state/field/column
+arrays remain externally hashed under the established data run root. The tiny
+damaged ZIP is an explicit regression fixture. New preparations, journals,
+checkpoint arrays and Slurm logs all stay on data, with private node-local caches.
+No live fine output/source, active environment or existing link is migrated or
+rewritten. Only compact publication evidence remains in the source checkout.
+
 The canonical125-resilient-recovery-v1 packet adds794 payloads/5,326,422 bytes
 for terminal preemptions, exact saved-prefix preparations, completed periodic
 state/control reinspection and immutable replacement launch/source receipts.

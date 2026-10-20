@@ -18,10 +18,12 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--run", type=Path, required=True)
     cli.add_argument("--parent", type=Path, required=True)
+    cli.add_argument("--baseline", type=Path, help="Uninterrupted comparison anchor, if the saved-state parent was itself continued")
     cli.add_argument("--comparison", type=Path, required=True)
     cli.add_argument("--contract", type=Path, required=True)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
+    baseline = args.parent if args.baseline is None else args.baseline
     args.output.mkdir(parents=True, exist_ok=False)
     checks, receipts, differences = {}, {}, {}
     error = None
@@ -44,15 +46,18 @@ def main():
 
     try:
         contract = read(args.contract)
-        child, original = read(args.run / "result.json"), read(args.parent / "result.json")
-        start, parent_start = read(args.run / "start.json"), read(args.parent / "start.json")
+        child, original = read(args.run / "result.json"), read(baseline / "result.json")
+        saved_parent = read(args.parent / "result.json")
+        start, parent_start = read(args.run / "start.json"), read(baseline / "start.json")
+        direct_start = read(args.parent / "start.json")
         provenance = start["resume_provenance"]
         verify(provenance["receipt"])
         proof = read(Path(provenance["receipt"]["path"]))
         check(
-            "terminal_parent_source_is_exact_uninterrupted_control",
+            "terminal_saved_state_parent_and_uninterrupted_baseline",
             proof["passed"]
             and proof["run"] == str(args.parent)
+            and saved_parent["completed"] and saved_parent["mechanical_history_passed"]
             and original["completed"]
             and original["mechanical_history_passed"],
         )
@@ -62,6 +67,11 @@ def main():
             "same_physical_solver_arguments",
             {key: value for key, value in start["args"].items() if key not in ("output", "checkpoint_stride")}
             == {key: value for key, value in parent_start["args"].items() if key not in ("output", "checkpoint_stride")},
+        )
+        check(
+            "same_direct_saved_parent_arguments",
+            {key: value for key, value in start["args"].items() if key not in ("output", "checkpoint_stride")}
+            == {key: value for key, value in direct_start["args"].items() if key not in ("output", "checkpoint_stride")},
         )
         check(
             "complete400_step_mechanical_history",
@@ -128,7 +138,7 @@ def main():
             "same_actual_geometry_and_mass",
             start["mesh"] == parent_start["mesh"] and start["mass_kg"] == parent_start["mass_kg"],
         )
-        resumed_frame, original_frame = args.run / "frames/level1.npz", args.parent / "frames/level1.npz"
+        resumed_frame, original_frame = args.run / "frames/level1.npz", baseline / "frames/level1.npz"
         identify(resumed_frame)
         identify(original_frame)
         with np.load(resumed_frame) as new, np.load(original_frame) as old:
@@ -198,7 +208,10 @@ def main():
             "fine_reference_resumed": False,
             "physical_reference_spatially_qualified": False,
             "whole_goal_complete": False,
-            "scope": "Actual400-step coarse uninterrupted reference versus its exact saved200-step prefix plus200 newly integrated steps, with original complete-history, equilibrium, contact, momentum and boundary gates. All body/plate/lagged-force state is restored; only algorithmic caches are rebuilt. Full saved arrays and q9/depth4 common fields/raw/common peaks use targets fixed before execution. This is a continuation control, not fine-reference qualification or whole-trajectory performance timing.",
+            "inherited_steps": contract["control_inherited_steps"],
+            "new_steps": contract["control_new_steps"],
+            "baseline": str(baseline),
+            "scope": "Actual400-step coarse uninterrupted baseline versus the declared saved physical prefix and newly integrated suffix, with original complete-history, equilibrium, contact, momentum and boundary gates. All body/plate/lagged-force state is restored; only algorithmic caches are rebuilt. Full saved arrays and q9/depth4 common fields/raw/common peaks use targets fixed before execution. This is a continuation control, not fine-reference qualification or whole-trajectory performance timing.",
         },
     )
     if not passed:

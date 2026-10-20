@@ -1971,3 +1971,39 @@ retains794 payloads/5,326,422 bytes and18 external arrays. Live new fine outputs
 are excluded. Periodic packing is validated; non-endpoint restoration awaits its
 own control. Full fine qualification, final method comparisons/ranks, inspected
 friction figures and configuration-matched combined delivery remain incomplete.
+
+## Executed partial-level recovery, 2026-10-20
+
+Actual terminal preparations bind periodic step300 and loading-phase step225
+of the independently admitted coarse periodic control. Slurm731095/731101
+complete the same400-step physical history as300+100 and225+175. Both pass34
+full-array/q9-depth4 common-field/raw/common-peak checks against the uninterrupted
+baseline, with unchanged1e-8 relative and1e-10m/s velocity limits, both complete
+equilibrium windows and their own independent current-momentum admission.
+Largest full-array difference is8.68371e-10, compatible-field change4.96540e-10
+and nodal velocity difference2.28258e-12m/s. These are numerical continuation
+controls, not fine physical-reference uncertainty or whole-trajectory timings.
+
+Each run passes15 original prefix-input and14 partial-state selection controls,
+including exact state/clock/plate binding, missing/changed state/frame rejection,
+private truncated-newest-write fallback and final-step refusal. Completed-level
+windows remain mandatory; the unfinished phase retains all original per-step
+mechanical gates. No artificial equilibrium assumption is imposed mid-phase.
+
+Each actual two-link continuation passes49 lineage controls back through its
+saved200-step ancestor. Missing or changed ancestor provenance/job/frame/prefix,
+mass/output and cycles are rejected; prefixes must strictly advance. Validation
+of a killed intermediate parent uses its exact available prefix without reading
+a completed parent result. The outer continued trajectory still needs complete
+own admission. Old endpoint lineage passes30 controls. New periodic states pass
+32/44 packing checks. All three wrappers exit0; the original JSON-reader failure
+and99-check independent admission remain unchanged and rehashed.
+
+The driver and ten numerical modules are byte unchanged. All four initially
+checked captured analysis inventories remain intact; the three fine jobs keep
+their endpoint-based immutable captures and existing strict downstream graph.
+The [partial-step packet](../evidence/20261019-qualified-ranking/solid-pad-partial-step-recovery-v1/README.md)
+adds205 payloads/1,066,370 bytes and24 external arrays, including both executed
+worker variants and the small damaged-write fixture. New outputs stay on data.
+Full fine qualification,54 final error rows/18 metric ranks, inspected final
+friction figures and matched cost/error consolidation remain open.

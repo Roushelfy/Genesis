@@ -1,4 +1,4 @@
-"""Prepare terminal endpoint receipts and restore the complete physical P2 state.
+"""Prepare terminal saved-state receipts and restore the complete physical P2 state.
 
 Preparation is stdlib-only scheduler/file inspection. NumPy state restoration
 is called only by the reference driver inside its compute allocation.
@@ -10,6 +10,7 @@ import hashlib
 import json
 import shutil
 import subprocess
+import zipfile
 from pathlib import Path
 
 from .artifacts import file_id, write_json
@@ -64,6 +65,61 @@ def physical_arguments(args):
     }
 
 
+def selected_state_file(proof):
+    """Original endpoint receipts predate the explicit state-frame member."""
+    if "state_frame" in proof:
+        return proof["state_frame"]
+    return proof["frames"][-1]["file"]
+
+
+def complete_state_archive(path):
+    """A killed compressed write must never become an admitted recovery state."""
+    try:
+        with zipfile.ZipFile(path) as archive:
+            required = {
+                key + ".npy" for key in (
+                    "vertices_m", "tetrahedra", "load_n", "displacement_m", "velocity_m_per_s",
+                    "source_points_m", "source_forces_n", "projected_area_m2", "forces_n",
+                    "body_forces_n", "inertial_forces_n", "young_pa", "poisson",
+                )
+            }
+            return required.issubset(archive.namelist()) and archive.testzip() is None
+    except (OSError, ValueError, zipfile.BadZipFile, EOFError):
+        return False
+
+
+def select_saved_state(run, configuration, lines, *, level=None, step=None):
+    """Select by declared global step; latest skips unfinished compressed writes."""
+    count = round((configuration["ramp"] + configuration["hold"]) / configuration["dt"])
+    total = len(configuration["loads"]) * count
+    if level is not None:
+        assert 0 <= level < len(configuration["loads"]) - 1
+        prefix_steps, kind = (level + 1) * count, "endpoint"
+        state_path = run / "frames" / f"level{level}.npz"
+    elif step is not None:
+        prefix_steps, kind = step, "step"
+        state_path = run / "checkpoints" / f"step{prefix_steps}.npz"
+    else:
+        candidates = [
+            ((index + 1) * count, "endpoint", run / "frames" / f"level{index}.npz")
+            for index in range(len(configuration["loads"]) - 1)
+        ]
+        for path in (run / "checkpoints").glob("step*.npz"):
+            number = path.stem.removeprefix("step")
+            if number.isdigit():
+                candidates.append((int(number), "step", path))
+        candidates.sort(key=lambda row: row[0], reverse=True)
+        selected = next(
+            (row for row in candidates if 0 < row[0] < total and row[0] <= len(lines)
+             and complete_state_archive(row[2])), None
+        )
+        assert selected is not None, "No complete saved state with remaining steps"
+        prefix_steps, kind, state_path = selected
+    assert 0 < prefix_steps < total and complete_state_archive(state_path)
+    assert len(lines) >= prefix_steps and all(line.endswith(b"\n") for line in lines[:prefix_steps])
+    return prefix_steps, kind, state_path
+
+
 def validate_checkpoint(args, step_checks):
     proof = json.loads(args.resume_checkpoint.read_text())
     assert proof["passed"] and proof["terminal_scheduler_state"] in TERMINAL
@@ -72,6 +128,7 @@ def validate_checkpoint(args, step_checks):
     for receipt in (
         proof["start"],
         proof["journal"],
+        selected_state_file(proof),
         *(row["file"] for row in proof["frames"]),
         *(row["file"] for row in proof["physics_modules"]),
     ):
@@ -79,7 +136,19 @@ def validate_checkpoint(args, step_checks):
     parent = Path(proof["run"])
     assert proof["start"]["path"] == str(parent / "start.json")
     assert proof["journal"]["path"] == str(parent / "steps.jsonl")
-    assert [row["level"] for row in proof["frames"]] == list(range(proof["level"] + 1))
+    count = round((args.ramp + args.hold) / args.dt)
+    prefix_steps = proof["prefix_steps"]
+    assert isinstance(prefix_steps, int) and 0 < prefix_steps < len(args.loads) * count
+    kind = proof.get("checkpoint_kind", "endpoint")
+    assert kind in ("endpoint", "step")
+    completed_levels = prefix_steps // count
+    assert proof["level"] == completed_levels - 1
+    if kind == "endpoint":
+        assert prefix_steps == (proof["level"] + 1) * count
+        assert selected_state_file(proof) == proof["frames"][-1]["file"]
+    else:
+        assert selected_state_file(proof)["path"] == str(parent / "checkpoints" / f"step{prefix_steps}.npz")
+    assert [row["level"] for row in proof["frames"]] == list(range(completed_levels))
     assert all(row["file"]["path"] == str(parent / "frames" / f"level{row['level']}.npz") for row in proof["frames"])
     assert tuple(row["relative"] for row in proof["physics_modules"]) == PHYSICS_FILES, (
         "Incomplete numerical module coverage"
@@ -104,11 +173,6 @@ def validate_checkpoint(args, step_checks):
         assert semantic_signature(Path(__file__).parent / row["relative"]) == row["semantic_sha256"], (
             "Checkpoint numerical implementation differs: " + row["relative"]
         )
-    count = round((args.ramp + args.hold) / args.dt)
-    selected = proof["level"]
-    assert 0 <= selected < len(args.loads) - 1
-    prefix_steps = (selected + 1) * count
-    assert prefix_steps == proof["prefix_steps"]
     lines = Path(proof["journal"]["path"]).read_bytes().splitlines(keepends=True)[:prefix_steps]
     assert len(lines) == prefix_steps and all(line.endswith(b"\n") for line in lines)
     prefix = b"".join(lines)
@@ -120,7 +184,7 @@ def validate_checkpoint(args, step_checks):
         assert row["level"] == level and abs(row["time_s"] - (index + 1) * args.dt) <= 1e-12
         assert row["command_force_n"] == command and all(step_checks(row).values())
         assert row["contact_force_evaluation"] == "full_velocity"
-    for level in range(selected + 1):
+    for level in range(completed_levels):
         endpoint = rows[(level + 1) * count - 1]
         window = [row for row in rows if row["level"] == level and row["time_s"] >= endpoint["time_s"] - 0.05 - 1e-10]
         assert len(window) >= 51 and window[-1]["time_s"] - window[0]["time_s"] >= 0.05 - 1e-10
@@ -133,8 +197,13 @@ def restore_checkpoint(args, context, model, tets, points, area, sign):
 
     proof, rows, prefix = context
     endpoint = rows[-1]
-    selected = next(row for row in proof["frames"] if row["level"] == proof["level"])
-    with np.load(selected["file"]["path"]) as saved:
+    selected = selected_state_file(proof)
+    with np.load(selected["path"]) as saved:
+        if proof.get("checkpoint_kind", "endpoint") == "step":
+            assert int(saved["step"]) == endpoint["step"] == proof["prefix_steps"]
+            assert int(saved["level"]) == endpoint["level"]
+            for key in ("time_s", "compression_coordinate_m", "plate_speed_m_per_s"):
+                assert float(saved[key]) == endpoint[key], "Saved state/journal disagreement: " + key
         np.testing.assert_array_equal(saved["vertices_m"], model.vertices)
         np.testing.assert_array_equal(saved["tetrahedra"], tets)
         np.testing.assert_array_equal(saved["source_points_m"], points)
@@ -176,7 +245,7 @@ def restore_checkpoint(args, context, model, tets, points, area, sign):
         "parent_state": proof["terminal_scheduler_state"],
         "prefix_steps": len(rows),
         "prefix_sha256": proof["prefix_sha256"],
-        "selected_frame": selected["file"],
+        "selected_frame": selected,
         "physical_state": "Exact saved full body displacement/velocity, journal plate displacement/velocity and lagged normal point force. Global load/time indices continue unchanged.",
         "algorithmic_warm_start": "Physical point force times dt; solver caches are rebuilt and original convergence gates remain mandatory.",
         "new_segment_elapsed_is_whole_trajectory_cost": False,
@@ -186,10 +255,13 @@ def restore_checkpoint(args, context, model, tets, points, area, sign):
 
 def main():
     cli = argparse.ArgumentParser(
-        description="Prepare an immutable endpoint receipt only after the parent job is terminal"
+        description="Prepare an immutable saved-state receipt only after the parent job is terminal"
     )
     cli.add_argument("--run", type=Path, required=True)
-    cli.add_argument("--level", type=int, required=True)
+    selection = cli.add_mutually_exclusive_group(required=True)
+    selection.add_argument("--level", type=int, help="Use a completed load-level endpoint")
+    selection.add_argument("--step", type=int, help="Use an exact periodic full-state checkpoint")
+    selection.add_argument("--latest", action="store_true", help="Use the newest complete saved state before the final step")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -213,14 +285,14 @@ def main():
         start, journal = args.run / "start.json", args.run / "steps.jsonl"
         configuration = json.loads(start.read_text())["args"]
         count = round((configuration["ramp"] + configuration["hold"]) / configuration["dt"])
-        assert 0 <= args.level < len(configuration["loads"]) - 1
-        prefix_steps = (args.level + 1) * count
         lines = journal.read_bytes().splitlines(keepends=True)
-        assert len(lines) >= prefix_steps and all(line.endswith(b"\n") for line in lines[:prefix_steps])
+        prefix_steps, kind, state_path = select_saved_state(
+            args.run, configuration, lines, level=args.level, step=args.step
+        )
         prefix = b"".join(lines[:prefix_steps])
         frames = [
             {"level": level, "file": file_id(args.run / "frames" / f"level{level}.npz")}
-            for level in range(args.level + 1)
+            for level in range(prefix_steps // count)
         ]
         physics_root = campaign / "analysis-source/research/rigid_stress/qipc_comparison"
         physics = [
@@ -234,6 +306,9 @@ def main():
         proof.update(
             {
                 "passed": True,
+                "checkpoint_kind": kind,
+                "state_frame": file_id(state_path),
+                "level": prefix_steps // count - 1,
                 "prefix_steps": prefix_steps,
                 "prefix_sha256": hashlib.sha256(prefix).hexdigest(),
                 "start": file_id(start),
@@ -246,6 +321,7 @@ def main():
             file_id(submission),
             proof["start"],
             proof["journal"],
+            proof["state_frame"],
             *[row["file"] for row in frames],
             *[row["file"] for row in physics],
         ]
@@ -253,7 +329,7 @@ def main():
         proof["passed"], proof["error"] = False, str(failure)
     write_json(args.output / "result.json", proof)
     if not proof["passed"]:
-        raise SystemExit("Terminal endpoint preparation refused; no continuation admitted")
+        raise SystemExit("Terminal saved-state preparation refused; no continuation admitted")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-# Validated terminal-endpoint continuation for the physical solid reference
+# Validated terminal saved-state continuation for the physical solid reference
 
 The coarse control completes the original400-step physical history as200 saved
 steps plus200 newly integrated steps. Independent aggregation730363 passes33
@@ -164,3 +164,56 @@ CLI/path/placement/dependency checks pass55. The
 retains794 payloads/5,326,422 bytes and18 external arrays. All live fine outputs
 stay on data; continued-parent admission, fine qualification and final delivery
 remain incomplete.
+
+## Partial-level recovery and repeated-continuation ancestry
+
+Terminal-only preparation additionally accepts `--step N` or `--latest`, mutually
+exclusive with `--level`. The latest selector checks compressed archive integrity,
+skips an interrupted newest write and excludes the final step. A state receipt
+binds the exact selected file, full parent journal, inherited prefix, completed
+endpoint frames and the same ten numerical modules. Original endpoint receipts
+remain valid. Restoration checks saved step/time/level, load and plate state
+against the journal before restoring full body displacement/velocity and lagged
+normal force. Only completed phases need a full equilibrium window; partial
+phases retain every original per-step mechanical gate and global clock/load.
+
+Actual Slurm731095 restores step300 of the independently admitted periodic
+coarse control and executes100 new steps. Both equilibrium windows and own
+current-momentum audit pass. All34 conformance checks pass against the original
+uninterrupted400-step baseline, retaining the prior1e-8 field/point-force/peak
+limits and1e-10m/s nodal-velocity limit. Full displacement/stress/point-force
+differences are5.84197e-10/3.04605e-10/8.68371e-10; maximum nodal velocity
+difference is2.28258e-12m/s. The largest compatible-field change is4.70562e-10.
+
+Input controls pass15 and partial-state selection controls14, including changed
+state bindings, missing completed frames, shifted steps, live-state refusal,
+private truncated-write fallback and final-state refusal. Legacy endpoint
+lineage passes30 controls. The actual300+100 run passes49 ancestry controls
+through its saved200-step ancestor, including changed ancestor provenance,
+mass/output/job/frame/prefix and a cycle. Each inherited prefix must advance
+strictly. Intermediate prefix validation does not require a completed parent
+result; the final continued trajectory still needs complete admission and
+honest inherited/new segment accounting. An explicit `--baseline` keeps the
+uninterrupted comparison separate from the immediate saved-state parent.
+
+The physical driver and all ten numerical modules have identical bytes to the
+previous checkpoint. Live fine job captures remain unchanged. This extension
+changes state selection, validation and ancestry; it does not admit the fine
+reference or alter its pending spatial/time/contact gates.
+
+Slurm731101 additionally restores step225 during the tangential-loading phase
+and integrates175 new steps. It also passes all34 conformance and49 ancestry
+checks against the uninterrupted400-step baseline. Complete displacement/stress/
+point-force changes are4.30784e-10/2.75502e-10/4.98506e-10, maximum velocity
+difference1.05699e-12m/s and maximum compatible-field change4.96540e-10.
+Periodic packing passes32 checks for the four new step300-control states and44
+for the seven new step225-control states. Both own independent momentum audits
+pass; all wrappers exit0. The original periodic reader's returncode1 remains
+unchanged and its independent99-check admission is rehashed before publication.
+
+The [partial-step packet](../evidence/20261019-qualified-ranking/solid-pad-partial-step-recovery-v1/README.md)
+preserves both complete controls, exact source variants, terminal receipts,
+private damaged-write inputs and external array identities. New runtime outputs
+stay under the established data run root. Existing fine continuations still
+start from their original complete-phase endpoints and retain their captured
+sources; this validation does not restart or relabel them.

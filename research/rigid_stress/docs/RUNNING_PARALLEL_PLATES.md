@@ -771,3 +771,27 @@ input provenance passes15. This permits a verified infrastructure fallback if
 needed after actual termination, without admitting a partial fine history or
 changing the fine spatial/time/contact targets. Existing live tasks and queued
 plans are left intact until any actual replacement is necessary.
+
+The same terminal-only preparation now accepts mutually exclusive `--step N`
+and `--latest` in place of `--level`. Periodic states come from an explicit
+`plate_solid_pad --checkpoint-stride 25` run. `--latest` skips incomplete ZIP
+writes and excludes the final step, which has no remaining integration. An
+explicit damaged or final-step selection is refused. Every chosen state binds
+its full file hash, exact journal prefix and ten numerical modules. Restoration
+also requires matching saved step/time/level and plate displacement/velocity.
+Only completed load-level endpoints are copied and tested for equilibrium;
+the unfinished phase retains all original per-step mechanical checks.
+
+If the terminal parent was itself continued, admission follows every recorded
+saved prefix back to the original physical parent. Each link must preserve
+prefix/frame bytes and physical/source identity and add actual steps. Cycles
+and changed ancestor metadata are rejected. A killed intermediate parent needs
+its exact available prefix, without a fabricated completion result. The final
+continued trajectory still requires its own complete-history admission.
+
+For a coarse control with an intermediate saved-state parent, use
+`audit_solid_pad_resume --parent SAVED_STATE_PARENT --baseline
+UNINTERRUPTED_CONTROL` with a fresh contract declaring the inherited/new step
+counts and preserving the existing numerical limits. Reuse the captured Slurm
+tasks in the [continuation record](REFERENCE_ENDPOINT_CONTINUATION_20261019.md);
+do not run scientific integration or conformance checks on the login node.

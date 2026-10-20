@@ -1,0 +1,32 @@
+{
+  "source_sha256": {
+    "solid_pad_checkpoint.py": "5d6023201c80f0db5491defb23e24f0c5b52a24a15de06dff1245ed9e7a04aec",
+    "solid_pad_resume_admission.py": "1a619c2deeb356d14cf84d21eddca87f965cd83884ebbadeb5be14709149accd",
+    "plate_solid_pad.py": "eebfa38c34835b59fe597bf02cbbf8af51a004ee56bef200792ae310e2ccf523",
+    "audit_solid_pad_resume.py": "d55f412200c8f0d2e793a91b9433fd7e42e19080bb14f64ff215b91bc4eb92ff",
+    "check_solid_pad_step_checkpoint.py": "59cac600906b2d6e5cc199f121e6aaf6327d04b2a745c1e9c0626857756a6e72",
+    "check_solid_pad_resume_admission.py": "75ab59b1d2b9fd8aacdceb611e1bd2709623f88824816c02dc9c75f158f3f8ac"
+  },
+  "terminal_parent_required": true,
+  "complete_inherited_prefix_with_byte_identity": true,
+  "all_original_step_and_equilibrium_gates": true,
+  "identical_physical_arguments_and_numerical_module_AST": true,
+  "saved_state_dtype": "float64",
+  "no_physical_state_reset": true,
+  "full_displacement_relative_target": 1e-08,
+  "full_stress_relative_target": 1e-08,
+  "full_point_force_relative_target": 1e-08,
+  "maximum_nodal_velocity_difference_m_per_s": 1e-10,
+  "five_common_field_relative_targets": 1e-08,
+  "raw_and_common_peak_relative_targets": 1e-08,
+  "original_momentum_target": 1e-07,
+  "control_parent_steps": 400,
+  "control_inherited_steps": 300,
+  "control_new_steps": 100,
+  "whole_goal_complete": false,
+  "prior_numeric_contract": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/solid-pad-resume-contract-v1.json",
+    "sha256": "68c16b59ee1f9df9ab994b01519f6e070271b7ff8496527df3a78c691878fae8"
+  },
+  "scope": "Exact saved step300 plus100 new steps versus uninterrupted400; all numerical targets unchanged."
+}
