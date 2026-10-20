@@ -2007,3 +2007,34 @@ adds205 payloads/1,066,370 bytes and24 external arrays, including both executed
 worker variants and the small damaged-write fixture. New outputs stay on data.
 Full fine qualification,54 final error rows/18 metric ranks, inspected final
 friction figures and matched cost/error consolidation remain open.
+
+## Independent preparation and delivery inspections, 2026-10-20
+
+Pending method fields731020 and force/traction data731021 now wait on strict
+complete-parent admission731010, allowing these independent calculations to
+overlap the remaining time/contact resolution work. Ranking731022 explicitly
+waits for both731020 and full qualifier731019. All original seven-parent/
+36-comparison/18-envelope,54-error/18-metric and figure/cost gates stay required.
+The physical data reader itself claims no spatial qualification. Three live
+fine continuations and all submitted source/task/output identities are unchanged.
+
+The first receipt check incorrectly parsed only one ID of a compact two-ID
+dependency and stopped after the safe consumer update. Slurm had correctly
+installed both; the two producer dependencies were still unchanged. Its failed
+reader/source/partial state remain preserved. The corrected reader verifies
+all eight affected array elements and completes the remaining two updates.
+Eleven current wiring checks pass. Publication also rehashes all seven captured
+analysis inventories and six computation/acceptance modules against the original
+frozen packet. No numerical integration or unchanged scientific test is rerun.
+
+The entire delivered Genesis package tree equals the measured1ff39b077 package;
+MPR repair58bbcdd5b is an ancestor and the strengthened witness-regression blob
+is identical. The analysis worktree deliberately retains its separate baseline.
+The exact pending rank source uses explicit pairwise strict interval comparisons,
+retaining touching/overlapping pairs as unresolved without transitive clustering.
+These are delivery/code inspections, not new physical-error or timing results.
+
+The [preparation packet](../evidence/20261019-qualified-ranking/independent-method-preparation-v1/README.md)
+adds12 payloads/58,999 bytes, no external arrays and no live fine output.
+Full fine qualification, final error/rank computation, inspected final figures
+and configuration-matched delivery remain incomplete.
