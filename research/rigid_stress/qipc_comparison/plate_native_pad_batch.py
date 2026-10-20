@@ -22,6 +22,8 @@ def main():
     cli.add_argument("--envs", type=int, choices=(1, 2, 4, 8), required=True)
     cli.add_argument("--env-load-scales", type=float, nargs="+")
     args = cli.parse_args()
+    if args.load_transfer != "fixed_radius" or args.source_roundoff:
+        raise ValueError("New resolved-pressure/roundoff variants require their separate single-environment controls")
     assert args.primary_cost and args.record_stride == 1 and args.source_reduction == "none"
     assert args.integrator == "Euler" and not args.empty and not args.shear_distance and args.plate_offset_x == 0
     assert not args.gravity_x or args.friction == 0.3

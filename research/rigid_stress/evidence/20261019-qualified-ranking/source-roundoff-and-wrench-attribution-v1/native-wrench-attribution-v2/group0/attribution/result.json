@@ -1,0 +1,116 @@
+{
+  "passed": true,
+  "state": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-capture-v2/group0/scr-max/rejected-state.npz",
+    "bytes": 192719,
+    "sha256": "3bea6c60a11c6a57128fc99a2a7e9a39e1ca059f8dbe37c0a634cf66008af042"
+  },
+  "original_receipt": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-capture-v2/group0/scr-max/rejected-step.json",
+    "bytes": 5521,
+    "sha256": "c63d5fc4013c6be830ee597dd97d085ea30dfd8169ed7887d4adb28500633d86"
+  },
+  "certificate": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-audit-v5/group0/audit/result.json",
+    "bytes": 3103,
+    "sha256": "45f719e1f8d494fba6120f6a3d3bf27e8000853a3a308d9f45aef9306cb84e4f"
+  },
+  "original_start": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-capture-v2/group0/scr-max/start.json",
+    "bytes": 1823,
+    "sha256": "6608a8f7ca6409d4636c11d08b1848deb67f9bc9a5adce5e0a5e3c65a4885d95"
+  },
+  "boundary_connected_components": 1,
+  "rows": [
+    {
+      "environment": 9,
+      "native_status": 36,
+      "original_continuous_certificate_retained": true,
+      "source_radii_m": [
+        0.005472871731392972,
+        0.005472871731392972
+      ],
+      "source_friction": [
+        0.4394455792948494,
+        0.4394455792948494
+      ],
+      "source_application_to_anchor_distance_m": [
+        5.5258998983617276e-05,
+        7.158732837436953e-05
+      ],
+      "source_to_anchor_face_normal_angle_deg": [
+        17.983290260711886,
+        15.95619718118997
+      ],
+      "maximum_raw_source_cone_excess_n": -3.469446951953614e-18,
+      "application_to_anchor_wrench_change_nm": [
+        3.6183713779811917e-06,
+        -1.007364245452782e-06,
+        -3.9174730339823017e-07
+      ],
+      "contrasts": [
+        {
+          "radius_multiplier": 1.0,
+          "surface_points": 20,
+          "physical_normals_force_only": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "physical_normals_full_wrench": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "physical_normals_anchor_application_wrench": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "source_normals_full_wrench": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "diagnostic_variant_only": false
+        },
+        {
+          "radius_multiplier": 1.5,
+          "surface_points": 32,
+          "physical_normals_force_only": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "physical_normals_full_wrench": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "physical_normals_anchor_application_wrench": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "source_normals_full_wrench": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "diagnostic_variant_only": true
+        }
+      ]
+    }
+  ],
+  "whole_goal_complete": false,
+  "SCR_repair_admitted": false,
+  "scope": "Force-only/full-wrench and geometry-normal/application/radius diagnostic contrasts on the exact captured first-failure states. Every physical candidate has an explicit surface path shorter than the stated radius and stays on the anchor's connected component; separate inner/outer boundaries are not mixed. LP generators satisfy actual circular Coulomb cones, so a verified positive equality is constructive on these sampled points. A failed LP alone never proves continuous infeasibility; only the unchanged original full-wrench case reuses its independently proven larger-support certificate. Source-normal, moved-application and1.5x-radius variants change the model and cannot admit SCR physical accuracy. No source, original failure, coefficient, solver tolerance or production engine is changed."
+}

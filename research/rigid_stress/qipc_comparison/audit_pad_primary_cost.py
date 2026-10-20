@@ -150,7 +150,7 @@ def main():
     write_json(
         args.output / "result.json",
         {
-            "identity": runtime_identity(),
+            "identity": runtime_identity(require_gpu_inventory=False),
             "passed": passed,
             "cases": cases,
             "receipts": receipts,

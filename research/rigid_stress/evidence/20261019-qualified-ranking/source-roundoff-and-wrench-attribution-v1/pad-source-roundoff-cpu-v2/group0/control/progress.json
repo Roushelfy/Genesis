@@ -1,0 +1,42 @@
+{
+  "cases": [
+    {
+      "frame": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-dpr-rejection-capture-v1/group0/dpr/frames/rejected-stress.npz",
+        "bytes": 2432914,
+        "sha256": "a1bcf3e714ec6b1e2d5cfe71b74acbb3db98f80f0e8e76f1f9e69fe20e022afa"
+      },
+      "corrected_sources": 8,
+      "source_count": 54,
+      "command_force_n": 0.074,
+      "unsigned_original_force_n": 0.0011635925328930198,
+      "physical_force_budget_n": 2.6290081223123706e-16,
+      "force_change_bound_n": 3.802358869417027e-21,
+      "moment_change_bound_nm": 1.1426880158545798e-22,
+      "actual_net_force_change_n": [
+        8.605619863255966e-22,
+        3.703696267180352e-21,
+        0.0
+      ],
+      "actual_moment_change_nm": [
+        -1.111103368441685e-22,
+        2.581673152391567e-23,
+        -2.7550648847397363e-40
+      ],
+      "maximum_absolute_principal_stress_perturbation_pa": 5.312686827552036e-15,
+      "force_scale_invariance_errors": [
+        0.0,
+        0.0,
+        2.220446049250313e-16
+      ],
+      "finite_incompatible_load_rejected": true,
+      "frame_rotation_conformance_passed": true,
+      "already_admitted_sources_bitwise_preserved": true,
+      "correction": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-source-roundoff-cpu-v2/group0/control/correction-dpr-rejected-stress.npz",
+        "bytes": 8202723,
+        "sha256": "d4e7737514b7cb3eb86320a6c76453ea02f1ef57f08334a7bda8237b9557a898"
+      }
+    }
+  ]
+}

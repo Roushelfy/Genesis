@@ -11,7 +11,11 @@ qualified physical stress error or an admitted native implementation.
 The [evidence packet](../evidence/20261019-qualified-ranking/automatic-contact-support-v1/README.md)
 retains executed sources, original reader failures, terminal receipts and the
 inspected pressure figure. Full fields, maps and original quadrature remain
-hashed on data. Existing fixed-radius rankings and their running fine-reference
+hashed on data. [Subsequent native and source-input results](RESOLVED_PAD_AND_SOURCE_INPUTS_20261020.md)
+add400-step Quadrants resolved-pressure conformance, completed DPR/SCR1000-step
+bounded-roundoff variants and an independent force-only SCR conflict certificate.
+These retain their research scope and do not supply a production automatic model.
+Existing fixed-radius rankings and their running fine-reference
 histories continue independently, without source edits or restarts.
 
 ## Physical support and pressure together

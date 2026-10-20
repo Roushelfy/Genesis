@@ -25,7 +25,7 @@ def main():
     original = NativePadRecovery.sample
     count, previous_force = 0, None
 
-    def sample(observer, force_world, rotation, angular_world, friction, load, path=None):
+    def sample(observer, force_world, rotation, angular_world, friction, load, path=None, *, physical_law_admitted=False):
         nonlocal count, previous_force
         count += 1
         if count == args.observation:
@@ -60,7 +60,8 @@ def main():
                     "scope": "Exact caller-owned force/state input captured before the requested observer call. Physical dynamics and recovery arithmetic are unchanged. This intrusive diagnostic cannot supply primary timings or admit the unfinished trajectory.",
                 },
             )
-        result = original(observer, force_world, rotation, angular_world, friction, load, path)
+        result = original(observer, force_world, rotation, angular_world, friction, load, path,
+                          physical_law_admitted=physical_law_admitted)
         previous_force = force_world.copy()
         return result
 

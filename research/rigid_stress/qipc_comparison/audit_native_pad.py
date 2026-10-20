@@ -91,7 +91,7 @@ def main():
     )
     write_json(
         args.output / "result.json",
-        {"identity": runtime_identity(), "cases": cases, "passed": passed, "physical_accuracy_qualified": False},
+        {"identity": runtime_identity(require_gpu_inventory=False), "cases": cases, "passed": passed, "physical_accuracy_qualified": False},
     )
     assert passed, "Native pad history/source adapter failed; audit retained"
 

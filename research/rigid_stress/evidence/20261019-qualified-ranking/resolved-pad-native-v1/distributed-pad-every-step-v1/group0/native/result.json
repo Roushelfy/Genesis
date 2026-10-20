@@ -1,0 +1,61 @@
+{
+  "completed": true,
+  "steps": 400,
+  "history_checks": {
+    "native_velocity_prediction": true,
+    "physical_pad_law": true,
+    "physical_friction_law": true,
+    "linear_equation": true,
+    "angular_equation": true,
+    "frozen_point_moment": true
+  },
+  "history_failed_steps": [],
+  "mechanical_history_passed": true,
+  "windows": [
+    {
+      "level": 0,
+      "samples": 51,
+      "checks": {
+        "both_plate_reactions": true,
+        "plate_velocity": true,
+        "egg_inertial_resultant": true,
+        "egg_kinetic": true,
+        "equation_residual": true,
+        "native_velocity_prediction": true,
+        "physical_pad_law": true,
+        "physical_friction_law": true,
+        "linear_equation": true,
+        "angular_equation": true,
+        "frozen_point_moment": true
+      },
+      "maximum_prediction_error_m_per_s": 9.055946246371963e-18,
+      "maximum_normal_law_error": 6.140080992460817e-13,
+      "maximum_friction_law_error": 5.112639286493919e-15,
+      "mechanical_window_passed": true
+    },
+    {
+      "level": 1,
+      "samples": 51,
+      "checks": {
+        "both_plate_reactions": true,
+        "plate_velocity": true,
+        "egg_inertial_resultant": true,
+        "egg_kinetic": true,
+        "equation_residual": true,
+        "native_velocity_prediction": true,
+        "physical_pad_law": true,
+        "physical_friction_law": true,
+        "linear_equation": true,
+        "angular_equation": true,
+        "frozen_point_moment": true,
+        "sustained_tangential_balance": true
+      },
+      "maximum_prediction_error_m_per_s": 1.4349125644590612e-12,
+      "maximum_normal_law_error": 6.7825233609559765e-12,
+      "maximum_friction_law_error": 9.642259656785078e-09,
+      "mechanical_window_passed": true
+    }
+  ],
+  "elapsed_seconds": 612.3327169410186,
+  "physical_accuracy_qualified": false
+}
