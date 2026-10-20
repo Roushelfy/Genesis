@@ -2038,3 +2038,28 @@ The [preparation packet](../evidence/20261019-qualified-ranking/independent-meth
 adds12 payloads/58,999 bytes, no external arrays and no live fine output.
 Full fine qualification, final error/rank computation, inspected final figures
 and configuration-matched delivery remain incomplete.
+
+## Early refusal of nonadvancing continuation metadata, 2026-10-20
+
+An intermediate terminal attempt can contain only its copied inherited normal
+endpoint. The old preparation/validator accepts that duplicate200-step state,
+while the existing strict ancestry audit rejects the nonadvancing extra link
+after expensive integration. The new preparation and validation instead compare
+the selected step with the parent's recorded inherited prefix before model
+setup; latest selection skips nonadvancing states. Recovery uses the existing
+terminal ancestor receipt if no newer complete state is available.
+
+Actual metadata control731307 passes20 checks, including acceptance by the exact
+old module versus early rejection by the new one, an actual terminal CLI refusal,
+unchanged original coarse200 and advancing225/300 receipts, all three original
+fine200/200/400 receipts, and valid explicit/latest selections. This is a real
+before/after counterexample using retained data, without rebuilding FEM or
+reexecuting trajectories. The restoration function AST and physical driver/
+ten-module bytes remain identical; no physical tolerance or allowed advancing
+trajectory changes. Current fine captures and queues stay intact.
+
+The [forward-prefix packet](../evidence/20261019-qualified-ranking/solid-pad-forward-prefix-guard-v1/README.md)
+adds44 payloads/253,293 bytes and seven existing external state arrays; prior
+packets retain mesh/source dependencies. Fine qualification,54 final errors/
+18 metric ranks, inspected final figures and matched cost/error consolidation
+remain required before goal completion.

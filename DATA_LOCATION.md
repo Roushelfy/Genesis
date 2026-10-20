@@ -1,5 +1,13 @@
 # Rigid-stress data and artifact locations
 
+The solid-pad-forward-prefix-guard-v1 packet adds44 compact payloads/253,293
+bytes for the actual old/new inherited-prefix counterexample,20 passing metadata
+controls and unchanged restoration/physics-source inspection. Seven existing
+checkpoint arrays remain externally hashed on data; mesh/source dependencies
+retain their earlier packets and exact receipts. No FEM trajectory is rerun and
+no live fine source/output is copied or migrated. New refusal/control outputs,
+private job caches and logs use the existing data run root or node-local paths.
+
 The independent-method-preparation-v1 packet adds12 compact payloads/58,999
 bytes for scheduler-only dependency updates and final source inspections. It
 contains no runtime arrays or live numerical output. All seven captured analysis

@@ -217,3 +217,38 @@ private damaged-write inputs and external array identities. New runtime outputs
 stay under the established data run root. Existing fine continuations still
 start from their original complete-phase endpoints and retain their captured
 sources; this validation does not restart or relabel them.
+
+## Refuse a repeated inherited prefix before expensive setup
+
+If a terminal intermediate attempt has inherited200 steps but saved no newer
+state, its copied level0 endpoint still represents those same200 steps. The
+original preparation/latest selector admitted that endpoint; the existing
+strictly advancing ancestry audit would reject the extra link after the new
+trajectory had been integrated. This wastes setup/integration without adding
+usable provenance.
+
+Preparation and checkpoint validation now require the selected prefix to exceed
+the parent's recorded inherited prefix. The latest selector skips earlier or
+equal states; explicit level/step selections are also refused. If no advancing
+state exists, use the unchanged terminal ancestor receipt directly and preserve
+the unsuccessful intermediate attempt separately. Original uncontinued parents
+have no inherited prefix, so their normal endpoint receipts remain valid.
+Actual terminal-state verification and every original physical/source check
+still apply. A live reference cannot be resumed.
+
+Slurm731307 passes20 metadata checks. It loads the exact old validator/selector
+and demonstrates acceptance of the real-data copied200-step endpoint, then
+checks the new early refusal and actual terminal CLI rejection. Original coarse200,
+advancing225/300 and the three original fine200/200/400 receipts all still pass.
+Valid explicit/latest selections remain accepted. The restoration function AST,
+driver and ten physics modules are unchanged; no FEM model, trajectory or
+unchanged conformance test is rerun. The prior34-check trajectory comparisons
+and49-check ancestry controls retain their original scope.
+
+The [forward-prefix packet](../evidence/20261019-qualified-ranking/solid-pad-forward-prefix-guard-v1/README.md)
+preserves44 payloads/253,293 bytes, the actual old/new counterexample and source
+variants, and seven existing externally hashed state arrays. The earlier
+partial-step/recovery packets retain the mesh and remaining reconstruction
+dependencies. This guard changes early metadata admission only; live fine
+captures, numerical parameters, downstream qualification and final delivery
+requirements remain unchanged.
