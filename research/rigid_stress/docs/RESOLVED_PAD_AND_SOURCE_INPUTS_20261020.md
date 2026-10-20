@@ -157,8 +157,9 @@ The resumed125um/three-wall/q10 reference730978 and q6 contact control730979
 each complete400 steps. Four-parent admission731010 passes40 checks; q6/q10
 pair admission731014 passes20. Subsequently half-dt730980 completes800 steps
 and the complete seven-parent qualification,54-error/18-rank and matched-cost
-chain passes. Its separately generated final figures still require visual review
-and publication; this packet retains the earlier main/contact terminal boundary.
+chain passes. The [final fixed-radius report](QUALIFIED_FRICTION_RESULTS_20261020.md)
+now includes inspected figures and matching costs; this packet retains the earlier
+main/contact terminal boundary.
 
 Next compare rigid-gap, local approximations and reusable coupled compliance
 across declared stiffness/thickness/asymmetry/nonconvex/motion cases. Predict
