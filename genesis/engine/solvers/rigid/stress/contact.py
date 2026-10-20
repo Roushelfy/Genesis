@@ -215,6 +215,29 @@ def kernel_anchor(source_epsilon: float, contact_state: StressContactState, surf
 
 
 @qd.func
+def func_contact_force_admissible(
+    point: qd.types.vector(3),
+    force: qd.types.vector(3),
+    normal: qd.types.vector(3),
+    friction: float,
+    source_epsilon: float,
+):
+    magnitude = force.norm()
+    admitted = normal.norm() > 0.0 and friction >= 0.0
+    admitted = admitted and not qd.math.isnan(magnitude) and not qd.math.isinf(magnitude)
+    admitted = admitted and not qd.math.isinf(normal.norm()) and not qd.math.isinf(friction)
+    for i_a in qd.static(range(3)):
+        admitted = admitted and not qd.math.isnan(point[i_a]) and not qd.math.isinf(point[i_a])
+    if admitted:
+        normal = normal.normalized()
+        compression = force.dot(normal)
+        tangent = force - compression * normal
+        allowance = 16.0 * source_epsilon * magnitude
+        admitted = compression >= -allowance and tangent.norm() <= friction * compression + allowance
+    return admitted
+
+
+@qd.func
 def func_anchor(source_epsilon: float, contact_state: StressContactState, surface_info: StressSurfaceInfo):
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         contact_state.status[i_c, i_b] = 0
@@ -228,22 +251,10 @@ def func_anchor(source_epsilon: float, contact_state: StressContactState, surfac
             magnitude = force.norm()
             normal = contact_state.normal[i_c, i_b]
             radius = contact_state.radius[i_c, i_b]
-            admitted = radius > 0.0 and normal.norm() > 0.0 and contact_state.friction[i_c, i_b] >= 0.0
-            admitted = admitted and not qd.math.isnan(magnitude) and not qd.math.isinf(magnitude)
-            admitted = admitted and not qd.math.isinf(radius) and not qd.math.isinf(normal.norm())
-            admitted = admitted and not qd.math.isinf(contact_state.friction[i_c, i_b])
-            for i_a in qd.static(range(3)):
-                value = contact_state.position[i_c, i_b][i_a]
-                admitted = admitted and not qd.math.isnan(value) and not qd.math.isinf(value)
-            if admitted:
-                normal = normal.normalized()
-                compression = force.dot(normal)
-                tangent = force - compression * normal
-                allowance = 16.0 * source_epsilon * magnitude
-                admitted = (
-                    compression >= -allowance
-                    and tangent.norm() <= contact_state.friction[i_c, i_b] * compression + allowance
-                )
+            admitted = func_contact_force_admissible(
+                contact_state.position[i_c, i_b], force, normal, contact_state.friction[i_c, i_b], source_epsilon
+            )
+            admitted = admitted and radius > 0.0 and not qd.math.isinf(radius)
             if not admitted:
                 contact_state.status[i_c, i_b] = 1
             elif magnitude > 1e-30:

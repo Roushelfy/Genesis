@@ -33,6 +33,7 @@ from .model import StressModel
 from .pipeline import kernel_pipeline
 from .post import create_post_kernel
 from .provenance import kernel_capture_rigid_sources
+from .resolved import ResolvedContacts
 from .scatter import StressScatterWorkspace, create_scatter_workspace, kernel_pressure_moments, kernel_scatter_faces
 from .surface import StressSurface
 
@@ -59,6 +60,7 @@ class StressLink:
     coalesced_residual: bool
     reuse_contact_moments: bool
     intrinsic: IntrinsicContacts | None = None
+    resolved: ResolvedContacts | None = None
     requested_step: int = -1
 
 
@@ -70,11 +72,14 @@ class RigidStressRecovery:
             for link in entity.links:
                 options = link.stress_options
                 if options is not None:
+                    if options.load_transfer == "resolved" and options.contact_model != "pressure":
+                        gs.raise_exception("Resolved boundary transfer requires pressure-mode stress recovery.")
                     if options.history_size and options.method == "pcg":
                         gs.raise_exception("The native load history requires a direct or inverse stress method.")
                     # Equal geometry, constitutive parameters and mass share physical operators and factors.
                     model = None
                     surface = None
+                    quadrature = 1 if options.load_transfer == "resolved" else options.quadrature
                     for existing in self.links:
                         previous = existing.model.options
                         if (
@@ -88,15 +93,16 @@ class RigidStressRecovery:
                             and previous.surface_inverse == options.surface_inverse
                         ):
                             model = existing.model
-                            if previous.quadrature == options.quadrature:
+                            if existing.surface.info.gauss.shape[0] == quadrature:
                                 surface = existing.surface
                             break
                     if model is None:
                         model = StressModel(options)
                     if surface is None:
-                        surface = StressSurface(options.quadrature, model.info)
+                        surface = StressSurface(quadrature, model.info)
                     reuse_contact_moments = (
                         options.contact_model == "pressure"
+                        and options.load_transfer == "patch"
                         and gs.backend == gs.cuda
                         and options.face_parallel_scatter
                         and options.cooperative_pressure
@@ -117,8 +123,12 @@ class RigidStressRecovery:
                                 solver.collider.collider_state.contact_sort_idx.shape[0],
                                 solver._B,
                                 options.contact_radius,
-                                options.contact_model == "pressure" and options.cooperative_pressure,
-                                options.contact_model == "pressure" and options.cooperative_scatter,
+                                options.contact_model == "pressure"
+                                and options.load_transfer == "patch"
+                                and options.cooperative_pressure,
+                                options.contact_model == "pressure"
+                                and options.load_transfer == "patch"
+                                and options.cooperative_scatter,
                             ),
                             V_VEC(3, dtype=gs.qd_float, shape=(solver._B,)),
                             StressHistory(model.info.vertices.shape[0], solver._B) if options.history_size else None,
@@ -127,6 +137,7 @@ class RigidStressRecovery:
                                 solver._B,
                                 options.scatter_tasks_per_env
                                 if options.contact_model == "pressure"
+                                and options.load_transfer == "patch"
                                 and options.face_parallel_scatter
                                 and options.cooperative_scatter
                                 and gs.backend == gs.cuda
@@ -143,6 +154,7 @@ class RigidStressRecovery:
                             if solver._B >= 8192
                             else 0,
                             options.contact_model == "pressure"
+                            and options.load_transfer == "patch"
                             and gs.backend == gs.cuda
                             and options.fused_pipeline
                             and model.surface_inverse is not None
@@ -157,7 +169,9 @@ class RigidStressRecovery:
                         )
                     )
         for entry in self.links:
-            if entry.options.contact_model == "intrinsic":
+            if entry.options.load_transfer == "resolved":
+                entry.resolved = ResolvedContacts(entry.link, entry.contacts, entry.model.info, entry.options)
+            elif entry.options.contact_model == "intrinsic":
                 paths = None
                 for previous in self.links:
                     if (
@@ -290,7 +304,14 @@ class RigidStressRecovery:
                 entry.state.step_valid,
                 solver._errno,
             )
-            if entry.intrinsic is not None:
+            if entry.resolved is not None:
+                kernel_capture_rigid_sources(
+                    entry.link.idx, entry.contacts, entry.resolved.raw_sources, solver.collider.collider_state
+                )
+                entry.resolved.scatter(
+                    entry.contacts, entry.state, entry.model.info, entry.surface.info, options, self.source_epsilon
+                )
+            elif entry.intrinsic is not None:
                 kernel_capture_rigid_sources(
                     entry.link.idx, entry.contacts, entry.intrinsic.raw_sources, solver.collider.collider_state
                 )
@@ -466,6 +487,10 @@ class RigidStressRecovery:
                 yield from entry.intrinsic.data(f"stress.{i}.intrinsic")
             if entry.history is not None:
                 yield from iter_data(entry.history.state, f"stress.{i}.history")
+            if entry.resolved is not None:
+                yield from iter_data(entry.resolved.raw_sources, f"stress.{i}.resolved.sources")
+                if entry.resolved.vertices.info is not None:
+                    yield from iter_data(entry.resolved.vertices.info, f"stress.{i}.resolved.vertices")
             yield DataItem(f"stress.{i}.omega", entry.omega, entry.state.kind)
 
     def get_peak(self, link_idx: int, envs_idx=None, *, copy: bool = True) -> torch.Tensor:
@@ -498,6 +523,8 @@ class RigidStressRecovery:
             gs.raise_exception("Stress radius environment index is out of bounds.")
         for entry in self.links:
             if entry.link.idx == link_idx:
+                if entry.options.load_transfer == "resolved":
+                    gs.raise_exception("Resolved boundary samples have no reconstruction radius.")
                 if gs.use_zerocopy:
                     view = qd_to_torch(entry.contacts.radius, transpose=True, copy=False)
                     mask = indices_to_mask(envs_idx)
