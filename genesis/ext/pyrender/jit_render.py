@@ -258,6 +258,9 @@ class JITRenderer:
         self._mesh_textures = set()
         self._shadow_textures = set()
         self._context_revision = None
+        # Whether the per-primitive tables (VAO and buffer ids above all) refer to GL objects freed by 'delete', so the
+        # next 'update' has to gather them again even though the scene meshes did not change
+        self._is_primitive_stale = False
         self.set_primitive(scene, node_list, primitive_list)
         self.set_light(scene, scene.light_nodes, scene.ambient_light)
         self.reflection_mat = np.identity(4, np.float32)
@@ -291,7 +294,7 @@ class JITRenderer:
         self.translation_bounds_grid[idx, 1] = translations.max(axis=1)
 
     def update(self, scene):
-        if scene.meshes_updated:
+        if scene.meshes_updated or self._is_primitive_stale:
             node_list, primitive_list = [], []
             for node in scene.sorted_mesh_nodes():
                 mesh = node.mesh
@@ -302,6 +305,7 @@ class JITRenderer:
                     primitive_list.append(primitive)
             self.set_primitive(scene, node_list, primitive_list)
             scene.reset_meshes_updated()
+            self._is_primitive_stale = False
         elif self._scene_revision != scene.revision:
             # A node moves through Scene.set_pose, which advances the revision. Its own transform setters leave it alone.
             for i, node in enumerate(self.node_list):
@@ -443,6 +447,13 @@ class JITRenderer:
         self._mesh_textures.clear()
         self._shadow_textures.clear()
         self._context_revision = None
+        # The JIT renderer outlives its GL context (the viewer retries the OpenGL platforms with the same one), and the
+        # next context hands out the ids anew, so every id cached from the freed objects has to be gathered again.
+        # Stale VAO ids would make several primitives draw through the one VAO that happens to reuse the id.
+        self._is_primitive_stale = True
+        self.program_id.clear()
+        self._lights_revision = None
+        self._is_lighting_ready = False
         if self.env_offset_buffer is not None:
             try:
                 GL.glDeleteBuffers(1, [self.env_offset_buffer])
