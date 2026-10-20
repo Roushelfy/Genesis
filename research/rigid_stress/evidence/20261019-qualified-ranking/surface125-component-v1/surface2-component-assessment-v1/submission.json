@@ -1,0 +1,22 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0%1",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=none",
+    "--cpus-per-task=4",
+    "--mem=32G",
+    "--time=20",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/surface2-component-assessment-v1/logs/%A_%a.log",
+    "--dependency=afterany:729479_0:729479_1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/surface2-component-assessment-v1/job.sh"
+  ],
+  "job": "730619",
+  "dependency": "afterany:729479_0:729479_1",
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "allow_home_output": false
+}

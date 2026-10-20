@@ -69,3 +69,103 @@ def assess_pair(low, high, *, spatial):
         "peak_target": peak_target,
         "angular_changes": changes,
     }
+
+
+def inspect_surface_pair():
+    """Inspect the ready surface component without admitting the full reference."""
+    import argparse
+    import json
+    from pathlib import Path
+
+    from .artifacts import file_id, runtime_identity, write_json
+
+    cli = argparse.ArgumentParser(description=inspect_surface_pair.__doc__)
+    cli.add_argument("--data-root", type=Path, required=True)
+    cli.add_argument("--surface-pair-admission", type=Path, required=True)
+    cli.add_argument("--spatial-campaign", default="stvk-canonical125-fields-v2")
+    cli.add_argument("--output", type=Path, required=True)
+    args = cli.parse_args()
+    args.output.mkdir(parents=True, exist_ok=False)
+    receipts, rows, checks = [], [], {}
+
+    def read(path):
+        receipts.append(file_id(path))
+        return json.loads(Path(path).read_text())
+
+    def require(name, passed):
+        checks[name] = bool(passed)
+        assert passed, name
+
+    error = None
+    try:
+        admission = read(args.surface_pair_admission)
+        runs = [
+            args.data_root / "solid-pad-stvk-spatial250-cache-v1/group0/reference",
+            args.data_root / "solid-pad-stvk-canonical125-reference-v1/group0/reference",
+        ]
+        require("exact_complete_parent_pair", admission["passed"] and len(admission["runs"]) == 2
+                and {r["run"] for r in admission["runs"]} == {str(r) for r in runs}
+                and all(r["passed"] and r["expected_steps"] == 400 and len(r["checks"]) == 10
+                        and all(r["checks"].values()) for r in admission["runs"]))
+        for ident in admission["receipts"]:
+            require("receipt/" + ident["path"], file_id(ident["path"]) == ident)
+            receipts.append(ident)
+        starts = [read(run / "start.json") for run in runs]
+        ignored = {"output", "mesh", "cache_constitutive_evaluations", "reuse_contact_velocity"}
+        parameters = [{k: v for k, v in s["args"].items() if k not in ignored} for s in starts]
+        require("same_physical_parameters", parameters[0] == parameters[1])
+        require("original_case", all(
+            s["fixed_dynamic_dofs"] == 0 and s["args"]["loads"] == [0.1, 0.1]
+            and s["args"]["dt"] == 0.001 and s["args"]["quadrature_order"] == 10
+            and s["args"]["friction"] == 0.3 and s["args"]["gravity_x"] == 1
+            and s["args"]["elasticity"] == "stvk" and s["args"]["contact_solver"] == "modal"
+            and s["args"]["warm_contact"] and s["args"]["constitutive_correction"] == "direct"
+            for s in starts))
+        for level in range(2):
+            folder = args.data_root / args.spatial_campaign / f"group{level}"
+            require(f"level{level}/terminal_field_task", (folder / "returncode.txt").read_text().strip() == "0")
+            receipts.append(file_id(folder / "returncode.txt"))
+            values = {}
+            for order in (9, 25):
+                path = folder / f"surface2-level{level}-q{order}/result.json"
+                result = read(path)
+                require(f"level{level}/q{order}/sampling", result["surface_quadrature_points_per_face"] == order
+                        and result["depth_quadrature_points"] == 4 and result["physical_volume_weighting"]
+                        and result["common_peaks_evaluated"] and result["shell_indices"] == [])
+                require(f"level{level}/q{order}/one_complete_pair", len(result["cases"]) == 1)
+                case = result["cases"][0]
+                expected = [file_id(run / f"frames/level{level}.npz") for run in runs]
+                require(f"level{level}/q{order}/ordered_own_frames", ordered_fields_match(case, expected))
+                for raw, start, ident in zip(case["raw"], starts, expected):
+                    require("mesh/" + ident["path"], raw["mesh"] == start["mesh"]
+                            and file_id(raw["mesh"]["path"]) == raw["mesh"])
+                    receipts.extend((ident, raw["mesh"]))
+                require(f"level{level}/q{order}/actual_comparison", case["load_n"] == 0.1
+                        and len(case["adjacent_comparisons"]) == 1)
+                value = case["adjacent_comparisons"][0]
+                require(f"level{level}/q{order}/volume_and_order", value["coarse_index"] == 0
+                        and value["fine_index"] == 1 and value["integration_measure_unit"] == "m3"
+                        and math.isfinite(value["integration_measure"]) and value["integration_measure"] > 0)
+                tangent_peaks(value)
+                values[order] = value
+            assessment = assess_pair(values[9], values[25], spatial=True)
+            checks.update({f"level{level}/surface_component/{k}": v for k, v in assessment["checks"].items()})
+            rows.append({"level": level, "assessment": assessment, "q9": values[9], "q25": values[25]})
+    except (OSError, KeyError, ValueError, AssertionError) as failure:
+        checks["complete_component_inputs"] = False
+        error = str(failure)
+    passed = bool(checks) and all(checks.values()) and len(rows) == 2
+    write_json(args.output / "result.json", {
+        "identity": runtime_identity(require_gpu_inventory=False),
+        "passed": passed, "surface_pair_passed": passed,
+        "checks": checks, "error": error, "rows": rows, "receipts": receipts,
+        "fine_reference_qualified": False, "accepted_reference_frames": [],
+        "whole_goal_complete": False,
+        "scope": "Only the admitted250-to125um two-wall surface component at the two fixed normal/friction endpoints. Original2% field/5% raw-and-common peak and angular targets apply. Coarse refinement trend, wall/joint, time/contact/depth controls and the complete seven-parent qualification remain separate; this component produces no accepted fine-reference frames or method ranks.",
+    })
+    if not passed:
+        raise SystemExit("Surface-refinement component failed; full reference qualification remains unproven")
+
+
+if __name__ == "__main__":
+    inspect_surface_pair()

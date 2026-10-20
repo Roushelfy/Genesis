@@ -1,0 +1,23 @@
+{
+  "module": "research/rigid_stress/qipc_comparison/friction_reference_gates.py",
+  "source_sha256": "ae4f5b4b72141f9f8826c514ebdf7201133e70f97f8260316793ff42ff0a8cc9",
+  "original_core_AST_unchanged": true,
+  "fixed_component": "250-to125um, two-wall, normal/friction endpoint pair; q9/q25/depth4 actual full fields",
+  "physical_parent_guard": "surface2-pair-parent-admission-v1/group0/admission/result.json",
+  "targets_unchanged": {
+    "fields": 0.02,
+    "raw_and_common_peaks": 0.05,
+    "angular_field_contrast": 0.005,
+    "angular_peak_value": 0.01
+  },
+  "scope_limit": "Always fine_reference_qualified=false, accepted_reference_frames=[], whole_goal_complete=false. Coarse trends, wall/joint and time/contact/depth controls remain for the full qualifier. No mechanical source, load, solver parameter or existing captured qualifier is changed.",
+  "input_guard_strengthening": "Require each parent row passed=true and all ten named check values, matching the actual20-check guard; original numerical gate AST unchanged.",
+  "cancelled_pending_reader": {
+    "job": "730619",
+    "before": "JobId=730619 ArrayJobId=730619 ArrayTaskId=0 ArrayTaskThrottle=1 JobName=shell22-compare UserId=zhaofeng(2157) GroupId=zhaofeng(2157) MCS_label=N/A Priority=1 Nice=0 Account=root QOS=normal JobState=PENDING Reason=Dependency Dependency=afterany:729479_0(unfulfilled),afterany:729479_1(unfulfilled) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=00:20:00 TimeMin=N/A SubmitTime=2026-10-20T00:07:29 EligibleTime=Unknown AccrueTime=Unknown StartTime=Unknown EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-20T00:07:29 Scheduler=Main Partition=rtx-mid AllocNode:Sid=cpu-207-159:298378 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1 NumCPUs=4 NumTasks=1 CPUs/Task=4 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=4,mem=32G,node=1,billing=4 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=4 MinMemoryNode=32G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) LicensesAlloc=(null) Network=(null) Command=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/surface2-component-assessment-v1/job.sh WorkDir=/mnt/home/zhaofeng/workspace/Genesis/.worktrees/stress_qualified_ranking StdErr=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/surface2-component-assessment-v1/logs/730619_0.log StdIn=/dev/null StdOut=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/surface2-component-assessment-v1/logs/730619_0.log TresPerTask=cpu=4 \n",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "",
+    "worker_never_started": true
+  }
+}

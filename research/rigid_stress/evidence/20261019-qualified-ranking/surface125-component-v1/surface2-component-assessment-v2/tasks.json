@@ -1,0 +1,38 @@
+[
+  [
+    {
+      "name": "assessment",
+      "module": "research.rigid_stress.qipc_comparison.friction_reference_gates",
+      "args": [
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking",
+        "--surface-pair-admission",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/surface2-pair-parent-admission-v1/group0/admission/result.json"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "negative-row-passed",
+      "module": "research.rigid_stress.qipc_comparison.friction_reference_gates",
+      "args": [
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking",
+        "--surface-pair-admission",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/negative-row-passed-v1.json"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "negative-empty-checks",
+      "module": "research.rigid_stress.qipc_comparison.friction_reference_gates",
+      "args": [
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking",
+        "--surface-pair-admission",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/negative-empty-checks-v1.json"
+      ]
+    }
+  ]
+]
