@@ -1,5 +1,17 @@
 # Rigid-stress data and artifact locations
 
+The `hard-normal-roots-and-edge-v1` packet retains96 compact payloads/677,074
+bytes and67 externally hashed arrays/meshes for direct planar normal roots,
+matched live Franka input/rigid timing and original/corrected straight-edge
+pressure controls. New runtime data and logs are under
+`/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/`
+in `hard-normal-roots-v1`, `hard-normal-live-v1` and `hard-edge-v1`/`v2`.
+The original edge-domain clipping and quadrature limitations remain documented.
+Exact executed source variants and compact histories are archived; private
+compiler caches were node-local. No existing data, environment or compatibility
+link was migrated. Native input timing and offline edge fitting remain distinct
+from physically admitted shell-stress throughput.
+
 The hard-hertz-inputs-v1 packet retains270 compact payloads/1,680,227 bytes
 for native curvature, twelve CPU/GPU region/source controls, and same-substep
 moving Franka input pilots with matched rigid baselines. Original option,

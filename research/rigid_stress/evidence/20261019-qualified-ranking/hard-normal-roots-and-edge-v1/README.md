@@ -1,0 +1,5 @@
+# Direct normal roots and finite-edge pressure controls
+
+Native direct inversion of fixed mesh normal fields for planar opponents preserves twelve CPU/GPU source-region controls and passes128 forward-normal queries per backend. Actual matched Franka trajectories remain identical; input cost falls to4.025ms versus2.249ms pure rigid, with1381/2808 loaded environment steps passing geometric checks. Finite-face rejection, coarse geometry error and large incompatible source moments remain explicit. A separate mixed regular/edge variational pressure trial passes eight predeclared cell-pressure/subsurface-sample targets; offline fitting is not native runtime, shell accuracy or continuum-peak qualification.
+
+The manifest retains exact executed sources, terminal scheduler state, corrected and original diagnostic results, and compact moving-scene histories. Full arrays and generated geometry remain hashed on data. Private compiler caches were node-local. The original finite-edge trial-domain and quadrature limitations remain recorded; only the final corrected study supports its stated cell/sample comparisons.

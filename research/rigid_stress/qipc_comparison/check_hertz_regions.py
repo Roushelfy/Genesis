@@ -18,6 +18,7 @@ from genesis.engine.solvers.rigid.stress.curvature import (
     func_surface_curvature,
 )
 from genesis.engine.solvers.rigid.stress.hertz_regions import StressHertzRegions
+from genesis.engine.solvers.rigid.stress.normal_roots import func_normal_root
 from genesis.engine.solvers.rigid.stress.provenance import StressSourceState, create_sources
 from genesis.utils import array_class
 from genesis.utils.misc import qd_to_numpy, tensor_to_array
@@ -48,6 +49,31 @@ def kernel_queries(
             for k in qd.static(range(3)):
                 tensors[i, j, k] = tensor[j, k]
         statuses[i] = status
+
+
+@qd.kernel
+def kernel_normal_roots(
+    i_geom: int,
+    directions: qd.types.ndarray(),
+    seeds: qd.types.ndarray(),
+    centers: qd.types.ndarray(),
+    faces: qd.types.ndarray(),
+    residuals: qd.types.ndarray(),
+    statuses: qd.types.ndarray(),
+    dyn_state: array_class.DynState,
+    dyn_info: array_class.DynInfo,
+    curvature: StressCurvatureInfo,
+    epsilon: float,
+):
+    for i in range(directions.shape[0]):
+        normal = qd.Vector([directions[i, j] for j in qd.static(range(3))])
+        seed = qd.Vector([seeds[i, j] for j in qd.static(range(3))])
+        center, operator, face, residual, status = func_normal_root(
+            i_geom, 0, normal, seed, dyn_state, dyn_info, curvature, epsilon
+        )
+        for j in qd.static(range(3)):
+            centers[i, j] = center[j]
+        faces[i], residuals[i], statuses[i] = face, residual, status
 
 
 @qd.kernel
@@ -255,6 +281,49 @@ def main():
         )
         saved_fields[f"{name}_{level}_tensor"] = tensor
         saved_fields[f"{name}_{level}_reference"] = exact
+        selected = np.linspace(0, count - 1, 32, dtype=gs.np_int)
+        directions = expected_normal[selected].copy()
+        seeds = positions[selected].copy()
+        roots = np.empty_like(seeds)
+        root_faces, root_status = np.empty(32, dtype=gs.np_int), np.empty(32, dtype=gs.np_int)
+        root_residual = np.empty(32)
+        kernel_normal_roots(
+            geometry.idx,
+            directions,
+            seeds,
+            roots,
+            root_faces,
+            root_residual,
+            root_status,
+            solver.dyn_state,
+            solver.dyn_info,
+            cache.info,
+            epsilon,
+        )
+        np.testing.assert_array_equal(root_status, CurvatureStatus.SMOOTH_NORMAL_ESTIMATE)
+        assert root_residual.max() < 1e-12
+        recovered_normal = np.empty((32, 3))
+        kernel_queries(
+            np.full(32, geometry.idx, dtype=gs.np_int),
+            root_faces,
+            roots,
+            recovered_normal,
+            np.empty((32, 3, 3)),
+            root_status,
+            solver.dyn_state,
+            solver.dyn_info,
+            cache.info,
+            epsilon,
+        )
+        np.testing.assert_allclose(recovered_normal, directions, atol=1e-12, rtol=0)
+        curvature_rows[-1]["normal_root_forward_residual_max"] = float(
+            np.linalg.norm(recovered_normal - directions, axis=1).max()
+        )
+        curvature_rows[-1]["normal_root_analytic_position_difference_max_m"] = float(
+            np.linalg.norm(roots - (local[selected] + translation), axis=1).max()
+        )
+        saved_fields[f"{name}_{level}_normal_roots"] = roots
+        saved_fields[f"{name}_{level}_normal_root_reference"] = local[selected] + translation
     arrays = args.output / "curvature-fields.npz"
     np.savez_compressed(arrays, **saved_fields)
     write_json(args.output / "curvature.json", curvature_rows)

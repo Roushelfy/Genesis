@@ -59,7 +59,17 @@ the full-volume difference below0.024% versus refined Hertz boundary correction
 and reduces matched GPU module time by48–57%. Full updates cost1.100/1.566/3.267ms
 at B1/128/512. This distance regime does not yet qualify shell inner walls.
 
-The [current-curvature and live-input study](docs/HARD_CONTACT_ESTIMATES_20261020.md#current-curvature-and-live-contact-inputs) adds analytical primitive and smooth-mesh curvature controls, source-splitting/wrench checks and actual same-substep Franka inputs. It retains coarse-mesh curvature failures and substantial live geometry rejection; these input-stage costs are not admitted stress throughput. Finite-shell pressure, friction history and useful public max/full integration remain open.
+The [current-curvature and live-input study](docs/HARD_CONTACT_ESTIMATES_20261020.md#direct-planar-normal-roots)
+now directly inverts cached mesh normals for planar opponents. CPU/GPU controls
+pass, and the matched moving Franka input-stage median falls from6.825ms to4.025ms
+versus2.249ms for pure rigid. Only1381/2808 loaded environment steps pass geometry
+checks, and large remaining source moments are incompatible with centered Hertz
+pressure. These measurements do not admit usable stress throughput. A separate
+[finite-edge control](docs/HARD_CONTACT_ESTIMATES_20261020.md#finite-straight-edge-pressure-candidates)
+reduces fine-grid sampled stress error to1.26–5.78% with a mixed variational
+pressure candidate. Its offline fitting, half-space samples and sharp-edge
+limits remain distinct from native runtime and complete shell accuracy.
+Friction history and useful public max/full integration remain open.
 
 The [first CPU contact-region study](docs/AUTOMATIC_CONTACT_PROGRESS_20261020.md)
 now measures distributed-source double spreading: the retained2mm DPR baseline
