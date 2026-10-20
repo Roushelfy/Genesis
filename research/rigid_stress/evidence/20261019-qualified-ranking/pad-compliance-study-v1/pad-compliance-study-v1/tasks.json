@@ -1,0 +1,20 @@
+[
+  [
+    {
+      "name": "study",
+      "module": "research.rigid_stress.qipc_comparison.study_pad_compliance",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--seed-operator",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-explicit-centroid-v1/group0/reference/order-0/contact-operator.npz",
+        "--baseline-frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/compliant-pad-explicit-centroid-v1/group0/reference/order-0/load-0.1.npz",
+        "--qp-solver-path",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/assets/clarabel-0.11.1",
+        "--cases",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/pad-compliance-cases-v1.json"
+      ]
+    }
+  ]
+]
