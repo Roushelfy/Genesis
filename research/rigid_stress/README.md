@@ -37,6 +37,16 @@ retain a measured moment/cone conflict; a separately measured6x6 correction
 is not engineering-admitted. Live grouping/curvature and public scene integration
 remain required.
 
+The [normal near-field tensor](docs/HARD_CONTACT_ESTIMATES_20261020.md#a-cheap-normal-near-field-tensor)
+now evaluates elliptical Hertz stress through the surface, edge and interior.
+Independent circular/pressure-integral controls pass. Native16-point evaluation
+passes2,849 tensors per CPU/GPU backend, with at most0.01805% of peak pressure
+as the sampled tensor error. GPU cost is0.111–0.173ms for77 probes on1–512
+regions. The retained0.2N ellipse predicts a16.5MPa local von-Mises candidate
+versus0.086MPa in the coarse shell: correct transfer alone does not resolve
+contact peaks. Finite-domain correction, friction history and scene integration
+remain required; direct addition would duplicate part of the contact response.
+
 The [first CPU contact-region study](docs/AUTOMATIC_CONTACT_PROGRESS_20261020.md)
 now measures distributed-source double spreading: the retained2mm DPR baseline
 places about42% of normal load on the inner boundary. Conservative outer P2

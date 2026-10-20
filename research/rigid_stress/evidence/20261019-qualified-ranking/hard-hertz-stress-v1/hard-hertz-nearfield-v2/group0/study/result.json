@@ -1,0 +1,74 @@
+{
+  "passed": true,
+  "checks": {
+    "circular_axis_and_surface_three_poisson_values": true
+  },
+  "rows": [
+    {
+      "axis_ratio": 0.05,
+      "independent_radial_orders": [
+        256,
+        512
+      ],
+      "orders": {
+        "16": {
+          "tensor_relative_l2": 0.00016925330835191712,
+          "maximum_tensor_absolute_over_peak_pressure": 0.0002724548793201136
+        },
+        "32": {
+          "tensor_relative_l2": 3.768831983045645e-06,
+          "maximum_tensor_absolute_over_peak_pressure": 1.608871517870669e-05
+        },
+        "48": {
+          "tensor_relative_l2": 3.5458032244006977e-07,
+          "maximum_tensor_absolute_over_peak_pressure": 2.5975568697982176e-06
+        },
+        "96": {
+          "tensor_relative_l2": 1.88861921139988e-09,
+          "maximum_tensor_absolute_over_peak_pressure": 2.4855680483067626e-08
+        }
+      },
+      "independent_pressure_integration_relative_errors": [
+        0.0003155103280686465,
+        4.5938466779994407e-07
+      ],
+      "independent_integration_change": 0.0003150554446159471,
+      "searched_axis_von_mises_over_peak_pressure": 0.5643386605539453,
+      "searched_axis_von_mises_depth_over_major_axis": 0.035739175292557226,
+      "edge_tensile_over_peak_pressure": 0.05399243803687261,
+      "edge_tensile_location_over_major_axis": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-nearfield-v2/group0/study/ratio-0.05.npz",
+        "bytes": 28657,
+        "sha256": "27ffe468d90cfe1c92b0889aa95e3685c7bb9dc9e07a58716a560526e0452069"
+      }
+    }
+  ],
+  "coarse_scale_gap": {
+    "source": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-transfer-v4/group0/check/result.json",
+      "bytes": 7517,
+      "sha256": "c05377a88ea7f48696829a558fcfd3f5352f163ac63c98349dab5009d684ffaf"
+    },
+    "normal_load_n": 0.2,
+    "axes_m": [
+      6.993279565275541e-05,
+      5.11374189492572e-05
+    ],
+    "peak_pressure_pa": 26702485.49304262,
+    "halfspace_axis_von_mises_pa": 16501579.148959445,
+    "halfspace_axis_von_mises_depth_m": 2.8222228116089036e-05,
+    "halfspace_edge_tensile_pa": 3714644.5709637767,
+    "coarse_full_von_mises_max_pa": 85712.81251705503,
+    "coarse_full_tensile_max_pa": 30204.47952679673,
+    "coarse_over_halfspace_von_mises": 0.005194218792233585,
+    "coarse_over_halfspace_tensile": 0.008131189660215615,
+    "scope": "Scale comparison for the retained supplied Hertz ellipse. Half-space local candidates and a coarse faceted mass-relieved shell are different elastic domains; this is not a qualified shell error or an additive correction."
+  },
+  "scope": "Normal elliptic half-space tensor including exact surface traction. Independent circular closed forms and positive-depth pressure integration; axis/edge searched peaks do not certify global peaks under arbitrary superposed loading. No shell, tangential-history or production lifecycle admission.",
+  "whole_goal_complete": false
+}
