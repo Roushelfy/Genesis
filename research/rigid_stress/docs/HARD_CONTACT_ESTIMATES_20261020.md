@@ -618,3 +618,117 @@ Reproduce with `qipc_comparison.check_hertz_regions`, `live_hertz_inputs` and
 trajectories and generated control meshes remain under the established data root;
 compact sources, receipts and histories are in the
 [retained input packet](../evidence/20261019-qualified-ranking/hard-hertz-inputs-v1/README.md).
+
+
+## Direct planar normal roots
+
+For a planar opponent and a sphere or smooth-normal mesh, the input candidate
+now solves the normal-field condition directly. Each fixed triangle caches the
+inverse of its three raw vertex-normal columns. Given the opposing plane normal,
+the barycentric normal weights follow from one matrix product and normalization;
+only nonnegative weights are eligible. The source-nearest eligible triangle
+supplies the center and cached curvature. Spheres retain their analytical root.
+Box contacts still select an opposed face and check its finite tangential bounds;
+other shape pairs retain the bounded geometric iteration. The direct inversion
+does not certify nonconvex visibility, physical smoothing or finite pressure support.
+
+The final CPU/GPU controls retain all12 region/source cases and add128 mesh
+normal-root queries per backend. Re-evaluating the existing forward interpolation
+at each returned point gives a maximum normal discrepancy of3.34e-15. This small
+residual measures inversion of the supplied normal field, not geometric accuracy.
+The maximum root-position differences from the analytical smooth shapes are:
+
+| Collision shape | 80 faces | 1280 faces |
+| --- | ---: | ---: |
+| Sphere | 1.317mm | 0.115mm |
+| Ellipsoid | 2.117mm | 0.175mm |
+
+These geometry differences exceed the approximately40–60um Hertz radii sampled
+in the Franka pilot. No physical contact-location accuracy follows from an
+accurate algebraic root or the finer mesh's curvature RMS target.
+
+The matched720-step, four-environment Franka pilot now records3020 successful
+roots and6873 finite-geometry rejections among9893 loaded source observations;
+iteration-limit rejections fall from1000 to zero. Complete valid loaded
+environment steps increase from882/2808 to1381/2808. Position, quaternion and
+joint histories remain exactly equal to the paired pure-rigid run. Measured
+warm full-run medians are4.025ms/scene step for the input adapter and2.249ms
+for pure rigid, an added1.777ms. The previous input implementation cost6.825ms;
+this is an input-stage improvement, with rejected steps still included, rather
+than admitted stress throughput. No elastic field is recovered in this pilot.
+
+Even successful region inputs retain a separate pressure compatibility problem:
+the largest sampled magnitude of region moment divided by force magnitude times
+Hertz major axis is121.63. Preserving that source wrench in bookkeeping does
+not make it representable by centered normal Hertz pressure. It cannot be
+silently dropped, converted to a tiny pressure-centroid shift or declared
+physically accurate. The actual stepped finite finger boxes, source moment
+allocation, friction/history and finite-shell response remain unresolved.
+
+Executed jobs are733883 (CPU/GPU controls) and733886 (matched moving-scene
+input/rigid runs). Full control and trajectory arrays remain on data. Exact
+sources, logs and compact histories are retained with the
+[normal-root and edge packet](../evidence/20261019-qualified-ranking/hard-normal-roots-and-edge-v1/README.md).
+
+
+## Finite straight-edge pressure candidates
+
+A separate compact control places a rigid half-plane x>=0 against the same
+elastic spherical quadratic gap. Its unconstrained minimum is x=-d; d/a0 is
+-0.5,0,0.5 or2, where a0 is the unrestricted Hertz radius. The independent
+force-controlled unilateral BEM determines its own pressure and support. E,
+nu, curvature and normal load match the earlier circular half-space control.
+
+Simply clipping Hertz pressure at the edge fails the predeclared15% cell-pressure,
+10% sampled-tensor and15% sampled-von-Mises-peak targets. The cap radius is
+adjusted to conserve total force, using
+`F=(E*/R)*(a-d)^2*(2a+d)/3`; force conservation alone does not recover pressure.
+A pure edge trial `p proportional to sqrt(max(a^2-(x+d)^2-y^2,0)/x)` improves
+outside-center cases but overweights the edge in the interior case.
+
+A two-parameter mixed trial improves all four tested offsets. At each trial
+radius, normalize both the regular cap and edge shape to F, then write cell
+forces `f=h+alpha*(e-h)`. Minimize `0.5*f.T*K*f+gap.T*f` over0<=alpha<=1
+analytically, then use a bounded scalar radius minimization. This uses the
+independent Green operator and prescribed gap, never reference pressures or
+fitted stress targets. It remains an offline variational candidate; its
+0.276–1.363s fitting cost is not a native runtime estimate. A useful runtime
+version would require a verified dimensionless table or equivalent inexpensive
+formula, with explicit limits on ellipticity, offset and finite-face topology.
+
+The48² and72² grids have the same cell widths as the original36²/54² pilot,
+but extend to x=4.8a0 and |y|=2.4a0 so every trial footprint is contained.
+The reference's three remote boundaries are unloaded. The substitution x=u²
+removes the trial edge singularity from integration;20-point versus40-point
+per-axis quadrature changes the mixed cell forces by at most0.00765% in these
+cases. No radius minimizer reaches its search bound. Final72² comparisons are:
+
+| d/a0 | Hertz cap cell-pressure error | Mixed cell-pressure error | Mixed sampled tensor error | Mixed sampled VM peak error |
+| --- | ---: | ---: | ---: | ---: |
+| -0.5 | 25.992% | 5.714% | 1.549% | 0.591% |
+| 0 | 48.505% | 5.550% | 1.262% | 0.162% |
+| 0.5 | 60.793% | 7.333% | 2.291% | 0.419% |
+| 2 | 75.113% | 12.335% | 5.779% | 2.419% |
+
+All eight mixed comparisons meet the three declared sample/cell targets. The
+fine-grid edge fractions are0.273,0.556,0.766 and1.0. The pure edge trial misses
+the15% pressure target at d/a0=0.5 after quadrature correction:15.151%, versus
+the preliminary13.299%. That earlier provisional pass is superseded.
+
+Stress uses the same17x17x9 observation points at positive depths0.25a0–2a0
+for both grids; minimum depth is2.5 coarse or3.75 fine cell widths. Cell
+resultants remain point sources for this subsurface evaluation. These are
+sampled fields, not a complete-volume or continuum global-peak comparison.
+The cell-pressure norm is resolution-specific near the singular edge. Sharp
+edge/surface maxima, a finite hollow shell, friction, multiple finite faces,
+source-wrench compatibility and current-region integration remain unqualified.
+The two-grid changes and quadrature check are measured sensitivities, not a
+certified continuum error bound.
+
+Job733898 retains the original diagnostic with an insufficient trial domain:
+at d/a0=2 the Hertz cap extends beyond |y|=1.8a0 and was inadvertently clipped
+before load normalization. Its results are historical diagnostics. Job733910
+retains the corrected domain, transformed quadrature and mixed candidate; both
+finished with exit0. Use the captured `study_hard_edge` tasks with a fresh data
+output directory to reproduce them. Full force/stress arrays remain on data;
+both source variants and their results are in the retained packet above.
