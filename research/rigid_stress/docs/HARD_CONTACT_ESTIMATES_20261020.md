@@ -536,3 +536,85 @@ unknown shell contact pressure. Directly adding a Hertz field to the original
 coarse loaded solution would still count part of the load twice.
 General curved/nonconvex use also needs a valid local domain or a controlled
 cutoff and its equilibrium residual; the half-space formula alone supplies neither.
+
+## Current curvature and live contact inputs
+
+The native input candidate caches signed rest curvature and evaluates it in
+current geom poses. Sphere, plane, box-face, cylinder and capsule queries have
+analytical controls; box edges, cylinder rims and capsule seams remain explicit
+ambiguities. Mesh tensors estimate a smooth surface from the supplied vertex
+normals. The comparison evaluates analytical sphere/ellipsoid curvature at the
+radial projection of each collision-face centroid; it does not certify that a
+faceted collision asset is the same physical smooth surface.
+
+| Shape | Faces | RMS tensor error | Maximum tensor error | Predeclared5% RMS target |
+| --- | ---: | ---: | ---: | --- |
+| Sphere | 80 | 11.075% | 12.015% | Fail |
+| Sphere | 1280 | 1.191% | 2.923% | Pass |
+| Ellipsoid | 80 | 26.750% | 48.057% | Fail |
+| Ellipsoid | 1280 | 3.037% | 9.553% | Pass |
+
+CPU/GPU controls also cover two disconnected spherical minima on one link,
+source permutation, swapping collider sides, source splitting with half forces,
+release, invalid pair IDs, NaN force/moment/position quarantine, recovery and
+rigid rotation. Complete original source force and moment are retained at each
+region center. All sources in an invalid environment yield zero region loads;
+other environments remain independent. This preserves a wrench, but does not
+prove that a centered Hertz pressure or a tangential law represents that wrench.
+
+The candidate performs at most six2D geometric Newton updates, with normal
+misalignment below1e-7, before combining sources that resolve to the same local
+minimum. Its coalescing length is set by curvature and geometric resolution,
+independently of source count, load and Hertz radius. This is a local geometry
+candidate, not a general contact-union or pressure certificate. In particular,
+normal interpolation, finite box faces and disconnected/occluded boundaries need
+their own applicability checks.
+
+The actual Franka adapter runs this input stage before position integration,
+using the native association and both current geometry and solved forces from
+the same substep. It then evaluates the existing normal Hertz lookup. It does
+not request a recovered elastic stress field. Four varied environments run720
+steps at dt=0.01s, one substep, including release and four partial resets. The
+matched pure-rigid baseline receives exactly the same saved condition bank.
+The retained level1 egg collision asset has80 outer triangles; the sphere and
+ellipsoid errors above do not measure its physical stress or curvature error.
+Three complete warm timing intervals exclude detailed host histories/exports;
+aggregate device counters, dispatch and the research callback remain included.
+
+Before the opposing-box correction, all joint/position/quaternion trajectories
+match the pure-rigid baseline exactly. Only882 of2808 loaded environment steps
+pass region input checks. Across9893 loaded source observations there are887
+converged roots,8016 geometry rejections and990 iteration-limit rejections.
+The corresponding input-stage scene cost is6.660ms versus2.235ms for pure rigid,
+an added4.426ms/scene step. This is measured rejected-candidate cost, not usable
+stress throughput or max/full observation cost.
+
+Same-substep boundary probes identify a specific geometric failure: an egg
+witness can lie inside the opposing box during rigid overlap, so the closest
+box face can be a side face whose normal is nearly perpendicular to the egg's
+surface normal. The candidate now fixes the box face most opposed to the initial
+material normal during the local solve. It queries the actual finite face;
+edge-clipped roots remain unresolved. A separate1mm-overlap sphere/box control
+passes on CPU and GPU. This correction does not translate physical geometry,
+use penetration as elastic indentation, or establish visibility of a box union.
+
+The final source passes12 region controls on each backend, but the box correction
+does not improve the Franka admission count:882/2808 loaded environment steps
+remain valid, with8006 geometry and1000 iteration-limit source rejections.
+The retained early-grasp snapshots now identify finite-face ambiguities rather
+than accepting a perpendicular side face. Final matched scene medians are
+6.825ms for the input adapter and2.222ms for pure rigid, an added4.603ms.
+All trajectories still match exactly. Normal lookup success on admitted inputs
+does not supply the missing tangential/history law or complete shell stress.
+This six-iteration, full-mesh-search candidate is not recommended as a runtime
+default. Finite-face/link-union selection and coarse normal-field convergence
+need targeted repair before larger-batch or max/full throughput promotion.
+
+The original invalid Mesh option, compile failure from reusing a loop index as
+an unpack target, and NaN-force acceptance failure are retained with their
+corrections. Explicit native isnan/isinf checks now reject the nonfinite inputs.
+Reproduce with `qipc_comparison.check_hertz_regions`, `live_hertz_inputs` and
+`compare_live_hertz_inputs` using the captured Slurm task lists. Full arrays,
+trajectories and generated control meshes remain under the established data root;
+compact sources, receipts and histories are in the
+[retained input packet](../evidence/20261019-qualified-ranking/hard-hertz-inputs-v1/README.md).

@@ -1,0 +1,58 @@
+{
+  "passed": true,
+  "backend": "gpu",
+  "curvature": [
+    {
+      "shape": "sphere",
+      "level": 1,
+      "faces": 80,
+      "rms_tensor_relative": 0.11075317884796014,
+      "maximum_tensor_relative": 0.12014726066326473,
+      "rms_target_met": false
+    },
+    {
+      "shape": "sphere",
+      "level": 3,
+      "faces": 1280,
+      "rms_tensor_relative": 0.011906006172707274,
+      "maximum_tensor_relative": 0.029229952520993377,
+      "rms_target_met": true
+    },
+    {
+      "shape": "ellipsoid",
+      "level": 1,
+      "faces": 80,
+      "rms_tensor_relative": 0.26749532273090154,
+      "maximum_tensor_relative": 0.4805696855937318,
+      "rms_target_met": false
+    },
+    {
+      "shape": "ellipsoid",
+      "level": 3,
+      "faces": 1280,
+      "rms_tensor_relative": 0.030365894256387593,
+      "maximum_tensor_relative": 0.09553017403118348,
+      "rms_target_met": true
+    }
+  ],
+  "arrays": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-inputs-v5/group0/regions/curvature-fields.npz",
+    "bytes": 121984,
+    "sha256": "5755142a887641fb089c0eba6d1fb343108beeb4b773ad582441bfe32e84bad1"
+  },
+  "region_cases": [
+    "original",
+    "swapped",
+    "permuted",
+    "split",
+    "release",
+    "bad_pair",
+    "nonfinite_force",
+    "bad_moment",
+    "bad_position",
+    "recovered",
+    "rotated"
+  ],
+  "scope": "Geometry and complete region-wrench controls. Sources are synthetic over current actual shapes, not admitted physical contact pressures. Smooth mesh estimates are compared to analytical curvature; target flags are distinct from numerical validity.",
+  "whole_goal_complete": false
+}

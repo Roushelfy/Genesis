@@ -59,6 +59,8 @@ the full-volume difference below0.024% versus refined Hertz boundary correction
 and reduces matched GPU module time by48–57%. Full updates cost1.100/1.566/3.267ms
 at B1/128/512. This distance regime does not yet qualify shell inner walls.
 
+The [current-curvature and live-input study](docs/HARD_CONTACT_ESTIMATES_20261020.md#current-curvature-and-live-contact-inputs) adds analytical primitive and smooth-mesh curvature controls, source-splitting/wrench checks and actual same-substep Franka inputs. It retains coarse-mesh curvature failures and substantial live geometry rejection; these input-stage costs are not admitted stress throughput. Finite-shell pressure, friction history and useful public max/full integration remain open.
+
 The [first CPU contact-region study](docs/AUTOMATIC_CONTACT_PROGRESS_20261020.md)
 now measures distributed-source double spreading: the retained2mm DPR baseline
 places about42% of normal load on the inner boundary. Conservative outer P2
