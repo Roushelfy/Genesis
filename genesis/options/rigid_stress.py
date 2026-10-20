@@ -28,6 +28,15 @@ class RigidStressOptions(Options):
     larger footprint spreads the same contact wrench over more shell area;
     choose it from the contact model rather than the elastic mesh resolution.
     ``quadrature`` controls surface integration cost and accuracy.
+    ``load_transfer="resolved"`` declares that pressure-mode input forces are
+    already integrated boundary samples. It transfers each sample through the
+    P2 shape functions of its witnessed material face, without another finite
+    disk. The witness may identify an outer, inner or nonconvex face. Missing
+    or ambiguous provenance and an unrepresented original-point moment are
+    rejected. Boundary association obeys the declared projection limit and
+    final force/moment checks. This declaration does not infer
+    physical support or make sparse collision points resolved pressure data.
+    The default ``"patch"`` retains the manual finite-footprint baseline.
     ``contact_model="intrinsic"`` preserves collision geom/pair witnesses and
     fits vector tractions in the local inward material Coulomb cones. The
     finite profile multiplies positive area weights by a Gaussian of width
@@ -165,6 +174,7 @@ class RigidStressOptions(Options):
     density: PositiveFloat = 2000.0
     contact_radius: PositiveFloat = 0.006
     contact_model: Literal["pressure", "intrinsic"] = "pressure"
+    load_transfer: Literal["patch", "resolved"] = "patch"
     intrinsic_integration: Literal["surface_fan", "anchor_fan"] = "surface_fan"
     intrinsic_support: Literal["contact", "pair_union"] = "contact"
     intrinsic_load_partition: Literal["componentwise", "body_source_prior"] = "componentwise"
