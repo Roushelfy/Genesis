@@ -1,0 +1,143 @@
+{
+  "environment": 9,
+  "minimax": [
+    {
+      "status": "Solved",
+      "iterations": 8,
+      "seconds": 0.006534799002110958,
+      "accepted": true,
+      "continuous_infeasibility_claim": false,
+      "primal_residual": 6.298603515203172e-12,
+      "dual_residual": 1.2506957625524841e-11,
+      "relative_gap": 3.7559299915932905e-12,
+      "sampled_minimax_budget": 0.3078026613900228,
+      "actual_normalized_force_change": 0.3078026614027597,
+      "actual_normalized_moment_change": 0.22107006058578846,
+      "force_change_n": [
+        -0.0004231957479230777,
+        0.00653456129799383,
+        -0.038020426832900925
+      ],
+      "anchor_moment_change_nm": [
+        -0.00013983302593981943,
+        4.8976527145781074e-05,
+        -3.232978999185073e-05
+      ],
+      "numerical_cone_projection_n": 5.340507072709973e-13,
+      "minimum_compression_n": 0.0003097501573329991,
+      "maximum_cone_excess_n": -1.869910844139413e-17,
+      "unsigned_point_force_change_n": 0.1644292214072082,
+      "weighted_point_change_relative": 97.47315137096605
+    },
+    {
+      "status": "Solved",
+      "iterations": 9,
+      "seconds": 0.00017190701328217983,
+      "accepted": true,
+      "continuous_infeasibility_claim": false,
+      "primal_residual": 3.46567369095406e-12,
+      "dual_residual": 6.742996029979921e-12,
+      "relative_gap": 9.306221546582793e-13,
+      "sampled_minimax_budget": 0.2739344866352374,
+      "actual_normalized_force_change": 0.27393448664260095,
+      "actual_normalized_moment_change": 0.23350569947202907,
+      "force_change_n": [
+        -0.00015120225482077114,
+        0.001609147566529624,
+        -0.009275287048159206
+      ],
+      "anchor_moment_change_nm": [
+        -2.8642082900560156e-05,
+        1.4068183916841363e-05,
+        -3.0181413955456086e-05
+      ],
+      "numerical_cone_projection_n": 1.1640148641162145e-13,
+      "minimum_compression_n": 0.0012839460444591302,
+      "maximum_cone_excess_n": -5.485219440198133e-18,
+      "unsigned_point_force_change_n": 0.02903710721670122,
+      "weighted_point_change_relative": 3.4749920655505355
+    }
+  ],
+  "budgets": [
+    {
+      "budget": 0.0,
+      "sources": [
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 13,
+          "seconds": 0.0004415949806571007,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        },
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 7,
+          "seconds": 0.00015377497766166925,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        }
+      ],
+      "accepted": false
+    },
+    {
+      "budget": 0.001,
+      "sources": [
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 14,
+          "seconds": 0.00045290100388228893,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        },
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 8,
+          "seconds": 0.0001595780486240983,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        }
+      ],
+      "accepted": false
+    },
+    {
+      "budget": 0.01,
+      "sources": [
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 13,
+          "seconds": 0.00045005406718701124,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        },
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 8,
+          "seconds": 0.00015478301793336868,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        }
+      ],
+      "accepted": false
+    },
+    {
+      "budget": 0.1,
+      "sources": [
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 15,
+          "seconds": 0.00047660106793046,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        },
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 9,
+          "seconds": 0.00018284597899764776,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        }
+      ],
+      "accepted": false
+    }
+  ]
+}

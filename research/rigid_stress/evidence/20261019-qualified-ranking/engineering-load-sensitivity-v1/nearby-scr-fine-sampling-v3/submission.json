@@ -1,0 +1,23 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0%1",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=none",
+    "--cpus-per-task=4",
+    "--mem=16G",
+    "--time=10",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nearby-scr-fine-sampling-v3/logs/%A_%a.log",
+    "--dependency=afterok:732451",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/nearby-scr-fine-sampling-v3/job.sh"
+  ],
+  "job": "732457",
+  "dependency": "afterok:732451",
+  "exclude_nodes": null,
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "allow_home_output": false
+}

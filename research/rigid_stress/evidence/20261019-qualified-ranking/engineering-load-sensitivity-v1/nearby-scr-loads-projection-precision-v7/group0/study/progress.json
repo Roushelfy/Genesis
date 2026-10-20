@@ -1,0 +1,173 @@
+{
+  "environment": 9,
+  "minimax": [
+    {
+      "status": "Solved",
+      "iterations": 11,
+      "seconds": 0.016396861989051104,
+      "accepted": true,
+      "continuous_infeasibility_claim": false,
+      "primal_residual": 1.3598872381501264e-12,
+      "dual_residual": 1.670930784191693e-12,
+      "relative_gap": 3.023861726619198e-13,
+      "sampled_minimax_budget": 0.30780266137904067,
+      "actual_normalized_force_change": 0.3078026613858237,
+      "actual_normalized_moment_change": 0.24797046700322625,
+      "force_change_n": [
+        -0.0004232184818072664,
+        0.006534581652815026,
+        -0.0380204230793113
+      ],
+      "anchor_moment_change_nm": [
+        -0.00014298747265550322,
+        5.673976401248399e-05,
+        -7.259205274175169e-05
+      ],
+      "numerical_cone_projection_n": 7.974202109823854e-14,
+      "minimum_compression_n": 8.662711564471751e-05,
+      "maximum_cone_excess_n": -9.512627840825501e-19,
+      "unsigned_point_force_change_n": 0.1907286923686796,
+      "weighted_point_change_relative": 33.80149565577662
+    },
+    {
+      "status": "Solved",
+      "iterations": 10,
+      "seconds": 0.0023881769739091396,
+      "accepted": true,
+      "continuous_infeasibility_claim": false,
+      "primal_residual": 2.0037783849897218e-12,
+      "dual_residual": 4.447946864492817e-12,
+      "relative_gap": 7.206798621495331e-13,
+      "sampled_minimax_budget": 0.2739344866323985,
+      "actual_normalized_force_change": 0.27393448664347475,
+      "actual_normalized_moment_change": 0.26533365859203184,
+      "force_change_n": [
+        -0.00015122006906267475,
+        0.0016091579567156246,
+        -0.009275284955196686
+      ],
+      "anchor_moment_change_nm": [
+        -3.010989773935281e-05,
+        1.5612479047277075e-05,
+        -3.6614292418568355e-05
+      ],
+      "numerical_cone_projection_n": 4.689621263642566e-14,
+      "minimum_compression_n": 4.9719225480749994e-05,
+      "maximum_cone_excess_n": -4.099009092539366e-19,
+      "unsigned_point_force_change_n": 0.04619178070061389,
+      "weighted_point_change_relative": 8.80361442898959
+    }
+  ],
+  "budgets": [
+    {
+      "budget": 0.0,
+      "variant": "budget0",
+      "sources": [
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 12,
+          "seconds": 0.007427498931065202,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        },
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 11,
+          "seconds": 0.0028716118540614843,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        }
+      ],
+      "accepted": false,
+      "physically_evaluable": false
+    },
+    {
+      "budget": 0.001,
+      "variant": "budget0.001",
+      "sources": [
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 13,
+          "seconds": 0.00830022688023746,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        },
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 11,
+          "seconds": 0.002895866986364126,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        }
+      ],
+      "accepted": false,
+      "physically_evaluable": false
+    },
+    {
+      "budget": 0.01,
+      "variant": "budget0.01",
+      "sources": [
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 13,
+          "seconds": 0.008213885826990008,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        },
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 11,
+          "seconds": 0.0026854011230170727,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        }
+      ],
+      "accepted": false,
+      "physically_evaluable": false
+    },
+    {
+      "budget": 0.1,
+      "variant": "budget0.1",
+      "sources": [
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 13,
+          "seconds": 0.007965161930769682,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        },
+        {
+          "status": "PrimalInfeasible",
+          "iterations": 11,
+          "seconds": 0.0026953162159770727,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        }
+      ],
+      "accepted": false,
+      "physically_evaluable": false
+    },
+    {
+      "budget": null,
+      "variant": "unbudgeted-projection",
+      "sources": [
+        {
+          "status": "AlmostSolved",
+          "iterations": 13,
+          "seconds": 0.004429375985637307,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        },
+        {
+          "status": "AlmostSolved",
+          "iterations": 12,
+          "seconds": 0.001789351925253868,
+          "accepted": false,
+          "continuous_infeasibility_claim": false
+        }
+      ],
+      "accepted": false,
+      "physically_evaluable": false
+    }
+  ]
+}

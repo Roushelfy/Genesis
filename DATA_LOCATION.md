@@ -636,3 +636,15 @@ The completed compliance study/control/figure campaigns use
 hashed arrays. Actual undersized-search states stay alongside the accepted
 expanded states. The cached834-node operator is reused in place; no original
 data, environment or compatibility link is migrated.
+
+The resolved-boundary reference comparison and source-local engineering study
+use `resolved-pad-qualified-reference-v1`, `resolved-pad-ranking-v1` and the
+explicit `nearby-scr-*` campaigns under the established20261019 ranking run root.
+Their `engineering-load-sensitivity-v1` packet retains532 compact payloads
+(2,909,373 bytes) and38 externally hashed arrays. Earlier failed controls,
+underresolved support sampling and rejected optimizer results remain in place.
+Successful finer cases are reused by explicit paths; no aliases hide a failed
+parent. The corrected signed decomposition runs separately in
+`resolved-pad-decomposition-v2` and is excluded from this terminal packet while
+live. Full stress/source arrays, job logs and private node-local caches remain
+on data; no data or active environment is migrated.

@@ -1,0 +1,5 @@
+{
+  "all_four_jobs_failed_before_optimization": true,
+  "cause": "Original elastic.npz tetrahedra retain mixed orientation; the new measurement incorrectly required all determinants positive. Physical volumes require absolute determinant without reordering stress corners.",
+  "repair": "Absolute physical volume and explicit negative-orientation count; keep all other gates and immutable v1 outputs."
+}

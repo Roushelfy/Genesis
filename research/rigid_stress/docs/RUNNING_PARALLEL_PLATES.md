@@ -831,3 +831,27 @@ captures current analysis code; exact historical replay uses the packet's captur
 analysis sources and recorded engine identity. Never overwrite the archived or
 original runtime records. The fixed-radius result does not include the separate
 research-only `--load-transfer resolved_outer_p2` or `--source-roundoff` variants.
+
+## Resolved transfer and engineering load sensitivity
+
+The [new report](ENGINEERING_LOAD_SENSITIVITY_20261020.md) binds18 resolved-transfer
+errors to its own continuous-history admission and the existing fine reference.
+`rank_resolved_pad_transfer --data-root ROOT` reintegrates complete arrays and
+forms conditional intervals. It does not substitute new paths into the original
+fixed-radius ranking.
+
+`study_nearby_scr_loads --run FIRST_FAILURE --certificate AUDIT --qp-solver-path
+CLARABEL --quadrature COUNT` preserves original support/friction and the
+source-local budget grid. Count625 has one separately retained
+`--diagnostic-solver analytic` case after failed numerical attempts; this changes
+only the unbudgeted diagnostic. The exact projection has independent cone,
+polar and complementarity checks. It does not admit an engineering observation.
+`compare_nearby_scr_sampling --runs RUN_A_COARSE RUN_A_FINE RUN_B_COARSE
+RUN_B_FINE --quadratures 225 625` explicitly binds successful retained cases
+without replacing failed parents.
+
+Use the existing CPU-only Slurm helper, fresh data-side outputs and pinned
+inputs. The [packet](../evidence/20261019-qualified-ranking/engineering-load-sensitivity-v1/README.md)
+contains actual task arguments and captured source for all variants, including
+failed and cancelled controls. Current code may have later diagnostic options;
+exact reproduction uses each task's captured analysis source.
