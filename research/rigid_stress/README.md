@@ -11,6 +11,12 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current goal and verified scope
 
+The [2026-10-20 next goals](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md)
+add automatic physical contact-region prediction, distinct SCR failure handling
+and continued native throughput optimization. CPU investigation and production
+tuning proceed alongside completion of the existing fixed-radius comparison;
+these are goals, not newly validated results.
+
 The [active goal](docs/QUALIFIED_STRESS_RANKING_GOAL.md) is qualified DPR/SCR/Shell
 stress-error comparisons on a free full hollow egg between parallel plates.
 The [accuracy/throughput protocol](docs/ACCURACY_AND_THROUGHPUT_PROTOCOL.md)

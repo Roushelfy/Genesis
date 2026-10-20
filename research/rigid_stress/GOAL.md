@@ -1,5 +1,14 @@
 # Active goal: qualified stress-error rankings
 
+**2026-10-20 priority update:** execute the
+[contact-region, SCR robustness and throughput goals](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md).
+Finish the existing fixed-radius comparison while independently testing automatic
+physical contact regions on CPU and optimizing low-resolution native throughput.
+Prioritize DPR for practical integration; diagnose certified SCR incompatibility
+separately from detachment roundoff/input-law failures. Migrate useful validated
+contact models into the existing Quadrants rigid feature. Keep current baselines,
+running captures and all previous accuracy/performance requirements.
+
 Follow [docs/QUALIFIED_STRESS_RANKING_GOAL.md](docs/QUALIFIED_STRESS_RANKING_GOAL.md).
 
 **2026-10-19 priority update:** follow the
