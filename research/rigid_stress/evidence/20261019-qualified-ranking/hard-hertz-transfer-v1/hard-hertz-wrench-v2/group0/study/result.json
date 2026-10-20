@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "metrics": {
+    "prior": {
+      "minimum_sample_compression_n": 5.2389471341545244e-05,
+      "contact_plane_minimum_compression_n": 6.61545071836371e-05,
+      "contact_plane_maximum_required_mu": 0.19999999999999987,
+      "contact_plane_cone_violations": 0,
+      "maximum_required_local_mu": 0.811359437820619,
+      "declared_mu_cone_excess_sum_n": 0.025028785703656603,
+      "cone_violations": 60,
+      "balance_correction_norm_n": 0.011120246856331995,
+      "raw_tensile_max_pa": 31231.475653641763,
+      "raw_von_mises_max_pa": 93450.51271879574
+    },
+    "corrected": {
+      "minimum_sample_compression_n": 4.6049890232800535e-05,
+      "contact_plane_minimum_compression_n": 4.8353132899884324e-05,
+      "contact_plane_maximum_required_mu": 0.24829055585890275,
+      "contact_plane_cone_violations": 0,
+      "maximum_required_local_mu": 0.8275833428550448,
+      "declared_mu_cone_excess_sum_n": 0.025476318259712964,
+      "cone_violations": 60,
+      "balance_correction_norm_n": 0.011120789162921228,
+      "raw_tensile_max_pa": 31235.373728436833,
+      "raw_von_mises_max_pa": 93452.3479958555
+    }
+  },
+  "prior_moment_error_nm": 7.951374762687088e-07,
+  "sample_correction_l1_n": 0.02171701153317176,
+  "sample_correction_weighted_relative": 0.12196405249802539,
+  "complete_tensor_relative_change": 0.000958213943166448,
+  "arrays": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-wrench-v2/group0/study/correction.npz",
+    "bytes": 194017,
+    "sha256": "b3221e89a73712b75ff255fa4c0f875426457e155dba30417fc0f3eae7be6067"
+  },
+  "strict_original_preserved": true,
+  "engineering_admitted": false,
+  "scope": "One unconstrained 6x6 weighted minimum-force correction on the retained faceted egg. Full wrench, separate mu=0.5 reference-facet/contact-plane cone diagnostics, independent mass-relieved complete P2 response and raw peaks are measured. This is a load-model sensitivity, not hard-contact physical accuracy or accepted friction/history behavior."
+}

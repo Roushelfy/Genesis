@@ -152,10 +152,120 @@ entrypoint and a fresh explicit data-side output directory; its `--cpu-only`
 mode still runs numerical work in Slurm `rtx-mid`. Original arrays stay on data
 with manifest hashes; no live source, environment or old evidence was migrated.
 
+## Finite footprints on the witnessed mesh
+
+The [native transfer component](../qipc_comparison/native_hertz_transfer.py)
+now feeds supplied Hertz regions into the existing native elastic recovery.
+It places96 integration points on each physical ellipse, rather than hoping
+that fixed mesh quadrature samples intersect a roughly50um footprint. A
+projected triangle walk follows boundary-edge identities from the witnessed
+face. It cannot use a nearby disconnected face as a shortcut across a cavity
+or the gap of a U-shaped material. It refuses non-facing/open walks.
+
+The normalized Hertz measure uses r=sqrt(1-t²), giving3t² dt dtheta/(2pi).
+Three Gauss points in t and32 angular points exactly integrate its constant,
+linear and quadratic moments on one affine patch. Every mapped sample uses
+signed P2 shape weights on its reached boundary face, preserving discrete
+virtual work. Crossing several triangles introduces a measured integration
+error; this rule is not a certificate of the entire continuous footprint.
+No physical radius or elasticity tolerance is enlarged.
+
+Seven controls pass on each CPU/GPU backend: an interior face, shared edge,
+interior mesh vertex, cavity inner wall, U-shaped boundary, coarse egg vertex
+and its common rotation/translation. All use three environments and include
+release, failure isolation, resultant force/moment checks and independent
+all-triangle projection. Planar normal/tangential loads also pass a closed-form
+quadratic virtual-work identity. Independent scikit-fem P2 solves reproduce
+all same-load complete native fields to1.42e-11 relative error. This is
+implementation agreement, not Hertz accuracy on the shell.
+
+A separate12-radial by1024-angular CPU rule measures source-integration
+sensitivity on the same mesh. Relative complete tensor differences use volume
+weights over all tetrahedron corners:
+
+| Footprint placement |96-point versus dense-rule complete tensor difference |
+| --- | ---: |
+| Interior flat face | Below5e-14 |
+| Shared flat edge |0.1808% |
+| Interior flat vertex |0.1989% |
+| Cavity inner wall |0.1375% |
+| U-shaped flat wall | Below1e-12 |
+| Coarse egg vertex, either frame |0.01676% |
+
+Invalid environment indices, a valid and a failed region sharing one environment,
+and nonzero shear at zero normal load also pass explicit rejection/isolation
+controls in the final source. The original vertex/rotated failure is retained. Its cause was comparing a
+barycentric roundoff allowance directly with a segment parameter: very short
+footprints have small barycentric derivatives. The correction bounds the
+current barycentric coordinate first and clamps only its roundoff-sized
+zero-distance crossing; no load or geometry acceptance budget changes. A prior
+wrong-environment `skfem` import failure is also retained. Successful reruns
+reuse the existing data-side physical-validation environment.
+
+The combined estimate,96-point boundary mapping, wrench checks and nodal
+scatter costs below include zeroing the destination nodal load and all native
+dispatch. They exclude elastic recovery, grouping/curvature preparation,
+input transfers, imports/JIT and actual scene dynamics. Each allocation requests
+one CPU; timing uses seven groups of five resident updates with synchronization
+at each group boundary. The workload repeats one known coarse-egg vertex
+region in each environment, with max-mode elastic state storage.
+
+| Regions/environments | GPU median | CPU median |
+| ---: | ---: | ---: |
+|1 |0.1728ms |0.1747ms |
+|128 |0.1727ms |3.207ms |
+|512 |0.1955ms |12.584ms |
+
+These timings include the estimate itself and must not be added to the earlier
+lookup-only table. They remain module measurements rather than moving-scene
+throughput. No public automatic contact option is connected yet.
+
+## A measured friction/moment limitation
+
+On the faceted egg, proportional tangential traction with Fn=0.2N and
+Ft/Fn=0.2 introduces7.951e-7N*m about the witnessed center. The strict transfer
+rejects this mismatch and retains unaffected environments. A separate CPU
+candidate applies one6x6 weighted minimum-force correction to enforce the
+same total force and zero source free moment. It does not change rigid dynamics
+or the strict transfer path.
+
+The correction changes the samples by0.02172N in summed magnitudes, or12.20%
+in the pressure-weighted force norm. Its mass-relieved complete P2 tensor
+change is only0.09582%; raw tensile maximum changes from31,231.48Pa to31,235.37Pa,
+and raw von-Mises maximum from93,450.51Pa to93,452.35Pa. The free-link balance
+correction is recomputed for each load; it is included in these field changes.
+Small aggregate-moment disagreement and local source redistribution therefore
+need separate stress-response measurements.
+
+This candidate is **not engineering-admitted**. Against declared mu=0.5 cones
+on the actual reference facets,60 of96 samples violate the cone both before
+and after correction. Maximum required local mu changes from0.8114 to0.8276;
+we do not raise mu to make the candidate pass. A separate diagnostic in the
+unchanged Hertz contact-plane frame has no cone violations: maximum shear/normal
+ratio changes from0.2000 to0.2483, with positive compression throughout. These
+are two explicitly different friction-frame models. The latter does not erase
+the reference-facet violation, prove the physically correct current normal, or
+supply partial-slip/unloading history. This is evidence of the
+normal/geometry/traction-model conflict on the coarse faceted mesh, not proof
+that physical smooth-shell contact is impossible. Neither the0.09582% coarse
+field change nor exact wrench balance establishes hard-contact accuracy,
+friction history or a general practical tolerance. Normal curvature/model
+preparation and actual source semantics must be reconciled before promotion.
+
+Executed transfer campaigns are `hard-hertz-transfer-v1`/job733285 (missing
+validation dependency), `v2`/733299 (retained geometry failures) and `v3`/733327
+(seven successful cases per backend and timing). Final `v4`/733392 repeats
+the unchanged geometry checks, adds invalid-index/multiple-region/zero-normal
+rejection controls and supplies the matching timings above. `hard-hertz-wrench-v1`/733351
+reuses the completed v3 GPU fields for the correction study; `v2`/733398 adds
+the explicit contact-plane versus reference-facet cone comparison. Their sources,
+receipts, failures and data-side full-array hashes are retained in the
+[transfer packet](../evidence/20261019-qualified-ranking/hard-hertz-transfer-v1/README.md).
+
 ## Remaining work
 
 Next connect cached rest-curvature/current physical-region inputs to the cheap
-native route and actual witnessed-boundary pressure integration. Keep sparse
+native estimate and the now-executed witnessed-boundary transfer. Keep sparse
 collider samples distinct from physical regions and preserve complete force
 and moment under source splitting. Compare a declared inexpensive tangential
 law with monotonic/unloading controls, then test hollow-shell thickness/global
@@ -164,3 +274,9 @@ response against a matched targeted hard-contact reference. The observed
 do not enlarge it to a numerical disk. Run matched max/full and pure-rigid
 moving-scene timing as soon as the native route is connected. No further
 soft-pad campaign or dense elastic-basis preparation is required by this goal.
+
+Correctly transferring a50um pressure footprint does not resolve a coarse mesh's
+elastic near field. Before claiming damage-relevant global peaks, test a cheap
+Hertz near-field stress estimate/correction alongside the coarse shell response
+and check its overlap/double-counting and full-output meaning against a matched
+reference. Repeating a point-load peak convergence sweep is not the next step.
