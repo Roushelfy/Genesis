@@ -1,0 +1,82 @@
+{
+  "claim_anchor": "cheap-hard-contact-ellipticity-and-interaction",
+  "main_claim": "A scalar equivalent radius loses elliptical pressure geometry. A single far-field Taylor correction tests a cheap remedy for interaction between two known symmetric regions.",
+  "material_passport": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-v1/group2/study/result.json",
+      "bytes": 14624,
+      "sha256": "dddbc204e2aad705ff900c41303e347e580726f481bd90693a362f7f3e462746"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-interaction-v1/group0/check/result.json",
+      "bytes": 3836,
+      "sha256": "98f72478ab5eb4351d0037b460ada5d965d97297d18f31fbfb7ba63951b79dae"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-v1/group2/study/ellipse-54.npz",
+      "bytes": 278959,
+      "sha256": "d135e4e439adb9e281690c8065e31a51e93ecd9c7b704cc0f540219d27d250f4"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-v1/group2/study/two_regions-54.npz",
+      "bytes": 244424,
+      "sha256": "5998efefcfb1d72fe5acfc530f18d4e9334ee335a87e28ce5a94a52bf1c98922"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-interaction-v1/group0/check/interaction-54.npz",
+      "bytes": 78227,
+      "sha256": "f2dfa1752381ae3fa6edcdedb8023f6ef2f00416cb8f2fdaeb9a2bab403ea9f7"
+    }
+  ],
+  "style": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/hard-hertz-nature-style-v1.py",
+    "bytes": 7459,
+    "sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1"
+  },
+  "size_mm": [
+    183,
+    127
+  ],
+  "panels": [
+    {
+      "panel": "a",
+      "title": "Elliptical obstacle: BEM",
+      "quantity": "cell-average pressure (MPa)",
+      "pressure_l2_relative": null
+    },
+    {
+      "panel": "b",
+      "title": "Equivalent circle",
+      "quantity": "cell-average pressure (MPa)",
+      "pressure_l2_relative": 0.5821173558152379
+    },
+    {
+      "panel": "c",
+      "title": "Elliptic Hertz",
+      "quantity": "cell-average pressure (MPa)",
+      "pressure_l2_relative": 0.024069527314388453
+    },
+    {
+      "panel": "d",
+      "title": "Two regions: BEM",
+      "quantity": "cell-average pressure (MPa)",
+      "pressure_l2_relative": null
+    },
+    {
+      "panel": "e",
+      "title": "Independent Hertz regions",
+      "quantity": "cell-average pressure (MPa)",
+      "pressure_l2_relative": 0.09627973601450757
+    },
+    {
+      "panel": "f",
+      "title": "One interaction correction",
+      "quantity": "cell-average pressure (MPa)",
+      "pressure_l2_relative": 0.025010242017656392
+    }
+  ],
+  "uncertainty": "One deterministic load per geometry, 54x54 BEM grid. The report retains the separate 36x36 comparison. No statistical error bars or shell qualification.",
+  "full_nonzero_support_visible": true,
+  "smoothing": false,
+  "alternatives": "A pressure cross-section would hide the rotated elliptical support; six pressure maps retain its orientation and both support islands."
+}

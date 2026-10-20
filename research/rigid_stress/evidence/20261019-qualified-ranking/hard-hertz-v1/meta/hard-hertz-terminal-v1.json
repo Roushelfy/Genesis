@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "superseding_goal_commit": "75d534428e83072ac6fdcb17c5bcde64d01009e9",
+  "scheduler_accounting": "733211_0|COMPLETED|0:0|00:01:00|2026-10-20T20:14:11|rtx-210-029\n733211_0.batch|COMPLETED|0:0|00:01:00|2026-10-20T20:14:11|rtx-210-029\n733211_0.0|COMPLETED|0:0|00:00:59|2026-10-20T20:14:11|rtx-210-029\n733211_1|COMPLETED|0:0|00:01:00|2026-10-20T20:14:12|rtx-210-029\n733211_1.batch|COMPLETED|0:0|00:01:00|2026-10-20T20:14:12|rtx-210-029\n733211_1.0|COMPLETED|0:0|00:01:00|2026-10-20T20:14:12|rtx-210-029\n733211_2|COMPLETED|0:0|00:01:06|2026-10-20T20:14:18|rtx-209-191\n733211_2.batch|COMPLETED|0:0|00:01:06|2026-10-20T20:14:18|rtx-209-191\n733211_2.0|COMPLETED|0:0|00:01:06|2026-10-20T20:14:18|rtx-209-191\n733223_0|COMPLETED|0:0|00:00:42|2026-10-20T20:16:31|rtx-210-023\n733223_0.batch|COMPLETED|0:0|00:00:42|2026-10-20T20:16:31|rtx-210-023\n733223_0.0|COMPLETED|0:0|00:00:41|2026-10-20T20:16:31|rtx-210-023\n733233_0|COMPLETED|0:0|00:00:46|2026-10-20T20:17:46|rtx-210-023\n733233_0.batch|COMPLETED|0:0|00:00:46|2026-10-20T20:17:46|rtx-210-023\n733233_0.0|COMPLETED|0:0|00:00:45|2026-10-20T20:17:46|rtx-210-023\n",
+  "current_sources_match_executed": [
+    {
+      "module": "native_hertz",
+      "sha256": "ea3c89998d980dc9b60c2965d4a799f7d9ce7fca8356ce94a12bef2c69c727d3"
+    },
+    {
+      "module": "hertz_reference",
+      "sha256": "ad50a31d5f6c928480a2619e188354542b2bc726e90b1c96318c0df0bc3bdc2b"
+    },
+    {
+      "module": "check_native_hertz",
+      "sha256": "524f06164fc3dd93a3a27491354eba9ae66d98ac8b0138b99465731b3b561e17"
+    },
+    {
+      "module": "study_hard_hertz",
+      "sha256": "106d89b72d7d73ab9fc636f207b9a934f6c5bda8a2791170836262296bd336a3"
+    },
+    {
+      "module": "check_hertz_interaction",
+      "sha256": "3faebb93dd3d84dbe18bd883184716d0907f53b71eb213681f323922cf1526d9"
+    },
+    {
+      "module": "plot_hard_hertz",
+      "sha256": "aa3c4363235af8ebe1a4dc7aad837251b5a8fb0a18111049ba150e721447a646"
+    }
+  ],
+  "native_cases_per_backend": 101,
+  "independent_bem_cases": 6,
+  "interaction_reused_references": 2,
+  "native_gpu_cost_scope": "Resident supplied-region curvature/force-to-ellipse lookup; geometry, grouping, pressure scatter, elasticity and scene excluded.",
+  "physical_scope": "Unilateral normal hard contact in an elastic half-space. Sampled subsurface tensors exclude surface/global peaks; no shell or friction claim.",
+  "whole_goal_complete": false,
+  "next": "Cached current-region curvature and witnessed-boundary transfer for the cheap native estimator, matched shell/friction controls and actual scene throughput. No further soft-pad or dense elastic-basis expansion."
+}
