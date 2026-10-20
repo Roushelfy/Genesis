@@ -943,3 +943,15 @@ CONTRACT --output NEW_DATA_PATH` creates the editable SVG/preview first.
 Final export additionally requires `--accepted-svg INSPECTED_SVG` and verifies
 byte equality before PDF/600dpi PNG export. The core and input builders remain
 research tools; CPU-prepared geometry/operators are not production preprocessing.
+
+Add `--native-preparation` to `check_native_pad_newton` to build the compliance
+factor and sparse interpolation map in Quadrants, then initialize both opposing
+pads directly on device. This variant still reads the saved large compliance and
+source geometry; it does not read the supplied rigid pose for its actual cold
+start. Its normal pressure files retain the same independent full-field reader.
+`check_native_pad_compliance --backend cpu|gpu --output NEW_DATA_PATH` separately
+checks native balanced unit-load condensation and mass-gauge alignment against
+complete independent FEM on a compact mesh, including frame/material changes.
+Use the physical-reference environment for this combined native/CPU oracle.
+The [preparation packet](../evidence/20261019-qualified-ranking/native-pad-preparation-v1/README.md)
+retains both operator controls and all48 actual-pressure/full-field checks.

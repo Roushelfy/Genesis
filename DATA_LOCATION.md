@@ -689,7 +689,7 @@ original reference or live source was migrated or overwritten.
 The native pressure-stage and physical thickness campaigns use
 `native-pad-newton-{inputs,fields}-v1`, `native-pad-newton-v1`,
 `pad-thickness-study-v1`, `native-pad-thickness-{inputs,fields}-v1`,
-`native-pad-thickness-v1` and the draft/final `pad-thickness-figure-*-v1`
+`native-pad-thickness-v1`, `pad-thickness-figure-draft-v1` and `pad-thickness-figure-v1`
 outputs under the same ranking run root. Their
 `native-pad-pressure-and-thickness-v1` packet retains301 selected payloads
 (4,900,765 bytes) and120 externally hashed arrays. New meshes,834-node
@@ -697,3 +697,11 @@ compliances,48 native pressure/full-field checks and24 physical thickness
 fields remain on data. Inspected SVG/PDF/PNG publication deliverables stay in
 Git with their compact records. Original source checkouts, active environments,
 historical arrays and compatibility links remain in place.
+
+`native-pad-compliance-v1`, `native-pad-basis-v1` and
+`native-pad-basis-fields-v1` add the native operator/factor/cold-start controls
+under that same run root. The `native-pad-preparation-v1` packet retains140
+compact payloads (481,066 bytes) and98 externally hashed arrays, including48
+new full fields and the small frame/material operator controls. Large physical
+compliances and source maps are reused in place. All new numerical arrays and
+job logs stay on data, with private process caches on the compute nodes.

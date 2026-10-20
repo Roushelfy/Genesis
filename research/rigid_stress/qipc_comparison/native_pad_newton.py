@@ -14,6 +14,18 @@ class PadInfo:
     mapping: qd.Tensor
     elastic: qd.Tensor
 
+    @classmethod
+    def from_arrays(cls, mapping: np.ndarray, elastic: np.ndarray):
+        assert mapping.ndim == 2 and elastic.shape == (mapping.shape[1],)
+        assert np.isfinite(mapping).all() and np.isin(elastic, (0, 1)).all()
+        info = cls(
+            mapping=V(dtype=gs.qd_float, shape=mapping.shape),
+            elastic=V(dtype=gs.qd_float, shape=elastic.shape),
+        )
+        info.mapping.from_numpy(mapping)
+        info.elastic.from_numpy(elastic)
+        return info
+
 
 @dataclass(frozen=True)
 class PadState:
@@ -51,17 +63,11 @@ class PadState:
 class NativePadNewton:
     """Validate the numerical pressure stage before attaching a geometry/source producer."""
 
-    def __init__(self, mapping: np.ndarray, elastic: np.ndarray, n_envs: int):
-        assert mapping.ndim == 2 and elastic.shape == (mapping.shape[1],)
-        assert np.isfinite(mapping).all() and np.isin(elastic, (0, 1)).all()
+    def __init__(self, info: PadInfo, n_envs: int):
+        assert info.elastic.shape == (info.mapping.shape[1],)
         assert n_envs > 0
-        n_points, n_dofs = mapping.shape
-        self.info = PadInfo(
-            mapping=V(dtype=gs.qd_float, shape=mapping.shape),
-            elastic=V(dtype=gs.qd_float, shape=elastic.shape),
-        )
-        self.info.mapping.from_numpy(mapping)
-        self.info.elastic.from_numpy(elastic)
+        n_points, n_dofs = info.mapping.shape
+        self.info = info
         self.state = PadState(
             gap=V(dtype=gs.qd_float, shape=(n_points, n_envs)),
             weight=V(dtype=gs.qd_float, shape=(n_points, n_envs)),

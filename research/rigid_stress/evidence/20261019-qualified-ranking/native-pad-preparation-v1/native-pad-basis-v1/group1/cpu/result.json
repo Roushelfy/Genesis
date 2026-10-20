@@ -1,0 +1,150 @@
+{
+  "passed": true,
+  "backend": "cpu",
+  "native_basis_and_cold_initialization": true,
+  "rows": [
+    {
+      "order": 0,
+      "native_mapping_relative_error": 1.3511826502330317e-14,
+      "pressure_relative_errors": [
+        3.946419507992628e-11,
+        1.0600432329555675e-12,
+        6.000814979556693e-13,
+        1.060983912572584e-11,
+        1.61215368811485e-13,
+        2.0977469548886506e-12,
+        9.57315079755346e-10,
+        2.0460239288848205e-11
+      ],
+      "independent_pad_law_errors": [
+        5.382496533125695e-16,
+        6.786429057551647e-16,
+        6.50414410243986e-15,
+        5.995758114038155e-16,
+        9.519136444613693e-15,
+        7.778695339757017e-14,
+        4.753154115686162e-15,
+        4.815891146062031e-16
+      ],
+      "wrench_errors": [
+        2.7925067244029063e-15,
+        9.73092808026883e-15,
+        5.753956732466243e-14,
+        1.2472238990802998e-14,
+        3.392961391275828e-14,
+        3.4746529611120437e-14,
+        6.913062087595027e-14,
+        4.941170528277661e-16
+      ],
+      "maximum_gradient": 9.825733728552552e-14,
+      "newton_updates": [
+        5,
+        4,
+        6,
+        4,
+        5,
+        6,
+        4,
+        6
+      ],
+      "pcg_iterations": [
+        24,
+        15,
+        43,
+        20,
+        39,
+        85,
+        19,
+        51
+      ],
+      "cold_compile_and_solve_seconds": 0.766908005985897,
+      "warm_unchanged_exact": true,
+      "release_exact": true,
+      "failure_isolation_exact": true,
+      "partial_recovery_preserves_others_exact": true,
+      "pressure": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-basis-v1/group1/cpu/q0-pressure.npz",
+        "bytes": 62668,
+        "sha256": "a2b67e48b24e647f27d3c0e41beaf21cb13f668753c013326f560877c2772ae7"
+      },
+      "inputs": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-newton-inputs-v1/group0/inputs/q0.npz",
+        "bytes": 7618473,
+        "sha256": "0de5ea6c632a0aa542adcdf20cef8415c70317d3c5669219f74fb11f4e5cdd82"
+      }
+    },
+    {
+      "order": 6,
+      "native_mapping_relative_error": 1.1794833831690845e-14,
+      "pressure_relative_errors": [
+        1.3209471019498523e-10,
+        3.323378630848157e-11,
+        4.861127209133159e-10,
+        4.762033784130826e-10,
+        1.5452035600872486e-11,
+        6.694968708141557e-11,
+        2.5105577115527455e-10,
+        2.7505612475353625e-09
+      ],
+      "independent_pad_law_errors": [
+        3.277954152977115e-16,
+        4.1626757915344166e-16,
+        4.2578018101671466e-16,
+        4.418696029439222e-16,
+        6.866192646256222e-16,
+        7.423767882716849e-14,
+        1.5911043546263884e-13,
+        5.353226534147204e-16
+      ],
+      "wrench_errors": [
+        4.499212677441178e-16,
+        2.3117120635523005e-16,
+        7.434081929320248e-16,
+        1.3187613098333234e-16,
+        2.3324915557274215e-15,
+        1.0900121491005628e-13,
+        1.6962044119252157e-13,
+        2.6086273046340634e-16
+      ],
+      "maximum_gradient": 2.7306875214481023e-12,
+      "newton_updates": [
+        6,
+        5,
+        7,
+        5,
+        6,
+        6,
+        5,
+        6
+      ],
+      "pcg_iterations": [
+        29,
+        19,
+        50,
+        26,
+        46,
+        84,
+        25,
+        51
+      ],
+      "cold_compile_and_solve_seconds": 5.9104493809863925,
+      "warm_unchanged_exact": true,
+      "release_exact": true,
+      "failure_isolation_exact": true,
+      "partial_recovery_preserves_others_exact": true,
+      "pressure": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-basis-v1/group1/cpu/q6-pressure.npz",
+        "bytes": 174809,
+        "sha256": "91a6bee0e9eb26902a5ea5100d42b7b44a5da2f6a0ad2a947210692c87cc1ba3"
+      },
+      "inputs": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-newton-inputs-v1/group0/inputs/q6.npz",
+        "bytes": 28288022,
+        "sha256": "2c0ec717be5fcb8873057d291d09ba5ba76a74bb309cd98cb6d5ff870aef41af"
+      }
+    }
+  ],
+  "production_automatic_model_admitted": false,
+  "whole_goal_complete": false,
+  "scope": "Native nonlinear pressure and matrix-free linear solves match every supplied independent normal pad case. Warm repeat, exact separation release, invalid-input isolation and selective recovery pass. Compliance and geometry remain CPU-prepared validation inputs. The explicit native-preparation variant factors compliance, builds the sparse map and initializes cold opposing pads on device. Dynamic geometry selection, friction integration, production lifecycle wiring and controlled throughput remain required."
+}

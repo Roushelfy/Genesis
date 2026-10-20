@@ -10,15 +10,18 @@ import quadrants as qd
 
 import genesis as gs
 from genesis.utils.misc import qd_to_numpy
+from genesis.utils.array_class import V
 
 from .artifacts import file_id, runtime_identity, write_json
-from .native_pad_newton import NativePadNewton
+from .native_pad_newton import NativePadNewton, PadInfo
+from .native_pad_operator import NativePadBasis, kernel_parallel_pad_cold_start
 
 
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--inputs", type=Path, required=True)
     cli.add_argument("--backend", choices=("cpu", "gpu"), required=True)
+    cli.add_argument("--native-preparation", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -30,8 +33,9 @@ def main():
             "identity": runtime_identity(require_gpu_inventory=args.backend == "gpu"),
             "preparation": file_id(args.inputs / "result.json"),
             "backend": args.backend,
+            "native_basis_and_cold_initialization": args.native_preparation,
             "targets": {"pressure_relative": 1e-6, "pad_law": 1e-7, "wrench": 1e-8, "outer_gradient": 1e-10},
-            "scope": "Native numerical pressure stage with independently prepared physical operators and cold rigid-coordinate guesses. No collider geometry producer or production timing is included.",
+            "scope": "Native numerical pressure stage with independently prepared physical compliance and geometry. The declared native-preparation option replaces CPU factor/map construction and rigid cold guesses. No collider geometry producer or production timing is included.",
         },
     )
     gs.init(backend=gs.cuda if args.backend == "gpu" else gs.cpu, precision="64", logging_level="warning")
@@ -42,7 +46,26 @@ def main():
         with np.load(path) as saved:
             inputs = {key: saved[key] for key in saved.files}
         batch = inputs["gap"].shape[1]
-        native = NativePadNewton(inputs["mapping"], inputs["elastic"], batch)
+        mapping_error = None
+        if args.native_preparation:
+            compliance = V(dtype=gs.qd_float, shape=inputs["compliance_m_per_n"].shape)
+            compliance.from_numpy(inputs["compliance_m_per_n"])
+            basis = NativePadBasis(compliance, inputs["interpolation"], inputs["rigid"])
+            mapping = qd_to_numpy(basis.info.mapping, transpose=True, copy=True).T
+            n_elastic = len(inputs["compliance_m_per_n"])
+            mapping_error = (
+                np.linalg.norm(mapping[:, :n_elastic] - inputs["mapping"][:, :n_elastic])
+                / np.linalg.norm(inputs["mapping"][:, :n_elastic])
+            ).item()
+            assert mapping_error <= 1e-10
+            np.testing.assert_allclose(mapping[:, n_elastic:], inputs["mapping"][:, n_elastic:], rtol=0, atol=1e-14)
+            lower = qd_to_numpy(basis.workspace.lower, transpose=True, copy=True).T
+            factor_error = np.linalg.norm(lower @ lower.T - inputs["compliance_m_per_n"])
+            factor_error /= np.linalg.norm(inputs["compliance_m_per_n"])
+            assert factor_error <= 1e-10
+            native = NativePadNewton(basis.info, batch)
+        else:
+            native = NativePadNewton(PadInfo.from_arrays(inputs["mapping"], inputs["elastic"]), batch)
         state = native.state
         for name in ("gap", "weight", "linear", "elastic_scale"):
             # Explicit field dispatch keeps the numerical stage's owned state typed.
@@ -56,6 +79,8 @@ def main():
                 state.elastic_scale.from_numpy(inputs[name])
         state.coordinate.from_numpy(inputs["initial"])
         requested = np.ones(batch, dtype=gs.np_bool)
+        if args.native_preparation:
+            kernel_parallel_pad_cold_start(requested, state, native.info)
         before = perf_counter()
         native.solve(requested)
         qd.sync()
@@ -134,6 +159,8 @@ def main():
         state.coordinate.from_numpy(restored)
         requested[:] = False
         requested[:2] = True
+        if args.native_preparation:
+            kernel_parallel_pad_cold_start(requested, state, native.info)
         native.solve(requested)
         recovered = qd_to_numpy(state.force, transpose=True, copy=True).T
         assert np.all(qd_to_numpy(state.status, transpose=True) == 1)
@@ -142,6 +169,7 @@ def main():
         rows.append(
             {
                 "order": record["order"],
+                "native_mapping_relative_error": mapping_error,
                 "pressure_relative_errors": pressure_errors,
                 "independent_pad_law_errors": law_errors,
                 "wrench_errors": wrench_errors,
@@ -163,10 +191,11 @@ def main():
         {
             "passed": True,
             "backend": args.backend,
+            "native_basis_and_cold_initialization": args.native_preparation,
             "rows": rows,
             "production_automatic_model_admitted": False,
             "whole_goal_complete": False,
-            "scope": "Native nonlinear pressure and matrix-free linear solves match every supplied independent normal pad case. Warm repeat, exact separation release, invalid-input isolation and selective recovery pass. Physical operators and initial rigid guesses remain CPU-prepared validation inputs. Dynamic geometry selection, friction integration, production lifecycle wiring and controlled throughput remain required.",
+            "scope": "Native nonlinear pressure and matrix-free linear solves match every supplied independent normal pad case. Warm repeat, exact separation release, invalid-input isolation and selective recovery pass. Compliance and geometry remain CPU-prepared validation inputs. The explicit native-preparation variant factors compliance, builds the sparse map and initializes cold opposing pads on device. Dynamic geometry selection, friction integration, production lifecycle wiring and controlled throughput remain required.",
         },
     )
 

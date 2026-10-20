@@ -1,0 +1,84 @@
+{
+  "rows": [
+    {
+      "order": 0,
+      "native_mapping_relative_error": 1.8781954210443488e-14,
+      "pressure_relative_errors": [
+        8.681054218263437e-13,
+        4.257147559341693e-13
+      ],
+      "independent_pad_law_errors": [
+        4.681189521669071e-16,
+        7.328270928635137e-15
+      ],
+      "wrench_errors": [
+        4.427225568495587e-16,
+        2.9438149807874356e-14
+      ],
+      "maximum_gradient": 3.4308767924961306e-14,
+      "newton_updates": [
+        8,
+        6
+      ],
+      "pcg_iterations": [
+        54,
+        61
+      ],
+      "cold_compile_and_solve_seconds": 0.607338978908956,
+      "warm_unchanged_exact": true,
+      "release_exact": true,
+      "failure_isolation_exact": true,
+      "partial_recovery_preserves_others_exact": true,
+      "pressure": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-basis-v1/group3/cpu/q0-pressure.npz",
+        "bytes": 16220,
+        "sha256": "e210c191e19a3f0b7364fb6addd2efdc4f62242c12b8848ddd5284ae442298ab"
+      },
+      "inputs": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-thickness-inputs-v1/group0/inputs/q0.npz",
+        "bytes": 7675231,
+        "sha256": "968e63270ac30a9ceed19bcd8107b8aa45e713f3ef1e0af0221c1362814d09b8"
+      }
+    },
+    {
+      "order": 6,
+      "native_mapping_relative_error": 1.6220404281814698e-14,
+      "pressure_relative_errors": [
+        1.900849144875788e-09,
+        9.795037624649921e-11
+      ],
+      "independent_pad_law_errors": [
+        3.7418653170842796e-13,
+        2.6111465518711225e-14
+      ],
+      "wrench_errors": [
+        4.699051846534126e-13,
+        5.1401732161941505e-14
+      ],
+      "maximum_gradient": 4.520929465022255e-12,
+      "newton_updates": [
+        6,
+        6
+      ],
+      "pcg_iterations": [
+        36,
+        62
+      ],
+      "cold_compile_and_solve_seconds": 1.6885483929654583,
+      "warm_unchanged_exact": true,
+      "release_exact": true,
+      "failure_isolation_exact": true,
+      "partial_recovery_preserves_others_exact": true,
+      "pressure": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-basis-v1/group3/cpu/q6-pressure.npz",
+        "bytes": 40258,
+        "sha256": "5e3e3e7aee85f17fb95ff1b115adfc387efa248b1c5df95e8d84f8cd5ca8ceab"
+      },
+      "inputs": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-pad-thickness-inputs-v1/group0/inputs/q6.npz",
+        "bytes": 28121250,
+        "sha256": "678b94d378cad4b4568db89928e39fc9f93199ccf06090551092db3a7e8ffcff"
+      }
+    }
+  ]
+}
