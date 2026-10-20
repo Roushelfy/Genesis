@@ -27,6 +27,15 @@ block it. Historical research-workflow costs are not production throughput.
 
 The [partial-level recovery control](REFERENCE_ENDPOINT_CONTINUATION_20261019.md#partial-level-recovery-and-repeated-continuation-ancestry) now completes300+100 and225+175 coarse histories, each passing34 unchanged-limit conformance and49 two-link ancestry checks. It supports recovery after future actual termination; current fine captures/queues remain unchanged. This does not qualify any partial fine trajectory or remove any remaining proof in the table.
 
+The [independent-preparation inspection](../evidence/20261019-qualified-ranking/independent-method-preparation-v1/README.md)
+confirms that the delivered production package and witness regression match the
+measured1ff39b077 source and contain the MPR repair. The pending ranking source
+retains each pairwise strict interval relation without transitive overlap
+clustering. Eleven scheduler checks let field/data preparation follow complete
+parent admission while final ranks explicitly await full reference qualification.
+These source/scheduling checks do not replace any remaining numerical result,
+final visual inspection or matched cost/error consolidation in the table.
+
 The prescribed-pressure case, physical compliant pads and original hard plates
 are distinct physical models. A passing discrete elastic core is not a resolved
 contact footprint. A passing final field does not validate failed earlier stress

@@ -106,3 +106,19 @@ retains83 compact payloads/492,556 bytes, exact tested worker variants, original
 positive/negative results, the predeclared ranking contract and immutable pending
 field/ranking tasks. Complete original arrays remain on data with their hashes
 in the receipts. Live fine outputs and final ranks/figures are excluded.
+
+Current resilient jobs separate field preparation from final qualification:
+731020 waits afterok on strict complete-parent guard731010;731022 explicitly
+waits afterany on both731020 and full qualifier731019. All18 q1/q9/q25 complete
+field tasks, data paths, numerical source and error/uncertainty gates stay the
+same. This allows independent preparation while time/contact comparisons finish.
+The actual54 error rows and18 metric records still require successful fine
+qualification and exact admitted candidate/reference bindings.
+
+Inspection of the exact pending worker confirms each metric retains all three
+method pairs. Only strictly disjoint intervals are ordered; touching/overlapping
+intervals remain unresolved. No transitive overlap grouping discards a supported
+pairwise order. Existing99 reader/bound controls remain the numerical evidence;
+no unchanged tests are rerun for this scheduling/source inspection. The
+[preparation packet](../evidence/20261019-qualified-ranking/independent-method-preparation-v1/README.md)
+preserves the updated dependencies, corrected receipt reader and source hashes.

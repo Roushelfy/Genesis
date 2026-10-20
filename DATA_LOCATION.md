@@ -1,5 +1,14 @@
 # Rigid-stress data and artifact locations
 
+The independent-method-preparation-v1 packet adds12 compact payloads/58,999
+bytes for scheduler-only dependency updates and final source inspections. It
+contains no runtime arrays or live numerical output. All seven captured analysis
+inventories and six published computation/acceptance modules remain unchanged.
+The original receipt-reader failure is retained beside the completed correction.
+Existing fine writers, their data-side outputs, environments and links stay in
+place. New scheduler journals and inspection receipts use the same data run root;
+only compact publication evidence is added to the source checkout.
+
 The solid-pad-partial-step-recovery-v1 packet adds205 compact payloads/1,066,370
 bytes for terminal step300/225 recovery, complete400-step controls, exact captured
 worker variants and ancestry/negative checks. Twenty-four full state/field/column

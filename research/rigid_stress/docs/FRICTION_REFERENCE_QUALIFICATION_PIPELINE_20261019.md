@@ -189,3 +189,32 @@ postprocessing and read-only reinspection, tested source variants and the exact
 replacement graph. Live scientific outputs and final scientific products are
 excluded. Full qualification, method ranks, inspected final figures and matched
 friction delivery remain pending.
+
+## Independent preparation before final resolution qualification
+
+Scheduler-only updates now let731020 compute the18 method-field integrations
+and731021 prepare complete force/traction data after successful731010, the
+unchanged four-parent complete-history/current-momentum/endpoint guard. These
+calculations need the actual complete main reference and candidate fields;
+they do not consume or establish the final uncertainty envelopes. The data
+reader explicitly retains spatial_reference_qualified=false. No live or partial
+reference is admitted by this ordering change.
+
+Final ranking731022 now explicitly waits afterany on both731020 and731019.
+Its unchanged entry gate still requires successful seven-parent physical and
+resolution qualification,18 envelopes and all matching source/frame identities.
+The36-comparison qualifier and all field/peak/time/contact targets are unchanged.
+Figures731023 retain their rank/data dependency and own strict matching guards;
+cost731025 retains its rank dependency and admission checks. No numerical error,
+rank, final drawing or speedup measurement follows from queue submission.
+
+Eleven actual wiring checks verify all eight affected pending array elements,
+unchanged submitted tasks/source inventories and unchanged remaining guards.
+The consumer dependency was updated first. Its initial receipt assertion failed
+because the reader parsed only the first ID of the compact two-job expression;
+Slurm had correctly installed both. The original script/exit/partial state are
+preserved, and the corrected reader updates only the two remaining producers.
+The [preparation packet](../evidence/20261019-qualified-ranking/independent-method-preparation-v1/README.md)
+retains exact before/after states and11 checks, rehashes all seven captured
+inventories and binds six computation/acceptance modules to the original frozen
+recovery packet. Original submission JSON remains unchanged historical evidence.
