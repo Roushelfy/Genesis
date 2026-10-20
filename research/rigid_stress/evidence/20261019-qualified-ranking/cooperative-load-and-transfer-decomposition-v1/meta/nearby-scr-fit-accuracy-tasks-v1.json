@@ -1,0 +1,98 @@
+[
+  [
+    {
+      "name": "study",
+      "module": "research.rigid_stress.qipc_comparison.study_nearby_scr_loads",
+      "args": [
+        "--run",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-capture-v2/group0/scr-max",
+        "--certificate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-audit-v5/group0/audit/result.json",
+        "--qp-solver-path",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/assets/clarabel-0.11.1",
+        "--quadrature",
+        "625",
+        "--budget-scope",
+        "group",
+        "--diagnostic-solver",
+        "analytic",
+        "--path-subdivisions",
+        "16",
+        "--fit-tolerance",
+        "1e-9"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "study",
+      "module": "research.rigid_stress.qipc_comparison.study_nearby_scr_loads",
+      "args": [
+        "--run",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-capture-v2/group0/scr-max",
+        "--certificate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-audit-v5/group0/audit/result.json",
+        "--qp-solver-path",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/assets/clarabel-0.11.1",
+        "--quadrature",
+        "625",
+        "--budget-scope",
+        "group",
+        "--diagnostic-solver",
+        "analytic",
+        "--path-subdivisions",
+        "16",
+        "--fit-tolerance",
+        "1e-10"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "study",
+      "module": "research.rigid_stress.qipc_comparison.study_nearby_scr_loads",
+      "args": [
+        "--run",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-capture-v2/group1/scr-max",
+        "--certificate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-audit-v5/group1/audit/result.json",
+        "--qp-solver-path",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/assets/clarabel-0.11.1",
+        "--quadrature",
+        "625",
+        "--budget-scope",
+        "group",
+        "--diagnostic-solver",
+        "analytic",
+        "--path-subdivisions",
+        "16",
+        "--fit-tolerance",
+        "1e-9"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "study",
+      "module": "research.rigid_stress.qipc_comparison.study_nearby_scr_loads",
+      "args": [
+        "--run",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-capture-v2/group1/scr-max",
+        "--certificate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-diverse-rejection-audit-v5/group1/audit/result.json",
+        "--qp-solver-path",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/assets/clarabel-0.11.1",
+        "--quadrature",
+        "625",
+        "--budget-scope",
+        "group",
+        "--diagnostic-solver",
+        "analytic",
+        "--path-subdivisions",
+        "16",
+        "--fit-tolerance",
+        "1e-10"
+      ]
+    }
+  ]
+]

@@ -855,3 +855,20 @@ inputs. The [packet](../evidence/20261019-qualified-ranking/engineering-load-sen
 contains actual task arguments and captured source for all variants, including
 failed and cancelled controls. Current code may have later diagnostic options;
 exact reproduction uses each task's captured analysis source.
+
+`--path-subdivisions 8|16` uses topology-preserving edge ports and exact
+adjacent-facet unfolding; zero retains the original centroid-path diagnostic.
+`--budget-scope group` keeps local priors while constraining the aggregate
+force and moment about the captured failure position. `--fit-tolerance
+1e-9|1e-10` changes only the positive-budget numerical target; strict/minimax
+targets and independent acceptance checks stay fixed. These options do not
+admit physical stress accuracy or change production defaults.
+
+`compare_group_scr_budgets --data-root ROOT` independently remeasures source
+and aggregate changes, compares successful precision/conditioning pairs and
+retains same-path source-local controls. Use the successful
+`nearby-scr-group-comparison-v3` output;v2's metadata-key error remains retained.
+`summarize_resolved_pad_decomposition` completes10 signed tensor decompositions
+from `resolved-pad-decomposition-v2`. The
+[new packet](../evidence/20261019-qualified-ranking/cooperative-load-and-transfer-decomposition-v1/README.md)
+contains their captured recipes, actual failures and inspected figure exports.

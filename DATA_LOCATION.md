@@ -644,7 +644,18 @@ Their `engineering-load-sensitivity-v1` packet retains532 compact payloads
 (2,909,373 bytes) and38 externally hashed arrays. Earlier failed controls,
 underresolved support sampling and rejected optimizer results remain in place.
 Successful finer cases are reused by explicit paths; no aliases hide a failed
-parent. The corrected signed decomposition runs separately in
-`resolved-pad-decomposition-v2` and is excluded from this terminal packet while
-live. Full stress/source arrays, job logs and private node-local caches remain
-on data; no data or active environment is migrated.
+parent. The corrected signed decomposition was excluded while live and is now
+published separately with the cooperative-load study. Full stress/source
+arrays, job logs and private node-local caches remain on data; no data or
+active environment is migrated.
+
+`cooperative-load-and-transfer-decomposition-v1` freezes the completed
+`resolved-pad-decomposition-v2` and its summary, centroid/group and improved
+port-path SCR budget variants, solver-accuracy and same-path local controls,
+independent comparison and inspected figure campaigns. All originate under
+the established20261019 ranking run root. Failed `AlmostSolved` attempts and
+the comparison-v2 metadata-key failure remain retained alongside the successful
+v3 reader. The historical moment-anchor metadata wording is corrected in the
+reader/report without altering frozen observations. Compact evidence and
+publication figures stay in Git:499 payloads total12,408,095 bytes. The98
+externally hashed arrays remain on data.

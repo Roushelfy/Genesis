@@ -1,0 +1,11 @@
+{
+  "problem": "Several port-support SOCP attempts returned AlmostSolved at unchanged target1e-11; not accepted.",
+  "equivalent_transformation": "Each physical point force is sqrt(w)*y. Circular cone homogeneity permits removing the positive sqrt(w) factor from each cone-constraint block. Objective, wrench constraints, feasible set and all acceptance limits are unchanged.",
+  "targets": {
+    "same_accepted_complete_stress_relative_difference": 1e-06,
+    "independent_kkt": 1e-08,
+    "solver_target": 1e-11
+  },
+  "retained_parent": "nearby-scr-port-budget-v1",
+  "scope": "Numerical conditioning only, not enlarged support or a relaxed numerical/physical assertion."
+}

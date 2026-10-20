@@ -41,11 +41,14 @@ and native cost remain central to the next implementation.
 The [engineering load-sensitivity study](docs/ENGINEERING_LOAD_SENSITIVITY_20261020.md)
 adds18 qualified resolved-transfer errors: corrected-boundary tangential error
 is10.56%, versus7.94% for fixed-radius DPR, with metric-specific conditional
-rankings. The two SCR failures reject the predeclared source-local budgets;
-a separately unbudgeted projection changes complete stress by29.81%/33.51%.
-Refined sampling, actual corrections, peak locations and unsuccessful numerical
-attempts are retained. Cooperative aggregate budgets, signed transfer attribution
-and native automatic integration remain open.
+rankings. Signed tensor cross terms now demonstrate partial cancellation by
+the old wrong-boundary transfer. Improved surface paths admit cooperative SCR
+loads within1%/0.1% aggregate budgets, with8.76%/14.66% complete-stress changes
+and measured individual-source redistribution. The earlier29.81%/33.51%
+unbudgeted changes apply only to the narrower centroid-path diagnostic.
+Numerical/path sensitivity, a matched source-local control and inspected maps
+are retained. No production tolerance is relaxed; useful native automatic
+integration and matching physical/cost validation remain open.
 
 The [active goal](docs/QUALIFIED_STRESS_RANKING_GOAL.md) is qualified DPR/SCR/Shell
 stress-error comparisons on a free full hollow egg between parallel plates.

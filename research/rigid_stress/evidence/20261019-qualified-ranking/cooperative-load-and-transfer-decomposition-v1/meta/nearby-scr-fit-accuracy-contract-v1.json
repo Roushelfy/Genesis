@@ -1,0 +1,20 @@
+{
+  "purpose": "Measure numerical stopping accuracy separately from permitted load discrepancy and stress accuracy.",
+  "positive_budget_solver_targets": [
+    1e-09,
+    1e-10
+  ],
+  "retained_original_target": 1e-11,
+  "strict_zero_budget_and_minimax_target_unchanged": 1e-11,
+  "acceptance_assertions_unchanged": {
+    "independent_kkt": 1e-08,
+    "actual_budget_allowance": 1e-09,
+    "numerical_cone_projection": 1e-08,
+    "actual_cone_rounding": 1e-13,
+    "elastic_equation": 1e-07,
+    "same_problem_complete_stress": 1e-06
+  },
+  "selection": "Finest q625 and16 edge subdivisions for both original failing states. Keep all0/0.001/0.01/0.1 load budgets unchanged.",
+  "reason": "The previous1e-11 stopping target is stricter than the unchanged independently checked1e-8 numerical contract. Several attempts return AlmostSolved and stay rejected. Compare fresh successful1e-9/1e-10 variants and any successful1e-11 reference using full fields; never reinterpret an old unsuccessful solver as accepted.",
+  "production_defaults_unchanged": true
+}

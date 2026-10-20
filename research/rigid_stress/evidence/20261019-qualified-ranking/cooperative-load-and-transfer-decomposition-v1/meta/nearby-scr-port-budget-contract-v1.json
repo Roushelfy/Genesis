@@ -1,0 +1,31 @@
+{
+  "reason": "Centroid paths are a conservative support subset and may exclude relevant original-support normals. Test edge-port paths matching original native8 subdivisions and independent16 refinement, including exact adjacent-face unfolding.",
+  "budgets_unchanged": [
+    0,
+    0.001,
+    0.01,
+    0.1
+  ],
+  "quadratures": [
+    225,
+    625
+  ],
+  "edge_subdivisions": [
+    8,
+    16
+  ],
+  "physics_unchanged": [
+    "original source force/moment",
+    "material boundary",
+    "radius",
+    "friction",
+    "source prior objective",
+    "free-link elastic model"
+  ],
+  "scope": "Every selected sample has an explicit on-surface path within the original support; no Euclidean shortcut. Finite-port paths remain upper bounds; successful sampled loads are constructive and failed optimization alone is not a continuous infeasibility proof.",
+  "controls": [
+    "exact folded-adjacent distance",
+    "coincident disconnected boundary excluded",
+    "adjacent distance independent of port spacing"
+  ]
+}
