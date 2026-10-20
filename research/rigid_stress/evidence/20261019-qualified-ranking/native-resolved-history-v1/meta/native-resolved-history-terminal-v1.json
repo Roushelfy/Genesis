@@ -1,0 +1,93 @@
+{
+  "passed": true,
+  "actual_scheduler_accounting": "732633_0|COMPLETED|0:0|00:13:02|2026-10-20T17:28:03|rtx-209-231\n732633_0.batch|COMPLETED|0:0|00:13:02|2026-10-20T17:28:03|rtx-209-231\n732633_0.0|COMPLETED|0:0|00:13:01|2026-10-20T17:28:03|rtx-209-231\n732635_0|COMPLETED|0:0|00:00:35|2026-10-20T17:28:38|rtx-209-115\n732635_0.batch|COMPLETED|0:0|00:00:35|2026-10-20T17:28:38|rtx-209-115\n732635_0.0|COMPLETED|0:0|00:00:35|2026-10-20T17:28:38|rtx-209-115\n732662_0|COMPLETED|0:0|00:00:38|2026-10-20T17:32:39|rtx-209-099\n732662_0.batch|COMPLETED|0:0|00:00:38|2026-10-20T17:32:39|rtx-209-099\n732662_0.0|COMPLETED|0:0|00:00:37|2026-10-20T17:32:39|rtx-209-099\n",
+  "captured_imports": {
+    "native-resolved-history-v1": [
+      "research/rigid_stress/qipc_comparison/artifacts.py",
+      "research/rigid_stress/qipc_comparison/common_metric.py",
+      "research/rigid_stress/qipc_comparison/distributed_pad_transfer.py",
+      "research/rigid_stress/qipc_comparison/native_pad_recovery.py",
+      "research/rigid_stress/qipc_comparison/native_reference_replay.py",
+      "research/rigid_stress/qipc_comparison/pad_cost.py",
+      "research/rigid_stress/qipc_comparison/pad_primary_cost.py",
+      "research/rigid_stress/qipc_comparison/plate_native_pad.py",
+      "research/rigid_stress/qipc_comparison/plates.py",
+      "research/rigid_stress/qipc_comparison/rigid_pad_coupling.py",
+      "research/rigid_stress/qipc_comparison/source_roundoff.py",
+      "research/rigid_stress/qipc_comparison/wrench_compression.py"
+    ],
+    "native-resolved-history-admission-v1": [
+      "research/rigid_stress/qipc_comparison/artifacts.py",
+      "research/rigid_stress/qipc_comparison/audit_native_pad.py"
+    ],
+    "native-resolved-history-comparison-v1": [
+      "research/rigid_stress/qipc_comparison/artifacts.py",
+      "research/rigid_stress/qipc_comparison/compare_resolved_boundary_history.py"
+    ]
+  },
+  "observations": 400,
+  "all_steps_and_mechanical_windows_passed": true,
+  "complete_field_errors": [
+    {
+      "level": 0,
+      "errors": {
+        "stress_pa": 3.138457354717786e-11,
+        "forces_n": 4.672651890396861e-16,
+        "rhs_n": 4.677062752666015e-16,
+        "original_contact_forces_n": 1.866177091901946e-16
+      },
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/distributed-pad-every-step-v1/group0/native/frames/stress-level0.npz",
+        "bytes": 8121566,
+        "sha256": "9fe831e7781d23112ea8f1801713b3d716454756edc586769baebabda5830bc4"
+      },
+      "native": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-resolved-history-v1/group0/native/frames/stress-level0.npz",
+        "bytes": 8152235,
+        "sha256": "d81bdfcbc17d044c4448ce9c7163dc63cf220e5974ac61e2be05c8197d432ee7"
+      }
+    },
+    {
+      "level": 1,
+      "errors": {
+        "stress_pa": 3.2305746398632486e-11,
+        "forces_n": 4.439842671774086e-16,
+        "rhs_n": 4.448020186251733e-16,
+        "original_contact_forces_n": 1.6540386377860948e-16
+      },
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/distributed-pad-every-step-v1/group0/native/frames/stress-level1.npz",
+        "bytes": 8128242,
+        "sha256": "6ea6f96343a9fc7a9502d283ecc057078f4951daa9be757b552fb51f44c596e2"
+      },
+      "native": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-resolved-history-v1/group0/native/frames/stress-level1.npz",
+        "bytes": 8125277,
+        "sha256": "a0428079ec784789df9b2fe7084bb7927758e5a7219dfbf249463de4dd105de3"
+      }
+    }
+  ],
+  "maximum_peak_absolute_difference_pa": 1.1220923624932766e-05,
+  "maximum_peak_mixed_scaled_difference": 0.03685031805746652,
+  "corrections": [
+    {
+      "step": 37,
+      "corrected_sources": 8,
+      "force_change_bound_n": 5.148422912240264e-21,
+      "moment_change_bound_nm": 1.5472082894874323e-22,
+      "physical_force_budget_n": 2.6290081223123706e-16
+    },
+    {
+      "step": 38,
+      "corrected_sources": 46,
+      "force_change_bound_n": 2.2100346492110765e-20,
+      "moment_change_bound_nm": 6.635437304898814e-22,
+      "physical_force_budget_n": 2.700062395888381e-16
+    }
+  ],
+  "intermediate_complete_original_source_arrays_captured": false,
+  "new_per_event_correction_stress_bound_claimed": false,
+  "production_automatic_pressure_model_admitted": false,
+  "production_tolerance_changed": false,
+  "whole_goal_complete": false
+}

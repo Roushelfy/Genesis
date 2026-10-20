@@ -668,5 +668,10 @@ unchanged. GPU/CPU virtual-work and lifecycle tests, manual-pressure
 regressions, actual normal/friction field comparisons and earlier failed test
 setups are retained. Test fixtures and private caches stayed in each job's
 node-local scratch; durable receipts/fields stay under the existing data run.
-The separate `native-resolved-history-v1` trajectory and its dependent
-admission are excluded from this packet while running.
+The separate trajectory was excluded while running. Its now-completed
+`native-resolved-history-v1` companion packet retains70 compact payloads
+(612,228 bytes) and11 externally hashed arrays for all400 observations,
+independent mechanical/source admission and the endpoint/every-step comparison.
+Intermediate correction magnitudes are recorded, but complete original source
+arrays were captured only at endpoint keyframes. No new intermediate-event
+stress bound is inferred from absent arrays.

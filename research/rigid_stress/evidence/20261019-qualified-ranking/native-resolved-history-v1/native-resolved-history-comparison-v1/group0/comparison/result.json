@@ -1,0 +1,128 @@
+{
+  "passed": true,
+  "observations": 400,
+  "targets": {
+    "peak_relative": 1e-08,
+    "peak_absolute_pa": 1e-06,
+    "complete_field_relative": 1e-06,
+    "original_source_relative": 1e-09
+  },
+  "maximum_peak_absolute_difference_pa": 1.1220923624932766e-05,
+  "maximum_peak_mixed_scaled_difference": 0.03685031805746652,
+  "corrections": [
+    {
+      "step": 37,
+      "corrected_sources": 8,
+      "force_change_bound_n": 5.148422912240264e-21,
+      "moment_change_bound_nm": 1.5472082894874323e-22,
+      "physical_force_budget_n": 2.6290081223123706e-16
+    },
+    {
+      "step": 38,
+      "corrected_sources": 46,
+      "force_change_bound_n": 2.2100346492110765e-20,
+      "moment_change_bound_nm": 6.635437304898814e-22,
+      "physical_force_budget_n": 2.700062395888381e-16
+    }
+  ],
+  "fields": [
+    {
+      "level": 0,
+      "errors": {
+        "stress_pa": 3.138457354717786e-11,
+        "forces_n": 4.672651890396861e-16,
+        "rhs_n": 4.677062752666015e-16,
+        "original_contact_forces_n": 1.866177091901946e-16
+      },
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/distributed-pad-every-step-v1/group0/native/frames/stress-level0.npz",
+        "bytes": 8121566,
+        "sha256": "9fe831e7781d23112ea8f1801713b3d716454756edc586769baebabda5830bc4"
+      },
+      "native": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-resolved-history-v1/group0/native/frames/stress-level0.npz",
+        "bytes": 8152235,
+        "sha256": "d81bdfcbc17d044c4448ce9c7163dc63cf220e5974ac61e2be05c8197d432ee7"
+      }
+    },
+    {
+      "level": 1,
+      "errors": {
+        "stress_pa": 3.2305746398632486e-11,
+        "forces_n": 4.439842671774086e-16,
+        "rhs_n": 4.448020186251733e-16,
+        "original_contact_forces_n": 1.6540386377860948e-16
+      },
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/distributed-pad-every-step-v1/group0/native/frames/stress-level1.npz",
+        "bytes": 8128242,
+        "sha256": "6ea6f96343a9fc7a9502d283ecc057078f4951daa9be757b552fb51f44c596e2"
+      },
+      "native": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-resolved-history-v1/group0/native/frames/stress-level1.npz",
+        "bytes": 8125277,
+        "sha256": "a0428079ec784789df9b2fe7084bb7927758e5a7219dfbf249463de4dd105de3"
+      }
+    }
+  ],
+  "peaks": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-resolved-history-comparison-v1/group0/comparison/every-step-peaks.npz",
+    "bytes": 4725,
+    "sha256": "3242b02e4832f414fc2a769f8c94c24ff36e04be874576614fda6412c0aba4a7"
+  },
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/distributed-pad-every-step-v1/group0/native/start.json",
+      "bytes": 2969,
+      "sha256": "11e24df2eecb4f3d7e108f319b876d3b79d5faad815485d8d08475f1e5d83b84"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/distributed-pad-every-step-v1/group0/native/result.json",
+      "bytes": 1863,
+      "sha256": "e67c4f575572b129bbba54617ab655dd0c1a37c0c0b926b0ee8ac41e7f9d07e3"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/distributed-pad-every-step-v1/group0/native/steps.jsonl",
+      "bytes": 784603,
+      "sha256": "18682fd1d26c29b232dc1723e195fda19652c29f0e2e494e9a72a5d324d7fd6c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-resolved-history-v1/group0/native/start.json",
+      "bytes": 3001,
+      "sha256": "11059e3fd0794e061935039970cc697c59492cf8bd1eea96775ba36afe627c36"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-resolved-history-v1/group0/native/result.json",
+      "bytes": 1861,
+      "sha256": "c15a8384cdc0b5821585bf9697bfc8ada4f4aceb2096e1101f02ecfe43cfcacb"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-resolved-history-v1/group0/native/steps.jsonl",
+      "bytes": 847714,
+      "sha256": "fbac150a34abfc405de58a4b079cc4d80c67838a1559ba9000d36776296da599"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/distributed-pad-every-step-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8121566,
+      "sha256": "9fe831e7781d23112ea8f1801713b3d716454756edc586769baebabda5830bc4"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-resolved-history-v1/group0/native/frames/stress-level0.npz",
+      "bytes": 8152235,
+      "sha256": "d81bdfcbc17d044c4448ce9c7163dc63cf220e5974ac61e2be05c8197d432ee7"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/distributed-pad-every-step-v1/group0/native/frames/stress-level1.npz",
+      "bytes": 8128242,
+      "sha256": "6ea6f96343a9fc7a9502d283ecc057078f4951daa9be757b552fb51f44c596e2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/native-resolved-history-v1/group0/native/frames/stress-level1.npz",
+      "bytes": 8125277,
+      "sha256": "a0428079ec784789df9b2fe7084bb7927758e5a7219dfbf249463de4dd105de3"
+    }
+  ],
+  "whole_goal_complete": false,
+  "automatic_pressure_prediction_admitted": false,
+  "scope": "Actual complete histories and both endpoints agree within unchanged predeclared numerical checks. Correction magnitudes are retained per observation; original source arrays are retained at the endpoint keyframes. No new per-event correction stress bound is assigned to intermediate rows whose complete source arrays were not captured. Earlier exact P2 roundoff controls remain separate evidence. This is neither continuum accuracy nor production throughput."
+}

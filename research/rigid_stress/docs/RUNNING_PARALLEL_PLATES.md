@@ -890,3 +890,12 @@ normal/friction endpoint loads and independent same-load CPU fields. The
 diagnostics. The engine's `tests/rigid/test_stress_resolved.py` covers quadratic
 virtual work on nonconvex/cavity surfaces, source moment rejection, release,
 batch isolation and public max/full checkpoint/reset behavior.
+
+`compare_resolved_boundary_history --baseline OLD --native NEW` compares the
+completed400-step `resolved_outer_p2` history with the production
+`resolved_boundary_p2 --source-roundoff` variant. It verifies every-step peaks,
+both complete endpoint fields and matching physical settings. The companion
+`native-resolved-history-v1` packet includes this reader, the independent
+`audit_native_pad` admission and exact captured task/source recipes. Per-step
+correction magnitudes are available; intermediate complete source arrays are
+not, so this reader claims no new event-specific correction-stress bound.

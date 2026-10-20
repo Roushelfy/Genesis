@@ -54,7 +54,10 @@ pressure samples. It uses the witnessed material boundary, including cavities
 and nonconvex faces, with conservative P2 work transfer. Nonconvex/cavity work
 and isolation controls, native max/full checkpoint/reset controls and six
 manual-pressure regressions pass. The retained normal/friction complete fields
-agree with independent CPU resolved transfer to1.26e-11. This removes a second
+agree with independent CPU resolved transfer to1.26e-11. A separate400-step
+normal/friction history passes every observation and mechanical window with
+explicit bounded source reconciliation; endpoint stresses agree with the earlier
+resolved research adapter to3.24e-11. This removes a second
 disk from a declared resolved input; automatic physical support/pressure
 prediction, its material/pad configuration and matched production costs remain
 open.
