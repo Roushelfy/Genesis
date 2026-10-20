@@ -160,7 +160,7 @@ def test_resolved_native_observation_reset_and_checkpoint(show_viewer, output_mo
     assert np.isfinite(peak).all() and (peak > 0).all()
     if output_mode == "full":
         tensor, mises = (tensor_to_array(value) for value in link.get_stress_field())
-        assert_allclose(mises.max(axis=(1, 2)), peak)
+        assert_equal(mises.max(axis=(1, 2)), peak)
     checkpoint = scene.get_state()
     scene.step()
     position, next_peak = tensor_to_array(egg.get_pos()), tensor_to_array(link.get_max_stress())
