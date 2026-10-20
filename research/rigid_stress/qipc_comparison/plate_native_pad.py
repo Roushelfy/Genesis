@@ -49,6 +49,9 @@ def arguments():
     cli.add_argument("--method", choices=("rigid", "dpr", "scr"), default="rigid")
     cli.add_argument("--radius", type=float, default=0.002)
     cli.add_argument("--source-reduction", choices=("wrench", "none"), default="wrench")
+    cli.add_argument("--load-transfer", choices=("fixed_radius", "resolved_outer_p2"), default="fixed_radius")
+    cli.add_argument("--source-roundoff", action="store_true",
+                     help="Reconcile only cone conflicts below the aggregate physical-force roundoff budget")
     cli.add_argument("--friction", type=float, choices=(0.0, 0.3), default=0.0)
     cli.add_argument("--gravity-x", type=float, choices=(0.0, 1.0), default=0.0)
     cli.add_argument("--gravity-start", type=float, default=0.2)
@@ -63,6 +66,10 @@ def main():
     assert args.stress_stride >= 0 and args.cost_warm_levels >= 0
     assert not args.empty and not args.shear_distance and args.plate_offset_x == 0
     assert args.record_stride == 1 and (not args.gravity_x or args.friction == 0.3)
+    if args.load_transfer == "resolved_outer_p2" and (args.method != "dpr" or args.source_reduction != "none"):
+        raise ValueError("Resolved outer transfer requires DPR with complete physical centroid sources")
+    if args.source_roundoff and (args.load_transfer != "fixed_radius" or args.source_reduction != "none"):
+        raise ValueError("Source roundoff reconciliation requires fixed-radius complete centroid sources")
     args.output.mkdir(parents=True, exist_ok=False)
     (args.output / "frames").mkdir()
     assets = json.loads((args.assets / "result.json").read_text())
@@ -106,7 +113,10 @@ def main():
     actual_inertia = tensor_to_array(scene.rigid_solver.get_links_inertia([link.idx])).reshape(3, 3)
     np.testing.assert_allclose(np.linalg.eigvalsh(actual_inertia), np.linalg.eigvalsh(inertia_local), rtol=1e-10)
     pad = RigidPadState.allocate(points, area)
-    recovery = NativePadRecovery.allocate(args, outer, faces, points, xml) if args.method != "rigid" else None
+    recovery = (
+        NativePadRecovery.allocate(args, outer, faces, points, xml, args.load_transfer, args.source_roundoff)
+        if args.method != "rigid" else None
+    )
     top = points[:, 2] > 0
     sign = np.where(top, -1.0, 1.0)
     stiffness = 1e9
@@ -236,6 +246,7 @@ def main():
                         args.friction,
                         command,
                         args.output / "frames" / f"stress-level{level}.npz" if endpoint else None,
+                        physical_law_admitted=all(history_checks(row).values()),
                     )
                 journal.write(json.dumps(row, allow_nan=False) + "\n")
                 rows.append(row)

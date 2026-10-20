@@ -601,3 +601,17 @@ endpoint copies and new segments stay on data, with exact saved-prefix lineage;
 only small source/proof/control metadata is selected for publication. No live
 fine task is resumed, relocated or hot-edited. The new segment's elapsed time
 is explicitly separated from inherited physical history.
+
+
+Resolved-pressure native controls, the400-step trajectory and complete-column
+comparisons use `distributed-pad-*` directories under the20261019 ranking data
+root. Source-roundoff controls, both1000-step trajectories, independent audits
+and wrench-attribution variants use `pad-source-roundoff-cpu-*`,
+`pad-roundoff-every-step-v1`, `dpr-roundoff-admission-v1`,
+`scr-roundoff-admission-v1` and `native-wrench-attribution-*`. Two new relative
+data-side audit aliases preserve the existing primary auditor convention;
+their paths are recorded in `meta/roundoff-admission-plans-v1.json`. No existing
+outputs are relocated. Three terminal publication packets retain554 compact
+payloads (3,638,756 bytes) and78 externally hashed arrays, including the completed
+main/contact125um reference checkpoints. Earlier archives and captured sources
+remain immutable; all full fields, trajectories, caches and logs stay on data.

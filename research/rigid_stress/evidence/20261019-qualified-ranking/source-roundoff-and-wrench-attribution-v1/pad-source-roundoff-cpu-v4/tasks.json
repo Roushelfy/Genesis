@@ -1,0 +1,17 @@
+[
+  [
+    {
+      "name": "control",
+      "module": "research.rigid_stress.qipc_comparison.check_pad_source_roundoff",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--frames",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-dpr-rejection-capture-v1/group0/dpr/frames/rejected-stress.npz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-friction-scr-rejection-capture-v1/group0/capture/input.npz",
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-source-roundoff-cpu-v1/group0/control"
+      ]
+    }
+  ]
+]

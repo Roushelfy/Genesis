@@ -1,0 +1,24 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0%1",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=none",
+    "--cpus-per-task=4",
+    "--mem=128G",
+    "--time=900",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-contact-resume-v1/logs/%A_%a.log",
+    "--dependency=afterok:730971",
+    "--exclude=rtx-209-067,rtx-209-099,rtx-209-115,rtx-209-187,rtx-209-201,rtx-209-223,rtx-209-233,rtx-209-235,rtx-210-023,rtx-210-029",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-stvk-canonical125-contact-resume-v1/job.sh"
+  ],
+  "job": "730979",
+  "dependency": "afterok:730971",
+  "exclude_nodes": "rtx-209-067,rtx-209-099,rtx-209-115,rtx-209-187,rtx-209-201,rtx-209-223,rtx-209-233,rtx-209-235,rtx-210-023,rtx-210-029",
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "allow_home_output": false
+}

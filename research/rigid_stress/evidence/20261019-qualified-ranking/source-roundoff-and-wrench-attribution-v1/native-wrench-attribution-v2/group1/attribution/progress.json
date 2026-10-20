@@ -1,0 +1,91 @@
+{
+  "rows": [
+    {
+      "environment": 330,
+      "native_status": 36,
+      "original_continuous_certificate_retained": true,
+      "source_radii_m": [
+        0.005623592811854342,
+        0.005623592811854342
+      ],
+      "source_friction": [
+        0.713472763041482,
+        0.713472763041482
+      ],
+      "source_application_to_anchor_distance_m": [
+        0.00025883430534664467,
+        0.0002598299443654673
+      ],
+      "source_to_anchor_face_normal_angle_deg": [
+        17.808450241128813,
+        17.559569119815347
+      ],
+      "maximum_raw_source_cone_excess_n": 1.3877787807814457e-17,
+      "application_to_anchor_wrench_change_nm": [
+        2.2072641150515297e-05,
+        2.4356594338460834e-09,
+        2.3835303513707377e-07
+      ],
+      "contrasts": [
+        {
+          "radius_multiplier": 1.0,
+          "surface_points": 10,
+          "physical_normals_force_only": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "physical_normals_full_wrench": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "physical_normals_anchor_application_wrench": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "source_normals_full_wrench": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "diagnostic_variant_only": false
+        },
+        {
+          "radius_multiplier": 1.5,
+          "surface_points": 20,
+          "physical_normals_force_only": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "physical_normals_full_wrench": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "physical_normals_anchor_application_wrench": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "source_normals_full_wrench": {
+            "solver_status": 2,
+            "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)",
+            "constructively_feasible": false,
+            "continuous_infeasibility_claim": false
+          },
+          "diagnostic_variant_only": true
+        }
+      ]
+    }
+  ]
+}

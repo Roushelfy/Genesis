@@ -17,9 +17,11 @@ from genesis.engine.solvers.rigid.stress.intrinsic import IntrinsicContacts
 from genesis.engine.solvers.rigid.stress.recovery import StressLink, kernel_accept, kernel_begin_step
 from genesis.utils.misc import qd_to_numpy, qd_to_torch
 
-from .artifacts import file_id
+from .artifacts import file_id, write_json
 from .common_metric import voigt_tensor
+from .distributed_pad_transfer import ResolvedPadTransfer
 from .native_reference_replay import ContactViews
+from .source_roundoff import reconcile_source_roundoff
 from .wrench_compression import compress
 
 
@@ -36,9 +38,17 @@ class NativePadRecovery:
     source_reduction: str
     phase_timing: bool = True
     failure_path: Path | None = None
+    distributed: ResolvedPadTransfer | None = None
+    roundoff_reconciliation: bool = False
 
     @classmethod
-    def allocate(cls, args, outer, faces, points, xml):
+    def allocate(cls, args, outer, faces, points, xml, load_transfer="fixed_radius", source_roundoff=False):
+        if load_transfer not in ("fixed_radius", "resolved_outer_p2"):
+            raise ValueError("Unknown pad load transfer")
+        if load_transfer == "resolved_outer_p2" and (args.method != "dpr" or args.source_reduction != "none"):
+            raise ValueError("Resolved outer transfer requires DPR with complete physical centroid sources")
+        if source_roundoff and (load_transfer != "fixed_radius" or args.source_reduction != "none"):
+            raise ValueError("Source roundoff reconciliation requires fixed-radius complete centroid sources")
         # The motion scene accepts external wrenches; the independent observer
         # receives their complete surface-source packet. Keep the native guard
         # against observing an unspecified external wrench intact.
@@ -108,12 +118,35 @@ class NativePadRecovery:
             args.source_reduction,
             not getattr(args, "primary_cost", False),
             args.output / "frames" / "rejected-stress.npz",
+            ResolvedPadTransfer.allocate(outer, faces, coordinates, envs) if load_transfer == "resolved_outer_p2" else None,
+            source_roundoff,
         )
 
-    def sample(self, force_world, rotation, angular_world, friction, load, path=None):
+    def sample(self, force_world, rotation, angular_world, friction, load, path=None, *, physical_law_admitted=False):
+        if self.distributed is not None and not physical_law_admitted:
+            raise ValueError("Resolved pressure transfer requires separate physical law and momentum admission")
         clock = perf_counter if self.phase_timing else lambda: 0.0
         started = clock()
         force = force_world @ rotation
+        original_force = force
+        normals = np.zeros_like(force_world)
+        normals[:, 2] = np.where(self.points[:, 2] > 0, -1.0, 1.0)
+        roundoff = None
+        if self.roundoff_reconciliation:
+            try:
+                roundoff = reconcile_source_roundoff(self.points, force, normals @ rotation, friction, load)
+            except ValueError as error:
+                if self.failure_path is not None:
+                    self.failure_path.parent.mkdir(parents=True, exist_ok=True)
+                    selected = np.flatnonzero(np.any(force != 0, axis=1))
+                    np.savez_compressed(self.failure_path, source_points_m=self.points[selected],
+                        source_forces_n=force[selected], source_normals_material=(normals @ rotation)[selected],
+                        original_contact_forces_n=force, friction=friction, load_n=load)
+                    write_json(self.failure_path.with_suffix(".json"), {
+                        "accepted": False, "error": str(error), "input": file_id(self.failure_path),
+                        "scope": "Unchanged actual input refused before recovery because its cone conflict exceeds the physical source-roundoff budget."})
+                raise
+            force = roundoff.forces
         if self.source_reduction == "wrench":
             selected, coefficient, components, defect = compress(self.points, force, self.adjacency, 0.06)
         else:
@@ -121,8 +154,6 @@ class NativePadRecovery:
             coefficient = np.ones(len(selected))
             _, components = connected_components(self.adjacency[selected][:, selected], directed=False)
             defect = 0.0
-        normals = np.zeros_like(force_world)
-        normals[:, 2] = np.where(self.points[:, 2] > 0, -1.0, 1.0)
         entry = self.entry
         kernel_begin_step(entry.state)
         errno = qd_to_torch(self.errno, transpose=True, copy=False)
@@ -140,7 +171,9 @@ class NativePadRecovery:
             }
         )
         compression_seconds = clock() - started
-        if entry.intrinsic is not None:
+        if self.distributed is not None:
+            self.distributed.scatter(selected, entry.contacts, entry.state)
+        elif entry.intrinsic is not None:
             sources = entry.intrinsic.raw_sources
             sources.geom.fill(entry.link.geoms[0].idx)
             sources.method.fill(0)
@@ -217,7 +250,8 @@ class NativePadRecovery:
                 source_forces_n=force[selected] * coefficient[:, None],
                 source_components=components,
                 original_contact_points_m=self.points,
-                original_contact_forces_n=force,
+                original_contact_forces_n=original_force,
+                source_roundoff_correction_n=force - original_force,
                 original_contact_forces_world_n=force_world,
                 rotation_material_to_world=rotation,
                 angular_velocity_world_rad_per_s=angular_world,
@@ -226,6 +260,7 @@ class NativePadRecovery:
                 native_valid=valid,
                 errno=error_code,
                 contact_status=status[:count],
+                load_transfer="resolved_outer_p2" if self.distributed is not None else "fixed_radius",
             )
         relative_residual = float(np.linalg.norm(residual) / max(np.linalg.norm(rhs), 1e-30))
         return {
@@ -234,6 +269,13 @@ class NativePadRecovery:
             "source_count": count,
             "source_capacity": entry.contacts.valid.shape[0],
             "source_reduction": self.source_reduction,
+            "load_transfer": "resolved_outer_p2" if self.distributed is not None else "fixed_radius",
+            "source_roundoff": None if roundoff is None else {
+                "corrected_sources": roundoff.corrected_sources,
+                "force_change_bound_n": roundoff.force_change_bound_n,
+                "moment_change_bound_nm": roundoff.moment_change_bound_nm,
+                "physical_force_budget_n": roundoff.physical_force_budget_n,
+            },
             "source_compression_wrench_error": defect,
             "source_compression_seconds": compression_seconds,
             "observation_seconds_excluding_frame_IO": observation_seconds,

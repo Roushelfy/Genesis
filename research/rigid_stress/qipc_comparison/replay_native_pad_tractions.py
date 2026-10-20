@@ -27,6 +27,7 @@ def main():
     assert result["completed"] and result["mechanical_history_passed"] and all(result["history_checks"].values())
     assert all(w["mechanical_window_passed"] for w in result["windows"])
     params = SimpleNamespace(**start["args"])
+    assert start["args"].get("load_transfer", "fixed_radius") == "fixed_radius", "This reader exports finite-patch quadrature"
     assert params.method in ("dpr", "scr") and params.source_reduction == "none"
     assert params.radius == 0.002 and len(set(args.levels)) == len(args.levels)
     params.assets, params.output = Path(params.assets), args.output
@@ -43,7 +44,8 @@ def main():
         assert endpoint["stress"]["field"] == file_id(args.run / f"frames/stress-level{level}.npz")
     gs.init(backend=gs.cuda, precision="64", logging_level="warning")
     xml = plate_xml(float(outer[:, 2].min() - params.clearance), float(outer[:, 2].max() + params.clearance))
-    observer = NativePadRecovery.allocate(params, outer, faces, points, xml)
+    observer = NativePadRecovery.allocate(params, outer, faces, points, xml,
+                                          source_roundoff=start["args"].get("source_roundoff", False))
     write_json(
         args.output / "start.json",
         {

@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "name": "dpr-audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_native_pad",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-roundoff-every-step-v1/group0/dpr"
+      ]
+    },
+    {
+      "name": "primary-audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_pad_primary_cost",
+      "args": [
+        "--runs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/pad-roundoff-every-step-v1/group0/dpr",
+        "--data-root",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking"
+      ]
+    }
+  ]
+]

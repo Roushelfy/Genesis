@@ -1,0 +1,37 @@
+[
+  [
+    {
+      "name": "native",
+      "module": "research.rigid_stress.qipc_comparison.plate_native_pad",
+      "args": [
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-controls-v1/group0/native-meshes/land-contact-0.npz",
+        "--assets",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/finite-area-native-inputs-v1/group0/assets",
+        "--loads",
+        "0.1",
+        "0.1",
+        "--dt",
+        "0.001",
+        "--ramp",
+        "0.05",
+        "--hold",
+        "0.15",
+        "--record-stride",
+        "1",
+        "--friction",
+        "0.3",
+        "--gravity-x",
+        "1",
+        "--method",
+        "dpr",
+        "--source-reduction",
+        "none",
+        "--load-transfer",
+        "resolved_outer_p2",
+        "--stress-stride",
+        "1"
+      ]
+    }
+  ]
+]
