@@ -1,0 +1,213 @@
+{
+  "rows": [
+    {
+      "mesh": "coarse",
+      "tetrahedra": 192,
+      "scalar_nodes": 405,
+      "preparation_seconds": 0.3520899710129015,
+      "particular_force_error_relative": 1.933653922219123e-12,
+      "particular_moment_error_relative": 2.039637562619035e-12,
+      "methods": {
+        "direct": {
+          "elastic_residual_relative": 7.61566837676776e-15,
+          "solve_seconds": 0.0050969020230695605,
+          "balance_force_n": [
+            -2.8768578544284336e-32,
+            9.10001898722969e-33,
+            0.20000000000000093
+          ],
+          "sampled_tensile_peak_pa": 309526.820699757,
+          "sampled_tensile_position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sampled_von_mises_peak_pa": 1319942.265324807,
+          "sampled_von_mises_position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "corner_von_mises_peak_before_particular_pa": 1319942.265324807,
+          "corner_tensile_max_pa": 643560.06875429,
+          "corner_von_mises_max_pa": 1319942.265324807,
+          "combined_sample_tensile_max_pa": 643560.06875429,
+          "combined_sample_von_mises_max_pa": 1319942.265324807
+        },
+        "corrected": {
+          "elastic_residual_relative": 1.4506540439118922e-14,
+          "solve_seconds": 0.0013397610164247453,
+          "balance_force_n": [
+            -2.664578627187279e-13,
+            -2.8014179517810186e-13,
+            0.20000000000000928
+          ],
+          "sampled_tensile_peak_pa": 3699148.727545109,
+          "sampled_tensile_position_m": [
+            6.993279565275541e-05,
+            0.0,
+            0.0
+          ],
+          "sampled_von_mises_peak_pa": 16482378.829007482,
+          "sampled_von_mises_position_m": [
+            0.0,
+            0.0,
+            2.901633660945324e-05
+          ],
+          "corner_von_mises_peak_before_particular_pa": 35979.615101871634,
+          "corner_tensile_max_pa": 88282.6153730901,
+          "corner_von_mises_max_pa": 5517327.227164729,
+          "combined_sample_tensile_max_pa": 3699148.727545109,
+          "combined_sample_von_mises_max_pa": 16482378.829007482
+        }
+      },
+      "sensitivities": {
+        "remote_q8_q12_complete_tensor_relative": 6.532118380505202e-08,
+        "remote_stress_order16_96_complete_tensor_relative": 2.626625322958021e-06
+      },
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v3/group0/study/coarse.npz",
+        "bytes": 3514160,
+        "sha256": "8ea748ba9e9dd2fa530a5664668dddc14dc728ce9c5a53fa9a84c6e8b5139129"
+      }
+    },
+    {
+      "mesh": "medium",
+      "tetrahedra": 6048,
+      "scalar_nodes": 9375,
+      "preparation_seconds": 6.395680711022578,
+      "particular_force_error_relative": 7.562234946530102e-12,
+      "particular_moment_error_relative": 4.0574975363446563e-13,
+      "methods": {
+        "direct": {
+          "elastic_residual_relative": 5.322495316828112e-13,
+          "solve_seconds": 0.04141063103452325,
+          "balance_force_n": [
+            -3.353224589110464e-32,
+            -8.702795936199822e-33,
+            0.20000000000000015
+          ],
+          "sampled_tensile_peak_pa": 9443769.10831971,
+          "sampled_tensile_position_m": [
+            -3.1469758043739934e-05,
+            -6.903551558149722e-05,
+            0.0
+          ],
+          "sampled_von_mises_peak_pa": 17721483.39861036,
+          "sampled_von_mises_position_m": [
+            0.0,
+            -6.818322526567625e-06,
+            3.2497316171720773e-05
+          ],
+          "corner_von_mises_peak_before_particular_pa": 20628941.702168126,
+          "corner_tensile_max_pa": 10491488.908259759,
+          "corner_von_mises_max_pa": 20628941.702168126,
+          "combined_sample_tensile_max_pa": 10491488.908259759,
+          "combined_sample_von_mises_max_pa": 20628941.702168126
+        },
+        "corrected": {
+          "elastic_residual_relative": 4.797705659093908e-13,
+          "solve_seconds": 0.041525931970681995,
+          "balance_force_n": [
+            1.065956350965184e-12,
+            1.0729359024505605e-12,
+            0.19999999999999737
+          ],
+          "sampled_tensile_peak_pa": 3698231.8366579344,
+          "sampled_tensile_position_m": [
+            6.993279565275541e-05,
+            0.0,
+            0.0
+          ],
+          "sampled_von_mises_peak_pa": 16480825.15036841,
+          "sampled_von_mises_position_m": [
+            0.0,
+            0.0,
+            2.901633660945324e-05
+          ],
+          "corner_von_mises_peak_before_particular_pa": 38566.84762153253,
+          "corner_tensile_max_pa": 3698238.3483414147,
+          "corner_von_mises_max_pa": 16157435.435659442,
+          "combined_sample_tensile_max_pa": 3698238.3483414147,
+          "combined_sample_von_mises_max_pa": 16480825.15036841
+        }
+      },
+      "sensitivities": {},
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v3/group0/study/medium.npz",
+        "bytes": 6327994,
+        "sha256": "35fa94445b61a67df26084ff116ef412fd71c56f8b62ba3fe37fee7f657254d6"
+      }
+    },
+    {
+      "mesh": "fine",
+      "tetrahedra": 12288,
+      "scalar_nodes": 18513,
+      "preparation_seconds": 11.073314203007612,
+      "particular_force_error_relative": 5.5364663116128775e-12,
+      "particular_moment_error_relative": 4.675656784246219e-14,
+      "methods": {
+        "direct": {
+          "elastic_residual_relative": 9.714663624860418e-13,
+          "solve_seconds": 0.09346932201879099,
+          "balance_force_n": [
+            -1.3464055870589642e-31,
+            4.519314985126173e-32,
+            0.2000000000000041
+          ],
+          "sampled_tensile_peak_pa": 7097304.262392834,
+          "sampled_tensile_position_m": [
+            -6.818447576143652e-05,
+            -3.451775779074861e-05,
+            0.0
+          ],
+          "sampled_von_mises_peak_pa": 16849345.158830777,
+          "sampled_von_mises_position_m": [
+            0.0,
+            -3.4091612632838125e-06,
+            3.2497316171720773e-05
+          ],
+          "corner_von_mises_peak_before_particular_pa": 17389793.566486057,
+          "corner_tensile_max_pa": 9412094.841552041,
+          "corner_von_mises_max_pa": 17389793.566486057,
+          "combined_sample_tensile_max_pa": 9412094.841552041,
+          "combined_sample_von_mises_max_pa": 17389793.566486057
+        },
+        "corrected": {
+          "elastic_residual_relative": 5.333238533791247e-13,
+          "solve_seconds": 0.0920366839854978,
+          "balance_force_n": [
+            7.82395957917015e-13,
+            7.835780635456713e-13,
+            0.20000000000000037
+          ],
+          "sampled_tensile_peak_pa": 3698227.779123771,
+          "sampled_tensile_position_m": [
+            -6.993279565275541e-05,
+            0.0,
+            0.0
+          ],
+          "sampled_von_mises_peak_pa": 16480827.724186404,
+          "sampled_von_mises_position_m": [
+            0.0,
+            0.0,
+            2.901633660945324e-05
+          ],
+          "corner_von_mises_peak_before_particular_pa": 39774.89954847039,
+          "corner_tensile_max_pa": 3698234.775250721,
+          "corner_von_mises_max_pa": 16157435.300479028,
+          "combined_sample_tensile_max_pa": 3698234.775250721,
+          "combined_sample_von_mises_max_pa": 16480827.724186404
+        }
+      },
+      "sensitivities": {
+        "pressure_rule_complete_tensor_relative": 0.0030871313081858886
+      },
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v3/group0/study/fine.npz",
+        "bytes": 9268084,
+        "sha256": "23000abe06cd7103bc84de2a54d0e1232c7a50e8ba075e8acb0a447925f7b0a5"
+      }
+    }
+  ]
+}

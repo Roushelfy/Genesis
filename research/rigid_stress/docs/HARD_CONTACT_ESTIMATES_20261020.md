@@ -357,6 +357,159 @@ half-space versus a faceted finite shell with inertial relief. This table is a
 scale-gap diagnosis, not a measured shell error. It rules out using same-load
 coarse-core agreement alone to claim contact-peak resolution.
 
+## Finite-box particular stress and boundary correction
+
+The [finite-domain study](../qipc_comparison/study_hertz_residual.py) now tests
+sigma_total=sigma_Hertz+sigma_residual on a free box under the same finite
+elliptical normal pressure. Its dimensions are40a by40a by20a, with material
+depth positive from the loaded plane. Fn=0.2N, E=10GPa, nu=0.3 and density
+2000kg/m³ give a=69.93um, b=51.14um and p0=26.702MPa. The top prescribed and
+particular tractions cancel exactly in the residual problem. Other faces carry
+minus sigma_Hertz*n; the existing consistent-mass inertial relief is retained.
+Adding the particular field therefore does not duplicate the original top load.
+
+The192/6,048/12,288-tetrahedron P2 meshes share24,192 volume-weighted interior
+queries and9,123 surface/interior peak probes. All element-corner tensors and
+displacements are saved as well. The coarse particular field uses16 integration
+points; finer controls use96. Boundary integration uses an independent facet
+rule. Complete-field differences are weighted tensor L2 norms, not unweighted
+norms of differently sized arrays.
+
+| Comparison | Complete tensor difference |
+| --- | ---: |
+| Coarse direct pressure versus fine direct pressure |86.18% |
+| Coarse corrected versus fine direct pressure |8.56% |
+| Coarse corrected versus fine corrected |1.575% |
+| Medium direct pressure versus fine direct pressure |8.03% |
+| Medium corrected versus fine corrected |0.274% |
+| Fine direct pressure versus fine corrected |8.36% |
+
+The coarse corrected tensile/von-Mises sampled maxima are3.699MPa/16.482MPa;
+the fine corrected values are3.698MPa/16.481MPa. Their relative changes are
+0.0247%/0.00942%. The medium/fine corrected peak changes are below0.0001%.
+These meet the predeclared **internal corrected-mesh** targets:5% complete
+field,10% peak, with2%/5% reference refinement changes. The shared analytical
+particular field makes this a decomposition/discretization check. The direct
+pressure FEM reference still changes8.03% between its last two meshes and its
+tensile corner peaks remain unresolved; neither a5% independent physical error
+nor hollow-shell pressure accuracy is established. Maxima of the corrected
+nonpolynomial field are sampled, not certified continuum global maxima.
+
+The complete particular boundary resultant closes within7.6e-12 of Fn and
+its moment within2.1e-12 of Fn*a. Changing coarse boundary integration order
+8 to12 changes the corrected complete field by6.54e-8 relative; changing remote
+stress evaluation from16 to96 points changes it by2.63e-6. Doubling the fine
+pressure rule from24x512 to48x1024 changes its direct field by0.309%. Complete
+elastic residuals remain below9.8e-13 relative. Thus the direct/corrected gap
+cannot be represented as a failed algebraic tolerance or a precise physical
+error estimate.
+
+The first8GB allocation failed during natural-order factorization; nested
+dissection allowed both finer factors to complete, but the second allocation
+exhausted memory during later evaluation. The final run bounds pressure-point
+location and tensor-evaluation scratch by chunking and completes on the same
+8GB allocation. Interface queries can select different incident elements when
+batched; stress is discontinuous across P2 tetrahedra. All incident corner
+values remain retained, and the combined maxima use those corners plus probes.
+Original outputs and failures remain intact. This fixed-pressure box control
+does not add a pad model or prescribe an automatic shell contact radius.
+
+## Native combined field and a cheaper distant-boundary correction
+
+The bounded [native box control](../qipc_comparison/native_hertz_box.py) now
+combines the Hertz estimate, remote boundary subtraction, existing native
+elastic recovery and the particular tensor at every requested material point.
+The192-tetrahedron/405-node mesh uses4x4 positive face quadrature and16-point
+Hertz evaluation. Both maximum and complete-output modes evaluate all768
+element corners plus93 local probes; full mode writes861 symmetric tensors,
+and maximum mode reduces the same sampled von-Mises values on device. This is
+a research module for one normal contact per environment on a flat box, not
+the public moving-scene route or a certified continuum maximum.
+
+Three forces0.12/0.2/0.25N are compared against independent P2 elasticity.
+Same-load/same-ellipse combined tensors agree within1.2e-14 relative. Moving
+one supplied center and rotating its supplied curvature23 degrees agrees
+within1.6e-13; other environments are unchanged. Release, invalid force/NaN
+center rejection, single-environment isolation and recovery pass on CPU/GPU.
+Maximum/full reductions agree at1/128/512 environments. These are supplied
+inputs and module-level state changes, not collider grouping or scene resets.
+
+The retained first native allocation failed on a compile-time shape check.
+The second exposed a reference mismatch: it compared the approximate lookup
+ellipse with the independently solved ellipse as if they were identical.
+Final checks retain the1e-7 implementation and0.1% quadrature budgets on
+matching ellipses, and separately report the lookup contribution. At the exact
+0.2N ellipse edge, its tiny support shift changes the query-set tensor norm
+by0.1200%; the square-root pressure edge amplifies axis errors. This is neither
+a failed elastic tolerance nor a0.1200% complete-volume physical error.
+
+Profiling the original combined module identifies boundary integration as
+the dominant GPU phase:1.70ms at B1 and4.30ms at B512. A separate inexpensive
+variant uses the closed-form Boussinesq point-force tensor **only on the distant
+box boundary**, while keeping finite Hertz tensors at all output queries.
+These faces are at least18.6 major-axis lengths away across the force controls;
+this is not a point-load peak approximation. Independent complex-step
+derivatives of Boussinesq displacement check its integrated nodal traction.
+The4x4 versus independent high-order point traction difference is0.00626%.
+Relative force/moment discrepancy stays below5.21e-7 under the declared1e-4
+runtime budget; a rejected environment's entire residual load is cleared.
+
+Compared with the96-point Hertz/high-order boundary control on24,192 common
+volume queries, complete volume-weighted tensor differences are0.00329–0.00365%
+for the native Hertz-boundary version and0.0131–0.0238% for the distant-point
+version. Both meet the predeclared0.1% **numerical/approximation difference**
+budget on this box. The native full-field arrays, reconstructed complete-volume
+tensors and independent references are retained. These differences do not
+replace the finite-domain physical-reference uncertainty above or establish a
+safe point-force distance threshold for a thin shell.
+
+Matched primary timings use five groups of ten warmed resident updates. The
+two variants execute sequentially on the same RTX PRO6000 Blackwell GPU; the
+CPU control requests two cores. Every inclusive update includes ellipse
+estimation, required wrench/status checks, boundary scatter, inertial relief,
+elastic solve and complete residual, combined field and reduction. Forces vary
+across the batch, but repeat during timing. Imports/JIT, geometry setup,
+CPU validation, host readback and dynamics are excluded. The existing inverse
+recovery also scans its residual-field peak before the combined scan; that
+work is included, not subtracted from the measurements.
+
+| Environments | GPU Hertz boundary, full | GPU distant point, max | GPU distant point, full |
+| ---: | ---: | ---: | ---: |
+|1 |2.536ms |1.101ms |1.100ms |
+|128 |3.021ms |1.579ms |1.566ms |
+|512 |7.150ms |3.260ms |3.267ms |
+
+On the matched two-core CPU allocation, full-output Hertz/distant-point times
+are2.072/1.498ms at B1,170.555/94.265ms at B128 and716.690/422.909ms at B512.
+CPU/GPU validation uses the same configurations and numerical thresholds.
+
+The distant-boundary approximation reduces matched full-update GPU time by
+48.2–56.6%. Boundary work falls to0.274/0.287/0.425ms at B1/128/512; at B512,
+combined-field evaluation is now1.632ms and recovery1.190ms in separate phase
+measurements. Separate phase medians are descriptive and are not added to
+manufacture an inclusive timing. This supports using the cheaper correction
+for this distant-boundary control; shell inner walls and arbitrary curved
+regions require their own accuracy checks. It is not a simulator speedup.
+
+Executed finite-domain campaigns are `hard-hertz-residual-v1`/733597 and
+`v2`/733628 (retained memory failures), and `v3`/733635 (complete three-grid
+study). Native `hard-hertz-box-v1`/733638 and `v2`/733641 retain initialization
+and reference-matching failures. `v3`/733644 passes the initial combined
+CPU/GPU controls and timings; `v4`/733648 adds complete-volume validation and
+matched Hertz/distant-point variants. Their executed sources, receipts and
+external array identities are in the
+[finite-box packet](../evidence/20261019-qualified-ranking/hard-hertz-residual-v1/README.md).
+
+To reproduce, use the archived `tasks.json` for the corresponding campaign
+with `python3 -m research.rigid_stress.shell_comparison.submit`, the unchanged
+`automatic-pad-geometry` engine checkout, the analysis sources in
+`stress_qualified_ranking`, and the existing `rigid-stress-physical` Python.
+Use a fresh explicit data-side `--output`, `--node-local-cache`, `rtx-mid` and
+image1_26. The finite-domain task used `--cpu-only --cpus 1 --memory-gb 8
+--minutes 15`; the native pair used `--cpus 2 --memory-gb 16 --minutes 20`.
+The native task's reference NPZ supplies the fixed box mesh/common queries;
+it does not supply production contact inputs.
+
 ## Remaining work
 
 Next connect cached rest-curvature/current physical-region inputs to the cheap
@@ -376,12 +529,10 @@ Hertz near-field stress estimate/correction alongside the coarse shell response
 and check its overlap/double-counting and full-output meaning against a matched
 reference. Repeating a point-load peak convergence sweep is not the next step.
 
-The next finite-domain control should solve a smooth residual field after
-subtracting the known Hertz boundary traction from the target traction, then
-add the particular Hertz stress back at the actual material queries. Compare
-that decomposition with independent resolved-pressure elasticity on a small
-flat-faced finite body before applying it to a hollow polar-land egg. Preserve
-inertial relief and inspect boundary-integration error. Directly adding a Hertz
-field to the original coarse loaded solution would count part of the load twice.
+The finite-box control now supports testing that residual decomposition on a
+hollow polar-land egg, retaining inertial relief and boundary integration checks.
+Its direct-pressure reference uncertainty remains visible; it does not qualify
+unknown shell contact pressure. Directly adding a Hertz field to the original
+coarse loaded solution would still count part of the load twice.
 General curved/nonconvex use also needs a valid local domain or a controlled
 cutoff and its equilibrium residual; the half-space formula alone supplies neither.

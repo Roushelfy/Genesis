@@ -47,6 +47,18 @@ versus0.086MPa in the coarse shell: correct transfer alone does not resolve
 contact peaks. Finite-domain correction, friction history and scene integration
 remain required; direct addition would duplicate part of the contact response.
 
+The [finite-box residual control](docs/HARD_CONTACT_ESTIMATES_20261020.md#finite-box-particular-stress-and-boundary-correction)
+now subtracts the particular boundary traction before elastic recovery. Coarse
+versus fine corrected complete-field difference is1.575%, with sampled peak
+changes below0.025%. Direct-pressure FEM still changes8.03% between its final
+meshes, so this is internal decomposition evidence, not a qualified independent
+physical error. Native normal-box max/full output, moving supplied centers and
+curvature, release and isolation are tested separately from scene integration.
+Using a closed-form point-force tensor only on the distant box boundary keeps
+the full-volume difference below0.024% versus refined Hertz boundary correction
+and reduces matched GPU module time by48–57%. Full updates cost1.100/1.566/3.267ms
+at B1/128/512. This distance regime does not yet qualify shell inner walls.
+
 The [first CPU contact-region study](docs/AUTOMATIC_CONTACT_PROGRESS_20261020.md)
 now measures distributed-source double spreading: the retained2mm DPR baseline
 places about42% of normal load on the inner boundary. Conservative outer P2

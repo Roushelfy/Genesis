@@ -1,0 +1,228 @@
+{
+  "passed": true,
+  "backend": "cpu",
+  "remote_traction": "hertz",
+  "moving_center_curvature_tensor_relative": 1.5010148651479953e-13,
+  "rows": [
+    {
+      "force_n": 0.2,
+      "same_load_tensor_relative": 9.603424940838348e-15,
+      "higher_rule_tensor_relative": 0.00024245545918082632,
+      "complete_volume_tensor_relative": 3.5309632460658197e-05,
+      "independent_point_traction_relative": null,
+      "independent_ellipse_tensor_relative": 0.001199918371390584,
+      "wrench_error_relative": 4.885647210596036e-07,
+      "sampled_von_mises_peak_pa": 16482337.855909137
+    },
+    {
+      "force_n": 0.12,
+      "same_load_tensor_relative": 2.1782908477345756e-16,
+      "higher_rule_tensor_relative": 1.1560546110236875e-07,
+      "complete_volume_tensor_relative": 3.2836106342442036e-05,
+      "independent_point_traction_relative": null,
+      "independent_ellipse_tensor_relative": 2.4104293710212747e-06,
+      "wrench_error_relative": 4.887662226041759e-07,
+      "sampled_von_mises_peak_pa": 13904962.02848213
+    },
+    {
+      "force_n": 0.25,
+      "same_load_tensor_relative": 2.7323395442333196e-16,
+      "higher_rule_tensor_relative": 1.7603211036028038e-07,
+      "complete_volume_tensor_relative": 3.6428617155810476e-05,
+      "independent_point_traction_relative": null,
+      "independent_ellipse_tensor_relative": 2.833068173376563e-06,
+      "wrench_error_relative": 4.884544345817227e-07,
+      "sampled_von_mises_peak_pa": 17742835.949484494
+    }
+  ],
+  "arrays": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-box-v4/group1/hertz/fields.npz",
+    "bytes": 7898279,
+    "sha256": "82f968d64ff25ee2286e44e3710d8b03b39f6a92d309205baea6183854c95012"
+  },
+  "build_seconds": 2.970990879985038,
+  "elastic_method": "inverse",
+  "tetrahedra": 192,
+  "scalar_nodes": 405,
+  "queries": 861,
+  "surface_gauss_order": 4,
+  "hertz_order": 16,
+  "benchmark": [
+    {
+      "batch": 1,
+      "output": "max",
+      "inclusive": {
+        "seconds": [
+          0.002232592599466443,
+          0.002059179899515584,
+          0.0020566241000778973,
+          0.0020584574027452617,
+          0.0020566222025081514
+        ],
+        "median_seconds": 0.0020584574027452617
+      }
+    },
+    {
+      "batch": 1,
+      "output": "full",
+      "inclusive": {
+        "seconds": [
+          0.0020830661989748476,
+          0.00207335070008412,
+          0.0020716818049550056,
+          0.00205903789610602,
+          0.0020645902026444674
+        ],
+        "median_seconds": 0.0020716818049550056
+      },
+      "transfer": {
+        "seconds": [
+          0.0006826072989497334,
+          0.0006759299023542554,
+          0.0006745763996150345,
+          0.000676052604103461,
+          0.0006774030975066125
+        ],
+        "median_seconds": 0.000676052604103461
+      },
+      "recovery": {
+        "seconds": [
+          0.0009945417987182736,
+          0.0009761132998391986,
+          0.0009734668012242765,
+          0.0009727106953505427,
+          0.0009699099988210947
+        ],
+        "median_seconds": 0.0009734668012242765
+      },
+      "combined_field": {
+        "seconds": [
+          0.000363493402255699,
+          0.00036145180347375573,
+          0.0003609120030887425,
+          0.00036233750288374724,
+          0.00036016000085510315
+        ],
+        "median_seconds": 0.00036145180347375573
+      }
+    },
+    {
+      "batch": 128,
+      "output": "max",
+      "inclusive": {
+        "seconds": [
+          0.16772482700180263,
+          0.16714641409926118,
+          0.16799026709632017,
+          0.16784647530294022,
+          0.16831116739776916
+        ],
+        "median_seconds": 0.16784647530294022
+      }
+    },
+    {
+      "batch": 128,
+      "output": "full",
+      "inclusive": {
+        "seconds": [
+          0.1720246331009548,
+          0.1686899882974103,
+          0.17055528750061058,
+          0.16842119499924593,
+          0.17217371169826948
+        ],
+        "median_seconds": 0.17055528750061058
+      },
+      "transfer": {
+        "seconds": [
+          0.07874246690189465,
+          0.07863404939998872,
+          0.07864510049694218,
+          0.07859480089973658,
+          0.07853094729944132
+        ],
+        "median_seconds": 0.07863404939998872
+      },
+      "recovery": {
+        "seconds": [
+          0.04942463879706338,
+          0.04891869830316864,
+          0.04935767590068281,
+          0.04886768449796364,
+          0.04892707869876176
+        ],
+        "median_seconds": 0.04892707869876176
+      },
+      "combined_field": {
+        "seconds": [
+          0.040084824699442835,
+          0.04018131489865482,
+          0.04018316599540413,
+          0.040113371005281805,
+          0.04011483970098197
+        ],
+        "median_seconds": 0.04011483970098197
+      }
+    },
+    {
+      "batch": 512,
+      "output": "max",
+      "inclusive": {
+        "seconds": [
+          0.7087520122004207,
+          0.7065689873008523,
+          0.7075651024992112,
+          0.7066207954019774,
+          0.7074188444996252
+        ],
+        "median_seconds": 0.7074188444996252
+      }
+    },
+    {
+      "batch": 512,
+      "output": "full",
+      "inclusive": {
+        "seconds": [
+          0.7153702971991152,
+          0.7177011292020324,
+          0.7166904404002707,
+          0.7171067512012087,
+          0.7166709974000696
+        ],
+        "median_seconds": 0.7166904404002707
+      },
+      "transfer": {
+        "seconds": [
+          0.31391349209588953,
+          0.3143562434997875,
+          0.31384231140255,
+          0.3137465587002225,
+          0.3140595691045746
+        ],
+        "median_seconds": 0.31391349209588953
+      },
+      "recovery": {
+        "seconds": [
+          0.24034236560110003,
+          0.24028957370319404,
+          0.24164930740371346,
+          0.24115507070091552,
+          0.2415244657022413
+        ],
+        "median_seconds": 0.24115507070091552
+      },
+      "combined_field": {
+        "seconds": [
+          0.16057692269678228,
+          0.1607744685956277,
+          0.16105338589986787,
+          0.16279738279990852,
+          0.16180994400056078
+        ],
+        "median_seconds": 0.16105338589986787
+      }
+    }
+  ],
+  "scope": "Normal flat-box module with fixed supplied queries including every P2 corner and93 local probes. Maximum is over these samples; no certified continuum maximum. Includes estimate, traction correction, elastic recovery/residual, combined field and reduction. Full/max remain resident. Excludes JIT/setup, host outputs, moving dynamics, current region/curvature preparation and tangential history.",
+  "whole_goal_complete": false
+}

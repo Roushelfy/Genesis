@@ -1,0 +1,143 @@
+{
+  "rows": [
+    {
+      "mesh": "coarse",
+      "tetrahedra": 192,
+      "scalar_nodes": 405,
+      "preparation_seconds": 0.3690389869734645,
+      "particular_force_error_relative": 1.9336474389905694e-12,
+      "particular_moment_error_relative": 2.0399214072019515e-12,
+      "methods": {
+        "direct": {
+          "elastic_residual_relative": 7.501693847641182e-15,
+          "solve_seconds": 0.005238511017523706,
+          "balance_force_n": [
+            -1.824818622306906e-32,
+            2.15463412528322e-33,
+            0.20000000000000093
+          ],
+          "sampled_tensile_peak_pa": 308113.64255611156,
+          "sampled_tensile_position_m": [
+            0.0,
+            3.409161263283801e-06,
+            0.0
+          ],
+          "sampled_von_mises_peak_pa": 1309806.542614492,
+          "sampled_von_mises_position_m": [
+            4.6621863768503446e-06,
+            0.0,
+            4.735479274234171e-06
+          ],
+          "corner_von_mises_peak_before_particular_pa": 1319942.2653248073,
+          "corner_tensile_max_pa": 643560.0687542902,
+          "corner_von_mises_max_pa": 1319942.2653248073,
+          "combined_sample_tensile_max_pa": 643560.0687542902,
+          "combined_sample_von_mises_max_pa": 1319942.2653248073
+        },
+        "corrected": {
+          "elastic_residual_relative": 1.4506540439118922e-14,
+          "solve_seconds": 0.001264036982320249,
+          "balance_force_n": [
+            -2.664578627187279e-13,
+            -2.8014179517810186e-13,
+            0.20000000000000928
+          ],
+          "sampled_tensile_peak_pa": 3699148.727545109,
+          "sampled_tensile_position_m": [
+            6.993279565275541e-05,
+            0.0,
+            0.0
+          ],
+          "sampled_von_mises_peak_pa": 16481656.802398102,
+          "sampled_von_mises_position_m": [
+            0.0,
+            0.0,
+            2.901633660945324e-05
+          ],
+          "corner_von_mises_peak_before_particular_pa": 35979.615101871634,
+          "corner_tensile_max_pa": 88282.6153730901,
+          "corner_von_mises_max_pa": 5517327.227164729,
+          "combined_sample_tensile_max_pa": 3699148.727545109,
+          "combined_sample_von_mises_max_pa": 16481656.802398102
+        }
+      },
+      "sensitivities": {
+        "remote_q8_q12_complete_tensor_relative": 6.532114436352158e-08,
+        "remote_stress_order16_96_complete_tensor_relative": 2.6266152255724706e-06
+      },
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v2/group0/study/coarse.npz",
+        "bytes": 3514177,
+        "sha256": "6a4fe172684f26a69110c5ae45340b621ac307309dbb9730ebbc480161778b9f"
+      }
+    },
+    {
+      "mesh": "medium",
+      "tetrahedra": 6048,
+      "scalar_nodes": 9375,
+      "preparation_seconds": 4.270189581031445,
+      "particular_force_error_relative": 7.562235493091546e-12,
+      "particular_moment_error_relative": 4.05706961863689e-13,
+      "methods": {
+        "direct": {
+          "elastic_residual_relative": 5.308470961972253e-13,
+          "solve_seconds": 0.041233480034861714,
+          "balance_force_n": [
+            8.459045427613312e-33,
+            -4.9773252000257627e-33,
+            0.20000000000000018
+          ],
+          "sampled_tensile_peak_pa": 9443769.108319644,
+          "sampled_tensile_position_m": [
+            -3.1469758043739934e-05,
+            -6.903551558149722e-05,
+            0.0
+          ],
+          "sampled_von_mises_peak_pa": 17787056.436957967,
+          "sampled_von_mises_position_m": [
+            0.0,
+            3.409161263283801e-06,
+            1.8442632851468943e-05
+          ],
+          "corner_von_mises_peak_before_particular_pa": 20628941.70216813,
+          "corner_tensile_max_pa": 10491488.908259686,
+          "corner_von_mises_max_pa": 20628941.70216813,
+          "combined_sample_tensile_max_pa": 10491488.908259686,
+          "combined_sample_von_mises_max_pa": 20628941.70216813
+        },
+        "corrected": {
+          "elastic_residual_relative": 4.797705659093908e-13,
+          "solve_seconds": 0.04106672899797559,
+          "balance_force_n": [
+            1.065956350965184e-12,
+            1.0729359024505605e-12,
+            0.19999999999999737
+          ],
+          "sampled_tensile_peak_pa": 3698231.8366579344,
+          "sampled_tensile_position_m": [
+            6.993279565275541e-05,
+            0.0,
+            0.0
+          ],
+          "sampled_von_mises_peak_pa": 16480823.846002998,
+          "sampled_von_mises_position_m": [
+            0.0,
+            0.0,
+            2.901633660945324e-05
+          ],
+          "corner_von_mises_peak_before_particular_pa": 38566.84762153253,
+          "corner_tensile_max_pa": 3698238.3483414147,
+          "corner_von_mises_max_pa": 16157435.435659442,
+          "combined_sample_tensile_max_pa": 3698238.3483414147,
+          "combined_sample_von_mises_max_pa": 16480823.846002998
+        }
+      },
+      "sensitivities": {},
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v2/group0/study/medium.npz",
+        "bytes": 6327652,
+        "sha256": "91772210991bcb9f9fae86d4bb305e4c559b05bbc9ad9dbb6d7d04043c825ee7"
+      }
+    }
+  ]
+}
