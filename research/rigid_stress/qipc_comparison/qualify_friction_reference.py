@@ -16,6 +16,7 @@ from .friction_reference_gates import (
     tangent_peaks,
 )
 from .pad_normal_qualification import FIELDS, PEAKS
+from .solid_pad_resume_admission import audit_resume_lineage
 
 PARENTS = {
     "surface500": ("solid-pad-stvk-spatial500-v2/group0/reference", 400, 0.001, 10),
@@ -41,11 +42,13 @@ def main():
     cli.add_argument("--parent-admission", type=Path, required=True)
     cli.add_argument("--spatial-campaign", default="stvk-canonical125-fields-v2")
     cli.add_argument("--control-campaign", default="stvk-canonical125-time-contact-fields-v2")
+    cli.add_argument("--parent-overrides", type=Path, help="Explicit relative paths for terminal-endpoint continuations")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     checks, receipts, comparisons, envelopes, starts, verified = {}, [], {}, [], {}, {}
     error = None
+    parent_specs, overrides, continuations = dict(PARENTS), {}, {}
 
     def verify(expected):
         path = expected["path"]
@@ -64,22 +67,33 @@ def main():
         assert passed, name
 
     try:
+        if args.parent_overrides is not None:
+            overrides = read(args.parent_overrides)
+            require(
+                "explicit_relative_continuation_parent_map",
+                isinstance(overrides, dict) and bool(overrides) and set(overrides) <= set(PARENTS)
+                and all(isinstance(value, str) and value and not Path(value).is_absolute()
+                        and ".." not in Path(value).parts for value in overrides.values()),
+            )
+            for name, relative in overrides.items():
+                parent_specs[name] = (relative, *PARENTS[name][1:])
         admission = read(args.parent_admission)
         require(
             "explicit_parent_admission_passed",
             admission["passed"] and all(row["passed"] and all(row["checks"].values()) for row in admission["runs"]),
         )
         admitted = {row["run"]: row for row in admission["runs"]}
-        expected_runs = {str(args.data_root / spec[0]) for spec in PARENTS.values()}
+        expected_runs = {str(args.data_root / spec[0]) for spec in parent_specs.values()}
+        require("seven_distinct_parent_run_paths", len(expected_runs) == len(parent_specs))
         require(
             "all_seven_required_parent_histories",
-            set(admitted) == expected_runs and len(admission["runs"]) == len(PARENTS),
+            set(admitted) == expected_runs and len(admission["runs"]) == len(parent_specs),
         )
         for receipt in admission["receipts"]:
             verify(receipt)
         bound_fields = {row["path"]: row for row in admission["receipts"] if row["path"].endswith(".npz")}
         require("fourteen_independently_admitted_frames", len(bound_fields) == 14)
-        for name, (relative, steps, dt, order) in PARENTS.items():
+        for name, (relative, steps, dt, order) in parent_specs.items():
             run = args.data_root / relative
             require(name + "/expected_complete_step_count", admitted[str(run)]["expected_steps"] == steps)
             start = read(run / "start.json")
@@ -103,6 +117,11 @@ def main():
             )
             verify(start["mesh"])
             starts[name] = start
+            if name in overrides:
+                continuations[name] = audit_resume_lineage(
+                    run, args.data_root / PARENTS[name][0], start, read, verify,
+                    lambda key, passed, parent=name: require(parent + "/continuation/" + key, passed),
+                )
         ignored = {
             "output",
             "mesh",
@@ -110,6 +129,7 @@ def main():
             "quadrature_order",
             "cache_constitutive_evaluations",
             "reuse_contact_velocity",
+            "checkpoint_stride",
         }
         reference_parameters = {k: v for k, v in starts["final125"]["args"].items() if k not in ignored}
         require(
@@ -138,7 +158,7 @@ def main():
             assert len(result["cases"]) == 1
             case = result["cases"][0]
             expected = [
-                bound_fields[str(args.data_root / PARENTS[name][0] / "frames" / f"level{level}.npz")]
+                bound_fields[str(args.data_root / parent_specs[name][0] / "frames" / f"level{level}.npz")]
                 for name in (first, second)
             ]
             require(str(path.relative_to(args.data_root)) + "/ordered_own_frames", ordered_fields_match(case, expected))
@@ -271,10 +291,12 @@ def main():
             "error": error,
             "receipts": receipts,
             "verified_inputs": list(verified.values()),
+            "parent_overrides": overrides,
+            "continued_parent_lineage": continuations,
             "comparisons": rows,
             "reference_envelopes": envelopes,
             "accepted_reference_frames": [
-                str(args.data_root / PARENTS["final125"][0] / "frames" / f"level{level}.npz") for level in range(2)
+                str(args.data_root / parent_specs["final125"][0] / "frames" / f"level{level}.npz") for level in range(2)
             ]
             if passed
             else [],

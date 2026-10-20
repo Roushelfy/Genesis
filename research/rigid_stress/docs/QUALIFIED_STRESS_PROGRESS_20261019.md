@@ -1930,3 +1930,44 @@ retains23 payloads/165,478 bytes and excludes live outputs. Guard and selected
 fields remain pending, with no new scientific result or accepted reference frame.
 The complete reference, method ranks, final friction figures and consolidated
 matched delivery remain required. This scheduling advance does not close them.
+
+
+## Node-wide preemption and independently placed continuations, 2026-10-20
+
+729312_1 is actually PREEMPTED after321 records. Further same-node preemption
+stops729314_0/_1 after342/418 and the corrected730903 initialization after
+13m33s, before any reference journal. Terminal-only receipts retain normal
+prefixes200/200/400 with full body/plate state, original source and all later
+partial records. The first730868 launch is cancelled before integration to
+correct an in-group terminal-receipt dependency; its15 passing input controls
+and original capture remain retained. No live captured source is edited.
+
+Periodic --checkpoint-stride25 writes complete physical-state data. All33
+coarse history/array/common-field equivalence checks pass; fine prefix controls
+pass45, including the400-step half-dt case; lineage controls pass26. Only added
+output nodes differ in the reference-driver AST, and state-restoration AST is
+unchanged. The initial periodic inspector fails only at NumPy-bool JSON output;
+its original failed wrapper remains. Read-only730990 passes99 packing/source/
+control-receipt checks without rerunning the actual dynamics.
+
+Three CPU-only continuations730978/730979/730980 now inherit200/200/400 steps
+and require200/200/400 new steps. Their node pools are disjoint and exclude
+rtx-209-067. Scheduler-only dependency updates bind them to730990 while keeping
+captured sources/tasks byte-identical. Actual placement/source/CLI/dependency
+inspection passes55 checks. All output/log/checkpoint data stays under the
+established data root; private caches remain node-local.
+
+The replacement graph is731010/731011 for spatial parents/fields,731013 for
+complete parents,731014/731016 for independently ready contact and full half-dt
+controls,731019 for full qualification,731020/731021 for method/force data,
+731022 for54 errors/18 per-metric ranks,731023 for figures and731025 for matched
+costs. Two completed surface2 groups are reused through recorded relative data
+links. Only never-started obsolete consumers are cancelled. Every original
+mechanical/resolution/uncertainty target remains required. The figure entry
+accepts an explicit fields campaign and retains its actual normal-only rejection.
+
+The [recovery packet](../evidence/20261019-qualified-ranking/canonical125-resilient-recovery-v1/README.md)
+retains794 payloads/5,326,422 bytes and18 external arrays. Live new fine outputs
+are excluded. Periodic packing is validated; non-endpoint restoration awaits its
+own control. Full fine qualification, final method comparisons/ranks, inspected
+friction figures and configuration-matched combined delivery remain incomplete.

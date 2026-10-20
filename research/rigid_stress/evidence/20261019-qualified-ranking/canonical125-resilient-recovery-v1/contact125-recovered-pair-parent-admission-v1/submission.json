@@ -1,0 +1,22 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0%1",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=none",
+    "--cpus-per-task=2",
+    "--mem=8G",
+    "--time=20",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/contact125-recovered-pair-parent-admission-v1/logs/%A_%a.log",
+    "--dependency=afterok:730903:729314_0",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/contact125-recovered-pair-parent-admission-v1/job.sh"
+  ],
+  "job": "730931",
+  "dependency": "afterok:730903:729314_0",
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "allow_home_output": false
+}

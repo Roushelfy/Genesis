@@ -1,0 +1,51 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-235",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "730913",
+      "SLURM_ARRAY_JOB_ID": "730913",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "passed": false,
+  "fine_reference_qualified": false,
+  "checks": {
+    "explicit_relative_continuation_parent_map": true,
+    "explicit_parent_admission_passed": true,
+    "seven_distinct_parent_run_paths": true,
+    "all_seven_required_parent_histories": false,
+    "complete_input_contract": false
+  },
+  "error": "all_seven_required_parent_histories",
+  "receipts": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/solid-pad-resume-lineage-controls-v1/group0/controls/valid_plan_incomplete_parents.json",
+      "bytes": 81,
+      "sha256": "2e12a582ed4ec5afd050dbcaf5d9be53f7742abf639091ac0e4ef5c802f9b9b1"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/surface2-pair-parent-admission-v1/group0/admission/result.json",
+      "bytes": 6175,
+      "sha256": "0b9ed9f6e147d0692dedd0a112b5f6f920ac54869fc1c91f523ab331dfc2de94"
+    }
+  ],
+  "verified_inputs": [],
+  "parent_overrides": {
+    "final125": "solid-pad-stvk-canonical125-final-resume-v2/group0/reference"
+  },
+  "continued_parent_lineage": {},
+  "comparisons": [],
+  "reference_envelopes": [],
+  "accepted_reference_frames": [],
+  "certified_continuum_error_bound": false,
+  "whole_goal_complete": false,
+  "scope": "Declared0.1N normal/sustained-friction StVK compliant-pad reference only. All seven complete physical histories, independently bound endpoint frames, isolated surface/wall trends, joint changes, fine q6/q10 and1/0.5ms controls, q9/q25 and depth2/4 controls must pass unchanged2%/5% spatial and0.5%/1% control targets. Envelopes sum observed changes; they are conditional numerical sensitivity summaries, not statistical intervals or certified continuum bounds. No method errors/ranks, Shell mesh independence or failed every-step native stress are admitted here."
+}

@@ -25,6 +25,7 @@ def main():
     cli.add_argument("--ranking", type=Path, required=True)
     cli.add_argument("--force-data", type=Path, required=True)
     cli.add_argument("--style", type=Path, required=True)
+    cli.add_argument("--fields-campaign", default="canonical-stvk-method-fields-v2")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -78,7 +79,7 @@ def main():
         check("three_friction_candidate_details", set(details) == {"dpr", "scr", "shell"})
         reference_mesh = None
         for group, method in enumerate(("dpr", "scr", "shell")):
-            directory = args.data_root / f"canonical-stvk-method-fields-v2/group{3 + group}/{method}-level1-q1"
+            directory = args.data_root / args.fields_campaign / f"group{3 + group}/{method}-level1-q1"
             result = read(directory / "result.json")
             check(
                 method + "/centroid_display_only",

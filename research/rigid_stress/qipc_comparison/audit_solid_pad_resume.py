@@ -60,8 +60,8 @@ def main():
             verify(receipt)
         check(
             "same_physical_solver_arguments",
-            {key: value for key, value in start["args"].items() if key != "output"}
-            == {key: value for key, value in parent_start["args"].items() if key != "output"},
+            {key: value for key, value in start["args"].items() if key not in ("output", "checkpoint_stride")}
+            == {key: value for key, value in parent_start["args"].items() if key not in ("output", "checkpoint_stride")},
         )
         check(
             "complete400_step_mechanical_history",

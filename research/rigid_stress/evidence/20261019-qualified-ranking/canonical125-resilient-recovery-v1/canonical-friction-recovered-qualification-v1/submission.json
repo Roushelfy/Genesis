@@ -1,0 +1,22 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0%1",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=none",
+    "--cpus-per-task=4",
+    "--mem=16G",
+    "--time=60",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/canonical-friction-recovered-qualification-v1/logs/%A_%a.log",
+    "--dependency=afterany:730929:730932",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/canonical-friction-recovered-qualification-v1/job.sh"
+  ],
+  "job": "730935",
+  "dependency": "afterany:730929:730932",
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "allow_home_output": false
+}

@@ -80,7 +80,7 @@ restoration function has the identical AST and the reference driver identical
 bytes in both versions. The source difference/identity journal preserves this
 provenance strengthening without rerunning unchanged integration arithmetic.
 
-## Fine-reference status and use
+## Fine-reference status at the original continuation checkpoint
 
 No live fine task is cancelled, restarted or modified by this control. The
 half-dt729314_1 remains subject to its original15h limit after the denied36h
@@ -102,3 +102,65 @@ data root; small receipts/source/metadata may be published.
 
 
 The [endpoint-continuation packet](../evidence/20261019-qualified-ranking/solid-pad-endpoint-continuation-v1/README.md) retains99 compact payloads/496,923 bytes with exact original/encoded hashes, executed control variants and source/proof lineage. Three full state/column arrays stay on data with external hashes. No live fine field is frozen or admitted by this packet.
+
+
+## Actual fine preemptions and periodic state output, 2026-10-20
+
+Slurm729312_1 is PREEMPTED after321 complete steps. The other two original
+parents729314_0/_1 then stop after342/418 records during further preemption
+on the same node. The full saved normal endpoints provide200/200/400 steps;
+all original later records remain preserved. Separate terminal-only receipts
+bind these endpoints and all ten numerical modules. The first revised launch
+730868 was cancelled during initialization to remove an invalid in-group
+terminal check; it has no reference start/journal. Corrected730903 is later
+preempted during initialization, also before integration. Both attempts remain
+visible rather than being counted as complete fine trajectories.
+
+The current CPU-only continuations730978/730979/730980 use fresh data outputs
+and inherit200/200/400 steps. Required new integration is200/200/400 steps.
+They use three disjoint recorded node pools and exclude the repeatedly preempted
+node through the runner's job-specific --exclude-nodes option. Shared cluster
+configuration, numerical parameters, environments and existing links stay intact.
+rtx-mid remains a preemptible execution environment.
+
+plate_solid_pad adds --checkpoint-stride, default0. The current runs use25.
+Each periodic file retains FP64 body displacement/velocity, point forces, fixed
+geometry/quadrature, physical body/inertial force arrays, plate state and global
+clock/load metadata. Complete stress fields retain their existing endpoint
+outputs. The saved-state restoration function has the same AST as the validated
+coarse implementation. Removing only the new CLI/validation/directory/write
+nodes gives the identical prior reference-driver AST. No integration arithmetic
+or physical acceptance threshold changes.
+
+Actual coarse control730971 completes the original400-step history as200
+inherited+200 new steps with periodic output and passes all33 full-array/common-
+field equivalence checks. Three fine input controls pass15 each, including the
+half-dt400-step prefix. Input controls now accept --expected-prefix-steps;
+physical and source validation are unchanged. Continued-parent metadata passes26
+controls. Eight periodic states cover225–400 in steps of25. Independent inspection
+checks finite complete body states, exact clock/plate/point-force records, current
+force/moment balance and final endpoint-array identity.
+
+The initial periodic reader finishes its computations but fails at JSON encoding
+of NumPy booleans. Its group0 returncode1 and original log/source remain intact.
+Read-only730990 converts booleans at the output boundary, rechecks identical
+arrays and all original scientific-control receipts, and passes99 checks. No
+reference integration is rerun for this metadata correction. The fine jobs
+depend on this independent successful inspection; captured task/source bytes
+remain unchanged when their scheduler dependencies are updated.
+
+Current continuation still uses the validated complete-phase endpoints. The
+periodic-state files retain data for later recovery; non-endpoint preparation
+and restoration require a separate provenance/trajectory control before use.
+Segment elapsed time includes its own output work and excludes inherited
+history/setup. Preserve original failed/retried costs; no whole-trajectory speed
+claim follows from a shorter resumed segment.
+
+[The complete replacement queue](FRICTION_REFERENCE_QUALIFICATION_PIPELINE_20261019.md)
+retains seven-parent admission,36 comparisons,18 envelopes,54 final error rows/
+18 metric ranks or ties, guarded figures and matching costs. Current source/
+CLI/path/placement/dependency checks pass55. The
+[recovery packet](../evidence/20261019-qualified-ranking/canonical125-resilient-recovery-v1/README.md)
+retains794 payloads/5,326,422 bytes and18 external arrays. All live fine outputs
+stay on data; continued-parent admission, fine qualification and final delivery
+remain incomplete.
