@@ -1,0 +1,239 @@
+{
+  "execution_completed": true,
+  "retained_field_peak_reductions_passed": true,
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/coarse-mesh.npz",
+      "bytes": 702481,
+      "sha256": "0c8e22fb06e994181da5e8b551fe597688cb601bcea4faa071b44f976deb8b55"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/coarse-fields.npz",
+      "bytes": 87788647,
+      "sha256": "04e236bde53f4a7dc59627ebb322f8b003d0e83ea816b96e6d05b459308859ae"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/medium-mesh.npz",
+      "bytes": 960370,
+      "sha256": "82198eb856372783b1b09cec6fbe4e41819e6947b47e6f14024f986eddb5b74b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/medium-fields.npz",
+      "bytes": 103338281,
+      "sha256": "1b291e8a5058a7058239467367a585652e7487637b786e45518ce159ffbb6968"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/fine-mesh.npz",
+      "bytes": 1309214,
+      "sha256": "b93ab11f8983030a4e57b06d84e74e09dcba3c3eb18e741404aa88b8da8d4fdf"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/fine-fields.npz",
+      "bytes": 123932396,
+      "sha256": "57f608d46cf3a41ec53842742cbe1803b351ef01380ce629d03d5efc48dd2921"
+    }
+  ],
+  "peak_observations": {
+    "coarse": {
+      "direct": {
+        "tensile": {
+          "value_pa": 2317813.90799604,
+          "position_m": [
+            0.00015065562946203526,
+            -9.311029960404782e-05,
+            0.02975
+          ]
+        },
+        "von_mises": {
+          "value_pa": 7823615.02158816,
+          "position_m": [
+            0.0,
+            0.0,
+            0.03
+          ]
+        }
+      },
+      "corrected": {
+        "tensile": {
+          "value_pa": 2777371.043441249,
+          "position_m": [
+            6.993279565275541e-05,
+            0.0,
+            0.03
+          ]
+        },
+        "von_mises": {
+          "value_pa": 15730201.803601531,
+          "position_m": [
+            0.0,
+            0.0,
+            0.02997201925675065
+          ]
+        }
+      }
+    },
+    "medium": {
+      "direct": {
+        "tensile": {
+          "value_pa": 9832694.407163376,
+          "position_m": [
+            -3.7663907365508814e-05,
+            2.3277574901011956e-05,
+            0.0299375
+          ]
+        },
+        "von_mises": {
+          "value_pa": 19464693.81173279,
+          "position_m": [
+            0.0,
+            0.0,
+            0.03
+          ]
+        }
+      },
+      "corrected": {
+        "tensile": {
+          "value_pa": 2771187.3091121144,
+          "position_m": [
+            6.993279565275541e-05,
+            0.0,
+            0.03
+          ]
+        },
+        "von_mises": {
+          "value_pa": 15659186.800439319,
+          "position_m": [
+            0.0,
+            0.0,
+            0.02997201925675065
+          ]
+        }
+      }
+    },
+    "fine": {
+      "direct": {
+        "tensile": {
+          "value_pa": 6152136.911981526,
+          "position_m": [
+            -7.532781473101763e-05,
+            2.3277574901011956e-05,
+            0.03
+          ]
+        },
+        "von_mises": {
+          "value_pa": 19024662.344696734,
+          "position_m": [
+            0.0,
+            0.0,
+            0.029984374999999997
+          ]
+        }
+      },
+      "corrected": {
+        "tensile": {
+          "value_pa": 2772973.719306661,
+          "position_m": [
+            6.993279565275541e-05,
+            0.0,
+            0.03
+          ]
+        },
+        "von_mises": {
+          "value_pa": 15661898.465298044,
+          "position_m": [
+            0.0,
+            0.0,
+            0.02997201925675065
+          ]
+        }
+      }
+    }
+  },
+  "peak_comparisons": {
+    "coarse_corrected_fine_direct": {
+      "tensile": {
+        "relative_value_difference": 0.5485518148934216,
+        "position_distance_m": 0.00014711386889868178
+      },
+      "von_mises": {
+        "relative_value_difference": 0.1731678850013103,
+        "position_distance_m": 1.2355743249346102e-05
+      }
+    },
+    "coarse_corrected_fine_corrected": {
+      "tensile": {
+        "relative_value_difference": 0.0015857792318665354,
+        "position_distance_m": 0.0
+      },
+      "von_mises": {
+        "relative_value_difference": 0.004361114870896854,
+        "position_distance_m": 0.0
+      }
+    },
+    "medium_direct_fine_direct": {
+      "tensile": {
+        "relative_value_difference": 0.5982567598607602,
+        "position_distance_m": 7.29713636849253e-05
+      },
+      "von_mises": {
+        "relative_value_difference": 0.023129528349222994,
+        "position_distance_m": 1.562500000000175e-05
+      }
+    },
+    "medium_corrected_fine_corrected": {
+      "tensile": {
+        "relative_value_difference": 0.0006442218265930721,
+        "position_distance_m": 0.0
+      },
+      "von_mises": {
+        "relative_value_difference": 0.00017313768600490942,
+        "position_distance_m": 0.0
+      }
+    }
+  },
+  "field_comparisons": {
+    "coarse_direct_fine_direct": {
+      "volume": 0.33579413635149324,
+      "membrane": 0.04978541027263647,
+      "bending": 0.07129898019088829
+    },
+    "coarse_corrected_fine_direct": {
+      "volume": 0.060678265162592414,
+      "membrane": 0.00951815624552747,
+      "bending": 0.010044812735787773
+    },
+    "coarse_corrected_fine_corrected": {
+      "volume": 0.021886067705093347,
+      "membrane": 0.006577040981005135,
+      "bending": 0.004946658138562716
+    },
+    "medium_direct_fine_direct": {
+      "volume": 0.09823286586313931,
+      "membrane": 0.007825765101761209,
+      "bending": 0.009748790456833157
+    },
+    "medium_corrected_fine_corrected": {
+      "volume": 0.010994851402104499,
+      "membrane": 0.0014754882169691348,
+      "bending": 0.0013096849321552174
+    },
+    "fine_direct_fine_corrected": {
+      "volume": 0.056246336359004334,
+      "membrane": 0.009232785945884876,
+      "bending": 0.007084771118730805
+    }
+  },
+  "targets": {
+    "field_relative": 0.05,
+    "peak_relative": 0.1,
+    "reference_field_change": 0.02,
+    "reference_peak_change": 0.05
+  },
+  "independent_direct_reference_change_gate_passed": false,
+  "coarse_corrected_vs_fine_direct_error_gate_passed": false,
+  "conditional_prescribed_pressure_stress_gate_passed": false,
+  "corrected_internal_targets_met": true,
+  "pressure_support_prediction_qualified": false,
+  "scope": "Read-only independent reductions of all retained element-corner and common near-field tensors, with global sampled tensile/von-Mises peak locations. Original field/peak/reference thresholds are unchanged. The direct-pressure reference change gate is required separately from corrected internal refinement. A conditional prescribed-pressure gate does not qualify predicted contact support/pressure, friction history, arbitrary geometry or a native scene estimator.",
+  "whole_goal_complete": false
+}

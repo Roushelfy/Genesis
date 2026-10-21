@@ -61,6 +61,14 @@ B1024 max/full costs 15.65/15.67 ms per step, with 52.77% loaded admission.
 Batch scaling of the composed numerical path is measured; useful physical
 throughput and the public automatic estimator remain unqualified.
 
+The [fixed hollow-shell particular/residual control](HERTZ_HOLLOW_SHELL_RESIDUAL_20261021.md)
+retains complete and membrane/bending fields plus sampled peak locations.
+Corrected internal refinement passes its declared targets. Direct-pressure
+reference changes exceed the original field/tensile-peak budgets, so independent
+physical error, pressure/support prediction and cheap native shell correction
+remain open. The numerical residual and boundary-resultant checks do not close
+those requirements.
+
 The [current-curvature/live-input controls](HARD_CONTACT_ESTIMATES_20261020.md#current-curvature-and-live-contact-inputs) now include native primitive and mesh geometry, source splitting/order/side invariance, invalid-source quarantine, release and actual same-substep Franka inputs. Matched trajectories remain exact, while substantial region rejection and measured input overhead prevent promotion to useful stress throughput. Preserve the failed candidate and opposing-box diagnostic; complete stress/friction output and shell/contact accuracy remain required.
 
 The [partial-level recovery control](REFERENCE_ENDPOINT_CONTINUATION_20261019.md#partial-level-recovery-and-repeated-continuation-ancestry) now completes300+100 and225+175 coarse histories, each passing34 unchanged-limit conformance and49 two-link ancestry checks. It supports recovery after future actual termination; current fine captures/queues remain unchanged. This does not qualify any partial fine trajectory or remove any remaining proof in the table.

@@ -1,0 +1,141 @@
+{
+  "rows": [
+    {
+      "name": "coarse",
+      "mesh": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/coarse-mesh.npz",
+        "bytes": 702481,
+        "sha256": "0c8e22fb06e994181da5e8b551fe597688cb601bcea4faa071b44f976deb8b55"
+      },
+      "fields": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/coarse-fields.npz",
+        "bytes": 87788647,
+        "sha256": "04e236bde53f4a7dc59627ebb322f8b003d0e83ea816b96e6d05b459308859ae"
+      },
+      "tetrahedra": 60600,
+      "scalar_nodes": 101010,
+      "volume_m3": 3.7303908382972873e-06,
+      "construction_seconds": 247.8398298100219,
+      "particular_force_error_relative": 3.348207798784358e-16,
+      "particular_moment_error_relative": 3.2103692617268744e-15,
+      "methods": {
+        "direct": {
+          "elastic_residual_relative": 8.172026522391839e-13,
+          "solve_seconds": 0.5558786420151591,
+          "tensile_max_pa": 2317813.90799604,
+          "von_mises_max_pa": 7823615.02158816,
+          "balance_force_n": [
+            -5.136873578894933e-35,
+            -2.5911421975175684e-34,
+            -0.19999999999999957
+          ]
+        },
+        "corrected": {
+          "elastic_residual_relative": 4.8644992677315495e-12,
+          "solve_seconds": 0.5961714079603553,
+          "tensile_max_pa": 2777371.043441249,
+          "von_mises_max_pa": 15730201.803601531,
+          "balance_force_n": [
+            -8.538012698984664e-18,
+            -2.5884655018104096e-18,
+            -0.19999999999999887
+          ]
+        }
+      },
+      "sensitivities": {
+        "boundary_q8_q12": 1.1321051055224222e-09,
+        "boundary_stress16_96": 2.2301917777493925e-06
+      }
+    },
+    {
+      "name": "medium",
+      "mesh": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/medium-mesh.npz",
+        "bytes": 960370,
+        "sha256": "82198eb856372783b1b09cec6fbe4e41819e6947b47e6f14024f986eddb5b74b"
+      },
+      "fields": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/medium-fields.npz",
+        "bytes": 103338281,
+        "sha256": "1b291e8a5058a7058239467367a585652e7487637b786e45518ce159ffbb6968"
+      },
+      "tetrahedra": 94608,
+      "scalar_nodes": 147182,
+      "volume_m3": 3.730390838297287e-06,
+      "construction_seconds": 393.0484948750236,
+      "particular_force_error_relative": 1.3087208411118932e-14,
+      "particular_moment_error_relative": 6.187101783186746e-15,
+      "methods": {
+        "direct": {
+          "elastic_residual_relative": 5.2473217948322e-12,
+          "solve_seconds": 0.8611604300094768,
+          "tensile_max_pa": 9832694.407163376,
+          "von_mises_max_pa": 19464693.81173279,
+          "balance_force_n": [
+            4.485757902233297e-35,
+            -5.190408076929495e-36,
+            -0.1999999999999958
+          ]
+        },
+        "corrected": {
+          "elastic_residual_relative": 2.2724585614215164e-11,
+          "solve_seconds": 0.7841903300140984,
+          "tensile_max_pa": 2771187.3091121144,
+          "von_mises_max_pa": 15659186.800439319,
+          "balance_force_n": [
+            -6.112189747387033e-18,
+            -5.9067842576778426e-18,
+            -0.19999999999999488
+          ]
+        }
+      },
+      "sensitivities": {}
+    },
+    {
+      "name": "fine",
+      "mesh": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/fine-mesh.npz",
+        "bytes": 1309214,
+        "sha256": "b93ab11f8983030a4e57b06d84e74e09dcba3c3eb18e741404aa88b8da8d4fdf"
+      },
+      "fields": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/fine-fields.npz",
+        "bytes": 123932396,
+        "sha256": "57f608d46cf3a41ec53842742cbe1803b351ef01380ce629d03d5efc48dd2921"
+      },
+      "tetrahedra": 139488,
+      "scalar_nodes": 209250,
+      "volume_m3": 3.730390838297287e-06,
+      "construction_seconds": 252.24259156401968,
+      "particular_force_error_relative": 4.4752052560096485e-15,
+      "particular_moment_error_relative": 7.161331530559204e-15,
+      "methods": {
+        "direct": {
+          "elastic_residual_relative": 4.0169409390687436e-11,
+          "solve_seconds": 1.4824965539737605,
+          "tensile_max_pa": 6152136.911981526,
+          "von_mises_max_pa": 19024662.344696734,
+          "balance_force_n": [
+            -8.495112083181979e-36,
+            5.785625208995315e-35,
+            -0.19999999999999343
+          ]
+        },
+        "corrected": {
+          "elastic_residual_relative": 9.141667183012636e-11,
+          "solve_seconds": 1.464030004979577,
+          "tensile_max_pa": 2772973.719306661,
+          "von_mises_max_pa": 15661898.465298044,
+          "balance_force_n": [
+            6.268043809681942e-19,
+            -5.3615961333891465e-18,
+            -0.19999999999999277
+          ]
+        }
+      },
+      "sensitivities": {
+        "pressure_q24_q48": 0.0011845272998995298
+      }
+    }
+  ]
+}
