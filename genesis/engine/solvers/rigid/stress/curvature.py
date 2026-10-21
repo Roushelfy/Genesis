@@ -35,6 +35,9 @@ class StressCurvatureInfo:
     face_edges: qd.Tensor
     face_dual: qd.Tensor
     face_valid: qd.Tensor
+    face_min: qd.Tensor
+    face_max: qd.Tensor
+    face_scale: qd.Tensor
 
 
 class StressCurvature:
@@ -64,6 +67,9 @@ class StressCurvature:
             face_edges=V_MAT(2, 3, dtype=gs.qd_float, shape=(n_faces,)),
             face_dual=V_MAT(2, 3, dtype=gs.qd_float, shape=(n_faces,)),
             face_valid=V(dtype=gs.qd_bool, shape=(n_faces,)),
+            face_min=V_VEC(3, dtype=gs.qd_float, shape=(n_faces,)),
+            face_max=V_VEC(3, dtype=gs.qd_float, shape=(n_faces,)),
+            face_scale=V(dtype=gs.qd_float, shape=(n_faces,)),
         )
         kernel_mesh_curvature(dyn_info, self.info, epsilon)
         kernel_vertex_curvature(dyn_info, self.info)
@@ -77,6 +83,11 @@ def kernel_mesh_curvature(dyn_info: array_class.DynInfo, curvature_info: StressC
         first = dyn_info.verts.init_pos[i_a]
         edges = qd.Matrix.cols([dyn_info.verts.init_pos[i_b] - first, dyn_info.verts.init_pos[i_c] - first])
         geometric_gram = edges.transpose() @ edges
+        curvature_info.face_min[i_f] = qd.min(first, qd.min(dyn_info.verts.init_pos[i_b], dyn_info.verts.init_pos[i_c]))
+        curvature_info.face_max[i_f] = qd.max(first, qd.max(dyn_info.verts.init_pos[i_b], dyn_info.verts.init_pos[i_c]))
+        curvature_info.face_scale[i_f] = (
+            curvature_info.face_min[i_f].norm_sqr() + curvature_info.face_max[i_f].norm_sqr()
+        )
         curvature_info.face_origin[i_f] = first
         curvature_info.face_edges[i_f] = edges.transpose()
         curvature_info.face_dual[i_f] = qd.Matrix.zero(gs.qd_float, 2, 3)
@@ -242,17 +253,20 @@ def func_closest_surface(
 ):
     """Find the nearest mesh face using shared rest-shape barycentric maps.
 
-    Face order and the nearest-distance tolerance retain the existing surface
-    query's choice. The search covers every face, including disconnected and
-    nonconvex components, and makes no assumption about normal uniqueness.
+    Face order and the nearest-distance tolerance retain the existing surface query's choice. Conservative box bounds
+    skip faces that cannot improve the ordered selection, including on disconnected and nonconvex components.
     """
     local = geom.qd_inv_transform_by_trans_quat(position, dyn_state.geoms.pos[i_g, i_b], dyn_state.geoms.quat[i_g, i_b])
     tolerance = 128.0 * epsilon * (dyn_state.geoms.aabb_max[i_g, i_b] - dyn_state.geoms.aabb_min[i_g, i_b]).norm()
     minimum = gs.qd_float(float("inf"))
     selected = -1
     closest = qd.Vector.zero(gs.qd_float, 3)
+    local_scale = local.norm_sqr()
     for i_f in range(dyn_info.geoms.face_start[i_g], dyn_info.geoms.face_end[i_g]):
-        if curvature_info.face_valid[i_f]:
+        lower = qd.max(curvature_info.face_min[i_f] - local, qd.max(local - curvature_info.face_max[i_f], 0.0))
+        squared_minimum = minimum * minimum
+        slack = 128.0 * epsilon * (local_scale + curvature_info.face_scale[i_f] + squared_minimum)
+        if curvature_info.face_valid[i_f] and lower.norm_sqr() <= squared_minimum + slack:
             origin = curvature_info.face_origin[i_f]
             edges = curvature_info.face_edges[i_f]
             coordinates = curvature_info.face_dual[i_f] @ (local - origin)
@@ -271,6 +285,7 @@ def func_closest_surface(
             distance = (local - candidate).norm()
             if distance < minimum - tolerance:
                 minimum, closest, selected = distance, candidate, i_f
-    return geom.qd_transform_by_trans_quat(
-        closest, dyn_state.geoms.pos[i_g, i_b], dyn_state.geoms.quat[i_g, i_b]
-    ), selected
+    return (
+        geom.qd_transform_by_trans_quat(closest, dyn_state.geoms.pos[i_g, i_b], dyn_state.geoms.quat[i_g, i_b]),
+        selected,
+    )
