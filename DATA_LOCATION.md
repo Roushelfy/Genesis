@@ -1,5 +1,15 @@
 # Rigid-stress data and artifact locations
 
+The `hard-scene-large-batch-v1` packet adds 60 compact payloads/658,695 bytes
+for completed B256/B1024 paired max/full/rigid scenes and complete-history
+comparisons. Its 72 external artifacts, including large compressed histories,
+stay hashed under `20261019-qualified-ranking/hard-scene-large-batch-v1` on data.
+The separate `hard-shell-residual-v1` study and its job logs also use this data
+root; its live scientific outputs are excluded from the large-batch packet.
+The adjacent `hard-scene-public-source-binding-v1` packet retains three compact
+stdlib source-verification payloads, binding the isolated scientific checkouts
+to public task commits without changing the original execution provenance.
+
 The `hard-scene-transfer-v1` packet retains 326 compact payloads/3,209,088 bytes
 for B4/B64 paired moving-scene max/full transfer and coarse elasticity, CPU/GPU
 independent bridge controls and complete-history comparisons. Its 180 external

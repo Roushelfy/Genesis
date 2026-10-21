@@ -55,6 +55,12 @@ an old-engine negative regression and eighteen passing CPU/GPU checks. B4 admits
 This closes the missing composed timing measurement, while finite-face/source
 moments, friction memory and shell/near-field physical accuracy remain open.
 
+The [B256/B1024 extension](HARD_CONTACT_ESTIMATES_20261020.md#complete-scene-scaling-through-1024-environments)
+passes the same complete scene comparisons and paired rigid trajectories.
+B1024 max/full costs 15.65/15.67 ms per step, with 52.77% loaded admission.
+Batch scaling of the composed numerical path is measured; useful physical
+throughput and the public automatic estimator remain unqualified.
+
 The [current-curvature/live-input controls](HARD_CONTACT_ESTIMATES_20261020.md#current-curvature-and-live-contact-inputs) now include native primitive and mesh geometry, source splitting/order/side invariance, invalid-source quarantine, release and actual same-substep Franka inputs. Matched trajectories remain exact, while substantial region rejection and measured input overhead prevent promotion to useful stress throughput. Preserve the failed candidate and opposing-box diagnostic; complete stress/friction output and shell/contact accuracy remain required.
 
 The [partial-level recovery control](REFERENCE_ENDPOINT_CONTINUATION_20261019.md#partial-level-recovery-and-repeated-continuation-ancestry) now completes300+100 and225+175 coarse histories, each passing34 unchanged-limit conformance and49 two-link ancestry checks. It supports recovery after future actual termination; current fine captures/queues remain unchanged. This does not qualify any partial fine trajectory or remove any remaining proof in the table.

@@ -1154,3 +1154,54 @@ retains task commands, captured workers, engine identity, full histories,
 terminal accounting and hashes for external complete fields/trajectories.
 Replay its `tasks.json` with the existing Slurm submitter and a fresh data-side
 output directory; retain the captured worker versions and original conditions.
+
+## Complete scene scaling through 1024 environments
+
+The same reproducible engine and scene adapter now complete both larger
+independently evolving batches. Each group pairs pure rigid, max and full in
+one allocation, with the original 720 steps and three warmed repeats. Every
+audited status/source/input/peak check passes, and all compared rigid trajectories
+remain exactly equal. This extends the composed coarse-stress measurement;
+the earlier input-only rates retain their original scope.
+
+| Batch | Rigid ms/step | Max ms/step | Full ms/step | Max added ms | Full added ms | Raw max/full env-step/s | Admitted loaded / loaded env-steps |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 256 | 5.257 | 9.261 | 9.257 | 4.004 | 4.000 | 27,642 / 27,654 | 96,297 / 181,803 |
+| 1024 | 7.247 | 15.648 | 15.670 | 8.402 | 8.424 | 65,438 / 65,346 | 383,722 / 727,222 |
+
+The loaded admission fractions are 52.97% and 52.77%. At B1024 there are
+257,790 geometry, 43,712 transfer and 43,443 actual-facet cone rejection bits;
+1,445 steps overlap the latter two categories. Source projection and elastic
+solves add no rejection bits. Rejected steps remain in the measured wall time.
+These rates include failures and do not qualify useful physical stress updates.
+Pressure/support, near-field/shell accuracy and friction history remain open.
+
+The separate synchronized max profile measures traction transfer at
+1.308/4.698 ms for B256/B1024, elastic recovery plus peak at 0.842/1.438 ms,
+boundary-source resolution at 0.841/0.862 ms, and planar geometry at
+0.574/0.589 ms. Transfer is the clearest batch-dependent target for the next
+composed-path optimization. These intrusive phase measurements cannot be
+summed into the primary inclusive wall-clock total. Host readback, detailed
+research probes and audit counters remain confined to the audited rollout.
+
+Scheduler peak host RSS is 37.86/38.91 GiB for the complete sequential groups;
+this includes initialization, compilation and the audited output/comparison
+workload. It is distinct from GPU memory and declared shared tensor storage.
+Both groups use RTX PRO 6000 Blackwell Server Edition GPUs, container `1_26`,
+float64 and the unchanged level 1 elasticity. Cold preparation and the shared
+65,800,337-byte operator footprint were measured in the preceding scene packet.
+
+Executed campaign `hard-scene-large-batch-v1`/737287 has both groups completed
+with exit 0. Its [compact packet](../evidence/20261019-qualified-ranking/hard-scene-large-batch-v1/README.md)
+retains captured workers, original tasks, terminal accounting and complete
+comparison receipts. Full field snapshots, histories, trajectories and meshes
+remain hashed in the established data directory. The separate live hollow-shell
+study is excluded from this packet.
+
+For public replay, use selected task commit
+`d4503b9e42a7f8f8555d128b437bb45b3193cf75` (baseline `aa803cdb9`).
+The [public source binding](../evidence/20261019-qualified-ranking/hard-scene-public-source-binding-v1/README.md)
+verifies every scientific file in nine executed source inventories and five
+explicit test dependencies against those public Git blobs. The isolated local
+`900110f11` commit has different ancestry; its recorded identity remains original
+execution provenance. Captured research workers remain authoritative.
