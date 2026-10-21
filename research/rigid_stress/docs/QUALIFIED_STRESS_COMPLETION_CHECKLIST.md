@@ -61,6 +61,15 @@ B1024 max/full costs 15.65/15.67 ms per step, with 52.77% loaded admission.
 Batch scaling of the composed numerical path is measured; useful physical
 throughput and the public automatic estimator remain unqualified.
 
+The [inactive-sample bandwidth follow-up](HARD_CONTACT_ESTIMATES_20261020.md#avoiding-inactive-sample-geometry-stores)
+selects a numerically conforming research scene optimization: same-allocation
+B1024 max/full cost falls from 15.673/15.760 to 11.749/11.885 ms, with unchanged
+52.77% loaded admission and sample capacity. CPU/GPU controls and complete
+history/field comparisons pass. The final allocation's preemption and absent
+returncode remain preserved; a source/input-bound CPU reinspection completes
+only its missing read-only full comparison. Pressure/support, shell/near-field
+and friction-history qualification remain required.
+
 The [fixed hollow-shell particular/residual control](HERTZ_HOLLOW_SHELL_RESIDUAL_20261021.md)
 retains complete and membrane/bending fields plus sampled peak locations.
 Corrected internal refinement passes its declared targets. Direct-pressure

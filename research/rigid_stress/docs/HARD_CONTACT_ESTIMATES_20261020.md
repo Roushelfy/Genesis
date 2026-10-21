@@ -1244,3 +1244,58 @@ numerical gates; [standalone diagnostics](../qipc_comparison/diagnose_hertz_walk
 retain homogeneous patch states without bypassing admission. The separate
 inactive-sample bandwidth candidate is still being measured and is excluded
 from this packet.
+
+## Avoiding inactive sample geometry stores
+
+The selected research scene now refreshes every sample's negative face tag but
+skips clearing unused position and barycentric storage. All readers gate those
+values on the face tag; active samples still write their complete geometry.
+The transfer constructor retains the original clearing default for other
+consumers, and `live_hertz_cleared_samples` supplies an explicit paired control.
+No capacity, pressure law, walking rule or acceptance threshold changes.
+
+The final B1024 comparison interleaves cleared/max, masked/max, cleared/full,
+masked/full and pure rigid on one GPU allocation. All use 720 steps, three
+warmed uninstrumented repeats, float64 and the same level 1 elastic model.
+
+| Mode | Cleared ms/step | Selected ms/step | Total time reduction | Cleared added ms | Selected added ms | Selected raw env-step/s |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Max | 15.673 | 11.749 | 25.04% | 8.324 | 4.400 | 87,155 |
+| Full | 15.760 | 11.885 | 24.59% | 8.410 | 4.535 | 86,163 |
+
+The shared rigid median is 7.349 ms/step. Added time falls 47.14%/46.08%; every
+selected warmed replicate is faster than every clearing replicate in its mode.
+Separate synchronized max profiling measures transfer at 4.670 versus 0.825 ms,
+with elastic recovery at 1.447 versus 1.444 ms and boundary sources at
+0.876 versus 0.874 ms. These intrusive profiles are not summed into the primary
+scene timing. Audit, detailed probes and host exports remain outside its warmed
+timed repeats.
+
+At 750 contact slots per environment and 96 samples per slot, B1024 reserves
+73,728,000 samples. Clearing six float64 geometry values represents
+3,538,944,000 logical store bytes per step; omitting inactive writes saves
+bandwidth, while allocated capacity and face-tag refresh remain unchanged.
+This logical accounting is not a measured DRAM-traffic counter.
+
+CPU/GPU geometry and independent elastic/bridge controls, B4/B1024 complete
+histories, max/full comparisons and retained complete-field comparisons pass
+their original gates. Rigid trajectories remain exactly equal. Loaded admission
+remains 383,722/727,222 (52.77%), with identical rejection counts; raw rates
+include rejected observations. Pressure/support prediction, near-field/shell
+stress and friction history remain unqualified, so this selects the numerical
+research scene path without promoting a public physical estimator.
+
+Campaign `hard-scene-masked-samples-v1`/737403 completes all four prototype
+groups. In the final paired `hard-scene-sample-bandwidth-v1`/737439, CPU/GPU
+controls complete, and all five measured scene tasks, both scene comparisons
+and max conformance finish before group 2 is preempted. Its scheduler state
+and absent returncode marker remain intact. Only the missing read-only full
+conformance is completed by CPU job 737514, using exactly matched comparator
+bytes and original result/field hashes. Dynamics are not rerun; all table
+timings come from the original paired allocation.
+
+The [bandwidth packet](../evidence/20261019-qualified-ranking/hard-transfer-sample-bandwidth-v1/README.md)
+retains captured workers, original task order, source identities, failed/partial
+terminal state, completed checks and external hashes for complete data arrays.
+Replay its tasks with the captured workers and public engine alias `d4503b9e4`,
+the pinned Python, `rtx-mid`, image `1_26` and fresh explicit data-side outputs.

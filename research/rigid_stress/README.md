@@ -57,6 +57,14 @@ about 65,400 raw env-step/s; only 52.77% of loaded observations pass the discret
 gate. Traction transfer is the main measured batch-dependent addition. These
 coarse-field rates retain the same unresolved physical-accuracy limitations.
 
+The [inactive-sample bandwidth optimization](docs/HARD_CONTACT_ESTIMATES_20261020.md#avoiding-inactive-sample-geometry-stores)
+reduces same-allocation B1024 max/full step time from 15.673/15.760 to
+11.749/11.885 ms, about 25%/24.6%, with unchanged numerical gates and admission.
+Negative face tags invalidate unused geometry, avoiding unnecessary clearing;
+allocated sample capacity is unchanged. All five measured tasks finish before
+preemption; the missing read-only full comparison passes in a separately bound
+CPU reinspection. These are raw scene rates, with physical accuracy still open.
+
 The [hollow-shell decomposition](docs/HERTZ_HOLLOW_SHELL_RESIDUAL_20261021.md)
 now retains full tensors, material-column membrane/bending and sampled peak
 locations for three meshes of one fixed prescribed-pressure egg. Corrected
