@@ -22,7 +22,13 @@ from examples.rigid.franka_egg_stress import FrankaEgg
 from genesis.engine.solvers.rigid.stress.association import kernel_associate
 from genesis.engine.solvers.rigid.stress.contact import StressContactState
 from genesis.engine.solvers.rigid.stress.curvature import StressCurvature, StressCurvatureInfo, func_surface_curvature
-from genesis.engine.solvers.rigid.stress.hertz_regions import StressHertzRegions, StressHertzRegionState
+from genesis.engine.solvers.rigid.stress.hertz_regions import (
+    StressHertzRegions,
+    StressHertzRegionState,
+    kernel_hertz_roots,
+    kernel_hertz_planar,
+    kernel_hertz_regions,
+)
 from genesis.engine.solvers.rigid.stress.provenance import create_sources, kernel_capture_rigid_sources
 from genesis.engine.solvers.rigid.stress.provenance import StressSourceState
 from genesis.engine.solvers.rigid.stress.pair_geometry import func_opponent_boundary
@@ -32,6 +38,7 @@ from genesis.utils.array_class import V, V_MAT, V_VEC
 from genesis.utils.misc import qd_to_numpy, tensor_to_array
 
 from .artifacts import file_id, runtime_identity, write_json
+from .check_hertz_grouping import kernel_serial_grouping, kernel_compare_grouping
 from .native_hertz import HertzState, NativeHertz
 
 
@@ -142,14 +149,25 @@ def array(field):
 
 
 class InputObserver:
-    def __init__(self, solver):
+    def __init__(self, solver, check_grouping=False):
         self.solver = solver
         self.entry = solver.stress_recovery.links[0]
         self.epsilon = float(np.finfo(gs.np_float).eps)
+        qd.sync()
+        begun = perf_counter()
         self.cache = StressCurvature(solver.dyn_info, self.epsilon)
+        qd.sync()
+        self.curvature_build_seconds = perf_counter() - begun
+        self.profile = False
+        self.audit_enabled = True
+        self.phase_samples = []
         shape = self.entry.contacts.valid.shape
         self.sources = create_sources(*shape)
         self.regions = StressHertzRegions(self.entry.contacts)
+        self.grouping_reference = StressHertzRegions(self.entry.contacts) if check_grouping else None
+        self.grouping_errors = V(dtype=gs.qd_float, shape=(shape[1], 3))
+        self.grouping_errors.fill(0)
+        self.check_grouping = check_grouping
         self.hertz = NativeHertz(shape[0] * shape[1])
         self.capture_probe = False
         self.probe = BoundaryProbeState(
@@ -168,6 +186,16 @@ class InputObserver:
             moment_error=V(dtype=gs.qd_float, shape=(shape[1],)),
         )
 
+    def phase(self, name, function, *args):
+        if self.profile:
+            qd.sync()
+            begun = perf_counter()
+            function(*args)
+            qd.sync()
+            self.phase_samples.append((name, perf_counter() - begun))
+        else:
+            function(*args)
+
     def reset_audit(self):
         self.audit.status_counts.fill(0)
         self.audit.invalid_steps.fill(0)
@@ -179,8 +207,10 @@ class InputObserver:
         assert recovery is self.solver.stress_recovery
         entry, solver = self.entry, self.solver
         if i_substep == 0:
-            kernel_begin_step(entry.state)
-        kernel_associate(
+            self.phase("begin_step", kernel_begin_step, entry.state)
+        self.phase(
+            "association",
+            kernel_associate,
             entry.link.idx,
             solver._links_offset_pos,
             solver._links_offset_quat,
@@ -193,22 +223,61 @@ class InputObserver:
             entry.state.step_valid,
             solver._errno,
         )
-        kernel_capture_rigid_sources(entry.link.idx, entry.contacts, self.sources, solver.collider.collider_state)
-        self.regions.update(
+        self.phase(
+            "provenance",
+            kernel_capture_rigid_sources,
             entry.link.idx,
             entry.contacts,
             self.sources,
+            solver.collider.collider_state,
+        )
+        self.phase(
+            "geometry_roots",
+            kernel_hertz_roots,
+            entry.link.idx,
             solver.dyn_state,
             solver.collider.collider_state,
+            entry.contacts,
+            self.sources,
+            self.regions.state,
             solver.dyn_info,
             self.cache.info,
             self.epsilon,
         )
-        kernel_estimate_inputs(self.regions.state, self.hertz.state)
-        self.hertz.update()
-        kernel_audit(entry.contacts, self.regions.state, self.audit)
+        self.phase(
+            "geometry_planar",
+            kernel_hertz_planar,
+            solver.dyn_state,
+            solver.collider.collider_state,
+            entry.contacts,
+            self.sources,
+            self.regions.state,
+            solver.dyn_info,
+            self.cache.info,
+            self.epsilon,
+        )
+        self.phase(
+            "grouping_wrench",
+            kernel_hertz_regions,
+            entry.contacts,
+            self.sources,
+            self.regions.state,
+            solver.collider.collider_state,
+            self.epsilon,
+        )
+        self.phase("hertz_inputs", kernel_estimate_inputs, self.regions.state, self.hertz.state)
+        self.phase("hertz_law", self.hertz.update)
+        if self.audit_enabled:
+            self.phase("research_audit", kernel_audit, entry.contacts, self.regions.state, self.audit)
+        if self.check_grouping and self.audit_enabled:
+            kernel_serial_grouping(
+                entry.contacts, self.sources, self.regions.state, self.grouping_reference.state, self.epsilon
+            )
+            kernel_compare_grouping(self.regions.state, self.grouping_reference.state, self.grouping_errors)
         if self.capture_probe:
-            kernel_boundary_probe(
+            self.phase(
+                "research_probe",
+                kernel_boundary_probe,
                 entry.link.idx,
                 solver.dyn_state,
                 solver.collider.collider_state,
@@ -269,6 +338,19 @@ def main():
     cli.add_argument("--steps", type=int, default=720)
     cli.add_argument("--repeats", type=int, default=3)
     cli.add_argument("--conditions", type=Path)
+    cli.add_argument(
+        "--check-grouping",
+        action="store_true",
+        help="Compare every audited input with the original serial grouping on the same device.",
+    )
+    cli.add_argument(
+        "--profile-phases", action="store_true", help="Synchronize individual phases in the audited warmup only."
+    )
+    cli.add_argument(
+        "--omit-timed-audit",
+        action="store_true",
+        help="Keep research audit counters in the separate audited rollout only.",
+    )
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -298,7 +380,7 @@ def main():
     # The observer reads no prescribed radius; retain the identical rigid controller.
     workload.stress = False
     solver = workload.scene.rigid_solver
-    observer = InputObserver(solver) if args.mode == "inputs" else None
+    observer = InputObserver(solver, args.check_grouping) if args.mode == "inputs" else None
     workload.save_conditions(args.output / "conditions.npz")
     qd.sync()
     setup_seconds = perf_counter() - begun
@@ -316,6 +398,8 @@ def main():
             if observer is not None:
                 observer.reset_audit()
                 observer.capture_probe = repeat == 0
+                observer.profile = args.profile_phases and repeat == 0
+                observer.audit_enabled = repeat == 0 or not args.omit_timed_audit
             qd.sync()
             begun = perf_counter()
             for step in range(args.steps):
@@ -346,8 +430,11 @@ def main():
             seconds = perf_counter() - begun
             solver.check_errno()
             row = {"repeat": repeat, "audited": repeat == 0, "seconds": seconds, "reset_count": workload.reset_count}
-            if observer is not None:
+            if observer is not None and observer.audit_enabled:
                 row["inputs"] = observer.report()
+                assert max(row["inputs"]["maximum_force_discrepancy_n"]) < 1e-10
+                assert max(row["inputs"]["maximum_moment_discrepancy_nm"]) < 1e-10
+            row["research_audit_in_timing"] = observer is not None and observer.audit_enabled
             rollouts.append(row)
             write_json(args.output / "rollouts.json", rollouts)
     trajectory = args.output / "trajectory.npz"
@@ -356,20 +443,51 @@ def main():
     if observer is not None:
         assert max(array(observer.audit.force_error)) < 1e-10
         assert max(array(observer.audit.moment_error)) < 1e-10
+    grouping_errors = array(observer.grouping_errors).T if observer is not None and args.check_grouping else None
+    if grouping_errors is not None:
+        np.testing.assert_array_equal(grouping_errors, 0)
+    phase_rows = []
+    if observer is not None and observer.phase_samples:
+        names = sorted({name for name, _ in observer.phase_samples})
+        for name in names:
+            values = np.array([seconds for phase, seconds in observer.phase_samples if phase == name])
+            warmed = values[60:]
+            phase_rows.append(
+                {
+                    "phase": name,
+                    "samples": len(warmed),
+                    "excluded_initial_samples": 60,
+                    "median_seconds": float(np.median(warmed)),
+                    "p95_seconds": float(np.quantile(warmed, 0.95)),
+                    "sum_seconds": float(warmed.sum()),
+                }
+            )
+        write_json(args.output / "phase-samples.json", observer.phase_samples)
     write_json(
         args.output / "result.json",
         {
             "execution_completed": True,
             "mode": args.mode,
             "setup_seconds": setup_seconds,
+            "curvature_build_seconds_including_first_compile": observer.curvature_build_seconds
+            if observer is not None
+            else None,
+            "phase_profile": phase_rows,
+            "grouping_errors": grouping_errors.tolist() if grouping_errors is not None else None,
+            "grouping_check_scope": "Every audited step, all slots and environments: exact validity, leader, count, force and moment against the original serial kernel. Research controls are excluded from primary timing.",
+            "phase_profile_scope": "Intrusive synchronized dispatch plus device execution in audited repeat zero; samples exclude first 60 steps. Primary inclusive scene timing uses uninstrumented repeats. No stress, traction transfer or history kernels run in this input-only pilot.",
+            "omit_timed_audit": args.omit_timed_audit,
             "envs": args.envs,
+            "contact_capacity_per_environment": observer.entry.contacts.valid.shape[0] if observer is not None else None,
+            "shared_curvature_faces": observer.cache.info.status.shape[0] if observer is not None else None,
+            "shared_curvature_vertices": observer.cache.info.vertices_weight.shape[0] if observer is not None else None,
             "steps": args.steps,
             "timestep": 0.01,
             "substeps": 1,
             "rollouts": rollouts,
             "trajectory": file_id(trajectory),
             "snapshots": snapshots,
-            "scope": "Same preintegration substep native curvature/region/Hertz input pilot. Timings include aggregate audit counters and the research callback; detailed host snapshots occur only in repeat zero. No traction/stress output, pressure/finite-shell qualification, or tangential history law. Failed inputs remain reported and do not qualify usable estimator throughput.",
+            "scope": "Same preintegration substep native curvature/region/Hertz input pilot. Timings include the research callback; audit counters are included unless omit_timed_audit is true. Detailed host snapshots and phase synchronization occur only in repeat zero. No traction/stress output, pressure/finite-shell qualification, or tangential history law. Failed inputs remain reported and do not qualify usable estimator throughput.",
             "whole_goal_complete": False,
         },
     )

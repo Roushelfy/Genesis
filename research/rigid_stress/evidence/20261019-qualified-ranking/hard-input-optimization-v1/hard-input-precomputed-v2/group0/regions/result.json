@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "backend": "gpu",
+  "curvature": [
+    {
+      "shape": "sphere",
+      "level": 1,
+      "faces": 80,
+      "rms_tensor_relative": 0.11075317884796017,
+      "maximum_tensor_relative": 0.1201472606632647,
+      "rms_target_met": false,
+      "normal_root_forward_residual_max": 7.108895957933346e-16,
+      "normal_root_analytic_position_difference_max_m": 0.0013165527506821696
+    },
+    {
+      "shape": "sphere",
+      "level": 3,
+      "faces": 1280,
+      "rms_tensor_relative": 0.01190600617270728,
+      "maximum_tensor_relative": 0.029229952520993422,
+      "rms_target_met": true,
+      "normal_root_forward_residual_max": 1.1905815549843721e-15,
+      "normal_root_analytic_position_difference_max_m": 0.00011476856620845131
+    },
+    {
+      "shape": "ellipsoid",
+      "level": 1,
+      "faces": 80,
+      "rms_tensor_relative": 0.2674953227309016,
+      "maximum_tensor_relative": 0.4805696855937319,
+      "rms_target_met": false,
+      "normal_root_forward_residual_max": 3.092984324228045e-15,
+      "normal_root_analytic_position_difference_max_m": 0.0021165565949166575
+    },
+    {
+      "shape": "ellipsoid",
+      "level": 3,
+      "faces": 1280,
+      "rms_tensor_relative": 0.030365894256387593,
+      "maximum_tensor_relative": 0.0955301740311835,
+      "rms_target_met": true,
+      "normal_root_forward_residual_max": 2.830524433501838e-15,
+      "normal_root_analytic_position_difference_max_m": 0.00017531419957224193
+    }
+  ],
+  "arrays": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-precomputed-v2/group0/regions/curvature-fields.npz",
+    "bytes": 128767,
+    "sha256": "e137ee3331ab361d027863d447c78a62dc2b1a85341d964e5a54e52009813ffa"
+  },
+  "region_cases": [
+    "original",
+    "swapped",
+    "permuted",
+    "split",
+    "release",
+    "bad_pair",
+    "nonfinite_force",
+    "bad_moment",
+    "bad_position",
+    "recovered",
+    "penetrating_box",
+    "rotated"
+  ],
+  "scope": "Geometry and complete region-wrench controls. Sources are synthetic over current actual shapes, not admitted physical contact pressures. Smooth mesh estimates are compared to analytical curvature; target flags are distinct from numerical validity.",
+  "whole_goal_complete": false
+}

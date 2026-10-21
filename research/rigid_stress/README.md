@@ -26,6 +26,13 @@ batch sizes. The B4 input pilot includes repeated geometry searches and audits,
 not just curvature lookup; its added1.777ms is not an inherent Hertz cost.
 Report matched validity/numerics and input/module/full-scene measurements.
 
+The [profiled input optimization](docs/HARD_CONTACT_ESTIMATES_20261020.md#profiled-contact-input-optimization)
+now measures matched B4/B64 scene and phase costs. Parallel clearing/active-count
+grouping and shared barycentric preprocessing retain every-step validity and
+wrenches, exact motion, and CPU/GPU geometry controls. Research audits are
+separate from primary timing. Input-only speed does not qualify rejected
+contacts or replace complete max/full stress scene measurements.
+
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
 cheap two-region interaction correction. Ellipticity reduces the rotated-case

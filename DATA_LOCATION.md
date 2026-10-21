@@ -791,3 +791,15 @@ The two initial8GB failures and native initialization/reference-comparison
 failures are preserved beside final results. The compact `hard-hertz-residual-v1`
 publication packet captures executed sources, logs and hashes; no runtime
 dataset or environment is relocated into home. Private caches stay node-local.
+
+
+Hard-contact input profiling and optimization use `hard-input-profile-v1`,
+`hard-input-grouping-v1` and `hard-input-precomputed-v1` through `v3` beneath the existing
+20261019 ranking data run. Complete trajectories, source snapshots and generated
+control meshes remain there, with private compiler caches on compute-node scratch.
+The isolated source checkout is `.worktrees/hard_contact_optimized`; the compact
+`hard-input-optimization-v1` packet retains executed sources, terminal receipts,
+compressed audit histories and the fixture/numerical failures. No live data,
+existing environment or compatibility link was moved. Unfinished friction-history
+sources/results remain preserved separately while the remote input-overhead
+priority is executed.

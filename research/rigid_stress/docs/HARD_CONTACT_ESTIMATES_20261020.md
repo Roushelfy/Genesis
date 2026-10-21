@@ -825,3 +825,92 @@ explicitly and normalizes its tolerance per region; the numerical kernel was
 unchanged. The final task list runs tangential and normal controls sequentially.
 See the [retained tangential packet](../evidence/20261019-qualified-ranking/hard-hertz-tangential-v1/README.md)
 for executed variants, task arguments, terminal state and data-side field hashes.
+
+
+## Profiled contact-input optimization
+
+The [remote follow-up](https://github.com/Roushelfy/Genesis/commit/c1c82eea667f986b7cf494eda5230904a1a752a7)
+now has an executed first optimization. Required geometry/source validity remains
+on device every step. Detailed probes, host histories, the independent grouping
+oracle and aggregate research audit counters run in a separate audited rollout.
+Primary results are three warmed inclusive 720-step repeats, timestep 0.01 s,
+one substep, float64, RTX PRO 6000 Blackwell Server Edition, container 1_26,
+varied independently evolving Franka environments and
+matched saved initial conditions. They include the research callback and dispatch.
+These are **input-only scene costs**, with no elastic recovery or max/full stress.
+
+| Variant | Environments | Input scene ms/step | Paired pure rigid ms/step | Added ms/step | Aggregate scene env-step/s |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Profiled baseline | 4 | 3.588 | 2.219 | 1.369 | 1115 |
+| Profiled baseline | 64 | 5.560 | 3.865 | 1.695 | 11510 |
+| Parallel clear / active grouping | 4 | 3.303 | 2.215 | 1.088 | 1211 |
+| Parallel clear / active grouping | 64 | 5.023 | 3.750 | 1.273 | 12741 |
+| Grouping + precomputed geometry | 4 | 3.127 | 2.229 | 0.898 | 1279 |
+| Grouping + precomputed geometry | 64 | 4.812 | 3.830 | 0.982 | 13300 |
+
+Aggregate scene rates include all environments; they are not valid stress-update
+rates. The historical 4.025 ms B4 pilot included research audit counters. The new
+baseline explicitly excludes those counters from primary timing and reproduces
+its source-status counts and 1381/2808 valid loaded environment steps.
+
+The separate intrusive profile synchronizes each phase; medians below include
+CPU dispatch, device work and synchronization. They are not exclusive GPU times
+and must not be summed into the uninstrumented scene total. The first 60 samples
+are excluded. One Quadrants call may contain several GPU tasks; this experiment
+does not yet provide a device launch trace.
+
+| Phase | B4 baseline ms | B4 optimized ms | B64 baseline ms | B64 optimized ms |
+| --- | ---: | ---: | ---: | ---: |
+| association | 0.169 | 0.168 | 0.180 | 0.170 |
+| provenance | 0.047 | 0.048 | 0.048 | 0.047 |
+| geometry_roots | 0.140 | 0.139 | 0.153 | 0.146 |
+| geometry_planar | 0.972 | 0.619 | 1.041 | 0.666 |
+| grouping_wrench | 0.423 | 0.100 | 0.608 | 0.120 |
+| hertz_inputs | 0.041 | 0.041 | 0.042 | 0.041 |
+| hertz_law | 0.044 | 0.044 | 0.045 | 0.046 |
+| research_audit | 0.415 | 0.417 | 0.503 | 0.526 |
+
+The grouping kernel clears 750 contact slots per environment in parallel and
+restricts serial grouping/ordered wrench accumulation to the actual current
+contact count. It preserves the original transitive grouping and summation
+order. Fixed-geometry preprocessing stores triangle origins, edges and
+barycentric transforms once per shared shape. The general curvature evaluator
+retains its original operation order. Planar mesh/box closest-face queries reuse
+these maps and perform closest-face search in the local frame. All faces are
+still searched, preserving the nearest source-local choice on disconnected and
+nonconvex shapes. This version adds no temporal cache or new center model.
+
+Both backends pass the existing 12 region/source controls and 2406 independent
+nearest-surface/curvature comparisons each, including edges, vertices, competing
+disconnected components and three rigid frames. Every selected face agrees.
+The final moving B4/B64 histories retain exact source/region validity and motion;
+all 720 audited steps compare leaders, source counts, forces and moments exactly
+against the original serial grouping. Complete retained input arrays and
+per-step curvature/residuals also pass the declared numerical bounds against
+the original baseline. These are implementation controls, not a new physical
+pressure, shell or friction qualification.
+
+Preprocessing time includes first compilation and is recorded separately.
+The new shared face maps require 15 floating values and one validity flag per
+face (121 logical bytes in float64), independent of batch size. Existing
+curvature arrays, allocator alignment, rigid buffers and audit-only references
+are additional; this is not a measured process-memory or capacity bound.
+
+The initial geometry test failed before query execution because its fixed-mesh
+fixture lacked `batch_fixed_verts=True`. The second candidate completes timings
+but fails exact research-probe normal equality after changing the general
+curvature operation order (maximum observed first-snapshot difference 1.39e-16).
+The final candidate restores that operation order and keeps all conformance
+assertions unchanged; all failed attempts remain retained. Final
+commands and source identities are in the
+[input optimization packet](../evidence/20261019-qualified-ranking/hard-input-optimization-v1/README.md).
+Reproduce with `live_hertz_inputs --profile-phases --omit-timed-audit`, adding
+`--check-grouping` for the separate audited oracle, then
+`compare_hertz_implementations` and `compare_live_hertz_inputs` using the captured
+task files and Slurm helper. Runtime arrays/logs stay in the established data run.
+
+Collision-feature reuse, continuous-contact caches and controlled fallback,
+fusion, larger-batch/memory tuning, finite-face/wrench compatibility, friction
+history and complete max/full scene accounting remain active work. Rejected
+geometric inputs retain their original failures and do not become usable stress
+updates through this speed improvement.
