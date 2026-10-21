@@ -41,7 +41,7 @@ from research.rigid_stress.mechanics import P2Shell, SurfaceGeometry, shell_mesh
 from research.rigid_stress.peak_cpu import P2Peak
 from research.rigid_stress.wrench import FinitePatchMapper, WrenchPatch
 from tests.rigid.test_stress_nonconvex import nonconvex_material_mesh
-from tests.utils.assertions import assert_allclose
+from tests.utils.assertions import assert_allclose, assert_equal
 
 
 @qd.kernel(graph=True)
@@ -113,6 +113,18 @@ def test_native_full_field_same_state_and_invalid_solve(tmp_path):
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
     model = StressModel(RigidStressOptions(mesh=mesh))
+    rebuilt = StressModel(model.options)
+    for current, repeated in (
+        (model.info.stiffness, rebuilt.info.stiffness),
+        (model.info.mass, rebuilt.info.mass),
+        (model.info.mass_properties, rebuilt.info.mass_properties),
+        (model.info.gram, rebuilt.info.gram),
+        (model.info.centrifugal_wrench, rebuilt.info.centrifugal_wrench),
+        (model.inverse.info.blocks, rebuilt.inverse.info.blocks),
+        (model.surface_inverse.info.force_blocks, rebuilt.surface_inverse.info.force_blocks),
+        (model.surface_inverse.info.centrifugal, rebuilt.surface_inverse.info.centrifugal),
+    ):
+        assert_equal(qd_to_numpy(current, transpose=True), qd_to_numpy(repeated, transpose=True))
     maximum = model.create_state(3)
     complete = model.create_state(3, "full")
     assert maximum.stress_tensor.shape[0] == maximum.von_mises.shape[0] == 0
