@@ -109,6 +109,7 @@ def scatter_oracle(faces, bary, weights, force, nodes, coordinates):
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--backend", choices=("cpu", "gpu"), required=True)
+    cli.add_argument("--masked-samples", action="store_true")
     cli.add_argument("--egg", type=Path, required=True)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
@@ -171,7 +172,7 @@ def main():
         native.state.modulus.fill(1e10 / (1 - 0.3**2))
         native.state.curvature.from_numpy(np.broadcast_to(np.diag([50.0, 80.0]), (3, 2, 2)).copy())
         native.update()
-        transfer = HertzSurfaceTransfer(3, 3, angles=32)
+        transfer = HertzSurfaceTransfer(3, 3, angles=32, clear_inactive=not args.masked_samples)
         patch = transfer.patches
         patch.environment.from_numpy(np.arange(3, dtype=gs.np_int))
         patch.anchor.fill(int(anchor[0]))
@@ -351,7 +352,7 @@ def main():
         estimate.state.force.fill(0.1)
         estimate.state.modulus.fill(1e10 / (1 - 0.3**2))
         estimate.state.curvature.from_numpy(np.broadcast_to(np.diag([50.0, 80.0]), (count, 2, 2)).copy())
-        mapped = HertzSurfaceTransfer(count, count, angles=32)
+        mapped = HertzSurfaceTransfer(count, count, angles=32, clear_inactive=not args.masked_samples)
         mapped.patches.environment.from_numpy(np.arange(count, dtype=gs.np_int))
         mapped.patches.anchor.fill(int(anchor[0]))
         for field, value in (
@@ -366,7 +367,24 @@ def main():
         estimate.update()
         mapped.scatter(estimate.state, target, model.info, surface.info, epsilon)
         qd.sync()
-        assert np.all(qd_to_numpy(mapped.patches.status, transpose=True) == 0)
+        benchmark_status = qd_to_numpy(mapped.patches.status, transpose=True, copy=True)
+        if not np.all(benchmark_status == 0):
+            np.savez_compressed(
+                args.output / f"benchmark-{count}-failed.npz",
+                status=benchmark_status,
+                hertz_force_n=qd_to_numpy(estimate.state.force, transpose=True, copy=True),
+                hertz_axes_m=qd_to_numpy(estimate.state.axes, transpose=True, copy=True),
+                patch_force_n=qd_to_numpy(mapped.patches.force, transpose=True, copy=True),
+                patch_center_m=qd_to_numpy(mapped.patches.center, transpose=True, copy=True),
+                patch_normal=qd_to_numpy(mapped.patches.normal, transpose=True, copy=True),
+                patch_tangent=qd_to_numpy(mapped.patches.tangent, transpose=True, copy=True),
+                patch_anchor=qd_to_numpy(mapped.patches.anchor, transpose=True, copy=True),
+                force_error_n=qd_to_numpy(mapped.patches.force_error, transpose=True, copy=True),
+                moment_error_nm=qd_to_numpy(mapped.patches.moment_error, transpose=True, copy=True),
+                sample_faces=qd_to_numpy(mapped.samples.face, transpose=True, copy=True),
+                sample_positions_m=qd_to_numpy(mapped.samples.position, transpose=True, copy=True),
+            )
+        assert np.all(benchmark_status == 0)
         elapsed = []
         for _ in range(7):
             start = perf_counter()
@@ -388,6 +406,7 @@ def main():
         {
             "passed": True,
             "backend": args.backend,
+            "masked_samples": args.masked_samples,
             "rows": rows,
             "benchmark": benchmark,
             "scope": "Known supplied Hertz regions lifted along witnessed triangle adjacency. Face/edge/vertex/cavity/coarse egg, work/wrench, release/failure isolation and independent same-load P2 fields. Not automatic source grouping, curvature prediction, continuous footprint admission, friction physics or shell Hertz accuracy.",

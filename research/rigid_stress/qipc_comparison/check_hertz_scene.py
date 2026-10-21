@@ -47,7 +47,7 @@ def main():
     surface = StressSurface(3, model.info)
     contacts, sources = create_contacts(1, 3, 1e-4), create_sources(1, 3)
     regions = StressHertzRegions(contacts).state
-    native, transfer = NativeHertz(3), HertzSurfaceTransfer(3, 3)
+    native, transfer = NativeHertz(3), HertzSurfaceTransfer(3, 3, clear_inactive=False)
     observation = SceneObservationState(
         status=V(dtype=gs.qd_int, shape=(3,)),
         is_loaded=V(dtype=gs.qd_bool, shape=(3,)),

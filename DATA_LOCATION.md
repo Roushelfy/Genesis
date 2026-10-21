@@ -855,3 +855,15 @@ and `hard_contact_bounds` holds the selected small change. Private compilation
 caches are node-local; the data-side physical environment is reused. No existing
 runtime data, active environment, compatibility link or preserved unfinished
 friction-history source is migrated.
+
+Inactive-sample bandwidth controls use `hard-scene-masked-samples-v1`,
+`hard-scene-sample-bandwidth-v1` and
+`hard-scene-sample-bandwidth-reinspection-v1` beneath the established20261019
+ranking run. Complete trajectories, meshes, sampled fields and histories remain
+on data. The `hard-transfer-sample-bandwidth-v1` packet retains194 compact
+payloads (2,046,589 bytes) and204 external-array receipts, including the final
+paired allocation's preempted state and the separate read-only full comparison.
+No original outputs or returncode markers are rewritten. Private compilation
+caches use node scratch; the preempted allocation's cleanup is not asserted.
+Source, small receipts and documentation remain in the workspace. No existing
+environment, live data or compatibility link is migrated.

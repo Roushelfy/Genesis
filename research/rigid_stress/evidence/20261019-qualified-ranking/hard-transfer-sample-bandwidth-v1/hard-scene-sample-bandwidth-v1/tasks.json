@@ -1,0 +1,191 @@
+[
+  [
+    {
+      "name": "transfer",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_transfer",
+      "args": [
+        "--backend",
+        "gpu",
+        "--masked-samples",
+        "--egg",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible/examples/rigid/assets/hollow_egg/level1/elastic.npz"
+      ]
+    },
+    {
+      "name": "bridge",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_scene",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "transfer",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_transfer",
+      "args": [
+        "--backend",
+        "cpu",
+        "--masked-samples",
+        "--egg",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible/examples/rigid/assets/hollow_egg/level1/elastic.npz"
+      ]
+    },
+    {
+      "name": "bridge",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_scene",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "cleared-max",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_cleared_samples",
+      "args": [
+        "--mode",
+        "max",
+        "--envs",
+        "1024",
+        "--steps",
+        "720",
+        "--repeats",
+        "3",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group3/inputs/conditions.npz",
+        "--omit-timed-audit",
+        "--snapshot-step",
+        "554",
+        "--profile-phases"
+      ]
+    },
+    {
+      "name": "masked-max",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_scene",
+      "args": [
+        "--mode",
+        "max",
+        "--envs",
+        "1024",
+        "--steps",
+        "720",
+        "--repeats",
+        "3",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group3/inputs/conditions.npz",
+        "--omit-timed-audit",
+        "--snapshot-step",
+        "554",
+        "--profile-phases"
+      ]
+    },
+    {
+      "name": "cleared-full",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_cleared_samples",
+      "args": [
+        "--mode",
+        "full",
+        "--envs",
+        "1024",
+        "--steps",
+        "720",
+        "--repeats",
+        "3",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group3/inputs/conditions.npz",
+        "--omit-timed-audit",
+        "--snapshot-step",
+        "554"
+      ]
+    },
+    {
+      "name": "masked-full",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_scene",
+      "args": [
+        "--mode",
+        "full",
+        "--envs",
+        "1024",
+        "--steps",
+        "720",
+        "--repeats",
+        "3",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group3/inputs/conditions.npz",
+        "--omit-timed-audit",
+        "--snapshot-step",
+        "554"
+      ]
+    },
+    {
+      "name": "rigid",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_scene",
+      "args": [
+        "--mode",
+        "rigid",
+        "--envs",
+        "1024",
+        "--steps",
+        "720",
+        "--repeats",
+        "3",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group3/inputs/conditions.npz",
+        "--omit-timed-audit",
+        "--snapshot-step",
+        "554"
+      ]
+    },
+    {
+      "name": "cleared-comparison",
+      "module": "research.rigid_stress.qipc_comparison.compare_hertz_scene",
+      "args": [
+        "--max",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group2/cleared-max",
+        "--full",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group2/cleared-full",
+        "--rigid",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group2/rigid",
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group3/inputs"
+      ]
+    },
+    {
+      "name": "masked-comparison",
+      "module": "research.rigid_stress.qipc_comparison.compare_hertz_scene",
+      "args": [
+        "--max",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group2/masked-max",
+        "--full",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group2/masked-full",
+        "--rigid",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group2/rigid",
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group3/inputs"
+      ]
+    },
+    {
+      "name": "max-conformance",
+      "module": "research.rigid_stress.qipc_comparison.compare_hertz_implementations",
+      "args": [
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group2/cleared-max",
+        "--candidate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group2/masked-max"
+      ]
+    },
+    {
+      "name": "full-conformance",
+      "module": "research.rigid_stress.qipc_comparison.compare_hertz_implementations",
+      "args": [
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group2/cleared-full",
+        "--candidate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group2/masked-full"
+      ]
+    }
+  ]
+]

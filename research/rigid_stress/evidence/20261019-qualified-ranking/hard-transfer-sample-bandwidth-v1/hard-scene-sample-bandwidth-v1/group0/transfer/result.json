@@ -1,0 +1,162 @@
+{
+  "passed": true,
+  "backend": "gpu",
+  "masked_samples": true,
+  "rows": [
+    {
+      "case": "face",
+      "tensor_relative_error": 2.7164333675923025e-14,
+      "quadrature_complete_tensor_relative": 2.656935117235187e-14,
+      "quadrature_nodal_load_relative": 1.398691817375553e-15,
+      "sample_count": 96,
+      "curved_proportional_tangent_moment_error_nm": null,
+      "regions": 3,
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group0/transfer/face-fields.npz",
+        "bytes": 19647,
+        "sha256": "f6b207a42b18d8d650ee46fdfd2d6bf07ffdc7692958db1118306c894974694a"
+      },
+      "mesh": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group0/transfer/face.npz",
+        "bytes": 909,
+        "sha256": "de5d61b453b09a58ab4ef974e0b03059be2d725d087eaed433db84cf028f4d7e"
+      }
+    },
+    {
+      "case": "edge",
+      "tensor_relative_error": 5.245306467141476e-14,
+      "quadrature_complete_tensor_relative": 0.001808243533650395,
+      "quadrature_nodal_load_relative": 0.0017868410261114328,
+      "sample_count": 96,
+      "curved_proportional_tangent_moment_error_nm": null,
+      "regions": 3,
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group0/transfer/edge-fields.npz",
+        "bytes": 19727,
+        "sha256": "fd7224aeeba271bc4cca73106bc3829ee2333439de451aeb4778d96355c34b23"
+      },
+      "mesh": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group0/transfer/edge.npz",
+        "bytes": 909,
+        "sha256": "de5d61b453b09a58ab4ef974e0b03059be2d725d087eaed433db84cf028f4d7e"
+      }
+    },
+    {
+      "case": "vertex",
+      "tensor_relative_error": 1.5999483644917746e-14,
+      "quadrature_complete_tensor_relative": 0.0019887355307094084,
+      "quadrature_nodal_load_relative": 0.0026638610777770903,
+      "sample_count": 96,
+      "curved_proportional_tangent_moment_error_nm": null,
+      "regions": 3,
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group0/transfer/vertex-fields.npz",
+        "bytes": 19975,
+        "sha256": "26b290f28ba04356d4dde01ed6ca579e02a6322711fe2b69e351e7c4e93da0cc"
+      },
+      "mesh": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group0/transfer/vertex.npz",
+        "bytes": 909,
+        "sha256": "de5d61b453b09a58ab4ef974e0b03059be2d725d087eaed433db84cf028f4d7e"
+      }
+    },
+    {
+      "case": "cavity",
+      "tensor_relative_error": 3.2335147187746996e-14,
+      "quadrature_complete_tensor_relative": 0.0013747438553205504,
+      "quadrature_nodal_load_relative": 0.0017868410261110406,
+      "sample_count": 96,
+      "curved_proportional_tangent_moment_error_nm": null,
+      "regions": 3,
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group0/transfer/cavity-fields.npz",
+        "bytes": 121495,
+        "sha256": "f42cd9cd63da2eb5c3300b7e27a88b34a0e1e62fca9aff2eeeaa2f07f4ea2eec"
+      },
+      "mesh": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group0/transfer/cavity.npz",
+        "bytes": 1710,
+        "sha256": "10027466839345562d4e2a1771ee86405c0cba9fec33c0b46df6f5cac79c3ce1"
+      }
+    },
+    {
+      "case": "u",
+      "tensor_relative_error": 8.517806313232513e-13,
+      "quadrature_complete_tensor_relative": 8.518969416947703e-13,
+      "quadrature_nodal_load_relative": 1.3028494015408548e-15,
+      "sample_count": 96,
+      "curved_proportional_tangent_moment_error_nm": null,
+      "regions": 3,
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group0/transfer/u-fields.npz",
+        "bytes": 31995,
+        "sha256": "1e6b8655ceda130ecd793cf4b84cca2db5c6a478e8394c9680e472e01122a526"
+      },
+      "mesh": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group0/transfer/u.npz",
+        "bytes": 1113,
+        "sha256": "262f7d5be6fb3d6929f6e79d46cac12d5aa0fef8e3606645e2864d78c323a62e"
+      }
+    },
+    {
+      "case": "egg",
+      "tensor_relative_error": 7.613262733117754e-12,
+      "quadrature_complete_tensor_relative": 0.00016757294098322805,
+      "quadrature_nodal_load_relative": 0.00023478746458212752,
+      "sample_count": 96,
+      "curved_proportional_tangent_moment_error_nm": 7.951374762687089e-07,
+      "regions": 3,
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group0/transfer/egg-fields.npz",
+        "bytes": 382353,
+        "sha256": "a24f74d1b551eaaa43df724aa865d02b6207e27a3bd38fc563eec1f64974d66d"
+      },
+      "mesh": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group0/transfer/egg.npz",
+        "bytes": 3573,
+        "sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4"
+      }
+    },
+    {
+      "case": "rotated_egg",
+      "tensor_relative_error": 1.2864954391889425e-11,
+      "quadrature_complete_tensor_relative": 0.0001675729386599578,
+      "quadrature_nodal_load_relative": 0.00023478746458090519,
+      "sample_count": 96,
+      "curved_proportional_tangent_moment_error_nm": 7.951374762686924e-07,
+      "regions": 3,
+      "arrays": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group0/transfer/rotated_egg-fields.npz",
+        "bytes": 386033,
+        "sha256": "bbef9b8c2f56f3cadc9bf5e3d513190820e00dad3aa11505d42c4f5e87f573e3"
+      },
+      "mesh": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-sample-bandwidth-v1/group0/transfer/rotated_egg.npz",
+        "bytes": 5437,
+        "sha256": "6f558da28f7cc3c1c73733fa779de4e7662c160850c96cd50ddacac08c433afc"
+      }
+    }
+  ],
+  "benchmark": [
+    {
+      "regions_and_environments": 1,
+      "samples_per_region": 96,
+      "median_seconds": 0.00017668940126895903,
+      "p90_seconds": 0.0001847851136699319
+    },
+    {
+      "regions_and_environments": 128,
+      "samples_per_region": 96,
+      "median_seconds": 0.00018163060303777456,
+      "p90_seconds": 0.00018556455383077265
+    },
+    {
+      "regions_and_environments": 512,
+      "samples_per_region": 96,
+      "median_seconds": 0.0001930892001837492,
+      "p90_seconds": 0.00019890331896021962
+    }
+  ],
+  "scope": "Known supplied Hertz regions lifted along witnessed triangle adjacency. Face/edge/vertex/cavity/coarse egg, work/wrench, release/failure isolation and independent same-load P2 fields. Not automatic source grouping, curvature prediction, continuous footprint admission, friction physics or shell Hertz accuracy.",
+  "whole_goal_complete": false
+}

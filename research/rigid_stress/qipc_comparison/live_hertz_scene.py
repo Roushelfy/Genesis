@@ -152,7 +152,7 @@ class SceneObserver(InputObserver):
     def __init__(self, solver, check_grouping=False):
         super().__init__(solver, check_grouping)
         shape = self.entry.contacts.valid.shape
-        self.transfer = HertzSurfaceTransfer(shape[0] * shape[1], shape[1])
+        self.transfer = HertzSurfaceTransfer(shape[0] * shape[1], shape[1], clear_inactive=False)
         self.vertices = StressSourceVertices(
             self.entry.link, self.entry.model.info, self.entry.options.source_geometry_tolerance
         )
@@ -233,6 +233,7 @@ class SceneObserver(InputObserver):
 
     def report(self):
         return super().report() | {
+            "cleared_inactive_sample_geometry": self.transfer.clear_inactive,
             "scene_count_columns": [
                 "steps",
                 "loaded",

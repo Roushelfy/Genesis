@@ -35,6 +35,8 @@ class HertzPatchState:
 
 @dataclass(frozen=True)
 class HertzSampleState:
+    """A negative face invalidates its position and barycentric storage."""
+
     face: qd.Tensor
     barycentric: qd.Tensor
     position: qd.Tensor
@@ -51,8 +53,9 @@ class HertzSurfaceTransfer:
     partial environment load. The caller still owns production error reporting.
     """
 
-    def __init__(self, count: int, n_envs: int, angles: int = 32):
+    def __init__(self, count: int, n_envs: int, angles: int = 32, clear_inactive: bool = True):
         assert count > 0 and n_envs > 0 and angles >= 8 and angles % 4 == 0
+        self.clear_inactive = clear_inactive
         self.patches = HertzPatchState(
             environment=V(dtype=gs.qd_int, shape=(count,)),
             anchor=V(dtype=gs.qd_int, shape=(count,)),
@@ -77,7 +80,7 @@ class HertzSurfaceTransfer:
     def scatter(
         self, hertz: HertzState, state: StressState, info: StressInfo, surface: StressSurfaceInfo, epsilon: float
     ):
-        kernel_hertz_samples(self.patches, self.samples, hertz, info, surface, epsilon)
+        kernel_hertz_samples(self.patches, self.samples, hertz, info, surface, epsilon, self.clear_inactive)
         kernel_hertz_accept(self.patches, self.samples, hertz, epsilon)
         kernel_hertz_scatter(self.patches, self.samples, state, info)
 
@@ -170,11 +173,13 @@ def kernel_hertz_samples(
     stress_info: StressInfo,
     surface_info: StressSurfaceInfo,
     epsilon: float,
+    clear_inactive: qd.template(),
 ):
     for i_s, i_p in qd.ndrange(sample_state.face.shape[0], sample_state.face.shape[1]):
         sample_state.face[i_s, i_p] = -1
-        sample_state.position[i_s, i_p] = qd.Vector.zero(gs.qd_float, 3)
-        sample_state.barycentric[i_s, i_p] = qd.Vector.zero(gs.qd_float, 3)
+        if qd.static(clear_inactive):
+            sample_state.position[i_s, i_p] = qd.Vector.zero(gs.qd_float, 3)
+            sample_state.barycentric[i_s, i_p] = qd.Vector.zero(gs.qd_float, 3)
         if hertz_state.status[i_p] == 0:
             angles = sample_state.face.shape[0] // 3
             radial = i_s // angles

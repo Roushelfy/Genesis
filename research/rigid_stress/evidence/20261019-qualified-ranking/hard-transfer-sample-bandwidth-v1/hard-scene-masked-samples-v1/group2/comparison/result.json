@@ -1,0 +1,200 @@
+{
+  "passed": true,
+  "peak_failures": [],
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-099",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "737406",
+      "SLURM_ARRAY_JOB_ID": "737403",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-ef214d63-bb6e-b1c8-20a6-dc7b4cf438b5, 00000000:C1:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": null
+  },
+  "results": {
+    "max": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-masked-samples-v1/group2/max/result.json",
+      "bytes": 13228,
+      "sha256": "6ac5442124d40648b34e67f16b8c9187df019823315c34071a368d220fb7a02b"
+    },
+    "full": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-masked-samples-v1/group2/full/result.json",
+      "bytes": 8941,
+      "sha256": "8bfa521564c8ee12543fdc063465e20ca62f4d403f9d10090ad1e2679c7f624f"
+    },
+    "rigid": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-masked-samples-v1/group2/rigid/result.json",
+      "bytes": 2788,
+      "sha256": "8649b163a53b5f4794da6ea3509b6798f785eae90f93d4c4e868554450a1e516"
+    },
+    "inputs": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group0/inputs/result.json",
+      "bytes": 9686,
+      "sha256": "fc25b444fc505577699f2b1ca5c8cdbe26e686940adb947420e842ec89e70f6c"
+    }
+  },
+  "counts": {
+    "total_environment_steps": 2880,
+    "loaded_environment_steps": 2808,
+    "input_valid_loaded_environment_steps": 1381,
+    "admitted_environment_steps": 730,
+    "admitted_loaded_environment_steps": 658,
+    "rejection_bits": {
+      "geometry": 1427,
+      "source": 0,
+      "transfer": 499,
+      "facet_cone": 240,
+      "elastic_solve": 0
+    },
+    "status_combinations": {
+      "0": 730,
+      "1": 1427,
+      "4": 483,
+      "8": 224,
+      "12": 16
+    }
+  },
+  "timing": {
+    "max": {
+      "seconds_per_step": [
+        0.00474305613331833,
+        0.004736725080551373,
+        0.004726046281899067
+      ],
+      "median_seconds_per_step": 0.004736725080551373,
+      "added_seconds_per_step": 0.002471881470814373,
+      "raw_environment_steps_per_second": 844.4653071430494,
+      "audited_admitted_loaded_fraction": 0.23433048433048434
+    },
+    "full": {
+      "seconds_per_step": [
+        0.004654722452849253,
+        0.004615480863867561,
+        0.004647758238893907
+      ],
+      "median_seconds_per_step": 0.004647758238893907,
+      "added_seconds_per_step": 0.002382914629156908,
+      "raw_environment_steps_per_second": 860.6299627477905,
+      "audited_admitted_loaded_fraction": 0.23433048433048434
+    },
+    "rigid": {
+      "seconds_per_step": [
+        0.0022648436097369995,
+        0.002267698177779999,
+        0.0022634634832987407
+      ],
+      "median_seconds_per_step": 0.0022648436097369995
+    },
+    "inputs": {
+      "seconds_per_step": [
+        0.003101626624993514,
+        0.003078970440320619,
+        0.003079855759683091
+      ],
+      "median_seconds_per_step": 0.003079855759683091
+    }
+  },
+  "trajectory_differences": {
+    "max": {
+      "position": 0.0,
+      "quaternion": 0.0,
+      "joints": 0.0
+    },
+    "full": {
+      "position": 0.0,
+      "quaternion": 0.0,
+      "joints": 0.0
+    },
+    "rigid": {
+      "position": 0.0,
+      "quaternion": 0.0,
+      "joints": 0.0
+    },
+    "inputs": {
+      "position": 0.0,
+      "quaternion": 0.0,
+      "joints": 0.0
+    }
+  },
+  "snapshots": [
+    {
+      "file": "step0000.npz",
+      "admitted": 4,
+      "admitted_with_nonzero_contact_load": 0
+    },
+    {
+      "file": "step0060.npz",
+      "admitted": 3,
+      "admitted_with_nonzero_contact_load": 3
+    },
+    {
+      "file": "step0120.npz",
+      "admitted": 2,
+      "admitted_with_nonzero_contact_load": 2
+    },
+    {
+      "file": "step0180.npz",
+      "admitted": 1,
+      "admitted_with_nonzero_contact_load": 1
+    },
+    {
+      "file": "step0240.npz",
+      "admitted": 0,
+      "admitted_with_nonzero_contact_load": 0
+    },
+    {
+      "file": "step0300.npz",
+      "admitted": 0,
+      "admitted_with_nonzero_contact_load": 0
+    },
+    {
+      "file": "step0360.npz",
+      "admitted": 0,
+      "admitted_with_nonzero_contact_load": 0
+    },
+    {
+      "file": "step0420.npz",
+      "admitted": 0,
+      "admitted_with_nonzero_contact_load": 0
+    },
+    {
+      "file": "step0480.npz",
+      "admitted": 1,
+      "admitted_with_nonzero_contact_load": 0
+    },
+    {
+      "file": "step0540.npz",
+      "admitted": 0,
+      "admitted_with_nonzero_contact_load": 0
+    },
+    {
+      "file": "step0554.npz",
+      "admitted": 2,
+      "admitted_with_nonzero_contact_load": 0
+    },
+    {
+      "file": "step0600.npz",
+      "admitted": 1,
+      "admitted_with_nonzero_contact_load": 0
+    },
+    {
+      "file": "step0660.npz",
+      "admitted": 2,
+      "admitted_with_nonzero_contact_load": 2
+    },
+    {
+      "file": "step0719.npz",
+      "admitted": 2,
+      "admitted_with_nonzero_contact_load": 2
+    }
+  ],
+  "admitted_nonzero_contact_snapshots": 10,
+  "scope": "Every-step max/full status, source and peak comparison; input-stage conformance; saved complete-field von Mises identity and rejection masking; paired rigid trajectories and warmed inclusive cost. Admission is a strict mechanical gate, not independent pressure, finite-shell or friction-history accuracy. Zero admitted loaded steps provide no useful stress-throughput evidence. The input-only timing is retained from its earlier allocation; only max/full/rigid share the present allocation.",
+  "whole_goal_complete": false
+}
