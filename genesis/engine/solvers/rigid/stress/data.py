@@ -23,7 +23,8 @@ class StressInfo:
     volumes: qd.Tensor
     row_start: qd.Tensor
     columns: qd.Tensor
-    element_entries: qd.Tensor
+    assembly_start: qd.Tensor
+    assembly_idx: qd.Tensor
     stiffness: qd.Tensor
     mass: qd.Tensor
     modes: qd.Tensor

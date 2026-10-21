@@ -59,12 +59,12 @@ def func_balance_cooperative(
 
 @qd.kernel
 def kernel_centrifugal_wrench(stress_info: StressInfo):
-    for _ in range(1):
-        stress_info.centrifugal_wrench[None] = qd.Matrix.zero(gs.qd_float, 6, 6)
-    for i_n in range(stress_info.vertices.shape[0]):
-        value = stress_info.modes[i_n].transpose() @ stress_info.centrifugal[i_n]
-        for a, b in qd.static(qd.ndrange(6, 6)):
-            qd.atomic_add(stress_info.centrifugal_wrench[None][a, b], value[a, b])
+    for i_a, i_c in qd.ndrange(6, 6):
+        value = gs.qd_float(0.0)
+        for i_n in range(stress_info.vertices.shape[0]):
+            for i_d in qd.static(range(3)):
+                value += stress_info.modes[i_n][i_d, i_a] * stress_info.centrifugal[i_n][i_d, i_c]
+        stress_info.centrifugal_wrench[None][i_a, i_c] = value
 
 
 @qd.func

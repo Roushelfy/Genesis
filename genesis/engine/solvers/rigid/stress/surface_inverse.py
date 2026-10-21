@@ -147,8 +147,6 @@ def kernel_surface_apply_packed_block(
 def kernel_surface_unit_loads(
     stress_state: StressState, stress_info: StressInfo, surface_inverse_info: StressSurfaceInverseInfo
 ):
-    for i_b in range(stress_state.active.shape[0]):
-        stress_state.wrench[i_b] = qd.Vector.zero(gs.qd_float, 6)
     for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
         n_surface = surface_inverse_info.nodes.shape[0]
         load = qd.Vector.zero(gs.qd_float, 3)
@@ -160,9 +158,11 @@ def kernel_surface_unit_loads(
             for a in qd.static(range(3)):
                 load[a] = stress_info.centrifugal[i_n][a, i_b - 3 * n_surface]
         stress_state.rhs[i_n, i_b] = load
-        wrench = stress_info.modes[i_n].transpose() @ load
-        for a in qd.static(range(6)):
-            qd.atomic_add(stress_state.wrench[i_b][a], wrench[a])
+    for i_b in range(stress_state.active.shape[0]):
+        wrench = qd.Vector.zero(gs.qd_float, 6)
+        for i_n in range(stress_info.vertices.shape[0]):
+            wrench += stress_info.modes[i_n].transpose() @ stress_state.rhs[i_n, i_b]
+        stress_state.wrench[i_b] = wrench
     for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
         acceleration = stress_info.gram_inverse[None] @ stress_state.wrench[i_b]
         stress_state.rhs[i_n, i_b] -= stress_info.mass_modes[i_n] @ acceleration

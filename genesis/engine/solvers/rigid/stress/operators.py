@@ -103,38 +103,43 @@ def kernel_geometry(stress_info: StressInfo):
 
 @qd.kernel
 def kernel_assemble(poisson: float, density: float, stress_info: StressInfo):
-    for i_e, i_n, j_n in qd.ndrange(stress_info.elements.shape[0], 10, 10):
-        gradient = stress_info.gradients[i_e]
-        block = qd.Matrix.zero(gs.qd_float, 3, 3)
+    for i_entry in range(stress_info.stiffness.shape[0]):
+        stiffness = qd.Matrix.zero(gs.qd_float, 3, 3)
+        mass = gs.qd_float(0.0)
         lam = poisson / ((1.0 + poisson) * (1.0 - 2.0 * poisson))
         mu = 1.0 / (2.0 * (1.0 + poisson))
-        for i_q in range(4):
-            bary = qd.Vector([0.1381966011250105] * 4)
-            bary[i_q] = 0.5854101966249685
-            grad_i = func_shape_gradient(i_n, bary, gradient, stress_info.edges)
-            grad_j = func_shape_gradient(j_n, bary, gradient, stress_info.edges)
-            block += lam * grad_i.outer_product(grad_j) + mu * grad_j.outer_product(grad_i)
-            for i_a in qd.static(range(3)):
-                block[i_a, i_a] += mu * grad_i.dot(grad_j)
-        i_entry = stress_info.element_entries[i_e, i_n, j_n]
-        scale = stress_info.volumes[i_e] / 4.0
-        for i_a, i_c in qd.static(qd.ndrange(3, 3)):
-            qd.atomic_add(stress_info.stiffness[i_entry][i_a, i_c], scale * block[i_a, i_c])
-        qd.atomic_add(
-            stress_info.mass[i_entry],
-            density * stress_info.volumes[i_e] * func_mass_weight(i_n, j_n, stress_info.edges),
-        )
+        # Shared operators require a fixed element order across independent scene builds
+        for i_slot in range(stress_info.assembly_start[i_entry], stress_info.assembly_start[i_entry + 1]):
+            i_con = stress_info.assembly_idx[i_slot]
+            i_e, i_n, j_n = i_con // 100, (i_con % 100) // 10, i_con % 10
+            gradient = stress_info.gradients[i_e]
+            block = qd.Matrix.zero(gs.qd_float, 3, 3)
+            for i_q in range(4):
+                bary = qd.Vector([0.1381966011250105] * 4)
+                bary[i_q] = 0.5854101966249685
+                grad_i = func_shape_gradient(i_n, bary, gradient, stress_info.edges)
+                grad_j = func_shape_gradient(j_n, bary, gradient, stress_info.edges)
+                block += lam * grad_i.outer_product(grad_j) + mu * grad_j.outer_product(grad_i)
+                for i_a in qd.static(range(3)):
+                    block[i_a, i_a] += mu * grad_i.dot(grad_j)
+            stiffness += stress_info.volumes[i_e] * block / 4.0
+            mass += density * stress_info.volumes[i_e] * func_mass_weight(i_n, j_n, stress_info.edges)
+        stress_info.stiffness[i_entry] = stiffness
+        stress_info.mass[i_entry] = mass
 
 
 @qd.kernel
 def kernel_mass_properties(stress_info: StressInfo):
-    for i_n in range(stress_info.vertices.shape[0]):
-        mass = gs.qd_float(0.0)
-        for i_entry in range(stress_info.row_start[i_n], stress_info.row_start[i_n + 1]):
-            mass += stress_info.mass[i_entry]
-        qd.atomic_add(stress_info.mass_properties[0], mass)
-        for i_a in qd.static(range(3)):
-            qd.atomic_add(stress_info.mass_properties[1 + i_a], mass * stress_info.vertices[i_n][i_a])
+    for i_a in range(4):
+        total = gs.qd_float(0.0)
+        for i_n in range(stress_info.vertices.shape[0]):
+            mass = gs.qd_float(0.0)
+            for i_entry in range(stress_info.row_start[i_n], stress_info.row_start[i_n + 1]):
+                mass += stress_info.mass[i_entry]
+            if i_a > 0:
+                mass *= stress_info.vertices[i_n][i_a - 1]
+            total += mass
+        stress_info.mass_properties[i_a] = total
 
 
 @qd.kernel
@@ -172,9 +177,12 @@ def kernel_mass_modes(stress_info: StressInfo):
             centrifugal += mass * basis
         stress_info.mass_modes[i_n] = mass_modes
         stress_info.centrifugal[i_n] = centrifugal
-        gram = stress_info.modes[i_n].transpose() @ mass_modes
-        for i_a, i_c in qd.ndrange(6, 6):
-            qd.atomic_add(stress_info.gram[None][i_a, i_c], gram[i_a, i_c])
+    for i_a, i_c in qd.ndrange(6, 6):
+        value = gs.qd_float(0.0)
+        for i_n in range(stress_info.vertices.shape[0]):
+            for i_d in qd.static(range(3)):
+                value += stress_info.modes[i_n][i_d, i_a] * stress_info.mass_modes[i_n][i_d, i_c]
+        stress_info.gram[None][i_a, i_c] = value
 
 
 @qd.kernel

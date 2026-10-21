@@ -94,6 +94,8 @@ class StressModel:
         entries, inverse = np.unique(pairs.reshape((-1, 2)), axis=0, return_inverse=True)
         row_start = np.r_[0, np.cumsum(np.bincount(entries[:, 0], minlength=len(xyz)))]
         n_nodes, n_elements, n_entries = len(xyz), len(elements), len(entries)
+        assembly_start = np.r_[0, np.cumsum(np.bincount(inverse, minlength=n_entries))]
+        assembly_idx = np.argsort(inverse, kind="stable")
 
         self.info = StressInfo(
             vertices=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes,)),
@@ -109,7 +111,8 @@ class StressModel:
             volumes=V(dtype=gs.qd_float, shape=(n_elements,)),
             row_start=V(dtype=gs.qd_int, shape=(n_nodes + 1,)),
             columns=V(dtype=gs.qd_int, shape=(n_entries,)),
-            element_entries=V(dtype=gs.qd_int, shape=(n_elements, 10, 10)),
+            assembly_start=V(dtype=gs.qd_int, shape=(n_entries + 1,)),
+            assembly_idx=V(dtype=gs.qd_int, shape=(len(inverse),)),
             stiffness=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_entries,)),
             mass=V(dtype=gs.qd_float, shape=(n_entries,)),
             modes=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
@@ -134,11 +137,8 @@ class StressModel:
         self.info.edges.from_numpy(edges)
         self.info.row_start.from_numpy(row_start.astype(gs.np_int, copy=False))
         self.info.columns.from_numpy(entries[:, 1].astype(gs.np_int, copy=False))
-        self.info.element_entries.from_numpy(inverse.reshape((n_elements, 10, 10)).astype(gs.np_int, copy=False))
-        self.info.stiffness.fill(0)
-        self.info.mass.fill(0)
-        self.info.mass_properties.fill(0)
-        self.info.gram.fill(0)
+        self.info.assembly_start.from_numpy(assembly_start.astype(gs.np_int, copy=False))
+        self.info.assembly_idx.from_numpy(assembly_idx.astype(gs.np_int, copy=False))
         self.info.is_free.fill(1)
         topology_done = time.perf_counter()
         kernel_midpoints(len(vertices), edge_vertices.astype(gs.np_int, copy=False), self.info)
