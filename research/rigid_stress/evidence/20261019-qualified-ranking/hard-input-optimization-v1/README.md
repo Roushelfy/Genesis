@@ -1,0 +1,5 @@
+# Native hard-contact input profiling and optimization
+
+Profile-driven native contact-input optimization: parallel slot clearing, actual-contact-count deterministic region grouping, and shared fixed-geometry barycentric preprocessing. Matched B4/B64 independently evolving Franka inputs retain full-history geometric validity and motion, complete sampled outputs, and exact every-step group/force/moment controls. Intrusive synchronized phases and primary warmed inclusive scene timings are separate. No elastic recovery, maximum/full stress output or new physical-pressure/friction admission is inferred from input-only timings.
+
+The manifest retains terminal scheduler state, exact task/import/source inventories, the initial fixture failure and second candidate numerical failure, full compressed audit histories and final numerical/performance receipts. Complete arrays and generated meshes stay hashed on data; private caches were compute-node local. The prior friction-history work remains separate and unfinished.
