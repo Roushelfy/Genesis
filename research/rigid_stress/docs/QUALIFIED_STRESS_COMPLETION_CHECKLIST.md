@@ -78,6 +78,15 @@ physical error, pressure/support prediction and cheap native shell correction
 remain open. The numerical residual and boundary-resultant checks do not close
 those requirements.
 
+The [independent polar-land pressure study](HOLLOW_SHELL_CONTACT_PRESSURE_20261021.md)
+now predicts pressure/support without prescribing Hertz pressure. Three body
+meshes and pressure-grid/source-table checks meet the original variation targets
+after a targeted 97-grid refinement; all earlier 33-to-65 failures remain intact.
+The single normal case has 1.062% Hertz pressure error and a 2.202% observed
+conditional pressure envelope. This narrows the pressure requirement for that
+case; complete/peak stress, friction history, general changing contacts and
+matched native scene qualification remain required.
+
 The [current-curvature/live-input controls](HARD_CONTACT_ESTIMATES_20261020.md#current-curvature-and-live-contact-inputs) now include native primitive and mesh geometry, source splitting/order/side invariance, invalid-source quarantine, release and actual same-substep Franka inputs. Matched trajectories remain exact, while substantial region rejection and measured input overhead prevent promotion to useful stress throughput. Preserve the failed candidate and opposing-box diagnostic; complete stress/friction output and shell/contact accuracy remain required.
 
 The [partial-level recovery control](REFERENCE_ENDPOINT_CONTINUATION_20261019.md#partial-level-recovery-and-repeated-continuation-ancestry) now completes300+100 and225+175 coarse histories, each passing34 unchanged-limit conformance and49 two-link ancestry checks. It supports recovery after future actual termination; current fine captures/queues remain unchanged. This does not qualify any partial fine trajectory or remove any remaining proof in the table.

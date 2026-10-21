@@ -46,15 +46,22 @@ def ellipse_pressure(points, axes, direction, peak):
 
 
 def square_compliance(points, width, modulus):
-    delta = points[:, None] - points[None, :]
-    integral = np.zeros(delta.shape[:2])
-    for sx, sy in ((1, 1), (-1, -1), (1, -1), (-1, 1)):
-        x, y = delta[..., 0] + sx * width / 2, delta[..., 1] + sy * width / 2
-        primitive = x * np.arcsinh(y / np.abs(x)) + y * np.arcsinh(x / np.abs(y))
-        integral += sx * sy * primitive
-    matrix = integral / (np.pi * modulus * width * width)
+    matrix = rectangular_compliance(points, points, np.full(2, width), modulus)
     np.testing.assert_allclose(matrix, matrix.T, rtol=2e-12, atol=1e-20)
     return matrix
+
+
+def rectangular_compliance(targets, sources, widths, modulus):
+    """Surface point response to unit resultants on uniform rectangular cells."""
+    delta = targets[:, None] - sources[None, :]
+    integral = np.zeros(delta.shape[:2])
+    for sx, sy in ((1, 1), (-1, -1), (1, -1), (-1, 1)):
+        x, y = delta[..., 0] + sx * widths[0] / 2, delta[..., 1] + sy * widths[1] / 2
+        ratio_x = np.divide(y, np.abs(x), out=np.zeros_like(x), where=x != 0)
+        ratio_y = np.divide(x, np.abs(y), out=np.zeros_like(y), where=y != 0)
+        primitive = x * np.arcsinh(ratio_x) + y * np.arcsinh(ratio_y)
+        integral += sx * sy * primitive
+    return integral / (np.pi * modulus * widths.prod())
 
 
 @dataclass(frozen=True)

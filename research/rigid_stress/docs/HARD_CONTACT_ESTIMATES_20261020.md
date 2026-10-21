@@ -1299,3 +1299,16 @@ retains captured workers, original task order, source identities, failed/partial
 terminal state, completed checks and external hashes for complete data arrays.
 Replay its tasks with the captured workers and public engine alias `d4503b9e4`,
 the pinned Python, `rtx-mid`, image `1_26` and fresh explicit data-side outputs.
+
+## Independent hollow-shell normal pressure
+
+The [force-controlled polar-land reference](HOLLOW_SHELL_CONTACT_PRESSURE_20261021.md)
+solves continuous pressure hats with a half-space Green kernel and a small
+normal-source finite-body table. Hertz only sizes an inactive-boundary search
+window. Three body meshes, 3/5 source tables and targeted 65-to-97 pressure
+refinement pass the original variation targets; the earlier 33-to-65 failures
+remain retained. Fine-case Hertz pressure error is 1.062%, peak-pressure error
+0.319%, and the observed conditional pressure envelope is 2.202%. A single-pass
+curvature correction improves less than the observed grid uncertainty and is
+not selected. This is one normal polar-contact control, with no new runtime
+pressure solve or complete-stress/friction qualification.
