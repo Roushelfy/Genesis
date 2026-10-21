@@ -1205,3 +1205,14 @@ verifies every scientific file in nine executed source inventories and five
 explicit test dependencies against those public Git blobs. The isolated local
 `900110f11` commit has different ancestry; its recorded identity remains original
 execution provenance. Captured research workers remain authoritative.
+
+## Hollow-shell particular-stress control
+
+The [fixed-shell control](HERTZ_HOLLOW_SHELL_RESIDUAL_20261021.md) extends the
+finite-box decomposition to a complete hollow polar-land egg, subtracting the
+particular traction on the cavity as well as the outer boundary. Corrected
+internal complete/membrane/bending changes are 2.189%/0.658%/0.495%, with small
+sampled peak changes. The independent direct-pressure reference still changes
+9.823% in complete field and 59.83% in tensile maximum. Its original reference
+and physical-error gates remain false. All fields and failures are retained;
+this is a prescribed-pressure CPU control, not a native scene accuracy result.

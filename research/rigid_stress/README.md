@@ -57,6 +57,12 @@ about 65,400 raw env-step/s; only 52.77% of loaded observations pass the discret
 gate. Traction transfer is the main measured batch-dependent addition. These
 coarse-field rates retain the same unresolved physical-accuracy limitations.
 
+The [hollow-shell decomposition](docs/HERTZ_HOLLOW_SHELL_RESIDUAL_20261021.md)
+now retains full tensors, material-column membrane/bending and sampled peak
+locations for three meshes of one fixed prescribed-pressure egg. Corrected
+internal refinement passes; the independent direct-pressure reference and
+physical stress-error gates remain unqualified. No scene accuracy is inferred.
+
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
 cheap two-region interaction correction. Ellipticity reduces the rotated-case

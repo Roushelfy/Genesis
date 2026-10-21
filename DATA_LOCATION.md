@@ -1,5 +1,12 @@
 # Rigid-stress data and artifact locations
 
+The completed `hard-shell-residual-v1` packet retains 55 compact payloads/357,879
+bytes for prescribed-pressure hollow-shell decomposition and read-only full-field
+inspection. Six mesh/complete-field archives remain hashed under the data-side
+`hard-shell-residual-v1` run; inspection logs/receipts use
+`hard-shell-residual-inspection-v1`. Private node-local caches were removed by
+the existing job trap. The separate live scene-walk experiment is excluded.
+
 The `hard-scene-large-batch-v1` packet adds 60 compact payloads/658,695 bytes
 for completed B256/B1024 paired max/full/rigid scenes and complete-history
 comparisons. Its 72 external artifacts, including large compressed histories,
