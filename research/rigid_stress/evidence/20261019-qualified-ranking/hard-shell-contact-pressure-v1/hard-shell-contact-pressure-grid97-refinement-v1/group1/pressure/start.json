@@ -1,0 +1,56 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-115",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "737619",
+      "SLURM_ARRAY_JOB_ID": "737619",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "parent_result": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-refinement-v1/group1/pressure/result.json",
+    "bytes": 18623,
+    "sha256": "5efda8dda7a00cf6099d99fa474211629ba77d065957ed4890cf7987c20d486f"
+  },
+  "parent_start": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-refinement-v1/group1/pressure/start.json",
+    "bytes": 1716,
+    "sha256": "13228e5ae0170a1a3fc29d4ee067edfa8bb425e75dc574b3cb6ddde41a39b391"
+  },
+  "source_table": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-refinement-v1/group1/pressure/normal-source-table.npz",
+    "bytes": 117925248,
+    "sha256": "bfefb6ada3eaa5250f15a1f1645750a869eed73f210b79a2cd813a2768608935"
+  },
+  "previous_pressures": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-refinement-v1/group1/pressure/pressures.npz",
+    "bytes": 212508,
+    "sha256": "637b3a547c4f3444f42739587c5d15f4dc8c5c16f8a88f633f2dda1a6fb8a057"
+  },
+  "halfspace_seed": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-grid97-v1/group0/pressure/pressures.npz",
+    "bytes": 332363,
+    "sha256": "205dbb3c03d4d9a9401c9a05272c4cfc6c7598da5f1634973a8eeec0cf44b83f"
+  },
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/fine-mesh.npz",
+    "bytes": 1309214,
+    "sha256": "b93ab11f8983030a4e57b06d84e74e09dcba3c3eb18e741404aa88b8da8d4fdf"
+  },
+  "targets": {
+    "pressure_grid_change": 0.02,
+    "source_table_change": 0.02,
+    "pressure_prediction_relative_l2": 0.05,
+    "moment_axes_relative": 0.05,
+    "halfspace_kernel_rule_change": 0.0002
+  },
+  "scope": "One added 97x97 scalar pressure grid. Reuse the completed 25-source normal table, with no new elastic factorization or Hertz pressure/support prescribed. The initial pressure is an exact nested prolongation of the computed 33x33 half-space solution; all nodes remain free to enter or leave contact."
+}

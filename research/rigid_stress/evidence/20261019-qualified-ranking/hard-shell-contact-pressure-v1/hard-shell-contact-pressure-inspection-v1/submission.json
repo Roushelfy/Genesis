@@ -1,0 +1,24 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=none",
+    "--cpus-per-task=1",
+    "--mem=8G",
+    "--time=5",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-inspection-v1/logs/%A_%a.log",
+    "--dependency=afterok:737619",
+    "--exclude=rtx-209-231",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-inspection-v1/job.sh"
+  ],
+  "job": "737624",
+  "dependency": "afterok:737619",
+  "exclude_nodes": "rtx-209-231",
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "allow_home_output": false
+}

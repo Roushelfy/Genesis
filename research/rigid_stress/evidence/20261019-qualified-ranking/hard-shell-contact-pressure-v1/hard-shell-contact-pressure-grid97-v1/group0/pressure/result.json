@@ -1,0 +1,115 @@
+{
+  "execution_completed": true,
+  "rows": [
+    {
+      "relative_pressure_l2_to_hertz": 0.009868952309717327,
+      "peak_pressure_pa": 26704395.195868015,
+      "peak_pressure_relative_difference": 7.151779282454918e-05,
+      "moment_equivalent_axes_m": [
+        6.994212191636598e-05,
+        5.11445865980757e-05
+      ],
+      "moment_axes_relative_difference": [
+        0.00013336037153255376,
+        0.0001401644620666609
+      ],
+      "moment_major_direction": [
+        -1.0,
+        -2.341602934385189e-16
+      ],
+      "force_error_n": 5.551115123125783e-17,
+      "moment_nm": [
+        2.126237573282993e-22,
+        -9.712319836541208e-21,
+        0.0
+      ],
+      "active_pressure_nodes": 4293,
+      "minimum_scaled_gap": -1.7763568394002505e-15,
+      "complementarity_scaled": 3.459576370492426e-19,
+      "maximum_linear_residual": 1.4379163219919665e-15,
+      "iterations": 341,
+      "label": "grid97-sources0",
+      "nodes_per_axis": 97,
+      "source_table_axis": 0,
+      "solve_seconds": 357.50701541197486
+    },
+    {
+      "relative_pressure_l2_to_hertz": 0.01086193713324246,
+      "peak_pressure_pa": 26567304.457263414,
+      "peak_pressure_relative_difference": -0.005062488876341864,
+      "moment_equivalent_axes_m": [
+        7.014051291085863e-05,
+        5.117998739516031e-05
+      ],
+      "moment_axes_relative_difference": [
+        0.0029702410173135796,
+        0.0008324324296724583
+      ],
+      "moment_major_direction": [
+        -1.0,
+        -7.932027055121877e-09
+      ],
+      "force_error_n": 2.7755575615628914e-17,
+      "moment_nm": [
+        4.892618226886305e-22,
+        5.5326388860915534e-21,
+        0.0
+      ],
+      "active_pressure_nodes": 4307,
+      "minimum_scaled_gap": -3.9968028886505635e-15,
+      "complementarity_scaled": 1.292604551176162e-18,
+      "maximum_linear_residual": 4.515906427561649e-15,
+      "iterations": 15,
+      "label": "grid97-sources3",
+      "nodes_per_axis": 97,
+      "source_table_axis": 3,
+      "solve_seconds": 14.829589281987865
+    },
+    {
+      "relative_pressure_l2_to_hertz": 0.010877025660353874,
+      "peak_pressure_pa": 26566538.445665043,
+      "peak_pressure_relative_difference": -0.005091175778861534,
+      "moment_equivalent_axes_m": [
+        7.014191435167989e-05,
+        5.11799981526068e-05
+      ],
+      "moment_axes_relative_difference": [
+        0.002990280839948678,
+        0.0008326427931735214
+      ],
+      "moment_major_direction": [
+        -1.0,
+        -7.930382025601374e-09
+      ],
+      "force_error_n": 1.6653345369377348e-16,
+      "moment_nm": [
+        1.47114071942556e-22,
+        8.76803177500084e-21,
+        0.0
+      ],
+      "active_pressure_nodes": 4307,
+      "minimum_scaled_gap": -4.440892098500626e-15,
+      "complementarity_scaled": 1.3743063155506824e-18,
+      "maximum_linear_residual": 4.553618641117704e-15,
+      "iterations": 1,
+      "label": "grid97-sources5",
+      "nodes_per_axis": 97,
+      "source_table_axis": 5,
+      "solve_seconds": 1.1973062349716201
+    }
+  ],
+  "construction_seconds_without_factorization": 72.45865000301274,
+  "grid65_grid97_relative_pressure_change": 0.011306113398528325,
+  "source_table_relative_pressure_change": 3.651125804018008e-05,
+  "targets": {
+    "pressure_grid_change": 0.02,
+    "source_table_change": 0.02,
+    "pressure_prediction_relative_l2": 0.05,
+    "moment_axes_relative": 0.05,
+    "halfspace_kernel_rule_change": 0.0002
+  },
+  "discrete_pressure_refinement_targets_met": true,
+  "independent_complete_stress_qualified": false,
+  "finite_body_mesh_refinement_qualified": false,
+  "whole_goal_complete": false
+}

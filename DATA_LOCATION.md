@@ -867,3 +867,18 @@ No original outputs or returncode markers are rewritten. Private compilation
 caches use node scratch; the preempted allocation's cleanup is not asserted.
 Source, small receipts and documentation remain in the workspace. No existing
 environment, live data or compatibility link is migrated.
+
+Independent hollow-shell pressure work uses `hard-shell-contact-pressure-v1`
+through `v4`, `hard-shell-contact-pressure-inputs-v1/v2`,
+`hard-shell-contact-pressure-refinement-v1`,
+`hard-shell-contact-pressure-grid97-v1`,
+`hard-shell-contact-pressure-grid97-refinement-v1`,
+`hard-shell-contact-pressure-inspection-v1` and `hard-shell-contact-kernel-v1`
+under the same20261019 ranking run. Existing fixed meshes are reused in place.
+Complete normal-response tables, pressures/forces/gaps and the large failed
+coordinate diagnostic remain on data. The `hard-shell-contact-pressure-v1`
+publication packet keeps279 compact payloads (1,641,121 bytes) with13 external
+data/mesh receipts, including original failures and independent reductions.
+All scientific work uses Slurm `rtx-mid`, image `1_26`, the existing data-side
+physical environment and explicit output/private cache paths. No environment,
+live dataset or compatibility link is moved; no runtime coupled solve is added.

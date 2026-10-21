@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "case": "old_square",
+      "angle_radians": 0.0,
+      "relative_change": 0.0
+    },
+    {
+      "case": "old_square",
+      "angle_radians": 0.31,
+      "relative_change": 0.0
+    },
+    {
+      "case": "center",
+      "relative_error": 0.0
+    },
+    {
+      "case": "edge",
+      "relative_error": 1.1102230246251565e-16
+    },
+    {
+      "case": "vertex",
+      "relative_error": 0.0
+    },
+    {
+      "case": "separated_quadrature",
+      "relative_error": 5.10702591327572e-15
+    }
+  ],
+  "baseline": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/hertz-reference-before-rectangle-v1.py",
+    "bytes": 5493,
+    "sha256": "ad50a31d5f6c928480a2619e188354542b2bc726e90b1c96318c0df0bc3bdc2b"
+  },
+  "scope": "Independent nonsingular Gauss and singular Duffy integration, plus unchanged square-cell controls. This verifies the mathematical kernel, not physical contact or stress accuracy."
+}

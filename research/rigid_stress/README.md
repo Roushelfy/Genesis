@@ -71,6 +71,13 @@ locations for three meshes of one fixed prescribed-pressure egg. Corrected
 internal refinement passes; the independent direct-pressure reference and
 physical stress-error gates remain unqualified. No scene accuracy is inferred.
 
+The [independent hollow-shell normal-pressure control](docs/HOLLOW_SHELL_CONTACT_PRESSURE_20261021.md)
+now solves pressure/support rather than prescribing Hertz pressure. Three fixed
+body meshes and a targeted 97-grid refinement pass the original pressure-change
+targets. Hertz's fine-case pressure error is 1.06%, with a 2.20% observed
+conditional envelope. This single normal polar case supports a cheap pressure
+baseline; complete stress, friction and moving-scene accuracy remain open.
+
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
 cheap two-region interaction correction. Ellipticity reduces the rotated-case
