@@ -50,6 +50,13 @@ Actual boundary/source-moment and friction rejection remains
 substantial; B4 admits 658/2808 loaded steps. Proportional shear, unresolved
 near-field/shell accuracy and failed intervals prevent public estimator promotion.
 
+The [larger composed scenes](docs/HARD_CONTACT_ESTIMATES_20261020.md#complete-scene-scaling-through-1024-environments)
+also pass every-step max/full and trajectory comparisons at B256/B1024.
+B1024 measures 15.65/15.67 ms per max/full step versus 7.25 ms pure rigid,
+about 65,400 raw env-step/s; only 52.77% of loaded observations pass the discrete
+gate. Traction transfer is the main measured batch-dependent addition. These
+coarse-field rates retain the same unresolved physical-accuracy limitations.
+
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
 cheap two-region interaction correction. Ellipticity reduces the rotated-case

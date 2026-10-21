@@ -1,0 +1,143 @@
+{
+  "recorded_at_UTC": "2026-10-21T21:22:41.124796+00:00",
+  "published_checkpoint": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/hard-scene-published-checkpoint-v1.json",
+  "source_engine": "900110f112c9d1313ebac9b3d75ef076ad7e197d",
+  "jobs": {
+    "hard-scene-large-batch-v1": {
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--array=0-1%2",
+        "--partition=rtx-mid",
+        "--no-requeue",
+        "--gres=gpu:1",
+        "--cpus-per-task=1",
+        "--mem=64G",
+        "--time=45",
+        "--job-name=shell22-compare",
+        "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-large-batch-v1/logs/%A_%a.log",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-large-batch-v1/job.sh"
+      ],
+      "job": "737287",
+      "dependency": null,
+      "exclude_nodes": null,
+      "node_local_cache": true,
+      "kernel_profiler": false,
+      "allow_home_output": false
+    },
+    "hard-shell-residual-v1": {
+      "command": [
+        "sbatch",
+        "--parsable",
+        "--array=0-0",
+        "--partition=rtx-mid",
+        "--no-requeue",
+        "--gres=none",
+        "--cpus-per-task=1",
+        "--mem=64G",
+        "--time=45",
+        "--job-name=shell22-compare",
+        "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/logs/%A_%a.log",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/job.sh"
+      ],
+      "job": "737295",
+      "dependency": null,
+      "exclude_nodes": null,
+      "node_local_cache": true,
+      "kernel_profiler": false,
+      "allow_home_output": false
+    }
+  },
+  "shell_worker_sha256": "414fc4d4c26db143c497696968ad315dd0640926b036c7285dc69d87de2ae0e7",
+  "initial_shell_mesh_headers": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/coarse-mesh.npz",
+      "shapes": {
+        "vertices.npy": [
+          15156,
+          3
+        ],
+        "tetrahedra.npy": [
+          60600,
+          4
+        ],
+        "surface_triangles.npy": [
+          20200,
+          3
+        ],
+        "outer_vertices.npy": [
+          5052,
+          3
+        ],
+        "inner_vertices.npy": [
+          5052,
+          3
+        ],
+        "mid_faces.npy": [
+          10100,
+          3
+        ]
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/fine-mesh.npz",
+      "shapes": {
+        "vertices.npy": [
+          29070,
+          3
+        ],
+        "tetrahedra.npy": [
+          139488,
+          4
+        ],
+        "surface_triangles.npy": [
+          23248,
+          3
+        ],
+        "outer_vertices.npy": [
+          5814,
+          3
+        ],
+        "inner_vertices.npy": [
+          5814,
+          3
+        ],
+        "mid_faces.npy": [
+          11624,
+          3
+        ]
+      }
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/medium-mesh.npz",
+      "shapes": {
+        "vertices.npy": [
+          21032,
+          3
+        ],
+        "tetrahedra.npy": [
+          94608,
+          4
+        ],
+        "surface_triangles.npy": [
+          21024,
+          3
+        ],
+        "outer_vertices.npy": [
+          5258,
+          3
+        ],
+        "inner_vertices.npy": [
+          5258,
+          3
+        ],
+        "mid_faces.npy": [
+          10512,
+          3
+        ]
+      }
+    }
+  ],
+  "scope": "B256/B1024 paired pure-rigid/max/full inclusive scenes and same original complete-history gates. Separately, a prescribed-pressure hollow polar-land stress decomposition on identical fixed boundaries, with direct pressure FEM, cavity traction subtraction, material-column membrane/bending and full tensors/peaks. Pressure prediction and friction history remain outside this shell control.",
+  "whole_goal_complete": false
+}
