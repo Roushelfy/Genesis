@@ -914,3 +914,139 @@ fusion, larger-batch/memory tuning, finite-face/wrench compatibility, friction
 history and complete max/full scene accounting remain active work. Rejected
 geometric inputs retain their original failures and do not become usable stress
 updates through this speed improvement.
+
+
+## Cache ablations and batch scaling
+
+The follow-up evaluates temporal normal-root hints, source-vertex hints and
+conservative face bounds, then selects **nearest-surface bounds only**. The
+complete cache variants pass numerical controls but add state and search work
+without a consistent inclusive advantage over the smaller change. Their exact
+sources, failures and measurements remain in the
+[cache/scaling packet](../evidence/20261019-qualified-ranking/hard-input-cache-and-scaling-v1/README.md).
+They are not the active engine path.
+
+The selected implementation precomputes local face boxes and their squared
+scales once. The nearest-surface loop retains ascending face order and its
+original distance tolerance; conservative squared lower bounds avoid expensive
+triangle candidates that cannot improve that ordered selection. All components
+remain eligible. The exhaustive normal-root implementation, general curvature
+arithmetic, grouping, force/moment accounting and live adapter API are unchanged.
+This adds 56 logical bytes per face: 152,656 bytes for this scene, shared across
+all environments. It adds no temporal state or reset obligation.
+
+All rows use the previous 720-step, three-warmed-repeat, float64, 0.01 s/one-substep
+moving Franka setup on RTX PRO 6000 Blackwell Server Edition GPUs, container 1_26.
+Initial conditions match within each batch/variant comparison. Environments
+have independently varied initial poses, friction and controller phase; these
+are not homogeneous replay rates. Required validity runs on device. Research
+histories, probes, grouping oracle and synchronized phase profiles are excluded
+from the primary repeats. The research callback remains included.
+
+| Variant | B | Input scene ms/step | Pure rigid ms/step | Added ms/step | Raw aggregate env-step/s |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Published precomputation | 4 | 3.127 | 2.229 | 0.898 | 1279 |
+| Published precomputation | 64 | 4.812 | 3.830 | 0.982 | 13300 |
+| Published precomputation | 256 | 6.324 | 5.331 | 0.993 | 40478 |
+| Published precomputation | 1024 | 8.595 | 7.367 | 1.229 | 119132 |
+| Bounds + temporal hints | 4 | 3.194 | 2.264 | 0.930 | 1252 |
+| Bounds + temporal hints | 64 | 4.829 | 3.786 | 1.043 | 13252 |
+| Bounds + temporal hints | 256 | 6.415 | 5.329 | 1.087 | 39905 |
+| Bounds + temporal hints | 1024 | 8.562 | 7.278 | 1.284 | 119602 |
+| Squared bounds + temporal hints | 4 | 3.139 | 2.231 | 0.908 | 1274 |
+| Squared bounds + temporal hints | 64 | 4.713 | 3.776 | 0.937 | 13579 |
+| Squared bounds + temporal hints | 256 | 6.407 | 5.420 | 0.987 | 39957 |
+| Squared bounds + temporal hints | 1024 | 8.467 | 7.279 | 1.189 | 120935 |
+| Nearest-surface bounds only | 4 | 3.080 | 2.257 | 0.823 | 1299 |
+| Nearest-surface bounds only | 64 | 4.687 | 3.859 | 0.827 | 13656 |
+| Nearest-surface bounds only | 256 | 6.258 | 5.218 | 1.041 | 40906 |
+| Nearest-surface bounds only | 1024 | 8.386 | 7.299 | 1.087 | 122104 |
+
+The added cost is a difference of independently timed matched medians. The B256
+cross-job subtraction is mixed, even though its absolute input time decreases;
+it must not be presented as a uniform overhead reduction. A focused repeat runs
+both variants and their rigid partners sequentially in the same allocation:
+baseline: 6.313 ms input, 5.300 ms rigid, 1.012 ms added; selected: 6.208 ms input, 5.295 ms rigid, 0.913 ms added. Its complete histories and sampled arrays also pass
+the unchanged implementation comparison. No statistical or universal speedup
+bound is claimed from three repeats.
+
+All variants retain the same loaded/valid input counts: B4: 1381/2808, B64: 29008/45508, B256: 116974/181803, B1024: 469432/727222.
+Raw aggregate rates include rejected environments. Geometric validity alone
+does not certify a physical pressure or a useful stress update. B1024 is the
+largest tested batch here, not a practical memory limit or proven throughput
+optimum. Complete max/full elastic output remains absent.
+
+Each final variant passes 2406 nearest-surface/curvature queries per CPU/GPU
+backend with unchanged face choices, plus the existing 12 region/source controls.
+Every audited moving step compares grouping, counts, forces and moments exactly
+against the original serial oracle. Baseline/variant conditions and trajectories,
+720-step source identities/validity and retained input arrays pass the original
+numerical limits. B4's environment prefix also agrees with B64/B256/B1024,
+including partial resets; full-batch reset totals naturally differ. Only the
+diagnostic candidate-evaluation counter is excluded from tensor conformance.
+
+The cache candidates additionally pass 11 lifecycle/identity cases per backend:
+cold/warm contact, wrong disconnected-component hint, release/reload, partial
+reset, source permutation, out-of-range hint, malformed pair/recovery and a
+discontinuous source position. Roots match the frozen exhaustive implementation
+exactly in face index, position and residual for those controls. A hint is
+accepted only for the current geometry/pair, and all potentially closer faces
+remain searchable. Failed finite-face inputs still reject and clear the cached
+face. These checks concern geometry, not tangential-memory invalidation.
+
+| B | Temporal hint / active source | Selected root matches temporal hint | Mean closest / root candidate calculations |
+| ---: | ---: | ---: | ---: |
+| 4 | 29.66% | 97.92% | 10.28 / 24.48 |
+| 64 | 38.51% | 98.55% | 9.47 / 26.15 |
+| 256 | 40.48% | 98.70% | 9.33 / 25.12 |
+| 1024 | 41.62% | 98.83% | 9.26 / 24.50 |
+
+The hit percentage is conditional on providing a temporal hint. Even a hit still
+executes conservative bounds over other faces; it is not a search-free update.
+Candidate counts exclude box-bound visits. Every actual moving-scene vertex-hint
+count is zero: the synthetic provenance control works, but this collision path
+does not supply a usable vertex feature. Broad search and finite-face rejection
+therefore remain significant. The full cache adds 29 logical bytes per contact
+slot, including diagnostics: 87,000 / 1,392,000 / 5,568,000 / 22,272,000 bytes for
+B4/B64/B256/B1024, plus 158,308 shared geometry bytes in the squared variant.
+This extra state is not retained in the selected implementation.
+
+Separate 60-step CUDA traces follow 480 warmup steps without per-phase
+synchronization or research audits. The table reports **summed device task
+durations**, not inclusive wall time; host scope timing remains separate.
+
+| Native phase | CUDA tasks/step | B4 baseline / selected us | B1024 baseline / selected us |
+| --- | ---: | ---: | ---: |
+| begin_step | 2 | 9.60 / 9.49 | 9.57 / 9.59 |
+| association | 4 | 20.56 / 20.05 | 25.21 / 24.85 |
+| provenance | 2 | 9.66 / 9.59 | 10.28 / 10.32 |
+| geometry_roots | 2 | 10.40 / 10.22 | 134.13 / 134.72 |
+| geometry_planar | 2 | 502.02 / 411.08 | 572.69 / 451.69 |
+| grouping_wrench | 5 | 32.54 / 32.17 | 111.09 / 110.15 |
+| hertz_inputs | 2 | 9.62 / 9.57 | 55.27 / 55.40 |
+| hertz_law | 2 | 13.51 / 13.10 | 37.55 / 37.21 |
+
+The input callback launches 21 CUDA tasks per scene step in these windows and
+performs no traced device-to-host copy. One Quadrants call can launch several
+tasks. Planar-query device cost falls from about 502 to 411 us at B4 and 573 to
+452 us at B1024. Summed task times may overlap and must not be added to host
+dispatch or independently synchronized phase medians. Some rigid GPU events
+lack a recorded matching driver event; the summary keeps them unattributed.
+Profiler occupancy metadata is an estimate, not a measured utilization result.
+
+The trace records setup/first-compile time, logical field bytes, torch allocator
+values, device free-memory snapshots and host maximum RSS. Device snapshots are
+not process peaks, torch counters exclude Quadrants allocations, and logical
+bytes exclude allocator rounding and other state. The initial trace writer
+exported its traces, then failed while treating a Quadrants internal dictionary
+as a tensor; the corrected writer uses declared fields and the final utility
+uses `iter_data`. Both failed runs are preserved.
+
+Reproduce each variant using its captured tasks, worker import cone and source
+patch. The cache workers intentionally differ from the active baseline-compatible
+adapter; use their captured snapshots. Large compressed histories, raw traces,
+expanded snapshot summaries and arrays remain hashed on data. The selected
+engine change and active trace/batch-comparison utilities match executed sources.
+Further work remains on useful collision provenance, genuinely local updates,
+fusion, homogeneous and larger batches, finite-face/source-moment compatibility,
+friction memory, finite-shell accuracy and actual complete max/full scene cost.

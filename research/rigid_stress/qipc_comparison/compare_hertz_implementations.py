@@ -47,8 +47,10 @@ def main():
     for path in sorted(args.baseline.glob("step*.npz")):
         differences = {}
         with np.load(path) as baseline, np.load(args.candidate / path.name) as candidate:
-            assert baseline.files == candidate.files
+            assert set(baseline.files).issubset(candidate.files)
             for key in baseline.files:
+                if key == "query_evaluations":
+                    continue
                 left, right = baseline[key], candidate[key]
                 if key in ("curvature",):
                     np.testing.assert_allclose(right, left, rtol=1e-11, atol=1e-9)
@@ -70,6 +72,7 @@ def main():
             "exact_motion_differences": motion,
             "history_maximum_absolute_differences": history_differences,
             "snapshots": snapshots,
+            "excluded_diagnostic_fields": ["query_evaluations"],
             "scope": "Exact conditions, motion and every-step validity/source identity/region counts; every-step source curvature/residual and all retained input tensors checked with declared numerical tolerances. No physical stress accuracy or complete stress-module claim.",
         },
     )

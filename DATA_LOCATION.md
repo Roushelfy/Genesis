@@ -803,3 +803,19 @@ compressed audit histories and the fixture/numerical failures. No live data,
 existing environment or compatibility link was moved. Unfinished friction-history
 sources/results remain preserved separately while the remote input-overhead
 priority is executed.
+
+
+Contact-input cache/scaling ablations use `hard-input-cache-v1/v2`,
+`hard-input-trace-v1/v2`, `hard-input-scaling-v1`,
+`hard-input-scaling-baseline-v1`, `hard-input-scaling-check-v1`,
+`hard-input-bounds-v1`, `hard-input-bounds-trace-v1` and
+`hard-input-bounds-paired-v1` under the established20261019 ranking run.
+Complete trajectories, large compressed histories, expanded snapshot summaries,
+raw CUDA traces and generated meshes stay there with external hashes. The
+`hard-input-cache-and-scaling-v1` packet keeps compact terminal/source evidence,
+including both initial trace-writer failures. Candidate source worktrees remain
+under the existing workspace: `hard_contact_optimized` holds the cache experiment
+and `hard_contact_bounds` holds the selected small change. Private compilation
+caches are node-local; the data-side physical environment is reused. No existing
+runtime data, active environment, compatibility link or preserved unfinished
+friction-history source is migrated.

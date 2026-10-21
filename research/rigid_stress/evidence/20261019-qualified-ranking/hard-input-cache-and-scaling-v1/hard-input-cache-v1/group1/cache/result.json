@@ -1,0 +1,221 @@
+{
+  "passed": true,
+  "backend": "cpu",
+  "cases": [
+    {
+      "case": "cold",
+      "oracle_maximum_errors": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hint_kind_counts": [
+        0,
+        0,
+        12,
+        0
+      ],
+      "cache_hits": 0,
+      "query_evaluations": [
+        0,
+        144
+      ]
+    },
+    {
+      "case": "warm",
+      "oracle_maximum_errors": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hint_kind_counts": [
+        0,
+        12,
+        0,
+        0
+      ],
+      "cache_hits": 12,
+      "query_evaluations": [
+        0,
+        144
+      ]
+    },
+    {
+      "case": "wrong_component_hint",
+      "oracle_maximum_errors": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hint_kind_counts": [
+        0,
+        12,
+        0,
+        0
+      ],
+      "cache_hits": 0,
+      "query_evaluations": [
+        0,
+        813
+      ]
+    },
+    {
+      "case": "release",
+      "oracle_maximum_errors": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hint_kind_counts": [
+        4,
+        8,
+        0,
+        0
+      ],
+      "cache_hits": 8,
+      "query_evaluations": [
+        0,
+        96
+      ]
+    },
+    {
+      "case": "reload",
+      "oracle_maximum_errors": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hint_kind_counts": [
+        0,
+        8,
+        4,
+        0
+      ],
+      "cache_hits": 8,
+      "query_evaluations": [
+        0,
+        144
+      ]
+    },
+    {
+      "case": "partial_reset",
+      "oracle_maximum_errors": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hint_kind_counts": [
+        0,
+        8,
+        4,
+        0
+      ],
+      "cache_hits": 8,
+      "query_evaluations": [
+        0,
+        144
+      ]
+    },
+    {
+      "case": "permuted",
+      "oracle_maximum_errors": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hint_kind_counts": [
+        0,
+        12,
+        0,
+        0
+      ],
+      "cache_hits": 0,
+      "query_evaluations": [
+        0,
+        813
+      ]
+    },
+    {
+      "case": "invalid_hint",
+      "oracle_maximum_errors": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hint_kind_counts": [
+        0,
+        12,
+        0,
+        0
+      ],
+      "cache_hits": 0,
+      "query_evaluations": [
+        0,
+        954
+      ]
+    },
+    {
+      "case": "bad_pair",
+      "oracle_maximum_errors": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hint_kind_counts": [
+        1,
+        11,
+        0,
+        0
+      ],
+      "cache_hits": 11,
+      "query_evaluations": [
+        0,
+        138
+      ]
+    },
+    {
+      "case": "recovered",
+      "oracle_maximum_errors": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hint_kind_counts": [
+        0,
+        11,
+        1,
+        0
+      ],
+      "cache_hits": 11,
+      "query_evaluations": [
+        0,
+        144
+      ]
+    },
+    {
+      "case": "discontinuous_source",
+      "oracle_maximum_errors": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hint_kind_counts": [
+        0,
+        12,
+        0,
+        0
+      ],
+      "cache_hits": 6,
+      "query_evaluations": [
+        0,
+        609
+      ]
+    }
+  ],
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-cache-v1/group1/cache/disconnected.obj",
+    "bytes": 4802,
+    "sha256": "58ef4682cbcfde8877d6f9fb3309bd979c499417c8c8ca16ffdf6fea4f0a0aa8"
+  },
+  "scope": "Synthetic current-plane contacts on one disconnected mesh. Exact root-face and bounded position/residual agreement with the frozen exhaustive normal-root implementation, source vertex hints, cold/warm/wrong-component/invalid-hint fallback, release, pair rejection, source reordering, partial reset and discontinuous source changes. No friction-history or physical pressure claim."
+}

@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "small": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group0/inputs/result.json",
+    "bytes": 9686,
+    "sha256": "fc25b444fc505577699f2b1ca5c8cdbe26e686940adb947420e842ec89e70f6c"
+  },
+  "large": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group2/inputs/result.json",
+    "bytes": 72751,
+    "sha256": "9c13bc2fd856f5c68f29411529aba4b9550198dc1fb912d3001b5e2384877492"
+  },
+  "shared_environments": 4,
+  "large_environments": 256,
+  "steps": 720,
+  "snapshot_maximum_absolute_differences": {
+    "source_force": 0.0,
+    "source_position": 0.0,
+    "source_normal": 0.0,
+    "source_witness": 0.0,
+    "frame_position": 0.0,
+    "frame_quaternion": 0.0,
+    "center": 0.0,
+    "normal": 0.0,
+    "curvature": 1.7763568394002505e-15,
+    "normal_residual": 0.0,
+    "gap": 0.0,
+    "force": 0.0,
+    "moment": 0.0,
+    "hertz_axes": 0.0,
+    "probe_normals": 0.0,
+    "probe_points": 0.0
+  },
+  "scope": "Exact initial/controller conditions and motion for the shared environment prefix, exact every-step validity/source identity/region/cache status, and sampled tensors at the implementation-conformance tolerances. Total reset count is batch-wide and is not compared. Query evaluation counters are diagnostic. No physical stress claim."
+}

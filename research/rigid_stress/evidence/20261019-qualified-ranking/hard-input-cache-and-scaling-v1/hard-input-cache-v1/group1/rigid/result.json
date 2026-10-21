@@ -1,0 +1,56 @@
+{
+  "execution_completed": true,
+  "mode": "rigid",
+  "setup_seconds": 38.00226257700706,
+  "curvature_build_seconds_including_first_compile": null,
+  "phase_profile": [],
+  "grouping_errors": null,
+  "grouping_check_scope": "Every audited step, all slots and environments: exact validity, leader, count, force and moment against the original serial kernel. Research controls are excluded from primary timing.",
+  "phase_profile_scope": "Intrusive synchronized dispatch plus device execution in audited repeat zero; samples exclude first 60 steps. Primary inclusive scene timing uses uninstrumented repeats. No stress, traction transfer or history kernels run in this input-only pilot.",
+  "omit_timed_audit": false,
+  "envs": 64,
+  "contact_capacity_per_environment": null,
+  "shared_curvature_faces": null,
+  "shared_curvature_vertices": null,
+  "steps": 720,
+  "timestep": 0.01,
+  "substeps": 1,
+  "rollouts": [
+    {
+      "repeat": 0,
+      "audited": true,
+      "seconds": 3.2097946159774438,
+      "reset_count": 13,
+      "research_audit_in_timing": false
+    },
+    {
+      "repeat": 1,
+      "audited": false,
+      "seconds": 2.7259896470350213,
+      "reset_count": 13,
+      "research_audit_in_timing": false
+    },
+    {
+      "repeat": 2,
+      "audited": false,
+      "seconds": 2.7287987869931385,
+      "reset_count": 13,
+      "research_audit_in_timing": false
+    },
+    {
+      "repeat": 3,
+      "audited": false,
+      "seconds": 2.7205214019631967,
+      "reset_count": 13,
+      "research_audit_in_timing": false
+    }
+  ],
+  "trajectory": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-cache-v1/group1/rigid/trajectory.npz",
+    "bytes": 2923515,
+    "sha256": "a0e088a927fa8471e24e6fc21b262e6bd979258a4190ef41972cdbc21d59ee0a"
+  },
+  "snapshots": [],
+  "scope": "Same preintegration substep native curvature/region/Hertz input pilot. Timings include the research callback; audit counters are included unless omit_timed_audit is true. Detailed host snapshots and phase synchronization occur only in repeat zero. No traction/stress output, pressure/finite-shell qualification, or tangential history law. Failed inputs remain reported and do not qualify usable estimator throughput.",
+  "whole_goal_complete": false
+}

@@ -1,0 +1,85 @@
+{
+  "rows": [
+    {
+      "envs": 4,
+      "hint_counts": {
+        "0": 56,
+        "1": 2934,
+        "3": 6903
+      },
+      "temporal_root_hits": 2873,
+      "hit_rate_when_temporal_hint_supplied": 0.9792092706203136,
+      "temporal_hint_fraction_of_active_sources": 0.29657333468108765,
+      "closest_full_candidate_evaluations": {
+        "count": 9893,
+        "total": 101657,
+        "mean": 10.275649449105428,
+        "median": 10,
+        "p95": 20.0,
+        "max": 20
+      },
+      "normal_root_full_candidate_evaluations": {
+        "count": 9893,
+        "total": 242220,
+        "mean": 24.48397857070656,
+        "median": 7,
+        "p95": 70.0,
+        "max": 80
+      },
+      "total_full_candidate_evaluations_per_scene_step": {
+        "count": 720,
+        "total": 343877,
+        "mean": 477.6069444444444,
+        "median": 411.0,
+        "p95": 942.0,
+        "max": 1042
+      },
+      "history": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-cache-v1/group0/inputs/history.jsonl.gz",
+        "bytes": 186378,
+        "sha256": "a4f60810d280516552af7b1dc314ab84e3e038be0d834ab04d118f5815aef4b7"
+      }
+    },
+    {
+      "envs": 64,
+      "hint_counts": {
+        "0": 322,
+        "1": 48506,
+        "3": 77133
+      },
+      "temporal_root_hits": 47801,
+      "hit_rate_when_temporal_hint_supplied": 0.9854657155815776,
+      "temporal_hint_fraction_of_active_sources": 0.3850874477020665,
+      "closest_full_candidate_evaluations": {
+        "count": 125961,
+        "total": 1192426,
+        "mean": 9.466628559633538,
+        "median": 10,
+        "p95": 20.0,
+        "max": 21
+      },
+      "normal_root_full_candidate_evaluations": {
+        "count": 125961,
+        "total": 3293723,
+        "mean": 26.14875239161328,
+        "median": 7,
+        "p95": 77.0,
+        "max": 80
+      },
+      "total_full_candidate_evaluations_per_scene_step": {
+        "count": 720,
+        "total": 4486149,
+        "mean": 6230.7625,
+        "median": 7804.0,
+        "p95": 10580.1,
+        "max": 10951
+      },
+      "history": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-cache-v1/group1/inputs/history.jsonl.gz",
+        "bytes": 2608793,
+        "sha256": "19b231423552c9425e5c454b667863561dc75bc7a7bbd227e9b73867f93a70f4"
+      }
+    }
+  ],
+  "scope": "Full candidate calculations, not AABB visits. A temporal hit means the selected normal-root face matches the hint; finite-face/curvature rejection still applies. All potentially closer faces are checked, including after a hint hit. Thus this is bounded exhaustive search, not a search-free local update. Actual Franka collision sources supplied no usable vertex hints in this rollout."
+}
