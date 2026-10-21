@@ -1,0 +1,32 @@
+[
+  [
+    {
+      "name": "comparison",
+      "module": "research.rigid_stress.qipc_comparison.compare_hertz_scene",
+      "args": [
+        "--max",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-scaling-v1/group0/max",
+        "--full",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-scaling-v1/group0/full",
+        "--rigid",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-scaling-v1/group0/rigid",
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group1/inputs"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "replay",
+      "module": "research.rigid_stress.qipc_comparison.study_hertz_scene_replay",
+      "args": [
+        "--max-snapshot",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-replay-capture-v1/group0/max/step0554.npz",
+        "--full-snapshot",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-replay-capture-v1/group1/full/step0554.npz",
+        "--mesh",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_bounds/examples/rigid/assets/hollow_egg/level1/elastic.npz"
+      ]
+    }
+  ]
+]

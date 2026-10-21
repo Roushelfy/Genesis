@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "name": "baseline",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_bounds",
+      "module": "research.rigid_stress.qipc_comparison.measure_stress_preparation",
+      "args": [
+        "--mesh",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_bounds/examples/rigid/assets/hollow_egg/level1/elastic.npz"
+      ]
+    },
+    {
+      "name": "stable",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible",
+      "module": "research.rigid_stress.qipc_comparison.measure_stress_preparation",
+      "args": [
+        "--mesh",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible/examples/rigid/assets/hollow_egg/level1/elastic.npz"
+      ]
+    }
+  ]
+]

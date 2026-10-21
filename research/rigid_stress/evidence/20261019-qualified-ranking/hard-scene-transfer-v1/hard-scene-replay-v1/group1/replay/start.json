@@ -1,0 +1,39 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-099",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "734405",
+      "SLURM_ARRAY_JOB_ID": "734405",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-ef214d63-bb6e-b1c8-20a6-dc7b4cf438b5, 00000000:C1:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "mesh": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_bounds/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+    "bytes": 3573,
+    "sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4"
+  },
+  "snapshots": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-replay-capture-v1/group0/max/step0554.npz",
+      "bytes": 2348554,
+      "sha256": "150ee4ceb8b952cb55bb3174470f5baabaf6898c21dd557754392b7ee3798da7"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-replay-capture-v1/group1/full/step0554.npz",
+      "bytes": 4041509,
+      "sha256": "b569bd2edce660896db614a1998b8444c8fba61090e49e0327a678abc4355a39"
+    }
+  ],
+  "existing_peak_comparison": {
+    "relative_tolerance": 1e-11,
+    "absolute_tolerance_pa": 1e-09
+  }
+}

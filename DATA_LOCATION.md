@@ -1,5 +1,17 @@
 # Rigid-stress data and artifact locations
 
+The `hard-scene-transfer-v1` packet retains 326 compact payloads/3,209,088 bytes
+for B4/B64 paired moving-scene max/full transfer and coarse elasticity, CPU/GPU
+independent bridge controls and complete-history comparisons. Its 180 external
+artifacts stay hashed under the established `20261019-qualified-ranking` data root
+in `hard-scene-pilot-v1`, `hard-scene-check-v1`, `hard-scene-scaling-v1` and
+`hard-scene-replay-capture-v1`/`hard-scene-replay-v1`, `hard-scene-stable-v3` and
+`hard-scene-preparation-v1`. Original B64/regression failures and two unsubmitted
+sparse-checkout capture failures remain retained beside the passing repair.
+Full fields, trajectories, generated meshes and job logs use data; private
+compiler caches were node-local. No active environment, existing data, source
+checkout or compatibility link was migrated. Source/docs remain in workspace.
+
 The `hard-hertz-tangential-v1` packet retains87 compact payloads/395,654 bytes
 for independent elliptic tangential stress controls, a loading/reversal comparison
 and native CPU/GPU accuracy/timing. Its five full tensor/cycle arrays remain

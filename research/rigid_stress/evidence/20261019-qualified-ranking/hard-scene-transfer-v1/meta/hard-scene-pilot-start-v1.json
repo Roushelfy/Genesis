@@ -1,0 +1,56 @@
+{
+  "preservation": {
+    "passed": true,
+    "heads": {
+      "rigid-stress-recovery": "aa803cdb9e88da9e738ee156d5ebfb1fe952f950",
+      "stress_qualified_ranking": "7fa4f3dfd9a8bad28bbb8f115a3bc9047a2ceb78",
+      "hard_contact_bounds": "260efa7daec83648377fc7de3c1c60e96ef593b1",
+      "hard_contact_optimized": "5e3fad38e08b1ac0725c4dcede6bacba244e41f4",
+      "cheap_hard_contact": "616e6efcbacfe4785c8efe797e2e26d1cfb3bb4c",
+      "automatic-pad-geometry": "1e67f0219d478b0f16b0dad743b9f63888bb4d19",
+      "native-witness-consistency": "1ff39b0775200120737225fdfb8631c9b1fc5fa7",
+      "resolved-boundary-production": "d5026c7c9da05c6c483d421672fa62a7339467d8"
+    },
+    "engine_tree": "ee7551bcdcb850aa58f9b0d12879b8ef0f76e4c3",
+    "research_tree": "2d9932bc05109554bd24d31d1a787c82f0c28bcc",
+    "prior_worktree_engine_test_example_differences_preserved_exactly": true,
+    "preserved": {
+      "rigid-stress-recovery": {
+        "head": "88f388c35dd21416428c4b1f035bb815fc1bf836",
+        "files": {
+          "research/rigid_stress/qipc_comparison/contact_events.py": "1db042d3cb16d8a8b931ff86d70bc3f9d9669dec6018d0f182bf49e4fddcd50d",
+          "research/rigid_stress/qipc_comparison/reaction_history.py": "ce4f54e207b0d75b62149eaceae2289e57fbd311b0cebf766d97de04ceeb1c1e",
+          "research/rigid_stress/qipc_comparison/reference_uncertainty.py": "667ddd89658c29b278ac6156841b6eea5fddc89526c3d44b25f25663133ebd8e",
+          "research/rigid_stress/docs/QIPC_SPARSE_FIGURE_PLAN.md": "ab73e1f155a6d37b6a3dd1645c1edb84b8bbd9774e9b84a44fdbacbe995f8ef3",
+          "research/rigid_stress/qipc_comparison/keyframe_maps.py": "c5f4e26e4ab869515051e41bb15da12cb8988bdfb6d13f5b3af7f6c082fd2fa5",
+          "research/rigid_stress/qipc_comparison/keyframe_qualification.py": "34acd3c1d180c424ac0757de95704506afc16311bcc88dc1731007498e8c3807",
+          "research/rigid_stress/qipc_comparison/keyframe_sensitivity_figure.py": "34734093d627416ae0cc6deaf67136536cd91d580c56adf9531a7fafc206e947",
+          "research/rigid_stress/qipc_comparison/sparse_cost.py": "3717aedad8c078e5a93d3e8dae0d57f3d0e441c3343d9fa6c6aa6f8d0cd3aef9"
+        }
+      },
+      "stress_qualified_ranking": {
+        "head": "6374b95c9cabf21a458eda8aea5d204aecf7566a",
+        "files": {
+          "research/rigid_stress/qipc_comparison/hertz_history.py": "7e9c7197891a8a2a18aedad33ab32f07cd4b684f3910553a206f03fd7ea5eccf",
+          "research/rigid_stress/qipc_comparison/native_hertz_history.py": "56208e157da3c9a1047b0b5ea84c7319949b0dc50fbf4bc707b685d33cfae4b3",
+          "research/rigid_stress/qipc_comparison/native_hertz_memory_stress.py": "07edd25f1713bc9011b8180f8130c47e15b62420009701ad8ca5b143c8b6eab6",
+          "research/rigid_stress/qipc_comparison/study_hertz_history.py": "76bfa34cab44fc28cf31355985d92ddeb75633afe61df9f50a4aadc7fdc3f656"
+        }
+      },
+      "cheap_hard_contact": {
+        "head": "8558829df119e06e675a880f1867111d8cc7d0ff",
+        "files": {}
+      }
+    },
+    "statuses": {
+      "rigid-stress-recovery": "M research/rigid_stress/qipc_comparison/contact_events.py\n M research/rigid_stress/qipc_comparison/reaction_history.py\n M research/rigid_stress/qipc_comparison/reference_uncertainty.py\n?? research/rigid_stress/docs/QIPC_SPARSE_FIGURE_PLAN.md\n?? research/rigid_stress/qipc_comparison/keyframe_maps.py\n?? research/rigid_stress/qipc_comparison/keyframe_qualification.py\n?? research/rigid_stress/qipc_comparison/keyframe_sensitivity_figure.py\n?? research/rigid_stress/qipc_comparison/sparse_cost.py",
+      "stress_qualified_ranking": "?? research/rigid_stress/qipc_comparison/hertz_history.py\n?? research/rigid_stress/qipc_comparison/native_hertz_history.py\n?? research/rigid_stress/qipc_comparison/native_hertz_memory_stress.py\n?? research/rigid_stress/qipc_comparison/study_hertz_history.py",
+      "hard_contact_bounds": "",
+      "hard_contact_optimized": ""
+    },
+    "whole_goal_complete": false
+  },
+  "source": "hard_contact_bounds",
+  "scientific_outputs": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-pilot-v1",
+  "scope": "Strict composed moving-scene Hertz transfer and existing coarse native elasticity. Preserve rejected environments; physical near-field and friction-history qualification remain open."
+}

@@ -44,7 +44,16 @@ adds CPU/GPU cache lifecycle controls, four batch sizes through1024, shared-pref
 isolation, device traces and logical memory. Only conservative nearest-surface
 bounds are selected; full temporal-cache variants remain experiments. Genuine
 local updates, useful collision-feature reuse, homogeneous/capacity tuning and
-complete max/full scene integration remain open.
+qualified public max/full scene integration remain open.
+
+The [moving-scene max/full pilot](HARD_CONTACT_ESTIMATES_20261020.md#moving-scene-transfer-and-coarse-maxfull-output)
+executes paired B4/B64 geometry/transfer/coarse-elasticity scenes, independent
+CPU/GPU bridge controls and complete-history output checks. A B64 peak failure
+is repaired by fixed-order shared-operator preparation, with unchanged thresholds,
+an old-engine negative regression and eighteen passing CPU/GPU checks. B4 admits only
+658/2808 loaded steps, with no admitted loaded update during steps 240-599.
+This closes the missing composed timing measurement, while finite-face/source
+moments, friction memory and shell/near-field physical accuracy remain open.
 
 The [current-curvature/live-input controls](HARD_CONTACT_ESTIMATES_20261020.md#current-curvature-and-live-contact-inputs) now include native primitive and mesh geometry, source splitting/order/side invariance, invalid-source quarantine, release and actual same-substep Franka inputs. Matched trajectories remain exact, while substantial region rejection and measured input overhead prevent promotion to useful stress throughput. Preserve the failed candidate and opposing-box diagnostic; complete stress/friction output and shell/contact accuracy remain required.
 

@@ -41,6 +41,15 @@ and paired subtraction varies. Full temporal caches remain captured experiments.
 All original geometric rejections remain visible; complete stress/history and
 physical shell qualification are still open.
 
+The [moving-scene max/full pilot](docs/HARD_CONTACT_ESTIMATES_20261020.md#moving-scene-transfer-and-coarse-maxfull-output)
+now connects native Hertz transfer and coarse elasticity for paired B4/B64
+Franka runs. Independent CPU/GPU bridge controls and both max/full comparisons
+pass after fixed-order operator preparation repairs an observed B64 cross-build
+peak failure; the original failure and negative regression remain retained.
+Actual boundary/source-moment and friction rejection remains
+substantial; B4 admits 658/2808 loaded steps. Proportional shear, unresolved
+near-field/shell accuracy and failed intervals prevent public estimator promotion.
+
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
 cheap two-region interaction correction. Ellipticity reduces the rotated-case

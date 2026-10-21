@@ -1,0 +1,46 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-231",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "734424",
+      "SLURM_ARRAY_JOB_ID": "734421",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-9897254d-b78b-5427-f5ac-48c0f31b431c, 00000000:C1:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "engine_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible/genesis/__init__.py",
+  "tests": [
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible/tests/rigid/test_stress.py",
+      "bytes": 64517,
+      "sha256": "be15448f109109c9b21cc0de6b3e8ef4513b51b4016255f39dead7a2122f2e7c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible/tests/rigid/test_stress_independent_fem.py",
+      "bytes": 8993,
+      "sha256": "ab483fcf0e899e0aa9d25a325f43ae79b450abed5e7f0651df345ef226121b7b"
+    }
+  ],
+  "pytest_arguments": [
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible/tests/rigid/test_stress.py",
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible/tests/rigid/test_stress_independent_fem.py",
+    "-k",
+    "native_full_field_same_state_and_invalid_solve or independent_fem_assembly_boundary_loads_and_inertia_relief",
+    "--backend",
+    "cpu",
+    "-n",
+    "0",
+    "-v",
+    "--import-mode=importlib",
+    "-p",
+    "no:cacheprovider",
+    "--junitxml=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-stable-v3/group2/cpu/junit.xml"
+  ]
+}

@@ -331,13 +331,14 @@ class InputObserver:
         }
 
 
-def main():
+def main(observer_type=InputObserver, modes=("inputs", "rigid"), scope=None):
     cli = argparse.ArgumentParser(description=__doc__)
-    cli.add_argument("--mode", choices=("inputs", "rigid"), required=True)
+    cli.add_argument("--mode", choices=modes, required=True)
     cli.add_argument("--envs", type=int, default=4)
     cli.add_argument("--steps", type=int, default=720)
     cli.add_argument("--repeats", type=int, default=3)
     cli.add_argument("--conditions", type=Path)
+    cli.add_argument("--snapshot-step", type=int, action="append", default=[])
     cli.add_argument(
         "--check-grouping",
         action="store_true",
@@ -366,11 +367,11 @@ def main():
     workload = FrankaEgg(
         args.envs,
         level=1,
-        stress=args.mode == "inputs",
+        stress=args.mode != "rigid",
         seed=623016,
         varied=True,
         conditions=args.conditions,
-        output_mode="max",
+        output_mode="full" if args.mode == "full" else "max",
         stress_update_mode="every_step",
         fused_rigid_post=False,
         egg_geometry="mesh64",
@@ -380,7 +381,7 @@ def main():
     # The observer reads no prescribed radius; retain the identical rigid controller.
     workload.stress = False
     solver = workload.scene.rigid_solver
-    observer = InputObserver(solver, args.check_grouping) if args.mode == "inputs" else None
+    observer = observer_type(solver, args.check_grouping) if args.mode != "rigid" else None
     workload.save_conditions(args.output / "conditions.npz")
     qd.sync()
     setup_seconds = perf_counter() - begun
@@ -421,8 +422,30 @@ def main():
                             "curvature": snapshot["curvature"][active].tolist(),
                             "region_count": np.count_nonzero(snapshot["source_count"], axis=1).tolist(),
                         }
+                        if "scene_status" in snapshot:
+                            regions = snapshot["source_count"] > 0
+                            row["scene_status"] = snapshot["scene_status"].tolist()
+                            row["patch_indices"] = np.argwhere(regions).tolist()
+                            row["patch_status"] = snapshot["patch_status"][regions].tolist()
+                            row["source_projection_status"] = snapshot["source_projection_status"][active].tolist()
+                            row["scene_peak_pa"] = [
+                                float(value) if np.isfinite(value) else None for value in snapshot["scene_peak_pa"]
+                            ]
+                            row["patch_moment_error_nm"] = snapshot["patch_moment_error_nm"][regions].tolist()
+                            row["patch_required_friction"] = snapshot["patch_required_friction"][regions].tolist()
+                            if args.mode == "full":
+                                valid = snapshot["scene_status"] == 0
+                                field = snapshot["stress_tensor"]
+                                assert np.isfinite(field[valid]).all()
+                                assert np.isnan(field[~valid]).all()
+                                np.testing.assert_allclose(
+                                    snapshot["von_mises"][valid].max(axis=(1, 2, 3)),
+                                    snapshot["scene_peak_pa"][valid],
+                                    rtol=1e-12,
+                                    atol=1e-10,
+                                )
                         history.write(json.dumps(row, allow_nan=False) + "\n")
-                        if step % 60 == 0 or step == args.steps - 1:
+                        if step % 60 == 0 or step == args.steps - 1 or step in args.snapshot_step:
                             path = args.output / f"step{step:04d}.npz"
                             np.savez_compressed(path, **snapshot)
                             snapshots.append(file_id(path))
@@ -475,10 +498,13 @@ def main():
             "phase_profile": phase_rows,
             "grouping_errors": grouping_errors.tolist() if grouping_errors is not None else None,
             "grouping_check_scope": "Every audited step, all slots and environments: exact validity, leader, count, force and moment against the original serial kernel. Research controls are excluded from primary timing.",
-            "phase_profile_scope": "Intrusive synchronized dispatch plus device execution in audited repeat zero; samples exclude first 60 steps. Primary inclusive scene timing uses uninstrumented repeats. No stress, traction transfer or history kernels run in this input-only pilot.",
+            "phase_profile_scope": "Intrusive synchronized dispatch plus device execution in audited repeat zero; samples exclude first 60 steps. Primary inclusive scene timing uses uninstrumented repeats. "
+            + (scope or "No stress, traction transfer or history kernels run in this input-only pilot."),
             "omit_timed_audit": args.omit_timed_audit,
             "envs": args.envs,
-            "contact_capacity_per_environment": observer.entry.contacts.valid.shape[0] if observer is not None else None,
+            "contact_capacity_per_environment": observer.entry.contacts.valid.shape[0]
+            if observer is not None
+            else None,
             "shared_curvature_faces": observer.cache.info.status.shape[0] if observer is not None else None,
             "shared_curvature_vertices": observer.cache.info.vertices_weight.shape[0] if observer is not None else None,
             "steps": args.steps,
@@ -487,7 +513,8 @@ def main():
             "rollouts": rollouts,
             "trajectory": file_id(trajectory),
             "snapshots": snapshots,
-            "scope": "Same preintegration substep native curvature/region/Hertz input pilot. Timings include the research callback; audit counters are included unless omit_timed_audit is true. Detailed host snapshots and phase synchronization occur only in repeat zero. No traction/stress output, pressure/finite-shell qualification, or tangential history law. Failed inputs remain reported and do not qualify usable estimator throughput.",
+            "scope": scope
+            or "Same preintegration substep native curvature/region/Hertz input pilot. Timings include the research callback; audit counters are included unless omit_timed_audit is true. Detailed host snapshots and phase synchronization occur only in repeat zero. No traction/stress output, pressure/finite-shell qualification, or tangential history law. Failed inputs remain reported and do not qualify usable estimator throughput.",
             "whole_goal_complete": False,
         },
     )
