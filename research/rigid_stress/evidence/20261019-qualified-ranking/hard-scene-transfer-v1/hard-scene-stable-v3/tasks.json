@@ -1,0 +1,233 @@
+[
+  [
+    {
+      "name": "gpu",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible/tests/rigid/test_stress.py",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible/tests/rigid/test_stress_independent_fem.py",
+        "--select",
+        "native_full_field_same_state_and_invalid_solve or independent_fem_assembly_boundary_loads_and_inertia_relief",
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible",
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "baseline",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_bounds",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible/tests/rigid/test_stress.py",
+        "--select",
+        "native_full_field_same_state_and_invalid_solve",
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_bounds",
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "cpu",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible/tests/rigid/test_stress.py",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible/tests/rigid/test_stress_independent_fem.py",
+        "--select",
+        "native_full_field_same_state_and_invalid_solve or independent_fem_assembly_boundary_loads_and_inertia_relief",
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible",
+        "--backend",
+        "cpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "replay",
+      "module": "research.rigid_stress.qipc_comparison.study_hertz_scene_replay",
+      "args": [
+        "--max-snapshot",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-replay-capture-v1/group0/max/step0554.npz",
+        "--full-snapshot",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-replay-capture-v1/group1/full/step0554.npz",
+        "--mesh",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_reproducible/examples/rigid/assets/hollow_egg/level1/elastic.npz"
+      ]
+    },
+    {
+      "name": "cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_scene",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    },
+    {
+      "name": "gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_scene",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "max",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_scene",
+      "args": [
+        "--mode",
+        "max",
+        "--envs",
+        "4",
+        "--steps",
+        "720",
+        "--repeats",
+        "3",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group0/inputs/conditions.npz",
+        "--omit-timed-audit",
+        "--snapshot-step",
+        "554",
+        "--profile-phases"
+      ]
+    },
+    {
+      "name": "full",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_scene",
+      "args": [
+        "--mode",
+        "full",
+        "--envs",
+        "4",
+        "--steps",
+        "720",
+        "--repeats",
+        "3",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group0/inputs/conditions.npz",
+        "--omit-timed-audit",
+        "--snapshot-step",
+        "554"
+      ]
+    },
+    {
+      "name": "rigid",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_scene",
+      "args": [
+        "--mode",
+        "rigid",
+        "--envs",
+        "4",
+        "--steps",
+        "720",
+        "--repeats",
+        "3",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group0/inputs/conditions.npz",
+        "--omit-timed-audit",
+        "--snapshot-step",
+        "554"
+      ]
+    },
+    {
+      "name": "comparison",
+      "module": "research.rigid_stress.qipc_comparison.compare_hertz_scene",
+      "args": [
+        "--max",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-stable-v3/group4/max",
+        "--full",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-stable-v3/group4/full",
+        "--rigid",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-stable-v3/group4/rigid",
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group0/inputs"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "max",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_scene",
+      "args": [
+        "--mode",
+        "max",
+        "--envs",
+        "64",
+        "--steps",
+        "720",
+        "--repeats",
+        "3",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group1/inputs/conditions.npz",
+        "--omit-timed-audit",
+        "--snapshot-step",
+        "554",
+        "--profile-phases"
+      ]
+    },
+    {
+      "name": "full",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_scene",
+      "args": [
+        "--mode",
+        "full",
+        "--envs",
+        "64",
+        "--steps",
+        "720",
+        "--repeats",
+        "3",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group1/inputs/conditions.npz",
+        "--omit-timed-audit",
+        "--snapshot-step",
+        "554"
+      ]
+    },
+    {
+      "name": "rigid",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_scene",
+      "args": [
+        "--mode",
+        "rigid",
+        "--envs",
+        "64",
+        "--steps",
+        "720",
+        "--repeats",
+        "3",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group1/inputs/conditions.npz",
+        "--omit-timed-audit",
+        "--snapshot-step",
+        "554"
+      ]
+    },
+    {
+      "name": "comparison",
+      "module": "research.rigid_stress.qipc_comparison.compare_hertz_scene",
+      "args": [
+        "--max",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-stable-v3/group5/max",
+        "--full",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-stable-v3/group5/full",
+        "--rigid",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-stable-v3/group5/rigid",
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group1/inputs"
+      ]
+    }
+  ]
+]

@@ -1,0 +1,111 @@
+{
+  "execution_completed": true,
+  "rows": [
+    {
+      "repeat": 0,
+      "cold": true,
+      "seconds": 16.6440156820463,
+      "phases": {
+        "topology_seconds": 0.5829602790181525,
+        "operators_seconds": 1.5590230399975553,
+        "factor_seconds": 13.700796903984156,
+        "inverse_seconds": 0.5076481720316224,
+        "surface_inverse_seconds": 0.2933705259929411
+      }
+    },
+    {
+      "repeat": 1,
+      "cold": false,
+      "seconds": 13.386285927030258,
+      "phases": {
+        "topology_seconds": 0.03738440200686455,
+        "operators_seconds": 0.01920954295201227,
+        "factor_seconds": 13.283716528036166,
+        "inverse_seconds": 0.03292220301227644,
+        "surface_inverse_seconds": 0.012773016991559416
+      }
+    },
+    {
+      "repeat": 2,
+      "cold": false,
+      "seconds": 13.386771267978474,
+      "phases": {
+        "topology_seconds": 0.03794164099963382,
+        "operators_seconds": 0.019526035990566015,
+        "factor_seconds": 13.285271491971798,
+        "inverse_seconds": 0.030862849031109363,
+        "surface_inverse_seconds": 0.012811774970032275
+      }
+    },
+    {
+      "repeat": 3,
+      "cold": false,
+      "seconds": 13.38966626097681,
+      "phases": {
+        "topology_seconds": 0.036970457003917545,
+        "operators_seconds": 0.01943348499480635,
+        "factor_seconds": 13.282425627054181,
+        "inverse_seconds": 0.038031299947761,
+        "surface_inverse_seconds": 0.012566245044581592
+      }
+    }
+  ],
+  "warm_median_seconds": 13.386771267978474,
+  "warm_phase_median_seconds": {
+    "topology_seconds": 0.03738440200686455,
+    "operators_seconds": 0.01943348499480635,
+    "factor_seconds": 13.283716528036166,
+    "inverse_seconds": 0.03292220301227644,
+    "surface_inverse_seconds": 0.012773016991559416
+  },
+  "shared_logical_bytes_by_field": {
+    "operators.vertices": 19440,
+    "operators.elements": 19200,
+    "operators.surface_nodes": 1920,
+    "operators.surface_owners": 320,
+    "operators.surface_opposite_vertices": 320,
+    "operators.surface_neighbors": 960,
+    "operators.edges": 48,
+    "operators.gradients": 46080,
+    "operators.corner_gradients": 322560,
+    "operators.corner_nodes": 53760,
+    "operators.volumes": 3840,
+    "operators.row_start": 3244,
+    "operators.columns": 81096,
+    "operators.element_entries": 192000,
+    "operators.stiffness": 1459728,
+    "operators.mass": 162192,
+    "operators.modes": 116640,
+    "operators.mass_modes": 116640,
+    "operators.relief": 116640,
+    "operators.centrifugal": 116640,
+    "operators.centrifugal_wrench": 288,
+    "operators.gram": 288,
+    "operators.gram_inverse": 288,
+    "operators.pins": 24,
+    "operators.is_free": 9720,
+    "operators.diagonal_inverse": 58320,
+    "operators.scalar_diagonal_inverse": 19440,
+    "operators.mass_properties": 32,
+    "factor.order": 3240,
+    "factor.row_start": 3244,
+    "factor.columns": 266676,
+    "factor.sources": 266676,
+    "factor.column_start": 3244,
+    "factor.rows": 266676,
+    "factor.transpose_entries": 266676,
+    "factor.lower": 4800168,
+    "factor.diagonal": 58320,
+    "factor.diagonal_inverse": 58320,
+    "factor.valid": 1,
+    "inverse.blocks": 47239200,
+    "surface_inverse.nodes": 648,
+    "surface_inverse.force_blocks": 9447840,
+    "surface_inverse.centrifugal": 116640
+  },
+  "shared_logical_bytes": 65719237,
+  "nodes": 810,
+  "elements": 480,
+  "method": "inverse",
+  "scope": "One first construction and three warmed independent model constructions on the same mesh/material. Inclusive construction includes topology processing, Quadrants operators and factors; imports and gs.init are excluded. Byte counts cover declared shared tensors, not temporary construction state, allocator overhead or process peak memory."
+}

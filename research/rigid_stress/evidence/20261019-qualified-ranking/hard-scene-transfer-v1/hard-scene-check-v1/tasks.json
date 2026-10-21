@@ -1,0 +1,38 @@
+[
+  [
+    {
+      "name": "cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_scene",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_scene",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "comparison",
+      "module": "research.rigid_stress.qipc_comparison.compare_hertz_scene",
+      "args": [
+        "--max",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-pilot-v1/group0/max",
+        "--full",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-pilot-v1/group0/full",
+        "--rigid",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-scene-pilot-v1/group0/rigid",
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group0/inputs"
+      ]
+    }
+  ]
+]

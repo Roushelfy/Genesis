@@ -1,0 +1,44 @@
+[
+  [
+    {
+      "name": "max",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_scene",
+      "args": [
+        "--mode",
+        "max",
+        "--envs",
+        "64",
+        "--steps",
+        "720",
+        "--repeats",
+        "0",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group1/inputs/conditions.npz",
+        "--snapshot-step",
+        "554",
+        "--omit-timed-audit"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "full",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_scene",
+      "args": [
+        "--mode",
+        "full",
+        "--envs",
+        "64",
+        "--steps",
+        "720",
+        "--repeats",
+        "0",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-bounds-v1/group1/inputs/conditions.npz",
+        "--snapshot-step",
+        "554",
+        "--omit-timed-audit"
+      ]
+    }
+  ]
+]

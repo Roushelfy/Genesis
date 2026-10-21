@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="31.568" timestamp="2026-10-21T02:21:56.422856+00:00" hostname="rtx-209-231"><testcase classname="tests.rigid.test_stress" name="test_native_full_field_same_state_and_invalid_solve" time="31.326"><failure message="AssertionError: &#10;Not equal to tolerance rtol=0, atol=0&#10;None&#10;Mismatched elements: 11126 / 182466 (6.1%)&#10;Max absolute difference among violations: 4.4408921e-16&#10;Max relative difference among violations: 934.&#10; ACTUAL: array([[[ 2.491032e-01, -1.366904e-01, -1.871314e-02],&#10;        [-1.366904e-01,  3.858605e-01,  2.988544e-02],&#10;        [-1.871314e-02,  2.988544e-02,  1.591187e-01]],...&#10; DESIRED: array([[[ 2.491032e-01, -1.366904e-01, -1.871314e-02],&#10;        [-1.366904e-01,  3.858605e-01,  2.988544e-02],&#10;        [-1.871314e-02,  2.988544e-02,  1.591187e-01]],...">tmp_path = PosixPath('/tmp/gs-shell-compare.uiVQE6/tmp/pytest-of-zhaofeng/pytest-0/test_native_full_field_same_st0')
+
+    @pytest.mark.required
+    @pytest.mark.precision("64")
+    def test_native_full_field_same_state_and_invalid_solve(tmp_path):
+        vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
+        mesh = tmp_path / "shell.npz"
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
+        model = StressModel(RigidStressOptions(mesh=mesh))
+        rebuilt = StressModel(model.options)
+        for current, repeated in (
+            (model.info.stiffness, rebuilt.info.stiffness),
+            (model.info.mass, rebuilt.info.mass),
+            (model.info.mass_properties, rebuilt.info.mass_properties),
+            (model.info.gram, rebuilt.info.gram),
+            (model.info.centrifugal_wrench, rebuilt.info.centrifugal_wrench),
+            (model.inverse.info.blocks, rebuilt.inverse.info.blocks),
+            (model.surface_inverse.info.force_blocks, rebuilt.surface_inverse.info.force_blocks),
+            (model.surface_inverse.info.centrifugal, rebuilt.surface_inverse.info.centrifugal),
+        ):
+&gt;           assert_equal(qd_to_numpy(current, transpose=True), qd_to_numpy(repeated, transpose=True))
+
+../hard_contact_reproducible/tests/rigid/test_stress.py:127: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../hard_contact_reproducible/tests/utils/assertions.py:54: in assert_equal
+    assert_allclose(actual, desired, atol=0.0, rtol=0.0, err_msg=err_msg)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = array([[[ 2.49103201e-01, -1.36690425e-01, -1.87131414e-02],
+        [-1.36690425e-01,  3.85860512e-01,  2.98854368e-0...752716e-01, -6.46028283e-03],
+        [ 9.48280910e-03, -6.46028283e-03,  1.77767610e-01]]],
+      shape=(20274, 3, 3))
+desired = array([[[ 2.49103201e-01, -1.36690425e-01, -1.87131414e-02],
+        [-1.36690425e-01,  3.85860512e-01,  2.98854368e-0...752716e-01, -6.46028283e-03],
+        [ 9.48280910e-03, -6.46028283e-03,  1.77767610e-01]]],
+      shape=(20274, 3, 3))
+
+    def assert_allclose(actual, desired, *, atol=None, rtol=None, tol=None, err_msg=None):
+        # Determine absolute and relative tolerance from input arguments
+        assert (tol is not None) ^ (atol is not None or rtol is not None)
+        if tol is not None:
+            atol = tol
+            rtol = tol
+        if rtol is None:
+            rtol = 0.0
+        if atol is None:
+            atol = 0.0
+    
+        # Convert input arguments as numpy arrays
+        args = [actual, desired]
+        for i, arg in enumerate(args):
+            if isinstance(arg, (GeneratorType, map)):
+                arg = tuple(arg)
+            if isinstance(arg, (tuple, list)):
+                arg = np.stack([tensor_to_array(val) for val in arg], axis=0)
+            args[i] = tensor_to_array(arg)
+    
+        # Early return without checking anything is both arrays are empty (0D arrays have size 1).
+        if all(e.size == 0 for e in args):
+            return
+    
+        # Try to make sure both arrays have the exact same shape.
+        # First, try to broadcast both matrices. Then it is does not work, squeeze them before trying again.
+        try:
+            args = np.broadcast_arrays(*args)
+        except ValueError as e:
+            try:
+                args = np.broadcast_arrays(*map(np.squeeze, args))
+            except ValueError:
+                raise e
+    
+&gt;       np.testing.assert_allclose(*args, atol=atol, rtol=rtol, err_msg=err_msg)
+E       AssertionError: 
+E       Not equal to tolerance rtol=0, atol=0
+E       None
+E       Mismatched elements: 11126 / 182466 (6.1%)
+E       Max absolute difference among violations: 4.4408921e-16
+E       Max relative difference among violations: 934.
+E        ACTUAL: array([[[ 2.491032e-01, -1.366904e-01, -1.871314e-02],
+E               [-1.366904e-01,  3.858605e-01,  2.988544e-02],
+E               [-1.871314e-02,  2.988544e-02,  1.591187e-01]],...
+E        DESIRED: array([[[ 2.491032e-01, -1.366904e-01, -1.871314e-02],
+E               [-1.366904e-01,  3.858605e-01,  2.988544e-02],
+E               [-1.871314e-02,  2.988544e-02,  1.591187e-01]],...
+
+../hard_contact_reproducible/tests/utils/assertions.py:50: AssertionError</failure></testcase></testsuite></testsuites>
