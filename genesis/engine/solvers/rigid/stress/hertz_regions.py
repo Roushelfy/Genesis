@@ -86,7 +86,7 @@ class StressHertzRegions:
     def update(self, link, contacts, sources, dyn_state, collider, dyn_info, curvature_info, epsilon):
         kernel_hertz_roots(link, dyn_state, collider, contacts, sources, self.state, dyn_info, curvature_info, epsilon)
         kernel_hertz_planar(dyn_state, collider, contacts, sources, self.state, dyn_info, curvature_info, epsilon)
-        kernel_hertz_regions(contacts, sources, self.state, epsilon)
+        kernel_hertz_regions(contacts, sources, self.state, collider, epsilon)
 
 
 @qd.kernel
@@ -341,15 +341,21 @@ def kernel_hertz_regions(
     contact_state: StressContactState,
     source_state: StressSourceState,
     region_state: StressHertzRegionState,
+    collider_state: array_class.ColliderState,
     epsilon: float,
 ):
     for i_b in range(region_state.is_valid.shape[0]):
         region_state.is_valid[i_b] = True
-        for i_c in range(region_state.status.shape[0]):
-            region_state.force[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
-            region_state.moment[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
-            region_state.source_count[i_c, i_b] = 0
-            region_state.leader[i_c, i_b] = -1
+    # Every slot must clear on release, while only current contacts need the
+    # serial transitive grouping and deterministic wrench accumulation.
+    for i_c, i_b in qd.ndrange(region_state.status.shape[0], region_state.status.shape[1]):
+        region_state.force[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
+        region_state.moment[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
+        region_state.source_count[i_c, i_b] = 0
+        region_state.leader[i_c, i_b] = -1
+    for i_b in range(region_state.is_valid.shape[0]):
+        count = qd.min(collider_state.n_contacts[i_b], region_state.status.shape[0])
+        for i_c in range(count):
             status = region_state.status[i_c, i_b]
             if status != HertzRegionStatus.SUCCESS and status != HertzRegionStatus.UNLOADED:
                 region_state.is_valid[i_b] = False
@@ -365,7 +371,7 @@ def kernel_hertz_regions(
                             if (region_state.center[j_c, i_b] - center).norm() <= resolution:
                                 i_leader = qd.min(i_leader, region_state.leader[j_c, i_b])
                 region_state.leader[i_c, i_b] = i_leader
-        for i_c in range(region_state.status.shape[0]):
+        for i_c in range(count):
             i_leader = region_state.leader[i_c, i_b]
             if i_leader >= 0 and region_state.is_valid[i_b]:
                 rotation = contact_state.frame_quaternion[i_b]
