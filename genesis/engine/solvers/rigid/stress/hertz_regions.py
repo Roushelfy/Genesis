@@ -11,7 +11,7 @@ from genesis.utils import array_class, geom
 from genesis.utils.array_class import DataKind, V, V_MAT, V_VEC
 
 from .contact import StressContactState
-from .curvature import CurvatureStatus, StressCurvatureInfo, func_surface_curvature
+from .curvature import CurvatureStatus, StressCurvatureInfo, func_surface_curvature, func_closest_surface
 from .normal_roots import func_normal_root
 from .pair_geometry import PairGeometryStatus, func_opponent_boundary
 from .provenance import StressSourceState
@@ -262,9 +262,15 @@ def kernel_hertz_planar(
                 plane_point = dyn_state.geoms.pos[i_other, i_b]
                 i_box_axis = -1
                 if other_kind == gs.GEOM_TYPE.BOX:
-                    position, boundary_normal, boundary_gap, i_f, boundary_status = func_opponent_boundary(
-                        i_own, i_b, seed, dyn_state, dyn_info, epsilon
-                    )
+                    position, i_f = seed, -1
+                    if own_kind == gs.GEOM_TYPE.MESH:
+                        position, i_f = func_closest_surface(
+                            i_own, i_b, seed, dyn_state, dyn_info, curvature_info, epsilon
+                        )
+                    else:
+                        position, boundary_normal, boundary_gap, i_f, boundary_status = func_opponent_boundary(
+                            i_own, i_b, seed, dyn_state, dyn_info, epsilon
+                        )
                     own_normal, own_tensor, curvature_status = func_surface_curvature(
                         i_own, i_f, i_b, position, dyn_state, dyn_info, curvature_info, epsilon
                     )

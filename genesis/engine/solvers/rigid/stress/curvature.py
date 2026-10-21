@@ -31,6 +31,10 @@ class StressCurvatureInfo:
     vertices_weight: qd.Tensor
     normal_inverse: qd.Tensor
     normal_inverse_valid: qd.Tensor
+    face_origin: qd.Tensor
+    face_edges: qd.Tensor
+    face_dual: qd.Tensor
+    face_valid: qd.Tensor
 
 
 class StressCurvature:
@@ -56,6 +60,10 @@ class StressCurvature:
             vertices_weight=V(dtype=gs.qd_float, shape=dyn_info.verts.geom_idx.shape),
             normal_inverse=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_faces,)),
             normal_inverse_valid=V(dtype=gs.qd_bool, shape=(n_faces,)),
+            face_origin=V_VEC(3, dtype=gs.qd_float, shape=(n_faces,)),
+            face_edges=V_MAT(2, 3, dtype=gs.qd_float, shape=(n_faces,)),
+            face_dual=V_MAT(2, 3, dtype=gs.qd_float, shape=(n_faces,)),
+            face_valid=V(dtype=gs.qd_bool, shape=(n_faces,)),
         )
         kernel_mesh_curvature(dyn_info, self.info, epsilon)
         kernel_vertex_curvature(dyn_info, self.info)
@@ -68,6 +76,13 @@ def kernel_mesh_curvature(dyn_info: array_class.DynInfo, curvature_info: StressC
         i_a, i_b, i_c = indices[0], indices[1], indices[2]
         first = dyn_info.verts.init_pos[i_a]
         edges = qd.Matrix.cols([dyn_info.verts.init_pos[i_b] - first, dyn_info.verts.init_pos[i_c] - first])
+        geometric_gram = edges.transpose() @ edges
+        curvature_info.face_origin[i_f] = first
+        curvature_info.face_edges[i_f] = edges.transpose()
+        curvature_info.face_dual[i_f] = qd.Matrix.zero(gs.qd_float, 2, 3)
+        curvature_info.face_valid[i_f] = edges[:, 0].cross(edges[:, 1]).norm() > 0.0
+        if curvature_info.face_valid[i_f]:
+            curvature_info.face_dual[i_f] = geometric_gram.inverse() @ edges.transpose()
         normals = qd.Matrix.rows(
             [dyn_info.verts.init_normal[i_a], dyn_info.verts.init_normal[i_b], dyn_info.verts.init_normal[i_c]]
         )
@@ -213,3 +228,49 @@ def func_surface_curvature(
                 status = CurvatureStatus.ANALYTIC
     rotation = geom.qd_quat_to_R(dyn_state.geoms.quat[i_g, i_b], epsilon)
     return rotation @ normal, rotation @ tensor @ rotation.transpose(), status
+
+
+@qd.func
+def func_closest_surface(
+    i_g: int,
+    i_b: int,
+    position: qd.types.vector(3),
+    dyn_state: array_class.DynState,
+    dyn_info: array_class.DynInfo,
+    curvature_info: StressCurvatureInfo,
+    epsilon: float,
+):
+    """Find the nearest mesh face using shared rest-shape barycentric maps.
+
+    Face order and the nearest-distance tolerance retain the existing surface
+    query's choice. The search covers every face, including disconnected and
+    nonconvex components, and makes no assumption about normal uniqueness.
+    """
+    local = geom.qd_inv_transform_by_trans_quat(position, dyn_state.geoms.pos[i_g, i_b], dyn_state.geoms.quat[i_g, i_b])
+    tolerance = 128.0 * epsilon * (dyn_state.geoms.aabb_max[i_g, i_b] - dyn_state.geoms.aabb_min[i_g, i_b]).norm()
+    minimum = gs.qd_float(float("inf"))
+    selected = -1
+    closest = qd.Vector.zero(gs.qd_float, 3)
+    for i_f in range(dyn_info.geoms.face_start[i_g], dyn_info.geoms.face_end[i_g]):
+        if curvature_info.face_valid[i_f]:
+            origin = curvature_info.face_origin[i_f]
+            edges = curvature_info.face_edges[i_f]
+            coordinates = curvature_info.face_dual[i_f] @ (local - origin)
+            candidate = origin + coordinates @ edges
+            if coordinates.min() < 0.0 or coordinates.sum() > 1.0:
+                squared = gs.qd_float(float("inf"))
+                vertices = qd.Matrix.rows([origin, origin + edges[0, :], origin + edges[1, :]])
+                for i in qd.static(range(3)):
+                    j = (i + 1) % 3
+                    edge = vertices[j, :] - vertices[i, :]
+                    fraction = qd.min(1.0, qd.max(0.0, (local - vertices[i, :]).dot(edge) / edge.norm_sqr()))
+                    projection = vertices[i, :] + fraction * edge
+                    distance = (local - projection).norm_sqr()
+                    if distance < squared:
+                        squared, candidate = distance, projection
+            distance = (local - candidate).norm()
+            if distance < minimum - tolerance:
+                minimum, closest, selected = distance, candidate, i_f
+    return geom.qd_transform_by_trans_quat(
+        closest, dyn_state.geoms.pos[i_g, i_b], dyn_state.geoms.quat[i_g, i_b]
+    ), selected
