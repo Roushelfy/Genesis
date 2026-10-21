@@ -33,6 +33,14 @@ wrenches, exact motion, and CPU/GPU geometry controls. Research audits are
 separate from primary timing. Input-only speed does not qualify rejected
 contacts or replace complete max/full stress scene measurements.
 
+The [cache ablations and batch scaling](docs/HARD_CONTACT_ESTIMATES_20261020.md#cache-ablations-and-batch-scaling)
+now cover B4/B64/B256/B1024, CUDA task attribution, logical memory and exact
+shared-environment isolation. The selected nearest-surface bounds reduce the
+measured planar device query by about18-21%; inclusive scene gains are smaller
+and paired subtraction varies. Full temporal caches remain captured experiments.
+All original geometric rejections remain visible; complete stress/history and
+physical shell qualification are still open.
+
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
 cheap two-region interaction correction. Ellipticity reduces the rotated-case

@@ -1,0 +1,7 @@
+# Contact-input cache ablations, device traces and batch scaling
+
+Native contact-input cache and conservative-search ablations, CPU/GPU geometry and lifecycle controls, exact every-step grouping and matched source/trajectory comparisons, B4/B64/B256/B1024 independent environments, cross-batch prefix isolation, inclusive warmed timing, device launch traces and logical field memory. Only the small nearest-surface bound change is selected. Input-only: no traction transfer, complete/max stress, physical-pressure qualification or friction-history admission.
+
+The manifest retains original trace-writer failures, exact task/import/source inventories, compact terminal results and all external data hashes. Large histories, raw Chrome traces, expanded snapshot summaries, NPZ arrays and generated meshes stay on data. The cache variants are retained through their captured source patches and worker modules. The selected nearest-surface-only variant uses the existing live adapter. Decode gzip payloads into a fresh data directory for replay; do not edit this immutable packet.
+
+Use the recorded `tasks.json`, `workload-*.sh` and source inventory/patch for each variant. Source patches apply to the engine at public task commit `ccb703cb30334602f2ce8ed6f9b1bfe5326380bf`; the experiment worktrees started from an equivalent engine tree. Worker snapshots are authoritative where active research adapters differ. All numerical execution uses the existing Slurm helper, `rtx-mid`, container `1_26`, explicit data outputs and private node-local caches.

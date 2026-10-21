@@ -1,0 +1,164 @@
+[
+  [
+    {
+      "name": "cache",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_cache",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    },
+    {
+      "name": "surface",
+      "module": "research.rigid_stress.qipc_comparison.check_precomputed_surface",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    },
+    {
+      "name": "regions",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_regions",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    },
+    {
+      "name": "inputs",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_inputs",
+      "args": [
+        "--mode",
+        "inputs",
+        "--profile-phases",
+        "--omit-timed-audit",
+        "--check-grouping",
+        "--envs",
+        "4",
+        "--steps",
+        "720",
+        "--repeats",
+        "3",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-precomputed-v3/group0/inputs/conditions.npz"
+      ]
+    },
+    {
+      "name": "rigid",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_inputs",
+      "args": [
+        "--mode",
+        "rigid",
+        "--envs",
+        "4",
+        "--steps",
+        "720",
+        "--repeats",
+        "3",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-precomputed-v3/group0/inputs/conditions.npz"
+      ]
+    },
+    {
+      "name": "comparison",
+      "module": "research.rigid_stress.qipc_comparison.compare_live_hertz_inputs",
+      "args": [
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-cache-v1/group0/inputs",
+        "--rigid",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-cache-v1/group0/rigid"
+      ]
+    },
+    {
+      "name": "conformance",
+      "module": "research.rigid_stress.qipc_comparison.compare_hertz_implementations",
+      "args": [
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-precomputed-v3/group0/inputs",
+        "--candidate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-cache-v1/group0/inputs"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "cache",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_cache",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    },
+    {
+      "name": "surface",
+      "module": "research.rigid_stress.qipc_comparison.check_precomputed_surface",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    },
+    {
+      "name": "regions",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_regions",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    },
+    {
+      "name": "inputs",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_inputs",
+      "args": [
+        "--mode",
+        "inputs",
+        "--profile-phases",
+        "--omit-timed-audit",
+        "--check-grouping",
+        "--envs",
+        "64",
+        "--steps",
+        "720",
+        "--repeats",
+        "3",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-precomputed-v3/group1/inputs/conditions.npz"
+      ]
+    },
+    {
+      "name": "rigid",
+      "module": "research.rigid_stress.qipc_comparison.live_hertz_inputs",
+      "args": [
+        "--mode",
+        "rigid",
+        "--envs",
+        "64",
+        "--steps",
+        "720",
+        "--repeats",
+        "3",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-precomputed-v3/group1/inputs/conditions.npz"
+      ]
+    },
+    {
+      "name": "comparison",
+      "module": "research.rigid_stress.qipc_comparison.compare_live_hertz_inputs",
+      "args": [
+        "--inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-cache-v1/group1/inputs",
+        "--rigid",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-cache-v1/group1/rigid"
+      ]
+    },
+    {
+      "name": "conformance",
+      "module": "research.rigid_stress.qipc_comparison.compare_hertz_implementations",
+      "args": [
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-precomputed-v3/group1/inputs",
+        "--candidate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-input-cache-v1/group1/inputs"
+      ]
+    }
+  ]
+]

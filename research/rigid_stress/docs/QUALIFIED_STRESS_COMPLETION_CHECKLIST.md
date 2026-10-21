@@ -39,9 +39,12 @@ The [profiled input optimization](HARD_CONTACT_ESTIMATES_20261020.md#profiled-co
 adds B4/B64 matched inclusive scene costs, separate synchronized phase profiles,
 parallel clear/active-count grouping and shared triangle preprocessing. CPU/GPU
 geometry controls, exact every-step grouping/wrenches and complete-history
-implementation comparisons pass. It remains input-only: temporal caching,
-collision-feature reuse, larger-batch/memory tuning and useful complete max/full
-scene integration still require execution.
+implementation comparisons pass. The [cache/scaling follow-up](HARD_CONTACT_ESTIMATES_20261020.md#cache-ablations-and-batch-scaling)
+adds CPU/GPU cache lifecycle controls, four batch sizes through1024, shared-prefix
+isolation, device traces and logical memory. Only conservative nearest-surface
+bounds are selected; full temporal-cache variants remain experiments. Genuine
+local updates, useful collision-feature reuse, homogeneous/capacity tuning and
+complete max/full scene integration remain open.
 
 The [current-curvature/live-input controls](HARD_CONTACT_ESTIMATES_20261020.md#current-curvature-and-live-contact-inputs) now include native primitive and mesh geometry, source splitting/order/side invariance, invalid-source quarantine, release and actual same-substep Franka inputs. Matched trajectories remain exact, while substantial region rejection and measured input overhead prevent promotion to useful stress throughput. Preserve the failed candidate and opposing-box diagnostic; complete stress/friction output and shell/contact accuracy remain required.
 
