@@ -1216,3 +1216,31 @@ sampled peak changes. The independent direct-pressure reference still changes
 9.823% in complete field and 59.83% in tensile maximum. Its original reference
 and physical-error gates remain false. All fields and failures are retained;
 this is a prescribed-pressure CPU control, not a native scene accuracy result.
+
+## A declined projected-walk early exit
+
+An explicit break after a projected surface walk resolves was tested as an
+implementation-only candidate. B4/B1024 max/full runs retain the original
+every-step admission/peak/source gates, exact rigid motion, sampled loads,
+displacements and full stress tensors. It provides no measured acceleration:
+B1024 transfer is 4.707 ms versus the preceding 4.698 ms, while max/full scene
+costs are 15.635/15.702 ms versus 15.648/15.670 ms. These are separate allocations
+on the same GPU model, with their own paired rigid controls; differences this
+small do not establish a speedup. The early exit is not selected.
+
+The first GPU component run completes all seven geometric cases, then fails
+its original homogeneous microbenchmark assertion. Its seven complete case
+fields, failed log and captured source remain retained; no successful timing
+is claimed for that group. CPU controls pass. Separate baseline/early-exit
+standalone GPU diagnostics at 1/3/128/512 patches and complete-context GPU
+controls later pass without budget changes. That observation does not resolve
+the initial failure's cause or convert it into a passing result.
+
+The [declined-variant packet](../evidence/20261019-qualified-ranking/hard-transfer-walk-exit-v1/README.md)
+retains five campaigns, including 737354, 737376/737377 and 737389/737390.
+The [scene conformance helper](../qipc_comparison/compare_hertz_implementations.py)
+now checks stress histories/fields when present, using the existing scene
+numerical gates; [standalone diagnostics](../qipc_comparison/diagnose_hertz_walk.py)
+retain homogeneous patch states without bypassing admission. The separate
+inactive-sample bandwidth candidate is still being measured and is excluded
+from this packet.

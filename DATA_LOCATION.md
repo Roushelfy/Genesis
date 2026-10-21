@@ -1,5 +1,12 @@
 # Rigid-stress data and artifact locations
 
+The `hard-transfer-walk-exit-v1` packet retains 185 compact payloads/1,707,799
+bytes for the declined projected-walk exit, its original failed GPU group and
+later baseline/variant diagnostics. Its 138 external fields, histories,
+trajectories and meshes remain hashed in `hard-scene-walk-stop-v1` and the
+`hard-walk-*-diagnostic-v1` / `hard-walk-*-context-v1` runs on data. Subsequent
+masked-sample and paired bandwidth jobs are separate and excluded.
+
 The completed `hard-shell-residual-v1` packet retains 55 compact payloads/357,879
 bytes for prescribed-pressure hollow-shell decomposition and read-only full-field
 inspection. Six mesh/complete-field archives remain hashed under the data-side
