@@ -58,6 +58,7 @@ class FrankaEgg:
         warm_start_tractions: bool = True,
         public_defaults: bool = False,
         timestep: float = 0.01,
+        stress_mesh: Path | None = None,
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -65,6 +66,7 @@ class FrankaEgg:
         self.arm = np.arange(7)
         self.fingers = np.array([7, 8])
         assets = Path(__file__).parent / "assets" / "hollow_egg" / f"level{level}"
+        elastic_mesh = assets / "elastic.npz" if stress_mesh is None else stress_mesh
         self.scene = gs.Scene(
             sim_options=gs.options.SimOptions(dt=timestep, substeps=substeps),
             rigid_options=gs.options.RigidOptions(
@@ -104,7 +106,7 @@ class FrankaEgg:
         self.link = self.egg.base_link
         if stress:
             options = gs.options.RigidStressOptions(
-                mesh=assets / "elastic.npz",
+                mesh=elastic_mesh,
                 contact_model=contact_model,
                 contact_block_size=contact_block_size,
                 intrinsic_support=intrinsic_support,
@@ -135,7 +137,7 @@ class FrankaEgg:
                 cached_face_bounds=cached_face_bounds,
             )
             if public_defaults:
-                defaults = gs.options.RigidStressOptions(mesh=assets / "elastic.npz")
+                defaults = gs.options.RigidStressOptions(mesh=elastic_mesh)
                 if options != defaults:
                     raise ValueError("Public-default stress requires all stress tuning options at their defaults.")
                 options = defaults

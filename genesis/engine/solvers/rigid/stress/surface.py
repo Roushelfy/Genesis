@@ -87,6 +87,35 @@ def func_surface_geometry(i_f: int, bary: qd.types.vector(3), info: StressInfo):
     return point, tangent, area
 
 
+@qd.func
+def func_surface_projection(
+    i_f: int,
+    position: qd.types.vector(3),
+    plane: qd.types.matrix(2, 3),
+    info: StressInfo,
+):
+    """Invert the quadratic surface chart along a supplied projection direction."""
+    i_origin, i_first, i_second = info.surface_nodes[i_f, 0], info.surface_nodes[i_f, 1], info.surface_nodes[i_f, 2]
+    origin = info.vertices[i_origin]
+    chord = qd.Matrix.cols([info.vertices[i_first] - origin, info.vertices[i_second] - origin])
+    chart = plane @ chord
+    is_valid = qd.abs(chart.determinant()) > 0 and chart.norm() < float("inf")
+    local = qd.Vector.zero(gs.qd_float, 2)
+    if is_valid:
+        local = chart.inverse() @ (plane @ (position - origin))
+    bary = qd.Vector([1 - local.sum(), local[0], local[1]])
+    point, area = origin, qd.Vector.zero(gs.qd_float, 3)
+    for i_iteration in range(9):
+        if is_valid:
+            point, tangent, area = func_surface_geometry(i_f, bary, info)
+            chart = plane @ tangent
+            is_valid = qd.abs(chart.determinant()) > 0 and chart.norm() < float("inf")
+            if is_valid and i_iteration < 8:
+                update = chart.inverse() @ (plane @ (point - position))
+                bary += qd.Vector([update.sum(), -update[0], -update[1]])
+    return point, bary, area, is_valid
+
+
 @qd.kernel
 def kernel_gauss(surface_info: StressSurfaceInfo):
     for i in range(surface_info.gauss.shape[0]):
