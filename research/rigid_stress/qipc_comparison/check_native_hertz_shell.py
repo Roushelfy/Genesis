@@ -5,6 +5,7 @@ from pathlib import Path
 
 import numpy as np
 import quadrants as qd
+from skfem import MeshTet
 
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.hertz import StressHertz
@@ -41,10 +42,15 @@ def main():
     gs.init(backend=gs.cuda if args.backend == "gpu" else gs.cpu, precision="64", logging_level="warning")
     with np.load(mesh) as saved:
         vertices, tets = saved["vertices"], saved["tetrahedra"]
-    model = StressModel(RigidStressOptions(mesh=mesh))
+        selected = saved["surface_triangles"]
+    model = StressModel(RigidStressOptions.hertz(mesh=mesh))
     surface = StressSurface(args.quadrature, model.info)
     nodes = array(model.info.vertices)
     faces, normals = array(model.info.surface_nodes).T, array(surface.info.face_normal)
+    expected_mesh = MeshTet(vertices.T, tets.T, sort_t=False)
+    expected_faces = expected_mesh.facets[:, expected_mesh.boundary_facets()].T
+    np.testing.assert_array_equal(faces[:len(selected), :3], selected)
+    assert {tuple(sorted(face)) for face in faces[:, :3]} == {tuple(sorted(face)) for face in expected_faces}
     triangles = nodes[faces[:, :3]]
     centers = triangles.mean(axis=1)
     is_outer = np.einsum("fi,fi->f", centers, normals) > 0
@@ -88,6 +94,7 @@ def main():
         wrench_error=array(module.state.wrench_error),
         errno=array(errno),
         material_nodes_m=nodes,
+        material_surface_nodes=faces,
         regular_force_n=array(state.force),
         corner_tensor_pa=array(state.stress_tensor),
         probe_tensor_pa=array(module.probes.tensor),
@@ -103,6 +110,8 @@ def main():
         "elastic_valid": array(state.valid).tolist(),
         "step_valid": array(state.step_valid).tolist(),
         "fields": file_id(path),
+        "selected_contact_faces": len(selected),
+        "complete_material_boundary_faces": len(faces),
         "whole_goal_complete": False,
     }
     write_json(args.output / "result.json", report)

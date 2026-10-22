@@ -985,3 +985,14 @@ shell fields and normal-component references stay on data. Source
 `hard_contact_shell_recovery` is frozen atd26b5b3d4, with the original16 heads
 and12 unfinished files preserved. The existing Slurm/image/environment and
 private node caches are reused. No runtime data or environment is migrated.
+
+Complete cavity-boundary controls use `hard-native-hertz-shell-quadrature-v1`
+through `v3`, `hard-native-hertz-complete-boundary-v1/v2` and its inspection
+under that same data root. The `hard-native-hertz-complete-boundary-v1` packet
+retains193 compact payloads (1,169,923 bytes) and52 external-array receipts.
+Complete independent/native loads, corner fields and probes remain on data.
+The new isolated source `hard_contact_complete_boundary` is frozen at2e39f5f75.
+The asset's selected outer faces remain unchanged in Git. Native Hertz appends
+omitted material faces during preprocessing. All18 frozen source heads and
+the original12 unfinished files remain preserved; scientific execution reuses
+the established Slurm/image/environment and private node scratch.
