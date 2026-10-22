@@ -11,6 +11,15 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current goal and verified scope
 
+The latest [remote-edge quadrature and load-allocation study](docs/SHARP_EDGE_PRESSURE_20261022.md#remote-field-quadrature-and-paired-component-cost)
+reduces65,536 native64-bit particular-tensor queries from2.83ms to1.25ms in a
+paired GPU allocation. Independent prescribed-pressure point error stays below
+0.027%; the remote rule also fixes a retained32-bit cancellation failure.
+Reconstructing all three physical pressure centers permits a wrench/cone
+compatible force allocation, but its fixed-support near-field change is5.67%,
+above the5% budget. Keep that load approximation unadmitted. Complete physical
+accuracy, actual source binding and accepted max/full scene throughput remain open.
+
 The new [sharp-edge pressure component](docs/SHARP_EDGE_PRESSURE_20261022.md)
 uses load, edge slope/curvature and transverse shear without fitting contact
 widths. On two captured gaps and reversed shear, independent coupled-reference

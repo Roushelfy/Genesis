@@ -1,5 +1,18 @@
 # Rigid-stress data and artifact locations
 
+The `hard-edge-farfield-v1` packet retains304 compact payloads /1,861,974 bytes
+and23 external receipts. Nine terminal campaigns cover remote pressure-moment
+quadrature, paired64-bit component timings, the original32-bit cancellation
+failure, corrected32-bit evaluation, complete-shell regression and constrained
+all-contact load sensitivity. The unassigned ground-cache reader trial remains
+labelled invalid geometry evidence. Full arrays and logs stay under the existing
+`20261019-qualified-ranking` data root in `hard-edge-*` and
+`hard-native-edge-farfield-*`. Engine `hard_contact_edge_farfield` is frozen at
+`4a8125c4c`, with29 frozen heads and12 original unfinished files preserved.
+Scientific execution uses Slurm `rtx-mid`, image `1_26`, the existing data-side
+environment and private node caches. Source/docs and compact evidence stay in
+workspace. No data, environment or compatibility link moved.
+
 The `hard-edge-fields-v1` packet retains 293 compact payloads / 1,613,039 bytes
 and 22 external receipts. Eight terminal campaigns cover continuous sharp-edge
 fields, native CPU/GPU 32/64-bit evaluation and timings, original endpoint and

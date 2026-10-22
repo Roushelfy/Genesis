@@ -248,6 +248,108 @@ diagnostic. The next source study must examine collision/provenance accuracy
 and physically constrained force redistribution, rather than treating a small
 change in peak magnitude as sufficient evidence for moving an entire patch.
 
+## Remote field quadrature and paired component cost
+
+For distances at least eight times `max(w,b)`, four equal quadrature forces
+replace the strip/line cancellation. Their coordinates are
+
+```text
+x = 2*(1-lambda)*w/5 +/- w*sqrt(4*(1-lambda)*(3+2*lambda)/175)
+y = +/- b/sqrt(5)
+```
+
+They reproduce the pressure's first and second moments. Their purpose is remote
+field evaluation; pressure support continues to use the continuous sharp-edge
+law. Eleven prescribed-pressure controls include both observed contacts and
+nine synthetic profiles with `w/b=0.001,0.01,0.049` and
+`lambda=0.2,0.5,0.8`, including longitudinal shear. Independent separable Jacobi
+integration at12x20 and24x40 agrees within1.41e-14 relative. At radii8.001,8.01,
+16 and64 half-lengths, the maximum point tensor error is0.02690%, below the
+predeclared0.2% target. Near-surface directions reach `z/r=1e-4`. The largest
+same-point difference between the two branches near the switch is0.05018%.
+
+The native candidate agrees with its CPU formulas within9.18e-11 in64-bit and
+1.09e-5 in32-bit. It also retains the surface, invalid/singular isolation,
+restoration and original Hertz-quadrature checks. The retained full-shell
+coordinate bank has98.86% remote queries. A complete curved-shell rerun keeps
+the regular displacement identical; the maximum coarse-volume tensor change
+across four source placements is0.00209%, and the maximum point change is
+0.00952%. These measure the quadrature change within the existing model.
+
+| 64-bit resident queries | Baseline before | Remote candidate | Baseline after |
+| --- | ---: | ---: | ---: |
+| 256 | 0.5375ms | 0.07117ms | 0.5378ms |
+| 8,192 | 1.0649ms | 0.07200ms | 1.0654ms |
+| 65,536 | 2.8290ms | 1.2488ms | 2.8258ms |
+
+All three64-bit variants run sequentially in one GPU allocation on the same
+captured volume/probe inputs. At65,536 queries the measured reduction is about
+2.26x; that bank contains0.92% near queries. Smaller banks contain only remote
+queries. The timing includes dispatch and synchronization, and covers only
+particular tensors. Geometry, prediction, boundary correction, elastic solve,
+max reduction, copies and actual scenes need their own inclusive measurements.
+
+The32-bit baseline fails the unchanged0.05% numerical point-error check, at
+0.1126%. Its worst point lies445 half-lengths away with an approximately2Pa
+tensor. Input rounding changes the64-bit evaluation by only1.52e-7 relative;
+the composite's model error there is1.27e-6. Cancellation in the remote strip
+correction explains the much larger native32-bit error. The new remote branch
+passes the same numerical target. On its separate allocation,32-bit candidate
+medians are0.02126/0.02067/0.04062ms for the three banks. This is an independent
+component timing; the failed baseline supplies no admitted32-bit speedup ratio.
+
+## Fixed-support constrained load allocation
+
+The all-contact diagnostic minimizes the sum of squared relative force changes,
+subject to the captured total force/moment, local compression and Coulomb cones.
+The friction coefficient0.7191016 comes from the pinned fixture's material and
+friction-ratio settings and the collider's maximum-friction rule. All three
+captured sources are included. The offline convex allocation is a diagnostic;
+it adds no iterative runtime solver.
+
+An optimistic check that keeps the ground at its collision position and uses
+collider normals requires at most2.69% force change. Using the edge pressure
+centers' actual material normals increases that to4.79%. A subsequent reader
+mistakenly used unassigned downstream Hertz cache fields in this refused frame;
+its origin-centered ground result is retained as invalid geometry evidence.
+The corrected check reconstructs the ground center, normal and curvature
+directly from the actual quadratic material and computes its Hertz patch.
+The existing captured ground load point is184 micrometres above this material
+boundary, so this correction must also enter the wrench allocation.
+
+With all three physical centers, maximum force change is6.22%; the individual
+changes are5.21% ground,6.22% contact1 and5.33% contact2. Total scaled wrench
+residual is5.18e-18, the minimum normalized cone margin is-1.56e-14 and the
+stationarity residual is4.35e-10. These establish the constrained minimum for
+this declared objective, without establishing a universally optimal stress
+approximation.
+
+The original and adjusted loads then use the same fixed pressure supports,
+exponents and centers, with pressure amplitude and tangential traction updated.
+Native curved-shell point correction and edge fields include both grippers;
+the ground uses the analytical normal/tangential Hertz particular field. All
+three recovered fields are superposed at common volume and near-contact points.
+Boundary orders16/24 change the per-source sample fields by at most2.08e-9.
+
+| Combined field quantity | Relative change |
+| --- | ---: |
+| Coarse volume tensor | 4.9935% |
+| Common near-contact probe tensor | 5.6731% |
+| Sample von-Mises maximum | 4.4928% |
+| Sample tensile maximum | 7.9824% |
+
+The near-contact field exceeds the predeclared5% budget. Keep this candidate
+unadmitted. The sharp-edge probes retain depths0.1 width, one width and0.1
+half-length; the volume rule remains coarse near the footprint. Pressure support
+and exponent were held fixed, so a self-consistent updated contact estimate is
+still required. The next useful discrimination concerns collision/material
+geometry and pressure provenance, with measured stress response for any nearby
+load approximation. No runtime source gate is relaxed.
+
+The [remote-field and allocation packet](../evidence/20261019-qualified-ranking/hard-edge-farfield-v1/README.md)
+retains sources, terminal jobs, failed32-bit control, invalid cache-reader trial,
+corrected geometry, full arrays and measured limits.
+
 ## Remaining physical and integration limits
 
 The edge pressure behaves as`x^(-lambda)`. Its pointwise loaded-edge limit is

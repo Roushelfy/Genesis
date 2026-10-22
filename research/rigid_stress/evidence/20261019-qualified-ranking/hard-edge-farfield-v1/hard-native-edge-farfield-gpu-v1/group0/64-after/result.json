@@ -1,0 +1,63 @@
+{
+  "passed": true,
+  "precision": "64",
+  "variant": "baseline",
+  "maximum_numerical_point_error": 5.810017123626611e-13,
+  "maximum_captured_point_change": 5.810017123626611e-13,
+  "captured_far_fraction": 0.9886123680241328,
+  "captured_field_metrics": {
+    "tensor_relative": 2.025203842890688e-15,
+    "maximum_tensor_error_over_reference_maximum": 3.569161143134138e-15,
+    "vm_peak_relative": 2.220446049250313e-16,
+    "tensile_peak_relative": 1.3322676295501878e-15
+  },
+  "cold_seconds": 0.17975422996096313,
+  "benchmarks": [
+    {
+      "queries": 256,
+      "inclusive_seconds": [
+        0.0005380708025768399,
+        0.0005369847058318555,
+        0.0005379882059060037,
+        0.0005379213020205498,
+        0.0005377845955081284,
+        0.0005373743944801391,
+        0.0005376728950068355
+      ],
+      "median_seconds": 0.0005377845955081284,
+      "far_fraction": 1.0,
+      "logical_tensor_bytes": 41984
+    },
+    {
+      "queries": 8192,
+      "inclusive_seconds": [
+        0.0010662129963748157,
+        0.0010655567981302737,
+        0.0010654269019141794,
+        0.0010658352985046804,
+        0.0010652943048626185,
+        0.001064703508745879,
+        0.001065038493834436
+      ],
+      "median_seconds": 0.0010654269019141794,
+      "far_fraction": 1.0,
+      "logical_tensor_bytes": 1343488
+    },
+    {
+      "queries": 65536,
+      "inclusive_seconds": [
+        0.0028954686946235596,
+        0.002802567894104868,
+        0.002824270096607506,
+        0.002848861599341035,
+        0.0028743072994984686,
+        0.0028123260010033844,
+        0.0028257452067919075
+      ],
+      "median_seconds": 0.0028257452067919075,
+      "far_fraction": 0.99078369140625,
+      "logical_tensor_bytes": 10747904
+    }
+  ],
+  "whole_goal_complete": false
+}

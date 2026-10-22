@@ -1,0 +1,21 @@
+[
+  [
+    {
+      "name": "32-candidate",
+      "module": "research.rigid_stress.qipc_comparison.check_native_edge_farfield",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_edge_farfield",
+      "args": [
+        "--geometry",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-source-response-v2/group0/response/source-geometry.json",
+        "--fields",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-source-response-v2/group0/response/fields24.npz",
+        "--precision",
+        "32",
+        "--variant",
+        "candidate",
+        "--controls",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-farfield-controls-v1/group1/controls/controls.npz"
+      ]
+    }
+  ]
+]
