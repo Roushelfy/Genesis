@@ -1,0 +1,25 @@
+[
+  [
+    {
+      "name": "lookup",
+      "module": "research.rigid_stress.qipc_comparison.study_hertz_edge_lookup",
+      "args": [
+        "--prior",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-v2/group0/study/result.json",
+        "--frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/frame0108.npz",
+        "--geometry",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/geometry0108.npz",
+        "--boundaries",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/boundaries0108.npz",
+        "--lookup",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-lookup-v1/group0/lookup/lookup.json",
+        "--fit-anisotropic",
+        "--only",
+        "captured-franka",
+        "anisotropic-0",
+        "anisotropic-0.785398"
+      ]
+    }
+  ]
+]

@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "name": "boundaries",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_face_boundaries",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "boundaries",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_face_boundaries",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ]
+]
