@@ -1,0 +1,42 @@
+[
+  [
+    {
+      "name": "conformance-0",
+      "module": "research.rigid_stress.qipc_comparison.compare_live_hertz_friction",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-live-pilot-v1/group0/friction-scene",
+        "--candidate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-moments-controls-v2/group0/live"
+      ]
+    },
+    {
+      "name": "p2-0",
+      "module": "research.rigid_stress.qipc_comparison.inspect_live_hertz_friction",
+      "args": [
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-moments-controls-v2/group0/live",
+        "--roundoff-guard"
+      ]
+    },
+    {
+      "name": "conformance-1",
+      "module": "research.rigid_stress.qipc_comparison.compare_live_hertz_friction",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-live-pilot-v1/group1/friction-scene",
+        "--candidate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-moments-controls-v2/group1/live"
+      ]
+    },
+    {
+      "name": "p2-1",
+      "module": "research.rigid_stress.qipc_comparison.inspect_live_hertz_friction",
+      "args": [
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-moments-controls-v2/group1/live",
+        "--roundoff-guard"
+      ]
+    }
+  ]
+]

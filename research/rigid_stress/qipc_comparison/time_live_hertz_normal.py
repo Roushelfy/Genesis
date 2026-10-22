@@ -55,6 +55,9 @@ def paired_sources(args):
                 "--output",
                 str(args.output / label),
             ]
+            command.extend(["--friction", str(args.friction)])
+            if args.force_driven:
+                command.append("--force-driven")
             with (args.output / f"{label}.log").open("w") as log:
                 result = subprocess.run(command, cwd=source, env=environment, stdout=log, stderr=subprocess.STDOUT)
             records.append({"label": label, "source": str(source), "command": command, "returncode": result.returncode})
@@ -72,10 +75,17 @@ def paired_sources(args):
     )
 
 
-def update(fixture, step, phase):
-    position = np.zeros((len(phase), 3))
-    position[:, 2] = 1e-7 * np.sin(0.3 * step + phase)
-    fixture.sphere.set_pos(position)
+def update(fixture, step, phase, force_driven=False):
+    if force_driven:
+        force = np.zeros((len(phase), 6))
+        force[:, 0] = 0.0007 * np.cos(0.3 * step + phase)
+        force[:, 1] = 0.0005 * np.sin(0.3 * step + phase)
+        force[:, 2] = 0.0004 * np.sin(0.3 * step)
+        fixture.target.control_dofs_force(force)
+    else:
+        position = np.zeros((len(phase), 3))
+        position[:, 2] = 1e-7 * np.sin(0.3 * step + phase)
+        fixture.sphere.set_pos(position)
     fixture.scene.step(update_visualizer=False, refresh_visualizer=False)
 
 
@@ -85,13 +95,17 @@ def main():
     cli.add_argument("--batches", type=int, nargs="+", default=[1, 64, 256, 1024])
     cli.add_argument("--reference-source", type=Path)
     cli.add_argument("--current-first", action="store_true")
+    cli.add_argument("--friction", type=float, default=0.01)
+    cli.add_argument("--force-driven", action="store_true")
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     write_json(
         args.output / "start.json",
         {
             "identity": runtime_identity(),
-            "scope": "Actual centered sphere/flat-link normal contact. Complete headless rigid/max/full scene steps, including vector input motion, native association, curvature/region prediction, acceptance, solve, moving probes and reductions. Two physical substeps per scene step. No research recovery producer or audit in primary timing. These are normal box scene rates, not Franka or general friction qualification.",
+            "force_driven_friction": args.force_driven,
+            "friction": args.friction,
+            "scope": "Actual sphere/flat-link contact. Complete headless rigid/max/full scene steps, including vector input motion, native association, curvature/region prediction, acceptance, solve, moving probes and reductions. Two physical substeps per scene step. No research recovery producer or audit in primary timing. Force-driven runs vary tangential/normal inputs with native physical history. These are box scene rates, not Franka or general friction accuracy qualification.",
         },
     )
     if args.reference_source is not None:
@@ -109,16 +123,16 @@ def main():
         phase = 0.11 * np.arange(batch)
         for mode in ["rigid", "max", "full"]:
             begun = perf_counter()
-            fixture = build_fixture(path, batch=batch, dt=2e-4, substeps=2, output_mode=mode)
+            fixture = build_fixture(path, batch=batch, dt=2e-4, substeps=2, output_mode=mode, friction=args.friction)
             preparation = perf_counter() - begun
             for step in range(4):
-                update(fixture, step, phase)
+                update(fixture, step, phase, args.force_driven)
             qd.sync()
             elapsed = []
             for repeat in range(3):
                 begun = perf_counter()
                 for frame in range(8):
-                    update(fixture, repeat * 8 + frame, phase)
+                    update(fixture, repeat * 8 + frame, phase, args.force_driven)
                 qd.sync()
                 elapsed.append((perf_counter() - begun) / 8)
             # The native errno latches all rejected timed updates, even when a
@@ -126,7 +140,7 @@ def main():
             fixture.scene.rigid_solver.check_errno()
             pose_rows, vm_rows, principal_rows, input_rows, field_rows, loaded_rows = [], [], [], [], [], []
             for step in range(24):
-                update(fixture, step, phase)
+                update(fixture, step, phase, args.force_driven)
                 pose_rows.append(tensor_to_array(fixture.target.get_pos()).copy())
                 if fixture.entry is not None:
                     entry = fixture.entry
@@ -141,6 +155,10 @@ def main():
                     assert (inputs == 0).all() and (fields <= 1).all()
                     assert array(entry.state.step_valid).all() and array(entry.state.valid).all()
                     assert np.isfinite(vm).all() and np.isfinite(principal).all()
+                    if args.force_driven:
+                        assert not array(normal.binding.is_lost).any()
+                        assert (array(normal.friction.state.status) <= 1).all()
+                        assert array(normal.friction.state.traction_bound).max() <= 1 + 1e-10
                     vm_rows.append(vm.copy())
                     principal_rows.append(principal.copy())
                     input_rows.append(inputs)
@@ -196,6 +214,8 @@ def main():
             "rows": rows,
             "mesh": file_id(path),
             "actual_native_route_without_research_recovery_callback": True,
+            "force_driven_friction": args.force_driven,
+            "friction": args.friction,
             "scene_input_generation_included": True,
             "research_audits_outside_primary_timing": True,
             "same_allocation_rigid_max_full": True,

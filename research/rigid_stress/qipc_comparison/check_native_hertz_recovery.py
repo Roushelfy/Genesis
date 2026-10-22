@@ -47,10 +47,12 @@ def material_points(points, center, basis):
     return local
 
 
-def discrete_particular(points, axes, peak, force, far_field):
+def discrete_particular(points, axes, peak, force, far_field, roundoff_guard=False):
     result = elliptic_stress(points, axes, peak=peak, order=16)
     if far_field:
         far = np.linalg.norm(points, axis=1) >= 8 * axes[0]
+        if roundoff_guard:
+            far = np.sum(points**2, axis=1) >= 64 * axes[0] ** 2 * (1 - 64 * np.finfo(points.dtype).eps)
         sources = np.array([[-1, -1, 0], [-1, 1, 0], [1, -1, 0], [1, 1, 0]]) * np.r_[axes, 0] / np.sqrt(5)
         result[far] = point_tensor(points[far, None] - sources[None]).sum(axis=1) * force / 4
     return result

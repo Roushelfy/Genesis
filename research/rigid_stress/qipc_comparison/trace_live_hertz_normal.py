@@ -25,6 +25,8 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--mesh", type=Path, required=True)
     cli.add_argument("--batches", type=int, nargs="+", default=[1, 1024])
+    cli.add_argument("--friction", type=float, default=0.01)
+    cli.add_argument("--force-driven", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -32,11 +34,13 @@ def main():
     gs.init(backend=gs.cuda, precision="64", logging_level="warning")
     rows = []
     for batch in args.batches:
-        fixture = build_fixture(args.mesh, batch=batch, dt=2e-4, substeps=2, output_mode="max", quadrature=None)
+        fixture = build_fixture(
+            args.mesh, batch=batch, dt=2e-4, substeps=2, output_mode="max", quadrature=None, friction=args.friction
+        )
         assert fixture.entry is not None and fixture.entry.hertz is not None
         phase = 0.11 * np.arange(batch)
         for step in range(4):
-            update(fixture, step, phase)
+            update(fixture, step, phase, args.force_driven)
         qd.sync()
         fixture.scene.rigid_solver.check_errno()
         host = cProfile.Profile()
@@ -49,7 +53,7 @@ def main():
             try:
                 for step in range(4):
                     with torch.profiler.record_function("LiveHertz.scene_step"):
-                        update(fixture, step, phase)
+                        update(fixture, step, phase, args.force_driven)
                 qd.sync()
             finally:
                 host.disable()
@@ -118,8 +122,10 @@ def main():
             "passed": True,
             "rows": rows,
             "source_producer_unmodified": True,
+            "force_driven_friction": args.force_driven,
+            "friction": args.friction,
             "primary_timing": False,
-            "scope": "Separate intrusive cProfile/Torch CPU/CUDA trace of the original actual native normal scene. Python inclusive calls overlap and contain profiler/dispatch work; device tasks can overlap and their durations are not a scene wall time. The memory inventory counts unique exposed stress fields, including immutable geometry and shared operators, and excludes compiler/allocator overhead. No producer is replaced. Required native errno acceptance is retained. Use the uninstrumented paired scene timer for throughput. This control does not qualify friction, curved material or Franka accuracy.",
+            "scope": "Separate intrusive cProfile/Torch CPU/CUDA trace of the original actual native sphere/flat scene (force-driven friction or centered normal input). Python inclusive calls overlap and contain profiler/dispatch work; device tasks can overlap and their durations are not a scene wall time. The memory inventory counts unique exposed stress fields, including immutable geometry and shared operators, and excludes compiler/allocator overhead. No producer is replaced. Required native errno acceptance is retained. Use the uninstrumented paired scene timer for throughput. This control does not qualify friction, curved material or Franka accuracy.",
             "whole_goal_complete": False,
         },
     )

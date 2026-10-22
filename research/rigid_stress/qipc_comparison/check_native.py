@@ -12,6 +12,7 @@ from .artifacts import write_json
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, required=True)
+    parser.add_argument("--test-node", action="append")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -37,7 +38,7 @@ def main():
             str(args.output / (backend + "-tmp")),
             "--junitxml",
             str(args.output / (backend + ".xml")),
-            "tests/rigid/test_stress.py::test_native_full_field_unbatched_shared_operator",
+            *(args.test_node or ["tests/rigid/test_stress.py::test_native_full_field_unbatched_shared_operator"]),
         ]
         with (args.output / (backend + ".log")).open("w") as log:
             result = subprocess.run(command, cwd=args.source, env=environment, stdout=log, stderr=subprocess.STDOUT)

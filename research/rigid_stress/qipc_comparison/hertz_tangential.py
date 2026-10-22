@@ -110,13 +110,13 @@ def elliptic_tangential_stress(points, axes, tangent, peak=1.0, poisson=0.3, ord
 
 
 def cerruti_stress(points, source, force, poisson=0.3):
-    """Independent positive-depth point-force integration via displacement gradients.
+    """Independent surface/positive-depth point stresses via displacement gradients.
 
     force has two tangential components per source; unit shear modulus cancels.
     The Cerruti displacement is differentiated by complex step, not by the
     integrated-potential formulas used by elliptic_tangential_stress.
     """
-    assert np.all(points[:, 2] > 0)
+    assert np.all(points[:, 2] >= 0)
     result = np.empty((len(points), 3, 3))
     for start in range(0, len(points), 16):
         position = points[start : start + 16, None] - np.column_stack((source, np.zeros(len(source))))[None]

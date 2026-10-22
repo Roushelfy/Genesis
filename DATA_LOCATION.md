@@ -963,3 +963,15 @@ the earlier `fc63cf32e` source unchanged. Scientific work uses the existing
 Slurm/image/data-side environment and private node scratch; paired source
 processes also use separate private compiler caches. No runtime dataset,
 active environment, compatibility link or protected unfinished source is moved.
+
+Native changing-force friction uses `hard-native-friction-*` campaigns under
+the same20261019 ranking data run. The `hard-native-friction-live-v1` packet
+retains623 compact payloads (3,756,502 bytes) and398 external array/trace
+receipts. It includes failed worker and exact-switch controls, the cancelled
+pending speed attempt, full-field checks and the completed source-paired timing.
+Complete physical histories, scene fields, meshes and CUDA traces remain on
+data. Workspace sources `hard_contact_friction_core`, `hard_contact_live_friction`
+and `hard_contact_friction_moments` are frozen at07bf46ce8,795805290 and6ffdd399b.
+Scientific execution reuses Slurm `rtx-mid`, image `1_26`, the data-side physical
+environment and private node scratch. The original12 unfinished files and all
+16 frozen source heads remain preserved. No data, environment or link is moved.

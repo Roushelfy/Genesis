@@ -1,0 +1,40 @@
+{
+  "children": [
+    {
+      "label": "reference",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_live_friction",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+        "-m",
+        "research.rigid_stress.qipc_comparison.time_live_hertz_normal",
+        "--batches",
+        "1",
+        "64",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-moments-paired-v2/group0/paired/reference",
+        "--friction",
+        "0.4",
+        "--force-driven"
+      ],
+      "returncode": 0
+    },
+    {
+      "label": "current",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_friction_moments",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+        "-m",
+        "research.rigid_stress.qipc_comparison.time_live_hertz_normal",
+        "--batches",
+        "1",
+        "64",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-moments-paired-v2/group0/paired/current",
+        "--friction",
+        "0.4",
+        "--force-driven"
+      ],
+      "returncode": 0
+    }
+  ]
+}

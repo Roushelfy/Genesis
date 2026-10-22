@@ -1,0 +1,16 @@
+[
+  [
+    {
+      "name": "public-lifecycle",
+      "module": "research.rigid_stress.qipc_comparison.check_native",
+      "args": [
+        "--source",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_friction_moments",
+        "--test-node",
+        "tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[manual-False-full-4]",
+        "--test-node",
+        "tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[every_step-False-max-1]"
+      ]
+    }
+  ]
+]
