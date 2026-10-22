@@ -27,7 +27,7 @@ from .association import kernel_associate
 from .contact import StressContactState, create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
 from .data import StressState
 from .history import StressHistory
-from .hertz_contacts import HertzContacts, StressHertzProbeField, kernel_hertz_contact_begin
+from .hertz_contacts import HertzContacts, StressHertzProbeField, kernel_hertz_contact_input_begin
 from .curvature import StressCurvature
 from .intrinsic import IntrinsicContacts
 from .lifecycle import func_accept, func_begin_step
@@ -197,7 +197,7 @@ class RigidStressRecovery:
                 )
         self.subscribers = [
             Subscriber(
-                to=frozenset((StateChange.GEOMETRY, StateChange.DYNAMICS)),
+                to=frozenset((StateChange.GEOMETRY, StateChange.DYNAMICS, StateChange.RESTORED)),
                 callback=partial(self._state_changed, entry=entry),
                 links_filter=[entry.link.idx],
             )
@@ -216,7 +216,9 @@ class RigidStressRecovery:
     @property
     def is_update_requested(self) -> bool:
         return any(
-            entry.options.update_mode == "every_step" or entry.requested_step == self.solver.sim.cur_step_global
+            entry.hertz is not None
+            or entry.options.update_mode == "every_step"
+            or entry.requested_step == self.solver.sim.cur_step_global
             for entry in self.links
         )
 
@@ -294,15 +296,17 @@ class RigidStressRecovery:
             options = entry.link.stress_options
             if options != entry.options:
                 gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
-            if options.update_mode == "manual" and entry.requested_step != solver.sim.cur_step_global:
+            is_observed = options.update_mode == "every_step" or entry.requested_step == solver.sim.cur_step_global
+            if not is_observed and entry.hertz is None:
                 continue
             if entry.fused_pipeline:
                 kernel_pipeline(*self._pipeline_arguments(entry, i_substep))
                 continue
             if i_substep == 0:
-                kernel_begin_step(entry.state)
                 if entry.hertz is not None:
-                    kernel_hertz_contact_begin(entry.hertz.state)
+                    kernel_hertz_contact_input_begin(entry.hertz.state)
+                else:
+                    kernel_begin_step(entry.state)
             kernel_associate(
                 entry.link.idx,
                 solver._links_offset_pos,
@@ -313,7 +317,7 @@ class RigidStressRecovery:
                 solver.collider.collider_state,
                 solver._links_offset_quat.ndim == 3,
                 not solver._disable_constraint,
-                entry.state.step_valid,
+                entry.hertz.state.input_is_valid if entry.hertz is not None else entry.state.step_valid,
                 solver._errno,
             )
             if entry.hertz is not None:
@@ -333,8 +337,9 @@ class RigidStressRecovery:
                     options,
                     entry.history,
                     self.source_epsilon,
+                    is_observed,
                 )
-                if entry.history is not None:
+                if is_observed and entry.history is not None:
                     entry.history.append(entry.state)
                 continue
             if entry.resolved is not None:
@@ -395,9 +400,12 @@ class RigidStressRecovery:
                 entry.history.append(entry.state)
 
     def _state_changed(self, change: StateChange, envs_idx, *, entry: StressLink) -> None:
-        # The outer native mutation emits both notices for a state restore.
-        # Geometry already invalidates the complete observation/history state.
-        if change is StateChange.DYNAMICS and StateChange.GEOMETRY in self.solver._mutation_changes:
+        # A physical checkpoint carries friction memory. Invalidate observations
+        # once while preserving that restored state, regardless of notice order.
+        if StateChange.RESTORED in self.solver._mutation_changes:
+            if change is not StateChange.RESTORED:
+                return
+        elif change is StateChange.DYNAMICS and StateChange.GEOMETRY in self.solver._mutation_changes:
             return
         self.reset(change, envs_idx, entry=entry)
 
@@ -407,7 +415,7 @@ class RigidStressRecovery:
             affected.requested_step = -1
             kernel_reset(envs_idx, affected.state)
             if affected.hertz is not None:
-                affected.hertz.reset(envs_idx, affected.contacts)
+                affected.hertz.reset(envs_idx, affected.contacts, is_restore=change is StateChange.RESTORED)
             if affected.history is not None:
                 affected.history.reset(envs_idx)
 
@@ -432,9 +440,10 @@ class RigidStressRecovery:
             36: "original wrench is incompatible with the continuous reference-surface friction cones inside the physical radius",
             40: "vector traction fails final original wrench or local friction acceptance",
             51: "normal Hertz region has an unresolved source, curvature or material anchor",
-            52: "normal Hertz estimate cannot represent the supplied tangential force",
-            53: "centered normal Hertz pressure cannot represent the original region moment",
+            52: "Hertz force decomposition does not preserve the original resultant",
+            53: "centered Hertz tractions cannot represent the original region moment",
             54: "a Hertz region contains incompatible collision geom/pair identities",
+            55: "radial friction history, region correspondence or continuous cone is unresolved",
         }
         details = []
         for entry in self.links:
@@ -543,7 +552,7 @@ class RigidStressRecovery:
                     yield from iter_data(entry.resolved.vertices.info, f"stress.{i}.resolved.vertices")
             if entry.hertz is not None:
                 for item in entry.hertz.data(f"stress.{i}.hertz"):
-                    if 0 not in item.value.shape:
+                    if item.kind is DataKind.CONFIG or 0 not in item.value.shape:
                         yield item
             yield DataItem(f"stress.{i}.omega", entry.omega, entry.state.kind)
 
@@ -597,13 +606,12 @@ class RigidStressRecovery:
                 position = qd_to_torch(probes.position, transpose=True, copy=copy)
                 tensor = qd_to_torch(probes.tensor, transpose=True, copy=copy)
                 element = qd_to_torch(probes.element, transpose=True, copy=copy)
-                force = qd_to_torch(entry.hertz.law.state.force, transpose=True)
-                valid = qd_to_torch(entry.state.step_valid, transpose=True)
+                sampled_active = qd_to_torch(entry.hertz.state.sampled_active, transpose=True, copy=copy)
                 mask = indices_to_mask(envs_idx)
                 position = position.reshape(n_regions, batch, -1, 3).transpose(0, 1)[mask]
                 tensor = tensor.reshape(n_regions, batch, -1, 6).transpose(0, 1)[mask]
                 element = element.reshape(n_regions, batch, -1).transpose(0, 1)[mask]
-                active = ((force.reshape(n_regions, batch).T > 0) & valid[:, None])[mask]
+                active = sampled_active[mask]
                 if self.solver.n_envs == 0:
                     position, tensor, element, active = position[0], tensor[0], element[0], active[0]
                 return StressHertzProbeField(position, tensor, element, active)
