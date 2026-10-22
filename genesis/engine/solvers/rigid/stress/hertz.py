@@ -291,6 +291,15 @@ def func_boussinesq_tensor(point: qd.types.vector(3), force: float, poisson: flo
 
 
 @qd.func
+def func_hertz_is_far(point: qd.types.vector(3), major: float):
+    """Resolve the approximation switch consistently within distance roundoff."""
+    epsilon = 1.1920928955078125e-7
+    if qd.static(gs.qd_float == qd.f64):
+        epsilon = 2.220446049250313e-16
+    return point.norm_sqr() >= 64 * major * major * (1 - 64 * epsilon)
+
+
+@qd.func
 def func_hertz_particular(
     point: qd.types.vector(3),
     axes: qd.types.vector(2),
@@ -304,7 +313,7 @@ def func_hertz_particular(
     (tensor, resolved) = (qd.Matrix.zero(gs.qd_float, 3, 3), True)
     is_far = False
     if qd.static(far_field):
-        is_far = point.norm() >= 8 * axes[0]
+        is_far = func_hertz_is_far(point, axes[0])
     if is_far:
         for i in range(4):
             source = qd.Vector([(2 * (i // 2) - 1) * axes[0], (2 * (i % 2) - 1) * axes[1], 0.0]) / qd.sqrt(5.0)
