@@ -277,16 +277,20 @@ def kernel_hertz_contact_inputs(
                 material_force = geom.qd_inv_transform_by_quat(force, rotation)
                 material_moment = geom.qd_inv_transform_by_quat(regions.moment[i_c, i_b], rotation)
                 normal = -outward
+                projection_normal = outward
                 offset = qd.Vector.zero(gs.qd_float, 3)
                 if compression > 0:
                     offset = material_force.cross(material_moment) / material_force.norm_sqr()
                     height = (contacts.center[i_c, i_b] - center).dot(normal)
                     offset += material_force * (height - offset.dot(normal)) / compression
+                    if info.volume_points.shape[0] > 0:
+                        # Translation along the resultant line preserves its moment on a curved boundary.
+                        projection_normal = -material_force.normalized()
                 anchor, bary, projected = func_projected_surface_walk(
                     contacts.anchor_face[i_c, i_b],
                     contacts.center[i_c, i_b],
                     center + offset - contacts.center[i_c, i_b],
-                    outward,
+                    projection_normal,
                     info,
                     surface,
                     epsilon,
