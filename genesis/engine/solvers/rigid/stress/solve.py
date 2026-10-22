@@ -6,6 +6,7 @@ import genesis as gs
 
 from .balance import func_balance_cooperative
 from .data import StressInfo, StressState
+from .operators import func_material_gradients
 
 
 @qd.func
@@ -313,6 +314,11 @@ def func_peak_impl(
             derivative = qd.Matrix.zero(gs.qd_float, 3, 3)
             i_n = stress_info.elements[i_e, i_corner]
             origin_displacement = stress_state.displacement[i_n, i_b]
+            gradients = stress_info.gradients[i_e]
+            if qd.static(not cached and stress_info.volume_points.shape[0] > 0):
+                bary = qd.Vector.zero(gs.qd_float, 4)
+                bary[i_corner] = 1.0
+                gradients = func_material_gradients(i_e, bary, stress_info)
             i_slot = 4
             # The three quadratic edge tangents preserve translation cancellation before multiplying by geometry.
             for i_edge in range(6):
@@ -323,7 +329,7 @@ def func_peak_impl(
                         i_other = i_c
                     j_n = stress_info.elements[i_e, i_other]
                     i_n_mid = stress_info.elements[i_e, 4 + i_edge]
-                    gradient = stress_info.gradients[i_e][i_other, :]
+                    gradient = gradients[i_other, :]
                     if qd.static(cached):
                         j_n = stress_info.corner_nodes[i_e, i_corner, i_other]
                         i_n_mid = stress_info.corner_nodes[i_e, i_corner, i_slot]

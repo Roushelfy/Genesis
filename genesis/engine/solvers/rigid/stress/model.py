@@ -7,7 +7,7 @@ import quadrants as qd
 
 import genesis as gs
 from genesis.options.rigid_stress import RigidStressOptions
-from genesis.utils.array_class import V_MAT, V_VEC, V
+from genesis.utils.array_class import V_MAT, V_VEC, V, maybe_shape
 from genesis.utils.misc import qd_to_numpy
 
 from .balance import kernel_centrifugal_wrench, kernel_relief_projection
@@ -17,16 +17,19 @@ from .history import StressHistory
 from .inverse import StressInverse
 from .operators import (
     kernel_assemble,
+    kernel_assemble_curved,
     kernel_corner_gradients,
     kernel_diagonal,
     kernel_gauge,
     kernel_geometry,
+    kernel_curved_geometry,
     kernel_gram_inverse,
     kernel_mass_modes,
     kernel_mass_properties,
     kernel_midpoints,
     kernel_modes,
     kernel_valid_geometry,
+    kernel_volume_quadrature,
 )
 from .solve import (
     kernel_active,
@@ -60,6 +63,8 @@ class StressModel:
             vertices = asset["vertices"]
             tetrahedra = asset["tetrahedra"]
             surface = asset["surface_triangles"]
+            edge_positions = asset["edge_positions"] if "edge_positions" in asset else None
+        self.curved_geometry = edge_positions is not None
         if vertices.ndim != 2 or vertices.shape[1] != 3 or not np.isfinite(vertices).all():
             gs.raise_exception("Stress mesh vertices must be a finite (n, 3) array.")
         if tetrahedra.ndim != 2 or tetrahedra.shape[1] != 4 or not len(tetrahedra):
@@ -82,6 +87,12 @@ class StressModel:
         elements = np.column_stack((tetrahedra, len(vertices) + edge_inverse.reshape((-1, 6))))
         xyz = np.zeros((len(vertices) + len(edge_vertices), 3), dtype=gs.np_float)
         xyz[: len(vertices)] = vertices
+        if self.curved_geometry:
+            if edge_positions.shape != (len(edge_vertices), 3) or not np.isfinite(edge_positions).all():
+                gs.raise_exception("Stress edge_positions must give finite coordinates for every sorted unique edge.")
+            if options.contact_model != "hertz":
+                gs.raise_exception("Curved stress geometry requires the Hertz contact route.")
+            xyz[len(vertices) :] = edge_positions
         face_edges = np.sort(surface[:, [[0, 1], [0, 2], [1, 2]]], axis=2)
         edge_keys = edge_vertices[:, 0] * len(vertices) + edge_vertices[:, 1]
         face_keys = face_edges[:, :, 0] * len(vertices) + face_edges[:, :, 1]
@@ -97,6 +108,7 @@ class StressModel:
         n_nodes, n_elements, n_entries = len(xyz), len(elements), len(entries)
         assembly_start = np.r_[0, np.cumsum(np.bincount(inverse, minlength=n_entries))]
         assembly_idx = np.argsort(inverse, kind="stable")
+        n_volume = 216 if self.curved_geometry else 0
 
         self.info = StressInfo(
             vertices=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes,)),
@@ -111,6 +123,13 @@ class StressModel:
             corner_gradients=V_VEC(3, dtype=gs.qd_float, shape=(n_elements, 4, 7)),
             corner_nodes=V(dtype=gs.qd_int, shape=(n_elements, 4, 7)),
             volumes=V(dtype=gs.qd_float, shape=(n_elements,)),
+            geometry_invalid=V(dtype=gs.qd_int, shape=(n_elements,)),
+            volume_points=V_VEC(4, dtype=gs.qd_float, shape=(n_volume,)),
+            volume_base_weights=V(dtype=gs.qd_float, shape=maybe_shape((n_volume,), self.curved_geometry)),
+            volume_gradients=V_MAT(
+                4, 3, dtype=gs.qd_float, shape=maybe_shape((n_elements, n_volume), self.curved_geometry)
+            ),
+            volume_weights=V(dtype=gs.qd_float, shape=maybe_shape((n_elements, n_volume), self.curved_geometry)),
             row_start=V(dtype=gs.qd_int, shape=(n_nodes + 1,)),
             columns=V(dtype=gs.qd_int, shape=(n_entries,)),
             assembly_start=V(dtype=gs.qd_int, shape=(n_entries + 1,)),
@@ -144,12 +163,19 @@ class StressModel:
         self.info.assembly_idx.from_numpy(assembly_idx.astype(gs.np_int, copy=False))
         self.info.is_free.fill(1)
         topology_done = time.perf_counter()
-        kernel_midpoints(len(vertices), edge_vertices.astype(gs.np_int, copy=False), self.info)
+        if not self.curved_geometry:
+            kernel_midpoints(len(vertices), edge_vertices.astype(gs.np_int, copy=False), self.info)
         kernel_geometry(self.info)
-        kernel_corner_gradients(self.info)
+        if self.curved_geometry:
+            kernel_volume_quadrature(self.info)
+            kernel_curved_geometry(self.info)
         if kernel_valid_geometry(self.info):
-            gs.raise_exception("Stress tetrahedra must have positive volume.")
-        kernel_assemble(options.poisson, options.density, self.info)
+            gs.raise_exception("Stress tetrahedra must have positive volume and positive sampled geometry Jacobians.")
+        kernel_corner_gradients(self.info)
+        if self.curved_geometry:
+            kernel_assemble_curved(options.poisson, options.density, self.info)
+        else:
+            kernel_assemble(options.poisson, options.density, self.info)
         kernel_mass_properties(self.info)
         kernel_modes(self.info)
         kernel_mass_modes(self.info)

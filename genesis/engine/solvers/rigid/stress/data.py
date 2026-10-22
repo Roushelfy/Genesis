@@ -22,6 +22,11 @@ class StressInfo:
     corner_gradients: qd.Tensor
     corner_nodes: qd.Tensor
     volumes: qd.Tensor
+    geometry_invalid: qd.Tensor
+    volume_points: qd.Tensor
+    volume_base_weights: qd.Tensor
+    volume_gradients: qd.Tensor
+    volume_weights: qd.Tensor
     row_start: qd.Tensor
     columns: qd.Tensor
     assembly_start: qd.Tensor

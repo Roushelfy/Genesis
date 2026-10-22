@@ -1,4 +1,4 @@
-"""Native positive quadrature of an affine exterior P2 surface."""
+"""Native positive quadrature of a quadratic material boundary."""
 
 from dataclasses import dataclass
 from typing import ClassVar
@@ -19,6 +19,7 @@ class StressSurfaceInfo:
     gauss: qd.Tensor
     gauss_weights: qd.Tensor
     positions: qd.Tensor
+    normals: qd.Tensor
     weights: qd.Tensor
     shape: qd.Tensor
     face_origin: qd.Tensor
@@ -38,6 +39,7 @@ class StressSurface:
             gauss=V(dtype=gs.qd_float, shape=(quadrature,)),
             gauss_weights=V(dtype=gs.qd_float, shape=(quadrature,)),
             positions=V_VEC(3, dtype=gs.qd_float, shape=(n_faces * n_quadrature,)),
+            normals=V_VEC(3, dtype=gs.qd_float, shape=(n_faces * n_quadrature,)),
             weights=V(dtype=gs.qd_float, shape=(n_faces * n_quadrature,)),
             shape=V_VEC(6, dtype=gs.qd_float, shape=(n_quadrature,)),
             face_origin=V_VEC(3, dtype=gs.qd_float, shape=(n_faces,)),
@@ -51,6 +53,34 @@ class StressSurface:
         kernel_gauss(self.info)
         kernel_surface(stress_info, self.info)
         build_grid(self.info.positions, self.info.grid)
+
+
+@qd.func
+def func_surface_geometry(i_f: int, bary: qd.types.vector(3), info: StressInfo):
+    point = qd.Vector.zero(gs.qd_float, 3)
+    tangent = qd.Matrix.zero(gs.qd_float, 3, 2)
+    gradient = qd.Matrix([[-1.0, -1.0], [1.0, 0.0], [0.0, 1.0]])
+    pairs = qd.Matrix([[0, 1], [0, 2], [1, 2]])
+    origin = info.vertices[info.surface_nodes[i_f, 0]]
+    for i in range(6):
+        shape, derivative = gs.qd_float(0.0), qd.Vector.zero(gs.qd_float, 2)
+        if i < 3:
+            shape, derivative = bary[i] * (2 * bary[i] - 1), (4 * bary[i] - 1) * gradient[i, :]
+        else:
+            a, b = pairs[i - 3, 0], pairs[i - 3, 1]
+            shape = 4 * bary[a] * bary[b]
+            derivative = 4 * (bary[a] * gradient[b, :] + bary[b] * gradient[a, :])
+        offset = info.vertices[info.surface_nodes[i_f, i]] - origin
+        point += shape * offset
+        tangent += offset.outer_product(derivative)
+    point += origin
+    area = tangent[:, 0].cross(tangent[:, 1])
+    first = info.vertices[info.surface_nodes[i_f, 1]] - origin
+    second = info.vertices[info.surface_nodes[i_f, 2]] - origin
+    opposite = info.vertices[info.surface_opposite_vertices[i_f]] - origin
+    if first.cross(second).dot(opposite) > 0:
+        area = -area
+    return point, tangent, area
 
 
 @qd.kernel
@@ -84,6 +114,15 @@ def kernel_surface(stress_info: StressInfo, surface_info: StressSurfaceInfo):
         surface_info.face_edges[i_f] = qd.Matrix.rows([first, second])
         surface_info.face_bounds_low[i_f] = qd.min(x, x + first, x + second)
         surface_info.face_bounds_high[i_f] = qd.max(x, x + first, x + second)
+        if qd.static(stress_info.volume_points.shape[0] > 0):
+            pairs = qd.Matrix([[0, 1], [0, 2], [1, 2]])
+            for i in qd.static(range(3)):
+                a = stress_info.vertices[stress_info.surface_nodes[i_f, pairs[i, 0]]]
+                b = stress_info.vertices[stress_info.surface_nodes[i_f, pairs[i, 1]]]
+                midpoint = stress_info.vertices[stress_info.surface_nodes[i_f, i + 3]]
+                control = 2 * midpoint - (a + b) / 2
+                surface_info.face_bounds_low[i_f] = qd.min(surface_info.face_bounds_low[i_f], control)
+                surface_info.face_bounds_high[i_f] = qd.max(surface_info.face_bounds_high[i_f], control)
         surface_info.face_dual[i_f] = gram.inverse() @ qd.Matrix.rows([first, second])
         normal = first.cross(second).normalized()
         i_opposite = stress_info.surface_opposite_vertices[i_f]
@@ -96,12 +135,20 @@ def kernel_surface(stress_info: StressInfo, surface_info: StressSurfaceInfo):
             bary = qd.Vector([1.0 - u, u * (1.0 - v), u * v])
             i_sample = i_f * surface_info.shape.shape[0] + i_q
             surface_info.positions[i_sample] = x + bary[1] * first + bary[2] * second
+            surface_info.normals[i_sample] = normal
             surface_info.weights[i_sample] = (
                 first.cross(second).norm()
                 * u
                 * surface_info.gauss_weights[i_q // n]
                 * surface_info.gauss_weights[i_q % n]
             )
+            if qd.static(stress_info.volume_points.shape[0] > 0):
+                position, tangent, area = func_surface_geometry(i_f, bary, stress_info)
+                surface_info.positions[i_sample] = position
+                surface_info.normals[i_sample] = area.normalized()
+                surface_info.weights[i_sample] = (
+                    area.norm() * u * surface_info.gauss_weights[i_q // n] * surface_info.gauss_weights[i_q % n]
+                )
     for i_q in range(surface_info.shape.shape[0]):
         n = surface_info.gauss.shape[0]
         u, v = surface_info.gauss[i_q // n], surface_info.gauss[i_q % n]
