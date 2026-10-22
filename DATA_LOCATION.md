@@ -1,5 +1,17 @@
 # Rigid-stress data and artifact locations
 
+The `hard-curved-walk-v1` packet retains378 compact payloads/2,287,422bytes
+and479 external receipts. Twelve terminal campaigns under `hard-curved-walk-*`
+cover quadratic material paths, curved/affine friction binding, nonconvex
+first exits, GPU component cost and original/refined Franka replay. Original
+negative controls, the sign-label reader and near-zero relative-comparison
+failure remain preserved. Full arrays, generated meshes, scene captures and
+logs use the established20261019 ranking data root. Engine
+`hard_contact_curved_walk` is frozen at`3025c965b`, with25 frozen heads and12
+original unfinished files preserved. Source/docs remain in workspace;
+scientific execution reuses Slurm`rtx-mid`, image`1_26`, the data-side environment
+and private node caches. No data, environment or compatibility link moved.
+
 The `hard-matched-collision-v1` packet retains304 compact payloads/1,690,286bytes
 and819 external receipts. Collision meshes generated from the curved material
 surface, original/repaired Franka captures, source-binding CPU/CUDA controls,

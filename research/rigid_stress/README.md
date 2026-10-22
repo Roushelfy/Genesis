@@ -11,15 +11,14 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current goal and verified scope
 
-The latest [matched-collision and curved-source checks](docs/NATIVE_HOLLOW_EGG_ADMISSION_20261022.md#matched-collision-geometry-and-curved-source-binding)
-repair source binding that still projected quadratic material faces onto their
-flat chords. Native CPU/CUDA controls and original nonconvex regressions pass.
-Collision meshes sampled from the actual curved boundary reduce geometry error;
-the8-division Franka case now clears source binding at initial gripper contact.
-Two finite-face normal roots still reject at step106. Load-compatible finite
-support, moving curved source/friction frames, physical stress accuracy and
-accepted max/full grasp throughput remain open.
-
+The latest [curved material walk and friction binding](docs/NATIVE_HOLLOW_EGG_ADMISSION_20261022.md#curved-material-walks-and-friction-binding)
+uses actual quadratic faces and first-edge crossings. CPU/CUDA geometry,
+nonconvex path and moving radial-history controls pass; old-source negative
+controls retain their failures. Component timings are measured separately.
+Actual Franka still first rejects at108(original collision) or106(refined):
+selected box faces match collision normals, but refined normal roots lie outside
+by25–34 local Hertz widths. Wrench-compatible curved local frames, finite-edge
+pressure/global-peak accuracy and accepted max/full grasp throughput remain open.
 
 **Latest user priority:** implement
 [cheap Hertz/thin-shell hard-contact estimates](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md)

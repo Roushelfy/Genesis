@@ -538,8 +538,8 @@ selected faces by at least2.58 and7.39 local Hertz widths, but one is272um from
 its collision witness. At8divisions, both witness/intersection distances fall
 below90um, while one load line lies66.63um outside a selected face, about1.04
 local Hertz widths. Refining collision geometry and correcting provenance thus
-do not establish load-compatible finite support. Native moving-source/friction
-walks still use affine geometry and require their own repair and controls.
+do not establish load-compatible finite support. At this checkpoint, native moving-source/friction
+walks used affine geometry; the following section records their geometric repair.
 
 The [matched-collision packet](../evidence/20261019-qualified-ranking/hard-matched-collision-v1/README.md)
 retains the negative controls, exact source variants, generated assets, complete
@@ -547,6 +547,106 @@ scene captures and original/corrected inspections. Reuse captured task groups
 with Slurm`rtx-mid`, image`1_26`, the data-side environment, fresh explicit outputs
 and private node caches. This change supplies no accepted full-grasp throughput
 or new physical pressure/global-peak qualification. The whole goal remains active.
+
+## Curved material walks and friction binding
+
+Experimental engine [`3025c965b`](https://github.com/Roushelfy/Genesis/commit/3025c965b7be8b4139434eb33a4e4b6eb9678a0c)
+adds native quadratic material walks. It inverts the actual face chart, bounds
+the projected Jacobian using its Bernstein coefficients, and crosses the first
+outgoing quadratic edge along the segment. Only the shared neighbor is eligible
+for continuation. Affine materials retain their original path. Pressure laws,
+source projection limits and native force/moment acceptance thresholds remain
+unchanged. Highly grazing or folded projected patches fail the facing bound.
+
+CPU/CUDA each pass224 positive position queries across affine/curved and
+original/rotated geometries, with maximum error2.60e-17m against independent
+P2 coordinates. Each backend also refuses224 reversed-normal queries and96
+disconnected cross-face queries while preserving128 isolated within-face
+queries. The old affine walk returned nominally valid curved points displaced
+by up to1.618mm. A separate regular quadratic face has a nonconvex projected
+boundary: both endpoints lie inside, but the connecting segment exits and
+returns. New CPU/CUDA walks refuse both directions at the disconnected edge;
+the old source incorrectly accepts them. Its interior-segment control passes.
+
+Supplied curved normal/friction frames now preserve native radial history over
+12 steps, two regions and four environments, including eight shared-edge
+crossings, slot permutations and an isolated release/recontact. Independent
+SciPy normal rotation and CPU radial history agree: maximum line difference is
+6.08e-8, below the existing1e-5 control budget. The old source loses all four
+environments at the first movement, step1. Existing affine binding, duplicate
+correspondence, loss-latch and release controls also pass on CPU/CUDA. These
+controls verify the declared history approximation; physical moving-footprint
+traction error remains a separate question.
+
+Same-substep finite-face inspection of the retained first gripper contacts
+finds that the collision normal's dominant box axis matches the selected face
+in all five contacts. The captured collision normal points inward on the stress
+link, so the relevant angular comparison uses negative region normal; the first
+reader's opposite-sign angle is retained alongside the corrected v2 reader.
+For the8-division collision mesh:
+
+| Contact | Normal root outside face | Distance / root Hertz edge width | Collision point inside edge | Collision normal / opponent face angle |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 2359.77um | 34.261 | 4.663um | 2.854deg |
+| 2 | 1640.23um | 24.756 | 5.393um | 2.793deg |
+
+The roots lie far outside the earlier edge table's tested normalized interval
+[-1,2]. Selecting another dominant face or extending that table without evidence
+would misrepresent the observed problem. One force-line intersection still lies
+outside the face by1.043 local widths. No physical gripper rounding radius has
+been supplied. Sharp-edge pressure/peak behavior remains an explicit model
+limit rather than a reason to relax native geometry gates.
+
+Actual B4 full-output Franka runs still first reject at108 with the original
+collision asset and106 with the8-division asset. The latter retains successful
+source binding and two finite-face region refusals. The accepted prefixes do
+not establish accepted closure/lift throughput. Both complete captures
+(109 and107 frames) retain exact rigid inputs and acceptance against C16. The
+largest relative tensile-peak/probe-tensor differences are2.42e-11/1.22e-12;
+corner-tensor difference stays below7.30e-14. A first comparison failed at
+step3 because it divided an almost-zero moment residual by its old residual.
+That failure is retained. The scale-aware reader keeps the existing field and
+curvature budgets and native moment gate: largest new moment residual is
+1.63e-19Nm, or6.38e-14 of Fn*a, compared with the unchanged1e-8 gate. Other
+floating intermediate differences are recorded individually. This numerical
+comparison adds no physical accuracy claim.
+
+Warmed device-resident projected-walk dispatches on an RTX PRO6000 Blackwell
+Server Edition give the following synchronized inclusive wall medians. Each
+configuration uses five blocks of ten calls after three warmups; numerical
+readback is outside timing. All queries pass the same1e-12m position check.
+
+| Queries per dispatch | Affine walk | Curved walk |
+| ---: | ---: | ---: |
+| 56 | 0.0873ms | 0.2330ms |
+| 1792 | 0.0859ms | 0.2500ms |
+| 57344 | 0.0881ms | 0.6857ms |
+
+These are geometry component costs with repeated control inputs. They exclude
+region estimation, friction, elastic recovery and the rigid scene. They cannot
+supply accepted max/full scene throughput or substitute for its profiling.
+
+The [curved-walk packet](../evidence/20261019-qualified-ranking/hard-curved-walk-v1/README.md)
+retains sources, negative controls, scene failures, timings and original/corrected
+readers. Replay captured task JSON using `shell_comparison/submit.py`, frozen
+engine`3025c965b`, Slurm`rtx-mid`, image`1_26`, the data-side physical environment,
+a fresh explicit data output and private node-local caches. For example:
+
+```bash
+python3 research/rigid_stress/shell_comparison/submit.py \
+  --source ../hard_contact_curved_walk \
+  --output /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261022-curved-walk-replay \
+  --tasks /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-curved-walk-controls-v1/tasks.json \
+  --python /mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python \
+  --minutes 6 --memory-gb 12 --cpus 2 --node-local-cache
+```
+
+The geometric walk is repaired; native contact-center construction still
+projects along the root normal and retains root curvature/frame after moving
+the load center. A wrench-preserving force-line intersection and actual local
+frame need separate numerical and physical controls. Finite-face pressure,
+complete/global-peak stress error and accepted moving Franka max/full throughput
+remain required. The whole goal stays active.
 
 ## Repair and reproduction
 
