@@ -1,5 +1,19 @@
 # Rigid-stress data and artifact locations
 
+The `hard-native-curved-source-v1` packet retains249 compact payloads/
+1,407,781bytes and509 external receipts. Native curved-source CPU/CUDA fields,
+actual Franka frames, the refused gripper contact and geometry diagnosis all
+remain under the established `20261019-qualified-ranking` data root, in
+`hard-native-curved-source-v1/v2`, `hard-live-curved-franka-v1`,
+`hard-live-curved-franka-grasp-v1`, `hard-live-curved-franka-geometry-v1/v2`
+and `hard-curved-franka-region-v1`. Full arrays, generated assets and large
+per-step JSON histories stay on data. Compact source/log/summary evidence is in
+Git. New engine `hard_contact_curved_source` is frozen at`ce57a7fb2` with22
+frozen heads and the original12 unfinished files preserved. All scientific work
+uses Slurm`rtx-mid`, image`1_26`, the established data-side environment and
+private node caches. No data, active environment or compatibility link is moved.
+
+
 The `hard-native-curved-material-v1` packet retains289 compact payloads/
 1,669,564bytes and71 externally hashed fields and meshes. Native curved material
 CPU/GPU checks, original compiler failures, affine/friction regressions, corner

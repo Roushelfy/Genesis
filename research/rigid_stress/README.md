@@ -11,6 +11,15 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current goal and verified scope
 
+The latest [curved Hertz source checks](docs/NATIVE_HOLLOW_EGG_ADMISSION_20261022.md#native-curved-hertz-sources-and-moving-material-probes)
+pass independent CPU/CUDA same-load fields, moving material probes and max/full
+controls. Both curved assets admit the first30 actual Franka steps (111 loaded
+environment-steps each). The longer grasp first rejects contact geometry at
+step108: the converged normal root lies2.052um beyond a finite finger-box face.
+A cheap finite-edge pressure estimate, gripper-contact admission and accepted
+max/full throughput remain open.
+
+
 **Latest user priority:** implement
 [cheap Hertz/thin-shell hard-contact estimates](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md)
 and maximize native throughput. Do not assume or extend a deformable gripper pad.

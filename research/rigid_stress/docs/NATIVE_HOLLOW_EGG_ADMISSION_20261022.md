@@ -340,6 +340,68 @@ retains seven terminal campaigns, their original failures, exact sources and
 complete fields at hashed data-side paths. Reuse the captured tasks with immutable
 sources, Slurm`rtx-mid`, image`1_26`, fresh explicit data outputs and private caches.
 
+## Native curved Hertz sources and moving material probes
+
+Experimental engine [`ce57a7fb2`](https://github.com/Roushelfy/Genesis/commit/ce57a7fb2af5a235a2f77360afe0ad9490cbecb7)
+connects quadratic material geometry to source traction and all89 moving probes.
+Sources are checked against the actual curved position and tangent. Probes follow
+the curved boundary, then invert the owning material cell through shared-face
+adjacency. Complete-boundary correction uses pointwise curved normals and areas,
+with linear radial integration on a source-centered fan. Original affine,
+source/wrench, material-containment and field acceptance gates remain in force.
+
+Both analytic-normal and estimated-normal assets pass independent CPU/CUDA
+same-prescribed-Hertz checks. Maximum relative differences across them are:
+
+| Quantity | Difference |
+| --- | ---: |
+| Consistent nodal load versus refined point reference | `6.57e-7` |
+| Complete corner tensor versus distributed reference | `3.16e-7` |
+| Moving-probe tensor versus distributed reference | `2.23e-5` |
+| Sampled von Mises peak | `3.98e-8` |
+| Sampled tensile peak | `4.36e-4` (0.0436%) |
+| Complete-boundary wrench | `4.92e-9` |
+| Maximum material inverse-map error | `1.39e-17m` |
+
+Max/full agreement, released states, restoration, and isolation of a deliberately
+misplaced source pass. Existing affine-shell and actual planar-friction controls
+also pass. The initial two-radial-subdivision rule failed the declared nodal-load
+`1e-5` gate with `1.43e-5`. Three radial subdivisions pass without changing that
+gate. Both attempts and their complete fields remain retained. These comparisons
+verify native same-load recovery on the selected quadratic geometry. Independent
+pressure accuracy, shell discretization and continuous global-maximum accuracy
+retain their separate requirements.
+
+Three warm B3 normal-module samples give approximately11.49ms on CUDA and19.9ms
+on CPU. They include scatter, regular recovery, moving probes and synchronization
+for two loaded environments plus one release. They exclude automatic collision
+inputs, friction and full scenes, so they are component costs only.
+
+The actual original Franka controller/collision scene now accepts the first30
+steps for both curved assets, with111 valid loaded environment-steps per asset
+(B4, full output, default quadrature10). A220-step estimated-geometry attempt
+first becomes invalid at step108 as the gripper makes contact, and the production
+exception is raised at110. Environment0 reports region geometry status2, while
+the other environments remain valid. The accepted prefix covers ground contact
+and approach. It does not qualify gripper closure/lift throughput. Every frame,
+including the first invalid result, remains available.
+
+A separate read-only CPU inspection identifies the exact finite-box gate:
+the normal root residual is`3.20e-17`, with positive principal curvatures
+24.779/39.940 per metre, but its center lies2.052um beyond the selected box face.
+The half-extents are3/2/3.5mm. Source geometry is therefore outside the currently
+supported interior Hertz region even with a converged normal root. Relaxing the
+finite-face gate or tightening Newton/PCG tolerances would not validate pressure
+near that edge. Reuse the existing [straight-edge physical controls](HARD_CONTACT_ESTIMATES_20261020.md#finite-straight-edge-pressure-candidates)
+for an inexpensive finite-edge model. Curved moving-source/friction binding and
+matched accepted max/full throughput also remain active work. The diagnostic
+worker's first cache-owner attribute error remains in its original failed run.
+
+The [curved-source packet](../evidence/20261019-qualified-ranking/hard-native-curved-source-v1/README.md)
+binds the executed native, affine regression and actual scene checks to their
+source commits. Reproduce its captured tasks with Slurm`rtx-mid`, image`1_26`, the
+existing data-side environment, fresh data outputs and private node caches.
+
 ## Repair and reproduction
 
 Source[`d26b5b3d4`](https://github.com/Roushelfy/Genesis/commit/d26b5b3d46efe614ed715fef293f8cc49bcdf0c7)
