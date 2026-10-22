@@ -65,6 +65,31 @@ def diagnose(workload, output, step, is_boundary_capture):
     solver = workload.scene.rigid_solver
     entry = solver.stress_recovery.links[0]
     regions = entry.hertz.regions.state
+    collider = solver.collider.collider_state
+    contacts = collider.contact_data
+    np.savez_compressed(
+        output / f"contacts{step:04d}.npz",
+        count=array(collider.n_contacts),
+        sort_idx=array(collider.contact_sort_idx),
+        position=array(contacts.pos),
+        normal=array(contacts.normal),
+        force=array(contacts.force),
+        penetration=array(contacts.penetration),
+        friction=array(contacts.friction),
+        sol_params=array(contacts.sol_params),
+        geom_a=array(contacts.geom_a),
+        geom_b=array(contacts.geom_b),
+        link_a=array(contacts.link_a),
+        link_b=array(contacts.link_b),
+        pair_idx=array(contacts.pair_idx),
+        witness_a=array(contacts.witness.point_a),
+        witness_b=array(contacts.witness.point_b),
+        witness_method=array(contacts.witness.method),
+        witness_vertex_a=array(contacts.witness.vertex_a),
+        witness_vertex_b=array(contacts.witness.vertex_b),
+        source_method=array(entry.hertz.sources.method),
+        source_vertex=array(entry.hertz.sources.vertex),
+    )
     initial = np.full((4, entry.contacts.valid.shape[0], 2, 15), np.nan)
     kernel_boundary_diagnostic(
         initial,
@@ -147,6 +172,7 @@ def main():
     cli.add_argument("--collision-urdf", type=Path)
     cli.add_argument("--conditions", type=Path)
     cli.add_argument("--steps", type=int, default=30)
+    cli.add_argument("--substeps", type=int, default=1)
     cli.add_argument("--diagnose", action="store_true")
     cli.add_argument("--boundary-planes", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
@@ -167,6 +193,7 @@ def main():
             "collision_assets": collision_assets,
             "conditions": file_id(args.conditions) if args.conditions is not None else None,
             "steps": args.steps,
+            "substeps": args.substeps,
             "environments": 4,
             "scope": "Actual moving Franka with the original controller, explicitly identified original or supplied collision asset, supplied quadratic material geometry and native Hertz/friction. Retain every step and stop on the unchanged production error. Loaded rejection does not count as useful throughput, and success alone is not physical stress qualification.",
         },
@@ -186,6 +213,7 @@ def main():
         stress_mesh=args.stress_mesh,
         collision_urdf=args.collision_urdf,
         conditions=args.conditions,
+        substeps=args.substeps,
     )
     workload.stress = False
     workload.save_conditions(args.output / "conditions.npz")

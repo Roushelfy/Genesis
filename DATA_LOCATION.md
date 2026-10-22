@@ -1132,3 +1132,14 @@ The asset's selected outer faces remain unchanged in Git. Native Hertz appends
 omitted material faces during preprocessing. All18 frozen source heads and
 the original12 unfinished files remain preserved; scientific execution reuses
 the established Slurm/image/environment and private node scratch.
+
+Sharp-edge collision application provenance, division32 collision assets and
+updated-support load studies use `hard-contact-application-*` under the same
+20261019 ranking run. Their `hard-contact-application-v1` publication packet
+retains compact captures, source inventories and terminal jobs, including all
+three native Franka refusals. Full frame/contact/field arrays and generated
+OBJ/URDF assets remain at hashed data paths. Source `hard_contact_edge_farfield`
+stays frozen at4a8125c4c; no engine is changed by this study. All29 frozen source
+heads and12 original unfinished files remain preserved. Scientific runs reuse
+Slurm `rtx-mid`, image `1_26`, the existing data-side environment and private
+node caches. No runtime dataset, environment or compatibility link is migrated.

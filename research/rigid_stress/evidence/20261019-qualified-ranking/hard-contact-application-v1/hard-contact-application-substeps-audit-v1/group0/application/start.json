@@ -1,0 +1,36 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-233",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "740483",
+      "SLURM_ARRAY_JOB_ID": "740483",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-substeps-v1/group0/franka/frame0106.npz",
+      "bytes": 360503,
+      "sha256": "054bdc680478eb2822ce412fe3b94cf857f095f964139a550c6043c7ffa9bb64"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-substeps-v1/group0/franka/geometry0106.npz",
+      "bytes": 2335194,
+      "sha256": "9a731aba33000803e7e8d2d20c7d69b42541980c446305cbbec8c1b0a9f3cbb6"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-substeps-v1/group0/franka/contacts0106.npz",
+      "bytes": 6604,
+      "sha256": "458848300dc61eee870ce85eb70bf9882fabd2faae87d5075dc18e5b01f8cda8"
+    }
+  ],
+  "scope": "Decompose application-to-witness and witness-to-material/pressure-center offsets in a captured stress-input frame. Check raw collider association when supplied. The auxiliary initial boundary query uses post-step geometry and is labelled separately. Normal separation times two is an inferred midpoint depth, checked against the raw penetration when supplied. Preserve actual source and region rejection; no load or acceptance change."
+}
