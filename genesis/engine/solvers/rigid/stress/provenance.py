@@ -13,7 +13,7 @@ from genesis.utils.array_class import V_VEC, DataKind, V
 from .contact import StressContactState
 from .data import StressInfo
 from .paths import func_surface_segment
-from .surface import StressSurfaceInfo
+from .surface import StressSurfaceInfo, func_quadratic_edge_closest, func_surface_geometry
 
 
 class StressSourceStatus(IntEnum):
@@ -148,6 +148,50 @@ def func_closest_triangle(i_f: int, point: qd.types.vector(3), surface_info: Str
 
 
 @qd.func
+def func_material_source_point(
+    i_f: int,
+    point: qd.types.vector(3),
+    known_bary: qd.types.vector(3),
+    stress_info: StressInfo,
+    surface_info: StressSurfaceInfo,
+    epsilon: float,
+    is_bound: bool,
+):
+    """Resolve a bound coordinate or the closest point on a material face."""
+    position, bary = qd.Vector.zero(gs.qd_float, 3), known_bary
+    if is_bound:
+        position = surface_info.face_origin[i_f] + bary[1:3] @ surface_info.face_edges[i_f]
+    else:
+        position, bary = func_closest_triangle(i_f, point, surface_info)
+    if stress_info.volume_points.shape[0] > 0:
+        is_regular = True
+        for i_iteration in range(qd.select(is_bound, 1, 13)):
+            if is_regular:
+                position, tangent, area = func_surface_geometry(i_f, bary, stress_info)
+                gram = tangent.transpose() @ tangent
+                is_regular = gram.determinant() > 0 and gram.norm() < float("inf")
+                if is_regular and not is_bound and i_iteration < 12:
+                    update = gram.inverse() @ (tangent.transpose() @ (position - point))
+                    bary += qd.Vector([update.sum(), -update[0], -update[1]])
+        distance = gs.qd_float(float("inf"))
+        if is_regular and bary.min() >= -64 * epsilon and bary.max() <= 1 + 64 * epsilon:
+            distance = (position - point).norm_sqr()
+        for i_edge in range(qd.select(is_bound, 0, 3)):
+            a, b = i_edge, (i_edge + 1) % 3
+            i_first, i_second = stress_info.surface_nodes[i_f, a], stress_info.surface_nodes[i_f, b]
+            i_midpoint = stress_info.surface_nodes[i_f, qd.select(i_edge == 0, 3, qd.select(i_edge == 1, 5, 4))]
+            candidate, fraction = func_quadratic_edge_closest(
+                point, stress_info.vertices[i_first], stress_info.vertices[i_midpoint], stress_info.vertices[i_second]
+            )
+            squared = (candidate - point).norm_sqr()
+            if squared < distance:
+                position, distance = candidate, squared
+                bary = qd.Vector.zero(gs.qd_float, 3)
+                bary[a], bary[b] = 1 - fraction, fraction
+    return position, bary
+
+
+@qd.func
 def func_source_distance_bound(i_f: int, point: qd.types.vector(3), surface_info: StressSurfaceInfo):
     """Bound squared distance to a face by its immutable enclosing box."""
     outside = qd.max(surface_info.face_bounds_low[i_f] - point, point - surface_info.face_bounds_high[i_f], 0.0)
@@ -169,6 +213,7 @@ def func_same_surface_feature(
     sheets remain distinct: distance is checked only on their common topology.
     """
     count = 0
+    first_corner, second_corner = -1, -1
     first, second = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
     for a in qd.static(range(3)):
         vertex = stress_info.surface_nodes[first_face, a]
@@ -178,8 +223,10 @@ def func_same_surface_feature(
         if shared:
             if count == 0:
                 first = stress_info.vertices[vertex]
+                first_corner = a
             elif count == 1:
                 second = stress_info.vertices[vertex]
+                second_corner = a
             count += 1
     equivalent = count == 3
     if count == 1:
@@ -187,7 +234,12 @@ def func_same_surface_feature(
     elif count == 2:
         edge = second - first
         coordinate = qd.min(1.0, qd.max(0.0, (position - first).dot(edge) / edge.dot(edge)))
-        equivalent = (position - first - coordinate * edge).norm() <= tolerance
+        closest = first + coordinate * edge
+        if stress_info.volume_points.shape[0] > 0:
+            i_edge = qd.select(first_corner == 0, qd.select(second_corner == 1, 3, 4), 5)
+            i_midpoint = stress_info.surface_nodes[first_face, i_edge]
+            closest, coordinate = func_quadratic_edge_closest(position, first, stress_info.vertices[i_midpoint], second)
+        equivalent = (position - closest).norm() <= tolerance
     return equivalent
 
 
@@ -234,6 +286,7 @@ def func_resolve_sources(
             finite += contact_state.position[i_c, i_b].sum() + contact_state.force[i_c, i_b].sum()
             valid = valid and qd.abs(finite) < qd.math.inf
             nearest_face = source_state.witness_face[i_c, i_b]
+            bound_face = nearest_face
             position = qd.Vector.zero(gs.qd_float, 3)
             bary = qd.Vector.zero(gs.qd_float, 3)
             distance = gs.qd_float(float("inf"))
@@ -245,34 +298,56 @@ def func_resolve_sources(
                         valid = qd.abs(bary.sum() - 1.0) <= 32.0 * source_epsilon
                         for a in qd.static(range(3)):
                             valid = valid and bary[a] >= 0.0 and qd.abs(bary[a]) < qd.math.inf
-                        position = (
-                            surface_info.face_origin[nearest_face] + bary[1:3] @ surface_info.face_edges[nearest_face]
-                        )
-                        distance = (position - witness).norm()
-                else:
-                    for i_f in range(surface_info.face_origin.shape[0]):
-                        # Padding retains every transform-roundoff tie that can
-                        # select the canonical representative of a shared feature
-                        if func_source_distance_bound(i_f, witness, surface_info) <= (distance + tolerance) ** 2:
-                            candidate, candidate_bary = func_closest_triangle(i_f, witness, surface_info)
+            if valid:
+                # One shared query body serves nearest-point and ambiguity
+                # passes, so curved projection is compiled only once.
+                for i_pass in range(2):
+                    for i_candidate in range(qd.select(bound_face >= 0, 1, surface_info.face_origin.shape[0])):
+                        i_f = qd.select(bound_face >= 0, bound_face, i_candidate)
+                        reach = distance + tolerance + qd.select(i_pass == 1, 2 * uncertainty, 0.0)
+                        is_query = i_pass == 0
+                        if i_pass == 1:
+                            is_query = bound_face < 0 and nearest_face >= 0 and distance <= projection_limit
+                        if bound_face < 0:
+                            is_query = (
+                                is_query and func_source_distance_bound(i_f, witness, surface_info) <= reach * reach
+                            )
+                        if is_query:
+                            candidate, candidate_bary = func_material_source_point(
+                                i_f,
+                                witness,
+                                source_state.witness_barycentric[i_c, i_b],
+                                stress_info,
+                                surface_info,
+                                source_epsilon,
+                                bound_face >= 0,
+                            )
                             candidate_distance = (candidate - witness).norm()
-                            if candidate_distance < distance:
-                                # A shared edge/vertex has several equivalent closest faces. Keep the first
-                                # representative within the existing transform-roundoff budget so a one-ulp
-                                # frame change cannot select another port graph and change the finite profile.
-                                is_equivalent = False
-                                if (
-                                    nearest_face >= 0
-                                    and distance - candidate_distance <= tolerance
-                                    and (candidate - position).norm() <= tolerance
-                                ):
-                                    is_equivalent = func_same_surface_feature(
-                                        nearest_face, i_f, position, tolerance, stress_info
+                            separation = (candidate - position).norm()
+                            is_equivalent = False
+                            is_comparable = nearest_face >= 0 and separation <= tolerance
+                            if i_pass == 0:
+                                is_comparable = (
+                                    is_comparable
+                                    and candidate_distance < distance
+                                    and (distance - candidate_distance <= tolerance)
+                                )
+                            if is_comparable:
+                                is_equivalent = func_same_surface_feature(
+                                    nearest_face, i_f, position, tolerance, stress_info
+                                )
+                            if i_pass == 0:
+                                # Equivalent shared features retain their canonical first face.
+                                if candidate_distance < distance and not is_equivalent:
+                                    distance, nearest_face = candidate_distance, i_f
+                                    position, bary = candidate, candidate_bary
+                            elif candidate_distance <= reach:
+                                if separation > tolerance and separation <= 2 * uncertainty + tolerance:
+                                    is_equivalent = func_surface_segment(
+                                        nearest_face, i_f, position, candidate, stress_info, surface_info
                                     )
                                 if not is_equivalent:
-                                    distance = candidate_distance
-                                    nearest_face = i_f
-                                    position, bary = candidate, candidate_bary
+                                    source_state.status[i_c, i_b] = StressSourceStatus.AMBIGUOUS
             if source_state.has_vertex_ambiguity[i_c, i_b]:
                 source_state.status[i_c, i_b] = StressSourceStatus.AMBIGUOUS
             elif not valid:
@@ -280,25 +355,6 @@ def func_resolve_sources(
             elif nearest_face < 0 or distance > projection_limit:
                 source_state.status[i_c, i_b] = StressSourceStatus.UNRESOLVED
             else:
-                if source_state.witness_face[i_c, i_b] < 0:
-                    for i_f in range(surface_info.face_origin.shape[0]):
-                        reach = distance + 2.0 * uncertainty + tolerance
-                        if func_source_distance_bound(i_f, witness, surface_info) <= reach * reach:
-                            candidate, candidate_bary = func_closest_triangle(i_f, witness, surface_info)
-                            if (candidate - witness).norm() <= reach:
-                                separation = (candidate - position).norm()
-                                is_equivalent = False
-                                if separation <= tolerance:
-                                    is_equivalent = func_same_surface_feature(
-                                        nearest_face, i_f, position, tolerance, stress_info
-                                    )
-                                elif separation <= 2.0 * uncertainty + tolerance:
-                                    # A resolved local planar displacement is one surface source, not another branch.
-                                    is_equivalent = func_surface_segment(
-                                        nearest_face, i_f, position, candidate, stress_info, surface_info
-                                    )
-                                if not is_equivalent:
-                                    source_state.status[i_c, i_b] = StressSourceStatus.AMBIGUOUS
                 if source_state.status[i_c, i_b] == StressSourceStatus.SUCCESS:
                     contact_state.center[i_c, i_b] = position
                     contact_state.anchor_face[i_c, i_b] = nearest_face

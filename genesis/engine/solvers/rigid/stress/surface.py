@@ -88,6 +88,26 @@ def func_surface_geometry(i_f: int, bary: qd.types.vector(3), info: StressInfo):
 
 
 @qd.func
+def func_quadratic_edge_closest(
+    point: qd.types.vector(3),
+    first: qd.types.vector(3),
+    midpoint: qd.types.vector(3),
+    second: qd.types.vector(3),
+):
+    """Project onto a regular quadratic edge, retaining its endpoint bounds."""
+    chord = second - first
+    bulge = midpoint - 0.5 * (first + second)
+    fraction = qd.min(1.0, qd.max(0.0, (point - first).dot(chord) / chord.norm_sqr()))
+    position = first
+    for i_iteration in range(17):
+        position = first + fraction * chord + 4 * fraction * (1 - fraction) * bulge
+        tangent = chord + 4 * (1 - 2 * fraction) * bulge
+        if i_iteration < 16 and tangent.norm_sqr() > 0:
+            fraction = qd.min(1.0, qd.max(0.0, fraction - (position - point).dot(tangent) / tangent.norm_sqr()))
+    return position, fraction
+
+
+@qd.func
 def func_surface_projection(
     i_f: int,
     position: qd.types.vector(3),
