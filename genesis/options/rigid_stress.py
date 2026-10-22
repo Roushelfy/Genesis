@@ -216,7 +216,7 @@ class RigidStressOptions(Options):
     preconditioner: Literal["diagonal", "block"] = "block"
 
     @classmethod
-    def hertz(cls, *, mesh: PathType, quadrature: PositiveInt = 6, **options) -> Self:
+    def hertz(cls, *, mesh: PathType, quadrature: PositiveInt = 8, **options) -> Self:
         """Estimate normal Hertz support from current curvature and rigid forces.
 
         This route currently requires a locally planar material source, supported
