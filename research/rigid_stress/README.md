@@ -111,6 +111,17 @@ input motion and probe location. Faster order4 retains a rotated wrench refusal.
 Automatic live inputs, general physical contacts/friction and scene integration
 remain open; these are experimental normal component results.
 
+The [actual native normal route](docs/NATIVE_LIVE_HERTZ_NORMAL_20261022.md)
+now connects current rigid contacts and predicted support to public max/full,
+principal and moving-probe observations in a pinned experimental engine source.
+CPU/GPU independent fields, physical substeps, manual cadence, partial resets,
+snapshot/view semantics and release/reload pass. An inherited checkpoint-clock
+bug is repaired for both Hertz and DPR; original negative controls remain frozen.
+Same-allocation B1024 two-substep max/full normal scene time is 9.02/9.16 ms
+versus 2.30 ms pure rigid, with every audited loaded observation admitted.
+The final helper uses measured order8. General curved/inner material response,
+physical friction history and accepted Franka throughput remain active work.
+
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
 cheap two-region interaction correction. Ellipticity reduces the rotated-case

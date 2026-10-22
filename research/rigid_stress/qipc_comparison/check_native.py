@@ -16,7 +16,7 @@ def main():
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     environment = os.environ.copy()
-    environment["PYTHONPATH"] = str(args.source)
+    environment["PYTHONPATH"] = str(args.source) + os.pathsep + environment.get("PYTHONPATH", "")
     import_command = [sys.executable, "-c", "import genesis; print(genesis.__file__)"]
     imported = subprocess.check_output(import_command, cwd=args.source, env=environment, text=True).strip()
     assert imported.startswith(str(args.source) + "/"), imported
@@ -44,7 +44,12 @@ def main():
         rows.append({"backend": backend, "command": command, "returncode": result.returncode})
         write_json(
             args.output / "result.json",
-            {"kind": "public-preset-and-full-field-contract", "genesis_import": imported, "checks": rows},
+            {
+                "passed": all(row["returncode"] == 0 for row in rows),
+                "kind": "public-preset-and-full-field-contract",
+                "genesis_import": imported,
+                "checks": rows,
+            },
         )
         if result.returncode:
             raise SystemExit(result.returncode)

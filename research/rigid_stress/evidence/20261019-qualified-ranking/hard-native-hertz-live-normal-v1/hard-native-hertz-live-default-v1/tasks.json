@@ -1,0 +1,30 @@
+[
+  [
+    {
+      "name": "check",
+      "module": "research.rigid_stress.qipc_comparison.check_live_hertz_normal",
+      "args": [
+        "--backend",
+        "cpu",
+        "--default-quadrature",
+        "--rotated",
+        "--steps",
+        "8"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "check",
+      "module": "research.rigid_stress.qipc_comparison.check_live_hertz_normal",
+      "args": [
+        "--backend",
+        "gpu",
+        "--default-quadrature",
+        "--rotated",
+        "--steps",
+        "8"
+      ]
+    }
+  ]
+]

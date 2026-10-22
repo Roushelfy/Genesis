@@ -1,0 +1,50 @@
+[
+  [
+    {
+      "name": "hertz",
+      "module": "research.rigid_stress.qipc_comparison.check_native_stress_clock",
+      "args": [
+        "--backend",
+        "cpu",
+        "--route",
+        "hertz",
+        "--expect-last-only"
+      ],
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_local_clock"
+    },
+    {
+      "name": "dpr",
+      "module": "research.rigid_stress.qipc_comparison.check_native_stress_clock",
+      "args": [
+        "--backend",
+        "cpu",
+        "--route",
+        "dpr",
+        "--expect-last-only"
+      ],
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_local_clock"
+    }
+  ],
+  [
+    {
+      "name": "hertz",
+      "module": "research.rigid_stress.qipc_comparison.check_native_stress_clock",
+      "args": [
+        "--backend",
+        "cpu",
+        "--route",
+        "hertz"
+      ]
+    },
+    {
+      "name": "dpr",
+      "module": "research.rigid_stress.qipc_comparison.check_native_stress_clock",
+      "args": [
+        "--backend",
+        "cpu",
+        "--route",
+        "dpr"
+      ]
+    }
+  ]
+]

@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "name": "check",
+      "module": "research.rigid_stress.qipc_comparison.check_live_hertz_normal",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "check",
+      "module": "research.rigid_stress.qipc_comparison.check_live_hertz_normal",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ]
+]
