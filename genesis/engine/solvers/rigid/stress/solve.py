@@ -280,6 +280,7 @@ def kernel_peak(young: float, poisson: float, stress_state: StressState, stress_
         stress_info,
         cached and gs.backend == gs.cuda,
         stress_state.stress_tensor.shape[0] > 0,
+        stress_info.volume_points.shape[0] > 0,
     )
 
 
@@ -291,8 +292,9 @@ def kernel_peak_impl(
     stress_info: StressInfo,
     cached: qd.template(),
     full: qd.template(),
+    is_curved: qd.template() = False,
 ):
-    func_peak_impl(young, poisson, stress_state, stress_info, cached, full)
+    func_peak_impl(young, poisson, stress_state, stress_info, cached, full, is_curved)
 
 
 @qd.func
@@ -303,6 +305,7 @@ def func_peak_impl(
     stress_info: StressInfo,
     cached: qd.template(),
     full: qd.template() = False,
+    is_curved: qd.template() = False,
 ):
     for i_b in range(stress_state.active.shape[0]):
         stress_state.peak[i_b] = 0.0
@@ -315,10 +318,10 @@ def func_peak_impl(
             i_n = stress_info.elements[i_e, i_corner]
             origin_displacement = stress_state.displacement[i_n, i_b]
             gradients = stress_info.gradients[i_e]
-            if qd.static(not cached and stress_info.volume_points.shape[0] > 0):
+            if qd.static(not cached and is_curved):
                 bary = qd.Vector.zero(gs.qd_float, 4)
                 bary[i_corner] = 1.0
-                gradients = func_material_gradients(i_e, bary, stress_info)
+                gradients = func_material_gradients(i_e, bary, stress_info, is_curved)
             i_slot = 4
             # The three quadratic edge tangents preserve translation cancellation before multiplying by geometry.
             for i_edge in range(6):
