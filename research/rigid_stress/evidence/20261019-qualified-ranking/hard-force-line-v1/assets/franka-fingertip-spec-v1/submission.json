@@ -1,0 +1,16 @@
+{
+  "job": "739623",
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=none",
+    "--cpus-per-task=2",
+    "--mem=4G",
+    "--time=3",
+    "--job-name=finger-drawing",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/assets/franka-fingertip-spec-v1/job-%j.log",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/assets/franka-fingertip-spec-v1/job.sh"
+  ]
+}

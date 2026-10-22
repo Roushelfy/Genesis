@@ -11,6 +11,14 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current goal and verified scope
 
+The user selected actual fingertip fillet/chamfer geometry on2026-10-22;
+numeric dimensions remain pending. The latest
+[force-line repair and sharp-edge diagnostic](docs/NATIVE_HOLLOW_EGG_ADMISSION_20261022.md#curved-force-line-projection-and-edge-geometry)
+preserves a curved contact's resultant moment and passes CPU/CUDA controls.
+Original/refined Franka still reject at108/106. Sharp-edge reference pressure
+and positive-depth stress checks remain diagnostic; final edge pressure and
+surface/global peaks require the documented physical geometry.
+
 The latest [curved material walk and friction binding](docs/NATIVE_HOLLOW_EGG_ADMISSION_20261022.md#curved-material-walks-and-friction-binding)
 uses actual quadratic faces and first-edge crossings. CPU/CUDA geometry,
 nonconvex path and moving radial-history controls pass; old-source negative

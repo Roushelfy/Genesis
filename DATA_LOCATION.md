@@ -1,5 +1,17 @@
 # Rigid-stress data and artifact locations
 
+The `hard-force-line-v1` packet retains195 compact payloads/1,133,852bytes
+and477 external receipts. Six terminal scientific campaigns cover the native
+curved force-line repair, its frozen negative control, actual Franka replay,
+field comparison and sharp-edge normal-only diagnostics. The manufacturer
+document, rendered page, visual-mesh sections and isolated PDF renderer use
+`assets/franka-fingertip-spec-v1` under the existing20261019 ranking data root;
+original inspection failures remain retained. Runtime arrays, logs and assets
+remain on data. Engine `hard_contact_force_line` is frozen at`601cde58f`, with26
+frozen heads and12 original unfinished files preserved. Scientific work uses
+Slurm`rtx-mid`, image`1_26`, the existing data-side environment and private node
+caches. Source/docs stay in workspace. No active environment, data or link moved.
+
 The `hard-curved-walk-v1` packet retains378 compact payloads/2,287,422bytes
 and479 external receipts. Twelve terminal campaigns under `hard-curved-walk-*`
 cover quadratic material paths, curved/affine friction binding, nonconvex
