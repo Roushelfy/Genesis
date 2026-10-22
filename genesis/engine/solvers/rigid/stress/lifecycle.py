@@ -7,13 +7,18 @@ from .data import StressState
 
 
 @qd.func
+def func_begin_environment(i_b: int, stress_state: StressState):
+    stress_state.step_peak[i_b] = 0.0
+    stress_state.step_valid[i_b] = True
+    stress_state.corrections[i_b] = 0
+    stress_state.fallbacks[i_b] = 0
+    stress_state.invalid_reported[i_b] = False
+
+
+@qd.func
 def func_begin_step(stress_state: StressState):
     for i_b in range(stress_state.active.shape[0]):
-        stress_state.step_peak[i_b] = 0.0
-        stress_state.step_valid[i_b] = True
-        stress_state.corrections[i_b] = 0
-        stress_state.fallbacks[i_b] = 0
-        stress_state.invalid_reported[i_b] = False
+        func_begin_environment(i_b, stress_state)
 
 
 @qd.func

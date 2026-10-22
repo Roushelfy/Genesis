@@ -37,11 +37,14 @@ class StateChange(enum.Enum):
     Solver-agnostic: it names what kind of state changed, never an index space (links, dofs, particles, ...), which
     differs from one solver to the next. GEOMETRY is the kinematic configuration that places or deforms the world
     surface (link poses, qpos, vertices); DYNAMICS is the velocity state. Model parameters (mass, inertia, friction,
-    gains, limits) are not scene state and are never broadcast.
+    gains, limits) are not scene state and are never broadcast. RESTORED marks
+    a checkpoint write containing physical state, so consumers can retain
+    restored memory while invalidating derived observations.
     """
 
     GEOMETRY = enum.auto()
     DYNAMICS = enum.auto()
+    RESTORED = enum.auto()
 
 
 class MutatedLinks(enum.Enum):
@@ -383,9 +386,12 @@ class Solver(RBC):
                 arrays[name] = read(value, copy=True)
         return SolverCheckpoint(arrays=arrays, configs=configs, kinds=array_class.CHECKPOINT_KINDS)
 
+    @mutates()
     def __setstate__(self, state: SolverCheckpoint) -> None:
         """Write back the arrays of the kinds a record holds, rejecting a record read from another build."""
         array_class.fill_data((item for item in self.data if item.kind in state.kinds), state.arrays)
+        if array_class.DataKind.STATE in state.kinds and self._is_mutating:
+            self._mutation_changes.add(StateChange.RESTORED)
 
     # ------------------------------------------------------------------------------------
     # ----------------------------------- properties -------------------------------------

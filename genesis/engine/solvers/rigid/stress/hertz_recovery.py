@@ -11,6 +11,7 @@ from genesis.utils.array_class import DataKind, ErrorCode, V, V_MAT, V_VEC, mayb
 from .data import StressInfo, StressState
 from .hertz import StressHertzState, func_boussinesq_tensor, func_hertz_particular, kernel_hertz_stress_quadrature
 from .hertz_probes import StressHertzProbeState, func_hertz_probe_location, kernel_hertz_probe_offsets
+from .hertz_tangential import StressHertzShear, func_cerruti_tensor, func_hertz_friction_particular
 from .model import StressModel
 from .operators import func_shape_gradient
 from .provenance import func_closest_triangle
@@ -68,6 +69,7 @@ class StressHertzRecovery:
         far_field: bool = True,
         moving_probes: bool = False,
         probe_walk_steps: int = 64,
+        shear: StressHertzShear | None = None,
     ):
         assert n_envs > 0 and n_regions > 0 and n_queries >= 0 and output_mode in ("max", "full")
         assert probe_walk_steps > 0
@@ -75,6 +77,14 @@ class StressHertzRecovery:
         self.full = output_mode == "full"
         self.far_field = far_field
         self.has_queries = n_queries > 0
+        self.has_shear = shear is not None
+        self.shear = shear
+        if self.shear is None:
+            self.shear = StressHertzShear(
+                friction=V(dtype=gs.qd_float, shape=(0,)),
+                force=V_VEC(2, dtype=gs.qd_float, shape=(0,)),
+                coefficients=V_VEC(2, dtype=gs.qd_float, shape=(0, 0)),
+            )
         self.moving_probes, self.probe_walk_steps = moving_probes, probe_walk_steps
         n_probes = 89 if moving_probes else 0
         self.probe_offsets = V_VEC(3, dtype=gs.qd_float, shape=(n_probes,))
@@ -121,8 +131,10 @@ class StressHertzRecovery:
         assert state.active.shape[0] == self.state.status.shape[0]
         kernel_hertz_residual_begin(epsilon, self.frames, hertz, state, self.state, surface)
         kernel_hertz_halfspace(epsilon, self.frames, hertz, self.state, info)
-        kernel_hertz_residual_traction(poisson, epsilon, self.frames, hertz, state, self.state, info, surface)
-        kernel_hertz_residual_accept(self.frames, hertz, state, self.state, info, errno)
+        kernel_hertz_residual_traction(
+            poisson, epsilon, self.frames, hertz, self.shear, state, self.state, info, surface, self.has_shear
+        )
+        kernel_hertz_residual_accept(self.frames, hertz, self.shear, state, self.state, info, self.has_shear, errno)
 
     def recover(
         self,
@@ -154,6 +166,7 @@ class StressHertzRecovery:
             self.probe_offsets,
             self.frames,
             hertz,
+            self.shear,
             state,
             self.state,
             self.probes,
@@ -163,6 +176,7 @@ class StressHertzRecovery:
             self.far_field,
             self.has_queries,
             self.moving_probes,
+            self.has_shear,
         )
         kernel_hertz_combined_accept(state, self.state, self.probes, self.full, errno)
 
@@ -252,15 +266,22 @@ def kernel_hertz_residual_traction(
     epsilon: float,
     frames: StressHertzFrames,
     hertz: StressHertzState,
+    shear: StressHertzShear,
     stress_state: StressState,
     state: StressHertzRecoveryState,
     info: StressInfo,
     surface: StressSurfaceInfo,
+    has_shear: qd.template(),
 ):
     for i_f, i_p in qd.ndrange(info.surface_nodes.shape[0], frames.center.shape[0]):
         i_b = i_p % state.status.shape[0]
         if state.status[i_b] == 0 and hertz.status[i_p] == 0:
             basis, center = frames.basis[i_p], frames.center[i_p]
+            if qd.static(has_shear):
+                direction = hertz.direction[i_p]
+                basis = basis @ qd.Matrix(
+                    [[direction[0], -direction[1], 0.0], [direction[1], direction[0], 0.0], [0.0, 0.0, 1.0]]
+                )
             normal = surface.face_normal[i_f]
             coplanar = True
             for i in qd.static(range(3)):
@@ -278,6 +299,9 @@ def kernel_hertz_residual_traction(
                         local = basis.transpose() @ (surface.positions[i_sample] - center)
                         local[2] = qd.max(local[2], 0.0)
                         tensor = func_boussinesq_tensor(local, hertz.force[i_p], poisson)
+                        if qd.static(has_shear):
+                            if shear.force[i_p].norm() > 0:
+                                tensor += func_cerruti_tensor(local, shear.force[i_p], poisson)
                         traction = -(basis @ tensor @ basis.transpose() @ normal) * surface.weights[i_sample]
                         loads += surface.shape[i_q].outer_product(traction)
                 for i, j in qd.static(qd.ndrange(6, 3)):
@@ -289,9 +313,11 @@ def kernel_hertz_residual_traction(
 def kernel_hertz_residual_accept(
     frames: StressHertzFrames,
     hertz: StressHertzState,
+    shear: StressHertzShear,
     stress_state: StressState,
     state: StressHertzRecoveryState,
     info: StressInfo,
+    has_shear: qd.template(),
     errno: qd.Tensor,
 ):
     for i_b in range(state.status.shape[0]):
@@ -301,6 +327,12 @@ def kernel_hertz_residual_accept(
             i_p = i_r * state.status.shape[0] + i_b
             if hertz.status[i_p] == 0:
                 force = hertz.force[i_p] * frames.basis[i_p][:, 2]
+                if qd.static(has_shear):
+                    direction = hertz.direction[i_p]
+                    rotation = qd.Matrix(
+                        [[direction[0], -direction[1], 0.0], [direction[1], direction[0], 0.0], [0.0, 0.0, 1.0]]
+                    )
+                    force += frames.basis[i_p] @ rotation @ qd.Vector([shear.force[i_p][0], shear.force[i_p][1], 0.0])
                 expected_force += force
                 expected_moment += frames.center[i_p].cross(force)
                 load_scale += hertz.force[i_p]
@@ -333,6 +365,7 @@ def kernel_hertz_combined_field(
     probe_offsets: qd.Tensor,
     frames: StressHertzFrames,
     hertz: StressHertzState,
+    shear: StressHertzShear,
     stress_state: StressState,
     state: StressHertzRecoveryState,
     probes: StressHertzProbeState,
@@ -342,6 +375,7 @@ def kernel_hertz_combined_field(
     far_field: qd.template(),
     has_queries: qd.template(),
     moving_probes: qd.template(),
+    has_shear: qd.template(),
 ):
     for i_b in range(state.status.shape[0]):
         stress_state.peak[i_b], state.tensile_peak[i_b] = 0.0, -float("inf")
@@ -405,9 +439,23 @@ def kernel_hertz_combined_field(
                                 # The probe is defined in this source frame. Retain exact
                                 # surface depth instead of round-tripping world coordinates.
                                 local = probe_offsets[i_probe] * qd.Vector([axes[0], axes[1], axes[0]])
-                        particular, resolved = func_hertz_particular(
-                            local, axes, hertz.peak_pressure[i_p], hertz.force[i_p], poisson, quadrature, far_field
-                        )
+                        particular, resolved = qd.Matrix.zero(gs.qd_float, 3, 3), True
+                        if qd.static(has_shear):
+                            particular, resolved = func_hertz_friction_particular(
+                                i_p,
+                                local,
+                                axes,
+                                hertz.peak_pressure[i_p],
+                                hertz.force[i_p],
+                                poisson,
+                                quadrature,
+                                shear,
+                                far_field,
+                            )
+                        else:
+                            particular, resolved = func_hertz_particular(
+                                local, axes, hertz.peak_pressure[i_p], hertz.force[i_p], poisson, quadrature, far_field
+                            )
                         tensor += basis @ particular @ basis.transpose()
                         valid = valid and resolved
                 valid = valid and tensor.norm() < float("inf")

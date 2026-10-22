@@ -9,9 +9,7 @@ point count, penetration or solver stiffness.
 from dataclasses import dataclass
 from math import pi
 from typing import ClassVar
-
 import quadrants as qd
-
 import genesis as gs
 from genesis.utils.array_class import DataKind, V, V_MAT, V_VEC
 
@@ -19,7 +17,6 @@ from genesis.utils.array_class import DataKind, V, V_MAT, V_VEC
 @dataclass(frozen=True)
 class StressHertzInfo:
     kind: ClassVar[DataKind] = DataKind.CONSTANT
-
     log_ratio: qd.Tensor
     integrals: qd.Tensor
 
@@ -27,7 +24,6 @@ class StressHertzInfo:
 @dataclass(frozen=True)
 class StressHertzState:
     kind: ClassVar[DataKind] = DataKind.SCRATCH
-
     force: qd.Tensor
     modulus: qd.Tensor
     curvature: qd.Tensor
@@ -49,8 +45,7 @@ class StressHertz:
     def __init__(self, count: int):
         assert count > 0
         self.info = StressHertzInfo(
-            log_ratio=V(dtype=gs.qd_float, shape=(257,)),
-            integrals=V_VEC(2, dtype=gs.qd_float, shape=(257,)),
+            log_ratio=V(dtype=gs.qd_float, shape=(257,)), integrals=V_VEC(2, dtype=gs.qd_float, shape=(257,))
         )
         self.state = StressHertzState(
             force=V(dtype=gs.qd_float, shape=(count,)),
@@ -71,13 +66,11 @@ class StressHertz:
 @qd.kernel
 def kernel_hertz_table(hertz_info: StressHertzInfo):
     for i in range(hertz_info.log_ratio.shape[0]):
-        # s = tan(theta)^2 removes the endpoint singularities of the Hertz
-        # potential integrals. q=b/a is sampled logarithmically down to 0.05.
         q = qd.exp(qd.log(0.05) * (1 - i / 256.0))
-        j_x, j_y, j_0 = 0.0, 0.0, 0.0
+        (j_x, j_y, j_0) = (0.0, 0.0, 0.0)
         for k in range(256):
             theta = (k + 0.5) * pi / 512
-            c, s = qd.cos(theta), qd.sin(theta)
+            (c, s) = (qd.cos(theta), qd.sin(theta))
             d = qd.sqrt(q * q * c * c + s * s)
             j_x += c * c / d * pi / 256
             j_y += c * c / (d * d * d) * pi / 256
@@ -89,9 +82,9 @@ def kernel_hertz_table(hertz_info: StressHertzInfo):
 @qd.kernel
 def kernel_hertz(hertz_state: StressHertzState, hertz_info: StressHertzInfo):
     for i in range(hertz_state.force.shape[0]):
-        load, modulus = hertz_state.force[i], hertz_state.modulus[i]
+        (load, modulus) = (hertz_state.force[i], hertz_state.modulus[i])
         curvature = hertz_state.curvature[i]
-        finite = load >= 0 and load < float("inf") and modulus > 0 and modulus < float("inf")
+        finite = load >= 0 and load < float("inf") and (modulus > 0) and (modulus < float("inf"))
         for a, b in qd.static(qd.ndrange(2, 2)):
             finite = finite and qd.abs(curvature[a, b]) < float("inf")
         hertz_state.axes[i] = qd.Vector.zero(gs.qd_float, 2)
@@ -104,13 +97,13 @@ def kernel_hertz(hertz_state: StressHertzState, hertz_info: StressHertzInfo):
                 off = 0.5 * (curvature[0, 1] + curvature[1, 0])
                 mean = 0.5 * (curvature[0, 0] + curvature[1, 1])
                 span = qd.sqrt((0.5 * (curvature[0, 0] - curvature[1, 1])) ** 2 + off * off)
-                first, second = mean - span, mean + span
+                (first, second) = (mean - span, mean + span)
                 hertz_state.status[i] = 3
                 symmetric = qd.abs(curvature[0, 1] - curvature[1, 0]) <= 1e-12 * qd.max(second, 1.0)
                 if first > 0 and symmetric:
                     ratio = qd.log(first / second)
                     if ratio >= hertz_info.log_ratio[0]:
-                        low, high = 0, hertz_info.log_ratio.shape[0] - 1
+                        (low, high) = (0, hertz_info.log_ratio.shape[0] - 1)
                         for _ in range(8):
                             middle = (low + high) // 2
                             if hertz_info.log_ratio[middle] <= ratio:
@@ -152,10 +145,10 @@ def kernel_hertz_stress_quadrature(quadrature: qd.types.ndarray()):
         root = qd.cos(pi * (i + 0.75) / (count + 0.5))
         derivative = gs.qd_float(0.0)
         for _ in range(8):
-            previous, current = gs.qd_float(1.0), root
+            (previous, current) = (gs.qd_float(1.0), root)
             for j in range(2, count + 1):
                 following = ((2 * j - 1) * root * current - (j - 1) * previous) / j
-                previous, current = current, following
+                (previous, current) = (current, following)
             derivative = count * (root * current - previous) / (root * root - 1)
             root -= current / derivative
         weight = pi / (2 * (1 - root * root) * derivative * derivative)
@@ -167,14 +160,13 @@ def kernel_hertz_stress_quadrature(quadrature: qd.types.ndarray()):
 @qd.func
 def func_hertz_integrals(argument: qd.types.vector(3)):
     """Evaluate all three differentiated Newton integrals by shared duplication."""
-    value, accumulated, factor = argument, qd.Vector.zero(gs.qd_float, 3), gs.qd_float(1.0)
+    (value, accumulated, factor) = (argument, qd.Vector.zero(gs.qd_float, 3), gs.qd_float(1.0))
     for _ in range(12):
         root = qd.sqrt(value)
         addition = root[0] * root[1] + root[1] * root[2] + root[2] * root[0]
         accumulated += factor / (root * (value + addition))
         value = (value + addition) / 4
         factor /= 4
-    # Weighted means cancel the first-order remainder of Carlson RD.
     mean = (value.sum() + 2 * value) / 5
     return 2 * accumulated + 2 * factor / (3 * mean * qd.sqrt(mean))
 
@@ -190,11 +182,9 @@ def func_hertz_coordinate(point: qd.types.vector(3), ratio: float):
         coordinate = -2 * constant / (coefficient + qd.sqrt(coefficient * coefficient - 4 * constant))
     is_resolved = True
     if point[2] > 0:
-        low, high = qd.max(coordinate, squared[2]), squared.sum()
+        (low, high) = (qd.max(coordinate, squared[2]), squared.sum())
         surface_slack = 1 - squared[0] - squared[1] / bb
         if surface_slack > 0:
-            # The in-plane terms decrease with the confocal coordinate, so
-            # z²/slack bounds the root above, including near-surface probes.
             high = qd.min(high, squared[2] / surface_slack)
         coordinate = qd.max(low, high / 2)
         is_iterating = True
@@ -215,17 +205,24 @@ def func_hertz_coordinate(point: qd.types.vector(3), ratio: float):
                     if proposal > low and proposal < high:
                         coordinate = proposal
         argument = qd.Vector([1 + coordinate, bb + coordinate, coordinate])
-        is_resolved = qd.abs((squared / argument).sum() - 1) < 1e-9
-    return coordinate, is_resolved
+        is_resolved = qd.abs((squared / argument).sum() - 1) < 1e-09
+    return (coordinate, is_resolved)
 
 
 @qd.func
-def func_hertz_tensor(point: qd.types.vector(3), ratio: float, poisson: float, quadrature: qd.Tensor):
+def func_hertz_normal_from_coordinate(
+    point: qd.types.vector(3),
+    ratio: float,
+    poisson: float,
+    coordinate: float,
+    common_integrals: qd.types.vector(3),
+    quadrature: qd.Tensor,
+):
+    """Evaluate the tensor using a shared confocal coordinate and interior integrals."""
     bb = ratio * ratio
     squared = point * point
     coefficient = 1 + bb - squared[0] - squared[1]
     constant = bb - bb * squared[0] - squared[1]
-    coordinate, is_resolved = func_hertz_coordinate(point, ratio)
     q0 = qd.max(constant, 0)
     if coordinate > 0:
         q0 = (1 + coordinate) * (bb + coordinate) * squared[2] / coordinate
@@ -233,8 +230,8 @@ def func_hertz_tensor(point: qd.types.vector(3), ratio: float, poisson: float, q
     moment = qd.Matrix.zero(gs.qd_float, 2, 2)
     for i in range(quadrature.shape[0]):
         rule = quadrature[i]
-        increment, weight = (bb + coordinate) * rule[0], (bb + coordinate) * rule[1]
-        ax, by = 1 + coordinate + increment, bb + coordinate + increment
+        (increment, weight) = ((bb + coordinate) * rule[0], (bb + coordinate) * rule[1])
+        (ax, by) = (1 + coordinate + increment, bb + coordinate + increment)
         root = qd.sqrt(q0 + increment * (2 * coordinate + coefficient + increment))
         ell += weight * root / (ax * by) * qd.Vector([1 / ax, 1 / by])
         moment[0, 0] += weight / (ax * ax * root)
@@ -254,20 +251,31 @@ def func_hertz_tensor(point: qd.types.vector(3), ratio: float, poisson: float, q
         tensor[2, 2] = -pressure
     else:
         argument = qd.Vector([1 + coordinate, bb + coordinate, coordinate])
-        integrals = func_hertz_integrals(argument)
+        integrals = common_integrals
         denominator = qd.sqrt(argument[0] * argument[1] * argument[2]) * (squared / (argument * argument)).sum()
         for i, j in qd.static(qd.ndrange(3, 3)):
             tensor[i, j] -= ratio * point[2] * point[i] * point[j] / (argument[i] * argument[j] * denominator)
         for i in qd.static(range(2)):
             tensor[i, i] += ratio * point[2] * ((1 - poisson) * integrals[i] - poisson * integrals[2])
-    return tensor, is_resolved
+    return tensor
+
+
+@qd.func
+def func_hertz_tensor(point: qd.types.vector(3), ratio: float, poisson: float, quadrature: qd.Tensor):
+    """Evaluate the pressure-normalized normal Hertz tensor."""
+    (coordinate, is_resolved) = func_hertz_coordinate(point, ratio)
+    common_integrals = qd.Vector.zero(gs.qd_float, 3)
+    if point[2] > 0:
+        common_integrals = func_hertz_integrals(qd.Vector([1 + coordinate, ratio * ratio + coordinate, coordinate]))
+    tensor = func_hertz_normal_from_coordinate(point, ratio, poisson, coordinate, common_integrals, quadrature)
+    return (tensor, is_resolved)
 
 
 @qd.func
 def func_boussinesq_tensor(point: qd.types.vector(3), force: float, poisson: float):
-    radius, depth = point.norm(), point[2]
+    (radius, depth) = (point.norm(), point[2])
     factor = force / (2 * pi)
-    tensor = (-3 * factor * depth / radius**5) * point.outer_product(point)
+    tensor = -3 * factor * depth / radius**5 * point.outer_product(point)
     for i, j in qd.static(qd.ndrange(2, 2)):
         tensor[i, j] += (
             factor
@@ -293,7 +301,7 @@ def func_hertz_particular(
     far_field: qd.template(),
 ):
     """Use four pressure-moment sources beyond eight major radii."""
-    tensor, resolved = qd.Matrix.zero(gs.qd_float, 3, 3), True
+    (tensor, resolved) = (qd.Matrix.zero(gs.qd_float, 3, 3), True)
     is_far = False
     if qd.static(far_field):
         is_far = point.norm() >= 8 * axes[0]
@@ -302,6 +310,6 @@ def func_hertz_particular(
             source = qd.Vector([(2 * (i // 2) - 1) * axes[0], (2 * (i % 2) - 1) * axes[1], 0.0]) / qd.sqrt(5.0)
             tensor += func_boussinesq_tensor(point - source, force / 4, poisson)
     else:
-        value, resolved = func_hertz_tensor(point / axes[0], axes[1] / axes[0], poisson, quadrature)
+        (value, resolved) = func_hertz_tensor(point / axes[0], axes[1] / axes[0], poisson, quadrature)
         tensor = value * peak
-    return tensor, resolved
+    return (tensor, resolved)

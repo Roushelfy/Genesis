@@ -1,4 +1,4 @@
-"""Connect current rigid contact regions to native normal Hertz recovery."""
+"""Connect current rigid contact regions to native Hertz recovery and radial friction memory."""
 
 from dataclasses import dataclass
 from typing import ClassVar, NamedTuple, TYPE_CHECKING
@@ -9,12 +9,16 @@ import torch
 import genesis as gs
 from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils import array_class, geom
-from genesis.utils.array_class import DataKind, DataItem, V, iter_data
+from genesis.utils.array_class import DataKind, DataItem, V, V_MAT, V_VEC, iter_data, of_kind
 
 from .contact import StressContactState
 from .curvature import StressCurvature
 from .data import StressInfo, StressState
 from .hertz import StressHertz, StressHertzState
+from .hertz_binding import StressFrictionBindingState, kernel_friction_bind, kernel_friction_commit
+from .hertz_friction import StressFrictionHistory, StressFrictionInput, StressFrictionState, func_friction_reset
+from .hertz_tangential import StressHertzShear
+from .lifecycle import func_begin_environment
 from .hertz_recovery import StressHertzFrames, StressHertzRecovery
 from .hertz_recovery import StressHertzRecoveryState
 from .hertz_probes import StressHertzProbeState
@@ -39,6 +43,9 @@ class StressHertzContactState:
     force_error: qd.Tensor
     moment_error: qd.Tensor
     step_principal: qd.Tensor
+    observed_step: qd.Tensor
+    sampled_active: qd.Tensor
+    input_is_valid: qd.Tensor = of_kind(DataKind.SCRATCH)
 
 
 class StressHertzProbeField(NamedTuple):
@@ -49,11 +56,11 @@ class StressHertzProbeField(NamedTuple):
 
 
 class HertzContacts:
-    """Normal-only locally planar estimate, with explicit unsupported loads.
+    """Locally planar Hertz stress with continuous radial vector friction memory.
 
-    Region construction retains the original contact wrenches and provenance.
-    A centered normal Hertz ellipse must represent both before it is admitted.
-    No tangential load, free couple or unresolved source is silently omitted.
+    Collision provenance and a material surface walk bind physical histories.
+    Ambiguous correspondence, free couples and unresolved loads invalidate the
+    observation. The radial law is an approximation for changing footprints.
     """
 
     def __init__(self, link: "RigidLink", contacts: StressContactState, info: StressInfo, options: RigidStressOptions):
@@ -63,12 +70,32 @@ class HertzContacts:
         self.vertices = StressSourceVertices(link, info, options.source_geometry_tolerance)
         self.regions = StressHertzRegions(contacts)
         self.law = StressHertz(n_regions * n_envs)
-        self.recovery = StressHertzRecovery(n_envs, n_regions, output_mode=options.output_mode, moving_probes=True)
+        self.friction = StressFrictionHistory(n_regions * n_envs)
+        self.shear = StressHertzShear(
+            friction=V(dtype=gs.qd_float, shape=(n_regions * n_envs,)),
+            force=V_VEC(2, dtype=gs.qd_float, shape=(n_regions * n_envs,)),
+            coefficients=self.friction.state.coefficients,
+        )
+        self.binding = StressFrictionBindingState(
+            geom=V(dtype=gs.qd_int, shape=(n_regions * n_envs,)),
+            pair=V(dtype=gs.qd_int, shape=(n_regions * n_envs,)),
+            center=V_VEC(3, dtype=gs.qd_float, shape=(n_regions * n_envs,)),
+            basis=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_regions * n_envs,)),
+            anchor=V(dtype=gs.qd_int, shape=(n_regions * n_envs,)),
+            radius=V(dtype=gs.qd_float, shape=(n_regions * n_envs,)),
+            is_lost=V(dtype=gs.qd_bool, shape=(n_envs,)),
+        )
+        self.recovery = StressHertzRecovery(
+            n_envs, n_regions, output_mode=options.output_mode, moving_probes=True, shear=self.shear
+        )
         self.state = StressHertzContactState(
             status=V(dtype=gs.qd_int, shape=(n_envs,)),
             force_error=V(dtype=gs.qd_float, shape=(n_regions, n_envs)),
             moment_error=V(dtype=gs.qd_float, shape=(n_regions, n_envs)),
             step_principal=V(dtype=gs.qd_float, shape=(n_envs,)),
+            observed_step=V(dtype=gs.qd_int, shape=(n_envs,)),
+            sampled_active=V(dtype=gs.qd_bool, shape=(n_regions, n_envs)),
+            input_is_valid=V(dtype=gs.qd_bool, shape=(n_envs,)),
         )
         self.state.status.fill(0)
         self.state.step_principal.fill(float("nan"))
@@ -87,6 +114,7 @@ class HertzContacts:
         options: RigidStressOptions,
         history: StressHistory | None,
         epsilon: float,
+        is_observed: bool,
     ) -> None:
         self.regions.update(
             link.idx,
@@ -119,14 +147,46 @@ class HertzContacts:
         )
         self.law.update()
         kernel_hertz_contact_accept(
-            contacts, self.regions.state, self.law.state, self.recovery.frames, self.state, stress, solver._errno
+            contacts, self.regions.state, self.law.state, self.recovery.frames, self.state, solver._errno
         )
+        kernel_friction_bind(
+            contacts,
+            self.sources,
+            self.regions.state,
+            self.law.state,
+            self.recovery.frames,
+            self.binding,
+            self.friction.input,
+            self.shear,
+            self.state.status,
+            self.state.input_is_valid,
+            model.info,
+            surface,
+            epsilon,
+        )
+        self.friction.update()
+        kernel_friction_commit(
+            contacts,
+            self.sources,
+            self.regions.state,
+            self.law.state,
+            self.recovery.frames,
+            self.binding,
+            self.friction.input,
+            self.friction.state,
+            self.state.status,
+            self.state.input_is_valid,
+            solver._errno,
+        )
+        if not is_observed:
+            return
+        kernel_hertz_contact_begin(solver.sim.cur_step_global, self.state, stress)
         self.recovery.scatter(self.law.state, stress, model.info, surface, options.poisson, epsilon, solver._errno)
         model.recover(omega, stress, options, history, surface_load=True, compute_peak=False)
         self.recovery.evaluate(self.law.state, stress, model, epsilon, solver._errno)
-        kernel_hertz_contact_peak(self.recovery.state.tensile_peak, stress, self.state)
+        kernel_hertz_contact_peak(self.recovery.state.tensile_peak, self.law.state, stress, self.state)
 
-    def reset(self, envs_idx: torch.Tensor, contacts: StressContactState) -> None:
+    def reset(self, envs_idx: torch.Tensor, contacts: StressContactState, is_restore: bool = False) -> None:
         kernel_hertz_contact_reset(
             envs_idx,
             contacts,
@@ -137,7 +197,12 @@ class HertzContacts:
             self.state,
             self.recovery.state,
             self.recovery.probes,
+            self.binding,
+            self.friction.input,
+            self.friction.state,
+            self.shear,
             self.recovery.full,
+            is_restore,
         )
 
     def data(self, prefix: str):
@@ -148,6 +213,9 @@ class HertzContacts:
         yield from iter_data(self.law.info, prefix + ".law.info")
         yield from iter_data(self.law.state, prefix + ".law.state")
         yield from iter_data(self.state, prefix + ".state")
+        yield from iter_data(self.binding, prefix + ".binding")
+        yield from self.friction.data(prefix + ".friction")
+        yield from iter_data(self.shear, prefix + ".shear")
         yield from iter_data(self.recovery.frames, prefix + ".frames")
         yield from iter_data(self.recovery.probes, prefix + ".probes")
         yield from iter_data(self.recovery.state, prefix + ".recovery")
@@ -202,20 +270,28 @@ def kernel_hertz_contact_inputs(
             force = regions.force[i_c, i_b]
             compression = -force.dot(regions.normal[i_c, i_b])
             residual = force + compression * regions.normal[i_c, i_b]
-            state.force_error[i_c, i_b] = residual.norm()
+            state.force_error[i_c, i_b] = (force - (compression * (-regions.normal[i_c, i_b]) + residual)).norm()
             curvature = regions.curvature[i_c, i_b]
             law.curvature[i_p] = qd.Matrix([[curvature[0, 0], -curvature[0, 1]], [-curvature[1, 0], curvature[1, 1]]])
             if sources.status[i_c, i_b] == StressSourceStatus.SUCCESS:
+                material_force = geom.qd_inv_transform_by_quat(force, rotation)
+                material_moment = geom.qd_inv_transform_by_quat(regions.moment[i_c, i_b], rotation)
+                normal = -outward
+                offset = qd.Vector.zero(gs.qd_float, 3)
+                if compression > 0:
+                    offset = material_force.cross(material_moment) / material_force.norm_sqr()
+                    height = (contacts.center[i_c, i_b] - center).dot(normal)
+                    offset += material_force * (height - offset.dot(normal)) / compression
                 anchor, bary, projected = func_projected_surface_walk(
                     contacts.anchor_face[i_c, i_b],
                     contacts.center[i_c, i_b],
-                    center - contacts.center[i_c, i_b],
+                    center + offset - contacts.center[i_c, i_b],
                     outward,
                     info,
                     surface,
                     epsilon,
                 )
-                if anchor >= 0 and (projected - center).norm() <= projection_limit:
+                if anchor >= 0 and (projected - center - offset).norm() <= projection_limit:
                     frames.anchor[i_p], frames.center[i_p] = anchor, projected
             if compression > 0:
                 law.force[i_p] = compression
@@ -228,7 +304,6 @@ def kernel_hertz_contact_accept(
     law: StressHertzState,
     frames: StressHertzFrames,
     state: StressHertzContactState,
-    stress: StressState,
     errno: qd.Tensor,
 ):
     for i_c, i_b in qd.ndrange(regions.status.shape[0], regions.status.shape[1]):
@@ -252,23 +327,37 @@ def kernel_hertz_contact_accept(
                 qd.atomic_or(state.status[i_b], 4)
     for i_b in range(state.status.shape[0]):
         if state.status[i_b] != 0:
-            stress.step_valid[i_b] = False
+            state.input_is_valid[i_b] = False
             qd.atomic_or(errno[i_b], array_class.ErrorCode.INVALID_STRESS_LOAD)
 
 
 @qd.kernel
-def kernel_hertz_contact_begin(state: StressHertzContactState):
+def kernel_hertz_contact_input_begin(state: StressHertzContactState):
     for i_b in range(state.status.shape[0]):
-        state.step_principal[i_b] = -float("inf")
+        state.input_is_valid[i_b] = True
 
 
 @qd.kernel
-def kernel_hertz_contact_peak(tensile: qd.Tensor, stress: StressState, state: StressHertzContactState):
+def kernel_hertz_contact_begin(i_step: int, state: StressHertzContactState, stress: StressState):
+    for i_b in range(state.status.shape[0]):
+        if state.observed_step[i_b] != i_step:
+            func_begin_environment(i_b, stress)
+            state.step_principal[i_b], state.observed_step[i_b] = -float("inf"), i_step
+        stress.step_valid[i_b] = stress.step_valid[i_b] and state.input_is_valid[i_b]
+
+
+@qd.kernel
+def kernel_hertz_contact_peak(
+    tensile: qd.Tensor, law: StressHertzState, stress: StressState, state: StressHertzContactState
+):
     for i_b in range(state.status.shape[0]):
         if stress.step_valid[i_b]:
             state.step_principal[i_b] = qd.max(state.step_principal[i_b], tensile[i_b])
         else:
             state.step_principal[i_b] = float("nan")
+    for i_c, i_b in qd.ndrange(state.sampled_active.shape[0], state.sampled_active.shape[1]):
+        i_p = i_c * state.sampled_active.shape[1] + i_b
+        state.sampled_active[i_c, i_b] = law.force[i_p] > 0 and stress.step_valid[i_b]
 
 
 @qd.kernel
@@ -282,13 +371,20 @@ def kernel_hertz_contact_reset(
     state: StressHertzContactState,
     recovery: StressHertzRecoveryState,
     probes: StressHertzProbeState,
+    binding: StressFrictionBindingState,
+    friction_input: StressFrictionInput,
+    friction_state: StressFrictionState,
+    shear: StressHertzShear,
     full: qd.template(),
+    is_restore: bool,
 ):
     for i_selected in range(envs_idx.shape[0]):
         i_b = envs_idx[i_selected]
         state.status[i_b], state.step_principal[i_b] = 0, float("nan")
         recovery.status[i_b], recovery.wrench_error[i_b], recovery.tensile_peak[i_b] = 1, 0.0, float("nan")
-        regions.is_valid[i_b] = True
+        regions.is_valid[i_b], state.input_is_valid[i_b], state.observed_step[i_b] = True, True, -1
+        if not is_restore:
+            binding.is_lost[i_b] = False
     for i_c, i_selected in qd.ndrange(regions.status.shape[0], envs_idx.shape[0]):
         i_b = envs_idx[i_selected]
         i_p = i_c * regions.status.shape[1] + i_b
@@ -307,6 +403,13 @@ def kernel_hertz_contact_reset(
         frames.anchor[i_p], frames.center[i_p] = -1, qd.Vector([float("nan")] * 3)
         frames.basis[i_p] = qd.Matrix.identity(gs.qd_float, 3)
         state.force_error[i_c, i_b], state.moment_error[i_c, i_b] = 0.0, 0.0
+        state.sampled_active[i_c, i_b] = False
+        shear.friction[i_p], shear.force[i_p] = 0.0, qd.Vector.zero(gs.qd_float, 2)
+        if not is_restore:
+            func_friction_reset(i_p, friction_input, friction_state)
+            binding.geom[i_p], binding.pair[i_p], binding.anchor[i_p], binding.radius[i_p] = -1, -1, -1, 0.0
+            binding.center[i_p] = qd.Vector.zero(gs.qd_float, 3)
+            binding.basis[i_p] = qd.Matrix.identity(gs.qd_float, 3)
     for i_q, i_c, i_selected in qd.ndrange(probes.position.shape[0], regions.status.shape[0], envs_idx.shape[0]):
         i_b = envs_idx[i_selected]
         i_p = i_c * regions.status.shape[1] + i_b
