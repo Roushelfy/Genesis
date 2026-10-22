@@ -294,16 +294,61 @@ def kernel_hertz_residual_traction(
                     qd.atomic_max(state.status[i_b], 3)
                 loads = qd.Matrix.zero(gs.qd_float, 6, 3)
                 if clear:
-                    for i_q in range(surface.shape.shape[0]):
+                    diameter = qd.max(
+                        surface.face_edges[i_f][0, :].norm(),
+                        surface.face_edges[i_f][1, :].norm(),
+                        (surface.face_edges[i_f][1, :] - surface.face_edges[i_f][0, :]).norm(),
+                    )
+                    distance = (closest - center).norm()
+                    is_near = distance < diameter / 4
+                    n_rules = 12 if is_near else 1
+                    for i_sample_local in range(n_rules * surface.shape.shape[0]):
+                        i_q = i_sample_local % surface.shape.shape[0]
                         i_sample = i_f * surface.shape.shape[0] + i_q
-                        local = basis.transpose() @ (surface.positions[i_sample] - center)
+                        position, weight = surface.positions[i_sample], surface.weights[i_sample]
+                        shape = surface.shape[i_q]
+                        if is_near:
+                            i_rule = i_sample_local // surface.shape.shape[0]
+                            i_edge = i_rule // 4
+                            first_bary, second_bary = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
+                            first_bary[i_edge], second_bary[(i_edge + 1) % 3] = 1.0, 1.0
+                            first = info.vertices[info.surface_nodes[i_f, i_edge]] - closest
+                            second = info.vertices[info.surface_nodes[i_f, (i_edge + 1) % 3]] - closest
+                            n_gauss = surface.gauss.shape[0]
+                            u = (surface.gauss[i_q // n_gauss] + (i_rule % 4) // 2) / 2
+                            v = (surface.gauss[i_q % n_gauss] + i_rule % 2) / 2
+                            length = ((1 - v) * first + v * second).norm()
+                            denominator = length * (1 - u) + distance * u
+                            radius = distance * u / denominator
+                            derivative = distance * length / (denominator * denominator)
+                            sample_bary = bary + radius * ((1 - v) * first_bary + v * second_bary - bary)
+                            position = closest + radius * ((1 - v) * first + v * second)
+                            # The rational radial map resolves the closest material depth
+                            # without globally refining every remote boundary face.
+                            weight = (
+                                first.cross(second).norm()
+                                * radius
+                                * derivative
+                                * surface.gauss_weights[i_q // n_gauss]
+                                * surface.gauss_weights[i_q % n_gauss]
+                                / 4
+                            )
+                            shape = qd.Vector([
+                                sample_bary[0] * (2 * sample_bary[0] - 1),
+                                sample_bary[1] * (2 * sample_bary[1] - 1),
+                                sample_bary[2] * (2 * sample_bary[2] - 1),
+                                4 * sample_bary[0] * sample_bary[1],
+                                4 * sample_bary[0] * sample_bary[2],
+                                4 * sample_bary[1] * sample_bary[2],
+                            ])
+                        local = basis.transpose() @ (position - center)
                         local[2] = qd.max(local[2], 0.0)
                         tensor = func_boussinesq_tensor(local, hertz.force[i_p], poisson)
                         if qd.static(has_shear):
                             if shear.force[i_p].norm() > 0:
                                 tensor += func_cerruti_tensor(local, shear.force[i_p], poisson)
-                        traction = -(basis @ tensor @ basis.transpose() @ normal) * surface.weights[i_sample]
-                        loads += surface.shape[i_q].outer_product(traction)
+                        traction = -(basis @ tensor @ basis.transpose() @ normal) * weight
+                        loads += shape.outer_product(traction)
                 for i, j in qd.static(qd.ndrange(6, 3)):
                     i_n = info.surface_nodes[i_f, i]
                     qd.atomic_add(stress_state.force[i_n, i_b][j], loads[i, j])

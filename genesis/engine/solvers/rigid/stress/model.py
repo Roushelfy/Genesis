@@ -73,7 +73,8 @@ class StressModel:
             gs.raise_exception("Every stress mesh vertex must belong to a tetrahedron.")
 
         # Connectivity processing handles asset topology; physical operators are assembled in Quadrants below.
-        boundary = build_surface_topology(tetrahedra, surface)
+        boundary = build_surface_topology(tetrahedra, surface, complete=options.contact_model == "hertz")
+        surface = boundary.triangles
         edges = np.array([[0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3]], dtype=gs.np_int)
         edge_vertices, edge_inverse = np.unique(
             np.sort(tetrahedra[:, edges].reshape((-1, 2)), axis=1), axis=0, return_inverse=True
