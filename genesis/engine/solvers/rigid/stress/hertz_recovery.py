@@ -273,9 +273,7 @@ def kernel_hertz_residual_traction(
     surface: StressSurfaceInfo,
     has_shear: qd.template(),
 ):
-    for i_f, i_p, i_lane in qd.ndrange(
-        info.surface_nodes.shape[0], frames.center.shape[0], surface.gauss.shape[0]
-    ):
+    for i_f, i_p, i_lane in qd.ndrange(info.surface_nodes.shape[0], frames.center.shape[0], surface.gauss.shape[0]):
         i_b = i_p % state.status.shape[0]
         if state.status[i_b] == 0 and hertz.status[i_p] == 0:
             basis, center = frames.basis[i_p], frames.center[i_p]
@@ -338,14 +336,16 @@ def kernel_hertz_residual_traction(
                                 * surface.gauss_weights[i_q % n_gauss]
                                 / 4
                             )
-                            shape = qd.Vector([
-                                sample_bary[0] * (2 * sample_bary[0] - 1),
-                                sample_bary[1] * (2 * sample_bary[1] - 1),
-                                sample_bary[2] * (2 * sample_bary[2] - 1),
-                                4 * sample_bary[0] * sample_bary[1],
-                                4 * sample_bary[0] * sample_bary[2],
-                                4 * sample_bary[1] * sample_bary[2],
-                            ])
+                            shape = qd.Vector(
+                                [
+                                    sample_bary[0] * (2 * sample_bary[0] - 1),
+                                    sample_bary[1] * (2 * sample_bary[1] - 1),
+                                    sample_bary[2] * (2 * sample_bary[2] - 1),
+                                    4 * sample_bary[0] * sample_bary[1],
+                                    4 * sample_bary[0] * sample_bary[2],
+                                    4 * sample_bary[1] * sample_bary[2],
+                                ]
+                            )
                         local = basis.transpose() @ (position - center)
                         local[2] = qd.max(local[2], 0.0)
                         tensor = func_boussinesq_tensor(local, hertz.force[i_p], poisson)
