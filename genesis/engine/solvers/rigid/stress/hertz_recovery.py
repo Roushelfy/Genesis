@@ -273,7 +273,9 @@ def kernel_hertz_residual_traction(
     surface: StressSurfaceInfo,
     has_shear: qd.template(),
 ):
-    for i_f, i_p in qd.ndrange(info.surface_nodes.shape[0], frames.center.shape[0]):
+    for i_f, i_p, i_lane in qd.ndrange(
+        info.surface_nodes.shape[0], frames.center.shape[0], surface.gauss.shape[0]
+    ):
         i_b = i_p % state.status.shape[0]
         if state.status[i_b] == 0 and hertz.status[i_p] == 0:
             basis, center = frames.basis[i_p], frames.center[i_p]
@@ -302,7 +304,10 @@ def kernel_hertz_residual_traction(
                     distance = (closest - center).norm()
                     is_near = distance < diameter / 4
                     n_rules = 12 if is_near else 1
-                    for i_sample_local in range(n_rules * surface.shape.shape[0]):
+                    # Each lane integrates one angular knot over every radial rule.
+                    # This preserves the quadrature while exposing near-wall work.
+                    for i_sample_ in range(n_rules * surface.gauss.shape[0]):
+                        i_sample_local = i_sample_ * surface.gauss.shape[0] + i_lane
                         i_q = i_sample_local % surface.shape.shape[0]
                         i_sample = i_f * surface.shape.shape[0] + i_q
                         position, weight = surface.positions[i_sample], surface.weights[i_sample]
