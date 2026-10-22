@@ -54,15 +54,21 @@ def projected_surface(nodes, face_normals, targets, plane, normal, witness):
     return np.concatenate(results)
 
 
-def edge_trial(points, widths, extent, along, shift, order):
-    """Integrate a parabolic edge profile with an inverse-square-root edge factor."""
+def edge_trial(points, widths, extent, along, shift, order, *, edge_exponent=0.5):
+    """Integrate a parabolic footprint with an integrable sharp-edge power law."""
+    assert 0 < edge_exponent < 1
     knots, weights = np.polynomial.legendre.leggauss(order)
-    bounds = np.sqrt(np.maximum(points[:, 0, None] + np.array([-0.5, 0.5]) * widths[0], 0))
+    bounds = np.maximum(points[:, 0, None] + np.array([-0.5, 0.5]) * widths[0], 0) ** (1 - edge_exponent)
     half = (bounds[:, 1] - bounds[:, 0]) / 2
     u = bounds.mean(axis=1)[:, None] + half[:, None] * knots
     y = points[:, 1, None] + widths[1] * knots / 2 - shift
-    profile = np.sqrt(np.maximum(1 - u[:, :, None] ** 2 / extent - y[:, None, :] ** 2 / along**2, 0))
-    measure = half[:, None, None] * widths[1] * weights[None, :, None] * weights[None, None, :]
+    profile = (
+        np.maximum(1 - u[:, :, None] ** (1 / (1 - edge_exponent)) / extent - y[:, None, :] ** 2 / along**2, 0)
+        ** edge_exponent
+    )
+    measure = (
+        half[:, None, None] * widths[1] * weights[None, :, None] * weights[None, None, :] / (2 * (1 - edge_exponent))
+    )
     return np.sum(profile * measure, axis=(1, 2))
 
 

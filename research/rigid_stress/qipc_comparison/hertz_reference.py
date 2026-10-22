@@ -64,6 +64,26 @@ def rectangular_compliance(targets, sources, widths, modulus):
     return integral / (np.pi * modulus * widths.prod())
 
 
+def rectangular_shear_normal_compliance(targets, sources, widths, modulus, poisson):
+    """Inward displacement per tangential cell resultant, with two shear columns.
+
+    Integrate the isotropic Cerruti surface kernel r_i/r^2 exactly over each
+    rectangle. Dean (2023), DOI10.1680/jgere.22.00063, Eq.86 and Table4 give
+    the coefficient (1-2nu)/(4*pi*G); modulus is E/(1-nu^2).
+    """
+    delta = targets[:, None] - sources[None, :]
+    integral = np.zeros((*delta.shape[:2], 2))
+    for sx, sy in ((1, 1), (-1, -1), (1, -1), (-1, 1)):
+        position = delta + np.array([sx, sy]) * widths / 2
+        radius2 = np.sum(position**2, axis=-1)
+        logarithm = np.log(radius2, out=np.zeros_like(radius2), where=radius2 > 0)
+        for axis in (0, 1):
+            x, y = position[..., axis], position[..., 1 - axis]
+            primitive = 0.5 * y * logarithm - y + np.abs(x) * np.arctan2(y, np.abs(x))
+            integral[..., axis] += sx * sy * primitive
+    return integral * ((1 - 2 * poisson) / (2 * (1 - poisson) * np.pi * modulus * widths.prod()))
+
+
 @dataclass(frozen=True)
 class HardContactSolution:
     force: np.ndarray
@@ -72,8 +92,13 @@ class HardContactSolution:
     iterations: int
 
 
-def solve_hard_contact(matrix, gap, load):
-    """Primal active-set QP with force equality and explicit complete KKT checks."""
+def solve_hard_contact(matrix, gap, load, *, is_symmetric=True):
+    """Force-constrained active set with complete complementarity checks.
+
+    Normal compliance uses positive-definite solves. Prescribed proportional
+    shear introduces a skew normal-displacement response and requires a general
+    solve; its complementarity equation has no scalar QP energy.
+    """
     scale = np.max(np.diag(matrix)) * load
     scaled_matrix, scaled_gap = matrix * load / scale, (gap - gap.min()) / scale
     force = np.zeros(len(gap))
@@ -81,7 +106,11 @@ def solve_hard_contact(matrix, gap, load):
     active = force > 0
     for iteration in range(5 * len(gap)):
         current = scaled_matrix[np.ix_(active, active)]
-        response = solve(current, np.column_stack((np.ones(active.sum()), scaled_gap[active])), assume_a="pos")
+        response = solve(
+            current,
+            np.column_stack((np.ones(active.sum()), scaled_gap[active])),
+            assume_a="pos" if is_symmetric else "gen",
+        )
         depth = (1 + response[:, 1].sum()) / response[:, 0].sum()
         candidate = np.zeros_like(force)
         candidate[active] = depth * response[:, 0] - response[:, 1]

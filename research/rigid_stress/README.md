@@ -11,6 +11,14 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current goal and verified scope
 
+The new [sharp-edge pressure component](docs/SHARP_EDGE_PRESSURE_20261022.md)
+uses load, edge slope/curvature and transverse shear without fitting contact
+widths. On two captured gaps and reversed shear, independent coupled-reference
+pressure errors are3.4--5.8% and positive-depth tensor errors1.3--1.6%. Native
+CPU/CUDA32/64-bit controls pass; resident scale cost is measured separately.
+Actual source/wrench compatibility, complete shell recovery, edge-peak
+interpretation and accepted max/full grasp throughput remain open.
+
 The latest user direction on2026-10-22 is to **proceed with sharp edges first**;
 the earlier fillet/chamfer dimension wait is superseded. The latest
 [force-line repair and sharp-edge diagnostic](docs/NATIVE_HOLLOW_EGG_ADMISSION_20261022.md#curved-force-line-projection-and-edge-geometry)

@@ -1,0 +1,64 @@
+{
+  "passed": true,
+  "backend": "gpu",
+  "precision": "64",
+  "valid_cases": 274,
+  "unsupported_cases": 0,
+  "maximum_relative_errors": [
+    2.3381296898605797e-13,
+    2.339239912885205e-13,
+    2.220446049250313e-16,
+    2.220446049250313e-16
+  ],
+  "cold_update_seconds": 0.22009285003878176,
+  "sharp_edge_unbounded_pressure_checked": true,
+  "invalid_unloaded_isolation_and_reset_checked": true,
+  "benchmarks": [
+    {
+      "regions": 64,
+      "preparation_seconds": 0.0018205230589956045,
+      "inclusive_seconds_per_dispatch": [
+        2.995035029016435e-05,
+        2.975295064970851e-05,
+        2.9777601594105362e-05,
+        3.000195138156414e-05,
+        2.9841798823326827e-05,
+        2.9715499840676786e-05,
+        2.9791000997647643e-05
+      ],
+      "median_seconds_per_dispatch": 2.9791000997647643e-05,
+      "logical_tensor_bytes": 5376
+    },
+    {
+      "regions": 2048,
+      "preparation_seconds": 0.0018362520495429635,
+      "inclusive_seconds_per_dispatch": [
+        3.2291299430653456e-05,
+        3.1941302586346866e-05,
+        3.189105191268027e-05,
+        3.1966803362593055e-05,
+        3.19363025482744e-05,
+        3.207004629075527e-05,
+        3.215604810975492e-05
+      ],
+      "median_seconds_per_dispatch": 3.1966803362593055e-05,
+      "logical_tensor_bytes": 172032
+    },
+    {
+      "regions": 65536,
+      "preparation_seconds": 0.004641017992980778,
+      "inclusive_seconds_per_dispatch": [
+        7.898135227151215e-05,
+        7.888359832577407e-05,
+        7.887110114097595e-05,
+        7.899355259723961e-05,
+        7.87903496529907e-05,
+        7.912124856375158e-05,
+        7.884239894337953e-05
+      ],
+      "median_seconds_per_dispatch": 7.888359832577407e-05,
+      "logical_tensor_bytes": 5505024
+    }
+  ],
+  "whole_goal_complete": false
+}

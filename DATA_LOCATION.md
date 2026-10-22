@@ -1,5 +1,17 @@
 # Rigid-stress data and artifact locations
 
+The `hard-edge-law-v1` packet retains 174 compact payloads / 771,900 bytes
+and 34 external receipts. Five terminal campaigns cover independent
+shear-coupled sharp-edge pressure, the unfitted slender-edge law, and native
+CPU/GPU 32/64-bit controls and resident scale timings. Full pressure/stress
+arrays and job logs remain below the established `20261019-qualified-ranking`
+data root in `hard-edge-*` and `hard-native-edge-law-*`. Source and compact
+publication evidence stay in workspace. Engine `hard_contact_edge_law` is
+frozen at `88d9e891a`, with 27 frozen heads and 12 original unfinished files
+preserved. Scientific execution uses Slurm `rtx-mid`, image `1_26`, the
+existing data-side environment and private node caches. No data, environment
+or compatibility link moved.
+
 The `hard-force-line-v1` packet retains195 compact payloads/1,133,852bytes
 and477 external receipts. Six terminal scientific campaigns cover the native
 curved force-line repair, its frozen negative control, actual Franka replay,

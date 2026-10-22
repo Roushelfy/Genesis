@@ -1,6 +1,7 @@
 # Native hollow-egg admission and geometry gap
 
-Latest update: [curved force-line projection and edge geometry](#curved-force-line-projection-and-edge-geometry).
+Latest pressure update: [unfitted sharp-edge pressure and native scales](SHARP_EDGE_PRESSURE_20261022.md).
+The [curved force-line projection evidence](#curved-force-line-projection-and-edge-geometry) remains preserved.
 The latest user direction is to proceed with sharp edges first, superseding
 the earlier fillet/chamfer dimension wait. The sections below retain the
 diagnostic campaigns and their original geometry.
