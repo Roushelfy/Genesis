@@ -189,11 +189,45 @@ def func_hertz_friction_particular(
     """Combine normal pressure and the smooth nested traction history."""
     tensor, is_resolved = qd.Matrix.zero(gs.qd_float, 3, 3), True
     distance, ratio = point.norm(), axes[1] / axes[0]
-    for i_s in range(16):
+    has_far_bank = False
+    if qd.static(far_field):
+        has_far_bank = distance >= 8 * axes[0]
+    far_forces = qd.Matrix.zero(gs.qd_float, 4, 2)
+    n_shells = 16
+    if has_far_bank:
+        # The symmetric four-source ring has an even analytic radial expansion.
+        # Interpolation in squared radius preserves its first four moments,
+        # including a zero resultant with nonzero residual stress.
+        n_shells = 4
+        for i_s in range(16):
+            radius = (i_s + 1) / 16
+            square = radius * radius
+            coefficients = qd.Vector(
+                [
+                    -(square - 0.25) * (square - 0.64) * (square - 1.0) / 0.16,
+                    square * (square - 0.64) * (square - 1.0) / (0.25 * (0.25 - 0.64) * (0.25 - 1.0)),
+                    square * (square - 0.25) * (square - 1.0) / (0.64 * (0.64 - 0.25) * (0.64 - 1.0)),
+                    square * (square - 0.25) * (square - 0.64) / 0.27,
+                ]
+            )
+            tangential_force = force * radius**3 * shear.friction[i_p] * shear.coefficients[i_s, i_p]
+            for i_m in qd.static(range(4)):
+                for i_d in qd.static(range(2)):
+                    far_forces[i_m, i_d] += coefficients[i_m] * tangential_force[i_d]
+    for i_s in range(n_shells):
         radius = (i_s + 1) / 16
-        tangent = shear.friction[i_p] * shear.coefficients[i_s, i_p]
-        is_outer, has_tangent = i_s == 15, tangent.norm() > 0
-        is_resolved = is_resolved and tangent.norm() < float("inf")
+        tangent = qd.Vector.zero(gs.qd_float, 2)
+        tangential_force = qd.Vector.zero(gs.qd_float, 2)
+        is_outer = i_s == 15
+        if has_far_bank:
+            radius = qd.Vector([0.0, 0.5, 0.8, 1.0])[i_s]
+            tangential_force = qd.Vector([far_forces[i_s, 0], far_forces[i_s, 1]])
+            is_outer = i_s == 3
+        else:
+            tangent = shear.friction[i_p] * shear.coefficients[i_s, i_p]
+            tangential_force = force * radius**3 * tangent
+        has_tangent = tangential_force.norm() > 0
+        is_resolved = is_resolved and tangential_force.norm() < float("inf")
         if is_outer or has_tangent:
             semiaxes = radius * axes
             is_far = False
@@ -207,7 +241,7 @@ def func_hertz_friction_particular(
                     if is_outer:
                         tensor += func_boussinesq_tensor(point - source, force / 4, poisson)
                     if has_tangent:
-                        tensor += func_cerruti_tensor(point - source, force * radius**3 * tangent / 4, poisson)
+                        tensor += func_cerruti_tensor(point - source, tangential_force / 4, poisson)
             else:
                 normalized = point / semiaxes[0]
                 coordinate, is_root = func_hertz_coordinate(normalized, ratio)
