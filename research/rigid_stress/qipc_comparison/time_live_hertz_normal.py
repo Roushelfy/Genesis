@@ -2,7 +2,11 @@
 
 import argparse
 from dataclasses import asdict
+import os
 from pathlib import Path
+import subprocess
+import sys
+import tempfile
 from time import perf_counter
 
 import numpy as np
@@ -15,6 +19,57 @@ from genesis.utils.misc import tensor_to_array
 from .artifacts import file_id, runtime_identity, write_json
 from .check_live_hertz_normal import build_fixture
 from .check_native_hertz_recovery import array
+from ..shell_comparison.submit import capture_source
+
+
+def paired_sources(args):
+    """Compare source variants on one allocation with isolated child caches."""
+    current = Path(gs.__file__).resolve().parents[1]
+    assert args.reference_source.resolve() != current
+    capture_source(args.reference_source.resolve(), args.output, "reference-source")
+    records = []
+    variants = [("reference", args.reference_source.resolve()), ("current", current)]
+    if args.current_first:
+        variants.reverse()
+    for label, source in variants:
+        with tempfile.TemporaryDirectory(prefix=f"live-hertz-{label}-", dir=os.environ["TMPDIR"]) as temporary:
+            scratch = Path(temporary)
+            environment = os.environ.copy()
+            paths = [part for part in environment["PYTHONPATH"].split(os.pathsep) if Path(part).resolve() != current]
+            environment["PYTHONPATH"] = os.pathsep.join([*paths, str(source)])
+            cache_paths = {
+                "GS_CACHE_FILE_PATH": "genesis",
+                "QD_OFFLINE_CACHE_FILE_PATH": "quadrants",
+                "CUDA_CACHE_PATH": "cuda",
+                "NUMBA_CACHE_DIR": "numba",
+                "MPLCONFIGDIR": "matplotlib",
+            }
+            for name, suffix in cache_paths.items():
+                environment[name] = str(scratch / suffix)
+            command = [
+                sys.executable,
+                "-m",
+                "research.rigid_stress.qipc_comparison.time_live_hertz_normal",
+                "--batches",
+                *[str(batch) for batch in args.batches],
+                "--output",
+                str(args.output / label),
+            ]
+            with (args.output / f"{label}.log").open("w") as log:
+                result = subprocess.run(command, cwd=source, env=environment, stdout=log, stderr=subprocess.STDOUT)
+            records.append({"label": label, "source": str(source), "command": command, "returncode": result.returncode})
+            write_json(args.output / "children.json", {"children": records})
+            assert result.returncode == 0, records[-1]
+    write_json(
+        args.output / "result.json",
+        {
+            "passed": True,
+            "children": records,
+            "same_allocation": True,
+            "separate_processes_and_private_compiler_caches": True,
+            "whole_goal_complete": False,
+        },
+    )
 
 
 def update(fixture, step, phase):
@@ -28,6 +83,8 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--output", type=Path, required=True)
     cli.add_argument("--batches", type=int, nargs="+", default=[1, 64, 256, 1024])
+    cli.add_argument("--reference-source", type=Path)
+    cli.add_argument("--current-first", action="store_true")
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     write_json(
@@ -37,6 +94,9 @@ def main():
             "scope": "Actual centered sphere/flat-link normal contact. Complete headless rigid/max/full scene steps, including vector input motion, native association, curvature/region prediction, acceptance, solve, moving probes and reductions. Two physical substeps per scene step. No research recovery producer or audit in primary timing. These are normal box scene rates, not Franka or general friction qualification.",
         },
     )
+    if args.reference_source is not None:
+        paired_sources(args)
+        return
     gs.init(backend=gs.cuda, precision="64", logging_level="warning")
     mesh = MeshTet.init_tensor(np.array([-0.004, 0, 0.004]), np.array([-0.004, 0, 0.004]), np.array([-0.002, 0, 0.002]))
     path = args.output / "mesh.npz"
