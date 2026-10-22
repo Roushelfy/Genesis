@@ -13,7 +13,7 @@ from .hertz import StressHertzState, func_boussinesq_tensor, func_hertz_particul
 from .hertz_probes import StressHertzProbeState, func_hertz_probe_location, kernel_hertz_probe_offsets
 from .hertz_tangential import StressHertzShear, func_cerruti_tensor, func_hertz_friction_particular
 from .model import StressModel
-from .operators import func_shape_gradient
+from .operators import func_shape_gradient, func_material_gradients, func_material_position
 from .provenance import func_closest_triangle
 from .surface import StressSurfaceInfo
 
@@ -461,13 +461,13 @@ def kernel_hertz_combined_field(
             if valid:
                 i_origin = info.elements[i_e, 0]
                 origin = stress_state.displacement[i_origin, i_b]
-                derivative, located = qd.Matrix.zero(gs.qd_float, 3, 3), qd.Vector.zero(gs.qd_float, 3)
+                derivative = qd.Matrix.zero(gs.qd_float, 3, 3)
+                gradients = func_material_gradients(i_e, bary, info)
+                located = func_material_position(i_e, bary, info)
                 for i in range(10):
                     i_n = info.elements[i_e, i]
-                    gradient = func_shape_gradient(i, bary, info.gradients[i_e], info.edges)
+                    gradient = func_shape_gradient(i, bary, gradients, info.edges)
                     derivative += (stress_state.displacement[i_n, i_b] - origin).outer_product(gradient)
-                    if i < 4:
-                        located += bary[i] * info.vertices[i_n]
                 valid = (located - position).norm() <= epsilon
                 tensor = young / (2 * (1 + poisson)) * (derivative + derivative.transpose())
                 for i in qd.static(range(3)):

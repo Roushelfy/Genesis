@@ -1,4 +1,4 @@
-"""Assemble shared affine-P2 stiffness and consistent mass in Quadrants."""
+"""Assemble shared quadratic stiffness and consistent mass in Quadrants."""
 
 import quadrants as qd
 
@@ -20,7 +20,7 @@ def kernel_valid_geometry(stress_info: StressInfo) -> int:
     invalid = 0
     for i in range(stress_info.volumes.shape[0]):
         volume = stress_info.volumes[i]
-        if not (volume > 0.0) or qd.math.isinf(volume) or qd.math.isnan(volume):
+        if not (volume > 0.0) or qd.math.isinf(volume) or qd.math.isnan(volume) or stress_info.geometry_invalid[i] != 0:
             invalid += 1
     return invalid
 
@@ -35,6 +35,117 @@ def func_shape_gradient(i_n: int, bary: qd.types.vector(4), gradient: qd.types.m
         i_c = edges[i_n - 4, 1]
         value = 4.0 * (bary[i_a] * gradient[i_c, :] + bary[i_c] * gradient[i_a, :])
     return value
+
+
+@qd.func
+def func_shape_value(i_n: int, bary: qd.types.vector(4), edges: qd.Tensor):
+    value = gs.qd_float(0.0)
+    if i_n < 4:
+        value = bary[i_n] * (2 * bary[i_n] - 1)
+    else:
+        value = 4 * bary[edges[i_n - 4, 0]] * bary[edges[i_n - 4, 1]]
+    return value
+
+
+@qd.func
+def func_material_jacobian(i_e: int, bary: qd.types.vector(4), info: StressInfo):
+    jacobian = qd.Matrix.zero(gs.qd_float, 3, 3)
+    origin = info.vertices[info.elements[i_e, 0]]
+    for i in range(10):
+        gradient = func_shape_gradient(i, bary, info.gradients[i_e], info.edges)
+        jacobian += (info.vertices[info.elements[i_e, i]] - origin).outer_product(gradient)
+    return jacobian
+
+
+@qd.func
+def func_material_gradients(i_e: int, bary: qd.types.vector(4), info: StressInfo):
+    gradients = info.gradients[i_e]
+    if qd.static(info.volume_points.shape[0] > 0):
+        gradients = gradients @ func_material_jacobian(i_e, bary, info).inverse()
+    return gradients
+
+
+@qd.func
+def func_material_position(i_e: int, bary: qd.types.vector(4), info: StressInfo):
+    position = qd.Vector.zero(gs.qd_float, 3)
+    if qd.static(info.volume_points.shape[0] > 0):
+        for i in range(10):
+            position += func_shape_value(i, bary, info.edges) * info.vertices[info.elements[i_e, i]]
+    else:
+        for i in qd.static(range(4)):
+            position += bary[i] * info.vertices[info.elements[i_e, i]]
+    return position
+
+
+@qd.kernel
+def kernel_volume_quadrature(info: StressInfo):
+    for i_q in range(info.volume_points.shape[0]):
+        knots, weights = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
+        for axis in qd.static(range(3)):
+            index = (i_q // (6**axis)) % 6
+            x = -qd.cos(3.141592653589793 * (index + 0.75) / 6.5)
+            derivative = gs.qd_float(0.0)
+            for _ in range(32):
+                previous, value = gs.qd_float(0.0), gs.qd_float(1.0)
+                for j in range(6):
+                    old = value
+                    value = ((2 * j + 1) * x * value - j * previous) / (j + 1)
+                    previous = old
+                derivative = 6 * (x * value - previous) / (x * x - 1)
+                x -= value / derivative
+            knots[axis], weights[axis] = (x + 1) / 2, 1 / ((1 - x * x) * derivative * derivative)
+        u, v, w = knots[0], knots[1], knots[2]
+        info.volume_points[i_q] = qd.Vector([(1 - u) * (1 - v) * (1 - w), u, (1 - u) * v, (1 - u) * (1 - v) * w])
+        info.volume_base_weights[i_q] = weights[0] * weights[1] * weights[2] * (1 - u) ** 2 * (1 - v)
+
+
+@qd.kernel
+def kernel_curved_geometry(info: StressInfo):
+    for i_e, i_q in qd.ndrange(info.elements.shape[0], info.volume_points.shape[0] + 4):
+        bary = qd.Vector.zero(gs.qd_float, 4)
+        if i_q < info.volume_points.shape[0]:
+            bary = info.volume_points[i_q]
+        else:
+            bary[i_q - info.volume_points.shape[0]] = 1.0
+        jacobian = func_material_jacobian(i_e, bary, info)
+        ratio = jacobian.determinant()
+        valid = ratio > 0 and ratio < float("inf")
+        if not valid:
+            qd.atomic_or(info.geometry_invalid[i_e], 1)
+        if i_q < info.volume_points.shape[0]:
+            info.volume_weights[i_e, i_q] = 0.0
+            info.volume_gradients[i_e, i_q] = qd.Matrix.zero(gs.qd_float, 4, 3)
+            if valid:
+                info.volume_weights[i_e, i_q] = 6 * info.volumes[i_e] * ratio * info.volume_base_weights[i_q]
+                info.volume_gradients[i_e, i_q] = info.gradients[i_e] @ jacobian.inverse()
+    for i_e in range(info.elements.shape[0]):
+        volume = gs.qd_float(0.0)
+        for i_q in range(info.volume_points.shape[0]):
+            volume += info.volume_weights[i_e, i_q]
+        info.volumes[i_e] = volume
+
+
+@qd.kernel
+def kernel_assemble_curved(poisson: float, density: float, info: StressInfo):
+    for i_entry in range(info.stiffness.shape[0]):
+        stiffness, mass = qd.Matrix.zero(gs.qd_float, 3, 3), gs.qd_float(0.0)
+        lam, mu = poisson / ((1 + poisson) * (1 - 2 * poisson)), 1 / (2 * (1 + poisson))
+        for i_slot in range(info.assembly_start[i_entry], info.assembly_start[i_entry + 1]):
+            i_con = info.assembly_idx[i_slot]
+            i_e, i_n, j_n = i_con // 100, (i_con % 100) // 10, i_con % 10
+            for i_q in range(info.volume_points.shape[0]):
+                bary, gradient = info.volume_points[i_q], info.volume_gradients[i_e, i_q]
+                grad_i = func_shape_gradient(i_n, bary, gradient, info.edges)
+                grad_j = func_shape_gradient(j_n, bary, gradient, info.edges)
+                block = lam * grad_i.outer_product(grad_j) + mu * grad_j.outer_product(grad_i)
+                for i in qd.static(range(3)):
+                    block[i, i] += mu * grad_i.dot(grad_j)
+                weight = info.volume_weights[i_e, i_q]
+                stiffness += weight * block
+                mass += (
+                    density * weight * func_shape_value(i_n, bary, info.edges) * func_shape_value(j_n, bary, info.edges)
+                )
+        info.stiffness[i_entry], info.mass[i_entry] = stiffness, mass
 
 
 @qd.func
@@ -68,6 +179,7 @@ def kernel_corner_gradients(stress_info: StressInfo):
     for i_e, i_corner in qd.ndrange(stress_info.elements.shape[0], 4):
         bary = qd.Vector.zero(gs.qd_float, 4)
         bary[i_corner] = 1.0
+        gradient = func_material_gradients(i_e, bary, stress_info)
         slot = 0
         for i_local in range(10):
             active = i_local < 4
@@ -76,7 +188,7 @@ def kernel_corner_gradients(stress_info: StressInfo):
             if active:
                 stress_info.corner_nodes[i_e, i_corner, slot] = stress_info.elements[i_e, i_local]
                 stress_info.corner_gradients[i_e, i_corner, slot] = func_shape_gradient(
-                    i_local, bary, stress_info.gradients[i_e], stress_info.edges
+                    i_local, bary, gradient, stress_info.edges
                 )
                 slot += 1
 
@@ -99,6 +211,7 @@ def kernel_geometry(stress_info: StressInfo):
             gradient[0, i_c] -= inverse[i_a, i_c]
         stress_info.gradients[i_e] = gradient
         stress_info.volumes[i_e] = qd.abs(edges.determinant()) / 6.0
+        stress_info.geometry_invalid[i_e] = 0
 
 
 @qd.kernel
