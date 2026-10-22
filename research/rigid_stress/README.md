@@ -11,15 +11,14 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current goal and verified scope
 
-The latest [finite-face checks](docs/NATIVE_HOLLOW_EGG_ADMISSION_20261022.md#same-substep-finite-face-boundaries-and-edge-pressure)
-record native boundaries at the contact evaluation pose. CPU/CUDA controls pass;
-all109 actual Franka frames retain positions, forces, histories and acceptance,
-with field differences at roundoff. The first rejected normal root lies1.817um
-beyond a finger-box face at step108. A nine-node circular edge-pressure lookup
-passes held-out circular controls but fails flatter rotated ellipses. An offline
-shifted trial passes those selected controls; it is not a qualified native
-pressure model. Moving source placement, gripper-contact admission and accepted
-max/full throughput remain open.
+The latest [matched-collision and curved-source checks](docs/NATIVE_HOLLOW_EGG_ADMISSION_20261022.md#matched-collision-geometry-and-curved-source-binding)
+repair source binding that still projected quadratic material faces onto their
+flat chords. Native CPU/CUDA controls and original nonconvex regressions pass.
+Collision meshes sampled from the actual curved boundary reduce geometry error;
+the8-division Franka case now clears source binding at initial gripper contact.
+Two finite-face normal roots still reject at step106. Load-compatible finite
+support, moving curved source/friction frames, physical stress accuracy and
+accepted max/full grasp throughput remain open.
 
 
 **Latest user priority:** implement
