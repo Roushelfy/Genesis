@@ -12,6 +12,7 @@ from .hertz import (
     func_boussinesq_tensor,
     func_hertz_coordinate,
     func_hertz_integrals,
+    func_hertz_is_far,
     func_hertz_normal_from_coordinate,
 )
 
@@ -188,10 +189,10 @@ def func_hertz_friction_particular(
 ):
     """Combine normal pressure and the smooth nested traction history."""
     tensor, is_resolved = qd.Matrix.zero(gs.qd_float, 3, 3), True
-    distance, ratio = point.norm(), axes[1] / axes[0]
+    ratio = axes[1] / axes[0]
     has_far_bank = False
     if qd.static(far_field):
-        has_far_bank = distance >= 8 * axes[0]
+        has_far_bank = func_hertz_is_far(point, axes[0])
     far_forces = qd.Matrix.zero(gs.qd_float, 4, 2)
     n_shells = 16
     if has_far_bank:
@@ -232,7 +233,7 @@ def func_hertz_friction_particular(
             semiaxes = radius * axes
             is_far = False
             if qd.static(far_field):
-                is_far = distance >= 8 * semiaxes[0]
+                is_far = func_hertz_is_far(point, semiaxes[0])
             if is_far:
                 for i_m in range(4):
                     source = qd.Vector(
