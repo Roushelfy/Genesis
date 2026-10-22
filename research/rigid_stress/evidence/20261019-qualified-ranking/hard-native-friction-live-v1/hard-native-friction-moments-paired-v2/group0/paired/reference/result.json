@@ -1,0 +1,150 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "batch": 1,
+      "mode": "rigid",
+      "seconds_per_scene_step": [
+        0.0017805851239245385,
+        0.0017624056272325106,
+        0.001779357873601839
+      ],
+      "median_seconds": 0.001779357873601839,
+      "environment_scene_steps_per_second": 562.0004917705311,
+      "physical_substeps_per_scene_step": 2,
+      "preparation_seconds": 74.64696325699333,
+      "model_preparation": null,
+      "contact_slots_per_environment": null,
+      "audit_environment_steps": 24,
+      "admitted_audit_environment_steps": null,
+      "admitted_loaded_audit_steps": null
+    },
+    {
+      "batch": 1,
+      "mode": "max",
+      "seconds_per_scene_step": [
+        0.015768236749863718,
+        0.01607837937626755,
+        0.016276561247650534
+      ],
+      "median_seconds": 0.01607837937626755,
+      "environment_scene_steps_per_second": 62.19532308561194,
+      "physical_substeps_per_scene_step": 2,
+      "preparation_seconds": 48.68142913500196,
+      "model_preparation": {
+        "topology_seconds": 0.044673105992842466,
+        "operators_seconds": 1.2251447050075512,
+        "factor_seconds": 0.49483253198559396,
+        "inverse_seconds": 0.4969047160120681,
+        "surface_inverse_seconds": 0.2672509360127151
+      },
+      "contact_slots_per_environment": 5,
+      "audit_environment_steps": 24,
+      "admitted_audit_environment_steps": 24,
+      "admitted_loaded_audit_steps": 24
+    },
+    {
+      "batch": 1,
+      "mode": "full",
+      "seconds_per_scene_step": [
+        0.015919946123176487,
+        0.016354768496967154,
+        0.01640925950050587
+      ],
+      "median_seconds": 0.016354768496967154,
+      "environment_scene_steps_per_second": 61.144246718346466,
+      "physical_substeps_per_scene_step": 2,
+      "preparation_seconds": 2.566801320994273,
+      "model_preparation": {
+        "topology_seconds": 0.010312439000699669,
+        "operators_seconds": 0.0038041270163375884,
+        "factor_seconds": 0.07369933498557657,
+        "inverse_seconds": 0.006389273999957368,
+        "surface_inverse_seconds": 0.005966508004348725
+      },
+      "contact_slots_per_environment": 5,
+      "audit_environment_steps": 24,
+      "admitted_audit_environment_steps": 24,
+      "admitted_loaded_audit_steps": 24
+    },
+    {
+      "batch": 64,
+      "mode": "rigid",
+      "seconds_per_scene_step": [
+        0.001941927501320606,
+        0.0019298161241749767,
+        0.0019389697517908644
+      ],
+      "median_seconds": 0.0019389697517908644,
+      "environment_scene_steps_per_second": 33007.21939622243,
+      "physical_substeps_per_scene_step": 2,
+      "preparation_seconds": 54.97476251499029,
+      "model_preparation": null,
+      "contact_slots_per_environment": null,
+      "audit_environment_steps": 1536,
+      "admitted_audit_environment_steps": null,
+      "admitted_loaded_audit_steps": null
+    },
+    {
+      "batch": 64,
+      "mode": "max",
+      "seconds_per_scene_step": [
+        0.015314751999540022,
+        0.015493353250349173,
+        0.015640164998330874
+      ],
+      "median_seconds": 0.015493353250349173,
+      "environment_scene_steps_per_second": 4130.803639848438,
+      "physical_substeps_per_scene_step": 2,
+      "preparation_seconds": 33.69465127500007,
+      "model_preparation": {
+        "topology_seconds": 0.011202074005268514,
+        "operators_seconds": 0.0037725589936599135,
+        "factor_seconds": 0.07435220101615414,
+        "inverse_seconds": 0.0063558469992130995,
+        "surface_inverse_seconds": 0.006416932999854907
+      },
+      "contact_slots_per_environment": 5,
+      "audit_environment_steps": 1536,
+      "admitted_audit_environment_steps": 1536,
+      "admitted_loaded_audit_steps": 1536
+    },
+    {
+      "batch": 64,
+      "mode": "full",
+      "seconds_per_scene_step": [
+        0.015531623750575818,
+        0.015717507874796866,
+        0.01582250537830987
+      ],
+      "median_seconds": 0.015717507874796866,
+      "environment_scene_steps_per_second": 4071.89234513599,
+      "physical_substeps_per_scene_step": 2,
+      "preparation_seconds": 0.9195672940113582,
+      "model_preparation": {
+        "topology_seconds": 0.010291023994795978,
+        "operators_seconds": 0.0037536959862336516,
+        "factor_seconds": 0.07354599400423467,
+        "inverse_seconds": 0.005756735015893355,
+        "surface_inverse_seconds": 0.006042269000317901
+      },
+      "contact_slots_per_environment": 5,
+      "audit_environment_steps": 1536,
+      "admitted_audit_environment_steps": 1536,
+      "admitted_loaded_audit_steps": 1536
+    }
+  ],
+  "mesh": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-moments-paired-v2/group0/paired/reference/mesh.npz",
+    "bytes": 921,
+    "sha256": "f15446ed546fba9d3a76dfe962948c8a330571430dc195431ce3501a5b7f670f"
+  },
+  "actual_native_route_without_research_recovery_callback": true,
+  "force_driven_friction": true,
+  "friction": 0.4,
+  "scene_input_generation_included": true,
+  "research_audits_outside_primary_timing": true,
+  "same_allocation_rigid_max_full": true,
+  "general_friction_curved_or_franka_qualified": false,
+  "whole_goal_complete": false
+}

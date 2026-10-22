@@ -1,0 +1,40 @@
+[
+  [
+    {
+      "name": "binding",
+      "module": "research.rigid_stress.qipc_comparison.check_native_friction_binding",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    },
+    {
+      "name": "rotated-live",
+      "module": "research.rigid_stress.qipc_comparison.check_live_hertz_friction",
+      "args": [
+        "--backend",
+        "cpu",
+        "--rotated"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "binding",
+      "module": "research.rigid_stress.qipc_comparison.check_native_friction_binding",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    },
+    {
+      "name": "rotated-live",
+      "module": "research.rigid_stress.qipc_comparison.check_live_hertz_friction",
+      "args": [
+        "--backend",
+        "gpu",
+        "--rotated"
+      ]
+    }
+  ]
+]

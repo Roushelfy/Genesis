@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "name": "uncompressed",
+      "module": "research.rigid_stress.qipc_comparison.check_native_friction_stress",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_live_friction",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    },
+    {
+      "name": "moments",
+      "module": "research.rigid_stress.qipc_comparison.check_native_friction_stress",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_friction_moments",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ]
+]

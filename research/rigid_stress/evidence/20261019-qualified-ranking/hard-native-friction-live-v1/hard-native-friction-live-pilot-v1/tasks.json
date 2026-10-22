@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "name": "friction-scene",
+      "module": "research.rigid_stress.qipc_comparison.check_live_hertz_friction",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "friction-scene",
+      "module": "research.rigid_stress.qipc_comparison.check_live_hertz_friction",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ]
+]

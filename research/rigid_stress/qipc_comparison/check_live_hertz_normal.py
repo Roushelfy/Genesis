@@ -38,6 +38,7 @@ def build_fixture(
     quadrature=8,
     rotated=False,
     route="hertz",
+    friction=0.01,
 ):
     rotation = Rotation.from_rotvec([0.31, -0.47, 0.22]).as_matrix() if rotated else np.eye(3)
     quaternion = Rotation.from_matrix(rotation).as_quat()
@@ -45,14 +46,16 @@ def build_fixture(
         sim_options=gs.options.SimOptions(dt=dt, substeps=substeps, gravity=tuple(rotation @ np.array([0, 0, -9.81]))),
         show_viewer=False,
     )
-    sphere = scene.add_entity(gs.morphs.Sphere(radius=0.003, fixed=True), material=gs.materials.Rigid(friction=0.01))
+    sphere = scene.add_entity(
+        gs.morphs.Sphere(radius=0.003, fixed=True), material=gs.materials.Rigid(friction=friction)
+    )
     target = scene.add_entity(
         gs.morphs.Box(
             size=(0.008, 0.008, 0.004),
             pos=tuple(rotation @ np.array([0, 0, 0.004999])),
             quat=tuple(np.r_[quaternion[3], quaternion[:3]]),
         ),
-        material=gs.materials.Rigid(rho=2000, friction=0.01),
+        material=gs.materials.Rigid(rho=2000, friction=friction),
     )
     if output_mode != "rigid":
         if route == "hertz":

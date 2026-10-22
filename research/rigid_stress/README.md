@@ -136,6 +136,15 @@ Combined spatial/time reference changes meet2%; strict tangent-only targets
 remain failed. These conditional controls support native history integration;
 surface/global/full-volume and hollow-egg/friction qualification remain open.
 
+The [native vector-friction route](docs/NATIVE_LIVE_HERTZ_FRICTION_20261022.md)
+now advances physical history on every substep while manual observations hold.
+CPU/GPU actual force-driven and rotated scenes pass max/full, checkpoint
+continuation, selected reset and pure-rigid trajectory controls. Source795805290
+measures48.13/48.14ms per B1024 max/full sphere/flat scene step, with every
+loaded audit admitted. This is a declared radial approximation on supported
+flat material patches; curved/inner material and accepted Franka throughput
+remain active work. Independent elasticity checks do not certify pressure.
+
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
 cheap two-region interaction correction. Ellipticity reduces the rotated-case

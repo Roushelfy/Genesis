@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "kind": "public-preset-and-full-field-contract",
+  "genesis_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_friction_moments/genesis/__init__.py",
+  "checks": [
+    {
+      "backend": "cpu",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+        "-m",
+        "pytest",
+        "-n",
+        "0",
+        "--backend",
+        "cpu",
+        "-q",
+        "-o",
+        "cache_dir=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-public-lifecycle-v1/group0/public-lifecycle/cpu-cache",
+        "--basetemp",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-public-lifecycle-v1/group0/public-lifecycle/cpu-tmp",
+        "--junitxml",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-public-lifecycle-v1/group0/public-lifecycle/cpu.xml",
+        "tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[manual-False-full-4]",
+        "tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[every_step-False-max-1]"
+      ],
+      "returncode": 0
+    },
+    {
+      "backend": "cuda",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+        "-m",
+        "pytest",
+        "-n",
+        "0",
+        "--backend",
+        "cuda",
+        "-q",
+        "-o",
+        "cache_dir=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-public-lifecycle-v1/group0/public-lifecycle/cuda-cache",
+        "--basetemp",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-public-lifecycle-v1/group0/public-lifecycle/cuda-tmp",
+        "--junitxml",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-public-lifecycle-v1/group0/public-lifecycle/cuda.xml",
+        "tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[manual-False-full-4]",
+        "tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[every_step-False-max-1]"
+      ],
+      "returncode": 0
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+[
+  [
+    {
+      "name": "history",
+      "module": "research.rigid_stress.qipc_comparison.check_native_friction_history",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    },
+    {
+      "name": "tensors",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_stress",
+      "args": [
+        "--backend",
+        "cpu",
+        "--tangential"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "history",
+      "module": "research.rigid_stress.qipc_comparison.check_native_friction_history",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    },
+    {
+      "name": "tensors",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_stress",
+      "args": [
+        "--backend",
+        "gpu",
+        "--tangential"
+      ]
+    }
+  ]
+]

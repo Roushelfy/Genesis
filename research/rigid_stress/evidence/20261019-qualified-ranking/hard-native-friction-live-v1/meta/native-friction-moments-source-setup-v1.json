@@ -1,0 +1,59 @@
+[
+  {
+    "command": [
+      "git",
+      "worktree",
+      "add",
+      "--no-checkout",
+      "-b",
+      "hard_contact_friction_moments",
+      "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_friction_moments",
+      "07bf46ce865e88b6bc80fafb0d9eb9d44c37d811"
+    ],
+    "returncode": 0,
+    "output": "Preparing worktree (new branch 'hard_contact_friction_moments')\n"
+  },
+  {
+    "command": [
+      "git",
+      "sparse-checkout",
+      "init",
+      "--cone"
+    ],
+    "returncode": 0,
+    "output": ""
+  },
+  {
+    "command": [
+      "git",
+      "sparse-checkout",
+      "set",
+      "genesis",
+      "tests",
+      "examples",
+      "external",
+      ".github"
+    ],
+    "returncode": 0,
+    "output": ""
+  },
+  {
+    "command": [
+      "git",
+      "checkout",
+      "hard_contact_friction_moments"
+    ],
+    "returncode": 0,
+    "output": "Already on 'hard_contact_friction_moments'\n"
+  },
+  {
+    "command": [
+      "git",
+      "apply",
+      "--index",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-binding-pilot-v1/source.patch"
+    ],
+    "returncode": 0,
+    "output": ""
+  }
+]
