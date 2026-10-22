@@ -1,9 +1,9 @@
 # Native hollow-egg admission and geometry gap
 
 Latest update: [curved force-line projection and edge geometry](#curved-force-line-projection-and-edge-geometry).
-Actual fingertip fillet/chamfer dimensions are now required by the user; the
-numeric values remain pending. The sections below retain the earlier diagnostic
-campaigns and their original geometry.
+The latest user direction is to proceed with sharp edges first, superseding
+the earlier fillet/chamfer dimension wait. The sections below retain the
+diagnostic campaigns and their original geometry.
 
 Native Hertz recovery now includes the omitted cavity boundary and passes
 four facet-centered normal shell controls against independent complete-boundary
@@ -730,14 +730,15 @@ expose the limits of interpreting the captured rigid wrench through this
 normal-only pressure model. They supply neither coupled-friction pressure
 qualification nor a complete hollow-shell error bound.
 
-The user subsequently selected **actual fillet/chamfer dimensions** for the
-final geometry. The existing Panda MJCF describes five manually designed
+The user briefly selected actual fillet/chamfer dimensions, then directed
+**sharp edges first**. The existing Panda MJCF describes five manually designed
 fingertip collision boxes; its configuration supplies no edge radius or
 chamfer dimensions. The associated `finger_1.obj` is visual geometry and is
-excluded from collision. Exact manufacturing edge dimensions must be bound
-to a supplied value or verified source geometry before final pressure and
-peak-stress qualification. Existing sharp-edge studies remain diagnostic.
-The dimension clarification is pending; retain the rigid hard-contact scope.
+excluded from collision. Manufacturing edge dimensions remain relevant to a
+future rounded/chamfered variant. Current work proceeds with sharp-box geometry
+and independent pressure/wrench checks. Edge-peak results must carry sampling
+depth, spatial resolution and convergence evidence; a finite pointwise surface
+peak cannot be inferred from a single sharp-edge discretization.
 
 The [manufacturer manual, page13, Figure5.7](https://download.franka.de/documents/220010_Product%20Manual_Franka%20Hand_1.2_EN.pdf#page=13)
 labels an18mm square plan outline with R5 outline corners, a110-degree groove,
