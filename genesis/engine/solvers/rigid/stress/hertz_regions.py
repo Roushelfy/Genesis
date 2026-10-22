@@ -44,6 +44,9 @@ class StressHertzRegionState:
     moment: qd.Tensor
     source_count: qd.Tensor
     is_valid: qd.Tensor
+    # Rectangle half-planes a*x + b*y <= c use the region's tangent/bitangent frame at contact evaluation time.
+    boundary_planes: qd.Tensor
+    n_boundaries: qd.Tensor
 
 
 class StressHertzRegions:
@@ -81,6 +84,8 @@ class StressHertzRegions:
             moment=V_VEC(3, dtype=gs.qd_float, shape=shape),
             source_count=V(dtype=gs.qd_int, shape=shape),
             is_valid=V(dtype=gs.qd_bool, shape=(shape[1],)),
+            boundary_planes=V_MAT(4, 3, dtype=gs.qd_float, shape=shape),
+            n_boundaries=V(dtype=gs.qd_int, shape=shape),
         )
 
     def update(self, link, contacts, sources, dyn_state, collider, dyn_info, curvature_info, epsilon):
@@ -102,6 +107,8 @@ def kernel_hertz_roots(
     epsilon: float,
 ):
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+        region_state.boundary_planes[i_c, i_b] = qd.Matrix.zero(gs.qd_float, 4, 3)
+        region_state.n_boundaries[i_c, i_b] = 0
         status = gs.qd_int(HertzRegionStatus.UNLOADED)
         center, normal, tangent = (
             qd.Vector.zero(gs.qd_float, 3),
@@ -311,10 +318,22 @@ def kernel_hertz_planar(
                             center, dyn_state.geoms.pos[i_other, i_b], dyn_state.geoms.quat[i_other, i_b]
                         )
                         half = 0.5 * qd.Vector([dyn_info.geoms.data[i_other][i] for i in qd.static(range(3))])
+                        local_frame = frame @ geom.qd_quat_to_R(dyn_state.geoms.quat[i_other, i_b], epsilon)
+                        i_boundary = 0
                         for i in qd.static(range(3)):
-                            if i != i_box_axis and qd.abs(local_center[i]) >= half[i] - 128.0 * epsilon * half.norm():
-                                status = HertzRegionStatus.GEOMETRY
-                                geometry_kind = CurvatureStatus.AMBIGUOUS
+                            if i != i_box_axis:
+                                for j in qd.static(range(2)):
+                                    sign = 1.0 - 2.0 * j
+                                    region_state.boundary_planes[i_c, i_b][i_boundary, 0] = sign * local_frame[0, i]
+                                    region_state.boundary_planes[i_c, i_b][i_boundary, 1] = sign * local_frame[1, i]
+                                    region_state.boundary_planes[i_c, i_b][i_boundary, 2] = (
+                                        half[i] - sign * local_center[i]
+                                    )
+                                    i_boundary += 1
+                                if qd.abs(local_center[i]) >= half[i] - 128.0 * epsilon * half.norm():
+                                    status = HertzRegionStatus.GEOMETRY
+                                    geometry_kind = CurvatureStatus.AMBIGUOUS
+                        region_state.n_boundaries[i_c, i_b] = i_boundary
                 region_state.center[i_c, i_b] = center
                 region_state.normal[i_c, i_b] = normal
                 region_state.tangent[i_c, i_b] = tangent
