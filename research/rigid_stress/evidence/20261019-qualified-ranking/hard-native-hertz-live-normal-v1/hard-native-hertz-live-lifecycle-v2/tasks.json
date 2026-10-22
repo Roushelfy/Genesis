@@ -1,0 +1,44 @@
+[
+  [
+    {
+      "name": "lifecycle",
+      "module": "research.rigid_stress.qipc_comparison.check_live_hertz_lifecycle",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    },
+    {
+      "name": "rotated",
+      "module": "research.rigid_stress.qipc_comparison.check_live_hertz_normal",
+      "args": [
+        "--backend",
+        "cpu",
+        "--rotated",
+        "--steps",
+        "8"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "lifecycle",
+      "module": "research.rigid_stress.qipc_comparison.check_live_hertz_lifecycle",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    },
+    {
+      "name": "rotated",
+      "module": "research.rigid_stress.qipc_comparison.check_live_hertz_normal",
+      "args": [
+        "--backend",
+        "gpu",
+        "--rotated",
+        "--steps",
+        "8"
+      ]
+    }
+  ]
+]

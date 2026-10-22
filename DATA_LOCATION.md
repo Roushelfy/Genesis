@@ -930,3 +930,20 @@ checkout is `.worktrees/hard_contact_moving_probes`, public source `a599b9c50`.
 Focused test sources and results are hash-bound to that source. Scientific work
 uses the established Slurm/image/environment and private node scratch; no live
 data, existing environment or compatibility link is moved.
+
+Actual native normal lifecycle work uses `hard-native-hertz-live-normal-v1`
+through `v3`, live lifecycle `v1` through `v4`, saved-array inspection `v1/v2`,
+failure inspection `v1/v2`, public/transfer regression `v1`, walk-roundoff
+controls and CPU/GPU physical-clock controls under the same ranking data root.
+Actual paired scene cost, final default checks and intrusive original-producer
+traces use `hard-native-hertz-live-timing-v1`, `hard-native-hertz-live-default-v1`
+and `hard-native-hertz-live-trace-v1`. The publication packet
+`hard-native-hertz-live-normal-v1` retains 659 compact payloads (3,733,019 bytes)
+and 253 externally hashed arrays/traces, including every original failed job
+and primary/override source inventory. Native/reference fields, full benchmark
+audits and CUDA traces remain on data. The workspace checkout
+`hard_contact_live_normal` is pinned at public experimental source `fc63cf32e`;
+`hard_contact_local_clock` preserves the clean negative baseline `69f89c064`.
+Scientific work uses the existing data-side physical environment, Slurm
+`rtx-mid`, image `1_26` and private node scratch. No runtime data, environment,
+compatibility link or protected unfinished source is migrated.

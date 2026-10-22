@@ -1,0 +1,28 @@
+[
+  [
+    {
+      "name": "old",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_moving_probes",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_probe_walk_roundoff",
+      "args": [
+        "--backend",
+        "cpu",
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-live-lifecycle-v1/group0/rotated",
+        "--expect-failure"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "new",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_probe_walk_roundoff",
+      "args": [
+        "--backend",
+        "cpu",
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-live-lifecycle-v1/group0/rotated"
+      ]
+    }
+  ]
+]
