@@ -1,0 +1,78 @@
+[
+  [
+    {
+      "name": "curved-material",
+      "module": "research.rigid_stress.qipc_comparison.check_native_curved_material",
+      "args": [
+        "--backend",
+        "cpu",
+        "--geometry",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-quadratic-rest-surface-v1/group0/geometry/geometry.npz"
+      ]
+    },
+    {
+      "name": "shell-q16",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_shell",
+      "args": [
+        "--backend",
+        "cpu",
+        "--quadrature",
+        "16"
+      ]
+    },
+    {
+      "name": "normal-component",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_recovery",
+      "args": [
+        "--backend",
+        "cpu",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v1/group0/study/coarse.npz",
+        "--far-field",
+        "--rotated"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "curved-material",
+      "module": "research.rigid_stress.qipc_comparison.check_native_curved_material",
+      "args": [
+        "--backend",
+        "gpu",
+        "--geometry",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-quadratic-rest-surface-v1/group0/geometry/geometry.npz"
+      ]
+    },
+    {
+      "name": "shell-q16",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_shell",
+      "args": [
+        "--backend",
+        "gpu",
+        "--quadrature",
+        "16"
+      ]
+    },
+    {
+      "name": "normal-component",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_recovery",
+      "args": [
+        "--backend",
+        "gpu",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v1/group0/study/coarse.npz",
+        "--far-field",
+        "--rotated"
+      ]
+    },
+    {
+      "name": "live-friction",
+      "module": "research.rigid_stress.qipc_comparison.check_live_hertz_friction",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ]
+]
