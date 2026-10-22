@@ -1,0 +1,36 @@
+[
+  [
+    {
+      "name": "inspection",
+      "module": "research.rigid_stress.qipc_comparison.inspect_complete_hertz_shell",
+      "args": [
+        "--native",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-parallel-boundary-check-v1",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-shell-quadrature-v3/group0/quadrature",
+        "--original",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-shell-admission-v4/group0/shell-q16/fields.npz",
+        "--mesh",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_shell_recovery/examples/rigid/assets/hollow_egg/level1/elastic.npz"
+      ]
+    },
+    {
+      "name": "timing-conformance",
+      "module": "research.rigid_stress.qipc_comparison.compare_native_hertz_timing",
+      "args": [
+        "--paired",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-parallel-boundary-paired-v1/group0"
+      ]
+    },
+    {
+      "name": "friction-conformance",
+      "module": "research.rigid_stress.qipc_comparison.compare_live_hertz_friction",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-complete-boundary-v1/group1/live-friction",
+        "--candidate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-parallel-boundary-check-v1/group1/live-friction"
+      ]
+    }
+  ]
+]
