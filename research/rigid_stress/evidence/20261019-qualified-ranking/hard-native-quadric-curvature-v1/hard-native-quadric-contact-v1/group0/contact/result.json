@@ -1,0 +1,63 @@
+{
+  "passed": true,
+  "matched_arrays": [
+    "contact_force_n",
+    "contact_valid",
+    "contact_position_m",
+    "contact_normal",
+    "source_witness_m",
+    "source_geom",
+    "source_pair",
+    "hertz_centers_m",
+    "hertz_frames",
+    "law_force_n",
+    "law_status",
+    "position_m",
+    "quaternion",
+    "recovery_status",
+    "step_valid"
+  ],
+  "rows": [
+    {
+      "variant": "baseline",
+      "axes_m": [
+        4.696366618512347e-05,
+        4.642416449394011e-05
+      ],
+      "pressure_relative": 0.06264265325936115,
+      "sample_tensor_relative": 0.024115134809071966,
+      "sample_vm_peak_relative": 0.04143302447347752,
+      "sample_tensile_peak_relative": 0.038342293473025646,
+      "pressure_quadrature_force_relative": 7.662664970431443e-06,
+      "targets_met": false,
+      "accepted_loaded_environments": 0,
+      "recovery_status": [
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "variant": "quadric",
+      "axes_m": [
+        4.5476132250955165e-05,
+        4.543486229665817e-05
+      ],
+      "pressure_relative": 0.016833793952780098,
+      "sample_tensor_relative": 0.0049374589987272385,
+      "sample_vm_peak_relative": 0.009654423211699736,
+      "sample_tensile_peak_relative": 0.00018098844879932408,
+      "pressure_quadrature_force_relative": 3.729966622012526e-06,
+      "targets_met": true,
+      "accepted_loaded_environments": 0,
+      "recovery_status": [
+        2,
+        2,
+        2,
+        2
+      ]
+    }
+  ],
+  "whole_goal_complete": false
+}

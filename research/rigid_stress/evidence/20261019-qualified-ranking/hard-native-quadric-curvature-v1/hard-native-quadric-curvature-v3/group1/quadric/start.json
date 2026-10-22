@@ -1,0 +1,24 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-233",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "739282",
+      "SLURM_ARRAY_JOB_ID": "739282",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-81f21c6b-40d5-aaa6-0c4e-06772eb42812, 00000000:46:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "fit": "quadric",
+  "targets": {
+    "native_relative": 1e-09,
+    "normal_reversal_relative": 1e-10
+  },
+  "scope": "Same-shape numerical conformance on three closed shapes at two resolutions plus a rank-deficient flat mesh; sign reversal and disconnected identity. Warm constructor measurements include allocations and synchronization, not scene throughput."
+}

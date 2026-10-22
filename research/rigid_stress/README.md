@@ -160,7 +160,13 @@ fixed-compliance contact control exposes a substantial facet/smooth-gap
 discrepancy. These controls do not qualify physical hollow-shell pressure.
 The normal-component buffer repair, failed controls and probe-coordinate
 sensitivity remain reproducible. Accepted Franka throughput and curved-source
-physical accuracy remain open.
+physical accuracy remain open. The subsequent shape-only quadric curvature
+fit reduces the actual first-contact pressure error from6.264% to1.683% against
+the retained smooth-gap reference, adding about0.667ms GPU initialization for
+the672-vertex control. CPU/GPU fits and curved-shell operator/probe checks pass.
+The coarse egg still has9.138% vertex-curvature RMS error, and the actual Franka
+frame remains refused by the unchanged material-geometry checks. This is
+pressure-input progress; accepted shell stress throughput remains required.
 
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
