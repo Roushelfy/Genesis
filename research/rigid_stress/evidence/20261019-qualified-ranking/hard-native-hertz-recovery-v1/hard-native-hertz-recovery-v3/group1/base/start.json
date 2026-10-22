@@ -1,0 +1,31 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-255",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "737887",
+      "SLURM_ARRAY_JOB_ID": "737887",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-e7ef1048-b6fa-60d8-77b6-c46d59dd577e, 00000000:C1:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "reference": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v1/group0/study/coarse.npz",
+    "bytes": 3514182,
+    "sha256": "17ccc12244bde2d898c2fdae4135a6cf50a40765ec38619e0ee3506c77902ed6"
+  },
+  "rotated": false,
+  "targets": {
+    "same_load_tensor": 1e-07,
+    "point_rhs": 0.0001,
+    "full_hertz_volume": 0.001,
+    "max_full": 1e-07
+  },
+  "scope": "Normal flat-patch finite-body correction inside the existing rigid StressModel, with two region slots and four independently loaded environments. Prescribed Hertz pressures, independent P2 elasticity and higher quadrature; not independent pressure prediction, arbitrary curved/nonconvex contact, friction memory or a moving scene."
+}

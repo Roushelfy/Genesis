@@ -1,0 +1,48 @@
+[
+  [
+    {
+      "name": "base",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_recovery",
+      "args": [
+        "--backend",
+        "cpu",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v1/group0/study/coarse.npz"
+      ]
+    },
+    {
+      "name": "rotated",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_recovery",
+      "args": [
+        "--backend",
+        "cpu",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v1/group0/study/coarse.npz",
+        "--rotated"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "base",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_recovery",
+      "args": [
+        "--backend",
+        "gpu",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v1/group0/study/coarse.npz"
+      ]
+    },
+    {
+      "name": "rotated",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_recovery",
+      "args": [
+        "--backend",
+        "gpu",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v1/group0/study/coarse.npz",
+        "--rotated"
+      ]
+    }
+  ]
+]

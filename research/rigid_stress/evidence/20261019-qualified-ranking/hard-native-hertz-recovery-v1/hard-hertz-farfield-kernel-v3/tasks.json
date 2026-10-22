@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "name": "check",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_farfield",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "check",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_farfield",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ]
+]
