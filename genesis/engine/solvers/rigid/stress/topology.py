@@ -13,14 +13,19 @@ class StressBoundaryTopology:
     opposite_vertices: np.ndarray
     neighbors: np.ndarray
     element_neighbors: np.ndarray
+    triangles: np.ndarray
 
 
-def build_surface_topology(tetrahedra: np.ndarray, surface: np.ndarray) -> StressBoundaryTopology:
+def build_surface_topology(
+    tetrahedra: np.ndarray, surface: np.ndarray, complete: bool = False
+) -> StressBoundaryTopology:
     """Associate each surface triangle with its unique material element and edge neighbors.
 
     Surface winding is unrestricted. Edges connect only matching vertex indices;
     coincident positions on separate surface sheets never create adjacency.
     A selected subset of the material boundary may have open edges.
+    Complete coverage appends omitted boundary faces while preserving supplied
+    face indices, including disconnected cavity surfaces.
     """
     local_faces = np.array([[1, 2, 3], [0, 2, 3], [0, 1, 3], [0, 1, 2]], dtype=gs.np_int)
     faces = np.sort(tetrahedra[:, local_faces].reshape((-1, 3)), axis=1)
@@ -36,6 +41,13 @@ def build_surface_topology(tetrahedra: np.ndarray, surface: np.ndarray) -> Stres
         gs.raise_exception("Each stress boundary triangle must have exactly one owning tetrahedron.")
     if len(np.unique(surface_faces)) != len(surface_faces):
         gs.raise_exception("Stress boundary triangles must not be duplicated, regardless of winding.")
+
+    if complete:
+        is_selected = np.zeros(len(unique), dtype=bool)
+        is_selected[surface_faces] = True
+        missing = np.flatnonzero((counts == 1) & ~is_selected)
+        surface = np.concatenate((surface, unique[missing]))
+        surface_faces = np.concatenate((surface_faces, missing))
 
     owners = np.full(len(unique), -1, dtype=gs.np_int)
     opposite_vertices = np.full(len(unique), -1, dtype=gs.np_int)
@@ -60,4 +72,6 @@ def build_surface_topology(tetrahedra: np.ndarray, surface: np.ndarray) -> Stres
     flat_neighbors = neighbors.reshape((-1,))
     flat_neighbors[first] = second // 3
     flat_neighbors[second] = first // 3
-    return StressBoundaryTopology(owners[surface_faces], opposite_vertices[surface_faces], neighbors, element_neighbors)
+    return StressBoundaryTopology(
+        owners[surface_faces], opposite_vertices[surface_faces], neighbors, element_neighbors, surface
+    )

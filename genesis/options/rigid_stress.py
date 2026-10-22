@@ -223,6 +223,8 @@ class RigidStressOptions(Options):
         half-space geometry and a representable force line. Sixteen radial
         intervals retain vector friction memory under changing normal and shear
         loads. Free couples and ambiguous history correspondence are rejected.
+        The finite-body correction includes every material boundary, including
+        cavity faces omitted from the asset's selected contact surface.
         A missing reduced modulus uses this material's
         E/(1-nu**2), declaring an infinitely stiff opposing material.
         """
