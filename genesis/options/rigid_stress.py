@@ -173,7 +173,8 @@ class RigidStressOptions(Options):
     poisson: Annotated[ValidFloat, Field(gt=-1.0, lt=0.5)] = 0.3
     density: PositiveFloat = 2000.0
     contact_radius: PositiveFloat = 0.006
-    contact_model: Literal["pressure", "intrinsic"] = "pressure"
+    contact_model: Literal["pressure", "intrinsic", "hertz"] = "pressure"
+    hertz_reduced_modulus: PositiveFloat | None = None
     load_transfer: Literal["patch", "resolved"] = "patch"
     intrinsic_integration: Literal["surface_fan", "anchor_fan"] = "surface_fan"
     intrinsic_support: Literal["contact", "pair_union"] = "contact"
@@ -213,6 +214,17 @@ class RigidStressOptions(Options):
     cached_face_bounds: StrictBool = True
     inverse_corrections: Annotated[int, Field(ge=0, le=8)] = 2
     preconditioner: Literal["diagonal", "block"] = "block"
+
+    @classmethod
+    def hertz(cls, *, mesh: PathType, quadrature: PositiveInt = 6, **options) -> Self:
+        """Estimate normal Hertz support from current curvature and rigid forces.
+
+        This route currently requires a locally planar material source, supported
+        half-space geometry and a centered normal wrench. Shear and free moments
+        remain explicit failures. A missing reduced modulus uses this material's
+        E/(1-nu**2), declaring an infinitely stiff opposing material.
+        """
+        return cls(mesh=mesh, contact_model="hertz", quadrature=quadrature, **options)
 
     @classmethod
     def dpr(cls, *, mesh: PathType, **options) -> Self:
