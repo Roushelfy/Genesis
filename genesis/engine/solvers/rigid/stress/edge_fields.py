@@ -41,6 +41,10 @@ def func_edge_transform(position: qd.types.vector(2), width: float, exponent: fl
     ratio = width * inverse
     argument = qd.Vector([1 - ratio[0], -ratio[1]])
     radius, angle = argument.norm(), qd.atan2(argument[1], argument[0])
+    if not position[1] > 0:
+        angle = 0.0
+        if argument[0] < 0:
+            angle = pi
     coefficient = pi * amplitude / qd.sin(pi * exponent)
     transform = qd.Vector.zero(gs.qd_float, 2)
     derivative = qd.Vector.zero(gs.qd_float, 2)
