@@ -1,16 +1,15 @@
 """Normal Hertz fields with a finite-domain regular elastic response."""
 
 from dataclasses import dataclass
-from math import pi
 from typing import ClassVar
 
 import quadrants as qd
 
 import genesis as gs
-from genesis.utils.array_class import DataKind, ErrorCode, V, V_MAT, V_VEC
+from genesis.utils.array_class import DataKind, ErrorCode, V, V_MAT, V_VEC, maybe_shape
 
 from .data import StressInfo, StressState
-from .hertz import StressHertzState, func_hertz_tensor, kernel_hertz_stress_quadrature
+from .hertz import StressHertzState, func_boussinesq_tensor, func_hertz_particular, kernel_hertz_stress_quadrature
 from .model import StressModel
 from .operators import func_shape_gradient
 from .provenance import func_closest_triangle
@@ -59,10 +58,14 @@ class StressHertzRecovery:
     and maximum principal stresses. Probe metadata must locate actual material.
     """
 
-    def __init__(self, n_envs: int, n_regions: int, n_queries: int = 0, output_mode: str = "max"):
+    def __init__(
+        self, n_envs: int, n_regions: int, n_queries: int = 0, output_mode: str = "max", far_field: bool = True
+    ):
         assert n_envs > 0 and n_regions > 0 and n_queries >= 0 and output_mode in ("max", "full")
         n_patches = n_envs * n_regions
         self.full = output_mode == "full"
+        self.far_field = far_field
+        self.has_queries = n_queries > 0
         self.frames = StressHertzFrames(
             center=V_VEC(3, dtype=gs.qd_float, shape=(n_patches,)),
             basis=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_patches,)),
@@ -70,7 +73,7 @@ class StressHertzRecovery:
         )
         self.queries = StressHertzQueryInfo(
             position=V_VEC(3, dtype=gs.qd_float, shape=(n_queries,)),
-            element=V(dtype=gs.qd_int, shape=(n_queries,)),
+            element=V(dtype=gs.qd_int, shape=maybe_shape((n_queries,), n_queries > 0)),
             barycentric=V_VEC(4, dtype=gs.qd_float, shape=(n_queries,)),
         )
         self.state = StressHertzRecoveryState(
@@ -131,27 +134,10 @@ class StressHertzRecovery:
             model.info,
             self.queries,
             self.full,
+            self.far_field,
+            self.has_queries,
         )
         kernel_hertz_combined_accept(state, self.state, self.full, errno)
-
-
-@qd.func
-def func_boussinesq_tensor(point: qd.types.vector(3), force: float, poisson: float):
-    radius, depth = point.norm(), point[2]
-    factor = force / (2 * pi)
-    tensor = (-3 * factor * depth / radius**5) * point.outer_product(point)
-    for i, j in qd.static(qd.ndrange(2, 2)):
-        tensor[i, j] += (
-            factor
-            * (1 - 2 * poisson)
-            * point[i]
-            * point[j]
-            * (2 * radius + depth)
-            / (radius**3 * (radius + depth) ** 2)
-        )
-    for i in qd.static(range(2)):
-        tensor[i, i] += factor * (1 - 2 * poisson) * (depth / radius**3 - 1 / (radius * (radius + depth)))
-    return tensor
 
 
 @qd.kernel
@@ -293,6 +279,8 @@ def kernel_hertz_combined_field(
     info: StressInfo,
     queries: StressHertzQueryInfo,
     full: qd.template(),
+    far_field: qd.template(),
+    has_queries: qd.template(),
 ):
     for i_b in range(state.status.shape[0]):
         stress_state.peak[i_b], state.tensile_peak[i_b] = 0.0, -float("inf")
@@ -303,8 +291,9 @@ def kernel_hertz_combined_field(
             bary[i_q % 4] = 1.0
             position = info.vertices[i_n]
         else:
-            i_extra = i_q - 4 * info.elements.shape[0]
-            i_e, bary, position = queries.element[i_extra], queries.barycentric[i_extra], queries.position[i_extra]
+            if qd.static(has_queries):
+                i_extra = i_q - 4 * info.elements.shape[0]
+                i_e, bary, position = queries.element[i_extra], queries.barycentric[i_extra], queries.position[i_extra]
         tensor = qd.Matrix.zero(gs.qd_float, 3, 3)
         if state.status[i_b] <= 1 and stress_state.valid[i_b]:
             valid = i_e >= 0 and i_e < info.elements.shape[0] and bary.min() >= -1e-10 and bary.max() <= 1 + 1e-10
@@ -335,10 +324,10 @@ def kernel_hertz_combined_field(
                         valid = valid and local[2] >= -epsilon
                         local[2] = qd.max(local[2], 0.0)
                         axes = hertz.axes[i_p]
-                        particular, resolved = func_hertz_tensor(
-                            local / axes[0], axes[1] / axes[0], poisson, quadrature
+                        particular, resolved = func_hertz_particular(
+                            local, axes, hertz.peak_pressure[i_p], hertz.force[i_p], poisson, quadrature, far_field
                         )
-                        tensor += hertz.peak_pressure[i_p] * (basis @ particular @ basis.transpose())
+                        tensor += basis @ particular @ basis.transpose()
                         valid = valid and resolved
                 valid = valid and tensor.norm() < float("inf")
             if not valid:
@@ -373,6 +362,9 @@ def kernel_hertz_combined_accept(
         stress_state.step_valid[i_b] = stress_state.step_valid[i_b] and state.status[i_b] <= 1
         if not stress_state.step_valid[i_b]:
             qd.atomic_or(errno[i_b], ErrorCode.INVALID_STRESS_LOAD)
+            if not stress_state.invalid_reported[i_b]:
+                stress_state.invalid_steps[i_b] += 1
+                stress_state.invalid_reported[i_b] = True
             stress_state.peak[i_b], state.tensile_peak[i_b] = float("nan"), float("nan")
             stress_state.step_peak[i_b] = float("nan")
         else:
