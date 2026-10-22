@@ -2,12 +2,14 @@
 
 Follow [the current hard-contact goal](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md).
 
-**Latest geometry direction, 2026-10-22:** use actual fingertip fillet/chamfer
-dimensions for the final edge-contact model. The user selected this geometry;
-the radius or chamfer dimensions are still pending. Check the existing assets
-and their source before choosing values. Preserve sharp-box studies as diagnostic
-evidence. Bind collision geometry, pressure geometry and physical-error claims
-to the same documented dimensions.
+**Latest geometry direction, 2026-10-22:** proceed with sharp edges first.
+This supersedes the preceding request to wait for actual fillet/chamfer
+dimensions. Continue the sharp-box contact model and its independent pressure,
+wrench and stress checks. State sampling depth and spatial resolution for peak
+results and check convergence at the edge singularity. Keep collision and
+pressure geometry consistent. Preserve the actual-geometry source inspection
+for a later rounded/chamfered variant; its missing edge radius is not a blocker
+for the current sharp-edge work.
 
 **Latest user priority, 2026-10-20:** implement inexpensive Hertz/thin-shell
 contact approximations first. Do not assume a deformable gripper pad or extend

@@ -1,11 +1,11 @@
 # Working on native rigid stress recovery
 
-**Latest geometry direction, 2026-10-22:** the user selected actual fingertip
-fillet/chamfer dimensions. Resolve them from the supplied dimensions or verified
-source geometry; the numeric dimensions remain pending. Preserve sharp-box
-calculations as diagnostics, and use matched documented collision/pressure
-geometry for final accuracy and throughput claims. This changes the boundary
-geometry requirement while retaining the cheap rigid-contact objective below.
+**Latest geometry direction, 2026-10-22:** proceed with sharp edges first.
+This supersedes the preceding fillet/chamfer dimension wait. Continue matched
+sharp-box collision/pressure geometry, independent physical checks and cheap
+native implementation. Report sampling depth/resolution and edge convergence
+with stress peaks; retain the actual-geometry inspection for a later variant.
+Unknown fillet dimensions do not block the current work.
 
 **Highest-priority user direction, 2026-10-20:** follow the
 [cheap hard-contact goal](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md)
