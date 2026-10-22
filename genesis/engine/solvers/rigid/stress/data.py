@@ -12,6 +12,7 @@ class StressInfo:
 
     vertices: qd.Tensor
     elements: qd.Tensor
+    element_neighbors: qd.Tensor
     surface_nodes: qd.Tensor
     surface_owners: qd.Tensor
     surface_opposite_vertices: qd.Tensor

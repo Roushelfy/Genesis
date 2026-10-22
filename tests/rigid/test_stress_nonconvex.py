@@ -111,6 +111,16 @@ def test_material_boundary_adjacency_uses_vertex_identity(nonconvex_material_mes
     )
     assert_equal(separate.neighbors[: len(surface)], topology.neighbors)
     assert_equal(separate.neighbors[len(surface) :], topology.neighbors + len(surface))
+    elements = topology.element_neighbors
+    assert_equal(separate.element_neighbors[: len(tetrahedra)], elements)
+    assert_equal(
+        separate.element_neighbors[len(tetrahedra) :], np.where(elements >= 0, elements + len(tetrahedra), -1)
+    )
+    for i_face in range(4):
+        active = elements[:, i_face] >= 0
+        shared = np.delete(tetrahedra[active], i_face, axis=1)
+        adjacent = tetrahedra[elements[active, i_face]]
+        assert_equal((shared[:, :, None] == adjacent[:, None, :]).any(axis=2).all(axis=1), True)
 
 
 @pytest.mark.required
@@ -123,6 +133,8 @@ def test_material_boundary_rejects_interior_and_duplicate_faces(nonconvex_materi
     faces, counts = np.unique(np.sort(tetrahedra[:, local_faces].reshape((-1, 3)), axis=1), axis=0, return_counts=True)
     with pytest.raises(gs.GenesisException, match="exactly one owning"):
         build_surface_topology(tetrahedra, faces[counts == 2][:1])
+    with pytest.raises(gs.GenesisException, match="at most two incident tetrahedra"):
+        build_surface_topology(np.tile(tetrahedra, (3, 1)), surface)
 
 
 @pytest.mark.required
