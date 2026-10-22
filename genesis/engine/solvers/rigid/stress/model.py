@@ -100,6 +100,7 @@ class StressModel:
         self.info = StressInfo(
             vertices=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes,)),
             elements=V(dtype=gs.qd_int, shape=(n_elements, 10)),
+            element_neighbors=V(dtype=gs.qd_int, shape=(n_elements, 4)),
             surface_nodes=V(dtype=gs.qd_int, shape=(len(surface), 6)),
             surface_owners=V(dtype=gs.qd_int, shape=(len(surface),)),
             surface_opposite_vertices=V(dtype=gs.qd_int, shape=(len(surface),)),
@@ -130,6 +131,7 @@ class StressModel:
         )
         self.info.vertices.from_numpy(xyz.astype(gs.np_float, copy=False))
         self.info.elements.from_numpy(elements.astype(gs.np_int, copy=False))
+        self.info.element_neighbors.from_numpy(boundary.element_neighbors)
         self.info.surface_nodes.from_numpy(surface_nodes.astype(gs.np_int, copy=False))
         self.info.surface_owners.from_numpy(boundary.owners)
         self.info.surface_opposite_vertices.from_numpy(boundary.opposite_vertices)
