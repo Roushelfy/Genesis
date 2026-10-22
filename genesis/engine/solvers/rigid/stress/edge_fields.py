@@ -90,7 +90,11 @@ def func_edge_particular(
     poisson: float,
     quadrature: qd.Tensor,
 ):
-    """Return a finite tensor and status: 0 finite, 2 invalid, 3 unbounded sharp edge."""
+    """Return a finite tensor and status: 0 finite, 2 invalid, 3 unbounded sharp edge.
+
+    Beyond eight maximum patch dimensions, four quadrature sources match the
+    pressure moments through second order for remote field evaluation.
+    """
     tensor, status = qd.Matrix.zero(gs.qd_float, 3, 3), 2
     is_valid = point.norm() < float("inf") and point[2] >= 0 and tangent.norm() < float("inf")
     is_valid = is_valid and width > 0 and half_length > 0 and width < float("inf") and half_length < float("inf")
@@ -103,56 +107,76 @@ def func_edge_particular(
         status = 3
         if not is_singular:
             status = 0
-            transform, derivative = qd.Vector.zero(gs.qd_float, 2), qd.Vector.zero(gs.qd_float, 2)
-            if profile > 0:
-                transform, derivative = func_edge_transform(
-                    qd.Vector([point[0], point[2]]), extent, exponent, amplitude
+            is_far = point.norm() >= 8 * qd.max(width, half_length)
+            depth = point[2]
+            if not is_far:
+                transform, derivative = qd.Vector.zero(gs.qd_float, 2), qd.Vector.zero(gs.qd_float, 2)
+                if profile > 0:
+                    transform, derivative = func_edge_transform(
+                        qd.Vector([point[0], point[2]]), extent, exponent, amplitude
+                    )
+                depth = qd.max(point[2], 0.001 * half_length)
+                transverse = point[0] - extent * (1 - exponent) / 2
+                square = transverse * transverse + depth * depth
+                density = 3 * force * profile / (4 * half_length)
+                transform -= density * qd.Vector([transverse, -depth]) / square
+                derivative += (
+                    density
+                    * depth
+                    * qd.Vector([transverse * transverse - depth * depth, -2 * transverse * depth])
+                    / square**2
                 )
-            depth = qd.max(point[2], 0.001 * half_length)
-            transverse = point[0] - extent * (1 - exponent) / 2
-            square = transverse * transverse + depth * depth
-            density = 3 * force * profile / (4 * half_length)
-            transform -= density * qd.Vector([transverse, -depth]) / square
-            derivative += (
-                density
-                * depth
-                * qd.Vector([transverse * transverse - depth * depth, -2 * transverse * depth])
-                / square**2
-            )
-            tensor[0, 0] = transform[1] + derivative[0] + tangent[0] * (-2 * transform[0] + derivative[1])
-            tensor[2, 2] = transform[1] - derivative[0] - tangent[0] * derivative[1]
-            tensor[0, 2] = -derivative[1] + tangent[0] * (transform[1] + derivative[0])
-            tensor[2, 0] = tensor[0, 2]
-            tensor[1, 1] = poisson * (tensor[0, 0] + tensor[2, 2])
-            tensor[0, 1], tensor[1, 0] = -tangent[1] * transform[0], -tangent[1] * transform[0]
-            tensor[1, 2], tensor[2, 1] = tangent[1] * transform[1], tangent[1] * transform[1]
-            tensor /= pi
-            distance = qd.max(qd.max(-point[0], point[0] - width), 0.0)
-            scale = qd.sqrt(distance * distance + depth * depth)
-            split = qd.min(qd.max(point[1], -half_length), half_length)
-            for i_s in range(2):
-                bounds = qd.Vector([-half_length, split])
-                if i_s > 0:
-                    bounds = qd.Vector([split, half_length])
-                if bounds[1] > bounds[0]:
-                    limits = qd.Vector.zero(gs.qd_float, 2)
+                tensor[0, 0] = transform[1] + derivative[0] + tangent[0] * (-2 * transform[0] + derivative[1])
+                tensor[2, 2] = transform[1] - derivative[0] - tangent[0] * derivative[1]
+                tensor[0, 2] = -derivative[1] + tangent[0] * (transform[1] + derivative[0])
+                tensor[2, 0] = tensor[0, 2]
+                tensor[1, 1] = poisson * (tensor[0, 0] + tensor[2, 2])
+                tensor[0, 1], tensor[1, 0] = -tangent[1] * transform[0], -tangent[1] * transform[0]
+                tensor[1, 2], tensor[2, 1] = tangent[1] * transform[1], tangent[1] * transform[1]
+                tensor /= pi
+            limits = qd.Matrix.zero(gs.qd_float, 2, 2)
+            scale = gs.qd_float(1.0)
+            n_samples = 4
+            if not is_far:
+                distance = qd.max(qd.max(-point[0], point[0] - width), 0.0)
+                scale = qd.sqrt(distance * distance + depth * depth)
+                split = qd.min(qd.max(point[1], -half_length), half_length)
+                for i_s in range(2):
+                    bounds = qd.Vector([-half_length, split])
+                    if i_s > 0:
+                        bounds = qd.Vector([split, half_length])
                     for i_d in qd.static(range(2)):
                         value = (bounds[i_d] - point[1]) / scale
-                        limits[i_d] = qd.log(qd.abs(value) + qd.sqrt(value * value + 1))
+                        limits[i_s, i_d] = qd.log(qd.abs(value) + qd.sqrt(value * value + 1))
                         if value < 0:
-                            limits[i_d] = -limits[i_d]
-                    for i_q in range(quadrature.shape[0]):
-                        rule = quadrature[i_q]
-                        coordinate = (limits.sum() + (limits[1] - limits[0]) * rule[0]) / 2
+                            limits[i_s, i_d] = -limits[i_s, i_d]
+                n_samples = 2 * quadrature.shape[0]
+            for i_q in range(n_samples):
+                source = qd.Vector.zero(gs.qd_float, 3)
+                load = force / 4
+                is_sample = True
+                if is_far:
+                    center = 2 * (1 - exponent) * width / 5
+                    spread = width * qd.sqrt(4 * (1 - exponent) * (3 + 2 * exponent) / 175)
+                    source[0] = center + (2 * (i_q // 2) - 1) * spread
+                    source[1] = (2 * (i_q % 2) - 1) * half_length / qd.sqrt(5.0)
+                else:
+                    i_s, i_r = i_q // quadrature.shape[0], i_q % quadrature.shape[0]
+                    lower, upper = limits[i_s, 0], limits[i_s, 1]
+                    is_sample = upper > lower
+                    if is_sample:
+                        rule = quadrature[i_r]
+                        coordinate = (lower + upper + (upper - lower) * rule[0]) / 2
                         exponential = qd.exp(coordinate)
                         along = point[1] + scale * (exponential - 1 / exponential) / 2
-                        measure = rule[1] * (limits[1] - limits[0]) * scale * (exponential + 1 / exponential) / 4
+                        measure = rule[1] * (upper - lower) * scale * (exponential + 1 / exponential) / 4
                         shape = qd.max(1 - (along / half_length) ** 2, 0.0)
                         source = qd.Vector([width * (1 - exponent) * shape / 2, along, 0.0])
-                        position = qd.Vector([point[0], point[1], depth]) - source
                         load = 3 * force * shape * measure / (4 * half_length)
-                        tensor += func_boussinesq_tensor(position, load, poisson)
-                        tensor += func_cerruti_tensor(position, load * tangent, poisson)
+                if is_sample:
+                    position = qd.Vector([point[0], point[1], depth]) - source
+                    tensor += func_boussinesq_tensor(position, load, poisson)
+                    tensor += func_cerruti_tensor(position, load * tangent, poisson)
             if not point[2] > 0:
                 pressure = func_edge_pressure(qd.Vector([point[0], point[1]]), width, half_length, exponent, amplitude)
                 for i_d in qd.static(range(3)):
