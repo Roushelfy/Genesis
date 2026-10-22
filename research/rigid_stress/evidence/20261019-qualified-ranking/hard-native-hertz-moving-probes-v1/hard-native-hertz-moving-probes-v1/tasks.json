@@ -1,0 +1,88 @@
+[
+  [
+    {
+      "name": "moving",
+      "module": "research.rigid_stress.qipc_comparison.check_moving_hertz_probes",
+      "args": [
+        "--backend",
+        "cpu",
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-farfield-controls-v5/group0/exact"
+      ]
+    },
+    {
+      "name": "rotated",
+      "module": "research.rigid_stress.qipc_comparison.check_moving_hertz_probes",
+      "args": [
+        "--backend",
+        "cpu",
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-farfield-controls-v5/group0/rotated-far"
+      ]
+    },
+    {
+      "name": "fixed",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_recovery",
+      "args": [
+        "--backend",
+        "cpu",
+        "--far-field",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v1/group0/study/coarse.npz"
+      ]
+    },
+    {
+      "name": "topology",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_probe_topology",
+      "args": [
+        "--backend",
+        "cpu",
+        "--source",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_moving_probes"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "moving",
+      "module": "research.rigid_stress.qipc_comparison.check_moving_hertz_probes",
+      "args": [
+        "--backend",
+        "gpu",
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-farfield-controls-v5/group0/exact"
+      ]
+    },
+    {
+      "name": "rotated",
+      "module": "research.rigid_stress.qipc_comparison.check_moving_hertz_probes",
+      "args": [
+        "--backend",
+        "gpu",
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-farfield-controls-v5/group0/rotated-far"
+      ]
+    },
+    {
+      "name": "fixed",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_recovery",
+      "args": [
+        "--backend",
+        "gpu",
+        "--far-field",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-hertz-residual-v1/group0/study/coarse.npz"
+      ]
+    },
+    {
+      "name": "topology",
+      "module": "research.rigid_stress.qipc_comparison.check_hertz_probe_topology",
+      "args": [
+        "--backend",
+        "cuda",
+        "--source",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_moving_probes"
+      ]
+    }
+  ]
+]

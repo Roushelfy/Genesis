@@ -160,3 +160,8 @@ component. The next delivery must connect actual contact/region/history and
 state-change paths, generate moving material probes, cover required curved and
 inner contacts and friction, and measure matching accepted max/full Franka
 throughput. The complete active goal remains open.
+
+The [moving-probe follow-up](NATIVE_MOVING_HERTZ_PROBES_20261022.md) now implements
+the material probe bank and measures its complete resident moving-input cost.
+The original fixed-query evidence and timings above remain bound to their own
+source/configuration; automatic live scene integration remains open.

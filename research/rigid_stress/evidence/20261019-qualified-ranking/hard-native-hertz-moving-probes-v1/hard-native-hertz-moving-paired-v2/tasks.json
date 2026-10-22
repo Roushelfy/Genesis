@@ -1,0 +1,55 @@
+[
+  [
+    {
+      "name": "exact",
+      "module": "research.rigid_stress.qipc_comparison.time_native_hertz_recovery",
+      "args": [
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-farfield-controls-v5/group0/exact",
+        "--moving-probes",
+        "--moving-centers",
+        "--quadrature",
+        "8"
+      ]
+    },
+    {
+      "name": "far",
+      "module": "research.rigid_stress.qipc_comparison.time_native_hertz_recovery",
+      "args": [
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-farfield-controls-v5/group0/exact",
+        "--moving-probes",
+        "--moving-centers",
+        "--quadrature",
+        "8",
+        "--far-field"
+      ]
+    },
+    {
+      "name": "q6",
+      "module": "research.rigid_stress.qipc_comparison.time_native_hertz_recovery",
+      "args": [
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-farfield-controls-v5/group0/exact",
+        "--moving-probes",
+        "--moving-centers",
+        "--quadrature",
+        "6",
+        "--far-field"
+      ]
+    },
+    {
+      "name": "q4",
+      "module": "research.rigid_stress.qipc_comparison.time_native_hertz_recovery",
+      "args": [
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-farfield-controls-v5/group0/exact",
+        "--moving-probes",
+        "--moving-centers",
+        "--quadrature",
+        "4",
+        "--far-field"
+      ]
+    }
+  ]
+]

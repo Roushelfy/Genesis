@@ -917,3 +917,16 @@ on data. Source checkouts `hard_contact_enrichment` and `hard_contact_farfield`
 remain in the workspace. All scientific execution uses Slurm `rtx-mid`, image
 `1_26`, the existing data-side environment and private node scratch. No existing
 dataset, environment or compatibility link is moved.
+
+Moving normal material probes use `hard-native-hertz-moving-probes-v1` through
+`v5`, `hard-native-hertz-moving-roundoff-v1`, paired cost `v1/v2` and saved-array
+inspection `v1/v2` under that data root. The `hard-native-hertz-moving-probes-v1`
+packet retains 399 compact payloads (1,965,299 bytes) and 285 external-array
+receipts. It preserves failed rotation/quadrature attempts and both strict
+corner-accuracy inspection failures, separately recording the preexisting
+engineering budgets. Complete moving fields, independent references, meshes
+and benchmark source/peak/status audits remain on data. The fixed experimental
+checkout is `.worktrees/hard_contact_moving_probes`, public source `a599b9c50`.
+Focused test sources and results are hash-bound to that source. Scientific work
+uses the established Slurm/image/environment and private node scratch; no live
+data, existing environment or compatibility link is moved.
