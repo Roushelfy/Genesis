@@ -1,0 +1,26 @@
+[
+  [
+    {
+      "name": "franka",
+      "module": "research.rigid_stress.qipc_comparison.check_live_curved_hertz_franka",
+      "args": [
+        "--stress-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/analytic.npz",
+        "--steps",
+        "30"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "franka",
+      "module": "research.rigid_stress.qipc_comparison.check_live_curved_hertz_franka",
+      "args": [
+        "--stress-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--steps",
+        "30"
+      ]
+    }
+  ]
+]
