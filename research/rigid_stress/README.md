@@ -11,12 +11,14 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current goal and verified scope
 
-The latest [curved Hertz source checks](docs/NATIVE_HOLLOW_EGG_ADMISSION_20261022.md#native-curved-hertz-sources-and-moving-material-probes)
-pass independent CPU/CUDA same-load fields, moving material probes and max/full
-controls. Both curved assets admit the first30 actual Franka steps (111 loaded
-environment-steps each). The longer grasp first rejects contact geometry at
-step108: the converged normal root lies2.052um beyond a finite finger-box face.
-A cheap finite-edge pressure estimate, gripper-contact admission and accepted
+The latest [finite-face checks](docs/NATIVE_HOLLOW_EGG_ADMISSION_20261022.md#same-substep-finite-face-boundaries-and-edge-pressure)
+record native boundaries at the contact evaluation pose. CPU/CUDA controls pass;
+all109 actual Franka frames retain positions, forces, histories and acceptance,
+with field differences at roundoff. The first rejected normal root lies1.817um
+beyond a finger-box face at step108. A nine-node circular edge-pressure lookup
+passes held-out circular controls but fails flatter rotated ellipses. An offline
+shifted trial passes those selected controls; it is not a qualified native
+pressure model. Moving source placement, gripper-contact admission and accepted
 max/full throughput remain open.
 
 

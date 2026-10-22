@@ -386,9 +386,10 @@ the other environments remain valid. The accepted prefix covers ground contact
 and approach. It does not qualify gripper closure/lift throughput. Every frame,
 including the first invalid result, remains available.
 
-A separate read-only CPU inspection identifies the exact finite-box gate:
+A separate read-only CPU inspection identifies the finite-box gate:
 the normal root residual is`3.20e-17`, with positive principal curvatures
-24.779/39.940 per metre, but its center lies2.052um beyond the selected box face.
+24.779/39.940 per metre. Its original2.052um excess used the box pose after
+integration; the same-substep capture below corrects that excess to1.817um.
 The half-extents are3/2/3.5mm. Source geometry is therefore outside the currently
 supported interior Hertz region even with a converged normal root. Relaxing the
 finite-face gate or tightening Newton/PCG tolerances would not validate pressure
@@ -401,6 +402,82 @@ The [curved-source packet](../evidence/20261019-qualified-ranking/hard-native-cu
 binds the executed native, affine regression and actual scene checks to their
 source commits. Reproduce its captured tasks with Slurm`rtx-mid`, image`1_26`, the
 existing data-side environment, fresh data outputs and private node caches.
+
+## Same-substep finite-face boundaries and edge pressure
+
+Experimental engine [`660c85e98`](https://github.com/Roushelfy/Genesis/commit/660c85e9859d54adaf3cf4e69e2a06025d392dff)
+retains the four finite-box half-planes in each Hertz region's tangent frame at
+the actual contact evaluation pose. Release and partial reset clear them.
+The existing root, curvature, finite-face and wrench gates are unchanged.
+CPU/CUDA sphere/box controls pass interior,2um exterior, rotated, released and
+restored cases. Independent box corners verify each recorded inequality.
+
+The actual B4 Franka run still first rejects at step108. Recorded face distances
+are4.842132,1.157868,-0.001816555 and7.001817mm: the converged normal root lies
+**1.816555um outside** the selected face. This supersedes the earlier2.051902um
+diagnostic based on the post-integration box pose. The old capture remains
+immutable. Comparing all109 saved frames preserves exact positions, rigid loads,
+history and acceptance. Maximum relative stress differences are below9.13e-16;
+curvature differs by at most7.11e-15 per metre and normalized wrench error by
+1.09e-15 absolute. The original exact-curvature comparison failure is retained;
+the corrected reader declares a1e-13 curvature roundoff budget while leaving
+production gates and the existing field budgets unchanged.
+
+A compact circular lookup uses nine dimensionless edge offsets from-1 to2,
+piecewise-linear support scale and a regular/edge pressure mixture. Training
+minimizes complementary energy, without using reference pressure as a fit target.
+Independent unilateral square-cell contact solves choose their own pressure and
+support. Held-out offsets-0.625,0.125 and0.75 give5.41–8.10% cell-pressure error,
+1.46–3.13% sampled tensor error and0.51–2.51% sampled von Mises peak error.
+These pass the declared15%/10%/15% engineering budgets.
+
+Circular parameters do not generalize sufficiently to flat ellipses. For axis
+ratio0.399887, the original lookup gives15.31%/17.25% pressure errors at0/45deg,
+so its campaigns remain FAILED. Fitting support scale, mixture and a tangential
+shift independently by complementary energy improves these selected cases:
+
+| Control | Pressure error | Sampled tensor error | Sampled VM peak error |
+| --- | ---: | ---: | ---: |
+| Captured root geometry, ratio0.727659 | 6.40% | 1.57% | 1.07% |
+| Flattened ellipse,0deg | 9.73% | 2.44% | 2.81% |
+| Flattened ellipse,45deg | 10.92% | 3.43% | 0.82% |
+
+The rotated flattened trial shifts3.1545um along the edge. These are offline
+fits (up to24.65s here), not runtime timings or a tested multidimensional table.
+For the captured-root control, reference48-to72 refinement changes the sampled
+tensor by1.05% and VM peak by1.96%; quadrature20-to40 changes trial cell forces
+by less than0.012%. Observations lie at positive depths0.25–2 major radii.
+The sharp-edge pressure is singular, and these samples do not qualify continuous
+surface/global peaks, shell fields or friction.
+
+The root-based pressure control also does not resolve actual source placement.
+Material contact positions and forces must be rotated into the world frame
+before comparing them with region geometry. The original lookup-v1 diagnostic
+mixed these frames; its actual-contact diagnostic is superseded byv2/v3, while
+its independent circular training and held-out controls remain valid. Correct
+conversion places the captured force line approximately6mm from the normal
+root. Native inputs already move the recovery source along the resultant force
+line to retain its wrench; a pressure estimate at the geometric root cannot be
+substituted for that source without a separate load/geometry assessment.
+
+An independent intersection with the captured quadratic material surface
+preserves the single-force wrench to3.37e-19Nm and locates the incoming outer
+face46. That point is197.2um from the collision witness, and its local normal
+differs14.53deg from the geometric root normal. It lies29.05um **outside a
+different box edge**; the local Hertz width toward that edge is45.14um. Thus a
+root-centered finite-edge correction alone cannot qualify this observed source.
+The collision/material surface correspondence and the load-compatible finite
+support need assessment before native pressure integration. The first inspector
+failed because it read transposed surface connectivity incorrectly; its corrected
+version and the original failure are both retained. This inspection establishes
+geometry/wrench facts, not physical pressure accuracy.
+
+The [finite-face packet](../evidence/20261019-qualified-ranking/hard-finite-edge-v1/README.md)
+retains original failures, corrected readers, exact native/worker sources and
+data-side array identities. Reuse its captured Slurm tasks with fresh explicit
+data outputs, image1_26 and the existing environment/private caches. Actual
+gripper admission and matched accepted pure-rigid/max/full throughput remain
+required. The whole goal stays active.
 
 ## Repair and reproduction
 

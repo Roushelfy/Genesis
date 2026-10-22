@@ -1,0 +1,94 @@
+{
+  "nodes": [
+    {
+      "offset": -1.0,
+      "scale": 1.0,
+      "fraction": 0.0,
+      "source": "unclipped Hertz limit"
+    },
+    {
+      "offset": -0.75,
+      "scale": 1.005710935437246,
+      "fraction": 0.11453568744738578,
+      "source": "new circular variational fit"
+    },
+    {
+      "offset": -0.5,
+      "scale": 1.0295059362110377,
+      "fraction": 0.2727643697928215,
+      "source": "retained circular variational fit"
+    },
+    {
+      "offset": -0.25,
+      "scale": 1.075057877105449,
+      "fraction": 0.4232085540506414,
+      "source": "new circular variational fit"
+    },
+    {
+      "offset": 0.0,
+      "scale": 1.1469068692229598,
+      "fraction": 0.5557004684033017,
+      "source": "retained circular variational fit"
+    },
+    {
+      "offset": 0.25,
+      "scale": 1.2460485486715112,
+      "fraction": 0.6689198897077375,
+      "source": "new circular variational fit"
+    },
+    {
+      "offset": 0.5,
+      "scale": 1.3712938243718267,
+      "fraction": 0.7656109158645906,
+      "source": "retained circular variational fit"
+    },
+    {
+      "offset": 1.0,
+      "scale": 1.6852128273345799,
+      "fraction": 0.9209085809023435,
+      "source": "new circular variational fit"
+    },
+    {
+      "offset": 2.0,
+      "scale": 2.461536146222422,
+      "fraction": 1.0,
+      "source": "retained circular variational fit"
+    }
+  ],
+  "training": [
+    {
+      "offset": -0.75,
+      "seconds": 1.2343566790223122,
+      "evaluations": 22,
+      "energy": 0.6013506699428388
+    },
+    {
+      "offset": -0.25,
+      "seconds": 0.9929048239719123,
+      "evaluations": 18,
+      "energy": 0.6472925296051278
+    },
+    {
+      "offset": 0.25,
+      "seconds": 1.033919992041774,
+      "evaluations": 19,
+      "energy": 0.8212131818147399
+    },
+    {
+      "offset": 1.0,
+      "seconds": 1.118428077083081,
+      "evaluations": 21,
+      "energy": 1.4405686076055142
+    }
+  ],
+  "prior": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-v2/group0/study/result.json",
+    "bytes": 26756,
+    "sha256": "96bfeb073acab8ec36f3aaa11119374efd2989dcbb7814d0c0abe798da5f02a9"
+  },
+  "interpolation": "piecewise linear",
+  "supported_offset_interval": [
+    -1,
+    2
+  ]
+}

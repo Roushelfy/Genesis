@@ -60,7 +60,7 @@ def kernel_boundary_diagnostic(
                 output[i_b, i_c, side, 12 + j] = direction[j]
 
 
-def diagnose(workload, output, step):
+def diagnose(workload, output, step, is_boundary_capture):
     solver = workload.scene.rigid_solver
     entry = solver.stress_recovery.links[0]
     regions = entry.hertz.regions.state
@@ -97,6 +97,14 @@ def diagnose(workload, output, step):
         curvature_status=array(solver.stress_recovery.curvature.info.status),
         curvature_weight=array(solver.stress_recovery.curvature.info.vertices_weight),
     )
+    if is_boundary_capture:
+        np.savez_compressed(
+            output / f"boundaries{step:04d}.npz",
+            planes=array(regions.boundary_planes),
+            count=array(regions.n_boundaries),
+            normal=array(regions.normal),
+            tangent=array(regions.tangent),
+        )
     active = array(entry.contacts.valid) & (np.linalg.norm(array(entry.contacts.force), axis=2) > 0)
     write_json(
         output / "geometry.json",
@@ -137,6 +145,7 @@ def main():
     cli.add_argument("--stress-mesh", type=Path, required=True)
     cli.add_argument("--steps", type=int, default=30)
     cli.add_argument("--diagnose", action="store_true")
+    cli.add_argument("--boundary-planes", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -174,13 +183,13 @@ def main():
             rows.append(capture(workload, args.output, step))
             if args.diagnose:
                 write_json(args.output / "result.json", {"passed": False, "rows": rows, "whole_goal_complete": False})
-            diagnose(workload, args.output, step)
+                diagnose(workload, args.output, step, args.boundary_planes)
             raise
         rows.append(capture(workload, args.output, step))
         write_json(args.output / "progress.json", {"rows": rows})
         if args.diagnose and not all(rows[-1]["accepted"]):
             write_json(args.output / "result.json", {"passed": False, "rows": rows, "whole_goal_complete": False})
-            diagnose(workload, args.output, step)
+            diagnose(workload, args.output, step, args.boundary_planes)
             raise AssertionError(f"First invalid stress observation at step {step}")
     assert any(any(row["loaded"]) for row in rows)
     assert all(all(row["accepted"]) for row in rows)

@@ -1,5 +1,17 @@
 # Rigid-stress data and artifact locations
 
+The `hard-finite-edge-v1` packet retains213 compact payloads/1,343,627bytes
+and240 external receipts. Same-substep face-boundary capture, CPU/CUDA controls,
+independent edge-pressure trials and saved-frame/force-line inspections use
+`hard-finite-edge-*` below the established20261019 ranking data root. Nine
+submitted campaigns are terminal; the unsubmitted sparse-checkout preflight,
+original failed readers and rejected pressure models remain preserved. Full
+arrays, scene frames and generated meshes stay on data. Source/docs remain in
+workspace. The new engine `hard_contact_finite_edge` is frozen at`660c85e98`,
+with23 frozen heads and the original12 unfinished files preserved. Scientific
+execution uses Slurm`rtx-mid`, image`1_26`, the existing data-side environment
+and private node caches. No data, active environment or compatibility link moved.
+
 The `hard-native-curved-source-v1` packet retains249 compact payloads/
 1,407,781bytes and509 external receipts. Native curved-source CPU/CUDA fields,
 actual Franka frames, the refused gripper contact and geometry diagnosis all
