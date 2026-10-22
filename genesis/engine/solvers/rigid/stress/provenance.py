@@ -148,6 +148,13 @@ def func_closest_triangle(i_f: int, point: qd.types.vector(3), surface_info: Str
 
 
 @qd.func
+def func_source_distance_bound(i_f: int, point: qd.types.vector(3), surface_info: StressSurfaceInfo):
+    """Bound squared distance to a face by its immutable enclosing box."""
+    outside = qd.max(surface_info.face_bounds_low[i_f] - point, point - surface_info.face_bounds_high[i_f], 0.0)
+    return outside.dot(outside)
+
+
+@qd.func
 def func_same_surface_feature(
     first_face: int,
     second_face: int,
@@ -244,25 +251,28 @@ def func_resolve_sources(
                         distance = (position - witness).norm()
                 else:
                     for i_f in range(surface_info.face_origin.shape[0]):
-                        candidate, candidate_bary = func_closest_triangle(i_f, witness, surface_info)
-                        candidate_distance = (candidate - witness).norm()
-                        if candidate_distance < distance:
-                            # A shared edge/vertex has several equivalent closest faces. Keep the first
-                            # representative within the existing transform-roundoff budget so a one-ulp
-                            # frame change cannot select another port graph and change the finite profile.
-                            is_equivalent = False
-                            if (
-                                nearest_face >= 0
-                                and distance - candidate_distance <= tolerance
-                                and (candidate - position).norm() <= tolerance
-                            ):
-                                is_equivalent = func_same_surface_feature(
-                                    nearest_face, i_f, position, tolerance, stress_info
-                                )
-                            if not is_equivalent:
-                                distance = candidate_distance
-                                nearest_face = i_f
-                                position, bary = candidate, candidate_bary
+                        # Padding retains every transform-roundoff tie that can
+                        # select the canonical representative of a shared feature
+                        if func_source_distance_bound(i_f, witness, surface_info) <= (distance + tolerance) ** 2:
+                            candidate, candidate_bary = func_closest_triangle(i_f, witness, surface_info)
+                            candidate_distance = (candidate - witness).norm()
+                            if candidate_distance < distance:
+                                # A shared edge/vertex has several equivalent closest faces. Keep the first
+                                # representative within the existing transform-roundoff budget so a one-ulp
+                                # frame change cannot select another port graph and change the finite profile.
+                                is_equivalent = False
+                                if (
+                                    nearest_face >= 0
+                                    and distance - candidate_distance <= tolerance
+                                    and (candidate - position).norm() <= tolerance
+                                ):
+                                    is_equivalent = func_same_surface_feature(
+                                        nearest_face, i_f, position, tolerance, stress_info
+                                    )
+                                if not is_equivalent:
+                                    distance = candidate_distance
+                                    nearest_face = i_f
+                                    position, bary = candidate, candidate_bary
             if source_state.has_vertex_ambiguity[i_c, i_b]:
                 source_state.status[i_c, i_b] = StressSourceStatus.AMBIGUOUS
             elif not valid:
@@ -272,21 +282,23 @@ def func_resolve_sources(
             else:
                 if source_state.witness_face[i_c, i_b] < 0:
                     for i_f in range(surface_info.face_origin.shape[0]):
-                        candidate, candidate_bary = func_closest_triangle(i_f, witness, surface_info)
-                        if (candidate - witness).norm() <= distance + 2.0 * uncertainty + tolerance:
-                            separation = (candidate - position).norm()
-                            is_equivalent = False
-                            if separation <= tolerance:
-                                is_equivalent = func_same_surface_feature(
-                                    nearest_face, i_f, position, tolerance, stress_info
-                                )
-                            elif separation <= 2.0 * uncertainty + tolerance:
-                                # A resolved local planar displacement is one surface source, not another branch.
-                                is_equivalent = func_surface_segment(
-                                    nearest_face, i_f, position, candidate, stress_info, surface_info
-                                )
-                            if not is_equivalent:
-                                source_state.status[i_c, i_b] = StressSourceStatus.AMBIGUOUS
+                        reach = distance + 2.0 * uncertainty + tolerance
+                        if func_source_distance_bound(i_f, witness, surface_info) <= reach * reach:
+                            candidate, candidate_bary = func_closest_triangle(i_f, witness, surface_info)
+                            if (candidate - witness).norm() <= reach:
+                                separation = (candidate - position).norm()
+                                is_equivalent = False
+                                if separation <= tolerance:
+                                    is_equivalent = func_same_surface_feature(
+                                        nearest_face, i_f, position, tolerance, stress_info
+                                    )
+                                elif separation <= 2.0 * uncertainty + tolerance:
+                                    # A resolved local planar displacement is one surface source, not another branch.
+                                    is_equivalent = func_surface_segment(
+                                        nearest_face, i_f, position, candidate, stress_info, surface_info
+                                    )
+                                if not is_equivalent:
+                                    source_state.status[i_c, i_b] = StressSourceStatus.AMBIGUOUS
                 if source_state.status[i_c, i_b] == StressSourceStatus.SUCCESS:
                     contact_state.center[i_c, i_b] = position
                     contact_state.anchor_face[i_c, i_b] = nearest_face
