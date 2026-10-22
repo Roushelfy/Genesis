@@ -39,7 +39,9 @@ def func_edge_transform(position: qd.types.vector(2), width: float, exponent: fl
     square = position.dot(position)
     inverse = qd.Vector([position[0], -position[1]]) / square
     ratio = width * inverse
-    argument = qd.Vector([1 - ratio[0], -ratio[1]])
+    argument = (
+        qd.Vector([(position[0] - width) * position[0] + position[1] * position[1], width * position[1]]) / square
+    )
     radius, angle = argument.norm(), qd.atan2(argument[1], argument[0])
     if not position[1] > 0:
         angle = 0.0
