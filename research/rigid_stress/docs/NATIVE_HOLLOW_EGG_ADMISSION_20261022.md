@@ -185,6 +185,92 @@ the probes' declared exact local coordinates, matching the existing production
 definition, and separately records that round-trip sensitivity. The original
 field assertion failures remain preserved.
 
+## Curvature correction and curved rest-geometry control
+
+The first loaded Franka frame also exposes a pressure-estimation error before
+the separate geometry refusal. With the captured0.062275N load and fixed
+half-space compliance, an independent unilateral contact solve on the analytic
+smooth egg gives6.264% pressure-cell error for the original native Hertz law.
+Analytic egg curvature reduces that error to1.365%. The32/48-cell reference
+changes0.051% in sampled positive-depth stress and0.064% in pressure second
+moment. These local controls exclude finite-shell compliance and global peaks.
+
+Source[`e7e49b738`](https://github.com/Roushelfy/Genesis/commit/e7e49b738e425f9a25227929262122bcd1f35340)
+fits an implicit local quadric to adjacent positions and normal directions
+once per shared shape, entirely in Quadrants. A scaled six-coefficient fit
+updates the cached tangent curvature. Rank-deficient fits retain the original
+face-derivative estimate and expose a false`vertices_quadric_valid` flag.
+Current-frame queries, source identity, pressure law and recovery acceptance
+are unchanged. No per-step fit or contact solve is added.
+
+The independent comparison uses the imported mesh's actual normals. At the
+first contact, the quadric candidate gives1.683% pressure and0.494% sampled
+tensor error, versus6.264%/2.412% for face averaging. A direct vertex-normal
+derivative fit gives2.150%/0.749%; the quadric fit is retained for its broader
+shape improvement. Whole-surface vertex-curvature RMS remains resolution
+dependent:
+
+| Shape and mesh | Face averaging | Quadric fit |
+| --- | ---: | ---: |
+| Ellipsoid,80 faces |18.309%|5.507%|
+| Egg,80 faces |17.356%|9.138%|
+| Egg,320 faces |6.120%|3.659%|
+| Egg,1280 faces |2.159%|1.709%|
+
+Thus coarse vertex curvature is improved but does not meet the5% RMS target
+everywhere. Interpolation between vertices contributes additional error:
+the existing native face-centroid control still measures5.741% on the80-face
+sphere and14.193% on the80-face ellipsoid. The local first-contact result
+does not qualify arbitrary moving contacts or an entire shell.
+
+CPU/GPU fits agree with an independent least-squares implementation below
+`2.26e-14` relative over six closed mesh controls. Normal reversal preserves
+signed curvature within`1.08e-14`; exact planar input uses the explicit
+rank-deficient fallback. The2406-query disconnected-surface control preserves
+all selected faces in three rigid frames. Existing region splitting, movement,
+release, invalid-input and rotated-frame controls pass on both backends.
+
+For672 vertices, five warmed inclusive constructor measurements give median
+CPU2.017→4.965ms and GPU1.436→2.102ms. The additional persistent flag storage
+is672bytes; transient fit buffers total233,856bytes. These measurements include
+allocation and synchronization and quantify preprocessing only. They are not
+module or scene throughput measurements. The actual four-environment Franka
+rollout still rejects all four loaded environments at step10 with recovery
+status2 and valid contact inputs. No rejected step counts as a useful update.
+The actual native snapshot comparison confirms the1.683%/0.494% local
+pressure/tensor result, with15 rigid/contact/frame/status arrays exactly equal
+to the baseline. Its sampled VM/tensile-peak errors are0.965%/0.0181%.
+
+A separate quadratic rest-surface candidate preserves every original vertex
+and uses shared edge nodes constrained by endpoint tangent planes. On the
+80-face egg, its sampled cell Jacobians remain positive, but analytic-normal
+curvature error is13.715% and the maximum cross-edge normal jump is6.244°.
+Area-weighted normals give14.811% and6.236°. Its local half-space reference
+differs3.257%/3.778% in sampled tensor from the analytic egg; neither curvature
+nor tangent continuity is generally qualified at this resolution. At1280faces,
+the analytic-normal reconstruction meets the declared geometry checks.
+
+The curved candidate nevertheless supports a consistent independent P2
+elasticity discretization. Both normal choices pass the all-boundary uniform
+traction test at quadrature orders8/9: uniform stress error is below`8e-12`,
+load consistency below`2.67e-13`, and mass changes below`4.3e-15`. This tests
+curved Jacobians, stiffness, consistent mass and rigid modes. All89 contact
+probes can be shifted onto the curved boundary and located inside curved
+material; the maximum surface shift is46.64nm and inverse-map error is below
+`1.42e-17m`. The corresponding unmodified tangent probes remain invalid in
+the original faceted domain. These are operator/geometry controls, not contact
+stress or pressure validation, and no production material geometry is changed.
+
+The [curvature and curved-geometry packet](../evidence/20261019-qualified-ranking/hard-native-quadric-curvature-v1/README.md)
+retains all actual successes and failures. Failed attempts include a misplaced
+test option, an imported flat mesh that was thickened, thin-cell global inverse
+mapping, a JSON scalar and an unavailable order10 tetrahedron rule. The final
+boundary integration uses each face's known local chart and supported orders8/9.
+Reproduce with captured tasks, immutable sources, Slurm`rtx-mid`, image`1_26`
+and fresh explicit data outputs. Continue with consistent curved-source
+traction and native material geometry, matched stress error and accepted
+Franka max/full throughput; the complete goal remains open.
+
 ## Repair and reproduction
 
 Source[`d26b5b3d4`](https://github.com/Roushelfy/Genesis/commit/d26b5b3d46efe614ed715fef293f8cc49bcdf0c7)

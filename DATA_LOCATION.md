@@ -1,5 +1,17 @@
 # Rigid-stress data and artifact locations
 
+The `hard-native-quadric-curvature-v1` packet retains345 compact payloads/
+1,988,937bytes and121 externally hashed fields and generated meshes. Curved
+rest-surface/gap studies, native curvature controls, actual Franka snapshots
+and independent curved P2 checks use the existing`20261019-qualified-ranking`
+data root under`hard-quadratic-rest-surface-*`, `hard-curved-contact-gap-*`,
+`hard-vertex-curvature-*`, `hard-native-quadric-*` and`hard-curved-shell-operators-*`.
+All12 campaigns are terminal; original failures remain intact. Runtime arrays
+and logs stay on data, with private node-local compiler caches. All20 frozen
+engine heads and12 original unrelated files are preserved. Source/docs stay
+in workspace. The new native implementation is commit`e7e49b738`; successful
+curvature and curved-operator workers are captured in their v3/v4 campaigns.
+
 The `hard-native-parallel-boundary-v1` packet retains227 compact payloads/
 1,306,754 bytes and100 externally hashed arrays. The geometry-gap control,
 complete-shell module timings, parallel CPU/GPU checks, independent fields,

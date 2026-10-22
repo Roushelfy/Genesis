@@ -1,0 +1,48 @@
+[
+  [
+    {
+      "name": "quadric",
+      "module": "research.rigid_stress.qipc_comparison.check_quadric_curvature",
+      "args": [
+        "--backend",
+        "cpu",
+        "--fit",
+        "quadric"
+      ]
+    },
+    {
+      "name": "baseline",
+      "module": "research.rigid_stress.qipc_comparison.check_quadric_curvature",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_parallel_boundary",
+      "args": [
+        "--backend",
+        "cpu",
+        "--fit",
+        "baseline"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "quadric",
+      "module": "research.rigid_stress.qipc_comparison.check_quadric_curvature",
+      "args": [
+        "--backend",
+        "gpu",
+        "--fit",
+        "quadric"
+      ]
+    },
+    {
+      "name": "baseline",
+      "module": "research.rigid_stress.qipc_comparison.check_quadric_curvature",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_parallel_boundary",
+      "args": [
+        "--backend",
+        "gpu",
+        "--fit",
+        "baseline"
+      ]
+    }
+  ]
+]
