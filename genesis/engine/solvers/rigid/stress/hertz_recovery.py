@@ -1,4 +1,4 @@
-"""Normal Hertz fields with a finite-domain regular elastic response."""
+"""Hertz normal and radial friction fields with a finite-domain regular elastic response."""
 
 from dataclasses import dataclass
 from typing import ClassVar
@@ -47,13 +47,13 @@ class StressHertzRecoveryState:
 
 
 class StressHertzRecovery:
-    """Recover normal contacts whose footprints lie on supported flat patches.
+    """Recover normal and tangential contacts on supported flat patches.
 
     Regions use region-major flattened arrays, with environment as the inner
     dimension. The supplied frame's third column points into material. The
     actual anchor and a four-major-radius clearance from noncoplanar boundaries
     are checked. Material outside a region's half-space is rejected explicitly.
-    This normal-only component does not infer contact association or friction.
+    Optional shear data supplies the radial friction history for each region.
 
     Complete output retains all element corners in StressState and additional
     material probes in this component. Both banks contribute to the sampled VM
@@ -81,9 +81,9 @@ class StressHertzRecovery:
         self.shear = shear
         if self.shear is None:
             self.shear = StressHertzShear(
-                friction=V(dtype=gs.qd_float, shape=(0,)),
-                force=V_VEC(2, dtype=gs.qd_float, shape=(0,)),
-                coefficients=V_VEC(2, dtype=gs.qd_float, shape=(0, 0)),
+                friction=V(dtype=gs.qd_float, shape=()),
+                force=V_VEC(2, dtype=gs.qd_float, shape=()),
+                coefficients=V_VEC(2, dtype=gs.qd_float, shape=()),
             )
         self.moving_probes, self.probe_walk_steps = moving_probes, probe_walk_steps
         n_probes = 89 if moving_probes else 0

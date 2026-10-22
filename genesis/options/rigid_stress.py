@@ -217,11 +217,13 @@ class RigidStressOptions(Options):
 
     @classmethod
     def hertz(cls, *, mesh: PathType, quadrature: PositiveInt = 8, **options) -> Self:
-        """Estimate normal Hertz support from current curvature and rigid forces.
+        """Estimate Hertz support and friction stress from current rigid contacts.
 
         This route currently requires a locally planar material source, supported
-        half-space geometry and a centered normal wrench. Shear and free moments
-        remain explicit failures. A missing reduced modulus uses this material's
+        half-space geometry and a representable force line. Sixteen radial
+        intervals retain vector friction memory under changing normal and shear
+        loads. Free couples and ambiguous history correspondence are rejected.
+        A missing reduced modulus uses this material's
         E/(1-nu**2), declaring an infinitely stiff opposing material.
         """
         return cls(mesh=mesh, contact_model="hertz", quadrature=quadrature, **options)
