@@ -96,8 +96,35 @@ def main():
         directions = planes[:, :2] @ region_basis.T @ rotation.as_matrix() @ principal_basis
         widths = np.linalg.norm(directions * axes, axis=1) / np.linalg.norm(planes[:, :2], axis=1)
         moment = np.cross(point - center, force)
+        edge_norms = np.linalg.norm(planes[:, :2], axis=1)
+        root_margins = planes[:, 2] / edge_norms
+        world_force = rotation.apply(force)
+        root_axes, root_principal, _, _ = ellipse(
+            -world_force @ region_normal, 1e10 / 0.91, frame["region_curvature_per_m"][i_b, i_c]
+        )
+        root_rotation = np.array([[root_principal[0], -root_principal[1]], [root_principal[1], root_principal[0]]])
+        root_widths = np.linalg.norm((planes[:, :2] @ root_rotation) * root_axes, axis=1) / edge_norms
+        world_point = rotation.apply(point) + frame["frame_position_m"][i_b]
+        contact_offset = (world_point - frame["region_center_m"][i_b, i_c]) @ region_basis
+        contact_margins = (planes[:, 2] - planes[:, :2] @ contact_offset) / edge_norms
+        world_collision_normal = rotation.apply(frame["contact_normal"][i_b, i_c])
+        world_collision_normal /= np.linalg.norm(world_collision_normal)
+        box_axes = np.vstack((region_normal, planes[[0, 2], :2] @ region_basis.T))
+        box_axes /= np.linalg.norm(box_axes, axis=1)[:, None]
+        collision_axis_cosines = box_axes @ world_collision_normal
         rows.append(
             {
+                "normal_root_finite_face_margins_m": root_margins.tolist(),
+                "normal_root_hertz_axes_m": root_axes.tolist(),
+                "normal_root_hertz_edge_widths_m": root_widths.tolist(),
+                "normal_root_margin_over_hertz_width": (root_margins / root_widths).tolist(),
+                "collision_point_finite_face_margins_m": contact_margins.tolist(),
+                "collision_normal_to_opponent_face_normal_degrees": float(
+                    np.rad2deg(np.arccos(np.clip(-world_collision_normal @ region_normal, -1, 1)))
+                ),
+                "collision_normal_box_axis_cosines": collision_axis_cosines.tolist(),
+                "collision_normal_convention": "Captured normal points inward on the stress link; the selected opponent face normal is negative region_normal.",
+                "collision_normal_dominant_axis_is_selected_face": bool(np.argmax(np.abs(collision_axis_cosines)) == 0),
                 "environment": int(i_b),
                 "contact": int(i_c),
                 "region_status": int(frame["region_status"][i_b, i_c]),

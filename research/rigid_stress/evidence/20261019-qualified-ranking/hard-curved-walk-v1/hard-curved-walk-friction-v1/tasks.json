@@ -1,0 +1,42 @@
+[
+  [
+    {
+      "name": "curved-friction",
+      "module": "research.rigid_stress.qipc_comparison.check_curved_friction_binding",
+      "args": [
+        "--backend",
+        "cpu",
+        "--curved",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz"
+      ]
+    },
+    {
+      "name": "affine-friction",
+      "module": "research.rigid_stress.qipc_comparison.check_native_friction_binding",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "curved-friction",
+      "module": "research.rigid_stress.qipc_comparison.check_curved_friction_binding",
+      "args": [
+        "--backend",
+        "gpu",
+        "--curved",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz"
+      ]
+    },
+    {
+      "name": "affine-friction",
+      "module": "research.rigid_stress.qipc_comparison.check_native_friction_binding",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ]
+]

@@ -1,0 +1,34 @@
+[
+  [
+    {
+      "name": "force-line-0",
+      "module": "research.rigid_stress.qipc_comparison.inspect_hertz_force_line",
+      "args": [
+        "--frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-matched-collision-franka-v2/group0/franka/frame0108.npz",
+        "--boundaries",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-matched-collision-franka-v2/group0/franka/boundaries0108.npz"
+      ]
+    },
+    {
+      "name": "force-line-1",
+      "module": "research.rigid_stress.qipc_comparison.inspect_hertz_force_line",
+      "args": [
+        "--frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-matched-collision-franka-v2/group1/franka/frame0106.npz",
+        "--boundaries",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-matched-collision-franka-v2/group1/franka/boundaries0106.npz"
+      ]
+    },
+    {
+      "name": "force-line-2",
+      "module": "research.rigid_stress.qipc_comparison.inspect_hertz_force_line",
+      "args": [
+        "--frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-matched-collision-franka-v2/group2/franka/frame0106.npz",
+        "--boundaries",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-matched-collision-franka-v2/group2/franka/boundaries0106.npz"
+      ]
+    }
+  ]
+]
