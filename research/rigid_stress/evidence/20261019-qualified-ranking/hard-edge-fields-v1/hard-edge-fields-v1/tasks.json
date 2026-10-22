@@ -1,0 +1,33 @@
+[
+  [
+    {
+      "name": "controls",
+      "module": "research.rigid_stress.qipc_comparison.study_edge_fields",
+      "args": []
+    }
+  ],
+  [
+    {
+      "name": "fields",
+      "module": "research.rigid_stress.qipc_comparison.study_edge_fields",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-far-edge-contact-v2/group0/edge",
+        "--coupling",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-shear-coupling-v2/group1/coupling"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "fields",
+      "module": "research.rigid_stress.qipc_comparison.study_edge_fields",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-far-edge-contact-v2/group1/edge",
+        "--coupling",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-shear-coupling-v2/group2/coupling"
+      ]
+    }
+  ]
+]

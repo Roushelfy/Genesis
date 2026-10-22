@@ -1,5 +1,18 @@
 # Rigid-stress data and artifact locations
 
+The `hard-edge-fields-v1` packet retains 293 compact payloads / 1,613,039 bytes
+and 22 external receipts. Eight terminal campaigns cover continuous sharp-edge
+fields, native CPU/GPU 32/64-bit evaluation and timings, original endpoint and
+frame-orientation failures, curved-shell source-placement response and a smooth
+shell-tilt diagnostic. Full arrays and job logs remain below the established
+`20261019-qualified-ranking` data root in `hard-edge-fields-*`,
+`hard-native-edge-fields-*`, `hard-edge-source-response-*` and
+`hard-edge-shell-tilt-*`. Engine `hard_contact_edge_fields` is frozen at
+`e64780805`, with 28 frozen heads and 12 original unfinished files preserved.
+Source and compact publication evidence stay in workspace. Scientific execution
+uses Slurm `rtx-mid`, image `1_26`, the existing data-side environment and
+private node caches. No data, environment or compatibility link moved.
+
 The `hard-edge-law-v1` packet retains 174 compact payloads / 771,900 bytes
 and 34 external receipts. Five terminal campaigns cover independent
 shear-coupled sharp-edge pressure, the unfitted slender-edge law, and native

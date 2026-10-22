@@ -15,13 +15,14 @@ from .study_franka_contact_gap import von_mises
 from .study_quadratic_rest_surface import quadratic_basis
 
 
-def projected_surface(nodes, face_normals, targets, plane, normal, witness):
+def projected_surface(nodes, face_normals, targets, plane, normal, witness, *, return_geometry=False):
     """Intersect parallel lines with facing quadratic faces in bounded vectorized blocks."""
     chord = (nodes[:, 1:3] - nodes[:, :1]).transpose(0, 2, 1)
     chart = plane @ chord
     selected = np.abs(np.linalg.det(chart)) > 1e-10 * np.linalg.norm(chart, axis=(1, 2)) ** 2
+    face_indices = np.flatnonzero(selected)
     nodes, face_normals, chart = nodes[selected], face_normals[selected], chart[selected]
-    results = []
+    results, normals, indices = [], [], []
     for start in range(0, len(targets), 128):
         target = targets[start : start + 128]
         local = np.linalg.solve(chart[:, None], ((target[None] - nodes[:, None, 0]) @ plane.T)[..., None])[..., 0]
@@ -51,6 +52,12 @@ def projected_surface(nodes, face_normals, targets, plane, normal, witness):
         distance[~is_inside] = np.inf
         index = distance.argmin(axis=0)
         results.append(positions[index, np.arange(len(target))])
+        if return_geometry:
+            selected_area = area[index, np.arange(len(target))]
+            normals.append(selected_area / np.linalg.norm(selected_area, axis=1, keepdims=True))
+            indices.append(face_indices[index])
+    if return_geometry:
+        return np.concatenate(results), np.concatenate(normals), np.concatenate(indices)
     return np.concatenate(results)
 
 

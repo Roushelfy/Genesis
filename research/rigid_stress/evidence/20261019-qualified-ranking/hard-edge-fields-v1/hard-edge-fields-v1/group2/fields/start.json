@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-233",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "739974",
+      "SLURM_ARRAY_JOB_ID": "739974",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-far-edge-contact-v2/group1/edge/result.json",
+      "bytes": 3809,
+      "sha256": "440755a0f2e8fe69879bdcced27e1c340bce7b97299c3eb8baac6ca9c42b7d7c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-shear-coupling-v2/group2/coupling/result.json",
+      "bytes": 6136,
+      "sha256": "42488abf5367d8d9166db30344a03ecfe77b1db46f7f96af6dbed7da99e02eb0"
+    }
+  ],
+  "targets": {
+    "reference_tensor": 0.005,
+    "reference_peak": 0.01,
+    "composite_tensor": 0.05,
+    "composite_peak": 0.1
+  },
+  "scope": "Continuous prescribed sharp-edge pressure, positive-depth samples down to 0.1 transverse width and out to four half-lengths. Independent Boussinesq/Cerruti displacement gradients integrate both pressure coordinates. A local strip plus parabolic centroid-line correction is tested without fitting stresses. This isolates pressure-to-stress approximation, not physical contact pressure, friction history, complete shell fields or global surface peaks."
+}
