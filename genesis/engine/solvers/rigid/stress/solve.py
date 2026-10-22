@@ -292,7 +292,7 @@ def kernel_peak_impl(
     stress_info: StressInfo,
     cached: qd.template(),
     full: qd.template(),
-    is_curved: qd.template() = False,
+    is_curved: qd.template(),
 ):
     func_peak_impl(young, poisson, stress_state, stress_info, cached, full, is_curved)
 

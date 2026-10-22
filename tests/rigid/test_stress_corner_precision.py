@@ -33,7 +33,7 @@ def test_corner_cancellation_against_decimal_polynomial(tmp_path, cached):
     state = model.create_state(1, "full")
     state.displacement.from_numpy(displacement[:, None])
     state.valid.fill(True)
-    kernel_peak_impl(options.young, options.poisson, state, model.info, cached, True)
+    kernel_peak_impl(options.young, options.poisson, state, model.info, cached, True, model.is_curved_geometry)
     tensor = qd_to_numpy(state.stress_tensor, transpose=True, copy=True)[0, 0]
     assert np.all(abs(tensor - expected) <= budget)
     expected_vm = np.sqrt(
