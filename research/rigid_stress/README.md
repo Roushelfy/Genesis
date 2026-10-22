@@ -19,6 +19,16 @@ CPU/CUDA32/64-bit controls pass; resident scale cost is measured separately.
 Actual source/wrench compatibility, complete shell recovery, edge-peak
 interpretation and accepted max/full grasp throughput remain open.
 
+The same [sharp-edge study](docs/SHARP_EDGE_PRESSURE_20261022.md#sharp-edge-particular-stress)
+now adds native near-field tensors, using an exact strip and finite line
+correction. Continuous prescribed-pressure errors are0.164--0.524% on the
+declared samples; CPU/CUDA32/64-bit controls pass. Coupling to the curved-shell
+point correction shows that translating pressure to the captured rigid-force
+line changes common near-probe tensors by about141%, despite small peak-value
+changes. The two-source smooth shell tilt does not explain the displacement.
+This rejects that source-placement shortcut; actual scene binding, qualified
+complete physical fields and accepted scene throughput remain active work.
+
 The latest user direction on2026-10-22 is to **proceed with sharp edges first**;
 the earlier fillet/chamfer dimension wait is superseded. The latest
 [force-line repair and sharp-edge diagnostic](docs/NATIVE_HOLLOW_EGG_ADMISSION_20261022.md#curved-force-line-projection-and-edge-geometry)

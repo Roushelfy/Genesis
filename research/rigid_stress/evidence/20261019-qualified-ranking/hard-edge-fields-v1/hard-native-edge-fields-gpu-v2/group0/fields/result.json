@@ -1,0 +1,81 @@
+{
+  "passed": true,
+  "backend": "gpu",
+  "precision": "64",
+  "queries": 768,
+  "maximum_point_tensor_relative": 1.457418943972976e-10,
+  "reference_errors": [
+    {
+      "tensor_relative": 0.0016426688918301372,
+      "maximum_tensor_error_over_reference_maximum": 0.003161536507849057,
+      "vm_peak_relative": 1.5769274079868723e-06,
+      "tensile_peak_relative": 4.29587217776195e-06
+    },
+    {
+      "tensor_relative": 0.003161835656721854,
+      "maximum_tensor_error_over_reference_maximum": 0.005091178087060666,
+      "vm_peak_relative": 3.0226255869347796e-06,
+      "tensile_peak_relative": 0.00036988555903727516
+    },
+    {
+      "tensor_relative": 0.005239689545963906,
+      "maximum_tensor_error_over_reference_maximum": 0.008475184961728707,
+      "vm_peak_relative": 7.846771750363857e-06,
+      "tensile_peak_relative": 0.0004899121161718867
+    },
+    {
+      "tensor_relative": 0.0023600996860437414,
+      "maximum_tensor_error_over_reference_maximum": 0.004274574487245224,
+      "vm_peak_relative": 4.38876228414653e-06,
+      "tensile_peak_relative": 9.2787344466716e-06
+    }
+  ],
+  "original_hertz_quadrature_checked": true,
+  "invalid_singular_isolation_restore_checked": true,
+  "cold_field_seconds": 0.5599041469395161,
+  "benchmarks": [
+    {
+      "queries": 256,
+      "inclusive_seconds": [
+        0.0010408209054730833,
+        0.0010399779886938632,
+        0.0010397105012089013,
+        0.0010398155078291892,
+        0.0010386900044977664,
+        0.0010396523983217775,
+        0.0010394350974820554
+      ],
+      "median_seconds": 0.0010397105012089013,
+      "logical_tensor_bytes": 41984
+    },
+    {
+      "queries": 8192,
+      "inclusive_seconds": [
+        0.001040836307220161,
+        0.001040758506860584,
+        0.0010405382025055587,
+        0.0010406638961285354,
+        0.0010408285073935986,
+        0.0010404678992927074,
+        0.0010405757930129766
+      ],
+      "median_seconds": 0.0010406638961285354,
+      "logical_tensor_bytes": 1343488
+    },
+    {
+      "queries": 65536,
+      "inclusive_seconds": [
+        0.003791642503347248,
+        0.0037935949978418647,
+        0.003791696997359395,
+        0.003790852695237845,
+        0.003791288798674941,
+        0.0037915932014584543,
+        0.0037912194035016
+      ],
+      "median_seconds": 0.0037915932014584543,
+      "logical_tensor_bytes": 10747904
+    }
+  ],
+  "whole_goal_complete": false
+}

@@ -123,6 +123,131 @@ Imports, initialization, source geometry, pressure/stress recovery, transfers,
 friction history and scene simulation are outside this timing. No accepted
 max/full scene-throughput claim follows from these component measurements.
 
+## Sharp-edge particular stress
+
+The prescribed pressure now has a cheap native stress evaluator, including
+transverse and longitudinal proportional shear. This isolates the field
+calculation from the independent contact-pressure error above. For a local
+strip of width`a=w*(1-y^2/b^2)`, its complex Cauchy transform is
+
+\[
+H(\zeta)=\frac{\pi C}{\sin(\pi\lambda)}
+\left[1-\left(1-\frac a\zeta\right)^\lambda\right],\qquad
+\zeta=x+iz.
+\]
+
+The transform and its derivative give the exact infinite-strip Flamant
+plane-strain stress; longitudinal traction adds the antiplane shear field.
+Independent integration of the three-dimensional Boussinesq/Cerruti
+displacement derivatives agrees within2.57e-12 relative, including a nonzero
+longitudinal shear control. The prescribed surface traction also agrees.
+
+The composite field adds the finite parabolic line load and subtracts the
+infinite local line. Its line density is`3*Fn*(1-y^2/b^2)/(4*b)` and its
+transverse coordinate is`(1-lambda)*w*(1-y^2/b^2)/2`, preserving the strip's
+force and transverse first moment at every y. A hyperbolic-sine quadrature
+resolves the line near each observation. The regular finite-length correction
+uses`z>=0.001*b`; the local strip retains its actual depth. At the surface,
+the known normal and shear tractions are imposed exactly.
+
+The independent two-dimensional continuous-pressure integration uses
+Gauss-Jacobi quadrature across the edge and a stretched rule along it.
+Increasing64/48 to96/72 knots changes the sampled tensors by at most4.65e-12
+relative on these four cases. Each case samples187 points, down to0.1 transverse
+width and out to four half-lengths. These are substantially closer to the
+edge than the earlier cell-pressure stress samples.
+
+| Contact / shear | Composite32 tensor error | Maximum point error / maximum reference tensor norm | Sample VM peak error | Sample tensile peak error |
+| --- | ---: | ---: | ---: | ---: |
+| 1 / observed | 0.1643% | 0.3162% | 0.000158% | 0.000430% |
+| 1 / reversed | 0.3162% | 0.5091% | 0.000302% | 0.03699% |
+| 2 / observed | 0.5240% | 0.8475% | 0.000785% | 0.04899% |
+| 2 / reversed | 0.2360% | 0.4275% | 0.000439% | 0.000928% |
+
+At the smallest depth,0.1 width, tensor errors are0.187--0.586%. The overall
+norm above weights the specified samples equally; it is not a volume-weighted
+whole-shell error. Pressure uncertainty, contact-history error and the shell
+correction are separate from this prescribed-pressure comparison.
+
+Native engine[`e64780805`](https://github.com/Roushelfy/Genesis/commit/e64780805847beb0d8f902d3a05392976ce93cd8)
+adds`rigid/stress/edge_fields.py`. CPU/CUDA32/64-bit controls each cover768
+positive-depth and surface queries, original Hertz quadrature, invalid input,
+explicit sharp-edge singularity status, neighbor isolation and restoration.
+The first64-bit CPU/GPU checks and32-bit GPU check exposed loss of the exact
+zero-pressure endpoint after subtracting nearly equal values. The repaired
+expression preserves that zero before applying the fractional power; the same
+unchanged tests then pass. Maximum pointwise differences from the independent
+composite implementation are1.46e-10 in64-bit and1.65e-5 in32-bit.
+
+| Precision | 256 queries | 8,192 queries | 65,536 queries |
+| --- | ---: | ---: | ---: |
+| 64-bit | 1.0397ms | 1.0407ms | 3.7916ms |
+| 32-bit | 0.0240ms | 0.0250ms | 0.0380ms |
+
+These are warmed resident **tensor-evaluation** dispatch medians on separate
+RTX PRO6000 Blackwell Server allocations. They include32 quadrature knots
+per nonempty half-interval. They exclude source geometry, scale estimation,
+finite-shell recovery, max reduction, transfers and scene simulation. The two
+allocations do not isolate precision as the sole cause of their timing gap.
+This component measurement does not establish accepted scene throughput.
+
+## Captured source-line sensitivity with the curved-shell response
+
+The two observed edge loads now run through native all-boundary point-traction
+correction, curved P2 elastic recovery and the new edge particular field.
+Each source is evaluated separately in two configurations: its pressure
+centroid projected onto the actual material, and the captured rigid-force
+line intersecting that material. The local pressure shape is transported
+without fitting its exponent. The latter is a counterfactual load-placement
+approximation, not a new contact solution.
+
+The pressure is expressed in each center's actual material tangent frame,
+with normal/shear components transformed from the same captured vector force.
+The transverse scale and amplitude account for the local projection. A first
+adapter attempt supplied reflected frames and was refused by the existing
+proper-rotation check. Correcting the adapter's orientation admits all four
+supplied configurations with unchanged engine checks. At boundary orders16/24,
+maximum normalized wrench residual falls from1.88e-6 to1.10e-9. The retained
+combined sampled fields change by at most6.46e-13 relative between those rules.
+
+| Contact | Center displacement | Coarse volume tensor change | Common near-probe tensor change | Sample VM peak change | Sample tensile peak change |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | 92.98 micrometres | 1.539% | 141.475% | 0.1687% | 0.3124% |
+| 2 | 369.66 micrometres | 62.409% | 141.439% | 0.02445% | 0.7034% |
+
+The two pressure-centroid cases retain moment discrepancies1.449/7.054`Fn*a`.
+The translated cases preserve the captured resultant moment to1.27e-13 and
+3.54e-14 on that scale. Despite this moment agreement and small changes in
+peak magnitude, the fields at common material locations differ substantially.
+Simply translating pressure to the rigid force line fails the existing5%
+sample-field engineering budget and does not justify relaxing source handling.
+
+The volume metric uses positive27-point quadrature per coarse curved element;
+it does not resolve the micron-wide contact by itself. Common material probes
+cover both source placements at depths0.1 width, one width and0.1 half-length.
+The all-boundary point correction remains an approximation to a distributed
+sharp-edge shell response. This diagnostic measures source-placement
+sensitivity in that declared complete-field approximation. It does not close
+the independent shell/contact accuracy requirement or actual scene admission.
+
+A retained-displacement check also tests whether the two gripper sources'
+smooth shell response can explain the along-edge displacement. It removes
+mass-weighted rigid translation/rotation from the regular-plus-point
+displacement and includes the other gripper source's distant particular field.
+At the pressure-centroid configurations, the predicted along-edge shifts are
+-0.0217/+0.0195 micrometres, compared with required shifts-64.51/-356.00
+micrometres. Required gap tilts are-0.00319/-0.01719 radians, while the computed
+smooth tilts are-1.08e-6/+9.40e-7 radians. This first-order, two-source check
+does not explain the discrepancy; it is not a coupled contact equilibrium
+calculation and does not include other contacts' displacement response.
+
+The [field and source-response packet](../evidence/20261019-qualified-ranking/hard-edge-fields-v1/README.md)
+retains continuous references, native tests and timings, original endpoint and
+frame-orientation failures, curved-shell response arrays and the displacement
+diagnostic. The next source study must examine collision/provenance accuracy
+and physically constrained force redistribution, rather than treating a small
+change in peak magnitude as sufficient evidence for moving an entire patch.
+
 ## Remaining physical and integration limits
 
 The edge pressure behaves as`x^(-lambda)`. Its pointwise loaded-edge limit is
@@ -131,8 +256,8 @@ Refined cell-average maxima continue to rise, as expected for this singular
 model. A finite cell average or positive-depth sample peak is not a converged
 surface/global stress peak; retain sampling scales with every such value.
 
-The pressure law has not been connected to actual scene source binding or
-complete curved-shell particular/correction fields. The earlier Franka
+The pressure law has not been connected to actual scene source binding.
+Complete curved-shell particular/correction validation is still required. The earlier Franka
 rejections and moment mismatch remain evidence. Before changing their handling,
 quantify the source correction and its complete stress response under the
 existing engineering-error protocol. Preserve strict source diagnostics and

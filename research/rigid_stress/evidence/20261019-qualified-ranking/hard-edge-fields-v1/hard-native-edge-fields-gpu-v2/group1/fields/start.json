@@ -1,0 +1,29 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "740011",
+      "SLURM_ARRAY_JOB_ID": "740011",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-779281f8-1132-b676-132d-571b2ccec62c, 00000000:46:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/native-edge-law-physical-inputs-v1.json",
+      "bytes": 3324,
+      "sha256": "1be91a46c72ec7732c7e5eefed286ceb2187cb0eadef1ddde037d1fa47092f69"
+    }
+  ],
+  "backend": "gpu",
+  "precision": "32",
+  "maximum_point_tensor_relative_target": 0.0005,
+  "scope": "Native prescribed sharp-edge particular tensors at near/far positive-depth and surface locations, independent continuous pressure references, original Hertz quadrature preservation, singular/invalid isolation and restoration. Resident tensor evaluation timing excludes scale estimation, geometry, finite-shell correction, max reduction, transfers and scenes."
+}

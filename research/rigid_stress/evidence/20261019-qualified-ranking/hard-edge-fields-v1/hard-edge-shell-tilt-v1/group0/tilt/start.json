@@ -1,0 +1,51 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "740166",
+      "SLURM_ARRAY_JOB_ID": "740166",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-source-response-v2/group0/response/source-geometry.json",
+      "bytes": 4114,
+      "sha256": "e73cc4990b81d5909a3aa164ec1bed2e1005e899647190a223b962634b2c34af"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-source-response-v2/group0/response/fields24.npz",
+      "bytes": 6212285,
+      "sha256": "6815fd69731ba03e6a5b0912367e78c0d9a32cbc9b23b4d29507f3d2d71df2c0"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-curved-walk-franka-v1/group1/franka/frame0106.npz",
+      "bytes": 360133,
+      "sha256": "8efe80881c44cf04cf0713386c3b860b43388ebb2a4e72fd04d596f6315ef6c1"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-curved-walk-franka-v1/group1/franka/boundaries0106.npz",
+      "bytes": 1593,
+      "sha256": "b5b6e138259dc9fbca35bda92a94e1f72785dc497acfb29ecb922c87c4046995"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+      "bytes": 10476,
+      "sha256": "bc9487c70df48c57608b80d802810cbfb421adbb2a781a12a546e58810a635d1"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/native-edge-law-physical-inputs-v1.json",
+      "bytes": 3324,
+      "sha256": "1be91a46c72ec7732c7e5eefed286ceb2187cb0eadef1ddde037d1fa47092f69"
+    }
+  ],
+  "scope": "Read retained regular P2 displacements; add each source's nodal point particular displacement to remove its mass-weighted rigid translation/rotation. Estimate the smooth along-edge normal displacement gradient from both gripper sources and the other source's far particular field. This is a first-order shell-tilt diagnostic, not a coupled contact solve. Point particular displacement is used only for the global rigid projection and the distant source; the self singular field is excluded from the smooth correction."
+}
