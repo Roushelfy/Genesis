@@ -11,6 +11,14 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current goal and verified scope
 
+The latest [native sharp-edge geometry and force allocation](docs/SHARP_EDGE_PRESSURE_20261022.md#native-edge-geometry-and-force-allocation)
+components pass CPU/GPU64 controls. Connected material-edge minima agree with
+the independent search within0.206nm. A six-coordinate native force allocation
+matches independent constrained minima within3.36e-10 relative after3--4 updates.
+Resident B1/64/1024 allocation costs0.198/0.199/0.217ms, excluding geometry and
+full recovery. Actual sharp-edge scene binding and admitted complete throughput
+remain open; these component results do not close the goal.
+
 The latest [contact-application and updated-support study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)
 identifies the ground's184micrometre offset as the collider's half-penetration
 application point. With refined collision geometry and samples grouped by

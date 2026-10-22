@@ -1143,3 +1143,12 @@ stays frozen at4a8125c4c; no engine is changed by this study. All29 frozen sourc
 heads and12 original unfinished files remain preserved. Scientific runs reuse
 Slurm `rtx-mid`, image `1_26`, the existing data-side environment and private
 node caches. No runtime dataset, environment or compatibility link is migrated.
+
+Native edge geometry and constrained force-allocation controls use
+`hard-native-edge-geometry-v1` and `hard-native-force-allocation-v1/v2` under
+the same data run. The `hard-native-edge-geometry-v1` packet keeps compact
+source/terminal records and external array identities. Rotated mesh controls,
+complete numerical arrays and component timing outputs stay under data. The
+isolated `hard_contact_edge_geometry` source is frozen at6c2e887be, with its
+geometry-only ancestor f57245943 retained. All30 frozen heads and12 original
+unfinished files are preserved; Slurm/image/environment/cache policy is unchanged.

@@ -1,0 +1,51 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-115",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "740515",
+      "SLURM_ARRAY_JOB_ID": "740515",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-4fdce966-62a0-70f5-3ac5-820ab2d1e6e6, 00000000:C0:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-refined-v1/group0/franka/frame0106.npz",
+      "bytes": 360149,
+      "sha256": "235f741a5284096174ac6992c46ae7647f64b6679b96eb90db3270dfaf2a18cb"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-refined-v1/group0/franka/boundaries0106.npz",
+      "bytes": 1594,
+      "sha256": "70c91883b2daa3ee929f260f6eae758de6c3018bd6cc116857c728e629745f5c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+      "bytes": 10476,
+      "sha256": "bc9487c70df48c57608b80d802810cbfb421adbb2a781a12a546e58810a635d1"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-geometry-v2/group0/geometry/result.json",
+      "bytes": 974,
+      "sha256": "d42eb510db15117898546413f47280c32923dd589f1cffdc90a852a8cf4cd497"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-geometry-v2/group1/geometry/result.json",
+      "bytes": 975,
+      "sha256": "fb19a5052b326432c4ff99a5a2ad6ea943ce90c0540965d26572469498b0eb21"
+    }
+  ],
+  "targets": {
+    "reference_position_m": 2e-08,
+    "reference_geometry_relative": 0.0002,
+    "central_difference_relative": 5e-06
+  },
+  "scope": "Native connected quadratic-surface edge minimum and analytic height derivatives. Compare independent global-face projection and scalar minimization, direct central differences, duplicated collision samples, rotated/translated geometry and mixed invalid/corner/interior slots. Geometry only; no physical pressure, load allocation, full stress or scene throughput claim."
+}
