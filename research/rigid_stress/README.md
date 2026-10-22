@@ -78,6 +78,18 @@ targets. Hertz's fine-case pressure error is 1.06%, with a 2.20% observed
 conditional envelope. This single normal polar case supports a cheap pressure
 baseline; complete stress, friction and moving-scene accuracy remain open.
 
+The [independent-pressure complete stress comparison](docs/HOLLOW_SHELL_PRESSURE_STRESS_20261022.md)
+now gives2.188% volume tensor and5.023%/0.771% tensile/VM peak errors for a
+coarse Hertz plus central finite-shell response. Observed reference-variation
+envelopes are3.479% and8.007%/0.819%. This offline normal-case qualification
+does not transfer to level1 native scene accuracy or general contact/friction.
+
+The [continuous-Coulomb history candidate](docs/HERTZ_CONE_HISTORY_20261022.md)
+repairs the old variable-load surface-cone failure in a declared new model.
+CPU/GPU controls pass. Same-allocation B1024 history cost falls from4.411 to
+0.808ms with16 intervals using a cooperative layout; these are component times.
+General vector-friction physics and whole-scene integration remain required.
+
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
 cheap two-region interaction correction. Ellipticity reduces the rotated-case

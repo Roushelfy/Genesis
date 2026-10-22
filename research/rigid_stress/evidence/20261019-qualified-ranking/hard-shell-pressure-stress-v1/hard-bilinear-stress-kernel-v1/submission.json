@@ -1,0 +1,23 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=none",
+    "--cpus-per-task=1",
+    "--mem=32G",
+    "--time=15",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-bilinear-stress-kernel-v1/logs/%A_%a.log",
+    "--exclude=rtx-209-231",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-bilinear-stress-kernel-v1/job.sh"
+  ],
+  "job": "737709",
+  "dependency": null,
+  "exclude_nodes": "rtx-209-231",
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "allow_home_output": false
+}

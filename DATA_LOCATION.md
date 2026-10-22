@@ -882,3 +882,23 @@ data/mesh receipts, including original failures and independent reductions.
 All scientific work uses Slurm `rtx-mid`, image `1_26`, the existing data-side
 physical environment and explicit output/private cache paths. No environment,
 live dataset or compatibility link is moved; no runtime coupled solve is added.
+
+Independent-pressure full stress work uses `hard-bilinear-stress-kernel-v1`,
+`hard-shell-pressure-stress-v1`, its two saved-array inspections and
+`hard-shell-pressure-stress-figure-v1` through `v4` beneath the same ranking
+data root. Complete bilinear particular fields, P2 readouts, element corners and
+queries remain on data. The `hard-shell-pressure-stress-v1` packet keeps175
+compact/export payloads (3,929,274 bytes) and28 external-array receipts,
+including both actual figure-QA failures and reviewed SVG/PDF/RGB PNG exports.
+Completed normal-response tables and meshes are reused in place.
+
+Cone-preserving friction work uses `hard-cone-history-v1` through `v5`,
+`hard-native-cone-history-v1` through `v3`, `hard-native-cone-vectors-v1`,
+`hard-cone-penalty-paired-v1`, `hard-cone-warp-paired-v1` through `v4`,
+`hard-cone-warp-inspection-v1` and `hard-cone-baseline-final-v1` under that data
+root. The `hard-cone-history-native-v1` packet keeps450 compact payloads
+(2,725,219 bytes) and161 externally hashed history/benchmark/input arrays.
+Failed solver/compile/test attempts remain alongside final controls. The
+original four unfinished radial-history source files remain unchanged. All
+scientific execution uses the existing Slurm/image/environment and private
+node scratch. No live data, environment or compatibility link is migrated.

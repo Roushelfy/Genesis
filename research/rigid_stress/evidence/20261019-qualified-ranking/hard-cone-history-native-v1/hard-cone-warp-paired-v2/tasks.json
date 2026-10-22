@@ -1,0 +1,36 @@
+[
+  [
+    {
+      "name": "warp",
+      "module": "research.rigid_stress.qipc_comparison.check_native_cone_vectors",
+      "args": [
+        "--backend",
+        "gpu",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-cone-history-v5/group0/study",
+        "--benchmark"
+      ]
+    },
+    {
+      "name": "serial",
+      "module": "research.rigid_stress.qipc_comparison.check_native_cone_serial",
+      "args": [
+        "--backend",
+        "gpu",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-cone-history-v5/group0/study",
+        "--benchmark"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "scalar",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_cone",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ]
+]

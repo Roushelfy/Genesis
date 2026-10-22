@@ -1,0 +1,23 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-1",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=gpu:1",
+    "--cpus-per-task=1",
+    "--mem=64G",
+    "--time=20",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-cone-warp-paired-v1/logs/%A_%a.log",
+    "--exclude=rtx-209-231",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-cone-warp-paired-v1/job.sh"
+  ],
+  "job": "737801",
+  "dependency": null,
+  "exclude_nodes": "rtx-209-231",
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "allow_home_output": false
+}
