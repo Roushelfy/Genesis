@@ -29,6 +29,7 @@ class StressCurvatureInfo:
     status: qd.Tensor
     vertices_tensor: qd.Tensor
     vertices_weight: qd.Tensor
+    vertices_quadric_valid: qd.Tensor
     normal_inverse: qd.Tensor
     normal_inverse_valid: qd.Tensor
     face_origin: qd.Tensor
@@ -40,11 +41,22 @@ class StressCurvatureInfo:
     face_scale: qd.Tensor
 
 
+@dataclass(frozen=True)
+class StressCurvatureFit:
+    kind: ClassVar[DataKind] = DataKind.SCRATCH
+
+    scale: qd.Tensor
+    count: qd.Tensor
+    gram: qd.Tensor
+    rhs: qd.Tensor
+
+
 class StressCurvature:
     """Cache signed shape operators in each geom's immutable local frame.
 
-    Primitive curvature is analytical away from edges/seams. Mesh curvature
-    fits the supplied vertex-normal variation on each triangle. It explicitly
+    Primitive curvature is analytical away from edges/seams. Mesh curvature fits
+    a local implicit quadric to adjacent vertices and their supplied normals.
+    Rank-deficient fits retain the face-normal derivative estimate. It explicitly
     denotes a smooth-surface estimate: interpolation normals do not prove that
     a faceted collision mesh represents the same physical smooth surface.
     Positive principal values describe an outward convex material boundary;
@@ -61,6 +73,7 @@ class StressCurvature:
             status=V(dtype=gs.qd_int, shape=(n_faces,)),
             vertices_tensor=V_MAT(3, 3, dtype=gs.qd_float, shape=dyn_info.verts.geom_idx.shape),
             vertices_weight=V(dtype=gs.qd_float, shape=dyn_info.verts.geom_idx.shape),
+            vertices_quadric_valid=V(dtype=gs.qd_bool, shape=dyn_info.verts.geom_idx.shape),
             normal_inverse=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_faces,)),
             normal_inverse_valid=V(dtype=gs.qd_bool, shape=(n_faces,)),
             face_origin=V_VEC(3, dtype=gs.qd_float, shape=(n_faces,)),
@@ -73,6 +86,111 @@ class StressCurvature:
         )
         kernel_mesh_curvature(dyn_info, self.info, epsilon)
         kernel_vertex_curvature(dyn_info, self.info)
+        fit = StressCurvatureFit(
+            scale=V(dtype=gs.qd_float, shape=dyn_info.verts.geom_idx.shape),
+            count=V(dtype=gs.qd_int, shape=dyn_info.verts.geom_idx.shape),
+            gram=V_MAT(6, 6, dtype=gs.qd_float, shape=dyn_info.verts.geom_idx.shape),
+            rhs=V_VEC(6, dtype=gs.qd_float, shape=dyn_info.verts.geom_idx.shape),
+        )
+        kernel_quadric_scale(dyn_info, self.info, fit)
+        kernel_quadric_fit(dyn_info, self.info, fit)
+        kernel_quadric_curvature(dyn_info, self.info, fit, epsilon)
+
+
+@qd.kernel
+def kernel_quadric_scale(dyn_info: array_class.DynInfo, curvature: StressCurvatureInfo, fit: StressCurvatureFit):
+    for i_v in range(fit.scale.shape[0]):
+        fit.scale[i_v], fit.count[i_v] = 0.0, 0
+        fit.gram[i_v] = qd.Matrix.zero(gs.qd_float, 6, 6)
+        fit.rhs[i_v] = qd.Vector.zero(gs.qd_float, 6)
+    for i_f in range(curvature.status.shape[0]):
+        if curvature.status[i_f] == CurvatureStatus.SMOOTH_NORMAL_ESTIMATE:
+            indices = dyn_info.faces.verts_idx[i_f]
+            for i, j in qd.static(qd.ndrange(3, 3)):
+                if qd.static(i != j):
+                    edge = dyn_info.verts.init_pos[indices[j]] - dyn_info.verts.init_pos[indices[i]]
+                    qd.atomic_add(fit.scale[indices[i]], edge.norm())
+                    qd.atomic_add(fit.count[indices[i]], 1)
+
+
+@qd.kernel
+def kernel_quadric_fit(dyn_info: array_class.DynInfo, curvature: StressCurvatureInfo, fit: StressCurvatureFit):
+    for i_f, i, j in qd.ndrange(curvature.status.shape[0], 3, 3):
+        if i != j and curvature.status[i_f] == CurvatureStatus.SMOOTH_NORMAL_ESTIMATE:
+            indices = dyn_info.faces.verts_idx[i_f]
+            i_v, j_v = indices[i], indices[j]
+            scale = fit.scale[i_v] / fit.count[i_v]
+            edge = (dyn_info.verts.init_pos[j_v] - dyn_info.verts.init_pos[i_v]) / scale
+            normal, other = dyn_info.verts.init_normal[i_v].normalized(), dyn_info.verts.init_normal[j_v].normalized()
+            projection = qd.Matrix.identity(gs.qd_float, 3) - other.outer_product(other)
+            derivative = qd.Matrix(
+                [
+                    [edge[0], 0.0, 0.0, edge[1], edge[2], 0.0],
+                    [0.0, edge[1], 0.0, edge[0], 0.0, edge[2]],
+                    [0.0, 0.0, edge[2], 0.0, edge[0], edge[1]],
+                ]
+            )
+            value = derivative.transpose() @ edge / (2 * edge.norm())
+            normal_rows = projection @ derivative
+            # A zero implicit level and parallel gradients constrain the same local quadric
+            gram = value.outer_product(value) + normal_rows.transpose() @ normal_rows
+            rhs = -value * normal.dot(edge) / edge.norm() - normal_rows.transpose() @ (projection @ normal)
+            for a, b in qd.static(qd.ndrange(6, 6)):
+                qd.atomic_add(fit.gram[i_v][a, b], gram[a, b])
+            for a in qd.static(range(6)):
+                qd.atomic_add(fit.rhs[i_v][a], rhs[a])
+
+
+@qd.kernel
+def kernel_quadric_curvature(
+    dyn_info: array_class.DynInfo, curvature: StressCurvatureInfo, fit: StressCurvatureFit, epsilon: float
+):
+    for i_v in range(fit.scale.shape[0]):
+        valid = fit.count[i_v] > 0 and fit.scale[i_v] > 0.0
+        lower, gram = qd.Matrix.zero(gs.qd_float, 6, 6), fit.gram[i_v]
+        diagonal = qd.Vector.zero(gs.qd_float, 6)
+        for i in qd.static(range(6)):
+            valid = valid and gram[i, i] > 0.0
+            diagonal[i] = qd.sqrt(qd.max(gram[i, i], epsilon))
+        if valid:
+            for i in range(6):
+                for j in range(i + 1):
+                    value = gram[i, j] / (diagonal[i] * diagonal[j])
+                    for k in range(j):
+                        value -= lower[i, k] * lower[j, k]
+                    if i == j:
+                        valid = valid and value > 128.0 * epsilon
+                        lower[i, j] = qd.sqrt(qd.max(value, epsilon))
+                    else:
+                        lower[i, j] = value / lower[j, j]
+        if valid:
+            coefficients, rhs = qd.Vector.zero(gs.qd_float, 6), fit.rhs[i_v]
+            for i in range(6):
+                value = rhs[i] / diagonal[i]
+                for j in range(i):
+                    value -= lower[i, j] * coefficients[j]
+                coefficients[i] = value / lower[i, i]
+            for k in range(6):
+                i = 5 - k
+                value = coefficients[i]
+                for j in range(i + 1, 6):
+                    value -= lower[j, i] * coefficients[j]
+                coefficients[i] = value / lower[i, i]
+            coefficients /= diagonal * (fit.scale[i_v] / fit.count[i_v])
+            tensor = qd.Matrix(
+                [
+                    [coefficients[0], coefficients[3], coefficients[4]],
+                    [coefficients[3], coefficients[1], coefficients[5]],
+                    [coefficients[4], coefficients[5], coefficients[2]],
+                ]
+            )
+            normal = dyn_info.verts.init_normal[i_v].normalized()
+            projection = qd.Matrix.identity(gs.qd_float, 3) - normal.outer_product(normal)
+            tensor = projection @ tensor @ projection
+            valid = tensor.norm() < float("inf")
+            if valid:
+                curvature.vertices_tensor[i_v] = tensor
+        curvature.vertices_quadric_valid[i_v] = valid
 
 
 @qd.kernel
