@@ -138,19 +138,24 @@ def func_hertz_pressure(
     return pressure
 
 
+@qd.func
+def func_legendre_root(i_q: int, count: int):
+    root = qd.cos(pi * (i_q + 0.75) / (count + 0.5))
+    derivative = gs.qd_float(0.0)
+    for _ in range(8):
+        previous, current = gs.qd_float(1.0), root
+        for i_k in range(2, count + 1):
+            following = ((2 * i_k - 1) * root * current - (i_k - 1) * previous) / i_k
+            previous, current = current, following
+        derivative = count * (root * current - previous) / (root * root - 1)
+        root -= current / derivative
+    return root, derivative
+
+
 @qd.kernel
 def kernel_hertz_stress_quadrature(quadrature: qd.types.ndarray()):
     for i in range(quadrature.shape[0]):
-        count = quadrature.shape[0]
-        root = qd.cos(pi * (i + 0.75) / (count + 0.5))
-        derivative = gs.qd_float(0.0)
-        for _ in range(8):
-            (previous, current) = (gs.qd_float(1.0), root)
-            for j in range(2, count + 1):
-                following = ((2 * j - 1) * root * current - (j - 1) * previous) / j
-                (previous, current) = (current, following)
-            derivative = count * (root * current - previous) / (root * root - 1)
-            root -= current / derivative
+        root, derivative = func_legendre_root(i, quadrature.shape[0])
         weight = pi / (2 * (1 - root * root) * derivative * derivative)
         theta = (root + 1) * pi / 4
         tangent = qd.sin(theta) / qd.cos(theta)
