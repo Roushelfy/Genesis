@@ -59,6 +59,7 @@ class FrankaEgg:
         public_defaults: bool = False,
         timestep: float = 0.01,
         stress_mesh: Path | None = None,
+        collision_urdf: Path | None = None,
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -94,7 +95,7 @@ class FrankaEgg:
         self.egg_geometry = egg_geometry
         self.egg = self.scene.add_entity(
             gs.morphs.URDF(
-                file=assets / "egg_shell.urdf",
+                file=assets / "egg_shell.urdf" if collision_urdf is None else collision_urdf,
                 pos=(0.65, 0, 0.031),
                 align=False,
                 convexify=True,
