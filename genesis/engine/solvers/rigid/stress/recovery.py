@@ -27,6 +27,8 @@ from .association import kernel_associate
 from .contact import StressContactState, create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
 from .data import StressState
 from .history import StressHistory
+from .hertz_contacts import HertzContacts, StressHertzProbeField, kernel_hertz_contact_begin
+from .curvature import StressCurvature
 from .intrinsic import IntrinsicContacts
 from .lifecycle import func_accept, func_begin_step
 from .model import StressModel
@@ -61,12 +63,14 @@ class StressLink:
     reuse_contact_moments: bool
     intrinsic: IntrinsicContacts | None = None
     resolved: ResolvedContacts | None = None
+    hertz: HertzContacts | None = None
     requested_step: int = -1
 
 
 class RigidStressRecovery:
     def __init__(self, solver: "RigidSolver"):
         self.solver = solver
+        self.source_epsilon = float(np.finfo(gs.np_float).eps)
         self.links: list[StressLink] = []
         for entity in solver.entities:
             for link in entity.links:
@@ -168,8 +172,15 @@ class RigidStressRecovery:
                             reuse_contact_moments,
                         )
                     )
+        self.curvature = (
+            StressCurvature(solver.dyn_info, self.source_epsilon)
+            if any(entry.options.contact_model == "hertz" for entry in self.links)
+            else None
+        )
         for entry in self.links:
-            if entry.options.load_transfer == "resolved":
+            if entry.options.contact_model == "hertz":
+                entry.hertz = HertzContacts(entry.link, entry.contacts, entry.model.info, entry.options)
+            elif entry.options.load_transfer == "resolved":
                 entry.resolved = ResolvedContacts(entry.link, entry.contacts, entry.model.info, entry.options)
             elif entry.options.contact_model == "intrinsic":
                 paths = None
@@ -194,7 +205,6 @@ class RigidStressRecovery:
         ]
         for subscriber in self.subscribers:
             solver.subscribe(subscriber)
-        self.source_epsilon = float(np.finfo(gs.np_float).eps)
         self.post_kernel = None
         if len(self.links) == 1:
             entry = self.links[0]
@@ -291,6 +301,8 @@ class RigidStressRecovery:
                 continue
             if i_substep == 0:
                 kernel_begin_step(entry.state)
+                if entry.hertz is not None:
+                    kernel_hertz_contact_begin(entry.hertz.state)
             kernel_associate(
                 entry.link.idx,
                 solver._links_offset_pos,
@@ -304,6 +316,27 @@ class RigidStressRecovery:
                 entry.state.step_valid,
                 solver._errno,
             )
+            if entry.hertz is not None:
+                assert self.curvature is not None
+                kernel_capture_rigid_sources(
+                    entry.link.idx, entry.contacts, entry.hertz.sources, solver.collider.collider_state
+                )
+                entry.hertz.recover(
+                    entry.link,
+                    solver,
+                    entry.contacts,
+                    entry.state,
+                    entry.omega,
+                    entry.model,
+                    entry.surface.info,
+                    self.curvature,
+                    options,
+                    entry.history,
+                    self.source_epsilon,
+                )
+                if entry.history is not None:
+                    entry.history.append(entry.state)
+                continue
             if entry.resolved is not None:
                 kernel_capture_rigid_sources(
                     entry.link.idx, entry.contacts, entry.resolved.raw_sources, solver.collider.collider_state
@@ -373,6 +406,8 @@ class RigidStressRecovery:
         for affected in self.links if entry is None else (entry,):
             affected.requested_step = -1
             kernel_reset(envs_idx, affected.state)
+            if affected.hertz is not None:
+                affected.hertz.reset(envs_idx, affected.contacts)
             if affected.history is not None:
                 affected.history.reset(envs_idx)
 
@@ -396,9 +431,22 @@ class RigidStressRecovery:
             35: "force is incompatible with the continuous reference-surface friction cones inside the physical radius",
             36: "original wrench is incompatible with the continuous reference-surface friction cones inside the physical radius",
             40: "vector traction fails final original wrench or local friction acceptance",
+            51: "normal Hertz region has an unresolved source, curvature or material anchor",
+            52: "normal Hertz estimate cannot represent the supplied tangential force",
+            53: "centered normal Hertz pressure cannot represent the original region moment",
+            54: "a Hertz region contains incompatible collision geom/pair identities",
         }
         details = []
         for entry in self.links:
+            if entry.hertz is not None:
+                inputs = qd_to_numpy(entry.hertz.state.status, transpose=True)
+                fields = qd_to_numpy(entry.hertz.recovery.state.status, transpose=True)
+                failed_envs = np.flatnonzero((inputs != 0) | (fields > 1))
+                for env in failed_envs[:8]:
+                    details.append(
+                        f"link={entry.link.idx}, env={env}, Hertz input status={inputs[env]}, "
+                        f"field status={fields[env]} (2 input, 3 half-space/clearance, 4 wrench, 5 solve, 6 probe/field)"
+                    )
             if entry.intrinsic is not None:
                 failure = entry.intrinsic.failure
                 preserved = qd_to_numpy(failure.status, transpose=True)
@@ -451,6 +499,8 @@ class RigidStressRecovery:
         seen = set()
         seen_surfaces = set()
         seen_paths = set()
+        if self.curvature is not None:
+            yield from iter_data(self.curvature.info, "stress.curvature")
         for i, entry in enumerate(self.links):
             if entry.link.stress_options != entry.options:
                 gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
@@ -491,6 +541,10 @@ class RigidStressRecovery:
                 yield from iter_data(entry.resolved.raw_sources, f"stress.{i}.resolved.sources")
                 if entry.resolved.vertices.info is not None:
                     yield from iter_data(entry.resolved.vertices.info, f"stress.{i}.resolved.vertices")
+            if entry.hertz is not None:
+                for item in entry.hertz.data(f"stress.{i}.hertz"):
+                    if 0 not in item.value.shape:
+                        yield item
             yield DataItem(f"stress.{i}.omega", entry.omega, entry.state.kind)
 
     def get_peak(self, link_idx: int, envs_idx=None, *, copy: bool = True) -> torch.Tensor:
@@ -516,6 +570,45 @@ class RigidStressRecovery:
                 return tensor, von_mises
         gs.raise_exception("Stress recovery is not enabled for this link.")
 
+    def get_principal(self, link_idx: int, envs_idx=None, *, copy: bool = True) -> torch.Tensor:
+        for entry in self.links:
+            if entry.link.idx == link_idx:
+                if entry.link.stress_options != entry.options:
+                    gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
+                if entry.hertz is None:
+                    gs.raise_exception("Maximum principal stress currently requires the Hertz recovery route.")
+                tensor = qd_to_torch(entry.hertz.state.step_principal, envs_idx, transpose=True, copy=copy)
+                return tensor[0] if self.solver.n_envs == 0 else tensor
+        gs.raise_exception("Stress recovery is not enabled for this link.")
+
+    def get_probes(self, link_idx: int, envs_idx=None, *, copy: bool = True) -> StressHertzProbeField:
+        if envs_idx is not None and self.solver.n_envs == 0:
+            gs.raise_exception("`envs_idx` is not supported for a scene without parallel environments.")
+        if isinstance(envs_idx, (int, np.integer)) and not -self.solver._B <= envs_idx < self.solver._B:
+            gs.raise_exception("Stress probe environment index is out of bounds.")
+        for entry in self.links:
+            if entry.link.idx == link_idx:
+                if entry.link.stress_options != entry.options:
+                    gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
+                if entry.hertz is None or entry.output_mode != "full":
+                    gs.raise_exception("Contact probe fields require full Hertz recovery configured before building.")
+                probes = entry.hertz.recovery.probes
+                n_regions, batch = entry.contacts.valid.shape
+                position = qd_to_torch(probes.position, transpose=True, copy=copy)
+                tensor = qd_to_torch(probes.tensor, transpose=True, copy=copy)
+                element = qd_to_torch(probes.element, transpose=True, copy=copy)
+                force = qd_to_torch(entry.hertz.law.state.force, transpose=True)
+                valid = qd_to_torch(entry.state.step_valid, transpose=True)
+                mask = indices_to_mask(envs_idx)
+                position = position.reshape(n_regions, batch, -1, 3).transpose(0, 1)[mask]
+                tensor = tensor.reshape(n_regions, batch, -1, 6).transpose(0, 1)[mask]
+                element = element.reshape(n_regions, batch, -1).transpose(0, 1)[mask]
+                active = ((force.reshape(n_regions, batch).T > 0) & valid[:, None])[mask]
+                if self.solver.n_envs == 0:
+                    position, tensor, element, active = position[0], tensor[0], element[0], active[0]
+                return StressHertzProbeField(position, tensor, element, active)
+        gs.raise_exception("Stress recovery is not enabled for this link.")
+
     def set_radius(self, link_idx: int, radius, envs_idx=None) -> None:
         if envs_idx is not None and self.solver.n_envs == 0:
             gs.raise_exception("`envs_idx` is not supported for a scene without parallel environments.")
@@ -523,6 +616,8 @@ class RigidStressRecovery:
             gs.raise_exception("Stress radius environment index is out of bounds.")
         for entry in self.links:
             if entry.link.idx == link_idx:
+                if entry.hertz is not None:
+                    gs.raise_exception("Hertz contact radii are predicted from current load, curvature and modulus.")
                 if entry.options.load_transfer == "resolved":
                     gs.raise_exception("Resolved boundary samples have no reconstruction radius.")
                 if gs.use_zerocopy:

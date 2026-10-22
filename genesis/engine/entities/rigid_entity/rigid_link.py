@@ -16,6 +16,7 @@ from .rigid_geom import RigidGeom, RigidVisGeom
 
 if TYPE_CHECKING:
     from genesis.engine.solvers.rigid import RigidSolver
+    from genesis.engine.solvers.rigid.stress.hertz_contacts import StressHertzProbeField
 
     from .rigid_entity import KinematicEntity, RigidEntity
     from .rigid_joint import RigidJoint
@@ -505,6 +506,32 @@ class RigidLink(KinematicLink):
         if recovery is None:
             gs.raise_exception("Stress recovery is not enabled for this link.")
         return recovery.get_field(self.idx, envs_idx, copy=copy)
+
+    @gs.assert_built
+    def get_max_principal_stress(self, envs_idx=None, *, copy: bool = True) -> torch.Tensor:
+        """Return the sampled maximum principal stress in Pa across observed substeps.
+
+        Requires the Hertz recovery route. A negative value denotes compression
+        at every sampled material point; failed or reset observations are NaN.
+        """
+        recovery = self._solver.stress_recovery
+        if recovery is None:
+            gs.raise_exception("Stress recovery is not enabled for this link.")
+        return recovery.get_principal(self.idx, envs_idx, copy=copy)
+
+    @gs.assert_built
+    def get_stress_contact_probes(self, envs_idx=None, *, copy: bool = True) -> "StressHertzProbeField":
+        """Return full Hertz probe positions, packed stresses, elements and active regions.
+
+        Batched shapes are [B, regions, 89, 3], [B, regions, 89, 6],
+        [B, regions, 89] and [B, regions]. Unbatched scenes omit B. Positions
+        and stresses use the authored material frame. Inactive probes do not
+        contribute to maxima; failed/reset observations carry NaN fields.
+        """
+        recovery = self._solver.stress_recovery
+        if recovery is None:
+            gs.raise_exception("Stress recovery is not enabled for this link.")
+        return recovery.get_probes(self.idx, envs_idx, copy=copy)
 
     @gs.assert_built
     def set_stress_contact_radius(self, radius, envs_idx=None) -> None:

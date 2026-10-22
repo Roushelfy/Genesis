@@ -57,11 +57,16 @@ def func_hertz_probe_location(
             else:
                 source = gradients @ (center - origin)
                 source[0] += 1.0
+                change = bary - source
+                current = source + parameter * change
                 crossing, i_face = 2.0, -1
                 for i in qd.static(range(4)):
-                    if bary[i] < -1e-10 and source[i] > bary[i]:
-                        value = source[i] / (source[i] - bary[i])
-                        if value >= parameter - 1e-10 and value < crossing:
+                    if current.min() >= -1e-10 and bary[i] < -1e-10 and change[i] < 0:
+                        # Containment bounds barycentric roundoff, not its ratio
+                        # to a possibly tiny segment derivative. A tolerated
+                        # negative current coordinate crosses at this parameter.
+                        value = qd.max(parameter, parameter - current[i] / change[i])
+                        if value < crossing:
                             crossing, i_face = value, i
                 if i_face >= 0:
                     i_next = info.element_neighbors[i_e, i_face]
