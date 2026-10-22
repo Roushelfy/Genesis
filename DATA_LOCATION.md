@@ -902,3 +902,18 @@ Failed solver/compile/test attempts remain alongside final controls. The
 original four unfinished radial-history source files remain unchanged. All
 scientific execution uses the existing Slurm/image/environment and private
 node scratch. No live data, environment or compatibility link is migrated.
+
+Native normal recovery uses `hard-native-hertz-recovery-v1` through `v5`,
+the surface-depth/rotation inspections, `hard-native-hertz-farfield-controls-v3`
+through `v5`, paired timing `v3` through `v5`, the far-kernel control, two final
+saved-array inspections, component regressions and refusal `v1` through `v4`
+under the same ranking data root. The `hard-native-hertz-recovery-v1` packet
+keeps 798 compact payloads (4,066,408 bytes) and 182 external-array receipts.
+It retains actual failed jobs, unsubmitted preparation failures, captured
+workers and every historical source patch. Source replay verifies every
+captured engine file; the final public experimental source is `67c9de0b2`.
+Complete native/reference fields, meshes and per-frame benchmark audits stay
+on data. Source checkouts `hard_contact_enrichment` and `hard_contact_farfield`
+remain in the workspace. All scientific execution uses Slurm `rtx-mid`, image
+`1_26`, the existing data-side environment and private node scratch. No existing
+dataset, environment or compatibility link is moved.

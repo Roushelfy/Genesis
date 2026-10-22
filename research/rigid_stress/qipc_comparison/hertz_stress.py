@@ -27,6 +27,9 @@ def confocal_coordinate(points, axes):
     surface[outside] = 2 * (-constant[outside]) / (coefficient[outside] + discriminant[outside])
     low = np.maximum(surface, squared[:, 2])
     high = squared.sum(axis=1)
+    slack = 1 - squared[:, 0] / aa - squared[:, 1] / bb
+    inside = slack > 0
+    high[inside] = np.minimum(high[inside], squared[inside, 2] / slack[inside])
     value = np.maximum(low, high / 2)
     active = points[:, 2] > 0
     for _ in range(56):

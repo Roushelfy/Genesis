@@ -90,6 +90,16 @@ CPU/GPU controls pass. Same-allocation B1024 history cost falls from4.411 to
 0.808ms with16 intervals using a cooperative layout; these are component times.
 General vector-friction physics and whole-scene integration remain required.
 
+The [native normal recovery component](docs/NATIVE_HERTZ_RECOVERY_20261022.md)
+combines Hertz fields with the existing finite-domain elastic solve. CPU/GPU,
+rotation, multiple-source, max/full and failure/release controls pass. Independent
+prescribed-load P2 differences are at most 0.01974% for volume tensors and
+0.001842%/0.000296% for tensile/VM peaks. Four moment-matched far sources reduce
+same-allocation B1024 max/full component time from 12.16/12.21 to 7.39/7.43 ms.
+All audited frames pass. Live automatic contacts, moving probes, curved/inner
+contacts and physical friction integration remain open; public options still
+use their established path. The report pins the experimental engine source.
+
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
 cheap two-region interaction correction. Ellipticity reduces the rotated-case
