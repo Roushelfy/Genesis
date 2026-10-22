@@ -1,0 +1,49 @@
+{
+  "passed": true,
+  "kind": "public-preset-and-full-field-contract",
+  "genesis_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_curved_material/genesis/__init__.py",
+  "checks": [
+    {
+      "backend": "cpu",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+        "-m",
+        "pytest",
+        "-n",
+        "0",
+        "--backend",
+        "cpu",
+        "-q",
+        "-o",
+        "cache_dir=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-curved-material-corner-v1/group0/corner/cpu-cache",
+        "--basetemp",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-curved-material-corner-v1/group0/corner/cpu-tmp",
+        "--junitxml",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-curved-material-corner-v1/group0/corner/cpu.xml",
+        "tests/rigid/test_stress_corner_precision.py"
+      ],
+      "returncode": 0
+    },
+    {
+      "backend": "cuda",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+        "-m",
+        "pytest",
+        "-n",
+        "0",
+        "--backend",
+        "cuda",
+        "-q",
+        "-o",
+        "cache_dir=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-curved-material-corner-v1/group0/corner/cuda-cache",
+        "--basetemp",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-curved-material-corner-v1/group0/corner/cuda-tmp",
+        "--junitxml",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-curved-material-corner-v1/group0/corner/cuda.xml",
+        "tests/rigid/test_stress_corner_precision.py"
+      ],
+      "returncode": 0
+    }
+  ]
+}

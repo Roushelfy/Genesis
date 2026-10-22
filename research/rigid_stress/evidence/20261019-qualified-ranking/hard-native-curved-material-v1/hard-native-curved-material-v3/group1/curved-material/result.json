@@ -1,0 +1,85 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "geometry": "analytic",
+      "build_seconds": 16.69656297500478,
+      "stiffness_relative": 5.195492008887931e-15,
+      "mass_relative": 4.232319443608e-15,
+      "uniform_load_relative": 7.42480217777046e-13,
+      "corner_relative": [
+        5.364019841110487e-11,
+        7.763961412303223e-11,
+        0.0
+      ],
+      "query_relative": [
+        3.0574317853957924e-11,
+        4.984381585431465e-11,
+        0.0
+      ],
+      "higher_rule_corner_relative": 4.012721260065925e-08,
+      "nodes": 810,
+      "tetrahedra": 480,
+      "regular_core_B3_inclusive_seconds": {
+        "full": [
+          0.00720200699288398,
+          0.006973904033657163,
+          0.006922740023583174,
+          0.006893076992128044,
+          0.006914322031661868
+        ],
+        "max": [
+          0.006903908972162753,
+          0.006905812013428658,
+          0.006866477953735739,
+          0.006865350995212793,
+          0.0068633430055342615
+        ]
+      }
+    },
+    {
+      "geometry": "estimated",
+      "build_seconds": 13.517191833991092,
+      "stiffness_relative": 5.1657113006626185e-15,
+      "mass_relative": 4.0474255120300306e-15,
+      "uniform_load_relative": 7.879885324993021e-13,
+      "corner_relative": [
+        3.254365507210092e-11,
+        6.496768257198702e-11,
+        0.0
+      ],
+      "query_relative": [
+        1.6466922292206217e-11,
+        4.658821125924673e-11,
+        0.0
+      ],
+      "higher_rule_corner_relative": 4.2159919544109195e-08,
+      "nodes": 810,
+      "tetrahedra": 480,
+      "regular_core_B3_inclusive_seconds": {
+        "full": [
+          0.007051335996948183,
+          0.007091770006809384,
+          0.007047815015539527,
+          0.006898145016748458,
+          0.00688035401981324
+        ],
+        "max": [
+          0.006963964959140867,
+          0.006888451986014843,
+          0.006862032983917743,
+          0.0068664890131913126,
+          0.0068467590026557446
+        ]
+      }
+    }
+  ],
+  "targets": {
+    "operator_relative": 1e-10,
+    "same_load_field_relative": 1e-07,
+    "uniform_field_relative": 1e-07,
+    "quadrature_field_relative": 0.02
+  },
+  "inverted_geometry_rejected": true,
+  "whole_goal_complete": false
+}

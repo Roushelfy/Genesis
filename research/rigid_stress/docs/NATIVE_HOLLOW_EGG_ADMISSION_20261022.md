@@ -271,6 +271,75 @@ and fresh explicit data outputs. Continue with consistent curved-source
 traction and native material geometry, matched stress error and accepted
 Franka max/full throughput; the complete goal remains open.
 
+## Native curved material and source integration
+
+Experimental engine [`aa9cc8298`](https://github.com/Roushelfy/Genesis/commit/aa9cc8298)
+now accepts optional `edge_positions` in the stress mesh asset. Coordinates follow
+lexicographically sorted unique tetrahedral edges. Shared quadratic geometry is
+used consistently for volume stiffness, consistent mass, boundary positions,
+normals and weights, and corner/query stress gradients. Positive sampled geometry
+Jacobians are checked before assembly. Assets without edge coordinates retain the
+affine path; curved geometry currently requires the Hertz route. Source association
+and transfer are not yet adapted to it, so this is an isolated material implementation.
+
+The 810-node/480-cell shell passes independent same-load checks with both analytic
+and estimated geometry on CPU and CUDA. Maximum relative differences are:
+
+| Quantity | Difference |
+| --- | ---: |
+| Stiffness matrix | `5.32e-15` |
+| Consistent mass matrix | `4.37e-15` |
+| Uniform-traction load consistency | `8.14e-13` |
+| Complete corner stress | `7.77e-11` |
+| 1440 interior material-query stresses | `5.27e-11` |
+| Response change from 6³ to 7³ volume quadrature | `4.22e-8` |
+
+The controls include uniform and asymmetric loads, centrifugal inertia relief,
+zero load, max/full output, cached/uncached gradients and a deliberately inverted
+cell. Existing affine four-source shell checks, rotated normal components and the
+live friction/history/checkpoint/partial-reset scene pass. The original decimal
+corner-cancellation test passes all four CPU/CUDA and cached/uncached cases.
+Five warm B3 regular-core samples are retained, but include 1440 extra material
+queries and no active contact particular. They are not contact-module or Franka
+throughput measurements. Initial failures from static tensor-shape inspection
+and a default kernel argument remain in the v1/v2 campaigns.
+
+A separate independent elasticity study uses the actual first-loaded Franka normal
+source on the same curved shell. It compares the inexpensive point-traction
+boundary correction with distributed prescribed-Hertz traction cancellation.
+Both use the complete material boundary and consistent curved operators; contact
+pressure is prescribed, not independently predicted by this comparison.
+
+A rational radial map applied over the entire source face misses its broad curved
+traction: the original order16 wrench error is about1.4%. Surface tangency cancels
+the point singularity against a source-centered fan's radial Jacobian. Linear
+radial integration at that source, with the existing focused rule on nearby remote
+walls, reduces the order16 error without changing its50176 sample count:
+
+| Geometry normals | Point16 wrench error | Corner-field difference | Probe-field difference |
+| --- | ---: | ---: | ---: |
+| Analytic | `6.61e-7` | `2.33e-7` | `1.23e-7` |
+| Estimated | `7.06e-7` | `2.99e-7` | `1.61e-7` |
+
+Differences are relative to the refined distributed-Hertz correction. Peak
+VM/tensile differences are below`1.41e-7` in this control. The reference separates
+the broad point term from the localized distributed-minus-point correction and
+integrates physical pressure together with its cancelling traction. Order24→32
+field/peak changes are below`2.38e-7`; final reference wrench errors are
+`1.45e-5`/`2.67e-5`, below the independently retained`1e-4` gate. The estimated
+order24 reference still has`1.30e-4` wrench error, which remains reported rather
+than treated as an admitted result. The first two quadrature attempts are retained.
+
+These very small decomposition differences do not measure shell discretization,
+unknown-pressure error or arbitrary curved-source accuracy. They support porting
+this source-centered integration into Quadrants. Native curved source provenance,
+material-following probes, moving friction and accepted Franka max/full throughput
+remain required. The whole goal stays active. The
+[material/source evidence packet](../evidence/20261019-qualified-ranking/hard-native-curved-material-v1/README.md)
+retains seven terminal campaigns, their original failures, exact sources and
+complete fields at hashed data-side paths. Reuse the captured tasks with immutable
+sources, Slurm`rtx-mid`, image`1_26`, fresh explicit data outputs and private caches.
+
 ## Repair and reproduction
 
 Source[`d26b5b3d4`](https://github.com/Roushelfy/Genesis/commit/d26b5b3d46efe614ed715fef293f8cc49bcdf0c7)

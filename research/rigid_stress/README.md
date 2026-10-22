@@ -168,6 +168,15 @@ The coarse egg still has9.138% vertex-curvature RMS error, and the actual Franka
 frame remains refused by the unchanged material-geometry checks. This is
 pressure-input progress; accepted shell stress throughput remains required.
 
+The [native curved-material implementation](docs/NATIVE_HOLLOW_EGG_ADMISSION_20261022.md#native-curved-material-and-source-integration)
+now passes independent CPU/GPU stiffness, consistent-mass and complete-stress
+checks, plus the existing affine and live-friction controls. A source-centered
+quadrature change reduces the captured curved normal-source wrench error from
+about1.4% to below7.1e-7 at the same sample count. Its prescribed-Hertz decomposition
+comparison passes, while native curved source transfer, moving probes/friction
+and admitted Franka throughput remain open. These checks do not qualify physical
+contact pressure or shell discretization.
+
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
 cheap two-region interaction correction. Ellipticity reduces the rotated-case

@@ -1,5 +1,17 @@
 # Rigid-stress data and artifact locations
 
+The `hard-native-curved-material-v1` packet retains289 compact payloads/
+1,669,564bytes and71 externally hashed fields and meshes. Native curved material
+CPU/GPU checks, original compiler failures, affine/friction regressions, corner
+precision tests and curved source-traction comparisons use the existing
+`20261019-qualified-ranking` data root in `hard-native-curved-material-v1` through
+`v3`, `hard-curved-material-corner-v1` and `hard-curved-hertz-residual-v1` through
+`v3`. All seven campaigns are terminal. Runtime outputs and logs stay on data;
+compiler caches are private and node-local. All21 frozen engine heads and12
+original unrelated files remain preserved. Source/docs stay in workspace. The
+new experimental engine is`aa9cc8298`; final material and residual workers are
+captured in v3. No data or active environment was migrated.
+
 The `hard-native-quadric-curvature-v1` packet retains345 compact payloads/
 1,988,937bytes and121 externally hashed fields and generated meshes. Curved
 rest-surface/gap studies, native curvature controls, actual Franka snapshots
