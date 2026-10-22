@@ -219,8 +219,8 @@ class RigidStressOptions(Options):
     def hertz(cls, *, mesh: PathType, quadrature: PositiveInt = 8, **options) -> Self:
         """Estimate Hertz support and friction stress from current rigid contacts.
 
-        This route currently requires a locally planar material source, supported
-        half-space geometry and a representable force line. Sixteen radial
+        This route requires a tangent material source, supported half-space geometry
+        and a representable force line. Sixteen radial
         intervals retain vector friction memory under changing normal and shear
         loads. Free couples and ambiguous history correspondence are rejected.
         The finite-body correction includes every material boundary, including

@@ -52,13 +52,15 @@ class StressHertzRecoveryState:
 
 
 class StressHertzRecovery:
-    """Recover normal and tangential contacts on supported flat patches.
+    """Recover contacts on supported planar or quadratic material boundaries.
 
     Regions use region-major flattened arrays, with environment as the inner
-    dimension. The supplied frame's third column points into material. The
-    actual anchor and a four-major-radius clearance from noncoplanar boundaries
-    are checked. Material outside a region's half-space is rejected explicitly.
-    Optional shear data supplies the radial friction history for each region.
+    dimension. The supplied frame's third column follows the inward source
+    normal. Affine sources require four-major-radius clearance from noncoplanar
+    boundaries. Quadratic boundaries use their actual normal and area measure;
+    material probes follow adjacent surface and volume charts. Material outside
+    a region's half-space is rejected. Optional shear data supplies radial
+    friction history for each region.
 
     Complete output retains all element corners in StressState and additional
     material probes in this component. Both banks contribute to the sampled VM
@@ -362,7 +364,10 @@ def kernel_hertz_residual_traction(
                     )
                     distance = (closest - center).norm()
                     is_near = distance < diameter / 4
-                    n_rules = 12 if is_near else 1
+                    radial_splits = 2
+                    if qd.static(is_curved):
+                        radial_splits = 3
+                    n_rules = 6 * radial_splits if is_near else 1
                     # Each lane integrates one angular knot over every radial rule.
                     for i_sample_ in range(n_rules * surface.gauss.shape[0]):
                         i_sample_local = i_sample_ * surface.gauss.shape[0] + i_lane
@@ -374,7 +379,7 @@ def kernel_hertz_residual_traction(
                             normal = surface.normals[i_sample]
                         if is_near:
                             i_rule = i_sample_local // surface.shape.shape[0]
-                            i_edge = i_rule // 4
+                            i_edge = i_rule // (2 * radial_splits)
                             first_bary, second_bary = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
                             first_bary[i_edge], second_bary[(i_edge + 1) % 3] = 1.0, 1.0
                             i_first, i_second = (
@@ -383,7 +388,7 @@ def kernel_hertz_residual_traction(
                             )
                             first, second = info.vertices[i_first] - closest, info.vertices[i_second] - closest
                             n_gauss = surface.gauss.shape[0]
-                            u = (surface.gauss[i_q // n_gauss] + (i_rule % 4) // 2) / 2
+                            u = (surface.gauss[i_q // n_gauss] + (i_rule % (2 * radial_splits)) // 2) / radial_splits
                             v = (surface.gauss[i_q % n_gauss] + i_rule % 2) / 2
                             radius, derivative = u, gs.qd_float(1.0)
                             if not is_source:
@@ -406,7 +411,7 @@ def kernel_hertz_residual_traction(
                                 * derivative
                                 * surface.gauss_weights[i_q // n_gauss]
                                 * surface.gauss_weights[i_q % n_gauss]
-                                / 4
+                                / (2 * radial_splits)
                             )
                             shape = qd.Vector(
                                 [
