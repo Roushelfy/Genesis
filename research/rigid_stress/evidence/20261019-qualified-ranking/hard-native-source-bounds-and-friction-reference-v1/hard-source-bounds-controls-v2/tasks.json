@@ -1,0 +1,50 @@
+[
+  [
+    {
+      "name": "sources",
+      "module": "research.rigid_stress.qipc_comparison.check_source_bounds",
+      "args": [
+        "--backend",
+        "cpu",
+        "--source",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_bounded_sources"
+      ]
+    },
+    {
+      "name": "rotated",
+      "module": "research.rigid_stress.qipc_comparison.check_live_hertz_normal",
+      "args": [
+        "--backend",
+        "cpu",
+        "--default-quadrature",
+        "--rotated",
+        "--steps",
+        "8"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "sources",
+      "module": "research.rigid_stress.qipc_comparison.check_source_bounds",
+      "args": [
+        "--backend",
+        "cuda",
+        "--source",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_bounded_sources"
+      ]
+    },
+    {
+      "name": "rotated",
+      "module": "research.rigid_stress.qipc_comparison.check_live_hertz_normal",
+      "args": [
+        "--backend",
+        "gpu",
+        "--default-quadrature",
+        "--rotated",
+        "--steps",
+        "8"
+      ]
+    }
+  ]
+]

@@ -947,3 +947,19 @@ audits and CUDA traces remain on data. The workspace checkout
 Scientific work uses the existing data-side physical environment, Slurm
 `rtx-mid`, image `1_26` and private node scratch. No runtime data, environment,
 compatibility link or protected unfinished source is migrated.
+
+Shared source-bound controls use `hard-source-bounds-controls-v2`, paired
+source orders `hard-source-bounds-paired-v2/v3`, separate device tracing `v2`
+and saved-array inspectors under the same ranking data root. Their unsubmitted
+`v1` preparation directories remain intact. Independent vector-friction work
+uses `hard-tangential-contact-pilot-v1/v2`, five matched studies in
+`hard-tangential-contact-reference-v1` and failed/corrected read-only inspections.
+The `hard-native-source-bounds-and-friction-reference-v1` publication packet
+retains 445 compact payloads (2,303,663 bytes) and 154 external-array/trace
+receipts. Full cell histories, independent/candidate stress fields, actual
+scene audits and CUDA traces stay on data. The isolated source checkout
+`hard_contact_bounded_sources` is pinned at public alias `5a28cf837`, with
+the earlier `fc63cf32e` source unchanged. Scientific work uses the existing
+Slurm/image/data-side environment and private node scratch; paired source
+processes also use separate private compiler caches. No runtime dataset,
+active environment, compatibility link or protected unfinished source is moved.

@@ -122,6 +122,20 @@ versus 2.30 ms pure rigid, with every audited loaded observation admitted.
 The final helper uses measured order8. General curved/inner material response,
 physical friction history and accepted Franka throughput remain active work.
 
+The [shared source bounds](docs/NATIVE_SOURCE_BOUNDS_20261022.md) retain all
+saved source/full-field outputs and seven existing tests on each CPU/CUDA
+backend. Two paired source orders improve B1024 max/full scenes by about
+5.2–5.5%/4.5–4.8%; B4096 improves by about3.7%. B1 is order-sensitive and
+keeps its original max-mode regression. Every audited observation is admitted.
+
+The [independent changing-force friction control](docs/TANGENTIAL_CONTACT_REFERENCE_20261022.md)
+now compares radial16 history with vector Cerruti/Coulomb surface contact.
+On96 positive-depth points, history's maximum combined tensor/tensile-peak
+differences are0.561%/2.364%, versus6.899%/21.435% for proportional shear.
+Combined spatial/time reference changes meet2%; strict tangent-only targets
+remain failed. These conditional controls support native history integration;
+surface/global/full-volume and hollow-egg/friction qualification remain open.
+
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
 cheap two-region interaction correction. Ellipticity reduces the rotated-case

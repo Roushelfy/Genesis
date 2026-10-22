@@ -1,0 +1,26 @@
+[
+  [
+    {
+      "name": "inspection",
+      "module": "research.rigid_stress.qipc_comparison.inspect_source_bounds",
+      "args": [
+        "--paired",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-source-bounds-paired-v2",
+        "--controls",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-source-bounds-controls-v2",
+        "--baseline-controls",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-live-default-v1"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "inspection",
+      "module": "research.rigid_stress.qipc_comparison.inspect_tangential_contact_reference",
+      "args": [
+        "--campaign",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-tangential-contact-reference-v1"
+      ]
+    }
+  ]
+]
