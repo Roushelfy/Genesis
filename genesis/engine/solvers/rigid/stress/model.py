@@ -241,6 +241,7 @@ class StressModel:
         options: RigidStressOptions | None = None,
         history: StressHistory | None = None,
         surface_load: bool = False,
+        compute_peak: bool = True,
     ) -> None:
         """Balance the complete load, recover displacement and scan the full-domain peak."""
         if options is None:
@@ -306,7 +307,8 @@ class StressModel:
                 only_active=True,
                 coalesced=coalesced,
             )
-        kernel_peak(options.young, options.poisson, state, self.info, options.cached_peak)
+        if compute_peak:
+            kernel_peak(options.young, options.poisson, state, self.info, options.cached_peak)
 
     def solve(
         self,
