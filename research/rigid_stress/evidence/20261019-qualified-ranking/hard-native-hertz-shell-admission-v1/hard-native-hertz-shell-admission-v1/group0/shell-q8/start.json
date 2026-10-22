@@ -1,0 +1,26 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-223",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "739127",
+      "SLURM_ARRAY_JOB_ID": "739126",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-4ca49797-0564-da00-b5e7-4b086bc6cdb2, 00000000:45:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": null
+  },
+  "mesh": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_live_friction/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+    "bytes": 3573,
+    "sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4"
+  },
+  "quadrature": 8,
+  "same_load_tensor_gate": 1e-07,
+  "scope": "Four separate normal contacts at actual outer-facet centers of the unmodified level1 hollow egg, using prescribed relative curvatures50/80 per metre. Test native clearance, remote traction integration and complete regular/particular fields against independent same-load P2 elasticity. This isolates shell recovery from source association, curved pressure prediction and friction."
+}

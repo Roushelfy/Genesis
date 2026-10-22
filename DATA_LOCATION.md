@@ -975,3 +975,13 @@ and `hard_contact_friction_moments` are frozen at07bf46ce8,795805290 and6ffdd399
 Scientific execution reuses Slurm `rtx-mid`, image `1_26`, the data-side physical
 environment and private node scratch. The original12 unfinished files and all
 16 frozen source heads remain preserved. No data, environment or link is moved.
+
+The actual Franka admission probe and separate level1 shell controls use
+`hard-native-friction-franka-admission-v1` and
+`hard-native-hertz-shell-admission-v1` through `v4` under the same data root.
+Their `hard-native-hertz-shell-admission-v1` packet retains201 compact payloads
+(985,120 bytes) and24 external-array receipts. Complete refused Franka frames,
+shell fields and normal-component references stay on data. Source
+`hard_contact_shell_recovery` is frozen atd26b5b3d4, with the original16 heads
+and12 unfinished files preserved. The existing Slurm/image/environment and
+private node caches are reused. No runtime data or environment is migrated.

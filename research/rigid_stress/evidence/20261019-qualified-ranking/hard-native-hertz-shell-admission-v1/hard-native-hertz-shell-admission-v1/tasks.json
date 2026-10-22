@@ -1,0 +1,46 @@
+[
+  [
+    {
+      "name": "shell-q8",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_shell",
+      "args": [
+        "--backend",
+        "cpu",
+        "--quadrature",
+        "8"
+      ]
+    },
+    {
+      "name": "shell-q16",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_shell",
+      "args": [
+        "--backend",
+        "cpu",
+        "--quadrature",
+        "16"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shell-q8",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_shell",
+      "args": [
+        "--backend",
+        "gpu",
+        "--quadrature",
+        "8"
+      ]
+    },
+    {
+      "name": "shell-q16",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_shell",
+      "args": [
+        "--backend",
+        "gpu",
+        "--quadrature",
+        "16"
+      ]
+    }
+  ]
+]

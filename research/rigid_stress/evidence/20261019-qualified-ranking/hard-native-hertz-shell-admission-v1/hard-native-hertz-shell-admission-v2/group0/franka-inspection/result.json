@@ -1,0 +1,134 @@
+{
+  "passed": true,
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-223",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "739132",
+      "SLURM_ARRAY_JOB_ID": "739131",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-8e4d594b-2f96-203d-69d3-3fcc7c758473, 00000000:AD:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": null
+  },
+  "frame": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-franka-admission-v1/group0/franka/frame0010.npz",
+    "bytes": 63554,
+    "sha256": "9dc7514ad8e709f0aa9266bb87f1c1c6d4102743d7882280b12fd3678d37e27c"
+  },
+  "input_status": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "recovery_status": [
+    2,
+    2,
+    2,
+    2
+  ],
+  "native_step_valid": [
+    false,
+    false,
+    false,
+    false
+  ],
+  "active_regions": [
+    {
+      "patch": 0,
+      "environment": 0,
+      "anchor": 33,
+      "normal_force_n": 0.06227486992035645,
+      "axes_m": [
+        4.696366618512347e-05,
+        4.642416449394011e-05
+      ],
+      "orthonormal_error": 3.141748103465424e-16,
+      "determinant_error": 2.220446049250313e-16,
+      "minimum_material_depth_m": 0.0,
+      "center_plane_distance_m": 6.815794248640443e-19,
+      "face_barycentric": [
+        0.0,
+        1.0,
+        -1.768771880831267e-18
+      ],
+      "inward_normal_alignment": 0.9229706687122372,
+      "normal_angle_degrees": 22.635688313611716,
+      "original_normal_gate_passed": false
+    },
+    {
+      "patch": 1,
+      "environment": 1,
+      "anchor": 33,
+      "normal_force_n": 0.06403407220061623,
+      "axes_m": [
+        4.7401791594889155e-05,
+        4.685725687671452e-05
+      ],
+      "orthonormal_error": 9.222366723037063e-16,
+      "determinant_error": 7.771561172376096e-16,
+      "minimum_material_depth_m": 0.0,
+      "center_plane_distance_m": 6.815794248640443e-19,
+      "face_barycentric": [
+        0.0,
+        1.0,
+        -1.768771880831267e-18
+      ],
+      "inward_normal_alignment": 0.922970668712237,
+      "normal_angle_degrees": 22.63568831361175,
+      "original_normal_gate_passed": false
+    },
+    {
+      "patch": 2,
+      "environment": 2,
+      "anchor": 33,
+      "normal_force_n": 0.06391695887006085,
+      "axes_m": [
+        4.73728758979368e-05,
+        4.6828673352879686e-05
+      ],
+      "orthonormal_error": 2.0367275326669812e-17,
+      "determinant_error": 1.1102230246251565e-16,
+      "minimum_material_depth_m": 0.0,
+      "center_plane_distance_m": 6.815794248640443e-19,
+      "face_barycentric": [
+        0.0,
+        1.0,
+        -1.768771880831267e-18
+      ],
+      "inward_normal_alignment": 0.9229706687122372,
+      "normal_angle_degrees": 22.635688313611716,
+      "original_normal_gate_passed": false
+    },
+    {
+      "patch": 3,
+      "environment": 3,
+      "anchor": 33,
+      "normal_force_n": 0.06390557615505386,
+      "axes_m": [
+        4.7370063582457505e-05,
+        4.682589334426824e-05
+      ],
+      "orthonormal_error": 1.874780163894793e-17,
+      "determinant_error": 0.0,
+      "minimum_material_depth_m": 0.0,
+      "center_plane_distance_m": 6.815794248640443e-19,
+      "face_barycentric": [
+        0.0,
+        1.0,
+        -1.768771880831267e-18
+      ],
+      "inward_normal_alignment": 0.9229706687122372,
+      "normal_angle_degrees": 22.635688313611716,
+      "original_normal_gate_passed": false
+    }
+  ],
+  "scope": "Read-only geometry attribution of the original refused snapshot. Original1e-10 frame-normal gate and source identity are retained. Inspection completion supplies no admitted stress update or physical accuracy claim.",
+  "whole_goal_complete": false
+}

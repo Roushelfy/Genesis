@@ -1,0 +1,54 @@
+[
+  [
+    {
+      "name": "franka-inspection",
+      "module": "research.rigid_stress.qipc_comparison.inspect_hertz_franka_admission",
+      "args": [
+        "--frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-franka-admission-v1/group0/franka/frame0010.npz"
+      ]
+    },
+    {
+      "name": "shell-q8",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_shell",
+      "args": [
+        "--backend",
+        "cpu",
+        "--quadrature",
+        "8"
+      ]
+    },
+    {
+      "name": "shell-q16",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_shell",
+      "args": [
+        "--backend",
+        "cpu",
+        "--quadrature",
+        "16"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shell-q8",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_shell",
+      "args": [
+        "--backend",
+        "gpu",
+        "--quadrature",
+        "8"
+      ]
+    },
+    {
+      "name": "shell-q16",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_shell",
+      "args": [
+        "--backend",
+        "gpu",
+        "--quadrature",
+        "16"
+      ]
+    }
+  ]
+]

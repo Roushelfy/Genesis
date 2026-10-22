@@ -145,6 +145,14 @@ loaded audit admitted. This is a declared radial approximation on supported
 flat material patches; curved/inner material and accepted Franka throughput
 remain active work. Independent elasticity checks do not certify pressure.
 
+The [native hollow-egg check](docs/NATIVE_HOLLOW_EGG_ADMISSION_20261022.md)
+locates the actual Franka refusal at a coarse vertex: its smooth contact normal
+differs22.64 degrees from the material facet normal. Separate facet-centered
+shell controls pass complete CPU/GPU fields with order16 boundary integration;
+order8 fails the unchanged wrench gate. The normal-component buffer repair,
+failed controls and probe-coordinate sensitivity remain reproducible. Accepted
+Franka throughput and curved-source physical accuracy remain open.
+
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
 cheap two-region interaction correction. Ellipticity reduces the rotated-case
