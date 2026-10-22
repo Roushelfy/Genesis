@@ -88,6 +88,48 @@ def func_surface_geometry(i_f: int, bary: qd.types.vector(3), info: StressInfo):
 
 
 @qd.func
+def func_surface_height_derivatives(
+    i_f: int,
+    bary: qd.types.vector(3),
+    plane: qd.types.matrix(2, 3),
+    normal: qd.types.vector(3),
+    info: StressInfo,
+    epsilon: float,
+):
+    """Differentiate quadratic material height in a projected Cartesian chart."""
+    point, tangent, area = func_surface_geometry(i_f, bary, info)
+    chart = plane @ tangent
+    is_valid = qd.abs(chart.determinant()) > 128 * epsilon * chart.norm_sqr()
+    is_valid = is_valid and chart.norm() < float("inf") and area.dot(normal) > 0
+    gradient = qd.Vector.zero(gs.qd_float, 2)
+    hessian = qd.Matrix.zero(gs.qd_float, 2, 2)
+    if is_valid:
+        inverse = chart.inverse()
+        lifted = tangent @ inverse
+        gradient = -lifted.transpose() @ normal
+        # Differentiating the inverse chart removes its tangential acceleration.
+        transverse = normal - plane.transpose() @ (lifted.transpose() @ normal)
+        derivatives = qd.Matrix([[-1.0, -1.0], [1.0, 0.0], [0.0, 1.0]])
+        pairs = qd.Matrix([[0, 1], [0, 2], [1, 2]])
+        i_origin = info.surface_nodes[i_f, 0]
+        origin = info.vertices[i_origin]
+        for i in range(6):
+            second = qd.Matrix.zero(gs.qd_float, 2, 2)
+            if i < 3:
+                derivative = derivatives[i, :]
+                second = 4 * derivative.outer_product(derivative)
+            else:
+                a, b = pairs[i - 3, 0], pairs[i - 3, 1]
+                first, last = derivatives[a, :], derivatives[b, :]
+                second = 4 * (first.outer_product(last) + last.outer_product(first))
+            i_n = info.surface_nodes[i_f, i]
+            hessian -= (info.vertices[i_n] - origin).dot(transverse) * second
+        hessian = inverse.transpose() @ hessian @ inverse
+        is_valid = gradient.norm() < float("inf") and hessian.norm() < float("inf")
+    return gradient, hessian, is_valid
+
+
+@qd.func
 def func_quadratic_edge_closest(
     point: qd.types.vector(3),
     first: qd.types.vector(3),
