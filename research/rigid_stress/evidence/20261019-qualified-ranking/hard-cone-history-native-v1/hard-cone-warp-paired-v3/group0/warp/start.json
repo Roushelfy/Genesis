@@ -1,0 +1,35 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-235",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "737812",
+      "SLURM_ARRAY_JOB_ID": "737811",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-2534f374-d5df-913a-6024-4ed7d11bbc69, 00000000:45:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "reference_result": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-cone-history-v5/group0/study/result.json",
+    "bytes": 491275,
+    "sha256": "5933680a2e0bdea3cbbe1eca242f3e3e8a01ae822b9da394c94b7688b45d6416"
+  },
+  "reference_fields": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-cone-history-v5/group0/study/fields.npz",
+    "bytes": 15219164,
+    "sha256": "4ad050fab3ba1df3adccc990e4a795438e3f01ebeeb6fe04e8a2802b19739d7a"
+  },
+  "targets": {
+    "line_absolute": 1e-05,
+    "surface_traction_absolute_over_mu_p0": 0.0001,
+    "force_residual": 1e-09,
+    "continuous_slope_bound": 1.0000000001
+  },
+  "scope": "All97 observations of changing normal load and two-direction radial memory at16/32 intervals; an independently rotated frame shares the same physical path. CPU reference uses independent constrained optimization and KKT checks. Resident benchmarks include input law and history update, exclude tensor evaluation/rigid dynamics, and retain full audited admission."
+}

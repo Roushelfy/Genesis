@@ -6,6 +6,11 @@ gives 1.062% pressure L2 error, 0.319% peak-pressure error and
 0.248%/0.099% moment-axis errors. This is a conditional pressure result;
 complete/peak stress, friction and the moving native estimator remain unqualified.
 
+The subsequent [independent-pressure stress comparison](HOLLOW_SHELL_PRESSURE_STRESS_20261022.md)
+adds a conditional complete/resultant/peak stress budget for this same normal
+case. This original pressure packet and its scope remain unchanged; general
+friction, moving contacts and native accuracy/cost matching remain open.
+
 ## Physical problem and independent solve
 
 Reuse the exact faceted hollow egg and three meshes from the

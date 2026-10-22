@@ -1,0 +1,54 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-113",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "737722",
+      "SLURM_ARRAY_JOB_ID": "737722",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "targets": {
+    "reference_field_change": 0.02,
+    "reference_peak_change": 0.05,
+    "candidate_field_error": 0.05,
+    "candidate_peak_error": 0.1,
+    "near_integration_over_pressure": 0.001,
+    "far_integration_over_pressure": 1e-05
+  },
+  "pressure_inspection": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-inspection-v1/group0/inspection/result.json",
+    "bytes": 15552,
+    "sha256": "705ca82096844f9c65b91e2014106c1be5a17513aaaf4fd96180cb7b54a12a76"
+  },
+  "parents": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-v4/group0/pressure/result.json",
+      "bytes": 18606,
+      "sha256": "cee439f4281ab5277e57d728c4b05358fcd16c18e3c195e0cccc306fb0ce7fb8"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-refinement-v1/group0/pressure/result.json",
+      "bytes": 18659,
+      "sha256": "06a184b53b4586d1ad1c26904d1665ed9d9665584596432544f797781b6ae162"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-refinement-v1/group1/pressure/result.json",
+      "bytes": 18623,
+      "sha256": "5efda8dda7a00cf6099d99fa474211629ba77d065957ed4890cf7987c20d486f"
+    }
+  ],
+  "fine_refinement": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-grid97-refinement-v1/group1/pressure/result.json",
+    "bytes": 3649,
+    "sha256": "d77181603f4079babe4c6cb64afd8be0a7ca38aa239c36cdd7b3653dbf9e598c"
+  },
+  "scope": "One matched fixed hollow-shell normal case. Independently solved pressure hats feed independently integrated Boussinesq tensors and retained scalar normal elastic responses. Shared-pressure body refinement, pressure65/97, source3/5 and near/far integration gates remain separate. Native throughput, friction and arbitrary-contact qualification are excluded."
+}

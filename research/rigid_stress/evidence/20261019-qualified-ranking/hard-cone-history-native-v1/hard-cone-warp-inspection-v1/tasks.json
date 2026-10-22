@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "name": "inspection",
+      "module": "research.rigid_stress.qipc_comparison.inspect_native_cone_layout",
+      "args": [
+        "--paired",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-cone-warp-paired-v4"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "scalar",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hertz_cone",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    }
+  ]
+]
