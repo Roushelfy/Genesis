@@ -148,8 +148,10 @@ remain active work. Independent elasticity checks do not certify pressure.
 The [native hollow-egg check](docs/NATIVE_HOLLOW_EGG_ADMISSION_20261022.md)
 locates the actual Franka refusal at a coarse vertex: its smooth contact normal
 differs22.64 degrees from the material facet normal. Separate facet-centered
-shell controls pass complete CPU/GPU fields with order16 boundary integration;
-order8 fails the unchanged wrench gate. The normal-component buffer repair,
+shell controls pass same-load CPU/GPU fields with order16 boundary integration;
+order8 fails the unchanged wrench gate. A subsequent audit finds that the
+asset lists only80 of160 material-boundary faces, so complete cavity correction
+remains required despite those same-load passes. The normal-component buffer repair,
 failed controls and probe-coordinate sensitivity remain reproducible. Accepted
 Franka throughput and curved-source physical accuracy remain open.
 
