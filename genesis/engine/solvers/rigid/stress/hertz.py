@@ -261,3 +261,47 @@ def func_hertz_tensor(point: qd.types.vector(3), ratio: float, poisson: float, q
         for i in qd.static(range(2)):
             tensor[i, i] += ratio * point[2] * ((1 - poisson) * integrals[i] - poisson * integrals[2])
     return tensor, is_resolved
+
+
+@qd.func
+def func_boussinesq_tensor(point: qd.types.vector(3), force: float, poisson: float):
+    radius, depth = point.norm(), point[2]
+    factor = force / (2 * pi)
+    tensor = (-3 * factor * depth / radius**5) * point.outer_product(point)
+    for i, j in qd.static(qd.ndrange(2, 2)):
+        tensor[i, j] += (
+            factor
+            * (1 - 2 * poisson)
+            * point[i]
+            * point[j]
+            * (2 * radius + depth)
+            / (radius**3 * (radius + depth) ** 2)
+        )
+    for i in qd.static(range(2)):
+        tensor[i, i] += factor * (1 - 2 * poisson) * (depth / radius**3 - 1 / (radius * (radius + depth)))
+    return tensor
+
+
+@qd.func
+def func_hertz_particular(
+    point: qd.types.vector(3),
+    axes: qd.types.vector(2),
+    peak: float,
+    force: float,
+    poisson: float,
+    quadrature: qd.Tensor,
+    far_field: qd.template(),
+):
+    """Use four pressure-moment sources beyond eight major radii."""
+    tensor, resolved = qd.Matrix.zero(gs.qd_float, 3, 3), True
+    is_far = False
+    if qd.static(far_field):
+        is_far = point.norm() >= 8 * axes[0]
+    if is_far:
+        for i in range(4):
+            source = qd.Vector([(2 * (i // 2) - 1) * axes[0], (2 * (i % 2) - 1) * axes[1], 0.0]) / qd.sqrt(5.0)
+            tensor += func_boussinesq_tensor(point - source, force / 4, poisson)
+    else:
+        value, resolved = func_hertz_tensor(point / axes[0], axes[1] / axes[0], poisson, quadrature)
+        tensor = value * peak
+    return tensor, resolved
