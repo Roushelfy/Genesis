@@ -1,0 +1,29 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-233",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "739914",
+      "SLURM_ARRAY_JOB_ID": "739914",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-a9140870-af6c-c59c-9466-6040d0d0475a, 00000000:C0:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/native-edge-law-physical-inputs-v1.json",
+      "bytes": 3324,
+      "sha256": "1be91a46c72ec7732c7e5eefed286ceb2187cb0eadef1ddde037d1fa47092f69"
+    }
+  ],
+  "backend": "gpu",
+  "precision": "32",
+  "scale_relative_target": 8e-06,
+  "scope": "Supplied physical-region normal load, reduced modulus, edge slope, along-edge curvature and transverse shear ratio. Independent SciPy digamma/Brent scales, finite/unbounded pressure limits, invalid/unloaded/slender-regime isolation and reset, plus optional warmed resident dispatch timings. Physical pressure budgets are supplied by separate coupled BEM comparisons. Collider binding, friction history, complete fields and accepted max/full scene throughput are outside this component test."
+}

@@ -1,0 +1,77 @@
+{
+  "passed": true,
+  "controls": {
+    "quadrature_relative_error": 2.423846168385064e-15,
+    "manufactured_force_maximum_error": 1.942890293094024e-16,
+    "manufactured_iterations": 9,
+    "zero_self_integral_checked": true,
+    "incompressible_limit_checked": true,
+    "dimensional_scaling_checked": true,
+    "skew_reciprocity_checked": true,
+    "positive_symmetric_part_checked": true,
+    "normal_solver_regression_checked": true
+  },
+  "contact": 2,
+  "tangent_over_normal_components": [
+    -0.7957656535959365,
+    -0.0077521989414418655
+  ],
+  "rows": [
+    {
+      "grid": 48,
+      "shear_direction": 1,
+      "cell_widths_m": [
+        1.6210915521064004e-07,
+        1.1043510601898491e-05
+      ],
+      "assembly_seconds": 1.507415329106152,
+      "solve_seconds": 0.3973754489561543,
+      "iterations": 154,
+      "active_cells": 154,
+      "indentation_m": 2.524114105479084e-07,
+      "centroid_edge_xy_m": [
+        5.229051610918487e-07,
+        2.2708215741329323e-08
+      ],
+      "centroid_change_m": 1.277437594160186e-07,
+      "moment_difference_over_Fa": 7.053727733455808,
+      "pressure_cell_l2_change": 0.25901376684942623,
+      "sample_tensor_change": 0.011460019103918407,
+      "sample_vm_peak_change": 0.0074459262541818946,
+      "coupled_cell_mean_pressure_max_pa": 1115260713.2719703,
+      "coupled_sample_vm_peak_pa": 26747386.276978653,
+      "normal_only_approximation_targets_met": false,
+      "reference_refinement": null
+    },
+    {
+      "grid": 48,
+      "shear_direction": -1,
+      "cell_widths_m": [
+        1.6210915521064004e-07,
+        1.1043510601898491e-05
+      ],
+      "assembly_seconds": 1.507415329106152,
+      "solve_seconds": 0.25845022208523005,
+      "iterations": 114,
+      "active_cells": 114,
+      "indentation_m": 2.5949620381221873e-07,
+      "centroid_edge_xy_m": [
+        3.0359161325112505e-07,
+        -3.4016198805307504e-08
+      ],
+      "centroid_change_m": 9.89514048446595e-08,
+      "moment_difference_over_Fa": 7.042996030487014,
+      "pressure_cell_l2_change": 0.2130281795890216,
+      "sample_tensor_change": 0.01309497428466157,
+      "sample_vm_peak_change": 0.014713756538477155,
+      "coupled_cell_mean_pressure_max_pa": 1909373368.1837547,
+      "coupled_sample_vm_peak_pa": 25765611.452922724,
+      "normal_only_approximation_targets_met": false,
+      "reference_refinement": null
+    }
+  ],
+  "native_scene_admitted": false,
+  "global_surface_peak_qualified": false,
+  "friction_history_law_qualified": false,
+  "whole_goal_complete": false
+}

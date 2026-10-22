@@ -1,0 +1,32 @@
+[
+  [
+    {
+      "name": "edge",
+      "module": "research.rigid_stress.qipc_comparison.check_native_edge_law",
+      "args": [
+        "--backend",
+        "gpu",
+        "--precision",
+        "64",
+        "--physical-inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/native-edge-law-physical-inputs-v1.json",
+        "--timing"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "edge",
+      "module": "research.rigid_stress.qipc_comparison.check_native_edge_law",
+      "args": [
+        "--backend",
+        "gpu",
+        "--precision",
+        "32",
+        "--physical-inputs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/native-edge-law-physical-inputs-v1.json",
+        "--timing"
+      ]
+    }
+  ]
+]
