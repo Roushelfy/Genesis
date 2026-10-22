@@ -51,7 +51,7 @@ class StressSurface:
             grid=allocate_grid(n_faces * n_quadrature),
         )
         kernel_gauss(self.info)
-        kernel_surface(stress_info, self.info)
+        kernel_surface(stress_info, self.info, stress_info.volume_points.shape[0] > 0)
         build_grid(self.info.positions, self.info.grid)
 
 
@@ -61,7 +61,8 @@ def func_surface_geometry(i_f: int, bary: qd.types.vector(3), info: StressInfo):
     tangent = qd.Matrix.zero(gs.qd_float, 3, 2)
     gradient = qd.Matrix([[-1.0, -1.0], [1.0, 0.0], [0.0, 1.0]])
     pairs = qd.Matrix([[0, 1], [0, 2], [1, 2]])
-    origin = info.vertices[info.surface_nodes[i_f, 0]]
+    i_origin = info.surface_nodes[i_f, 0]
+    origin = info.vertices[i_origin]
     for i in range(6):
         shape, derivative = gs.qd_float(0.0), qd.Vector.zero(gs.qd_float, 2)
         if i < 3:
@@ -70,14 +71,17 @@ def func_surface_geometry(i_f: int, bary: qd.types.vector(3), info: StressInfo):
             a, b = pairs[i - 3, 0], pairs[i - 3, 1]
             shape = 4 * bary[a] * bary[b]
             derivative = 4 * (bary[a] * gradient[b, :] + bary[b] * gradient[a, :])
-        offset = info.vertices[info.surface_nodes[i_f, i]] - origin
+        i_n = info.surface_nodes[i_f, i]
+        offset = info.vertices[i_n] - origin
         point += shape * offset
         tangent += offset.outer_product(derivative)
     point += origin
     area = tangent[:, 0].cross(tangent[:, 1])
-    first = info.vertices[info.surface_nodes[i_f, 1]] - origin
-    second = info.vertices[info.surface_nodes[i_f, 2]] - origin
-    opposite = info.vertices[info.surface_opposite_vertices[i_f]] - origin
+    i_first, i_second = info.surface_nodes[i_f, 1], info.surface_nodes[i_f, 2]
+    i_opposite = info.surface_opposite_vertices[i_f]
+    first = info.vertices[i_first] - origin
+    second = info.vertices[i_second] - origin
+    opposite = info.vertices[i_opposite] - origin
     if first.cross(second).dot(opposite) > 0:
         area = -area
     return point, tangent, area
@@ -102,7 +106,7 @@ def kernel_gauss(surface_info: StressSurfaceInfo):
 
 
 @qd.kernel
-def kernel_surface(stress_info: StressInfo, surface_info: StressSurfaceInfo):
+def kernel_surface(stress_info: StressInfo, surface_info: StressSurfaceInfo, is_curved: qd.template()):
     for i_f in range(stress_info.surface_nodes.shape[0]):
         i_0 = stress_info.surface_nodes[i_f, 0]
         i_1 = stress_info.surface_nodes[i_f, 1]
@@ -114,12 +118,14 @@ def kernel_surface(stress_info: StressInfo, surface_info: StressSurfaceInfo):
         surface_info.face_edges[i_f] = qd.Matrix.rows([first, second])
         surface_info.face_bounds_low[i_f] = qd.min(x, x + first, x + second)
         surface_info.face_bounds_high[i_f] = qd.max(x, x + first, x + second)
-        if qd.static(stress_info.volume_points.shape[0] > 0):
+        if qd.static(is_curved):
             pairs = qd.Matrix([[0, 1], [0, 2], [1, 2]])
             for i in qd.static(range(3)):
-                a = stress_info.vertices[stress_info.surface_nodes[i_f, pairs[i, 0]]]
-                b = stress_info.vertices[stress_info.surface_nodes[i_f, pairs[i, 1]]]
-                midpoint = stress_info.vertices[stress_info.surface_nodes[i_f, i + 3]]
+                i_a, i_c = pairs[i, 0], pairs[i, 1]
+                i_first, i_second = stress_info.surface_nodes[i_f, i_a], stress_info.surface_nodes[i_f, i_c]
+                i_midpoint = stress_info.surface_nodes[i_f, i + 3]
+                a, b = stress_info.vertices[i_first], stress_info.vertices[i_second]
+                midpoint = stress_info.vertices[i_midpoint]
                 control = 2 * midpoint - (a + b) / 2
                 surface_info.face_bounds_low[i_f] = qd.min(surface_info.face_bounds_low[i_f], control)
                 surface_info.face_bounds_high[i_f] = qd.max(surface_info.face_bounds_high[i_f], control)
@@ -142,7 +148,7 @@ def kernel_surface(stress_info: StressInfo, surface_info: StressSurfaceInfo):
                 * surface_info.gauss_weights[i_q // n]
                 * surface_info.gauss_weights[i_q % n]
             )
-            if qd.static(stress_info.volume_points.shape[0] > 0):
+            if qd.static(is_curved):
                 position, tangent, area = func_surface_geometry(i_f, bary, stress_info)
                 surface_info.positions[i_sample] = position
                 surface_info.normals[i_sample] = area.normalized()

@@ -43,37 +43,42 @@ def func_shape_value(i_n: int, bary: qd.types.vector(4), edges: qd.Tensor):
     if i_n < 4:
         value = bary[i_n] * (2 * bary[i_n] - 1)
     else:
-        value = 4 * bary[edges[i_n - 4, 0]] * bary[edges[i_n - 4, 1]]
+        i_a, i_c = edges[i_n - 4, 0], edges[i_n - 4, 1]
+        value = 4 * bary[i_a] * bary[i_c]
     return value
 
 
 @qd.func
 def func_material_jacobian(i_e: int, bary: qd.types.vector(4), info: StressInfo):
     jacobian = qd.Matrix.zero(gs.qd_float, 3, 3)
-    origin = info.vertices[info.elements[i_e, 0]]
+    i_origin = info.elements[i_e, 0]
+    origin = info.vertices[i_origin]
     for i in range(10):
         gradient = func_shape_gradient(i, bary, info.gradients[i_e], info.edges)
-        jacobian += (info.vertices[info.elements[i_e, i]] - origin).outer_product(gradient)
+        i_n = info.elements[i_e, i]
+        jacobian += (info.vertices[i_n] - origin).outer_product(gradient)
     return jacobian
 
 
 @qd.func
-def func_material_gradients(i_e: int, bary: qd.types.vector(4), info: StressInfo):
+def func_material_gradients(i_e: int, bary: qd.types.vector(4), info: StressInfo, is_curved: qd.template()):
     gradients = info.gradients[i_e]
-    if qd.static(info.volume_points.shape[0] > 0):
+    if qd.static(is_curved):
         gradients = gradients @ func_material_jacobian(i_e, bary, info).inverse()
     return gradients
 
 
 @qd.func
-def func_material_position(i_e: int, bary: qd.types.vector(4), info: StressInfo):
+def func_material_position(i_e: int, bary: qd.types.vector(4), info: StressInfo, is_curved: qd.template()):
     position = qd.Vector.zero(gs.qd_float, 3)
-    if qd.static(info.volume_points.shape[0] > 0):
+    if qd.static(is_curved):
         for i in range(10):
-            position += func_shape_value(i, bary, info.edges) * info.vertices[info.elements[i_e, i]]
+            i_n = info.elements[i_e, i]
+            position += func_shape_value(i, bary, info.edges) * info.vertices[i_n]
     else:
         for i in qd.static(range(4)):
-            position += bary[i] * info.vertices[info.elements[i_e, i]]
+            i_n = info.elements[i_e, i]
+            position += bary[i] * info.vertices[i_n]
     return position
 
 
@@ -175,11 +180,11 @@ def func_mass_weight(i_n: int, j_n: int, edges: qd.Tensor):
 
 
 @qd.kernel
-def kernel_corner_gradients(stress_info: StressInfo):
+def kernel_corner_gradients(stress_info: StressInfo, is_curved: qd.template()):
     for i_e, i_corner in qd.ndrange(stress_info.elements.shape[0], 4):
         bary = qd.Vector.zero(gs.qd_float, 4)
         bary[i_corner] = 1.0
-        gradient = func_material_gradients(i_e, bary, stress_info)
+        gradient = func_material_gradients(i_e, bary, stress_info, is_curved)
         slot = 0
         for i_local in range(10):
             active = i_local < 4

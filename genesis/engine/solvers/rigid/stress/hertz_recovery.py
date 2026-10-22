@@ -177,6 +177,7 @@ class StressHertzRecovery:
             self.has_queries,
             self.moving_probes,
             self.has_shear,
+            model.is_curved_geometry,
         )
         kernel_hertz_combined_accept(state, self.state, self.probes, self.full, errno)
 
@@ -426,6 +427,7 @@ def kernel_hertz_combined_field(
     has_queries: qd.template(),
     moving_probes: qd.template(),
     has_shear: qd.template(),
+    is_curved: qd.template(),
 ):
     for i_b in range(state.status.shape[0]):
         stress_state.peak[i_b], state.tensile_peak[i_b] = 0.0, -float("inf")
@@ -462,8 +464,8 @@ def kernel_hertz_combined_field(
                 i_origin = info.elements[i_e, 0]
                 origin = stress_state.displacement[i_origin, i_b]
                 derivative = qd.Matrix.zero(gs.qd_float, 3, 3)
-                gradients = func_material_gradients(i_e, bary, info)
-                located = func_material_position(i_e, bary, info)
+                gradients = func_material_gradients(i_e, bary, info, is_curved)
+                located = func_material_position(i_e, bary, info, is_curved)
                 for i in range(10):
                     i_n = info.elements[i_e, i]
                     gradient = func_shape_gradient(i, bary, gradients, info.edges)
