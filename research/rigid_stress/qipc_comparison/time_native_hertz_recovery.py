@@ -93,41 +93,52 @@ def capture(
 
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
-    cli.add_argument("--control", type=Path, required=True)
+    source = cli.add_mutually_exclusive_group(required=True)
+    source.add_argument("--control", type=Path)
+    source.add_argument("--shell-fields", type=Path)
     cli.add_argument("--far-field", action="store_true")
     cli.add_argument("--moving-probes", action="store_true")
     cli.add_argument("--moving-centers", action="store_true")
     cli.add_argument("--quadrature", type=int, default=4)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
+    if args.shell_fields is not None:
+        assert args.moving_probes and args.far_field
+    mesh = (Path(gs.__file__).resolve().parent.parent / "examples/rigid/assets/hollow_egg/level1/elastic.npz"
+            if args.shell_fields is not None else args.control / "mesh.npz")
+    fields = args.shell_fields if args.shell_fields is not None else args.control / "fields.npz"
     args.output.mkdir(parents=True, exist_ok=False)
     write_json(
         args.output / "start.json",
         {
             "identity": runtime_identity(),
-            "control_mesh": file_id(args.control / "mesh.npz"),
-            "control_fields": file_id(args.control / "fields.npz"),
+            "control_mesh": file_id(mesh),
+            "control_fields": file_id(fields),
             "far_field_four_moment_sources": args.far_field,
             "moving_probes": args.moving_probes,
             "moving_centers_and_rotating_curvature": args.moving_centers,
             "boundary_quadrature": args.quadrature,
-            "scope": "Supplied flat normal regions on the finite control box, independently phased normal loads and release. Inclusive resident input/Hertz/scatter/solve/combined max/full module work. Optional resident center/curvature motion and source-relative material probes are explicit. No collision association, friction, moving rigid scene or general physical qualification.",
+            "scope": "Supplied facet-centered normal regions on the finite control box or declared hollow-egg volume, independently phased normal loads and release. Inclusive resident input/Hertz/scatter/solve/combined max/full module work. Optional resident center/curvature motion and source-relative material probes are explicit. No collision association, friction, moving rigid scene or general physical qualification.",
         },
     )
     gs.init(backend=gs.cuda, precision="64", logging_level="warning")
     started = perf_counter()
-    model = StressModel(RigidStressOptions(mesh=args.control / "mesh.npz", method="auto"))
+    options = (RigidStressOptions.hertz(mesh=mesh) if args.shell_fields is not None
+               else RigidStressOptions(mesh=mesh, method="auto"))
+    model = StressModel(options)
     surface = StressSurface(args.quadrature, model.info)
     qd.sync()
     preparation = perf_counter() - started
-    with np.load(args.control / "fields.npz") as data:
-        nv = len(data["volume_weights_m3"])
+    with np.load(fields) as data:
         centers, frames, anchors = data["centers_m"], data["frames"], data["anchors"]
-        positions, elements, barycentric = (
-            data["positions_m"][nv:],
-            data["query_elements"][nv:],
-            data["query_barycentric"][nv:],
-        )
+        if args.shell_fields is not None:
+            np.testing.assert_array_equal(array(model.info.surface_nodes).T, data["material_surface_nodes"])
+            positions, elements, barycentric = np.empty((0, 3)), np.empty(0, dtype=int), np.empty((0, 4))
+        else:
+            nv = len(data["volume_weights_m3"])
+            positions, elements, barycentric = (
+                data["positions_m"][nv:], data["query_elements"][nv:], data["query_barycentric"][nv:]
+            )
     if args.moving_probes:
         positions, elements, barycentric = positions[:0], elements[:0], barycentric[:0]
     angles = np.arange(8) * 0.17
@@ -137,19 +148,23 @@ def main():
     )
     curvature = rotations @ np.diag([50.0, 80.0]) @ rotations.transpose(0, 2, 1)
     force = np.array([0.2, 0.12, 0.18, 0, 0, 0.05, 0.11, 0])
+    n_regions = 2
+    if args.shell_fields is not None:
+        force = np.array([0.2, 0.12, 0.18, 0.1])
+        n_regions = 1
     rows = []
     for batch in [1, 64, 256, 1024]:
-        indices = np.r_[np.arange(batch) % 4, 4 + np.arange(batch) % 4]
-        law = StressHertz(2 * batch)
+        indices = np.concatenate([region * 4 + np.arange(batch) % 4 for region in range(n_regions)])
+        law = StressHertz(n_regions * batch)
         law.state.modulus.fill(1e10 / 0.91)
         law.state.curvature.from_numpy(curvature[indices])
-        nominal = V(dtype=gs.qd_float, shape=(2 * batch,))
+        nominal = V(dtype=gs.qd_float, shape=(n_regions * batch,))
         nominal.from_numpy(force[indices])
         omega = V_VEC(3, dtype=gs.qd_float, shape=(batch,))
         omega.fill(0)
         for mode in ["max", "full"]:
             module = StressHertzRecovery(
-                batch, 2, len(positions), mode, far_field=args.far_field, moving_probes=args.moving_probes
+                batch, n_regions, len(positions), mode, far_field=args.far_field, moving_probes=args.moving_probes
             )
             if args.moving_probes:
                 module.frames.center.from_numpy(centers[indices])
@@ -183,8 +198,8 @@ def main():
                 V(dtype=dtype, shape=(24, batch))
                 for dtype in [gs.qd_int, gs.qd_bool, gs.qd_float, gs.qd_float, gs.qd_float, gs.qd_bool]
             )
-            source_centers = V_VEC(3, dtype=gs.qd_float, shape=(24, 2 * batch))
-            source_axes = V_VEC(2, dtype=gs.qd_float, shape=(24, 2 * batch))
+            source_centers = V_VEC(3, dtype=gs.qd_float, shape=(24, n_regions * batch))
+            source_axes = V_VEC(2, dtype=gs.qd_float, shape=(24, n_regions * batch))
             for step in range(24):
                 kernel_begin_step(state)
                 inputs(step, nominal, law.state, module.frames, model.info, batch, args.moving_centers)
@@ -239,7 +254,8 @@ def main():
                 "maximum_wrench_error": float(wrenches.max()),
                 "exclusive_fixed_input_phase_diagnostics": diagnostics,
                 "complete_tensor_output_bytes": (
-                    model.info.elements.shape[0] * 4 * 7 + (len(positions) + (178 if args.moving_probes else 0)) * 6
+                    model.info.elements.shape[0] * 4 * 7
+                    + (len(positions) + (89 * n_regions if args.moving_probes else 0)) * 6
                 )
                 * batch
                 * 8
@@ -258,6 +274,8 @@ def main():
             "additional_query_count": len(positions),
             "moving_probe_count_per_region": 89 if args.moving_probes else 0,
             "element_count": model.info.elements.shape[0],
+            "material_boundary_faces": model.info.surface_nodes.shape[0],
+            "regions_per_environment": n_regions,
             "phase_times_are_separate_fixed_input_diagnostics_not_additive": True,
             "moving_rigid_scene_qualified": False,
             "general_contact_friction_physics_qualified": False,

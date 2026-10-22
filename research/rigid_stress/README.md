@@ -152,9 +152,15 @@ shell controls pass same-load CPU/GPU fields with order16 boundary integration;
 order8 fails the unchanged wrench gate. A subsequent audit finds that the
 asset lists only80 of160 material-boundary faces. Source2e39f5f75 now completes
 the boundary and resolves near-wall integration: four normal controls pass
-CPU/GPU and independent higher-order fields below2.58e-9 relative. The normal-component buffer repair,
-failed controls and probe-coordinate sensitivity remain reproducible. Accepted
-Franka throughput and curved-source physical accuracy remain open.
+CPU/GPU and independent higher-order fields below2.58e-9 relative. Parallel
+integration preserves those fields and improves the measured moving normal
+shell module by2.41–8.51 times acrossB1–B1024. The captured Franka geometry
+study finds64 of89 tangent-frame probes outside the faceted material; its
+fixed-compliance contact control exposes a substantial facet/smooth-gap
+discrepancy. These controls do not qualify physical hollow-shell pressure.
+The normal-component buffer repair, failed controls and probe-coordinate
+sensitivity remain reproducible. Accepted Franka throughput and curved-source
+physical accuracy remain open.
 
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a

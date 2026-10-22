@@ -1,5 +1,16 @@
 # Rigid-stress data and artifact locations
 
+The `hard-native-parallel-boundary-v1` packet retains227 compact payloads/
+1,306,754 bytes and100 externally hashed arrays. The geometry-gap control,
+complete-shell module timings, parallel CPU/GPU checks, independent fields,
+paired sphere/flat friction scenes and cost comparisons use the existing
+`20261019-qualified-ranking` data root in the `hard-franka-contact-gap-v1`,
+`hard-native-complete-shell-timing-v1` and `hard-native-parallel-boundary-*`
+runs. Runtime arrays/logs stay on data; compiler caches were private node-local
+directories. All19 frozen source heads and12 original unrelated files are
+preserved. Source/docs remain in workspace. The formatting-only descendant
+was made after every scientific reader terminated and has an unchanged AST.
+
 The `hard-transfer-walk-exit-v1` packet retains 185 compact payloads/1,707,799
 bytes for the declined projected-walk exit, its original failed GPU group and
 later baseline/variant diagnostics. Its 138 external fields, histories,

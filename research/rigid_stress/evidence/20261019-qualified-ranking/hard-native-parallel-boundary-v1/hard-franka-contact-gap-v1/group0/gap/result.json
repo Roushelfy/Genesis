@@ -1,0 +1,98 @@
+{
+  "passed": true,
+  "targets": {
+    "reference_tensor_change": 0.02,
+    "reference_vm_peak_change": 0.05,
+    "reference_second_moment_change": 0.05
+  },
+  "rows": [
+    {
+      "grid": 32,
+      "width_m": 6.981950611683356e-07,
+      "active_cells": 60,
+      "indentation_m": 1.8915931913621227e-06,
+      "iterations": 60,
+      "force_relative_error": 7.771561172376096e-16,
+      "centroid_m": [
+        -7.122866800827549e-22,
+        -9.297914705042955e-23
+      ],
+      "second_moment_m2": [
+        [
+          1.2194634418413826e-12,
+          4.819947161876475e-25
+        ],
+        [
+          4.8200261520167095e-25,
+          1.898085133757856e-12
+        ]
+      ],
+      "support_area_m2": 2.924858060639136e-11,
+      "hertz_area_ratio": 234.18073585024146,
+      "hertz_tensor_relative_to_faceted_gap": 0.9833989511222118,
+      "hertz_vm_peak_relative_to_faceted_gap": 0.997018996337505,
+      "sample_vm_peak_pa": 2675459097.722811,
+      "fields": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-franka-contact-gap-v1/group0/gap/faceted-gap-32.npz",
+        "bytes": 91398,
+        "sha256": "7f4cb1343c8a845e4c5f0784eb3641be2ba898bea872c31ae5ba4f6003832349"
+      }
+    },
+    {
+      "grid": 48,
+      "width_m": 4.6546337411222376e-07,
+      "active_cells": 128,
+      "indentation_m": 1.8912785558356137e-06,
+      "iterations": 128,
+      "force_relative_error": 2.220446049250313e-16,
+      "centroid_m": [
+        -3.8229372514931075e-22,
+        3.3206838232296264e-24
+      ],
+      "second_moment_m2": [
+        [
+          1.2155450477972913e-12,
+          9.560724746672254e-25
+        ],
+        [
+          9.560889274024487e-25,
+          1.929025934174558e-12
+        ]
+      ],
+      "support_area_m2": 2.7731987537911805e-11,
+      "hertz_area_ratio": 246.98749484205152,
+      "hertz_tensor_relative_to_faceted_gap": 0.9833650793801856,
+      "hertz_vm_peak_relative_to_faceted_gap": 0.9970184319441385,
+      "sample_vm_peak_pa": 2674952648.988835,
+      "fields": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-franka-contact-gap-v1/group0/gap/faceted-gap-48.npz",
+        "bytes": 102465,
+        "sha256": "4d0e1e03c8640a9f926825694363575247a2892c10ca0f549a2081f6b8fa82d6"
+      }
+    }
+  ],
+  "reference_change": {
+    "tensor": 0.0033480879966285436,
+    "vm_peak": 0.00018932998091303332,
+    "second_moment": 0.01367853380910997
+  },
+  "patch": 0,
+  "load_n": 0.06227486992035645,
+  "native_axes_m": [
+    4.696366618512347e-05,
+    4.642416449394011e-05
+  ],
+  "hertz_indentation_m": 9.102461752830022e-08,
+  "facet_gap_scale_m": 3.72370699289779e-06,
+  "outside_faceted_material_probes": 64,
+  "probe_count": 89,
+  "maximum_facet_depth_m": 2.135224477237828e-05,
+  "maximum_quadratic_depth_m": 4.5975473054132666e-08,
+  "maximum_facet_depth_over_hertz_indentation": 234.57659424649285,
+  "geometry": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-franka-contact-gap-v1/group0/gap/geometry.npz",
+    "bytes": 2984,
+    "sha256": "2f1c3715dbeef3d3f73c4f195f4292e58db5d6c6e38dd68f16746f1abb3d561b"
+  },
+  "whole_goal_complete": false
+}

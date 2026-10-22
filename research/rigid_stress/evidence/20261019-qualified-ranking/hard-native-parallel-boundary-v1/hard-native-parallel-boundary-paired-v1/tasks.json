@@ -1,0 +1,31 @@
+[
+  [
+    {
+      "name": "baseline",
+      "module": "research.rigid_stress.qipc_comparison.time_native_hertz_recovery",
+      "args": [
+        "--shell-fields",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-complete-boundary-v2/group1/shell-q16/fields.npz",
+        "--far-field",
+        "--moving-probes",
+        "--moving-centers",
+        "--quadrature",
+        "16"
+      ],
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_complete_boundary"
+    },
+    {
+      "name": "parallel",
+      "module": "research.rigid_stress.qipc_comparison.time_native_hertz_recovery",
+      "args": [
+        "--shell-fields",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-complete-boundary-v2/group1/shell-q16/fields.npz",
+        "--far-field",
+        "--moving-probes",
+        "--moving-centers",
+        "--quadrature",
+        "16"
+      ]
+    }
+  ]
+]

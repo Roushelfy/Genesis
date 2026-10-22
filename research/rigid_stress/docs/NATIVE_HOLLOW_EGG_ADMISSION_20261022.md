@@ -26,6 +26,24 @@ and the entire material remains in its inward half-space. The existing
 Changing equilibrium or friction solver tolerances cannot fix this mismatch.
 The original rejection, source identities and complete frame arrays remain.
 
+The captured-frame gap study739190 finds that64 of89 native tangent-frame
+probes lie outside the faceted material. At the Hertz footprint, the maximum
+facet depth is21.35 micrometres, while the quadratic curvature gap reaches only
+0.04598 micrometres and predicted Hertz indentation is0.09102 micrometres.
+Merely relaxing normal alignment would therefore leave invalid material probes.
+
+A small independent unilateral-contact control keeps half-space compliance
+fixed and replaces the quadratic rigid-obstacle gap with the actual projected
+facet gap. Its32/48 grids change positive-depth sampled tensors by0.335%,
+the sampled von-Mises peak by0.0189% and force second moments by1.37%.
+The Hertz footprint area is234–247 times the faceted-gap support area; the
+sampled Hertz tensor differs by98.34% relative to that control. This demonstrates
+gap-model sensitivity, not the stress error of Hertz on the physical hollow
+egg: the control uses a rigid obstacle and half-space compliance, excludes
+surface/global peaks and does not solve the faceted shell's elasticity.
+These results favor resolving the smooth-rest-surface interpretation before
+changing production geometry gates.
+
 ## Selected-surface component control
 
 The component control places four separate normal loads at actual outer-facet
@@ -95,6 +113,71 @@ This repairs boundary coverage and numerical integration under the declared
 normal traction model. Moving friction on the shell, physical pressure errors,
 curved-source compatibility and accepted Franka throughput remain required.
 
+## Parallel boundary integration and measured module cost
+
+The first complete-boundary timing739183 attributes most cost to boundary
+integration. Measured source[`61c121720`](https://github.com/Roushelfy/Genesis/commit/61c1217206d57269caabf45480469b2bc65233c4)
+assigns one angular Gauss knot to each lane;
+each lane retains all radial rules and atomically accumulates its nodal loads.
+Quadrature points, weights, coverage, pressure law and acceptance gates remain
+the same. CPU/GPU shell and rotated normal controls pass. Independent complete
+corner/probe fields remain within2.58e-9/2.22e-9 relatively, and the actual
+planar-friction control preserves history exactly and complete fields within
+1.07e-18 relative to the retained baseline.
+Its formatted descendant[`32c1f3ecf`](https://github.com/Roushelfy/Genesis/commit/32c1f3ecff20813a7567e03f4ed725686b57f21d)
+has an identical Python syntax tree; both exact sources and the formatting
+patch remain retained.
+
+The same-allocation739197 comparison on an RTX PRO6000 Blackwell uses the unchanged level1 shell,160
+boundary faces, order16, one supplied region per environment, changing
+facet-interior centers, rotating curvature, changing loads and release.
+Primary timing includes resident input generation, Hertz lookup, boundary
+traction, regular recovery, moving probes and max/full reduction. Research
+exports and inspection are outside timing. It includes no rigid scene,
+collision association or shell friction.
+
+| Environments | Baseline max / full (ms) | Parallel max / full (ms) |
+| ---: | ---: | ---: |
+| 1 | 23.139 / 23.097 | 2.845 / 2.713 |
+| 64 | 27.140 / 27.168 | 3.964 / 4.018 |
+| 256 | 50.287 / 50.203 | 8.370 / 8.413 |
+| 1024 | 62.036 / 62.435 | 25.787 / 25.852 |
+
+All24 audited frames per environment pass, including unloaded frames. Loaded
+counts per mode are22,1418,5672 and22686 respectively. Input/admission histories
+match exactly; sampled peak differences are below2.55e-16 relative. Separate
+fixed-input diagnostics put the parallel input/boundary phase at1.88ms forB1
+and18.72ms forB1024 full output. These diagnostics are not additive inclusive
+phase totals. The measured module improvement is2.41–8.51 times for this
+declared normal workload; it is not a Franka throughput result.
+
+The separate739203 paired sphere/flat-link scene includes actual collision
+association, normal/friction input, physical history, two rigid substeps,
+elastic recovery and max/full output. Both variants use separate processes
+and private compiler caches on the same allocation; the baseline runs first.
+All24 audited loaded steps per environment pass, trajectories agree within
+1e-12m, and the final739207 reader verifies every saved peak and status.
+
+| Environments | Baseline rigid / max / full (ms) | Parallel rigid / max / full (ms) |
+| ---: | ---: | ---: |
+| 1 | 1.798 / 15.980 / 16.063 | 1.787 / 14.245 / 14.163 |
+| 64 | 1.936 / 15.461 / 15.534 | 1.933 / 14.051 / 14.120 |
+| 256 | 1.930 / 24.840 / 25.049 | 1.929 / 22.034 / 22.268 |
+| 1024 | 2.113 / 49.003 / 49.032 | 2.058 / 48.308 / 48.432 |
+
+Full-scene wall time falls9.10–11.83% forB1/B64/B256, with separated three-repeat
+ranges. The B1024 full-scene change is only1.22%, while the matched pure-rigid
+baseline also changes2.64%; a general large-batch scene speedup is not established.
+The optimized B1024 full scene measures21,143 admitted environment scene-steps/s
+on this supported planar-friction workload. It does not admit the Franka egg.
+Retain the parallel integration for the measured boundary-limited path; use
+order16 for the tested facet-centered shell controls. Neither performance
+result changes the curved-source or physical-pressure limits.
+The [parallel-boundary packet](../evidence/20261019-qualified-ranking/hard-native-parallel-boundary-v1/README.md)
+contains the actual sources, numerical controls, raw repeated costs and gap
+study. Use its captured tasks with the same Slurm runner and explicit fresh
+data outputs; full arrays remain hashed on data.
+
 The original order16 reader round-tripped surface probes through world
 coordinates. At contact edges, coordinate changes below`3.30e-18m` changed
 its reference field by up to`1.36e-7` relatively. The corrected reader uses
@@ -128,5 +211,5 @@ on data. `check_live_hertz_franka`, `check_native_hertz_shell` and
 `inspect_hertz_franka_admission` are the three new research entrypoints.
 
 Remaining work is a useful curved-source approximation with matched physical
-error, measured cost of the complete finite-boundary route, and accepted moving
-Franka max/full throughput. The face-normal mismatch remains unresolved.
+error, moving shell friction, and accepted moving Franka max/full throughput.
+The coarse-facet versus smooth-rest-surface mismatch remains unresolved.
