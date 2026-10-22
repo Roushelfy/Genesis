@@ -150,8 +150,9 @@ locates the actual Franka refusal at a coarse vertex: its smooth contact normal
 differs22.64 degrees from the material facet normal. Separate facet-centered
 shell controls pass same-load CPU/GPU fields with order16 boundary integration;
 order8 fails the unchanged wrench gate. A subsequent audit finds that the
-asset lists only80 of160 material-boundary faces, so complete cavity correction
-remains required despite those same-load passes. The normal-component buffer repair,
+asset lists only80 of160 material-boundary faces. Source2e39f5f75 now completes
+the boundary and resolves near-wall integration: four normal controls pass
+CPU/GPU and independent higher-order fields below2.58e-9 relative. The normal-component buffer repair,
 failed controls and probe-coordinate sensitivity remain reproducible. Accepted
 Franka throughput and curved-source physical accuracy remain open.
 

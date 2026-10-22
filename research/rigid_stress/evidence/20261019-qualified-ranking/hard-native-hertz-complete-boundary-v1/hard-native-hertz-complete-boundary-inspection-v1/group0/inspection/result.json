@@ -1,0 +1,119 @@
+{
+  "passed": true,
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "739169",
+      "SLURM_ARRAY_JOB_ID": "739169",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "native_fields": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-complete-boundary-v2/group0/shell-q16/fields.npz",
+      "bytes": 424942,
+      "sha256": "152ab000cec3a1e6b0126fef71fb2d7d2dfd7058dbaa295a4f23287856777c2f"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-complete-boundary-v2/group1/shell-q16/fields.npz",
+      "bytes": 426978,
+      "sha256": "0624720e8281b581a1141c0cbcf9f49fd81e439c8b2618a8ba0dc1e7fe8b82e0"
+    }
+  ],
+  "reference_fields": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-shell-quadrature-v3/group0/quadrature/comparison.npz",
+    "bytes": 2363499,
+    "sha256": "73016b4838cab2270f1352aeec13a484b0f7b07611fe1d2f0498b85823c6a59b"
+  },
+  "original_selected_surface_fields": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-shell-admission-v4/group0/shell-q16/fields.npz",
+    "bytes": 408578,
+    "sha256": "6d00ba4f3ed83602eaa6099ef220989afafee4d244e7a6d26fa44d723339f88e"
+  },
+  "mesh": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_shell_recovery/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+    "bytes": 3573,
+    "sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4"
+  },
+  "rows": [
+    {
+      "backend": "cpu",
+      "environment": 0,
+      "boundary_load_relative": 1.4976285372016182e-09,
+      "corner_field_relative": 9.88963077985008e-10,
+      "probe_field_relative": 2.100410830079631e-09,
+      "native_wrench_error": 4.4401342362694885e-07
+    },
+    {
+      "backend": "cpu",
+      "environment": 1,
+      "boundary_load_relative": 1.1029642941214152e-10,
+      "corner_field_relative": 4.4743545495439695e-11,
+      "probe_field_relative": 2.039021880562653e-09,
+      "native_wrench_error": 2.263063801421864e-08
+    },
+    {
+      "backend": "cpu",
+      "environment": 2,
+      "boundary_load_relative": 9.70129588018106e-09,
+      "corner_field_relative": 2.5741797263993636e-09,
+      "probe_field_relative": 2.072823773667551e-09,
+      "native_wrench_error": 4.900677012702448e-07
+    },
+    {
+      "backend": "cpu",
+      "environment": 3,
+      "boundary_load_relative": 1.1338220788613171e-11,
+      "corner_field_relative": 1.592102237975314e-11,
+      "probe_field_relative": 1.0806832736336633e-09,
+      "native_wrench_error": 1.339667512335493e-09
+    },
+    {
+      "backend": "gpu",
+      "environment": 0,
+      "boundary_load_relative": 1.4976284894063916e-09,
+      "corner_field_relative": 9.9122707155009e-10,
+      "probe_field_relative": 1.8557852874094086e-09,
+      "native_wrench_error": 4.4401333783225444e-07
+    },
+    {
+      "backend": "gpu",
+      "environment": 1,
+      "boundary_load_relative": 1.1029642887669227e-10,
+      "corner_field_relative": 4.618387362954461e-11,
+      "probe_field_relative": 2.21181056615095e-09,
+      "native_wrench_error": 2.2630536600681435e-08
+    },
+    {
+      "backend": "gpu",
+      "environment": 2,
+      "boundary_load_relative": 9.701295802106472e-09,
+      "corner_field_relative": 2.5734507377308066e-09,
+      "probe_field_relative": 1.9780779536238733e-09,
+      "native_wrench_error": 4.90067808321091e-07
+    },
+    {
+      "backend": "gpu",
+      "environment": 3,
+      "boundary_load_relative": 1.1338332830961056e-11,
+      "corner_field_relative": 1.2594844904591788e-11,
+      "probe_field_relative": 1.0303201802516757e-09,
+      "native_wrench_error": 1.3396060176804242e-09
+    }
+  ],
+  "targets": {
+    "boundary_load": 0.0001,
+    "complete_fields": 1e-07,
+    "wrench": 0.0001
+  },
+  "scope": "All material boundaries, independent higher-order point-traction integral and P2 elasticity, prescribed normal Hertz load. The retained original particulars carry the previously measured same-load numerical error. Curved-contact pressure, moving frictional shells and Franka throughput remain unqualified.",
+  "whole_goal_complete": false
+}

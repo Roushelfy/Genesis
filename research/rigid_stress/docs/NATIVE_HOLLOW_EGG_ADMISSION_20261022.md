@@ -1,11 +1,11 @@
 # Native hollow-egg admission and geometry gap
 
-The actual native Franka/hollow-egg rollout rejects its first loaded step.
-Separate four-contact controls on the unchanged level1 hollow mesh pass
-same-load complete-field checks with order16 integration over the asset's
-selected surface. A subsequent audit finds that this selection omits the
-cavity boundary, so those passing checks do not establish complete boundary
-correction. The full
+Native Hertz recovery now includes the omitted cavity boundary and passes
+four facet-centered normal shell controls against independent complete-boundary
+fields. The original selected-surface passes and their omission remain below
+as evidence. The actual Franka/hollow-egg rollout still rejects its first
+loaded step because its smooth contact normal differs from the material facet
+normal. The full
 [hard-contact goal](AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md) remains active.
 
 ## Actual Franka rollout
@@ -57,11 +57,43 @@ traction regular-response model, not newly qualified physical stress errors.
 
 The all-boundary reference concentrates integration around each face's closest
 point to the source. Order24/32 changes the sampled corner fields by at most
-`2.56e-9`. A lower-order candidate is being checked against the production
-force/moment definition and then in native Quadrants. The implementation must
-complete the material boundary independently of the selected contact faces,
-preserve existing face identities, and resolve near-wall traction without
-relaxing the original acceptance gates.
+`2.56e-9`. The first lower-order trial evaluated moment about the source center.
+Applying the production gate about the authored model origin rejects that
+trial. Both moment definitions and original outcomes remain recorded.
+
+## Complete-boundary native repair
+
+Source[`2e39f5f75`](https://github.com/Roushelfy/Genesis/commit/2e39f5f752136de5d7616b3436063f1bf480814b)
+now constructs every material-boundary face for Hertz recovery, preserving
+supplied face indices and appending omitted faces. The normal-control asset
+itself is unchanged. Cavity faces participate in clearance checks, traction
+correction and the shared surface operator.
+
+Near faces use three triangles around the closest point, a rational radial
+map resolving the source-to-face distance, and two intervals in each integral
+coordinate. Remote faces use the supplied uniform rule. With order16, all four
+shell cases pass on CPU and CUDA. Maximum authored-frame wrench error is
+`4.91e-7`, within the unchanged`1e-4` gate. The original unsplit native attempt
+fails three of the four cases and remains retained.
+
+The independent higher-order all-boundary integral and P2 readout give maximum
+relative differences`9.71e-9` in nodal load, `2.58e-9` in the complete corner
+tensor bank and`2.22e-9` in the probe bank. The existing`1e-7` complete-field
+gate passes. These four cases use43,520–54,784 point-tensor evaluations each.
+That count describes quadrature work, not measured module or scene throughput.
+Order16 is the tested setting for these facet-centered normal shell controls.
+
+Slurm739154/739157/739163 preserve the independent integration studies, including
+the unconverged uniform-rule attempt and moment-definition correction.
+Native739161/739164 and inspection739169 retain the original rejection and the
+passing complete-boundary fields. The earlier native attempt also passes the
+existing rotated normal-component CPU/GPU and actual planar-friction CUDA
+controls. The final refinement's new all-boundary normal path is tested on both
+backends. See the [complete-boundary packet](../evidence/20261019-qualified-ranking/hard-native-hertz-complete-boundary-v1/README.md).
+
+This repairs boundary coverage and numerical integration under the declared
+normal traction model. Moving friction on the shell, physical pressure errors,
+curved-source compatibility and accepted Franka throughput remain required.
 
 The original order16 reader round-tripped surface probes through world
 coordinates. At contact edges, coordinate changes below`3.30e-18m` changed
@@ -95,7 +127,6 @@ image`1_26` and the existing data-side physical environment. Full arrays stay
 on data. `check_live_hertz_franka`, `check_native_hertz_shell` and
 `inspect_hertz_franka_admission` are the three new research entrypoints.
 
-Remaining work is a useful curved-source/finite-boundary approximation with
-matched physical error, cheaper accurate near-boundary integration, and accepted
-moving Franka max/full throughput. Relaxing the face-normal gate would conceal
-the present geometry mismatch, and order16 alone does not address it.
+Remaining work is a useful curved-source approximation with matched physical
+error, measured cost of the complete finite-boundary route, and accepted moving
+Franka max/full throughput. The face-normal mismatch remains unresolved.
