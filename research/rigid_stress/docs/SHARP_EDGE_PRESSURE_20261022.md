@@ -421,6 +421,64 @@ refusals, grouped controls, fixed-support and updated-law responses, and the
 post-integration diagnostic limitation. Full arrays and collision assets stay
 in the project's data directory.
 
+## Native edge geometry and force allocation
+
+Experimental native source `6c2e887be` adds two supplied-input components. They
+are implemented in Quadrants and are not yet connected to actual scene source
+binding. The original collision, region and recovery acceptance remains intact.
+
+The box-edge minimum starts at a resolved material anchor, selects the single
+violated finite-face half-plane and follows connected quadratic surface faces.
+Bounded scalar Newton updates use analytical derivatives of material height in
+the projected Cartesian chart. Differentiating the inverse chart retains the
+surface's tangential acceleration term. Corners, failed projections and
+nonpositive height curvature remain explicit failures. Runtime geometry uses
+local connected walks, with no whole-mesh surface minimization.
+
+On the four division32 collision samples, CPU/GPU64 positions agree with the
+independent whole-mesh minimization within0.206nanometres. Analytical slopes
+and curvatures differ from the preceding one-sided finite-difference records by
+at most2.83e-5 relative; independent central differences agree within6.85e-7.
+Rotation, translation, invalid anchors, interior/corner classification,
+unaffected-query isolation and restoration pass. This verifies the numerical
+geometry component for these cases, not a contact-pressure law.
+
+The force allocator minimizes the same squared relative region-force objective
+as the offline convex study. It uses six dual coordinates for total force and
+moment, exact Euclidean Coulomb-cone projections, and a small Cholesky solve.
+Original free couples enter the supplied total-wrench target. A bounded13
+residual-evaluation loop returns failure on a singular dual derivative or
+nonconvergence; it introduces no large pressure-field solve. Numerical
+convergence alone does not accept the adjusted loads as a physical model.
+
+Four source configurations at load scales1,0.001 and1000, with rigid rotations
+and translations, converge in3--4 updates on CPU/GPU64. Native forces match the
+independently certified constrained minima within3.36e-10 relative. Independent
+reconstruction of total force/moment has scaled residual2.47e-13 or less, and
+cone margins stay within2.52e-16 of nonnegative. Invalid input, singular geometry,
+unload, environment isolation and restoration pass. The original6.22% force
+correction remains visible, while refined candidates retain approximately2.96%.
+
+| Environments, three regions each | Resident allocation median |
+| --- | ---: |
+| 1 | 0.1983ms |
+| 64 | 0.1988ms |
+| 1,024 | 0.2173ms |
+
+These warmed GPU64 measurements include Python dispatch and synchronization.
+Each uses five blocks of32 calls, verifies admitted numerical outputs and replays
+the same supplied three-region configuration across environments. Grouping,
+geometry, pressure/support updates, stress recovery, transfers and actual scene
+steps are excluded. The table measures a component cost, not useful full-scene
+throughput or a paired speedup. Native scene composition, changing-contact and
+friction checks, independent complete physical accuracy, max/full handling of
+the sharp-edge singularity and matched admitted scene timings remain required.
+
+The [native geometry and allocation packet](../evidence/20261019-qualified-ranking/hard-native-edge-geometry-v1/README.md)
+retains all executed sources, CPU/GPU controls, source identities, terminal jobs,
+component timing blocks and hashes for complete arrays. The earlier geometry-only
+source `f57245943` is preserved as an ancestor of the final experimental source.
+
 ## Remaining physical and integration limits
 
 The edge pressure behaves as`x^(-lambda)`. Its pointwise loaded-edge limit is

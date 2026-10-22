@@ -1,0 +1,133 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-response-v1/group0/allocation/result.json",
+      "scale": 1.0,
+      "is_rotated": false
+    },
+    {
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-response-v1/group0/allocation/result.json",
+      "scale": 0.001,
+      "is_rotated": true
+    },
+    {
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-response-v1/group0/allocation/result.json",
+      "scale": 1000.0,
+      "is_rotated": true
+    },
+    {
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-response-v1/group1/allocation/result.json",
+      "scale": 1.0,
+      "is_rotated": false
+    },
+    {
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-response-v1/group1/allocation/result.json",
+      "scale": 0.001,
+      "is_rotated": true
+    },
+    {
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-response-v1/group1/allocation/result.json",
+      "scale": 1000.0,
+      "is_rotated": true
+    },
+    {
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-response-v1/group2/allocation/result.json",
+      "scale": 1.0,
+      "is_rotated": false
+    },
+    {
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-response-v1/group2/allocation/result.json",
+      "scale": 0.001,
+      "is_rotated": true
+    },
+    {
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-response-v1/group2/allocation/result.json",
+      "scale": 1000.0,
+      "is_rotated": true
+    },
+    {
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-law-update-v1/group0/allocation2/result.json",
+      "scale": 1.0,
+      "is_rotated": false
+    },
+    {
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-law-update-v1/group0/allocation2/result.json",
+      "scale": 0.001,
+      "is_rotated": true
+    },
+    {
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-law-update-v1/group0/allocation2/result.json",
+      "scale": 1000.0,
+      "is_rotated": true
+    }
+  ],
+  "maximum_force_relative": 3.3592452929382224e-10,
+  "maximum_scaled_wrench_residual": 2.4600509119589454e-13,
+  "minimum_cone_margin_relative": -1.2568832600482975e-16,
+  "maximum_iterations": 4,
+  "maximum_independently_reconstructed_wrench_residual": 2.4600267115725804e-13,
+  "maximum_relative_changes": [
+    0.06222460847885735,
+    0.06222460847885672,
+    0.062224608478857205,
+    0.02964557680725493,
+    0.02964557680725511,
+    0.029645576807255478,
+    0.03080657756934718,
+    0.03080657756934695,
+    0.03080657756934503,
+    0.029645609654829062,
+    0.02964560965482978,
+    0.029645609654830436
+  ],
+  "invalid_singular_unload_isolation_restoration": true,
+  "component_timing": [
+    {
+      "environments": 1,
+      "regions_per_environment": 3,
+      "seconds_per_call": [
+        0.00019876025180565193,
+        0.00019826753123197705,
+        0.00019828681251965463,
+        0.00019794605759670958,
+        0.00019800406153080985
+      ],
+      "median_seconds": 0.00019826753123197705,
+      "includes": "resident force allocation, dispatch and synchronization",
+      "excludes": "contact grouping, geometry, pressure-law updates, recovery, copies and scene",
+      "homogeneous_supplied_region_replay": true
+    },
+    {
+      "environments": 64,
+      "regions_per_environment": 3,
+      "seconds_per_call": [
+        0.00020155908714514226,
+        0.00019877500017173588,
+        0.0001988874064409174,
+        0.0001988114381674677,
+        0.00019881869229720905
+      ],
+      "median_seconds": 0.00019881869229720905,
+      "includes": "resident force allocation, dispatch and synchronization",
+      "excludes": "contact grouping, geometry, pressure-law updates, recovery, copies and scene",
+      "homogeneous_supplied_region_replay": true
+    },
+    {
+      "environments": 1024,
+      "regions_per_environment": 3,
+      "seconds_per_call": [
+        0.0002185623743571341,
+        0.000217353408515919,
+        0.0002172766617150046,
+        0.00021724040561821312,
+        0.0002171743180952035
+      ],
+      "median_seconds": 0.0002172766617150046,
+      "includes": "resident force allocation, dispatch and synchronization",
+      "excludes": "contact grouping, geometry, pressure-law updates, recovery, copies and scene",
+      "homogeneous_supplied_region_replay": true
+    }
+  ],
+  "whole_goal_complete": false
+}
