@@ -350,6 +350,77 @@ The [remote-field and allocation packet](../evidence/20261019-qualified-ranking/
 retains sources, terminal jobs, failed32-bit control, invalid cache-reader trial,
 corrected geometry, full arrays and measured limits.
 
+## Collision application points and updated support
+
+A raw replay of the original first refused frame106 reproduces all eight
+saved input/status arrays exactly. Contact sorting, geom/pair association,
+body-local transforms, forces, normals and material-side witnesses agree with
+the raw collider capture. The ground application point has local
+z=-0.029816409079m, while both its witness and the quadratic material surface
+have z=-0.03m. Their183.590921micrometre separation is exactly half the
+367.181842micrometre penetration. The plane collider constructs this midpoint,
+and the constraint Jacobian uses the same application point for its moment arm.
+It is a collision convention, not a ground surface discretization error.
+The original two gripper midpoint offsets are93.64/110.68micrometres; their
+witness-to-quadratic-surface discrepancies are11.97/11.89micrometres.
+
+The earlier `geometry0106.npz` diagnostic queried the material after integration,
+using a saved pre-integration witness. The frame positions differ by up to
+0.634mm. Those query distances must not be interpreted as same-contact surface
+errors. The current inspector labels these explicitly as post-step queries.
+Captured contact inputs and `boundaries0106.npz` retain the actual contact-time
+geometry and remain valid inputs to the pressure study.
+
+A targeted division32 collision mesh uses the same quadratic material, frame,
+mass and inertia. It contains40,962vertices and81,920triangles; maximum sampled
+flat-to-quadratic position error is1.960micrometres, versus31.36micrometres for
+division8. This sampled mesh error does not bound every actual MPR/hull witness
+error. The refined frame has two samples on each gripper region: contacts1/2
+share pair210, and3/4 share pair222. Grouping retains their summed force and
+free moment before predicting pressure. The initial geometry-v1 refined
+contact1/2 studies are per-source geometry diagnostics, not independent region
+pressure results; geometry-v2 and subsequent responses use full grouped loads.
+
+| Collision configuration | Maximum force adjustment | Volume tensor change | Near-probe tensor change |
+| --- | ---: | ---: | ---: |
+| Division8, one substep, fixed support | 6.2225% | 4.9935% | 5.6731% |
+| Division32, one substep, fixed support | 2.9646% | 2.6650% | 2.6754% |
+| Division32, four substeps, fixed support | 3.0807% | 2.4247% | 2.8406% |
+| Division32, one substep, updated support | 2.9646% | 2.6760% | 1.7940% |
+
+Each allocation minimizes squared relative region-force changes under the
+original total wrench and actual material-normal Coulomb cones. Grouping
+preserves original free moments. Four substeps reduce the default effective
+constraint time constant from0.02s to0.01s and reduce penetration, but do not
+improve the fixed-support near-field metric. No four-substep default is adopted.
+All three actual native Franka variants still refuse at106 because edge source
+binding is absent; those failed jobs are retained, not counted as stress updates.
+
+For division32 with one substep, the updated-support study recomputes edge
+width, half-length, exponent and physical center from the adjusted loads, and
+updates the ground Hertz axes with the new normal load. One further constrained
+allocation followed by another law update reduces the scaled moment residual
+to4.97e-11; relative force residual is1.21e-16 and minimum normalized cone
+margin is positive1.31e-13. Sample von-Mises/tensile maximum changes are
+1.166%/1.996%. Boundary orders16/24 change per-source fields by at most2.17e-9.
+The refactored source-response helper reproduces all six original fixed-support
+fields and regular displacements exactly.
+
+This is a nearby-load sensitivity result within the existing approximate
+complete-shell model. It passes the declared5% volume/near-field and10% sampled
+peak budgets for this captured frame; it does not independently qualify the
+physical pressure or complete stress field. Near-edge probes cover both old
+and updated footprints, retaining depths0.1 width, one width and0.1 half-length.
+The coarse volume rule does not resolve the surface singularity. Native grouping,
+pressure prediction, load allocation and full recovery still need integration,
+changing-contact checks and accepted inclusive max/full scene timing.
+
+The [contact application packet](../evidence/20261019-qualified-ranking/hard-contact-application-v1/README.md)
+retains raw captures, source identities, generated-asset hashes, all three native
+refusals, grouped controls, fixed-support and updated-law responses, and the
+post-integration diagnostic limitation. Full arrays and collision assets stay
+in the project's data directory.
+
 ## Remaining physical and integration limits
 
 The edge pressure behaves as`x^(-lambda)`. Its pointwise loaded-edge limit is
@@ -359,10 +430,10 @@ model. A finite cell average or positive-depth sample peak is not a converged
 surface/global stress peak; retain sampling scales with every such value.
 
 The pressure law has not been connected to actual scene source binding.
-Complete curved-shell particular/correction validation is still required. The earlier Franka
-rejections and moment mismatch remain evidence. Before changing their handling,
-quantify the source correction and its complete stress response under the
-existing engineering-error protocol. Preserve strict source diagnostics and
+Independent complete curved-shell physical validation is still required.
+The earlier Franka rejections and original moment mismatch remain evidence.
+The updated-support nearby-load candidate passes the declared sensitivity
+budget at the captured frame; it still needs native integration and changing-contact validation. Preserve strict source diagnostics and
 the original refused frames. Native max/full integration and matched complete
 pure-rigid/max/full throughput remain required.
 

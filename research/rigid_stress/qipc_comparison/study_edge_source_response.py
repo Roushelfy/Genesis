@@ -32,6 +32,80 @@ from .study_hertz_residual import field_difference
 from .study_quadratic_rest_surface import quadratic_basis
 
 
+def edge_source_case(frame, bounds, record, force, kind, *, update_law=False):
+    """Construct a material pressure frame from one captured physical edge region."""
+    contact = record["contact"]
+    members = record.get("contacts", [contact])
+    source = json.loads(Path(record["sources"][0]["path"]).read_text())
+    quaternion = frame["frame_quaternion"][0]
+    rotation = Rotation.from_quat(quaternion[[1, 2, 3, 0]])
+    origin = frame["frame_position_m"][0]
+    normal, tangent = bounds["normal"][0, contact], bounds["tangent"][0, contact]
+    planes = bounds["planes"][0, contact]
+    edge = (planes[:, 2] / np.linalg.norm(planes[:, :2], axis=1)).argmin()
+    inward = -planes[edge, :2] / np.linalg.norm(planes[edge, :2])
+    box_world = np.column_stack((tangent, np.cross(normal, tangent))) @ np.column_stack(
+        (inward, [-inward[1], inward[0]])
+    )
+    box_basis = rotation.inv().apply(box_world.T).T
+    normal_material = rotation.inv().apply(normal)
+    inputs = list(record["inputs"])
+    if update_law:
+        world_force = rotation.apply(force)
+        inputs[0] = float(-world_force @ normal)
+        inputs[4] = float(world_force @ box_world[:, 0] / inputs[0])
+    law = edge_scales(*inputs)
+    edge_origin = rotation.inv().apply(np.array(source["edge_minimum_world_m"]) - origin)
+    point = edge_origin + box_basis[:, 0] * (2 * (1 - law.exponent) * law.width / 5)
+    plane = box_basis.T
+    if kind == "rigid_line":
+        force_axis = force / np.linalg.norm(force)
+        first = np.cross(force_axis, box_basis[:, 1])
+        first /= np.linalg.norm(first)
+        plane = np.stack([first, np.cross(force_axis, first)])
+        point = frame["contact_position_m"][0, contact]
+    face_nodes = frame["material_nodes_m"][frame["material_surface_nodes"].T]
+    centers, normals, anchors = projected_surface(
+        face_nodes,
+        frame["material_face_normal"],
+        point[None],
+        plane,
+        normal_material,
+        frame["source_witness_m"][0, contact],
+        return_geometry=True,
+    )
+    center, material_normal = centers[0], normals[0]
+    axis = box_basis[:, 0] - material_normal * (material_normal @ box_basis[:, 0])
+    axis /= np.linalg.norm(axis)
+    basis = np.column_stack((axis, np.cross(axis, material_normal), -material_normal))
+    np.testing.assert_allclose(np.linalg.det(basis), 1, atol=1e-12, rtol=0)
+    local_force = force @ basis
+    assert local_force[2] > 0
+    width = law.width / (axis @ box_basis[:, 0])
+    amplitude = 3 * local_force[2] * np.sin(np.pi * law.exponent) / (4 * np.pi * law.exponent * width * law.along)
+    difference = np.cross(center - frame["contact_position_m"][0, members], frame["contact_force_n"][0, members]).sum(
+        axis=0
+    )
+    return {
+        "contact": contact,
+        "contacts": members,
+        "kind": kind,
+        "center": center,
+        "basis": basis,
+        "anchor": int(anchors[0]),
+        "force": local_force,
+        "width": width,
+        "along": law.along,
+        "exponent": law.exponent,
+        "amplitude": amplitude,
+        "law_inputs": inputs,
+        "moment_difference_nm": difference.tolist(),
+        "moment_difference_over_Fa": float(
+            np.linalg.norm(difference) / (record["inputs"][0] * source["hertz_axes_m"][0])
+        ),
+    }
+
+
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--frame", type=Path, required=True)
@@ -39,8 +113,11 @@ def main():
     cli.add_argument("--mesh", type=Path, required=True)
     cli.add_argument("--physical-inputs", type=Path, required=True)
     cli.add_argument("--allocation", type=Path)
+    cli.add_argument("--geometry-only", action="store_true")
+    cli.add_argument("--updated-law", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
+    assert not args.updated_law or args.allocation is not None
     args.output.mkdir(parents=True, exist_ok=False)
     write_json(
         args.output / "start.json",
@@ -51,7 +128,9 @@ def main():
                 for p in [args.frame, args.boundaries, args.mesh, args.physical_inputs, args.allocation]
                 if p is not None
             ],
-            "allocation_scope": "When allocation is supplied, compare original and reallocated forces at fixed pressure support/exponent and centers; include the captured ground Hertz patch and all three sources. This is a fixed-support load sensitivity control. A self-consistent pressure/support update remains a separate requirement.",
+            "allocation_scope": "With allocation, compare original and adjusted forces including both grippers and ground. The default holds support/exponent fixed. The updated-law variant recomputes edge width, length, exponent, pressure center and ground Hertz axes from the adjusted forces, retaining the original gap geometry. Record the resulting total wrench and local cone margins separately from field error.",
+            "geometry_only": args.geometry_only,
+            "updated_law": args.updated_law,
             "targets": {
                 "source_response_volume": 0.05,
                 "source_response_sample_tensor": 0.05,
@@ -61,88 +140,26 @@ def main():
             "scope": "Each captured edge source separately: local pressure-centroid tangent plane versus the rigid-force line intersecting the same curved material. The pressure shape is transported without refitting its exponent. Native all-boundary point correction plus curved P2 elastic recovery and the new native edge particular field form a declared complete-field approximation. The translated profile is a wrench-compatible counterfactual, not a contact solution. Per-element volume quadrature is coarse near the contact; separate common near-field probes retain that limitation. This does not authorize a relaxed input gate or qualify full physical shell/contact errors.",
         },
     )
-    gs.init(backend=gs.cpu, precision="64", logging_level="warning")
     with np.load(args.frame) as data:
         frame = {key: data[key] for key in data.files}
     with np.load(args.boundaries) as data:
         bounds = {key: data[key] for key in data.files}
-    model = StressModel(RigidStressOptions.hertz(mesh=args.mesh, method="direct"))
-    vertices = array(model.info.vertices)
-    np.testing.assert_allclose(vertices, frame["material_nodes_m"], atol=1e-14, rtol=0)
-    elements = array(model.info.elements).T
-    volume_nodes = vertices[elements]
+    vertices = frame["material_nodes_m"]
     surface_nodes = frame["material_surface_nodes"].T
     face_nodes = vertices[surface_nodes]
-    quaternion = frame["frame_quaternion"][0]
-    rotation = Rotation.from_quat(quaternion[[1, 2, 3, 0]])
-    origin = frame["frame_position_m"][0]
+    records = {
+        record["contact"]: record
+        for record in json.loads(args.physical_inputs.read_text())["cases"]
+        if record["direction"] == 1
+    }
     cases = []
-    for record in json.loads(args.physical_inputs.read_text())["cases"]:
-        if record["direction"] != 1:
-            continue
-        contact = record["contact"]
-        source = json.loads(Path(record["sources"][0]["path"]).read_text())
-        law = edge_scales(*record["inputs"])
-        normal, tangent = bounds["normal"][0, contact], bounds["tangent"][0, contact]
-        planes = bounds["planes"][0, contact]
-        edge = (planes[:, 2] / np.linalg.norm(planes[:, :2], axis=1)).argmin()
-        inward = -planes[edge, :2] / np.linalg.norm(planes[edge, :2])
-        box_world = np.column_stack((tangent, np.cross(normal, tangent))) @ np.column_stack(
-            (inward, [-inward[1], inward[0]])
-        )
-        box_basis = rotation.inv().apply(box_world.T).T
-        normal_material = rotation.inv().apply(normal)
-        edge_origin = rotation.inv().apply(np.array(source["edge_minimum_world_m"]) - origin)
-        force = frame["contact_force_n"][0, contact]
-        witness = frame["source_witness_m"][0, contact]
-        target = edge_origin + box_basis[:, 0] * (2 * (1 - law.exponent) * law.width / 5)
-        force_axis = force / np.linalg.norm(force)
-        first = np.cross(force_axis, box_basis[:, 1])
-        first /= np.linalg.norm(first)
-        force_plane = np.stack([first, np.cross(force_axis, first)])
-        for kind, point, plane in [
-            ("pressure", target, box_basis.T),
-            ("rigid_line", frame["contact_position_m"][0, contact], force_plane),
-        ]:
-            centers, normals, anchors = projected_surface(
-                face_nodes,
-                frame["material_face_normal"],
-                point[None],
-                plane,
-                normal_material,
-                witness,
-                return_geometry=True,
-            )
-            center, material_normal = centers[0], normals[0]
-            axis = box_basis[:, 0] - material_normal * (material_normal @ box_basis[:, 0])
-            axis /= np.linalg.norm(axis)
-            basis = np.column_stack((axis, np.cross(axis, material_normal), -material_normal))
-            np.testing.assert_allclose(np.linalg.det(basis), 1, atol=1e-12, rtol=0)
-            local_force = force @ basis
-            assert local_force[2] > 0
-            width = law.width / (axis @ box_basis[:, 0])
-            amplitude = (
-                3 * local_force[2] * np.sin(np.pi * law.exponent) / (4 * np.pi * law.exponent * width * law.along)
-            )
-            difference = np.cross(center - frame["contact_position_m"][0, contact], force)
-            cases.append(
-                {
-                    "contact": contact,
-                    "kind": kind,
-                    "center": center,
-                    "basis": basis,
-                    "anchor": int(anchors[0]),
-                    "force": local_force,
-                    "width": width,
-                    "along": law.along,
-                    "exponent": law.exponent,
-                    "amplitude": amplitude,
-                    "moment_difference_nm": difference.tolist(),
-                    "moment_difference_over_Fa": float(
-                        np.linalg.norm(difference) / (record["inputs"][0] * source["hertz_axes_m"][0])
-                    ),
-                }
-            )
+    for record in records.values():
+        members = record.get("contacts", [record["contact"]])
+        force = frame["contact_force_n"][0, members].sum(axis=0)
+        cases.append(edge_source_case(frame, bounds, record, force, "pressure"))
+        if args.allocation is None and not args.geometry_only:
+            assert len(members) == 1
+            cases.append(edge_source_case(frame, bounds, record, force, "rigid_line"))
     if args.allocation is not None:
         allocation = json.loads(args.allocation.read_text())
         assert allocation["normal_frame"] == "material"
@@ -152,16 +169,31 @@ def main():
             row["contact"]: np.array(force)
             for row, force in zip(allocation["contacts"], allocation["constrained"]["forces_n"])
         }
-        for i in [0, 2]:
-            cases[i + 1] = cases[i].copy()
-            cases[i + 1]["kind"] = "allocated"
-            cases[i + 1]["force"] = allocated[cases[i]["contact"]] @ cases[i]["basis"]
-            cases[i + 1]["amplitude"] *= cases[i + 1]["force"][2] / cases[i]["force"][2]
+        assert set(allocated) == {0, *(case["contact"] for case in cases)}
+        modeled = {0, *(member for case in cases for member in case["contacts"])}
+        loaded = np.flatnonzero(frame["contact_valid"][0] & (np.linalg.norm(frame["contact_force_n"][0], axis=1) > 0))
+        assert modeled == set(loaded)
+        paired = []
+        for case in cases:
+            updated = case.copy()
+            if args.updated_law:
+                updated = edge_source_case(
+                    frame, bounds, records[case["contact"]], allocated[case["contact"]], "pressure", update_law=True
+                )
+            else:
+                updated["force"] = allocated[case["contact"]] @ case["basis"]
+                updated["amplitude"] *= updated["force"][2] / case["force"][2]
+            updated["kind"] = "allocated"
+            paired.extend([case, updated])
+        cases = paired
         ground = allocation["ground_geometry"]
         center, basis = np.array(ground["center"]), np.array(ground["basis"])
         axes = np.array([ground["along"], ground["width"]])
         for kind, force in [("pressure", frame["contact_force_n"][0, 0]), ("allocated", allocated[0])]:
             local_force = force @ basis
+            patch_axes = axes
+            if args.updated_law and kind == "allocated":
+                patch_axes = axes * np.cbrt(local_force[2] / ground["force"][2])
             cases.append(
                 {
                     "contact": 0,
@@ -171,19 +203,63 @@ def main():
                     "basis": basis,
                     "anchor": ground["anchor"],
                     "force": local_force,
-                    "along": axes[0],
-                    "width": axes[1],
+                    "along": patch_axes[0],
+                    "width": patch_axes[1],
                     "exponent": 0.5,
-                    "amplitude": 3 * local_force[2] / (2 * np.pi * axes.prod()),
+                    "amplitude": 3 * local_force[2] / (2 * np.pi * patch_axes.prod()),
                 }
             )
         for c in cases:
             c.pop("moment_difference_nm", None)
             c.pop("moment_difference_over_Fa", None)
+    wrench = None
+    if args.allocation is not None:
+        original_force = frame["contact_force_n"][0, loaded]
+        original_moment = np.cross(frame["contact_position_m"][0, loaded], original_force).sum(axis=0)
+        updated = [case for case in cases if case["kind"] == "allocated"]
+        force = np.array([case["basis"] @ case["force"] for case in updated])
+        moment = np.cross(np.array([case["center"] for case in updated]), force).sum(axis=0)
+        moment_scale = sum(case["force"][2] * max(case["along"], case["width"]) for case in updated)
+        wrench = {
+            "minimum_friction_cone_margin_relative": float(
+                min(
+                    (allocation["friction"] * case["force"][2] - np.linalg.norm(case["force"][:2]))
+                    / np.linalg.norm(case["force"])
+                    for case in updated
+                )
+            ),
+            "force_residual_n": (force.sum(axis=0) - original_force.sum(axis=0)).tolist(),
+            "moment_residual_nm": (moment - original_moment).tolist(),
+            "moment_residual_over_sum_Fa": float(np.linalg.norm(moment - original_moment) / moment_scale),
+            "force_residual_relative": float(
+                np.linalg.norm(force.sum(axis=0) - original_force.sum(axis=0))
+                / np.linalg.norm(original_force, axis=1).sum()
+            ),
+        }
     write_json(
         args.output / "source-geometry.json",
-        {"cases": [{k: v.tolist() if isinstance(v, np.ndarray) else v for k, v in c.items()} for c in cases]},
+        {
+            "cases": [{k: v.tolist() if isinstance(v, np.ndarray) else v for k, v in c.items()} for c in cases],
+            "wrench": wrench,
+        },
     )
+    if args.geometry_only:
+        write_json(
+            args.output / "result.json",
+            {
+                "passed": True,
+                "geometry_only": True,
+                "updated_law": args.updated_law,
+                "wrench": wrench,
+                "whole_goal_complete": False,
+            },
+        )
+        return
+    gs.init(backend=gs.cpu, precision="64", logging_level="warning")
+    model = StressModel(RigidStressOptions.hertz(mesh=args.mesh, method="direct"))
+    np.testing.assert_allclose(array(model.info.vertices), vertices, atol=1e-14, rtol=0)
+    elements = array(model.info.elements).T
+    volume_nodes = vertices[elements]
     count = len(cases)
     law = StressHertz(count)
     law.state.force.from_numpy(np.array([c["force"][2] for c in cases]))
@@ -356,7 +432,14 @@ def main():
     passed = all(c["tensor_relative"] < 0.01 for c in convergence)
     write_json(
         args.output / "result.json",
-        {"passed": passed, "rows": rows, "boundary_quadrature_change": convergence, "whole_goal_complete": False},
+        {
+            "passed": passed,
+            "rows": rows,
+            "boundary_quadrature_change": convergence,
+            "updated_law": args.updated_law,
+            "wrench": wrench,
+            "whole_goal_complete": False,
+        },
     )
     assert passed
 

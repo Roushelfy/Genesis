@@ -70,6 +70,7 @@ def main():
     cli.add_argument("--frame", type=Path, required=True)
     cli.add_argument("--conditions", type=Path, required=True)
     cli.add_argument("--geometry", type=Path, required=True)
+    cli.add_argument("--geometry-kind", choices=["pressure", "allocated"], default="pressure")
     cli.add_argument("--normal-frame", choices=["collider", "material"], default="material")
     cli.add_argument("--ground-hertz", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
@@ -82,7 +83,8 @@ def main():
             "inputs": [file_id(p) for p in [args.frame, args.conditions, args.geometry]],
             "normal_frame": args.normal_frame,
             "ground_hertz": args.ground_hertz,
-            "scope": "Fixed pressure centers for the two edge contacts, unchanged captured locations for every other active source. Find the minimum weighted change in all vector forces subject to the original total force/moment and source-local compression/Coulomb cones. This is an optimistic necessary allocation check: other centers are not independently qualified here and changed forces have not yet been propagated through the pressure law or complete stress field. No runtime input gate changes.",
+            "geometry_kind": args.geometry_kind,
+            "scope": "Fix supplied physical pressure centers; the optional ground Hertz reconstruction uses the actual quadratic material. Aggregate only explicitly identified region members, preserving their total force and full original moment. Unspecified sources retain their captured positions. Minimize relative region-force changes subject to original total force/moment and local compression/Coulomb cones. Pressure/support updates and complete stress response require separate checks. No runtime gate changes.",
         },
     )
     with np.load(args.frame) as f:
@@ -101,14 +103,44 @@ def main():
     collision_tangent = force - collision_compression[:, None] * normal
     assert np.all(collision_compression >= 0)
     assert np.all(np.linalg.norm(collision_tangent, axis=1) <= friction * collision_compression + 1e-10 * magnitude)
+    geometry = json.loads(args.geometry.read_text())["cases"]
+    total_force = force.sum(axis=0)
+    total_moment = np.cross(original, force).sum(axis=0)
+    groups = [row.get("contacts", [row["contact"]]) for row in geometry if row["kind"] == args.geometry_kind]
+    used = [index for members in groups for index in members]
+    assert len(set(used)) == len(used) and set(used).issubset(set(active))
+    groups.extend([[int(index)] for index in active if index not in used])
+    groups.sort(key=min)
+    grouped_force, grouped_position, grouped_normal, grouped_pair, free_moment = [], [], [], [], []
+    for members in groups:
+        indices = np.array([np.flatnonzero(active == index)[0] for index in members])
+        np.testing.assert_array_equal(pair[indices], pair[indices[0]])
+        center = np.average(original[indices], axis=0, weights=magnitude[indices])
+        grouped_position.append(center)
+        grouped_force.append(force[indices].sum(axis=0))
+        grouped_normal.append(normal[indices[0]])
+        grouped_pair.append(pair[indices[0]])
+        free_moment.append(np.cross(original[indices] - center, force[indices]).sum(axis=0))
+    active = np.array([min(members) for members in groups])
+    force, original, normal, pair, free_moment = (
+        np.array(grouped_force),
+        np.array(grouped_position),
+        np.array(grouped_normal),
+        np.array(grouped_pair),
+        np.array(free_moment),
+    )
+    magnitude = np.linalg.norm(force, axis=1)
+    assert np.all(magnitude > 0)
+    grouped_total_moment = (np.cross(original, force) + free_moment).sum(axis=0)
+    np.testing.assert_allclose(force.sum(axis=0), total_force, rtol=1e-12, atol=1e-15)
+    np.testing.assert_allclose(grouped_total_moment, total_moment, rtol=1e-12, atol=1e-17)
     centers = original.copy()
     if args.ground_hertz:
         assert args.normal_frame == "material"
         index = np.flatnonzero(active == 0)[0]
         centers[index], normal[index] = ground["center"], np.array(ground["basis"])[:, 2]
-    geometry = json.loads(args.geometry.read_text())["cases"]
     for row in geometry:
-        if row["kind"] == "pressure":
+        if row["kind"] == args.geometry_kind:
             index = np.flatnonzero(active == row["contact"])[0]
             centers[index] = row["center"]
             if args.normal_frame == "material":
@@ -121,7 +153,7 @@ def main():
     matrix = np.concatenate(
         [np.vstack([np.eye(3), np.cross(p - origin, np.eye(3)).T / length]) for p in centers], axis=1
     )
-    delta = np.r_[np.zeros(3), np.cross(original - centers, force).sum(axis=0) / length]
+    delta = np.r_[np.zeros(3), (np.cross(original - centers, force) + free_moment).sum(axis=0) / length]
     weighted = matrix * np.repeat(magnitude, 3)
     left, singular, _ = np.linalg.svd(weighted, full_matrices=True)
     rank = np.count_nonzero(singular > singular[0] * 1e-12)
@@ -195,10 +227,12 @@ def main():
     rows = [
         {
             "contact": int(index),
+            "contacts": groups[i],
             "pair": int(pair[i]),
             "original_position_m": original[i].tolist(),
             "pressure_position_m": centers[i].tolist(),
             "force_n": force[i].tolist(),
+            "original_free_moment_nm": free_moment[i].tolist(),
             "normal": normal[i].tolist(),
             "compression_n": float(compression[i]),
             "tangential_ratio": float(np.linalg.norm(tangent[i]) / compression[i]),
@@ -212,6 +246,7 @@ def main():
         original_position_m=original,
         pressure_position_m=centers,
         original_force_n=force,
+        original_free_moment_nm=free_moment,
         normal=normal,
         matrix=matrix,
         weighted_matrix=weighted,
@@ -228,6 +263,8 @@ def main():
             "normal_frame": args.normal_frame,
             "ground_hertz": args.ground_hertz,
             "ground_geometry": ground,
+            "grouping_force_residual_n": (force.sum(axis=0) - total_force).tolist(),
+            "grouping_moment_residual_nm": (grouped_total_moment - total_moment).tolist(),
             "length_scale_m": float(length),
             "wrench_rank": int(rank),
             "singular_values": singular.tolist(),

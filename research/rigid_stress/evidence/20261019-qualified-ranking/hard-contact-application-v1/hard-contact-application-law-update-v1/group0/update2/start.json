@@ -1,0 +1,55 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "740500",
+      "SLURM_ARRAY_JOB_ID": "740499",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-refined-v1/group0/franka/frame0106.npz",
+      "bytes": 360149,
+      "sha256": "235f741a5284096174ac6992c46ae7647f64b6679b96eb90db3270dfaf2a18cb"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-refined-v1/group0/franka/boundaries0106.npz",
+      "bytes": 1594,
+      "sha256": "70c91883b2daa3ee929f260f6eae758de6c3018bd6cc116857c728e629745f5c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+      "bytes": 10476,
+      "sha256": "bc9487c70df48c57608b80d802810cbfb421adbb2a781a12a546e58810a635d1"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/contact-application-refined-physical-v1.json",
+      "bytes": 1916,
+      "sha256": "e8359f272f3e85cd23d4b568b917f7c764c717c2f71b12035c296894d191f82d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-law-update-v1/group0/allocation2/result.json",
+      "bytes": 5055,
+      "sha256": "b36db777fe16e099eb7f9664353c7226eecb2be7ee6c5223e8bd8d467f77a978"
+    }
+  ],
+  "allocation_scope": "With allocation, compare original and adjusted forces including both grippers and ground. The default holds support/exponent fixed. The updated-law variant recomputes edge width, length, exponent, pressure center and ground Hertz axes from the adjusted forces, retaining the original gap geometry. Record the resulting total wrench and local cone margins separately from field error.",
+  "geometry_only": false,
+  "updated_law": true,
+  "targets": {
+    "source_response_volume": 0.05,
+    "source_response_sample_tensor": 0.05,
+    "source_response_sample_peak": 0.1,
+    "boundary_quadrature_field_change": 0.01
+  },
+  "scope": "Each captured edge source separately: local pressure-centroid tangent plane versus the rigid-force line intersecting the same curved material. The pressure shape is transported without refitting its exponent. Native all-boundary point correction plus curved P2 elastic recovery and the new native edge particular field form a declared complete-field approximation. The translated profile is a wrench-compatible counterfactual, not a contact solution. Per-element volume quadrature is coarse near the contact; separate common near-field probes retain that limitation. This does not authorize a relaxed input gate or qualify full physical shell/contact errors."
+}

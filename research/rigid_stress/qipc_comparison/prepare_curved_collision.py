@@ -15,15 +15,18 @@ def main():
     cli.add_argument("--frame", type=Path, required=True)
     cli.add_argument("--material", type=Path, required=True)
     cli.add_argument("--original-urdf", type=Path, required=True)
+    cli.add_argument("--divisions", nargs="+", type=int, default=[1, 2, 4, 8])
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
+    assert all(value > 0 for value in args.divisions) and args.divisions == sorted(set(args.divisions))
     args.output.mkdir(parents=True, exist_ok=False)
     write_json(
         args.output / "start.json",
         {
             "identity": runtime_identity(require_gpu_inventory=False),
             "inputs": [file_id(args.frame), file_id(args.material), file_id(args.original_urdf)],
-            "scope": "Geometry preprocessing only. Tessellate the explicitly selected outer quadratic material faces at1/2/4/8 divisions; preserve original URDF mass, inertia and frame. Weld by shared parent topology, verify a closed triangular surface and measure interpolation/normal errors against the same quadratic charts. Collision and stress admission require a separate native run.",
+            "divisions": args.divisions,
+            "scope": "Geometry preprocessing only. Tessellate the explicitly selected outer quadratic material faces at the requested divisions; preserve original URDF mass, inertia and frame. Weld by shared parent topology, verify a closed triangular surface and measure interpolation/normal errors against the same quadratic charts. Collision and stress admission require a separate native run.",
         },
     )
     with np.load(args.frame) as frame:
@@ -40,7 +43,7 @@ def main():
     material_faces, outward = material_faces[ids], outward[ids]
     nodes = vertices[material_faces]
     rows = []
-    for divisions in [1, 2, 4, 8]:
+    for divisions in args.divisions:
         coordinates = [(i, j) for i in range(divisions + 1) for j in range(divisions + 1 - i)]
         local_ids = {value: i for i, value in enumerate(coordinates)}
         bary = np.array([[divisions - i - j, i, j] for i, j in coordinates]) / divisions
@@ -131,8 +134,9 @@ def main():
             }
         )
     assert all(
-        rows[i + 1]["maximum_sampled_position_error_m"] < rows[i]["maximum_sampled_position_error_m"] / 3.9
-        for i in range(3)
+        rows[i + 1]["maximum_sampled_position_error_m"]
+        < rows[i]["maximum_sampled_position_error_m"] * (rows[i]["divisions"] / rows[i + 1]["divisions"]) ** 2 * 4 / 3.9
+        for i in range(len(rows) - 1)
     )
     write_json(args.output / "result.json", {"passed": True, "rows": rows, "whole_goal_complete": False})
 

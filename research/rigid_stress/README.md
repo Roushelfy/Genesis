@@ -11,6 +11,15 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current goal and verified scope
 
+The latest [contact-application and updated-support study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)
+identifies the ground's184micrometre offset as the collider's half-penetration
+application point. With refined collision geometry and samples grouped by
+physical region, a wrench/cone-compatible load correction changes volume/near
+fields by2.68%/1.79% after support updates, within the5% sensitivity budget.
+This is one captured-frame model comparison, not independent physical accuracy.
+Native edge binding and accepted max/full scene throughput remain open; all
+three tested native Franka variants still refuse at106.
+
 The latest [remote-edge quadrature and load-allocation study](docs/SHARP_EDGE_PRESSURE_20261022.md#remote-field-quadrature-and-paired-component-cost)
 reduces65,536 native64-bit particular-tensor queries from2.83ms to1.25ms in a
 paired GPU allocation. Independent prescribed-pressure point error stays below

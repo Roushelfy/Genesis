@@ -83,12 +83,16 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--frame", type=Path, required=True)
     cli.add_argument("--boundaries", type=Path, required=True)
-    cli.add_argument("--contact", type=int, required=True)
+    cli.add_argument("--contact", type=int)
+    cli.add_argument("--pair", type=int)
     cli.add_argument("--grids", nargs="+", type=int, default=[24, 36, 48])
     cli.add_argument("--prior", type=Path)
     cli.add_argument("--extent-m", nargs=2, type=float)
+    cli.add_argument("--geometry-only", action="store_true")
+    cli.add_argument("--aggregate-region", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
+    assert (args.contact is None) != (args.pair is None)
     args.output.mkdir(parents=True, exist_ok=False)
     write_json(
         args.output / "start.json",
@@ -98,6 +102,8 @@ def main():
             + ([file_id(args.prior)] if args.prior is not None else []),
             "trial_parameters_reused": args.prior is not None,
             "domain_extent_m": args.extent_m,
+            "geometry_only": args.geometry_only,
+            "aggregate_region": args.aggregate_region,
             "targets": {
                 "pressure_cell_l2": 0.15,
                 "sample_tensor_relative": 0.10,
@@ -113,6 +119,11 @@ def main():
     with np.load(args.boundaries) as saved:
         bounds = {key: saved[key] for key in saved.files}
     env, contact = 0, args.contact
+    if args.pair is not None:
+        selected = frame["contact_valid"][env] & (np.linalg.norm(frame["contact_force_n"][env], axis=1) > 0)
+        selected &= frame["source_pair"][env] == args.pair
+        assert selected.any()
+        contact = int(np.flatnonzero(selected)[0])
     assert bounds["count"][env, contact] == 4 and frame["contact_valid"][env, contact]
     quaternion = frame["frame_quaternion"][env]
     rotation = Rotation.from_quat(quaternion[[1, 2, 3, 0]])
@@ -128,7 +139,21 @@ def main():
     curvature = edge_rotation.T @ frame["region_curvature_per_m"][env, contact] @ edge_rotation
     offset = -distances[edge]
     assert offset > 0
-    force = rotation.apply(frame["contact_force_n"][env, contact])
+    members = np.array([contact])
+    if args.aggregate_region:
+        resolution = 1e-6 * np.trace(curvature) / np.linalg.det(curvature) + 128 * np.finfo(float).eps * np.linalg.norm(
+            root
+        )
+        eligible = frame["contact_valid"][env] & (np.linalg.norm(frame["contact_force_n"][env], axis=1) > 0)
+        eligible &= frame["source_pair"][env] == frame["source_pair"][env, contact]
+        eligible &= np.linalg.norm(frame["region_center_m"][env] - root, axis=1) <= resolution
+        members = np.flatnonzero(eligible)
+        assert contact == members.min()
+        for index in members:
+            np.testing.assert_allclose(bounds["normal"][env, index], normal, rtol=0, atol=1e-10)
+            np.testing.assert_allclose(bounds["tangent"][env, index], tangent, rtol=0, atol=1e-10)
+            np.testing.assert_allclose(bounds["planes"][env, index], planes, rtol=0, atol=1e-10)
+    force = rotation.apply(frame["contact_force_n"][env, members].sum(axis=0))
     load = -force @ normal
     modulus = 1e10 / 0.91
     hertz_axes, _, _, _ = ellipse(load, modulus, curvature)
@@ -174,6 +199,31 @@ def main():
     observed_xy = (point - root) @ world_basis - [offset, shift]
     observed_material = material_points((observed_xy + [0, shift])[None])[0]
     observed_gap = -(observed_material - center) @ material_normal
+    if args.geometry_only:
+        ratio = force @ world_basis / load
+        write_json(
+            args.output / "result.json",
+            {
+                "passed": True,
+                "contact": contact,
+                "contacts": members.tolist(),
+                "geometry_only": True,
+                "root_offset_m": float(offset),
+                "hertz_axes_m": hertz_axes.tolist(),
+                "edge_stationary_shift_m": float(shift),
+                "edge_slope": float(slope),
+                "edge_along_curvature_per_m": float(along_curvature),
+                "edge_minimum_world_m": pressure_center_world.tolist(),
+                "normal_load_n": float(load),
+                "tangent_over_normal_components": ratio.tolist(),
+                "law_inputs": [float(load), modulus, float(slope), float(along_curvature), float(ratio[0]), 0.3],
+                "observed_contact_world_m": point.tolist(),
+                "observed_gap_m": float(observed_gap),
+                "native_scene_admitted": False,
+                "whole_goal_complete": False,
+            },
+        )
+        return
     rows, previous_tensor, previous_peak = [], None, None
     unit_observations = (
         np.array(np.meshgrid(np.linspace(-0.5, 2, 13), np.linspace(-2, 2, 17), np.geomspace(0.25, 2, 7), indexing="ij"))
