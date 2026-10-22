@@ -398,6 +398,8 @@ def kernel_hertz_contact_reset(
             qd.Vector.zero(gs.qd_float, 3),
         )
         regions.leader[i_c, i_b], regions.source_count[i_c, i_b], regions.status[i_c, i_b] = -1, 0, 1
+        regions.boundary_planes[i_c, i_b] = qd.Matrix.zero(gs.qd_float, 4, 3)
+        regions.n_boundaries[i_c, i_b] = 0
         law.force[i_p], law.status[i_p], law.peak_pressure[i_p], law.indentation[i_p] = 0.0, 1, 0.0, 0.0
         law.axes[i_p] = qd.Vector.zero(gs.qd_float, 2)
         frames.anchor[i_p], frames.center[i_p] = -1, qd.Vector([float("nan")] * 3)
