@@ -1386,7 +1386,9 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                     self._errno,
                 )
             elif self.stress_recovery.post_kernel is not None:
-                self.stress_recovery.recover_and_integrate(f % self.substeps)
+                # f indexes the checkpoint ring and can remain zero on every
+                # forward-only substep. Observation latches use physical time.
+                self.stress_recovery.recover_and_integrate(self.sim.cur_substep_global % self.substeps)
             else:
                 if not self._disable_constraint:
                     kernel_resolve_stress_contacts(
@@ -1399,7 +1401,7 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                         self._options.noslip_iterations > 0,
                         self._errno,
                     )
-                self.stress_recovery.recover(f % self.substeps)
+                self.stress_recovery.recover(self.sim.cur_substep_global % self.substeps)
                 kernel_step_2(
                     self.dyn_state,
                     constraint_solver.constraint_state,
