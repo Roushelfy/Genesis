@@ -24,6 +24,8 @@ from .check_curved_shell_operators import locate_curved
 from .check_native_edge_fields import kernel_evaluate
 from .check_native_hertz_recovery import array, matrix
 from .edge_asymptotic import edge_scales
+from .hertz_stress import elliptic_stress
+from .hertz_tangential import elliptic_tangential_stress
 from .study_edge_fields import field_metrics
 from .study_far_edge_contact import projected_surface
 from .study_hertz_residual import field_difference
@@ -36,6 +38,7 @@ def main():
     cli.add_argument("--boundaries", type=Path, required=True)
     cli.add_argument("--mesh", type=Path, required=True)
     cli.add_argument("--physical-inputs", type=Path, required=True)
+    cli.add_argument("--allocation", type=Path)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -43,7 +46,12 @@ def main():
         args.output / "start.json",
         {
             "identity": runtime_identity(require_gpu_inventory=False),
-            "inputs": [file_id(p) for p in [args.frame, args.boundaries, args.mesh, args.physical_inputs]],
+            "inputs": [
+                file_id(p)
+                for p in [args.frame, args.boundaries, args.mesh, args.physical_inputs, args.allocation]
+                if p is not None
+            ],
+            "allocation_scope": "When allocation is supplied, compare original and reallocated forces at fixed pressure support/exponent and centers; include the captured ground Hertz patch and all three sources. This is a fixed-support load sensitivity control. A self-consistent pressure/support update remains a separate requirement.",
             "targets": {
                 "source_response_volume": 0.05,
                 "source_response_sample_tensor": 0.05,
@@ -135,6 +143,43 @@ def main():
                     ),
                 }
             )
+    if args.allocation is not None:
+        allocation = json.loads(args.allocation.read_text())
+        assert allocation["normal_frame"] == "material"
+        assert allocation["ground_hertz"]
+        assert allocation["constrained"]["qualified_constrained_minimum"]
+        allocated = {
+            row["contact"]: np.array(force)
+            for row, force in zip(allocation["contacts"], allocation["constrained"]["forces_n"])
+        }
+        for i in [0, 2]:
+            cases[i + 1] = cases[i].copy()
+            cases[i + 1]["kind"] = "allocated"
+            cases[i + 1]["force"] = allocated[cases[i]["contact"]] @ cases[i]["basis"]
+            cases[i + 1]["amplitude"] *= cases[i + 1]["force"][2] / cases[i]["force"][2]
+        ground = allocation["ground_geometry"]
+        center, basis = np.array(ground["center"]), np.array(ground["basis"])
+        axes = np.array([ground["along"], ground["width"]])
+        for kind, force in [("pressure", frame["contact_force_n"][0, 0]), ("allocated", allocated[0])]:
+            local_force = force @ basis
+            cases.append(
+                {
+                    "contact": 0,
+                    "kind": kind,
+                    "profile": "hertz",
+                    "center": center,
+                    "basis": basis,
+                    "anchor": ground["anchor"],
+                    "force": local_force,
+                    "along": axes[0],
+                    "width": axes[1],
+                    "exponent": 0.5,
+                    "amplitude": 3 * local_force[2] / (2 * np.pi * axes.prod()),
+                }
+            )
+        for c in cases:
+            c.pop("moment_difference_nm", None)
+            c.pop("moment_difference_over_Fa", None)
     write_json(
         args.output / "source-geometry.json",
         {"cases": [{k: v.tolist() if isinstance(v, np.ndarray) else v for k, v in c.items()} for c in cases]},
@@ -170,6 +215,9 @@ def main():
     for c in cases:
         x = np.array([-1, 0, 0.25, 0.75, 1.5]) * c["width"] - 2 * (1 - c["exponent"]) * c["width"] / 5
         y = np.array([-1.2, -0.5, 0, 0.5, 1.2]) * c["along"]
+        if c.get("profile") == "hertz":
+            x = np.array([-1.2, -0.5, 0, 0.5, 1.2]) * c["along"]
+            y = np.array([-1.2, -0.5, 0, 0.5, 1.2]) * c["width"]
         depth = np.array([0.1 * c["width"], c["width"], 0.1 * c["along"]])
         offset = np.stack(np.meshgrid(x, y, depth, indexing="ij"), axis=-1).reshape(-1, 3)
         target = c["center"] + offset[:, :2] @ c["basis"][:, :2].T
@@ -186,6 +234,8 @@ def main():
     common = np.concatenate([volume_points.reshape(-1, 3), probes])
     inputs, positions = [], []
     for c in cases:
+        if c.get("profile") == "hertz":
+            continue
         local = (common - c["center"]) @ c["basis"]
         assert local[:, 2].min() >= -1e-12
         local[:, 2] = np.maximum(local[:, 2], 0)
@@ -218,8 +268,17 @@ def main():
     field = StressEdgeFields()
     kernel_evaluate(point_bank, input_bank, field.quadrature, tensor_bank, status_bank)
     np.testing.assert_array_equal(array(status_bank), 0)
-    particular = array(tensor_bank).reshape(count, len(common), 3, 3)
+    particular = np.zeros((count, len(common), 3, 3))
+    edge_count = sum(c.get("profile") != "hertz" for c in cases)
+    particular[:edge_count] = array(tensor_bank).reshape(edge_count, len(common), 3, 3)
     for i, c in enumerate(cases):
+        if c.get("profile") == "hertz":
+            local = (common - c["center"]) @ c["basis"]
+            assert local[:, 2].min() >= -1e-12
+            local[:, 2] = np.maximum(local[:, 2], 0)
+            axes = np.array([c["along"], c["width"]])
+            particular[i] = elliptic_stress(local, axes, c["amplitude"])
+            particular[i] += elliptic_tangential_stress(local, axes, c["force"][:2] / c["force"][2], c["amplitude"])
         particular[i] = c["basis"] @ particular[i] @ c["basis"].T
     rows, results = [], []
     for order in [16, 24]:
@@ -269,7 +328,7 @@ def main():
         )
         results.append(combined)
         comparisons = []
-        for i in [0, 2]:
+        for i in range(0, count, 2):
             comparisons.append(
                 {
                     "contact": cases[i]["contact"],
@@ -281,7 +340,17 @@ def main():
                     "center_distance_m": float(np.linalg.norm(cases[i + 1]["center"] - cases[i]["center"])),
                 }
             )
-        rows.append({**admission, "source_response": comparisons})
+        aggregate = {}
+        if args.allocation is not None:
+            original, allocated = combined[::2].sum(axis=0), combined[1::2].sum(axis=0)
+            aggregate = {
+                "volume_tensor_relative": float(
+                    field_difference(allocated[: len(volumes)], original[: len(volumes)], volumes)
+                ),
+                "common_probes": field_metrics(allocated[len(volumes) :], original[len(volumes) :]),
+                "all_samples": field_metrics(allocated, original),
+            }
+        rows.append({**admission, "source_response": comparisons, "all_contact_allocation_response": aggregate})
         write_json(args.output / "progress.json", {"rows": rows})
     convergence = [field_metrics(a, b) for a, b in zip(*results)]
     passed = all(c["tensor_relative"] < 0.01 for c in convergence)

@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "backend": "cpu",
+  "precision": "64",
+  "queries": 768,
+  "maximum_point_tensor_relative": 1.4574209309039799e-10,
+  "reference_errors": [
+    {
+      "tensor_relative": 0.001642668891829039,
+      "maximum_tensor_error_over_reference_maximum": 0.003161536507844854,
+      "vm_peak_relative": 1.5769274090970953e-06,
+      "tensile_peak_relative": 4.295872178761151e-06
+    },
+    {
+      "tensor_relative": 0.0031618356567222235,
+      "maximum_tensor_error_over_reference_maximum": 0.005091178087061435,
+      "vm_peak_relative": 3.0226255869347796e-06,
+      "tensile_peak_relative": 0.000369885559036609
+    },
+    {
+      "tensor_relative": 0.005239689545964684,
+      "maximum_tensor_error_over_reference_maximum": 0.008475184961730163,
+      "vm_peak_relative": 7.846771750363857e-06,
+      "tensile_peak_relative": 0.0004899121161727749
+    },
+    {
+      "tensor_relative": 0.00236009968604497,
+      "maximum_tensor_error_over_reference_maximum": 0.0042745744872492615,
+      "vm_peak_relative": 4.388762284035508e-06,
+      "tensile_peak_relative": 9.278734447781822e-06
+    }
+  ],
+  "original_hertz_quadrature_checked": true,
+  "invalid_singular_isolation_restore_checked": true,
+  "cold_field_seconds": 0.2948956140317023,
+  "benchmarks": [],
+  "whole_goal_complete": false
+}
