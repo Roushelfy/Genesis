@@ -1,9 +1,11 @@
 # Native hollow-egg admission and geometry gap
 
 The actual native Franka/hollow-egg rollout rejects its first loaded step.
-Separate four-contact controls on the unchanged level1 hollow mesh recover
-complete fields with order16 boundary integration. These results distinguish
-the contact geometry gap from finite-shell elasticity. The full
+Separate four-contact controls on the unchanged level1 hollow mesh pass
+same-load complete-field checks with order16 integration over the asset's
+selected surface. A subsequent audit finds that this selection omits the
+cavity boundary, so those passing checks do not establish complete boundary
+correction. The full
 [hard-contact goal](AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md) remains active.
 
 ## Actual Franka rollout
@@ -24,7 +26,7 @@ and the entire material remains in its inward half-space. The existing
 Changing equilibrium or friction solver tolerances cannot fix this mismatch.
 The original rejection, source identities and complete frame arrays remain.
 
-## Finite-shell component control
+## Selected-surface component control
 
 The component control places four separate normal loads at actual outer-facet
 centers on the same level1 volume, with forces0.20/0.12/0.18/0.10N and declared
@@ -43,6 +45,23 @@ particulars, differ by at most`3.59e-11` at element corners and`2.22e-9` over
 the complete probe bank. Both remain below the original`1e-7` field gate.
 This is a same-load numerical control. It supplies no independent pressure,
 curved-contact, frictional shell error or matched scene-throughput claim.
+
+The subsequent complete-boundary audit739157 finds80 selected outer faces
+versus160 actual material-boundary faces. Independent integration over the
+selected80 reproduces the native order16 load within`1.56e-8` relatively.
+Including all160 faces changes the sampled corner tensor bank by98.95–101.12%
+relative to the complete-boundary result. The force/moment checks cannot
+detect this omission because the cavity's resultant is zero while its local
+traction correction matters. These are differences within the same point-
+traction regular-response model, not newly qualified physical stress errors.
+
+The all-boundary reference concentrates integration around each face's closest
+point to the source. Order24/32 changes the sampled corner fields by at most
+`2.56e-9`. A lower-order candidate is being checked against the production
+force/moment definition and then in native Quadrants. The implementation must
+complete the material boundary independently of the selected contact faces,
+preserve existing face identities, and resolve near-wall traction without
+relaxing the original acceptance gates.
 
 The original order16 reader round-tripped surface probes through world
 coordinates. At contact edges, coordinate changes below`3.30e-18m` changed
