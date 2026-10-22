@@ -100,6 +100,17 @@ All audited frames pass. Live automatic contacts, moving probes, curved/inner
 contacts and physical friction integration remain open; public options still
 use their established path. The report pins the experimental engine source.
 
+The [moving material probe extension](docs/NATIVE_MOVING_HERTZ_PROBES_20261022.md)
+follows supplied normal contacts with 89 probes per region, locating them through
+actual material-face adjacency. CPU/GPU, rotation, release, isolation and max/full
+controls pass. Independent sampled corner/peak differences meet the existing
+5%/10% engineering budgets; the stricter 0.1% corner target fails at 0.1282%
+and remains recorded as failed. Order6 integration passes the moving/rotated
+controls and costs 6.63/6.67 ms per B1024 max/full update, including resident
+input motion and probe location. Faster order4 retains a rotated wrench refusal.
+Automatic live inputs, general physical contacts/friction and scene integration
+remain open; these are experimental normal component results.
+
 The [first hard-contact controls](docs/HARD_CONTACT_ESTIMATES_20261020.md)
 now compare independent half-space contact with circular/elliptic Hertz and a
 cheap two-region interaction correction. Ellipticity reduces the rotated-case

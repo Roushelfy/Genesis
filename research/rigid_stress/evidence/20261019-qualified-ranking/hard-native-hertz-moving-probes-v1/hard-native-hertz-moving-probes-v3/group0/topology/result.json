@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "command": [
+    "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "-m",
+    "pytest",
+    "-n",
+    "0",
+    "--backend",
+    "cpu",
+    "-q",
+    "-o",
+    "cache_dir=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-moving-probes-v3/group0/topology/cache",
+    "--basetemp",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-moving-probes-v3/group0/topology/tmp",
+    "--junitxml",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-moving-probes-v3/group0/topology/tests.xml",
+    "tests/rigid/test_stress_nonconvex.py::test_material_boundary_adjacency_uses_vertex_identity",
+    "tests/rigid/test_stress_nonconvex.py::test_material_boundary_rejects_interior_and_duplicate_faces"
+  ],
+  "test_source": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_moving_probes/tests/rigid/test_stress_nonconvex.py",
+    "bytes": 16200,
+    "sha256": "e04e18209b65f1f82b3ceb111261d68718bb30591d17a689b753a31e54ef4592"
+  },
+  "returncode": 0
+}

@@ -1,0 +1,84 @@
+[
+  [
+    {
+      "name": "moving",
+      "module": "research.rigid_stress.qipc_comparison.check_moving_hertz_probes",
+      "args": [
+        "--backend",
+        "cpu",
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-farfield-controls-v5/group0/exact",
+        "--quadrature",
+        "6"
+      ]
+    },
+    {
+      "name": "rotated",
+      "module": "research.rigid_stress.qipc_comparison.check_moving_hertz_probes",
+      "args": [
+        "--backend",
+        "cpu",
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-farfield-controls-v5/group0/rotated-far",
+        "--quadrature",
+        "6"
+      ]
+    },
+    {
+      "name": "benchmark",
+      "module": "research.rigid_stress.qipc_comparison.check_moving_hertz_probes",
+      "args": [
+        "--backend",
+        "cpu",
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-farfield-controls-v5/group0/exact",
+        "--quadrature",
+        "6",
+        "--benchmark-inputs",
+        "--steps",
+        "24"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "moving",
+      "module": "research.rigid_stress.qipc_comparison.check_moving_hertz_probes",
+      "args": [
+        "--backend",
+        "gpu",
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-farfield-controls-v5/group0/exact",
+        "--quadrature",
+        "6"
+      ]
+    },
+    {
+      "name": "rotated",
+      "module": "research.rigid_stress.qipc_comparison.check_moving_hertz_probes",
+      "args": [
+        "--backend",
+        "gpu",
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-farfield-controls-v5/group0/rotated-far",
+        "--quadrature",
+        "6"
+      ]
+    },
+    {
+      "name": "benchmark",
+      "module": "research.rigid_stress.qipc_comparison.check_moving_hertz_probes",
+      "args": [
+        "--backend",
+        "gpu",
+        "--control",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hertz-farfield-controls-v5/group0/exact",
+        "--quadrature",
+        "6",
+        "--benchmark-inputs",
+        "--steps",
+        "24"
+      ]
+    }
+  ]
+]
