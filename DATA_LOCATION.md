@@ -1,5 +1,18 @@
 # Rigid-stress data and artifact locations
 
+The `hard-matched-collision-v1` packet retains304 compact payloads/1,690,286bytes
+and819 external receipts. Collision meshes generated from the curved material
+surface, original/repaired Franka captures, source-binding CPU/CUDA controls,
+nonconvex regressions and saved-frame inspections remain under the established
+20261019 ranking data root in `hard-matched-collision-*` and
+`hard-curved-source-geometry-*`. All nine campaigns are terminal. Original failed
+geometry, reader and exact-comparison attempts remain preserved. Source/docs
+stay in workspace; runtime arrays, generated assets and logs stay on data.
+Engine `hard_contact_matched_collision` is frozen at`ad6b71984`, with24 frozen
+heads and12 original unfinished files preserved. Scientific work reuses Slurm
+`rtx-mid`, image`1_26`, the data-side environment and private node caches.
+No data, active environment or compatibility link was migrated.
+
 The `hard-finite-edge-v1` packet retains213 compact payloads/1,343,627bytes
 and240 external receipts. Same-substep face-boundary capture, CPU/CUDA controls,
 independent edge-pressure trials and saved-frame/force-line inspections use

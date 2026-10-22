@@ -1,0 +1,54 @@
+[
+  [
+    {
+      "name": "franka",
+      "module": "research.rigid_stress.qipc_comparison.check_live_curved_hertz_franka",
+      "args": [
+        "--stress-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--steps",
+        "130",
+        "--diagnose",
+        "--boundary-planes"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "franka",
+      "module": "research.rigid_stress.qipc_comparison.check_live_curved_hertz_franka",
+      "args": [
+        "--stress-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--steps",
+        "130",
+        "--diagnose",
+        "--boundary-planes",
+        "--collision-urdf",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-matched-collision-assets-v1/group0/assets/division2/egg_shell.urdf"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "franka",
+      "module": "research.rigid_stress.qipc_comparison.check_live_curved_hertz_franka",
+      "args": [
+        "--stress-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--steps",
+        "130",
+        "--diagnose",
+        "--boundary-planes",
+        "--collision-urdf",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-matched-collision-assets-v1/group0/assets/division8/egg_shell.urdf"
+      ]
+    }
+  ]
+]

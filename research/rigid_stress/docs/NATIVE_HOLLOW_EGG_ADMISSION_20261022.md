@@ -479,6 +479,75 @@ data outputs, image1_26 and the existing environment/private caches. Actual
 gripper admission and matched accepted pure-rigid/max/full throughput remain
 required. The whole goal stays active.
 
+## Matched collision geometry and curved source binding
+
+Experimental engine [`ad6b71984`](https://github.com/Roushelfy/Genesis/commit/ad6b719842603a2eed15d839585484f72f2eea22)
+corrects native source provenance on quadratic material faces. Known source
+barycentric coordinates now evaluate the actual curved position. Unbound
+witnesses use the curved face interior and quadratic edges; shared-edge
+equivalence also checks the curved edge. Nearest-point and ambiguity passes
+share one compiled query body. The100um projection limit, source uncertainty,
+force/free-moment balance and nonconvex identity rules remain in force.
+
+The negative control reproduces the defect: a valid curved midpoint and interior
+witness were rejected with source status3, while the same affine control passed.
+CPU/CUDA repaired controls pass known corners/midpoints, unbound interiors and
+shared edges, plus release. Eight outer/inner material faces also give48 accepted
+queries at signed20um offsets and24 refusals at200um, separately for affine and
+curved geometry. The largest accepted-center error against independent quadratic
+evaluation is7.77e-18m, below the1e-12m gate. Three existing GPU regressions pass: shared-edge roundoff, U-shaped
+surface uncertainty and cavity uncertainty. The expanded worker's first run
+overwrote its shape-function variables between materials; its original failed
+capture is retained alongside the corrected check.
+
+The example accepts an explicit collision URDF while preserving the original
+default. Generated collision meshes sample the selected outer quadratic material
+faces, weld by parent topology and retain the original mass, inertia and frame.
+Closed-surface and shared-edge checks pass. Independent child-edge/interior
+samples give:
+
+| Divisions per material edge | Collision triangles | Maximum sampled position error | Maximum sampled normal error |
+| --- | ---: | ---: | ---: |
+| 1 | 80 | 2007.03um | 13.956deg |
+| 2 | 320 | 501.76um | 8.844deg |
+| 4 | 1280 | 125.44um | 5.217deg |
+| 8 | 5120 | 31.36um | 2.804deg |
+
+These are tessellation errors against the supplied curved material geometry,
+not continuum stress errors or claims about the collider's smooth-normal fit.
+The original asset remains a separate control. Its109-frame replay retains
+exact rigid motion, contact loads, material geometry and acceptance. The first
+exact constitutive comparison failed on a1.04e-14 direction difference. A
+numerical comparison retains the1e-9 field budget and1e-13 curvature budget;
+its largest relative sampled tensile-peak difference is2.67e-11, probe tensor
+difference8.95e-13 and absolute normalized wrench difference1.52e-15. Every
+measured maximum and the original failure remain available.
+
+Actual B4 full-output runs use the same saved controller conditions. Before
+the source repair, both2- and8-division collision variants first reject at
+step106 with region and source failures. After repair, the8-division variant
+has **no source failures** at that step; two finite-face normal roots still
+reject, leaving environment0 invalid. Original and2-division meshes retain a
+source beyond the unchanged projection limit, as well as region rejection.
+The original mesh still first rejects at108. Mesh variants follow different
+contact trajectories; these first-rejection steps are admission diagnostics.
+
+Read-only force-line inspection further distinguishes geometry from pressure
+qualification. At2divisions, the two force-line intersections lie inside their
+selected faces by at least2.58 and7.39 local Hertz widths, but one is272um from
+its collision witness. At8divisions, both witness/intersection distances fall
+below90um, while one load line lies66.63um outside a selected face, about1.04
+local Hertz widths. Refining collision geometry and correcting provenance thus
+do not establish load-compatible finite support. Native moving-source/friction
+walks still use affine geometry and require their own repair and controls.
+
+The [matched-collision packet](../evidence/20261019-qualified-ranking/hard-matched-collision-v1/README.md)
+retains the negative controls, exact source variants, generated assets, complete
+scene captures and original/corrected inspections. Reuse captured task groups
+with Slurm`rtx-mid`, image`1_26`, the data-side environment, fresh explicit outputs
+and private node caches. This change supplies no accepted full-grasp throughput
+or new physical pressure/global-peak qualification. The whole goal remains active.
+
 ## Repair and reproduction
 
 Source[`d26b5b3d4`](https://github.com/Roushelfy/Genesis/commit/d26b5b3d46efe614ed715fef293f8cc49bcdf0c7)

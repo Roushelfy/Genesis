@@ -1,0 +1,46 @@
+[
+  [
+    {
+      "name": "sources",
+      "module": "research.rigid_stress.qipc_comparison.check_curved_source_geometry",
+      "args": [
+        "--backend",
+        "cpu",
+        "--curved",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--affine",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_matched_collision/examples/rigid/assets/hollow_egg/level1/elastic.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "sources",
+      "module": "research.rigid_stress.qipc_comparison.check_curved_source_geometry",
+      "args": [
+        "--backend",
+        "gpu",
+        "--curved",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--affine",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_matched_collision/examples/rigid/assets/hollow_egg/level1/elastic.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "regression",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_matched_collision/tests/rigid/test_stress_sources.py",
+        "--select",
+        "test_native_source_uncertainty_on_same_surface or test_shared_edge_roundoff_preserves_finite_profile",
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_matched_collision",
+        "--backend",
+        "gpu"
+      ]
+    }
+  ]
+]

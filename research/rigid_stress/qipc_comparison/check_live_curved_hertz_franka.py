@@ -2,6 +2,7 @@
 
 import argparse
 from pathlib import Path
+from xml.etree import ElementTree
 
 import numpy as np
 import quadrants as qd
@@ -143,20 +144,31 @@ def diagnose(workload, output, step, is_boundary_capture):
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--stress-mesh", type=Path, required=True)
+    cli.add_argument("--collision-urdf", type=Path)
+    cli.add_argument("--conditions", type=Path)
     cli.add_argument("--steps", type=int, default=30)
     cli.add_argument("--diagnose", action="store_true")
     cli.add_argument("--boundary-planes", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
+    collision_assets = []
+    if args.collision_urdf is not None:
+        for item in ElementTree.parse(args.collision_urdf).iter("mesh"):
+            path = args.collision_urdf.parent / item.attrib["filename"]
+            if str(path) not in [entry["path"] for entry in collision_assets]:
+                collision_assets.append(file_id(path))
     write_json(
         args.output / "start.json",
         {
             "identity": runtime_identity(),
             "mesh": file_id(args.stress_mesh),
+            "collision_urdf": file_id(args.collision_urdf) if args.collision_urdf is not None else None,
+            "collision_assets": collision_assets,
+            "conditions": file_id(args.conditions) if args.conditions is not None else None,
             "steps": args.steps,
             "environments": 4,
-            "scope": "Actual moving Franka, original rigid collision surface and controller, supplied quadratic material geometry and native Hertz/friction. Retain every step and stop on the unchanged production error. Loaded rejection does not count as useful throughput, and success alone is not physical stress qualification.",
+            "scope": "Actual moving Franka with the original controller, explicitly identified original or supplied collision asset, supplied quadratic material geometry and native Hertz/friction. Retain every step and stop on the unchanged production error. Loaded rejection does not count as useful throughput, and success alone is not physical stress qualification.",
         },
     )
     gs.init(backend=gs.cuda, precision="64", seed=623016, logging_level="warning")
@@ -172,6 +184,8 @@ def main():
         enable_contact_patch=False,
         fused_rigid_post=False,
         stress_mesh=args.stress_mesh,
+        collision_urdf=args.collision_urdf,
+        conditions=args.conditions,
     )
     workload.stress = False
     workload.save_conditions(args.output / "conditions.npz")
