@@ -10,12 +10,17 @@ from genesis.utils.array_class import DataKind, ErrorCode, V, V_MAT, V_VEC, mayb
 
 from .data import StressInfo, StressState
 from .hertz import StressHertzState, func_boussinesq_tensor, func_hertz_particular, kernel_hertz_stress_quadrature
-from .hertz_probes import StressHertzProbeState, func_hertz_probe_location, kernel_hertz_probe_offsets
+from .hertz_probes import (
+    StressHertzProbeState,
+    func_hertz_probe_location,
+    func_hertz_curved_probe_location,
+    kernel_hertz_probe_offsets,
+)
 from .hertz_tangential import StressHertzShear, func_cerruti_tensor, func_hertz_friction_particular
 from .model import StressModel
 from .operators import func_shape_gradient, func_material_gradients, func_material_position
 from .provenance import func_closest_triangle
-from .surface import StressSurfaceInfo
+from .surface import StressSurfaceInfo, func_surface_geometry, func_surface_projection
 
 
 @dataclass(frozen=True)
@@ -129,10 +134,22 @@ class StressHertzRecovery:
     ) -> None:
         assert hertz.force.shape[0] == self.frames.center.shape[0]
         assert state.active.shape[0] == self.state.status.shape[0]
-        kernel_hertz_residual_begin(epsilon, self.frames, hertz, state, self.state, surface)
+        kernel_hertz_residual_begin(
+            epsilon, self.frames, hertz, state, self.state, info, surface, info.volume_points.shape[0] > 0
+        )
         kernel_hertz_halfspace(epsilon, self.frames, hertz, self.state, info)
         kernel_hertz_residual_traction(
-            poisson, epsilon, self.frames, hertz, self.shear, state, self.state, info, surface, self.has_shear
+            poisson,
+            epsilon,
+            self.frames,
+            hertz,
+            self.shear,
+            state,
+            self.state,
+            info,
+            surface,
+            self.has_shear,
+            info.volume_points.shape[0] > 0,
         )
         kernel_hertz_residual_accept(self.frames, hertz, self.shear, state, self.state, info, self.has_shear, errno)
 
@@ -156,7 +173,15 @@ class StressHertzRecovery:
         assert self.full == (state.stress_tensor.shape[0] > 0)
         if self.moving_probes:
             kernel_hertz_moving_probes(
-                self.probe_offsets, self.frames, hertz, self.state, self.probes, model.info, self.probe_walk_steps
+                self.probe_offsets,
+                self.frames,
+                hertz,
+                self.state,
+                self.probes,
+                model.info,
+                self.probe_walk_steps,
+                epsilon,
+                model.is_curved_geometry,
             )
         kernel_hertz_combined_field(
             model.options.young,
@@ -191,6 +216,8 @@ def kernel_hertz_moving_probes(
     probes: StressHertzProbeState,
     info: StressInfo,
     walk_steps: int,
+    epsilon: float,
+    is_curved: qd.template(),
 ):
     for i_q, i_p in qd.ndrange(offsets.shape[0], frames.center.shape[0]):
         i_b = i_p % state.status.shape[0]
@@ -207,7 +234,13 @@ def kernel_hertz_moving_probes(
             position = center + frames.basis[i_p] @ rotation @ local
             anchor = frames.anchor[i_p]
             i_e = info.surface_owners[anchor]
-            i_e, bary = func_hertz_probe_location(i_e, center, position, info, walk_steps)
+            bary = qd.Vector.zero(gs.qd_float, 4)
+            if qd.static(is_curved):
+                position, i_e, bary = func_hertz_curved_probe_location(
+                    anchor, center, frames.basis[i_p] @ rotation, local, info, walk_steps, epsilon
+                )
+            else:
+                i_e, bary = func_hertz_probe_location(i_e, center, position, info, walk_steps)
             probes.position[i_q, i_p], probes.element[i_q, i_p], probes.barycentric[i_q, i_p] = position, i_e, bary
             if i_e < 0:
                 qd.atomic_max(state.status[i_b], 6)
@@ -220,7 +253,9 @@ def kernel_hertz_residual_begin(
     hertz: StressHertzState,
     stress_state: StressState,
     state: StressHertzRecoveryState,
+    info: StressInfo,
     surface: StressSurfaceInfo,
+    is_curved: qd.template(),
 ):
     for i_b in range(state.status.shape[0]):
         state.status[i_b], state.wrench_error[i_b] = 1, 0.0
@@ -237,8 +272,15 @@ def kernel_hertz_residual_begin(
                 valid = valid and anchor >= 0 and anchor < surface.face_normal.shape[0]
                 if valid:
                     closest, bary = func_closest_triangle(anchor, center, surface)
-                    valid = (closest - center).norm() <= epsilon
-                    valid = valid and surface.face_normal[anchor].dot(basis[:, 2]) < -1 + 1e-10
+                    normal = surface.face_normal[anchor]
+                    if qd.static(is_curved):
+                        closest, bary, area, is_projected = func_surface_projection(
+                            anchor, center, basis[:, :2].transpose(), info
+                        )
+                        normal = area.normalized()
+                        valid = valid and is_projected and bary.min() >= -1e-10 and bary.max() <= 1 + 1e-10
+                    valid = valid and (closest - center).norm() <= epsilon
+                    valid = valid and normal.dot(basis[:, 2]) < -1 + 1e-10
                 if not valid:
                     state.status[i_b] = 2
     for i_n, i_b in qd.ndrange(stress_state.force.shape[0], state.status.shape[0]):
@@ -273,6 +315,7 @@ def kernel_hertz_residual_traction(
     info: StressInfo,
     surface: StressSurfaceInfo,
     has_shear: qd.template(),
+    is_curved: qd.template(),
 ):
     for i_f, i_p, i_lane in qd.ndrange(info.surface_nodes.shape[0], frames.center.shape[0], surface.gauss.shape[0]):
         i_b = i_p % state.status.shape[0]
@@ -288,9 +331,26 @@ def kernel_hertz_residual_traction(
             for i in qd.static(range(3)):
                 i_n = info.surface_nodes[i_f, i]
                 coplanar = coplanar and qd.abs((info.vertices[i_n] - center).dot(basis[:, 2])) <= epsilon
+            if qd.static(is_curved):
+                coplanar = False
             if not coplanar:
                 closest, bary = func_closest_triangle(i_f, center, surface)
-                clear = (closest - center).norm() >= 4 * hertz.axes[i_p][0]
+                is_source, clear = False, (closest - center).norm() >= 4 * hertz.axes[i_p][0]
+                if qd.static(is_curved):
+                    closest, tangent, area = func_surface_geometry(i_f, bary, info)
+                    projected, projected_bary, projected_area, is_projected = func_surface_projection(
+                        i_f, center, basis[:, :2].transpose(), info
+                    )
+                    is_source = (
+                        is_projected
+                        and projected_bary.min() >= -1e-10
+                        and projected_bary.max() <= 1 + 1e-10
+                        and (projected - center).norm() <= epsilon
+                    )
+                    clear = True
+                    if is_source:
+                        closest, bary = projected, projected_bary
+                        clear = projected_area.normalized().dot(basis[:, 2]) < -1 + 1e-10
                 if not clear:
                     qd.atomic_max(state.status[i_b], 3)
                 loads = qd.Matrix.zero(gs.qd_float, 6, 3)
@@ -304,33 +364,44 @@ def kernel_hertz_residual_traction(
                     is_near = distance < diameter / 4
                     n_rules = 12 if is_near else 1
                     # Each lane integrates one angular knot over every radial rule.
-                    # This preserves the quadrature while exposing near-wall work.
                     for i_sample_ in range(n_rules * surface.gauss.shape[0]):
                         i_sample_local = i_sample_ * surface.gauss.shape[0] + i_lane
                         i_q = i_sample_local % surface.shape.shape[0]
                         i_sample = i_f * surface.shape.shape[0] + i_q
                         position, weight = surface.positions[i_sample], surface.weights[i_sample]
                         shape = surface.shape[i_q]
+                        if qd.static(is_curved):
+                            normal = surface.normals[i_sample]
                         if is_near:
                             i_rule = i_sample_local // surface.shape.shape[0]
                             i_edge = i_rule // 4
                             first_bary, second_bary = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
                             first_bary[i_edge], second_bary[(i_edge + 1) % 3] = 1.0, 1.0
-                            first = info.vertices[info.surface_nodes[i_f, i_edge]] - closest
-                            second = info.vertices[info.surface_nodes[i_f, (i_edge + 1) % 3]] - closest
+                            i_first, i_second = (
+                                info.surface_nodes[i_f, i_edge],
+                                info.surface_nodes[i_f, (i_edge + 1) % 3],
+                            )
+                            first, second = info.vertices[i_first] - closest, info.vertices[i_second] - closest
                             n_gauss = surface.gauss.shape[0]
                             u = (surface.gauss[i_q // n_gauss] + (i_rule % 4) // 2) / 2
                             v = (surface.gauss[i_q % n_gauss] + i_rule % 2) / 2
-                            length = ((1 - v) * first + v * second).norm()
-                            denominator = length * (1 - u) + distance * u
-                            radius = distance * u / denominator
-                            derivative = distance * length / (denominator * denominator)
+                            radius, derivative = u, gs.qd_float(1.0)
+                            if not is_source:
+                                length = ((1 - v) * first + v * second).norm()
+                                denominator = length * (1 - u) + distance * u
+                                radius = distance * u / denominator
+                                derivative = distance * length / (denominator * denominator)
                             sample_bary = bary + radius * ((1 - v) * first_bary + v * second_bary - bary)
                             position = closest + radius * ((1 - v) * first + v * second)
-                            # The rational radial map resolves the closest material depth
-                            # without globally refining every remote boundary face.
+                            measure = first.cross(second).norm()
+                            if qd.static(is_curved):
+                                # Tangency cancels the point singularity against
+                                # this source-centered fan's radial Jacobian.
+                                position, tangent, area = func_surface_geometry(i_f, sample_bary, info)
+                                normal = area.normalized()
+                                measure = area.norm() * qd.abs(bary[(i_edge + 2) % 3])
                             weight = (
-                                first.cross(second).norm()
+                                measure
                                 * radius
                                 * derivative
                                 * surface.gauss_weights[i_q // n_gauss]
@@ -348,6 +419,9 @@ def kernel_hertz_residual_traction(
                                 ]
                             )
                         local = basis.transpose() @ (position - center)
+                        if qd.static(is_curved):
+                            if not local[2] >= -epsilon:
+                                qd.atomic_max(state.status[i_b], 3)
                         local[2] = qd.max(local[2], 0.0)
                         tensor = func_boussinesq_tensor(local, hertz.force[i_p], poisson)
                         if qd.static(has_shear):
@@ -490,7 +564,10 @@ def kernel_hertz_combined_field(
                             if is_auto_query and i_p == i_source:
                                 # The probe is defined in this source frame. Retain exact
                                 # surface depth instead of round-tripping world coordinates.
-                                local = probe_offsets[i_probe] * qd.Vector([axes[0], axes[1], axes[0]])
+                                source_local = probe_offsets[i_probe] * qd.Vector([axes[0], axes[1], axes[0]])
+                                if qd.static(is_curved):
+                                    source_local[2] = local[2]
+                                local = source_local
                         particular, resolved = qd.Matrix.zero(gs.qd_float, 3, 3), True
                         if qd.static(has_shear):
                             particular, resolved = func_hertz_friction_particular(
