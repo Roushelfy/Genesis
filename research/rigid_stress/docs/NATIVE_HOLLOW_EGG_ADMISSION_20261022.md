@@ -1,5 +1,10 @@
 # Native hollow-egg admission and geometry gap
 
+Latest update: [curved force-line projection and edge geometry](#curved-force-line-projection-and-edge-geometry).
+Actual fingertip fillet/chamfer dimensions are now required by the user; the
+numeric values remain pending. The sections below retain the earlier diagnostic
+campaigns and their original geometry.
+
 Native Hertz recovery now includes the omitted cavity boundary and passes
 four facet-centered normal shell controls against independent complete-boundary
 fields. The original selected-surface passes and their omission remain below
@@ -676,3 +681,75 @@ on data. `check_live_hertz_franka`, `check_native_hertz_shell` and
 Remaining work is a useful curved-source approximation with matched physical
 error, moving shell friction, and accepted moving Franka max/full throughput.
 The coarse-facet versus smooth-rest-surface mismatch remains unresolved.
+
+## Curved force-line projection and edge geometry
+
+Engine `601cde58f` projects curved contact centers along the resultant force
+line. Translation along this line preserves its moment. The independent
+control starts with known P2 roots and curvature, displaces collision witnesses
+by20/80 micrometres along that line and independently resolves their nearest
+material anchors. Eight faces, four separately transformed environments and
+four moving steps give128 queries per backend. CPU/CUDA739601 pass: maximum
+center error9.82e-18m, moment error1.141e-18Nm and normalized moment2.084e-13
+in units of`Fn*a`. A free couple remains refused in its own environment.
+The original C17 control739603 rejects the three tangentially loaded
+environments, reaching6.56nm center error and1.002e-4 normalized moment.
+
+This five-line native change retains the affine path, existing root frame and
+curvature, pressure law, source-distance limit and acceptance gates. A load
+line whose true curved intersection differs from the normal root still needs
+an independently justified local pressure frame; these controls deliberately
+use a consistent known root. Wrench preservation supplies a geometry check,
+while pressure and shell-stress accuracy need separate evidence.
+
+Actual B4 Franka739604 still first rejects at108(original collision) and106
+(refined collision). Read-only comparison739618 covers109/107 complete saved
+frames: rigid inputs and acceptance are exact; maximum relative stress-field
+change is2.30e-11 against the existing1e-9 budget. Rejected frames remain
+retained. This run establishes no accepted complete-grasp throughput.
+
+The sharp-edge studies739590/739606 use the actual captured P2 material gap
+at the two refined first-gripper contacts. A normal-compliance half-space
+active-set reference is compared with an independent energy-minimized trial
+pressure proportional to`sqrt(1-x/w-((y-s)/b)^2)/sqrt(x)`. Initial trial widths
+are1.345/1.945 micrometres; their coefficients stay frozen in the narrower
+48/72-grid refinement. The reference includes the complete normal-contact KKT
+check. At grid72, trial/reference cell-pressure L2 differences are4.10/3.84%,
+positive-depth sampled tensor differences0.631/0.681%, and sampled von-Mises
+peak differences0.308/0.379%. Reference48-to72 tensor changes are0.156/0.315%
+and sampled peak changes0.253/0.155%.
+
+Those small sampled errors apply to the declared normal-only sharp-edge
+half-space problem. Cell-average maximum pressures rise from2.268/1.480GPa
+at grid48 to2.790/1.820GPa at72. Thus surface/global peaks remain unresolved.
+Measured tangential/normal force ratios are0.646/0.796. Assigning the full
+observed resultant proportionally to the reference normal pressure leaves
+moment discrepancies1.45/7.05`Fn*a`. Observed contact-point gaps above the
+edge minimum are1.40/12.97 times the reference indentation. These diagnostics
+expose the limits of interpreting the captured rigid wrench through this
+normal-only pressure model. They supply neither coupled-friction pressure
+qualification nor a complete hollow-shell error bound.
+
+The user subsequently selected **actual fillet/chamfer dimensions** for the
+final geometry. The existing Panda MJCF describes five manually designed
+fingertip collision boxes; its configuration supplies no edge radius or
+chamfer dimensions. The associated `finger_1.obj` is visual geometry and is
+excluded from collision. Exact manufacturing edge dimensions must be bound
+to a supplied value or verified source geometry before final pressure and
+peak-stress qualification. Existing sharp-edge studies remain diagnostic.
+The dimension clarification is pending; retain the rigid hard-contact scope.
+
+The [manufacturer manual, page13, Figure5.7](https://download.franka.de/documents/220010_Product%20Manual_Franka%20Hand_1.2_EN.pdf#page=13)
+labels an18mm square plan outline with R5 outline corners, a110-degree groove,
+1.95mm groove depth and2-degree draft. The R5 dimension refers to the plan
+outline; the small contact-face edge fillet/chamfer is unlabelled. Inspection
+of three sections of the existing visual mesh confirms the grooved shape,
+while leaving its manufacturing edge radius unresolved. The drawing, mesh
+hashes and section images remain on data with an interpretation receipt.
+
+The [force-line evidence packet](../evidence/20261019-qualified-ranking/hard-force-line-v1/README.md)
+preserves both engine sources, executed workers, original negative controls,
+terminal scheduler records and large-array receipts. All runtime data and
+logs remain under the established data-side ranking run. Full moving
+pure-rigid/max/full accepted throughput and physical pressure/complete-field
+accuracy remain open.

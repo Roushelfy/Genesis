@@ -1,0 +1,75 @@
+{
+  "passed": true,
+  "document": {
+    "url": "https://download.franka.de/documents/220010_Product%20Manual_Franka%20Hand_1.2_EN.pdf",
+    "bytes": 2269742,
+    "sha256": "c016711a3b749dc5871de3114a2cbb9fe24bb3d5a097a246f90df02ae98c5b29"
+  },
+  "page": 13,
+  "figure": "5.7",
+  "verified_drawing_dimensions": {
+    "plan_outline_radius_mm": 5,
+    "groove_angle_deg": 110,
+    "groove_depth_mm": 1.95,
+    "draft_angle_deg": 2,
+    "outline_mm": [
+      18,
+      18
+    ]
+  },
+  "contact_edge_small_fillet_radius_mm": null,
+  "dimension_scope": "R5 labels the plan-outline corner. The contact-face thickness-edge fillet/chamfer dimension is unlabelled in this drawing; visual mesh sections do not establish it.",
+  "user_direction": "Actual fillet/chamfer dimensions required; numeric contact-edge dimensions or a corresponding CAD/model source requested and pending.",
+  "assets_inspected": {
+    "passed": true,
+    "meshes": [
+      {
+        "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_force_line/genesis/assets/xml/franka_emika_panda/assets/finger_0.obj",
+        "sha256": "215098c0fcdf7192f6c503a37cf49e3efecf8a9e1320f02b17c5584d89cc5b2c",
+        "vertices": 1062,
+        "faces": 362,
+        "bounds_mm": [
+          [
+            -10.501,
+            2.4819999999999998,
+            0.133
+          ],
+          [
+            10.501999999999999,
+            26.345,
+            53.858000000000004
+          ]
+        ]
+      },
+      {
+        "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_force_line/genesis/assets/xml/franka_emika_panda/assets/finger_1.obj",
+        "sha256": "cf239e9aca26bba09dbbf1c544c47d87cfc9a2f0637c8bb786af750b6d4eca44",
+        "vertices": 786,
+        "faces": 262,
+        "bounds_mm": [
+          [
+            -8.931,
+            -0.08399999999999999,
+            36.089999999999996
+          ],
+          [
+            8.931,
+            10.907,
+            53.900000000000006
+          ]
+        ]
+      }
+    ],
+    "scope": "Existing visual geometry and manufacturer drawing inspection; physical fillet dimensions remain unverified."
+  },
+  "scheduler": "739623|FAILED|13:0|00:00:04\n739623.batch|FAILED|13:0|00:00:04\n739625|FAILED|1:0|00:00:03\n739625.batch|FAILED|1:0|00:00:03\n739628|COMPLETED|0:0|00:00:05\n739628.batch|COMPLETED|0:0|00:00:05\n",
+  "pdf_renderer": {
+    "package": "pypdfium2",
+    "version": "5.14.0",
+    "installation": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/assets/franka-fingertip-spec-v1/pdf-tools"
+  },
+  "original_render_failures_preserved": [
+    "PATH resolved env to a non-executable home entry; corrected using /usr/bin/env.",
+    "Direct inspect.py entrypoint shadowed Python inspect; corrected with runpy from the source working directory."
+  ]
+}

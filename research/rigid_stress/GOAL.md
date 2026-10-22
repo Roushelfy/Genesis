@@ -2,6 +2,13 @@
 
 Follow [the current hard-contact goal](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md).
 
+**Latest geometry direction, 2026-10-22:** use actual fingertip fillet/chamfer
+dimensions for the final edge-contact model. The user selected this geometry;
+the radius or chamfer dimensions are still pending. Check the existing assets
+and their source before choosing values. Preserve sharp-box studies as diagnostic
+evidence. Bind collision geometry, pressure geometry and physical-error claims
+to the same documented dimensions.
+
 **Latest user priority, 2026-10-20:** implement inexpensive Hertz/thin-shell
 contact approximations first. Do not assume a deformable gripper pad or extend
 the spring-pad study. Expensive automatic region/contact solves are optional
