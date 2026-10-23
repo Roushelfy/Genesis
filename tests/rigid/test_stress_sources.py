@@ -26,6 +26,7 @@ from genesis.engine.solvers.rigid.stress.source_vertices import (
     StressSourceVertexInfo,
     StressSourceVertexStatus,
     kernel_bind_source_vertices,
+    kernel_source_vertex_bounds,
     kernel_source_vertex_mapping,
 )
 from genesis.engine.solvers.rigid.stress.surface import StressSurface
@@ -140,6 +141,10 @@ def test_native_source_uncertainty_on_same_surface(nonconvex_material_mesh, asse
         barycentric=V_VEC(3, dtype=gs.qd_float, shape=(4,)),
         offset=V(dtype=gs.qd_float, shape=(4,)),
         status=V(dtype=gs.qd_int, shape=(4,)),
+        search_min=V_VEC(3, dtype=gs.qd_float, shape=(1,)),
+        search_max=V_VEC(3, dtype=gs.qd_float, shape=(1,)),
+        search_coarse_min=V_VEC(3, dtype=gs.qd_float, shape=(1,)),
+        search_coarse_max=V_VEC(3, dtype=gs.qd_float, shape=(1,)),
     )
     collision_vertex = corner + [6.8e-10, 0.0, 0.0]
     node_positions = qd_to_numpy(model.info.vertices, transpose=True)
@@ -147,6 +152,7 @@ def test_native_source_uncertainty_on_same_surface(nonconvex_material_mesh, asse
     edge_positions = node_positions[first_face_nodes[3:]]
     info.geom.fill(7)
     info.positions.from_numpy(np.concatenate((collision_vertex[None], edge_positions + [6.8e-10, 0.0, 0.0])))
+    kernel_source_vertex_bounds(info)
     kernel_source_vertex_mapping(model.info, info, 1e-8)
     assert_equal(qd_to_numpy(info.status, transpose=True), StressSourceVertexStatus.SUCCESS)
     matched_faces = qd_to_numpy(info.reference_face, transpose=True)
