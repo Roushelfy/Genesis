@@ -109,6 +109,8 @@ def main():
     qd.sync()
     preparation = perf_counter() - begun
     entry = workload.scene.rigid_solver.stress_recovery.links[0]
+    if args.mode == "hertz" and args.backend == "gpu" and args.contact_moment_reuse == "auto":
+        assert entry.reuse_contact_moments
     rows, peaks, positions = [], [], []
     failure = None
     reset_checked = False
@@ -258,6 +260,8 @@ def main():
         args.output / "result.json",
         {
             "passed": failure is None,
+            "genesis_module": gs.__file__,
+            "effective_contact_moment_reuse": entry.reuse_contact_moments,
             "preparation_seconds": preparation,
             "accepted_frames": len(peaks),
             "failure": failure,
