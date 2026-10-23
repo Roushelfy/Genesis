@@ -1,0 +1,23 @@
+[
+  [
+    {
+      "name": "prediction",
+      "module": "research.rigid_stress.qipc_comparison.predict_box_corner_profiles",
+      "args": [
+        "--hard",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-region-moments428-capture-v1/group0/capture428/failure-max-b4/hard0428.npz",
+        "--frame-check",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-contact-frame428-v2/group0/frames/result.json",
+        "--reference-fields",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/box-corner-fields428-v3/group0/fields/fields.npz",
+        "--reference-grid",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/box-corner-elastic428-v4/group0/elastic/fields.npz",
+        "--source-order",
+        "256",
+        "--geometry-correct",
+        "--baseline",
+        "/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261023-box-corner/box-corner-predict428-v1/group0/prediction"
+      ]
+    }
+  ]
+]

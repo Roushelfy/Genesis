@@ -1321,6 +1321,92 @@ material and loads, quantify original-to-control wrench/history differences,
 and check useful finite-depth accuracy without promoting a fitted diagnostic
 or this dense offline reference into the default runtime path.
 
+## Independent face scales and surface ordering
+
+The next candidate removes the reference-moment fit. Each face uses the
+transverse square-root strip profile, its own normal load F, normal n and
+projected gap slopes s=abs(n_x), k=n_z*k_material. Its leading self-energy and
+gap work are
+
+```text
+U = 3 F^2/(5 pi E* b) [log(2b/w) + D]
+G = F (s w/5 + k b^2/10)
+D = log(4) + 1/4 - [psi(3)-psi(7/2)]/2 + nu n_x^2/(1-nu)
+w b = 3 F/(pi E* s)
+b^3 = 3 F/(pi E* k) [log(2b/w) + D - 1].
+```
+
+This scalar root and strip-force balance predict widths0.509/0.0100micrometre
+and half-lengths65.884/188.622micrometres for the primary/side faces. A geometric
+candidate caps the side interval at the predicted primary half-length and
+renormalizes its force, giving side width0.01996micrometre. The untruncated
+side density remains parabolic on its predicted188.622micrometre scale inside
+that capped interval. Cross-face elasticity is omitted from these scale
+relations. The cap is a declared approximation requiring its own checks.
+Dimensional rescaling and pressure/cell-force normalization pass. Neither the
+scales nor the subsequent geometric search read reference pressure moments.
+
+| Model | Tensor error at6.595/16.488/32.976/65.953micrometres | Tensile peak error at the same depths |
+| --- | --- | --- |
+| Independent strips | 29.63% /28.70% /22.49% /13.83% | 1.41% /0.72% /17.63% /3.54% |
+| Primary-length side cap | 5.14% /4.16% /2.67% /1.21% | 10.86% /5.49% /1.01% /0.72% |
+
+The capped model meets the sampled tensor5%/both-peaks10% budgets at the three
+deeper levels. It fails both tensor and tensile budgets at6.595micrometres.
+Doubling longitudinal source integration from128 to256 changes its complete
+probe tensor by5.89e-10 relative; the uncapped change is9.99e-5. These conditional
+comparisons use the same earlier flat-material linear reference and572 probes.
+Their physical-reference limitation remains essential.
+
+The candidate pressure is independently projected to the reference's evaluation
+grid for a displacement check. Load-weighted plane approaches minimize mean
+normal mismatch without changing pressure. The uncapped/capped force-weighted
+normal-gap RMS values are2.43/5.38nm, while the respective other-face violations
+carry23.27%/14.03% of total force. For the capped case,30.65% of side-face force
+lies beyond the other plane; the largest excess is4.331nm. Thus the apparently
+small displacement mismatch still matters relative to the narrow side support.
+
+A separate eight-point search shortens only the side interval from1.00 down to
+0.65 times the predicted primary length. Its objective uses calculated elastic
+surface gaps, excluding reference stresses and pressure moments. Every trial
+retains positive other-plane gaps; the0.65 endpoint still has10.81% of side-face
+force outside. No corrected candidate is admitted. The CPU geometry search
+costs3.40s in this offline evaluator and supplies no production timing result.
+Further shortening merely to pass a gate is not justified by these data.
+
+The reference itself now receives an independent surface-ordering audit. Across
+a single, correctly oriented traversal of this convex corner, both face tangents
+have positive material-chart x projection. The finest solution instead contains
+8 reversed pairs among268 adjacent loaded-cell pairs. Their pair-force weight
+is8.83% of the loaded-pair total; this weight is a diagnostic, not a damaged-area
+or physical-contact-force fraction. Its minimum deformed/original transverse
+increment ratio is-0.006762. The600/1600-cell solutions have no such reversals;
+the1600-cell minimum ratio is already only0.000143.
+
+Reintegrating the finest saved forces at target orders8 and16 retains all8
+reversed pairs, with minimum ratios-0.006310 and-0.006112. The largest changes
+from saved cell displacements are47.7/59.7pm. These controls hold the pressure
+fixed; they do not replace a fully re-solved order16 contact state. The maximum
+loaded displacement-gradient norm remains1.944, with finite-difference surface
+area ratios approximately0.037--2.943. Averaged central-difference normals have
+positive z projection, illustrating why that test alone misses adjacent-cell
+ordering failures.
+
+These results demonstrate a discrete orientation problem and large gradients
+in the current linear reference. They strengthen its previously stated physical
+limitation. Preserved pressure/field differences remain useful numerical and
+shape diagnostics; they establish neither continuum sharp-corner accuracy nor
+an admitted two-face runtime model. Further physical work must address actual
+frictional reactions and consistent deformed geometry, with explicit positive
+depths outside any unresolved edge zone. The dense reference remains optional.
+Native throughput work can proceed independently on the existing admitted
+window and its measured geometry bottleneck, preserving all validity checks.
+
+The [independent-profile and surface-audit packet](../evidence/20261019-qualified-ranking/box-corner-predict428-v1/README.md)
+retains four terminal campaigns, final and original workers, the unsuccessful
+geometric search and source/target quadrature controls. Original runtime
+engines and the frame428 refusal remain unchanged.
+
 ## Remaining physical and integration limits
 
 The edge pressure behaves as`x^(-lambda)`. Its pointwise loaded-edge limit is
