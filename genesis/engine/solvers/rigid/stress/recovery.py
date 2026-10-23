@@ -119,7 +119,8 @@ class RigidStressRecovery:
                         and (
                             options.contact_moment_reuse
                             if options.contact_moment_reuse is not None
-                            else solver._B >= 8192
+                            else (options.radius_model == "hertz" and options.pressure_profile == "hertz")
+                            or solver._B >= 8192
                         )
                     )
                     self.links.append(
