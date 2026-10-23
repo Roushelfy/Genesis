@@ -185,6 +185,32 @@ def func_contact_sample(
     contact_state: StressContactState,
     surface_info: StressSurfaceInfo,
 ):
+    closest = qd.Vector.zero(gs.qd_float, 3)
+    remaining, contained = gs.qd_float(0.0), False
+    if i_q >= surface_info.positions.shape[0]:
+        i_face = (i_q - surface_info.positions.shape[0]) // (3 * surface_info.shape.shape[0])
+        closest, remaining, contained = func_contact_section(
+            i_face, contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b], surface_info
+        )
+    return func_contact_sample_prepared(
+        i_q, i_c, i_b, first, second, contact_state, surface_info, closest, remaining, contained
+    )
+
+
+@qd.func
+def func_contact_sample_prepared(
+    i_q: int,
+    i_c: int,
+    i_b: int,
+    first: qd.types.vector(3),
+    second: qd.types.vector(3),
+    contact_state: StressContactState,
+    surface_info: StressSurfaceInfo,
+    closest: qd.types.vector(3),
+    remaining: float,
+    contained: bool,
+):
+    """Integrate a sample using the unchanged face/ball section, shared by all samples of a packed face."""
     center, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
     n_quadrature = surface_info.shape.shape[0]
     position = qd.Vector.zero(gs.qd_float, 3)
@@ -204,7 +230,6 @@ def func_contact_sample(
         i_sample = i_virtual % n_quadrature
         n = surface_info.gauss.shape[0]
         u, v = surface_info.gauss[i_sample // n], surface_info.gauss[i_sample % n]
-        closest, remaining, contained = func_contact_section(i_face, center, radius, surface_info)
         offset = closest - center
         position = closest
         if remaining > 0.0:

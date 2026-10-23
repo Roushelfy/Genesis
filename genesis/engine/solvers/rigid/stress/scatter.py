@@ -10,7 +10,7 @@ from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
 
 from .contact import (
     StressContactState,
-    func_contact_sample,
+    func_contact_sample_prepared,
     func_contact_section,
     func_force_frame,
     func_hertz_disk_moments,
@@ -159,8 +159,8 @@ def func_pressure_moments(
         for chunk in range((count + 31) // 32):
             i_q = chunk * 32 + lane
             if i_q < count:
-                coordinates, weight, _position, shape, _face = func_contact_sample(
-                    start + i_q, i_c, i_b, first, second, contacts, surface
+                coordinates, weight, _position, shape, _face = func_contact_sample_prepared(
+                    start + i_q, i_c, i_b, first, second, contacts, surface, closest, remaining, contained
                 )
                 gram += weight * coordinates.outer_product(coordinates)
                 load += shape.outer_product(weight * coordinates)
@@ -228,8 +228,10 @@ def func_scatter_faces(
         first, second = func_force_frame(force)
         n_q = surface.shape.shape[0]
         i_q_start, n_q_current = i_f * n_q, n_q
+        closest = qd.Vector.zero(gs.qd_float, 3)
+        remaining, contained = gs.qd_float(0.0), False
         if contacts.is_refined[i_c, i_b]:
-            _closest, remaining, contained = func_contact_section(
+            closest, remaining, contained = func_contact_section(
                 i_f, contacts.center[i_c, i_b], contacts.radius[i_c, i_b], surface
             )
             i_q_start = surface.positions.shape[0] + i_f * 3 * n_q
@@ -254,8 +256,8 @@ def func_scatter_faces(
             for i_q_block in range((n_q_current + 31) // 32):
                 i_q_ = i_q_block * 32 + i_lane
                 if i_q_ < n_q_current:
-                    coordinates, weight, position, shape, _face = func_contact_sample(
-                        i_q_start + i_q_, i_c, i_b, first, second, contacts, surface
+                    coordinates, weight, position, shape, _face = func_contact_sample_prepared(
+                        i_q_start + i_q_, i_c, i_b, first, second, contacts, surface, closest, remaining, contained
                     )
                     sample_force = weight * qd.max(0.0, coordinates.dot(contacts.coefficient[i_c, i_b])) * force
                     total += sample_force
