@@ -1,0 +1,30 @@
+{
+  "passed": false,
+  "rows": [
+    {
+      "batch": 4,
+      "mode": "rigid",
+      "seconds_per_scene_step": [
+        0.0024729093777649622,
+        0.0024649816110872457,
+        0.002458619555464894
+      ],
+      "median_seconds": 0.0024649816110872457,
+      "environment_steps_per_second": 1622.730158313714,
+      "preparation_seconds": 46.25821924000047,
+      "audit_and_warmup_seconds": 3.0694031229941174,
+      "model_preparation": null,
+      "audit_environment_steps": 2880,
+      "admitted_timed_environment_steps": null,
+      "surface_quadrature": null,
+      "friction_penalty": null,
+      "loaded_timed_environment_steps": null,
+      "sharp_timed_environment_steps": null
+    }
+  ],
+  "failure": {
+    "batch": 4,
+    "mode": "max",
+    "step": 428
+  }
+}

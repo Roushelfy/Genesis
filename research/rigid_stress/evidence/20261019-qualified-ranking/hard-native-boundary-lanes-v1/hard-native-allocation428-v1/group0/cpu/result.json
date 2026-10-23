@@ -1,0 +1,110 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "environment": 0,
+      "regions": [
+        0
+      ],
+      "linear_rank": 3,
+      "singular_values": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unrestricted_normalized_wrench_residual_lower_bound": 0.0010036262126222485,
+      "certificate_null_error": 0.0,
+      "linear_infeasibility_proved_at_native_1e_12_gate": true,
+      "native_status": 3,
+      "native_residual": 0.01079298696177378,
+      "required_free_moment_nm": [
+        -7.305237012503065e-07,
+        1.9398132202400146e-06,
+        2.0680796777878732e-06
+      ],
+      "force_line_offset_m": [
+        -8.24802243368244e-05,
+        -1.966985576175628e-06,
+        -2.7290135261217254e-05
+      ],
+      "force_line_offset_norm_m": 8.689998804076613e-05,
+      "axial_free_moment_nm": [
+        -1.9921321203541183e-09,
+        -7.70649049175291e-09,
+        6.576371209514071e-09
+      ],
+      "axial_free_moment_norm_nm": 1.032507841954482e-08
+    },
+    {
+      "environment": 1,
+      "regions": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "linear_rank": 6,
+      "singular_values": [
+        2.0,
+        2.0,
+        1.9999999999999998,
+        0.5166736535702107,
+        0.5146031506634173,
+        0.046209337117151056
+      ],
+      "unrestricted_normalized_wrench_residual_lower_bound": 0.0,
+      "certificate_null_error": 0.0,
+      "linear_infeasibility_proved_at_native_1e_12_gate": false,
+      "native_status": 0,
+      "native_residual": 2.791039240830112e-17
+    },
+    {
+      "environment": 2,
+      "regions": [
+        0,
+        2,
+        4,
+        6
+      ],
+      "linear_rank": 6,
+      "singular_values": [
+        2.0000000000000004,
+        2.0000000000000004,
+        2.0,
+        0.516701305630634,
+        0.514630820189318,
+        0.04621047373148535
+      ],
+      "unrestricted_normalized_wrench_residual_lower_bound": 0.0,
+      "certificate_null_error": 0.0,
+      "linear_infeasibility_proved_at_native_1e_12_gate": false,
+      "native_status": 0,
+      "native_residual": 1.640824477463341e-17
+    },
+    {
+      "environment": 3,
+      "regions": [
+        0,
+        2,
+        4,
+        5
+      ],
+      "linear_rank": 6,
+      "singular_values": [
+        2.0000000000000004,
+        2.0000000000000004,
+        2.0,
+        0.5166048640598435,
+        0.5145343243623816,
+        0.04621436653324945
+      ],
+      "unrestricted_normalized_wrench_residual_lower_bound": 0.0,
+      "certificate_null_error": 0.0,
+      "linear_infeasibility_proved_at_native_1e_12_gate": false,
+      "native_status": 0,
+      "native_residual": 5.76266522580869e-17
+    }
+  ],
+  "scope": "Exact captured-input replay and independent singular-value decomposition of the point-region wrench map. The lower bound allows arbitrary signed region forces, so a positive certified defect also excludes cone-feasible forces at the original centers. It does not prove infeasibility of a distributed physical pressure/traction field with additional first moments.",
+  "whole_goal_complete": false
+}
