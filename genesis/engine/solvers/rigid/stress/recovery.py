@@ -24,6 +24,8 @@ from genesis.utils.misc import (
 )
 
 from .association import kernel_associate
+from .automatic_radius import StressRadiusInfo
+from .curvature import StressCurvature
 from .contact import StressContactState, create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
 from .data import StressState
 from .history import StressHistory
@@ -62,16 +64,23 @@ class StressLink:
     intrinsic: IntrinsicContacts | None = None
     resolved: ResolvedContacts | None = None
     requested_step: int = -1
+    automatic_radius: StressRadiusInfo | None = None
 
 
 class RigidStressRecovery:
     def __init__(self, solver: "RigidSolver"):
         self.solver = solver
         self.links: list[StressLink] = []
+        self.curvature: StressCurvature | None = None
+        self.source_epsilon = float(np.finfo(gs.np_float).eps)
         for entity in solver.entities:
             for link in entity.links:
                 options = link.stress_options
                 if options is not None:
+                    if (options.radius_model != "manual" or options.pressure_profile != "dpr") and (
+                        options.contact_model != "pressure" or options.load_transfer != "patch"
+                    ):
+                        gs.raise_exception("Automatic radius and Hertz profiles require DPR patch transfer.")
                     if options.load_transfer == "resolved" and options.contact_model != "pressure":
                         gs.raise_exception("Resolved boundary transfer requires pressure-mode stress recovery.")
                     if options.history_size and options.method == "pcg":
@@ -129,6 +138,7 @@ class RigidStressRecovery:
                                 options.contact_model == "pressure"
                                 and options.load_transfer == "patch"
                                 and options.cooperative_scatter,
+                                options.pressure_profile == "hertz",
                             ),
                             V_VEC(3, dtype=gs.qd_float, shape=(solver._B,)),
                             StressHistory(model.info.vertices.shape[0], solver._B) if options.history_size else None,
@@ -169,6 +179,18 @@ class RigidStressRecovery:
                         )
                     )
         for entry in self.links:
+            if entry.options.radius_model == "hertz":
+                if self.curvature is None:
+                    self.curvature = StressCurvature(solver.dyn_info, self.source_epsilon)
+                entry.automatic_radius = StressRadiusInfo(
+                    solver.dyn_info,
+                    self.curvature.info,
+                    entry.options.contact_modulus
+                    if entry.options.contact_modulus is not None
+                    else entry.options.young / (1.0 - entry.options.poisson**2),
+                    entry.options.contact_radius,
+                    self.source_epsilon,
+                )
             if entry.options.load_transfer == "resolved":
                 entry.resolved = ResolvedContacts(entry.link, entry.contacts, entry.model.info, entry.options)
             elif entry.options.contact_model == "intrinsic":
@@ -194,7 +216,6 @@ class RigidStressRecovery:
         ]
         for subscriber in self.subscribers:
             solver.subscribe(subscriber)
-        self.source_epsilon = float(np.finfo(gs.np_float).eps)
         self.post_kernel = None
         if len(self.links) == 1:
             entry = self.links[0]
@@ -259,6 +280,7 @@ class RigidStressRecovery:
             entry.packed_block_size,
             entry.coalesced_residual,
             entry.reuse_contact_moments,
+            entry.automatic_radius,
         )
 
     def recover_and_integrate(self, i_substep: int) -> None:
@@ -303,6 +325,7 @@ class RigidStressRecovery:
                 not solver._disable_constraint,
                 entry.state.step_valid,
                 solver._errno,
+                entry.automatic_radius,
             )
             if entry.resolved is not None:
                 kernel_capture_rigid_sources(
@@ -525,6 +548,10 @@ class RigidStressRecovery:
             if entry.link.idx == link_idx:
                 if entry.options.load_transfer == "resolved":
                     gs.raise_exception("Resolved boundary samples have no reconstruction radius.")
+                if entry.options.radius_model != "manual":
+                    gs.raise_exception(
+                        "Automatic contact radii are recomputed from current loads; select manual radii to set them."
+                    )
                 if gs.use_zerocopy:
                     view = qd_to_torch(entry.contacts.radius, transpose=True, copy=False)
                     mask = indices_to_mask(envs_idx)

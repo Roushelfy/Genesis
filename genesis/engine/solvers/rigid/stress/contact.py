@@ -30,6 +30,8 @@ class StressContactState:
     normal: qd.Tensor
     friction: qd.Tensor
     radius: qd.Tensor = of_kind(DataKind.INFO)  # noqa: RUF009 - typed array metadata
+    radius_status: qd.Tensor
+    hertz_profile: qd.Tensor = of_kind(DataKind.CONSTANT)
     valid: qd.Tensor
     coefficient: qd.Tensor
     weight_sum: qd.Tensor
@@ -45,7 +47,12 @@ class StressContactState:
 
 
 def create_contacts(
-    n_contacts: int, n_envs: int, radius: float, cooperative: bool = True, cooperative_scatter: bool = True
+    n_contacts: int,
+    n_envs: int,
+    radius: float,
+    cooperative: bool = True,
+    cooperative_scatter: bool = True,
+    hertz_profile: bool = False,
 ) -> StressContactState:
     shape = (n_contacts, n_envs)
     state = StressContactState(
@@ -57,6 +64,8 @@ def create_contacts(
         normal=V_VEC(3, dtype=gs.qd_float, shape=shape),
         friction=V(dtype=gs.qd_float, shape=shape),
         radius=V(dtype=gs.qd_float, shape=shape),
+        radius_status=V(dtype=gs.qd_int, shape=shape),
+        hertz_profile=V(dtype=gs.qd_bool, shape=()),
         valid=V(dtype=gs.qd_bool, shape=shape),
         coefficient=V_VEC(3, dtype=gs.qd_float, shape=shape),
         weight_sum=V(dtype=gs.qd_float, shape=shape),
@@ -75,6 +84,8 @@ def create_contacts(
         frame_quaternion=V_VEC(4, dtype=gs.qd_float, shape=(n_envs,)),
     )
     state.radius.fill(radius)
+    state.radius_status.fill(0)
+    state.hertz_profile.fill(hertz_profile)
     state.valid.fill(False)
     return state
 
@@ -172,10 +183,44 @@ def func_contact_sample(
                 4.0 * bary[1] * bary[2],
             ]
         )
+        # A disk contained in one triangle is integrated at its physical scale. Triangle-wide refinement cannot
+        # resolve a Hertz-sized disk several orders smaller than the elastic face; no radius enlargement is needed.
+        dual = surface_info.face_dual[i_face]
+        gradients = qd.Matrix.rows([-dual[0, :] - dual[1, :], dual[0, :], dual[1, :]])
+        contained = True
+        for i in qd.static(range(3)):
+            contained = contained and anchor[i] > radius * gradients[i, :].norm()
+        if contained:
+            radial = u
+            if contact_state.hertz_profile[None]:
+                radial = qd.sqrt(1.0 - u * u)
+            angle = 2.0 * qd.math.pi * v
+            tangent = surface_info.face_edges[i_face][0, :].normalized()
+            normal = surface_info.face_edges[i_face][0, :].cross(surface_info.face_edges[i_face][1, :]).normalized()
+            position = center + radius * radial * (qd.cos(angle) * tangent + qd.sin(angle) * normal.cross(tangent))
+            weight = 2.0 * qd.math.pi * radius * radius * u
+            weight *= surface_info.gauss_weights[i_sample // n] * surface_info.gauss_weights[i_sample % n]
+            if i_triangle > 0:
+                weight = 0.0
+            local = dual @ (position - surface_info.face_origin[i_face])
+            bary = qd.Vector([1.0 - local.sum(), local[0], local[1]])
+            shape = qd.Vector(
+                [
+                    bary[0] * (2.0 * bary[0] - 1.0),
+                    bary[1] * (2.0 * bary[1] - 1.0),
+                    bary[2] * (2.0 * bary[2] - 1.0),
+                    4.0 * bary[0] * bary[1],
+                    4.0 * bary[0] * bary[2],
+                    4.0 * bary[1] * bary[2],
+                ]
+            )
     relative = (position - center) / radius
     distance = relative.dot(relative)
     if distance < 1.0:
-        weight *= qd.exp(-0.5 * distance / (0.45 * 0.45)) * (1.0 - distance) ** 2
+        if contact_state.hertz_profile[None]:
+            weight *= qd.sqrt(1.0 - distance)
+        else:
+            weight *= qd.exp(-0.5 * distance / (0.45 * 0.45)) * (1.0 - distance) ** 2
     else:
         weight = 0.0
     coordinates = qd.Vector([1.0, relative.dot(first), relative.dot(second)])

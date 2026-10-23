@@ -27,6 +27,20 @@ class RigidStressOptions(Options):
     ``contact_radius`` declares the finite traction footprint in metres. A
     larger footprint spreads the same contact wrench over more shell area;
     choose it from the contact model rather than the elastic mesh resolution.
+    ``radius_model="hertz"`` instead estimates a circular radius from each current contact's normal force and the
+    mean relative surface curvature. It adds geometry lookup cost and is intended for smooth, compressive contacts;
+    sharp primitive edges and nonpositive relative curvature are unsupported. Meshes use their supplied smooth
+    normals, including signed concave curvature. Each supplied collision force gets its own estimate; this does not
+    infer a physical contact region from a manifold or establish thin-shell accuracy. No physical radius is enlarged
+    to accommodate the elastic mesh. The default ``"manual"`` retains the supplied radius and its setter.
+    ``contact_modulus`` is the reduced contact modulus in Pa. If None, resolved based on the rigid-counterface
+    assumption: ``young / (1 - poisson**2)``. Defaults to None. Supply the combined physical modulus when both
+    contacting materials deform; it changes contact size without changing this link's FEM material.
+    ``pressure_profile="hertz"`` uses a compact square-root profile with the existing DPR force/moment fit and
+    tangential-force direction. On a planar centered disk this gives circular Hertz pressure with proportional
+    shear. Curved or truncated supports may require a nonconstant wrench correction. The default ``"dpr"`` keeps
+    the original Gaussian/taper profile, including when only the radius is estimated. Changing the profile changes
+    the load model and its quadrature error; neither choice introduces a friction-history solver.
     ``quadrature`` controls surface integration cost and accuracy.
     ``load_transfer="resolved"`` declares that pressure-mode input forces are
     already integrated boundary samples. It transfers each sample through the
@@ -173,6 +187,9 @@ class RigidStressOptions(Options):
     poisson: Annotated[ValidFloat, Field(gt=-1.0, lt=0.5)] = 0.3
     density: PositiveFloat = 2000.0
     contact_radius: PositiveFloat = 0.006
+    radius_model: Literal["manual", "hertz"] = "manual"
+    pressure_profile: Literal["dpr", "hertz"] = "dpr"
+    contact_modulus: PositiveFloat | None = None
     contact_model: Literal["pressure", "intrinsic"] = "pressure"
     load_transfer: Literal["patch", "resolved"] = "patch"
     intrinsic_integration: Literal["surface_fan", "anchor_fan"] = "surface_fan"

@@ -61,11 +61,23 @@ def func_pipeline(
     packed_block_size: qd.template(),
     coalesced_residual: qd.template(),
     reuse_contact_moments: qd.template(),
+    automatic_radius: qd.template(),
 ):
     if qd.static(first):
         func_begin_step(state)
     func_associate(
-        link, offsets_pos, offsets_quat, omega, dyn, contacts, collider, batch_offsets, enable, state.step_valid, errno
+        link,
+        offsets_pos,
+        offsets_quat,
+        omega,
+        dyn,
+        contacts,
+        collider,
+        batch_offsets,
+        enable,
+        state.step_valid,
+        errno,
+        automatic_radius,
     )
     func_anchor(epsilon, contacts, surface)
     func_pack_contacts(contacts)
@@ -134,6 +146,7 @@ def kernel_pipeline(
     packed_block_size: qd.template(),
     coalesced_residual: qd.template(),
     reuse_contact_moments: qd.template(),
+    automatic_radius: qd.template(),
 ):
     func_pipeline(
         young,
@@ -170,4 +183,5 @@ def kernel_pipeline(
         packed_block_size,
         coalesced_residual,
         reuse_contact_moments,
+        automatic_radius,
     )

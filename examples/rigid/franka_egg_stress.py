@@ -58,8 +58,11 @@ class FrankaEgg:
         warm_start_tractions: bool = True,
         public_defaults: bool = False,
         timestep: float = 0.01,
+        radius_model: str = "manual",
+        pressure_profile: str = "dpr",
     ):
         self.n_envs = n_envs
+        self.radius_model = radius_model
         self.tick = 0
         self.reset_count = 0
         self.arm = np.arange(7)
@@ -106,6 +109,8 @@ class FrankaEgg:
             options = gs.options.RigidStressOptions(
                 mesh=assets / "elastic.npz",
                 contact_model=contact_model,
+                radius_model=radius_model,
+                pressure_profile=pressure_profile,
                 contact_block_size=contact_block_size,
                 intrinsic_support=intrinsic_support,
                 surface_fan_frontier=surface_fan_frontier,
@@ -277,7 +282,7 @@ class FrankaEgg:
         limit = torch.where((self.phase >= 0.7) & (self.phase < 0.76), 0.055, 4.0)[:, None].expand(-1, 2)
         self.robot.set_dofs_force_range(-limit, limit, self.fingers)
         self.robot.control_dofs_position(grip[:, None].expand(-1, 2), self.fingers)
-        if self.stress:
+        if self.stress and self.radius_model == "manual":
             radius = self.base_radius * (1.0 + 0.15 * torch.sin(2.0 * torch.pi * self.phase))
             self.link.set_stress_contact_radius(radius[:, None])
         self.scene.step()
@@ -296,6 +301,8 @@ def main() -> None:
     parser.add_argument("--varied", action="store_true")
     parser.add_argument("--viewer", action="store_true")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
+    parser.add_argument("--radius-model", choices=("manual", "hertz"), default="manual")
+    parser.add_argument("--pressure-profile", choices=("dpr", "hertz"), default="dpr")
     parser.add_argument("--contact-model", choices=("pressure", "intrinsic"), default="pressure")
     parser.add_argument("--intrinsic-support", choices=("contact", "pair_union"), default="contact")
     parser.add_argument("--dense-surface-fan", action="store_true", help="Compare the full-face fan launch.")
@@ -330,6 +337,8 @@ def main() -> None:
         resident_reset_indices=not args.host_reset_indices,
         fused_rigid_post=False if args.unfused_rigid_post else None,
         contact_model=args.contact_model,
+        radius_model=args.radius_model,
+        pressure_profile=args.pressure_profile,
         contact_block_size=args.contact_block_size,
         egg_geometry=args.egg_geometry,
         use_gjk_collision={"auto": None, "mpr": False, "gjk": True}[args.collision_method],

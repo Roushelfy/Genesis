@@ -143,13 +143,13 @@ def native_step(workload, workspace, residual_action=None):
         workspace["radius"],
         residual_action is not None,
         residual_action is not None and residual_action.dtype == torch.float32,
-        workload.stress,
+        workload.stress and workload.radius_model == "manual",
     )
     workload.robot.control_dofs_position(workspace["target"][:, :7], range(7))
     limit = workspace["limit"][:, None].expand(-1, 2)
     workload.robot.set_dofs_force_range(-limit, limit, range(7, 9))
     workload.robot.control_dofs_position(workspace["grip"][:, None].expand(-1, 2), range(7, 9))
-    if workload.stress:
+    if workload.stress and workload.radius_model == "manual":
         workload.link.set_stress_contact_radius(workspace["radius"][:, None])
     workload.scene.step()
     workload.tick += 1
