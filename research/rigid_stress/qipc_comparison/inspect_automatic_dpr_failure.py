@@ -23,6 +23,7 @@ def main():
     )
     with np.load(args.failure) as saved:
         data = {name: saved[name] for name in saved.files}
+    frame_prefix = "preintegration_" if "preintegration_geoms_pos" in data else ""
     failed = data["valid"] & (np.linalg.norm(data["force"], axis=-1) > 1e-30) & (data["status"] != 0)
     kinds = {
         int(gs.GEOM_TYPE.BOX): "box",
@@ -48,8 +49,10 @@ def main():
         for side in ["a", "b"]:
             index = data["source_geom_" + side][env, source]
             point = data["witness_point_" + side][env, source]
-            quaternion = data["geoms_quat"][env, index]
-            local = Rotation.from_quat(quaternion[[1, 2, 3, 0]]).inv().apply(point - data["geoms_pos"][env, index])
+            quaternion = data[frame_prefix + "geoms_quat"][env, index]
+            local = Rotation.from_quat(quaternion[[1, 2, 3, 0]]).inv().apply(
+                point - data[frame_prefix + "geoms_pos"][env, index]
+            )
             kind = data["geoms_type"][index]
             geom = {
                 "side": side,
@@ -76,6 +79,7 @@ def main():
         args.output / "result.json",
         {
             "passed": True,
+            "geometry_frame": "preintegration" if frame_prefix else "step_end",
             "failed_contacts": rows,
             "scope": "Diagnostic geometry only. No contact, radius, force or numerical threshold is changed.",
         },
