@@ -18,6 +18,7 @@ def func_normal_root(
     dyn_info: array_class.DynInfo,
     curvature_info: StressCurvatureInfo,
     epsilon: float,
+    cooperative: qd.template() = False,
 ):
     """Choose the normal-field root nearest the source and return its curvature.
 
@@ -25,6 +26,8 @@ def func_normal_root(
     Its position remains on the collision triangle. Multiple roots retain the
     source-local choice. Visibility and finite opponent support require separate
     checks before pressure admission.
+
+    Cooperative calls require one full CUDA warp per query with identical arguments in every lane.
     """
     rotation = geom.qd_quat_to_R(dyn_state.geoms.quat[i_g, i_b], epsilon)
     local_direction = rotation.transpose() @ direction
@@ -41,6 +44,10 @@ def func_normal_root(
         tensor = (qd.Matrix.identity(gs.qd_float, 3) - local_direction.outer_product(local_direction)) / radius
         status = CurvatureStatus.ANALYTIC
     elif dyn_info.geoms.type[i_g] == gs.GEOM_TYPE.MESH:
+        n_lanes = qd.static(32 if cooperative else 1)
+        i_s = 0
+        if qd.static(cooperative):
+            i_s = qd.simt.block.thread_idx() % 32
         distance = gs.qd_float(float("inf"))
         i_start, i_end = dyn_info.geoms.face_start[i_g], dyn_info.geoms.face_end[i_g]
         for i_grp in range(i_start // 4096, (i_end + 4095) // 4096):
@@ -51,8 +58,14 @@ def func_normal_root(
                     if (local_direction >= curvature_info.search_normal_min[i_blk]).all() and (
                         local_direction <= curvature_info.search_normal_max[i_blk]
                     ).all():
-                        for i_f in range(qd.max(i_start, 64 * i_blk), qd.min(i_end, 64 * (i_blk + 1))):
-                            if curvature_info.normal_inverse_valid[i_f]:
+                        i_first = qd.max(i_start, 64 * i_blk)
+                        i_last = qd.min(i_end, 64 * (i_blk + 1))
+                        for i_chunk_ in range((i_last - i_first + n_lanes - 1) // n_lanes):
+                            i_f = i_first + i_chunk_ * n_lanes + i_s
+                            is_valid = False
+                            if i_f < i_last:
+                                is_valid = curvature_info.normal_inverse_valid[i_f]
+                            if is_valid:
                                 barycentric = curvature_info.normal_inverse[i_f] @ local_direction
                                 total = barycentric.sum()
                                 if total > 128.0 * epsilon * barycentric.norm():
@@ -73,6 +86,18 @@ def func_normal_root(
                                                 i_f,
                                                 barycentric,
                                             )
+        if qd.static(cooperative):
+            # Equal-distance roots retain the first face in the ordered serial search
+            minimum = qd.simt.subgroup.reduce_all_min(distance)
+            i_face = qd.simt.subgroup.reduce_all_min(
+                qd.select(distance <= minimum and i_selected >= 0, i_selected, i_end)
+            )
+            i_winner = qd.simt.subgroup.reduce_all_min(qd.select(i_selected == i_face, i_s, 32))
+            if i_winner < 32:
+                for i in qd.static(range(3)):
+                    center[i] = qd.simt.subgroup.shuffle(center[i], qd.u32(i_winner))
+                    weights[i] = qd.simt.subgroup.shuffle(weights[i], qd.u32(i_winner))
+                i_selected = i_face
         if i_selected >= 0:
             indices = dyn_info.faces.verts_idx[i_selected]
             is_valid = True
