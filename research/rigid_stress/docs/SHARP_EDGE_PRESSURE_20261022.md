@@ -1428,3 +1428,84 @@ short window; useful complete-module optimization remains required.
 The [evidence packet](../evidence/20261019-qualified-ranking/hard-edge-law-v1/README.md)
 retains both coupled-reference stages, the unfitted-law comparison, native
 CPU/CUDA controls and timings, exact sources and externally hashed arrays.
+
+## Cooperative planar normal-root search
+
+The read-only stage probe resolves the preceding13.25ms planar-kernel cost.
+On the frozen `06cf62f1c` engine, the original kernel measures13.196ms,
+opposing-face selection plus closest-surface search4.269ms, and normal-root
+search8.908ms over the B4 steps100--129 window. The probe covers301 planar
+queries,181 against boxes. Its center, normal and residual differences are
+zero; projected curvature differs by at most2.55e-16 relatively. Extra probe
+and checking kernels make this an intrusive attribution run. These separate
+measurements supply no primary scene throughput.
+
+Isolated engine `03ee8b02a` assigns one CUDA warp to each planar query and
+partitions normal-root candidates among its lanes. The reduction retains the
+nearest root and the lowest original face index on exact distance ties.
+The ordered closest-surface query still executes once per box contact, with
+its selected opposing face shared across the query. CPU execution retains
+serial search. The implementation adds no temporal cache, friction state,
+pressure approximation or acceptance tolerance.
+
+CPU and GPU controls compare the serial variant against saved pre-change
+results on two disconnected spheres and a torus under two rigid transforms.
+Each backend checks1152 queries, with no shared-feature face aliases.
+The GPU additionally compares cooperative and serial evaluations and obtains
+exactly identical root-face/status choices, with all floating outputs within
+the original1e-10 relative/1e-12 absolute geometry bounds. Actual scene probes
+retain301/181 queries with maximum center3.47e-18m, normal2.23e-16,
+relative-curvature2.60e-16 and residual2.45e-16 differences. The complete
+planar kernel then measures3.099ms, about4.26x faster in this separate profile.
+Source resolution and boundary traction remain material costs.
+
+The initial profile attempt failed on an environment missing `skfem`.
+The second completed its original130-step scene audit, then failed because
+its warmup incorrectly required contact before the first loaded frame.
+The corrected probe retains errors from the entire replay and checks sample
+coverage in the measured loaded window. The first standalone cooperative
+geometry worker also failed at import because a Quadrants kernel parameter
+had a default value. The corrected CPU/GPU workers pass. All three original
+failures remain in the evidence packet.
+
+The separate full-field replay admits all520 environment steps across130
+frames. Comparison with the frozen boundary-lanes capture preserves every
+recorded admission, loading, sharp-edge, contact, source, region, law and
+friction status. The original universal1e-9 relative/1e-12 absolute array
+criterion retains failures: probe barycentrics differ by3.48e-12 and corner
+tensors by8.80e-8Pa in128 frames each; probe tensors fail in two frames and
+recovery wrench error in one. The maximum probe-tensor difference is0.374Pa
+with relative L2 at most4.68e-11, while the corner-tensor relative L2 is at
+most4.32e-15. Recovery wrench-error difference reaches2.76e-11. These raw
+failures remain distinct from the paired timer's original public-output
+checks and supply no independent physical contact-error qualification.
+
+Primary source-paired timing uses one allocation per batch, with the frozen
+baseline followed by the candidate on the same GPU. Each source runs its
+own pure-rigid/max/full trio with three profiler-off repeats of100--129,
+continuous history from0, original runtime checks, controller, dispatch and
+final synchronization. Audits, exports, resets, prelude and preparation are
+separate. Both use64-bit precision and the same order16 surface quadrature.
+B64 tiles the four initial conditions16 times.
+
+| Batch | Engine | Pure rigid ms/step | Max ms/step | Full ms/step | Added max/full ms/step | Max/full env-step/s |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| 4 | baseline | 2.776 | 41.280 | 41.081 | 38.503 / 38.304 | 96.90 / 97.37 |
+| 4 | candidate | 2.686 | 31.251 | 31.065 | 28.565 / 28.379 | 128.00 / 128.76 |
+| 64 | baseline | 2.905 | 54.932 | 55.024 | 52.027 / 52.119 | 1165.08 / 1163.13 |
+| 64 | candidate | 2.886 | 50.620 | 50.681 | 47.734 / 47.795 | 1264.32 / 1262.80 |
+
+Complete max/full scene costs decrease by24.30%/24.38% atB4 and
+7.85%/7.89% atB64. Every stress mode admits all360/5760 timed
+environment steps and all520/8320 audit environment steps. Across sources,
+public position, sampled/global maxima, principal stress, loading, edge and
+validity/status observations pass their unchanged checks. Raw sharp-edge
+infinity flags remain exact. This qualifies the measured short-window
+implementation improvement. The earlier frame428 wrench failure and the
+independent two-face physical-reference limitations remain active issues.
+
+The [cooperative-root packet](../evidence/20261019-qualified-ranking/hard-native-cooperative-roots-v1/README.md)
+retains the six terminal campaigns, source inventories and patches, numerical
+controls, original failed attempts, complete field differences and all primary
+timing samples. The49 source heads and12 original unfinished files are
+preserved. Runtime arrays and logs use the restored data root.

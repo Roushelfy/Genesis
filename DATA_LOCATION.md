@@ -1,5 +1,21 @@
 # Rigid-stress data and artifact locations
 
+On2026-10-23 the exclusive-create/write/fsync probe succeeded again under
+`/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/`.
+New planar profiling and cooperative-root validation use that restored data
+root in `hard-native-planar-stages-*` and `hard-native-cooperative-roots-*`.
+Outputs, stdout/stderr and source captures are explicit; dependency assets
+reuse the data-side physical environment and compilation caches use private
+node scratch. The existing bounded home fallback remains in place without
+new runtime output. Source/docs and the isolated `hard_contact_cooperative_roots`
+checkout remain in workspace. No data, environment or compatibility link moved.
+
+The `hard-native-cooperative-roots-v1` packet retains247 compact payloads
+(1,727,323 bytes) and286 external receipts from six terminal campaigns,
+including all three original failed attempts. New runtime arrays, complete
+fields, profiles and logs stay under data. Source03ee8b02a adds one isolated
+engine to the48 preserved heads; all12 original unfinished files are intact.
+
 The `box-corner-predict428-v1` packet retains136 compact payloads /985,989 bytes and11 external receipts. Four terminal CPU campaigns at the existing authorized fallback root `/mnt/home/zhaofeng/project-data-fallback/workspace/Genesis/rigid-stress-recovery/runs/20261023-box-corner/` retain independent profile predictions, the unsuccessful finite-face length correction, surface ordering and fixed-force displacement integration controls. They are `box-corner-predict428-v1/v2` and `box-corner-surface428-v1/v2`. Original reference arrays stay on data and are read in place. The data-side exclusive-write probe still failed errno122 with zero available capacity before this increment. The complete fallback now totals3,968,378,618 bytes after publication preparation, below the existing4,000,000,000-byte bound. All jobs explicitly record `--allow-home-output` and use Slurm `rtx-mid`, image `1_26`, the existing data-side environment and private node caches. Source/docs and compact publication evidence remain in workspace;48 frozen engines,12 original unfinished files and existing compatibility links remain preserved. No data or environment moved.
 
 The `box-corner-elastic428-v1` packet retains332 compact payloads /2,243,865 bytes and19 external receipts. Ten terminal campaigns retain frictionless two-face pressure controls, Hertz validation, finite-depth field/refinement diagnostics and the original data-quota initialization failure. The original arrays remain under the established data-side `20261019-qualified-ranking` root in `box-corner-elastic428-*`, `box-corner-fields428-*` and `vector-halfspace-hertz-v1`.

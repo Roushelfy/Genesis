@@ -1,0 +1,27 @@
+[
+  [
+    {
+      "name": "geometry",
+      "module": "research.rigid_stress.qipc_comparison.check_geometry_search",
+      "args": [
+        "--backend",
+        "cpu",
+        "--compare",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-geometry-search-controls-v3/group0/candidate/geometry.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "geometry",
+      "module": "research.rigid_stress.qipc_comparison.check_geometry_search",
+      "args": [
+        "--backend",
+        "gpu",
+        "--compare",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-geometry-search-controls-v3/group1/candidate/geometry.npz",
+        "--cooperative-roots"
+      ]
+    }
+  ]
+]
