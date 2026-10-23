@@ -1,5 +1,14 @@
 # Working on native rigid stress recovery
 
+**Immediate user goal, 2026-10-23:** maximize throughput of the now-integrated
+automatic-radius + Hertz-pressure DPR path. Follow
+[the optimization goal](docs/DPR_AUTOMATIC_RADIUS_GOAL_20261023.md#immediate-goal-maximize-native-automatic-dpr-throughput).
+Prioritize contained-disk analytical P2 integration, contact-face/geometry and
+refined-moment reuse, duplicate/zero-work elimination, fit/scheduling and batch
+tuning. Measure max/full complete-scene gains against matched manual DPR and
+pure rigid. Preserve the load model and numerical checks; use low-resolution,
+focused validation without waiting for broad physical convergence campaigns.
+
 **Highest-priority user correction, 2026-10-23:** follow
 [automatic-radius DPR](docs/DPR_AUTOMATIC_RADIUS_GOAL_20261023.md) and
 [GOAL.md](GOAL.md). Keep the mature DPR and its prefactorized FEM; add a cheap

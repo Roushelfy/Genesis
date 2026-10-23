@@ -5,6 +5,103 @@ linear FEM. Add the cheapest useful estimate of the contact footprint. Stop
 developing the analytic-particular / boundary-traction / combined-stress route.
 This correction supersedes conflicting goals and historical experiments.
 
+## Immediate goal: maximize native automatic-DPR throughput
+
+Latest user follow-up, 2026-10-23: optimize this path as far as practical.
+The feature is now integrated. The next deliverable is substantially better
+measured complete-scene throughput for cheap automatic radius + Hertz pressure
++ original DPR/prefactorized FEM, with maximum and full stress output.
+
+Keep low-resolution Franka/hollow-egg iteration and the existing load model.
+Only fixed shape/material may be preprocessed; contact locations, symmetry,
+convexity and normal/friction forces remain variable. Production stays inside
+the existing rigid solver, entirely in Quadrants. Continue the original DPR
+path; analytic stress enrichment and boundary correction remain stopped.
+
+### Optimize the measured bottlenecks
+
+Use the current profile to guide implementation, and pursue other material
+bottlenecks it reveals. These are leads, not a prescribed architecture:
+
+- Use analytical pressure moments for contained planar Hertz disks to integrate
+  P2 nodal loads directly where valid. Keep correct clipped/multiface handling
+  for supports crossing mesh edges/vertices and nonconvex surfaces.
+- Build compact intersecting-face candidates once per contact update and reuse
+  them through fitting and scatter. Hoist contact/face projection, containment,
+  fan/clipping geometry and immutable quadrature work out of sample loops.
+- Extend pressure/Gram/P2 moment reuse to refined supports where valid, so
+  accepted pressures do not require a second full integration for scatter.
+  Eliminate proven-zero fan ranges and duplicate geometry/weight evaluations.
+- Optimize the remaining constrained-fit path: reuse invariant integration
+  data, avoid unnecessary Newton/line-search evaluations and allow coherent
+  early exit after convergence. The current fixed upper-bound loop and
+  repeated all-face traversal deserve inspection.
+- Reuse collision witnesses, fixed-shape curvature and continuous-contact local
+  geometry. Keep current force-dependent radii fresh; invalidate caches for
+  release, feature/geometry changes and partial resets.
+- Tune parallel granularity, active-work packing, fusion, kernel launches,
+  workspaces, allocations, device traffic and batch size. Evaluate precision
+  and dense/batched FEM options if profiling makes them worthwhile; validate
+  numerical error and count the complete end-to-end cost.
+
+A smaller integration rule is allowed when independent load/stress controls
+establish equivalent accuracy. Do not freeze the expensive q16 algorithm as
+a requirement, but retain the actual q10 failure and validate replacements.
+Exact fast paths should preserve the physical support, pressure law, supplied
+normal/friction force and moment, original FEM and runtime acceptance.
+Keep unsupported geometry and edge-surrogate statuses explicit. Contact-region
+regrouping changes force-dependent radii and needs separate model evidence;
+it is not an equivalent performance-only substitution.
+
+### Demonstrate the improvement
+
+Use [the current implementation report](AUTOMATIC_DPR_IMPLEMENTATION_20261023.md)
+and its retained evidence as the starting baseline. At engine source
+`40775c1d0`, B64 full scene times on RTX PRO 6000 Blackwell are 1.734 ms
+rigid, 2.671 ms manual DPR, 5.339 ms radius-only DPR and 4.564 ms Hertz-profile
+DPR. The separate loaded-snapshot profile places Hertz-profile pressure
+integration/fit at 1.697 ms, scatter at 0.380 ms, radius estimation at 0.196 ms
+and FEM solve at 0.195 ms; intrusive stage times are not additive scene costs.
+These are starting measurements, not throughput targets or final scalability.
+
+Compare pure rigid, original manual DPR, radius-only DPR and automatic Hertz
+pressure on matching geometry/material/FEM, controller/trajectories, source
+loads, update cadence and output semantics. Measure small batches and search
+for the throughput-optimal useful batch; do not force B1024 or stop at B64.
+Retain the four-condition baseline and add a compact set of diverse changing
+contacts so tiling alone is not mistaken for broad workload coverage.
+
+Report paired, repeated, profiler-off scene timings; separate module, estimator,
+device/launch and pressure-integration/fit/scatter/FEM breakdowns. Include max
+and full output, env-step/s, added cost relative to rigid/manual DPR, memory,
+repeat variation and invalid-step coverage. Full fields remain on the GPU.
+Keep detailed research exports and intrusive audits outside primary timing.
+Explain regressions or declined candidates and use the final profile to
+identify remaining limits. A local kernel speedup alone is not completion.
+
+### Numerical scope and completion
+
+Preserve original wrench/FEM residual checks, normal/friction handling,
+nonconvex sheet identity, batch isolation and partial resets. Validate affected
+fast paths with independent disk/sector P2 moments, same-discretization stress
+controls and focused CPU/GPU checks. Use established accuracy-based checks;
+independent runs need not be bitwise identical. Retain the previous bitwise
+audit failure separately without rewriting it as a pass.
+
+Keep the reproducible 130-frame baseline. Add inexpensive numerical coverage
+of moving/asymmetric contacts, contact-count/load/friction changes, release,
+recontact and reset; extend a low-batch run through the grasp/release cycle
+where supported and report remaining failures. Distinguish supported-window
+throughput from complete-cycle coverage. Broad high-resolution convergence,
+Code_Aster installation and new coupled contact references are not prerequisites
+for this performance phase; retain existing physical-error limitations and do
+not promote numerical consistency into physical qualification.
+
+Deliver the optimized native feature, usable commands and recommended compact
+settings on this branch. Continue through the material profile-supported
+opportunities rather than stopping after the first local improvement; document
+remaining opportunities, measured tradeoffs and practical stopping reasons.
+
 ## Intended runtime path
 
 Current rigid contacts -> cheap Hertz/contact-size estimate -> finite contact

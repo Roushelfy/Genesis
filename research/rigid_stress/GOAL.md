@@ -1,4 +1,13 @@
-# Active goal: inexpensive automatic radius for mature DPR
+# Active goal: maximize automatic-radius DPR throughput
+
+**Immediate user goal, 2026-10-23:** maximize throughput of the now-integrated
+automatic-radius + Hertz-pressure DPR path. Follow
+[the optimization goal](docs/DPR_AUTOMATIC_RADIUS_GOAL_20261023.md#immediate-goal-maximize-native-automatic-dpr-throughput).
+Prioritize contained-disk analytical P2 integration, contact-face/geometry and
+refined-moment reuse, duplicate/zero-work elimination, fit/scheduling and batch
+tuning. Measure max/full complete-scene gains against matched manual DPR and
+pure rigid. Preserve the load model and numerical checks; use low-resolution,
+focused validation without waiting for broad physical convergence campaigns.
 
 **Latest user correction, 2026-10-23:** follow
 [the automatic-radius DPR goal](docs/DPR_AUTOMATIC_RADIUS_GOAL_20261023.md).
