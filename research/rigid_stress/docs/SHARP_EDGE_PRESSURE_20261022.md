@@ -1767,3 +1767,91 @@ retains four terminal scientific campaigns, source inventories, direct controls,
 profile records, primary timing samples, strict field differences and the
 unsubmitted preflight failures. All53 source heads and12 original unfinished
 files are preserved. Runtime arrays and logs remain under the data root.
+
+## Ordered cooperative source projection
+
+Source `f6c4ff2b0` assigns one CUDA warp to each source query, relative to
+the frozen edge-pruning source `1c8720391`. Its lanes evaluate up to32
+candidate material faces concurrently. Each chunk starts from the current
+nearest distance, so its initial queries contain every face that the serial
+scan could visit. The warp then considers those results in the original
+face order and rechecks each face's original distance bound against the
+updated nearest distance. The strict comparison and shared-feature tie rule
+retain their original order; the separate ambiguity pass follows the same
+procedure. Each lane retains the same selection state, and lane0 writes
+the final fields. CPU execution uses one lane and preserves the serial order.
+No temporal state, extra scratch arrays or acceptance thresholds are added.
+
+The new complete-source control reuses the captured all-face query bank from
+the preceding projection study. Its15,040 queries span16 environments and mix
+bound/unbound curved-face points, nonzero frame positions, uncertainty,
+inactive contacts, invalid geom/pair/barycentric inputs, vertex ambiguity,
+out-of-range faces and nonfinite inputs. Every returned status, canonical
+face, center, barycentric coordinate and anchor moment matches the serial
+source exactly on CPU64, CUDA64 and CUDA32, totaling45,120 paired queries.
+The declared128-machine-epsilon geometric/force budgets remain unchanged;
+actual differences are zero. All four source status values are exercised.
+Status counts differ between32-bit and64-bit precision but match the paired
+baseline exactly within each precision; inactive contacts retain their
+original cleared-output behavior.
+
+Existing analytic/estimated curved-source, complete-field and max-output
+controls also pass on CPU and CUDA, including refusal isolation and recovery.
+The7 source/nonconvex pytest regressions pass on each backend without changing
+their numerical, canonical-feature or ambiguity assertions. These controls
+establish implementation conformance to the frozen source, while independent
+contact-pressure and sharp-edge physical-error requirements remain separate.
+
+A separate same-allocation B4 profile measures source resolution3.548ms to
+0.569ms, an83.96% cost reduction. Boundary traction changes7.349ms to7.260ms,
+the main combined-field kernel remains3.957ms, and planar roots remain3.128ms.
+These latter kernels have unchanged implementations. Instrumented scene cost
+changes41.565ms to40.285ms and includes host/kernel instrumentation overhead.
+Primary throughput therefore uses separate profiler-off allocations, preserving
+64-bit precision, surface order16, the0--129 continuous admission audit and
+three100--129 timing repeats for each pure-rigid/max/full mode.
+
+| Batch | Engine | Pure rigid ms/step | Max ms/step | Full ms/step | Max/full env-step/s |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 4 | baseline | 2.564 | 29.362 | 29.026 | 136.23 /137.81 |
+| 4 | candidate | 2.552 | 26.483 | 25.852 | 151.04 /154.73 |
+| 64 | baseline | 2.830 | 48.317 | 48.427 | 1324.59 /1321.56 |
+| 64 | candidate | 2.828 | 46.980 | 46.716 | 1362.27 /1369.99 |
+
+Observed max/full median cost reductions are9.805%/10.934% atB4 and
+2.766%/3.535% atB64. Candidate inclusive added costs over its own pure-rigid
+baseline are23.931/23.300ms and44.152/43.888ms respectively. Each batch runs
+the paired sources on the same GPU with separate source-private compiler
+caches. All four stress-mode candidate repeat ranges lie below their paired
+baseline ranges in these allocations. Public observations pass, including
+360/5760 admitted timed and520/8320 audited environment steps per stress mode.
+B64 tiles the four starting conditions16 times; it does not establish
+throughput for64 independently selected trajectories or the best larger batch.
+These three repeat blocks supply no statistical confidence interval or
+portable hardware speedup guarantee. The B4 kernel profile does not separately
+attribute the smaller B64 complete-scene improvement.
+
+The separate130-frame full capture retains all52 exported fields and identical
+discrete statuses. Original raw1e-9 relative/1e-12 absolute criteria still fail
+for probe barycentrics in128 frames and corner tensors in128 frames. Their
+maximum absolute differences are3.524e-12 and4.843e-8Pa, with maximum
+corner-tensor relative L2 difference3.86e-15. Probe tensors pass those criteria;
+their maximum absolute and relative L2 differences are5.951e-5Pa and1.023e-12.
+These strict failures remain in the evidence alongside the passing public
+observations and exact complete-source controls. No tolerance is relaxed.
+
+A separate continuous429-step capture admits every0--427 frame and reproduces
+the original428 refusal `[False, True, True, True]` with input status
+`[32, 0, 0, 0]`. Cooperative search preserves that support/wrench limitation;
+it supplies no new physical pressure/stress qualification. Larger useful
+batches and their memory requirements still need measurement. Boundary traction,
+combined-field evaluation and planar roots now have the largest measured
+B4 kernel costs.
+
+The [cooperative-source packet](../evidence/20261019-qualified-ranking/hard-source-warps-v1/README.md)
+retains four terminal campaigns, source inventories, all direct controls,
+profile files, primary timing samples, strict field differences and the
+original refusal. All54 source heads and12 original unfinished files are
+preserved. Runtime arrays and logs remain under the data root, with private
+node caches separated by source checkout. The production implementation adds
+no persistent cache or public configuration option.

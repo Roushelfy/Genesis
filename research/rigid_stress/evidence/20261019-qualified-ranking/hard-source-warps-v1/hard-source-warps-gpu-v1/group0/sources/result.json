@@ -1,0 +1,74 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "kind": "affine",
+      "passed": true,
+      "status": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "position_error_m": [
+        0.0,
+        0.0,
+        1.939479807224432e-18,
+        9.371516178707636e-19
+      ],
+      "fields": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-source-warps-gpu-v1/group0/sources/affine.npz",
+        "bytes": 1439,
+        "sha256": "d059f4513a6f9a914eb90f867fd0a13a9f7c4300d5c111265ff65af8096c54d2"
+      }
+    },
+    {
+      "kind": "affine-offsets",
+      "passed": true,
+      "accepted_queries": 48,
+      "rejected_queries": 24,
+      "maximum_position_error_m": 7.165583942981724e-18,
+      "fields": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-source-warps-gpu-v1/group0/sources/affine-offsets.npz",
+        "bytes": 3928,
+        "sha256": "50b40371d4e836939ef2911ecc98d160add197e35fa538bf5dab4f96b0ed89d6"
+      }
+    },
+    {
+      "kind": "curved",
+      "passed": true,
+      "status": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "position_error_m": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "fields": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-source-warps-gpu-v1/group0/sources/curved.npz",
+        "bytes": 1458,
+        "sha256": "85596208ca4717cdca77b26071857562b2dd7bfea33899738084fa3b1f43d2f1"
+      }
+    },
+    {
+      "kind": "curved-offsets",
+      "passed": true,
+      "accepted_queries": 48,
+      "rejected_queries": 24,
+      "maximum_position_error_m": 5.222209201006512e-18,
+      "fields": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-source-warps-gpu-v1/group0/sources/curved-offsets.npz",
+        "bytes": 4065,
+        "sha256": "5d1d0e55bfbc56dfb1a784b841ecacfa4ad0f18b6b629857951c97b8803cdfd8"
+      }
+    }
+  ],
+  "whole_goal_complete": false
+}
