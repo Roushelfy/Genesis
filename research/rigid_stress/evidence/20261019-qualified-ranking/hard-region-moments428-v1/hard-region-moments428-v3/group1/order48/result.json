@@ -1,0 +1,97 @@
+{
+  "passed": true,
+  "environment": 0,
+  "quadrature_order": 48,
+  "rows": [
+    {
+      "region": 0,
+      "contacts": [
+        0,
+        1
+      ],
+      "local_force_n": [
+        -0.019962644134717693,
+        -0.00026383910611664095,
+        0.027142759801309913
+      ],
+      "local_free_moment_nm": [
+        -2.1463292740252155e-06,
+        -1.2157612116003307e-06,
+        -1.5775579498123287e-06
+      ],
+      "local_collision_positions_m": [
+        [
+          6.964354995438697e-06,
+          -0.0001691920965255395,
+          5.1285406609269124e-05
+        ],
+        [
+          6.866643558828595e-06,
+          -4.2800611748663215e-06,
+          5.1686139066075556e-05
+        ]
+      ],
+      "local_collision_forces_n": [
+        [
+          -0.009036897454631813,
+          -0.00012045781750008076,
+          0.01239294118617663
+        ],
+        [
+          -0.010925746680085877,
+          -0.0001433812886165606,
+          0.014749818615133282
+        ]
+      ],
+      "width_m": 5.986082111363336e-07,
+      "half_length_m": 6.595254265644664e-05,
+      "exponent": 0.42469190158811604,
+      "captured_terminal_edge_status": 1,
+      "captured_terminal_exponent": 0.0,
+      "captured_terminal_axes_m": [
+        0.0,
+        0.0
+      ],
+      "independent_and_native_pressure_scales_agree": true,
+      "reconstructed_pressure_center_matches_capture": true,
+      "friction": 0.7191016138165071,
+      "tangential_force_ratio": 0.7355327069957267,
+      "pressure_mean_x_m": 1.3775366065703344e-07,
+      "required_center_shift_m": [
+        4.4791363166455084e-05,
+        -7.907557262919276e-05
+      ],
+      "required_center_relative_to_minimum_m": [
+        4.4929116827112115e-05,
+        -7.907557262919276e-05
+      ],
+      "required_center_parabolic_coordinate": 76.49351032052759,
+      "positive_pressure_centroid_inside_planar_support": false,
+      "linear_pressure_tilt_extrema": [
+        -345.16679086780726,
+        1139.0503981332513
+      ],
+      "linear_pressure_tilt_nonnegative": false,
+      "curved_proportional_shear_ratio": 0.7355317793171199,
+      "curved_proportional_cone_admitted": false,
+      "curved_proportional_free_moment_nm": [
+        5.984951952541001e-12,
+        -4.2793854188111995e-10,
+        -1.5826843100948125e-11
+      ],
+      "curved_proportional_moment_defect_nm": [
+        2.146335258977168e-06,
+        1.2153332730584494e-06,
+        1.5775421229692277e-06
+      ],
+      "sampled_curved_height_extrema_m": [
+        1.0789946330213475e-10,
+        1.0656045175878661e-07
+      ],
+      "minimum_sampled_normal_alignment": 0.9999947463123358,
+      "planar_contact_geometry_scope": "Fixed flat normal with zero traction height; nonnegative pressure centroid must belong to the convex parabolic support. Curved positions and normals require separate checks."
+    }
+  ],
+  "scope": "Captured force/moment replay and analytic necessary pressure-centroid bounds. Gauss-Jacobi moments independently check pressure normalization, centroid and variance; signed affine tilts are diagnostics until positivity holds. No production acceptance, pressure law or stress result is changed.",
+  "whole_goal_complete": false
+}
