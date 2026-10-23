@@ -11,7 +11,9 @@ from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
 from .contact import (
     StressContactState,
     func_contact_sample,
+    func_contact_section,
     func_force_frame,
+    func_hertz_disk_moments,
     func_pack_contacts,
     func_pressure_correct_warp,
     func_pressure_initial,
@@ -34,6 +36,7 @@ class StressScatterWorkspace:
     pressure_gram: qd.Tensor
     load_moments: qd.Tensor
     affine_pressure: qd.Tensor
+    refined_pressure: qd.Tensor
 
 
 def create_scatter_workspace(n_envs: int, tasks_per_env: int, reuse_moments: bool = False) -> StressScatterWorkspace:
@@ -49,6 +52,7 @@ def create_scatter_workspace(n_envs: int, tasks_per_env: int, reuse_moments: boo
         # The ndarray backend rejects empty scalar tensors. An unused one-byte
         # placeholder keeps disabled caching compatible with that backend.
         affine_pressure=V(dtype=gs.qd_bool, shape=(max(1, capacity if reuse_moments else 0),)),
+        refined_pressure=V(dtype=gs.qd_bool, shape=(max(1, capacity if reuse_moments else 0),)),
     )
     workspace.count.fill(0)
     workspace.overflow_calls.fill(0)
@@ -86,7 +90,11 @@ def func_prepare_scatter(
                 low, high = qd.min(origin, first, second), qd.max(origin, first, second)
             center = contacts.center[i_c, i_b]
             distance = qd.max(low - center, 0.0) + qd.max(center - high, 0.0)
-            if distance.dot(distance) < contacts.radius[i_c, i_b] ** 2:
+            intersects = distance.dot(distance) < contacts.radius[i_c, i_b] ** 2
+            if intersects and contacts.is_refined[i_c, i_b]:
+                _closest, remaining, _contained = func_contact_section(i_f, center, contacts.radius[i_c, i_b], surface)
+                intersects = remaining > 0.0
+            if intersects:
                 i_t_out = qd.atomic_add(workspace.count[None], 1)
                 if i_t_out < workspace.tasks.shape[0]:
                     workspace.tasks[i_t_out] = qd.Vector([i_pair, i_f])
@@ -104,11 +112,14 @@ def func_pressure_moments(
     # Task identities stay fixed until scatter; repacking changes atomic order.
     func_prepare_scatter(contacts, state, info, surface, workspace, cached_bounds)
     is_admitted = workspace.count[None] <= workspace.tasks.shape[0]
-    for i_pair in range(qd.select(is_admitted, contacts.active_count[None], 0)):
-        workspace.pressure_gram[i_pair] = qd.Matrix.zero(gs.qd_float, 3, 3)
-        workspace.affine_pressure[i_pair] = False
-        pair = contacts.active_pairs[i_pair]
-        contacts.candidate_count[pair[0], pair[1]] = 0
+    for i_pair in range(qd.min(contacts.active_count[None], workspace.refined_pressure.shape[0])):
+        workspace.refined_pressure[i_pair] = False
+        if is_admitted:
+            workspace.pressure_gram[i_pair] = qd.Matrix.zero(gs.qd_float, 3, 3)
+            workspace.affine_pressure[i_pair] = False
+            pair = contacts.active_pairs[i_pair]
+            contacts.candidate_count[pair[0], pair[1]] = 0
+            workspace.refined_pressure[i_pair] = contacts.is_refined[pair[0], pair[1]]
     qd.loop_config(block_dim=128)
     for i_thread in range(qd.i32(qd.select(is_admitted, workspace.count[None] * 32, 0))):
         lane, i_t = i_thread % 32, i_thread // 32
@@ -120,11 +131,36 @@ def func_pressure_moments(
         load = qd.Matrix.zero(gs.qd_float, 6, 3)
         candidates = 0
         n_q = surface.shape.shape[0]
-        for chunk in range((n_q + 31) // 32):
+        start, count = i_f * n_q, n_q
+        closest = qd.Vector.zero(gs.qd_float, 3)
+        remaining = gs.qd_float(0.0)
+        contained = False
+        if contacts.is_refined[i_c, i_b]:
+            closest, remaining, contained = func_contact_section(
+                i_f, contacts.center[i_c, i_b], contacts.radius[i_c, i_b], surface
+            )
+            start = surface.positions.shape[0] + i_f * 3 * n_q
+            count = qd.select(contained, n_q, 3 * n_q)
+        analytical = contained and contacts.hertz_profile[None]
+        if analytical:
+            if lane == 0:
+                gram, load = func_hertz_disk_moments(
+                    i_f,
+                    closest,
+                    remaining,
+                    contacts.center[i_c, i_b],
+                    contacts.radius[i_c, i_b],
+                    first,
+                    second,
+                    surface,
+                )
+                candidates = 1
+            count = 0
+        for chunk in range((count + 31) // 32):
             i_q = chunk * 32 + lane
-            if i_q < n_q:
+            if i_q < count:
                 coordinates, weight, _position, shape, _face = func_contact_sample(
-                    i_f * n_q + i_q, i_c, i_b, first, second, contacts, surface
+                    start + i_q, i_c, i_b, first, second, contacts, surface
                 )
                 gram += weight * coordinates.outer_product(coordinates)
                 load += shape.outer_product(weight * coordinates)
@@ -164,7 +200,7 @@ def kernel_pressure_moments(
     func_pressure_moments(contacts, state, info, surface, workspace, cached_bounds)
     func_pressure_correct_warp(contacts, surface)
     func_refine_contacts(contacts)
-    func_pressure_warp(contacts, surface, True)
+    func_pressure_warp(contacts, surface, True, True, workspace.refined_pressure)
     func_pressure_correct_warp(contacts, surface)
 
 
@@ -193,18 +229,18 @@ def func_scatter_faces(
         n_q = surface.shape.shape[0]
         i_q_start, n_q_current = i_f * n_q, n_q
         if contacts.is_refined[i_c, i_b]:
-            i_q_start, n_q_current = surface.positions.shape[0] + i_f * 3 * n_q, 3 * n_q
+            _closest, remaining, contained = func_contact_section(
+                i_f, contacts.center[i_c, i_b], contacts.radius[i_c, i_b], surface
+            )
+            i_q_start = surface.positions.shape[0] + i_f * 3 * n_q
+            n_q_current = qd.select(remaining > 0.0, qd.select(contained, n_q, 3 * n_q), 0)
         if qd.static(reuse_moments):
             n_q_current = qd.select(contacts.status[i_c, i_b] == 0, n_q_current, 0)
         total, moment = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
         load = qd.Matrix.zero(gs.qd_float, 6, 3)
         use_moments = False
         if qd.static(reuse_moments):
-            use_moments = (
-                workspace.affine_pressure[i_pair]
-                and not contacts.is_refined[i_c, i_b]
-                and contacts.status[i_c, i_b] == 0
-            )
+            use_moments = workspace.affine_pressure[i_pair] and contacts.status[i_c, i_b] == 0
         if use_moments:
             if i_lane < 6:
                 row = qd.Vector([workspace.load_moments[i_t][i_lane, a] for a in qd.static(range(3))])
@@ -300,6 +336,6 @@ def kernel_fit_scatter_moments(
     func_pressure_moments(contacts, state, info, surface, workspace, cached_bounds)
     func_pressure_correct_warp(contacts, surface)
     func_refine_contacts(contacts)
-    func_pressure_warp(contacts, surface, True)
+    func_pressure_warp(contacts, surface, True, True, workspace.refined_pressure)
     func_pressure_correct_warp(contacts, surface)
     func_scatter_faces(contacts, state, info, surface, workspace, cached_bounds, True)

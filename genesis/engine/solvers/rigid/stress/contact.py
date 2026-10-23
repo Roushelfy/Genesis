@@ -141,6 +141,41 @@ def func_contact_section(
 
 
 @qd.func
+def func_hertz_disk_moments(
+    i_face: int,
+    closest: qd.types.vector(3),
+    remaining: float,
+    center: qd.types.vector(3),
+    radius: float,
+    first: qd.types.vector(3),
+    second: qd.types.vector(3),
+    surface: StressSurfaceInfo,
+):
+    """Exact Gram and P2/affine-pressure moments of a contained spherical Hertz section."""
+    normal = surface.face_normal[i_face]
+    covariance = remaining / 5.0 * (qd.Matrix.identity(gs.qd_float, 3) - normal.outer_product(normal))
+    mass = 2.0 * qd.math.pi * remaining * qd.sqrt(remaining) / (3.0 * radius)
+    offset = (closest - center) / radius
+    mean = qd.Vector([1.0, offset.dot(first), offset.dot(second)])
+    directions = qd.Matrix.rows([qd.Vector.zero(gs.qd_float, 3), first / radius, second / radius])
+    gram = mass * (mean.outer_product(mean) + directions @ covariance @ directions.transpose())
+    dual = surface.face_dual[i_face]
+    local = dual @ (closest - surface.face_origin[i_face])
+    bary = qd.Vector([1.0 - local.sum(), local[0], local[1]])
+    gradients = qd.Matrix.rows([-dual[0, :] - dual[1, :], dual[0, :], dual[1, :]])
+    second_moment = bary.outer_product(bary) + gradients @ covariance @ gradients.transpose()
+    load = qd.Matrix.zero(gs.qd_float, 6, 3)
+    for i in qd.static(range(3)):
+        average = 2.0 * second_moment[i, i] - bary[i]
+        linear = (4.0 * bary[i] - 1.0) * gradients[i, :]
+        load[i, :] = mass * (average * mean + directions @ covariance @ linear)
+    for i, j, node in qd.static(((0, 1, 3), (0, 2, 4), (1, 2, 5))):
+        linear = 4.0 * (bary[i] * gradients[j, :] + bary[j] * gradients[i, :])
+        load[node, :] = mass * (4.0 * second_moment[i, j] * mean + directions @ covariance @ linear)
+    return gram, load
+
+
+@qd.func
 def func_contact_sample(
     i_q: int,
     i_c: int,
@@ -425,7 +460,11 @@ def kernel_refine_contacts(contact_state: StressContactState):
 @qd.func
 def func_refine_contacts(contact_state: StressContactState):
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
-        if contact_state.valid[i_c, i_b] and contact_state.status[i_c, i_b] == 3:
+        if (
+            contact_state.valid[i_c, i_b]
+            and contact_state.status[i_c, i_b] == 3
+            and not contact_state.is_refined[i_c, i_b]
+        ):
             contact_state.is_refined[i_c, i_b] = True
             contact_state.status[i_c, i_b] = 0
             contact_state.candidate_count[i_c, i_b] = 0
@@ -457,7 +496,11 @@ def kernel_pressure_warp(contact_state: StressContactState, surface_info: Stress
 
 @qd.func
 def func_pressure_warp(
-    contact_state: StressContactState, surface_info: StressSurfaceInfo, refinement: bool, enabled: bool = True
+    contact_state: StressContactState,
+    surface_info: StressSurfaceInfo,
+    refinement: bool,
+    enabled: bool = True,
+    processed_refined: qd.template() = None,
 ):
     qd.loop_config(block_dim=128)
     for i_thread in range(qd.select(enabled, contact_state.active_count[None] * 32, 0)):
@@ -465,7 +508,11 @@ def func_pressure_warp(
         slot = i_thread // 32
         pair = contact_state.active_pairs[slot]
         i_c, i_b = pair[0], pair[1]
-        if refinement == contact_state.is_refined[i_c, i_b]:
+        processed = False
+        if qd.static(processed_refined is not None):
+            if slot < processed_refined.shape[0]:
+                processed = processed_refined[slot]
+        if refinement == contact_state.is_refined[i_c, i_b] and not processed:
             first, second = func_force_frame(contact_state.force[i_c, i_b])
             center, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
             low, dimensions = func_patch_grid(center, radius, surface_info.grid)
