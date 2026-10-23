@@ -1,0 +1,89 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "depth_m": 6.595254265644665e-06,
+      "tensor_relative_l2": 0.1469258329542193,
+      "reference_sample_vm_peak_pa": 26656623.08313642,
+      "estimate_sample_vm_peak_pa": 27401443.97554274,
+      "sample_vm_peak_relative_error": 0.02794130712218791,
+      "reference_sample_tensile_peak_pa": 2779198.09167447,
+      "estimate_sample_tensile_peak_pa": 3836818.0941870124,
+      "sample_tensile_peak_relative_error": 0.3805486214461688,
+      "sample_vm_peak_location_difference_m": 0.0,
+      "sample_tensile_peak_location_difference_m": 6.669038150449095e-05,
+      "tensor_5pct_peaks_10pct_met": false,
+      "reference_refinement": {
+        "tensor_relative_l2": 3.43895303000291e-07,
+        "sample_vm_peak_relative_change": 7.54231162073751e-08,
+        "sample_tensile_peak_relative_change": 7.084282674070241e-12
+      }
+    },
+    {
+      "depth_m": 1.648813566411166e-05,
+      "tensor_relative_l2": 0.1264882670722138,
+      "reference_sample_vm_peak_pa": 10724711.181220146,
+      "estimate_sample_vm_peak_pa": 11084629.550450344,
+      "sample_vm_peak_relative_error": 0.03355972605215183,
+      "reference_sample_tensile_peak_pa": 932631.3601772641,
+      "estimate_sample_tensile_peak_pa": 1313983.4654751173,
+      "sample_tensile_peak_relative_error": 0.40889908015249465,
+      "sample_vm_peak_location_difference_m": 9.892881398466998e-06,
+      "sample_tensile_peak_location_difference_m": 1.9228305178623654e-05,
+      "tensor_5pct_peaks_10pct_met": false,
+      "reference_refinement": {
+        "tensor_relative_l2": 3.0381282602156574e-13,
+        "sample_vm_peak_relative_change": 3.4075600927981034e-13,
+        "sample_tensile_peak_relative_change": 1.9722284317310163e-14
+      }
+    },
+    {
+      "depth_m": 3.297627132822332e-05,
+      "tensor_relative_l2": 0.08319257286944849,
+      "reference_sample_vm_peak_pa": 5388535.065217441,
+      "estimate_sample_vm_peak_pa": 5696800.586708998,
+      "sample_vm_peak_relative_error": 0.057207667345692235,
+      "reference_sample_tensile_peak_pa": 328284.04105630144,
+      "estimate_sample_tensile_peak_pa": 331897.5635411805,
+      "sample_tensile_peak_relative_error": 0.011007304751251494,
+      "sample_vm_peak_location_difference_m": 0.0,
+      "sample_tensile_peak_location_difference_m": 0.0,
+      "tensor_5pct_peaks_10pct_met": false,
+      "reference_refinement": {
+        "tensor_relative_l2": 6.595299869528595e-15,
+        "sample_vm_peak_relative_change": 2.0740091249521762e-15,
+        "sample_tensile_peak_relative_change": 4.326335577321061e-14
+      }
+    },
+    {
+      "depth_m": 6.595254265644664e-05,
+      "tensor_relative_l2": 0.03644728175869767,
+      "reference_sample_vm_peak_pa": 2250992.7954745437,
+      "estimate_sample_vm_peak_pa": 2328666.1885471623,
+      "sample_vm_peak_relative_error": 0.03450628239627213,
+      "reference_sample_tensile_peak_pa": 141138.3204861685,
+      "estimate_sample_tensile_peak_pa": 143535.53981691715,
+      "sample_tensile_peak_relative_error": 0.01698489341867708,
+      "sample_vm_peak_location_difference_m": 9.892881398466998e-06,
+      "sample_tensile_peak_location_difference_m": 0.0,
+      "tensor_5pct_peaks_10pct_met": true,
+      "reference_refinement": {
+        "tensor_relative_l2": 6.74987570827907e-15,
+        "sample_vm_peak_relative_change": 3.103039389401316e-15,
+        "sample_tensile_peak_relative_change": 1.1341432076040772e-14
+      }
+    }
+  ],
+  "total_force_material_n": [
+    -0.019962753388808083,
+    0.0,
+    0.027142679471195294
+  ],
+  "effective_shape": {
+    "width_m": 5.999454006009648e-07,
+    "half_length_m": 6.595254265644664e-05,
+    "exponent": 0.42469190158811604
+  },
+  "scope": "Same total force compares the native-shaped effective traction distribution with an independently solved frictionless two-face local elastic control. Both stresses use the undeformed flat material Green tensor. Pressure shape is transferred without fitting the reference forces. Positive-depth probes and discrete reference/source quadrature convergence limit this comparison. Frictional history, surface/global peaks and complete curved-shell physical accuracy remain separate requirements.",
+  "whole_goal_complete": false
+}

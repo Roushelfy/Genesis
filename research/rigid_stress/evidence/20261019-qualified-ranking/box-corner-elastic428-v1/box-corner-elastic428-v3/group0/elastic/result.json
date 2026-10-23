@@ -1,0 +1,88 @@
+{
+  "passed": true,
+  "kernel_relative_error": 1.2090518281675772e-15,
+  "raw_reciprocity_relative_error": 3.518449202578161e-05,
+  "active_cells": 128,
+  "iterations": 127,
+  "face_updates": [
+    {
+      "update": 0,
+      "iterations": 135,
+      "active_cells": 136,
+      "invalid_face_cells": 26,
+      "invalid_face_force_fraction": 0.23311176376178686,
+      "maximum_active_other_face_gap_m": 7.029812972240361e-07
+    },
+    {
+      "update": 1,
+      "iterations": 129,
+      "active_cells": 130,
+      "invalid_face_cells": 8,
+      "invalid_face_force_fraction": 0.079152820489475,
+      "maximum_active_other_face_gap_m": 5.6663695459013086e-08
+    },
+    {
+      "update": 2,
+      "iterations": 123,
+      "active_cells": 124,
+      "invalid_face_cells": 2,
+      "invalid_face_force_fraction": 0.06407151229510905,
+      "maximum_active_other_face_gap_m": 8.353747762221239e-10
+    },
+    {
+      "update": 3,
+      "iterations": 127,
+      "active_cells": 128,
+      "invalid_face_cells": 0,
+      "invalid_face_force_fraction": 0.0,
+      "maximum_active_other_face_gap_m": -2.461938495598413e-10
+    }
+  ],
+  "normal_loads_n": [
+    0.025750091380959184,
+    0.02172945847486004
+  ],
+  "rigid_translation_material_m": [
+    -1.0161678789074008e-07,
+    0.0,
+    1.2950606299786176e-07
+  ],
+  "rigid_normal_indentation_m": [
+    1.2243664430669272e-07,
+    1.100320865264047e-07
+  ],
+  "resultant_force_material_n": [
+    -0.019962753388808083,
+    0.0,
+    0.027142679471195294
+  ],
+  "moment_about_current_edge_nm": [
+    9.870436056865572e-21,
+    -3.3427619237364927e-09,
+    -9.069647675731814e-21
+  ],
+  "maximum_material_displacement_m": 1.60316855885935e-07,
+  "maximum_active_other_face_gap_m": -2.461938495598413e-10,
+  "invalid_face_cells": 0,
+  "invalid_face_force_fraction": 0.0,
+  "remote_boundary_force_fraction": 0.0,
+  "minimum_outside_box_gap_m": -8.850522354203089e-23,
+  "finite_face_membership_passed": true,
+  "force_centroids_m": [
+    [
+      1.0101527244968627e-07,
+      4.0581898997399645e-19
+    ],
+    [
+      -1.3085447066280104e-08,
+      -3.8584562821677955e-19
+    ]
+  ],
+  "pressure_peak_cell_mean_pa": 20849665816.049248,
+  "slope": 0.06687788586919333,
+  "curvature_per_m": 49.39403643088917,
+  "poisson": 0.3,
+  "young_pa": 10000000000.0,
+  "scope": "Discrete frictionless force-controlled oblique-normal contact on a local quadratic material gap. Circular friction and tangential stick/slip history are absent. A positive finite-face check is necessary for the assigned face branch. Quadrature, grid and domain convergence, physical large-gradient validity and stresses require further checks. Numerical penetration is absent from this elastic solve.",
+  "whole_goal_complete": false
+}

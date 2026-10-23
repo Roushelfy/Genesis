@@ -1,0 +1,115 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "depth_m": 6.595254265644665e-06,
+      "tensor_relative_l2": 0.11941126412976347,
+      "reference_sample_vm_peak_pa": 26778613.540383976,
+      "estimate_sample_vm_peak_pa": 27401443.975542754,
+      "sample_vm_peak_relative_error": 0.023258501946693662,
+      "reference_sample_tensile_peak_pa": 2783252.3333602846,
+      "estimate_sample_tensile_peak_pa": 3836818.0941870227,
+      "sample_tensile_peak_relative_error": 0.37853763677788566,
+      "sample_vm_peak_location_difference_m": 0.0,
+      "sample_tensile_peak_location_difference_m": 3.297627132822332e-05,
+      "tensor_5pct_peaks_10pct_met": false,
+      "reference_refinement": {
+        "tensor_relative_l2": 0.04547489951362635,
+        "sample_vm_peak_relative_change": 0.0045554429671277735,
+        "sample_tensile_peak_relative_change": 0.0014566561635578638
+      }
+    },
+    {
+      "depth_m": 1.648813566411166e-05,
+      "tensor_relative_l2": 0.10353731407376145,
+      "reference_sample_vm_peak_pa": 10759171.516839406,
+      "estimate_sample_vm_peak_pa": 11084629.55045035,
+      "sample_vm_peak_relative_error": 0.030249358243017364,
+      "reference_sample_tensile_peak_pa": 991821.6906355149,
+      "estimate_sample_tensile_peak_pa": 1313983.4654751215,
+      "sample_tensile_peak_relative_error": 0.3248182388844307,
+      "sample_vm_peak_location_difference_m": 9.892881398466998e-06,
+      "sample_tensile_peak_location_difference_m": 1.9228305178623654e-05,
+      "tensor_5pct_peaks_10pct_met": false,
+      "reference_refinement": {
+        "tensor_relative_l2": 0.029452124537353637,
+        "sample_vm_peak_relative_change": 0.0032028800330006395,
+        "sample_tensile_peak_relative_change": 0.05967839886657723
+      }
+    },
+    {
+      "depth_m": 3.297627132822332e-05,
+      "tensor_relative_l2": 0.06621146093019506,
+      "reference_sample_vm_peak_pa": 5443763.552988611,
+      "estimate_sample_vm_peak_pa": 5696800.586709005,
+      "sample_vm_peak_relative_error": 0.04648200298513645,
+      "reference_sample_tensile_peak_pa": 329615.9881664465,
+      "estimate_sample_tensile_peak_pa": 331897.56354118144,
+      "sample_tensile_peak_relative_error": 0.006921919617512024,
+      "sample_vm_peak_location_difference_m": 0.0,
+      "sample_tensile_peak_location_difference_m": 0.0,
+      "tensor_5pct_peaks_10pct_met": false,
+      "reference_refinement": {
+        "tensor_relative_l2": 0.018644865503505324,
+        "sample_vm_peak_relative_change": 0.010145276743483604,
+        "sample_tensile_peak_relative_change": 0.004040905653783608
+      }
+    },
+    {
+      "depth_m": 6.595254265644664e-05,
+      "tensor_relative_l2": 0.027668756871314253,
+      "reference_sample_vm_peak_pa": 2265693.4481268288,
+      "estimate_sample_vm_peak_pa": 2328666.1885471637,
+      "sample_vm_peak_relative_error": 0.027794025035645462,
+      "reference_sample_tensile_peak_pa": 141861.00472243136,
+      "estimate_sample_tensile_peak_pa": 143535.53981691634,
+      "sample_tensile_peak_relative_error": 0.01180405494632872,
+      "sample_vm_peak_location_difference_m": 0.0,
+      "sample_tensile_peak_location_difference_m": 0.0,
+      "tensor_5pct_peaks_10pct_met": true,
+      "reference_refinement": {
+        "tensor_relative_l2": 0.009011187769583996,
+        "sample_vm_peak_relative_change": 0.006488367905395971,
+        "sample_tensile_peak_relative_change": 0.005094312123865803
+      }
+    }
+  ],
+  "total_force_material_n": [
+    -0.01996275338880812,
+    0.0,
+    0.027142679471195308
+  ],
+  "reference_face_pressure_moments": [
+    {
+      "face": 0,
+      "normal_force_n": 0.025750091380959184,
+      "centroid_m": [
+        1.0009623112952504e-07,
+        1.9676422864152297e-19
+      ],
+      "longitudinal_variance_m2": 8.646080582608942e-10,
+      "parabolic_half_length_from_second_moment_m": 6.574983111236462e-05,
+      "longitudinal_fourth_over_second_squared": 2.1628899636047545,
+      "scope": "Reference-derived force moments diagnose longitudinal profile structure. These parameters are measured from the reference, rather than independently predicted runtime inputs."
+    },
+    {
+      "face": 1,
+      "normal_force_n": 0.021729458474860047,
+      "centroid_m": [
+        -1.2335984424850337e-08,
+        -4.48568005013003e-19
+      ],
+      "longitudinal_variance_m2": 1.226941764262363e-09,
+      "parabolic_half_length_from_second_moment_m": 7.832438203593958e-05,
+      "longitudinal_fourth_over_second_squared": 1.896320315077872,
+      "scope": "Reference-derived force moments diagnose longitudinal profile structure. These parameters are measured from the reference, rather than independently predicted runtime inputs."
+    }
+  ],
+  "effective_shape": {
+    "width_m": 5.999454006009648e-07,
+    "half_length_m": 6.595254265644664e-05,
+    "exponent": 0.42469190158811604
+  },
+  "scope": "Same total force compares the native-shaped effective traction distribution with an independently solved frictionless two-face local elastic control. Both stresses use the undeformed flat material Green tensor. Pressure shape is transferred without fitting the reference forces. Positive-depth probes and discrete reference/source quadrature convergence limit this comparison. Frictional history, surface/global peaks and complete curved-shell physical accuracy remain separate requirements.",
+  "whole_goal_complete": false
+}

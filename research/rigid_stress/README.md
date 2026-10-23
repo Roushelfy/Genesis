@@ -58,6 +58,13 @@ moment requires at least11.8micrometres of side-face depth. Moving each force
 to its true witness removes that transverse couple, while the predicted
 longitudinal support still fails a continuous wrench-cone certificate.
 Ideal sharp edges remain singular; finite sampled peaks retain their probe depths.
+The [frictionless two-face elastic control](docs/SHARP_EDGE_PRESSURE_20261022.md#two-face-elastic-reference-and-field-sensitivity)
+now satisfies deformed cell-mean face membership with unloaded remote boundaries.
+The effective single profile has11.94%/10.35% tensor and37.85%/32.48% tensile-peak
+errors at6.595/16.488micrometre depths. Spatial reference uncertainty remains
+material. Separate reference-fitted face profiles reduce these errors, motivating
+independent two-profile prediction; the fit supplies no runtime qualification.
+Hertz numerical and target/source quadrature controls are retained separately.
 
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)
 identifies the ground's184micrometre offset as the collider's half-penetration
