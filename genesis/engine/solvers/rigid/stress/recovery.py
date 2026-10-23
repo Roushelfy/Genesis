@@ -556,12 +556,15 @@ class RigidStressRecovery:
                         yield item
             yield DataItem(f"stress.{i}.omega", entry.omega, entry.state.kind)
 
-    def get_peak(self, link_idx: int, envs_idx=None, *, copy: bool = True) -> torch.Tensor:
+    def get_peak(self, link_idx: int, envs_idx=None, *, copy: bool = True, sampled: bool = False) -> torch.Tensor:
         for entry in self.links:
             if entry.link.idx == link_idx:
                 if entry.link.stress_options != entry.options:
                     gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
-                tensor = qd_to_torch(entry.state.step_peak, envs_idx, transpose=True, copy=copy)
+                field = entry.state.step_peak
+                if sampled and entry.hertz is not None:
+                    field = entry.hertz.state.step_sampled_vm
+                tensor = qd_to_torch(field, envs_idx, transpose=True, copy=copy)
                 return tensor[0] if self.solver.n_envs == 0 else tensor
         gs.raise_exception("Stress recovery is not enabled for this link.")
 

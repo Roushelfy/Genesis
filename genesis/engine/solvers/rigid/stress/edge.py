@@ -7,7 +7,7 @@ from typing import ClassVar
 import quadrants as qd
 
 import genesis as gs
-from genesis.utils.array_class import DataKind, V
+from genesis.utils.array_class import DataKind, V, maybe_shape
 
 
 @dataclass(frozen=True)
@@ -40,22 +40,24 @@ class StressEdge:
 
     def __init__(self, count: int):
         assert count >= 0
+        shape = maybe_shape((count,), count > 0)
         self.state = StressEdgeState(
-            force=V(dtype=gs.qd_float, shape=(count,)),
-            modulus=V(dtype=gs.qd_float, shape=(count,)),
-            slope=V(dtype=gs.qd_float, shape=(count,)),
-            curvature=V(dtype=gs.qd_float, shape=(count,)),
-            shear_ratio=V(dtype=gs.qd_float, shape=(count,)),
-            poisson=V(dtype=gs.qd_float, shape=(count,)),
-            width=V(dtype=gs.qd_float, shape=(count,)),
-            half_length=V(dtype=gs.qd_float, shape=(count,)),
-            exponent=V(dtype=gs.qd_float, shape=(count,)),
-            amplitude=V(dtype=gs.qd_float, shape=(count,)),
-            status=V(dtype=gs.qd_int, shape=(count,)),
+            force=V(dtype=gs.qd_float, shape=shape),
+            modulus=V(dtype=gs.qd_float, shape=shape),
+            slope=V(dtype=gs.qd_float, shape=shape),
+            curvature=V(dtype=gs.qd_float, shape=shape),
+            shear_ratio=V(dtype=gs.qd_float, shape=shape),
+            poisson=V(dtype=gs.qd_float, shape=shape),
+            width=V(dtype=gs.qd_float, shape=shape),
+            half_length=V(dtype=gs.qd_float, shape=shape),
+            exponent=V(dtype=gs.qd_float, shape=shape),
+            amplitude=V(dtype=gs.qd_float, shape=shape),
+            status=V(dtype=gs.qd_int, shape=shape),
         )
 
     def update(self):
-        kernel_edge_scales(self.state)
+        if self.state.force.shape:
+            kernel_edge_scales(self.state)
 
 
 @qd.func

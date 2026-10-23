@@ -65,7 +65,7 @@ class StressFrictionHistory:
     def __init__(self, n_regions: int, maximum_iterations: int = 2048, is_cooperative: bool = True):
         assert n_regions > 0 and maximum_iterations > 0
         self.maximum_iterations = maximum_iterations
-        self.penalty = 0.1
+        self.penalty = 1.0
         self.is_cooperative = is_cooperative and gs.backend == gs.cuda
         self.input = StressFrictionInput(
             radius=V(dtype=gs.qd_float, shape=(n_regions,)),

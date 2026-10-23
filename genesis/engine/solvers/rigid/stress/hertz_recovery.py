@@ -11,16 +11,22 @@ from genesis.utils.array_class import DataKind, ErrorCode, V, V_MAT, V_VEC, mayb
 from .data import StressInfo, StressState
 from .edge import StressEdge, StressEdgeState
 from .edge_fields import func_edge_particular, func_edge_probe_offset, kernel_edge_field_quadrature
-from .hertz import StressHertzState, func_boussinesq_tensor, func_hertz_particular, kernel_hertz_stress_quadrature
+from .hertz import (
+    StressHertzState,
+    func_boussinesq_tensor,
+    func_hertz_particular,
+    func_legendre_root,
+    kernel_hertz_stress_quadrature,
+)
 from .hertz_probes import (
     StressHertzProbeState,
-    func_hertz_probe_location,
     func_hertz_curved_probe_location,
+    func_hertz_probe_location,
     kernel_hertz_probe_offsets,
 )
 from .hertz_tangential import StressHertzShear, func_cerruti_tensor, func_hertz_friction_particular
 from .model import StressModel
-from .operators import func_shape_gradient, func_material_gradients, func_material_position
+from .operators import func_material_gradients, func_material_position, func_shape_gradient
 from .provenance import func_closest_triangle
 from .surface import StressSurfaceInfo, func_surface_geometry, func_surface_projection
 
@@ -129,9 +135,11 @@ class StressHertzRecovery:
             tensor=V_VEC(6, dtype=gs.qd_float, shape=(n_queries if self.full else 0, n_envs)),
         )
         self.quadrature = V_VEC(2, dtype=gs.qd_float, shape=(16,))
+        self.boundary_quadrature = V_VEC(2, dtype=gs.qd_float, shape=(16,))
         self.frames.anchor.fill(-1)
         self.state.status.fill(2)
         kernel_hertz_stress_quadrature(self.quadrature)
+        kernel_hertz_boundary_quadrature(self.boundary_quadrature)
         if moving_probes:
             kernel_hertz_probe_offsets(self.probe_offsets)
 
@@ -154,6 +162,7 @@ class StressHertzRecovery:
         kernel_hertz_residual_traction(
             poisson,
             epsilon,
+            self.boundary_quadrature,
             self.frames,
             hertz,
             self.shear,
@@ -327,9 +336,17 @@ def kernel_hertz_halfspace(
 
 
 @qd.kernel
+def kernel_hertz_boundary_quadrature(quadrature: qd.Tensor):
+    for i_q in range(quadrature.shape[0]):
+        root, derivative = func_legendre_root(i_q, quadrature.shape[0])
+        quadrature[i_q] = qd.Vector([0.5 * (root + 1), 1 / ((1 - root * root) * derivative * derivative)])
+
+
+@qd.kernel
 def kernel_hertz_residual_traction(
     poisson: float,
     epsilon: float,
+    boundary_quadrature: qd.Tensor,
     frames: StressHertzFrames,
     hertz: StressHertzState,
     shear: StressHertzShear,
@@ -389,72 +406,88 @@ def kernel_hertz_residual_traction(
                     if qd.static(is_curved):
                         radial_splits = 3
                     n_rules = 6 * radial_splits if is_near else 1
-                    # Each lane integrates one angular knot over every radial rule.
-                    for i_sample_ in range(n_rules * surface.gauss.shape[0]):
+                    n_gauss = surface.gauss.shape[0]
+                    is_refined = False
+                    if qd.static(is_curved):
+                        is_refined = is_near and n_gauss < boundary_quadrature.shape[0]
+                        if is_refined:
+                            n_gauss = boundary_quadrature.shape[0]
+                    n_samples = n_rules * n_gauss * n_gauss
+                    # Refine only the curved near-source fans, retaining the far-face rule.
+                    for i_sample_ in range((n_samples + surface.gauss.shape[0] - 1) // surface.gauss.shape[0]):
                         i_sample_local = i_sample_ * surface.gauss.shape[0] + i_lane
-                        i_q = i_sample_local % surface.shape.shape[0]
-                        i_sample = i_f * surface.shape.shape[0] + i_q
-                        position, weight = surface.positions[i_sample], surface.weights[i_sample]
-                        shape = surface.shape[i_q]
-                        if qd.static(is_curved):
-                            normal = surface.normals[i_sample]
-                        if is_near:
-                            i_rule = i_sample_local // surface.shape.shape[0]
-                            i_edge = i_rule // (2 * radial_splits)
-                            first_bary, second_bary = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
-                            first_bary[i_edge], second_bary[(i_edge + 1) % 3] = 1.0, 1.0
-                            i_first, i_second = (
-                                info.surface_nodes[i_f, i_edge],
-                                info.surface_nodes[i_f, (i_edge + 1) % 3],
-                            )
-                            first, second = info.vertices[i_first] - closest, info.vertices[i_second] - closest
-                            n_gauss = surface.gauss.shape[0]
-                            u = (surface.gauss[i_q // n_gauss] + (i_rule % (2 * radial_splits)) // 2) / radial_splits
-                            v = (surface.gauss[i_q % n_gauss] + i_rule % 2) / 2
-                            radius, derivative = u, gs.qd_float(1.0)
-                            if not is_source:
-                                length = ((1 - v) * first + v * second).norm()
-                                denominator = length * (1 - u) + distance * u
-                                radius = distance * u / denominator
-                                derivative = distance * length / (denominator * denominator)
-                            sample_bary = bary + radius * ((1 - v) * first_bary + v * second_bary - bary)
-                            position = closest + radius * ((1 - v) * first + v * second)
-                            measure = first.cross(second).norm()
+                        if i_sample_local < n_samples:
+                            i_q = i_sample_local % (n_gauss * n_gauss)
+                            position, weight = qd.Vector.zero(gs.qd_float, 3), gs.qd_float(0.0)
+                            shape = qd.Vector.zero(gs.qd_float, 6)
+                            if not is_near:
+                                i_sample = i_f * surface.shape.shape[0] + i_q
+                                position, weight = surface.positions[i_sample], surface.weights[i_sample]
+                                shape = surface.shape[i_q]
+                                if qd.static(is_curved):
+                                    normal = surface.normals[i_sample]
+                            if is_near:
+                                i_rule = i_sample_local // (n_gauss * n_gauss)
+                                i_edge = i_rule // (2 * radial_splits)
+                                first_bary, second_bary = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
+                                first_bary[i_edge], second_bary[(i_edge + 1) % 3] = 1.0, 1.0
+                                i_first, i_second = (
+                                    info.surface_nodes[i_f, i_edge],
+                                    info.surface_nodes[i_f, (i_edge + 1) % 3],
+                                )
+                                first, second = info.vertices[i_first] - closest, info.vertices[i_second] - closest
+                                first_rule, second_rule = qd.Vector.zero(gs.qd_float, 2), qd.Vector.zero(gs.qd_float, 2)
+                                if is_refined:
+                                    first_rule = boundary_quadrature[i_q // n_gauss]
+                                    second_rule = boundary_quadrature[i_q % n_gauss]
+                                else:
+                                    first_rule = qd.Vector(
+                                        [surface.gauss[i_q // n_gauss], surface.gauss_weights[i_q // n_gauss]]
+                                    )
+                                    second_rule = qd.Vector(
+                                        [surface.gauss[i_q % n_gauss], surface.gauss_weights[i_q % n_gauss]]
+                                    )
+                                u = (first_rule[0] + (i_rule % (2 * radial_splits)) // 2) / radial_splits
+                                v = (second_rule[0] + i_rule % 2) / 2
+                                radius, derivative = u, gs.qd_float(1.0)
+                                if not is_source:
+                                    length = ((1 - v) * first + v * second).norm()
+                                    denominator = length * (1 - u) + distance * u
+                                    radius = distance * u / denominator
+                                    derivative = distance * length / (denominator * denominator)
+                                sample_bary = bary + radius * ((1 - v) * first_bary + v * second_bary - bary)
+                                position = closest + radius * ((1 - v) * first + v * second)
+                                measure = first.cross(second).norm()
+                                if qd.static(is_curved):
+                                    # Tangency cancels the point singularity against
+                                    # this source-centered fan's radial Jacobian.
+                                    position, tangent, area = func_surface_geometry(i_f, sample_bary, info)
+                                    normal = area.normalized()
+                                    measure = area.norm() * qd.abs(bary[(i_edge + 2) % 3])
+                                weight = (
+                                    measure * radius * derivative * first_rule[1] * second_rule[1] / (2 * radial_splits)
+                                )
+                                shape = qd.Vector(
+                                    [
+                                        sample_bary[0] * (2 * sample_bary[0] - 1),
+                                        sample_bary[1] * (2 * sample_bary[1] - 1),
+                                        sample_bary[2] * (2 * sample_bary[2] - 1),
+                                        4 * sample_bary[0] * sample_bary[1],
+                                        4 * sample_bary[0] * sample_bary[2],
+                                        4 * sample_bary[1] * sample_bary[2],
+                                    ]
+                                )
+                            local = basis.transpose() @ (position - center)
                             if qd.static(is_curved):
-                                # Tangency cancels the point singularity against
-                                # this source-centered fan's radial Jacobian.
-                                position, tangent, area = func_surface_geometry(i_f, sample_bary, info)
-                                normal = area.normalized()
-                                measure = area.norm() * qd.abs(bary[(i_edge + 2) % 3])
-                            weight = (
-                                measure
-                                * radius
-                                * derivative
-                                * surface.gauss_weights[i_q // n_gauss]
-                                * surface.gauss_weights[i_q % n_gauss]
-                                / (2 * radial_splits)
-                            )
-                            shape = qd.Vector(
-                                [
-                                    sample_bary[0] * (2 * sample_bary[0] - 1),
-                                    sample_bary[1] * (2 * sample_bary[1] - 1),
-                                    sample_bary[2] * (2 * sample_bary[2] - 1),
-                                    4 * sample_bary[0] * sample_bary[1],
-                                    4 * sample_bary[0] * sample_bary[2],
-                                    4 * sample_bary[1] * sample_bary[2],
-                                ]
-                            )
-                        local = basis.transpose() @ (position - center)
-                        if qd.static(is_curved):
-                            if not local[2] >= -epsilon:
-                                qd.atomic_max(state.status[i_b], 3)
-                        local[2] = qd.max(local[2], 0.0)
-                        tensor = func_boussinesq_tensor(local, hertz.force[i_p], poisson)
-                        if qd.static(has_shear):
-                            if shear.force[i_p].norm() > 0:
-                                tensor += func_cerruti_tensor(local, shear.force[i_p], poisson)
-                        traction = -(basis @ tensor @ basis.transpose() @ normal) * weight
-                        loads += shape.outer_product(traction)
+                                if not local[2] >= -epsilon:
+                                    qd.atomic_max(state.status[i_b], 3)
+                            local[2] = qd.max(local[2], 0.0)
+                            tensor = func_boussinesq_tensor(local, hertz.force[i_p], poisson)
+                            if qd.static(has_shear):
+                                if shear.force[i_p].norm() > 0:
+                                    tensor += func_cerruti_tensor(local, shear.force[i_p], poisson)
+                            traction = -(basis @ tensor @ basis.transpose() @ normal) * weight
+                            loads += shape.outer_product(traction)
                 for i, j in qd.static(qd.ndrange(6, 3)):
                     i_n = info.surface_nodes[i_f, i]
                     qd.atomic_add(stress_state.force[i_n, i_b][j], loads[i, j])

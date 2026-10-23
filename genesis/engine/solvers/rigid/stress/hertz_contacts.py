@@ -15,9 +15,15 @@ from genesis.utils.array_class import DataItem, DataKind, V, V_MAT, V_VEC, iter_
 from .contact import StressContactState
 from .curvature import StressCurvature
 from .data import StressInfo, StressState
+from .edge import StressEdgeState
 from .hard_binding import StressHardBinding, StressHardBindingState
 from .hertz import StressHertz, StressHertzState
-from .hertz_binding import StressFrictionBindingState, StressFrictionRegions, kernel_friction_bind, kernel_friction_commit
+from .hertz_binding import (
+    StressFrictionBindingState,
+    StressFrictionRegions,
+    kernel_friction_bind,
+    kernel_friction_commit,
+)
 from .hertz_friction import StressFrictionHistory, StressFrictionInput, StressFrictionState, func_friction_reset
 from .hertz_probes import StressHertzProbeState
 from .hertz_recovery import StressHertzFrames, StressHertzRecovery, StressHertzRecoveryState
@@ -44,6 +50,7 @@ class StressHertzContactState:
     force_error: qd.Tensor
     moment_error: qd.Tensor
     step_principal: qd.Tensor
+    step_sampled_vm: qd.Tensor
     observed_step: qd.Tensor
     sampled_active: qd.Tensor
     input_is_valid: qd.Tensor = of_kind(DataKind.SCRATCH)
@@ -108,6 +115,7 @@ class HertzContacts:
             force_error=V(dtype=gs.qd_float, shape=(n_regions, n_envs)),
             moment_error=V(dtype=gs.qd_float, shape=(n_regions, n_envs)),
             step_principal=V(dtype=gs.qd_float, shape=(n_envs,)),
+            step_sampled_vm=V(dtype=gs.qd_float, shape=(n_envs,)),
             observed_step=V(dtype=gs.qd_int, shape=(n_envs,)),
             sampled_active=V(dtype=gs.qd_bool, shape=(n_regions, n_envs)),
             input_is_valid=V(dtype=gs.qd_bool, shape=(n_envs,)),
@@ -212,7 +220,9 @@ class HertzContacts:
         self.recovery.scatter(self.law.state, stress, model.info, surface, options.poisson, epsilon, solver._errno)
         model.recover(omega, stress, options, history, surface_load=True, compute_peak=False)
         self.recovery.evaluate(self.law.state, stress, model, epsilon, solver._errno)
-        kernel_hertz_contact_peak(self.recovery.state.tensile_peak, self.law.state, stress, self.state)
+        kernel_hertz_contact_peak(
+            self.recovery.state.tensile_peak, self.law.state, self.hard.edge.state, stress, self.state
+        )
 
     def reset(self, envs_idx: torch.Tensor, contacts: StressContactState, is_restore: bool = False) -> None:
         self.hard.reset(envs_idx)
@@ -253,6 +263,7 @@ class HertzContacts:
         yield from iter_data(self.recovery.state, prefix + ".recovery")
         yield DataItem(prefix + ".probe_offsets", self.recovery.probe_offsets, DataKind.CONSTANT)
         yield DataItem(prefix + ".quadrature", self.recovery.quadrature, DataKind.CONSTANT)
+        yield DataItem(prefix + ".boundary_quadrature", self.recovery.boundary_quadrature, DataKind.CONSTANT)
         yield DataItem(prefix + ".edge_quadrature", self.recovery.edge_quadrature, DataKind.CONSTANT)
 
 
@@ -426,21 +437,31 @@ def kernel_hertz_contact_begin(i_step: int, state: StressHertzContactState, stre
         if state.observed_step[i_b] != i_step:
             func_begin_environment(i_b, stress)
             state.step_principal[i_b], state.observed_step[i_b] = -float("inf"), i_step
+            state.step_sampled_vm[i_b] = 0.0
         stress.step_valid[i_b] = stress.step_valid[i_b] and state.input_is_valid[i_b]
 
 
 @qd.kernel
 def kernel_hertz_contact_peak(
-    tensile: qd.Tensor, law: StressHertzState, stress: StressState, state: StressHertzContactState
+    tensile: qd.Tensor,
+    law: StressHertzState,
+    edge: StressEdgeState,
+    stress: StressState,
+    state: StressHertzContactState,
 ):
     for i_b in range(state.status.shape[0]):
         if stress.step_valid[i_b]:
             state.step_principal[i_b] = qd.max(state.step_principal[i_b], tensile[i_b])
+            state.step_sampled_vm[i_b] = qd.max(state.step_sampled_vm[i_b], stress.peak[i_b])
         else:
             state.step_principal[i_b] = float("nan")
+            state.step_sampled_vm[i_b] = float("nan")
     for i_c, i_b in qd.ndrange(state.sampled_active.shape[0], state.sampled_active.shape[1]):
         i_p = i_c * state.sampled_active.shape[1] + i_b
         state.sampled_active[i_c, i_b] = law.force[i_p] > 0 and stress.step_valid[i_b]
+        if state.sampled_active[i_c, i_b] and edge.status[i_p] == 0:
+            # The positive-depth probe bank cannot bound an ideal edge singularity.
+            qd.atomic_max(stress.step_peak[i_b], float("inf"))
 
 
 @qd.kernel
@@ -465,6 +486,7 @@ def kernel_hertz_contact_reset(
     for i_selected in range(envs_idx.shape[0]):
         i_b = envs_idx[i_selected]
         state.status[i_b], state.step_principal[i_b] = 0, float("nan")
+        state.step_sampled_vm[i_b] = float("nan")
         recovery.status[i_b], recovery.wrench_error[i_b], recovery.tensile_peak[i_b] = 1, 0.0, float("nan")
         regions.is_valid[i_b], state.input_is_valid[i_b], state.observed_step[i_b] = True, True, -1
         if not is_restore:
