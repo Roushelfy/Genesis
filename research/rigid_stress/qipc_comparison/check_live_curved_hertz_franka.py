@@ -104,6 +104,21 @@ def diagnose(workload, output, step, is_boundary_capture, is_hard_capture=False)
     regions = entry.hertz.regions.state
     friction = entry.hertz.friction
     np.savez_compressed(
+        output / f"elastic{step:04d}.npz",
+        valid=array(entry.state.valid),
+        step_valid=array(entry.state.step_valid),
+        recovery_status=array(entry.hertz.recovery.state.status),
+        displacement_m=array(entry.state.displacement),
+        regular_force_n=array(entry.state.force),
+        omega_per_s=array(entry.omega),
+        elements=array(entry.model.info.elements),
+        mass_modes=array(entry.model.info.mass_modes),
+        modes=array(entry.model.info.modes),
+        gram_inverse=array(entry.model.info.gram_inverse),
+        young_pa=entry.options.young,
+        poisson=entry.options.poisson,
+    )
+    np.savez_compressed(
         output / f"friction{step:04d}.npz",
         **{"input_" + field.name: array(vars(friction.input)[field.name]) for field in fields(friction.input)},
         **{"state_" + field.name: array(vars(friction.state)[field.name]) for field in fields(friction.state)},
