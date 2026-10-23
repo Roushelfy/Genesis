@@ -1,0 +1,30 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-201",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "742903",
+      "SLURM_ARRAY_JOB_ID": "742900",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-8cfc54d5-b6d6-385d-af83-7571c6ced3aa, 00000000:C1:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": null
+  },
+  "baseline": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-source-warps-timing-v1/group2/full/result.json",
+    "bytes": 23951272,
+    "sha256": "59611d05f06b1d6372b1a68496009e3c57b708ec4a222bb68e36c4a72c5cff04"
+  },
+  "candidate": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-traction-timing-v1/group2/full/result.json",
+    "bytes": 23950752,
+    "sha256": "5ea056a7aa9a61b879f247e35e18b7f25955449132e8eb8d49c69d4e05b9d04d"
+  },
+  "relative_tolerance": 1e-09,
+  "absolute_tolerance": 1e-12
+}

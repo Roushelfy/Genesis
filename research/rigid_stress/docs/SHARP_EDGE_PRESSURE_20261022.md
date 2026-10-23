@@ -1960,3 +1960,95 @@ task-path rebinding; archived output directories must remain immutable.
 All 54 frozen engine heads and 12 original unfinished files are preserved.
 Runtime arrays, logs and metadata remain under `/mnt/data/zhaofeng`; source,
 documentation and compact publication evidence stay in workspace.
+
+## Boundary traction vector contractions
+
+The B1024 profile of source f6c4ff2b0 identifies boundary traction as 61.85% of measured
+GPU kernel time (253.730 ms mean), combined-field evaluation as 28.90% (118.555 ms), and
+source resolution as 0.49% (2.029 ms). These are intrusive measurements from the same
+admitted 100--129 window. They identify the next optimization target separately from
+primary throughput.
+
+Candidate [e2979aed2](https://github.com/Roushelfy/Genesis/commit/e2979aed2a13125a5a3b092c9cb4dddb43de9291)
+changes only the association of `-(B @ S @ B.T @ n) * w` to
+`-(B @ (S @ (B.T @ n))) * w`. Here B is the contact basis, S the local Boussinesq/Cerruti
+tensor, n the surface normal and w the quadrature weight. Three matrix-vector products
+replace two matrix-matrix products followed by one matrix-vector product. The
+quadrature, pressure/friction laws, source geometry, reductions, state buffers and
+acceptance conditions remain unchanged. The complete-field output still forms its
+required global tensors.
+
+CPU64 and CUDA64 paired controls retain analytic/estimated curved normal recovery and
+supplied sharp/friction recovery. Both implementations pass the existing independent
+elasticity/quadrature readouts, full/max, refusal isolation, release and restoration
+checks. Ten output-file pairs compare every field: stress relative 1e-7 / absolute 1e-6 Pa,
+position/displacement absolute 1e-12 m, force absolute 1e-12 N and dimensionless fields
+absolute 1e-12; integer and mask outputs compare exactly. These controls verify the
+implementation on supplied loads. They add no independent contact-pressure qualification
+or 32-bit scene qualification.
+
+The largest direct paired stress difference is 5.96e-08 Pa, with relative L2 difference
+at most 4.331e-16. The near-zero wrench-residual diagnostic has relative differences up
+to 26.26%, while its largest absolute difference is 8.613e-14. Its original residual
+gate and the declared absolute comparison both pass. The ratio of two near-zero
+residuals is retained separately from stress error.
+
+| Batch | Engine | Traction kernel mean ms | Main combined-field kernel mean ms |
+| --- | --- | ---: | ---: |
+| 4 | baseline | 7.189 | 3.860 |
+| 4 | candidate | 6.939 | 3.858 |
+| 1024 | baseline | 255.455 | 119.473 |
+| 1024 | candidate | 245.834 | 119.549 |
+
+Each row pair shares a GPU allocation with source-private compiler caches. The
+baseline/candidate profiler results identify component changes; the following
+profiler-off wall-clock medians measure complete scenes, including runtime acceptance,
+controller, dispatch and final synchronization. Reset, pre-window history and
+audit/export remain outside timing. All modes use 64-bit precision and surface order 16,
+with 130-frame admission and three 100--129 timing repeats.
+
+| Batch | Engine | Pure rigid ms/step | Max ms/step | Full ms/step | Max/full env-step/s |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 4 | baseline | 2.582 | 26.279 | 26.345 | 152.21 / 151.83 |
+| 4 | candidate | 2.558 | 26.112 | 25.855 | 153.18 / 154.71 |
+| 1024 | baseline | 3.533 | 424.788 | 425.684 | 2410.62 / 2405.54 |
+| 1024 | candidate | 3.504 | 414.904 | 416.286 | 2468.04 / 2459.85 |
+
+At B4, max/full median scene-cost reductions are 0.633% / 1.859%. Candidate inclusive
+added costs over its own pure-rigid mode are 23.554 / 23.297 ms.
+
+At B1024, max/full median scene-cost reductions are 2.327% / 2.208%. Candidate inclusive
+added costs over its own pure-rigid mode are 411.399 / 412.781 ms.
+
+Candidate repeat ranges lie entirely below baseline for B1024 max and full.
+Both B4 repeat ranges overlap the paired baseline.
+
+These three repeat blocks supply no statistical confidence interval or portable speedup.
+B1024 tiles the four starting conditions 256 times. Its short admitted window remains
+separate from independently diverse populations, best-batch/memory limits and full-cycle
+admission. Primary max/full admit 360 timed environment steps each at B4 and 92,160 each
+at B1024. Complete public observations and repeated load/edge counts pass across the
+paired sources.
+
+The separate 130-frame full capture retains all 52 fields and identical discrete statuses.
+Original raw 1e-9 relative/1e-12 absolute comparisons still fail for probe barycentrics
+in 128 frames, probe tensors in 126 and corner tensors in 128. Their maximum absolute
+differences are 3.45e-12, 5.952e-05, 5.215e-08 respectively (the tensor values are in
+Pa). Probe/corner tensor relative L2 differences are at most 1.039e-12 / 4.102e-15.
+Arithmetic order changes in the traction contraction, and the complete scene also
+retains upstream curvature/probe-coordinate differences. These raw failures remain
+visible alongside the passing direct recovery and public output checks; no assertion is
+relaxed.
+
+A continuous 429-step run again admits frames 0--427 and reproduces the original frame 428
+refusal. The sharp-edge singularity, unsupported contact-wrench boundary and independent
+complete-shell physical-error requirements remain unchanged.
+
+The [traction-vector packet](../evidence/20261019-qualified-ranking/hard-traction-vectors-v1/README.md)
+retains the initial profile, paired controls/profiles/timings, complete-field
+differences and original refusal. Captured task and workload scripts record the executed
+source and arguments. A missing tracked root file in the initial sparse checkout was
+detected before submission; that partial capture and the verified cone-mode repair are
+retained. All 55 frozen source heads and 12 original unfinished files are preserved.
+Runtime data/logs remain under the established data root, and the measured native source
+is pinned separately from the original task engine baseline.

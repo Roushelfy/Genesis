@@ -1,0 +1,106 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "mode": "rigid",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-traction-timing-v1/group1/baseline/rigid-b1024-audit.npz",
+        "bytes": 15060,
+        "sha256": "e126f950ba83c8204078a89f99669bc1d2b8cc747b723a10e8e1914d9779da81"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-traction-timing-v1/group1/candidate/rigid-b1024-audit.npz",
+        "bytes": 15060,
+        "sha256": "e126f950ba83c8204078a89f99669bc1d2b8cc747b723a10e8e1914d9779da81"
+      },
+      "frames": 130,
+      "batch": 1024,
+      "repeated_count_audits": [
+        {
+          "result": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-traction-timing-v1/group1/baseline/result.json",
+            "bytes": 4386,
+            "sha256": "88faddd2bc36fbf8beb851d48c84914cc80f319615273de01c8c373a668d1b8d"
+          },
+          "repeats": 3
+        },
+        {
+          "result": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-traction-timing-v1/group1/candidate/result.json",
+            "bytes": 4382,
+            "sha256": "9d42313944bc6e6eea4e1439dfe196bf5d9ccedb2682927e73403aae2dbe9613"
+          },
+          "repeats": 3
+        }
+      ]
+    },
+    {
+      "mode": "max",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-traction-timing-v1/group1/baseline/max-b1024-audit.npz",
+        "bytes": 221604,
+        "sha256": "923cb0a337890e837c63fcc0f4d4c6ecc04fa42bfc7883ba0e2ed5d8221c8061"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-traction-timing-v1/group1/candidate/max-b1024-audit.npz",
+        "bytes": 222135,
+        "sha256": "c7147373cada2a0601878852b2fa7402d5398293d81390e008e0ec51ee68a357"
+      },
+      "frames": 130,
+      "batch": 1024,
+      "repeated_count_audits": [
+        {
+          "result": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-traction-timing-v1/group1/baseline/result.json",
+            "bytes": 4386,
+            "sha256": "88faddd2bc36fbf8beb851d48c84914cc80f319615273de01c8c373a668d1b8d"
+          },
+          "repeats": 3
+        },
+        {
+          "result": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-traction-timing-v1/group1/candidate/result.json",
+            "bytes": 4382,
+            "sha256": "9d42313944bc6e6eea4e1439dfe196bf5d9ccedb2682927e73403aae2dbe9613"
+          },
+          "repeats": 3
+        }
+      ]
+    },
+    {
+      "mode": "full",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-traction-timing-v1/group1/baseline/full-b1024-audit.npz",
+        "bytes": 224974,
+        "sha256": "50eee2a0d5309e6af8f0ae4e69e35a62d5ba3d6e625c53167fe0ab40c81b1c38"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-traction-timing-v1/group1/candidate/full-b1024-audit.npz",
+        "bytes": 223178,
+        "sha256": "b1ee0fe3ec2bdf8801e79eee515894ae9c7faddec4d2619876922d80a1efddc5"
+      },
+      "frames": 130,
+      "batch": 1024,
+      "repeated_count_audits": [
+        {
+          "result": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-traction-timing-v1/group1/baseline/result.json",
+            "bytes": 4386,
+            "sha256": "88faddd2bc36fbf8beb851d48c84914cc80f319615273de01c8c373a668d1b8d"
+          },
+          "repeats": 3
+        },
+        {
+          "result": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-traction-timing-v1/group1/candidate/result.json",
+            "bytes": 4382,
+            "sha256": "9d42313944bc6e6eea4e1439dfe196bf5d9ccedb2682927e73403aae2dbe9613"
+          },
+          "repeats": 3
+        }
+      ]
+    }
+  ],
+  "scope": "Existing paired-timer public checks across engine sources: position absolute 1e-12m, stress relative 1e-7/absolute 1e-6Pa, exact validity/load/edge/status masks and infinite maxima. Separate raw full-field diagnostics retain their original criteria and outcomes.",
+  "whole_goal_complete": false
+}

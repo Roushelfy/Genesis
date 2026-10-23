@@ -22,20 +22,23 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     for name in ["stress-mesh", "collision-urdf", "conditions", "output"]:
         cli.add_argument("--" + name, type=Path, required=True)
+    cli.add_argument("--batch", type=int, default=4)
     cli.add_argument("--planar-stages", action="store_true")
     args = cli.parse_args()
+    assert args.batch > 0
     args.output.mkdir(parents=True, exist_ok=False)
     write_json(
         args.output / "start.json",
         {
             "identity": runtime_identity(),
             "inputs": [file_id(path) for path in [args.stress_mesh, args.collision_urdf, args.conditions]],
+            "batch": args.batch,
             "planar_stage_probes": args.planar_stages,
-            "scope": "Separate intrusive CPU/kernel profile of the original B4 max scene, steps100..129 after full0..129 admission. Same native runtime checks and controller; no numerical producer is replaced. Use the profiler-off paired timer for throughput.",
+            "scope": "Separate intrusive CPU/kernel profile of the moving max scene, steps100..129 after full0..129 admission. Larger batches tile the condition bank. Same native runtime checks and controller; no numerical producer is replaced. Use the profiler-off paired timer for throughput.",
         },
     )
     gs.init(backend=gs.cuda, precision="64", seed=623016, logging_level="warning")
-    workload = build_workload(args, 4, "max")
+    workload = build_workload(args, args.batch, "max")
     snapshots = []
     for step in range(130):
         workload.step()
@@ -91,7 +94,7 @@ def main():
         {
             "passed": True,
             "primary_timing": False,
-            "batch": 4,
+            "batch": args.batch,
             "steps": 30,
             "planar_stage_probes": probe_result,
             "instrumented_seconds_per_scene_step": elapsed / 30,

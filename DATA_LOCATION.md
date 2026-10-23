@@ -1,5 +1,17 @@
 # Rigid-stress data and artifact locations
 
+The `hard-traction-vectors-v1` packet retains 290 compact payloads (1,921,637 bytes) and
+352 external receipts from four terminal campaigns. Initial B1024 profiling, paired
+normal/sharp recovery, B4/B1024 profiling/timing, full-field captures and frame428
+replay remain in the data root below under `hard-large-profile-v1`,
+`hard-traction-controls-v2`, `hard-traction-profile-v1` and `hard-traction-timing-v1`.
+The unsubmitted `hard-traction-controls-v1` partial capture remains in place. Source
+`hard_contact_traction_vectors` is pinned in workspace at e2979aed2. All55 source heads
+and12 original unfinished files are preserved. Scientific work used Slurm `rtx-mid`,
+image `1_26`, the existing data-side environment and source-private node caches.
+Source/docs and compact evidence stay in workspace; no new home fallback output or
+environment migration occurred.
+
 The `hard-batch-scaling-v1` packet retains 158 compact payloads
 (1,057,402 bytes) and 22 external receipts from two completed campaigns.
 Primary B256/B1024 timings, fresh-process GPU polls, audits and logs remain in
