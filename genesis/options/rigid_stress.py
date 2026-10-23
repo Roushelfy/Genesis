@@ -127,12 +127,16 @@ class RigidStressOptions(Options):
     wrench instead of reducing it again from all nodes. Overflow retains the
     complete nodal reduction. ``contact_moment_reuse`` integrates current-step
     P2 load moments alongside the pressure Gram matrix. Strictly positive
-    affine pressures reuse those moments; constrained, refined and overflowing
-    cases retain complete sampling. It needs CUDA cooperative pressure and
-    face scatter, adds 217 bytes per task capacity, and assumes no contact
-    history. ``packed_block_size`` selects the CUDA inverse block size;
+    affine pressures reuse those moments, including refined supports. Contained
+    Hertz disks use exact moments; clipped and constrained pressures retain
+    their complete integration, with the original overflow fallback. Reuse
+    trades 218 bytes per task capacity for lower repeated integration cost,
+    requires CUDA cooperative pressure and face scatter, and stores no contact
+    history. It defaults on for automatic-radius Hertz pressure at every batch
+    size and for other profiles above 8,192 environments; disable it to compare
+    integration cost. ``packed_block_size`` selects the CUDA inverse block size;
     ``coalesced_residual`` changes only the complete residual row scheduling.
-    These four options default to their original routes below 8,192 environments
+    The wrench, block-size and residual options use their original routes below 8,192 environments
     and enable their large-batch routes above that size. Set explicit values
     to compare scheduling. All options are fixed when building the scene.
 
