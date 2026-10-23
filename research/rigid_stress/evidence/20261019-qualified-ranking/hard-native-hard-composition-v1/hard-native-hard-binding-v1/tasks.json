@@ -1,0 +1,24 @@
+[
+  [
+    {
+      "name": "binding",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hard_binding",
+      "args": [
+        "--backend",
+        "cpu",
+        "--frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-refined-v1/group0/franka/frame0106.npz",
+        "--boundaries",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-refined-v1/group0/franka/boundaries0106.npz",
+        "--geometry",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-refined-v1/group0/franka/geometry0106.npz",
+        "--raw-contacts",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-refined-v1/group0/franka/contacts0106.npz",
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-law-update-v1/group0/update2/source-geometry.json"
+      ]
+    }
+  ]
+]

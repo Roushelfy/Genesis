@@ -11,22 +11,26 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current goal and verified scope
 
-The latest [native sharp-edge geometry and force allocation](docs/SHARP_EDGE_PRESSURE_20261022.md#native-edge-geometry-and-force-allocation)
-components pass CPU/GPU64 controls. Connected material-edge minima agree with
-the independent search within0.206nm. A six-coordinate native force allocation
-matches independent constrained minima within3.36e-10 relative after3--4 updates.
-Resident B1/64/1024 allocation costs0.198/0.199/0.217ms, excluding geometry and
-full recovery. Actual sharp-edge scene binding and admitted complete throughput
-remain open; these component results do not close the goal.
+The latest [native hard-input and complete-field controls](docs/SHARP_EDGE_PRESSURE_20261022.md#native-hard-inputs-and-complete-field-composition)
+pass CPU/GPU64. Five actual collision samples form three physical pressure
+regions, with original total wrench, sample-merge invariance, world-frame
+invariance, isolation and partial resets verified. A cone-boundary instability
+is repaired by dual-objective backtracking. Native complete-field composition
+agrees with the same approximate offline model within4.87e-6 volume tensor and
+1.30e-5 near-probe tensor difference; max/full sampled peaks agree. Ideal sharp
+edges remain singular, and finite probe depths are explicit. Main scene
+acceptance/friction composition, independent physical errors and admitted paired
+scene throughput remain open. The actual Franka frame106 passes the new input
+component but still fails the original main stress path.
 
-The latest [contact-application and updated-support study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)
+The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)
 identifies the ground's184micrometre offset as the collider's half-penetration
-application point. With refined collision geometry and samples grouped by
-physical region, a wrench/cone-compatible load correction changes volume/near
-fields by2.68%/1.79% after support updates, within the5% sensitivity budget.
-This is one captured-frame model comparison, not independent physical accuracy.
-Native edge binding and accepted max/full scene throughput remain open; all
-three tested native Franka variants still refuse at106.
+application point. Refined collision geometry and grouped sources reduce the
+updated-load volume/near-field sensitivity to2.68%/1.79%, within the5% budget.
+This is a captured-frame model comparison. The earlier
+[native geometry/allocation measurements](docs/SHARP_EDGE_PRESSURE_20261022.md#native-edge-geometry-and-force-allocation)
+retain component costs for the allocator before backtracking; they exclude
+input processing and complete scene recovery.
 
 The latest [remote-edge quadrature and load-allocation study](docs/SHARP_EDGE_PRESSURE_20261022.md#remote-field-quadrature-and-paired-component-cost)
 reduces65,536 native64-bit particular-tensor queries from2.83ms to1.25ms in a

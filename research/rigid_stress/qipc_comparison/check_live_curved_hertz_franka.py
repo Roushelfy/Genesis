@@ -61,10 +61,62 @@ def kernel_boundary_diagnostic(
                 output[i_b, i_c, side, 12 + j] = direction[j]
 
 
-def diagnose(workload, output, step, is_boundary_capture):
+def hard_snapshot(module):
+    return {
+        "active": array(module.state.is_active),
+        "status": array(module.state.status),
+        "profile": array(module.state.profile),
+        "geometry_status": array(module.state.geometry_status),
+        "leader": array(module.state.leader),
+        "source_count": array(module.state.source_count),
+        "force_n": array(module.state.force),
+        "original_moment_nm": array(module.state.original_moment),
+        "minimum_m": array(module.state.minimum),
+        "geometry_basis": array(module.state.basis),
+        "center_m": array(module.frames.center),
+        "basis": array(module.frames.basis),
+        "anchor": array(module.frames.anchor),
+        "axes_m": array(module.hertz.state.axes),
+        "normal_force_n": array(module.hertz.state.force),
+        "direction": array(module.hertz.state.direction),
+        "amplitude_pa": array(module.hertz.state.peak_pressure),
+        "edge_exponent": array(module.edge.state.exponent),
+        "edge_status": array(module.edge.state.status),
+        "hertz_status": array(module.hertz.state.status),
+        "force_error": array(module.state.force_error),
+        "moment_error": array(module.state.moment_error),
+        "cone_margin": array(module.state.cone_margin),
+        "allocation_status": array(module.allocation.state.status),
+        "maximum_change": array(module.allocation.state.maximum_change),
+    }
+
+
+def diagnose(workload, output, step, is_boundary_capture, is_hard_capture=False):
     solver = workload.scene.rigid_solver
     entry = solver.stress_recovery.links[0]
     regions = entry.hertz.regions.state
+    if is_hard_capture:
+        hard = hard_snapshot(entry.hertz.hard)
+        np.savez_compressed(output / f"hard{step:04d}.npz", **hard)
+        write_json(
+            output / f"hard{step:04d}.json",
+            {
+                key: hard[key].tolist()
+                for key in [
+                    "active",
+                    "status",
+                    "profile",
+                    "geometry_status",
+                    "leader",
+                    "source_count",
+                    "force_error",
+                    "moment_error",
+                    "cone_margin",
+                    "allocation_status",
+                    "maximum_change",
+                ]
+            },
+        )
     collider = solver.collider.collider_state
     contacts = collider.contact_data
     np.savez_compressed(
@@ -175,6 +227,7 @@ def main():
     cli.add_argument("--substeps", type=int, default=1)
     cli.add_argument("--diagnose", action="store_true")
     cli.add_argument("--boundary-planes", action="store_true")
+    cli.add_argument("--hard-inputs", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -225,13 +278,13 @@ def main():
             rows.append(capture(workload, args.output, step))
             if args.diagnose:
                 write_json(args.output / "result.json", {"passed": False, "rows": rows, "whole_goal_complete": False})
-                diagnose(workload, args.output, step, args.boundary_planes)
+                diagnose(workload, args.output, step, args.boundary_planes, args.hard_inputs)
             raise
         rows.append(capture(workload, args.output, step))
         write_json(args.output / "progress.json", {"rows": rows})
         if args.diagnose and not all(rows[-1]["accepted"]):
             write_json(args.output / "result.json", {"passed": False, "rows": rows, "whole_goal_complete": False})
-            diagnose(workload, args.output, step, args.boundary_planes)
+            diagnose(workload, args.output, step, args.boundary_planes, args.hard_inputs)
             raise AssertionError(f"First invalid stress observation at step {step}")
     assert any(any(row["loaded"]) for row in rows)
     assert all(all(row["accepted"]) for row in rows)

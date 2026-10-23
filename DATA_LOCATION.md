@@ -1152,3 +1152,13 @@ complete numerical arrays and component timing outputs stay under data. The
 isolated `hard_contact_edge_geometry` source is frozen at6c2e887be, with its
 geometry-only ancestor f57245943 retained. All30 frozen heads and12 original
 unfinished files are preserved; Slurm/image/environment/cache policy is unchanged.
+
+Native hard-input binding and complete-field composition use
+`hard-native-hard-binding-v1/v2/v3`, `hard-native-hard-recovery-v3/v4/v5` and
+`hard-native-hard-stability-v1/v2` under the same data run. The
+`hard-native-hard-composition-v1` packet keeps compact sources, terminal records,
+failures and hashed external arrays. All full fields, raw captures and logs
+remain under data. The isolated binding/recovery/stability sources are frozen
+at58c18847e/edcffa58b/8324e7d53. All33 frozen heads and12 original unfinished
+files are preserved. Slurm `rtx-mid`, image `1_26`, the existing data-side Python
+environment and private node caches remain in use. There are no data migrations.
