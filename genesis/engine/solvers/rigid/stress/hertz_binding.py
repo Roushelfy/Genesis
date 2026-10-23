@@ -6,7 +6,6 @@ from typing import ClassVar
 import quadrants as qd
 
 import genesis as gs
-from genesis.utils import geom
 from genesis.utils.array_class import DataKind, ErrorCode
 
 from .contact import StressContactState
@@ -14,11 +13,25 @@ from .data import StressInfo
 from .hertz import StressHertzState
 from .hertz_friction import StressFrictionInput, StressFrictionState
 from .hertz_recovery import StressHertzFrames
-from .hertz_regions import StressHertzRegionState
 from .hertz_tangential import StressHertzShear
 from .provenance import StressSourceState
 from .surface import StressSurfaceInfo
 from .surface_walk import func_projected_surface_walk
+
+
+@dataclass(frozen=True)
+class StressFrictionRegions:
+    """Carry grouped material forces and pressure profiles into tangential recovery.
+
+    Profile1 uses radial Hertz memory. Profile2 uses proportional edge shear.
+    """
+
+    kind: ClassVar[DataKind] = DataKind.SCRATCH
+
+    force: qd.Tensor
+    source_count: qd.Tensor
+    leader: qd.Tensor
+    profile: qd.Tensor
 
 
 @dataclass(frozen=True)
@@ -38,7 +51,7 @@ class StressFrictionBindingState:
 def kernel_friction_bind(
     contacts: StressContactState,
     sources: StressSourceState,
-    regions: StressHertzRegionState,
+    regions: StressFrictionRegions,
     law: StressHertzState,
     frames: StressHertzFrames,
     binding: StressFrictionBindingState,
@@ -69,8 +82,7 @@ def kernel_friction_bind(
             basis = frames.basis[i_p] @ qd.Matrix(
                 [[direction[0], -direction[1], 0.0], [direction[1], direction[0], 0.0], [0.0, 0.0, 1.0]]
             )
-            force = geom.qd_inv_transform_by_quat(regions.force[i_c, i_b], contacts.frame_quaternion[i_b])
-            tangent = basis.transpose() @ force
+            tangent = basis.transpose() @ regions.force[i_c, i_b]
             friction = contacts.friction[i_c, i_b]
             is_compatible = True
             for i_s in range(contacts.valid.shape[0]):
@@ -78,51 +90,55 @@ def kernel_friction_bind(
                     is_compatible = is_compatible and qd.abs(contacts.friction[i_s, i_b] - friction) <= (
                         64 * epsilon * qd.max(1.0, friction)
                     )
-            inputs.radius[i_p], inputs.normal[i_p], inputs.friction[i_p] = law.axes[i_p][0], law.force[i_p], friction
-            inputs.force[i_p], shear.force[i_p] = (
-                qd.Vector([tangent[0], tangent[1]]),
-                qd.Vector([tangent[0], tangent[1]]),
-            )
+            shear.force[i_p] = qd.Vector([tangent[0], tangent[1]])
             shear.friction[i_p] = friction
             inputs.is_valid[i_p] = is_compatible and not binding.is_lost[i_b] and law.status[i_p] == 0
-            i_previous, n_candidates = -1, 0
-            for i_s in range(contacts.valid.shape[0]):
-                i_old = i_s * contacts.valid.shape[1] + i_b
-                if (
-                    binding.radius[i_old] > 0
-                    and binding.geom[i_old] == sources.geom[i_c, i_b]
-                    and binding.pair[i_old] == sources.pair[i_c, i_b]
-                    and binding.basis[i_old][:, 2].dot(basis[:, 2]) > 0
-                    and (binding.center[i_old] - frames.center[i_p]).norm() <= binding.radius[i_old] + law.axes[i_p][0]
-                ):
-                    i_previous, n_candidates = i_old, n_candidates + 1
-            if n_candidates == 1:
-                anchor, barycentric, position = func_projected_surface_walk(
-                    binding.anchor[i_previous],
-                    binding.center[i_previous],
-                    frames.center[i_p] - binding.center[i_previous],
-                    -basis[:, 2],
-                    info,
-                    surface,
-                    epsilon,
+            if regions.profile[i_c, i_b] == 1:
+                inputs.radius[i_p], inputs.normal[i_p], inputs.friction[i_p] = (
+                    law.axes[i_p][0],
+                    law.force[i_p],
+                    friction,
                 )
-                is_continuous = anchor >= 0 and (position - frames.center[i_p]).norm() <= (
-                    1e-10 * qd.max(binding.radius[i_previous], law.axes[i_p][0])
-                )
-                inputs.is_valid[i_p] = inputs.is_valid[i_p] and is_continuous
-                inputs.previous_index[i_p], inputs.is_reset[i_p] = i_previous, False
-                # Minimal normal rotation transports the old material tangent.
-                previous_normal, normal = binding.basis[i_previous][:, 2], basis[:, 2]
-                cross = previous_normal.cross(normal)
-                previous_tangent = binding.basis[i_previous][:, 0]
-                transported = (
-                    previous_tangent
-                    + cross.cross(previous_tangent)
-                    + cross.cross(cross.cross(previous_tangent)) / (1 + previous_normal.dot(normal))
-                )
-                inputs.angle[i_p] = qd.atan2(transported.dot(basis[:, 1]), transported.dot(basis[:, 0]))
-            elif n_candidates > 1:
-                inputs.is_valid[i_p] = False
+                inputs.force[i_p] = shear.force[i_p]
+                i_previous, n_candidates = -1, 0
+                for i_s in range(contacts.valid.shape[0]):
+                    i_old = i_s * contacts.valid.shape[1] + i_b
+                    if (
+                        binding.radius[i_old] > 0
+                        and binding.geom[i_old] == sources.geom[i_c, i_b]
+                        and binding.pair[i_old] == sources.pair[i_c, i_b]
+                        and binding.basis[i_old][:, 2].dot(basis[:, 2]) > 0
+                        and (binding.center[i_old] - frames.center[i_p]).norm()
+                        <= binding.radius[i_old] + law.axes[i_p][0]
+                    ):
+                        i_previous, n_candidates = i_old, n_candidates + 1
+                if n_candidates == 1:
+                    anchor, barycentric, position = func_projected_surface_walk(
+                        binding.anchor[i_previous],
+                        binding.center[i_previous],
+                        frames.center[i_p] - binding.center[i_previous],
+                        -basis[:, 2],
+                        info,
+                        surface,
+                        epsilon,
+                    )
+                    is_continuous = anchor >= 0 and (position - frames.center[i_p]).norm() <= (
+                        1e-10 * qd.max(binding.radius[i_previous], law.axes[i_p][0])
+                    )
+                    inputs.is_valid[i_p] = inputs.is_valid[i_p] and is_continuous
+                    inputs.previous_index[i_p], inputs.is_reset[i_p] = i_previous, False
+                    # Minimal normal rotation transports the old material tangent.
+                    previous_normal, normal = binding.basis[i_previous][:, 2], basis[:, 2]
+                    cross = previous_normal.cross(normal)
+                    previous_tangent = binding.basis[i_previous][:, 0]
+                    transported = (
+                        previous_tangent
+                        + cross.cross(previous_tangent)
+                        + cross.cross(cross.cross(previous_tangent)) / (1 + previous_normal.dot(normal))
+                    )
+                    inputs.angle[i_p] = qd.atan2(transported.dot(basis[:, 1]), transported.dot(basis[:, 0]))
+                elif n_candidates > 1:
+                    inputs.is_valid[i_p] = False
     for i_c, i_b in qd.ndrange(contacts.valid.shape[0], contacts.valid.shape[1]):
         i_p = i_c * contacts.valid.shape[1] + i_b
         i_previous = inputs.previous_index[i_p]
@@ -139,7 +155,7 @@ def kernel_friction_bind(
 def kernel_friction_commit(
     contacts: StressContactState,
     sources: StressSourceState,
-    regions: StressHertzRegionState,
+    regions: StressFrictionRegions,
     law: StressHertzState,
     frames: StressHertzFrames,
     binding: StressFrictionBindingState,
@@ -162,7 +178,7 @@ def kernel_friction_commit(
         i_p = i_c * contacts.valid.shape[1] + i_b
         binding.radius[i_p], binding.anchor[i_p] = 0.0, -1
         binding.geom[i_p], binding.pair[i_p] = -1, -1
-        if regions.source_count[i_c, i_b] > 0 and inputs.is_valid[i_p] and friction.status[i_p] <= 1:
+        if regions.profile[i_c, i_b] == 1 and inputs.is_valid[i_p] and friction.status[i_p] == 0:
             binding.radius[i_p], binding.anchor[i_p] = law.axes[i_p][0], frames.anchor[i_p]
             binding.geom[i_p], binding.pair[i_p] = sources.geom[i_c, i_b], sources.pair[i_c, i_b]
             binding.center[i_p] = frames.center[i_p]

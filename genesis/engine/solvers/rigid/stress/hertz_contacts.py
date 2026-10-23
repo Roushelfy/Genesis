@@ -3,28 +3,28 @@
 from dataclasses import dataclass
 from typing import ClassVar, NamedTuple, TYPE_CHECKING
 
-import quadrants as qd
 import torch
+
+import quadrants as qd
 
 import genesis as gs
 from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils import array_class, geom
-from genesis.utils.array_class import DataKind, DataItem, V, V_MAT, V_VEC, iter_data, of_kind
+from genesis.utils.array_class import DataItem, DataKind, V, V_MAT, V_VEC, iter_data, of_kind
 
 from .contact import StressContactState
 from .curvature import StressCurvature
 from .data import StressInfo, StressState
+from .hard_binding import StressHardBinding, StressHardBindingState
 from .hertz import StressHertz, StressHertzState
-from .hertz_binding import StressFrictionBindingState, kernel_friction_bind, kernel_friction_commit
+from .hertz_binding import StressFrictionBindingState, StressFrictionRegions, kernel_friction_bind, kernel_friction_commit
 from .hertz_friction import StressFrictionHistory, StressFrictionInput, StressFrictionState, func_friction_reset
-from .hertz_tangential import StressHertzShear
-from .lifecycle import func_begin_environment
-from .hertz_recovery import StressHertzFrames, StressHertzRecovery
-from .hertz_recovery import StressHertzRecoveryState
 from .hertz_probes import StressHertzProbeState
+from .hertz_recovery import StressHertzFrames, StressHertzRecovery, StressHertzRecoveryState
 from .hertz_regions import StressHertzRegions, StressHertzRegionState
+from .hertz_tangential import StressHertzShear
 from .history import StressHistory
-from .hard_binding import StressHardBinding
+from .lifecycle import func_begin_environment
 from .model import StressModel
 from .provenance import StressSourceState, StressSourceStatus, create_sources, kernel_resolve_sources
 from .source_vertices import StressSourceVertices, kernel_bind_source_vertices
@@ -57,11 +57,13 @@ class StressHertzProbeField(NamedTuple):
 
 
 class HertzContacts:
-    """Locally planar Hertz stress with continuous radial vector friction memory.
+    """Recover smooth Hertz and slender sharp-edge stresses from current rigid contacts.
 
-    Collision provenance and a material surface walk bind physical histories.
-    Ambiguous correspondence, free couples and unresolved loads invalidate the
-    observation. The radial law is an approximation for changing footprints.
+    Smooth contacts use continuous radial vector friction memory. Sharp edges use
+    grouped, wrench-compatible pressure estimates with proportional shear and
+    finite-depth probes. Collision provenance and connected material surface
+    walks bind each physical region. Failed geometry, load allocation or history
+    correspondence invalidates the observation.
     """
 
     def __init__(self, link: "RigidLink", contacts: StressContactState, info: StressInfo, options: RigidStressOptions):
@@ -72,6 +74,12 @@ class HertzContacts:
         self.regions = StressHertzRegions(contacts)
         self.law = StressHertz(n_regions * n_envs)
         self.hard = StressHardBinding(contacts, info)
+        self.friction_regions = StressFrictionRegions(
+            force=V_VEC(3, dtype=gs.qd_float, shape=(n_regions, n_envs)),
+            source_count=V(dtype=gs.qd_int, shape=(n_regions, n_envs)),
+            leader=V(dtype=gs.qd_int, shape=(n_regions, n_envs)),
+            profile=V(dtype=gs.qd_int, shape=(n_regions, n_envs)),
+        )
         self.friction = StressFrictionHistory(n_regions * n_envs)
         self.shear = StressHertzShear(
             friction=V(dtype=gs.qd_float, shape=(n_regions * n_envs,)),
@@ -88,7 +96,12 @@ class HertzContacts:
             is_lost=V(dtype=gs.qd_bool, shape=(n_envs,)),
         )
         self.recovery = StressHertzRecovery(
-            n_envs, n_regions, output_mode=options.output_mode, moving_probes=True, shear=self.shear
+            n_envs,
+            n_regions,
+            output_mode=options.output_mode,
+            moving_probes=True,
+            shear=self.shear,
+            edge=self.hard.edge.state,
         )
         self.state = StressHertzContactState(
             status=V(dtype=gs.qd_int, shape=(n_envs,)),
@@ -152,12 +165,22 @@ class HertzContacts:
         )
         self.law.update()
         kernel_hertz_contact_accept(
-            contacts, self.regions.state, self.law.state, self.recovery.frames, self.state, solver._errno
+            contacts,
+            self.regions.state,
+            self.hard.state,
+            self.hard.allocation.state.original,
+            self.hard.hertz.state,
+            self.hard.frames,
+            self.law.state,
+            self.recovery.frames,
+            self.friction_regions,
+            self.state,
+            solver._errno,
         )
         kernel_friction_bind(
             contacts,
             self.sources,
-            self.regions.state,
+            self.friction_regions,
             self.law.state,
             self.recovery.frames,
             self.binding,
@@ -173,7 +196,7 @@ class HertzContacts:
         kernel_friction_commit(
             contacts,
             self.sources,
-            self.regions.state,
+            self.friction_regions,
             self.law.state,
             self.recovery.frames,
             self.binding,
@@ -203,6 +226,7 @@ class HertzContacts:
             self.state,
             self.recovery.state,
             self.recovery.probes,
+            self.friction_regions,
             self.binding,
             self.friction.input,
             self.friction.state,
@@ -220,6 +244,7 @@ class HertzContacts:
         yield from iter_data(self.law.state, prefix + ".law.state")
         yield from self.hard.data(prefix + ".hard")
         yield from iter_data(self.state, prefix + ".state")
+        yield from iter_data(self.friction_regions, prefix + ".friction_regions")
         yield from iter_data(self.binding, prefix + ".binding")
         yield from self.friction.data(prefix + ".friction")
         yield from iter_data(self.shear, prefix + ".shear")
@@ -228,6 +253,7 @@ class HertzContacts:
         yield from iter_data(self.recovery.state, prefix + ".recovery")
         yield DataItem(prefix + ".probe_offsets", self.recovery.probe_offsets, DataKind.CONSTANT)
         yield DataItem(prefix + ".quadrature", self.recovery.quadrature, DataKind.CONSTANT)
+        yield DataItem(prefix + ".edge_quadrature", self.recovery.edge_quadrature, DataKind.CONSTANT)
 
 
 @qd.kernel
@@ -312,14 +338,60 @@ def kernel_hertz_contact_inputs(
 def kernel_hertz_contact_accept(
     contacts: StressContactState,
     regions: StressHertzRegionState,
+    hard: StressHardBindingState,
+    original: qd.Tensor,
+    hard_law: StressHertzState,
+    hard_frames: StressHertzFrames,
     law: StressHertzState,
     frames: StressHertzFrames,
+    friction_regions: StressFrictionRegions,
     state: StressHertzContactState,
     errno: qd.Tensor,
 ):
+    for i_b in range(state.status.shape[0]):
+        if hard.is_active[i_b]:
+            state.status[i_b] = 0 if hard.status[i_b] == 0 else 32
     for i_c, i_b in qd.ndrange(regions.status.shape[0], regions.status.shape[1]):
-        if regions.source_count[i_c, i_b] > 0:
-            i_p = i_c * regions.status.shape[1] + i_b
+        i_p = i_c * regions.status.shape[1] + i_b
+        friction_regions.force[i_c, i_b] = geom.qd_inv_transform_by_quat(
+            regions.force[i_c, i_b], contacts.frame_quaternion[i_b]
+        )
+        friction_regions.source_count[i_c, i_b] = regions.source_count[i_c, i_b]
+        friction_regions.leader[i_c, i_b] = regions.leader[i_c, i_b]
+        friction_regions.profile[i_c, i_b] = 1 if regions.source_count[i_c, i_b] > 0 else 0
+        if hard.is_active[i_b]:
+            friction_regions.source_count[i_c, i_b], friction_regions.profile[i_c, i_b] = 0, 0
+            friction_regions.leader[i_c, i_b] = hard.leader[i_c, i_b]
+            friction_regions.force[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
+            law.force[i_p], law.status[i_p], law.peak_pressure[i_p], law.indentation[i_p] = 0, 1, 0, 0
+            law.axes[i_p], law.direction[i_p] = qd.Vector.zero(gs.qd_float, 2), qd.Vector([1.0, 0.0])
+            frames.anchor[i_p], frames.center[i_p] = -1, qd.Vector([float("nan")] * 3)
+            state.force_error[i_c, i_b], state.moment_error[i_c, i_b] = 0, 0
+            contacts.status[i_c, i_b] = 0
+            if hard.status[i_b] == 0:
+                friction_regions.source_count[i_c, i_b] = hard.source_count[i_c, i_b]
+                if hard.source_count[i_c, i_b] > 0:
+                    force = hard.force[i_c, i_b]
+                    friction_regions.force[i_c, i_b], friction_regions.profile[i_c, i_b] = force, hard.profile[i_c, i_b]
+                    law.force[i_p], law.status[i_p] = hard_law.force[i_p], hard_law.status[i_p]
+                    law.axes[i_p], law.direction[i_p] = hard_law.axes[i_p], hard_law.direction[i_p]
+                    law.peak_pressure[i_p], law.indentation[i_p] = (
+                        hard_law.peak_pressure[i_p],
+                        hard_law.indentation[i_p],
+                    )
+                    law.curvature[i_p] = hard_law.curvature[i_p]
+                    frames.anchor[i_p], frames.center[i_p], frames.basis[i_p] = (
+                        hard_frames.anchor[i_p],
+                        hard_frames.center[i_p],
+                        hard_frames.basis[i_p],
+                    )
+                    state.force_error[i_c, i_b] = (force - original[i_c, i_b]).norm()
+                    state.moment_error[i_c, i_b] = (
+                        frames.center[i_p].cross(force) - hard.original_moment[i_c, i_b]
+                    ).norm()
+            elif contacts.valid[i_c, i_b] and contacts.force[i_c, i_b].norm() > 0:
+                contacts.status[i_c, i_b] = 60 + hard.status[i_b]
+        elif regions.source_count[i_c, i_b] > 0:
             force = regions.force[i_c, i_b]
             projected = geom.qd_transform_by_trans_quat(
                 frames.center[i_p], contacts.frame_position[i_b], contacts.frame_quaternion[i_b]
@@ -382,6 +454,7 @@ def kernel_hertz_contact_reset(
     state: StressHertzContactState,
     recovery: StressHertzRecoveryState,
     probes: StressHertzProbeState,
+    friction_regions: StressFrictionRegions,
     binding: StressFrictionBindingState,
     friction_input: StressFrictionInput,
     friction_state: StressFrictionState,
@@ -418,6 +491,12 @@ def kernel_hertz_contact_reset(
         frames.basis[i_p] = qd.Matrix.identity(gs.qd_float, 3)
         state.force_error[i_c, i_b], state.moment_error[i_c, i_b] = 0.0, 0.0
         state.sampled_active[i_c, i_b] = False
+        friction_regions.force[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
+        (
+            friction_regions.source_count[i_c, i_b],
+            friction_regions.leader[i_c, i_b],
+            friction_regions.profile[i_c, i_b],
+        ) = (0, -1, 0)
         shear.friction[i_p], shear.force[i_p] = 0.0, qd.Vector.zero(gs.qd_float, 2)
         if not is_restore:
             func_friction_reset(i_p, friction_input, friction_state)
