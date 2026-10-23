@@ -137,6 +137,7 @@ def main():
         "--node-local-cache", action="store_true", help="Use and remove private compute-node /tmp caches"
     )
     args = parser.parse_args()
+    groups = json.loads(args.tasks.read_text())
     output = runtime_output_path(args.output, args.allow_home_output)
     output.mkdir(parents=True, exist_ok=False)
     tools = output / "analysis-source"
@@ -159,7 +160,6 @@ def main():
         shutil.copytree(
             qipc_analysis, tools / "research/rigid_stress/qipc_comparison", ignore=shutil.ignore_patterns("__pycache__")
         )
-    groups = json.loads(args.tasks.read_text())
     (output / "tasks.json").write_text(json.dumps(groups, indent=2) + "\n")
     (output / "analysis-files.json").write_text(json.dumps(inventory(tools), indent=2) + "\n")
     (output / "logs").mkdir()

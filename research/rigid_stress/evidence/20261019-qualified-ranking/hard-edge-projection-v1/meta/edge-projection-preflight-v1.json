@@ -1,0 +1,20 @@
+{
+  "reason": "Task-plan preparation raised SyntaxError before writing task files. Three submit calls then failed with FileNotFoundError while reading those absent plans. Only analysis-source copies exist; no sbatch invocation occurred. Partial directories are retained. The runner now reads task JSON before creating output directories.",
+  "partial_directories": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-projection-cpu-v1",
+      "submitted": false,
+      "files": 498
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-projection-gpu-v1",
+      "submitted": false,
+      "files": 498
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-projection-profile-v1",
+      "submitted": false,
+      "files": 498
+    }
+  ]
+}

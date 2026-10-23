@@ -1,0 +1,74 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "kind": "affine",
+      "passed": true,
+      "status": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "position_error_m": [
+        0.0,
+        0.0,
+        8.673617379884035e-19,
+        9.857443087607062e-19
+      ],
+      "fields": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-projection-cpu-v2/group0/sources/affine.npz",
+        "bytes": 1426,
+        "sha256": "172613b3aa4fdd32dbd0352e613a98d0fcd0fcc43a3d4b0aff50fccff9ed486b"
+      }
+    },
+    {
+      "kind": "affine-offsets",
+      "passed": true,
+      "accepted_queries": 48,
+      "rejected_queries": 24,
+      "maximum_position_error_m": 7.760949074445342e-18,
+      "fields": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-projection-cpu-v2/group0/sources/affine-offsets.npz",
+        "bytes": 3940,
+        "sha256": "b412b8c87c666603fb54a18423ab2de8a67d2630653040e1aaaeb505192f7fb7"
+      }
+    },
+    {
+      "kind": "curved",
+      "passed": true,
+      "status": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "position_error_m": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "fields": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-projection-cpu-v2/group0/sources/curved.npz",
+        "bytes": 1452,
+        "sha256": "952f0f7e5ce3c4728c6941a8a389dfb955f638ae71371d72d24dd662815bc4df"
+      }
+    },
+    {
+      "kind": "curved-offsets",
+      "passed": true,
+      "accepted_queries": 48,
+      "rejected_queries": 24,
+      "maximum_position_error_m": 7.152448122690996e-18,
+      "fields": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-edge-projection-cpu-v2/group0/sources/curved-offsets.npz",
+        "bytes": 4045,
+        "sha256": "23cd2618e23c7a667e5a461ac61ef74f809cb64f8744c2047c67fceafa3c92d4"
+      }
+    }
+  ],
+  "whole_goal_complete": false
+}

@@ -1,0 +1,76 @@
+{
+  "rows": [
+    {
+      "batch": 64,
+      "mode": "rigid",
+      "seconds_per_scene_step": [
+        0.002859287868098666,
+        0.002849590766709298,
+        0.002858095969228695
+      ],
+      "median_seconds": 0.002858095969228695,
+      "environment_steps_per_second": 22392.530093127516,
+      "preparation_seconds": 80.58378962706774,
+      "audit_and_warmup_seconds": 2.411566991941072,
+      "model_preparation": null,
+      "audit_environment_steps": 8320,
+      "admitted_timed_environment_steps": null,
+      "surface_quadrature": null,
+      "friction_penalty": null,
+      "loaded_timed_environment_steps": null,
+      "sharp_timed_environment_steps": null
+    },
+    {
+      "batch": 64,
+      "mode": "max",
+      "seconds_per_scene_step": [
+        0.048916461931852,
+        0.04887754393275827,
+        0.048910638635667664
+      ],
+      "median_seconds": 0.048910638635667664,
+      "environment_steps_per_second": 1308.508778156263,
+      "preparation_seconds": 72.90364939591382,
+      "audit_and_warmup_seconds": 5.1344521819846705,
+      "model_preparation": {
+        "topology_seconds": 0.06686588493175805,
+        "operators_seconds": 1.2712328030029312,
+        "factor_seconds": 13.83206558204256,
+        "inverse_seconds": 0.3809254770167172,
+        "surface_inverse_seconds": 0.22274073492735624
+      },
+      "audit_environment_steps": 8320,
+      "admitted_timed_environment_steps": 5760,
+      "surface_quadrature": 16,
+      "friction_penalty": 1.0,
+      "loaded_timed_environment_steps": 1920,
+      "sharp_timed_environment_steps": 384
+    },
+    {
+      "batch": 64,
+      "mode": "full",
+      "seconds_per_scene_step": [
+        0.0489630866330117,
+        0.04905424586419637,
+        0.04891815326409414
+      ],
+      "median_seconds": 0.0489630866330117,
+      "environment_steps_per_second": 1307.1071372540914,
+      "preparation_seconds": 22.050948412972502,
+      "audit_and_warmup_seconds": 5.11294059897773,
+      "model_preparation": {
+        "topology_seconds": 0.03817660198546946,
+        "operators_seconds": 0.031636007013730705,
+        "factor_seconds": 13.470830996055156,
+        "inverse_seconds": 0.03355054999701679,
+        "surface_inverse_seconds": 0.022581098950468004
+      },
+      "audit_environment_steps": 8320,
+      "admitted_timed_environment_steps": 5760,
+      "surface_quadrature": 16,
+      "friction_penalty": 1.0,
+      "loaded_timed_environment_steps": 1920,
+      "sharp_timed_environment_steps": 384
+    }
+  ]
+}

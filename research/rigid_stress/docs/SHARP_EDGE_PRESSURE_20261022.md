@@ -1684,3 +1684,86 @@ retains six terminal campaigns, original failures, corrected tests, exact
 source inventories, profile files, complete field differences and primary
 timing samples. All52 source heads and12 original unfinished files are
 preserved. Runtime arrays and logs remain under the restored data root.
+
+## Bounded quadratic-edge projection
+
+Source `1c8720391` adds conservative distance pruning to the original three
+quadratic-edge projections, relative to `38583bb26`. For edge endpoints a,c
+and midpoint m, the quadratic Bezier control is `2*m-(a+c)/2`; the curve lies
+inside the three controls' convex hull. A componentwise box enclosing this
+hull supplies a lower distance bound. The implementation expands the box by
+`128*epsilon*(abs(a)+abs(m)+abs(c)+abs(query))` before comparison. An edge is
+skipped only when its bound exceeds the current candidate's squared distance.
+Original edge order, strict improvement comparison and17 projection iterations
+remain intact. The native implementation adds no state or model option.
+
+The new material-projection control exercises all160 quadratic egg faces.
+Each receives84 unbound corner, midpoint, interior, exterior and signed-normal
+offset queries plus10 bound queries. All15,040 positions and barycentric
+coordinates match the unpruned source exactly on each of CPU64, CUDA64 and
+CUDA32, totaling45,120 paired comparisons. The declared numerical budgets
+remain128 machine epsilons, with the material-coordinate scale for positions;
+actual differences are zero. This checks the existing finite-iteration
+projection implementation, without establishing a new global closest-point
+oracle or independent contact-pressure accuracy.
+
+Existing CPU/CUDA analytic and estimated curved-source controls pass, including
+complete-field/max output, source/wrench checks and rejection isolation.
+All7 source/nonconvex regression tests pass on each backend with unchanged
+assertions. A separate B4 profile changes the source-resolution kernel mean
+from3.964ms to3.506ms, an11.55% reduction. Instrumented scene cost changes
+39.873ms to39.439ms; it includes profiler overhead and is separate from primary
+throughput. Unchanged boundary traction measures7.169ms and7.058ms in this
+allocation, illustrating variation outside the edited operation.
+
+The first three submission attempts lacked their task-plan files and failed
+before invoking Slurm. Their partial analysis-source directories remain on
+data with explicit unsubmitted records. The runner now reads the task plan
+before creating the output directory or copying analysis sources. A negative
+CLI check confirms that a missing plan creates no output directory. Corrected
+CPU, GPU and profile campaigns use new v2 paths; no original output is replaced.
+
+Primary paired timing uses the same scene protocol as the preceding basis
+study:64-bit precision, surface order16, continuous history from0, an0--129
+audit, and three profiler-off100--129 repeats. Each batch runs both sources
+on one GPU with source-private compiler caches. Controller work, required
+runtime checks and final synchronization remain inside the measurement.
+
+| Batch | Engine | Pure rigid ms/step | Max ms/step | Full ms/step | Max/full env-step/s |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 4 | baseline | 2.596 | 30.021 | 30.034 | 133.24 /133.18 |
+| 4 | candidate | 2.596 | 29.612 | 29.751 | 135.08 /134.45 |
+| 64 | baseline | 2.868 | 49.119 | 49.177 | 1302.95 /1301.43 |
+| 64 | candidate | 2.858 | 48.911 | 48.963 | 1308.51 /1307.11 |
+
+Observed max/full median cost reductions are1.363%/0.942% atB4 and
+0.425%/0.434% atB64. B4 full-mode repeat ranges overlap; B4 max and both
+B64 stress-mode candidate ranges lie below their paired baselines in this
+allocation. These three blocks establish a modest measured change, without
+a confidence interval or portable speedup guarantee. Candidate inclusive
+added costs over its own pure-rigid baseline are27.015/27.155ms atB4 and
+46.053/46.105ms atB64. The source-kernel improvement therefore removes only
+a small part of complete stress-scene cost.
+
+Public observations pass with360/5760 admitted timed environment steps and
+520/8320 audited environment steps per stress mode. A separate130-frame
+capture compares all52 exported fields against the frozen preceding source's
+capture. All discrete statuses agree exactly. The original raw1e-9 relative
+and1e-12 absolute criteria still fail in128 frames for probe barycentrics and
+128 for corner tensors. Their maximum absolute differences are3.488e-12
+and4.843e-8Pa; maximum corner-tensor relative L2 is3.53e-15. Probe tensors pass
+those criteria, with maximum absolute difference5.952e-5Pa and relative
+L2 difference1.01e-12. The small differences remain archived rather than
+being removed by a relaxed threshold. This complete-scene comparison is
+distinct from the exact direct-projection controls.
+
+The continuous429-step capture admits every0--427 frame and reproduces the
+original428 refusal. The implementation optimization leaves that physical
+support/wrench limitation visible. Sharp-edge finite-depth physical errors,
+deformed-geometry validity and continuum peak interpretation remain open.
+
+The [edge-projection packet](../evidence/20261019-qualified-ranking/hard-edge-projection-v1/README.md)
+retains four terminal scientific campaigns, source inventories, direct controls,
+profile records, primary timing samples, strict field differences and the
+unsubmitted preflight failures. All53 source heads and12 original unfinished
+files are preserved. Runtime arrays and logs remain under the data root.

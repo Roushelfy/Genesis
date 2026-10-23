@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "command": [
+    "python3",
+    "-m",
+    "research.rigid_stress.shell_comparison.submit",
+    "--source",
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_edge_projection",
+    "--output",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-projection-missing-plan-check-v1",
+    "--tasks",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/edge-projection-missing-plan.json",
+    "--python",
+    "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python"
+  ],
+  "expected_returncode": 1,
+  "output_directory_absent": true,
+  "scope": "Invalid task input is rejected before output directories or source copies are created."
+}
