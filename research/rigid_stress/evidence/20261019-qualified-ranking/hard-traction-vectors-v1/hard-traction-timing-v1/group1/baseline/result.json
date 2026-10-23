@@ -1,0 +1,110 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "batch": 1024,
+      "mode": "rigid",
+      "seconds_per_scene_step": [
+        0.0035266049671918154,
+        0.0035330699989572167,
+        0.003575530764646828
+      ],
+      "median_seconds": 0.0035330699989572167,
+      "environment_steps_per_second": 289832.92159573204,
+      "preparation_seconds": 92.31373477098532,
+      "audit_and_warmup_seconds": 3.517701627104543,
+      "model_preparation": null,
+      "audit_environment_steps": 133120,
+      "admitted_timed_environment_steps": null,
+      "surface_quadrature": null,
+      "friction_penalty": null,
+      "loaded_window_environment_steps": null,
+      "sharp_window_environment_steps": null,
+      "loaded_timed_environment_steps": null,
+      "sharp_timed_environment_steps": null,
+      "memory_after_repeats": {
+        "device_free_bytes": 97588346880,
+        "device_total_bytes": 101975851008,
+        "torch_allocated_bytes": 2319360,
+        "torch_reserved_bytes": 27262976,
+        "host_maximum_rss_kib": 9885700,
+        "scope": "Outside timing; device-wide free memory and Torch allocator counters are distinct. Host high-water RSS includes earlier modes in this process. Fresh-process sampling supplies separate memory peaks."
+      }
+    },
+    {
+      "batch": 1024,
+      "mode": "max",
+      "seconds_per_scene_step": [
+        0.42520613663364204,
+        0.42478777763123315,
+        0.4245078333692315
+      ],
+      "median_seconds": 0.42478777763123315,
+      "environment_steps_per_second": 2410.615497720264,
+      "preparation_seconds": 89.58660669403616,
+      "audit_and_warmup_seconds": 43.03183680505026,
+      "model_preparation": {
+        "topology_seconds": 0.0803011249518022,
+        "operators_seconds": 1.787924102973193,
+        "factor_seconds": 14.016121122054756,
+        "inverse_seconds": 0.5302221439778805,
+        "surface_inverse_seconds": 0.28875184105709195
+      },
+      "audit_environment_steps": 133120,
+      "admitted_timed_environment_steps": 92160,
+      "surface_quadrature": 16,
+      "friction_penalty": 1.0,
+      "loaded_window_environment_steps": 30720,
+      "sharp_window_environment_steps": 6144,
+      "loaded_timed_environment_steps": 92160,
+      "sharp_timed_environment_steps": 18432,
+      "memory_after_repeats": {
+        "device_free_bytes": 86486024192,
+        "device_total_bytes": 101975851008,
+        "torch_allocated_bytes": 4113920,
+        "torch_reserved_bytes": 29360128,
+        "host_maximum_rss_kib": 10984024,
+        "scope": "Outside timing; device-wide free memory and Torch allocator counters are distinct. Host high-water RSS includes earlier modes in this process. Fresh-process sampling supplies separate memory peaks."
+      },
+      "added_seconds_per_scene_step": 0.42125470763227596
+    },
+    {
+      "batch": 1024,
+      "mode": "full",
+      "seconds_per_scene_step": [
+        0.4263270346991097,
+        0.42568363099902246,
+        0.42528372443048285
+      ],
+      "median_seconds": 0.42568363099902246,
+      "environment_steps_per_second": 2405.5423451374186,
+      "preparation_seconds": 33.932286685099825,
+      "audit_and_warmup_seconds": 42.59078732400667,
+      "model_preparation": {
+        "topology_seconds": 0.03968383802566677,
+        "operators_seconds": 0.03191197698470205,
+        "factor_seconds": 13.577266669017263,
+        "inverse_seconds": 0.031751565053127706,
+        "surface_inverse_seconds": 0.02232434693723917
+      },
+      "audit_environment_steps": 133120,
+      "admitted_timed_environment_steps": 92160,
+      "surface_quadrature": 16,
+      "friction_penalty": 1.0,
+      "loaded_window_environment_steps": 30720,
+      "sharp_window_environment_steps": 6144,
+      "loaded_timed_environment_steps": 92160,
+      "sharp_timed_environment_steps": 18432,
+      "memory_after_repeats": {
+        "device_free_bytes": 72017772544,
+        "device_total_bytes": 101975851008,
+        "torch_allocated_bytes": 5900288,
+        "torch_reserved_bytes": 31457280,
+        "host_maximum_rss_kib": 13383588,
+        "scope": "Outside timing; device-wide free memory and Torch allocator counters are distinct. Host high-water RSS includes earlier modes in this process. Fresh-process sampling supplies separate memory peaks."
+      },
+      "added_seconds_per_scene_step": 0.42215056100006526
+    }
+  ],
+  "whole_goal_complete": false
+}

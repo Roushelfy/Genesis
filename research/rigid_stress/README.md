@@ -133,6 +133,14 @@ they do not establish the best batch, diverse-population or full-cycle throughpu
 Loaded/sharp timed counters now include all repeats; older timing and admission
 values remain valid and archived unchanged. Engine code and physical limits are unchanged.
 
+The [boundary traction contraction](docs/SHARP_EDGE_PRESSURE_20261022.md#boundary-traction-vector-contractions)
+follows the B1024 profile that places 61.85% of GPU kernel time in boundary traction. A
+single native expression uses three matrix-vector products. CPU64/CUDA64 complete
+recovery and public scene checks pass. Measured B1024 max/full costs decrease by
+2.33% / 2.21%. Strict raw field differences remain recorded, and frame 428 still refuses. The
+profile, primary timing and independent physical-error requirements retain their
+separate scopes.
+
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)
 identifies the ground's184micrometre offset as the collider's half-penetration
 application point. Refined collision geometry and grouped sources reduce the
