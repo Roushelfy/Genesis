@@ -28,6 +28,9 @@ class RigidStressOptions(Options):
     larger footprint spreads the same contact wrench over more shell area;
     choose it from the contact model rather than the elastic mesh resolution.
     ``quadrature`` controls surface integration cost and accuracy.
+    Hertz recovery on curved quadratic material boundaries uses a minimum
+    order of 16 for its complete boundary correction. The rule is precomputed
+    once per shared shape; the runtime wrench acceptance remains unchanged.
     ``load_transfer="resolved"`` declares that pressure-mode input forces are
     already integrated boundary samples. It transfers each sample through the
     P2 shape functions of its witnessed material face, without another finite
