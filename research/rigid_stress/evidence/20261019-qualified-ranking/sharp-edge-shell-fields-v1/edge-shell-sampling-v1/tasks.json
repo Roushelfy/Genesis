@@ -1,0 +1,34 @@
+[
+  [
+    {
+      "name": "sampling",
+      "module": "research.rigid_stress.qipc_comparison.edge_shell_sampling",
+      "args": [
+        "--mesh-study",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study",
+        "--pressure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-pressure-refinement-v1/group2/pressure",
+        "--minimum-over-width",
+        "0.5",
+        "--depth-order",
+        "8"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "sampling",
+      "module": "research.rigid_stress.qipc_comparison.edge_shell_sampling",
+      "args": [
+        "--mesh-study",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study",
+        "--pressure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-pressure-refinement-v1/group2/pressure",
+        "--minimum-over-width",
+        "0.25",
+        "--depth-order",
+        "12"
+      ]
+    }
+  ]
+]

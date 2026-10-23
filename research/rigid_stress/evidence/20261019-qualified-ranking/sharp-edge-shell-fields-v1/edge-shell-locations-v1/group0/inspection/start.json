@@ -1,0 +1,31 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-201",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "743055",
+      "SLURM_ARRAY_JOB_ID": "743055",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-sampling-v1/group0/sampling/queries.npz",
+      "bytes": 19233202,
+      "sha256": "0740fa713455fe5e824d70459bcf881824a1b31398b35fa661eb7deed1a1ac16"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/coarse-mesh.npz",
+      "bytes": 702481,
+      "sha256": "0c8e22fb06e994181da5e8b551fe597688cb601bcea4faa071b44f976deb8b55"
+    }
+  ],
+  "scope": "Locate original query refusals and inspect candidate barycentrics; no admission change."
+}

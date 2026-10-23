@@ -1,0 +1,42 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "743027",
+      "SLURM_ARRAY_JOB_ID": "743027",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-pressure-refinement-v1/group2/pressure/grid48.npz",
+      "bytes": 124574,
+      "sha256": "639ad9b3d237b93e3f5b155d79d8247e4c54cf80cae447db4baed65c671f5b57"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-pressure-refinement-v1/group2/pressure/candidate.npz",
+      "bytes": 26868,
+      "sha256": "c2870413c3bd9d4413b24de490e5149edf2b0abaedf6bee7f69038da37068c11"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-pressure-refinement-v1/group2/pressure/start.json",
+      "bytes": 3307,
+      "sha256": "c02db4f760d6e50d3cb483203203c7870e8d7239a0e511fab42e35be823c769e"
+    }
+  ],
+  "targets": {
+    "direct_relative": 1e-09,
+    "surface_traction": 1e-06,
+    "saved_field_relative": 1e-07,
+    "far_relative": 1e-05
+  },
+  "scope": "Uniform-cell normal stress integration only; no new contact or shell qualification."
+}

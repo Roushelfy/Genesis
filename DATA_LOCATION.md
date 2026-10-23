@@ -1,5 +1,17 @@
 # Rigid-stress data and artifact locations
 
+The complete-domain sharp-edge follow-up uses edge-shell-rectangle-controls-*,
+edge-shell-sampling-v1, edge-shell-fields-*, edge-shell-locations-v1,
+edge-shell-peaks-v1 and edge-shell-integral-diagnosis-v1 under the established
+20261019 ranking data root. The sharp-edge-shell-fields-v1 packet retains457
+compact payloads (3,309,232 bytes) and25 external receipts from ten terminal
+campaigns, including two failed readouts and a cancelled pending inspector.
+Full volume/column/corner tensors and sampling arrays stay on data. Repaired
+readouts reuse the original completed particular arrays in place. CPU work
+used Slurm rtx-mid, image1_26, the existing data-side environment and private
+node caches. All55 engine heads and12 original unfinished files remain
+preserved. There is no new home fallback, data migration or engine change.
+
 The single-edge hollow-shell control uses edge-shell-pressure-pilot-v1,
 edge-shell-pressure-refinement-v1 and edge-shell-pressure-inspection-v1
 under the established20261019 ranking data root. The

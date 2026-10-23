@@ -1,0 +1,41 @@
+[
+  [
+    {
+      "name": "fields",
+      "module": "research.rigid_stress.qipc_comparison.study_edge_shell_fields",
+      "args": [
+        "--sampling",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-sampling-v1/group0/sampling",
+        "--pressure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-pressure-refinement-v1/group2/pressure",
+        "--parents",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-v4/group0/pressure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-refinement-v1/group0/pressure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-refinement-v1/group1/pressure",
+        "--kernel-check",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-rectangle-controls-v2/group0/controls/result.json",
+        "--bodies",
+        "coarse",
+        "fine"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "fields",
+      "module": "research.rigid_stress.qipc_comparison.study_edge_shell_fields",
+      "args": [
+        "--sampling",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-sampling-v1/group1/sampling",
+        "--pressure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-pressure-refinement-v1/group2/pressure",
+        "--parents",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-v4/group0/pressure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-refinement-v1/group0/pressure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-contact-pressure-refinement-v1/group1/pressure",
+        "--kernel-check",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-rectangle-controls-v2/group0/controls/result.json"
+      ]
+    }
+  ]
+]

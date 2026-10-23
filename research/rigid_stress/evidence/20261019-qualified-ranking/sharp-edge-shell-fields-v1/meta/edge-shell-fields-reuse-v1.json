@@ -1,0 +1,10 @@
+{
+  "particular_function_ast_exact": true,
+  "unchanged_helper_sources": [
+    "research/rigid_stress/qipc_comparison/rectangle_normal_stress.py",
+    "research/rigid_stress/qipc_comparison/edge_normal_batch.py",
+    "research/rigid_stress/qipc_comparison/edge_fields.py",
+    "research/rigid_stress/qipc_comparison/study_edge_farfield.py"
+  ],
+  "reason": "Original strict cross-mesh boundary location failures. Use own element corner readout, preserving unmodified interior queries and original thresholds. Reuse complete unchanged particular fields from terminal failed runs."
+}
