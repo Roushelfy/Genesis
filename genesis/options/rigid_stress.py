@@ -33,6 +33,10 @@ class RigidStressOptions(Options):
     normals, including signed concave curvature. Each supplied collision force gets its own estimate; this does not
     infer a physical contact region from a manifold or establish thin-shell accuracy. No physical radius is enlarged
     to accommodate the elastic mesh. The default ``"manual"`` retains the supplied radius and its setter.
+    ``box_edge_policy="planar"`` explicitly approximates a witnessed box edge or vertex by zero curvature when
+    estimating radius. The other surface must still provide positive relative curvature. This finite-footprint
+    surrogate preserves the sharp collision geometry and source force; it is not Hertz's sharp-edge solution.
+    The default ``"unsupported"`` rejects these contacts. Accepted surrogate radii carry a distinct status.
     ``contact_modulus`` is the reduced contact modulus in Pa. If None, resolved based on the rigid-counterface
     assumption: ``young / (1 - poisson**2)``. Defaults to None. Supply the combined physical modulus when both
     contacting materials deform; it changes contact size without changing this link's FEM material.
@@ -188,6 +192,7 @@ class RigidStressOptions(Options):
     density: PositiveFloat = 2000.0
     contact_radius: PositiveFloat = 0.006
     radius_model: Literal["manual", "hertz"] = "manual"
+    box_edge_policy: Literal["unsupported", "planar"] = "unsupported"
     pressure_profile: Literal["dpr", "hertz"] = "dpr"
     contact_modulus: PositiveFloat | None = None
     contact_model: Literal["pressure", "intrinsic"] = "pressure"
