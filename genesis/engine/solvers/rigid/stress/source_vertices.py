@@ -197,7 +197,8 @@ def kernel_bind_source_vertices(
                     source_vertex_info.search_min[i_block] - point,
                     qd.max(point - source_vertex_info.search_max[i_block], 0.0),
                 )
-                if lower.norm_sqr() <= tolerance * tolerance:
+                # Use the original norm comparison: squaring its tolerance can exclude equality after rounding.
+                if lower.norm() <= tolerance:
                     for i_v in range(64 * i_block, qd.min(64 * (i_block + 1), source_vertex_info.positions.shape[0])):
                         if (
                             source_vertex_info.geom[i_v] == source_state.geom[i_c, i_b]
