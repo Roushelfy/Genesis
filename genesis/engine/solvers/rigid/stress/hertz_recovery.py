@@ -351,9 +351,7 @@ def kernel_hertz_residual_traction(
     has_shear: qd.template(),
     is_curved: qd.template(),
 ):
-    for i_f, i_active, i_lane in qd.ndrange(
-        info.surface_nodes.shape[0], state.n_active_sources[None], surface.gauss.shape[0]
-    ):
+    for i_f, i_active, i_lane in qd.ndrange(info.surface_nodes.shape[0], state.n_active_sources[None], 64):
         i_p = state.active_sources_idx[i_active]
         i_b = i_p % state.status.shape[0]
         if state.status[i_b] == 0 and hertz.status[i_p] == 0:
@@ -405,104 +403,106 @@ def kernel_hertz_residual_traction(
                         radial_splits = 3
                         angular_splits = 4
                     n_rules = 3 * angular_splits * radial_splits if is_near else 1
-                    # Each lane integrates one angular knot over every radial rule.
-                    for i_sample_ in range(n_rules * surface.gauss.shape[0]):
-                        i_sample_local = i_sample_ * surface.gauss.shape[0] + i_lane
-                        i_q = i_sample_local % surface.shape.shape[0]
-                        i_sample = i_f * surface.shape.shape[0] + i_q
-                        position, weight = surface.positions[i_sample], surface.weights[i_sample]
-                        shape = surface.shape[i_q]
-                        if qd.static(is_curved):
-                            normal = surface.normals[i_sample]
-                        if is_near:
-                            i_rule = i_sample_local // surface.shape.shape[0]
-                            i_edge = i_rule // (angular_splits * radial_splits)
-                            first_bary, second_bary = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
-                            first_bary[i_edge], second_bary[(i_edge + 1) % 3] = 1.0, 1.0
-                            i_first, i_second = (
-                                info.surface_nodes[i_f, i_edge],
-                                info.surface_nodes[i_f, (i_edge + 1) % 3],
-                            )
-                            first, second = info.vertices[i_first] - closest, info.vertices[i_second] - closest
-                            n_gauss = surface.gauss.shape[0]
-                            u = (
-                                surface.gauss[i_q // n_gauss]
-                                + (i_rule % (angular_splits * radial_splits)) // angular_splits
-                            ) / radial_splits
-                            v = (surface.gauss[i_q % n_gauss] + i_rule % angular_splits) / angular_splits
-                            angular_derivative = gs.qd_float(1.0)
+                    # More lanes share the serial work of source-near surface rules
+                    n_samples = n_rules * surface.shape.shape[0]
+                    for i_sample_ in range((n_samples + 63) // 64):
+                        i_sample_local = i_sample_ * 64 + i_lane
+                        if i_sample_local < n_samples:
+                            i_q = i_sample_local % surface.shape.shape[0]
+                            i_sample = i_f * surface.shape.shape[0] + i_q
+                            position, weight = surface.positions[i_sample], surface.weights[i_sample]
+                            shape = surface.shape[i_q]
                             if qd.static(is_curved):
-                                if qd.abs(bary[(i_edge + 2) % 3]) > 0:
-                                    cross = first.cross(second).norm()
-                                    # Retain the regular rule when concentration would resolve coordinate roundoff.
-                                    if cross > 128 * epsilon * (1 + center.norm()) * (second - first).norm():
-                                        # Hyperbolic edge coordinates resolve the inverse-distance traction.
-                                        chord = second - first
-                                        fraction = -first.dot(chord) / chord.norm_sqr()
-                                        height = cross / chord.norm_sqr()
-                                        bounds = qd.Vector([-fraction / height, (1 - fraction) / height])
-                                        for i in qd.static(range(2)):
-                                            value = bounds[i]
-                                            bounds[i] = qd.select(value < 0, -1.0, 1.0) * qd.log(
-                                                qd.abs(value) + qd.sqrt(1 + value * value)
-                                            )
-                                        span = bounds[1] - bounds[0]
-                                        exponential = qd.exp(bounds[0] + span * v)
-                                        v = fraction + height * (exponential - 1 / exponential) / 2
-                                        angular_derivative = height * span * (exponential + 1 / exponential) / 2
-                            radius, derivative = u, gs.qd_float(1.0)
-                            if not is_source:
-                                length = ((1 - v) * first + v * second).norm()
-                                denominator = length * (1 - u) + distance * u
-                                radius = distance * u / denominator
-                                derivative = distance * length / (denominator * denominator)
+                                normal = surface.normals[i_sample]
+                            if is_near:
+                                i_rule = i_sample_local // surface.shape.shape[0]
+                                i_edge = i_rule // (angular_splits * radial_splits)
+                                first_bary, second_bary = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
+                                first_bary[i_edge], second_bary[(i_edge + 1) % 3] = 1.0, 1.0
+                                i_first, i_second = (
+                                    info.surface_nodes[i_f, i_edge],
+                                    info.surface_nodes[i_f, (i_edge + 1) % 3],
+                                )
+                                first, second = info.vertices[i_first] - closest, info.vertices[i_second] - closest
+                                n_gauss = surface.gauss.shape[0]
+                                u = (
+                                    surface.gauss[i_q // n_gauss]
+                                    + (i_rule % (angular_splits * radial_splits)) // angular_splits
+                                ) / radial_splits
+                                v = (surface.gauss[i_q % n_gauss] + i_rule % angular_splits) / angular_splits
+                                angular_derivative = gs.qd_float(1.0)
                                 if qd.static(is_curved):
-                                    if length > distance:
-                                        # The rational map has an unresolved far-end layer as distance vanishes.
-                                        ratio = length / distance
-                                        span = qd.log(ratio + qd.sqrt(1 + ratio * ratio))
-                                        exponential = qd.exp(span * u)
-                                        radius = (exponential - 1 / exponential) / (2 * ratio)
-                                        derivative = span * (exponential + 1 / exponential) / (2 * ratio)
-                            sample_bary = bary + radius * ((1 - v) * first_bary + v * second_bary - bary)
-                            position = closest + radius * ((1 - v) * first + v * second)
-                            measure = first.cross(second).norm()
+                                    if qd.abs(bary[(i_edge + 2) % 3]) > 0:
+                                        cross = first.cross(second).norm()
+                                        # Retain the regular rule when concentration would resolve coordinate roundoff.
+                                        if cross > 128 * epsilon * (1 + center.norm()) * (second - first).norm():
+                                            # Hyperbolic edge coordinates resolve the inverse-distance traction.
+                                            chord = second - first
+                                            fraction = -first.dot(chord) / chord.norm_sqr()
+                                            height = cross / chord.norm_sqr()
+                                            bounds = qd.Vector([-fraction / height, (1 - fraction) / height])
+                                            for i in qd.static(range(2)):
+                                                value = bounds[i]
+                                                bounds[i] = qd.select(value < 0, -1.0, 1.0) * qd.log(
+                                                    qd.abs(value) + qd.sqrt(1 + value * value)
+                                                )
+                                            span = bounds[1] - bounds[0]
+                                            exponential = qd.exp(bounds[0] + span * v)
+                                            v = fraction + height * (exponential - 1 / exponential) / 2
+                                            angular_derivative = height * span * (exponential + 1 / exponential) / 2
+                                radius, derivative = u, gs.qd_float(1.0)
+                                if not is_source:
+                                    length = ((1 - v) * first + v * second).norm()
+                                    denominator = length * (1 - u) + distance * u
+                                    radius = distance * u / denominator
+                                    derivative = distance * length / (denominator * denominator)
+                                    if qd.static(is_curved):
+                                        if length > distance:
+                                            # The rational map has an unresolved far-end layer as distance vanishes.
+                                            ratio = length / distance
+                                            span = qd.log(ratio + qd.sqrt(1 + ratio * ratio))
+                                            exponential = qd.exp(span * u)
+                                            radius = (exponential - 1 / exponential) / (2 * ratio)
+                                            derivative = span * (exponential + 1 / exponential) / (2 * ratio)
+                                sample_bary = bary + radius * ((1 - v) * first_bary + v * second_bary - bary)
+                                position = closest + radius * ((1 - v) * first + v * second)
+                                measure = first.cross(second).norm()
+                                if qd.static(is_curved):
+                                    # Tangency cancels the point singularity against
+                                    # this source-centered fan's radial Jacobian.
+                                    position, tangent, area = func_surface_geometry(i_f, sample_bary, info)
+                                    normal = area.normalized()
+                                    measure = area.norm() * qd.abs(bary[(i_edge + 2) % 3])
+                                weight = (
+                                    measure
+                                    * radius
+                                    * derivative
+                                    * angular_derivative
+                                    * surface.gauss_weights[i_q // n_gauss]
+                                    * surface.gauss_weights[i_q % n_gauss]
+                                    / (angular_splits * radial_splits)
+                                )
+                                shape = qd.Vector(
+                                    [
+                                        sample_bary[0] * (2 * sample_bary[0] - 1),
+                                        sample_bary[1] * (2 * sample_bary[1] - 1),
+                                        sample_bary[2] * (2 * sample_bary[2] - 1),
+                                        4 * sample_bary[0] * sample_bary[1],
+                                        4 * sample_bary[0] * sample_bary[2],
+                                        4 * sample_bary[1] * sample_bary[2],
+                                    ]
+                                )
+                            local = basis.transpose() @ (position - center)
                             if qd.static(is_curved):
-                                # Tangency cancels the point singularity against
-                                # this source-centered fan's radial Jacobian.
-                                position, tangent, area = func_surface_geometry(i_f, sample_bary, info)
-                                normal = area.normalized()
-                                measure = area.norm() * qd.abs(bary[(i_edge + 2) % 3])
-                            weight = (
-                                measure
-                                * radius
-                                * derivative
-                                * angular_derivative
-                                * surface.gauss_weights[i_q // n_gauss]
-                                * surface.gauss_weights[i_q % n_gauss]
-                                / (angular_splits * radial_splits)
-                            )
-                            shape = qd.Vector(
-                                [
-                                    sample_bary[0] * (2 * sample_bary[0] - 1),
-                                    sample_bary[1] * (2 * sample_bary[1] - 1),
-                                    sample_bary[2] * (2 * sample_bary[2] - 1),
-                                    4 * sample_bary[0] * sample_bary[1],
-                                    4 * sample_bary[0] * sample_bary[2],
-                                    4 * sample_bary[1] * sample_bary[2],
-                                ]
-                            )
-                        local = basis.transpose() @ (position - center)
-                        if qd.static(is_curved):
-                            if not local[2] >= -epsilon:
-                                qd.atomic_max(state.status[i_b], 3)
-                        local[2] = qd.max(local[2], 0.0)
-                        tensor = func_boussinesq_tensor(local, hertz.force[i_p], poisson)
-                        if qd.static(has_shear):
-                            if shear.force[i_p].norm() > 0:
-                                tensor += func_cerruti_tensor(local, shear.force[i_p], poisson)
-                        traction = -(basis @ tensor @ basis.transpose() @ normal) * weight
-                        loads += shape.outer_product(traction)
+                                if not local[2] >= -epsilon:
+                                    qd.atomic_max(state.status[i_b], 3)
+                            local[2] = qd.max(local[2], 0.0)
+                            tensor = func_boussinesq_tensor(local, hertz.force[i_p], poisson)
+                            if qd.static(has_shear):
+                                if shear.force[i_p].norm() > 0:
+                                    tensor += func_cerruti_tensor(local, shear.force[i_p], poisson)
+                            traction = -(basis @ tensor @ basis.transpose() @ normal) * weight
+                            loads += shape.outer_product(traction)
                 for i, j in qd.static(qd.ndrange(6, 3)):
                     i_n = info.surface_nodes[i_f, i]
                     qd.atomic_add(stress_state.force[i_n, i_b][j], loads[i, j])
