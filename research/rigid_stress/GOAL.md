@@ -1,5 +1,11 @@
 # Active goal: maximize automatic-radius DPR throughput
 
+**Delivery status, 2026-10-23:** the native optimization and required numerical,
+lifecycle, diverse-contact and matched throughput checks are complete. See the
+[delivery report](docs/DPR_THROUGHPUT_20261023.md) and its reproduction packet.
+The requirements below remain the acceptance criteria; physical sharp-edge peak
+qualification is not implied by this performance deliverable.
+
 **Immediate user goal, 2026-10-23:** maximize throughput of the now-integrated
 automatic-radius + Hertz-pressure DPR path. Follow
 [the optimization goal](docs/DPR_AUTOMATIC_RADIUS_GOAL_20261023.md#immediate-goal-maximize-native-automatic-dpr-throughput).

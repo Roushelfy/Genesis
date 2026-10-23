@@ -1,0 +1,88 @@
+{
+  "passed": true,
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "744169",
+      "SLURM_ARRAY_JOB_ID": "744166",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-e5a1cecc-eff3-bf27-77f8-0d3cf44a8890, 00000000:AD:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": null
+  },
+  "accepted_frames": 130,
+  "rigid_positions_exactly_equal": true,
+  "rows": [
+    {
+      "field": "field-0002.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-scenes-v1/group1/before/field-0002.npz",
+        "bytes": 314323,
+        "sha256": "c2a2bb7260db3ef6554112f5ce655b795a0571ebf157116206ea8f9bb06a8b23"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-scenes-v4/group0/after/field-0002.npz",
+        "bytes": 314356,
+        "sha256": "179b0ee7afc9bc0bb48e64165cae83afb9831c8d3af3fb3805c86a5a26adc94f"
+      },
+      "tensor_max_absolute_difference_pa": 9.978975867852569e-09,
+      "tensor_relative_difference": 7.770567730193618e-14,
+      "relative_load_difference_per_environment": [
+        0.0,
+        2.2050934584791263e-17,
+        1.4791742820745183e-16,
+        2.907875469074847e-16
+      ]
+    },
+    {
+      "field": "field-0110.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-scenes-v1/group1/before/field-0110.npz",
+        "bytes": 404532,
+        "sha256": "9db0f38ad6c6f9f919dc0373502cab2dae0ea17f31eed232da8208649d738534"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-scenes-v4/group0/after/field-0110.npz",
+        "bytes": 404511,
+        "sha256": "d80a1cf96805bb42b0aa3ea9efd1f295dd62c1f01fb43b5a7b2f7a4fb0dbcdfd"
+      },
+      "tensor_max_absolute_difference_pa": 7.566995918750763e-09,
+      "tensor_relative_difference": 6.955269598124877e-14,
+      "relative_load_difference_per_environment": [
+        1.4491929516969335e-16,
+        4.0370526730144265e-17,
+        2.225729157494718e-16,
+        4.007512630264793e-17
+      ]
+    },
+    {
+      "field": "field-0129.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-scenes-v1/group1/before/field-0129.npz",
+        "bytes": 403848,
+        "sha256": "9d41b46abb0a0cbb2e1d8e4bf75f50c4cb0595af64e62ee51853d844f7321c1c"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-scenes-v4/group0/after/field-0129.npz",
+        "bytes": 403635,
+        "sha256": "2e58a720008c4c9b97af1bb7af3bb8d2fcb26b90414f9f4b4199f86d5d8c0172"
+      },
+      "tensor_max_absolute_difference_pa": 1.471926225349307e-08,
+      "tensor_relative_difference": 8.214425241299107e-14,
+      "relative_load_difference_per_environment": [
+        1.6878557742442494e-16,
+        2.224555674631183e-16,
+        4.3163158793760216e-17,
+        2.2217208781407455e-16
+      ]
+    }
+  ],
+  "failures": [],
+  "scope": "Equivalent inputs and unchanged numerical budgets: load relative 1e-9, stress rtol/atol 1e-8, radius rtol 1e-12, original wrench 1e-8. Does not change or replace the historical bitwise audit."
+}

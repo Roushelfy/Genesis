@@ -1,0 +1,158 @@
+[
+  [
+    {
+      "name": "after",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--mode",
+        "radius",
+        "--quadrature",
+        "16",
+        "--box-edge-policy",
+        "planar",
+        "--field-steps",
+        "2",
+        "110",
+        "129",
+        "--contact-moment-reuse",
+        "on"
+      ]
+    },
+    {
+      "name": "audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_dpr_optimization",
+      "args": [
+        "--before",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-scenes-v1/group0/before",
+        "--after",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-scenes-v2/group0/after"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "after",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--mode",
+        "hertz",
+        "--quadrature",
+        "16",
+        "--box-edge-policy",
+        "planar",
+        "--field-steps",
+        "2",
+        "110",
+        "129",
+        "--contact-moment-reuse",
+        "on"
+      ]
+    },
+    {
+      "name": "audit",
+      "module": "research.rigid_stress.qipc_comparison.audit_dpr_optimization",
+      "args": [
+        "--before",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-scenes-v1/group1/before",
+        "--after",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-scenes-v2/group1/after"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "cycle",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--mode",
+        "hertz",
+        "--quadrature",
+        "16",
+        "--box-edge-policy",
+        "planar",
+        "--contact-moment-reuse",
+        "on",
+        "--steps",
+        "600",
+        "--field-steps",
+        "2",
+        "110",
+        "129",
+        "179",
+        "299",
+        "449",
+        "599"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "reset",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--mode",
+        "hertz",
+        "--quadrature",
+        "16",
+        "--box-edge-policy",
+        "planar",
+        "--contact-moment-reuse",
+        "on",
+        "--partial-reset-at",
+        "110"
+      ]
+    },
+    {
+      "name": "unfused",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--mode",
+        "hertz",
+        "--quadrature",
+        "16",
+        "--box-edge-policy",
+        "planar",
+        "--contact-moment-reuse",
+        "on",
+        "--unfused"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "diverse",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-bank-v1/group0/diverse/conditions.npz",
+        "--batch",
+        "8",
+        "--mode",
+        "hertz",
+        "--quadrature",
+        "16",
+        "--box-edge-policy",
+        "planar",
+        "--contact-moment-reuse",
+        "on",
+        "--steps",
+        "160",
+        "--field-steps",
+        "2",
+        "110",
+        "129",
+        "159"
+      ]
+    }
+  ]
+]

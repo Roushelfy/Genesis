@@ -1,0 +1,13 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-quadrature-v1/analysis-source/research/rigid_stress/qipc_comparison/check_automatic_dpr_controls.py", line 382, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-quadrature-v1/analysis-source/research/rigid_stress/qipc_comparison/check_automatic_dpr_controls.py", line 357, in main
+    assert relative < 1e-9, row
+AssertionError: {'location': 'mesh_edge', 'profile': 'dpr', 'relative_nodal_load_error': 1.5488484385181994e-09}
+
+[Genesis] [22:58:11] [ERROR] AssertionError: {'location': 'mesh_edge', 'profile': 'dpr', 'relative_nodal_load_error': 1.5488484385181994e-09}

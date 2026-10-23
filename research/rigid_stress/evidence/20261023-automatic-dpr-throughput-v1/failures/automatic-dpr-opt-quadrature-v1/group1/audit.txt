@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-quadrature-v1/analysis-source/research/rigid_stress/qipc_comparison/audit_dpr_optimization.py", line 74, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-quadrature-v1/analysis-source/research/rigid_stress/qipc_comparison/audit_dpr_optimization.py", line 22, in main
+    assert all(result["passed"] for result in results)
+AssertionError

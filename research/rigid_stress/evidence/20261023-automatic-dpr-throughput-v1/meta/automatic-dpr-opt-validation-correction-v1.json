@@ -1,0 +1,6 @@
+{
+  "time_utc": "2026-10-23T23:20:20.256969+00:00",
+  "original_validator": "validate-dpr-throughput-v1.py",
+  "original_failure": "Incorrectly required zero bounded-workspace fallbacks for every baseline. The diverse manual baseline has 37 complete native fallback calls per 160-step repetition, with zero invalid environment steps.",
+  "correction": "Version 2 explicitly requires exactly 37 fallback calls for the two diverse manual output modes and zero for all other final primary configurations. All original numerical gates and measured timings are unchanged. Version 1 script and failed log are retained."
+}

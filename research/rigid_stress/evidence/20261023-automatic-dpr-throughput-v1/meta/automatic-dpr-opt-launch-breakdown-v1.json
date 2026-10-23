@@ -1,0 +1,20 @@
+{
+  "source_log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-profile-device-v2/group0/hertz-cached.log",
+  "sha256": "31712186b688fb1fe4abae921c2d18db3bb3752825d3a7a26368aea84b462446",
+  "repetitions": 50,
+  "kernel_launch_counts": {
+    "kernel_associate_impl": 200,
+    "kernel_fit_scatter_moments": 1600,
+    "kernel_estimate_radii": 100,
+    "kernel_anchor": 100,
+    "kernel_surface_pack": 100,
+    "kernel_peak_impl": 250,
+    "kernel_surface_apply_packed": 150,
+    "kernel_full_residual_impl": 250,
+    "kernel_balance_impl": 300,
+    "kernel_direct_init": 200,
+    "kernel_begin_step": 100,
+    "kernel_accept_impl": 300
+  },
+  "scope": "Secondary QD_GRAPH=0 profiler. Counts refer to separately called diagnostic stages and include the standalone estimator also present inside association; they are not the production fused graph launch count."
+}

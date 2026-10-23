@@ -1,0 +1,68 @@
+[
+  [
+    {
+      "name": "hertz-cached",
+      "module": "examples.speed_benchmark.rigid_stress",
+      "args": [
+        "--envs",
+        "64",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--warmup",
+        "130",
+        "--steps",
+        "50",
+        "--compact-log",
+        "--scope",
+        "profile",
+        "--radius-model",
+        "hertz",
+        "--output-mode",
+        "full",
+        "--quadrature",
+        "16",
+        "--box-edge-policy",
+        "planar",
+        "--source-revision",
+        "db84114d1",
+        "--pressure-profile",
+        "hertz",
+        "--contact-moment-reuse",
+        "on"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "hertz-cached",
+      "module": "examples.speed_benchmark.rigid_stress",
+      "args": [
+        "--envs",
+        "16384",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--warmup",
+        "130",
+        "--steps",
+        "50",
+        "--compact-log",
+        "--scope",
+        "profile",
+        "--radius-model",
+        "hertz",
+        "--output-mode",
+        "full",
+        "--quadrature",
+        "16",
+        "--box-edge-policy",
+        "planar",
+        "--source-revision",
+        "db84114d1",
+        "--pressure-profile",
+        "hertz",
+        "--contact-moment-reuse",
+        "on"
+      ]
+    }
+  ]
+]
