@@ -9,6 +9,7 @@ import quadrants as qd
 
 import genesis as gs
 from examples.rigid.franka_egg_stress import FrankaEgg
+from examples.speed_benchmark.stress_stages import kernel_restore_geometry
 from genesis.engine.solvers.rigid.stress.automatic_radius import func_estimate_radius, func_witness_curvature
 from genesis.engine.solvers.rigid.stress.contact import StressContactState
 from genesis.utils import array_class
@@ -16,15 +17,6 @@ from genesis.utils.array_class import V, V_MAT
 from genesis.utils.misc import qd_to_numpy, tensor_to_array
 
 from .artifacts import file_id, runtime_identity, write_json
-
-
-@qd.kernel
-def kernel_restore_geometry(position: qd.types.ndarray(), quaternion: qd.types.ndarray(), dyn: array_class.DynState):
-    for i_g, i_b in qd.ndrange(dyn.geoms.pos.shape[0], dyn.geoms.pos.shape[1]):
-        for axis in qd.static(range(3)):
-            dyn.geoms.pos[i_g, i_b][axis] = position[i_b, i_g, axis]
-        for axis in qd.static(range(4)):
-            dyn.geoms.quat[i_g, i_b][axis] = quaternion[i_b, i_g, axis]
 
 
 @qd.kernel
