@@ -67,6 +67,7 @@ def main():
     cli.add_argument("--quadrature", type=int, default=10)
     cli.add_argument("--box-edge-policy", choices=("unsupported", "planar"), default="unsupported")
     cli.add_argument("--unfused", action="store_true")
+    cli.add_argument("--contact-moment-reuse", choices=("auto", "on", "off"), default="auto")
     cli.add_argument("--partial-reset-at", type=int)
     cli.add_argument("--field-steps", type=int, nargs="*", default=[])
     cli.add_argument("--output", type=Path, required=True)
@@ -83,6 +84,7 @@ def main():
             "quadrature": args.quadrature,
             "box_edge_policy": args.box_edge_policy,
             "unfused": args.unfused,
+            "contact_moment_reuse": args.contact_moment_reuse,
             "partial_reset_at": args.partial_reset_at,
             "field_steps": args.field_steps,
             "scope": "Actual public DPR path, original elastic mesh and rigid dynamics. Automatic radius and pressure "
@@ -102,6 +104,7 @@ def main():
         box_edge_policy=args.box_edge_policy,
         fused_pipeline=not args.unfused,
         fused_rigid_post=False if args.unfused else None,
+        contact_moment_reuse=None if args.contact_moment_reuse == "auto" else args.contact_moment_reuse == "on",
     )
     qd.sync()
     preparation = perf_counter() - begun
@@ -245,6 +248,7 @@ def main():
                 args.output / f"field-{step:04d}.npz",
                 stress_tensor=tensor_to_array(tensor),
                 von_mises=tensor_to_array(vm),
+                nodal_force=qd_to_numpy(entry.state.force, transpose=True, copy=True),
                 **fields,
             )
         peaks.append(peak)
