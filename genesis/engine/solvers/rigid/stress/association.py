@@ -6,6 +6,7 @@ import genesis as gs
 from genesis.utils import array_class, geom
 
 from .contact import StressContactState
+from .automatic_radius import func_estimate_radius
 
 
 @qd.kernel
@@ -21,6 +22,7 @@ def kernel_associate(
     enable_constraint: bool,
     step_valid: qd.Tensor,
     errno: qd.Tensor,
+    automatic_radius: qd.template() = None,
 ):
     func_associate(
         i_l,
@@ -34,6 +36,7 @@ def kernel_associate(
         enable_constraint,
         step_valid,
         errno,
+        automatic_radius,
     )
 
 
@@ -50,6 +53,7 @@ def func_associate(
     enable_constraint: bool,
     step_valid: qd.Tensor,
     errno: qd.Tensor,
+    automatic_radius: qd.template() = None,
 ):
     for i_b in range(omega.shape[0]):
         offset_pos = qd.Vector.zero(gs.qd_float, 3)
@@ -80,6 +84,9 @@ def func_associate(
             qd.atomic_or(errno[i_b], array_class.ErrorCode.INVALID_STRESS_LOAD)
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         contact_state.valid[i_c, i_b] = False
+        if qd.static(automatic_radius is not None):
+            contact_state.radius_status[i_c, i_b] = 2
+            contact_state.radius[i_c, i_b] = automatic_radius.unloaded_radius
         if enable_constraint and i_c < collider_state.n_contacts[i_b]:
             i_contact = collider_state.contact_sort_idx[i_c, i_b]
             i_a = collider_state.contact_data.link_a[i_contact, i_b]
@@ -101,3 +108,7 @@ def func_associate(
                 )
                 contact_state.friction[i_c, i_b] = collider_state.contact_data.friction[i_contact, i_b]
                 contact_state.valid[i_c, i_b] = True
+                if qd.static(automatic_radius is not None):
+                    func_estimate_radius(
+                        i_c, i_b, i_contact, contact_state, collider_state, dyn_state, automatic_radius
+                    )
