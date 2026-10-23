@@ -9,7 +9,23 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
-## Current goal and verified scope
+## Current target: automatic contact radius for the existing DPR
+
+**User correction, 2026-10-23:** keep the mature DPR and prefactorized FEM;
+add the cheapest useful Hertz/other contact-radius estimate. See
+[the corrected goal](docs/DPR_AUTOMATIC_RADIUS_GOAL_20261023.md).
+Feed finite Hertz/contact pressure through the existing DPR load transfer into
+that same FEM. Keep radius-only and pressure-profile effects separately measured.
+Analytic stress enrichment, boundary-traction correction and combined fields
+are stopped as the active direction. Earlier results below remain reproducible historical research.
+
+The per-contact radius API and native Hertz lookup exist, but the exact
+automatic-radius DPR feature is not yet integrated or benchmarked. The
+11.749/11.885 ms B1024 coarse-FEM bridge is relevant research evidence with
+52.77% loaded admission, not a completed radius-only feature. Later enrichment
+timings and errors do not describe the cost or accuracy of this target.
+
+## Historical research and verified scopes
 
 The [independent single-edge hollow-shell control](docs/SHARP_EDGE_SHELL_CONTROL_20261023.md)
 now retains complete-domain fields, exact through-wall integration and refined

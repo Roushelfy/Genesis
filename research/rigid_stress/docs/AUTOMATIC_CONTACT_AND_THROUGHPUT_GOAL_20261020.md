@@ -1,4 +1,12 @@
-# Current goal: cheap hard-contact stress estimates and native throughput
+# Historical goal: cheap hard-contact stress estimates and native throughput
+
+**Superseded where conflicting, 2026-10-23:** the active target is
+[cheap automatic radius for the original DPR](DPR_AUTOMATIC_RADIUS_GOAL_20261023.md).
+Keep the existing prefactorized FEM. Stop analytic particular-field,
+boundary-traction and combined-stress expansion. This older document is retained
+for provenance and reusable component/optimization evidence; it does not add
+additional enrichment, friction-history or coupled-reference prerequisites to
+the minimal automatic-radius DPR delivery.
 
 Latest user direction, 2026-10-20: prioritize inexpensive Hertz/thin-shell
 contact approximations and estimates. Do not assume or develop a deformable
