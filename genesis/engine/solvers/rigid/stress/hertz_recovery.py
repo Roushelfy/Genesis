@@ -411,6 +411,19 @@ def kernel_hertz_residual_traction(
                             n_gauss = surface.gauss.shape[0]
                             u = (surface.gauss[i_q // n_gauss] + (i_rule % (2 * radial_splits)) // 2) / radial_splits
                             v = (surface.gauss[i_q % n_gauss] + i_rule % 2) / 2
+                            angular_derivative = gs.qd_float(1.0)
+                            if qd.static(is_curved):
+                                if is_source:
+                                    cross = first.cross(second).norm()
+                                    if cross > 0:
+                                        # Equal angles resolve the narrow fan next to a face edge.
+                                        angle = qd.atan2(cross, first.dot(second))
+                                        theta = angle * v
+                                        denominator = first.norm() * qd.sin(theta) + second.norm() * qd.sin(
+                                            angle - theta
+                                        )
+                                        v = first.norm() * qd.sin(theta) / denominator
+                                        angular_derivative = angle * cross / (denominator * denominator)
                             radius, derivative = u, gs.qd_float(1.0)
                             if not is_source:
                                 length = ((1 - v) * first + v * second).norm()
@@ -430,6 +443,7 @@ def kernel_hertz_residual_traction(
                                 measure
                                 * radius
                                 * derivative
+                                * angular_derivative
                                 * surface.gauss_weights[i_q // n_gauss]
                                 * surface.gauss_weights[i_q % n_gauss]
                                 / (2 * radial_splits)
