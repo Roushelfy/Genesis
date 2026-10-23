@@ -131,6 +131,9 @@ def main():
         "--kernel-profiler", action="store_true", help="Enable Quadrants profiling in separate diagnostic runs"
     )
     parser.add_argument(
+        "--disable-cuda-graphs", action="store_true", help="Expose individual kernels in secondary diagnostic profiles"
+    )
+    parser.add_argument(
         "--allow-home-output", action="store_true", help="Record an explicitly user-authorized home-output exception"
     )
     parser.add_argument(
@@ -197,6 +200,8 @@ def main():
         )
         if args.kernel_profiler:
             lines.append("export QD_KERNEL_PROFILER=1")
+        if args.disable_cuda_graphs:
+            lines.append("export QD_GRAPH=0")
         if args.keep_going:
             lines.append("campaign_status=0")
         for task in group:
