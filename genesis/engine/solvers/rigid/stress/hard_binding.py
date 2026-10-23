@@ -249,31 +249,32 @@ def kernel_hard_geometry(
                     regions.opponent_type[i_c, i_b] == gs.GEOM_TYPE.PLANE
                     or regions.opponent_type[i_c, i_b] == gs.GEOM_TYPE.BOX
                 ):
-                    anchor, bary, point = func_projected_surface_walk(
-                        contacts.anchor_face[i_c, i_b],
-                        contacts.center[i_c, i_b],
-                        root - contacts.center[i_c, i_b],
-                        normal,
-                        info,
-                        surface,
-                        epsilon,
-                    )
-                    if anchor >= 0:
-                        located, derivative, area = func_surface_geometry(anchor, bary, info)
-                        outward = area.normalized()
-                        tangent = (tangent - outward * tangent.dot(outward)).normalized()
-                        basis = qd.Matrix.cols([tangent, -outward.cross(tangent), -outward])
-                        gradient, curvature, is_regular = func_surface_height_derivatives(
-                            anchor, bary, basis[:, :2].transpose(), outward, info, epsilon
-                        )
-                        if is_regular and (outward - normal).norm() < 1e-7:
-                            state.profile[i_c, i_b], state.geometry_status[i_c, i_b] = 1, 0
-                            state.anchor[i_c, i_b], state.minimum[i_c, i_b], state.basis[i_c, i_b] = (
-                                anchor,
-                                point,
-                                basis,
+                    tangent = (tangent - normal * tangent.dot(normal)).normalized()
+                    basis = qd.Matrix.cols([tangent, -normal.cross(tangent), -normal])
+                    anchor, point = contacts.anchor_face[i_c, i_b], contacts.center[i_c, i_b]
+                    offset = root - point
+                    curvature = qd.Matrix.zero(gs.qd_float, 2, 2)
+                    is_active, is_minimum = True, False
+                    # The collision normal root seeds a minimum of the actual material surface.
+                    for i_iteration in range(9):
+                        if is_active:
+                            anchor, bary, point = func_projected_surface_walk(
+                                anchor, point, offset, normal, info, surface, epsilon
                             )
-                            hertz.curvature[i_p] = curvature
+                            is_active = False
+                            if anchor >= 0:
+                                gradient, curvature, is_regular = func_surface_height_derivatives(
+                                    anchor, bary, basis[:, :2].transpose(), normal, info, epsilon
+                                )
+                                if is_regular and curvature.trace() > 0 and curvature.determinant() > 0:
+                                    is_minimum = gradient.norm() <= qd.max(1e-10, 128 * epsilon * (1 + gradient.norm()))
+                                    if not is_minimum and i_iteration < 8:
+                                        offset = -basis[:, :2] @ (curvature.inverse() @ gradient)
+                                        is_active = True
+                    if is_minimum:
+                        state.profile[i_c, i_b], state.geometry_status[i_c, i_b] = 1, 0
+                        state.anchor[i_c, i_b], state.minimum[i_c, i_b], state.basis[i_c, i_b] = anchor, point, basis
+                        hertz.curvature[i_p] = curvature
 
 
 @qd.kernel
