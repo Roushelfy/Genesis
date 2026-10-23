@@ -501,7 +501,7 @@ def kernel_hertz_residual_traction(
                             if qd.static(has_shear):
                                 if shear.force[i_p].norm() > 0:
                                     tensor += func_cerruti_tensor(local, shear.force[i_p], poisson)
-                            traction = -(basis @ tensor @ basis.transpose() @ normal) * weight
+                            traction = -(basis @ (tensor @ (basis.transpose() @ normal))) * weight
                             loads += shape.outer_product(traction)
                 for i, j in qd.static(qd.ndrange(6, 3)):
                     i_n = info.surface_nodes[i_f, i]
