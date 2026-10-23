@@ -9,6 +9,8 @@ import genesis as gs
 from genesis.utils.array_class import DataKind, ErrorCode, V, V_MAT, V_VEC, maybe_shape
 
 from .data import StressInfo, StressState
+from .edge import StressEdge, StressEdgeState
+from .edge_fields import func_edge_particular, func_edge_probe_offset, kernel_edge_field_quadrature
 from .hertz import StressHertzState, func_boussinesq_tensor, func_hertz_particular, kernel_hertz_stress_quadrature
 from .hertz_probes import (
     StressHertzProbeState,
@@ -60,7 +62,9 @@ class StressHertzRecovery:
     boundaries. Quadratic boundaries use their actual normal and area measure;
     material probes follow adjacent surface and volume charts. Material outside
     a region's half-space is rejected. Optional shear data supplies radial
-    friction history for each region.
+    friction history for each smooth region. Optional sharp-edge profiles use
+    proportional shear and finite-depth probes. Their continuum edge pressure
+    is unbounded, while the reported peaks describe the sampled points.
 
     Complete output retains all element corners in StressState and additional
     material probes in this component. Both banks contribute to the sampled VM
@@ -77,6 +81,7 @@ class StressHertzRecovery:
         moving_probes: bool = False,
         probe_walk_steps: int = 64,
         shear: StressHertzShear | None = None,
+        edge: StressEdgeState | None = None,
     ):
         assert n_envs > 0 and n_regions > 0 and n_queries >= 0 and output_mode in ("max", "full")
         assert probe_walk_steps > 0
@@ -84,6 +89,12 @@ class StressHertzRecovery:
         self.full = output_mode == "full"
         self.far_field = far_field
         self.has_queries = n_queries > 0
+        self.has_edge = edge is not None
+        self.edge = edge if edge is not None else StressEdge(0).state
+        self.edge_quadrature = V_VEC(2, dtype=gs.qd_float, shape=(32 if self.has_edge else 0,))
+        if self.has_edge:
+            assert self.edge.force.shape[0] == n_patches
+            kernel_edge_field_quadrature(self.edge_quadrature)
         self.has_shear = shear is not None
         self.shear = shear
         if self.shear is None:
@@ -178,12 +189,14 @@ class StressHertzRecovery:
                 self.probe_offsets,
                 self.frames,
                 hertz,
+                self.edge,
                 self.state,
                 self.probes,
                 model.info,
                 self.probe_walk_steps,
                 epsilon,
                 model.is_curved_geometry,
+                self.has_edge,
             )
         kernel_hertz_combined_field(
             model.options.young,
@@ -194,6 +207,8 @@ class StressHertzRecovery:
             self.frames,
             hertz,
             self.shear,
+            self.edge,
+            self.edge_quadrature,
             state,
             self.state,
             self.probes,
@@ -204,6 +219,7 @@ class StressHertzRecovery:
             self.has_queries,
             self.moving_probes,
             self.has_shear,
+            self.has_edge,
             model.is_curved_geometry,
         )
         kernel_hertz_combined_accept(state, self.state, self.probes, self.full, errno)
@@ -214,12 +230,14 @@ def kernel_hertz_moving_probes(
     offsets: qd.Tensor,
     frames: StressHertzFrames,
     hertz: StressHertzState,
+    edge: StressEdgeState,
     state: StressHertzRecoveryState,
     probes: StressHertzProbeState,
     info: StressInfo,
     walk_steps: int,
     epsilon: float,
     is_curved: qd.template(),
+    has_edge: qd.template(),
 ):
     for i_q, i_p in qd.ndrange(offsets.shape[0], frames.center.shape[0]):
         i_b = i_p % state.status.shape[0]
@@ -232,6 +250,9 @@ def kernel_hertz_moving_probes(
                 [[direction[0], -direction[1], 0.0], [direction[1], direction[0], 0.0], [0.0, 0.0, 1.0]]
             )
             local = offsets[i_q] * qd.Vector([axes[0], axes[1], axes[0]])
+            if qd.static(has_edge):
+                if edge.status[i_p] == 0:
+                    local = func_edge_probe_offset(i_q, edge.width[i_p], edge.half_length[i_p], edge.exponent[i_p])
             center = frames.center[i_p]
             position = center + frames.basis[i_p] @ rotation @ local
             anchor = frames.anchor[i_p]
@@ -496,6 +517,8 @@ def kernel_hertz_combined_field(
     frames: StressHertzFrames,
     hertz: StressHertzState,
     shear: StressHertzShear,
+    edge: StressEdgeState,
+    edge_quadrature: qd.Tensor,
     stress_state: StressState,
     state: StressHertzRecoveryState,
     probes: StressHertzProbeState,
@@ -506,6 +529,7 @@ def kernel_hertz_combined_field(
     has_queries: qd.template(),
     moving_probes: qd.template(),
     has_shear: qd.template(),
+    has_edge: qd.template(),
     is_curved: qd.template(),
 ):
     for i_b in range(state.status.shape[0]):
@@ -570,26 +594,58 @@ def kernel_hertz_combined_field(
                                 # The probe is defined in this source frame. Retain exact
                                 # surface depth instead of round-tripping world coordinates.
                                 source_local = probe_offsets[i_probe] * qd.Vector([axes[0], axes[1], axes[0]])
+                                if qd.static(has_edge):
+                                    if edge.status[i_p] == 0:
+                                        source_local = func_edge_probe_offset(
+                                            i_probe, edge.width[i_p], edge.half_length[i_p], edge.exponent[i_p]
+                                        )
                                 if qd.static(is_curved):
                                     source_local[2] = local[2]
                                 local = source_local
                         particular, resolved = qd.Matrix.zero(gs.qd_float, 3, 3), True
-                        if qd.static(has_shear):
-                            particular, resolved = func_hertz_friction_particular(
-                                i_p,
-                                local,
-                                axes,
-                                hertz.peak_pressure[i_p],
-                                hertz.force[i_p],
-                                poisson,
-                                quadrature,
-                                shear,
-                                far_field,
-                            )
-                        else:
-                            particular, resolved = func_hertz_particular(
-                                local, axes, hertz.peak_pressure[i_p], hertz.force[i_p], poisson, quadrature, far_field
-                            )
+                        is_edge = False
+                        if qd.static(has_edge):
+                            is_edge = edge.status[i_p] == 0
+                            if is_edge:
+                                local[0] += 2 * (1 - edge.exponent[i_p]) * edge.width[i_p] / 5
+                                tangent = qd.Vector.zero(gs.qd_float, 2)
+                                if qd.static(has_shear):
+                                    tangent = shear.force[i_p] / hertz.force[i_p]
+                                particular, edge_status = func_edge_particular(
+                                    local,
+                                    edge.width[i_p],
+                                    edge.half_length[i_p],
+                                    edge.exponent[i_p],
+                                    edge.amplitude[i_p],
+                                    hertz.force[i_p],
+                                    tangent,
+                                    poisson,
+                                    edge_quadrature,
+                                )
+                                resolved = edge_status == 0
+                        if not is_edge:
+                            if qd.static(has_shear):
+                                particular, resolved = func_hertz_friction_particular(
+                                    i_p,
+                                    local,
+                                    axes,
+                                    hertz.peak_pressure[i_p],
+                                    hertz.force[i_p],
+                                    poisson,
+                                    quadrature,
+                                    shear,
+                                    far_field,
+                                )
+                            else:
+                                particular, resolved = func_hertz_particular(
+                                    local,
+                                    axes,
+                                    hertz.peak_pressure[i_p],
+                                    hertz.force[i_p],
+                                    poisson,
+                                    quadrature,
+                                    far_field,
+                                )
                         tensor += basis @ particular @ basis.transpose()
                         valid = valid and resolved
                 valid = valid and tensor.norm() < float("inf")
