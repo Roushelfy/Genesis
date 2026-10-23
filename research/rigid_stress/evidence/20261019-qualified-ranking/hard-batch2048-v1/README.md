@@ -1,0 +1,5 @@
+# Native B1024/B2048 throughput and sampled memory
+
+Same-allocation B1024/B2048 rigid/max/full moving-scene timing with unchanged native engine, 64-bit precision, surface order16 and the same four-condition bank. Three continuous100..129 windows retain runtime admission. Independent saved-array checks cover all130 audited frames/environments across batches, within replicated condition banks and against separate fresh-process full memory sampling. GPU polls include non-Torch allocations but cannot certify a continuous peak or capacity limit. No independently diverse population, best batch, full-cycle admission or physical accuracy claim. The original frame428 refusal and all previous baselines remain unchanged.
+
+See [the measurements](../../../docs/SHARP_EDGE_PRESSURE_20261022.md#b2048-throughput-and-sampled-memory). All campaigns are terminal. Slurm rtx-mid/image1_26, the existing data-side Python and private node caches were used. All55 engine heads and12 original unfinished files remain preserved. Runtime arrays stay on data; no engine, tolerance, geometry or material change was introduced.

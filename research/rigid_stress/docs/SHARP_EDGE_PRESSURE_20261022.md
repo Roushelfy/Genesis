@@ -2058,3 +2058,69 @@ detected before submission; that partial capture and the verified cone-mode repa
 retained. All 55 frozen source heads and 12 original unfinished files are preserved.
 Runtime data/logs remain under the established data root, and the measured native source
 is pinned separately from the original task engine baseline.
+
+## B2048 throughput and sampled memory
+
+| Batch | Pure rigid ms/step | Max ms/step | Full ms/step | Max/full env-step/s |
+| --- | ---: | ---: | ---: | ---: |
+| 1024 | 3.425 | 410.473 | 411.821 | 2494.68 / 2486.52 |
+| 2048 | 4.681 | 809.722 | 812.542 | 2529.26 / 2520.49 |
+
+Relative to the same-allocation B1024 run, B2048 changes aggregate
+max/full throughput by+1.386% /+1.366%.
+Each primary max/full mode admits92,160 /184,320 timed environment steps
+at B1024/B2048; separate audits cover133,120 /266,240 environment steps.
+These three repeat blocks do not supply confidence intervals or a
+portable speedup. Each admitted mode retains all loaded/sharp counts.
+
+For this window, B1024 retains more than98.6% of B2048 aggregate throughput
+at about51% of its scene-step latency. Use B1024 as the measured compromise
+when latency matters; B2048 provides the slightly higher measured rate for
+a larger required population. This pair does not establish the best batch.
+
+The unchanged traction-vector engine e2979aed2 is evaluated at B1024 and
+B2048 in separate processes on the same allocated GPU. Both use64-bit
+precision, surface order16, the same collision/material assets and four
+initial conditions repeated256/512 times. Each process measures paired
+pure-rigid/max/full modes with three continuous100--129 windows after a
+separate complete0--129 audit. Required runtime acceptance, controller,
+dispatch and final synchronization remain inside the primary timings.
+This changes batch size alone; it does not change the physical model,
+solver tolerances or source implementation.
+
+A separate allocation measures full-mode process memory at B2048, from
+before scientific imports through build,130 audited frames and one repeated
+window. Independent NVIDIA polling includes non-Torch allocations. Its
+intrusive timing is excluded from primary throughput. Preparation durations
+are retained; sequential primary tasks share source-private compiler caches,
+so their preparation costs are not a matched cold-start comparison.
+
+The fresh B2048 full process completes all130 audited frames and its
+repeated window. Its sampled GPU peak is27,768MiB (27.12GiB), with
+9.421GiB host RSS high-water. The collector retains2,510 queries and2,407
+visible-process samples; the largest observed query gap is0.1964s. This
+is a measured fit on the97,887MiB RTX PRO6000 Blackwell Server GPU,
+not a maximum-batch or continuous-memory guarantee.
+
+All saved-array comparisons pass. The inspector checks all frames and all environments against
+the original public-output criteria: position absolute1e-12m, stress
+relative1e-7/absolute1e-6Pa, exact validity/load/edge/status masks and infinite
+maxima. It compares the batches, every repeated condition, rigid/max/full
+outputs and the independent full memory run. Loaded/sharp repeat counts
+are recomputed from the audit arrays. These are public observations;
+previous stricter raw full-field differences remain retained separately.
+
+This remains a tiled closing-window experiment. Sampled GPU memory is not
+a continuous peak or a capacity bound. Independently diverse populations,
+best batch, physical-stress accuracy and full-cycle admission remain open;
+the original frame428 refusal is unchanged.
+
+The [B2048 packet](../evidence/20261019-qualified-ranking/hard-batch2048-v1/README.md)
+retains terminal timing/memory job743187 and independent inspection743191,
+captured workers, all timing repeats, complete public audit arrays and
+memory polling receipts. Reproduce time_hard_franka and memory_hard_franka
+from the captured task files, then inspect_hard_batch_scaling; bind fresh
+output paths before using shell_comparison.submit. Scientific execution
+uses Slurm rtx-mid, image1_26, the existing data-side physical environment
+and private node caches. All55 engine heads and12 original unfinished
+files remain preserved. Runtime data stay under the established data root.
