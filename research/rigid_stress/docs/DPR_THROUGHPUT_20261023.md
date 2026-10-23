@@ -10,14 +10,14 @@ under the established `20261019-qualified-ranking` data root.
 
 | Requirement | Evidence required | Status |
 | --- | --- | --- |
-| Preserve original model, force/friction, support and FEM gates | CPU/GPU disk/sector load moments, same-mesh stress, original gates | First candidate submitted |
-| Contained-disk analytic moments and refined integration reuse | Independent off-plane disk moments; clipped/edge/vertex controls; overflow fallback | First candidate submitted |
-| Material complete-scene speedup, max/full | Paired repeated profiler-off rigid/manual/radius/Hertz measurements | First pilot submitted |
-| Useful batch optimum, beyond B64 | Batch sweep with env-step/s, memory and repeat variation | Pending |
-| Diverse changing contacts beyond the four tiled conditions | Seeded position/yaw/friction bank and equivalent-input comparisons | Bank generator prepared |
-| Release/recontact, reset, fusion, nonconvex identity | Focused moving-contact controls, partial reset, extended low-batch cycle and retained failures | Pending |
-| Continue through measured bottlenecks | Final stage/device/launch breakdown; evaluated candidates and stopping reasons | Pending |
-| Deliver integrated option and practical commands on branch | Final settings, executable commands, compact evidence and remote verification | Pending |
+| Preserve original model, force/friction, support and FEM gates | CPU/GPU disk/sector load moments, same-mesh stress, original gates | Passed through ray reuse; q16 controls running |
+| Contained-disk analytic moments and refined integration reuse | Independent off-plane disk moments; clipped/edge/vertex controls; overflow fallback | Passed through ray reuse |
+| Material complete-scene speedup, max/full | Paired repeated profiler-off rigid/manual/radius/Hertz measurements | Successive paired gains; final matched matrix running |
+| Useful batch optimum, beyond B64 | Batch sweep with env-step/s, memory and repeat variation | B16384/B32768 throughput plateau established |
+| Diverse changing contacts beyond the four tiled conditions | Seeded position/yaw/friction bank and equivalent-input comparisons | Eight-case bank and 160-frame checks pass; final ray variant running |
+| Release/recontact, reset, fusion, nonconvex identity | Focused moving-contact controls, partial reset, extended low-batch cycle and retained failures | Eight regressions per backend pass; final lifecycle rerun active |
+| Continue through measured bottlenecks | Final stage/device/launch breakdown; evaluated candidates and stopping reasons | Geometry/ray/zero-fan work measured; FEM alternatives running |
+| Deliver integrated option and practical commands on branch | Final settings, executable commands, compact evidence and remote verification | Native default integrated; publication pending |
 
 ## Numerical method
 
@@ -68,6 +68,15 @@ falls from 0.439 to 0.312 ms; cached scatter remains 0.074 ms. There are 16
 contained Hertz faces and 560 clipped faces, including 224 exactly zero-area
 fans. This profile motivates the subsequent ray-reuse candidate `db84114d1`.
 
+The ray candidate computes a fan ray's spherical-support clipping once for all
+radial samples and omits exactly zero-area fans. The original quadrature nodes,
+weights, pressure law and physical radius remain unchanged; only the reduction
+order changes. Its paired B64 full live time is 3.2384 versus 3.2799 ms, and its
+isolated complete module costs 1.0438 versus 1.0686 ms. This smaller gain is
+separate from the main moment-reuse improvement. CPU and GPU each pass all
+eight focused regressions, including asymmetric moving contacts on nonconvex
+inner walls, contact-slot changes, force/friction changes and release/recontact.
+
 The original Quadrants kernel profiler omits captured graphs. Historical
 `stage_device_ms` values of zero therefore mean unrecorded work, not free
 execution. New records call this `stage_recorded_kernel_ms`. Secondary
@@ -109,9 +118,9 @@ choice, not a universal optimum.
   fresh inverse-kinematics targets. No condition is filtered by stress admission.
 - `automatic-dpr-opt-quadrature-v1` rechecks cheaper q8/q10/q12 rules. q8's
   independent DPR edge-load error is 1.55e-9 against the unchanged 1e-9 gate.
-  Both q8 and q10 Hertz scene runs retain their step-108 fit rejection, so the
-  new analytical path does not erase the earlier q10 failure. Further results
-  remain pending; no tolerance is loosened.
+  The q8, q10 and q12 Hertz scene runs all retain their step-108 fit rejection,
+  so the new analytical path does not erase the earlier q10 failure. q16 remains
+  the recommended rule for this scene; no tolerance is loosened.
 
 The original approximately 86% coarse-FEM physical stress discrepancy and
 failed exact-bitwise audit remain in the starting report and evidence packet.
