@@ -184,7 +184,7 @@ def func_pressure_moments(
         contacts.status[i_c, i_b] = status
         workspace.affine_pressure[i_pair] = status == 0
     # Overflow recomputes the complete original pressure, with no cache accesses.
-    func_pressure_warp(contacts, surface, False, not is_admitted)
+    func_pressure_warp(contacts, surface, False, contacts.valid, False, not is_admitted)
 
 
 @qd.kernel(graph=True)
@@ -200,7 +200,7 @@ def kernel_pressure_moments(
     func_pressure_moments(contacts, state, info, surface, workspace, cached_bounds)
     func_pressure_correct_warp(contacts, surface)
     func_refine_contacts(contacts)
-    func_pressure_warp(contacts, surface, True, True, workspace.refined_pressure)
+    func_pressure_warp(contacts, surface, True, workspace.refined_pressure, True)
     func_pressure_correct_warp(contacts, surface)
 
 
@@ -336,6 +336,6 @@ def kernel_fit_scatter_moments(
     func_pressure_moments(contacts, state, info, surface, workspace, cached_bounds)
     func_pressure_correct_warp(contacts, surface)
     func_refine_contacts(contacts)
-    func_pressure_warp(contacts, surface, True, True, workspace.refined_pressure)
+    func_pressure_warp(contacts, surface, True, workspace.refined_pressure, True)
     func_pressure_correct_warp(contacts, surface)
     func_scatter_faces(contacts, state, info, surface, workspace, cached_bounds, True)
