@@ -2,9 +2,11 @@
 
 from dataclasses import dataclass
 from typing import ClassVar
+
 import quadrants as qd
+
 import genesis as gs
-from genesis.utils.array_class import DataItem, DataKind, V, V_VEC, iter_data, of_kind
+from genesis.utils.array_class import DataItem, DataKind, V, V_MAT, V_VEC, iter_data, of_kind
 
 
 @dataclass(frozen=True)
@@ -29,6 +31,8 @@ class StressFrictionInfo:
     response: qd.Tensor
     denominator: qd.Tensor
     inverse: qd.Tensor
+    dual_diagonal: qd.Tensor
+    weight_sum: qd.Tensor
 
 
 @dataclass(frozen=True)
@@ -51,6 +55,13 @@ class StressFrictionState:
     line_residual: qd.Tensor
     traction_bound: qd.Tensor
     iterations: qd.Tensor
+    newton_offset: qd.Tensor
+    newton_argument: qd.Tensor
+    newton_step: qd.Tensor
+    newton_upper: qd.Tensor
+    newton_iterations: qd.Tensor
+    newton_residual: qd.Tensor
+    newton_is_converged: qd.Tensor
 
 
 class StressFrictionHistory:
@@ -84,6 +95,8 @@ class StressFrictionHistory:
             response=V(dtype=gs.qd_float, shape=(16,)),
             denominator=V(dtype=gs.qd_float, shape=()),
             inverse=V(dtype=gs.qd_float, shape=(16, 16)),
+            dual_diagonal=V(dtype=gs.qd_float, shape=(16,)),
+            weight_sum=V(dtype=gs.qd_float, shape=()),
         )
         self.state = StressFrictionState(
             line=V_VEC(2, dtype=gs.qd_float, shape=(17, n_regions)),
@@ -103,6 +116,13 @@ class StressFrictionHistory:
             line_residual=V(dtype=gs.qd_float, shape=(n_regions,)),
             traction_bound=V(dtype=gs.qd_float, shape=(n_regions,)),
             iterations=V(dtype=gs.qd_int, shape=(n_regions,)),
+            newton_offset=V_VEC(2, dtype=gs.qd_float, shape=(16, n_regions)),
+            newton_argument=V_VEC(2, dtype=gs.qd_float, shape=(16, n_regions)),
+            newton_step=V_VEC(2, dtype=gs.qd_float, shape=(16, n_regions)),
+            newton_upper=V_MAT(2, 2, dtype=gs.qd_float, shape=(16, n_regions)),
+            newton_iterations=V(dtype=gs.qd_int, shape=(n_regions,)),
+            newton_residual=V(dtype=gs.qd_float, shape=(n_regions,)),
+            newton_is_converged=V(dtype=gs.qd_bool, shape=(n_regions,)),
         )
         kernel_friction_info(self.penalty, self.info)
         kernel_friction_initialize(self.input, self.state)
@@ -132,6 +152,7 @@ def func_friction_reset(i_p: int, inputs: StressFrictionInput, state: StressFric
     (state.status[i_p], state.is_lost[i_p], state.prior_is_lost[i_p]) = (1, False, False)
     (state.residual[i_p], state.dual_residual[i_p], state.line_residual[i_p]) = (0.0, 0.0, 0.0)
     (state.traction_bound[i_p], state.iterations[i_p]) = (0.0, 0)
+    (state.newton_iterations[i_p], state.newton_residual[i_p], state.newton_is_converged[i_p]) = (0, 0.0, False)
     for i_s in range(17):
         (state.line[i_s, i_p], state.prior[i_s, i_p]) = (qd.Vector.zero(gs.qd_float, 2), qd.Vector.zero(gs.qd_float, 2))
     for i_s in range(16):
@@ -211,6 +232,17 @@ def kernel_friction_info(penalty: float, info: StressFrictionInfo):
         for i_s in range(n_segments):
             denominator += info.weight[i_s] * info.response[i_s]
         info.denominator[None] = denominator
+        weight_sum = gs.qd_float(0.0)
+        for i_s in range(n_segments):
+            weight_sum += info.weight[i_s]
+        info.weight_sum[None] = weight_sum
+        for i_s in range(n_segments):
+            diagonal = 1 / info.weight[i_s]
+            if i_s < n_segments - 1:
+                diagonal += 1 / info.weight[i_s + 1]
+            else:
+                diagonal -= 1 / weight_sum
+            info.dual_diagonal[i_s] = diagonal
         for j_s in range(n_segments):
             for i_s in range(n_segments):
                 rhs = gs.qd_float(0.0)
@@ -234,6 +266,127 @@ def func_friction_disk(value: qd.types.vector(2), cap: float):
     if length > cap:
         result *= cap / length
     return result
+
+
+@qd.func
+def func_friction_newton_seed(
+    i_p: int,
+    target: qd.types.vector(2),
+    penalty: float,
+    state: StressFrictionState,
+    info: StressFrictionInfo,
+):
+    """Seed the existing alternating direction method of multipliers (ADMM) without changing its certificate.
+
+    Eliminate the weighted quadratic and force equality. For slope increments z and dual u, z = offset - M u,
+    where M = D W^-1 D.T - e_last e_last.T / sum(w) is tridiagonal. The projection equation is
+    z = disk(z + u). Its generalized derivative has 2 x 2 tridiagonal blocks, solved by block elimination.
+    A failed seed restores the original initialization; only the subsequent ADMM checks admit a physical line.
+    """
+    n_segments = info.radius.shape[0] - 1
+    current = qd.Vector.zero(gs.qd_float, 2)
+    for i_s in range(n_segments):
+        current += info.weight[i_s] * state.prior[i_s, i_p]
+        state.dual[i_s, i_p] = qd.Vector.zero(gs.qd_float, 2)
+        state.newton_step[i_s, i_p] = qd.Vector.zero(gs.qd_float, 2)
+    for i_s in range(n_segments):
+        offset = state.prior[i_s, i_p]
+        if i_s < n_segments - 1:
+            offset -= state.prior[i_s + 1, i_p]
+        else:
+            offset += (target - current) / info.weight_sum[None]
+        state.newton_offset[i_s, i_p] = offset
+    is_converged = False
+    is_valid = True
+    merit = gs.qd_float(0.0)
+    error = gs.qd_float(float("inf"))
+    iteration = gs.qd_int(0)
+    for i_iteration in range(65):
+        if is_valid and not is_converged:
+            fraction = gs.qd_float(1.0)
+            is_accepted = False
+            for i_backtrack in range(32):
+                if not is_accepted:
+                    trial_merit = gs.qd_float(0.0)
+                    error = gs.qd_float(0.0)
+                    for i_s in range(n_segments):
+                        dual = state.dual[i_s, i_p] + fraction * state.newton_step[i_s, i_p]
+                        value = state.newton_offset[i_s, i_p] - info.dual_diagonal[i_s] * dual
+                        if i_s > 0:
+                            value += (
+                                state.dual[i_s - 1, i_p] + fraction * state.newton_step[i_s - 1, i_p]
+                            ) / info.weight[i_s]
+                        if i_s < n_segments - 1:
+                            value += (
+                                state.dual[i_s + 1, i_p] + fraction * state.newton_step[i_s + 1, i_p]
+                            ) / info.weight[i_s + 1]
+                        argument = value + dual
+                        width = info.radius[i_s + 1] ** 2 - info.radius[i_s] ** 2
+                        projected = func_friction_disk(argument, width)
+                        residual = value - projected
+                        state.trial[i_s, i_p] = residual
+                        state.newton_argument[i_s, i_p] = argument
+                        state.increment[i_s, i_p] = projected
+                        trial_merit += residual.dot(residual)
+                        error = qd.max(error, residual.norm())
+                    if i_iteration == 0 or trial_merit <= (1 - 1e-4 * fraction) ** 2 * merit:
+                        is_accepted = True
+                        merit = trial_merit
+                        for i_s in range(n_segments):
+                            state.dual[i_s, i_p] += fraction * state.newton_step[i_s, i_p]
+                    else:
+                        fraction *= 0.5
+            is_valid = is_accepted
+            is_converged = is_accepted and error < 1e-12
+            iteration = i_iteration
+            if is_valid and not is_converged and i_iteration < 64:
+                for i_s in range(n_segments):
+                    argument = state.newton_argument[i_s, i_p]
+                    width = info.radius[i_s + 1] ** 2 - info.radius[i_s] ** 2
+                    identity = qd.Matrix.identity(gs.qd_float, 2)
+                    derivative = identity
+                    length = argument.norm()
+                    if length > width:
+                        direction = argument / length
+                        derivative = (width / length) * (identity - direction.outer_product(direction))
+                    complement = identity - derivative
+                    diagonal = derivative + info.dual_diagonal[i_s] * complement
+                    rhs = state.trial[i_s, i_p]
+                    if i_s > 0:
+                        lower = -complement / info.weight[i_s]
+                        diagonal -= lower @ state.newton_upper[i_s - 1, i_p]
+                        rhs -= lower @ state.solution[i_s - 1, i_p]
+                    if qd.abs(diagonal.determinant()) > 1e-24 * qd.max(1.0, diagonal.norm_sqr()):
+                        inverse = diagonal.inverse()
+                        state.solution[i_s, i_p] = inverse @ rhs
+                        upper = qd.Matrix.zero(gs.qd_float, 2, 2)
+                        if i_s < n_segments - 1:
+                            upper = -complement / info.weight[i_s + 1]
+                        state.newton_upper[i_s, i_p] = inverse @ upper
+                    else:
+                        is_valid = False
+                        state.solution[i_s, i_p] = qd.Vector.zero(gs.qd_float, 2)
+                        state.newton_upper[i_s, i_p] = qd.Matrix.zero(gs.qd_float, 2, 2)
+                for i_r in range(n_segments):
+                    i_s = n_segments - 1 - i_r
+                    step = state.solution[i_s, i_p]
+                    if i_s < n_segments - 1:
+                        step -= state.newton_upper[i_s, i_p] @ state.newton_step[i_s + 1, i_p]
+                    state.newton_step[i_s, i_p] = step
+    state.newton_iterations[i_p] = iteration
+    state.newton_residual[i_p] = error
+    state.newton_is_converged[i_p] = is_converged
+    for i_s in range(n_segments):
+        if is_converged:
+            state.dual[i_s, i_p] /= penalty
+        else:
+            width = info.radius[i_s + 1] ** 2 - info.radius[i_s] ** 2
+            difference = state.prior[i_s, i_p] - state.prior[i_s + 1, i_p]
+            length = difference.norm()
+            if length > width:
+                difference *= width / length
+            state.increment[i_s, i_p] = difference
+            state.dual[i_s, i_p] = qd.Vector.zero(gs.qd_float, 2)
 
 
 @qd.kernel
@@ -261,6 +414,7 @@ def kernel_friction_serial(
         )
         (state.residual[i_p], state.dual_residual[i_p], state.line_residual[i_p]) = (0.0, 0.0, 0.0)
         (state.traction_bound[i_p], state.iterations[i_p]) = (0.0, 0)
+        (state.newton_iterations[i_p], state.newton_residual[i_p], state.newton_is_converged[i_p]) = (0, 0.0, False)
         if inputs.is_reset[i_p]:
             state.is_lost[i_p] = False
         if not is_valid:
@@ -285,12 +439,7 @@ def kernel_friction_serial(
                     width = info.radius[i_s + 1] ** 2 - info.radius[i_s] ** 2
                     state.increment[i_s, i_p] = width * target / magnitude
             else:
-                for i_s in range(n_segments):
-                    width = info.radius[i_s + 1] ** 2 - info.radius[i_s] ** 2
-                    state.increment[i_s, i_p] = func_friction_disk(
-                        state.prior[i_s, i_p] - state.prior[i_s + 1, i_p], width
-                    )
-                    state.dual[i_s, i_p] = qd.Vector.zero(gs.qd_float, 2)
+                func_friction_newton_seed(i_p, target, penalty, state, info)
                 is_converged = False
                 iteration = 0
                 for i_iteration in range(maximum_iterations):
@@ -476,6 +625,8 @@ def kernel_friction_cooperative(
             gs.qd_float(0.0),
         )
         scale = gs.qd_float(0.0)
+        if i_s == 0:
+            (state.newton_iterations[i_p], state.newton_residual[i_p], state.newton_is_converged[i_p]) = (0, 0.0, False)
         if status == 0:
             scale = 0.75 * friction * normal / radius
             target = force / (friction * normal)
@@ -491,6 +642,12 @@ def kernel_friction_cooperative(
                 if is_active:
                     z = width * target / magnitude
             else:
+                if i_s == 0:
+                    func_friction_newton_seed(i_p, target, penalty, state, info)
+                qd.simt.warp.sync(qd.u32(0xFFFFFFFF))
+                if is_active:
+                    z = state.increment[i_s, i_p]
+                    u = state.dual[i_s, i_p]
                 is_converged = False
                 for i_iteration in range(maximum_iterations):
                     if not is_converged:
