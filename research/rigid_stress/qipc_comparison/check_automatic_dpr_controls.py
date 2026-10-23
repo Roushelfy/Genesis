@@ -19,7 +19,7 @@ from genesis.engine.solvers.rigid.stress.contact import (
     kernel_pressure,
     kernel_scatter,
 )
-from genesis.utils import array_class
+from genesis.utils import array_class, geom
 from genesis.utils.array_class import V_VEC
 from genesis.utils.misc import qd_to_numpy
 from research.rigid_stress.field_cpu import stress_field
@@ -53,6 +53,15 @@ def kernel_radius_controls(
         collider.contact_data.witness.point_b[0, i_b] = qd.Vector([0.0, 0.0, 0.05])
         if i_b == 4:
             collider.contact_data.witness.point_a[0, i_b] = qd.Vector([0.05, 0.05, 0.05])
+        collider.contact_data.witness.point_a[0, i_b] = geom.qd_transform_by_trans_quat(
+            collider.contact_data.witness.point_a[0, i_b], dyn.geoms.pos[0, i_b], dyn.geoms.quat[0, i_b]
+        )
+        collider.contact_data.witness.point_b[0, i_b] = geom.qd_transform_by_trans_quat(
+            collider.contact_data.witness.point_b[0, i_b], dyn.geoms.pos[0, i_b], dyn.geoms.quat[0, i_b]
+        )
+        collider.contact_data.normal[0, i_b] = geom.qd_transform_by_quat(
+            collider.contact_data.normal[0, i_b], dyn.geoms.quat[0, i_b]
+        )
         func_estimate_radius(0, i_b, 0, contacts, collider, dyn, info)
 
 
@@ -60,7 +69,6 @@ def disk_wedge_loads(model, surface, center, force, radii, profile):
     """Integrate P2 polynomials analytically over full disks and planar sectors at mesh edges/vertices."""
     nodes = qd_to_numpy(model.info.surface_nodes)
     coordinates = qd_to_numpy(model.info.vertices)
-    duals = qd_to_numpy(surface.info.face_dual)
     triangles = coordinates[nodes[:, :3]]
     sectors = []
     radial_first, radial_second = 3 * np.pi / 16, 0.4
@@ -70,7 +78,8 @@ def disk_wedge_loads(model, surface, center, force, radii, profile):
         measure = weights * r * np.exp(-0.5 * (r / 0.45) ** 2) * (1 - r**2) ** 2
         radial_first, radial_second = np.dot(measure, r) / measure.sum(), np.dot(measure, r**2) / measure.sum()
     for i_f, triangle in enumerate(triangles):
-        dual = duals[i_f]
+        edges = triangle[1:] - triangle[0]
+        dual = np.linalg.solve(edges @ edges.T, edges)
         local = dual @ (center - triangle[0])
         bary = np.r_[1 - local.sum(), local]
         projection = triangle[0] + local @ (triangle[1:] - triangle[0])
@@ -147,8 +156,12 @@ def main():
     asset = args.output / "cube.npz"
     np.savez(asset, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
     scene = gs.Scene(sim_options=gs.options.SimOptions(gravity=(0, 0, 0)), show_viewer=False)
-    box = scene.add_entity(gs.morphs.Box(size=(0.1, 0.1, 0.1)))
-    scene.add_entity(gs.morphs.Sphere(radius=0.05, pos=(0, 0, 0.1), fixed=True))
+    box = scene.add_entity(
+        gs.morphs.Box(size=(0.1, 0.1, 0.1), pos=(0.65, -0.3, 0.15), quat=(np.cos(np.pi / 8), 0, np.sin(np.pi / 8), 0))
+    )
+    scene.add_entity(
+        gs.morphs.Sphere(radius=0.05, pos=(0.65 + 0.1 / np.sqrt(2), -0.3, 0.15 + 0.1 / np.sqrt(2)), fixed=True)
+    )
     scene.add_entity(gs.morphs.Plane(pos=(0, 0, -1)))
     box.base_link.configure_stress_recovery(gs.options.RigidStressOptions.dpr(mesh=asset, radius_model="hertz"))
     scene.build(n_envs=6)

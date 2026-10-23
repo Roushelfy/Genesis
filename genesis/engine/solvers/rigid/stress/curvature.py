@@ -200,7 +200,8 @@ def func_surface_curvature(
         status = CurvatureStatus.ANALYTIC
     elif kind == gs.GEOM_TYPE.BOX:
         half = 0.5 * qd.Vector([dyn_info.geoms.data[i_g][i] for i in qd.static(range(3))])
-        tolerance = 128.0 * epsilon * half.norm()
+        # Projected boundary points have world-scale roundoff before they return to this local frame.
+        tolerance = 128.0 * epsilon * (half.norm() + position.norm() + dyn_state.geoms.pos[i_g, i_b].norm())
         count = 0
         for i in qd.static(range(3)):
             if qd.abs(qd.abs(local[i]) - half[i]) <= tolerance:
@@ -212,7 +213,7 @@ def func_surface_curvature(
     elif kind == gs.GEOM_TYPE.SPHERE or kind == gs.GEOM_TYPE.CAPSULE or kind == gs.GEOM_TYPE.CYLINDER:
         radius = dyn_info.geoms.data[i_g][0]
         half = 0.5 * dyn_info.geoms.data[i_g][1]
-        tolerance = 128.0 * epsilon * qd.max(radius, half)
+        tolerance = 128.0 * epsilon * (qd.max(radius, half) + position.norm() + dyn_state.geoms.pos[i_g, i_b].norm())
         center = qd.Vector.zero(gs.qd_float, 3)
         if kind == gs.GEOM_TYPE.CAPSULE:
             center[2] = qd.min(half, qd.max(-half, local[2]))
