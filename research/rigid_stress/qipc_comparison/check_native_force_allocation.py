@@ -139,6 +139,41 @@ def main():
     allocation.update()
     np.testing.assert_array_equal(array(state.status), 0)
     np.testing.assert_array_equal(array(state.force), force)
+    sparse = StressForceAllocation(750, original.shape[0])
+    slots = np.linspace(0, 749, original.shape[1], dtype=int)[::-1]
+    for field, values in [
+        (sparse.state.original, original),
+        (sparse.state.center, centers),
+        (sparse.state.normal, normals),
+    ]:
+        padded = np.zeros((750, original.shape[0], 3))
+        padded[slots] = values.transpose(1, 0, 2)
+        field.from_numpy(padded)
+    padded_friction = np.zeros((750, original.shape[0]))
+    padded_friction[slots] = friction.T
+    sparse.state.friction.from_numpy(padded_friction)
+    sparse.state.target.from_numpy(targets)
+    sparse.state.length.from_numpy(lengths)
+    sparse.update()
+    np.testing.assert_array_equal(array(sparse.state.status), 0)
+    sparse_force = array(sparse.state.force)
+    np.testing.assert_allclose(sparse_force[:, slots], force, rtol=1e-9, atol=1e-12)
+    np.testing.assert_array_equal(sparse_force[:, np.setdiff1d(np.arange(750), slots)], 0)
+    padded_original = np.zeros((750, original.shape[0], 3))
+    padded_original[slots] = original.transpose(1, 0, 2)
+    padded_original[:, 0] = 0
+    sparse.state.original.from_numpy(padded_original)
+    sparse.state.target.from_numpy(zero_target)
+    sparse.update()
+    assert array(sparse.state.status)[0] == 1
+    np.testing.assert_array_equal(array(sparse.state.force)[0], 0)
+    np.testing.assert_allclose(array(sparse.state.force)[1:], sparse_force[1:], rtol=1e-12, atol=1e-14)
+    padded_original[slots, 0] = original[0]
+    sparse.state.original.from_numpy(padded_original)
+    sparse.state.target.from_numpy(targets)
+    sparse.update()
+    np.testing.assert_array_equal(array(sparse.state.status), 0)
+    np.testing.assert_allclose(array(sparse.state.force), sparse_force, rtol=1e-12, atol=1e-14)
     timing = []
     if args.timing:
         for batch in [1, 64, 1024]:
@@ -188,6 +223,7 @@ def main():
             "maximum_independently_reconstructed_wrench_residual": float(independent_residual.max()),
             "maximum_relative_changes": changes.tolist(),
             "invalid_singular_unload_isolation_restoration": True,
+            "sparse_permuted_750_slot_unload_restoration": True,
             "component_timing": timing,
             "whole_goal_complete": False,
         },

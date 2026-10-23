@@ -1,0 +1,140 @@
+[
+  [
+    {
+      "name": "baseline",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hard_binding",
+      "args": [
+        "--backend",
+        "gpu",
+        "--geometry-only",
+        "--frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/frame0107.npz",
+        "--boundaries",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/boundaries0107.npz",
+        "--geometry",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/geometry0107.npz",
+        "--raw-contacts",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/contacts0107.npz",
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-law-update-v1/group0/update2/source-geometry.json",
+        "--require-admission",
+        "--timing-steps",
+        "100",
+        "--timing-repeats",
+        "3",
+        "--batch-repeat",
+        "1"
+      ],
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_smooth_minimum"
+    },
+    {
+      "name": "candidate",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hard_binding",
+      "args": [
+        "--backend",
+        "gpu",
+        "--geometry-only",
+        "--frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/frame0107.npz",
+        "--boundaries",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/boundaries0107.npz",
+        "--geometry",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/geometry0107.npz",
+        "--raw-contacts",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/contacts0107.npz",
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-law-update-v1/group0/update2/source-geometry.json",
+        "--require-admission",
+        "--timing-steps",
+        "100",
+        "--timing-repeats",
+        "3",
+        "--batch-repeat",
+        "1",
+        "--compare-binding",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-active-scaling-v1/group0/baseline/binding.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "baseline",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hard_binding",
+      "args": [
+        "--backend",
+        "gpu",
+        "--geometry-only",
+        "--frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/frame0107.npz",
+        "--boundaries",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/boundaries0107.npz",
+        "--geometry",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/geometry0107.npz",
+        "--raw-contacts",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/contacts0107.npz",
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-law-update-v1/group0/update2/source-geometry.json",
+        "--require-admission",
+        "--timing-steps",
+        "30",
+        "--timing-repeats",
+        "3",
+        "--batch-repeat",
+        "16"
+      ],
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_smooth_minimum"
+    },
+    {
+      "name": "candidate",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hard_binding",
+      "args": [
+        "--backend",
+        "gpu",
+        "--geometry-only",
+        "--frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/frame0107.npz",
+        "--boundaries",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/boundaries0107.npz",
+        "--geometry",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/geometry0107.npz",
+        "--raw-contacts",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-quadrature-v1/group0/full/contacts0107.npz",
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-law-update-v1/group0/update2/source-geometry.json",
+        "--require-admission",
+        "--timing-steps",
+        "30",
+        "--timing-repeats",
+        "3",
+        "--batch-repeat",
+        "16",
+        "--compare-binding",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-active-scaling-v1/group1/baseline/binding.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_force_allocation",
+      "args": [
+        "--backend",
+        "cpu",
+        "--references",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-response-v1/group0/allocation/result.json",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-response-v1/group1/allocation/result.json",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-response-v1/group2/allocation/result.json",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-law-update-v1/group0/allocation2/result.json",
+        "--timing"
+      ]
+    }
+  ]
+]

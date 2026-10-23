@@ -24,6 +24,7 @@ def main():
     cli.add_argument("--capture", type=Path, required=True)
     cli.add_argument("--backend", choices=["cpu", "gpu"], required=True)
     cli.add_argument("--penalties", type=float, nargs="+", default=[0.1, 0.3, 1, 3, 10, 30])
+    cli.add_argument("--captured-penalty", type=float, default=0.1)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -33,6 +34,7 @@ def main():
             "identity": runtime_identity(require_gpu_inventory=args.backend == "gpu"),
             "capture": file_id(args.capture),
             "penalties": args.penalties,
+            "captured_penalty": args.captured_penalty,
             "scope": "Replay the exact staged prior without rerunning history interpolation. Penalty changes alter only the numerical solver, with the original iteration limit and all acceptance gates. Independent SLSQP solves the same radial approximation; no physical accuracy claim.",
         },
     )
@@ -68,7 +70,7 @@ def main():
         line, status = array(native.state.line), array(native.state.status)
         errors = np.max(np.linalg.norm(line - expected, axis=2), axis=1)
         assert np.all(errors[status == 0] < 1e-5), (penalty, errors, status)
-        if np.isclose(penalty, 0.1):
+        if np.isclose(penalty, args.captured_penalty):
             np.testing.assert_array_equal(status, saved["state_status"][selected])
         rows.append(
             {

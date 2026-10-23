@@ -644,6 +644,88 @@ cycle or usable continuous-window throughput. Independent complete-field model
 errors, changing edge-friction accuracy, matched accepted timing and batch
 scaling remain active requirements.
 
+## Loaded-region allocation and moving-boundary diagnosis
+
+The input optimization keeps the existing pressure laws, original wrench target,
+Coulomb cones, Newton/backtracking iterations and every numerical acceptance gate.
+A single scan validates and clears every supplied slot, then records the loaded
+region indices. Iterative residuals and line searches traverse those indices.
+Release rebuilds the list; no persistent contact identity or friction history is
+changed. CPU/GPU checks retain the12 independent scaled/rotated allocations,
+invalid/singular isolation and unload/restoration. A reversed sparse embedding
+across750 slots also passes. Maximum independent force discrepancy is3.36e-10.
+
+Separate profiling identifies the actual cost: the original allocator consumes
+93.05% of GPU kernel time,15.217ms per call, with three calls per hard-input
+update. Loaded-index iteration reduces that kernel to0.906ms per call. These
+instrumented profiles establish attribution; the following paired wall-clock
+measurements disable profiling and include dispatch and final synchronization:
+
+| Fixed captured input bank | Baseline input update | Loaded-index update | Speedup |
+| --- | ---: | ---: | ---: |
+| B4,750 slots/environment | 47.781ms | 5.655ms | 8.45x |
+| B64,16 repetitions of the B4 bank | 50.392ms | 5.851ms | 8.61x |
+
+Each row uses the same GPU allocation and model, with three warmed timing
+intervals. All25 captured output fields match the numerical baseline at1e-9
+relative/1e-12 absolute tolerances, including status, geometry, force, support
+and allocation certificates. This workload has one active hard-contact
+environment per four-environment bank. It excludes collision/region construction,
+source resolution, elastic recovery, full fields and dynamics. It is resident
+fixed-input component throughput, not independently evolving RL throughput.
+Geometry, grouping and repeated target/frame work remain measurable costs.
+
+Boundary replays now retain raw nodal loads before acceptance clears them.
+Separating the three sources at frame107 localizes the16th-order failure to the
+ground's smooth source: its relative wrench error is0.41394; the two gripper edge
+sources give4.56e-7 and4.27e-8. Per-face replays sum back to the original raw
+nodal vector within1e-10 relative/1e-13N absolute. Against order48, the largest
+order16 nodal-load change is9.83e-4N on adjacent face33, followed by4.50e-5N on
+source face74. At order32, those two faces still dominate. The source is58.3um
+from face33 and lies near a vertex inside face74. Geometry uses the captured
+contact-time material frame, not the later diagnostic world geometry query.
+
+Equal-angle source fans and closest-curved-point fans are retained as failed
+controls. Neither admits frame107 at the original order16. A hyperbolic radial
+map removes the original rational map's far-end concentration; a hyperbolic edge
+coordinate resolves the inverse-distance traction near a fan vertex. Applying
+concentration to a numerically collapsed fan exposed a frame106 regression;
+the retained failure prevents promotion based only on frame107. Such fans retain
+the regular variable map, without dropping their load or changing the wrench
+gate. Later replays use the actual production64-bit source epsilon, rather than
+the earlier diagnostic1e-12 value. Numerical boundary convergence is separate
+from independent pressure and complete-shell physical accuracy.
+
+The resulting fixed near-face rule uses four angular subdivisions and three
+radial subdivisions, with the existing complete surface order16. It changes
+quadrature coordinates and weights, not the material surface, source positions,
+pressure or force model. Original frame106 and moving frame107 pass source-wise
+CPU/GPU replay under production source epsilon. At frame107 the ground-source
+wrench residual is4.93e-9, and the two gripper sources are5.78e-7 and8.03e-9.
+The combined residual is1.22e-7, below the unchanged1e-4 gate; the raw nodal
+load vector differs from order32 by8.14e-10 relative. Order24/32 reach
+a numerical floor around1e-8; their slight non-monotonicity does not establish
+physical accuracy. The failed angle-only, closest-point, insufficient-subdivision
+and collapsed-fan trials remain in the packet.
+
+Both actual four-environment max/full scenes now admit frames0 through109.
+The former frame107 boundary failure is repaired. At frame110 environment0
+fails friction history (input status16, contact status55), while all four
+boundary recoveries report status0. The other three environments remain admitted.
+Exact material inputs and staged friction history are captured. CPU replay
+reproduces the ground failure at normalized tangential target0.9999893674593.
+Every tested penalty0.1,0.3,1,3,10,30 exhausts the unchanged2048 iterations;
+penalty1 leaves residual6.19e-5. A larger fixed penalty alone has not repaired
+this near-saturation case.
+The continuous100--129 timing window remains unadmitted, so the prepared paired
+pure-rigid/max/full timing worker is still unexecuted. No successful prefix is
+counted as useful complete scene throughput. Independent complete physical
+errors and changing edge-friction qualification remain required.
+
+The [input/boundary packet](../evidence/20261019-qualified-ranking/hard-native-hard-input-boundary-v1/README.md)
+retains source/face loads, paired timings, CPU/GPU controls and every unsuccessful
+quadrature trial. Full arrays and logs remain under the project's data directory.
+
 ## Remaining physical and integration limits
 
 The edge pressure behaves as`x^(-lambda)`. Its pointwise loaded-edge limit is

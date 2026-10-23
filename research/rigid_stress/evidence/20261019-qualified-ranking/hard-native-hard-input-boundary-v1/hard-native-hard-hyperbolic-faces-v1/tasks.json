@@ -1,0 +1,59 @@
+[
+  [
+    {
+      "name": "gpu-faces",
+      "module": "research.rigid_stress.qipc_comparison.replay_hard_boundary",
+      "args": [
+        "--frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-smooth-minimum-v1/group0/full/frame0107.npz",
+        "--hard",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-smooth-minimum-v1/group0/full/hard0107.npz",
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--orders",
+        "12",
+        "16",
+        "24",
+        "32",
+        "--separate-sources",
+        "--per-face"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "cpu-sources",
+      "module": "research.rigid_stress.qipc_comparison.replay_hard_boundary",
+      "args": [
+        "--frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-smooth-minimum-v1/group0/full/frame0107.npz",
+        "--hard",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-smooth-minimum-v1/group0/full/hard0107.npz",
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--orders",
+        "16",
+        "--separate-sources",
+        "--backend",
+        "cpu"
+      ]
+    },
+    {
+      "name": "cpu-frame106",
+      "module": "research.rigid_stress.qipc_comparison.replay_hard_boundary",
+      "args": [
+        "--frame",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-capture-v2/group0/capture/frame0106.npz",
+        "--hard",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-capture-v2/group0/capture/hard0106.npz",
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--orders",
+        "16",
+        "--separate-sources",
+        "--backend",
+        "cpu"
+      ]
+    }
+  ]
+]
