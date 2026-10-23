@@ -478,6 +478,8 @@ class RigidStressRecovery:
 
     @property
     def data(self) -> Iterator[DataItem]:
+        if self.curvature is not None:
+            yield from iter_data(self.curvature.info, "stress.curvature")
         seen = set()
         seen_surfaces = set()
         seen_paths = set()
