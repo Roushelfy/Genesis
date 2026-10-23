@@ -3,11 +3,49 @@
 import quadrants as qd
 
 import genesis as gs
-from genesis.engine.solvers.rigid.stress.contact import StressContactState, func_force_frame, func_patch_sample
+from genesis.engine.solvers.rigid.stress.contact import (
+    StressContactState,
+    func_contact_section,
+    func_force_frame,
+    func_patch_sample,
+)
 from genesis.engine.solvers.rigid.stress.automatic_radius import func_estimate_radius
 from genesis.engine.solvers.rigid.stress.grid import func_patch_cell, func_patch_grid
+from genesis.engine.solvers.rigid.stress.scatter import StressScatterWorkspace
 from genesis.engine.solvers.rigid.stress.surface import StressSurfaceInfo
 from genesis.utils import array_class
+
+
+@qd.kernel
+def kernel_moment_geometry_counts(
+    contacts: StressContactState, surface: StressSurfaceInfo, workspace: StressScatterWorkspace, counts: qd.Tensor
+):
+    for i in range(counts.shape[0]):
+        counts[i] = 0
+    for i_task in range(qd.i32(qd.select(workspace.count[None] <= workspace.tasks.shape[0], workspace.count[None], 0))):
+        task = workspace.tasks[i_task]
+        pair = contacts.active_pairs[task[0]]
+        i_c, i_b, i_f = pair[0], pair[1], task[1]
+        category = 0
+        if contacts.is_refined[i_c, i_b]:
+            closest, _remaining, contained = func_contact_section(
+                i_f, contacts.center[i_c, i_b], contacts.radius[i_c, i_b], surface
+            )
+            category = 3
+            if contained:
+                category = qd.select(contacts.hertz_profile[None], 1, 2)
+            else:
+                vertices = qd.Matrix.rows(
+                    [
+                        surface.face_origin[i_f],
+                        surface.face_origin[i_f] + surface.face_edges[i_f][0, :],
+                        surface.face_origin[i_f] + surface.face_edges[i_f][1, :],
+                    ]
+                )
+                for i in qd.static(range(3)):
+                    area = (vertices[i, :] - closest).cross(vertices[(i + 1) % 3, :] - closest).norm()
+                    qd.atomic_add(counts[qd.select(area == 0.0, 4, 5)], 1)
+        qd.atomic_add(counts[category], 1)
 
 
 @qd.kernel

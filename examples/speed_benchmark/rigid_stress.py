@@ -25,6 +25,7 @@ from examples.rigid.franka_egg_stress import FrankaEgg
 from examples.speed_benchmark.rigid_stress_metrics import RolloutMetrics
 from examples.speed_benchmark.stress_stages import (
     kernel_estimate_radii,
+    kernel_moment_geometry_counts,
     kernel_query,
     kernel_restore_geometry,
     kernel_small_solve,
@@ -217,6 +218,7 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
     inside = V(dtype=gs.qd_int, shape=contact_shape)
     grams = V_MAT(3, 3, dtype=gs.qd_float, shape=contact_shape)
     coefficients = V_VEC(3, dtype=gs.qd_float, shape=contact_shape)
+    geometry_counts = V(dtype=gs.qd_int, shape=(6,))
     stages = {
         "begin_step": lambda: kernel_begin_step(entry.state),
         "association_transform": lambda: kernel_associate(
@@ -408,12 +410,22 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
                     + qd.profiler.get_kernel_profiler_total_time() * 1e3 / repetitions
                 )
         assert (qd_to_numpy(entry.contacts.status) == 0).all()
+    task_geometry = None
+    if entry.scatter.tasks.shape[0]:
+        kernel_moment_geometry_counts(entry.contacts, entry.surface.info, entry.scatter, geometry_counts)
+        task_geometry = dict(
+            zip(
+                ("unrefined_faces", "contained_hertz", "contained_dpr", "clipped_faces", "zero_fans", "positive_fans"),
+                qd_to_numpy(geometry_counts).tolist(),
+            )
+        )
     return {
         "recovery_snapshot_check": snapshot_check,
         "stage_wall_ms": times,
         "stage_device_ms": device_times,
         "moment_stage_wall_ms": moment_times,
         "moment_stage_device_ms": moment_device_times,
+        "task_geometry_counts": task_geometry,
         "stage_timing_note": "Intrusive profiling only. Wall minus device time includes host dispatch, synchronization and idle gaps; it is not a pure launch measurement. Moment subdivisions refresh pressure scratch before each scatter and synchronize every stage.",
         "contacts_per_environment": contacts.sum(axis=1).tolist(),
         "candidate_count": qd_to_numpy(entry.contacts.candidate_count, transpose=True)[contacts].tolist(),
