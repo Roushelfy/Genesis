@@ -277,6 +277,7 @@ def main():
                 "exclude_nodes": args.exclude_nodes,
                 "node_local_cache": args.node_local_cache,
                 "kernel_profiler": args.kernel_profiler,
+                "disable_cuda_graphs": args.disable_cuda_graphs,
                 "allow_home_output": args.allow_home_output,
             },
             indent=2,
