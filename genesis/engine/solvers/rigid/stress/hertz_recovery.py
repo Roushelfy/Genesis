@@ -386,9 +386,11 @@ def kernel_hertz_residual_traction(
                     distance = (closest - center).norm()
                     is_near = distance < diameter / 4
                     radial_splits = 2
+                    angular_splits = 2
                     if qd.static(is_curved):
                         radial_splits = 3
-                    n_rules = 6 * radial_splits if is_near else 1
+                        angular_splits = 4
+                    n_rules = 3 * angular_splits * radial_splits if is_near else 1
                     # Each lane integrates one angular knot over every radial rule.
                     for i_sample_ in range(n_rules * surface.gauss.shape[0]):
                         i_sample_local = i_sample_ * surface.gauss.shape[0] + i_lane
@@ -400,7 +402,7 @@ def kernel_hertz_residual_traction(
                             normal = surface.normals[i_sample]
                         if is_near:
                             i_rule = i_sample_local // surface.shape.shape[0]
-                            i_edge = i_rule // (2 * radial_splits)
+                            i_edge = i_rule // (angular_splits * radial_splits)
                             first_bary, second_bary = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
                             first_bary[i_edge], second_bary[(i_edge + 1) % 3] = 1.0, 1.0
                             i_first, i_second = (
@@ -409,13 +411,17 @@ def kernel_hertz_residual_traction(
                             )
                             first, second = info.vertices[i_first] - closest, info.vertices[i_second] - closest
                             n_gauss = surface.gauss.shape[0]
-                            u = (surface.gauss[i_q // n_gauss] + (i_rule % (2 * radial_splits)) // 2) / radial_splits
-                            v = (surface.gauss[i_q % n_gauss] + i_rule % 2) / 2
+                            u = (
+                                surface.gauss[i_q // n_gauss]
+                                + (i_rule % (angular_splits * radial_splits)) // angular_splits
+                            ) / radial_splits
+                            v = (surface.gauss[i_q % n_gauss] + i_rule % angular_splits) / angular_splits
                             angular_derivative = gs.qd_float(1.0)
                             if qd.static(is_curved):
-                                if is_source:
+                                if qd.abs(bary[(i_edge + 2) % 3]) > 0:
                                     cross = first.cross(second).norm()
-                                    if cross > 0:
+                                    # Retain the regular rule when concentration would resolve coordinate roundoff.
+                                    if cross > 128 * epsilon * (1 + center.norm()) * (second - first).norm():
                                         # Hyperbolic edge coordinates resolve the inverse-distance traction.
                                         chord = second - first
                                         fraction = -first.dot(chord) / chord.norm_sqr()
@@ -460,7 +466,7 @@ def kernel_hertz_residual_traction(
                                 * angular_derivative
                                 * surface.gauss_weights[i_q // n_gauss]
                                 * surface.gauss_weights[i_q % n_gauss]
-                                / (2 * radial_splits)
+                                / (angular_splits * radial_splits)
                             )
                             shape = qd.Vector(
                                 [
