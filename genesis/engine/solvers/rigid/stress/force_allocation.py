@@ -34,7 +34,8 @@ class StressForceAllocation:
     with moment divided by the supplied length. All original free couples belong
     in this target. A six-coordinate dual Newton solve projects each region onto
     its Coulomb cone. Status0 reports numerical convergence,1 is unloaded,2 is
-    invalid input,3 is a singular dual derivative and4 is the iteration limit.
+    invalid input,3 is a singular dual derivative,4 is the iteration limit and5
+    is a failed dual-objective line search.
     Physical acceptance of the adjusted loads belongs to the caller.
     """
 
@@ -85,6 +86,51 @@ def func_cone_projection(force: qd.types.vector(3), normal: qd.types.vector(3), 
             * (qd.Matrix.identity(gs.qd_float, 3) - normal.outer_product(normal) - direction.outer_product(direction))
         )
     return projected, derivative
+
+
+@qd.func
+def func_force_wrench_matrix(position: qd.types.vector(3)):
+    """Map a force to its force and moment about the supplied origin."""
+    matrix = qd.Matrix.zero(gs.qd_float, 6, 3)
+    for i in qd.static(range(3)):
+        unit = qd.Vector.zero(gs.qd_float, 3)
+        unit[i] = 1.0
+        moment = position.cross(unit)
+        matrix[i, i] = 1.0
+        for j in qd.static(range(3)):
+            matrix[j + 3, i] = moment[j]
+    return matrix
+
+
+@qd.func
+def func_allocation_trial(
+    i_b: int,
+    dual: qd.types.vector(6),
+    trial: qd.types.vector(6),
+    scale: float,
+    origin: qd.types.vector(3),
+    allocation: StressForceAllocationState,
+):
+    """Evaluate a trial residual and the convex dual Bregman remainder."""
+    remainder = gs.qd_float(0.0)
+    residual = -allocation.target[i_b] / scale
+    for i_c in range(allocation.original.shape[0]):
+        original = allocation.original[i_c, i_b] / scale
+        weight = original.norm_sqr()
+        if weight > 0:
+            position = (allocation.center[i_c, i_b] - origin) / allocation.length[i_b]
+            matrix = func_force_wrench_matrix(position)
+            previous, previous_derivative = func_cone_projection(
+                original - weight * (matrix.transpose() @ dual),
+                allocation.normal[i_c, i_b],
+                allocation.friction[i_c, i_b],
+            )
+            raw = original - weight * (matrix.transpose() @ trial)
+            force, derivative = func_cone_projection(raw, allocation.normal[i_c, i_b], allocation.friction[i_c, i_b])
+            difference = force - previous
+            remainder += (0.5 * difference.norm_sqr() + difference.dot(raw - force)) / weight
+            residual += matrix @ force
+    return residual, remainder
 
 
 @qd.func
@@ -161,14 +207,7 @@ def kernel_force_allocation(allocation: StressForceAllocationState, epsilon: flo
                             weight = original.norm_sqr()
                             if weight > 0:
                                 position = (allocation.center[i_c, i_b] - origin) / allocation.length[i_b]
-                                matrix = qd.Matrix.zero(gs.qd_float, 6, 3)
-                                for i in qd.static(range(3)):
-                                    unit = qd.Vector.zero(gs.qd_float, 3)
-                                    unit[i] = 1.0
-                                    moment = position.cross(unit)
-                                    matrix[i, i] = 1.0
-                                    for j in qd.static(range(3)):
-                                        matrix[j + 3, i] = moment[j]
+                                matrix = func_force_wrench_matrix(position)
                                 force, derivative = func_cone_projection(
                                     original - weight * (matrix.transpose() @ dual),
                                     allocation.normal[i_c, i_b],
@@ -186,6 +225,24 @@ def kernel_force_allocation(allocation: StressForceAllocationState, epsilon: flo
                         elif i_iteration < 12:
                             step, is_regular = func_solve_wrench_system(jacobian, residual, epsilon)
                             if is_regular:
-                                dual += step
+                                fraction, is_accepted = gs.qd_float(1.0), False
+                                for _ in range(20):
+                                    if not is_accepted:
+                                        trial = dual + fraction * step
+                                        trial_residual, remainder = func_allocation_trial(
+                                            i_b, dual, trial, scale, origin, allocation
+                                        )
+                                        directional = -fraction * residual.dot(step)
+                                        is_accepted = trial_residual.norm() <= qd.max(1e-12, 128 * epsilon)
+                                        is_accepted = is_accepted or (
+                                            trial_residual.norm() <= (1 - 1e-4 * fraction) * residual.norm()
+                                        )
+                                        is_accepted = is_accepted or directional + remainder <= 1e-4 * directional
+                                        if is_accepted:
+                                            dual = trial
+                                        else:
+                                            fraction *= 0.5
+                                if not is_accepted:
+                                    allocation.status[i_b] = 5
                             else:
                                 allocation.status[i_b] = 3
