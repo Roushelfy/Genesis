@@ -708,7 +708,8 @@ a numerical floor around1e-8; their slight non-monotonicity does not establish
 physical accuracy. The failed angle-only, closest-point, insufficient-subdivision
 and collapsed-fan trials remain in the packet.
 
-Both actual four-environment max/full scenes now admit frames0 through109.
+At the preceding boundary-repair checkpoint, both actual four-environment
+max/full scenes admitted frames0 through109.
 The former frame107 boundary failure is repaired. At frame110 environment0
 fails friction history (input status16, contact status55), while all four
 boundary recoveries report status0. The other three environments remain admitted.
@@ -717,14 +718,117 @@ reproduces the ground failure at normalized tangential target0.9999893674593.
 Every tested penalty0.1,0.3,1,3,10,30 exhausts the unchanged2048 iterations;
 penalty1 leaves residual6.19e-5. A larger fixed penalty alone has not repaired
 this near-saturation case.
-The continuous100--129 timing window remains unadmitted, so the prepared paired
-pure-rigid/max/full timing worker is still unexecuted. No successful prefix is
+At that checkpoint, the continuous100--129 timing window remained unadmitted,
+so the prepared paired pure-rigid/max/full timing worker was unexecuted. No successful prefix was
 counted as useful complete scene throughput. Independent complete physical
 errors and changing edge-friction qualification remain required.
 
 The [input/boundary packet](../evidence/20261019-qualified-ranking/hard-native-hard-input-boundary-v1/README.md)
 retains source/face loads, paired timings, CPU/GPU controls and every unsuccessful
 quadrature trial. Full arrays and logs remain under the project's data directory.
+
+## Near-saturation friction solve
+
+The extended penalty sweep30,60,100,300,1000,3000,10000 also fails the captured
+frame110 within2048 iterations. Its normalized target is0.9999893674593;
+rounding it to fully sliding would change force by1.063e-5, exceeding the
+unchanged1e-9 force gate. The existing fully sliding analytic branch therefore
+does not apply.
+
+Experimental engine`fe37f2c78` retains the same16-interval radial-memory
+objective, staged history, exact force equality and continuous slope disks.
+It eliminates the weighted quadratic and force equality analytically. Writing
+line increments as`z = D L`, weights as`W` and the force target as`t` gives
+
+```text
+L0 = prior + (t - w.T prior) / sum(w)
+z(u) = D L0 - M u
+M = D W^-1 D.T - e_last e_last.T / sum(w)
+F(u) = z(u) - project_disks(z(u) + u)
+```
+
+The generalized Newton matrix is block tridiagonal with16 blocks of size2x2.
+Native Quadrants block elimination and residual backtracking produce an initial
+value for the existing alternating direction solve. A failed initial-value solve
+restores its original initialization. Newton's internal1e-12 residual target is
+not a replacement acceptance rule: the original force1e-9, dual1e-10,
+line1e-9 and continuous cone1+1e-10 gates still decide admission. The bounded
+Newton work uses64 steps; its count is recorded separately from the subsequent
+alternating direction iterations. No pressure solve or PCG is introduced.
+
+Exact staged-prior CPU/GPU replay admits both frames106 and110. The loaded region
+uses12/44 Newton steps respectively, followed by one original iteration. Frame110
+force residual is at most3.34e-15 and line residual2.53e-14; its line differs from
+the independent constrained reference by less than6.8e-11. The reference itself
+reports its1000-iteration limit and a separate2.064e-8 KKT line-distance bound;
+its solver status is retained. This comparison verifies the declared discrete
+friction model, not its physical accuracy.
+
+CPU/GPU48-step changing-normal/vector histories, tangent rotations, slot
+permutations, selected reset, loss latching and release/reload all pass. Maximum
+line/traction differences are1.43e-6/1.81e-5 within the existing1e-5/1e-4 budgets.
+The separate16-step sharp/smooth transition and binding controls pass on both
+backends. The actual B4 Franka max/full scenes now each admit all130 frames0--129:
+520 environment steps, including511 loaded environment steps. This repairs the
+former110 blocker; it does not establish a full grasp cycle.
+
+A same-allocation, profiler-off GPU replay of the valid frame106,200 calls per
+repeat and three repeats, reduces the median radial-friction solve from3.0695ms
+to2.0870ms (1.47x). It includes dispatch, synchronization and unchanged runtime
+acceptance, and excludes history interpolation, contact construction, elastic
+recovery and dynamics. The original solve uses398 iterations for its loaded
+region; the candidate uses12 Newton steps plus one original iteration. Both
+admit the same input and agree with the independent reference.
+
+### Admitted paired scene cost
+
+The profiler-off paired timer now completes the predeclared100--129 moving
+window, with three repeats after continuous history from frame0. Each mode first
+passes a separate0--129 audit; restarts reproduce the final outputs. Pure-rigid,
+max and full positions agree to1e-12m. Max/full finite stress observations agree
+at relative1e-7/absolute1e-6Pa; their singular maximum masks match exactly.
+Controller, native runtime acceptance, dispatch and final synchronization are
+included. Audits, host field exports, resets and pre-window steps are outside
+the clock. Full fields remain on GPU during production timing.
+
+| Batch | Pure rigid ms/step | Max ms/step | Full ms/step | Added max/full ms/step | Max/full env-step/s |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 4 | 2.638 | 254.060 | 254.254 | 251.422 / 251.616 | 15.74 / 15.73 |
+| 64 | 2.852 | 286.197 | 286.317 | 283.344 / 283.465 | 223.62 / 223.53 |
+
+Both allocations use an RTX PRO6000 Blackwell Server GPU,64-bit Genesis,
+dt0.01s, one physical substep, every-step output and surface order16. B64 tiles
+the four supplied initial conditions16 times; it is homogeneous condition-bank
+scaling, not64 independently randomized conditions. All120/1920 timed
+environment steps per repeat are loaded;24/384 include sharp contacts. Three
+repeats give360/5760 admitted timed environment steps per stress mode. Max
+samples span254.032--254.078ms atB4 and286.101--286.630ms atB64; full samples
+span254.108--254.307ms and286.291--286.518ms respectively. Setup and factorization
+costs are retained separately in the packet.
+
+The complete path remains expensive. Input/friction component improvements do
+not remove this approximately0.25--0.29s scene-step cost. The near-equal max/full
+times are measured for this configuration and window, not a general output-mode
+equivalence. Larger batches improve aggregate throughput, but full-cycle
+stability, broader batch diversity and further complete-module optimization
+remain open. A separate original-kernel profile localizes the remaining cost.
+
+The separate B4 max profile over the same30-step window identifies
+`kernel_hertz_planar` at193.266ms/call (76.72% of measured device kernel time),
+`kernel_bind_source_vertices` at23.808ms (9.45%), boundary residual traction
+at17.407ms (6.91%), source resolution at3.996ms (1.59%) and combined fields
+at3.826ms (1.52%). Friction averages1.438ms (0.57%), with an11.698ms maximum;
+the three force allocations average0.753ms each. The instrumented wall time
+is264.230ms/step; use the separate254.060ms uninstrumented result for throughput.
+Kernel statistics and overlapping inclusive host calls are not added together.
+The next priority is current collision/source provenance and local geometry
+reuse in the planar-contact search and source-vertex binding. Their cost was
+excluded from the earlier resident hard-input replay, which explains why that
+component's8.45x improvement did not remove the complete-scene bottleneck.
+
+The [friction and admitted-scene packet](../evidence/20261019-qualified-ranking/hard-native-friction-newton-v1/README.md)
+retains exact source inventories, the unsuccessful penalty sweep, independent
+prototype, CPU/GPU controls, complete admitted timings and the separate profile.
 
 ## Remaining physical and integration limits
 
@@ -735,14 +839,14 @@ model. A finite cell average or positive-depth sample peak is not a converged
 surface/global stress peak; retain sampling scales with every such value.
 
 The pressure law and complete-field component are now connected to the actual
-main pipeline. Continuous changing-contact admission and independent complete
-curved-shell physical validation are still required.
+main pipeline. The short closing window is admitted; full-cycle changing-contact
+admission and independent complete curved-shell physical validation are still required.
 The earlier Franka rejections and original moment mismatch remain evidence.
 The updated-support nearby-load candidate passes the declared sensitivity
-budget at the captured frame. The native candidate still needs changing-contact
-validation in the complete scene. Preserve strict source diagnostics and
-the original refused frames. Matched admitted complete
-pure-rigid/max/full throughput remains required.
+budget at the captured frame. The native candidate still needs full-cycle
+changing-contact validation. Preserve strict source diagnostics and the original
+refused frames. Paired pure-rigid/max/full throughput now covers the declared
+short window; useful complete-module optimization remains required.
 
 The [evidence packet](../evidence/20261019-qualified-ranking/hard-edge-law-v1/README.md)
 retains both coupled-reference stages, the unfitted-law comparison, native

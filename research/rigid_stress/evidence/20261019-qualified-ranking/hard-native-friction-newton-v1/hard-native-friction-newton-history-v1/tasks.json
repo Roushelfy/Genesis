@@ -1,0 +1,40 @@
+[
+  [
+    {
+      "name": "history-cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_friction_history",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    },
+    {
+      "name": "binding-cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_friction_binding",
+      "args": [
+        "--backend",
+        "cpu",
+        "--edge-transition"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "history-gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_friction_history",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    },
+    {
+      "name": "binding-gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_friction_binding",
+      "args": [
+        "--backend",
+        "gpu",
+        "--edge-transition"
+      ]
+    }
+  ]
+]

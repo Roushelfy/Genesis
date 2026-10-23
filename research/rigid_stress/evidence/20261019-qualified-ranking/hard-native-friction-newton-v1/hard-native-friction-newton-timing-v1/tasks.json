@@ -1,0 +1,36 @@
+[
+  [
+    {
+      "name": "baseline",
+      "module": "research.rigid_stress.qipc_comparison.replay_friction_failure",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_boundary_hyperbolic",
+      "args": [
+        "--capture",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-capture-v2/group0/capture/friction0106.npz",
+        "--backend",
+        "gpu",
+        "--require-admission",
+        "--penalties",
+        "1",
+        "--timing-steps",
+        "200"
+      ]
+    },
+    {
+      "name": "candidate",
+      "module": "research.rigid_stress.qipc_comparison.replay_friction_failure",
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_friction_newton",
+      "args": [
+        "--capture",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-capture-v2/group0/capture/friction0106.npz",
+        "--backend",
+        "gpu",
+        "--require-admission",
+        "--penalties",
+        "1",
+        "--timing-steps",
+        "200"
+      ]
+    }
+  ]
+]
