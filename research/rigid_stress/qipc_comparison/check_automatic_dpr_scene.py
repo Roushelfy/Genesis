@@ -97,6 +97,7 @@ def main():
             ]
         }
         active = fields["valid"] & (np.linalg.norm(fields["force"], axis=-1) > 1e-30)
+        finite_radius = active & np.isfinite(fields["radius"])
         row = {
             "step": step,
             "active_contacts": int(active.sum()),
@@ -106,8 +107,12 @@ def main():
             "contact_status_counts": dict(
                 zip(*[a.tolist() for a in np.unique(fields["status"][active], return_counts=True)])
             ),
-            "radius_range_m": [float(np.min(fields["radius"][active])), float(np.max(fields["radius"][active]))]
-            if active.any()
+            "invalid_radius_contacts": int((active & ~finite_radius).sum()),
+            "radius_range_m": [
+                float(np.min(fields["radius"][finite_radius])),
+                float(np.max(fields["radius"][finite_radius])),
+            ]
+            if finite_radius.any()
             else None,
             "error": error,
         }
@@ -115,6 +120,25 @@ def main():
         write_json(args.output / "progress.json", {"rows": rows})
         if error is not None:
             failure = row
+            solver = workload.scene.rigid_solver
+            collider = solver.collider.collider_state
+            fields.update(
+                {
+                    "source_" + name: qd_to_numpy(vars(collider.contact_data)[name], transpose=True, copy=True)
+                    for name in ["geom_a", "geom_b", "normal", "pos", "force"]
+                }
+            )
+            fields.update(
+                {
+                    "witness_" + name: qd_to_numpy(vars(collider.contact_data.witness)[name], transpose=True, copy=True)
+                    for name in ["point_a", "point_b", "vertex_a", "vertex_b"]
+                }
+            )
+            fields["contact_sort_idx"] = qd_to_numpy(collider.contact_sort_idx, transpose=True, copy=True)
+            fields["geoms_type"] = qd_to_numpy(solver.dyn_info.geoms.type, copy=True)
+            fields["geoms_data"] = qd_to_numpy(solver.dyn_info.geoms.data, copy=True)
+            fields["geoms_pos"] = qd_to_numpy(solver.dyn_state.geoms.pos, transpose=True, copy=True)
+            fields["geoms_quat"] = qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True, copy=True)
             np.savez_compressed(args.output / "failure.npz", **fields)
             break
         peak = tensor_to_array(workload.link.get_max_stress()).copy()

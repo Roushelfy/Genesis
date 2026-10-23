@@ -332,6 +332,12 @@ def func_anchor(source_epsilon: float, contact_state: StressContactState, surfac
                             distance = qd.abs(parameter)
                 if best > -1e30:
                     contact_state.center[i_c, i_b] = point + best * direction
+                    i_f = contact_state.anchor_face[i_c, i_b]
+                    edges = surface_info.face_edges[i_f]
+                    diameter = qd.max(edges[0, :].norm(), edges[1, :].norm(), (edges[1, :] - edges[0, :]).norm())
+                    # A solvable moment fit does not certify integration accuracy when the support is smaller
+                    # than the face rule's spacing. Integrate these patches at their physical scale immediately.
+                    contact_state.is_refined[i_c, i_b] = radius * surface_info.gauss.shape[0] < diameter
                 else:
                     contact_state.status[i_c, i_b] = 2
 
@@ -443,7 +449,7 @@ def func_pressure_warp(
         slot = i_thread // 32
         pair = contact_state.active_pairs[slot]
         i_c, i_b = pair[0], pair[1]
-        if not refinement or contact_state.is_refined[i_c, i_b]:
+        if refinement == contact_state.is_refined[i_c, i_b]:
             first, second = func_force_frame(contact_state.force[i_c, i_b])
             center, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
             low, dimensions = func_patch_grid(center, radius, surface_info.grid)
@@ -563,7 +569,7 @@ def kernel_pressure_serial(contact_state: StressContactState, surface_info: Stre
         if (
             contact_state.valid[i_c, i_b]
             and contact_state.status[i_c, i_b] == 0
-            and (not refinement or contact_state.is_refined[i_c, i_b])
+            and refinement == contact_state.is_refined[i_c, i_b]
         ):
             force = contact_state.force[i_c, i_b]
             if force.norm() > 1e-30:

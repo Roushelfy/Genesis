@@ -56,6 +56,73 @@ def kernel_radius_controls(
         func_estimate_radius(0, i_b, 0, contacts, collider, dyn, info)
 
 
+def disk_wedge_loads(model, surface, center, force, radii, profile):
+    """Integrate P2 polynomials analytically over full disks and planar sectors at mesh edges/vertices."""
+    nodes = qd_to_numpy(model.info.surface_nodes)
+    coordinates = qd_to_numpy(model.info.vertices)
+    duals = qd_to_numpy(surface.info.face_dual)
+    triangles = coordinates[nodes[:, :3]]
+    sectors = []
+    radial_first, radial_second = 3 * np.pi / 16, 0.4
+    if not profile:
+        x, weights = np.polynomial.legendre.leggauss(64)
+        r, weights = (x + 1) / 2, weights / 2
+        measure = weights * r * np.exp(-0.5 * (r / 0.45) ** 2) * (1 - r**2) ** 2
+        radial_first, radial_second = np.dot(measure, r) / measure.sum(), np.dot(measure, r**2) / measure.sum()
+    for i_f, triangle in enumerate(triangles):
+        dual = duals[i_f]
+        local = dual @ (center - triangle[0])
+        bary = np.r_[1 - local.sum(), local]
+        projection = triangle[0] + local @ (triangle[1:] - triangle[0])
+        if np.linalg.norm(projection - center) > 1e-12 or bary.min() < -1e-12:
+            continue
+        zeros = np.flatnonzero(np.abs(bary) < 1e-12)
+        if len(zeros) == 0:
+            first = (triangle[1] - triangle[0]) / np.linalg.norm(triangle[1] - triangle[0])
+            second = triangle[2] - triangle[0]
+            angle = 2 * np.pi
+        elif len(zeros) == 1:
+            first = triangle[np.flatnonzero(bary > 1e-12)[0]] - center
+            first /= np.linalg.norm(first)
+            second = triangle[zeros[0]] - center
+            angle = np.pi
+        else:
+            first = triangle[zeros[0]] - center
+            first /= np.linalg.norm(first)
+            second = triangle[zeros[1]] - center
+            angle = np.arccos(np.clip(first @ second / np.linalg.norm(second), -1, 1))
+        second = second - first * (first @ second)
+        second /= np.linalg.norm(second)
+        mean = radial_first * (np.sin(angle) * first + (1 - np.cos(angle)) * second) / angle
+        angular = (
+            (angle + np.sin(angle) * np.cos(angle)) * np.outer(first, first)
+            + (angle - np.sin(angle) * np.cos(angle)) * np.outer(second, second)
+            + np.sin(angle) ** 2 * (np.outer(first, second) + np.outer(second, first))
+        ) / (2 * angle)
+        gradients = np.vstack((-dual.sum(axis=0), dual))
+        first_moment = radii[:, None] * (gradients @ mean)
+        second_moment = radial_second * radii[:, None, None] ** 2 * (gradients @ angular @ gradients.T)
+        moments = (
+            np.outer(bary, bary)[None]
+            + bary[None, :, None] * first_moment[:, None, :]
+            + first_moment[:, :, None] * bary[None, None, :]
+            + second_moment
+        )
+        basis = np.column_stack(
+            (
+                2 * np.diagonal(moments, axis1=1, axis2=2) - (bary[None] + first_moment),
+                4 * moments[:, [0, 0, 1], [1, 2, 2]],
+            )
+        )
+        sectors.append((i_f, angle, basis))
+    assert sectors
+    total_angle = sum(row[1] for row in sectors)
+    result = np.zeros((len(radii), len(coordinates), 3))
+    for i_f, angle, basis in sectors:
+        result[:, nodes[i_f]] += angle / total_angle * basis[:, :, None] * force
+    return result
+
+
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--backend", choices=["cpu", "gpu"], required=True)
@@ -111,53 +178,53 @@ def main():
     tangent = (triangle[1] - triangle[0]) / np.linalg.norm(triangle[1] - triangle[0])
     force = -0.03 * normal + 0.006 * tangent
     radii = np.array([1e-6, 1e-5, 1e-4])
-    dual = qd_to_numpy(surface.info.face_dual)[face]
-    gradients = np.vstack((-dual.sum(axis=0), dual))
+    edge_pairs = np.array([[0, 1], [0, 2], [1, 2]])
+    longest = edge_pairs[np.argmax(np.linalg.norm(triangle[edge_pairs[:, 0]] - triangle[edge_pairs[:, 1]], axis=1))]
+    locations = [
+        ("interior", center, force),
+        ("mesh_edge", triangle[longest].mean(axis=0), force),
+        ("mesh_vertex", np.full(3, 0.05), -0.03 * np.ones(3) / np.sqrt(3)),
+    ]
     rows = []
     oracle = P2Shell(vertices, tetrahedra, faces, 1e10, 0.3, 2000.0, 2, factor_backend="none")
     free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))
     direct = splu(oracle.k[free][:, free].tocsc())
-    for profile in [False, True]:
-        contacts = create_contacts(1, 3, 0.006, hertz_profile=profile)
-        contacts.valid.fill(True)
-        contacts.position.from_numpy(np.broadcast_to(center, (1, 3, 3)).copy())
-        contacts.force.from_numpy(np.broadcast_to(force, (1, 3, 3)).copy())
-        contacts.normal.from_numpy(np.broadcast_to(-normal, (1, 3, 3)).copy())
-        contacts.friction.fill(0.5)
-        contacts.radius.from_numpy(radii[None].copy())
-        state = model.create_state(3, "full")
-        kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
-        kernel_pressure(contacts, surface.info)
-        kernel_scatter(contacts, state, model.info, surface.info)
-        np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
-        load = qd_to_numpy(state.force, transpose=True)
-        second_moment = 0.2
-        if not profile:
-            x, weight = np.polynomial.legendre.leggauss(64)
-            r, weight = (x + 1) / 2, weight / 2
-            measure = weight * r * np.exp(-0.5 * (r / 0.45) ** 2) * (1 - r**2) ** 2
-            second_moment = 0.5 * np.dot(measure, r**2) / measure.sum()
-        moments = np.ones((3, 3, 3)) / 9 + second_moment * radii[:, None, None] ** 2 * (gradients @ gradients.T)
-        basis = np.column_stack(
-            (2 * np.diagonal(moments, axis1=1, axis2=2) - 1 / 3, 4 * moments[:, [0, 0, 1], [1, 2, 2]])
-        )
-        # surface_nodes uses (01, 02, 12), matching the native surface basis.
-        expected_load = np.zeros_like(load)
-        expected_load[:, nodes[face]] = basis[:, :, None] * force
-        relative = np.linalg.norm(load - expected_load) / np.linalg.norm(expected_load)
-        assert relative < 1e-9, (profile, relative)
-        omega = V_VEC(3, dtype=gs.qd_float, shape=(3,))
-        omega.fill(0)
-        model.recover(omega, state)
-        assert qd_to_numpy(state.valid).all()
-        rhs = qd_to_numpy(state.rhs, transpose=True).reshape(3, -1).T
-        displacement = np.zeros_like(rhs)
-        displacement[free] = direct.solve(rhs[free])
-        tensor = qd_to_numpy(state.stress_tensor, transpose=True)
-        for i_b in range(3):
-            expected_tensor, _ = stress_field(oracle.glambda, oracle.elements, displacement[:, i_b], 1e10, 0.3)
-            np.testing.assert_allclose(tensor[i_b], expected_tensor, rtol=1e-8, atol=1e-8)
-        rows.append({"profile": "hertz" if profile else "dpr", "relative_nodal_load_error": float(relative)})
+    for location, center, force in locations:
+        for profile in [False, True]:
+            contacts = create_contacts(1, 3, 0.006, hertz_profile=profile)
+            contacts.valid.fill(True)
+            contacts.position.from_numpy(np.broadcast_to(center, (1, 3, 3)).copy())
+            contacts.force.from_numpy(np.broadcast_to(force, (1, 3, 3)).copy())
+            contacts.normal.from_numpy(np.broadcast_to(force / np.linalg.norm(force), (1, 3, 3)).copy())
+            contacts.friction.fill(0.5)
+            contacts.radius.from_numpy(radii[None].copy())
+            state = model.create_state(3, "full")
+            kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
+            kernel_pressure(contacts, surface.info)
+            kernel_scatter(contacts, state, model.info, surface.info)
+            np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
+            load = qd_to_numpy(state.force, transpose=True)
+            expected_load = disk_wedge_loads(model, surface, center, force, radii, profile)
+            relative = np.linalg.norm(load - expected_load) / np.linalg.norm(expected_load)
+            row = {
+                "location": location,
+                "profile": "hertz" if profile else "dpr",
+                "relative_nodal_load_error": float(relative),
+            }
+            rows.append(row)
+            write_json(args.output / "progress.json", {"rows": rows})
+            assert relative < 1e-9, row
+            omega = V_VEC(3, dtype=gs.qd_float, shape=(3,))
+            omega.fill(0)
+            model.recover(omega, state)
+            assert qd_to_numpy(state.valid).all()
+            rhs = qd_to_numpy(state.rhs, transpose=True).reshape(3, -1).T
+            displacement = np.zeros_like(rhs)
+            displacement[free] = direct.solve(rhs[free])
+            tensor = qd_to_numpy(state.stress_tensor, transpose=True)
+            for i_b in range(3):
+                expected_tensor, _ = stress_field(oracle.glambda, oracle.elements, displacement[:, i_b], 1e10, 0.3)
+                np.testing.assert_allclose(tensor[i_b], expected_tensor, rtol=1e-8, atol=1e-8)
     write_json(
         args.output / "result.json",
         {
