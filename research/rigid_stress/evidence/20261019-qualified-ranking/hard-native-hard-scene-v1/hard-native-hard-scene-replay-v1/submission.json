@@ -1,0 +1,23 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-2",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=gpu:1",
+    "--cpus-per-task=2",
+    "--mem=16G",
+    "--time=12",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-replay-v1/logs/%A_%a.log",
+    "--dependency=afterany:740668",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-replay-v1/job.sh"
+  ],
+  "job": "740672",
+  "dependency": "afterany:740668",
+  "exclude_nodes": null,
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "allow_home_output": false
+}

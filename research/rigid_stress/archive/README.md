@@ -5,6 +5,8 @@ all regression tests remain active. Superseded research lives in the existing
 Git history, rather than a second large directory in the checkout.
 Historical instructions are records and do not override [AGENTS.md](../AGENTS.md).
 
+The [sharp-edge scene integration packet](../evidence/20261019-qualified-ranking/hard-native-hard-scene-v1/README.md) retains exact executed sources, the admitted first sharp-contact frame, failed moving-frame quadrature, and all diagnostic failures. The active goal remains open; failed frames are excluded from useful throughput.
+
 ## Find an original
 
 The complete pre-cleanup tree is pinned at

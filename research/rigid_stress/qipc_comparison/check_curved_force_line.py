@@ -8,7 +8,9 @@ from scipy.spatial.transform import Rotation
 
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.contact import create_contacts
+from genesis.engine.solvers.rigid.stress.hard_binding import StressHardBinding
 from genesis.engine.solvers.rigid.stress.hertz import StressHertz
+from genesis.engine.solvers.rigid.stress.hertz_binding import StressFrictionRegions
 from genesis.engine.solvers.rigid.stress.hertz_contacts import (
     StressHertzContactState,
     kernel_hertz_contact_inputs,
@@ -53,6 +55,14 @@ def main():
     face_ids = outer[np.linspace(0, len(outer) - 1, 8, dtype=int)]
     contacts, sources = create_contacts(8, 4, 0.001), create_sources(8, 4)
     regions, law = StressHertzRegions(contacts).state, StressHertz(32)
+    hard = StressHardBinding(contacts, model.info)
+    hard.state.is_active.fill(0)
+    friction_regions = StressFrictionRegions(
+        force=V_VEC(3, dtype=gs.qd_float, shape=(8, 4)),
+        source_count=V(dtype=gs.qd_int, shape=(8, 4)),
+        leader=V(dtype=gs.qd_int, shape=(8, 4)),
+        profile=V(dtype=gs.qd_int, shape=(8, 4)),
+    )
     frames = StressHertzFrames(
         center=V_VEC(3, dtype=gs.qd_float, shape=(32,)),
         basis=V_MAT(3, 3, dtype=gs.qd_float, shape=(32,)),
@@ -63,6 +73,7 @@ def main():
         force_error=V(dtype=gs.qd_float, shape=(8, 4)),
         moment_error=V(dtype=gs.qd_float, shape=(8, 4)),
         step_principal=V(dtype=gs.qd_float, shape=(4,)),
+        step_sampled_vm=V(dtype=gs.qd_float, shape=(4,)),
         observed_step=V(dtype=gs.qd_int, shape=(4,)),
         sampled_active=V(dtype=gs.qd_bool, shape=(8, 4)),
         input_is_valid=V(dtype=gs.qd_bool, shape=(4,)),
@@ -138,7 +149,19 @@ def main():
             float(np.finfo(gs.np_float).eps),
         )
         law.update()
-        kernel_hertz_contact_accept(contacts, regions, law.state, frames, state, errno)
+        kernel_hertz_contact_accept(
+            contacts,
+            regions,
+            hard.state,
+            hard.allocation.state.original,
+            hard.hertz.state,
+            hard.frames,
+            law.state,
+            frames,
+            friction_regions,
+            state,
+            errno,
+        )
         projected = array(frames.center).reshape(8, 4, 3)
         error = np.linalg.norm(projected - center[:, None, :], axis=2)
         source_centers = array(contacts.center).transpose(1, 0, 2)
@@ -191,7 +214,19 @@ def main():
             float(np.finfo(gs.np_float).eps),
         )
         law.update()
-        kernel_hertz_contact_accept(contacts, regions, law.state, frames, state, errno)
+        kernel_hertz_contact_accept(
+            contacts,
+            regions,
+            hard.state,
+            hard.allocation.state.original,
+            hard.hertz.state,
+            hard.frames,
+            law.state,
+            frames,
+            friction_regions,
+            state,
+            errno,
+        )
         np.testing.assert_array_equal(array(state.input_is_valid), [True, False, True, True])
         assert array(contacts.status)[1, 0] == 53
     write_json(

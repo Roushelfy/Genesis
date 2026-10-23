@@ -1,5 +1,7 @@
 # Rigid-stress data and artifact locations
 
+The `hard-native-hard-scene-v1` packet retains 553 compact payloads / 3,010,939 bytes and 1203 external receipts. Thirteen terminal campaigns cover actual sharp-edge main-pipeline integration, CPU/GPU friction and lifecycle controls, exact numerical/geometry replays, and the still-rejected moving-frame boundary correction. Runtime arrays and logs remain under the existing `20261019-qualified-ranking` data root in `hard-native-hard-*`; no environment, existing data or compatibility link moved. Source/docs remain in workspace. Scientific execution uses Slurm `rtx-mid`, image `1_26`, the established data-side environment and private node caches. All 37 frozen engine heads and 12 original unfinished files are preserved.
+
 The `hard-edge-farfield-v1` packet retains304 compact payloads /1,861,974 bytes
 and23 external receipts. Nine terminal campaigns cover remote pressure-moment
 quadrature, paired64-bit component timings, the original32-bit cancellation

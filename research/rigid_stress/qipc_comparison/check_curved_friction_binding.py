@@ -11,12 +11,12 @@ from genesis.engine.solvers.rigid.stress.contact import create_contacts
 from genesis.engine.solvers.rigid.stress.hertz import StressHertz
 from genesis.engine.solvers.rigid.stress.hertz_binding import (
     StressFrictionBindingState,
+    StressFrictionRegions,
     kernel_friction_bind,
     kernel_friction_commit,
 )
 from genesis.engine.solvers.rigid.stress.hertz_friction import StressFrictionHistory
 from genesis.engine.solvers.rigid.stress.hertz_recovery import StressHertzFrames
-from genesis.engine.solvers.rigid.stress.hertz_regions import StressHertzRegions
 from genesis.engine.solvers.rigid.stress.hertz_tangential import StressHertzShear
 from genesis.engine.solvers.rigid.stress.model import StressModel
 from genesis.engine.solvers.rigid.stress.provenance import create_sources
@@ -50,7 +50,14 @@ def main():
     model = StressModel(RigidStressOptions(mesh=args.curved, contact_model="hertz", method="direct"))
     surface = StressSurface(4, model.info)
     contacts, sources = create_contacts(2, 4, 0.001), create_sources(2, 4)
-    regions, law, friction = StressHertzRegions(contacts).state, StressHertz(8).state, StressFrictionHistory(8)
+    regions = StressFrictionRegions(
+        force=V_VEC(3, dtype=gs.qd_float, shape=(2, 4)),
+        source_count=V(dtype=gs.qd_int, shape=(2, 4)),
+        leader=V(dtype=gs.qd_int, shape=(2, 4)),
+        profile=V(dtype=gs.qd_int, shape=(2, 4)),
+    )
+    regions.profile.fill(1)
+    law, friction = StressHertz(8).state, StressFrictionHistory(8)
     frames = StressHertzFrames(
         center=V_VEC(3, dtype=gs.qd_float, shape=(8,)),
         basis=V_MAT(3, 3, dtype=gs.qd_float, shape=(8,)),

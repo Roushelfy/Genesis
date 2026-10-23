@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "name": "cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_friction_binding",
+      "args": [
+        "--backend",
+        "cpu",
+        "--edge-transition"
+      ]
+    },
+    {
+      "name": "gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_friction_binding",
+      "args": [
+        "--backend",
+        "gpu",
+        "--edge-transition"
+      ]
+    }
+  ]
+]

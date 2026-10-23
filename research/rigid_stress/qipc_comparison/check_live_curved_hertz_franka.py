@@ -1,6 +1,7 @@
 """Check actual Franka admission with an explicitly supplied curved material asset."""
 
 import argparse
+from dataclasses import fields
 from pathlib import Path
 from xml.etree import ElementTree
 
@@ -95,6 +96,12 @@ def diagnose(workload, output, step, is_boundary_capture, is_hard_capture=False)
     solver = workload.scene.rigid_solver
     entry = solver.stress_recovery.links[0]
     regions = entry.hertz.regions.state
+    friction = entry.hertz.friction
+    np.savez_compressed(
+        output / f"friction{step:04d}.npz",
+        **{"input_" + field.name: array(vars(friction.input)[field.name]) for field in fields(friction.input)},
+        **{"state_" + field.name: array(vars(friction.state)[field.name]) for field in fields(friction.state)},
+    )
     if is_hard_capture:
         hard = hard_snapshot(entry.hertz.hard)
         np.savez_compressed(output / f"hard{step:04d}.npz", **hard)
@@ -224,6 +231,7 @@ def main():
     cli.add_argument("--collision-urdf", type=Path)
     cli.add_argument("--conditions", type=Path)
     cli.add_argument("--steps", type=int, default=30)
+    cli.add_argument("--output-mode", choices=["max", "full"], default="full")
     cli.add_argument("--substeps", type=int, default=1)
     cli.add_argument("--diagnose", action="store_true")
     cli.add_argument("--boundary-planes", action="store_true")
@@ -246,6 +254,7 @@ def main():
             "collision_assets": collision_assets,
             "conditions": file_id(args.conditions) if args.conditions is not None else None,
             "steps": args.steps,
+            "output_mode": args.output_mode,
             "substeps": args.substeps,
             "environments": 4,
             "scope": "Actual moving Franka with the original controller, explicitly identified original or supplied collision asset, supplied quadratic material geometry and native Hertz/friction. Retain every step and stop on the unchanged production error. Loaded rejection does not count as useful throughput, and success alone is not physical stress qualification.",
@@ -258,7 +267,7 @@ def main():
         seed=623016,
         varied=True,
         contact_model="hertz",
-        output_mode="full",
+        output_mode=args.output_mode,
         egg_geometry="mesh64",
         use_gjk_collision=False,
         enable_contact_patch=False,
@@ -269,6 +278,16 @@ def main():
         substeps=args.substeps,
     )
     workload.stress = False
+    entry = workload.scene.rigid_solver.stress_recovery.links[0]
+    write_json(
+        args.output / "native-config.json",
+        {
+            "surface_quadrature": entry.surface.info.gauss.shape[0],
+            "friction_penalty": entry.hertz.friction.penalty,
+            "friction_maximum_iterations": entry.hertz.friction.maximum_iterations,
+            "edge_probe_minimum_width_fraction": 0.01,
+        },
+    )
     workload.save_conditions(args.output / "conditions.npz")
     rows = []
     for step in range(args.steps):
