@@ -26,6 +26,28 @@ class StressEdgeFields:
         kernel_edge_field_quadrature(self.quadrature)
 
 
+@qd.func
+def func_edge_probe_offset(index: int, width: float, half_length: float, exponent: float):
+    """Locate 89 finite-depth probes relative to the pressure centroid.
+
+    The first 84 samples span seven transverse positions, three along-edge
+    positions and depths of 0.01, 0.05, 0.2 and 1 widths. Five central samples
+    extend to 2, 4, 8, 16 and 32 widths. These define sampled peaks.
+    """
+    mean = 2 * (1 - exponent) * width / 5
+    local = qd.Vector.zero(gs.qd_float, 3)
+    if index < 84:
+        transverse = qd.Vector([-0.5, 0.0, 0.1, 0.3, 0.6, 1.0, 1.5])
+        along = qd.Vector([-0.75, 0.0, 0.75])
+        depth = qd.Vector([0.01, 0.05, 0.2, 1.0])
+        local = qd.Vector(
+            [transverse[index // 12] * width - mean, along[(index // 4) % 3] * half_length, depth[index % 4] * width]
+        )
+    else:
+        local[2] = width * 2 ** (index - 83)
+    return local
+
+
 @qd.kernel
 def kernel_edge_field_quadrature(quadrature: qd.Tensor):
     for i_q in range(quadrature.shape[0]):

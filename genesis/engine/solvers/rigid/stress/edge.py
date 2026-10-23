@@ -39,7 +39,7 @@ class StressEdge:
     """
 
     def __init__(self, count: int):
-        assert count > 0
+        assert count >= 0
         self.state = StressEdgeState(
             force=V(dtype=gs.qd_float, shape=(count,)),
             modulus=V(dtype=gs.qd_float, shape=(count,)),
