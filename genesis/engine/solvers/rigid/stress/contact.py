@@ -122,6 +122,25 @@ def func_patch_sample(
 
 
 @qd.func
+def func_contact_section(
+    i_face: int,
+    center: qd.types.vector(3),
+    radius: float,
+    surface_info: StressSurfaceInfo,
+):
+    closest, anchor = func_closest_triangle(i_face, center, surface_info)
+    remaining = radius * radius - (closest - center).norm_sqr()
+    contained = False
+    if remaining > 0.0:
+        dual = surface_info.face_dual[i_face]
+        gradients = qd.Matrix.rows([-dual[0, :] - dual[1, :], dual[0, :], dual[1, :]])
+        contained = True
+        for i in qd.static(range(3)):
+            contained = contained and anchor[i] > qd.sqrt(remaining) * gradients[i, :].norm()
+    return closest, remaining, contained
+
+
+@qd.func
 def func_contact_sample(
     i_q: int,
     i_c: int,
@@ -150,16 +169,10 @@ def func_contact_sample(
         i_sample = i_virtual % n_quadrature
         n = surface_info.gauss.shape[0]
         u, v = surface_info.gauss[i_sample // n], surface_info.gauss[i_sample % n]
-        closest, anchor = func_closest_triangle(i_face, center, surface_info)
+        closest, remaining, contained = func_contact_section(i_face, center, radius, surface_info)
         offset = closest - center
-        remaining = radius * radius - offset.norm_sqr()
         position = closest
         if remaining > 0.0:
-            dual = surface_info.face_dual[i_face]
-            gradients = qd.Matrix.rows([-dual[0, :] - dual[1, :], dual[0, :], dual[1, :]])
-            contained = True
-            for i in qd.static(range(3)):
-                contained = contained and anchor[i] > qd.sqrt(remaining) * gradients[i, :].norm()
             if contained:
                 # A full planar section uses a polar rule at the physical contact scale.
                 radial = u
@@ -242,9 +255,12 @@ def func_contact_cell(
         low_face, high_face = surface_info.face_bounds_low[i_cell], surface_info.face_bounds_high[i_cell]
         distance = qd.max(low_face - center, 0.0) + qd.max(center - high_face, 0.0)
         if distance.norm_sqr() < radius * radius:
-            count = 3 * surface_info.shape.shape[0]
-            start = surface_info.positions.shape[0] + i_cell * count
-            end = start + count
+            _closest, remaining, contained = func_contact_section(i_cell, center, radius, surface_info)
+            if remaining > 0.0:
+                count = surface_info.shape.shape[0]
+                start = surface_info.positions.shape[0] + i_cell * (3 * count)
+                # Complete disks assign all weight to fan zero; the other two fans contribute exactly zero.
+                end = start + qd.select(contained, count, 3 * count)
     elif i_cell < dimensions[0] * dimensions[1] * dimensions[2]:
         start, end = func_patch_cell(i_cell, low, dimensions, surface_info.grid)
     return start, end
