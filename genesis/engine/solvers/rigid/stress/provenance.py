@@ -276,12 +276,19 @@ def func_resolve_sources(
     stress_info: StressInfo,
     surface_info: StressSurfaceInfo,
 ):
-    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
-        source_state.status[i_c, i_b] = StressSourceStatus.SUCCESS
-        contact_state.center[i_c, i_b] = qd.Vector([float("nan")] * 3)
-        contact_state.anchor_face[i_c, i_b] = -1
-        source_state.barycentric[i_c, i_b] = qd.Vector([float("nan")] * 3)
-        source_state.anchor_moment[i_c, i_b] = qd.Vector([float("nan")] * 3)
+    n_lanes = qd.static(32 if gs.backend == gs.cuda else 1)
+    qd.loop_config(block_dim=128)
+    for i_t in range(contact_state.valid.shape[0] * contact_state.valid.shape[1] * n_lanes):
+        i_lane = i_t % n_lanes
+        i_c = i_t // (contact_state.valid.shape[1] * n_lanes)
+        i_b = (i_t // n_lanes) % contact_state.valid.shape[1]
+        status = StressSourceStatus.SUCCESS
+        if i_lane == 0:
+            source_state.status[i_c, i_b] = status
+            contact_state.center[i_c, i_b] = qd.Vector([float("nan")] * 3)
+            contact_state.anchor_face[i_c, i_b] = -1
+            source_state.barycentric[i_c, i_b] = qd.Vector([float("nan")] * 3)
+            source_state.anchor_moment[i_c, i_b] = qd.Vector([float("nan")] * 3)
         if contact_state.valid[i_c, i_b]:
             witness = source_state.witness[i_c, i_b]
             uncertainty = source_state.uncertainty[i_c, i_b]
@@ -313,19 +320,23 @@ def func_resolve_sources(
             if valid:
                 # One shared query body serves nearest-point and ambiguity
                 # passes, so curved projection is compiled only once.
+                n_candidates = qd.select(bound_face >= 0, 1, surface_info.face_origin.shape[0])
                 for i_pass in range(2):
-                    for i_candidate in range(qd.select(bound_face >= 0, 1, surface_info.face_origin.shape[0])):
+                    for i_chunk in range((n_candidates + n_lanes - 1) // n_lanes):
+                        i_candidate = i_chunk * n_lanes + i_lane
                         i_f = qd.select(bound_face >= 0, bound_face, i_candidate)
                         reach = distance + tolerance + qd.select(i_pass == 1, 2 * uncertainty, 0.0)
                         is_query = i_pass == 0
                         if i_pass == 1:
                             is_query = bound_face < 0 and nearest_face >= 0 and distance <= projection_limit
-                        if bound_face < 0:
-                            is_query = (
-                                is_query and func_source_distance_bound(i_f, witness, surface_info) <= reach * reach
-                            )
+                        is_query = is_query and i_candidate < n_candidates
+                        query_bound = gs.qd_float(0.0)
+                        if is_query and bound_face < 0:
+                            query_bound = func_source_distance_bound(i_f, witness, surface_info)
+                            is_query = query_bound <= reach * reach
+                        query_position, query_bary = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
                         if is_query:
-                            candidate, candidate_bary = func_material_source_point(
+                            query_position, query_bary = func_material_source_point(
                                 i_f,
                                 witness,
                                 source_state.witness_barycentric[i_c, i_b],
@@ -334,40 +345,59 @@ def func_resolve_sources(
                                 source_epsilon,
                                 bound_face >= 0,
                             )
-                            candidate_distance = (candidate - witness).norm()
-                            separation = (candidate - position).norm()
-                            is_equivalent = False
-                            is_comparable = nearest_face >= 0 and separation <= tolerance
-                            if i_pass == 0:
-                                is_comparable = (
-                                    is_comparable
-                                    and candidate_distance < distance
-                                    and (distance - candidate_distance <= tolerance)
+                        # A chunk evaluates a superset of the serial queries, then
+                        # rechecks each original bound in unchanged face order
+                        for i_item in range(qd.min(n_lanes, n_candidates - i_chunk * n_lanes)):
+                            is_candidate, candidate_bound = is_query, query_bound
+                            candidate, candidate_bary = query_position, query_bary
+                            if qd.static(gs.backend == gs.cuda):
+                                is_candidate = (
+                                    qd.simt.subgroup.shuffle(qd.cast(is_query, gs.qd_int), qd.u32(i_item)) != 0
                                 )
-                            if is_comparable:
-                                is_equivalent = func_same_surface_feature(
-                                    nearest_face, i_f, position, tolerance, stress_info
-                                )
-                            if i_pass == 0:
-                                # Equivalent shared features retain their canonical first face.
-                                if candidate_distance < distance and not is_equivalent:
-                                    distance, nearest_face = candidate_distance, i_f
-                                    position, bary = candidate, candidate_bary
-                            elif candidate_distance <= reach:
-                                if separation > tolerance and separation <= 2 * uncertainty + tolerance:
-                                    is_equivalent = func_surface_segment(
-                                        nearest_face, i_f, position, candidate, stress_info, surface_info
+                                candidate_bound = qd.simt.subgroup.shuffle(query_bound, qd.u32(i_item))
+                                for i_d in qd.static(range(3)):
+                                    candidate[i_d] = qd.simt.subgroup.shuffle(query_position[i_d], qd.u32(i_item))
+                                    candidate_bary[i_d] = qd.simt.subgroup.shuffle(query_bary[i_d], qd.u32(i_item))
+                            i_f = qd.select(bound_face >= 0, bound_face, i_chunk * n_lanes + i_item)
+                            reach = distance + tolerance + qd.select(i_pass == 1, 2 * uncertainty, 0.0)
+                            if bound_face < 0:
+                                is_candidate = is_candidate and candidate_bound <= reach * reach
+                            if is_candidate:
+                                candidate_distance = (candidate - witness).norm()
+                                separation = (candidate - position).norm()
+                                is_equivalent = False
+                                is_comparable = nearest_face >= 0 and separation <= tolerance
+                                if i_pass == 0:
+                                    is_comparable = (
+                                        is_comparable
+                                        and candidate_distance < distance
+                                        and (distance - candidate_distance <= tolerance)
                                     )
-                                if not is_equivalent:
-                                    source_state.status[i_c, i_b] = StressSourceStatus.AMBIGUOUS
+                                if is_comparable:
+                                    is_equivalent = func_same_surface_feature(
+                                        nearest_face, i_f, position, tolerance, stress_info
+                                    )
+                                if i_pass == 0:
+                                    # Equivalent shared features retain their canonical first face.
+                                    if candidate_distance < distance and not is_equivalent:
+                                        distance, nearest_face = candidate_distance, i_f
+                                        position, bary = candidate, candidate_bary
+                                elif candidate_distance <= reach:
+                                    if separation > tolerance and separation <= 2 * uncertainty + tolerance:
+                                        is_equivalent = func_surface_segment(
+                                            nearest_face, i_f, position, candidate, stress_info, surface_info
+                                        )
+                                    if not is_equivalent:
+                                        status = StressSourceStatus.AMBIGUOUS
             if source_state.has_vertex_ambiguity[i_c, i_b]:
-                source_state.status[i_c, i_b] = StressSourceStatus.AMBIGUOUS
+                status = StressSourceStatus.AMBIGUOUS
             elif not valid:
-                source_state.status[i_c, i_b] = StressSourceStatus.INVALID_INPUT
+                status = StressSourceStatus.INVALID_INPUT
             elif nearest_face < 0 or distance > projection_limit:
-                source_state.status[i_c, i_b] = StressSourceStatus.UNRESOLVED
-            else:
-                if source_state.status[i_c, i_b] == StressSourceStatus.SUCCESS:
+                status = StressSourceStatus.UNRESOLVED
+            if i_lane == 0:
+                source_state.status[i_c, i_b] = status
+                if status == StressSourceStatus.SUCCESS:
                     contact_state.center[i_c, i_b] = position
                     contact_state.anchor_face[i_c, i_b] = nearest_face
                     source_state.barycentric[i_c, i_b] = bary
