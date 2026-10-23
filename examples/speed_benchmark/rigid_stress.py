@@ -40,7 +40,11 @@ from genesis.engine.solvers.rigid.stress.contact import (
 )
 from genesis.engine.solvers.rigid.stress.provenance import kernel_capture_rigid_sources
 from genesis.engine.solvers.rigid.stress.recovery import kernel_accept, kernel_begin_step
-from genesis.engine.solvers.rigid.stress.scatter import kernel_fit_scatter_moments, kernel_scatter_faces
+from genesis.engine.solvers.rigid.stress.scatter import (
+    kernel_fit_scatter_moments,
+    kernel_pressure_moments,
+    kernel_scatter_faces,
+)
 from genesis.engine.solvers.rigid.stress.solve import (
     kernel_balance,
     kernel_direct_init,
@@ -332,13 +336,15 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
         stage()
     qd.sync()
     qd.profiler.clear_kernel_profiler_info()
-    times = {}
+    times, device_times = {}, {}
     for name, stage in stages.items():
+        device_before = qd.profiler.get_kernel_profiler_total_time()
         start = time.perf_counter()
         for _ in range(repetitions):
             stage()
         qd.sync()
         times[name] = (time.perf_counter() - start) * 1e3 / repetitions
+        device_times[name] = (qd.profiler.get_kernel_profiler_total_time() - device_before) * 1e3 / repetitions
     qd.profiler.print_kernel_profiler_info()
     if entry.intrinsic is None:
         kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info)
@@ -362,9 +368,53 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
             stage()
         qd.sync()
         micro_times[name] = (time.perf_counter() - start) * 1e3 / repetitions
+    moment_times, moment_device_times = {}, {}
+    if entry.reuse_contact_moments:
+        moment_stages = {
+            "pressure_integration_fit": lambda: kernel_pressure_moments(
+                entry.contacts,
+                entry.state,
+                entry.model.info,
+                entry.surface.info,
+                entry.scatter,
+                options.cached_face_bounds,
+            ),
+            "nodal_scatter": lambda: kernel_scatter_faces(
+                entry.contacts,
+                entry.state,
+                entry.model.info,
+                entry.surface.info,
+                entry.scatter,
+                options.cached_face_bounds,
+                True,
+            ),
+        }
+        # Keep each scatter paired with fresh pressure scratch. Repeating scatter alone accumulates its atomic outputs.
+        kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info)
+        for stage in moment_stages.values():
+            stage()
+        qd.sync()
+        for _ in range(repetitions):
+            kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info)
+            qd.sync()
+            for name, stage in moment_stages.items():
+                qd.profiler.clear_kernel_profiler_info()
+                start = time.perf_counter()
+                stage()
+                qd.sync()
+                moment_times[name] = moment_times.get(name, 0.0) + (time.perf_counter() - start) * 1e3 / repetitions
+                moment_device_times[name] = (
+                    moment_device_times.get(name, 0.0)
+                    + qd.profiler.get_kernel_profiler_total_time() * 1e3 / repetitions
+                )
+        assert (qd_to_numpy(entry.contacts.status) == 0).all()
     return {
         "recovery_snapshot_check": snapshot_check,
         "stage_wall_ms": times,
+        "stage_device_ms": device_times,
+        "moment_stage_wall_ms": moment_times,
+        "moment_stage_device_ms": moment_device_times,
+        "stage_timing_note": "Intrusive profiling only. Wall minus device time includes host dispatch, synchronization and idle gaps; it is not a pure launch measurement. Moment subdivisions refresh pressure scratch before each scatter and synchronize every stage.",
         "contacts_per_environment": contacts.sum(axis=1).tolist(),
         "candidate_count": qd_to_numpy(entry.contacts.candidate_count, transpose=True)[contacts].tolist(),
         "pressure_evaluations": qd_to_numpy(entry.contacts.evaluations, transpose=True)[contacts].tolist(),
