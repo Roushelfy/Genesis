@@ -225,6 +225,7 @@ def main():
     cli.add_argument("--output", type=Path, required=True)
     cli.add_argument("--reuse-moments", action="store_true")
     cli.add_argument("--tasks-per-env", type=int, default=8)
+    cli.add_argument("--quadrature", type=int, default=10)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     write_json(
@@ -232,6 +233,7 @@ def main():
         {
             "identity": runtime_identity(require_gpu_inventory=args.backend == "gpu"),
             "genesis_module": gs.__file__,
+            "quadrature": args.quadrature,
             "code_aster_runtime": {
                 "run_aster": shutil.which("run_aster"),
                 "as_run": shutil.which("as_run"),
@@ -253,7 +255,9 @@ def main():
         gs.morphs.Sphere(radius=0.05, pos=(0.65 + 0.1 / np.sqrt(2), -0.3, 0.15 + 0.1 / np.sqrt(2)), fixed=True)
     )
     scene.add_entity(gs.morphs.Plane(pos=(0, 0, -1)))
-    box.base_link.configure_stress_recovery(gs.options.RigidStressOptions.dpr(mesh=asset, radius_model="hertz"))
+    box.base_link.configure_stress_recovery(
+        gs.options.RigidStressOptions.dpr(mesh=asset, radius_model="hertz", quadrature=args.quadrature)
+    )
     scene.build(n_envs=6)
     entry = scene.rigid_solver.stress_recovery.links[0]
     contacts = create_contacts(1, 6, 0.006)
