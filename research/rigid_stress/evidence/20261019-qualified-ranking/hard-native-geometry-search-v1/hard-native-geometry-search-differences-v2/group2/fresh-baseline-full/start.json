@@ -1,0 +1,30 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "741093",
+      "SLURM_ARRAY_JOB_ID": "741093",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "baseline": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-geometry-search-scene-v2/group0/baseline-full/result.json",
+    "bytes": 23953612,
+    "sha256": "fec6c40ac690da2f336c761e1306422d9d0e8b7d59131557f0987aaff3cd8afe"
+  },
+  "candidate": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-geometry-search-scene-v3/group0/full/result.json",
+    "bytes": 23952442,
+    "sha256": "f810cc7c6b42a1ea437b9071d70593c501c1bd09c4a6525c4a649e527513a0bc"
+  },
+  "relative_tolerance": 1e-09,
+  "absolute_tolerance": 1e-12
+}

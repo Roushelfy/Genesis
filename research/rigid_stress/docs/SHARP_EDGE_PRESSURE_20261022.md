@@ -830,6 +830,101 @@ The [friction and admitted-scene packet](../evidence/20261019-qualified-ranking/
 retains exact source inventories, the unsuccessful penalty sweep, independent
 prototype, CPU/GPU controls, complete admitted timings and the separate profile.
 
+## Ordered geometry search acceleration
+
+Experimental engine`cf292de7f` precomputes conservative position and normal
+bounds for consecutive64-face blocks and4096-face groups. Runtime closest-face
+and normal-root searches visit surviving faces in their original order. Normal
+roots retain source-nearest selection across disconnected/nonconvex components.
+Source-vertex binding uses the same hierarchy and preserves duplicate-feature
+ambiguity, geom identity and the original norm tolerance. All new metadata is
+shared fixed-shape data; this change adds no temporal cache or history state.
+It changes neither the sharp-edge law nor runtime acceptance thresholds.
+The additional64-bit bounds occupy104 bytes per face block/group and48 bytes
+per vertex block/group, with exact ceiling-sized arrays independent of batch.
+
+The first candidate`68668460a` squared the vertex-distance tolerance when
+pruning blocks. A targeted boundary control found25 mismatches among1928 CPU
+queries: rounding excluded equality accepted by the original norm comparison.
+The retained negative control motivates`bbe06fc38`, which compares the same
+norm as the original test. CPU/GPU each pass1928 queries after this repair.
+At the smaller geometry resolution, five GPU root face IDs differ from the
+original. Each is proved to lie on a shared vertex/edge within1.15e-16m;
+root positions, curvature, residuals and statuses still meet their comparison.
+
+The final hierarchy control spans10240 disconnected-sphere faces plus a
+nonconvex torus. CPU/GPU each compare1152 rotated/unrotated normal-root and
+closest-point queries with the original engine; all pass, including face IDs
+for this mesh. Each backend also passes1960 exhaustive membership/binding
+queries over4162 vertices, crossing64/4096 boundaries. Controls include
+conflicting/same feature IDs, different geoms, unmapped/ambiguous vertices,
+two world-coordinate scales and576 roundoff-boundary points per environment.
+The actual B4 max/full scenes each admit all130 frames0--129. Status, contact,
+load and trajectory observations are retained for every frame.
+
+The raw52-array comparison retains its uniform relative1e-9/absolute1e-12
+criterion and its failures. Full-field corner tensors differ by at most
+4.44e-8Pa, with maximum relative L2 difference2.33e-15. An unchanged-engine
+repeat itself differs by4.57e-8Pa and2.55e-15, also failing that raw absolute
+criterion. In max mode, probe barycentrics differ by3.46e-12 while probe
+positions differ by at most1.39e-17m. Other raw fields meet the original
+criterion. The diagnostic result explicitly records`all_fields_conformant=false`;
+it is not labelled a blanket raw-array pass. Separate cross-engine checks
+reuse the existing public timer's position1e-12m and stress relative1e-7/
+absolute1e-6Pa criteria, exact validity/load/edge/status masks and infinite
+maximum comparison. All130-frame pure-rigid/max/full audits pass atB4 andB64.
+This distinguishes numerical conformance from independent physical accuracy.
+
+### Complete scene measurements after geometry pruning
+
+The same profiler-off100--129 window and three repeats retain continuous
+history from0 and separate every-step audits. Configuration, four-condition
+bank, surface order16,64-bit precision and GPU model match the preceding
+measurements. Each pure-rigid/max/full trio shares one allocation. Engine
+versions use separate allocations; the ratios below compare matched
+configurations rather than a paired same-allocation engine crossover.
+
+| Batch | Pure rigid ms/step | Max ms/step | Full ms/step | Added max/full ms/step | Max/full env-step/s |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 4 | 2.582 | 51.028 | 51.206 | 48.446 / 48.625 | 78.39 / 78.12 |
+| 64 | 2.851 | 72.463 | 72.348 | 69.612 / 69.497 | 883.21 / 884.61 |
+
+Compared with the original254.06/254.25ms atB4 and286.20/286.32ms atB64,
+max/full scene rates improve by about4.98/4.97x and3.95/3.96x respectively.
+All360/5760 timed environment steps per stress mode are admitted; the
+24/384 sharp-contact environment steps per repeat remain represented.
+Full stress fields stay on GPU during timing. Setup, reset, prelude, research
+exports and audits stay outside the measured window. Max timing samples span
+50.969--51.114ms atB4 and72.290--72.527ms atB64; full samples span
+51.126--51.209ms and72.294--73.010ms. Preparation timings, including warm/cold
+compilation differences, are retained separately and are not attributed solely
+to geometry preprocessing.
+
+The first single-level candidate measured51.64ms atB4 and72.09--72.19ms atB64.
+It retains its off-scene vertex-boundary defect and is a diagnostic timing
+control. The final second level adds little whole-scene benefit on this
+workload: B4 improves slightly and B64 is slightly slower. Its separately
+profiled binding cost decreases from0.636ms to0.395ms. The large measured
+improvement over the original comes from conservative block pruning overall.
+
+The final original-kernel B4 profile reports planar geometry13.323ms (27.13%
+of device kernel time) and vertex binding0.395ms (0.81%), versus the original
+193.266ms/23.808ms. Boundary residual traction now dominates at17.709ms
+(36.06%), followed by source resolution4.070ms (8.29%) and combined fields
+3.876ms (7.89%). Friction averages1.464ms and reaches11.918ms. Profiled wall
+cost61.591ms is separate from the51.028ms primary timing. These observations
+prioritize boundary work and remaining current-feature geometry reuse, rather
+than further fixed hierarchy levels without measured benefit. Shared geometry
+preprocessing alone has not supplied continuous-contact cache statistics.
+
+The [geometry-search packet](../evidence/20261019-qualified-ranking/hard-native-geometry-search-v1/README.md)
+retains all successful and failed controls, raw field differences, unchanged
+baseline repeat, source inventories, paired scene timings and separate profiles.
+Use its captured tasks and pinned engine sources with the existing Slurm/data
+workflow. Full-cycle admission, diverse batch scaling and independent complete
+curved-shell physical errors remain open. Sharp-edge global singular maxima
+and finite positive-depth sampled values retain their existing interpretation.
+
 ## Remaining physical and integration limits
 
 The edge pressure behaves as`x^(-lambda)`. Its pointwise loaded-edge limit is
