@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "mode": "rigid",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-source-warps-timing-v1/group0/baseline/rigid-b4-audit.npz",
+        "bytes": 3744,
+        "sha256": "90e6e1061527cc311319b481752c334f21f0b6aaf1cfa6494c3a1b5ced8928aa"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-source-warps-timing-v1/group0/candidate/rigid-b4-audit.npz",
+        "bytes": 3744,
+        "sha256": "90e6e1061527cc311319b481752c334f21f0b6aaf1cfa6494c3a1b5ced8928aa"
+      },
+      "frames": 130,
+      "batch": 4
+    },
+    {
+      "mode": "max",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-source-warps-timing-v1/group0/baseline/max-b4-audit.npz",
+        "bytes": 11590,
+        "sha256": "20c18671726f23effde6d05159ac7a50e113bef0aca09e8045a2a5182d0c0af0"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-source-warps-timing-v1/group0/candidate/max-b4-audit.npz",
+        "bytes": 11577,
+        "sha256": "a94f0563f88dc28013ae9d508bc2cbc66b31851ff0c38d46b4fabdb63301d875"
+      },
+      "frames": 130,
+      "batch": 4
+    },
+    {
+      "mode": "full",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-source-warps-timing-v1/group0/baseline/full-b4-audit.npz",
+        "bytes": 11581,
+        "sha256": "507a21e235ba3d56cd20a5310b7a7e35d044ecc57eb3138074961207c9bd33b2"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-source-warps-timing-v1/group0/candidate/full-b4-audit.npz",
+        "bytes": 11607,
+        "sha256": "ad2f8a7a2f705392e8f20d34149dbf0399ebe7961de5e189f499b85bfa11f5f7"
+      },
+      "frames": 130,
+      "batch": 4
+    }
+  ],
+  "scope": "Existing paired-timer public checks across engine sources: position absolute 1e-12m, stress relative 1e-7/absolute 1e-6Pa, exact validity/load/edge/status masks and infinite maxima. Separate raw full-field diagnostics retain their original criteria and outcomes.",
+  "whole_goal_complete": false
+}

@@ -114,6 +114,16 @@ scene benefit remains modest. The task runner also reads its task plan before cr
 output, preserving failed preflight attempts without leaving new partial
 directories for missing plans.
 
+The [ordered cooperative source search](docs/SHARP_EDGE_PRESSURE_20261022.md#ordered-cooperative-source-projection)
+evaluates candidate faces in CUDA warps and retains the serial face-order,
+distance-bound and ambiguity decisions. All45,120 complete-source queries
+match exactly across CPU64/CUDA64/CUDA32, and14 source/nonconvex regressions
+pass. Source-kernel profiling decreases3.548ms to0.569ms. Paired profiler-off
+max/full scene costs decrease9.81%/10.93% atB4 and2.77%/3.53% atB64; the
+component speedup therefore differs from complete-scene and batch scaling.
+Public observations pass, while strict raw barycentric/corner differences and
+the original frame428 refusal remain recorded. Physical qualification remains open.
+
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)
 identifies the ground's184micrometre offset as the collider's half-penetration
 application point. Refined collision geometry and grouped sources reduce the

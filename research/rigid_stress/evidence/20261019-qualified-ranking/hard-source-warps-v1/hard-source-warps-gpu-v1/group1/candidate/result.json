@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "precision": "32",
+  "queries": 15040,
+  "environments": 16,
+  "status_counts": {
+    "0": 8298,
+    "1": 1043,
+    "2": 492,
+    "3": 5207
+  },
+  "comparisons": [
+    {
+      "field": "status",
+      "exact": true,
+      "maximum_absolute_difference": 0.0,
+      "absolute_budget": 0
+    },
+    {
+      "field": "anchor_face",
+      "exact": true,
+      "maximum_absolute_difference": 0.0,
+      "absolute_budget": 0
+    },
+    {
+      "field": "center_m",
+      "exact": true,
+      "maximum_absolute_difference": 0.0,
+      "absolute_budget": 9.051576626006863e-07
+    },
+    {
+      "field": "barycentric",
+      "exact": true,
+      "maximum_absolute_difference": 0.0,
+      "absolute_budget": 1.52587890625e-05
+    },
+    {
+      "field": "anchor_moment_nm",
+      "exact": true,
+      "maximum_absolute_difference": 0.0,
+      "absolute_budget": 2.732257655770809e-08
+    }
+  ],
+  "all_fields_exact": true,
+  "whole_goal_complete": false
+}

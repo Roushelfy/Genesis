@@ -1,0 +1,80 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "batch": 64,
+      "mode": "rigid",
+      "seconds_per_scene_step": [
+        0.0028110360687909025,
+        0.0028648178364771106,
+        0.0028280389689219494
+      ],
+      "median_seconds": 0.0028280389689219494,
+      "environment_steps_per_second": 22630.52267076675,
+      "preparation_seconds": 76.39568319509272,
+      "audit_and_warmup_seconds": 2.4340087909949943,
+      "model_preparation": null,
+      "audit_environment_steps": 8320,
+      "admitted_timed_environment_steps": null,
+      "surface_quadrature": null,
+      "friction_penalty": null,
+      "loaded_timed_environment_steps": null,
+      "sharp_timed_environment_steps": null
+    },
+    {
+      "batch": 64,
+      "mode": "max",
+      "seconds_per_scene_step": [
+        0.04698038439964876,
+        0.047067587935210514,
+        0.046518188866320996
+      ],
+      "median_seconds": 0.04698038439964876,
+      "environment_steps_per_second": 1362.270675683924,
+      "preparation_seconds": 73.51556455600075,
+      "audit_and_warmup_seconds": 5.047593745985068,
+      "model_preparation": {
+        "topology_seconds": 0.06507145392242819,
+        "operators_seconds": 1.301428924081847,
+        "factor_seconds": 13.584576081018895,
+        "inverse_seconds": 0.38583130994811654,
+        "surface_inverse_seconds": 0.22932199703063816
+      },
+      "audit_environment_steps": 8320,
+      "admitted_timed_environment_steps": 5760,
+      "surface_quadrature": 16,
+      "friction_penalty": 1.0,
+      "loaded_timed_environment_steps": 1920,
+      "sharp_timed_environment_steps": 384,
+      "added_seconds_per_scene_step": 0.04415234543072681
+    },
+    {
+      "batch": 64,
+      "mode": "full",
+      "seconds_per_scene_step": [
+        0.04690607310039922,
+        0.04666103249959027,
+        0.0467157491017133
+      ],
+      "median_seconds": 0.0467157491017133,
+      "environment_steps_per_second": 1369.987664345359,
+      "preparation_seconds": 21.756383212050423,
+      "audit_and_warmup_seconds": 4.977979616029188,
+      "model_preparation": {
+        "topology_seconds": 0.03562123596202582,
+        "operators_seconds": 0.031133258948102593,
+        "factor_seconds": 13.216980544035323,
+        "inverse_seconds": 0.030284760054200888,
+        "surface_inverse_seconds": 0.020861980970948935
+      },
+      "audit_environment_steps": 8320,
+      "admitted_timed_environment_steps": 5760,
+      "surface_quadrature": 16,
+      "friction_penalty": 1.0,
+      "loaded_timed_environment_steps": 1920,
+      "sharp_timed_environment_steps": 384,
+      "added_seconds_per_scene_step": 0.04388771013279135
+    }
+  ],
+  "whole_goal_complete": false
+}

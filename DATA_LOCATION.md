@@ -1,5 +1,18 @@
 # Rigid-stress data and artifact locations
 
+The `hard-source-warps-v1` packet retains256 compact payloads
+(1,674,747 bytes) and332 external receipts from four terminal campaigns.
+Complete-source query arrays, CPU/GPU controls, paired profiles and B4/B64
+scene timings, full-field captures and the frame428 replay use the restored
+data root below in `hard-source-warps-cpu-v1`, `hard-source-warps-gpu-v1`,
+`hard-source-warps-profile-v1` and `hard-source-warps-timing-v1`.
+The isolated sparse source checkout `hard_contact_source_warps` remains in
+workspace atf6c4ff2b0. All54 frozen source heads and12 original unfinished
+files are preserved. Scientific work uses Slurm `rtx-mid`, image `1_26`,
+the existing data-side environment and source-private compiler caches in
+node scratch. Source/docs and compact publication evidence stay in workspace.
+No new home fallback output, data migration or environment change occurred.
+
 The `hard-edge-projection-v1` packet retains251 compact payloads
 (1,698,372 bytes) and329 external receipts from four terminal campaigns.
 Projection arrays, CPU/GPU controls, profiles, paired B4/B64 scene timings,
