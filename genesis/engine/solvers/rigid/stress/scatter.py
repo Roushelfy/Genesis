@@ -10,6 +10,7 @@ from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
 
 from .contact import (
     StressContactState,
+    func_contact_ray,
     func_contact_sample_prepared,
     func_contact_section,
     func_force_frame,
@@ -156,15 +157,41 @@ def func_pressure_moments(
                 )
                 candidates = 1
             count = 0
-        for chunk in range((count + 31) // 32):
-            i_q = chunk * 32 + lane
-            if i_q < count:
-                coordinates, weight, _position, shape, _face = func_contact_sample_prepared(
-                    start + i_q, i_c, i_b, first, second, contacts, surface, closest, remaining, contained
-                )
-                gram += weight * coordinates.outer_product(coordinates)
-                load += shape.outer_product(weight * coordinates)
-                candidates += gs.qd_int(weight > 0.0)
+        n = surface.gauss.shape[0]
+        is_clipped = contacts.is_refined[i_c, i_b] and not contained
+        n_rays = qd.select(is_clipped, 3 * n, count)
+        for chunk in range((n_rays + 31) // 32):
+            i_ray = chunk * 32 + lane
+            if i_ray < n_rays:
+                ray = qd.Vector.zero(gs.qd_float, 3)
+                area, limit = gs.qd_float(0.0), gs.qd_float(0.0)
+                n_radial = 1
+                if is_clipped:
+                    ray, area, limit = func_contact_ray(
+                        i_f, i_ray // n, i_ray % n, closest, closest - contacts.center[i_c, i_b], remaining, surface
+                    )
+                    # A zero-area fan contributes no load, Gram moment or positivity sample.
+                    n_radial = qd.select(area > 0.0 and limit > 0.0, n, 0)
+                for i_radial in range(n_radial):
+                    i_q = qd.select(is_clipped, (i_ray // n) * n_q + i_radial * n + i_ray % n, i_ray)
+                    coordinates, weight, _position, shape, _face = func_contact_sample_prepared(
+                        start + i_q,
+                        i_c,
+                        i_b,
+                        first,
+                        second,
+                        contacts,
+                        surface,
+                        closest,
+                        remaining,
+                        contained,
+                        ray,
+                        area,
+                        limit,
+                    )
+                    gram += weight * coordinates.outer_product(coordinates)
+                    load += shape.outer_product(weight * coordinates)
+                    candidates += gs.qd_int(weight > 0.0)
         for a, b in qd.static(qd.ndrange(3, 3)):
             gram[a, b] = qd.simt.subgroup.reduce_all_add(gram[a, b])
         for a, b in qd.static(qd.ndrange(6, 3)):
@@ -256,8 +283,32 @@ def func_scatter_faces(
             for i_q_block in range((n_q_current + 31) // 32):
                 i_q_ = i_q_block * 32 + i_lane
                 if i_q_ < n_q_current:
+                    ray = qd.Vector.zero(gs.qd_float, 3)
+                    area, limit = gs.qd_float(0.0), gs.qd_float(0.0)
+                    if contacts.is_refined[i_c, i_b] and not contained:
+                        ray, area, limit = func_contact_ray(
+                            i_f,
+                            i_q_ // n_q,
+                            i_q_ % surface.gauss.shape[0],
+                            closest,
+                            closest - contacts.center[i_c, i_b],
+                            remaining,
+                            surface,
+                        )
                     coordinates, weight, position, shape, _face = func_contact_sample_prepared(
-                        i_q_start + i_q_, i_c, i_b, first, second, contacts, surface, closest, remaining, contained
+                        i_q_start + i_q_,
+                        i_c,
+                        i_b,
+                        first,
+                        second,
+                        contacts,
+                        surface,
+                        closest,
+                        remaining,
+                        contained,
+                        ray,
+                        area,
+                        limit,
                     )
                     sample_force = weight * qd.max(0.0, coordinates.dot(contacts.coefficient[i_c, i_b])) * force
                     total += sample_force

@@ -176,6 +176,40 @@ def func_hertz_disk_moments(
 
 
 @qd.func
+def func_contact_ray(
+    i_face: int,
+    i_triangle: int,
+    i_angular: int,
+    closest: qd.types.vector(3),
+    offset: qd.types.vector(3),
+    remaining: float,
+    surface: StressSurfaceInfo,
+):
+    vertices = qd.Matrix.rows(
+        [
+            surface.face_origin[i_face],
+            surface.face_origin[i_face] + surface.face_edges[i_face][0, :],
+            surface.face_origin[i_face] + surface.face_edges[i_face][1, :],
+        ]
+    )
+    edge_a = vertices[i_triangle, :] - closest
+    edge_b = vertices[(i_triangle + 1) % 3, :] - closest
+    v = surface.gauss[i_angular]
+    direction = (1.0 - v) * edge_a + v * edge_b
+    squared = direction.norm_sqr()
+    area = edge_a.cross(edge_b).norm()
+    limit = gs.qd_float(0.0)
+    if squared > 0.0 and area > 0.0 and remaining > 0.0:
+        projection = offset.dot(direction)
+        discriminant = qd.sqrt(projection * projection + squared * remaining)
+        limit = (discriminant - projection) / squared
+        if projection >= 0.0:
+            limit = remaining / (discriminant + projection)
+        limit = qd.min(1.0, limit)
+    return direction, area, limit
+
+
+@qd.func
 def func_contact_sample(
     i_q: int,
     i_c: int,
@@ -187,13 +221,26 @@ def func_contact_sample(
 ):
     closest = qd.Vector.zero(gs.qd_float, 3)
     remaining, contained = gs.qd_float(0.0), False
+    ray = qd.Vector.zero(gs.qd_float, 3)
+    area, limit = gs.qd_float(0.0), gs.qd_float(0.0)
     if i_q >= surface_info.positions.shape[0]:
-        i_face = (i_q - surface_info.positions.shape[0]) // (3 * surface_info.shape.shape[0])
+        i_virtual = i_q - surface_info.positions.shape[0]
+        i_face = i_virtual // (3 * surface_info.shape.shape[0])
         closest, remaining, contained = func_contact_section(
             i_face, contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b], surface_info
         )
+        if not contained:
+            ray, area, limit = func_contact_ray(
+                i_face,
+                (i_virtual // surface_info.shape.shape[0]) % 3,
+                i_virtual % surface_info.gauss.shape[0],
+                closest,
+                closest - contact_state.center[i_c, i_b],
+                remaining,
+                surface_info,
+            )
     return func_contact_sample_prepared(
-        i_q, i_c, i_b, first, second, contact_state, surface_info, closest, remaining, contained
+        i_q, i_c, i_b, first, second, contact_state, surface_info, closest, remaining, contained, ray, area, limit
     )
 
 
@@ -209,6 +256,9 @@ def func_contact_sample_prepared(
     closest: qd.types.vector(3),
     remaining: float,
     contained: bool,
+    ray: qd.types.vector(3),
+    ray_area: float,
+    ray_limit: float,
 ):
     """Integrate a sample using the unchanged face/ball section, shared by all samples of a packed face."""
     center, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
@@ -230,7 +280,6 @@ def func_contact_sample_prepared(
         i_sample = i_virtual % n_quadrature
         n = surface_info.gauss.shape[0]
         u, v = surface_info.gauss[i_sample // n], surface_info.gauss[i_sample % n]
-        offset = closest - center
         position = closest
         if remaining > 0.0:
             if contained:
@@ -247,32 +296,12 @@ def func_contact_sample_prepared(
                 if i_triangle == 0:
                     weight = 2.0 * qd.math.pi * remaining * u
             else:
-                # Positive fans partition each intersecting face. Clip each ray to the unchanged spherical support;
-                # this resolves disks crossing elastic edges/vertices without increasing their physical radius.
-                vertices = qd.Matrix.rows(
-                    [
-                        surface_info.face_origin[i_face],
-                        surface_info.face_origin[i_face] + surface_info.face_edges[i_face][0, :],
-                        surface_info.face_origin[i_face] + surface_info.face_edges[i_face][1, :],
-                    ]
-                )
-                edge_a = vertices[i_triangle, :] - closest
-                edge_b = vertices[(i_triangle + 1) % 3, :] - closest
-                direction = (1.0 - v) * edge_a + v * edge_b
-                squared = direction.norm_sqr()
-                area = edge_a.cross(edge_b).norm()
-                if squared > 0.0 and area > 0.0:
-                    projection = offset.dot(direction)
-                    discriminant = qd.sqrt(projection * projection + squared * remaining)
-                    limit = (discriminant - projection) / squared
-                    if projection >= 0.0:
-                        limit = remaining / (discriminant + projection)
-                    limit = qd.min(1.0, limit)
-                    radial, derivative = limit * u, limit
+                if ray_limit > 0.0:
+                    radial, derivative = ray_limit * u, ray_limit
                     if contact_state.hertz_profile[None]:
-                        radial, derivative = limit * (1.0 - u * u), 2.0 * limit * u
-                    position = closest + radial * direction
-                    weight = area * radial * derivative
+                        radial, derivative = ray_limit * (1.0 - u * u), 2.0 * ray_limit * u
+                    position = closest + radial * ray
+                    weight = ray_area * radial * derivative
             weight *= surface_info.gauss_weights[i_sample // n] * surface_info.gauss_weights[i_sample % n]
         local = surface_info.face_dual[i_face] @ (position - surface_info.face_origin[i_face])
         bary = qd.Vector([1.0 - local.sum(), local[0], local[1]])
