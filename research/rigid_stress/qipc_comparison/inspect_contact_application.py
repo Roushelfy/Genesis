@@ -19,6 +19,7 @@ def main():
     cli.add_argument("--pressure-geometry", type=Path)
     cli.add_argument("--contacts", type=Path)
     cli.add_argument("--baseline-frame", type=Path)
+    cli.add_argument("--ground-hertz", action=argparse.BooleanOptionalAction, default=True)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -65,7 +66,8 @@ def main():
             if row["kind"] == "pressure"
         }
     )
-    pressure[0] = ground_pressure_geometry(frame)
+    if args.ground_hertz:
+        pressure[0] = ground_pressure_geometry(frame)
     nodes = frame["material_nodes_m"][frame["material_surface_nodes"].T]
     rows = []
     active = frame["contact_valid"] & (np.linalg.norm(frame["contact_force_n"], axis=2) > 0)
@@ -159,6 +161,7 @@ def main():
             ),
             "whole_goal_complete": False,
             "raw_contact_association_checked": raw is not None,
+            "ground_hertz_reconstructed": args.ground_hertz,
             "baseline_frame_exact_keys": replay_keys if args.baseline_frame is not None else [],
         },
     )

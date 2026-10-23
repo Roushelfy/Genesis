@@ -38,7 +38,13 @@ from17.71ms to7.37ms; planar geometry now dominates the device profile. Complete
 cycle audits of the baseline and candidates all reject max mode at frame428.
 An independent CPU/GPU certificate proves that the single region's point force
 cannot represent the required wrench (normalized residual lower bound1.004e-3).
-Distributed-traction moments and independent complete physical errors remain open.
+The [continuous traction check](docs/SHARP_EDGE_PRESSURE_20261022.md#single-region-pressure-support-and-traction-limits)
+also excludes the original force over the predicted undeformed support, even
+with arbitrary nonnegative pressure and Coulomb traction. The required planar
+pressure centroid lies about75 widths from the sharp edge; the collider's
+approximately50micrometre midpoint offset is much larger than the0.60micrometre
+predicted width. Cheap load/geometry corrections need independent stress-error
+evidence; extra region-moment variables alone cannot repair this model.
 Ideal sharp edges remain singular; finite sampled peaks retain their probe depths.
 
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)

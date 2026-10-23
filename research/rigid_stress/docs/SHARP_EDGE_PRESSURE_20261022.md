@@ -1016,6 +1016,73 @@ files are preserved. This completes a measured scheduling improvement;
 distributed-traction moment fidelity, full-cycle admission and independent
 complete curved-shell physical errors remain active work.
 
+## Single-region pressure support and traction limits
+
+The frame428 diagnostic now retains the original geometric anchor, edge slope,
+curvature and material inputs. Rejection clears the final edge exponent and
+Hertz axes. The first two readers incorrectly treated those cleared arrays as
+valid law outputs and fail explicitly; both remain archived. Independent scalar
+root solving and native CPU replay now rebuild the law from retained inputs,
+agreeing within1e-10 relative. Independent quadratic-surface projection recovers
+the captured pressure center within1e-12m and normal within1e-9.
+
+For environment0's two-source sharp region, the reconstructed transverse width
+is0.5986micrometre, along-edge half-length65.953micrometres and exponent0.42469.
+The local force is `[-0.019963,-0.000264,0.027143] N`. On a flat reference
+plane, its required normal-pressure centroid is44.929micrometres from the
+edge and-79.076micrometres along it. Every nonnegative pressure on the predicted
+parabolic support has `x >= 0` and `x/width + (y/half_length)^2 <= 1`; the
+required centroid gives76.494. A force-preserving affine pressure tilt reaches
+negative multipliers as low as-345.17. Adding these first moments to the fixed
+pressure law therefore cannot supply a nonnegative pressure field.
+
+Gauss-Jacobi quadrature independently checks pressure mass, centroid and
+variance. On the actual quadratic surface, a proportional tangential field
+adjusted to reproduce the original force produces local moment approximately
+`[5.985e-12,-4.279e-10,-1.583e-11] N m`, versus required
+`[-2.146e-6,-1.216e-6,-1.578e-6] N m`. Orders24/48 change the computed curved
+moment by at most1.10e-21N m. That particular field also exceeds the local
+friction bound: its shear/normal ratio0.735532 exceeds coefficient0.719102.
+
+A separate continuous bound covers a rectangular superset of the predicted
+footprint on the original P2 surface. Positive Bernstein subdivision and
+rounded convex-hull exclusions retain every intersecting surface portion;
+Bernstein area-vector coefficients bound all normals within retained cells.
+No retained cell touches the enclosing height boundary. The local sheet is
+face9, enclosed within+/-131.905micrometres normal depth. Flat admissible/
+excluded force controls and an analytically bounded paraboloid pass.
+
+| Subdivision levels | Retained cells | Normal-angle upper bound | Enlarged friction-cone half-angle | Target-force angle |
+| --- | ---: | ---: | ---: | ---: |
+| 8 | 7 | 0.285071 degrees | 36.005043 degrees | 36.335698 degrees |
+| 10 | 25 | 0.210560 degrees | 35.930533 degrees | 36.335698 degrees |
+
+Both bounds exclude the original force even with arbitrary nonnegative pressure
+and arbitrary Coulomb tangential traction over this rest-surface support. At
+level10, the separating direction has target-force projection1.19134e-4N,
+while every admissible unit traction projects at most-0.00353572. The enclosing
+cone implies a necessary relative force change of at least0.7071%. This is a
+lower bound on input-model correction; its stress error remains unmeasured.
+It strengthens the earlier point-force rank diagnosis: adding free moments
+alone cannot resolve this fixed-support force incompatibility.
+
+Raw collider association, signs and contact-time transforms pass independently.
+The two material-side witness offsets are49.929/49.525micrometres along the
+collision normal, exactly half the99.857/99.050micrometre penetration to within
+2.17e-17m. Witness-to-quadratic-surface distances are0.651/2.165micrometres.
+The first raw application point matches the mean of its witnesses to2.8e-17m;
+the second differs by0.277micrometre, retained separately. Post-integration
+surface queries remain distinct from the captured contact-time geometry.
+
+The [region-moment packet](../evidence/20261019-qualified-ranking/hard-region-moments428-v1/README.md)
+retains the repeated native refusal, original reader failures, reconstruction,
+quadrature checks, raw application-point audit and continuous cone certificate.
+These results concern the predicted support and undeformed-normal model.
+Deformed contact geometry, different support or a separately qualified nearby
+load model remain possible. Next work should measure a cheap correction's
+physical pressure and complete/near-field stress response under the existing
+engineering budgets. All production gates and the original failure are retained.
+
 ## Remaining physical and integration limits
 
 The edge pressure behaves as`x^(-lambda)`. Its pointwise loaded-edge limit is

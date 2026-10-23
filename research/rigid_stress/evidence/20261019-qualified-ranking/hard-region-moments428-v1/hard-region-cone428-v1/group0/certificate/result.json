@@ -1,0 +1,139 @@
+{
+  "passed": true,
+  "controls": {
+    "flat": {
+      "levels": 6,
+      "retained_cells_by_level": [
+        2,
+        8,
+        8,
+        8,
+        16,
+        64,
+        224
+      ],
+      "original_faces": [
+        0,
+        1
+      ],
+      "maximum_normal_tangent_bound": 1.7987293055128936e-08,
+      "maximum_normal_angle_degrees": 1.0305959769238643e-06,
+      "height_boundary_boxes": 0,
+      "position_roundoff_allowance_m": 3.637978807091713e-12,
+      "minimum_rounded_axial_coefficient": 0.0009765624824342844
+    },
+    "paraboloid": {
+      "levels": 9,
+      "retained_cells_by_level": [
+        2,
+        8,
+        8,
+        8,
+        16,
+        64,
+        224,
+        728,
+        2704,
+        10816
+      ],
+      "original_faces": [
+        0,
+        1
+      ],
+      "maximum_normal_tangent_bound": 0.06423397590693762,
+      "maximum_normal_angle_degrees": 3.675286521853074,
+      "height_boundary_boxes": 0,
+      "position_roundoff_allowance_m": 5.002220859751105e-12,
+      "minimum_rounded_axial_coefficient": 1.5258786038156488e-05
+    },
+    "paraboloid_exact_tangent_bound": 0.06324555320336758
+  },
+  "box_lower_m": [
+    -1.3775366065703344e-07,
+    -6.595254265644664e-05,
+    -0.00013190508531289328
+  ],
+  "box_upper_m": [
+    4.6085455047930015e-07,
+    6.595254265644664e-05,
+    0.00013190508531289328
+  ],
+  "rows": [
+    {
+      "bounds": {
+        "levels": 8,
+        "retained_cells_by_level": [
+          4,
+          2,
+          2,
+          3,
+          3,
+          2,
+          4,
+          5,
+          7
+        ],
+        "original_faces": [
+          9
+        ],
+        "maximum_normal_tangent_bound": 0.004975460810659828,
+        "maximum_normal_angle_degrees": 0.2850705532719123,
+        "height_boundary_boxes": 0,
+        "position_roundoff_allowance_m": 1.3642420526593923e-13,
+        "minimum_rounded_axial_coefficient": 2.7285804970590043e-09
+      },
+      "force_certificate": {
+        "force_angle_degrees": 36.335697882910125,
+        "enlarged_cone_angle_degrees": 36.00504337948281,
+        "continuous_force_excluded": true,
+        "separating_ray": [
+          -0.8071951269782079,
+          -0.010668408419566842,
+          -0.5901882852483843
+        ],
+        "maximum_unit_traction_projection": -0.002885500881492988,
+        "target_force_projection_n": 9.722494644145844e-05
+      }
+    },
+    {
+      "bounds": {
+        "levels": 10,
+        "retained_cells_by_level": [
+          4,
+          2,
+          2,
+          3,
+          3,
+          2,
+          4,
+          5,
+          7,
+          14,
+          25
+        ],
+        "original_faces": [
+          9
+        ],
+        "maximum_normal_tangent_bound": 0.003674989090212422,
+        "maximum_normal_angle_degrees": 0.21056041671815984,
+        "height_boundary_boxes": 0,
+        "position_roundoff_allowance_m": 1.6370904631912708e-13,
+        "minimum_rounded_axial_coefficient": 1.7059931187872586e-10
+      },
+      "force_certificate": {
+        "force_angle_degrees": 36.335697882910125,
+        "enlarged_cone_angle_degrees": 35.93053324292906,
+        "continuous_force_excluded": true,
+        "separating_ray": [
+          -0.807578677155385,
+          -0.01067347766466355,
+          -0.5896632573583847
+        ],
+        "maximum_unit_traction_projection": -0.0035357211232563412,
+        "target_force_projection_n": 0.00011913366550859776
+      }
+    }
+  ],
+  "scope": "A continuous rest-surface normal bound on the rectangular superset of the predicted sharp-edge support. No retained surface box touches the height boundary, enclosing the local connected sheet. The enlarged circular cone contains arbitrary nonnegative Coulomb tractions over that sheet. Exclusion concerns this fixed support and undeformed-normal model; other support, deformed geometry or approximate loads require separate physical validation.",
+  "whole_goal_complete": false
+}

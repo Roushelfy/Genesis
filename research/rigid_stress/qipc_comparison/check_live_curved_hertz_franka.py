@@ -74,6 +74,7 @@ def hard_snapshot(module):
         "original_moment_nm": array(module.state.original_moment),
         "minimum_m": array(module.state.minimum),
         "geometry_basis": array(module.state.basis),
+        "geometry_anchor": array(module.state.anchor),
         "center_m": array(module.frames.center),
         "basis": array(module.frames.basis),
         "anchor": array(module.frames.anchor),
@@ -89,6 +90,7 @@ def hard_snapshot(module):
         "cone_margin": array(module.state.cone_margin),
         "allocation_status": array(module.allocation.state.status),
         "maximum_change": array(module.allocation.state.maximum_change),
+        **{"edge_" + field.name: array(vars(module.edge.state)[field.name]) for field in fields(module.edge.state)},
         **{
             "allocation_" + field.name: array(vars(module.allocation.state)[field.name])
             for field in fields(module.allocation.state)
