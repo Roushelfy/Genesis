@@ -691,6 +691,88 @@ def test_native_finite_pressure_matches_independent_cpu(
 
 @pytest.mark.required
 @pytest.mark.precision("64")
+def test_native_refined_moments_moving_nonconvex_contacts(nonconvex_material_mesh, tmp_path):  # noqa: F811
+    vertices, tetrahedra, faces, shape = nonconvex_material_mesh
+    mesh = tmp_path / "moving_material.npz"
+    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
+    model = StressModel(RigidStressOptions.dpr(mesh=mesh, method="inverse"))
+    surface = StressSurface(16, model.info)
+    state = model.create_state(4, "full")
+    workspace = create_scatter_workspace(4, 32, reuse_moments=True) if gs.backend == gs.cuda else None
+    omega = V_VEC(3, dtype=gs.qd_float, shape=(4,))
+    omega.fill(0)
+    locations = qd_to_numpy(model.info.vertices, transpose=True)
+    for hertz in (False, True):
+        contacts = create_contacts(2, 4, 3e-5, hertz_profile=hertz)
+        for step in range(9):
+            phase = 0.71 * step + np.arange(8).reshape(2, 4) * 0.43
+            position = np.zeros((2, 4, 3))
+            position[..., 0] = np.array([0.001, 0.002])[:, None]
+            position[..., 1] = 0.0015 + 0.00012 * np.sin(phase)
+            position[..., 2] = (0.0005 if shape == "u" else 0.0015) + 0.0001 * np.cos(phase)
+            normal = np.zeros_like(position)
+            normal[..., 0] = np.array([-1.0, 1.0])[:, None]
+            compression = 0.02 * (1 + 0.2 * np.cos(phase))
+            force = compression[..., None] * normal
+            force[..., 1] = 0.2 * compression * np.sin(phase)
+            friction = 0.3 + 0.1 * np.cos(phase)
+            radius = 3e-5 * (1 + 0.25 * np.sin(phase))
+            valid = np.ones((2, 4), dtype=bool)
+            if step == 2:
+                valid[0, 0] = False
+            elif step == 3:
+                valid[:, 1] = False
+            elif step == 6:
+                force[:, 3] = 0
+            elif step == 7:
+                valid[:] = False
+            if step >= 5:
+                position, normal, force, friction, radius, valid = (
+                    array[::-1].copy() for array in (position, normal, force, friction, radius, valid)
+                )
+            contacts.position.from_numpy(position)
+            contacts.normal.from_numpy(normal)
+            contacts.force.from_numpy(force)
+            contacts.friction.from_numpy(friction)
+            contacts.radius.from_numpy(radius)
+            contacts.valid.from_numpy(valid)
+            kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
+            kernel_pressure(contacts, surface.info)
+            kernel_scatter(contacts, state, model.info, surface.info)
+            np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
+            expected_load = qd_to_numpy(state.force, transpose=True, copy=True)
+            model.recover(omega, state)
+            assert qd_to_numpy(state.valid).all()
+            expected_tensor = qd_to_numpy(state.stress_tensor, transpose=True, copy=True)
+            if workspace is not None:
+                kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
+                kernel_fit_scatter_moments(contacts, state, model.info, surface.info, workspace, True)
+                np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
+                np.testing.assert_allclose(
+                    qd_to_numpy(state.force, transpose=True), expected_load, atol=1e-12, rtol=2e-10
+                )
+                model.recover(omega, state)
+                assert qd_to_numpy(state.valid).all()
+                np.testing.assert_allclose(
+                    qd_to_numpy(state.stress_tensor, transpose=True), expected_tensor, atol=1e-8, rtol=1e-8
+                )
+            # Each force stays on its actual inward-facing material sheet, including after contact-slot reordering.
+            for contact in range(2):
+                plane = position[contact, 0, 0]
+                selected = np.abs(locations[:, 0] - plane) < 1e-12
+                np.testing.assert_allclose(
+                    expected_load[:, selected].sum(axis=1),
+                    force[contact] * valid[contact, :, None],
+                    atol=1e-12,
+                    rtol=1e-8,
+                )
+            if step == 7:
+                np.testing.assert_array_equal(qd_to_numpy(state.force), 0)
+                np.testing.assert_array_equal(qd_to_numpy(state.stress_tensor), 0)
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
 @pytest.mark.parametrize("case", ("random", "live_sliding"))
 def test_native_constrained_pressure_and_invalid_inputs(tmp_path, case):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
