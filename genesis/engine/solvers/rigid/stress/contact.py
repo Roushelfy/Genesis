@@ -570,56 +570,57 @@ def func_pressure_correct_warp(contact_state: StressContactState, surface_info: 
             # At most 80 Newton evaluations, each followed by at most 40 line evaluations.
             # One evaluator body avoids duplicating the integration helper in the kernel.
             for _ in range(80 * 41):
-                if not accepted and (line or iterations < 80):
-                    candidate = coefficient
-                    if line:
-                        candidate = coefficient - fraction * step
-                    objective = gs.qd_float(0.0)
-                    gradient = qd.Vector.zero(gs.qd_float, 3)
-                    hessian = qd.Matrix.zero(gs.qd_float, 3, 3)
-                    n_cells = dimensions[0] * dimensions[1] * dimensions[2] + 1
-                    if contact_state.is_refined[i_c, i_b]:
-                        n_cells = surface_info.face_origin.shape[0]
-                    for i_cell in range(n_cells):
-                        start, end = func_contact_cell(i_cell, i_c, i_b, low, dimensions, contact_state, surface_info)
-                        for chunk in range((end - start + 31) // 32):
-                            entry = start + chunk * 32 + lane
-                            if entry < end:
-                                i_q = func_contact_index(entry, surface_info)
-                                coordinates, weight, _position, _shape, _face = func_contact_sample(
-                                    i_q, i_c, i_b, first, second, contact_state, surface_info
-                                )
-                                weight /= weight_sum
-                                profile = qd.max(0.0, coordinates.dot(candidate))
-                                objective -= 0.5 * weight * profile * profile
-                                if not line:
-                                    gradient += weight * profile * coordinates
-                                    if profile > 0.0:
-                                        hessian += weight * coordinates.outer_product(coordinates)
-                    objective = qd.simt.subgroup.reduce_all_add(objective) + candidate[0]
-                    if not line:
-                        for a in qd.static(range(3)):
-                            gradient[a] = qd.simt.subgroup.reduce_all_add(gradient[a])
-                        for a, b in qd.static(qd.ndrange(3, 3)):
-                            hessian[a, b] = qd.simt.subgroup.reduce_all_add(hessian[a, b])
-                        gradient[0] -= 1.0
-                        iterations += 1
-                        accepted = gradient.norm() <= _PRESSURE_FIT_TOLERANCE
-                        proposed_step, nonsingular = func_pressure_step(hessian, gradient)
-                        if not accepted and nonsingular:
-                            step = proposed_step
-                            slope = gradient.dot(step)
-                            reference_objective = objective
-                            fraction, line = gs.qd_float(1.0), True
-                            line_evaluations = 0
+                if accepted or (not line and iterations >= 80):
+                    break
+                candidate = coefficient
+                if line:
+                    candidate = coefficient - fraction * step
+                objective = gs.qd_float(0.0)
+                gradient = qd.Vector.zero(gs.qd_float, 3)
+                hessian = qd.Matrix.zero(gs.qd_float, 3, 3)
+                n_cells = dimensions[0] * dimensions[1] * dimensions[2] + 1
+                if contact_state.is_refined[i_c, i_b]:
+                    n_cells = surface_info.face_origin.shape[0]
+                for i_cell in range(n_cells):
+                    start, end = func_contact_cell(i_cell, i_c, i_b, low, dimensions, contact_state, surface_info)
+                    for chunk in range((end - start + 31) // 32):
+                        entry = start + chunk * 32 + lane
+                        if entry < end:
+                            i_q = func_contact_index(entry, surface_info)
+                            coordinates, weight, _position, _shape, _face = func_contact_sample(
+                                i_q, i_c, i_b, first, second, contact_state, surface_info
+                            )
+                            weight /= weight_sum
+                            profile = qd.max(0.0, coordinates.dot(candidate))
+                            objective -= 0.5 * weight * profile * profile
+                            if not line:
+                                gradient += weight * profile * coordinates
+                                if profile > 0.0:
+                                    hessian += weight * coordinates.outer_product(coordinates)
+                objective = qd.simt.subgroup.reduce_all_add(objective) + candidate[0]
+                if not line:
+                    for a in qd.static(range(3)):
+                        gradient[a] = qd.simt.subgroup.reduce_all_add(gradient[a])
+                    for a, b in qd.static(qd.ndrange(3, 3)):
+                        hessian[a, b] = qd.simt.subgroup.reduce_all_add(hessian[a, b])
+                    gradient[0] -= 1.0
+                    iterations += 1
+                    accepted = gradient.norm() <= _PRESSURE_FIT_TOLERANCE
+                    proposed_step, nonsingular = func_pressure_step(hessian, gradient)
+                    if not accepted and nonsingular:
+                        step = proposed_step
+                        slope = gradient.dot(step)
+                        reference_objective = objective
+                        fraction, line = gs.qd_float(1.0), True
+                        line_evaluations = 0
+                else:
+                    line_evaluations += 1
+                    if objective >= reference_objective + 1e-4 * fraction * slope - 1e-15:
+                        coefficient, line = candidate, False
                     else:
-                        line_evaluations += 1
-                        if objective >= reference_objective + 1e-4 * fraction * slope - 1e-15:
-                            coefficient, line = candidate, False
-                        else:
-                            fraction *= 0.5
-                            if line_evaluations == 40:
-                                line = False
+                        fraction *= 0.5
+                        if line_evaluations == 40:
+                            line = False
             if lane == 0:
                 contact_state.coefficient[i_c, i_b] = coefficient / weight_sum
                 contact_state.status[i_c, i_b] = 0 if accepted else 3
@@ -677,50 +678,52 @@ def kernel_pressure_correct(contact_state: StressContactState, surface_info: Str
             accepted = False
             previous_evaluations = contact_state.evaluations[i_c, i_b]
             for iteration in range(80):
-                if not accepted:
-                    gradient = qd.Vector([-1.0, 0.0, 0.0])
-                    hessian = qd.Matrix.zero(gs.qd_float, 3, 3)
-                    objective = coefficient[0]
-                    for i_cell in range(n_cells):
-                        start, end = func_contact_cell(i_cell, i_c, i_b, low, dimensions, contact_state, surface_info)
-                        for i_entry in range(start, end):
-                            i_q = func_contact_index(i_entry, surface_info)
-                            coordinates, weight, _position, _shape, _face = func_contact_sample(
-                                i_q, i_c, i_b, first, second, contact_state, surface_info
+                if accepted:
+                    break
+                gradient = qd.Vector([-1.0, 0.0, 0.0])
+                hessian = qd.Matrix.zero(gs.qd_float, 3, 3)
+                objective = coefficient[0]
+                for i_cell in range(n_cells):
+                    start, end = func_contact_cell(i_cell, i_c, i_b, low, dimensions, contact_state, surface_info)
+                    for i_entry in range(start, end):
+                        i_q = func_contact_index(i_entry, surface_info)
+                        coordinates, weight, _position, _shape, _face = func_contact_sample(
+                            i_q, i_c, i_b, first, second, contact_state, surface_info
+                        )
+                        weight /= weight_sum
+                        profile = qd.max(0.0, coordinates.dot(coefficient))
+                        gradient += weight * profile * coordinates
+                        objective -= 0.5 * weight * profile * profile
+                        if profile > 0.0:
+                            hessian += weight * coordinates.outer_product(coordinates)
+                contact_state.evaluations[i_c, i_b] = previous_evaluations + iteration + 1
+                accepted = gradient.norm() <= _PRESSURE_FIT_TOLERANCE
+                step, nonsingular = func_pressure_step(hessian, gradient)
+                if not accepted and nonsingular:
+                    fraction = gs.qd_float(1.0)
+                    line_accepted = False
+                    for _ in range(40):
+                        if line_accepted:
+                            break
+                        candidate = coefficient - fraction * step
+                        candidate_objective = candidate[0]
+                        for i_cell in range(n_cells):
+                            start, end = func_contact_cell(
+                                i_cell, i_c, i_b, low, dimensions, contact_state, surface_info
                             )
-                            weight /= weight_sum
-                            profile = qd.max(0.0, coordinates.dot(coefficient))
-                            gradient += weight * profile * coordinates
-                            objective -= 0.5 * weight * profile * profile
-                            if profile > 0.0:
-                                hessian += weight * coordinates.outer_product(coordinates)
-                    contact_state.evaluations[i_c, i_b] = previous_evaluations + iteration + 1
-                    accepted = gradient.norm() <= _PRESSURE_FIT_TOLERANCE
-                    step, nonsingular = func_pressure_step(hessian, gradient)
-                    if not accepted and nonsingular:
-                        fraction = gs.qd_float(1.0)
-                        line_accepted = False
-                        for _ in range(40):
-                            if not line_accepted:
-                                candidate = coefficient - fraction * step
-                                candidate_objective = candidate[0]
-                                for i_cell in range(n_cells):
-                                    start, end = func_contact_cell(
-                                        i_cell, i_c, i_b, low, dimensions, contact_state, surface_info
-                                    )
-                                    for i_entry in range(start, end):
-                                        i_q = func_contact_index(i_entry, surface_info)
-                                        coordinates, weight, _position, _shape, _face = func_contact_sample(
-                                            i_q, i_c, i_b, first, second, contact_state, surface_info
-                                        )
-                                        weight /= weight_sum
-                                        profile = qd.max(0.0, coordinates.dot(candidate))
-                                        candidate_objective -= 0.5 * weight * profile * profile
-                                if candidate_objective >= objective + 1e-4 * fraction * gradient.dot(step) - 1e-15:
-                                    coefficient = candidate
-                                    line_accepted = True
-                                else:
-                                    fraction *= 0.5
+                            for i_entry in range(start, end):
+                                i_q = func_contact_index(i_entry, surface_info)
+                                coordinates, weight, _position, _shape, _face = func_contact_sample(
+                                    i_q, i_c, i_b, first, second, contact_state, surface_info
+                                )
+                                weight /= weight_sum
+                                profile = qd.max(0.0, coordinates.dot(candidate))
+                                candidate_objective -= 0.5 * weight * profile * profile
+                        if candidate_objective >= objective + 1e-4 * fraction * gradient.dot(step) - 1e-15:
+                            coefficient = candidate
+                            line_accepted = True
+                        else:
+                            fraction *= 0.5
             contact_state.coefficient[i_c, i_b] = coefficient / weight_sum
             contact_state.status[i_c, i_b] = 0 if accepted else 3
 
