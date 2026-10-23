@@ -9,12 +9,36 @@ import quadrants as qd
 
 import genesis as gs
 from examples.rigid.franka_egg_stress import FrankaEgg
-from genesis.engine.solvers.rigid.stress.automatic_radius import func_witness_curvature
+from genesis.engine.solvers.rigid.stress.automatic_radius import func_estimate_radius, func_witness_curvature
+from genesis.engine.solvers.rigid.stress.contact import StressContactState
 from genesis.utils import array_class
 from genesis.utils.array_class import V, V_MAT
 from genesis.utils.misc import qd_to_numpy, tensor_to_array
 
 from .artifacts import file_id, runtime_identity, write_json
+
+
+@qd.kernel
+def kernel_restore_geometry(position: qd.types.ndarray(), quaternion: qd.types.ndarray(), dyn: array_class.DynState):
+    for i_g, i_b in qd.ndrange(dyn.geoms.pos.shape[0], dyn.geoms.pos.shape[1]):
+        for axis in qd.static(range(3)):
+            dyn.geoms.pos[i_g, i_b][axis] = position[i_b, i_g, axis]
+        for axis in qd.static(range(4)):
+            dyn.geoms.quat[i_g, i_b][axis] = quaternion[i_b, i_g, axis]
+
+
+@qd.kernel
+def kernel_reestimate_radius(
+    selection: qd.types.ndarray(),
+    contacts: StressContactState,
+    collider: array_class.ColliderState,
+    dyn: array_class.DynState,
+    info: qd.template(),
+):
+    for row in range(selection.shape[0]):
+        i_b, slot = selection[row, 0], selection[row, 1]
+        source = collider.contact_sort_idx[slot, i_b]
+        func_estimate_radius(slot, i_b, source, contacts, collider, dyn, info)
 
 
 @qd.kernel
@@ -102,6 +126,10 @@ def main():
             assert peak[0] == 0
             reset_checked = True
         error = None
+        solver = workload.scene.rigid_solver
+        solver.update_forward_pos()
+        geometry_position = qd_to_numpy(solver.dyn_state.geoms.pos, transpose=True, copy=True)
+        geometry_quaternion = qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True, copy=True)
         try:
             workload.step()
             workload.scene.rigid_solver.check_errno()
@@ -170,7 +198,10 @@ def main():
             fields["geoms_data"] = qd_to_numpy(solver.dyn_info.geoms.data, copy=True)
             fields["geoms_pos"] = qd_to_numpy(solver.dyn_state.geoms.pos, transpose=True, copy=True)
             fields["geoms_quat"] = qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True, copy=True)
+            fields["preintegration_geoms_pos"] = geometry_position
+            fields["preintegration_geoms_quat"] = geometry_quaternion
             if entry.automatic_radius is not None:
+                kernel_restore_geometry(geometry_position, geometry_quaternion, solver.dyn_state)
                 selected = np.argwhere(active & (fields["status"] != 0)).astype(gs.np_int)
                 curvature = V_MAT(3, 3, dtype=gs.qd_float, shape=(len(selected), 2))
                 curvature_status = V(dtype=gs.qd_int, shape=(len(selected), 2))
@@ -180,6 +211,9 @@ def main():
                 fields["failed_selection"] = selected
                 fields["failed_curvature"] = qd_to_numpy(curvature, copy=True)
                 fields["failed_curvature_status"] = qd_to_numpy(curvature_status, copy=True)
+                kernel_reestimate_radius(selected, entry.contacts, collider, solver.dyn_state, entry.automatic_radius)
+                repeated_radius = qd_to_numpy(entry.contacts.radius, transpose=True, copy=True)
+                repeated_status = qd_to_numpy(entry.contacts.radius_status, transpose=True, copy=True)
                 diagnostics = []
                 for i, (env, slot) in enumerate(selected):
                     source = fields["contact_sort_idx"][env, slot]
@@ -191,6 +225,12 @@ def main():
                         {
                             "environment": int(env),
                             "contact": int(slot),
+                            "frame": "preintegration",
+                            "original_radius_status": int(fields["radius_status"][env, slot]),
+                            "repeated_radius_status": int(repeated_status[env, slot]),
+                            "repeated_radius_m": float(repeated_radius[env, slot])
+                            if np.isfinite(repeated_radius[env, slot])
+                            else None,
                             "curvature_status": fields["failed_curvature_status"][i].tolist(),
                             "projected_curvature_eigenvalues_per_m": np.linalg.eigvalsh(relative).tolist()
                             if np.isfinite(relative).all()
