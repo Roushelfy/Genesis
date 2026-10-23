@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "mode": "rigid",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-cooperative-roots-timing-v1/group1/baseline/rigid-b64-audit.npz",
+        "bytes": 4764,
+        "sha256": "1c31114d0dbd22b3fbc1947941da3d7c6b062a824cbf4d60837de36b8f095dd0"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-cooperative-roots-timing-v1/group1/candidate/rigid-b64-audit.npz",
+        "bytes": 4764,
+        "sha256": "1c31114d0dbd22b3fbc1947941da3d7c6b062a824cbf4d60837de36b8f095dd0"
+      },
+      "frames": 130,
+      "batch": 64
+    },
+    {
+      "mode": "max",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-cooperative-roots-timing-v1/group1/baseline/max-b64-audit.npz",
+        "bytes": 32300,
+        "sha256": "8fc3ebfb30ffc17f18c0d384358519a2e115ef8300765fcfa457ea18ec849269"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-cooperative-roots-timing-v1/group1/candidate/max-b64-audit.npz",
+        "bytes": 32237,
+        "sha256": "aaa3053cf62ea25eb14306e0c09e7afbb43e07f6a2f87a67ccb2ddabd2429225"
+      },
+      "frames": 130,
+      "batch": 64
+    },
+    {
+      "mode": "full",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-cooperative-roots-timing-v1/group1/baseline/full-b64-audit.npz",
+        "bytes": 31980,
+        "sha256": "c3eafee36409cec9c7c0ed4e8d0121864993b5905d7f9f3c51393d8123a64f53"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-cooperative-roots-timing-v1/group1/candidate/full-b64-audit.npz",
+        "bytes": 32136,
+        "sha256": "946508b766cc2e47c950bb46d9db71a3510ff209a053e55f466b76b2b37c7f85"
+      },
+      "frames": 130,
+      "batch": 64
+    }
+  ],
+  "scope": "Existing paired-timer public checks across engine sources: position absolute 1e-12m, stress relative 1e-7/absolute 1e-6Pa, exact validity/load/edge/status masks and infinite maxima. Separate raw full-field diagnostics retain their original criteria and outcomes.",
+  "whole_goal_complete": false
+}

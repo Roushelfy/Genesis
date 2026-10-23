@@ -37,19 +37,32 @@ def kernel_queries(
     dyn_info: array_class.DynInfo,
     curvature: StressCurvatureInfo,
     epsilon: float,
+    cooperative: qd.template(),
 ):
-    for i_q in range(directions.shape[0]):
+    n_lanes = qd.static(32 if cooperative else 1)
+    qd.loop_config(block_dim=128)
+    for i_t in range(directions.shape[0] * n_lanes):
+        i_q, i_s = i_t // n_lanes, i_t % n_lanes
         direction = qd.Vector([directions[i_q, j] for j in qd.static(range(3))])
         seed = qd.Vector([seeds[i_q, j] for j in qd.static(range(3))])
-        center, tensor, i_root, residual, status = func_normal_root(
-            i_geom, 0, direction, seed, dyn_state, dyn_info, curvature, epsilon
-        )
-        point, i_face = func_closest_surface(i_geom, 0, seed, dyn_state, dyn_info, curvature, epsilon)
-        for j in qd.static(range(3)):
-            centers[i_q, j], closest[i_q, j] = center[j], point[j]
-            for k in qd.static(range(3)):
-                tensors[i_q, j, k] = tensor[j, k]
-        root_faces[i_q], residuals[i_q], statuses[i_q], closest_faces[i_q] = i_root, residual, status, i_face
+        center = qd.Vector.zero(gs.qd_float, 3)
+        tensor = qd.Matrix.zero(gs.qd_float, 3, 3)
+        i_root, residual, status = -1, gs.qd_float(0.0), 0
+        if qd.static(cooperative):
+            center, tensor, i_root, residual, status = func_normal_root(
+                i_geom, 0, direction, seed, dyn_state, dyn_info, curvature, epsilon, cooperative=True
+            )
+        else:
+            center, tensor, i_root, residual, status = func_normal_root(
+                i_geom, 0, direction, seed, dyn_state, dyn_info, curvature, epsilon
+            )
+        if i_s == 0:
+            point, i_face = func_closest_surface(i_geom, 0, seed, dyn_state, dyn_info, curvature, epsilon)
+            for j in qd.static(range(3)):
+                centers[i_q, j], closest[i_q, j] = center[j], point[j]
+                for k in qd.static(range(3)):
+                    tensors[i_q, j, k] = tensor[j, k]
+            root_faces[i_q], residuals[i_q], statuses[i_q], closest_faces[i_q] = i_root, residual, status, i_face
 
 
 @qd.kernel
@@ -160,8 +173,10 @@ def main():
     cli.add_argument("--backend", choices=["cpu", "gpu"], required=True)
     cli.add_argument("--compare", type=Path)
     cli.add_argument("--source-controls", action="store_true")
+    cli.add_argument("--cooperative-roots", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
+    assert not args.cooperative_roots or args.backend == "gpu"
     args.output.mkdir(parents=True, exist_ok=False)
     write_json(
         args.output / "start.json",
@@ -242,7 +257,27 @@ def main():
                 solver.dyn_info,
                 cache.info,
                 epsilon,
+                cooperative=False,
             )
+            if args.cooperative_roots:
+                expected = [centers, tensors, root_faces, residuals, statuses, closest, closest_faces]
+                actual = [np.empty_like(value) for value in expected]
+                kernel_queries(
+                    geometry.idx,
+                    world_directions,
+                    world_seeds,
+                    *actual,
+                    solver.dyn_state,
+                    solver.dyn_info,
+                    cache.info,
+                    epsilon,
+                    cooperative=True,
+                )
+                for candidate, serial in zip(actual, expected):
+                    if serial.dtype.kind in "iu":
+                        np.testing.assert_array_equal(candidate, serial)
+                    else:
+                        np.testing.assert_allclose(candidate, serial, rtol=1e-10, atol=1e-12)
             prefix = f"mesh{index}_rotation{rotation_index}_"
             saved[prefix + "world_vertices"] = rotation.apply(positions) + translation
             for name, value in [
@@ -315,6 +350,7 @@ def main():
             "source_binding": source_result,
             "original_source_conformance": args.compare is not None,
             "shared_feature_face_aliases": aliases,
+            "cooperative_roots_exact_face_choices": args.cooperative_roots,
             "whole_goal_complete": False,
         },
     )

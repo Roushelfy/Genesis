@@ -34,8 +34,15 @@ roundoff differences and the initial failed pruning attempt remain documented.
 The latest [boundary quadrature scheduling](docs/SHARP_EDGE_PRESSURE_20261022.md#boundary-quadrature-scheduling)
 reduces max/full scene costs further to40.69/40.36ms atB4 and53.91/54.06ms atB64,
 with unchanged quadrature and public conformance checks. Boundary traction drops
-from17.71ms to7.37ms; planar geometry now dominates the device profile. Complete
-cycle audits of the baseline and candidates all reject max mode at frame428.
+from17.71ms to7.37ms; planar geometry dominates that device profile. The
+[cooperative planar root search](docs/SHARP_EDGE_PRESSURE_20261022.md#cooperative-planar-normal-root-search)
+now reduces matched max/full scene costs from41.28/41.08ms to31.25/31.07ms atB4
+and54.93/55.02ms to50.62/50.68ms atB64. Each source pair shares one allocation.
+CPU/GPU geometry controls and every-step public-output checks pass; stricter
+raw field failures remain recorded. The planar kernel alone drops13.20ms to
+3.10ms in a separate profile. These improvements retain the short100--129
+closing window. Earlier complete-cycle audits of the baseline and candidates
+all reject max mode at frame428.
 An independent CPU/GPU certificate proves that the single region's point force
 cannot represent the required wrench (normalized residual lower bound1.004e-3).
 The [continuous traction check](docs/SHARP_EDGE_PRESSURE_20261022.md#single-region-pressure-support-and-traction-limits)
