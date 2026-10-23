@@ -500,7 +500,7 @@ def func_pressure_warp(
     surface_info: StressSurfaceInfo,
     refinement: bool,
     enabled: bool = True,
-    processed_refined: qd.template() = None,
+    processed_refined: qd.Tensor | None = None,
 ):
     qd.loop_config(block_dim=128)
     for i_thread in range(qd.select(enabled, contact_state.active_count[None] * 32, 0)):
