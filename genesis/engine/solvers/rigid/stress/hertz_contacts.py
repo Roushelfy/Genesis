@@ -263,7 +263,6 @@ class HertzContacts:
         yield from iter_data(self.recovery.state, prefix + ".recovery")
         yield DataItem(prefix + ".probe_offsets", self.recovery.probe_offsets, DataKind.CONSTANT)
         yield DataItem(prefix + ".quadrature", self.recovery.quadrature, DataKind.CONSTANT)
-        yield DataItem(prefix + ".boundary_quadrature", self.recovery.boundary_quadrature, DataKind.CONSTANT)
         yield DataItem(prefix + ".edge_quadrature", self.recovery.edge_quadrature, DataKind.CONSTANT)
 
 

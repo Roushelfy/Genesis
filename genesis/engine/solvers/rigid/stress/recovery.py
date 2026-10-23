@@ -97,11 +97,15 @@ class RigidStressRecovery:
                             and previous.surface_inverse == options.surface_inverse
                         ):
                             model = existing.model
-                            if existing.surface.info.gauss.shape[0] == quadrature:
-                                surface = existing.surface
                             break
                     if model is None:
                         model = StressModel(options)
+                    if options.contact_model == "hertz" and model.info.volume_points.shape[0] > 0:
+                        quadrature = max(quadrature, 16)
+                    for existing in self.links:
+                        if existing.model is model and existing.surface.info.gauss.shape[0] == quadrature:
+                            surface = existing.surface
+                            break
                     if surface is None:
                         surface = StressSurface(quadrature, model.info)
                     reuse_contact_moments = (
