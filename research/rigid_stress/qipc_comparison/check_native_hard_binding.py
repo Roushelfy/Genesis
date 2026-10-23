@@ -5,21 +5,91 @@ import json
 from pathlib import Path
 
 import numpy as np
+import quadrants as qd
 import torch
 from scipy.spatial.transform import Rotation
 
 import genesis as gs
-from genesis.engine.solvers.rigid.stress.contact import create_contacts
+from genesis.engine.solvers.rigid.stress.contact import StressContactState, create_contacts
+from genesis.engine.solvers.rigid.stress.data import StressInfo
 from genesis.engine.solvers.rigid.stress.hard_binding import StressHardBinding
-from genesis.engine.solvers.rigid.stress.hertz_regions import StressHertzRegions
+from genesis.engine.solvers.rigid.stress.hertz_regions import StressHertzRegions, StressHertzRegionState
 from genesis.engine.solvers.rigid.stress.model import StressModel
 from genesis.engine.solvers.rigid.stress.provenance import create_sources, kernel_resolve_sources
-from genesis.engine.solvers.rigid.stress.surface import StressSurface
+from genesis.engine.solvers.rigid.stress.surface import (
+    StressSurface,
+    StressSurfaceInfo,
+    func_surface_geometry,
+    func_surface_height_derivatives,
+)
+from genesis.engine.solvers.rigid.stress.surface_walk import func_projected_surface_walk
 from genesis.options.rigid_stress import RigidStressOptions
+from genesis.utils import geom
+from genesis.utils.array_class import V_VEC
 
 from .artifacts import file_id, runtime_identity, write_json
 from .check_native_hertz_recovery import array
 from .check_live_curved_hertz_franka import hard_snapshot as snapshot
+
+
+@qd.kernel
+def kernel_smooth_geometry_diagnostic(
+    output: qd.Tensor,
+    contacts: StressContactState,
+    regions: StressHertzRegionState,
+    info: StressInfo,
+    surface: StressSurfaceInfo,
+    epsilon: float,
+):
+    for i_c, i_b in qd.ndrange(contacts.valid.shape[0], contacts.valid.shape[1]):
+        if contacts.valid[i_c, i_b] and regions.opponent_type[i_c, i_b] == gs.GEOM_TYPE.PLANE:
+            rotation = contacts.frame_quaternion[i_b]
+            root = geom.qd_inv_transform_by_quat(regions.center[i_c, i_b] - contacts.frame_position[i_b], rotation)
+            normal = geom.qd_inv_transform_by_quat(regions.normal[i_c, i_b], rotation)
+            tangent = geom.qd_inv_transform_by_quat(regions.tangent[i_c, i_b], rotation)
+            plane = qd.Matrix.rows([tangent, normal.cross(tangent)])
+            current, point = contacts.anchor_face[i_c, i_b], contacts.center[i_c, i_b]
+            offset = root - point
+            is_active = True
+            for iteration in range(9):
+                if is_active:
+                    current, bary, point = func_projected_surface_walk(
+                        current, point, offset, normal, info, surface, epsilon
+                    )
+                    output[i_c, i_b][3] = current
+                    if current < 0:
+                        is_active = False
+                    else:
+                        located, derivative, area = func_surface_geometry(current, bary, info)
+                        gradient, hessian, regular = func_surface_height_derivatives(
+                            current, bary, plane, normal, info, epsilon
+                        )
+                        error = (area.normalized() - normal).norm()
+                        if iteration == 0:
+                            output[i_c, i_b][0], output[i_c, i_b][1], output[i_c, i_b][2] = (
+                                current,
+                                error,
+                                gradient.norm(),
+                            )
+                        output[i_c, i_b][4], output[i_c, i_b][5], output[i_c, i_b][6] = (
+                            error,
+                            gradient.norm(),
+                            (point - root).norm(),
+                        )
+                        output[i_c, i_b][7], output[i_c, i_b][8], output[i_c, i_b][9] = (
+                            iteration,
+                            hessian.trace(),
+                            hessian.determinant(),
+                        )
+                        output[i_c, i_b][10], output[i_c, i_b][11] = (
+                            contacts.anchor_face[i_c, i_b],
+                            regions.status[i_c, i_b],
+                        )
+                        is_active = (
+                            regular and hessian.determinant() > 0 and hessian.trace() > 0 and gradient.norm() > 1e-10
+                        )
+                        if is_active:
+                            offset = -plane.transpose() @ (hessian.inverse() @ gradient)
 
 
 def main():
@@ -27,6 +97,8 @@ def main():
     cli.add_argument("--backend", choices=["cpu", "gpu"], required=True)
     cli.add_argument("--duplicate-active", action="store_true")
     cli.add_argument("--transform-world", action="store_true")
+    cli.add_argument("--geometry-only", action="store_true")
+    cli.add_argument("--require-admission", action="store_true")
     for name in ["frame", "boundaries", "geometry", "raw-contacts", "mesh", "reference", "output"]:
         cli.add_argument("--" + name, type=Path, required=True)
     args = cli.parse_args()
@@ -37,6 +109,7 @@ def main():
             "identity": runtime_identity(require_gpu_inventory=args.backend == "gpu"),
             "duplicate_active_environment_for_isolation": args.duplicate_active,
             "transformed_world_frames": args.transform_world,
+            "geometry_diagnostic_only": args.geometry_only,
             "inputs": [
                 file_id(p)
                 for p in [args.frame, args.boundaries, args.geometry, args.raw_contacts, args.mesh, args.reference]
@@ -142,6 +215,41 @@ def main():
             ]
         },
     )
+    if args.geometry_only:
+        if args.require_admission:
+            assert result["status"][0] == 0, result["status"]
+        diagnostic = V_VEC(12, dtype=gs.qd_float, shape=(count, batch))
+        diagnostic.fill(float("nan"))
+        kernel_smooth_geometry_diagnostic(diagnostic, contacts, region, model.info, surface.info, epsilon)
+        values = array(diagnostic)
+        np.savez_compressed(args.output / "smooth-geometry.npz", diagnostic=values)
+        selected = np.isfinite(values[:, :, 3])
+        write_json(
+            args.output / "result.json",
+            {
+                "passed": True,
+                "diagnostic_only": True,
+                "native_status": result["status"].tolist(),
+                "columns": [
+                    "initial_anchor",
+                    "initial_normal_error",
+                    "initial_gradient",
+                    "final_anchor",
+                    "final_normal_error",
+                    "final_gradient",
+                    "root_shift_m",
+                    "iterations",
+                    "hessian_trace",
+                    "hessian_determinant",
+                    "source_anchor",
+                    "region_status",
+                ],
+                "slots": np.argwhere(selected).tolist(),
+                "diagnostics": np.where(np.isfinite(values[selected]), values[selected], None).tolist(),
+                "whole_goal_complete": False,
+            },
+        )
+        return
     assert result["status"][0] == 0, result["status"]
     references = [row for row in json.loads(args.reference.read_text())["cases"] if row["kind"] == "allocated"]
     expected_leaders = sorted(row["contact"] for row in references)

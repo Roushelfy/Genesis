@@ -112,6 +112,8 @@ def snapshot(entry):
         "elastic_valid": array(entry.state.valid),
         "step_valid": array(entry.state.step_valid),
         "vm_pa": array(entry.state.step_peak),
+        "sampled_vm_pa": array(normal.state.step_sampled_vm),
+        "contact_profile": array(normal.friction_regions.profile),
         "principal_pa": array(normal.state.step_principal),
         "probe_position_m": array(normal.recovery.probes.position),
         "probe_elements": array(normal.recovery.probes.element),

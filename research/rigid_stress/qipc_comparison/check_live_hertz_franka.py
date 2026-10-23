@@ -29,10 +29,13 @@ def capture(workload, output, step):
     path = output / f"frame{step:04d}.npz"
     np.savez_compressed(path, **data)
     loaded = np.any(data["contact_valid"] & (np.linalg.norm(data["contact_force_n"], axis=2) > 0), axis=1)
+    assert np.isfinite(data["sampled_vm_pa"][data["step_valid"]]).all()
     return {
         "step": step,
         "loaded": loaded.tolist(),
         "accepted": data["step_valid"].tolist(),
+        "sharp_edge_regions": np.sum(data["contact_profile"] == 2, axis=1).tolist(),
+        "unbounded_vm": np.isposinf(data["vm_pa"]).tolist(),
         "input_status": data["input_status"].tolist(),
         "recovery_status": data["recovery_status"].tolist(),
         "contact_status": data["contact_status"].tolist(),

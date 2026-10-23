@@ -563,6 +563,87 @@ under the project data directory. Main-pipeline admission, changing edge-frictio
 accuracy, independent complete physical errors and matched admitted scene
 throughput remain active work.
 
+## Actual sharp-edge scene integration
+
+The actual main pipeline now consumes the grouped hard-contact candidate.
+Separate material-frame friction inputs preserve raw collider forces and the
+original region diagnostics. Smooth regions retain radial memory, while edge
+regions use their declared proportional shear. Entering or leaving an edge
+profile clears the affected radial history; independent environments retain
+their histories. Geometry, allocation and friction rejection still invalidate
+the observation through the native error path.
+
+Actual frame106 initially exposed two independent numerical failures. Its
+ground tangential force is0.990564974 times the Coulomb limit. The original
+radial ADMM penalty0.1 reaches the2048-iteration limit with force residual
+2.15e-8. The same captured staged history, with penalty1, converges in398
+iterations on both CPU and GPU. The force residual is1.14e-11; the maximum
+normalized line difference from the independent constrained solution is
+1.26e-9. The reference's line-search termination message is unsuccessful,
+but its independently checked KKT line-distance bound is2.72e-8 and its
+force/cone constraints pass. This is a numerical control of the same radial
+approximation, not a physical friction validation. Penalties10 and30 also
+fail the unchanged iteration limit; increasing the penalty indiscriminately
+is not a remedy. The production variant uses1 and retains all original force,
+dual, line and continuous-cone acceptance thresholds.
+
+The second failure is integration of the all-boundary correction:
+
+| Captured frame106 rule | Relative wrench residual | Original1e-4 gate |
+| --- | ---: | --- |
+| Original complete order10 | 1.2012e-3 | Rejected |
+| Near-source order16, far faces order10 | 1.2145e-4 | Rejected |
+| Complete order16 | 1.5369e-6 | Accepted |
+| Complete order24 | 1.2645e-10 | Accepted |
+
+The local-only variant remains frozen as a negative control. The current
+variant precomputes a minimum order16 rule for curved Hertz boundaries and
+shares it by shape. It retains the original runtime wrench gate. Against the
+order32 control, the accepted order16 nodal-load vector differs by4.67e-7
+relative. Rejected low-order loads are cleared by production acceptance and
+must not be interpreted as valid field differences. These measurements concern
+quadrature, not the physical error of the point boundary correction.
+
+Frame107 then exposed a distinct collision/material geometry discrepancy.
+The collision normal root, projected onto the actual quadratic material,
+leaves a normal error7.92e-4. Two local2x2 updates on the connected material
+surface move its minimum25.6micrometres and reduce the normal error below
+2.5e-13. Native CPU/GPU replay admits the resulting mixed contact inputs with
+maximum relative regional force change3.625%, below the original5% bound,
+and normalized force/moment residuals below8.6e-17/4.4e-14. The original
+four rotated/translated frame106 controls remain admitted. No whole-mesh
+normal search or pressure Newton-PCG solve is introduced by this refinement.
+
+The public experimental API distinguishes the singular idealization from its
+finite sampling. `get_max_stress()` returns positive infinity for an accepted
+loaded ideal edge. `get_max_sampled_stress()` returns the maximum over material
+corners and positive-depth probes, accumulated over observed physical substeps.
+Sharp-edge probes begin at0.01 contact widths; full mode exposes their actual
+positions and tensors. Failed observations are NaN. CPU/GPU checks cover
+substep accumulation, a failed environment, a subsequent smooth step, getter
+copy/selection behavior and selective reset. Independent48-step radial-history,
+16-step edge-transition,12-step curved-history and four-case force-line controls
+also pass on both backends. The original dump-cache and empty-optional-array
+failures are retained beside their repairs.
+
+Both four-environment max/full scenes now admit frames0 through106,
+including the first loaded sharp-edge frame. They still reject environment0
+at frame107 after its geometric input has passed. The moving frame's complete
+boundary wrench residual is0.17938 at order16,0.01954 at24,0.01933 at32 and
+0.00878 at48; every value exceeds the unchanged1e-4 gate. This is a separate
+moving-source integration limitation. The frame106 quadrature result does not
+certify it. Increasing the global quadrature order further is not an established
+cheap remedy; local per-face error and near-source mapping need diagnosis.
+
+The paired pure-rigid/max/full timing worker is prepared but has not run because
+the requested100–129 window is not admitted. There is no valid continuous-window
+throughput number from these trials. Actual scene outcomes are recorded in the
+[native scene packet](../evidence/20261019-qualified-ranking/hard-native-hard-scene-v1/README.md).
+Passing an individual sharp-contact frame does not establish a complete gripping
+cycle or usable continuous-window throughput. Independent complete-field model
+errors, changing edge-friction accuracy, matched accepted timing and batch
+scaling remain active requirements.
+
 ## Remaining physical and integration limits
 
 The edge pressure behaves as`x^(-lambda)`. Its pointwise loaded-edge limit is
@@ -571,15 +652,15 @@ Refined cell-average maxima continue to rise, as expected for this singular
 model. A finite cell average or positive-depth sample peak is not a converged
 surface/global stress peak; retain sampling scales with every such value.
 
-The pressure law now has a native actual-input candidate and a separately tested
-complete-field component. Main-pipeline acceptance/friction composition and
-independent complete curved-shell physical validation are still required.
+The pressure law and complete-field component are now connected to the actual
+main pipeline. Continuous changing-contact admission and independent complete
+curved-shell physical validation are still required.
 The earlier Franka rejections and original moment mismatch remain evidence.
 The updated-support nearby-load candidate passes the declared sensitivity
 budget at the captured frame. The native candidate still needs changing-contact
 validation in the complete scene. Preserve strict source diagnostics and
-the original refused frames. Native max/full integration and matched complete
-pure-rigid/max/full throughput remain required.
+the original refused frames. Matched admitted complete
+pure-rigid/max/full throughput remains required.
 
 The [evidence packet](../evidence/20261019-qualified-ranking/hard-edge-law-v1/README.md)
 retains both coupled-reference stages, the unfitted-law comparison, native

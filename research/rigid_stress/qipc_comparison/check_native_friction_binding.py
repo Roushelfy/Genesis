@@ -11,9 +11,12 @@ import genesis as gs
 from genesis.engine.solvers.rigid.stress.contact import StressContactState
 from genesis.engine.solvers.rigid.stress.data import StressInfo
 from genesis.engine.solvers.rigid.stress.hertz import StressHertzState
-from genesis.engine.solvers.rigid.stress.hertz_binding import kernel_friction_bind, kernel_friction_commit
+from genesis.engine.solvers.rigid.stress.hertz_binding import (
+    StressFrictionRegions,
+    kernel_friction_bind,
+    kernel_friction_commit,
+)
 from genesis.engine.solvers.rigid.stress.hertz_recovery import StressHertzFrames
-from genesis.engine.solvers.rigid.stress.hertz_regions import StressHertzRegionState
 from genesis.engine.solvers.rigid.stress.provenance import StressSourceState
 from genesis.engine.solvers.rigid.stress.surface import StressSurfaceInfo
 from genesis.engine.solvers.rigid.stress.surface_walk import func_projected_surface_walk
@@ -33,12 +36,13 @@ def kernel_inputs(
     labels: qd.Tensor,
     contacts: StressContactState,
     sources: StressSourceState,
-    regions: StressHertzRegionState,
+    regions: StressFrictionRegions,
     law: StressHertzState,
     frames: StressHertzFrames,
     info: StressInfo,
     surface: StressSurfaceInfo,
     epsilon: float,
+    use_edge: bool,
 ):
     for i_b in range(contacts.valid.shape[1]):
         contacts.frame_quaternion[i_b], contacts.frame_position[i_b] = (
@@ -56,6 +60,7 @@ def kernel_inputs(
             0,
             -1,
         )
+        regions.profile[i_c, i_b] = 0
         law.force[i_p], law.status[i_p], law.axes[i_p] = 0.0, 1, qd.Vector.zero(gs.qd_float, 2)
         frames.anchor[i_p], frames.basis[i_p] = -1, qd.Matrix.identity(gs.qd_float, 3)
         if identity >= 0:
@@ -71,6 +76,7 @@ def kernel_inputs(
             contacts.force[i_c, i_b], contacts.friction[i_c, i_b] = force, 0.4
             sources.geom[i_c, i_b], sources.pair[i_c, i_b] = 0, identity
             regions.force[i_c, i_b], regions.source_count[i_c, i_b], regions.leader[i_c, i_b] = force, 1, i_c
+            regions.profile[i_c, i_b] = 2 if use_edge and i_b == 0 and identity == 0 and 4 <= i_step < 8 else 1
             law.force[i_p], law.status[i_p], law.axes[i_p] = normal, 0, qd.Vector([radius, radius])
             law.direction[i_p] = qd.Vector([qd.cos(angle), qd.sin(angle)])
             frames.center[i_p], frames.anchor[i_p] = projected, anchor
@@ -82,7 +88,7 @@ def kernel_duplicate(
     i_second: int,
     contacts: StressContactState,
     sources: StressSourceState,
-    regions: StressHertzRegionState,
+    regions: StressFrictionRegions,
     law: StressHertzState,
     frames: StressHertzFrames,
 ):
@@ -102,7 +108,7 @@ def kernel_duplicate(
 
 
 @qd.kernel
-def kernel_release(contacts: StressContactState, regions: StressHertzRegionState, law: StressHertzState):
+def kernel_release(contacts: StressContactState, regions: StressFrictionRegions, law: StressHertzState):
     for i_c in range(contacts.valid.shape[0]):
         i_p = i_c * contacts.valid.shape[1]
         contacts.valid[i_c, 0], contacts.force[i_c, 0] = False, qd.Vector.zero(gs.qd_float, 3)
@@ -119,7 +125,7 @@ def advance(fixture):
     kernel_friction_bind(
         entry.contacts,
         native.sources,
-        native.regions.state,
+        native.friction_regions,
         native.law.state,
         native.recovery.frames,
         native.binding,
@@ -135,7 +141,7 @@ def advance(fixture):
     kernel_friction_commit(
         entry.contacts,
         native.sources,
-        native.regions.state,
+        native.friction_regions,
         native.law.state,
         native.recovery.frames,
         native.binding,
@@ -150,10 +156,17 @@ def advance(fixture):
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--backend", choices=["cpu", "gpu"], required=True)
+    cli.add_argument("--edge-transition", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
-    write_json(args.output / "start.json", {"identity": runtime_identity(require_gpu_inventory=args.backend == "gpu")})
+    write_json(
+        args.output / "start.json",
+        {
+            "identity": runtime_identity(require_gpu_inventory=args.backend == "gpu"),
+            "edge_transition": args.edge_transition,
+        },
+    )
     gs.init(backend=gs.cuda if args.backend == "gpu" else gs.cpu, precision="64", logging_level="warning")
     mesh = MeshTet.init_tensor(np.array([-0.004, 0, 0.004]), np.array([-0.004, 0, 0.004]), np.array([-0.002, 0, 0.002]))
     path = args.output / "mesh.npz"
@@ -189,16 +202,22 @@ def main():
             labels,
             entry.contacts,
             native.sources,
-            native.regions.state,
+            native.friction_regions,
             native.law.state,
             native.recovery.frames,
             entry.model.info,
             entry.surface.info,
             2.220446049250313e-16,
+            args.edge_transition,
         )
         advance(fixture)
         assert array(native.state.input_is_valid).all() and not array(native.binding.is_lost).any()
         line, angles = array(native.friction.state.line), array(native.friction.input.angle)
+        friction_status, binding_radius, shear_force = (
+            array(native.friction.state.status),
+            array(native.binding.radius),
+            array(native.shear.force),
+        )
         maximum = 0.0
         for env in range(4):
             for identity in range(2):
@@ -207,9 +226,18 @@ def main():
                 normal = 0.006 * (1 + 0.2 * np.sin(phase) + 0.03 * identity)
                 radius = 3e-5 * (normal / 0.006) ** (1 / 3)
                 force = normal * 0.2 * np.array([np.cos(phase - angle), np.sin(phase - angle)])
-                transport = -0.1 if step else 0.0
+                is_edge = args.edge_transition and env == 0 and identity == 0 and 4 <= step < 8
+                is_new_smooth = args.edge_transition and env == 0 and identity == 0 and step == 8
+                transport = -0.1 if step and not is_edge and not is_new_smooth else 0.0
                 np.testing.assert_allclose(angles[slot], transport, rtol=0, atol=1e-13)
-                references[env][identity].update(radius, normal, 0.4, force, transport)
+                if is_edge:
+                    references[env][identity] = ConeFrictionHistory(16)
+                    assert friction_status[slot] == 1
+                    assert not binding_radius[slot] > 0
+                    np.testing.assert_array_equal(line[slot], 0)
+                else:
+                    references[env][identity].update(radius, normal, 0.4, force, transport)
+                np.testing.assert_allclose(shear_force[slot], force, rtol=1e-12, atol=1e-14)
                 maximum = max(
                     maximum, float(np.max(np.linalg.norm(line[slot] - references[env][identity].line, axis=1)))
                 )
@@ -228,7 +256,7 @@ def main():
         int(active_slots[1]),
         entry.contacts,
         native.sources,
-        native.regions.state,
+        native.friction_regions,
         native.law.state,
         native.recovery.frames,
     )
@@ -237,7 +265,7 @@ def main():
     assert not array(native.state.input_is_valid)[0]
     advance(fixture)
     assert array(native.binding.is_lost)[0] and not array(native.state.input_is_valid)[0]
-    kernel_release(entry.contacts, native.regions.state, native.law.state)
+    kernel_release(entry.contacts, native.friction_regions, native.law.state)
     advance(fixture)
     assert not array(native.binding.is_lost).any()
     np.testing.assert_array_equal(array(native.friction.state.line).reshape(shape[0], 4, 17, 2)[:, 0], 0)
@@ -248,6 +276,7 @@ def main():
             "duplicate_correspondence_loss_latch_and_release_passed": True,
             "rows": rows,
             "scope": "Native material correspondence and tangent-frame transport under synthetic region inputs, moving centers, changing normal/vector force, two regions, arbitrary slot permutation and four environments. Independent CPU radial law. This does not certify the physical moving-footprint transport approximation or collider region construction.",
+            "edge_transition": args.edge_transition,
             "whole_goal_complete": False,
         },
     )

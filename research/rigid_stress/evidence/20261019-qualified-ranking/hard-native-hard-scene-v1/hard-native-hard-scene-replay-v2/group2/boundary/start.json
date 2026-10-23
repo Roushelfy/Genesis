@@ -1,0 +1,44 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-029",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "740682",
+      "SLURM_ARRAY_JOB_ID": "740682",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-325bc5a3-b0fe-9a67-0857-3a4ad14c17fb, 00000000:21:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-capture-v2/group0/capture/frame0106.npz",
+      "bytes": 360837,
+      "sha256": "c230bff0e3a1f415fafc8d8901429df2b30473e3c3a9640713d5b066f5fb8772"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-capture-v2/group0/capture/hard0106.npz",
+      "bytes": 8790,
+      "sha256": "185b55d11a1a1f45e58255499c8c1e1b0fa3148e0698449d996ddded2d8c3e64"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+      "bytes": 10476,
+      "sha256": "bc9487c70df48c57608b80d802810cbfb421adbb2a781a12a546e58810a635d1"
+    }
+  ],
+  "orders": [
+    8,
+    10,
+    12,
+    16,
+    24,
+    32
+  ],
+  "scope": "Actual environment zero, with the exact accepted hard-binding forces, frames and support. Boundary integration only; unchanged 1e-4 wrench gate. No recovered-field or physical accuracy claim."
+}
