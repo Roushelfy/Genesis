@@ -84,13 +84,13 @@ def func_pipeline(
     if qd.static(reuse_contact_moments):
         func_pressure_moments(contacts, state, info, surface, scatter, cached_bounds)
     else:
-        func_pressure_warp(contacts, surface, False)
+        func_pressure_warp(contacts, surface, False, contacts.valid, False)
     func_pressure_correct_warp(contacts, surface)
     func_refine_contacts(contacts)
     if qd.static(reuse_contact_moments):
-        func_pressure_warp(contacts, surface, True, True, scatter.refined_pressure)
+        func_pressure_warp(contacts, surface, True, scatter.refined_pressure, True)
     else:
-        func_pressure_warp(contacts, surface, True)
+        func_pressure_warp(contacts, surface, True, contacts.valid, False)
     func_pressure_correct_warp(contacts, surface)
     if qd.static(face_parallel):
         func_scatter_faces(contacts, state, info, surface, scatter, cached_bounds, reuse_contact_moments)

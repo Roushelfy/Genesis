@@ -491,7 +491,7 @@ def func_pack_contacts(contact_state: StressContactState):
 
 @qd.kernel
 def kernel_pressure_warp(contact_state: StressContactState, surface_info: StressSurfaceInfo, refinement: bool):
-    func_pressure_warp(contact_state, surface_info, refinement)
+    func_pressure_warp(contact_state, surface_info, refinement, contact_state.valid, False)
 
 
 @qd.func
@@ -499,8 +499,9 @@ def func_pressure_warp(
     contact_state: StressContactState,
     surface_info: StressSurfaceInfo,
     refinement: bool,
+    processed_refined: qd.Tensor,
+    reuse_refined: qd.template(),
     enabled: bool = True,
-    processed_refined: qd.Tensor | None = None,
 ):
     qd.loop_config(block_dim=128)
     for i_thread in range(qd.select(enabled, contact_state.active_count[None] * 32, 0)):
@@ -509,7 +510,7 @@ def func_pressure_warp(
         pair = contact_state.active_pairs[slot]
         i_c, i_b = pair[0], pair[1]
         processed = False
-        if qd.static(processed_refined is not None):
+        if qd.static(reuse_refined):
             if slot < processed_refined.shape[0]:
                 processed = processed_refined[slot]
         if refinement == contact_state.is_refined[i_c, i_b] and not processed:

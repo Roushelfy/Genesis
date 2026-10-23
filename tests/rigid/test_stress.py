@@ -54,10 +54,10 @@ def kernel_apex_contact_graph(
 ):
     func_anchor(epsilon, contacts, surface)
     func_pack_contacts(contacts)
-    func_pressure_warp(contacts, surface, False)
+    func_pressure_warp(contacts, surface, False, contacts.valid, False)
     func_pressure_correct_warp(contacts, surface)
     func_refine_contacts(contacts)
-    func_pressure_warp(contacts, surface, True)
+    func_pressure_warp(contacts, surface, True, contacts.valid, False)
     func_pressure_correct_warp(contacts, surface)
     func_scatter_warp(contacts, state, info, surface, True)
 
