@@ -1095,12 +1095,21 @@ The contact-time opposing face normal differs from the material normal by
 3.82635 degrees. Expressing the original force in that frame increases its
 tangential/normal ratio from0.735533 to0.843922, above friction0.719102.
 Changing the normal alone therefore worsens this one-face compatibility check.
-The required normal-pressure centroid on the opposing plane is
-(113.758, -78.272) micrometres from the projected edge origin. It lies inside
-the finite face, but outside the predicted submicrometre-wide footprint.
+The corrected normal-pressure centroid on the opposing plane is
+(-38.2412, -80.1174) micrometres from the projected edge origin. It lies
+38.2412micrometres beyond the finite face boundary.
 Both transformations preserve the complete original wrench. Contact involving
 the adjacent box face remains a separate possibility requiring its own geometry
 and pressure checks.
+
+The first frame reader omitted the saved `region_gap` when locating that plane.
+`region_center` identifies the material normal-root point. Adding
+`region_gap * normal` supplies the actual opposing plane. The corrected gap is
+-180.124micrometres and the pressure center is101.430micrometres below the face.
+Both independently captured opponent witnesses lie on its shared sharp edge
+to3.23e-17m in the transverse/normal coordinates. The first packet's opposing
+plane distances, moment and centroid are superseded by this correction.
+Force ratios, frame rotation and the separate displacement results remain valid.
 
 An untimed replay captures admitted frames419,420,427 immediately before the
 same native frame428 refusal. In environment0, all four physical regions have
@@ -1141,6 +1150,73 @@ The next physical comparison must check adjacent-face contact or explicitly
 qualified nearby load/support estimates. Small smooth shell motion and a simple
 normal swap are insufficient explanations. Useful full-cycle admission and
 complete-field physical accuracy remain open.
+
+## Adjacent-face wrench limits
+
+The corrected contact-time frame supports a separate two-face necessary check.
+The primary rectangle spans transverse0--a and longitudinal+/-b. Its adjacent
+rectangle spans normal-depth0--D and the same longitudinal interval. Their
+compressive normals are respectively+z and-x, with friction0.719102.
+Here a=0.598608micrometre and b=65.9525micrometres come from the reconstructed
+pressure law. The rectangles deliberately admit arbitrary nonnegative tractions.
+Their elastic gap compatibility remains an additional physical requirement.
+
+For each rectangle, nonnegative bilinear coordinates transfer every distributed
+traction to its four corners while preserving the complete wrench and the
+convex friction cone. This follows the surface-contact wrench construction
+described by [Caron, Pham and Nakamura](https://arxiv.org/abs/1501.04719).
+The present check treats both perpendicular faces together. Inner friction-cone
+polygons supply feasible atomic corner forces. Separators proposed using outer
+polygons are verified directly against the circular cone at every corner.
+Concavity extends the separating inequality over each complete rectangle.
+The primary-face compression, side-face compression and tensile negative
+controls pass. The original force alone is feasible with both faces, while the
+single-face force remains excluded.
+All16 classifications agree between64 and128 polygon facets. The largest
+normalized feasible-wrench residual is3.28e-13. One refined primal solve returns
+an unknown HiGHS status. The recorded interior-point retry proves infeasibility,
+and the resulting separator independently passes the continuous-cone check.
+
+Two moment targets are kept separate: the original collision midpoint wrench,
+and an input approximation placing each unchanged force at its captured opponent
+witness on the true sharp edge. This replacement changes the transverse moment
+from9.84713e-7Nm to-2.70e-19Nm. Its other moment changes are retained in the raw
+result. It leaves the complete force unchanged.
+
+| Side depth D (micrometres) | Original, half-length b | Witness, half-length b | Original, half-length 2b | Witness, half-length 2b |
+| ---: | --- | --- | --- | --- |
+| 0.598608 | Excluded | Excluded | Excluded | Feasible |
+| 9.57773 | Excluded | Excluded | Excluded | Feasible |
+| 38.3109 | Excluded | Excluded | Feasible | Feasible |
+| 153.244 | Excluded | Excluded | Feasible | Feasible |
+
+An independent bound explains the original transverse-moment obstruction.
+Let P and S denote the primary and side normal reactions. Coulomb friction gives
+Fx <= mu P - S and Fz >= P - mu S, hence
+S <= (mu Fz - Fx)/(1-mu^2) =0.0833443N. Since the primary face contributes
+nonpositive transverse moment and the side contributes at most D S, the
+positive original moment requires D >=11.8150micrometres, independently of
+longitudinal support. This exceeds the predicted width by19.7 times.
+
+For witness loads and D=a, another bound gives b >=77.9547micrometres.
+Specifically, Fz-Fx >=(1-mu)(P+S) and
+abs(Mx+Mz) <= b(Fz-Fx) + mu a(P+S).
+This establishes a longitudinal obstruction even after the transverse couple
+is removed, against the predicted b=65.9525micrometres.
+
+These tests distinguish force feasibility from complete-wrench feasibility and
+pressure physics. In particular, moving loads onto their real witnesses removes
+the midpoint-induced transverse couple but still exceeds the original support's
+longitudinal capability. Enlarging support until a conic check passes supplies
+no elastic-pressure or stress-error qualification. The next comparison must
+test a physical two-face contact state or an explicitly declared nearby load and
+support model against a matched pressure/stress reference.
+
+The [corrected-plane and adjacent-face packet](../evidence/20261019-qualified-ranking/box-edge-wrench428-v1/README.md)
+retains the original plane-reader evidence, corrected witness checks, initial
+integer-normal reader failure and the successful conic controls. The failed
+refined primal solve and its verified retry are also retained. Production
+behavior and the native frame428 refusal remain unchanged.
 
 ## Remaining physical and integration limits
 

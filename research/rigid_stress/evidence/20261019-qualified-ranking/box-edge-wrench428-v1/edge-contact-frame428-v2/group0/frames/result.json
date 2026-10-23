@@ -1,0 +1,105 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "region": 0,
+      "contacts": [
+        0,
+        1
+      ],
+      "opposing_face_force_n": [
+        -0.02172945847486004,
+        -0.0002638367231551671,
+        0.025750091380959184
+      ],
+      "opposing_face_moment_nm": [
+        -2.063030821629588e-06,
+        9.847133679234935e-07,
+        -1.7173081845917386e-06
+      ],
+      "opposing_face_shear_normal_ratio": 0.843921671295812,
+      "opposing_face_normalized_cone_margin": -0.09539083525896824,
+      "material_shear_normal_ratio": 0.7355327069957267,
+      "friction": 0.7191016138165071,
+      "normal_rotation_degrees": 3.8263537142890023,
+      "material_pressure_center_height_from_opposing_face_m": -0.00010142977116872464,
+      "material_root_to_face_gap_m": -0.00018012391041831867,
+      "opposing_edge_origin_material_m": [
+        0.0056459406459629085,
+        0.021443796176741116,
+        -0.007183750444355489
+      ],
+      "opposing_face_basis_material": [
+        [
+          -0.00864188448092734,
+          0.9682491944810122,
+          -0.24983757767695702
+        ],
+        [
+          0.013013773669087047,
+          -0.24971684725087395,
+          -0.9682314485152677
+        ],
+        [
+          -0.9998779723183766,
+          -0.011618674018790763,
+          -0.010442551725368305
+        ]
+      ],
+      "opponent_witnesses_from_opposing_edge_m": [
+        [
+          3.22828160034133e-17,
+          -0.0001691920917470042,
+          7.347365171926345e-19
+        ],
+        [
+          -5.874642750235877e-18,
+          -4.5777501703546534e-06,
+          -2.950001895327144e-18
+        ]
+      ],
+      "opponent_witness_nearest_face_distance_m": [
+        7.347365171926345e-19,
+        2.950001895327144e-18
+      ],
+      "collision_positions_from_opposing_edge_m": [
+        [
+          3.6638563035104565e-06,
+          -0.00016919209174706066,
+          -4.9793919059146294e-05
+        ],
+        [
+          3.539620662057511e-06,
+          -4.28005635998973e-06,
+          -4.9400615706341856e-05
+        ]
+      ],
+      "collision_forces_in_opposing_frame_n": [
+        [
+          -0.009843769297379453,
+          -0.00012045672899879223,
+          0.011762257994610108
+        ],
+        [
+          -0.011885689177480587,
+          -0.00014337999415637483,
+          0.013987833386349074
+        ]
+      ],
+      "required_pressure_centroid_from_opposing_edge_m": [
+        -3.8241160132411666e-05,
+        -8.01174174921604e-05
+      ],
+      "required_centroid_face_margins_m": [
+        0.0013293562413581007,
+        0.0046706437586419,
+        0.006038241160132412,
+        -3.824116013241173e-05
+      ],
+      "required_centroid_inside_opposing_face": false,
+      "frame_change_preserves_force_and_moment": true
+    }
+  ],
+  "scope": "Same captured force and moment expressed in the undeformed material frame and contact-time rigid opposing-face frame. A nonnegative normal-pressure distribution on one planar face requires its centroid inside that face. Changing frame alone preserves the full wrench. Deformation, contact on adjacent box faces, pressure physics and any nearby-load correction require separate checks. No native gates or fields change.",
+  "whole_goal_complete": false
+}

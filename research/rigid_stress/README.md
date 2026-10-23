@@ -52,6 +52,11 @@ only0.0067micrometre. Conditional local displacement at a declared positive
 depth converges to0.154micrometre, far below the collider's application offset.
 Adjacent-face contact or a separately qualified nearby-load estimate needs a
 physical comparison before changing production behavior.
+The [corrected opposing-plane and two-face check](docs/SHARP_EDGE_PRESSURE_20261022.md#adjacent-face-wrench-limits)
+locates both raw opponent witnesses on the actual sharp edge. The original
+moment requires at least11.8micrometres of side-face depth. Moving each force
+to its true witness removes that transverse couple, while the predicted
+longitudinal support still fails a continuous wrench-cone certificate.
 Ideal sharp edges remain singular; finite sampled peaks retain their probe depths.
 
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)
