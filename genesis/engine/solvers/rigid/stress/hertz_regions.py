@@ -38,6 +38,7 @@ class StressHertzRegionState:
     normal_residual: qd.Tensor
     geometry_kind: qd.Tensor
     opponent_link: qd.Tensor
+    opponent_type: qd.Tensor
     leader: qd.Tensor
     status: qd.Tensor
     force: qd.Tensor
@@ -78,6 +79,7 @@ class StressHertzRegions:
             normal_residual=V(dtype=gs.qd_float, shape=shape),
             geometry_kind=V(dtype=gs.qd_int, shape=shape),
             opponent_link=V(dtype=gs.qd_int, shape=shape),
+            opponent_type=V(dtype=gs.qd_int, shape=shape),
             leader=V(dtype=gs.qd_int, shape=shape),
             status=V(dtype=gs.qd_int, shape=shape),
             force=V_VEC(3, dtype=gs.qd_float, shape=shape),
@@ -117,6 +119,7 @@ def kernel_hertz_roots(
         )
         curvature = qd.Matrix.zero(gs.qd_float, 2, 2)
         gap, residual, geometry_kind, i_opponent = gs.qd_float(0.0), gs.qd_float(0.0), 0, -1
+        opponent_type = -1
         is_finite = True
         for i in qd.static(range(3)):
             force = contact_state.force[i_c, i_b][i]
@@ -146,6 +149,7 @@ def kernel_hertz_roots(
             )
             if is_valid:
                 i_opponent = dyn_info.geoms.link_idx[i_gb]
+                opponent_type = dyn_info.geoms.type[i_gb]
                 point = geom.qd_transform_by_trans_quat(
                     source_state.witness[i_c, i_b],
                     contact_state.frame_position[i_b],
@@ -235,6 +239,7 @@ def kernel_hertz_roots(
         region_state.curvature[i_c, i_b], region_state.gap[i_c, i_b] = curvature, gap
         region_state.normal_residual[i_c, i_b], region_state.geometry_kind[i_c, i_b] = residual, geometry_kind
         region_state.opponent_link[i_c, i_b], region_state.status[i_c, i_b] = i_opponent, status
+        region_state.opponent_type[i_c, i_b] = opponent_type
 
 
 @qd.kernel
