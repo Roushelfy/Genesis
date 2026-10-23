@@ -63,7 +63,7 @@ def func_surface_geometry(i_f: int, bary: qd.types.vector(3), info: StressInfo):
     pairs = qd.Matrix([[0, 1], [0, 2], [1, 2]])
     i_origin = info.surface_nodes[i_f, 0]
     origin = info.vertices[i_origin]
-    for i in range(6):
+    for i in qd.static(range(6)):
         shape, derivative = gs.qd_float(0.0), qd.Vector.zero(gs.qd_float, 2)
         if i < 3:
             shape, derivative = bary[i] * (2 * bary[i] - 1), (4 * bary[i] - 1) * gradient[i, :]
