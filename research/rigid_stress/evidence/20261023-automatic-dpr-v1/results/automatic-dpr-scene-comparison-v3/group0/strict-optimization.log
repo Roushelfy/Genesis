@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-scene-comparison-v3/analysis-source/research/rigid_stress/qipc_comparison/audit_automatic_dpr_scene.py", line 107, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-scene-comparison-v3/analysis-source/research/rigid_stress/qipc_comparison/audit_automatic_dpr_scene.py", line 103, in main
+    np.testing.assert_array_equal(before, after)
+  File "/usr/local/lib/python3.10/dist-packages/numpy/_utils/__init__.py", line 86, in wrapper
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/numpy/testing/_private/utils.py", line 1057, in assert_array_equal
+    assert_array_compare(operator.__eq__, actual, desired, err_msg=err_msg,
+  File "/usr/local/lib/python3.10/dist-packages/numpy/testing/_private/utils.py", line 921, in assert_array_compare
+    raise AssertionError(msg)
+AssertionError: 
+Arrays are not equal
+
+Mismatched elements: 1 / 10 (10%)
+Max absolute difference among violations: 6.77626358e-21
+Max relative difference among violations: 1.13799961e-16
+ ACTUAL: array([5.731332e-05, 5.268414e-05, 5.954539e-05, 5.288122e-05,
+       4.299555e-05, 5.490478e-05, 6.827832e-05, 4.713416e-05,
+       4.713416e-05, 4.713416e-05])
+ DESIRED: array([5.731332e-05, 5.268414e-05, 5.954539e-05, 5.288122e-05,
+       4.299555e-05, 5.490478e-05, 6.827832e-05, 4.713416e-05,
+       4.713416e-05, 4.713416e-05])
