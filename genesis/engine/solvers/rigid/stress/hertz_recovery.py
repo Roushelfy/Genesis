@@ -21,7 +21,7 @@ from .hertz_probes import (
 from .hertz_tangential import StressHertzShear, func_cerruti_tensor, func_hertz_friction_particular
 from .model import StressModel
 from .operators import func_shape_gradient, func_material_gradients, func_material_position
-from .provenance import func_closest_triangle
+from .provenance import func_closest_triangle, func_material_source_point
 from .surface import StressSurfaceInfo, func_surface_geometry, func_surface_projection
 
 
@@ -385,6 +385,10 @@ def kernel_hertz_residual_traction(
                     )
                     distance = (closest - center).norm()
                     is_near = distance < diameter / 4
+                    if qd.static(is_curved):
+                        if is_near and not is_source:
+                            closest, bary = func_material_source_point(i_f, center, bary, info, surface, epsilon, False)
+                            distance = (closest - center).norm()
                     radial_splits = 2
                     if qd.static(is_curved):
                         radial_splits = 3
@@ -413,10 +417,10 @@ def kernel_hertz_residual_traction(
                             v = (surface.gauss[i_q % n_gauss] + i_rule % 2) / 2
                             angular_derivative = gs.qd_float(1.0)
                             if qd.static(is_curved):
-                                if is_source:
+                                if qd.abs(bary[(i_edge + 2) % 3]) > 0:
                                     cross = first.cross(second).norm()
                                     if cross > 0:
-                                        # Equal angles resolve the narrow fan next to a face edge.
+                                        # Equal angles resolve narrow fans near face edges and vertices.
                                         angle = qd.atan2(cross, first.dot(second))
                                         theta = angle * v
                                         denominator = first.norm() * qd.sin(theta) + second.norm() * qd.sin(
