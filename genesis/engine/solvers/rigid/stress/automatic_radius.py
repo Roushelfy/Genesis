@@ -1,6 +1,5 @@
 """Witness-based circular Hertz sizes for the original DPR load transfer."""
 
-from dataclasses import dataclass
 from enum import IntEnum
 
 import quadrants as qd
@@ -21,13 +20,22 @@ class StressRadiusStatus(IntEnum):
     INVALID = 4
 
 
-@dataclass(frozen=True)
 class StressRadiusInfo:
-    geometry: array_class.DynInfo
-    curvature: StressCurvatureInfo
-    modulus: float
-    unloaded_radius: float
-    epsilon: float
+    """Immutable build-time geometry and material references for optional kernel specialization."""
+
+    def __init__(
+        self,
+        geometry: array_class.DynInfo,
+        curvature: StressCurvatureInfo,
+        modulus: float,
+        unloaded_radius: float,
+        epsilon: float,
+    ):
+        self.geometry = geometry
+        self.curvature = curvature
+        self.modulus = modulus
+        self.unloaded_radius = unloaded_radius
+        self.epsilon = epsilon
 
 
 @qd.func
@@ -37,7 +45,7 @@ def func_witness_curvature(
     i_b: int,
     point: qd.types.vector(3),
     dyn: array_class.DynState,
-    info: StressRadiusInfo,
+    info: qd.template(),
 ):
     """Reuse an identified mesh vertex, otherwise query only the witnessed geom."""
     normal = qd.Vector.zero(gs.qd_float, 3)
@@ -74,7 +82,7 @@ def func_estimate_radius(
     contacts: StressContactState,
     collider: array_class.ColliderState,
     dyn: array_class.DynState,
-    info: StressRadiusInfo,
+    info: qd.template(),
 ):
     """Estimate each supplied contact's size without changing its force or application point.
 

@@ -9,7 +9,7 @@ from scipy.sparse.linalg import splu
 from skfem import MeshTet
 
 import genesis as gs
-from genesis.engine.solvers.rigid.stress.automatic_radius import StressRadiusInfo, func_estimate_radius
+from genesis.engine.solvers.rigid.stress.automatic_radius import func_estimate_radius
 from genesis.engine.solvers.rigid.stress.contact import create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
 from genesis.utils import array_class
 from genesis.utils.array_class import V_VEC
@@ -22,7 +22,7 @@ from .artifacts import runtime_identity, write_json
 
 @qd.kernel
 def kernel_radius_controls(
-    contacts: qd.template(), collider: array_class.ColliderState, dyn: array_class.DynState, info: StressRadiusInfo
+    contacts: qd.template(), collider: array_class.ColliderState, dyn: array_class.DynState, info: qd.template()
 ):
     for i_b in range(6):
         force = 0.005 * qd.Vector([0.2, 0.0, -1.0])
