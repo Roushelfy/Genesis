@@ -89,6 +89,10 @@ def hard_snapshot(module):
         "cone_margin": array(module.state.cone_margin),
         "allocation_status": array(module.allocation.state.status),
         "maximum_change": array(module.allocation.state.maximum_change),
+        **{
+            "allocation_" + field.name: array(vars(module.allocation.state)[field.name])
+            for field in fields(module.allocation.state)
+        },
     }
 
 
@@ -149,7 +153,7 @@ def diagnose(workload, output, step, is_boundary_capture, is_hard_capture=False)
         source_method=array(entry.hertz.sources.method),
         source_vertex=array(entry.hertz.sources.vertex),
     )
-    initial = np.full((4, entry.contacts.valid.shape[0], 2, 15), np.nan)
+    initial = np.full((entry.contacts.valid.shape[1], entry.contacts.valid.shape[0], 2, 15), np.nan)
     kernel_boundary_diagnostic(
         initial,
         entry.contacts,
@@ -236,6 +240,7 @@ def main():
     cli.add_argument("--diagnose", action="store_true")
     cli.add_argument("--boundary-planes", action="store_true")
     cli.add_argument("--hard-inputs", action="store_true")
+    cli.add_argument("--capture-steps", type=int, nargs="*", default=[])
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -256,6 +261,7 @@ def main():
             "steps": args.steps,
             "output_mode": args.output_mode,
             "substeps": args.substeps,
+            "capture_steps": args.capture_steps,
             "environments": 4,
             "scope": "Actual moving Franka with the original controller, explicitly identified original or supplied collision asset, supplied quadratic material geometry and native Hertz/friction. Retain every step and stop on the unchanged production error. Loaded rejection does not count as useful throughput, and success alone is not physical stress qualification.",
         },
@@ -286,6 +292,9 @@ def main():
             "friction_penalty": entry.hertz.friction.penalty,
             "friction_maximum_iterations": entry.hertz.friction.maximum_iterations,
             "edge_probe_minimum_width_fraction": 0.01,
+            "controller_cycle_steps": 600,
+            "controller_delays": workload.delays.tolist(),
+            "all_environments_first_cycle_end": int(workload.delays.max()) + 600,
         },
     )
     workload.save_conditions(args.output / "conditions.npz")
@@ -301,6 +310,8 @@ def main():
             raise
         rows.append(capture(workload, args.output, step))
         write_json(args.output / "progress.json", {"rows": rows})
+        if step in args.capture_steps and all(rows[-1]["accepted"]):
+            diagnose(workload, args.output, step, args.boundary_planes, args.hard_inputs)
         if args.diagnose and not all(rows[-1]["accepted"]):
             write_json(args.output / "result.json", {"passed": False, "rows": rows, "whole_goal_complete": False})
             diagnose(workload, args.output, step, args.boundary_planes, args.hard_inputs)

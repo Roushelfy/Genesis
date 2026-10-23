@@ -1,0 +1,65 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "env": 0,
+      "same_load_field_relative": 1.433201729637118e-08,
+      "reselected_reference_field_relative": null,
+      "same_load_corner_relative": 1.8430551848648094e-16,
+      "higher_rule_point_rhs_relative": 6.25931425190146e-05,
+      "full_hertz_volume_relative": 0.00021435913426507485,
+      "wrench_error_relative": 5.4643772617522916e-05,
+      "vm_peak_pa": 16469835.823346255,
+      "tensile_peak_pa": 3699070.012268478,
+      "independent_elastic_residual": 1.2898620600931348e-14
+    },
+    {
+      "env": 1,
+      "same_load_field_relative": 3.2723312832884474e-08,
+      "reselected_reference_field_relative": null,
+      "same_load_corner_relative": 8.240250559013396e-15,
+      "higher_rule_point_rhs_relative": 6.510820711496963e-05,
+      "full_hertz_volume_relative": 0.0001622513059138334,
+      "wrench_error_relative": 3.931784724573185e-05,
+      "vm_peak_pa": 13882826.426607266,
+      "tensile_peak_pa": 3133777.8479681704,
+      "independent_elastic_residual": 1.2790066063500658e-14
+    },
+    {
+      "env": 2,
+      "same_load_field_relative": 1.1997377734702726e-08,
+      "reselected_reference_field_relative": null,
+      "same_load_corner_relative": 2.798255176172898e-16,
+      "higher_rule_point_rhs_relative": 6.130248474550347e-05,
+      "full_hertz_volume_relative": 0.00025685577564598993,
+      "wrench_error_relative": 5.879037416052021e-05,
+      "vm_peak_pa": 15955012.525436578,
+      "tensile_peak_pa": 3616562.5217342745,
+      "independent_elastic_residual": 5.4138000708197856e-15
+    },
+    {
+      "env": 3,
+      "same_load_field_relative": 0.0,
+      "reselected_reference_field_relative": null,
+      "same_load_corner_relative": 0.0,
+      "higher_rule_point_rhs_relative": 0.0,
+      "full_hertz_volume_relative": 0.0,
+      "wrench_error_relative": 0.0,
+      "vm_peak_pa": 0.0,
+      "tensile_peak_pa": 0.0,
+      "independent_elastic_residual": 0.0
+    }
+  ],
+  "build_and_control_seconds": 7.73246673704125,
+  "targets": {
+    "same_load_tensor": 1e-07,
+    "point_rhs": 0.0001,
+    "full_hertz_volume": 0.001,
+    "max_full": 1e-07
+  },
+  "max_full_and_anchor_failure_recovery_passed": true,
+  "release_and_reloading_isolation_passed": true,
+  "independent_contact_pressure_qualified": false,
+  "general_contact_friction_or_scene_qualified": false,
+  "whole_goal_complete": false
+}

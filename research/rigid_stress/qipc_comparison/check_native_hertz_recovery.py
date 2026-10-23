@@ -333,6 +333,24 @@ def main():
     np.testing.assert_array_equal(array(module.state.status), [0, 0, 0, 1])
     assert np.all(array(state.step_valid)) and not np.any(array(errno))
     np.testing.assert_array_equal(array(state.invalid_steps), [0, 1, 0, 0])
+    for loaded_envs in [[], [2], [0, 1, 2]]:
+        loaded = np.isin(np.arange(4), loaded_envs)
+        hertz.state.force.from_numpy(forces * loaded[np.arange(8) % 4])
+        hertz.update()
+        kernel_begin_step(state)
+        module.recover(omega, hertz.state, state, model, surface.info, 1e-12, errno)
+        qd.sync()
+        np.testing.assert_array_equal(array(module.state.status), np.where(loaded, 0, 1))
+        assert np.all(array(state.step_valid)) and not np.any(array(errno))
+        actual_fields = matrix(array(module.state.tensor))
+        actual_corners = matrix(array(state.stress_tensor))
+        actual_loads = array(state.force)
+        np.testing.assert_array_equal(actual_fields[~loaded], 0)
+        np.testing.assert_array_equal(actual_corners[~loaded], 0)
+        np.testing.assert_array_equal(actual_loads[~loaded], 0)
+        np.testing.assert_allclose(actual_fields[loaded], field[loaded], rtol=1e-7, atol=1e-5)
+        np.testing.assert_allclose(actual_corners[loaded], corners[loaded], rtol=1e-7, atol=1e-5)
+        np.testing.assert_allclose(actual_loads[loaded], native_loads[loaded], rtol=1e-10, atol=1e-13)
     write_json(
         args.output / "result.json",
         {
@@ -341,6 +359,7 @@ def main():
             "build_and_control_seconds": perf_counter() - begun,
             "targets": targets,
             "max_full_and_anchor_failure_recovery_passed": True,
+            "release_and_reloading_isolation_passed": True,
             "independent_contact_pressure_qualified": False,
             "general_contact_friction_or_scene_qualified": False,
             "whole_goal_complete": False,

@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "mode": "rigid",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-geometry-search-timing-v2/group1/paired-b64/rigid-b64-audit.npz",
+        "bytes": 4764,
+        "sha256": "1c31114d0dbd22b3fbc1947941da3d7c6b062a824cbf4d60837de36b8f095dd0"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-boundary-lanes-timing-v1/group1/paired-b64/rigid-b64-audit.npz",
+        "bytes": 4764,
+        "sha256": "1c31114d0dbd22b3fbc1947941da3d7c6b062a824cbf4d60837de36b8f095dd0"
+      },
+      "frames": 130,
+      "batch": 64
+    },
+    {
+      "mode": "max",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-geometry-search-timing-v2/group1/paired-b64/max-b64-audit.npz",
+        "bytes": 24024,
+        "sha256": "0546038b8879e27055bdcac5ea0679624c263c4d3b72a2e67dd42b1f71da8010"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-boundary-lanes-timing-v1/group1/paired-b64/max-b64-audit.npz",
+        "bytes": 32239,
+        "sha256": "f524b1e78efe3e1b844c97ac21d3c12351dd33704ddf8a7f575192b2024c7be0"
+      },
+      "frames": 130,
+      "batch": 64
+    },
+    {
+      "mode": "full",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-geometry-search-timing-v2/group1/paired-b64/full-b64-audit.npz",
+        "bytes": 24128,
+        "sha256": "56970343666af016df929bde1fe743ca5e07863247f5d5937532c21f79954e27"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-boundary-lanes-timing-v1/group1/paired-b64/full-b64-audit.npz",
+        "bytes": 31964,
+        "sha256": "d547ed3e8e62187b26c9eb5d893b0adfe50092f8cc74160cc3d8b5673254287d"
+      },
+      "frames": 130,
+      "batch": 64
+    }
+  ],
+  "scope": "Existing paired-timer public checks across engine sources: position absolute 1e-12m, stress relative 1e-7/absolute 1e-6Pa, exact validity/load/edge/status masks and infinite maxima. Separate raw full-field diagnostics retain their original criteria and outcomes.",
+  "whole_goal_complete": false
+}

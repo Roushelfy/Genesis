@@ -31,7 +31,14 @@ reduces complete max/full costs to51.03/51.21ms atB4 and72.46/72.35ms atB64
 CPU/GPU disconnected/nonconvex and threshold-boundary controls pass; actual
 0--129 audits retain admission and public observation conformance. Raw field
 roundoff differences and the initial failed pruning attempt remain documented.
-Boundary traction and remaining geometry work still dominate the complete path.
+The latest [boundary quadrature scheduling](docs/SHARP_EDGE_PRESSURE_20261022.md#boundary-quadrature-scheduling)
+reduces max/full scene costs further to40.69/40.36ms atB4 and53.91/54.06ms atB64,
+with unchanged quadrature and public conformance checks. Boundary traction drops
+from17.71ms to7.37ms; planar geometry now dominates the device profile. Complete
+cycle audits of the baseline and candidates all reject max mode at frame428.
+An independent CPU/GPU certificate proves that the single region's point force
+cannot represent the required wrench (normalized residual lower bound1.004e-3).
+Distributed-traction moments and independent complete physical errors remain open.
 Ideal sharp edges remain singular; finite sampled peaks retain their probe depths.
 
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)

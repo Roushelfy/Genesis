@@ -14,6 +14,8 @@ from examples.rigid.franka_egg_stress import FrankaEgg
 from genesis.utils.misc import tensor_to_array
 
 from .artifacts import file_id, runtime_identity, write_json
+from .check_live_curved_hertz_franka import diagnose
+from .check_live_hertz_franka import capture
 from .check_native_hertz_recovery import array
 
 
@@ -115,8 +117,20 @@ def main():
             begun = perf_counter()
             snapshots = []
             for step in range(horizon):
-                workload.step()
-                snapshots.append(observe(workload, mode))
+                try:
+                    workload.step()
+                    snapshots.append(observe(workload, mode))
+                except (gs.GenesisException, AssertionError):
+                    failure = {"batch": batch, "mode": mode, "step": step}
+                    write_json(args.output / "result.json", {"passed": False, "rows": rows, "failure": failure})
+                    if mode != "rigid":
+                        failure_output = args.output / f"failure-{mode}-b{batch}"
+                        failure_output.mkdir()
+                        write_json(failure_output / "frame.json", capture(workload, failure_output, step))
+                        diagnose(workload, failure_output, step, True, True)
+                    raise
+                if step % 32 == 0:
+                    write_json(args.output / "audit-progress.json", {"batch": batch, "mode": mode, "step": step})
             workload.scene.rigid_solver.check_errno()
             audit_seconds = perf_counter() - begun
             audit = {key: np.stack([item[key] for item in snapshots]) for key in snapshots[0]}

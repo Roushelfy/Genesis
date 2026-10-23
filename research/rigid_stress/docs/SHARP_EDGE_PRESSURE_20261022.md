@@ -925,6 +925,97 @@ workflow. Full-cycle admission, diverse batch scaling and independent complete
 curved-shell physical errors remain open. Sharp-edge global singular maxima
 and finite positive-depth sampled values retain their existing interpretation.
 
+## Boundary quadrature scheduling
+
+Engine `ddf776072` compacts currently loaded sources before particular-field and
+boundary-traction evaluation. The list is rebuilt on every recovery, with the
+original source identities and admission checks. Actual B4 frames contain
+0,3,4,6 or8 loaded sources among3000 slots. Compaction alone leaves boundary
+traction at17.697ms versus17.709ms and complete max/full at51.70/51.58ms
+(B4) and71.45/71.42ms (B64). This ablation supplies little overall benefit.
+
+Engine `06cf62f1c` distributes the same boundary quadrature samples over64
+lanes. Samples, weights, geometric rules and acceptance gates stay fixed;
+summation order changes. CPU/GPU order16 shell and normal-component controls
+pass. All-unloaded, one-environment reload and multi-environment reload checks
+verify zero stale loads/tensors and restored fields. GPU every-step/manual,
+two-substep and selected-reset friction controls also pass.
+
+The complete0--129 max/full runs admit all520 environment steps per mode.
+Separate B4/B64 public observations match the geometry-search baseline under
+the existing position1e-12m and stress1e-7 relative/1e-6Pa checks; status,
+loaded-region and sharp-edge infinity masks match exactly. The stricter raw
+array diagnostic retains its failures: probe barycentric differences reach
+3.45e-12, and full corner tensors differ by6.35e-8Pa (relative L2 at most
+3.12e-15). Each affects128 frames under the original universal1e-9 relative/
+1e-12 absolute criterion. These roundoff failures remain recorded separately
+from public conformance. Loaded-source counts match on every compared frame.
+
+Primary timings retain the original profiler-off100--129 window, three repeats,
+continuous history from0, order16,64-bit precision, dt0.01 and one substep on
+RTX PRO6000 Blackwell. B64 tiles the four initial conditions16 times. Each
+pure-rigid/max/full trio shares one allocation; engine versions use separate
+allocations with matching configurations.
+
+| Batch | Pure rigid ms/step | Max ms/step | Full ms/step | Added max/full ms/step | Max/full env-step/s |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 4 | 2.604 | 40.695 | 40.361 | 38.091 / 37.757 | 98.29 / 99.11 |
+| 64 | 2.899 | 53.907 | 54.055 | 51.008 / 51.156 | 1187.24 / 1183.98 |
+
+Relative to the preceding geometry-search measurements, complete scene costs
+decrease by about20--21% atB4 and25--26% atB64. Max samples span40.235--40.835ms
+and53.892--54.046ms; full samples span40.182--40.424ms and53.990--54.143ms.
+All360/5760 timed environment steps per stress mode are admitted. The24/384
+sharp-contact environment steps per repeat remain represented. Runtime checks,
+controller, dispatch and final synchronization are included; full fields stay
+on GPU. Audits, exports, setup, reset and prelude are separate. Preparation
+times, including compilation, remain in the records.
+
+The separate B4 original-kernel profile measures boundary traction7.369ms
+(19.07% of device kernel time), about2.40x faster than17.709ms. Planar geometry
+now dominates at13.247ms (34.28%), followed by source resolution4.048ms and
+combined fields3.876ms. Friction averages1.456ms and reaches11.847ms. The
+instrumented51.909ms wall time has a separate scope from primary40.695ms.
+
+### Single-region wrench failure at frame428
+
+The first requested720-frame full/max runs of the geometry-search baseline
+reach the scheduler's eight-minute limit. Their final parseable journals retain
+367/382 admitted frames respectively; extra saved frames lack completed journal
+admission. The original logs and arrays remain preserved. Compact audit retries
+of both that baseline and active-source compaction reject max mode at frame428.
+The64-lane candidate reproduces the same refusal. All three retain environment
+admission `[false,true,true,true]`, input status `[32,0,0,0]` and allocation
+status `[3,0,0,0]`. Full-cycle stress timing remains unavailable.
+
+At frame428, environment0 merges two collision sources into one physical sharp
+region. CPU/GPU exact-input allocation replays match the original force,
+residual, status and iteration results. An independent singular-value
+decomposition of its6-by-3 point-force wrench map has rank3 and certifies an
+unrestricted normalized residual lower bound of0.0010036262. Its left-null
+certificate has zero measured null residual. This exceeds the existing1e-12
+gate even when arbitrary signed forces are allowed at the fixed region center.
+The other three environments have rank6 and accepted allocation residuals
+below6e-17.
+
+The missing free moment is approximately
+`[-7.305e-7,1.940e-6,2.068e-6] N m`. Its perpendicular part corresponds to an
+86.90micrometre force-line offset; an axial couple of1.033e-8N m remains.
+Translating one point force therefore cannot represent the complete wrench.
+More Newton iterations or a tighter solver tolerance cannot remove the proven
+defect in this point-region model. A distributed pressure/traction field has
+additional first moments whose feasibility and stress response still need
+independent checks. The earlier unvalidated pressure-translation shortcut
+retains its141% near-field change and remains unadmitted.
+
+The [boundary-scheduling packet](../evidence/20261019-qualified-ranking/hard-native-boundary-lanes-v1/README.md)
+retains14 terminal campaigns, exact source captures, both timed-out runs,
+all three frame428 refusals, CPU/GPU certificates, ablations, short-window
+timings and raw differences. All48 frozen engines and12 original unfinished
+files are preserved. This completes a measured scheduling improvement;
+distributed-traction moment fidelity, full-cycle admission and independent
+complete curved-shell physical errors remain active work.
+
 ## Remaining physical and integration limits
 
 The edge pressure behaves as`x^(-lambda)`. Its pointwise loaded-edge limit is

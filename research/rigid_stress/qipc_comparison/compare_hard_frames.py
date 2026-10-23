@@ -37,6 +37,8 @@ def main():
         comparisons = []
         with np.load(before["fields"]["path"]) as original, np.load(after["fields"]["path"]) as changed:
             assert set(original.files) == set(changed.files)
+            source_counts = [int(np.count_nonzero(data["law_status"] == 0)) for data in [original, changed]]
+            source_slots = original["law_status"].size
             for key in original.files:
                 left, right = original[key], changed[key]
                 if left.dtype.kind in "biu":
@@ -60,7 +62,14 @@ def main():
                     }
                 )
         rows.append(
-            {"step": before["step"], "baseline": before["fields"], "candidate": after["fields"], "fields": comparisons}
+            {
+                "step": before["step"],
+                "baseline": before["fields"],
+                "candidate": after["fields"],
+                "fields": comparisons,
+                "loaded_source_counts": source_counts,
+                "source_slots": source_slots,
+            }
         )
     conformant = all(field["conformant"] for row in rows for field in row["fields"])
     write_json(
