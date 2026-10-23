@@ -15,10 +15,14 @@ from genesis.engine.solvers.rigid.stress.automatic_radius import StressRadiusInf
 from genesis.engine.solvers.rigid.stress.contact import (
     StressContactState,
     create_contacts,
+    func_force_frame,
+    func_hertz_disk_moments,
     kernel_anchor,
     kernel_pressure,
     kernel_scatter,
 )
+from genesis.engine.solvers.rigid.stress.scatter import create_scatter_workspace, kernel_fit_scatter_moments
+from genesis.engine.solvers.rigid.stress.surface import StressSurfaceInfo
 from genesis.utils import array_class, geom
 from genesis.utils.array_class import V_VEC
 from genesis.utils.misc import qd_to_numpy
@@ -26,6 +30,73 @@ from research.rigid_stress.field_cpu import stress_field
 from research.rigid_stress.mechanics import P2Shell
 
 from .artifacts import runtime_identity, write_json
+
+
+@qd.kernel
+def kernel_disk_moments(
+    face: int,
+    point: qd.types.vector(3),
+    center: qd.types.vector(3),
+    radius: float,
+    force: qd.types.vector(3),
+    surface: StressSurfaceInfo,
+    gram: qd.types.ndarray(),
+    load: qd.types.ndarray(),
+):
+    first, second = func_force_frame(force)
+    result_gram, result_load = func_hertz_disk_moments(
+        face, point, radius * radius - (point - center).norm_sqr(), center, radius, first, second, surface
+    )
+    for i, j in qd.ndrange(3, 3):
+        gram[i, j] = result_gram[i, j]
+    for i, j in qd.ndrange(6, 3):
+        load[i, j] = result_load[i, j]
+
+
+def check_disk_moments(surface, triangle, normal, force):
+    point = triangle.mean(axis=0)
+    radius = 1e-4
+    tangent = (triangle[1] - triangle[0]) / np.linalg.norm(triangle[1] - triangle[0])
+    bitangent = np.cross(normal, tangent)
+    direction = force / np.linalg.norm(force)
+    unit = np.eye(3)[np.argmin(np.abs(direction))]
+    first = np.cross(direction, unit)
+    first /= np.linalg.norm(first)
+    second = np.cross(direction, first)
+    edges = triangle[1:] - triangle[0]
+    dual = np.linalg.solve(edges @ edges.T, edges)
+    x, weight = np.polynomial.legendre.leggauss(64)
+    u, weight = (x + 1) / 2, weight / 2
+    angle = 2 * np.pi * u
+    rows = []
+    for distance in [0.0, 0.3 * radius, 0.9 * radius]:
+        center = point + distance * normal
+        remaining = radius**2 - distance**2
+        radial = np.sqrt(remaining * (1 - u**2))
+        positions = point + radial[:, None, None] * (
+            np.cos(angle)[None, :, None] * tangent + np.sin(angle)[None, :, None] * bitangent
+        )
+        measure = 2 * np.pi * remaining**1.5 / radius * (weight * u**2)[:, None] * weight[None, :]
+        local = (positions - triangle[0]) @ dual.T
+        bary = np.concatenate((1 - local.sum(axis=-1, keepdims=True), local), axis=-1)
+        shape = np.concatenate((bary * (2 * bary - 1), 4 * bary[..., [0, 0, 1]] * bary[..., [1, 2, 2]]), axis=-1)
+        relative = (positions - center) / radius
+        coordinates = np.stack((np.ones_like(measure), relative @ first, relative @ second), axis=-1)
+        expected_gram = np.einsum("ij,ija,ijb->ab", measure, coordinates, coordinates)
+        expected_load = np.einsum("ij,ija,ijb->ab", measure, shape, coordinates)
+        gram, load = np.zeros((3, 3)), np.zeros((6, 3))
+        kernel_disk_moments(0, point, center, radius, force, surface.info, gram, load)
+        error_gram = np.linalg.norm(gram - expected_gram) / np.linalg.norm(expected_gram)
+        error_load = np.linalg.norm(load - expected_load) / np.linalg.norm(expected_load)
+        assert error_gram < 1e-11 and error_load < 1e-11, (distance, error_gram, error_load)
+        rows.append(
+            {
+                "offset_over_radius": distance / radius,
+                "relative_gram_error": error_gram,
+                "relative_load_error": error_load,
+            }
+        )
+    return rows
 
 
 @qd.kernel
@@ -142,12 +213,15 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--backend", choices=["cpu", "gpu"], required=True)
     cli.add_argument("--output", type=Path, required=True)
+    cli.add_argument("--reuse-moments", action="store_true")
+    cli.add_argument("--tasks-per-env", type=int, default=8)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     write_json(
         args.output / "start.json",
         {
             "identity": runtime_identity(require_gpu_inventory=args.backend == "gpu"),
+            "genesis_module": gs.__file__,
             "code_aster_runtime": {
                 "run_aster": shutil.which("run_aster"),
                 "as_run": shutil.which("as_run"),
@@ -221,6 +295,10 @@ def main():
     center = triangle.mean(axis=0)
     tangent = (triangle[1] - triangle[0]) / np.linalg.norm(triangle[1] - triangle[0])
     force = -0.03 * normal + 0.006 * tangent
+    write_json(
+        args.output / "disk-moments.json",
+        {"passed": True, "rows": check_disk_moments(surface, triangle, normal, force)},
+    )
     radii = np.array([1e-6, 1e-5, 1e-4])
     edge_pairs = np.array([[0, 1], [0, 2], [1, 2]])
     longest = edge_pairs[np.argmax(np.linalg.norm(triangle[edge_pairs[:, 0]] - triangle[edge_pairs[:, 1]], axis=1))]
@@ -233,6 +311,7 @@ def main():
     oracle = P2Shell(vertices, tetrahedra, faces, 1e10, 0.3, 2000.0, 2, factor_backend="none")
     free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))
     direct = splu(oracle.k[free][:, free].tocsc())
+    workspace = create_scatter_workspace(3, args.tasks_per_env, True) if args.reuse_moments else None
     for location, center, force in locations:
         for profile in [False, True]:
             contacts = create_contacts(1, 3, 0.006, hertz_profile=profile)
@@ -244,8 +323,12 @@ def main():
             contacts.radius.from_numpy(radii[None].copy())
             state = model.create_state(3, "full")
             kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
-            kernel_pressure(contacts, surface.info)
-            kernel_scatter(contacts, state, model.info, surface.info)
+            if workspace is None:
+                kernel_pressure(contacts, surface.info)
+                kernel_scatter(contacts, state, model.info, surface.info)
+            else:
+                assert args.backend == "gpu"
+                kernel_fit_scatter_moments(contacts, state, model.info, surface.info, workspace, True)
             np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
             load = qd_to_numpy(state.force, transpose=True)
             expected_load = disk_wedge_loads(model, surface, center, force, radii, profile)
