@@ -79,6 +79,18 @@ loaded-cell pairs, persistent under refined displacement integration, with local
 gradients about1.94. Its field comparisons remain diagnostics; they supply no
 continuum two-face physical qualification or admitted runtime correction.
 
+The [contact-motion and sliding control](docs/SHARP_EDGE_PRESSURE_20261022.md#contact-motion-and-prescribed-sliding-control)
+captures pre-solve geometry with final rigid velocities and reproduces the
+original frame428 refusal on the latest engine. Circular friction cones give
+an attaining force-only side-load lower bound of2.119mN, compared with the
+frictionless21.729mN assignment. Measured saturated-sliding directions reproduce
+a nearby resultant with0.1204% error. Their small local contact solve passes
+normal complementarity and cell-mean face checks, but transverse edge refinement
+reveals4 reversed loaded-cell pairs and large surface-metric strains. Both
+persist as limitations despite improved conditional finite-depth fields.
+The original frictionless default arrays remain exactly unchanged. This optional
+control supplies no new runtime admission or qualified physical stress error.
+
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)
 identifies the ground's184micrometre offset as the collider's half-penetration
 application point. Refined collision geometry and grouped sources reduce the

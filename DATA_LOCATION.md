@@ -1,5 +1,16 @@
 # Rigid-stress data and artifact locations
 
+The `box-corner-sliding428-v1` packet retains243 compact payloads
+(1,544,585 bytes) and50 external receipts from five terminal campaigns.
+Contact-motion captures, prescribed-sliding controls, graded-grid fields and
+surface reintegration use the restored data root below in
+`box-corner-motion428-v1` and `box-corner-sliding428-v1/v2/v3/v4`.
+All runtime arrays, stdout/stderr and captured execution metadata remain on
+data. Scientific work uses Slurm `rtx-mid`, image `1_26`, the existing physical
+environment and private node caches. All49 frozen engine heads and12 original
+unfinished files are preserved. Source/docs and compact evidence stay in
+workspace; no new home fallback output, data migration or environment change.
+
 On2026-10-23 the exclusive-create/write/fsync probe succeeded again under
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/`.
 New planar profiling and cooperative-root validation use that restored data

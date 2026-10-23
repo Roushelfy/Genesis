@@ -1,0 +1,30 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "741981",
+      "SLURM_ARRAY_JOB_ID": "741981",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/box-corner-sliding428-v2/group1/sliding/result.json",
+      "bytes": 4080,
+      "sha256": "e0d506576ba5bc98092fafc740348b1a54e3acaca49dd36516fee39009748196"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/box-corner-sliding428-v2/group1/sliding/fields.npz",
+      "bytes": 6906246,
+      "sha256": "47084d012d0b5714f3329c1d1f83bbf9e7b95b1c5c756991c0a031a20faa1aae"
+    }
+  ]
+}
