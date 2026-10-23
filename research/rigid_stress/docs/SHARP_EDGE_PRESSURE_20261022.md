@@ -479,6 +479,90 @@ retains all executed sources, CPU/GPU controls, source identities, terminal jobs
 component timing blocks and hashes for complete arrays. The earlier geometry-only
 source `f57245943` is preserved as an ancestor of the final experimental source.
 
+## Native hard inputs and complete-field composition
+
+Experimental sources `58c18847e` (input binding), `edcffa58b` (field composition)
+and `8324e7d53` (cone-boundary stability) extend the preceding native components.
+The native input component now runs on actual scene contact records. The main
+Hertz contact acceptance and friction/recovery dispatch still require composition
+with this candidate. Franka frame106 continues to fail that original path.
+
+The input component resolves connected material geometry and groups source
+samples by geom, opposing pair, pressure profile and local surface feature.
+Five captured samples form the ground and two gripper regions. It sums their
+forces and original moments before computing Hertz or slender-edge pressure.
+Three constrained force updates alternate with four pressure/support updates.
+An independent final check preserves the original total force and moment,
+checks each material friction cone and enforces the existing5% force-change
+budget. Numerical success here is an input certificate, with physical model
+error assessed separately.
+
+CPU/GPU64 replay retains pressure centers within0.206nanometres of the offline
+material solution, forces within1.92e-8 relative and support/amplitude within
+2.83e-5 relative. The final force adjustment is2.96456%. Independently
+reconstructed force and moment residuals are below2.40e-13 and7.75e-11,
+respectively (moment scaled by the sum of normal force times major extent).
+Merged samples with their original free couples give the same result. Unload,
+positive-environment isolation, selective reset and restoration pass. The live
+Franka capture also accepts the new input component in environment0 at106.
+Its original main-path refusal remains retained and excluded from throughput.
+
+World-frame rotations and translations exposed a separate allocator defect.
+Small changes in roundoff could switch the active friction-cone branch and
+cause an undamped dual Newton step to diverge. Requiring a decreasing residual
+alone also failed at this nonsmooth boundary. The repaired solver accepts a
+converged/decreasing residual or an Armijo decrease of the convex dual objective.
+A projection-based Bregman remainder evaluates the objective change without
+subtracting large nearly equal objective values. It retains the original
+iteration and residual limits, and reports a line-search failure explicitly.
+All four transformed bindings now agree within the predeclared force1e-8 and
+geometry/support1e-6 tolerances. The original twelve scaled/rotated constrained
+minimum controls still pass on CPU/GPU64 within3.36e-10 relative. The preceding
+component timing table describes the earlier allocator, before backtracking.
+
+The complete-field component dispatches each source to its Hertz or edge
+particular field, adds the same all-boundary point correction and quadratic
+material elastic response, and reduces sampled VM/principal maxima. Smooth
+sources retain the radial tangential representation. Edge sources use the
+explicit proportional-shear approximation. The replay retains750 source slots
+and four identically loaded environments, with three loaded regions each.
+These are homogeneous numerical controls, rather than four independent scene
+trajectories.
+
+| CPU/GPU64 check | Largest relative difference |
+| --- | ---: |
+| Volume-weighted complete tensor | 4.87e-6 |
+| Common near-contact probe tensors | 1.30e-5 |
+| Common-sample VM maximum | 1.23e-5 |
+| Common-sample tensile maximum | 8.18e-6 |
+
+These differences compare native composition with the same approximate model
+assembled offline. The predeclared tensor target was1e-3. The comparison uses
+boundary quadrature order24, the retained quadratic material mesh, a3×3×3
+volume rule per element, and common points spanning old and updated footprints.
+It validates implementation and input conformance. It does not establish the
+independent physical error of the complete hard-contact model. An initial28%
+volume discrepancy came from a replay-script error: the ground tangential force
+had not been rotated into the Hertz principal frame. The corrected replay checks
+force reconstruction before recovery, and the failed run remains retained.
+
+Both CPU and GPU max/full modes agree within the predeclared1e-10 relative peak
+tolerance. Each sharp region adds89 material probes: seven transverse positions,
+three along-edge positions, depths0.01/0.05/0.2/1 width, and five central depths
+2/4/8/16/32 widths. The smallest prescribed edge depth is approximately11nm in
+this fixture. Full point coordinates, element locations and tensors are retained.
+The roughly4.56GPa sampled VM maximum belongs to that finite-depth probe bank;
+it is neither a bounded continuum maximum nor a physically qualified failure
+prediction. No radius or cutoff has been introduced to make the sharp-edge
+maximum finite.
+
+The [native hard composition packet](../evidence/20261019-qualified-ranking/hard-native-hard-composition-v1/README.md)
+retains every executed source, successful and failed controls, original live
+refusal, field arrays and scheduler outcomes. Runtime arrays and logs remain
+under the project data directory. Main-pipeline admission, changing edge-friction
+accuracy, independent complete physical errors and matched admitted scene
+throughput remain active work.
+
 ## Remaining physical and integration limits
 
 The edge pressure behaves as`x^(-lambda)`. Its pointwise loaded-edge limit is
@@ -487,11 +571,13 @@ Refined cell-average maxima continue to rise, as expected for this singular
 model. A finite cell average or positive-depth sample peak is not a converged
 surface/global stress peak; retain sampling scales with every such value.
 
-The pressure law has not been connected to actual scene source binding.
-Independent complete curved-shell physical validation is still required.
+The pressure law now has a native actual-input candidate and a separately tested
+complete-field component. Main-pipeline acceptance/friction composition and
+independent complete curved-shell physical validation are still required.
 The earlier Franka rejections and original moment mismatch remain evidence.
 The updated-support nearby-load candidate passes the declared sensitivity
-budget at the captured frame; it still needs native integration and changing-contact validation. Preserve strict source diagnostics and
+budget at the captured frame. The native candidate still needs changing-contact
+validation in the complete scene. Preserve strict source diagnostics and
 the original refused frames. Native max/full integration and matched complete
 pure-rigid/max/full throughput remain required.
 

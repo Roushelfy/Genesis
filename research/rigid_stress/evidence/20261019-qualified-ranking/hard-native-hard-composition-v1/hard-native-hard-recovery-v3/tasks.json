@@ -1,0 +1,21 @@
+[
+  [
+    {
+      "name": "recovery",
+      "module": "research.rigid_stress.qipc_comparison.check_native_hard_recovery",
+      "args": [
+        "--backend",
+        "gpu",
+        "--binding",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-binding-v2/group0/binding/binding.npz",
+        "--mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-law-update-v1/group0/update2/fields24.npz",
+        "--reference-geometry",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-law-update-v1/group0/update2/source-geometry.json",
+        "--moving-probes"
+      ]
+    }
+  ]
+]
