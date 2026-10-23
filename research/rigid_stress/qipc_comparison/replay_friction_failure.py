@@ -3,8 +3,10 @@
 import argparse
 from dataclasses import fields
 from pathlib import Path
+from time import perf_counter
 
 import numpy as np
+import quadrants as qd
 
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.hertz_friction import (
@@ -25,6 +27,8 @@ def main():
     cli.add_argument("--backend", choices=["cpu", "gpu"], required=True)
     cli.add_argument("--penalties", type=float, nargs="+", default=[0.1, 0.3, 1, 3, 10, 30])
     cli.add_argument("--captured-penalty", type=float, default=0.1)
+    cli.add_argument("--require-admission", action="store_true")
+    cli.add_argument("--timing-steps", type=int, default=0)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -70,7 +74,9 @@ def main():
         line, status = array(native.state.line), array(native.state.status)
         errors = np.max(np.linalg.norm(line - expected, axis=2), axis=1)
         assert np.all(errors[status == 0] < 1e-5), (penalty, errors, status)
-        if np.isclose(penalty, args.captured_penalty):
+        if args.require_admission:
+            np.testing.assert_array_equal(status, 0)
+        elif np.isclose(penalty, args.captured_penalty):
             np.testing.assert_array_equal(status, saved["state_status"][selected])
         rows.append(
             {
@@ -79,11 +85,40 @@ def main():
                 "maximum_line_error": errors.tolist(),
                 **{
                     name: array(vars(native.state)[name]).tolist()
-                    for name in ["iterations", "residual", "dual_residual", "line_residual", "traction_bound"]
+                    for name in [field.name for field in fields(native.state)]
+                    if name
+                    in {
+                        "iterations",
+                        "residual",
+                        "dual_residual",
+                        "line_residual",
+                        "traction_bound",
+                        "newton_iterations",
+                        "newton_residual",
+                        "newton_is_converged",
+                    }
                 },
             }
         )
         lines.append(line)
+        if args.timing_steps:
+            assert args.require_admission and args.timing_steps > 0
+            samples = []
+            for repeat in range(3):
+                qd.sync()
+                begun = perf_counter()
+                for step in range(args.timing_steps):
+                    solve(native.maximum_iterations, penalty, native.input, native.state, native.info)
+                qd.sync()
+                samples.append((perf_counter() - begun) / args.timing_steps)
+                np.testing.assert_array_equal(array(native.state.status), 0)
+                np.testing.assert_allclose(array(native.state.line), line, rtol=0, atol=1e-12)
+            rows[-1]["timing"] = {
+                "seconds_per_call": samples,
+                "median_seconds": float(np.median(samples)),
+                "steps_per_repeat": args.timing_steps,
+                "scope": "Warmed same-allocation exact staged-prior replay. Native solve and acceptance, dispatch and synchronization included. Prior interpolation, contact input construction, dynamics and stress recovery excluded.",
+            }
         write_json(args.output / "progress.json", {"rows": rows})
     np.savez_compressed(args.output / "lines.npz", selected=selected, reference=expected, native=np.stack(lines))
     write_json(

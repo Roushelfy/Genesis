@@ -1,0 +1,58 @@
+[
+  [
+    {
+      "name": "cpu110",
+      "module": "research.rigid_stress.qipc_comparison.replay_friction_failure",
+      "args": [
+        "--capture",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-hyperbolic-scene-v1/group0/full/friction0110.npz",
+        "--backend",
+        "cpu",
+        "--require-admission",
+        "--penalties",
+        "1"
+      ]
+    },
+    {
+      "name": "cpu106",
+      "module": "research.rigid_stress.qipc_comparison.replay_friction_failure",
+      "args": [
+        "--capture",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-capture-v2/group0/capture/friction0106.npz",
+        "--backend",
+        "cpu",
+        "--require-admission",
+        "--penalties",
+        "1"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu110",
+      "module": "research.rigid_stress.qipc_comparison.replay_friction_failure",
+      "args": [
+        "--capture",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-hyperbolic-scene-v1/group0/full/friction0110.npz",
+        "--backend",
+        "gpu",
+        "--require-admission",
+        "--penalties",
+        "1"
+      ]
+    },
+    {
+      "name": "gpu106",
+      "module": "research.rigid_stress.qipc_comparison.replay_friction_failure",
+      "args": [
+        "--capture",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-capture-v2/group0/capture/friction0106.npz",
+        "--backend",
+        "gpu",
+        "--require-admission",
+        "--penalties",
+        "1"
+      ]
+    }
+  ]
+]

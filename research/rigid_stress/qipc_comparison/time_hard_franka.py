@@ -51,6 +51,26 @@ def compare(left, right):
             np.testing.assert_allclose(right[key], left[key], rtol=1e-7, atol=1e-6)
 
 
+def build_workload(args, batch, mode):
+    workload = FrankaEgg(
+        batch,
+        stress=mode != "rigid",
+        seed=623016,
+        varied=True,
+        conditions=args.conditions,
+        output_mode="full" if mode == "full" else "max",
+        fused_rigid_post=False,
+        contact_model="hertz",
+        egg_geometry="mesh64",
+        use_gjk_collision=False,
+        enable_contact_patch=False,
+        stress_mesh=args.stress_mesh,
+        collision_urdf=args.collision_urdf,
+    )
+    workload.stress = False
+    return workload
+
+
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
     for name in ["stress-mesh", "collision-urdf", "conditions", "output"]:
@@ -90,22 +110,7 @@ def main():
         audits = {}
         for mode in ["rigid", "max", "full"]:
             begun = perf_counter()
-            workload = FrankaEgg(
-                batch,
-                stress=mode != "rigid",
-                seed=623016,
-                varied=True,
-                conditions=args.conditions,
-                output_mode="full" if mode == "full" else "max",
-                fused_rigid_post=False,
-                contact_model="hertz",
-                egg_geometry="mesh64",
-                use_gjk_collision=False,
-                enable_contact_patch=False,
-                stress_mesh=args.stress_mesh,
-                collision_urdf=args.collision_urdf,
-            )
-            workload.stress = False
+            workload = build_workload(args, batch, mode)
             preparation = perf_counter() - begun
             begun = perf_counter()
             snapshots = []

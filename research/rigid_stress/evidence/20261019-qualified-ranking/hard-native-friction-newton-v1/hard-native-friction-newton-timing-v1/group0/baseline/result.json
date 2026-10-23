@@ -1,0 +1,107 @@
+{
+  "passed": true,
+  "selected": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "target_magnitude": [
+    0.990564974043356,
+    6.576863859091802e-18,
+    2.346035915603299e-17,
+    2.1727302073451587e-17
+  ],
+  "reference_solvers": [
+    {
+      "status": "Positive directional derivative for linesearch",
+      "success": false,
+      "iterations": 17,
+      "objective": 4.30879821058553,
+      "projected_stationarity": 1.7930463033387264e-08,
+      "line_distance_bound_from_kkt": 2.7118180346482747e-08
+    },
+    {
+      "status": "Optimization terminated successfully",
+      "success": true,
+      "iterations": 1,
+      "objective": 1.367586831771978e-35,
+      "projected_stationarity": 5.215579597639356e-18,
+      "line_distance_bound_from_kkt": 7.581517923181403e-18
+    },
+    {
+      "status": "Optimization terminated successfully",
+      "success": true,
+      "iterations": 1,
+      "objective": 8.718025787492004e-34,
+      "projected_stationarity": 4.2013928537208357e-17,
+      "line_distance_bound_from_kkt": 6.107266628090165e-17
+    },
+    {
+      "status": "Optimization terminated successfully",
+      "success": true,
+      "iterations": 1,
+      "objective": 8.257270441502254e-34,
+      "projected_stationarity": 4.090505609734676e-17,
+      "line_distance_bound_from_kkt": 5.946077710924801e-17
+    }
+  ],
+  "rows": [
+    {
+      "penalty": 1.0,
+      "status": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "maximum_line_error": [
+        1.2545212531780944e-09,
+        2.1955416162029073e-18,
+        2.835378890688071e-17,
+        2.79598721050886e-17
+      ],
+      "residual": [
+        1.1404184561117591e-11,
+        9.06698200229295e-30,
+        8.207680273363537e-28,
+        2.1162162654503355e-27
+      ],
+      "dual_residual": [
+        9.812086124264293e-11,
+        1.4025512093311703e-30,
+        1.2697527075976833e-28,
+        3.274014125852748e-28
+      ],
+      "line_residual": [
+        2.069783587870985e-11,
+        7.499547868693988e-30,
+        6.789203938852265e-28,
+        1.750478741494204e-27
+      ],
+      "traction_bound": [
+        1.0,
+        2.423712088000646e-17,
+        2.5760777722575755e-16,
+        2.5262172977998974e-16
+      ],
+      "iterations": [
+        398,
+        1,
+        1,
+        1
+      ],
+      "timing": {
+        "seconds_per_call": [
+          0.0030695053504314275,
+          0.0030692646448733287,
+          0.0030697183648589997
+        ],
+        "median_seconds": 0.0030695053504314275,
+        "steps_per_repeat": 200,
+        "scope": "Warmed same-allocation exact staged-prior replay. Native solve and acceptance, dispatch and synchronization included. Prior interpolation, contact input construction, dynamics and stress recovery excluded."
+      }
+    }
+  ],
+  "whole_goal_complete": false
+}

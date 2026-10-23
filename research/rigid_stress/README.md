@@ -11,15 +11,22 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current goal and verified scope
 
-The [actual sharp-edge main pipeline](docs/SHARP_EDGE_PRESSURE_20261022.md#actual-sharp-edge-scene-integration)
-now admits both max/full modes through frame109. Source/face diagnosis and a
-regular hyperbolic boundary rule repair the former frame107 rejection. Frame110
-exposes a new friction-history convergence failure; its boundary recovery passes.
+The [actual sharp-edge main pipeline](docs/SHARP_EDGE_PRESSURE_20261022.md#near-saturation-friction-solve)
+now admits all130 frames0--129 in both max/full modes. A bounded native block
+Newton initialization repairs the former frame110 friction failure without
+changing its model or numerical acceptance gates. CPU/GPU exact replay,
+48-step histories and16-step sharp/smooth transition controls pass. Valid fixed
+friction replay improves from3.07ms to2.09ms; complete scene costs are separate.
 The [input optimization](docs/SHARP_EDGE_PRESSURE_20261022.md#loaded-region-allocation-and-moving-boundary-diagnosis)
 reduces matched B4 input replay from47.78ms to5.65ms and B64 from50.39ms to5.85ms,
 with all25 captured output fields checked against the baseline. These are fixed
 input component measurements, not complete scene throughput. Independent physical
-errors, continuous scene admission and paired pure-rigid/max/full timing remain open.
+errors and full-cycle scene admission remain open. The
+[admitted paired closing-window timer](docs/SHARP_EDGE_PRESSURE_20261022.md#admitted-paired-scene-cost)
+measures pure-rigid/max/full at2.64/254.06/254.25ms forB4 and
+2.85/286.20/286.32ms forB64 (four initial conditions tiled16 times). All modes
+pass the0--129 audit and repeat-output checks. The complete path remains expensive;
+component speedups do not imply a cheap complete stress update.
 Ideal sharp edges remain singular; finite sampled peaks retain their probe depths.
 
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)

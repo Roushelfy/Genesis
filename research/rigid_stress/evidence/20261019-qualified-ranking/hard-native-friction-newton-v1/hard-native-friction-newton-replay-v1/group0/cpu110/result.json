@@ -1,0 +1,115 @@
+{
+  "passed": true,
+  "selected": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "target_magnitude": [
+    0.9999893674592989,
+    6.57686386016168e-18,
+    2.3460359162090716e-17,
+    2.1727302069310988e-17
+  ],
+  "reference_solvers": [
+    {
+      "status": "Iteration limit reached",
+      "success": false,
+      "iterations": 1000,
+      "objective": 0.01803539203432323,
+      "projected_stationarity": 1.2823325747757775e-08,
+      "line_distance_bound_from_kkt": 2.0640026806603525e-08
+    },
+    {
+      "status": "Optimization terminated successfully",
+      "success": true,
+      "iterations": 1,
+      "objective": 1.4586504902291316e-35,
+      "projected_stationarity": 5.3865921231341665e-18,
+      "line_distance_bound_from_kkt": 7.830106695120431e-18
+    },
+    {
+      "status": "Optimization terminated successfully",
+      "success": true,
+      "iterations": 1,
+      "objective": 1.8642801707942522e-33,
+      "projected_stationarity": 6.139604548715644e-17,
+      "line_distance_bound_from_kkt": 8.924707418596732e-17
+    },
+    {
+      "status": "Optimization terminated successfully",
+      "success": true,
+      "iterations": 1,
+      "objective": 1.759825819795018e-33,
+      "projected_stationarity": 5.965923171217892e-17,
+      "line_distance_bound_from_kkt": 8.672239125903426e-17
+    }
+  ],
+  "rows": [
+    {
+      "penalty": 1.0,
+      "status": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "maximum_line_error": [
+        6.780329806258374e-11,
+        2.1052191558755215e-18,
+        3.54902546098093e-17,
+        3.442063016743714e-17
+      ],
+      "residual": [
+        3.3335590258932495e-15,
+        3.0814879110195774e-33,
+        5.55523133395175e-33,
+        6.352650070598816e-33
+      ],
+      "dual_residual": [
+        2.300954900510365e-15,
+        2.5559490518424924e-33,
+        2.356885048378364e-32,
+        6.029114385773149e-33
+      ],
+      "line_residual": [
+        2.5282404370047377e-14,
+        3.228446884096385e-33,
+        6.890416440883599e-33,
+        9.244463733058732e-33
+      ],
+      "traction_bound": [
+        1.0000000000000002,
+        2.3961899469972436e-17,
+        3.165411714237417e-16,
+        3.059750866778242e-16
+      ],
+      "iterations": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "newton_iterations": [
+        44,
+        0,
+        0,
+        0
+      ],
+      "newton_residual": [
+        2.157023252038275e-14,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "newton_is_converged": [
+        true,
+        true,
+        true,
+        true
+      ]
+    }
+  ],
+  "whole_goal_complete": false
+}

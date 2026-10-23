@@ -1,0 +1,24 @@
+[
+  [
+    {
+      "name": "frame110",
+      "module": "research.rigid_stress.qipc_comparison.study_friction_newton",
+      "args": [
+        "--capture",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-hyperbolic-scene-v1/group0/full/friction0110.npz",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-friction110-v1/group0/cpu/lines.npz"
+      ]
+    },
+    {
+      "name": "frame106",
+      "module": "research.rigid_stress.qipc_comparison.study_friction_newton",
+      "args": [
+        "--capture",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-capture-v2/group0/capture/friction0106.npz",
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-hard-scene-replay-v2/group0/cpu-friction/lines.npz"
+      ]
+    }
+  ]
+]
