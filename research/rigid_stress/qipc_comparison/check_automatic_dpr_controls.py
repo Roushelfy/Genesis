@@ -35,17 +35,27 @@ from .artifacts import runtime_identity, write_json
 @qd.kernel
 def kernel_disk_moments(
     face: int,
-    point: qd.types.vector(3),
-    center: qd.types.vector(3),
+    point: qd.types.ndarray(),
+    center: qd.types.ndarray(),
     radius: float,
-    force: qd.types.vector(3),
+    force: qd.types.ndarray(),
     surface: StressSurfaceInfo,
     gram: qd.types.ndarray(),
     load: qd.types.ndarray(),
 ):
-    first, second = func_force_frame(force)
+    point_value = qd.Vector([point[a] for a in qd.static(range(3))])
+    center_value = qd.Vector([center[a] for a in qd.static(range(3))])
+    force_value = qd.Vector([force[a] for a in qd.static(range(3))])
+    first, second = func_force_frame(force_value)
     result_gram, result_load = func_hertz_disk_moments(
-        face, point, radius * radius - (point - center).norm_sqr(), center, radius, first, second, surface
+        face,
+        point_value,
+        radius * radius - (point_value - center_value).norm_sqr(),
+        center_value,
+        radius,
+        first,
+        second,
+        surface,
     )
     for i, j in qd.ndrange(3, 3):
         gram[i, j] = result_gram[i, j]
