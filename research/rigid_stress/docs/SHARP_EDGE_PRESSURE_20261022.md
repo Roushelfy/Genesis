@@ -1218,6 +1218,109 @@ integer-normal reader failure and the successful conic controls. The failed
 refined primal solve and its verified retry are also retained. Production
 behavior and the native frame428 refusal remain unchanged.
 
+## Two-face elastic reference and field sensitivity
+
+A small frictionless two-face control now separates geometric normal reactions
+from frictional traction. It uses the captured slope0.0668779, longitudinal
+curvature49.3940/m, E=10GPa and Poisson ratio0.3, with primary/side normal
+resultants0.0257501/0.0217295N. In the flat material chart its face normals are
+(s,0,1)/sqrt(1+s^2) and(-1,0,s)/sqrt(1+s^2). The resulting material-chart force is
+(-0.0199628,0,0.0271427)N. A large transverse component therefore arises from
+frictionless geometric contact with the adjacent face. Applying a single
+undeformed-material-normal friction cone to that entire component needs a
+separate model justification.
+
+The local reference minimizes linear elastic energy with nonnegative cell
+forces and separately fixed face resultants. Its surface vector compliance
+integrates Boussinesq/Cerruti rectangular sources exactly and averages over
+Gauss target cells. Off-cell components agree with independent point-kernel
+quadrature to1.21e-15 relative. The isotropic surface kernels follow the
+[linear half-space formulation](https://doi.org/10.1680/jgere.22.00063), whose
+small-displacement geometry assumption limits the physical interpretation.
+The normal/contact active set checks force balance, gap and complementarity.
+Each outer update assigns cells to the face selected by deformed plane gaps;
+loaded cell-mean points must lie within the corresponding finite face.
+This controls cell-mean geometry. Pointwise face membership and large surface
+gradients require further qualification.
+
+The imposed data are the two face normal loads and local quadratic geometry.
+Along-edge force is zero; the original friction0.719102, tangential history and
+collision midpoint moments remain separate. Transverse curvature is omitted
+in this slender local gap. The reference determines a new rigid approach and
+moment, so its errors cannot be assigned to the original complete scene load.
+Numerical collision penetration supplies no physical indentation here.
+
+| Cells (two faces) | Longitudinal half-domain | Face updates | Invalid-face force | Remote-boundary force |
+| ---: | ---: | ---: | ---: | ---: |
+| 400 | 2b | 1 | 18.43% | 3.01% |
+| 600 | 3b | 3 | 0 | 0 |
+| 1600 | 3b | 4 | 0 | 0 |
+| 3840 | 3b | 5 | 0 | 0 |
+
+Here b=65.9525micrometres. The finest grid has48 graded transverse cells and80
+longitudinal cells; the smallest transverse width is4.157nm and longitudinal
+width4.946micrometres. Its maximum material displacement is0.164944micrometre,
+rigid approach vector(-0.106700,0,0.129586)micrometre and transverse moment
+-3.3733e-9Nm. Reference-area cell traction maxima grow from7.06 to20.85 to
+25.61GPa across the three valid grids. These singular local values exceed the
+10GPa modulus and reinforce the unresolved small-strain/geometry limitation.
+They supply no finite physical surface-pressure or stress maximum.
+
+An independent circular Hertz control uses known force, radius and modulus;
+its contact solve selects pressure and support. On20x20 cells, target orders4/8
+give indentation errors0.01818%/0.01839% and cell-pressure L2 errors4.593%/4.614%.
+These smooth normal-contact checks validate the numerical operator within
+those errors. Sharp two-face physical accuracy remains an additional question.
+On the1600-cell corner control, target order4 to8 changes finite-depth tensors
+by at most0.0171% and sampled tensile peaks by0.1381%. Source integration order8
+to12 changes tensors by at most3.44e-7 relative. Spatial refinement remains the
+larger uncertainty:1600 to3840 cells changes tensor norms by4.55%,2.95%,1.86%,
+0.90%, and tensile maxima by0.15%,5.97%,0.40%,0.51%, at the four depths below.
+These are observed pair differences, not rigorous continuum error bounds.
+
+The stress comparison uses572 identical positive-depth probes:11 transverse
+positions over+/-0.75b,13 longitudinal positions over+/-1.5b and four depths.
+The transverse/longitudinal probe spacing is9.893/16.488micrometres. Both fields
+use the same flat-material Green tensor and resultant force. The existing
+single effective-edge profile retains its independently predicted b, exponent
+0.424692 and transformed width0.599945micrometre, without fitting this reference.
+The following percentages compare against the3840-cell control.
+
+| Depth (micrometres) | Tensor L2 error | Sampled von-Mises peak error | Sampled tensile peak error | Tensor<5%, both peaks<10% |
+| ---: | ---: | ---: | ---: | --- |
+| 6.595 | 11.94% | 2.33% | 37.85% | Fail |
+| 16.488 | 10.35% | 3.02% | 32.48% | Fail |
+| 32.976 | 6.62% | 4.65% | 0.69% | Fail |
+| 65.953 | 2.77% | 2.78% | 1.18% | Pass on these probes |
+
+The reference-derived parabolic half-lengths sqrt(5*variance_y) are65.750 and
+78.324micrometres on the primary and side faces. Their fourth/second-moment
+ratios are2.163 and1.896, compared with15/7 for a parabola. The side half-length
+still changes from82.884micrometres on the1600-cell target-order8 control,
+showing residual spatial sensitivity. Thus separate face profiles are a useful
+diagnostic direction, with their independent prediction still to be established.
+
+For that diagnostic only, two parabolic line loads fit each reference force,
+centroid and longitudinal second moment. At the same four depths their tensor
+errors are5.14%,3.86%,1.91%,0.50%; tensile peak errors are3.00%,6.39%,0.043%,0.165%.
+The nearest tensor result still exceeds5%. The first two raw tensile argmax
+locations differ by32.976/16.488micrometres; the remaining locations coincide.
+These coarse-grid argmax differences include symmetric peak ambiguity and
+supply no continuous peak-location qualification. The moment fit uses measured
+reference parameters, so its smaller errors establish a shape-sensitivity
+result rather than a validated cheap predictor.
+
+The [two-face evidence packet](../evidence/20261019-qualified-ranking/box-corner-elastic428-v1/README.md)
+retains all ten terminal campaigns, including the initial invalid-face branch
+and the data-volume quota failure before output initialization. A small
+replacement campaign uses the prior user-authorized4GB home exception; detailed
+paths and measured occupancy are in DATA_LOCATION.md. Original large fields
+remain on data. Production engines, acceptance gates and the frame428 refusal
+are unchanged. Next work should predict the two face profiles from geometry,
+material and loads, quantify original-to-control wrench/history differences,
+and check useful finite-depth accuracy without promoting a fitted diagnostic
+or this dense offline reference into the default runtime path.
+
 ## Remaining physical and integration limits
 
 The edge pressure behaves as`x^(-lambda)`. Its pointwise loaded-edge limit is

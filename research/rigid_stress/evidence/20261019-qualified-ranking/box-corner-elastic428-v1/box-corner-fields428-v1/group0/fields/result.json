@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "depth_m": 6.595254265644665e-06,
+      "tensor_relative_l2": 0.17869955026525852,
+      "reference_sample_vm_peak_pa": 26491475.24469104,
+      "estimate_sample_vm_peak_pa": 27401443.97554275,
+      "sample_vm_peak_relative_error": 0.034349492523413544,
+      "reference_sample_tensile_peak_pa": 3124126.5935469265,
+      "estimate_sample_tensile_peak_pa": 3836818.094187011,
+      "tensor_5pct_vm_peak_10pct_met": false
+    },
+    {
+      "depth_m": 1.648813566411166e-05,
+      "tensor_relative_l2": 0.15154053526256092,
+      "reference_sample_vm_peak_pa": 10678163.153264625,
+      "estimate_sample_vm_peak_pa": 11084629.550450344,
+      "sample_vm_peak_relative_error": 0.0380651982322868,
+      "reference_sample_tensile_peak_pa": 941989.5312029172,
+      "estimate_sample_tensile_peak_pa": 1313983.4654751152,
+      "tensor_5pct_vm_peak_10pct_met": false
+    },
+    {
+      "depth_m": 3.297627132822332e-05,
+      "tensor_relative_l2": 0.09808669340444534,
+      "reference_sample_vm_peak_pa": 5328068.604645282,
+      "estimate_sample_vm_peak_pa": 5696800.586708998,
+      "sample_vm_peak_relative_error": 0.06920556198211054,
+      "reference_sample_tensile_peak_pa": 326245.0335026204,
+      "estimate_sample_tensile_peak_pa": 331897.56354118005,
+      "tensor_5pct_vm_peak_10pct_met": false
+    },
+    {
+      "depth_m": 6.595254265644664e-05,
+      "tensor_relative_l2": 0.04256174842216585,
+      "reference_sample_vm_peak_pa": 2236500.4941726606,
+      "estimate_sample_vm_peak_pa": 2328666.1885471623,
+      "sample_vm_peak_relative_error": 0.04120978046490268,
+      "reference_sample_tensile_peak_pa": 140358.69725343602,
+      "estimate_sample_tensile_peak_pa": 143535.53981691707,
+      "tensor_5pct_vm_peak_10pct_met": true
+    }
+  ],
+  "total_force_material_n": [
+    -0.019962753388808076,
+    0.0,
+    0.027142679471195297
+  ],
+  "effective_shape": {
+    "width_m": 5.999454006009648e-07,
+    "half_length_m": 6.595254265644664e-05,
+    "exponent": 0.42469190158811604
+  },
+  "scope": "Same total force compares the native-shaped effective traction distribution with an independently solved frictionless two-face local elastic control. Both stresses use the undeformed flat material Green tensor. Pressure shape is transferred without fitting the reference forces. Positive-depth probes and discrete reference/source quadrature convergence limit this comparison. Frictional history, surface/global peaks and complete curved-shell physical accuracy remain separate requirements.",
+  "whole_goal_complete": false
+}
