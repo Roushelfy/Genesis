@@ -1,5 +1,16 @@
 # Working on native rigid stress recovery
 
+**Highest-priority user correction, 2026-10-23:** follow
+[automatic-radius DPR](docs/DPR_AUTOMATIC_RADIUS_GOAL_20261023.md) and
+[GOAL.md](GOAL.md). Keep the mature DPR and its prefactorized FEM; add a cheap
+contact-radius/support estimate. Stop further analytic particular-field,
+boundary-traction, combined-stress/probe and associated singular-peak expansion.
+Keep earlier evidence as historical. Existing normal/friction handling and DPR
+checks remain; do not make new friction solvers or sharp-edge reference
+qualification prerequisites for this minimal feature. Deliver and measure the
+actual automatic-radius DPR on this branch. This overrides conflicting older
+instructions below, including broad sharp-edge and enrichment research.
+
 **Latest geometry direction, 2026-10-22:** proceed with sharp edges first.
 This supersedes the preceding fillet/chamfer dimension wait. Continue matched
 sharp-box collision/pressure geometry, independent physical checks and cheap

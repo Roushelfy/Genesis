@@ -1,52 +1,43 @@
-# Active goal: cheap hard-contact stress estimates and maximum throughput
+# Active goal: inexpensive automatic radius for mature DPR
 
-Follow [the current hard-contact goal](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md).
+**Latest user correction, 2026-10-23:** follow
+[the automatic-radius DPR goal](docs/DPR_AUTOMATIC_RADIUS_GOAL_20261023.md).
 
-**Latest geometry direction, 2026-10-22:** proceed with sharp edges first.
-This supersedes the preceding request to wait for actual fillet/chamfer
-dimensions. Continue the sharp-box contact model and its independent pressure,
-wrench and stress checks. State sampling depth and spatial resolution for peak
-results and check convergence at the edge singularity. Keep collision and
-pressure geometry consistent. Preserve the actual-geometry source inspection
-for a later rounded/chamfered variant; its missing edge radius is not a blocker
-for the current sharp-edge work.
+Keep the existing DPR load transfer and prefactorized linear FEM. Add the
+cheapest useful contact-radius/support estimate, using Hertz or another cheap
+declared approximation where appropriate. Feed the finite Hertz/contact pressure
+through DPR's existing load transfer into that same FEM. Keep a radius-only
+control separately labelled if it retains the original DPR pressure profile.
 
-**Latest user priority, 2026-10-20:** implement inexpensive Hertz/thin-shell
-contact approximations first. Do not assume a deformable gripper pad or extend
-the spring-pad study. Expensive automatic region/contact solves are optional
-reference work unless they show very accurate physical stress and a worthwhile
-measured accuracy/cost advantage. They are not a prerequisite or default fallback.
+The runtime path is:
 
-**Latest follow-up:** prioritize the
-[contact-input overhead optimization plan](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md#immediate-priority-reduce-contact-input-overhead).
-Profile the added work, reuse collision features and continuous-contact caches,
-precompute fixed geometry, fuse/reuse native work, improve grouping and tune
-large batches. Verify equivalent validity/numerics and report matched inclusive
-input/module/scene costs; B4 research timings are not a production speed limit.
-Implement and measure applicable optimizations now on low-resolution scenes.
+```text
+rigid contacts -> cheap radius estimate -> finite contact pressure
+               -> original DPR load transfer -> prefactorized FEM
+               -> existing maximum/full stress output
+```
 
-Target a rigid Franka gripping a hollow egg. Only rest shape/material is fixed;
-preserve arbitrary moving convex/nonconvex and asymmetric normal/friction contacts,
-global maximum/full output, batching, isolation and partial resets. Keep the
-feature inside the Genesis rigid solver, entirely in Quadrants.
+Stop further development of analytic particular fields, boundary-traction
+correction and combined stress/probe fields for this goal. Preserve their
+results as historical research. Their sharp-edge singular maxima, standalone
+friction-history solvers and two-face pressure references are not prerequisites.
 
-Run compact CPU comparisons and low-resolution native performance work in
-parallel. Predict a physically motivated pressure/support estimate cheaply,
-retain boundary/load fidelity and justified engineering stress-error budgets,
-and measure actual module and paired pure-rigid/max/full scene throughput.
-Do not infer physical accuracy from numerical-core agreement or global wrench
-balance. Match error and speed to the actual configuration.
+Only rest shape/material are fixed. Preserve arbitrary changing/asymmetric
+convex/nonconvex contacts, normal/friction forces, max/full output, batching,
+isolation and partial resets inside the existing rigid solver in Quadrants.
 
-Reuse the completed fixed-radius/soft-pad comparison as historical evidence,
-without inheriting its errors for hard contact or rerunning completed matrices.
-Keep the separate [accuracy/throughput protocol](docs/ACCURACY_AND_THROUGHPUT_PROTOCOL.md)
-and [engineering error judgments](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md#error-judgments-and-practical-acceptance-budgets).
-The [prior ranking goal](docs/QUALIFIED_STRESS_RANKING_GOAL.md) retains its original
-scope; its soft-pad/coupled-integration requirements do not override this update.
+Reuse original per-contact radius storage, native Hertz lookup, collision
+witnesses and fixed-shape preprocessing. Optimize the actual added work.
+Retain established DPR validity/numerical checks; do not introduce unrelated
+enrichment-specific requirements or silently modify the source loads.
 
-Deliver a useful cheap native estimator, applicable regimes, complete/peak stress
-errors and stability, batch scaling and measured overhead with recommended settings.
-Preserve original baselines, failures and source identities. Full Franka physical
-reference qualification is not revived; use small discriminating hard-contact
-controls and retain the Franka scene for throughput. Keep active entrypoints and
-documentation concise. Follow existing data storage/reproduction instructions.
+Prioritize low-resolution implementation, focused numerical consistency and
+matched pure-rigid/manual-DPR/automatic-DPR throughput. Use compact independent
+physical comparisons, preferably the requested Code_Aster reference, without
+blocking throughput work on broad high-resolution convergence sweeps.
+
+Deliver the usable feature on this branch with concise commands, recommended
+settings and honest measured errors/costs. The earlier
+[hard-contact goal](docs/AUTOMATIC_CONTACT_AND_THROUGHPUT_GOAL_20261020.md)
+and sharp-edge/combined-field reports are historical where they conflict with
+this correction. Follow the existing storage and reproduction policies.
