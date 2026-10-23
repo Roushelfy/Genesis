@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "mode": "rigid",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-surface-unroll-timing-v1/group1/baseline/rigid-b64-audit.npz",
+        "bytes": 4764,
+        "sha256": "1c31114d0dbd22b3fbc1947941da3d7c6b062a824cbf4d60837de36b8f095dd0"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-surface-unroll-timing-v1/group1/candidate/rigid-b64-audit.npz",
+        "bytes": 4764,
+        "sha256": "1c31114d0dbd22b3fbc1947941da3d7c6b062a824cbf4d60837de36b8f095dd0"
+      },
+      "frames": 130,
+      "batch": 64
+    },
+    {
+      "mode": "max",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-surface-unroll-timing-v1/group1/baseline/max-b64-audit.npz",
+        "bytes": 32486,
+        "sha256": "2db77b78e3724ddf88dfabc4979f7706abf2d89201116030f0120cef50a78887"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-surface-unroll-timing-v1/group1/candidate/max-b64-audit.npz",
+        "bytes": 32033,
+        "sha256": "644ef8c4786beca7690f73408414bd5b05875689312d30920cfee3a6903747c6"
+      },
+      "frames": 130,
+      "batch": 64
+    },
+    {
+      "mode": "full",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-surface-unroll-timing-v1/group1/baseline/full-b64-audit.npz",
+        "bytes": 32287,
+        "sha256": "938ba346d14bcdc536a1bfd21322e195d6cd78e9df90e73c96425b9e8e904288"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-surface-unroll-timing-v1/group1/candidate/full-b64-audit.npz",
+        "bytes": 31995,
+        "sha256": "d644f1db4733a8a1163d57a2ea631d192c080d0e44a16452df58916dbaae453b"
+      },
+      "frames": 130,
+      "batch": 64
+    }
+  ],
+  "scope": "Existing paired-timer public checks across engine sources: position absolute 1e-12m, stress relative 1e-7/absolute 1e-6Pa, exact validity/load/edge/status masks and infinite maxima. Separate raw full-field diagnostics retain their original criteria and outcomes.",
+  "whole_goal_complete": false
+}

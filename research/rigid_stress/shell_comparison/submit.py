@@ -122,7 +122,9 @@ def main():
     parser.add_argument("--concurrency", type=int)
     parser.add_argument("--dependency", help="Explicit Slurm dependency, e.g. afterok:12345 or afterany:12345:12346")
     parser.add_argument("--cpus", type=int, default=8)
-    parser.add_argument("--exclude-nodes", help="Job-specific Slurm exclusion list; leaves cluster configuration unchanged")
+    parser.add_argument(
+        "--exclude-nodes", help="Job-specific Slurm exclusion list; leaves cluster configuration unchanged"
+    )
     parser.add_argument("--cpu-only", action="store_true", help="Request no GPU for CPU analysis in rtx-mid")
     parser.add_argument("--keep-going", action="store_true")
     parser.add_argument(
@@ -200,6 +202,11 @@ def main():
         for task in group:
             command = [str(args.python), "-m", task["module"], *task["args"], "--output", str(run / task["name"])]
             task_source = str(Path(task.get("source", source)).resolve())
+            source_key = hashlib.sha256(task_source.encode()).hexdigest()[:16]
+            lines.append(
+                f'export GS_CACHE_FILE_PATH="$task_cache/{source_key}/genesis" '
+                f'QD_OFFLINE_CACHE_FILE_PATH="$task_cache/{source_key}/quadrants"'
+            )
             invocation = shlex.join(command)
             if task_source != str(source):
                 invocation = (
