@@ -34,6 +34,7 @@ def main():
     assert common
     rows = []
     optimization_rows = []
+    radius_comparisons = []
     for name in common:
         fields = []
         for path in paths:
@@ -61,11 +62,17 @@ def main():
             if previous is not None:
                 with np.load(previous / name) as saved:
                     before = saved["stress_tensor"]
-                    np.testing.assert_array_equal(saved["radius"][active], field["radius"][active])
+                    old_radius, new_radius = saved["radius"][active], field["radius"][active]
+                    radius_comparisons.append((old_radius, new_radius))
                     optimization_rows.append(
                         {
                             "previous": file_id(previous / name),
                             "field": name,
+                            "radius_bitwise_equal": bool(np.array_equal(old_radius, new_radius)),
+                            "radius_max_absolute_difference_m": float(np.abs(old_radius - new_radius).max()),
+                            "radius_max_relative_difference": float(
+                                np.abs((old_radius - new_radius) / old_radius).max()
+                            ),
                             "tensor_max_absolute_difference_pa": float(np.abs(field["stress_tensor"] - before).max()),
                             "tensor_relative_difference": float(
                                 np.linalg.norm(field["stress_tensor"] - before) / np.linalg.norm(before)
@@ -75,7 +82,8 @@ def main():
     write_json(
         args.output / "result.json",
         {
-            "passed": True,
+            "passed": all(np.array_equal(before, after) for before, after in radius_comparisons),
+            "scene_input_checks_passed": True,
             "identity": runtime_identity(require_gpu_inventory=False),
             "sources": [file_id(path / "result.json") for path in paths],
             "accepted_frames": results[0]["accepted_frames"],
@@ -90,6 +98,9 @@ def main():
             "does not certify a complete grasp/release cycle or the sharp-edge contact approximation.",
         },
     )
+    # Retain the strict replay assertion after saving every measured difference, including failures.
+    for before, after in radius_comparisons:
+        np.testing.assert_array_equal(before, after)
 
 
 if __name__ == "__main__":
