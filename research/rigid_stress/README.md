@@ -11,6 +11,11 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current target: automatic contact radius for the existing DPR
 
+**Current priority, 2026-10-23:** [maximize this native path's throughput](docs/DPR_AUTOMATIC_RADIUS_GOAL_20261023.md#immediate-goal-maximize-native-automatic-dpr-throughput),
+especially small-footprint integration, geometry/moment reuse and batch tuning.
+Keep the original DPR/FEM and validate max/full complete-scene improvements;
+physical convergence campaigns do not block this performance phase.
+
 **User correction, 2026-10-23:** keep the mature DPR and prefactorized FEM;
 add the cheapest useful Hertz/other contact-radius estimate. See
 [the corrected goal](docs/DPR_AUTOMATIC_RADIUS_GOAL_20261023.md).
