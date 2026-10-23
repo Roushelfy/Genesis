@@ -180,14 +180,26 @@ def func_material_source_point(
             a, b = i_edge, (i_edge + 1) % 3
             i_first, i_second = stress_info.surface_nodes[i_f, a], stress_info.surface_nodes[i_f, b]
             i_midpoint = stress_info.surface_nodes[i_f, qd.select(i_edge == 0, 3, qd.select(i_edge == 1, 5, 4))]
-            candidate, fraction = func_quadratic_edge_closest(
-                point, stress_info.vertices[i_first], stress_info.vertices[i_midpoint], stress_info.vertices[i_second]
+            first, midpoint, second = (
+                stress_info.vertices[i_first],
+                stress_info.vertices[i_midpoint],
+                stress_info.vertices[i_second],
             )
-            squared = (candidate - point).norm_sqr()
-            if squared < distance:
-                position, distance = candidate, squared
-                bary = qd.Vector.zero(gs.qd_float, 3)
-                bary[a], bary[b] = 1 - fraction, fraction
+            # The quadratic edge lies in its Bezier control hull. Pad its box for evaluation roundoff.
+            control = 2 * midpoint - 0.5 * (first + second)
+            padding = 128 * epsilon * (qd.abs(first) + qd.abs(midpoint) + qd.abs(second) + qd.abs(point))
+            outside = qd.max(
+                qd.min(first, control, second) - point - padding,
+                point - qd.max(first, control, second) - padding,
+                0.0,
+            )
+            if outside.norm_sqr() <= distance:
+                candidate, fraction = func_quadratic_edge_closest(point, first, midpoint, second)
+                squared = (candidate - point).norm_sqr()
+                if squared < distance:
+                    position, distance = candidate, squared
+                    bary = qd.Vector.zero(gs.qd_float, 3)
+                    bary[a], bary[b] = 1 - fraction, fraction
     return position, bary
 
 
