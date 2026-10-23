@@ -9,7 +9,6 @@ from .contact import StressContactState
 from .automatic_radius import func_estimate_radius
 
 
-@qd.kernel
 def kernel_associate(
     i_l: int,
     links_offset_pos: qd.types.ndarray(),
@@ -23,6 +22,37 @@ def kernel_associate(
     step_valid: qd.Tensor,
     errno: qd.Tensor,
     automatic_radius: qd.template() = None,
+):
+    kernel_associate_impl(
+        i_l,
+        links_offset_pos,
+        links_offset_quat,
+        omega,
+        dyn_state,
+        contact_state,
+        collider_state,
+        batch_offsets,
+        enable_constraint,
+        step_valid,
+        errno,
+        automatic_radius,
+    )
+
+
+@qd.kernel
+def kernel_associate_impl(
+    i_l: int,
+    links_offset_pos: qd.types.ndarray(),
+    links_offset_quat: qd.types.ndarray(),
+    omega: qd.Tensor,
+    dyn_state: array_class.DynState,
+    contact_state: StressContactState,
+    collider_state: array_class.ColliderState,
+    batch_offsets: qd.template(),
+    enable_constraint: bool,
+    step_valid: qd.Tensor,
+    errno: qd.Tensor,
+    automatic_radius: qd.template(),
 ):
     func_associate(
         i_l,
