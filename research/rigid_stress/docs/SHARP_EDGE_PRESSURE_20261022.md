@@ -5,9 +5,11 @@ sharp-box contacts and their reversed transverse loads in the declared
 half-space reference problem. Grid72 cell-pressure errors are3.40--5.75%,
 positive-depth sampled tensor errors1.32--1.61% and sampled von-Mises peak
 errors1.85--2.13%. Native Quadrants scale and pressure evaluation pass CPU/CUDA
-checks in32/64-bit precision. This supplies the sharp-edge pressure component;
-actual contact binding, complete curved-shell recovery and accepted full-grasp
-max/full throughput remain open. The [active goal](../GOAL.md) is unchanged.
+checks in32/64-bit precision. Subsequent sections measure native source/edge
+binding, curved-shell recovery
+and admitted max/full throughput over frames100--129. Independent complete
+curved-shell physical stress errors and full-cycle admission remain open;
+the original frame428 still refuses. The [active goal](../GOAL.md) is unchanged.
 
 ## Independent normal/shear reference
 
@@ -1843,8 +1845,8 @@ observations and exact complete-source controls. No tolerance is relaxed.
 A separate continuous429-step capture admits every0--427 frame and reproduces
 the original428 refusal `[False, True, True, True]` with input status
 `[32, 0, 0, 0]`. Cooperative search preserves that support/wrench limitation;
-it supplies no new physical pressure/stress qualification. Larger useful
-batches and their memory requirements still need measurement. Boundary traction,
+it supplies no new physical pressure/stress qualification. The following batch
+study extends measured throughput and memory to B256/B1024. Boundary traction,
 combined-field evaluation and planar roots now have the largest measured
 B4 kernel costs.
 
@@ -1855,3 +1857,106 @@ original refusal. All54 source heads and12 original unfinished files are
 preserved. Runtime arrays and logs remain under the data root, with private
 node caches separated by source checkout. The production implementation adds
 no persistent cache or public configuration option.
+
+## Larger-batch throughput and process memory
+
+The unchanged cooperative-source engine `f6c4ff2b0` now has measured B256 and
+B1024 runs against serial-source baseline `1c8720391`. Each batch runs both
+sources on one RTX PRO 6000 Blackwell Server GPU, with source-private compiler
+caches, 64-bit precision and surface order 16. The moving scene tiles the four
+starting conditions 64 or 256 times. It preserves the 0--129 continuous audit
+and three timed 100--129 windows, including runtime acceptance, the controller,
+dispatch and final synchronization. Reset, pre-window history and audit/export
+remain outside timing. No engine or numerical acceptance threshold changes.
+
+| Batch | Engine | Pure rigid ms/step | Max ms/step | Full ms/step | Max/full env-step/s |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 256 | baseline | 3.041 | 121.483 | 121.972 | 2107.30 / 2098.84 |
+| 256 | candidate | 3.042 | 120.208 | 120.622 | 2129.65 / 2122.34 |
+| 1024 | baseline | 3.463 | 423.270 | 424.524 | 2419.26 / 2412.11 |
+| 1024 | candidate | 3.442 | 423.157 | 424.499 | 2419.91 / 2412.25 |
+
+At B256, max/full median scene-cost reductions are 1.049% / 1.107%; candidate
+inclusive added costs over its paired pure-rigid mode are 117.166 / 117.580 ms.
+
+At B1024, max/full median scene-cost reductions are 0.027% / 0.006%; candidate
+inclusive added costs over its paired pure-rigid mode are 419.715 / 421.057 ms.
+
+Candidate repeat ranges lie entirely below their paired baseline ranges for
+B256 max and full. At B1024 both stress-mode repeat ranges overlap; these
+measurements do not establish a useful scene-level benefit from the source-search
+change at that batch.
+The three repeat blocks describe these allocations, not statistical confidence
+intervals or a portable speedup. Separate batches use different allocations;
+their throughput trend does not isolate GPU-to-GPU variation. The small source
+search improvement at large batches does not attribute their remaining scene
+cost to a particular kernel.
+
+Every primary stress mode admits 23,040 timed environment steps at B256 and
+92,160 at B1024, with 33,280 / 133,120 separately audited environment steps.
+All timed environments are loaded. Sharp-edge counts are 4,608 / 18,432 across
+the three windows. The complete 130-frame public observations pass both the
+baseline/candidate comparison and each fresh-process memory/primary comparison:
+positions use absolute 1e-12 m; stresses use relative 1e-7 / absolute 1e-6 Pa;
+validity, load/edge/status masks and infinite maxima retain exact checks.
+These compare public observations, not every internal full-field array. The
+preceding strict raw-field differences and original frame428 refusal remain
+preserved; this batch study changes neither their criteria nor their outcomes.
+
+The timer now accepts a single mode so memory can be measured from a fresh
+process. An independent NVIDIA polling process starts before scientific imports
+and stops after build, the 130-frame audit and one repeated timing window.
+It filters the driver PID, records all polls, and verifies the GPU identity,
+collector exit and observation agreement. Each mode's polling process is reaped
+before the next task. Memory-run rates are intrusive diagnostics and excluded
+from the primary throughput table.
+
+| Batch | Mode | Sampled process GPU peak (MiB) | Process RSS high-water (GiB) | Longest observed query gap (s) |
+| --- | --- | ---: | ---: | ---: |
+| 256 | rigid | 2,686 | 9.333 | 0.254 |
+| 256 | max | 4,720 | 9.296 | 0.261 |
+| 256 | full | 5,552 | 9.420 | 0.294 |
+| 1024 | rigid | 4,066 | 9.299 | 0.204 |
+| 1024 | max | 11,828 | 9.297 | 0.240 |
+| 1024 | full | 15,060 | 9.416 | 0.373 |
+
+Relative to B256, B1024 changes candidate max/full aggregate throughput by
++13.63% / +13.66%. Its fresh-process sampled max/full GPU peaks are 2.51 times /
+2.71 times those at B256. For this tiled window, B256 is the lower-memory
+measured choice; use the measured B1024 throughput/memory tradeoff when choosing
+a larger simulation batch.
+
+These GPU samples include non-Torch allocations. Requested 0.1 s polling plus
+query latency can miss short peaks; the observed maxima are not continuous
+peaks or memory-capacity bounds. RSS includes the whole process through build
+and the audit. Device-wide CUDA free memory, Torch allocator counters and job
+MaxRSS are retained separately and must not be substituted for process GPU
+memory. The primary timer also records its final memory counters outside the
+timed window; earlier modes can retain allocations in that shared process.
+
+Full-mode memory runs first and warms the candidate compiler caches before
+primary timing. Preparation/build durations are retained but are not a matched
+cold-start comparison. Both modes fit at B1024 on the measured hardware. These
+tiled starting conditions do not establish throughput for independently chosen
+large populations, full-cycle admission, the best batch or the memory limit.
+Use B256/B1024 as measured points for this bounded workload; further tuning
+must preserve admission and measure its own memory and trajectory diversity.
+
+The worker also corrects a reporting bug: old `loaded_timed_environment_steps`
+and `sharp_timed_environment_steps` described one audited window even when
+three windows were timed. New `*_window_environment_steps` retain those
+single-window values, and `*_timed_environment_steps` include all repeats.
+Both comparison tasks verify the counts against saved audit arrays. Older
+archives remain immutable; their timing values and admitted-step totals were
+already correct.
+
+The [batch-scaling packet](../evidence/20261019-qualified-ranking/hard-batch-scaling-v1/README.md)
+retains both completed seven-task campaigns, raw timing samples, independent
+process polling, driver/audit outputs, source inventories, exact captured worker
+bindings and the B256-to-B1024 resource decision. Its captured task plans and
+submission/workload scripts record the executed arguments and source/cache
+selection. Reproduction requires fresh output directories and corresponding
+task-path rebinding; archived output directories must remain immutable.
+All 54 frozen engine heads and 12 original unfinished files are preserved.
+Runtime arrays, logs and metadata remain under `/mnt/data/zhaofeng`; source,
+documentation and compact publication evidence stay in workspace.

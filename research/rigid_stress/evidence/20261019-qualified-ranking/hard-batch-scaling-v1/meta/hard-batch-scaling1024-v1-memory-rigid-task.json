@@ -1,0 +1,23 @@
+{
+  "module": "research.rigid_stress.qipc_comparison.time_hard_franka",
+  "args": [
+    "--stress-mesh",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+    "--collision-urdf",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-assets-v1/group0/assets/division32/egg_shell.urdf",
+    "--conditions",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+    "--start-step",
+    "100",
+    "--steps",
+    "30",
+    "--batches",
+    "1024",
+    "--modes",
+    "rigid",
+    "--repeats",
+    "1"
+  ],
+  "batch": 1024,
+  "mode": "rigid"
+}

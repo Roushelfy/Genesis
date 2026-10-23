@@ -1,0 +1,94 @@
+[
+  [
+    {
+      "name": "memory-full",
+      "module": "research.rigid_stress.qipc_comparison.memory_hard_franka",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/hard-batch-scaling256-v1-memory-full-task.json"
+      ]
+    },
+    {
+      "name": "baseline",
+      "module": "research.rigid_stress.qipc_comparison.time_hard_franka",
+      "args": [
+        "--stress-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--collision-urdf",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-assets-v1/group0/assets/division32/egg_shell.urdf",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--start-step",
+        "100",
+        "--steps",
+        "30",
+        "--batches",
+        "256"
+      ],
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_edge_projection"
+    },
+    {
+      "name": "candidate",
+      "module": "research.rigid_stress.qipc_comparison.time_hard_franka",
+      "args": [
+        "--stress-mesh",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+        "--collision-urdf",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-assets-v1/group0/assets/division32/egg_shell.urdf",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--start-step",
+        "100",
+        "--steps",
+        "30",
+        "--batches",
+        "256"
+      ],
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_source_warps"
+    },
+    {
+      "name": "observations",
+      "module": "research.rigid_stress.qipc_comparison.compare_hard_observations",
+      "args": [
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling256-v1/group0/baseline",
+        "--candidate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling256-v1/group0/candidate",
+        "--batch",
+        "256",
+        "--check-repeated-counts"
+      ]
+    },
+    {
+      "name": "memory-rigid",
+      "module": "research.rigid_stress.qipc_comparison.memory_hard_franka",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/hard-batch-scaling256-v1-memory-rigid-task.json"
+      ]
+    },
+    {
+      "name": "memory-max",
+      "module": "research.rigid_stress.qipc_comparison.memory_hard_franka",
+      "args": [
+        "--task",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/hard-batch-scaling256-v1-memory-max-task.json"
+      ]
+    },
+    {
+      "name": "memory-observations",
+      "module": "research.rigid_stress.qipc_comparison.compare_hard_observations",
+      "args": [
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling256-v1/group0/candidate",
+        "--candidate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling256-v1/group0",
+        "--candidate-mode-subdir",
+        "memory-{mode}/driver",
+        "--batch",
+        "256",
+        "--check-repeated-counts"
+      ]
+    }
+  ]
+]

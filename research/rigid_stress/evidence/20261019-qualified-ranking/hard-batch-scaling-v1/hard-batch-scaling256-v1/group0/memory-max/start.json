@@ -1,0 +1,28 @@
+{
+  "task": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/meta/hard-batch-scaling256-v1-memory-max-task.json",
+    "bytes": 852,
+    "sha256": "f125ce7ecb2e8bab78ce6b0dba3d87bc530387ade00fd77d7a1a32faec73176f"
+  },
+  "driver_argv": [
+    "research.rigid_stress.qipc_comparison.time_hard_franka",
+    "--stress-mesh",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-curved-material-v3/group1/curved-material/estimated.npz",
+    "--collision-urdf",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-assets-v1/group0/assets/division32/egg_shell.urdf",
+    "--conditions",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+    "--start-step",
+    "100",
+    "--steps",
+    "30",
+    "--batches",
+    "256",
+    "--modes",
+    "max",
+    "--repeats",
+    "1",
+    "--output",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling256-v1/group0/memory-max/driver"
+  ]
+}
