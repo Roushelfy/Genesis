@@ -1,0 +1,91 @@
+[
+  [
+    {
+      "name": "manual",
+      "module": "examples.speed_benchmark.rigid_stress",
+      "args": [
+        "--scope",
+        "profile",
+        "--envs",
+        "64",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--warmup",
+        "108",
+        "--steps",
+        "100",
+        "--minimum-seconds",
+        "0",
+        "--compact-log",
+        "--source-revision",
+        "d9ce91440",
+        "--radius-model",
+        "manual",
+        "--pressure-profile",
+        "dpr",
+        "--quadrature",
+        "16",
+        "--output-mode",
+        "full"
+      ]
+    },
+    {
+      "name": "radius",
+      "module": "examples.speed_benchmark.rigid_stress",
+      "args": [
+        "--scope",
+        "profile",
+        "--envs",
+        "64",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--warmup",
+        "108",
+        "--steps",
+        "100",
+        "--minimum-seconds",
+        "0",
+        "--compact-log",
+        "--source-revision",
+        "d9ce91440",
+        "--radius-model",
+        "hertz",
+        "--pressure-profile",
+        "dpr",
+        "--quadrature",
+        "16",
+        "--output-mode",
+        "full"
+      ]
+    },
+    {
+      "name": "hertz",
+      "module": "examples.speed_benchmark.rigid_stress",
+      "args": [
+        "--scope",
+        "profile",
+        "--envs",
+        "64",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--warmup",
+        "108",
+        "--steps",
+        "100",
+        "--minimum-seconds",
+        "0",
+        "--compact-log",
+        "--source-revision",
+        "d9ce91440",
+        "--radius-model",
+        "hertz",
+        "--pressure-profile",
+        "hertz",
+        "--quadrature",
+        "16",
+        "--output-mode",
+        "full"
+      ]
+    }
+  ]
+]

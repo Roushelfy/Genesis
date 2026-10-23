@@ -1,0 +1,77 @@
+{
+  "passed": true,
+  "geometry_frame": "preintegration",
+  "failed_contacts": [
+    {
+      "environment": 0,
+      "slot": 1,
+      "source": 1,
+      "status": 1,
+      "radius_status": 3,
+      "source_force_n": [
+        -0.012305409729178502,
+        0.07510619016899049,
+        -0.0518114742644603
+      ],
+      "source_normal": [
+        -0.023424883320428195,
+        -0.9997251721293736,
+        -0.0009246903907209279
+      ],
+      "geoms": [
+        {
+          "side": "a",
+          "index": 16,
+          "kind": "box",
+          "witness_vertex": -1,
+          "witness_local_m": [
+            0.002999999999999959,
+            -0.0020000000000000013,
+            -5.931454077846484e-05
+          ],
+          "parameters": [
+            0.006,
+            0.004,
+            0.007,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "projected_box_point_m": [
+            0.002999999999999959,
+            -0.002,
+            -5.931454077846484e-05
+          ],
+          "boundary_coordinate_count": 2,
+          "signed_distance_to_box_faces_m": [
+            4.119968255444917e-17,
+            -1.3010426069826053e-18,
+            0.003440685459221535
+          ]
+        },
+        {
+          "side": "b",
+          "index": 24,
+          "kind": "mesh",
+          "witness_vertex": -1,
+          "witness_local_m": [
+            -0.02183391185328764,
+            0.0005846543615662531,
+            0.0018728524446487427
+          ],
+          "parameters": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ]
+    }
+  ],
+  "scope": "Diagnostic geometry only. No contact, radius, force or numerical threshold is changed."
+}

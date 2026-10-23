@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "mode": "manual_area_circle_dpr",
+      "radius_m": 5.980119287763202e-05,
+      "complete_volume_tensor_vs_fine_direct": 0.8625207805472769,
+      "same_coarse_mesh_vs_elliptic_pressure": 0.050968202646249176,
+      "hertz_nodal_load_vs_analytic_sectors": null,
+      "independent_pressure_quadrature": [],
+      "native_corner_peak_pa": 1397100.0471171525,
+      "force_error_n": 0.0,
+      "moment_error_nm": 5.320107607086973e-22
+    },
+    {
+      "mode": "mean_curvature_circle_dpr",
+      "radius_m": 5.9439219527631335e-05,
+      "complete_volume_tensor_vs_fine_direct": 0.8625320662558361,
+      "same_coarse_mesh_vs_elliptic_pressure": 0.05145659074937019,
+      "hertz_nodal_load_vs_analytic_sectors": null,
+      "independent_pressure_quadrature": [],
+      "native_corner_peak_pa": 1397949.5268392165,
+      "force_error_n": 3.0531133177191805e-16,
+      "moment_error_nm": 1.6151352901423782e-21
+    },
+    {
+      "mode": "mean_curvature_circle_hertz",
+      "radius_m": 5.9439219527631335e-05,
+      "complete_volume_tensor_vs_fine_direct": 0.8618268996445737,
+      "same_coarse_mesh_vs_elliptic_pressure": 0.014520212208757089,
+      "hertz_nodal_load_vs_analytic_sectors": 1.0813250069060007e-08,
+      "independent_pressure_quadrature": [
+        {
+          "radial": 48,
+          "angular": 1024,
+          "relative_error_vs_analytic_sectors": 1.7816199556045027e-06
+        },
+        {
+          "radial": 96,
+          "angular": 2048,
+          "relative_error_vs_analytic_sectors": 2.6624924850233873e-07
+        }
+      ],
+      "native_corner_peak_pa": 1320107.5087287922,
+      "force_error_n": 5.551115123125783e-17,
+      "moment_error_nm": 6.826509078997801e-22
+    }
+  ],
+  "reference_axes_m": [
+    6.993279565275541e-05,
+    5.11374189492572e-05
+  ],
+  "reference_direct_medium_fine_change": 0.08032205802148826,
+  "coarse_exact_ellipse_vs_fine_direct": 0.8617719654179051,
+  "reference_converged_under_2_percent": false,
+  "scope": "Numerical conformance passes separately from measured physical/model differences. This finite-box normal-pressure comparison does not qualify hollow-egg contact, friction history or continuum stress peaks."
+}

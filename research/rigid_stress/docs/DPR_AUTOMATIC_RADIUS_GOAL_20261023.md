@@ -83,6 +83,11 @@ completed feature.
 
 ## Current evidence and gaps
 
+The bullets below record the starting state when this goal was set. The
+integrated option, matched timing, numerical checks and remaining physical
+limitations are now documented in the
+[implementation report](AUTOMATIC_DPR_IMPLEMENTATION_20261023.md).
+
 - Supplied-region native Hertz lookup costs about 21 microseconds on the measured
   GPU, excluding curvature lookup, grouping, transfer and FEM.
 - The research input adapter has current force/curvature/grouping controls but

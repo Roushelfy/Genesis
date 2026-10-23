@@ -1,5 +1,18 @@
 # Rigid-stress data and artifact locations
 
+Automatic-radius DPR development uses `automatic-dpr-*` campaigns under the
+established 20261019 ranking data root below. Generated control meshes, scene
+arrays, compiler logs and submission/source receipts remain on data. Active
+source/docs and frozen test checkouts stay in workspace. These runs reuse the
+existing data-side environment, Slurm rtx-mid/image 1_26 and private node caches.
+The 2026-10-23 goal correction is recorded in `meta/automatic-dpr-goal-transition-v1.json`;
+previous analytic-field jobs retain their captured sources as historical research.
+The small tracked `20261023-automatic-dpr-v1` publication packet contains compact
+results, repeat timings, task/source receipts and the unchanged 3,754-byte
+condition fixture. Full runtime arrays, logs, generated assets and complete
+benchmark buffer reports stay under data. Existing environments, compatibility
+links, frozen worktrees and unrelated unfinished files are preserved.
+
 The exact-column and cell-aligned volume studies use edge-shell-exact-columns-*,
 edge-shell-volume-window-* and edge-shell-integrals-inspection-* under the
 established20261019 ranking data root. The sharp-edge-shell-integrals-v1 packet
