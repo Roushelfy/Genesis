@@ -1,0 +1,30 @@
+[
+  [
+    {
+      "name": "observations",
+      "module": "research.rigid_stress.qipc_comparison.compare_hard_observations",
+      "args": [
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-newton-franka-timing-v1/group0/paired-b4",
+        "--candidate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-geometry-search-timing-v2/group0/paired-b4",
+        "--batch",
+        "4"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "observations",
+      "module": "research.rigid_stress.qipc_comparison.compare_hard_observations",
+      "args": [
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-newton-franka-timing-v1/group1/paired-b64",
+        "--candidate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-geometry-search-timing-v2/group1/paired-b64",
+        "--batch",
+        "64"
+      ]
+    }
+  ]
+]

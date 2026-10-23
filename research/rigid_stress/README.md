@@ -23,10 +23,15 @@ with all25 captured output fields checked against the baseline. These are fixed
 input component measurements, not complete scene throughput. Independent physical
 errors and full-cycle scene admission remain open. The
 [admitted paired closing-window timer](docs/SHARP_EDGE_PRESSURE_20261022.md#admitted-paired-scene-cost)
-measures pure-rigid/max/full at2.64/254.06/254.25ms forB4 and
-2.85/286.20/286.32ms forB64 (four initial conditions tiled16 times). All modes
-pass the0--129 audit and repeat-output checks. The complete path remains expensive;
-component speedups do not imply a cheap complete stress update.
+retains the original pure-rigid/max/full2.64/254.06/254.25ms atB4 and
+2.85/286.20/286.32ms atB64. The latest
+[ordered geometry search](docs/SHARP_EDGE_PRESSURE_20261022.md#ordered-geometry-search-acceleration)
+reduces complete max/full costs to51.03/51.21ms atB4 and72.46/72.35ms atB64
+(four initial conditions tiled16 times), approximately5x/4x the original rates.
+CPU/GPU disconnected/nonconvex and threshold-boundary controls pass; actual
+0--129 audits retain admission and public observation conformance. Raw field
+roundoff differences and the initial failed pruning attempt remain documented.
+Boundary traction and remaining geometry work still dominate the complete path.
 Ideal sharp edges remain singular; finite sampled peaks retain their probe depths.
 
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)

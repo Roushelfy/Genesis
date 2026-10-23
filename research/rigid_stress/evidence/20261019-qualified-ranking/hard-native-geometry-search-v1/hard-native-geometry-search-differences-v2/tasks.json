@@ -1,0 +1,41 @@
+[
+  [
+    {
+      "name": "full",
+      "module": "research.rigid_stress.qipc_comparison.compare_hard_frames",
+      "args": [
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-newton-scene-v1/group0/full",
+        "--candidate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-geometry-search-scene-v3/group0/full",
+        "--diagnostic"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "max",
+      "module": "research.rigid_stress.qipc_comparison.compare_hard_frames",
+      "args": [
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-friction-newton-scene-v1/group1/max",
+        "--candidate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-geometry-search-scene-v3/group1/max",
+        "--diagnostic"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "fresh-baseline-full",
+      "module": "research.rigid_stress.qipc_comparison.compare_hard_frames",
+      "args": [
+        "--baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-geometry-search-scene-v2/group0/baseline-full",
+        "--candidate",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-geometry-search-scene-v3/group0/full",
+        "--diagnostic"
+      ]
+    }
+  ]
+]

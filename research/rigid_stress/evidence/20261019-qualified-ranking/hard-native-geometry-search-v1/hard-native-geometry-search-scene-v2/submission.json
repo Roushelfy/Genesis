@@ -1,0 +1,22 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-1",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=gpu:1",
+    "--cpus-per-task=4",
+    "--mem=20G",
+    "--time=12",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-geometry-search-scene-v2/logs/%A_%a.log",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-geometry-search-scene-v2/job.sh"
+  ],
+  "job": "740958",
+  "dependency": null,
+  "exclude_nodes": null,
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "allow_home_output": false
+}

@@ -1,0 +1,43 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "mesh": 0,
+      "rotation": 0,
+      "faces": 10240,
+      "queries": 288,
+      "successful_roots": 288
+    },
+    {
+      "mesh": 0,
+      "rotation": 1,
+      "faces": 10240,
+      "queries": 288,
+      "successful_roots": 288
+    },
+    {
+      "mesh": 1,
+      "rotation": 0,
+      "faces": 1024,
+      "queries": 288,
+      "successful_roots": 288
+    },
+    {
+      "mesh": 1,
+      "rotation": 1,
+      "faces": 1024,
+      "queries": 288,
+      "successful_roots": 288
+    }
+  ],
+  "source_binding": {
+    "passed": true,
+    "queries": 1960,
+    "vertices": 4162,
+    "mismatches": [],
+    "scope": "Exhaustive same-backend distance membership over 4162 vertices, duplicate coordinates and selected queries across 64/4096 boundaries, conflicting/same feature ids, unmapped/ambiguous vertices, two world-coordinate scales and 576 roundoff-boundary queries."
+  },
+  "original_source_conformance": true,
+  "shared_feature_face_aliases": [],
+  "whole_goal_complete": false
+}
