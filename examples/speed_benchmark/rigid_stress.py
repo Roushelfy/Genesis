@@ -97,6 +97,7 @@ def prepare_recovery_snapshot(workload: FrankaEgg) -> dict:
     original_peak = qd_to_numpy(entry.state.peak, copy=True)
     original_point = qd_to_numpy(entry.contacts.position, transpose=True, copy=True)
     original_wrench_force = qd_to_numpy(entry.contacts.force, transpose=True, copy=True)
+    original_radius = qd_to_numpy(entry.contacts.radius, transpose=True, copy=True)
     restore_frame(workload)
     solver.stress_recovery.recover(0)
     qd.sync()
@@ -108,6 +109,11 @@ def prepare_recovery_snapshot(workload: FrankaEgg) -> dict:
     valid = qd_to_numpy(entry.contacts.valid, transpose=True)
     np.testing.assert_allclose(point[valid], original_point[valid], rtol=0, atol=1e-13)
     np.testing.assert_allclose(wrench_force[valid], original_wrench_force[valid], rtol=1e-12, atol=1e-13)
+    radius_difference = 0.0
+    if entry.options.radius_model == "hertz":
+        radius = qd_to_numpy(entry.contacts.radius, transpose=True)
+        np.testing.assert_allclose(radius[valid], original_radius[valid], rtol=1e-12, atol=0)
+        radius_difference = float(np.max(np.abs(radius[valid] - original_radius[valid]), initial=0))
     np.testing.assert_allclose(peak, original_peak, rtol=1e-4, atol=1e-3)
     conservation = "componentwise"
     body_scales = None
@@ -174,6 +180,7 @@ def prepare_recovery_snapshot(workload: FrankaEgg) -> dict:
         "nodal_force_max_difference_N": float(np.max(np.abs(force - original_force))),
         "peak_max_difference_Pa": float(np.max(np.abs(peak - original_peak))),
         "original_point_max_difference_m": float(np.max(np.abs(point[valid] - original_point[valid]), initial=0)),
+        "original_radius_max_difference_m": radius_difference,
         "normalized_force_error_max": float(force_error.max(initial=0)),
         "normalized_moment_error_max": float(moment_error.max(initial=0)),
         "complete_residual_max_N": float(residual.max()),

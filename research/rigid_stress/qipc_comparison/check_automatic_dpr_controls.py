@@ -1,7 +1,9 @@
 """Analytical radius, finite-disk P2 moments and original-FEM controls for automatic DPR."""
 
 import argparse
+import importlib.util
 from pathlib import Path
+import shutil
 
 import numpy as np
 import quadrants as qd
@@ -10,7 +12,13 @@ from skfem import MeshTet
 
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.automatic_radius import func_estimate_radius
-from genesis.engine.solvers.rigid.stress.contact import create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
+from genesis.engine.solvers.rigid.stress.contact import (
+    StressContactState,
+    create_contacts,
+    kernel_anchor,
+    kernel_pressure,
+    kernel_scatter,
+)
 from genesis.utils import array_class
 from genesis.utils.array_class import V_VEC
 from genesis.utils.misc import qd_to_numpy
@@ -22,7 +30,7 @@ from .artifacts import runtime_identity, write_json
 
 @qd.kernel
 def kernel_radius_controls(
-    contacts: qd.template(), collider: array_class.ColliderState, dyn: array_class.DynState, info: qd.template()
+    contacts: StressContactState, collider: array_class.ColliderState, dyn: array_class.DynState, info: qd.template()
 ):
     for i_b in range(6):
         force = 0.005 * qd.Vector([0.2, 0.0, -1.0])
@@ -54,7 +62,18 @@ def main():
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
-    write_json(args.output / "start.json", {"identity": runtime_identity(require_gpu_inventory=args.backend == "gpu")})
+    write_json(
+        args.output / "start.json",
+        {
+            "identity": runtime_identity(require_gpu_inventory=args.backend == "gpu"),
+            "code_aster_runtime": {
+                "run_aster": shutil.which("run_aster"),
+                "as_run": shutil.which("as_run"),
+                "code_aster_python_module": importlib.util.find_spec("code_aster") is not None,
+                "scope": "Current Slurm image PATH and the selected Python environment only.",
+            },
+        },
+    )
     gs.init(backend=gs.cuda if args.backend == "gpu" else gs.cpu, precision="64", logging_level="warning")
     mesh = MeshTet.init_tensor(*[np.array([-0.05, 0.05])] * 3)
     vertices, tetrahedra, faces = mesh.p.T, mesh.t.T, mesh.facets[:, mesh.boundary_facets()].T
@@ -107,7 +126,7 @@ def main():
         contacts.friction.fill(0.5)
         contacts.radius.from_numpy(radii[None].copy())
         state = model.create_state(3, "full")
-        kernel_anchor(np.finfo(float).eps, contacts, surface.info)
+        kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
         kernel_pressure(contacts, surface.info)
         kernel_scatter(contacts, state, model.info, surface.info)
         np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
