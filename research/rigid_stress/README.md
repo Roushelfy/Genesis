@@ -65,6 +65,12 @@ errors at6.595/16.488micrometre depths. Spatial reference uncertainty remains
 material. Separate reference-fitted face profiles reduce these errors, motivating
 independent two-profile prediction; the fit supplies no runtime qualification.
 Hertz numerical and target/source quadrature controls are retained separately.
+The subsequent [independent-profile and surface audit](docs/SHARP_EDGE_PRESSURE_20261022.md#independent-face-scales-and-surface-ordering)
+finds that a geometric cap improves conditional field errors but still violates
+finite-face geometry. The finest linear reference also has8 reversed adjacent
+loaded-cell pairs, persistent under refined displacement integration, with local
+gradients about1.94. Its field comparisons remain diagnostics; they supply no
+continuum two-face physical qualification or admitted runtime correction.
 
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)
 identifies the ground's184micrometre offset as the collider's half-penetration
