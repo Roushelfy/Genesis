@@ -14,6 +14,7 @@ from genesis.utils.array_class import V_VEC
 from genesis.utils.misc import qd_to_numpy
 
 from .artifacts import file_id, runtime_identity, write_json
+from .check_automatic_dpr_controls import disk_wedge_loads
 from .hertz_reference import ellipse
 from .p2_elastic import FreeElasticP2
 from .study_hertz_residual import field_difference, hertz_nodal_load, tensor_at_points
@@ -88,12 +89,29 @@ def main():
         force = np.empty_like(native_force)
         force[permutation] = native_force
         independent_load_error = None
+        pressure_quadrature = []
         if profile:
-            independent_force = hertz_nodal_load(cpu, np.full(2, radius), load, radial=48, angular=1024)
+            exact_native = disk_wedge_loads(
+                model, surface, np.zeros(3), np.array([0, 0, load]), np.array([radius]), True
+            )[0]
+            independent_force = np.empty_like(force)
+            independent_force[permutation] = exact_native
             independent_load_error = float(
                 np.linalg.norm(force - independent_force) / np.linalg.norm(independent_force)
             )
             assert independent_load_error < 1e-6, independent_load_error
+            for radial, angular in [(48, 1024), (96, 2048)]:
+                integrated = hertz_nodal_load(cpu, np.full(2, radius), load, radial=radial, angular=angular)
+                pressure_quadrature.append(
+                    {
+                        "radial": radial,
+                        "angular": angular,
+                        "relative_error_vs_analytic_sectors": float(
+                            np.linalg.norm(integrated - independent_force) / np.linalg.norm(independent_force)
+                        ),
+                    }
+                )
+            assert pressure_quadrature[-1]["relative_error_vs_analytic_sectors"] < 1e-6, pressure_quadrature
         displacement = np.empty_like(coordinates)
         displacement[permutation] = qd_to_numpy(state.displacement, transpose=True)[0]
         field = tensor_at_points(cpu, displacement, points)
@@ -104,7 +122,8 @@ def main():
                 "radius_m": radius,
                 "complete_volume_tensor_vs_fine_direct": float(field_difference(field, fine_field, weights)),
                 "same_coarse_mesh_vs_elliptic_pressure": float(field_difference(field, coarse_field, weights)),
-                "hertz_nodal_load_vs_independent_quadrature": independent_load_error,
+                "hertz_nodal_load_vs_analytic_sectors": independent_load_error,
+                "independent_pressure_quadrature": pressure_quadrature,
                 "native_corner_peak_pa": float(qd_to_numpy(state.peak)[0]),
                 "force_error_n": float(qd_to_numpy(contacts.force_error)[0, 0]),
                 "moment_error_nm": float(qd_to_numpy(contacts.moment_error)[0, 0]),

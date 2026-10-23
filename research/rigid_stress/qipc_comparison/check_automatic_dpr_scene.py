@@ -86,6 +86,7 @@ def main():
                 "radius",
                 "force",
                 "normal",
+                "friction",
                 "force_error",
                 "moment_error",
                 "position",
