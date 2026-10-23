@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "name": "cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_controls",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_controls",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ]
+]

@@ -1,0 +1,28 @@
+[
+  [
+    {
+      "name": "radius",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--mode",
+        "radius",
+        "--field-steps",
+        "2",
+        "110",
+        "129",
+        "--quadrature",
+        "16"
+      ]
+    },
+    {
+      "name": "geometry",
+      "module": "research.rigid_stress.qipc_comparison.inspect_automatic_dpr_failure",
+      "args": [
+        "--failure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-scene-q16-v4/group0/radius/failure.npz"
+      ]
+    }
+  ]
+]

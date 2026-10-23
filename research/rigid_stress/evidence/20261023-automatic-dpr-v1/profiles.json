@@ -1,0 +1,277 @@
+{
+  "scope": "Intrusive stage wall times at frame 129. Estimator is inside association; times are not additive.",
+  "rows": [
+    {
+      "source_revision": "44861eef5",
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-8cfc54d5-b6d6-385d-af83-7571c6ced3aa",
+      "envs": 64,
+      "quadrature": 16,
+      "radius_model": "manual",
+      "pressure_profile": "dpr",
+      "stage_wall_ms": {
+        "begin_step": 0.05476987978909165,
+        "association_transform": 0.1726010802667588,
+        "anchor_search": 0.14598158013541251,
+        "candidate_weights_constraints": 0.527974339784123,
+        "nodal_scatter": 0.14082306995987892,
+        "inertia_relief_centrifugal": 0.04071870993357152,
+        "rhs_reduction": 0.03033794986549765,
+        "linear_solve": 0.20761766994837672,
+        "complete_residual": 0.07161515997722745,
+        "global_peak": 0.08123567997245118,
+        "accept": 0.03691689984407276
+      },
+      "recovery_snapshot_check": {
+        "wrench_conservation": "componentwise",
+        "body_source_scales": null,
+        "nodal_force_max_difference_N": 1.3877787807814457e-17,
+        "peak_max_difference_Pa": 3.092281986027956e-09,
+        "original_point_max_difference_m": 0.0,
+        "original_radius_max_difference_m": 0.0,
+        "normalized_force_error_max": 3.5988839971000907e-16,
+        "normalized_moment_error_max": 4.569782623898951e-17,
+        "complete_residual_max_N": 7.995033286908127e-12
+      },
+      "native_buffer_bytes": 87729827,
+      "name": "manual-full",
+      "raw": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-profile-planar-v1/group0/manual-full",
+        "bytes": 341764,
+        "sha256": "ddceacc506aeabfdaabb1ff5b4d5613023bb65fdd8c08ba0454030812efbe723"
+      },
+      "fit_iterations_histogram": {
+        "0": 160
+      },
+      "contacts": 160
+    },
+    {
+      "source_revision": "44861eef5",
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-8cfc54d5-b6d6-385d-af83-7571c6ced3aa",
+      "envs": 64,
+      "quadrature": 16,
+      "radius_model": "hertz",
+      "pressure_profile": "dpr",
+      "stage_wall_ms": {
+        "begin_step": 0.05373861000407487,
+        "association_transform": 0.3499052202096209,
+        "anchor_search": 0.14524341007927433,
+        "candidate_weights_constraints": 9.412846130144317,
+        "nodal_scatter": 0.386773879872635,
+        "inertia_relief_centrifugal": 0.04067328991368413,
+        "rhs_reduction": 0.030420839902944863,
+        "linear_solve": 0.189560950093437,
+        "complete_residual": 0.07177113002398983,
+        "global_peak": 0.08481112017761916,
+        "accept": 0.036578800063580275,
+        "automatic_radius_only": 0.19361398997716606
+      },
+      "recovery_snapshot_check": {
+        "wrench_conservation": "componentwise",
+        "body_source_scales": null,
+        "nodal_force_max_difference_N": 2.407412430484045e-35,
+        "peak_max_difference_Pa": 0.0,
+        "original_point_max_difference_m": 0.0,
+        "original_radius_max_difference_m": 0.0,
+        "normalized_force_error_max": 2.1664474016976012e-16,
+        "normalized_moment_error_max": 5.404016601143232e-15,
+        "complete_residual_max_N": 8.841278197508026e-12
+      },
+      "native_buffer_bytes": 88840583,
+      "name": "radius-full",
+      "raw": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-profile-planar-v1/group0/radius-full",
+        "bytes": 343574,
+        "sha256": "a174b52e099e660fb419e4e54cc57ed21e9d89706e29f230df3a3842cbd58b86"
+      },
+      "fit_iterations_histogram": {
+        "2": 16,
+        "0": 128,
+        "5": 16
+      },
+      "contacts": 160
+    },
+    {
+      "source_revision": "44861eef5",
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-8cfc54d5-b6d6-385d-af83-7571c6ced3aa",
+      "envs": 64,
+      "quadrature": 16,
+      "radius_model": "hertz",
+      "pressure_profile": "hertz",
+      "stage_wall_ms": {
+        "begin_step": 0.0532566400943324,
+        "association_transform": 0.3531728099915199,
+        "anchor_search": 0.14676987018901855,
+        "candidate_weights_constraints": 1.6556412202771753,
+        "nodal_scatter": 0.37969052005792037,
+        "inertia_relief_centrifugal": 0.040953310090117157,
+        "rhs_reduction": 0.030427390011027455,
+        "linear_solve": 0.19059985992498696,
+        "complete_residual": 0.07191500015323982,
+        "global_peak": 0.08463119011139497,
+        "accept": 0.03682799986563623,
+        "automatic_radius_only": 0.1928080598008819
+      },
+      "recovery_snapshot_check": {
+        "wrench_conservation": "componentwise",
+        "body_source_scales": null,
+        "nodal_force_max_difference_N": 2.168404344971009e-19,
+        "peak_max_difference_Pa": 0.0,
+        "original_point_max_difference_m": 0.0,
+        "original_radius_max_difference_m": 0.0,
+        "normalized_force_error_max": 2.6745451477565256e-16,
+        "normalized_moment_error_max": 5.419937237078128e-15,
+        "complete_residual_max_N": 8.709664395188599e-12
+      },
+      "native_buffer_bytes": 88840583,
+      "name": "hertz-full",
+      "raw": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-profile-planar-v1/group0/hertz-full",
+        "bytes": 344672,
+        "sha256": "8b680e8401aae3afd093899e096ce89b99377d0a251b8f0be6d52868eacac267"
+      },
+      "fit_iterations_histogram": {
+        "0": 160
+      },
+      "contacts": 160
+    },
+    {
+      "source_revision": "40775c1d0",
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-4e7dc608-00fa-44a9-28c7-6a4948c1dae7",
+      "envs": 64,
+      "quadrature": 16,
+      "radius_model": "manual",
+      "pressure_profile": "dpr",
+      "stage_wall_ms": {
+        "begin_step": 0.0564323493745178,
+        "association_transform": 0.17687576008029282,
+        "anchor_search": 0.1508403499610722,
+        "candidate_weights_constraints": 0.5304002191405743,
+        "nodal_scatter": 0.1407532300800085,
+        "inertia_relief_centrifugal": 0.0408575008623302,
+        "rhs_reduction": 0.0304252200294286,
+        "linear_solve": 0.21043663029558957,
+        "complete_residual": 0.07183348061516881,
+        "global_peak": 0.08176572970114648,
+        "accept": 0.03681608010083437
+      },
+      "recovery_snapshot_check": {
+        "wrench_conservation": "componentwise",
+        "body_source_scales": null,
+        "nodal_force_max_difference_N": 1.3877787807814457e-17,
+        "peak_max_difference_Pa": 3.2159732654690742e-09,
+        "original_point_max_difference_m": 0.0,
+        "original_radius_max_difference_m": 0.0,
+        "normalized_force_error_max": 2.4018209194507166e-16,
+        "normalized_moment_error_max": 4.570002588096441e-17,
+        "complete_residual_max_N": 8.023607949488762e-12
+      },
+      "native_buffer_bytes": 87729827,
+      "name": "manual-full",
+      "raw": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-profile-planar-v2/group0/manual-full",
+        "bytes": 342069,
+        "sha256": "02ba5df07b7d20ee9f845ca0db8abacd0d0c4a4f7b63b79fffc04f50edb0d9cf"
+      },
+      "fit_iterations_histogram": {
+        "0": 160
+      },
+      "contacts": 160
+    },
+    {
+      "source_revision": "40775c1d0",
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-4e7dc608-00fa-44a9-28c7-6a4948c1dae7",
+      "envs": 64,
+      "quadrature": 16,
+      "radius_model": "hertz",
+      "pressure_profile": "dpr",
+      "stage_wall_ms": {
+        "begin_step": 0.05641393014229834,
+        "association_transform": 0.3511815599631518,
+        "anchor_search": 0.14807551982812583,
+        "candidate_weights_constraints": 6.819986780174077,
+        "nodal_scatter": 0.3882491705007851,
+        "inertia_relief_centrifugal": 0.04072733921930194,
+        "rhs_reduction": 0.030372249893844128,
+        "linear_solve": 0.20555305061861873,
+        "complete_residual": 0.07170495926402509,
+        "global_peak": 0.08482581004500389,
+        "accept": 0.036641539772972465,
+        "automatic_radius_only": 0.1972658501472324
+      },
+      "recovery_snapshot_check": {
+        "wrench_conservation": "componentwise",
+        "body_source_scales": null,
+        "nodal_force_max_difference_N": 2.407412430484045e-35,
+        "peak_max_difference_Pa": 0.0,
+        "original_point_max_difference_m": 0.0,
+        "original_radius_max_difference_m": 0.0,
+        "normalized_force_error_max": 2.67448417348069e-16,
+        "normalized_moment_error_max": 5.404016601143232e-15,
+        "complete_residual_max_N": 8.873192074516559e-12
+      },
+      "native_buffer_bytes": 88840583,
+      "name": "radius-full",
+      "raw": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-profile-planar-v2/group0/radius-full",
+        "bytes": 343573,
+        "sha256": "b0ba6091e7dfa51dbfac9dde4a1f775e1d5ee3b1ab04c0f3c765e40f65238d35"
+      },
+      "fit_iterations_histogram": {
+        "2": 16,
+        "0": 128,
+        "5": 16
+      },
+      "contacts": 160
+    },
+    {
+      "source_revision": "40775c1d0",
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "gpu_uuid": "GPU-4e7dc608-00fa-44a9-28c7-6a4948c1dae7",
+      "envs": 64,
+      "quadrature": 16,
+      "radius_model": "hertz",
+      "pressure_profile": "hertz",
+      "stage_wall_ms": {
+        "begin_step": 0.0690233800560236,
+        "association_transform": 0.3528759302571416,
+        "anchor_search": 0.14915565960109234,
+        "candidate_weights_constraints": 1.6971613396890461,
+        "nodal_scatter": 0.38003239897079766,
+        "inertia_relief_centrifugal": 0.040874138940125704,
+        "rhs_reduction": 0.030402649426832795,
+        "linear_solve": 0.19535808940418065,
+        "complete_residual": 0.07199827930890024,
+        "global_peak": 0.08506890037097037,
+        "accept": 0.03665560972876847,
+        "automatic_radius_only": 0.19578020903281868
+      },
+      "recovery_snapshot_check": {
+        "wrench_conservation": "componentwise",
+        "body_source_scales": null,
+        "nodal_force_max_difference_N": 2.168404344971009e-19,
+        "peak_max_difference_Pa": 0.0,
+        "original_point_max_difference_m": 0.0,
+        "original_radius_max_difference_m": 0.0,
+        "normalized_force_error_max": 2.6745451477565256e-16,
+        "normalized_moment_error_max": 5.419937237078128e-15,
+        "complete_residual_max_N": 8.709664401708033e-12
+      },
+      "native_buffer_bytes": 88840583,
+      "name": "hertz-full",
+      "raw": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-profile-planar-v2/group0/hertz-full",
+        "bytes": 344551,
+        "sha256": "6a46539c5417b0cff29e7f075a88cd670b5735ebf949407657fd0172f953e987"
+      },
+      "fit_iterations_histogram": {
+        "0": 160
+      },
+      "contacts": 160
+    }
+  ]
+}

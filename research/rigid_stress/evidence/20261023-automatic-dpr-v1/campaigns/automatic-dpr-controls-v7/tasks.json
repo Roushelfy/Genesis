@@ -1,0 +1,50 @@
+[
+  [
+    {
+      "name": "cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_controls",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    },
+    {
+      "name": "regressions",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-v7",
+        "--backend",
+        "cpu",
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-v7/tests/rigid/test_stress.py",
+        "--select",
+        "finite_pressure_matches_independent_cpu or constrained_pressure_and_invalid_inputs"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_controls",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    },
+    {
+      "name": "regressions",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-v7",
+        "--backend",
+        "gpu",
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-v7/tests/rigid/test_stress.py",
+        "--select",
+        "finite_pressure_matches_independent_cpu or constrained_pressure_and_invalid_inputs"
+      ]
+    }
+  ]
+]

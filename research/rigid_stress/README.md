@@ -19,11 +19,15 @@ that same FEM. Keep radius-only and pressure-profile effects separately measured
 Analytic stress enrichment, boundary-traction correction and combined fields
 are stopped as the active direction. Earlier results below remain reproducible historical research.
 
-The per-contact radius API and native Hertz lookup exist, but the exact
-automatic-radius DPR feature is not yet integrated or benchmarked. The
-11.749/11.885 ms B1024 coarse-FEM bridge is relevant research evidence with
-52.77% loaded admission, not a completed radius-only feature. Later enrichment
-timings and errors do not describe the cost or accuracy of this target.
+The [native automatic-radius DPR option](docs/AUTOMATIC_DPR_IMPLEMENTATION_20261023.md)
+is available on this branch. CPU/GPU controls, the 130-frame sharp-box scene
+window, partial reset and unfused execution pass with an explicit planar
+edge-footprint approximation and quadrature 16. Matched B64 full scene costs
+4.564 ms/step for automatic radius with Hertz pressure, 2.671 ms for manual DPR
+and 1.734 ms for pure rigid. The report retains a failed bitwise replay audit
+and quantified coarse-mesh physical discrepancies; neither full-cycle grasp
+qualification nor sharp-edge peak accuracy is claimed. The original DPR/FEM,
+friction, max/full outputs and numerical acceptance checks remain in use.
 
 ## Historical research and verified scopes
 

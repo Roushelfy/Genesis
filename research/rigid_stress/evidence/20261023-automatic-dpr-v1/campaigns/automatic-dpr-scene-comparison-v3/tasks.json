@@ -1,0 +1,32 @@
+[
+  [
+    {
+      "name": "scene-inputs",
+      "module": "research.rigid_stress.qipc_comparison.audit_automatic_dpr_scene",
+      "args": [
+        "--manual",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-scene-q16-v1/group0/manual",
+        "--radius",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-scene-planar-v2/group0/radius",
+        "--hertz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-scene-planar-v2/group1/hertz"
+      ]
+    },
+    {
+      "name": "strict-optimization",
+      "module": "research.rigid_stress.qipc_comparison.audit_automatic_dpr_scene",
+      "args": [
+        "--manual",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-scene-q16-v1/group0/manual",
+        "--radius",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-scene-planar-v2/group0/radius",
+        "--hertz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-scene-planar-v2/group1/hertz",
+        "--previous-radius",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-scene-planar-v1/group0/radius",
+        "--previous-hertz",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-scene-planar-v1/group1/hertz"
+      ]
+    }
+  ]
+]
