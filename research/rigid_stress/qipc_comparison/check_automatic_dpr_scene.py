@@ -9,9 +9,36 @@ import quadrants as qd
 
 import genesis as gs
 from examples.rigid.franka_egg_stress import FrankaEgg
+from genesis.engine.solvers.rigid.stress.automatic_radius import func_witness_curvature
+from genesis.utils import array_class
+from genesis.utils.array_class import V, V_MAT
 from genesis.utils.misc import qd_to_numpy, tensor_to_array
 
 from .artifacts import file_id, runtime_identity, write_json
+
+
+@qd.kernel
+def kernel_failed_curvature(
+    selection: qd.types.ndarray(),
+    tensor: qd.Tensor,
+    status: qd.Tensor,
+    collider: array_class.ColliderState,
+    dyn: array_class.DynState,
+    info: qd.template(),
+):
+    for row, side in qd.ndrange(selection.shape[0], 2):
+        i_b, slot = selection[row, 0], selection[row, 1]
+        source = collider.contact_sort_idx[slot, i_b]
+        i_g = collider.contact_data.geom_a[source, i_b]
+        i_v = collider.contact_data.witness.vertex_a[source, i_b]
+        point = collider.contact_data.witness.point_a[source, i_b]
+        if side == 1:
+            i_g = collider.contact_data.geom_b[source, i_b]
+            i_v = collider.contact_data.witness.vertex_b[source, i_b]
+            point = collider.contact_data.witness.point_b[source, i_b]
+        value, code = func_witness_curvature(i_g, i_v, i_b, point, dyn, info)
+        tensor[row, side] = value
+        status[row, side] = code
 
 
 def main():
@@ -140,6 +167,32 @@ def main():
             fields["geoms_data"] = qd_to_numpy(solver.dyn_info.geoms.data, copy=True)
             fields["geoms_pos"] = qd_to_numpy(solver.dyn_state.geoms.pos, transpose=True, copy=True)
             fields["geoms_quat"] = qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True, copy=True)
+            if entry.automatic_radius is not None:
+                selected = np.argwhere(active & (fields["status"] != 0)).astype(gs.np_int)
+                curvature = V_MAT(3, 3, dtype=gs.qd_float, shape=(len(selected), 2))
+                curvature_status = V(dtype=gs.qd_int, shape=(len(selected), 2))
+                kernel_failed_curvature(
+                    selected, curvature, curvature_status, collider, solver.dyn_state, entry.automatic_radius
+                )
+                fields["failed_selection"] = selected
+                fields["failed_curvature"] = qd_to_numpy(curvature, copy=True)
+                fields["failed_curvature_status"] = qd_to_numpy(curvature_status, copy=True)
+                diagnostics = []
+                for i, (env, slot) in enumerate(selected):
+                    source = fields["contact_sort_idx"][env, slot]
+                    direction = fields["source_normal"][env, source]
+                    direction = direction / np.linalg.norm(direction)
+                    projection = np.eye(3) - np.outer(direction, direction)
+                    relative = projection @ fields["failed_curvature"][i].sum(axis=0) @ projection
+                    diagnostics.append(
+                        {
+                            "environment": int(env),
+                            "contact": int(slot),
+                            "curvature_status": fields["failed_curvature_status"][i].tolist(),
+                            "projected_curvature_eigenvalues_per_m": np.linalg.eigvalsh(relative).tolist(),
+                        }
+                    )
+                write_json(args.output / "curvature-diagnostics.json", {"rows": diagnostics})
             np.savez_compressed(args.output / "failure.npz", **fields)
             break
         peak = tensor_to_array(workload.link.get_max_stress()).copy()
