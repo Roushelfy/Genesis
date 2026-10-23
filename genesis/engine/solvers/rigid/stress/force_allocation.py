@@ -25,6 +25,7 @@ class StressForceAllocationState:
     residual: qd.Tensor
     maximum_change: qd.Tensor
     iterations: qd.Tensor
+    region_idx: qd.Tensor
 
 
 class StressForceAllocation:
@@ -55,6 +56,7 @@ class StressForceAllocation:
             residual=V(dtype=gs.qd_float, shape=(n_envs,)),
             maximum_change=V(dtype=gs.qd_float, shape=(n_envs,)),
             iterations=V(dtype=gs.qd_int, shape=(n_envs,)),
+            region_idx=V(dtype=gs.qd_int, shape=shape),
         )
 
     def update(self):
@@ -105,6 +107,7 @@ def func_force_wrench_matrix(position: qd.types.vector(3)):
 @qd.func
 def func_allocation_trial(
     i_b: int,
+    n_regions: int,
     dual: qd.types.vector(6),
     trial: qd.types.vector(6),
     scale: float,
@@ -114,7 +117,8 @@ def func_allocation_trial(
     """Evaluate a trial residual and the convex dual Bregman remainder."""
     remainder = gs.qd_float(0.0)
     residual = -allocation.target[i_b] / scale
-    for i_c in range(allocation.original.shape[0]):
+    for i_c_ in range(n_regions):
+        i_c = allocation.region_idx[i_c_, i_b]
         original = allocation.original[i_c, i_b] / scale
         weight = original.norm_sqr()
         if weight > 0:
@@ -184,6 +188,7 @@ def kernel_force_allocation(allocation: StressForceAllocationState, epsilon: flo
             if force.norm() > 0:
                 scale += force.norm()
                 origin += allocation.center[i_c, i_b]
+                allocation.region_idx[count, i_b] = i_c
                 count += 1
                 is_valid = is_valid and allocation.center[i_c, i_b].norm() < float("inf")
                 is_valid = is_valid and qd.abs(allocation.normal[i_c, i_b].norm_sqr() - 1) <= 128 * epsilon
@@ -202,7 +207,8 @@ def kernel_force_allocation(allocation: StressForceAllocationState, epsilon: flo
                         residual = -allocation.target[i_b] / scale
                         jacobian = qd.Matrix.zero(gs.qd_float, 6, 6)
                         maximum_change = gs.qd_float(0.0)
-                        for i_c in range(allocation.original.shape[0]):
+                        for i_c_ in range(count):
+                            i_c = allocation.region_idx[i_c_, i_b]
                             original = allocation.original[i_c, i_b] / scale
                             weight = original.norm_sqr()
                             if weight > 0:
@@ -230,7 +236,7 @@ def kernel_force_allocation(allocation: StressForceAllocationState, epsilon: flo
                                     if not is_accepted:
                                         trial = dual + fraction * step
                                         trial_residual, remainder = func_allocation_trial(
-                                            i_b, dual, trial, scale, origin, allocation
+                                            i_b, count, dual, trial, scale, origin, allocation
                                         )
                                         directional = -fraction * residual.dot(step)
                                         is_accepted = trial_residual.norm() <= qd.max(1e-12, 128 * epsilon)
