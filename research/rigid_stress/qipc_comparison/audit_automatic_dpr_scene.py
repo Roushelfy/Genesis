@@ -13,6 +13,8 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     for name in ("manual", "radius", "hertz", "output"):
         cli.add_argument("--" + name, type=Path, required=True)
+    cli.add_argument("--previous-radius", type=Path)
+    cli.add_argument("--previous-hertz", type=Path)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     paths = [args.manual, args.radius, args.hertz]
@@ -31,6 +33,7 @@ def main():
     common = sorted(set.intersection(*[{file.name for file in path.glob("field-*.npz")} for path in paths]))
     assert common
     rows = []
+    optimization_rows = []
     for name in common:
         fields = []
         for path in paths:
@@ -54,6 +57,21 @@ def main():
                 ),
             }
         )
+        for previous, field in zip((args.previous_radius, args.previous_hertz), fields[1:]):
+            if previous is not None:
+                with np.load(previous / name) as saved:
+                    before = saved["stress_tensor"]
+                    np.testing.assert_array_equal(saved["radius"][active], field["radius"][active])
+                    optimization_rows.append(
+                        {
+                            "previous": file_id(previous / name),
+                            "field": name,
+                            "tensor_max_absolute_difference_pa": float(np.abs(field["stress_tensor"] - before).max()),
+                            "tensor_relative_difference": float(
+                                np.linalg.norm(field["stress_tensor"] - before) / np.linalg.norm(before)
+                            ),
+                        }
+                    )
     write_json(
         args.output / "result.json",
         {
@@ -65,6 +83,7 @@ def main():
             "common_keyframe_contact_inputs_exactly_equal": True,
             "automatic_radii_exactly_equal_across_profiles": True,
             "rows": rows,
+            "optimization_field_comparison": optimization_rows,
             "peak_over_window_pa": [float(observation["peaks"].max()) for observation in observations],
             "scope": "Same rigid trajectory and source contact inputs; different prescribed finite load footprints. "
             "Stress differences against manual DPR are model differences, not physical errors. This admitted window "
