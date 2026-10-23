@@ -454,10 +454,17 @@ class RigidStressRecovery:
                 continue
             radius = qd_to_numpy(entry.contacts.radius, transpose=True)
             friction = qd_to_numpy(entry.contacts.friction, transpose=True)
+            radius_status = qd_to_numpy(entry.contacts.radius_status, transpose=True)
             for env, contact in failed[:8]:
                 code = int(status[env, contact])
+                reason = reasons[code]
+                if entry.automatic_radius is not None:
+                    if radius_status[env, contact] == 3:
+                        reason = "automatic Hertz radius unsupported at this edge or relative curvature"
+                    elif radius_status[env, contact] == 4:
+                        reason = "automatic Hertz radius requires finite compressive contact inputs"
                 details.append(
-                    f"link={entry.link.idx}, env={env}, contact={contact}, status={code}: {reasons[code]}; "
+                    f"link={entry.link.idx}, env={env}, contact={contact}, status={code}: {reason}; "
                     f"radius={radius[env, contact]:.9g} m, mu={friction[env, contact]:.9g}"
                 )
             if len(failed) > 8:
