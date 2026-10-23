@@ -10,7 +10,7 @@ from genesis.utils.array_class import V_VEC, DataKind, V, of_kind
 
 from .data import StressInfo, StressState
 from .grid import func_patch_cell, func_patch_grid
-from .surface import StressSurfaceInfo
+from .surface import StressSurfaceInfo, func_closest_triangle
 
 # The normalized dual gradient bounds relative resultant force and moment/radius.
 # Stop at 10% of the independently checked 1e-8 contact wrench budget; the final
@@ -141,38 +141,68 @@ def func_contact_sample(
         position = surface_info.positions[i_q]
         weight = surface_info.weights[i_q]
         shape = surface_info.shape[i_q % n_quadrature]
-        if contact_state.is_refined[i_c, i_b] and i_face == contact_state.anchor_face[i_c, i_b]:
+        if contact_state.is_refined[i_c, i_b]:
             weight = 0.0
     else:
-        i_face = contact_state.anchor_face[i_c, i_b]
         i_virtual = i_q - surface_info.positions.shape[0]
-        i_triangle, i_sample = i_virtual // n_quadrature, i_virtual % n_quadrature
-        local = surface_info.face_dual[i_face] @ (center - surface_info.face_origin[i_face])
-        anchor = qd.Vector([1.0 - local.sum(), local[0], local[1]])
-        inner = qd.Matrix.zero(gs.qd_float, 3, 3)
-        for i in range(3):
-            inner[i, :] = (1.0 - anchor[i]) * anchor
-            inner[i, i] += anchor[i]
-        triangle = inner
-        if i_triangle > 0:
-            i_first = (i_triangle - 1) // 2
-            i_second = (i_first + 1) % 3
-            triangle = qd.Matrix.zero(gs.qd_float, 3, 3)
-            triangle[0, i_first] = 1.0
-            triangle[1, :] = inner[i_second, :]
-            triangle[2, :] = inner[i_first, :]
-            if i_triangle % 2 == 1:
-                triangle[1, :] = qd.Vector.zero(gs.qd_float, 3)
-                triangle[1, i_second] = 1.0
-                triangle[2, :] = inner[i_second, :]
+        i_face = i_virtual // (3 * n_quadrature)
+        i_triangle = (i_virtual // n_quadrature) % 3
+        i_sample = i_virtual % n_quadrature
         n = surface_info.gauss.shape[0]
         u, v = surface_info.gauss[i_sample // n], surface_info.gauss[i_sample % n]
-        bary = triangle.transpose() @ qd.Vector([1.0 - u, u * (1.0 - v), u * v])
-        edge_first = (triangle[1, :] - triangle[0, :])[1:3] @ surface_info.face_edges[i_face]
-        edge_second = (triangle[2, :] - triangle[0, :])[1:3] @ surface_info.face_edges[i_face]
-        position = surface_info.face_origin[i_face] + bary[1:3] @ surface_info.face_edges[i_face]
-        weight = edge_first.cross(edge_second).norm() * u
-        weight *= surface_info.gauss_weights[i_sample // n] * surface_info.gauss_weights[i_sample % n]
+        closest, anchor = func_closest_triangle(i_face, center, surface_info)
+        offset = closest - center
+        remaining = radius * radius - offset.norm_sqr()
+        position = closest
+        if remaining > 0.0:
+            dual = surface_info.face_dual[i_face]
+            gradients = qd.Matrix.rows([-dual[0, :] - dual[1, :], dual[0, :], dual[1, :]])
+            contained = True
+            for i in qd.static(range(3)):
+                contained = contained and anchor[i] > qd.sqrt(remaining) * gradients[i, :].norm()
+            if contained:
+                # A full planar section uses a polar rule at the physical contact scale.
+                radial = u
+                if contact_state.hertz_profile[None]:
+                    radial = qd.sqrt(1.0 - u * u)
+                angle = 2.0 * qd.math.pi * v
+                tangent = surface_info.face_edges[i_face][0, :].normalized()
+                normal = surface_info.face_normal[i_face]
+                position = closest + qd.sqrt(remaining) * radial * (
+                    qd.cos(angle) * tangent + qd.sin(angle) * normal.cross(tangent)
+                )
+                if i_triangle == 0:
+                    weight = 2.0 * qd.math.pi * remaining * u
+            else:
+                # Positive fans partition each intersecting face. Clip each ray to the unchanged spherical support;
+                # this resolves disks crossing elastic edges/vertices without increasing their physical radius.
+                vertices = qd.Matrix.rows(
+                    [
+                        surface_info.face_origin[i_face],
+                        surface_info.face_origin[i_face] + surface_info.face_edges[i_face][0, :],
+                        surface_info.face_origin[i_face] + surface_info.face_edges[i_face][1, :],
+                    ]
+                )
+                edge_a = vertices[i_triangle, :] - closest
+                edge_b = vertices[(i_triangle + 1) % 3, :] - closest
+                direction = (1.0 - v) * edge_a + v * edge_b
+                squared = direction.norm_sqr()
+                area = edge_a.cross(edge_b).norm()
+                if squared > 0.0 and area > 0.0:
+                    projection = offset.dot(direction)
+                    discriminant = qd.sqrt(projection * projection + squared * remaining)
+                    limit = (discriminant - projection) / squared
+                    if projection >= 0.0:
+                        limit = remaining / (discriminant + projection)
+                    limit = qd.min(1.0, limit)
+                    radial, derivative = limit * u, limit
+                    if contact_state.hertz_profile[None]:
+                        radial, derivative = limit * (1.0 - u * u), 2.0 * limit * u
+                    position = closest + radial * direction
+                    weight = area * radial * derivative
+            weight *= surface_info.gauss_weights[i_sample // n] * surface_info.gauss_weights[i_sample % n]
+        local = surface_info.face_dual[i_face] @ (position - surface_info.face_origin[i_face])
+        bary = qd.Vector([1.0 - local.sum(), local[0], local[1]])
         shape = qd.Vector(
             [
                 bary[0] * (2.0 * bary[0] - 1.0),
@@ -183,37 +213,6 @@ def func_contact_sample(
                 4.0 * bary[1] * bary[2],
             ]
         )
-        # A disk contained in one triangle is integrated at its physical scale. Triangle-wide refinement cannot
-        # resolve a Hertz-sized disk several orders smaller than the elastic face; no radius enlargement is needed.
-        dual = surface_info.face_dual[i_face]
-        gradients = qd.Matrix.rows([-dual[0, :] - dual[1, :], dual[0, :], dual[1, :]])
-        contained = True
-        for i in qd.static(range(3)):
-            contained = contained and anchor[i] > radius * gradients[i, :].norm()
-        if contained:
-            radial = u
-            if contact_state.hertz_profile[None]:
-                radial = qd.sqrt(1.0 - u * u)
-            angle = 2.0 * qd.math.pi * v
-            tangent = surface_info.face_edges[i_face][0, :].normalized()
-            normal = surface_info.face_edges[i_face][0, :].cross(surface_info.face_edges[i_face][1, :]).normalized()
-            position = center + radius * radial * (qd.cos(angle) * tangent + qd.sin(angle) * normal.cross(tangent))
-            weight = 2.0 * qd.math.pi * radius * radius * u
-            weight *= surface_info.gauss_weights[i_sample // n] * surface_info.gauss_weights[i_sample % n]
-            if i_triangle > 0:
-                weight = 0.0
-            local = dual @ (position - surface_info.face_origin[i_face])
-            bary = qd.Vector([1.0 - local.sum(), local[0], local[1]])
-            shape = qd.Vector(
-                [
-                    bary[0] * (2.0 * bary[0] - 1.0),
-                    bary[1] * (2.0 * bary[1] - 1.0),
-                    bary[2] * (2.0 * bary[2] - 1.0),
-                    4.0 * bary[0] * bary[1],
-                    4.0 * bary[0] * bary[2],
-                    4.0 * bary[1] * bary[2],
-                ]
-            )
     relative = (position - center) / radius
     distance = relative.dot(relative)
     if distance < 1.0:
@@ -238,18 +237,23 @@ def func_contact_cell(
     surface_info: StressSurfaceInfo,
 ):
     start, end = 0, 0
-    if i_cell < dimensions[0] * dimensions[1] * dimensions[2]:
+    if contact_state.is_refined[i_c, i_b]:
+        center, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
+        low_face, high_face = surface_info.face_bounds_low[i_cell], surface_info.face_bounds_high[i_cell]
+        distance = qd.max(low_face - center, 0.0) + qd.max(center - high_face, 0.0)
+        if distance.norm_sqr() < radius * radius:
+            count = 3 * surface_info.shape.shape[0]
+            start = surface_info.positions.shape[0] + i_cell * count
+            end = start + count
+    elif i_cell < dimensions[0] * dimensions[1] * dimensions[2]:
         start, end = func_patch_cell(i_cell, low, dimensions, surface_info.grid)
-    elif contact_state.is_refined[i_c, i_b]:
-        start = surface_info.positions.shape[0]
-        end = start + 7 * surface_info.shape.shape[0]
     return start, end
 
 
 @qd.func
-def func_contact_index(i_entry: int, i_cell: int, dimensions: qd.types.vector(3), surface_info: StressSurfaceInfo):
+def func_contact_index(i_entry: int, surface_info: StressSurfaceInfo):
     i_q = i_entry
-    if i_cell < dimensions[0] * dimensions[1] * dimensions[2]:
+    if i_entry < surface_info.positions.shape[0]:
         i_q = surface_info.grid.samples[i_entry]
     return i_q
 
@@ -445,12 +449,15 @@ def func_pressure_warp(
             low, dimensions = func_patch_grid(center, radius, surface_info.grid)
             gram = qd.Matrix.zero(gs.qd_float, 3, 3)
             candidates = 0
-            for i_cell in range(dimensions[0] * dimensions[1] * dimensions[2] + 1):
+            n_cells = dimensions[0] * dimensions[1] * dimensions[2] + 1
+            if contact_state.is_refined[i_c, i_b]:
+                n_cells = surface_info.face_origin.shape[0]
+            for i_cell in range(n_cells):
                 start, end = func_contact_cell(i_cell, i_c, i_b, low, dimensions, contact_state, surface_info)
                 for chunk in range((end - start + 31) // 32):
                     entry = start + chunk * 32 + lane
                     if entry < end:
-                        i_q = func_contact_index(entry, i_cell, dimensions, surface_info)
+                        i_q = func_contact_index(entry, surface_info)
                         coordinates, weight, _position, _shape, _face = func_contact_sample(
                             i_q, i_c, i_b, first, second, contact_state, surface_info
                         )
@@ -501,12 +508,15 @@ def func_pressure_correct_warp(contact_state: StressContactState, surface_info: 
                     objective = gs.qd_float(0.0)
                     gradient = qd.Vector.zero(gs.qd_float, 3)
                     hessian = qd.Matrix.zero(gs.qd_float, 3, 3)
-                    for i_cell in range(dimensions[0] * dimensions[1] * dimensions[2] + 1):
+                    n_cells = dimensions[0] * dimensions[1] * dimensions[2] + 1
+                    if contact_state.is_refined[i_c, i_b]:
+                        n_cells = surface_info.face_origin.shape[0]
+                    for i_cell in range(n_cells):
                         start, end = func_contact_cell(i_cell, i_c, i_b, low, dimensions, contact_state, surface_info)
                         for chunk in range((end - start + 31) // 32):
                             entry = start + chunk * 32 + lane
                             if entry < end:
-                                i_q = func_contact_index(entry, i_cell, dimensions, surface_info)
+                                i_q = func_contact_index(entry, surface_info)
                                 coordinates, weight, _position, _shape, _face = func_contact_sample(
                                     i_q, i_c, i_b, first, second, contact_state, surface_info
                                 )
@@ -562,11 +572,13 @@ def kernel_pressure_serial(contact_state: StressContactState, surface_info: Stre
                 radius = contact_state.radius[i_c, i_b]
                 low, dimensions = func_patch_grid(center, radius, surface_info.grid)
                 n_cells = dimensions[0] * dimensions[1] * dimensions[2] + 1
+                if contact_state.is_refined[i_c, i_b]:
+                    n_cells = surface_info.face_origin.shape[0]
                 gram = qd.Matrix.zero(gs.qd_float, 3, 3)
                 for i_cell in range(n_cells):
                     start, end = func_contact_cell(i_cell, i_c, i_b, low, dimensions, contact_state, surface_info)
                     for i_entry in range(start, end):
-                        i_q = func_contact_index(i_entry, i_cell, dimensions, surface_info)
+                        i_q = func_contact_index(i_entry, surface_info)
                         coordinates, weight, _position, _shape, _face = func_contact_sample(
                             i_q, i_c, i_b, first, second, contact_state, surface_info
                         )
@@ -589,6 +601,8 @@ def kernel_pressure_correct(contact_state: StressContactState, surface_info: Str
             radius = contact_state.radius[i_c, i_b]
             low, dimensions = func_patch_grid(center, radius, surface_info.grid)
             n_cells = dimensions[0] * dimensions[1] * dimensions[2] + 1
+            if contact_state.is_refined[i_c, i_b]:
+                n_cells = surface_info.face_origin.shape[0]
             weight_sum = contact_state.weight_sum[i_c, i_b]
             coefficient = contact_state.coefficient[i_c, i_b] * weight_sum
             accepted = False
@@ -601,7 +615,7 @@ def kernel_pressure_correct(contact_state: StressContactState, surface_info: Str
                     for i_cell in range(n_cells):
                         start, end = func_contact_cell(i_cell, i_c, i_b, low, dimensions, contact_state, surface_info)
                         for i_entry in range(start, end):
-                            i_q = func_contact_index(i_entry, i_cell, dimensions, surface_info)
+                            i_q = func_contact_index(i_entry, surface_info)
                             coordinates, weight, _position, _shape, _face = func_contact_sample(
                                 i_q, i_c, i_b, first, second, contact_state, surface_info
                             )
@@ -626,7 +640,7 @@ def kernel_pressure_correct(contact_state: StressContactState, surface_info: Str
                                         i_cell, i_c, i_b, low, dimensions, contact_state, surface_info
                                     )
                                     for i_entry in range(start, end):
-                                        i_q = func_contact_index(i_entry, i_cell, dimensions, surface_info)
+                                        i_q = func_contact_index(i_entry, surface_info)
                                         coordinates, weight, _position, _shape, _face = func_contact_sample(
                                             i_q, i_c, i_b, first, second, contact_state, surface_info
                                         )
@@ -661,12 +675,14 @@ def kernel_scatter_serial(
                     contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b], surface_info.grid
                 )
                 n_cells = dimensions[0] * dimensions[1] * dimensions[2] + 1
+                if contact_state.is_refined[i_c, i_b]:
+                    n_cells = surface_info.face_origin.shape[0]
                 total = qd.Vector.zero(gs.qd_float, 3)
                 moment = qd.Vector.zero(gs.qd_float, 3)
                 for i_cell in range(n_cells):
                     start, end = func_contact_cell(i_cell, i_c, i_b, low, dimensions, contact_state, surface_info)
                     for i_entry in range(start, end):
-                        i_q = func_contact_index(i_entry, i_cell, dimensions, surface_info)
+                        i_q = func_contact_index(i_entry, surface_info)
                         coordinates, weight, position, shape, i_face = func_contact_sample(
                             i_q, i_c, i_b, first, second, contact_state, surface_info
                         )
@@ -749,8 +765,8 @@ def func_scatter_warp(
                 if distance.dot(distance) < radius * radius:
                     n_q = surface_info.shape.shape[0]
                     start, count = i_f * n_q, n_q
-                    if contact_state.is_refined[i_c, i_b] and i_f == contact_state.anchor_face[i_c, i_b]:
-                        start, count = surface_info.positions.shape[0], 7 * n_q
+                    if contact_state.is_refined[i_c, i_b]:
+                        start, count = surface_info.positions.shape[0] + i_f * 3 * n_q, 3 * n_q
                     load = qd.Matrix.zero(gs.qd_float, 6, 3)
                     for chunk in range((count + 31) // 32):
                         i_sample = chunk * 32 + lane

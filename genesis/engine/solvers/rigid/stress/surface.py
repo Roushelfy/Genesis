@@ -116,3 +116,28 @@ def kernel_surface(stress_info: StressInfo, surface_info: StressSurfaceInfo):
                 4.0 * bary[1] * bary[2],
             ]
         )
+
+
+@qd.func
+def func_closest_triangle(i_f: int, point: qd.types.vector(3), surface_info: StressSurfaceInfo):
+    """Return the closest actual triangle point and its barycentric coordinates."""
+    origin = surface_info.face_origin[i_f]
+    edges = surface_info.face_edges[i_f]
+    local = surface_info.face_dual[i_f] @ (point - origin)
+    bary = qd.Vector([1.0 - local.sum(), local[0], local[1]])
+    position = origin + local @ edges
+    if bary[0] < 0.0 or bary[1] < 0.0 or bary[2] < 0.0:
+        nearest = gs.qd_float(float("inf"))
+        vertices = qd.Matrix.rows([origin, origin + edges[0, :], origin + edges[1, :]])
+        for a in range(3):
+            b = (a + 1) % 3
+            edge = vertices[b, :] - vertices[a, :]
+            fraction = qd.min(1.0, qd.max(0.0, edge.dot(point - vertices[a, :]) / edge.dot(edge)))
+            candidate = vertices[a, :] + fraction * edge
+            squared = (candidate - point).dot(candidate - point)
+            if squared < nearest:
+                nearest = squared
+                position = candidate
+                bary = qd.Vector.zero(gs.qd_float, 3)
+                bary[a], bary[b] = 1.0 - fraction, fraction
+    return position, bary

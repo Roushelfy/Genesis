@@ -74,6 +74,7 @@ def main():
         error = None
         try:
             workload.step()
+            workload.scene.rigid_solver.check_errno()
         except gs.GenesisException as exception:
             error = str(exception)
         fields = {

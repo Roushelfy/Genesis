@@ -192,8 +192,8 @@ def func_scatter_faces(
         first, second = func_force_frame(force)
         n_q = surface.shape.shape[0]
         i_q_start, n_q_current = i_f * n_q, n_q
-        if contacts.is_refined[i_c, i_b] and i_f == contacts.anchor_face[i_c, i_b]:
-            i_q_start, n_q_current = surface.positions.shape[0], 7 * n_q
+        if contacts.is_refined[i_c, i_b]:
+            i_q_start, n_q_current = surface.positions.shape[0] + i_f * 3 * n_q, 3 * n_q
         if qd.static(reuse_moments):
             n_q_current = qd.select(contacts.status[i_c, i_b] == 0, n_q_current, 0)
         total, moment = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
