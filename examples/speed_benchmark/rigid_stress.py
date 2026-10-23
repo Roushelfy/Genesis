@@ -550,8 +550,8 @@ def main() -> None:
             if tick == args.warmup - 1 and args.scope in ("profile", "recovery") and args.radius_model == "hertz":
                 solver.update_forward_pos()
                 geometry = GeometryFrame(
-                    qd_to_numpy(solver.dyn_state.geoms.pos, transpose=True, copy=True),
-                    qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True, copy=True),
+                    np.ascontiguousarray(qd_to_numpy(solver.dyn_state.geoms.pos, transpose=True, copy=True)),
+                    np.ascontiguousarray(qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True, copy=True)),
                 )
             workload.step(action)
             if metrics is not None:

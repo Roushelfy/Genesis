@@ -120,8 +120,8 @@ def main():
         error = None
         solver = workload.scene.rigid_solver
         solver.update_forward_pos()
-        geometry_position = qd_to_numpy(solver.dyn_state.geoms.pos, transpose=True, copy=True)
-        geometry_quaternion = qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True, copy=True)
+        geometry_position = np.ascontiguousarray(qd_to_numpy(solver.dyn_state.geoms.pos, transpose=True, copy=True))
+        geometry_quaternion = np.ascontiguousarray(qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True, copy=True))
         try:
             workload.step()
             workload.scene.rigid_solver.check_errno()
@@ -192,9 +192,10 @@ def main():
             fields["geoms_quat"] = qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True, copy=True)
             fields["preintegration_geoms_pos"] = geometry_position
             fields["preintegration_geoms_quat"] = geometry_quaternion
+            np.savez_compressed(args.output / "failure.npz", **fields)
             if entry.automatic_radius is not None:
                 kernel_restore_geometry(geometry_position, geometry_quaternion, solver.dyn_state)
-                selected = np.argwhere(active & (fields["status"] != 0)).astype(gs.np_int)
+                selected = np.ascontiguousarray(np.argwhere(active & (fields["status"] != 0)), dtype=gs.np_int)
                 curvature = V_MAT(3, 3, dtype=gs.qd_float, shape=(len(selected), 2))
                 curvature_status = V(dtype=gs.qd_int, shape=(len(selected), 2))
                 kernel_failed_curvature(
