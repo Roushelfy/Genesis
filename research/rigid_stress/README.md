@@ -45,6 +45,13 @@ pressure centroid lies about75 widths from the sharp edge; the collider's
 approximately50micrometre midpoint offset is much larger than the0.60micrometre
 predicted width. Cheap load/geometry corrections need independent stress-error
 evidence; extra region-moment variables alone cannot repair this model.
+The [contact-frame and displacement checks](docs/SHARP_EDGE_PRESSURE_20261022.md#contact-frames-and-shell-displacement)
+find that using the opposing face normal increases the force ratio to0.844,
+above friction0.719. At admitted frame427, the smooth along-edge correction is
+only0.0067micrometre. Conditional local displacement at a declared positive
+depth converges to0.154micrometre, far below the collider's application offset.
+Adjacent-face contact or a separately qualified nearby-load estimate needs a
+physical comparison before changing production behavior.
 Ideal sharp edges remain singular; finite sampled peaks retain their probe depths.
 
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)

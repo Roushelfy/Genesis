@@ -1,0 +1,66 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "region": 0,
+      "contacts": [
+        0,
+        1
+      ],
+      "opposing_face_force_n": [
+        -0.02172945847486004,
+        -0.0002638367231551671,
+        0.025750091380959184
+      ],
+      "opposing_face_moment_nm": [
+        -2.0155075193429538e-06,
+        -2.929281663840682e-06,
+        -1.717308184591741e-06
+      ],
+      "opposing_face_shear_normal_ratio": 0.843921671295812,
+      "opposing_face_normalized_cone_margin": -0.09539083525896824,
+      "material_shear_normal_ratio": 0.7355327069957267,
+      "friction": 0.7191016138165071,
+      "normal_rotation_degrees": 3.8263537142890023,
+      "material_pressure_center_height_from_opposing_face_m": 7.869413924959137e-05,
+      "collision_positions_from_opposing_edge_m": [
+        [
+          3.66385630351022e-06,
+          -0.00016919209174706112,
+          0.00013032999135916971
+        ],
+        [
+          3.5396206620572744e-06,
+          -4.280056359990188e-06,
+          0.00013072329471197413
+        ]
+      ],
+      "collision_forces_in_opposing_frame_n": [
+        [
+          -0.009843769297379453,
+          -0.00012045672899879223,
+          0.011762257994610108
+        ],
+        [
+          -0.011885689177480587,
+          -0.00014337999415637483,
+          0.013987833386349074
+        ]
+      ],
+      "required_pressure_centroid_from_opposing_edge_m": [
+        0.0001137581075151729,
+        -7.827185890428776e-05
+      ],
+      "required_centroid_face_margins_m": [
+        0.0013312017999459736,
+        0.004668798200054027,
+        0.005886241892484828,
+        0.00011375810751517324
+      ],
+      "required_centroid_inside_opposing_face": true,
+      "frame_change_preserves_force_and_moment": true
+    }
+  ],
+  "scope": "Same captured force and moment expressed in the undeformed material frame and contact-time rigid opposing-face frame. A nonnegative normal-pressure distribution on one planar face requires its centroid inside that face. Changing frame alone preserves the full wrench. Deformation, contact on adjacent box faces, pressure physics and any nearby-load correction require separate checks. No native gates or fields change.",
+  "whole_goal_complete": false
+}

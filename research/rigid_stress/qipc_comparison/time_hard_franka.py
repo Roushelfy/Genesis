@@ -81,6 +81,7 @@ def main():
     cli.add_argument("--start-step", type=int, default=100)
     cli.add_argument("--steps", type=int, default=30)
     cli.add_argument("--repeats", type=int, default=3)
+    cli.add_argument("--capture-steps", type=int, nargs="*", default=[])
     args = cli.parse_args()
     assert args.start_step >= 0 and args.steps > 0 and args.repeats > 0
     args.output.mkdir(parents=True, exist_ok=False)
@@ -102,6 +103,7 @@ def main():
             "start_step": args.start_step,
             "steps": args.steps,
             "repeats": args.repeats,
+            "capture_steps": args.capture_steps,
             "scope": "Same-allocation pure-rigid/max/full, actual moving Franka and matched sharp collision/material geometry. Each timed window has continuous history from the same initial state. Native runtime acceptance, controller, dispatch and final synchronization are included. Audit reads/exports, resets and pre-window steps are outside timing. Admission is required; no physical accuracy claim. A short window does not establish full-cycle throughput. Larger batches tile the supplied condition bank.",
         },
     )
@@ -131,6 +133,11 @@ def main():
                     raise
                 if step % 32 == 0:
                     write_json(args.output / "audit-progress.json", {"batch": batch, "mode": mode, "step": step})
+                if mode != "rigid" and step in args.capture_steps:
+                    capture_output = args.output / f"capture-{mode}-b{batch}-step{step}"
+                    capture_output.mkdir()
+                    write_json(capture_output / "frame.json", capture(workload, capture_output, step))
+                    diagnose(workload, capture_output, step, True, True)
             workload.scene.rigid_solver.check_errno()
             audit_seconds = perf_counter() - begun
             audit = {key: np.stack([item[key] for item in snapshots]) for key in snapshots[0]}

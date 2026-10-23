@@ -1083,6 +1083,65 @@ load model remain possible. Next work should measure a cheap correction's
 physical pressure and complete/near-field stress response under the existing
 engineering budgets. All production gates and the original failure are retained.
 
+## Contact frames and shell displacement
+
+The next checks test two possible explanations of the frame428 mismatch:
+the choice of traction normal and elastic motion of the shell. They retain the
+same C40 engine and exact captured forces and moments. The one-face Coulomb
+condition uses the force components relative to that face's normal, consistent
+with the [Coulomb formulation](https://docs.software.vt.edu/abaqusv2025/English/SIMACAETHERefMap/simathe-c-coulombfric.htm).
+
+The contact-time opposing face normal differs from the material normal by
+3.82635 degrees. Expressing the original force in that frame increases its
+tangential/normal ratio from0.735533 to0.843922, above friction0.719102.
+Changing the normal alone therefore worsens this one-face compatibility check.
+The required normal-pressure centroid on the opposing plane is
+(113.758, -78.272) micrometres from the projected edge origin. It lies inside
+the finite face, but outside the predicted submicrometre-wide footprint.
+Both transformations preserve the complete original wrench. Contact involving
+the adjacent box face remains a separate possibility requiring its own geometry
+and pressure checks.
+
+An untimed replay captures admitted frames419,420,427 immediately before the
+same native frame428 refusal. In environment0, all four physical regions have
+sharp-edge profiles. The following maxima use the actual accepted regular P2
+displacement plus the far displacement of other regions. A mass-weighted rigid
+translation/rotation is removed from regular plus nodal particular displacement.
+The local self-contact field is excluded from these smooth corrections.
+
+| Frame | Maximum smooth normal rotation (degrees) | Maximum along-edge center shift (micrometres) | Maximum smooth normal displacement (micrometres) |
+| --- | ---: | ---: | ---: |
+| 419 | 0.000468632 | 0.0567423 | 0.280415 |
+| 420 | 0.000245830 | 0.0297313 | 0.144903 |
+| 427 | 0.0000532190 | 0.00670722 | 0.0331188 |
+
+These values use four point sources matching the pressure second moments.
+Replacing them with a single source changes rotation by at most5.99e-9 degrees
+and displacement by1.68e-13m. Mass-projection residuals stay below1.6e-15.
+The measured smooth correction cannot account for the approximately79micrometre
+longitudinal centroid shift. This comparison bounds neither the self-contact
+surface gradient nor a different adjacent-face contact state.
+
+Separately, Boussinesq/Cerruti displacement integration uses the reconstructed
+frame428 pressure and proportional shear at its pressure centroid. At positive
+depths0.1 and0.01 times the0.598608micrometre width, the displacement norms are
+0.146983 and0.153620micrometres, respectively. At the shallower5.986nm probe,
+orders48/96/192/384 give0.153788/0.153611/0.153620/0.153620micrometres.
+The final vector refinement changes by8.69e-7 relative. Force normalization and
+pressure centroid checks pass. This conditional estimate is far smaller than
+the approximately50micrometre collider application offset. Its pressure and
+proportional-shear assumptions retain the original force-cone incompatibility,
+so it supplies a displacement scale rather than a physically admitted solution.
+Exact surface limits and sharp-edge stress peaks retain their separate scope.
+
+The [contact-frame and displacement packet](../evidence/20261019-qualified-ranking/edge-shell-transition-v1/README.md)
+contains five terminal campaigns, captured analysis sources, the native refusal,
+and the quadrature refinements. All elastic exports occur in the untimed audit.
+The next physical comparison must check adjacent-face contact or explicitly
+qualified nearby load/support estimates. Small smooth shell motion and a simple
+normal swap are insufficient explanations. Useful full-cycle admission and
+complete-field physical accuracy remain open.
+
 ## Remaining physical and integration limits
 
 The edge pressure behaves as`x^(-lambda)`. Its pointwise loaded-edge limit is
