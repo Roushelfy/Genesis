@@ -4,8 +4,32 @@ import quadrants as qd
 
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.contact import StressContactState, func_force_frame, func_patch_sample
+from genesis.engine.solvers.rigid.stress.automatic_radius import func_estimate_radius
 from genesis.engine.solvers.rigid.stress.grid import func_patch_cell, func_patch_grid
 from genesis.engine.solvers.rigid.stress.surface import StressSurfaceInfo
+from genesis.utils import array_class
+
+
+@qd.kernel
+def kernel_estimate_radii(
+    contacts: StressContactState,
+    collider: array_class.ColliderState,
+    dyn: array_class.DynState,
+    info: qd.template(),
+):
+    for i_c, i_b in qd.ndrange(contacts.valid.shape[0], contacts.valid.shape[1]):
+        if contacts.valid[i_c, i_b]:
+            source = collider.contact_sort_idx[i_c, i_b]
+            func_estimate_radius(i_c, i_b, source, contacts, collider, dyn, info)
+
+
+@qd.kernel
+def kernel_restore_geometry(position: qd.types.ndarray(), quaternion: qd.types.ndarray(), dyn: array_class.DynState):
+    for i_g, i_b in qd.ndrange(dyn.geoms.pos.shape[0], dyn.geoms.pos.shape[1]):
+        for axis in qd.static(range(3)):
+            dyn.geoms.pos[i_g, i_b][axis] = position[i_b, i_g, axis]
+        for axis in qd.static(range(4)):
+            dyn.geoms.quat[i_g, i_b][axis] = quaternion[i_b, i_g, axis]
 
 
 @qd.kernel

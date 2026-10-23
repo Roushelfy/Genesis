@@ -14,6 +14,7 @@ import sys
 import time
 from dataclasses import asdict
 from pathlib import Path
+from typing import NamedTuple
 
 import numpy as np
 import quadrants as qd
@@ -22,7 +23,13 @@ import torch
 import genesis as gs
 from examples.rigid.franka_egg_stress import FrankaEgg
 from examples.speed_benchmark.rigid_stress_metrics import RolloutMetrics
-from examples.speed_benchmark.stress_stages import kernel_query, kernel_small_solve, kernel_weights_gram
+from examples.speed_benchmark.stress_stages import (
+    kernel_estimate_radii,
+    kernel_query,
+    kernel_restore_geometry,
+    kernel_small_solve,
+    kernel_weights_gram,
+)
 from genesis.engine.solvers.rigid.stress.association import kernel_associate
 from genesis.engine.solvers.rigid.stress.balance import kernel_balance_contacts
 from genesis.engine.solvers.rigid.stress.contact import (
@@ -89,7 +96,12 @@ def restore_frame(workload: FrankaEgg) -> None:
     )
 
 
-def prepare_recovery_snapshot(workload: FrankaEgg) -> dict:
+class GeometryFrame(NamedTuple):
+    position: np.ndarray
+    quaternion: np.ndarray
+
+
+def prepare_recovery_snapshot(workload: FrankaEgg, geometry: GeometryFrame | None = None) -> dict:
     """Check the independent recovery route before timing its frozen input."""
     solver = workload.scene.rigid_solver
     entry = solver.stress_recovery.links[0]
@@ -99,6 +111,9 @@ def prepare_recovery_snapshot(workload: FrankaEgg) -> dict:
     original_wrench_force = qd_to_numpy(entry.contacts.force, transpose=True, copy=True)
     original_radius = qd_to_numpy(entry.contacts.radius, transpose=True, copy=True)
     restore_frame(workload)
+    if entry.automatic_radius is not None:
+        assert geometry is not None
+        kernel_restore_geometry(geometry.position, geometry.quaternion, solver.dyn_state)
     solver.stress_recovery.recover(0)
     qd.sync()
     solver.check_errno()
@@ -187,8 +202,8 @@ def prepare_recovery_snapshot(workload: FrankaEgg) -> dict:
     }
 
 
-def profile(workload: FrankaEgg, repetitions: int) -> dict:
-    snapshot_check = prepare_recovery_snapshot(workload)
+def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | None) -> dict:
+    snapshot_check = prepare_recovery_snapshot(workload, geometry)
     recovery = workload.scene.rigid_solver.stress_recovery
     entry = recovery.links[0]
     solver = workload.scene.rigid_solver
@@ -258,6 +273,10 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
         ),
         "accept": lambda: kernel_accept(entry.state, entry.contacts, solver._errno),
     }
+    if entry.automatic_radius is not None:
+        stages["automatic_radius_only"] = lambda: kernel_estimate_radii(
+            entry.contacts, solver.collider.collider_state, solver.dyn_state, entry.automatic_radius
+        )
     if entry.reuse_contact_moments:
         # These stages share current-footprint scratch and must refresh together.
         stages = {
@@ -359,7 +378,8 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
         "full_surface_samples": entry.surface.info.positions.shape[0],
         "complete_residual_N": np.sqrt(qd_to_numpy(entry.state.residual_norm_squared)).tolist(),
         "rhs_norm_N": np.sqrt(qd_to_numpy(entry.state.rhs_norm_squared)).tolist(),
-        "profiler_note": "Captured Quadrants graphs are omitted by the kernel profiler; stage wall times include them.",
+        "profiler_note": "Captured Quadrants graphs are omitted by the kernel profiler; stage wall times include them. "
+        "automatic_radius_only also belongs to association_transform; stage timings are not additive.",
     }
 
 
@@ -516,6 +536,7 @@ def main() -> None:
     policy_error_rad = 0.0
     with torch.inference_mode():
         quality = []
+        geometry = None
         for tick in range(args.warmup):
             action = None
             if args.scope.startswith("policy"):
@@ -526,6 +547,12 @@ def main() -> None:
                     difference = (action.to(dtype=torch.float64) - expected).abs().max().item()
                     policy_error_rad = max(policy_error_rad, 1e-4 * difference)
                     assert policy_error_rad < 1e-9
+            if tick == args.warmup - 1 and args.scope in ("profile", "recovery") and args.radius_model == "hertz":
+                solver.update_forward_pos()
+                geometry = GeometryFrame(
+                    qd_to_numpy(solver.dyn_state.geoms.pos, transpose=True, copy=True),
+                    qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True, copy=True),
+                )
             workload.step(action)
             if metrics is not None:
                 metrics.record()
@@ -716,13 +743,13 @@ def main() -> None:
         }
         policy_reference = None
         if args.scope == "profile":
-            result.update(profile(workload, args.steps))
+            result.update(profile(workload, args.steps, geometry))
         else:
             if args.scope == "recovery":
                 prepare_start = time.perf_counter()
                 # Live warmup may only compile the combined rigid-post graph.
                 # Compile/capture this standalone path before timing its repeats.
-                result["recovery_snapshot_check"] = prepare_recovery_snapshot(workload)
+                result["recovery_snapshot_check"] = prepare_recovery_snapshot(workload, geometry)
                 result["recovery_preparation_steps"] = 1
                 result["recovery_preparation_seconds_including_JIT"] = time.perf_counter() - prepare_start
                 result["recovery_input"] = "Frozen actual contact snapshot with its matching pre-integration frame."
