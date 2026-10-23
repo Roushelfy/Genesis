@@ -416,20 +416,34 @@ def kernel_hertz_residual_traction(
                                 if is_source:
                                     cross = first.cross(second).norm()
                                     if cross > 0:
-                                        # Equal angles resolve the narrow fan next to a face edge.
-                                        angle = qd.atan2(cross, first.dot(second))
-                                        theta = angle * v
-                                        denominator = first.norm() * qd.sin(theta) + second.norm() * qd.sin(
-                                            angle - theta
-                                        )
-                                        v = first.norm() * qd.sin(theta) / denominator
-                                        angular_derivative = angle * cross / (denominator * denominator)
+                                        # Hyperbolic edge coordinates resolve the inverse-distance traction.
+                                        chord = second - first
+                                        fraction = -first.dot(chord) / chord.norm_sqr()
+                                        height = cross / chord.norm_sqr()
+                                        bounds = qd.Vector([-fraction / height, (1 - fraction) / height])
+                                        for i in qd.static(range(2)):
+                                            value = bounds[i]
+                                            bounds[i] = qd.select(value < 0, -1.0, 1.0) * qd.log(
+                                                qd.abs(value) + qd.sqrt(1 + value * value)
+                                            )
+                                        span = bounds[1] - bounds[0]
+                                        exponential = qd.exp(bounds[0] + span * v)
+                                        v = fraction + height * (exponential - 1 / exponential) / 2
+                                        angular_derivative = height * span * (exponential + 1 / exponential) / 2
                             radius, derivative = u, gs.qd_float(1.0)
                             if not is_source:
                                 length = ((1 - v) * first + v * second).norm()
                                 denominator = length * (1 - u) + distance * u
                                 radius = distance * u / denominator
                                 derivative = distance * length / (denominator * denominator)
+                                if qd.static(is_curved):
+                                    if length > distance:
+                                        # The rational map has an unresolved far-end layer as distance vanishes.
+                                        ratio = length / distance
+                                        span = qd.log(ratio + qd.sqrt(1 + ratio * ratio))
+                                        exponential = qd.exp(span * u)
+                                        radius = (exponential - 1 / exponential) / (2 * ratio)
+                                        derivative = span * (exponential + 1 / exponential) / (2 * ratio)
                             sample_bary = bary + radius * ((1 - v) * first_bary + v * second_bary - bary)
                             position = closest + radius * ((1 - v) * first + v * second)
                             measure = first.cross(second).norm()
