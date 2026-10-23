@@ -1,5 +1,19 @@
 # Rigid-stress data and artifact locations
 
+The `hard-native-surface-basis-v1` packet retains302 compact payloads
+(2,055,379 bytes) and332 external receipts from six terminal campaigns.
+The surface-basis trials, corrected source tests, profiles, B4/B64 paired
+timings and frame428 replay use the restored data root below in
+`hard-native-surface-geometry-*`, `hard-native-surface-unroll-*` and
+`hard-native-surface-basis-tests-v1`. Source inventories, logs, full fields
+and generated test assets have explicit data-side destinations. Scientific
+work uses Slurm `rtx-mid`, image `1_26`, the existing physical environment
+and private node caches; paired timing now namespaces Genesis/Quadrants
+caches by source path within each allocation. All52 source heads and12
+original unfinished files are preserved. Three isolated source checkouts
+stay in workspace, with the two later ones using sparse checkout. No new
+home fallback output, data migration or environment changes occurred.
+
 The `box-corner-sliding428-v1` packet retains243 compact payloads
 (1,544,585 bytes) and50 external receipts from five terminal campaigns.
 Contact-motion captures, prescribed-sliding controls, graded-grid fields and

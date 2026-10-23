@@ -91,6 +91,17 @@ persist as limitations despite improved conditional finite-depth fields.
 The original frictionless default arrays remain exactly unchanged. This optional
 control supplies no new runtime admission or qualified physical stress error.
 
+The [fixed surface-basis specialization](docs/SHARP_EDGE_PRESSURE_20261022.md#fixed-quadratic-surface-basis-specialization)
+retains the quadratic geometry formula while specializing its six nodes and
+vertex/edge branches. CPU/GPU curved-field controls and14 source/provenance
+regressions pass after repairing a stale test fixture. Source-paired max/full
+scene medians decrease0.97%/0.30% atB4 and1.03%/1.24% atB64; B4 repeat ranges
+overlap, so this remains a modest measured candidate. Public observations pass,
+stricter raw field differences remain recorded, and frame428 still rejects.
+Primary campaigns now isolate Genesis/Quadrants caches by source checkout even
+inside a shared allocation. The prior cooperative-root performance result and
+physical-reference limitations remain the main established evidence.
+
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)
 identifies the ground's184micrometre offset as the collider's half-penetration
 application point. Refined collision geometry and grouped sources reduce the

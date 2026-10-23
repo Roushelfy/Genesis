@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "command": [
+    "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "-m",
+    "pytest",
+    "-n",
+    "0",
+    "--backend",
+    "cuda",
+    "-q",
+    "-o",
+    "cache_dir=/tmp/gs-shell-compare.lYSh0L/tmp/source-bounds-pytest-cache",
+    "--basetemp",
+    "/tmp/gs-shell-compare.lYSh0L/tmp/source-bounds-pytest-temp",
+    "--junitxml",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-native-surface-basis-tests-v1/group1/bounds/tests.xml",
+    "tests/rigid/test_stress_sources.py",
+    "tests/rigid/test_stress_nonconvex.py::test_native_source_provenance_ambiguity_and_offset_wrench"
+  ],
+  "test_sources": [
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_surface_basis/tests/rigid/test_stress_sources.py",
+      "bytes": 16368,
+      "sha256": "29b392871aea08d0788532e381987e7145725962628cfde534f6497f87c2722c"
+    },
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_surface_basis/tests/rigid/test_stress_nonconvex.py",
+      "bytes": 16200,
+      "sha256": "e04e18209b65f1f82b3ceb111261d68718bb30591d17a689b753a31e54ef4592"
+    }
+  ],
+  "returncode": 0
+}

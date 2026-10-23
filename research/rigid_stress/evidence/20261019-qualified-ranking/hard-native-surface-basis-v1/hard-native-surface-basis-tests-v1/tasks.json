@@ -1,0 +1,26 @@
+[
+  [
+    {
+      "name": "bounds",
+      "module": "research.rigid_stress.qipc_comparison.check_source_bounds",
+      "args": [
+        "--backend",
+        "cpu",
+        "--source",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_surface_basis"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "bounds",
+      "module": "research.rigid_stress.qipc_comparison.check_source_bounds",
+      "args": [
+        "--backend",
+        "cuda",
+        "--source",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/hard_contact_surface_basis"
+      ]
+    }
+  ]
+]

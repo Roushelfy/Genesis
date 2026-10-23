@@ -1600,3 +1600,87 @@ coarse and refined arrays by external receipts, and fixed-force integration
 checks. All49 engine heads and12 original unfinished files are preserved.
 All new runtime data and logs use the restored data root. These optional
 local controls change no production solver, tolerance or acceptance behavior.
+
+## Fixed quadratic surface-basis specialization
+
+The separate profile identifies repeated quadratic material geometry in both
+boundary traction and source resolution. Candidate `4fe6c6af1` specializes the
+six-node loop and the corner/midpoint branch at compilation; the formula,
+node order, iteration counts and acceptance thresholds remain unchanged.
+No state, geometric cache, quadrature rule or model option is added.
+Final source `38583bb26` has identical engine and example files and additionally
+repairs a test fixture. It remains an isolated measured candidate.
+
+The initial `8b2996d21` attempt specialized only the loop. Its runtime branch
+still compiled invalid negative matrix indices for corner nodes. Both native
+controls and the subsequent profile candidate failed at compilation, and all
+three failures remain archived. The corrected specialization passes CPU/GPU
+curved-source controls using analytic and estimated P2 geometry, complete
+corners,89 material probes, max/full output, rejected-environment isolation,
+release and recovery. The maximum retained probe-reference tensor error is
+2.2291e-5 and sampled tensile-peak error4.3521e-4 relatively. These are existing
+supplied-load elasticity controls, not independent pressure accuracy.
+
+The original source/nonconvex pytest run then reports5 passes and2 failures
+per backend. Both failures occur during fixture construction: the old
+`StressSourceVertexInfo` fixture lacks the four search-bound arrays introduced
+by the earlier vertex-search optimization. The corrected fixture allocates
+the existing four-vertex block/coarse bounds and initializes them with the
+production builder. Original numerical and ambiguity assertions remain intact.
+CPU and CUDA each pass all7 tests afterward. These failures and fixes are
+separate from the quadratic-geometry implementation.
+
+In one separately profiled allocation, boundary traction changes7.260ms to
+7.182ms, source resolution4.126ms to4.009ms. Instrumented scene time changes
+40.394ms to39.978ms. This profile includes instrumentation overhead and does
+not supply primary throughput. The first failed specialization reaches its own
+compilation error after the baseline executes in the same allocation.
+The primary runner now additionally assigns separate Genesis and
+Quadrants cache subdirectories to each source checkout within an allocation.
+It retains private node scratch and reuses each source's own cache across tasks.
+
+Primary timing retains64-bit precision, surface order16, continuous history
+from0, admission audits0--129 and three profiler-off repeats of100--129.
+Each batch compares baseline `03ee8b02a` and candidate `38583bb26` on the same
+GPU. B64 tiles the four starting conditions16 times. Controller, dispatch,
+required runtime checks and final synchronization remain inside each timing.
+
+| Batch | Engine | Pure rigid ms/step | Max ms/step | Full ms/step | Max/full env-step/s |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 4 | baseline | 2.559 | 30.143 | 29.851 | 132.70 /134.00 |
+| 4 | candidate | 2.545 | 29.851 | 29.761 | 134.00 /134.40 |
+| 64 | baseline | 2.859 | 50.413 | 50.624 | 1269.52 /1264.23 |
+| 64 | candidate | 2.875 | 49.891 | 49.997 | 1282.80 /1280.07 |
+
+Observed max/full median reductions are0.969%/0.301% atB4 and
+1.035%/1.237% atB64. B4 repeat ranges overlap for both stress modes; B64
+candidate ranges lie below the baseline ranges in this allocation. Three
+blocks are not a confidence interval or a portable speedup guarantee.
+Preparation and audit costs are retained separately. Even pure-rigid
+preparation changes92.3s to75.0/75.3s despite no relevant geometry change,
+so these sequential measurements do not isolate a compilation-time benefit.
+This small trial provides no reason to relax physical or admission gates.
+
+Public position, peak and validity observations pass their unchanged checks,
+with360/5760 admitted timed environment steps and520/8320 audited environment
+steps per stress mode. The separate130-frame full-field comparison retains
+all discrete statuses and original raw1e-9 relative/1e-12 absolute criteria.
+Those strict criteria still fail for probe barycentrics in128 frames,
+corner tensors in128, probe tensors in21 and recovery wrench error in24.
+Maximum differences are3.49e-12 in barycentrics,1.87e-6Pa in corner tensors,
+1.162Pa in probe tensors and2.05e-9 in dimensionless wrench error. Maximum
+probe-tensor relative L2 difference is1.47e-10. These failures remain visible
+alongside the public-output checks; neither supplies independent physical error.
+
+A separate continuous429-step capture admits all0--427 and reproduces the
+original frame428 refusal `[False, True, True, True]` with input status
+`[32, 0, 0, 0]`. The candidate preserves this known model limitation.
+Further throughput work should target the remaining source-projection and
+traction operations from their measured costs. Local basis specialization
+alone changes the complete cost only slightly.
+
+The [surface-basis packet](../evidence/20261019-qualified-ranking/hard-native-surface-basis-v1/README.md)
+retains six terminal campaigns, original failures, corrected tests, exact
+source inventories, profile files, complete field differences and primary
+timing samples. All52 source heads and12 original unfinished files are
+preserved. Runtime arrays and logs remain under the restored data root.
