@@ -124,6 +124,15 @@ component speedup therefore differs from complete-scene and batch scaling.
 Public observations pass, while strict raw barycentric/corner differences and
 the original frame428 refusal remain recorded. Physical qualification remains open.
 
+The [larger-batch study](docs/SHARP_EDGE_PRESSURE_20261022.md#larger-batch-throughput-and-process-memory)
+measures B256/B1024 with separate process-memory runs and passing public output
+comparisons. B1024 max/full reach 2420 / 2412 env-step/s;
+fresh-process sampled GPU peaks are 11.55 / 14.71 GiB.
+The batches tile four starting conditions and cover the admitted 100--129 window;
+they do not establish the best batch, diverse-population or full-cycle throughput.
+Loaded/sharp timed counters now include all repeats; older timing and admission
+values remain valid and archived unchanged. Engine code and physical limits are unchanged.
+
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)
 identifies the ground's184micrometre offset as the collider's half-penetration
 application point. Refined collision geometry and grouped sources reduce the

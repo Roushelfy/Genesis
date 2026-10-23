@@ -1,0 +1,23 @@
+{
+  "time": "2026-10-23T16:24:47.300810+00:00",
+  "input": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling256-v1/group0/memory-full/result.json",
+    "bytes": 634370,
+    "sha256": "2504445a65f3f2e42aa237a893dbbf6949e668d02683d02b4a79e19e0d46700b"
+  },
+  "observed_b256_gpu_peak_mib": 5552,
+  "observed_b256_process_max_rss_kib": 9877168,
+  "b256_driver_memory_after_repeats": {
+    "device_free_bytes": 96030162944,
+    "device_total_bytes": 101975851008,
+    "torch_allocated_bytes": 918528,
+    "torch_reserved_bytes": 23068672,
+    "host_maximum_rss_kib": 9877168,
+    "scope": "Outside timing; device-wide free memory and Torch allocator counters are distinct. Host high-water RSS includes earlier modes in this process. Fresh-process sampling supplies separate memory peaks."
+  },
+  "fourfold_gpu_bytes": 23286775808,
+  "fourfold_host_rss_bytes": 40456880128,
+  "next_trial_batch": 1024,
+  "next_trial_host_memory_gib": 48,
+  "scope": "Measured B256 full admission and memory support a bounded B1024 trial. Fourfold extrapolation selects resources; actual B1024 memory and admission still require measurement. Sampler rates remain separate from primary timing."
+}

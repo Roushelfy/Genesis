@@ -3,11 +3,13 @@
 import argparse
 from dataclasses import asdict
 from pathlib import Path
+import resource
 from time import perf_counter
 from xml.etree import ElementTree
 
 import numpy as np
 import quadrants as qd
+import torch
 
 import genesis as gs
 from examples.rigid.franka_egg_stress import FrankaEgg
@@ -78,12 +80,14 @@ def main():
     for name in ["stress-mesh", "collision-urdf", "conditions", "output"]:
         cli.add_argument("--" + name, type=Path, required=True)
     cli.add_argument("--batches", type=int, nargs="+", default=[4])
+    cli.add_argument("--modes", choices=["rigid", "max", "full"], nargs="+", default=["rigid", "max", "full"])
     cli.add_argument("--start-step", type=int, default=100)
     cli.add_argument("--steps", type=int, default=30)
     cli.add_argument("--repeats", type=int, default=3)
     cli.add_argument("--capture-steps", type=int, nargs="*", default=[])
     args = cli.parse_args()
     assert args.start_step >= 0 and args.steps > 0 and args.repeats > 0
+    modes = [mode for mode in ["rigid", "max", "full"] if mode in args.modes]
     args.output.mkdir(parents=True, exist_ok=False)
     write_json(
         args.output / "start.json",
@@ -100,6 +104,7 @@ def main():
                 )
             ],
             "batches": args.batches,
+            "modes": modes,
             "start_step": args.start_step,
             "steps": args.steps,
             "repeats": args.repeats,
@@ -112,7 +117,7 @@ def main():
     horizon = args.start_step + args.steps
     for batch in args.batches:
         audits = {}
-        for mode in ["rigid", "max", "full"]:
+        for mode in modes:
             begun = perf_counter()
             workload = build_workload(args, batch, mode)
             preparation = perf_counter() - begun
@@ -142,9 +147,9 @@ def main():
             audit_seconds = perf_counter() - begun
             audit = {key: np.stack([item[key] for item in snapshots]) for key in snapshots[0]}
             np.savez_compressed(args.output / f"{mode}-b{batch}-audit.npz", **audit)
-            if mode != "rigid":
+            if mode != "rigid" and "rigid" in audits:
                 compare(audits["rigid"], audit)
-            if mode == "full":
+            if mode == "full" and "max" in audits:
                 compare(audits["max"], audit)
             audits[mode] = audit
             samples = []
@@ -162,6 +167,9 @@ def main():
                 compare(snapshots[-1], observe(workload, mode))
             entry = workload.scene.rigid_solver.stress_recovery.links[0] if mode != "rigid" else None
             median = float(np.median(samples))
+            free, total = torch.cuda.mem_get_info()
+            loaded_window = int(audit["loaded"][args.start_step :].sum()) if entry is not None else None
+            sharp_window = int(audit["sharp_edge"][args.start_step :].sum()) if entry is not None else None
             row = {
                 "batch": batch,
                 "mode": mode,
@@ -175,19 +183,27 @@ def main():
                 "admitted_timed_environment_steps": args.steps * batch * args.repeats if entry is not None else None,
                 "surface_quadrature": entry.surface.info.gauss.shape[0] if entry is not None else None,
                 "friction_penalty": entry.hertz.friction.penalty if entry is not None else None,
-                "loaded_timed_environment_steps": int(audit["loaded"][args.start_step :].sum())
-                if entry is not None
-                else None,
-                "sharp_timed_environment_steps": int(audit["sharp_edge"][args.start_step :].sum())
-                if entry is not None
-                else None,
+                "loaded_window_environment_steps": loaded_window,
+                "sharp_window_environment_steps": sharp_window,
+                "loaded_timed_environment_steps": loaded_window * args.repeats if entry is not None else None,
+                "sharp_timed_environment_steps": sharp_window * args.repeats if entry is not None else None,
+                "memory_after_repeats": {
+                    "device_free_bytes": free,
+                    "device_total_bytes": total,
+                    "torch_allocated_bytes": torch.cuda.memory_allocated(),
+                    "torch_reserved_bytes": torch.cuda.memory_reserved(),
+                    "host_maximum_rss_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+                    "scope": "Outside timing; device-wide free memory and Torch allocator counters are distinct. Host high-water RSS includes earlier modes in this process. Fresh-process sampling supplies separate memory peaks.",
+                },
             }
             rows.append(row)
             write_json(args.output / "progress.json", {"rows": rows})
             workload.scene.destroy()
-        rigid = rows[-3]["median_seconds"]
-        for row in rows[-2:]:
-            row["added_seconds_per_scene_step"] = row["median_seconds"] - rigid
+        if "rigid" in modes:
+            current = [row for row in rows if row["batch"] == batch]
+            rigid = current[0]["median_seconds"]
+            for row in current[1:]:
+                row["added_seconds_per_scene_step"] = row["median_seconds"] - rigid
     write_json(args.output / "result.json", {"passed": True, "rows": rows, "whole_goal_complete": False})
 
 

@@ -1,0 +1,106 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "mode": "rigid",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling1024-v1/group0/baseline/rigid-b1024-audit.npz",
+        "bytes": 15060,
+        "sha256": "e126f950ba83c8204078a89f99669bc1d2b8cc747b723a10e8e1914d9779da81"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling1024-v1/group0/candidate/rigid-b1024-audit.npz",
+        "bytes": 15060,
+        "sha256": "e126f950ba83c8204078a89f99669bc1d2b8cc747b723a10e8e1914d9779da81"
+      },
+      "frames": 130,
+      "batch": 1024,
+      "repeated_count_audits": [
+        {
+          "result": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling1024-v1/group0/baseline/result.json",
+            "bytes": 4382,
+            "sha256": "425130364c5c74bda7dd23832a4ca0b5615c3d939be6372fd7152fcd713f1545"
+          },
+          "repeats": 3
+        },
+        {
+          "result": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling1024-v1/group0/candidate/result.json",
+            "bytes": 4383,
+            "sha256": "35a6358d7f6ecce44f9ada0ea092d2c494e9ecffc0de61bcb5997ec230837aed"
+          },
+          "repeats": 3
+        }
+      ]
+    },
+    {
+      "mode": "max",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling1024-v1/group0/baseline/max-b1024-audit.npz",
+        "bytes": 226104,
+        "sha256": "c64c7b7fcdf478001caf96ece86b3e214c3efb74d4bf2a0ee3c34438bef30db8"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling1024-v1/group0/candidate/max-b1024-audit.npz",
+        "bytes": 221022,
+        "sha256": "b1c7e05af3489e596abfd67585bb641bebdcc35a0dd3e593d0ab1f689b62c72b"
+      },
+      "frames": 130,
+      "batch": 1024,
+      "repeated_count_audits": [
+        {
+          "result": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling1024-v1/group0/baseline/result.json",
+            "bytes": 4382,
+            "sha256": "425130364c5c74bda7dd23832a4ca0b5615c3d939be6372fd7152fcd713f1545"
+          },
+          "repeats": 3
+        },
+        {
+          "result": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling1024-v1/group0/candidate/result.json",
+            "bytes": 4383,
+            "sha256": "35a6358d7f6ecce44f9ada0ea092d2c494e9ecffc0de61bcb5997ec230837aed"
+          },
+          "repeats": 3
+        }
+      ]
+    },
+    {
+      "mode": "full",
+      "baseline": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling1024-v1/group0/baseline/full-b1024-audit.npz",
+        "bytes": 227429,
+        "sha256": "bbd5b83e48dbfa18f330462910adf3c83aad0aac83e6ee501140c1f540f8e54b"
+      },
+      "candidate": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling1024-v1/group0/candidate/full-b1024-audit.npz",
+        "bytes": 225215,
+        "sha256": "451103e5c2b006728e9c66d6bd140b5b69b40ac9099efb6bbf5b4250fcbd3405"
+      },
+      "frames": 130,
+      "batch": 1024,
+      "repeated_count_audits": [
+        {
+          "result": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling1024-v1/group0/baseline/result.json",
+            "bytes": 4382,
+            "sha256": "425130364c5c74bda7dd23832a4ca0b5615c3d939be6372fd7152fcd713f1545"
+          },
+          "repeats": 3
+        },
+        {
+          "result": {
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-batch-scaling1024-v1/group0/candidate/result.json",
+            "bytes": 4383,
+            "sha256": "35a6358d7f6ecce44f9ada0ea092d2c494e9ecffc0de61bcb5997ec230837aed"
+          },
+          "repeats": 3
+        }
+      ]
+    }
+  ],
+  "scope": "Existing paired-timer public checks across engine sources: position absolute 1e-12m, stress relative 1e-7/absolute 1e-6Pa, exact validity/load/edge/status masks and infinite maxima. Separate raw full-field diagnostics retain their original criteria and outcomes.",
+  "whole_goal_complete": false
+}

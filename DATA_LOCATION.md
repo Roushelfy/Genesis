@@ -1,5 +1,15 @@
 # Rigid-stress data and artifact locations
 
+The `hard-batch-scaling-v1` packet retains 158 compact payloads
+(1,057,402 bytes) and 22 external receipts from two completed campaigns.
+Primary B256/B1024 timings, fresh-process GPU polls, audits and logs remain in
+the restored data root below under `hard-batch-scaling256-v1` and
+`hard-batch-scaling1024-v1`. Scientific execution used Slurm `rtx-mid`, image
+`1_26`, the existing data-side environment and source-private node caches.
+No engine checkout moved or changed; all 54 frozen source heads and 12 original
+unfinished files remain preserved. Source/docs and compact evidence stay in
+workspace. No new home fallback output, data migration or environment change occurred.
+
 The `hard-source-warps-v1` packet retains256 compact payloads
 (1,674,747 bytes) and332 external receipts from four terminal campaigns.
 Complete-source query arrays, CPU/GPU controls, paired profiles and B4/B64
