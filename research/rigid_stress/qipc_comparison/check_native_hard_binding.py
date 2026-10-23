@@ -3,6 +3,7 @@
 import argparse
 import json
 from pathlib import Path
+from time import perf_counter
 
 import numpy as np
 import quadrants as qd
@@ -99,6 +100,11 @@ def main():
     cli.add_argument("--transform-world", action="store_true")
     cli.add_argument("--geometry-only", action="store_true")
     cli.add_argument("--require-admission", action="store_true")
+    cli.add_argument("--timing-steps", type=int, default=0)
+    cli.add_argument("--timing-repeats", type=int, default=5)
+    cli.add_argument("--profile", action="store_true")
+    cli.add_argument("--batch-repeat", type=int, default=1)
+    cli.add_argument("--compare-binding", type=Path)
     for name in ["frame", "boundaries", "geometry", "raw-contacts", "mesh", "reference", "output"]:
         cli.add_argument("--" + name, type=Path, required=True)
     args = cli.parse_args()
@@ -110,6 +116,7 @@ def main():
             "duplicate_active_environment_for_isolation": args.duplicate_active,
             "transformed_world_frames": args.transform_world,
             "geometry_diagnostic_only": args.geometry_only,
+            "condition_bank_repetitions": args.batch_repeat,
             "inputs": [
                 file_id(p)
                 for p in [args.frame, args.boundaries, args.geometry, args.raw_contacts, args.mesh, args.reference]
@@ -155,6 +162,28 @@ def main():
         frame["region_center_m"] += translations[:, None]
         for key in ["normal", "tangent"]:
             bounds[key] = np.einsum("bij,bcj->bci", rotations.as_matrix(), bounds[key])
+    assert args.batch_repeat > 0
+    if args.batch_repeat > 1:
+        for key in [
+            "contact_valid",
+            "contact_force_n",
+            "contact_position_m",
+            "contact_normal",
+            "source_witness_m",
+            "source_geom",
+            "source_pair",
+            "frame_position_m",
+            "frame_quaternion",
+            "region_center_m",
+            "region_curvature_per_m",
+            "region_status",
+        ]:
+            frame[key] = np.concatenate([frame[key]] * args.batch_repeat, axis=0)
+        for key in ["normal", "tangent", "planes", "count"]:
+            bounds[key] = np.concatenate([bounds[key]] * args.batch_repeat, axis=0)
+        for key in ["sort_idx", "geom_a", "geom_b", "friction"]:
+            raw[key] = np.concatenate([raw[key]] * args.batch_repeat, axis=0)
+        batch *= args.batch_repeat
     gs.init(backend=gs.cpu if args.backend == "cpu" else gs.cuda, precision="64", logging_level="warning")
     model = StressModel(RigidStressOptions.hertz(mesh=args.mesh, method="direct"))
     surface = StressSurface(4, model.info)
@@ -195,6 +224,52 @@ def main():
     module = StressHardBinding(contacts, model.info)
     module.update(contacts, sources, region, model.info, surface.info, 1e10 / 0.91, 0.3, epsilon)
     result = snapshot(module)
+    if args.compare_binding is not None:
+        with np.load(args.compare_binding) as baseline:
+            assert set(baseline.files) == set(result)
+            for key in result:
+                np.testing.assert_allclose(result[key], baseline[key], rtol=1e-9, atol=1e-12, equal_nan=True)
+        write_json(
+            args.output / "conformance.json",
+            {
+                "passed": True,
+                "baseline": file_id(args.compare_binding),
+                "fields": sorted(result),
+                "relative_tolerance": 1e-9,
+                "absolute_tolerance": 1e-12,
+            },
+        )
+    if args.timing_steps:
+        assert result["status"][0] == 0 and args.timing_steps > 0 and args.timing_repeats > 0
+        if args.profile:
+            qd.profiler.clear_kernel_profiler_info()
+        samples = []
+        for repeat in range(args.timing_repeats):
+            qd.sync()
+            begun = perf_counter()
+            for step in range(args.timing_steps):
+                module.update(contacts, sources, region, model.info, surface.info, 1e10 / 0.91, 0.3, epsilon)
+            qd.sync()
+            samples.append((perf_counter() - begun) / args.timing_steps)
+        if args.profile:
+            qd.profiler.print_kernel_profiler_info()
+        repeated = snapshot(module)
+        for key in result:
+            np.testing.assert_allclose(repeated[key], result[key], rtol=1e-9, atol=1e-12, equal_nan=True)
+        write_json(
+            args.output / "timing.json",
+            {
+                "seconds_per_update": samples,
+                "median_seconds": float(np.median(samples)),
+                "batch": batch,
+                "slots_per_environment": count,
+                "steps": args.timing_steps,
+                "repeats": args.timing_repeats,
+                "instrumented": args.profile,
+                "status": result["status"].tolist(),
+                "scope": "Warmed resident hard-input update, including dispatch, geometry, grouping, pressure, force allocation and native acceptance; input snapshot and final readbacks outside timing. Precomputed collision regions/source resolution excluded. Repeated fixed captured inputs, not moving-scene or complete stress throughput.",
+            },
+        )
     np.savez_compressed(args.output / "binding.npz", **result)
     write_json(
         args.output / "numerical.json",

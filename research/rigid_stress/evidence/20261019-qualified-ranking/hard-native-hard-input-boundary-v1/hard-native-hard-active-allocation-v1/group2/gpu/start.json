@@ -1,0 +1,45 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-115",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "740774",
+      "SLURM_ARRAY_JOB_ID": "740774",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-4fdce966-62a0-70f5-3ac5-820ab2d1e6e6, 00000000:C0:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-response-v1/group0/allocation/result.json",
+      "bytes": 4854,
+      "sha256": "e7803f16901fc42f69d3747815e05d473e2fc8630299eeaaf5bc9418efee12ef"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-response-v1/group1/allocation/result.json",
+      "bytes": 5074,
+      "sha256": "c0bd55ea60fd41081c6e80a494ea1afa4a5a9e5ba6379a639162c76292dd6b6e"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-response-v1/group2/allocation/result.json",
+      "bytes": 5184,
+      "sha256": "0fd692824aa46ce9f7a6af9f5609c07c228a3c5106ef47cbf2195575355a8138"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-contact-application-law-update-v1/group0/allocation2/result.json",
+      "bytes": 5055,
+      "sha256": "b36db777fe16e099eb7f9664353c7226eecb2be7ee6c5223e8bd8d467f77a978"
+    }
+  ],
+  "targets": {
+    "independent_force_relative": 1e-08,
+    "scaled_wrench_residual": 1e-10
+  },
+  "scope": "Six-coordinate native dual Newton force allocation with exact Coulomb-cone projections. Compare certified independent SLSQP minima under original total force/moment, physical centers/normals and free couples. Exercise load scales, rotations, translations, invalid/singular isolation and unload/restoration. Numerical allocation only; nearby-load stress acceptance, pressure-support updates and native scene binding remain separate."
+}

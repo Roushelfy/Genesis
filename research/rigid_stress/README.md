@@ -11,17 +11,16 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current goal and verified scope
 
-The latest [native hard-input and complete-field controls](docs/SHARP_EDGE_PRESSURE_20261022.md#native-hard-inputs-and-complete-field-composition)
-pass CPU/GPU64. Five actual collision samples form three physical pressure
-regions, with original total wrench, sample-merge invariance, world-frame
-invariance, isolation and partial resets verified. A cone-boundary instability
-is repaired by dual-objective backtracking. Native complete-field composition
-agrees with the same approximate offline model within4.87e-6 volume tensor and
-1.30e-5 near-probe tensor difference; max/full sampled peaks agree. Ideal sharp
-edges remain singular, and finite probe depths are explicit. Main scene
-acceptance/friction composition, independent physical errors and admitted paired
-scene throughput remain open. The actual Franka frame106 passes the new input
-component but still fails the original main stress path.
+The [actual sharp-edge main pipeline](docs/SHARP_EDGE_PRESSURE_20261022.md#actual-sharp-edge-scene-integration)
+now admits both max/full modes through frame109. Source/face diagnosis and a
+regular hyperbolic boundary rule repair the former frame107 rejection. Frame110
+exposes a new friction-history convergence failure; its boundary recovery passes.
+The [input optimization](docs/SHARP_EDGE_PRESSURE_20261022.md#loaded-region-allocation-and-moving-boundary-diagnosis)
+reduces matched B4 input replay from47.78ms to5.65ms and B64 from50.39ms to5.85ms,
+with all25 captured output fields checked against the baseline. These are fixed
+input component measurements, not complete scene throughput. Independent physical
+errors, continuous scene admission and paired pure-rigid/max/full timing remain open.
+Ideal sharp edges remain singular; finite sampled peaks retain their probe depths.
 
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)
 identifies the ground's184micrometre offset as the collider's half-penetration
