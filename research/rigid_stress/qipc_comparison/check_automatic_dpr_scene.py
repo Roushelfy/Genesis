@@ -189,7 +189,9 @@ def main():
                             "environment": int(env),
                             "contact": int(slot),
                             "curvature_status": fields["failed_curvature_status"][i].tolist(),
-                            "projected_curvature_eigenvalues_per_m": np.linalg.eigvalsh(relative).tolist(),
+                            "projected_curvature_eigenvalues_per_m": np.linalg.eigvalsh(relative).tolist()
+                            if np.isfinite(relative).all()
+                            else None,
                         }
                     )
                 write_json(args.output / "curvature-diagnostics.json", {"rows": diagnostics})
