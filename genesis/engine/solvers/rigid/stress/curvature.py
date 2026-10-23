@@ -39,6 +39,11 @@ class StressCurvatureInfo:
     face_min: qd.Tensor
     face_max: qd.Tensor
     face_scale: qd.Tensor
+    search_min: qd.Tensor
+    search_max: qd.Tensor
+    search_scale: qd.Tensor
+    search_normal_min: qd.Tensor
+    search_normal_max: qd.Tensor
 
 
 @dataclass(frozen=True)
@@ -83,8 +88,14 @@ class StressCurvature:
             face_min=V_VEC(3, dtype=gs.qd_float, shape=(n_faces,)),
             face_max=V_VEC(3, dtype=gs.qd_float, shape=(n_faces,)),
             face_scale=V(dtype=gs.qd_float, shape=(n_faces,)),
+            search_min=V_VEC(3, dtype=gs.qd_float, shape=((n_faces + 63) // 64,)),
+            search_max=V_VEC(3, dtype=gs.qd_float, shape=((n_faces + 63) // 64,)),
+            search_scale=V(dtype=gs.qd_float, shape=((n_faces + 63) // 64,)),
+            search_normal_min=V_VEC(3, dtype=gs.qd_float, shape=((n_faces + 63) // 64,)),
+            search_normal_max=V_VEC(3, dtype=gs.qd_float, shape=((n_faces + 63) // 64,)),
         )
         kernel_mesh_curvature(dyn_info, self.info, epsilon)
+        kernel_mesh_search_bounds(dyn_info, self.info, epsilon)
         kernel_vertex_curvature(dyn_info, self.info)
         fit = StressCurvatureFit(
             scale=V(dtype=gs.qd_float, shape=dyn_info.verts.geom_idx.shape),
@@ -254,6 +265,59 @@ def kernel_mesh_curvature(dyn_info: array_class.DynInfo, curvature_info: StressC
 
 
 @qd.kernel
+def kernel_mesh_search_bounds(dyn_info: array_class.DynInfo, curvature_info: StressCurvatureInfo, epsilon: float):
+    """Bound consecutive face blocks without changing the original ordered surface selection.
+
+    A positive combination of vertex normals stays in their spherical cap when its cosine is positive. The cap's
+    Euclidean radius bounds every normalized interpolation, including all roots of the piecewise normal field.
+    Conditioning-scaled padding covers the existing barycentric tolerance and inverse/rotation roundoff. Wide or
+    ill-conditioned caps conservatively retain the whole sphere. Position bounds also preserve disconnected components.
+    """
+    for i_block in range(curvature_info.search_scale.shape[0]):
+        lower = qd.Vector([float("inf")] * 3)
+        upper = qd.Vector([-float("inf")] * 3)
+        normal_lower = qd.Vector([float("inf")] * 3)
+        normal_upper = qd.Vector([-float("inf")] * 3)
+        scale = gs.qd_float(0.0)
+        for i_f in range(64 * i_block, qd.min(64 * (i_block + 1), curvature_info.face_scale.shape[0])):
+            lower = qd.min(lower, curvature_info.face_min[i_f])
+            upper = qd.max(upper, curvature_info.face_max[i_f])
+            scale = qd.max(scale, curvature_info.face_scale[i_f])
+            if curvature_info.normal_inverse_valid[i_f]:
+                indices = dyn_info.faces.verts_idx[i_f]
+                normals = qd.Matrix.zero(gs.qd_float, 3, 3)
+                for i in qd.static(range(3)):
+                    i_v = indices[i]
+                    normals[i, :] = dyn_info.verts.init_normal[i_v]
+                condition = curvature_info.normal_inverse[i_f].norm() * normals.norm()
+                padding = 4096.0 * epsilon * qd.max(1.0, condition)
+                center = qd.Vector.zero(gs.qd_float, 3)
+                for i in qd.static(range(3)):
+                    normals[i, :] = normals[i, :].normalized()
+                    center += normals[i, :]
+                cosine = gs.qd_float(-1.0)
+                if center.norm() > 128.0 * epsilon:
+                    center = center.normalized()
+                    cosine = qd.min(
+                        center.dot(normals[0, :]), qd.min(center.dot(normals[1, :]), center.dot(normals[2, :]))
+                    )
+                cap_lower = qd.Vector([-1.0 - padding] * 3)
+                cap_upper = qd.Vector([1.0 + padding] * 3)
+                if cosine > 0.0:
+                    radius = qd.sqrt(qd.max(0.0, 2.0 * (1.0 - cosine))) + padding
+                    cap_lower = center - radius
+                    cap_upper = center + radius
+                normal_lower = qd.min(normal_lower, cap_lower)
+                normal_upper = qd.max(normal_upper, cap_upper)
+        curvature_info.search_min[i_block], curvature_info.search_max[i_block] = lower, upper
+        curvature_info.search_scale[i_block] = scale
+        curvature_info.search_normal_min[i_block], curvature_info.search_normal_max[i_block] = (
+            normal_lower,
+            normal_upper,
+        )
+
+
+@qd.kernel
 def kernel_vertex_curvature(dyn_info: array_class.DynInfo, curvature_info: StressCurvatureInfo):
     for i_v in range(curvature_info.vertices_weight.shape[0]):
         curvature_info.vertices_tensor[i_v] = qd.Matrix.zero(gs.qd_float, 3, 3)
@@ -380,29 +444,36 @@ def func_closest_surface(
     selected = -1
     closest = qd.Vector.zero(gs.qd_float, 3)
     local_scale = local.norm_sqr()
-    for i_f in range(dyn_info.geoms.face_start[i_g], dyn_info.geoms.face_end[i_g]):
-        lower = qd.max(curvature_info.face_min[i_f] - local, qd.max(local - curvature_info.face_max[i_f], 0.0))
-        squared_minimum = minimum * minimum
-        slack = 128.0 * epsilon * (local_scale + curvature_info.face_scale[i_f] + squared_minimum)
-        if curvature_info.face_valid[i_f] and lower.norm_sqr() <= squared_minimum + slack:
-            origin = curvature_info.face_origin[i_f]
-            edges = curvature_info.face_edges[i_f]
-            coordinates = curvature_info.face_dual[i_f] @ (local - origin)
-            candidate = origin + coordinates @ edges
-            if coordinates.min() < 0.0 or coordinates.sum() > 1.0:
-                squared = gs.qd_float(float("inf"))
-                vertices = qd.Matrix.rows([origin, origin + edges[0, :], origin + edges[1, :]])
-                for i in qd.static(range(3)):
-                    j = (i + 1) % 3
-                    edge = vertices[j, :] - vertices[i, :]
-                    fraction = qd.min(1.0, qd.max(0.0, (local - vertices[i, :]).dot(edge) / edge.norm_sqr()))
-                    projection = vertices[i, :] + fraction * edge
-                    distance = (local - projection).norm_sqr()
-                    if distance < squared:
-                        squared, candidate = distance, projection
-            distance = (local - candidate).norm()
-            if distance < minimum - tolerance:
-                minimum, closest, selected = distance, candidate, i_f
+    i_start, i_end = dyn_info.geoms.face_start[i_g], dyn_info.geoms.face_end[i_g]
+    for i_block in range(i_start // 64, (i_end + 63) // 64):
+        block_lower = qd.max(
+            curvature_info.search_min[i_block] - local, qd.max(local - curvature_info.search_max[i_block], 0.0)
+        )
+        block_slack = 128.0 * epsilon * (local_scale + curvature_info.search_scale[i_block] + minimum * minimum)
+        if block_lower.norm_sqr() <= minimum * minimum + block_slack:
+            for i_f in range(qd.max(i_start, 64 * i_block), qd.min(i_end, 64 * (i_block + 1))):
+                lower = qd.max(curvature_info.face_min[i_f] - local, qd.max(local - curvature_info.face_max[i_f], 0.0))
+                squared_minimum = minimum * minimum
+                slack = 128.0 * epsilon * (local_scale + curvature_info.face_scale[i_f] + squared_minimum)
+                if curvature_info.face_valid[i_f] and lower.norm_sqr() <= squared_minimum + slack:
+                    origin = curvature_info.face_origin[i_f]
+                    edges = curvature_info.face_edges[i_f]
+                    coordinates = curvature_info.face_dual[i_f] @ (local - origin)
+                    candidate = origin + coordinates @ edges
+                    if coordinates.min() < 0.0 or coordinates.sum() > 1.0:
+                        squared = gs.qd_float(float("inf"))
+                        vertices = qd.Matrix.rows([origin, origin + edges[0, :], origin + edges[1, :]])
+                        for i in qd.static(range(3)):
+                            j = (i + 1) % 3
+                            edge = vertices[j, :] - vertices[i, :]
+                            fraction = qd.min(1.0, qd.max(0.0, (local - vertices[i, :]).dot(edge) / edge.norm_sqr()))
+                            projection = vertices[i, :] + fraction * edge
+                            distance = (local - projection).norm_sqr()
+                            if distance < squared:
+                                squared, candidate = distance, projection
+                    distance = (local - candidate).norm()
+                    if distance < minimum - tolerance:
+                        minimum, closest, selected = distance, candidate, i_f
     return (
         geom.qd_transform_by_trans_quat(closest, dyn_state.geoms.pos[i_g, i_b], dyn_state.geoms.quat[i_g, i_b]),
         selected,
