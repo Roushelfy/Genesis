@@ -484,11 +484,32 @@ class RigidLink(KinematicLink):
 
     @gs.assert_built
     def get_max_stress(self, envs_idx=None, *, copy: bool = True) -> torch.Tensor:
-        """Return global maximum von Mises stress in Pa over the latest observed scene step's physical substeps."""
+        """Return maximum von Mises stress in Pa across the latest observed step's physical substeps.
+
+        An accepted loaded ideal sharp edge returns positive infinity because
+        its continuum stress is singular. Finite Hertz values estimate the
+        maximum over mesh corners and contact probes. Use
+        ``get_max_sampled_stress`` for the finite sampling result.
+        """
         recovery = self._solver.stress_recovery
         if recovery is None:
             gs.raise_exception("Stress recovery is not enabled for this link.")
         return recovery.get_peak(self.idx, envs_idx, copy=copy)
+
+    @gs.assert_built
+    def get_max_sampled_stress(self, envs_idx=None, *, copy: bool = True) -> torch.Tensor:
+        """Return maximum sampled von Mises stress in Pa across observed physical substeps.
+
+        Hertz recovery samples mesh corners and contact probes. Sharp-edge
+        probes begin at a depth of 0.01 contact widths; this finite result is
+        resolution dependent and does not bound the continuum singularity.
+        Full mode exposes probe positions through ``get_stress_contact_probes``.
+        Failed or reset Hertz observations are NaN.
+        """
+        recovery = self._solver.stress_recovery
+        if recovery is None:
+            gs.raise_exception("Stress recovery is not enabled for this link.")
+        return recovery.get_peak(self.idx, envs_idx, copy=copy, sampled=True)
 
     @gs.assert_built
     def get_stress_field(self, envs_idx=None, *, copy: bool = True) -> tuple[torch.Tensor, torch.Tensor]:
@@ -521,12 +542,14 @@ class RigidLink(KinematicLink):
 
     @gs.assert_built
     def get_stress_contact_probes(self, envs_idx=None, *, copy: bool = True) -> "StressHertzProbeField":
-        """Return full Hertz probe positions, packed stresses, elements and active regions.
+        """Return Hertz and sharp-edge probe positions, packed stresses, elements and active regions.
 
         Batched shapes are [B, regions, 89, 3], [B, regions, 89, 6],
         [B, regions, 89] and [B, regions]. Unbatched scenes omit B. Positions
         and stresses use the authored material frame. Inactive probes do not
         contribute to maxima; failed/reset observations carry NaN fields.
+        Sharp-edge probe depths start at 0.01 contact widths. Their finite
+        stresses do not bound the ideal edge's divergent continuum maximum.
         """
         recovery = self._solver.stress_recovery
         if recovery is None:
