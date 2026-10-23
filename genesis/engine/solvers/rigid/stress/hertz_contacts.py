@@ -24,6 +24,7 @@ from .hertz_recovery import StressHertzRecoveryState
 from .hertz_probes import StressHertzProbeState
 from .hertz_regions import StressHertzRegions, StressHertzRegionState
 from .history import StressHistory
+from .hard_binding import StressHardBinding
 from .model import StressModel
 from .provenance import StressSourceState, StressSourceStatus, create_sources, kernel_resolve_sources
 from .source_vertices import StressSourceVertices, kernel_bind_source_vertices
@@ -70,6 +71,7 @@ class HertzContacts:
         self.vertices = StressSourceVertices(link, info, options.source_geometry_tolerance)
         self.regions = StressHertzRegions(contacts)
         self.law = StressHertz(n_regions * n_envs)
+        self.hard = StressHardBinding(contacts, info)
         self.friction = StressFrictionHistory(n_regions * n_envs)
         self.shear = StressHertzShear(
             friction=V(dtype=gs.qd_float, shape=(n_regions * n_envs,)),
@@ -132,6 +134,9 @@ class HertzContacts:
         modulus = options.hertz_reduced_modulus
         if modulus is None:
             modulus = options.young / (1 - options.poisson**2)
+        self.hard.update(
+            contacts, self.sources, self.regions.state, model.info, surface, modulus, options.poisson, epsilon
+        )
         kernel_hertz_contact_inputs(
             contacts,
             self.sources,
@@ -187,6 +192,7 @@ class HertzContacts:
         kernel_hertz_contact_peak(self.recovery.state.tensile_peak, self.law.state, stress, self.state)
 
     def reset(self, envs_idx: torch.Tensor, contacts: StressContactState, is_restore: bool = False) -> None:
+        self.hard.reset(envs_idx)
         kernel_hertz_contact_reset(
             envs_idx,
             contacts,
@@ -212,6 +218,7 @@ class HertzContacts:
         yield from iter_data(self.regions.state, prefix + ".regions")
         yield from iter_data(self.law.info, prefix + ".law.info")
         yield from iter_data(self.law.state, prefix + ".law.state")
+        yield from self.hard.data(prefix + ".hard")
         yield from iter_data(self.state, prefix + ".state")
         yield from iter_data(self.binding, prefix + ".binding")
         yield from self.friction.data(prefix + ".friction")
@@ -404,6 +411,7 @@ def kernel_hertz_contact_reset(
         regions.leader[i_c, i_b], regions.source_count[i_c, i_b], regions.status[i_c, i_b] = -1, 0, 1
         regions.boundary_planes[i_c, i_b] = qd.Matrix.zero(gs.qd_float, 4, 3)
         regions.n_boundaries[i_c, i_b] = 0
+        regions.opponent_type[i_c, i_b] = -1
         law.force[i_p], law.status[i_p], law.peak_pressure[i_p], law.indentation[i_p] = 0.0, 1, 0.0, 0.0
         law.axes[i_p] = qd.Vector.zero(gs.qd_float, 2)
         frames.anchor[i_p], frames.center[i_p] = -1, qd.Vector([float("nan")] * 3)
