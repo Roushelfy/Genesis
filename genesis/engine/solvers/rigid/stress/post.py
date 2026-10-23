@@ -57,7 +57,7 @@ def create_post_kernel():
         packed_block_size: qd.template(),
         coalesced_residual: qd.template(),
         reuse_contact_moments: qd.template(),
-        automatic_radius: qd.types.Template | None,
+        automatic_radius: qd.template(),
         constraint_state: array_class.ConstraintState,
         dyn_info: array_class.DynInfo,
         rigid_info: array_class.RigidInfo,
