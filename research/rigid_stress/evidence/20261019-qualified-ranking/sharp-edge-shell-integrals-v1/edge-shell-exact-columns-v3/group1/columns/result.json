@@ -1,0 +1,207 @@
+{
+  "execution_completed": true,
+  "rows": [
+    {
+      "body": "coarse",
+      "seconds": 10.300367754069157,
+      "geometry": {
+        "columns": 46410,
+        "segments": 278460,
+        "ambiguous_surface_face_columns": 0,
+        "surface_reconstruction_max_m": 1.3877789462175583e-17,
+        "coverage_error": 1.7208456881689926e-14,
+        "maximum_raw_gap_or_overlap": 1.8318679906315083e-15,
+        "union_interface_columns": [],
+        "full_mesh_fallback_columns": []
+      },
+      "controls": {
+        "affine_membrane_bending_passed": true,
+        "independent_full_mesh_columns": 64,
+        "full_mesh_interface_columns": 0,
+        "full_mesh_maximum_relative_change": 1.270362668086695e-13
+      },
+      "squared_norms": {
+        "candidate-point": {
+          "membrane": 0.0001312439777642652,
+          "bending": 2.8470194850451907e-12
+        },
+        "reference48": {
+          "membrane": 0.00013125361976048836,
+          "bending": 2.846457805001972e-12
+        }
+      }
+    },
+    {
+      "body": "medium",
+      "seconds": 39.101048112032004,
+      "geometry": {
+        "columns": 46410,
+        "segments": 417414,
+        "ambiguous_surface_face_columns": 68,
+        "surface_reconstruction_max_m": 1.3877788270276265e-17,
+        "coverage_error": 2.2570834090629432e-13,
+        "maximum_raw_gap_or_overlap": 9.026113190202523e-14,
+        "union_interface_columns": [
+          4305,
+          4327,
+          4332,
+          5166,
+          5168,
+          7560,
+          7572,
+          18798,
+          18820,
+          18825,
+          19659,
+          19661,
+          22053,
+          22065
+        ],
+        "full_mesh_fallback_columns": [
+          4305,
+          4327,
+          4332,
+          5166,
+          5168,
+          7560,
+          7572,
+          18798,
+          18820,
+          18825,
+          19659,
+          19661,
+          22053,
+          22065
+        ]
+      },
+      "controls": {
+        "affine_membrane_bending_passed": true,
+        "independent_full_mesh_columns": 64,
+        "full_mesh_interface_columns": 0,
+        "full_mesh_maximum_relative_change": 5.511912247137796e-14
+      },
+      "squared_norms": {
+        "candidate-point": {
+          "membrane": 0.0001311100319543829,
+          "bending": 2.8556436950694804e-12
+        },
+        "reference48": {
+          "membrane": 0.00013111999330649236,
+          "bending": 2.855047735694163e-12
+        }
+      }
+    },
+    {
+      "body": "fine",
+      "seconds": 16.837587823043577,
+      "geometry": {
+        "columns": 46410,
+        "segments": 556344,
+        "ambiguous_surface_face_columns": 116,
+        "surface_reconstruction_max_m": 1.3877789520336714e-17,
+        "coverage_error": 3.9812597663058114e-13,
+        "maximum_raw_gap_or_overlap": 1.679975603074979e-13,
+        "union_interface_columns": [
+          4305,
+          4327,
+          4332,
+          5166,
+          5168,
+          7560,
+          7572,
+          18798,
+          18820,
+          18825,
+          19659,
+          19661,
+          22053,
+          22065
+        ],
+        "full_mesh_fallback_columns": [
+          4305,
+          4327,
+          4332,
+          5166,
+          5168,
+          7560,
+          7572,
+          18798,
+          18820,
+          18825,
+          19659,
+          19661,
+          22053,
+          22065
+        ]
+      },
+      "controls": {
+        "affine_membrane_bending_passed": true,
+        "independent_full_mesh_columns": 64,
+        "full_mesh_interface_columns": 0,
+        "full_mesh_maximum_relative_change": 7.57581920354778e-14
+      },
+      "squared_norms": {
+        "candidate-point": {
+          "membrane": 0.00013109599146149295,
+          "bending": 2.85748185475554e-12
+        },
+        "reference48": {
+          "membrane": 0.0001311058871130345,
+          "bending": 2.8568945593633777e-12
+        },
+        "reference36": {
+          "membrane": 0.00013110414490462405,
+          "bending": 2.8567946174730973e-12
+        },
+        "reference48-source3": {
+          "membrane": 0.0001310977304423156,
+          "bending": 2.8552738016783858e-12
+        },
+        "reference48-lower": {
+          "membrane": 0.00013110588711395327,
+          "bending": 2.8568945594242066e-12
+        }
+      }
+    }
+  ],
+  "candidate_errors": {
+    "coarse": {
+      "membrane_relative": 0.0068702895442160706,
+      "bending_relative": 0.008145564949610043
+    },
+    "medium": {
+      "membrane_relative": 0.005652333555600831,
+      "bending_relative": 0.008069303305742915
+    },
+    "fine": {
+      "membrane_relative": 0.0015372814550722793,
+      "bending_relative": 0.002583661104086956
+    }
+  },
+  "reference_changes": {
+    "coarse": {
+      "membrane_relative": 0.006729321674098577,
+      "bending_relative": 0.007869579498474149
+    },
+    "medium": {
+      "membrane_relative": 0.0054642120775054955,
+      "bending_relative": 0.007631079272652025
+    },
+    "reference36": {
+      "membrane_relative": 0.0004896706838536069,
+      "bending_relative": 0.0008274201460183148
+    },
+    "reference48-source3": {
+      "membrane_relative": 0.00018454306787249008,
+      "bending_relative": 0.0005357867974754253
+    },
+    "reference48-lower": {
+      "membrane_relative": 7.374693855550215e-10,
+      "bending_relative": 7.683838524153628e-10
+    }
+  },
+  "spatial_and_particular_integral_convergence_checked": false,
+  "complete_volume_error_qualified": false,
+  "native_scene_accuracy_qualified": false,
+  "whole_goal_complete": false
+}

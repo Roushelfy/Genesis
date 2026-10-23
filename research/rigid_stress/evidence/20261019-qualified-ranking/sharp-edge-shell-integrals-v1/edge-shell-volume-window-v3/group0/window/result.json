@@ -1,0 +1,91 @@
+{
+  "execution_completed": true,
+  "quadrature": {
+    "points": 3195264,
+    "angle_order": 8,
+    "radial_order": 8,
+    "along_order": 4,
+    "analytic_moment_relative_errors": [
+      4.94593255240261e-12,
+      8.901768211444505e-12,
+      4.293121413923018e-11
+    ],
+    "minimum_depth_m": 5.381010949445045e-12,
+    "weighted_volume_m3": 1.6116620695640097e-15,
+    "pressure_cell_alignment_depth_m": 1.570071350764318e-07
+  },
+  "seconds": {
+    "reference48": 383.6345356919337,
+    "reference36": 205.23888280894607,
+    "candidate": 34.89781188091729
+  },
+  "local_window_squared_norms": {
+    "reference": 1.1608338231324207,
+    "candidate_error": 0.007744779002591882,
+    "pressure_change": 0.0024328735521252243
+  },
+  "rows": [
+    {
+      "study": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-fields-v2/group0/fields",
+      "original_squared_norms": {
+        "reference": 2.5664726021330626,
+        "candidate_error": 0.0017738849419894323,
+        "pressure_change": 0.0008340099214619662
+      },
+      "subtracted_window_squared_norms": {
+        "reference": 1.1140469709876273,
+        "candidate_error": 0.0012388304941384023,
+        "pressure_change": 0.0008328947251040247
+      },
+      "corrected_squared_norms": {
+        "reference": 2.613259454277856,
+        "candidate_error": 0.008279833450442912,
+        "pressure_change": 0.002433988748483166
+      },
+      "candidate_errors": {
+        "coarse": 0.05628848183122716,
+        "fine": 0.05501775847195713
+      },
+      "reference_changes": {
+        "coarse": 0.011894018919856407,
+        "reference36": 0.03051883969456576,
+        "reference48-source3": 0.0002406971020975506,
+        "reference48-lower": 1.66502590076334e-09
+      }
+    },
+    {
+      "study": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-fields-v2/group1/fields",
+      "original_squared_norms": {
+        "reference": 2.596699326034066,
+        "candidate_error": 0.0027603622624396557,
+        "pressure_change": 0.001452340513373828
+      },
+      "subtracted_window_squared_norms": {
+        "reference": 1.1442732271367977,
+        "candidate_error": 0.002225308444039933,
+        "pressure_change": 0.0014512253176040763
+      },
+      "corrected_squared_norms": {
+        "reference": 2.6132599220296893,
+        "candidate_error": 0.008279832820991605,
+        "pressure_change": 0.0024339887478949758
+      },
+      "candidate_errors": {
+        "coarse": 0.056288474654053955,
+        "medium": 0.0553505387299837,
+        "fine": 0.05501775364792878
+      },
+      "reference_changes": {
+        "coarse": 0.011894017855301515,
+        "medium": 0.006084945904995753,
+        "reference36": 0.030518836959568613,
+        "reference48-source3": 0.00024069708055679802,
+        "reference48-lower": 1.6650257519264345e-09
+      }
+    }
+  ],
+  "quadrature_convergence_checked": false,
+  "complete_volume_error_qualified": false,
+  "native_scene_accuracy_qualified": false,
+  "whole_goal_complete": false
+}

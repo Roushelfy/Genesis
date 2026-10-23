@@ -1,5 +1,22 @@
 # Rigid-stress data and artifact locations
 
+The exact-column and cell-aligned volume studies use edge-shell-exact-columns-*,
+edge-shell-volume-window-* and edge-shell-integrals-inspection-* under the
+established20261019 ranking data root. The sharp-edge-shell-integrals-v1 packet
+retains426 compact payloads (2,906,225 bytes) and33 external receipts from ten
+terminal campaigns, including failed column searches, a rejected radial rule
+and two cancelled pending inspectors. Complete resultants and window tensors
+stay on data; original pressure/displacement/field arrays are reused in place.
+
+The same-GPU B1024/B2048 timing and separate fresh-process full memory run use
+hard-batch-scaling2048-v1 and hard-batch-scaling2048-inspection-v1 at that data
+root. The hard-batch2048-v1 packet retains93 compact payloads (636,120 bytes)
+and11 external receipts. All campaigns are terminal. Scientific execution
+used Slurm rtx-mid, image1_26, the existing data-side environment and private
+node caches. All55 engine heads and12 original unfinished files remain
+preserved. Source/docs and compact evidence stay in workspace; there is no
+new home fallback, data migration, environment migration or engine change.
+
 The complete-domain sharp-edge follow-up uses edge-shell-rectangle-controls-*,
 edge-shell-sampling-v1, edge-shell-fields-*, edge-shell-locations-v1,
 edge-shell-peaks-v1 and edge-shell-integral-diagnosis-v1 under the established

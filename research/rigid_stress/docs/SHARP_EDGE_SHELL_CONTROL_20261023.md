@@ -5,9 +5,14 @@ frictionless polar-land control whose reference independently determines
 pressure and support. Adding finite-shell compliance changes pressure by
 only **0.00536%**. Coarse-candidate versus fine-reference local tensor,
 sampled tensile and sampled von-Mises errors are **1.531% / 2.696% / 1.988%**.
-Complete-domain follow-up gives3.260% volume-tensor error, but its error
-integral and pressure-grid reference have not converged to the declared
-targets. Refined peak comparisons pass conditionally at depth cutoffs
+Exact through-wall integration gives coarse-candidate membrane/bending
+errors **0.687% /0.815%**, with observed variation sums **1.301% /1.714%**;
+both pass the declared conditional checks. Cell-aligned complete-volume
+quadrature now passes its observed integration checks, giving5.618% against
+the discrete reference. Pressure-grid change remains3.055%, above the2%
+reference target, so complete-volume physical accuracy remains unqualified.
+The original3.260% readout is retained as an unconverged result.
+Refined peak comparisons pass conditionally at depth cutoffs
 0.707um and7.687um; the0.177um tensile peak remains unqualified.
 These results support further work on the cheap law in this declared
 small-contact problem. Moving friction and native configuration matching
@@ -159,8 +164,8 @@ changes remain below2e-9 relative.
 Adding the observed same-query pressure/body/source/far changes to the
 coarse candidate errors gives6.260% /1.467% /1.687%. These sums exclude
 the separately tested integration discrepancy and are not certified bounds.
-**All three complete-field acceptance gates remain false** because the
-error integrals are not stable; volume also fails the reference-field gate.
+**All three acceptance gates in this initial Gauss-sampled study are false**
+because the error integrals are not stable; volume also fails the reference-field gate.
 About80.39% of reference volume stress-square energy lies within8 contact
 half-lengths. The original lower-partition results remain recorded rather
 than being presented as the final error estimate.
@@ -175,6 +180,104 @@ targeted: resolve the shallow singular/cell-pressure integral and integrate
 the piecewise-linear regular stress through each element crossing along
 material columns. Simply tightening the elastic solver is not supported
 by this diagnosis.
+
+### Exact through-wall integration
+
+The next variant integrates the saved piecewise-linear regular stress
+analytically over each Cartesian tetrahedron intersection. It retains both
+original midsurface column banks, their particular stresses, tangential
+projection and projected wall thickness. Source mesh topology supplies
+candidate tetrahedra; actual coordinates determine every interval and
+barycentric coefficient. No pressure or elastic equation is solved again.
+
+Two initial variants fail on14 columns whose surface-face candidate prism
+does not cover the actual line in the refined bodies. Both failures and
+their partial outputs remain intact. The final variant uses the existing
+full-mesh TetSampler intersection for those14 columns, with unchanged
+coordinates and tolerances. Interval unions are integrated once with a
+deterministic one-sided choice. All columns retain complete coverage;
+maximum coverage error is3.98e-13. Affine membrane/bending controls pass,
+as do384 independent full-mesh/two-point-Gauss column comparisons. Their
+largest resultant difference is1.28e-13 relative.
+
+| Candidate body, higher partition | Membrane error | Bending error |
+| --- | ---: | ---: |
+| Coarse | 0.68703% | 0.81456% |
+| Medium | 0.56523% | 0.80693% |
+| Fine | 0.15373% | 0.25837% |
+
+Reference membrane/bending norms now change0.00100% /0.00319% between
+partitions; coarse-candidate error norms change0.04095% /0.08189%.
+The corresponding observed pressure/body/source/far variation sums are
+1.3009% /1.7140%, within the original5% budget. This resolves the earlier
+through-wall integration sensitivity for these resultant comparisons.
+Spatial column sampling remains finite and the results do not qualify
+native implementation, general friction or complete-volume stress error.
+
+### Sharp-edge volume integration
+
+The volume check uses the exact subtraction identity
+
+    integral(g) = integral(g - chi*g_particular) + integral_local(chi*g_particular).
+
+Here g is reference stress-square energy, candidate error energy or the
+pressure-grid difference energy. The regular and cross terms stay in the
+original complete-domain quadrature. A quintic smooth window equals one
+near the edge and vanishes outside x=[-4,4]width, y=[-2,2]half-length and
+depth=[0,8]width. The source boundary triangles intersect this support box
+only on the flat top plane; its center is inside the solid. The identity
+therefore retains the entire original material domain.
+
+Local polar coordinates in the transverse/depth plane resolve the leading
+1/r stress-square behavior with the radial Jacobian. Along-edge intervals
+include the boundaries of both pressure grids. The two rules use705,536
+and2,381,184 points, with angular/radial/along orders8/8/4 and12/12/6.
+Analytic window volume, first depth moment and transverse second moment
+checks differ by at most4.30e-11 and1.47e-14 relative. Minimum positive
+depths are0.2583nm and0.05569nm; these remain quadrature points for the
+declared singular linear-elastic model, not material-scale validation.
+Saved-array inspection separately checks local-rule convergence, remaining
+global-partition changes and the pressure-difference integral itself.
+
+The first polar pair does **not** converge: local candidate-error norm
+changes20.47%, complete error norm19.01% and pressure-difference norm36.71%.
+Its corrected coarse-candidate volume errors are6.094% and5.148%, rather
+than the original3.260%. The remaining original global-partition changes
+are below9e-8 relative. This isolates the unresolved integration in the
+local rule; neither polar result is a qualified full-volume error.
+
+The next rule splits radial intervals at actual transverse pressure-cell
+boundaries where depth is at most four times the larger transverse cell
+width. Along-edge cell boundaries remain explicit. This targets the narrow
+stress transitions introduced by constant cell pressures, preserving the
+same smooth window, fields and material domain. The original polar rules,
+their arrays and failed convergence gates remain retained.
+
+The cell-aligned pair uses angular/radial/along orders8/8/4 and12/8/6,
+with3,195,264 /7,184,256 positive-weight points. Both radial rules have order8.
+Their minimum positive depths are0.00538101nm /0.00249861nm;
+maximum analytic moment errors are4.29e-11 /6.66e-15.
+These are quadrature scales for the declared singular elastic model,
+not validated material length scales.
+The first lower-order attempt used radial order6 and failed its analytic
+first-depth/transverse-second-moment checks (6.63e-8 /2.94e-7,
+above1e-8) before evaluating stress. It remains recorded; the lower
+rule was rerun at order8 without changing the higher job or the gate.
+
+| Integration comparison | Reference-norm change | Candidate-error-norm change |
+| --- | ---: | ---: |
+| Local window | 0.00225919% | 0.203084% |
+| Complete volume, local-rule refinement | 0.00100357% | 0.189923% |
+| Remaining global partition | 8.94941e-06% | 3.81556e-06% |
+
+Pressure-difference norm changes under local/complete rule refinement are
+0.095078% /0.095035%. The finer corrected coarse-candidate volume error is5.6181%.
+The pressure-grid36/48 reference change is3.0548%;
+the observed candidate-plus-reference variation sum is9.3054%.
+The joint conditional volume gate is **false**. Observed changes are not continuum bounds.
+This result does not qualify the cheap law's complete-volume physical error.
+The ideal-edge model, all material contributions and original solver
+acceptance criteria remain unchanged.
 
 ### Refined positive-depth peaks
 
@@ -202,7 +305,7 @@ At the middle cutoff, maximum tension occurs about3.231um deep, rather
 than on the cutoff plane. These are observed maxima over the retained
 domain bank plus local searches. They do not certify the global continuum
 maximum, material nonlinearity or the native scene configuration, and do
-not override the failed complete-field integration gates.
+not override the unresolved volume-field gates.
 
 ## Reproduction and remaining work
 
@@ -229,9 +332,26 @@ explicit. No new elastic factorization or production implementation is
 introduced. The larger repaired field job takes19m34s on one CPU; this
 offline validation cost is separate from native throughput.
 
-Next resolve the error-integral sensitivity and shallow pressure-grid
-sensitivity before promoting the complete-field error estimates. Preserve
-the conditional finite-depth peak results and every failed gate.
+The [integral-refinement packet](../evidence/20261019-qualified-ranking/sharp-edge-shell-integrals-v1/README.md)
+retains all ten terminal campaigns, including both failed column variants,
+the failed radial-order6 window and both cancelled pending inspectors.
+The workers are study_edge_shell_exact_columns, study_edge_volume_window
+and inspect_edge_shell_integrals. Use their captured task files with the
+same CPU Slurm wrapper, explicit data output and private node caches.
+The final volume inspector deliberately combines lower window-v3/group0
+with higher window-v2/group1; these paths must not be replaced by the
+failed window-v2/group0. No new pressure or elastic solve is introduced.
+The higher cell-aligned readout takes25m29s on one CPU, followed by57s
+for independent saved-array inspection. These offline validation costs
+do not enter native scene timing.
+
+Next resolve the pressure-grid sensitivity before promoting the volume
+physical-error estimate or the shallowest tensile peak. The observed volume
+error-norm integration change is now0.190%, within its5% target; lowering
+elastic solver tolerances does not address the remaining pressure-grid change.
+A targeted reference refinement near the edge can distinguish pressure
+discretization from actual cheap-law error without a new native contact solve.
+Preserve the conditional finite-depth peak results and every failed gate.
 General curved/nonconvex and changing friction contacts, matching native
 accuracy/cost, useful independent batch populations and full-cycle admission
 remain requirements of the [active goal](../GOAL.md). The original frame428

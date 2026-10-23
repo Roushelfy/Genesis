@@ -12,10 +12,14 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 ## Current goal and verified scope
 
 The [independent single-edge hollow-shell control](docs/SHARP_EDGE_SHELL_CONTROL_20261023.md)
-now retains complete-domain fields and refined positive-depth peaks. At5mN,
-the unfitted law has4.185% cell-pressure error. Higher-partition coarse-candidate
-volume/membrane/bending errors are3.260% /0.825% /0.830%, but their error
-integrals remain unstable and all complete-field gates remain false.
+now retains complete-domain fields, exact through-wall integration and refined
+positive-depth peaks. At5mN, the unfitted law has4.185% cell-pressure error.
+Exact regular-stress integration gives coarse-candidate membrane/bending
+errors0.687% /0.815%, with observed variation sums1.301% /1.714%; both pass
+the declared conditional checks. Cell-aligned volume quadrature now passes
+its observed integration checks, yielding5.618% against the discrete reference.
+However, pressure-grid change remains3.055%, above2%; the volume physical-error
+gate remains false. The original3.260% estimate is retained as an unconverged readout.
 Refined tensile/VM errors are3.761% /1.635% beyond0.707um depth and
 2.670% /1.988% beyond7.687um, passing the declared conditional variation
 checks. The0.177um tensile peak fails pressure-grid convergence. Original
@@ -152,6 +156,13 @@ recovery and public scene checks pass. Measured B1024 max/full costs decrease by
 2.33% / 2.21%. Strict raw field differences remain recorded, and frame 428 still refuses. The
 profile, primary timing and independent physical-error requirements retain their
 separate scopes.
+
+The unchanged engine's [same-GPU B1024/B2048 check](docs/SHARP_EDGE_PRESSURE_20261022.md#b2048-throughput-and-sampled-memory)
+measures B2048 max/full at2529 /2520 env-step/s, only1.386% /1.366% above
+the paired B1024 rates. Fresh-process full-mode sampled GPU memory is27.12GiB.
+All130-frame public observations pass across batches, replicated conditions
+and the memory run. These remain four-condition tiled windows, with no new
+best-batch, full-cycle or physical-accuracy qualification.
 
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)
 identifies the ground's184micrometre offset as the collider's half-penetration

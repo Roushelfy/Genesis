@@ -1,0 +1,125 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "743181",
+      "SLURM_ARRAY_JOB_ID": "743181",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "inputs": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-shell-residual-v1/group0/study/fine-mesh.npz",
+      "bytes": 1309214,
+      "sha256": "b93ab11f8983030a4e57b06d84e74e09dcba3c3eb18e741404aa88b8da8d4fdf"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-pressure-refinement-v1/group2/pressure/start.json",
+      "bytes": 3307,
+      "sha256": "c02db4f760d6e50d3cb483203203c7870e8d7239a0e511fab42e35be823c769e"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-pressure-refinement-v1/group2/pressure/grid36.npz",
+      "bytes": 94952,
+      "sha256": "f1f72f78190aedd626e6b3915e344b2cf9212aa21970f57c9ac166efbef8c81f"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-pressure-refinement-v1/group2/pressure/grid48.npz",
+      "bytes": 124574,
+      "sha256": "639ad9b3d237b93e3f5b155d79d8247e4c54cf80cae447db4baed65c671f5b57"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-fields-v2/group0/fields/start.json",
+      "bytes": 7339,
+      "sha256": "5fead47d73f2a16428092a07fe36f471e4e64fb84a7741b00ff9d13de2e36539"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-fields-v2/group0/fields/result.json",
+      "bytes": 34329,
+      "sha256": "3bdbab8d9054bb90968366fe55a428be22b5378a1f8d14096b4133e7e6ddc7e6"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-fields-v2/group0/fields/coarse-fields.npz",
+      "bytes": 146654295,
+      "sha256": "7cbf1a0eb585f9b0ff31f9586c28708c28f2a97d183ffc8f13ad2c15bb5af78c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-fields-v2/group0/fields/fine-fields.npz",
+      "bytes": 453831310,
+      "sha256": "31fe05b9cf9d41b02e213f6b66b164db6e378d7253adb07337b03fbf0c5ac1eb"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-sampling-v1/group0/sampling/queries.npz",
+      "bytes": 19233202,
+      "sha256": "0740fa713455fe5e824d70459bcf881824a1b31398b35fa661eb7deed1a1ac16"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-fields-v1/group0/fields/particular.npz",
+      "bytes": 220271801,
+      "sha256": "4cf5f1dbb65bfc5334385c6de237de5f7a134881c733eb1ce699a7c048ecce80"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-fields-v2/group1/fields/start.json",
+      "bytes": 7353,
+      "sha256": "f9b1a212acb630de7888ba26daa4f05cd97f862f343c8d7aa743de7fa192f74c"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-fields-v2/group1/fields/result.json",
+      "bytes": 44462,
+      "sha256": "7da29ac54ad7db0bc0815bc6be298e08fa1d28805418675fedc3b062c5b6afd2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-fields-v2/group1/fields/coarse-fields.npz",
+      "bytes": 255591066,
+      "sha256": "f3d2899f43a3282ed7b29350dec36661caf2f896ff97fc778017bc8bc3636491"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-fields-v2/group1/fields/fine-fields.npz",
+      "bytes": 725275344,
+      "sha256": "9fdeddcb36fdfa41ac72ad37bb5fe7689b47555e90dc2d131fc79bbb342f8ff9"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-sampling-v1/group1/sampling/queries.npz",
+      "bytes": 27065484,
+      "sha256": "14b756841eb03492a852848b0ef3d7a52b009190c7f29693e9dc607f47c16a46"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-fields-v1/group1/fields/particular.npz",
+      "bytes": 435089772,
+      "sha256": "6aa6ad0705e15195b3b6a642c764b2993dc4647f7bdd46ca2c0c0d71054c7e39"
+    }
+  ],
+  "orders": [
+    8,
+    8,
+    4
+  ],
+  "align_pressure_cells": true,
+  "candidate": {
+    "width": 7.065321078439431e-07,
+    "along": 3.0748283752225734e-05,
+    "exponent": 0.5,
+    "amplitude": 109890109.89010988
+  },
+  "problem": {
+    "load_n": 0.005,
+    "young_pa": 10000000000.0,
+    "poisson": 0.3,
+    "slope": 0.02,
+    "along_curvature_per_m": 80.0,
+    "wall_m": 0.0005,
+    "land_m": 0.0003,
+    "gap": "slope*x + curvature*y*y/2, x >= 0; fixed orientation, normal force control",
+    "reaction_moments": "Outputs; no imposed zero-moment or free-tilt condition",
+    "kinematics": "Linear elastic, small-slope frictionless normal contact on a flat land"
+  },
+  "scope": "Q_full[g - chi*g_particular] + Q_local[chi*g_particular]. The compact smooth window lies entirely inside the original material. No removed volume or stress-law change; original regular and cross terms remain in Q_full. Polar transverse/depth quadrature cancels the leading edge-energy singularity, and along-edge intervals include both pressure grids' cell boundaries."
+}

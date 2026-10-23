@@ -1,0 +1,90 @@
+{
+  "execution_completed": true,
+  "quadrature": {
+    "points": 2381184,
+    "angle_order": 12,
+    "radial_order": 12,
+    "along_order": 6,
+    "analytic_moment_relative_errors": [
+      2.220446049250313e-16,
+      1.4654943925052066e-14,
+      7.105427357601002e-15
+    ],
+    "minimum_depth_m": 5.5690938239484726e-11,
+    "weighted_volume_m3": 1.611662069571981e-15
+  },
+  "seconds": {
+    "reference48": 291.3828820340568,
+    "reference36": 151.6607043739641,
+    "candidate": 25.56065416801721
+  },
+  "local_window_squared_norms": {
+    "reference": 1.1599628561381772,
+    "candidate_error": 0.006388363177145067,
+    "pressure_change": 0.001676470559855166
+  },
+  "rows": [
+    {
+      "study": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-fields-v2/group0/fields",
+      "original_squared_norms": {
+        "reference": 2.5664726021330626,
+        "candidate_error": 0.0017738849419894323,
+        "pressure_change": 0.0008340099214619662
+      },
+      "subtracted_window_squared_norms": {
+        "reference": 1.1140469709876273,
+        "candidate_error": 0.0012388304941384023,
+        "pressure_change": 0.0008328947251040247
+      },
+      "corrected_squared_norms": {
+        "reference": 2.6123884872836127,
+        "candidate_error": 0.006923417624996097,
+        "pressure_change": 0.0016775857562131074
+      },
+      "candidate_errors": {
+        "coarse": 0.051480337339171504,
+        "fine": 0.050087309143535666
+      },
+      "reference_changes": {
+        "coarse": 0.011896001480003615,
+        "reference36": 0.025340984568148907,
+        "reference48-source3": 0.00024073722280741177,
+        "reference48-lower": 1.6653034363900416e-09
+      }
+    },
+    {
+      "study": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-shell-fields-v2/group1/fields",
+      "original_squared_norms": {
+        "reference": 2.596699326034066,
+        "candidate_error": 0.0027603622624396557,
+        "pressure_change": 0.001452340513373828
+      },
+      "subtracted_window_squared_norms": {
+        "reference": 1.1442732271367977,
+        "candidate_error": 0.002225308444039933,
+        "pressure_change": 0.0014512253176040763
+      },
+      "corrected_squared_norms": {
+        "reference": 2.6123889550354455,
+        "candidate_error": 0.00692341699554479,
+        "pressure_change": 0.0016775857556249176
+      },
+      "candidate_errors": {
+        "coarse": 0.05148033039015875,
+        "medium": 0.050452742895153536,
+        "fine": 0.050087304769131424
+      },
+      "reference_changes": {
+        "coarse": 0.011896000414916327,
+        "medium": 0.006085960176889097,
+        "reference36": 0.02534098229503726,
+        "reference48-source3": 0.00024073720125588564,
+        "reference48-lower": 1.6653032874786381e-09
+      }
+    }
+  ],
+  "quadrature_convergence_checked": false,
+  "complete_volume_error_qualified": false,
+  "native_scene_accuracy_qualified": false,
+  "whole_goal_complete": false
+}
