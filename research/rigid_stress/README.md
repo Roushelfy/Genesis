@@ -11,6 +11,15 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current goal and verified scope
 
+The [independent single-edge hollow-shell control](docs/SHARP_EDGE_SHELL_CONTROL_20261023.md)
+adds a pressure/support comparison on the established polar land. At5mN,
+the unfitted sharp-edge law has4.185% cell-pressure error; finite-shell
+compliance changes pressure by0.00536%. Coarse-candidate/fine-reference
+tensor and sampled tensile/VM errors are1.531% and2.696%/1.988% on140 points
+at7.687--61.497um depth. Grid/body/source/integration checks pass. The
+growing edge cell maximum remains singular; complete-volume, membrane/bending,
+global peaks and matching native-scene physical accuracy remain open.
+
 The [actual sharp-edge main pipeline](docs/SHARP_EDGE_PRESSURE_20261022.md#near-saturation-friction-solve)
 now admits all130 frames0--129 in both max/full modes. A bounded native block
 Newton initialization repairs the former frame110 friction failure without

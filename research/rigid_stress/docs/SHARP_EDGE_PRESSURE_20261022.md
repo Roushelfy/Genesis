@@ -11,6 +11,12 @@ and admitted max/full throughput over frames100--129. Independent complete
 curved-shell physical stress errors and full-cycle admission remain open;
 the original frame428 still refuses. The [active goal](../GOAL.md) is unchanged.
 
+A separate [single-edge hollow-shell control](SHARP_EDGE_SHELL_CONTROL_20261023.md)
+now tests independently solved pressure/support with a finite-body regular
+response. Its finite-depth local errors are conditional on that frictionless
+polar-land geometry; complete fields and general changing-contact qualification
+remain open.
+
 ## Independent normal/shear reference
 
 The existing normal-only rectangle compliance is augmented by the normal

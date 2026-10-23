@@ -1,5 +1,17 @@
 # Rigid-stress data and artifact locations
 
+The single-edge hollow-shell control uses edge-shell-pressure-pilot-v1,
+edge-shell-pressure-refinement-v1 and edge-shell-pressure-inspection-v1
+under the established20261019 ranking data root. The
+sharp-edge-shell-pressure-v1 packet retains156 compact payloads
+(1,134,755 bytes) and23 external receipts from three terminal campaigns.
+Complete cell pressures, gaps and positive-depth fields stay on data;
+existing meshes and normal-source response tables are reused in place.
+CPU scientific work used Slurm rtx-mid, image1_26, the existing data-side
+physical environment and private node caches. All55 engine heads and12
+original unfinished files remain preserved. No engine changes, new home
+fallback, data migration or runtime coupled solve were introduced.
+
 The `hard-traction-vectors-v1` packet retains 290 compact payloads (1,921,637 bytes) and
 352 external receipts from four terminal campaigns. Initial B1024 profiling, paired
 normal/sharp recovery, B4/B1024 profiling/timing, full-field captures and frame428
