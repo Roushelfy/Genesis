@@ -38,6 +38,8 @@ class StressSourceVertexInfo:
     status: qd.Tensor
     search_min: qd.Tensor
     search_max: qd.Tensor
+    search_coarse_min: qd.Tensor
+    search_coarse_max: qd.Tensor
 
 
 class StressSourceVertices:
@@ -68,6 +70,8 @@ class StressSourceVertices:
             status=V(dtype=gs.qd_int, shape=(n_vertices,)),
             search_min=V_VEC(3, dtype=gs.qd_float, shape=((n_vertices + 63) // 64,)),
             search_max=V_VEC(3, dtype=gs.qd_float, shape=((n_vertices + 63) // 64,)),
+            search_coarse_min=V_VEC(3, dtype=gs.qd_float, shape=((n_vertices + 4095) // 4096,)),
+            search_coarse_max=V_VEC(3, dtype=gs.qd_float, shape=((n_vertices + 4095) // 4096,)),
         )
         start = 0
         for geometry in geoms:
@@ -168,13 +172,20 @@ def kernel_source_vertex_mapping(
 
 @qd.kernel
 def kernel_source_vertex_bounds(source_vertex_info: StressSourceVertexInfo):
-    for i_block in range(source_vertex_info.search_min.shape[0]):
+    for i_blk in range(source_vertex_info.search_min.shape[0]):
         lower = qd.Vector([float("inf")] * 3)
         upper = qd.Vector([-float("inf")] * 3)
-        for i_v in range(64 * i_block, qd.min(64 * (i_block + 1), source_vertex_info.positions.shape[0])):
+        for i_v in range(64 * i_blk, qd.min(64 * (i_blk + 1), source_vertex_info.positions.shape[0])):
             lower = qd.min(lower, source_vertex_info.positions[i_v])
             upper = qd.max(upper, source_vertex_info.positions[i_v])
-        source_vertex_info.search_min[i_block], source_vertex_info.search_max[i_block] = lower, upper
+        source_vertex_info.search_min[i_blk], source_vertex_info.search_max[i_blk] = lower, upper
+    for i_grp in range(source_vertex_info.search_coarse_min.shape[0]):
+        lower = qd.Vector([float("inf")] * 3)
+        upper = qd.Vector([-float("inf")] * 3)
+        for i_blk in range(64 * i_grp, qd.min(64 * (i_grp + 1), source_vertex_info.search_min.shape[0])):
+            lower = qd.min(lower, source_vertex_info.search_min[i_blk])
+            upper = qd.max(upper, source_vertex_info.search_max[i_blk])
+        source_vertex_info.search_coarse_min[i_grp], source_vertex_info.search_coarse_max[i_grp] = lower, upper
 
 
 @qd.kernel
@@ -192,24 +203,34 @@ def kernel_bind_source_vertices(
             nearest = -1
             reference_vertex = -1
             is_ambiguous = False
-            for i_block in range(source_vertex_info.search_min.shape[0]):
-                lower = qd.max(
-                    source_vertex_info.search_min[i_block] - point,
-                    qd.max(point - source_vertex_info.search_max[i_block], 0.0),
+            for i_grp in range(source_vertex_info.search_coarse_min.shape[0]):
+                coarse_lower = qd.max(
+                    source_vertex_info.search_coarse_min[i_grp] - point,
+                    qd.max(point - source_vertex_info.search_coarse_max[i_grp], 0.0),
                 )
-                # Use the original norm comparison: squaring its tolerance can exclude equality after rounding.
-                if lower.norm() <= tolerance:
-                    for i_v in range(64 * i_block, qd.min(64 * (i_block + 1), source_vertex_info.positions.shape[0])):
-                        if (
-                            source_vertex_info.geom[i_v] == source_state.geom[i_c, i_b]
-                            and (point - source_vertex_info.positions[i_v]).norm() <= tolerance
-                        ):
-                            status = source_vertex_info.status[i_v]
-                            is_ambiguous = is_ambiguous or status == StressSourceVertexStatus.AMBIGUOUS
-                            if status == StressSourceVertexStatus.SUCCESS:
-                                i_reference = source_vertex_info.reference_vertex[i_v]
-                                is_ambiguous = is_ambiguous or (nearest >= 0 and i_reference != reference_vertex)
-                                nearest, reference_vertex = i_v, i_reference
+                if coarse_lower.norm() <= tolerance:
+                    for i_blk in range(64 * i_grp, qd.min(64 * (i_grp + 1), source_vertex_info.search_min.shape[0])):
+                        lower = qd.max(
+                            source_vertex_info.search_min[i_blk] - point,
+                            qd.max(point - source_vertex_info.search_max[i_blk], 0.0),
+                        )
+                        # Use the original norm comparison: squaring its tolerance can exclude equality after rounding.
+                        if lower.norm() <= tolerance:
+                            for i_v in range(
+                                64 * i_blk, qd.min(64 * (i_blk + 1), source_vertex_info.positions.shape[0])
+                            ):
+                                if (
+                                    source_vertex_info.geom[i_v] == source_state.geom[i_c, i_b]
+                                    and (point - source_vertex_info.positions[i_v]).norm() <= tolerance
+                                ):
+                                    status = source_vertex_info.status[i_v]
+                                    is_ambiguous = is_ambiguous or status == StressSourceVertexStatus.AMBIGUOUS
+                                    if status == StressSourceVertexStatus.SUCCESS:
+                                        i_reference = source_vertex_info.reference_vertex[i_v]
+                                        is_ambiguous = is_ambiguous or (
+                                            nearest >= 0 and i_reference != reference_vertex
+                                        )
+                                        nearest, reference_vertex = i_v, i_reference
             if is_ambiguous:
                 source_state.has_vertex_ambiguity[i_c, i_b] = True
             elif nearest >= 0:

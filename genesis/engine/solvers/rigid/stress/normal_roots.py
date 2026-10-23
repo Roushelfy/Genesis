@@ -43,32 +43,36 @@ def func_normal_root(
     elif dyn_info.geoms.type[i_g] == gs.GEOM_TYPE.MESH:
         distance = gs.qd_float(float("inf"))
         i_start, i_end = dyn_info.geoms.face_start[i_g], dyn_info.geoms.face_end[i_g]
-        for i_block in range(i_start // 64, (i_end + 63) // 64):
-            if (local_direction >= curvature_info.search_normal_min[i_block]).all() and (
-                local_direction <= curvature_info.search_normal_max[i_block]
+        for i_grp in range(i_start // 4096, (i_end + 4095) // 4096):
+            if (local_direction >= curvature_info.search_coarse_normal_min[i_grp]).all() and (
+                local_direction <= curvature_info.search_coarse_normal_max[i_grp]
             ).all():
-                for i_f in range(qd.max(i_start, 64 * i_block), qd.min(i_end, 64 * (i_block + 1))):
-                    if curvature_info.normal_inverse_valid[i_f]:
-                        barycentric = curvature_info.normal_inverse[i_f] @ local_direction
-                        total = barycentric.sum()
-                        if total > 128.0 * epsilon * barycentric.norm():
-                            barycentric /= total
-                            if barycentric.min() >= -128.0 * epsilon:
-                                barycentric = qd.max(barycentric, 0.0)
-                                barycentric /= barycentric.sum()
-                                indices = dyn_info.faces.verts_idx[i_f]
-                                candidate = qd.Vector.zero(gs.qd_float, 3)
-                                for i in qd.static(range(3)):
-                                    i_v = indices[i]
-                                    candidate += barycentric[i] * dyn_info.verts.init_pos[i_v]
-                                candidate_distance = (candidate - local_seed).norm_sqr()
-                                if candidate_distance < distance:
-                                    distance, center, i_selected, weights = (
-                                        candidate_distance,
-                                        candidate,
-                                        i_f,
-                                        barycentric,
-                                    )
+                for i_blk in range(qd.max(i_start // 64, 64 * i_grp), qd.min((i_end + 63) // 64, 64 * (i_grp + 1))):
+                    if (local_direction >= curvature_info.search_normal_min[i_blk]).all() and (
+                        local_direction <= curvature_info.search_normal_max[i_blk]
+                    ).all():
+                        for i_f in range(qd.max(i_start, 64 * i_blk), qd.min(i_end, 64 * (i_blk + 1))):
+                            if curvature_info.normal_inverse_valid[i_f]:
+                                barycentric = curvature_info.normal_inverse[i_f] @ local_direction
+                                total = barycentric.sum()
+                                if total > 128.0 * epsilon * barycentric.norm():
+                                    barycentric /= total
+                                    if barycentric.min() >= -128.0 * epsilon:
+                                        barycentric = qd.max(barycentric, 0.0)
+                                        barycentric /= barycentric.sum()
+                                        indices = dyn_info.faces.verts_idx[i_f]
+                                        candidate = qd.Vector.zero(gs.qd_float, 3)
+                                        for i in qd.static(range(3)):
+                                            i_v = indices[i]
+                                            candidate += barycentric[i] * dyn_info.verts.init_pos[i_v]
+                                        candidate_distance = (candidate - local_seed).norm_sqr()
+                                        if candidate_distance < distance:
+                                            distance, center, i_selected, weights = (
+                                                candidate_distance,
+                                                candidate,
+                                                i_f,
+                                                barycentric,
+                                            )
         if i_selected >= 0:
             indices = dyn_info.faces.verts_idx[i_selected]
             is_valid = True
