@@ -1,0 +1,25 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-231",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "744061",
+      "SLURM_ARRAY_JOB_ID": "744058",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-0fb64f83-4916-4ca0-6e63-39c9ca5c570a, 00000000:20:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "genesis_module": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-opt-v1/genesis/__init__.py",
+  "code_aster_runtime": {
+    "run_aster": null,
+    "as_run": null,
+    "code_aster_python_module": false,
+    "scope": "Current Slurm image PATH and the selected Python environment only."
+  }
+}

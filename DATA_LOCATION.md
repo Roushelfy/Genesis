@@ -1,5 +1,17 @@
 # Rigid-stress data and artifact locations
 
+The throughput phase uses 31 `automatic-dpr-opt-*` campaigns under the same
+20261019 ranking data root. All runs use explicit data outputs, the existing
+data-side environment, Slurm `rtx-mid`/image `1_26` and private node caches;
+no new home-data fallback or migration occurred. The compact
+`research/rigid_stress/evidence/20261023-automatic-dpr-throughput-v1` packet
+contains timings, controls, task receipts and two small condition fixtures.
+Full fields, logs and source inventories stay on data. Metadata include
+`meta/automatic-dpr-opt-launch-v8.json`, the final timing validation and
+`meta/automatic-dpr-opt-preservation-v1.json`. All 76 frozen engines and 12
+original unfinished files are preserved. See the
+[throughput report](research/rigid_stress/docs/DPR_THROUGHPUT_20261023.md).
+
 Automatic-radius DPR development uses `automatic-dpr-*` campaigns under the
 established 20261019 ranking data root below. Generated control meshes, scene
 arrays, compiler logs and submission/source receipts remain on data. Active

@@ -1,0 +1,37 @@
+[
+  [
+    {
+      "name": "hertz-full",
+      "module": "examples.speed_benchmark.rigid_stress",
+      "args": [
+        "--scope",
+        "live",
+        "--envs",
+        "64",
+        "--warmup",
+        "130",
+        "--steps",
+        "130",
+        "--repetitions",
+        "3",
+        "--minimum-seconds",
+        "0",
+        "--compact-log",
+        "--conditions",
+        "research/rigid_stress/evidence/20261023-automatic-dpr-throughput-v1/conditions.npz",
+        "--radius-model",
+        "hertz",
+        "--pressure-profile",
+        "hertz",
+        "--box-edge-policy",
+        "planar",
+        "--quadrature",
+        "16",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "db84114d1"
+      ]
+    }
+  ]
+]

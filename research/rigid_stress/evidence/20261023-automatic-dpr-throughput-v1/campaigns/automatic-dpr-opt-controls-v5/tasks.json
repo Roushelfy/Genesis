@@ -1,0 +1,74 @@
+[
+  [
+    {
+      "name": "cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_controls",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    },
+    {
+      "name": "regressions",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-opt-v6",
+        "--backend",
+        "cpu",
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-opt-v6/tests/rigid/test_stress.py",
+        "--select",
+        "finite_pressure_matches_independent_cpu or constrained_pressure_and_invalid_inputs or refined_moments_moving_nonconvex_contacts"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_controls",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    },
+    {
+      "name": "regressions",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-opt-v6",
+        "--backend",
+        "gpu",
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-opt-v6/tests/rigid/test_stress.py",
+        "--select",
+        "finite_pressure_matches_independent_cpu or constrained_pressure_and_invalid_inputs or refined_moments_moving_nonconvex_contacts"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "moments",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_controls",
+      "args": [
+        "--backend",
+        "gpu",
+        "--reuse-moments"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "overflow",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_controls",
+      "args": [
+        "--backend",
+        "gpu",
+        "--reuse-moments",
+        "--tasks-per-env",
+        "1"
+      ]
+    }
+  ]
+]

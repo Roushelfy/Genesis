@@ -1,0 +1,48 @@
+{
+  "passed": true,
+  "radius_m": [
+    2.574428817288844e-05,
+    5.148857634577688e-05
+  ],
+  "radius_status": [
+    1,
+    1,
+    2,
+    4,
+    3,
+    3
+  ],
+  "rows": [
+    {
+      "location": "interior",
+      "profile": "dpr",
+      "relative_nodal_load_error": 1.5560655051140798e-15
+    },
+    {
+      "location": "interior",
+      "profile": "hertz",
+      "relative_nodal_load_error": 3.2997513863978708e-15
+    },
+    {
+      "location": "mesh_edge",
+      "profile": "dpr",
+      "relative_nodal_load_error": 5.292089764066556e-11
+    },
+    {
+      "location": "mesh_edge",
+      "profile": "hertz",
+      "relative_nodal_load_error": 8.271029722005062e-11
+    },
+    {
+      "location": "mesh_vertex",
+      "profile": "dpr",
+      "relative_nodal_load_error": 1.304610349811053e-15
+    },
+    {
+      "location": "mesh_vertex",
+      "profile": "hertz",
+      "relative_nodal_load_error": 1.060403535167589e-14
+    }
+  ],
+  "scope": "Analytical circular radius and planar finite-pressure P2 moments; independent sparse solve of the same coarse FEM. Numerical conformance, not a shell contact-accuracy claim."
+}

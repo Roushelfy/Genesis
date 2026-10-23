@@ -1,0 +1,117 @@
+    return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 501, in build_Call
+    node.ptr = func(*py_args, **py_kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py", line 101, in __call__
+    return self.wrapper.__call__(*args, **kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/func.py", line 89, in __call__
+    ret = transform_tree(tree, ctx)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/transform.py", line 8, in transform_tree
+    ASTTransformer()(ctx, tree)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 51, in __call__
+    raise e.with_traceback(None)
+quadrants.lang.exception.QuadrantsSyntaxError: quadrants stack trace:
+===
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+    res = method(ctx, node)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 1018, in build_Compare
+    raise QuadrantsSyntaxError(
+quadrants.lang.exception.QuadrantsSyntaxError: Operator "is not" inside `qd.static` compares a direct kernel argument against `None`. The argument must be annotated `qd.Tensor | None`, `qd.types.Template | None`, or `qd.types.NDArray[...] | None`.
+
+===
+
+Your code:
+File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-opt-v3/genesis/engine/solvers/rigid/stress/contact.py", line 512, in func_pressure_warp:
+        if qd.static(processed_refined is not None):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Operator "is not" inside `qd.static` compares a direct kernel argument against `None`. The argument must be annotated `qd.Tensor | None`, `qd.types.Template | None`, or `qd.types.NDArray[...] | None`.
+
+
+===
+
+Your code:
+File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-opt-v3/genesis/engine/solvers/rigid/stress/scatter.py", line 187, in func_pressure_moments:
+    func_pressure_warp(contacts, surface, False, not is_admitted)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+quadrants stack trace:
+===
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+    res = method(ctx, node)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 1018, in build_Compare
+    raise QuadrantsSyntaxError(
+quadrants.lang.exception.QuadrantsSyntaxError: Operator "is not" inside `qd.static` compares a direct kernel argument against `None`. The argument must be annotated `qd.Tensor | None`, `qd.types.Template | None`, or `qd.types.NDArray[...] | None`.
+
+===
+
+Your code:
+File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-opt-v3/genesis/engine/solvers/rigid/stress/contact.py", line 512, in func_pressure_warp:
+        if qd.static(processed_refined is not None):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Operator "is not" inside `qd.static` compares a direct kernel argument against `None`. The argument must be annotated `qd.Tensor | None`, `qd.types.Template | None`, or `qd.types.NDArray[...] | None`.
+
+
+
+===
+
+Your code:
+File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-opt-v3/genesis/engine/solvers/rigid/stress/scatter.py", line 200, in kernel_pressure_moments:
+    func_pressure_moments(contacts, state, info, surface, workspace,
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+quadrants stack trace:
+===
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+    res = method(ctx, node)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 526, in build_Call
+    return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 501, in build_Call
+    node.ptr = func(*py_args, **py_kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py", line 101, in __call__
+    return self.wrapper.__call__(*args, **kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/func.py", line 89, in __call__
+    ret = transform_tree(tree, ctx)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/transform.py", line 8, in transform_tree
+    ASTTransformer()(ctx, tree)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 51, in __call__
+    raise e.with_traceback(None)
+quadrants.lang.exception.QuadrantsSyntaxError: quadrants stack trace:
+===
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+    res = method(ctx, node)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 1018, in build_Compare
+    raise QuadrantsSyntaxError(
+quadrants.lang.exception.QuadrantsSyntaxError: Operator "is not" inside `qd.static` compares a direct kernel argument against `None`. The argument must be annotated `qd.Tensor | None`, `qd.types.Template | None`, or `qd.types.NDArray[...] | None`.
+
+===
+
+Your code:
+File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-opt-v3/genesis/engine/solvers/rigid/stress/contact.py", line 512, in func_pressure_warp:
+        if qd.static(processed_refined is not None):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Operator "is not" inside `qd.static` compares a direct kernel argument against `None`. The argument must be annotated `qd.Tensor | None`, `qd.types.Template | None`, or `qd.types.NDArray[...] | None`.
+
+
+===
+
+Your code:
+File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-opt-v3/genesis/engine/solvers/rigid/stress/scatter.py", line 187, in func_pressure_moments:
+    func_pressure_warp(contacts, surface, False, not is_admitted)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+quadrants stack trace:
+===
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+    res = method(ctx, node)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 1018, in build_Compare
+    raise QuadrantsSyntaxError(
+quadrants.lang.exception.QuadrantsSyntaxError: Operator "is not" inside `qd.static` compares a direct kernel argument against `None`. The argument must be annotated `qd.Tensor | None`, `qd.types.Template | None`, or `qd.types.NDArray[...] | None`.
+
+===
+
+Your code:
+File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/automatic-dpr-opt-v3/genesis/engine/solvers/rigid/stress/contact.py", line 512, in func_pressure_warp:
+        if qd.static(processed_refined is not None):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Operator "is not" inside `qd.static` compares a direct kernel argument against `None`. The argument must be annotated `qd.Tensor | None`, `qd.types.Template | None`, or `qd.types.NDArray[...] | None`.

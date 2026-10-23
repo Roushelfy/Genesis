@@ -1,0 +1,46 @@
+[
+  [
+    {
+      "name": "cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_controls",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_controls",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "moments",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_controls",
+      "args": [
+        "--backend",
+        "gpu",
+        "--reuse-moments"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "overflow",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_controls",
+      "args": [
+        "--backend",
+        "gpu",
+        "--reuse-moments",
+        "--tasks-per-env",
+        "1"
+      ]
+    }
+  ]
+]

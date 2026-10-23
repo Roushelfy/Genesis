@@ -1,0 +1,27 @@
+[
+  [
+    {
+      "name": "cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_controls",
+      "args": [
+        "--backend",
+        "cpu",
+        "--quadrature",
+        "16"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_controls",
+      "args": [
+        "--backend",
+        "gpu",
+        "--reuse-moments",
+        "--quadrature",
+        "16"
+      ]
+    }
+  ]
+]

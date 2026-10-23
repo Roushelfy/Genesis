@@ -1,0 +1,132 @@
+{
+  "production_source": "db84114d1",
+  "remote_goal": "8cab17283",
+  "numerical_checks": [
+    {
+      "campaign": "automatic-dpr-opt-controls-v6",
+      "task": "group0/cpu",
+      "result_sha256": "1134924b846b1c07e9ecd907e03820e2d25e78edd7811280f5f498b6719ca7a9",
+      "passed": true,
+      "accepted_frames": null
+    },
+    {
+      "campaign": "automatic-dpr-opt-controls-v6",
+      "task": "group1/gpu",
+      "result_sha256": "ed80e34eafad0697897bd948a3dcc9c10de9f9bcc8d672a976905e9b07d8a674",
+      "passed": true,
+      "accepted_frames": null
+    },
+    {
+      "campaign": "automatic-dpr-opt-controls-v6",
+      "task": "group0/regressions",
+      "result_sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054",
+      "passed": true,
+      "accepted_frames": null
+    },
+    {
+      "campaign": "automatic-dpr-opt-controls-v6",
+      "task": "group1/regressions",
+      "result_sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054",
+      "passed": true,
+      "accepted_frames": null
+    },
+    {
+      "campaign": "automatic-dpr-opt-controls-v6",
+      "task": "group2/moments",
+      "result_sha256": "877a5b49d40321ab3189be30e181455d916a0c4b25eb283eba322ed5e235d079",
+      "passed": true,
+      "accepted_frames": null
+    },
+    {
+      "campaign": "automatic-dpr-opt-controls-v6",
+      "task": "group3/overflow",
+      "result_sha256": "31e78b4c9b5defeaa61e9325290ece43e559d0ed5efa335c3540ce0df586b7d3",
+      "passed": true,
+      "accepted_frames": null
+    },
+    {
+      "campaign": "automatic-dpr-opt-controls-q16-v1",
+      "task": "group0/cpu",
+      "result_sha256": "089c2098c9e79dd61fbc122c9081e836932204a12ebce21d323a676557d66502",
+      "passed": true,
+      "accepted_frames": null
+    },
+    {
+      "campaign": "automatic-dpr-opt-controls-q16-v1",
+      "task": "group1/gpu",
+      "result_sha256": "43449a5fa15edcf2ac35596337bf3aec20a0655a53691666f393d2298a1cbf01",
+      "passed": true,
+      "accepted_frames": null
+    },
+    {
+      "campaign": "automatic-dpr-opt-scenes-v4",
+      "task": "group0/after",
+      "result_sha256": "63b5b741e3aef248e33dbbdd2d8542d209ef14e8d6e59c98d97d11d0c642c1bd",
+      "passed": true,
+      "accepted_frames": 130
+    },
+    {
+      "campaign": "automatic-dpr-opt-scenes-v4",
+      "task": "group0/audit",
+      "result_sha256": "a34f4b4969e45de0843d929c2797f9ed61be60ddec3844515b77315082a80fbe",
+      "passed": true,
+      "accepted_frames": 130
+    },
+    {
+      "campaign": "automatic-dpr-opt-scenes-v4",
+      "task": "group1/cycle",
+      "result_sha256": "4a4285721839e4ab8ce64c2bec2b4323cd8d466811935a83d19ef614a96c859c",
+      "passed": true,
+      "accepted_frames": 600
+    },
+    {
+      "campaign": "automatic-dpr-opt-scenes-v4",
+      "task": "group2/reset",
+      "result_sha256": "d809baebeee04c3d8774a40ffd40bb2ec166bf2eb781f790acb085e44a0a8ea0",
+      "passed": true,
+      "accepted_frames": 130
+    },
+    {
+      "campaign": "automatic-dpr-opt-scenes-v4",
+      "task": "group2/unfused",
+      "result_sha256": "737890d3f953424aa46aa7b44f598489a954a42ce10cf211bff2666e3c470d22",
+      "passed": true,
+      "accepted_frames": 130
+    },
+    {
+      "campaign": "automatic-dpr-opt-scenes-v4",
+      "task": "group3/diverse",
+      "result_sha256": "e3ebd7f6d047965786a81f2bfdb72dcd7d96a6a33cc284e710f14f769bbc230b",
+      "passed": true,
+      "accepted_frames": 160
+    },
+    {
+      "campaign": "automatic-dpr-opt-scenes-v3",
+      "task": "group0/after",
+      "result_sha256": "80fc84aca6a07b139a5dc76be1c96458c54c71daa586ab628f4aa1329877d4c2",
+      "passed": true,
+      "accepted_frames": 130
+    },
+    {
+      "campaign": "automatic-dpr-opt-scenes-v3",
+      "task": "group0/audit",
+      "result_sha256": "e6b1708cd3e1a4f9d26af080117a30982f6de0bf774ed636c0ea753cc8b4028c",
+      "passed": true,
+      "accepted_frames": 130
+    },
+    {
+      "campaign": "final primary timings",
+      "passed": true,
+      "configurations": 33,
+      "invalid_environment_steps": 0
+    }
+  ],
+  "checked_scope": "Native integrated automatic Hertz DPR; exact contained moments, refined/geometry/ray reuse, max/full matched timing, batch plateau, diverse input bank, independent CPU/GPU controls, nonconvex changing contacts, release/recontact, partial reset and 600-frame numerical cycle.",
+  "excluded_claims": [
+    "Continuum-converged physical stress",
+    "Physical sharp-edge Hertz solution",
+    "Successful grasp qualification",
+    "Reclassifying the historical bitwise failure"
+  ],
+  "all_required_checks_passed": true
+}

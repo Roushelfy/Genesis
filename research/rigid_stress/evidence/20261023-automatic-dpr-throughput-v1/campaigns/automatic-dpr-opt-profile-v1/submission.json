@@ -1,0 +1,22 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=gpu:1",
+    "--cpus-per-task=1",
+    "--mem=12G",
+    "--time=20",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-profile-v1/logs/%A_%a.log",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/automatic-dpr-opt-profile-v1/job.sh"
+  ],
+  "job": "744100",
+  "dependency": null,
+  "exclude_nodes": null,
+  "node_local_cache": true,
+  "kernel_profiler": true,
+  "allow_home_output": false
+}

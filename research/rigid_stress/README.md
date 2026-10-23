@@ -11,6 +11,14 @@ See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 
 ## Current target: automatic contact radius for the existing DPR
 
+The [throughput optimization is delivered](docs/DPR_THROUGHPUT_20261023.md).
+Matched B64 full-scene Hertz DPR improves from 4.5836 to 3.1653 ms (31% lower
+latency, 45% higher throughput). The useful measured B16384 batch reaches
+356,895 full-output environment-steps/s. Default moment reuse, independent
+CPU/GPU checks, the 600-frame numerical cycle, diverse contacts and reset pass.
+The report includes max/full baselines, memory, failed alternatives, commands
+and the remaining physical sharp-edge limitations.
+
 **Current priority, 2026-10-23:** [maximize this native path's throughput](docs/DPR_AUTOMATIC_RADIUS_GOAL_20261023.md#immediate-goal-maximize-native-automatic-dpr-throughput),
 especially small-footprint integration, geometry/moment reuse and batch tuning.
 Keep the original DPR/FEM and validate max/full complete-scene improvements;
@@ -24,8 +32,8 @@ that same FEM. Keep radius-only and pressure-profile effects separately measured
 Analytic stress enrichment, boundary-traction correction and combined fields
 are stopped as the active direction. Earlier results below remain reproducible historical research.
 
-The [native automatic-radius DPR option](docs/AUTOMATIC_DPR_IMPLEMENTATION_20261023.md)
-is available on this branch. CPU/GPU controls, the 130-frame sharp-box scene
+The [starting automatic-radius DPR report](docs/AUTOMATIC_DPR_IMPLEMENTATION_20261023.md)
+records the pre-optimization baseline. CPU/GPU controls, the 130-frame sharp-box scene
 window, partial reset and unfused execution pass with an explicit planar
 edge-footprint approximation and quadrature 16. Matched B64 full scene costs
 4.564 ms/step for automatic radius with Hertz pressure, 2.671 ms for manual DPR
