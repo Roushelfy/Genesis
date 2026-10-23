@@ -380,6 +380,7 @@ def main() -> None:
     parser.add_argument("--contact-model", choices=("pressure", "intrinsic"), default="pressure")
     parser.add_argument("--radius-model", choices=("manual", "hertz"), default="manual")
     parser.add_argument("--pressure-profile", choices=("dpr", "hertz"), default="dpr")
+    parser.add_argument("--quadrature", type=int, default=10)
     parser.add_argument("--intrinsic-support", choices=("contact", "pair_union"), default="contact")
     parser.add_argument("--dense-surface-fan", action="store_true", help="Compare the full-face fan launch.")
     parser.add_argument(
@@ -479,6 +480,7 @@ def main() -> None:
         contact_model=args.contact_model,
         radius_model=args.radius_model,
         pressure_profile=args.pressure_profile,
+        quadrature=args.quadrature,
         contact_block_size=args.contact_block_size,
         egg_geometry=args.egg_geometry,
         use_gjk_collision={"auto": None, "mpr": False, "gjk": True}[args.collision_method],
@@ -595,15 +597,15 @@ def main() -> None:
             "envs": args.envs,
             "level": args.level,
             "precision": "64",
-            "quadrature": 10,
+            "quadrature": args.quadrature,
             "dt": 0.01,
             "substeps": 1,
             "varied": args.varied,
             "seed": args.seed,
-            "load_model": "intrinsic_surface_fan_q10_squared_coordinates_ports8_adjacent_unfolding_verified_single_face_disks_failed_disk_nine_panel_refinement_failed_wrench_fan_partition"
+            "load_model": f"intrinsic_surface_fan_q{args.quadrature}_squared_coordinates_ports8_adjacent_unfolding_verified_single_face_disks_failed_disk_nine_panel_refinement_failed_wrench_fan_partition"
             + ("_body_source_prior" if args.intrinsic_load_partition == "body_source_prior" else "")
             if args.contact_model == "intrinsic"
-            else "finite_pad_adaptive_q10",
+            else f"finite_pad_adaptive_q{args.quadrature}",
             "contact_model": args.contact_model,
             "radius_model": args.radius_model,
             "pressure_profile": args.pressure_profile,

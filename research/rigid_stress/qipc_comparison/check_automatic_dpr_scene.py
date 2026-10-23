@@ -48,6 +48,7 @@ def main():
     cli.add_argument("--backend", choices=["cpu", "gpu"], default="gpu")
     cli.add_argument("--batch", type=int, default=4)
     cli.add_argument("--steps", type=int, default=130)
+    cli.add_argument("--quadrature", type=int, default=10)
     cli.add_argument("--unfused", action="store_true")
     cli.add_argument("--partial-reset-at", type=int)
     cli.add_argument("--field-steps", type=int, nargs="*", default=[])
@@ -62,6 +63,7 @@ def main():
             "mode": args.mode,
             "batch": args.batch,
             "steps": args.steps,
+            "quadrature": args.quadrature,
             "unfused": args.unfused,
             "partial_reset_at": args.partial_reset_at,
             "field_steps": args.field_steps,
@@ -78,6 +80,7 @@ def main():
         output_mode="full",
         radius_model="manual" if args.mode == "manual" else "hertz",
         pressure_profile="hertz" if args.mode == "hertz" else "dpr",
+        quadrature=args.quadrature,
         fused_pipeline=not args.unfused,
         fused_rigid_post=False if args.unfused else None,
     )
