@@ -190,6 +190,7 @@ class RigidStressRecovery:
                     else entry.options.young / (1.0 - entry.options.poisson**2),
                     entry.options.contact_radius,
                     self.source_epsilon,
+                    entry.options.box_edge_policy == "planar",
                 )
             if entry.options.load_transfer == "resolved":
                 entry.resolved = ResolvedContacts(entry.link, entry.contacts, entry.model.info, entry.options)

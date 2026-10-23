@@ -11,7 +11,7 @@ from scipy.sparse.linalg import splu
 from skfem import MeshTet
 
 import genesis as gs
-from genesis.engine.solvers.rigid.stress.automatic_radius import func_estimate_radius
+from genesis.engine.solvers.rigid.stress.automatic_radius import StressRadiusInfo, func_estimate_radius
 from genesis.engine.solvers.rigid.stress.contact import (
     StressContactState,
     create_contacts,
@@ -30,7 +30,11 @@ from .artifacts import runtime_identity, write_json
 
 @qd.kernel
 def kernel_radius_controls(
-    contacts: StressContactState, collider: array_class.ColliderState, dyn: array_class.DynState, info: qd.template()
+    contacts: StressContactState,
+    collider: array_class.ColliderState,
+    dyn: array_class.DynState,
+    info: qd.template(),
+    corner: bool,
 ):
     for i_b in range(6):
         force = 0.005 * qd.Vector([0.2, 0.0, -1.0])
@@ -52,7 +56,9 @@ def kernel_radius_controls(
         collider.contact_data.witness.point_a[0, i_b] = qd.Vector([0.0, 0.0, 0.05])
         collider.contact_data.witness.point_b[0, i_b] = qd.Vector([0.0, 0.0, 0.05])
         if i_b == 4:
-            collider.contact_data.witness.point_a[0, i_b] = qd.Vector([0.05, 0.05, 0.05])
+            collider.contact_data.witness.point_a[0, i_b] = qd.Vector([0.05, 0.0, 0.05])
+            if corner:
+                collider.contact_data.witness.point_a[0, i_b][1] = 0.05
         collider.contact_data.witness.point_a[0, i_b] = geom.qd_transform_by_trans_quat(
             collider.contact_data.witness.point_a[0, i_b], dyn.geoms.pos[0, i_b], dyn.geoms.quat[0, i_b]
         )
@@ -168,14 +174,39 @@ def main():
     entry = scene.rigid_solver.stress_recovery.links[0]
     contacts = create_contacts(1, 6, 0.006)
     kernel_radius_controls(
-        contacts, scene.rigid_solver.collider.collider_state, scene.rigid_solver.dyn_state, entry.automatic_radius
+        contacts,
+        scene.rigid_solver.collider.collider_state,
+        scene.rigid_solver.dyn_state,
+        entry.automatic_radius,
+        False,
     )
-    radius = qd_to_numpy(contacts.radius, transpose=True)[:, 0]
-    status = qd_to_numpy(contacts.radius_status, transpose=True)[:, 0]
+    radius = qd_to_numpy(contacts.radius, transpose=True, copy=True)[:, 0]
+    status = qd_to_numpy(contacts.radius_status, transpose=True, copy=True)[:, 0]
     np.testing.assert_array_equal(status, [1, 1, 2, 4, 3, 3])
     expected = (0.75 * np.array([0.005, 0.04]) * 0.05 / (1e10 / (1 - 0.3**2))) ** (1 / 3)
     np.testing.assert_allclose(radius[:2], expected, rtol=5e-14)
     assert np.isnan(radius[3:]).all()
+    planar = StressRadiusInfo(
+        scene.rigid_solver.dyn_info,
+        entry.automatic_radius.curvature,
+        entry.automatic_radius.modulus,
+        entry.automatic_radius.unloaded_radius,
+        entry.automatic_radius.epsilon,
+        True,
+    )
+    edge_rows = []
+    for corner in (False, True):
+        kernel_radius_controls(
+            contacts, scene.rigid_solver.collider.collider_state, scene.rigid_solver.dyn_state, planar, corner
+        )
+        estimated = qd_to_numpy(contacts.radius, transpose=True, copy=True)[:, 0]
+        codes = qd_to_numpy(contacts.radius_status, transpose=True, copy=True)[:, 0]
+        np.testing.assert_array_equal(codes, [1, 1, 2, 4, 5, 3])
+        np.testing.assert_allclose(estimated[[0, 1, 4]], expected[[0, 1, 0]], rtol=5e-14)
+        assert np.isnan(estimated[[3, 5]]).all()
+        edge_rows.append({"corner": corner, "radius_m": float(estimated[4]), "status": int(codes[4])})
+    assert any(item.name.startswith("stress.curvature.") for item in scene.rigid_solver.stress_recovery.data)
+    write_json(args.output / "box-edge-controls.json", {"passed": True, "rows": edge_rows})
     try:
         box.base_link.set_stress_contact_radius(0.01)
     except gs.GenesisException:

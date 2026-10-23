@@ -61,6 +61,7 @@ class FrankaEgg:
         radius_model: str = "manual",
         pressure_profile: str = "dpr",
         quadrature: int = 10,
+        box_edge_policy: str = "unsupported",
     ):
         self.n_envs = n_envs
         self.radius_model = radius_model
@@ -112,6 +113,7 @@ class FrankaEgg:
                 contact_model=contact_model,
                 radius_model=radius_model,
                 pressure_profile=pressure_profile,
+                box_edge_policy=box_edge_policy,
                 quadrature=quadrature,
                 contact_block_size=contact_block_size,
                 intrinsic_support=intrinsic_support,
@@ -306,6 +308,7 @@ def main() -> None:
     parser.add_argument("--radius-model", choices=("manual", "hertz"), default="manual")
     parser.add_argument("--pressure-profile", choices=("dpr", "hertz"), default="dpr")
     parser.add_argument("--quadrature", type=int, default=10)
+    parser.add_argument("--box-edge-policy", choices=("unsupported", "planar"), default="unsupported")
     parser.add_argument("--contact-model", choices=("pressure", "intrinsic"), default="pressure")
     parser.add_argument("--intrinsic-support", choices=("contact", "pair_union"), default="contact")
     parser.add_argument("--dense-surface-fan", action="store_true", help="Compare the full-face fan launch.")
@@ -342,6 +345,7 @@ def main() -> None:
         contact_model=args.contact_model,
         radius_model=args.radius_model,
         pressure_profile=args.pressure_profile,
+        box_edge_policy=args.box_edge_policy,
         quadrature=args.quadrature,
         contact_block_size=args.contact_block_size,
         egg_geometry=args.egg_geometry,

@@ -18,6 +18,7 @@ class StressRadiusStatus(IntEnum):
     UNLOADED = 2
     UNSUPPORTED = 3
     INVALID = 4
+    BOX_EDGE_APPROXIMATION = 5
 
 
 class StressRadiusInfo:
@@ -30,12 +31,14 @@ class StressRadiusInfo:
         modulus: float,
         unloaded_radius: float,
         epsilon: float,
+        box_edges_as_planes: bool = False,
     ):
         self.geometry = geometry
         self.curvature = curvature
         self.modulus = modulus
         self.unloaded_radius = unloaded_radius
         self.epsilon = epsilon
+        self.box_edges_as_planes = box_edges_as_planes
 
 
 @qd.func
@@ -85,7 +88,8 @@ def func_estimate_radius(
     """Estimate each supplied contact's size without changing its force or application point.
 
     The circular approximation uses the mean positive relative principal curvature. Mesh curvature is a smooth-normal
-    estimate at the actual collision witness. Nonpositive curvature and primitive edges remain unsupported.
+    estimate at the actual collision witness. Nonpositive curvature remains unsupported. The explicit planar box-edge
+    policy ignores only the singular curvature at a witnessed box edge/vertex and labels that approximation.
     """
     contacts.radius[i_c, i_b] = float("nan")
     contacts.radius_status[i_c, i_b] = StressRadiusStatus.INVALID
@@ -99,6 +103,7 @@ def func_estimate_radius(
         elif load > 0.0:
             combined = qd.Matrix.zero(gs.qd_float, 3, 3)
             smooth = True
+            approximated_edge = False
             for side in range(2):
                 i_g = collider.contact_data.geom_a[i_contact, i_b]
                 i_v = collider.contact_data.witness.vertex_a[i_contact, i_b]
@@ -109,7 +114,21 @@ def func_estimate_radius(
                     point = collider.contact_data.witness.point_b[i_contact, i_b]
                 tensor, status = func_witness_curvature(i_g, i_v, i_b, point, dyn, info)
                 combined += tensor
-                smooth = smooth and status < CurvatureStatus.AMBIGUOUS
+                supported = status < CurvatureStatus.AMBIGUOUS
+                if qd.static(info.box_edges_as_planes):
+                    if not supported and info.geometry.geoms.type[i_g] == gs.GEOM_TYPE.BOX:
+                        local = geom.qd_inv_transform_by_trans_quat(
+                            point, dyn.geoms.pos[i_g, i_b], dyn.geoms.quat[i_g, i_b]
+                        )
+                        half = 0.5 * qd.Vector([info.geometry.geoms.data[i_g][axis] for axis in qd.static(range(3))])
+                        tolerance = 128.0 * info.epsilon * (half.norm() + point.norm() + dyn.geoms.pos[i_g, i_b].norm())
+                        boundary, inside = 0, True
+                        for axis in qd.static(range(3)):
+                            boundary += gs.qd_int(qd.abs(qd.abs(local[axis]) - half[axis]) <= tolerance)
+                            inside = inside and qd.abs(local[axis]) <= half[axis] + tolerance
+                        supported = inside and boundary >= 2
+                        approximated_edge = approximated_edge or supported
+                smooth = smooth and supported
             contacts.radius_status[i_c, i_b] = StressRadiusStatus.UNSUPPORTED
             if smooth:
                 direction = collider.contact_data.normal[i_contact, i_b].normalized()
@@ -120,3 +139,5 @@ def func_estimate_radius(
                 if mean > span and mean < float("inf"):
                     contacts.radius[i_c, i_b] = (0.75 * load / (info.modulus * mean)) ** (1.0 / 3.0)
                     contacts.radius_status[i_c, i_b] = StressRadiusStatus.SUCCESS
+                    if approximated_edge:
+                        contacts.radius_status[i_c, i_b] = StressRadiusStatus.BOX_EDGE_APPROXIMATION
