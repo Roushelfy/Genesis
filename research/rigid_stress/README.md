@@ -102,6 +102,18 @@ Primary campaigns now isolate Genesis/Quadrants caches by source checkout even
 inside a shared allocation. The prior cooperative-root performance result and
 physical-reference limitations remain the main established evidence.
 
+The [quadratic-edge projection pruning](docs/SHARP_EDGE_PRESSURE_20261022.md#bounded-quadratic-edge-projection)
+uses conservative curve bounds to skip unnecessary edge iterations. All45,120
+CPU64/CUDA64/CUDA32 projection comparisons match exactly, and existing curved
+source controls plus14 source/nonconvex regressions pass. The separately
+profiled source kernel decreases3.964ms to3.506ms. Paired full-scene max/full
+medians decrease1.36%/0.94% atB4 and0.43%/0.43% atB64, with overlapping B4
+full-mode repeats. Public output checks pass; strict raw barycentric/corner
+differences and the original frame428 refusal remain recorded. The complete
+scene benefit remains modest. The task runner also reads its task plan before creating
+output, preserving failed preflight attempts without leaving new partial
+directories for missing plans.
+
 The preceding [contact-application study](docs/SHARP_EDGE_PRESSURE_20261022.md#collision-application-points-and-updated-support)
 identifies the ground's184micrometre offset as the collider's half-penetration
 application point. Refined collision geometry and grouped sources reduce the

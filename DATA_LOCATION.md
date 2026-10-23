@@ -1,5 +1,20 @@
 # Rigid-stress data and artifact locations
 
+The `hard-edge-projection-v1` packet retains251 compact payloads
+(1,698,372 bytes) and329 external receipts from four terminal campaigns.
+Projection arrays, CPU/GPU controls, profiles, paired B4/B64 scene timings,
+complete fields and the frame428 replay use the restored data root below in
+`hard-edge-projection-cpu-v2`, `hard-edge-projection-gpu-v2`,
+`hard-edge-projection-profile-v2` and `hard-edge-projection-timing-v1`.
+Three initial v1 preflight directories remain explicitly unsubmitted; the
+runner now validates task-file input before creating output directories.
+Source `hard_contact_edge_projection` stays in a sparse workspace checkout
+at1c8720391. All53 frozen source heads and12 original unfinished files are
+preserved. Scientific work uses Slurm `rtx-mid`, image `1_26`, the existing
+data-side environment and source-private compiler caches in node scratch.
+Source/docs and compact evidence stay in workspace. No new home fallback
+output, data migration or environment changes occurred.
+
 The `hard-native-surface-basis-v1` packet retains302 compact payloads
 (2,055,379 bytes) and332 external receipts from six terminal campaigns.
 The surface-basis trials, corrected source tests, profiles, B4/B64 paired
