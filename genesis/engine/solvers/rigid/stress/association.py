@@ -21,7 +21,7 @@ def kernel_associate(
     enable_constraint: bool,
     step_valid: qd.Tensor,
     errno: qd.Tensor,
-    automatic_radius: qd.template() = None,
+    automatic_radius: qd.types.Template | None = None,
 ):
     kernel_associate_impl(
         i_l,
@@ -52,7 +52,7 @@ def kernel_associate_impl(
     enable_constraint: bool,
     step_valid: qd.Tensor,
     errno: qd.Tensor,
-    automatic_radius: qd.template(),
+    automatic_radius: qd.types.Template | None,
 ):
     func_associate(
         i_l,
@@ -83,7 +83,7 @@ def func_associate(
     enable_constraint: bool,
     step_valid: qd.Tensor,
     errno: qd.Tensor,
-    automatic_radius: qd.template() = None,
+    automatic_radius: qd.types.Template | None = None,
 ):
     for i_b in range(omega.shape[0]):
         offset_pos = qd.Vector.zero(gs.qd_float, 3)

@@ -205,6 +205,7 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
             not solver._disable_constraint,
             entry.state.step_valid,
             solver._errno,
+            entry.automatic_radius,
         ),
         "anchor_search": lambda: kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info),
         "candidate_weights_constraints": lambda: kernel_pressure(
@@ -324,7 +325,7 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
         "query_weights_gram": lambda: kernel_weights_gram(entry.contacts, entry.surface.info, grams),
         "small_closed_form_solve": lambda: kernel_small_solve(entry.contacts, grams, coefficients),
     }
-    if entry.intrinsic is not None:
+    if entry.intrinsic is not None or options.radius_model != "manual" or options.pressure_profile != "dpr":
         subdivisions = {}
     micro_times = {}
     for name, stage in subdivisions.items():
@@ -370,6 +371,8 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=510000)
     parser.add_argument("--public-default-stress", action="store_true")
     parser.add_argument("--contact-model", choices=("pressure", "intrinsic"), default="pressure")
+    parser.add_argument("--radius-model", choices=("manual", "hertz"), default="manual")
+    parser.add_argument("--pressure-profile", choices=("dpr", "hertz"), default="dpr")
     parser.add_argument("--intrinsic-support", choices=("contact", "pair_union"), default="contact")
     parser.add_argument("--dense-surface-fan", action="store_true", help="Compare the full-face fan launch.")
     parser.add_argument(
@@ -467,6 +470,8 @@ def main() -> None:
         cached_peak=not args.uncached_peak,
         cached_face_bounds=not args.uncached_face_bounds,
         contact_model=args.contact_model,
+        radius_model=args.radius_model,
+        pressure_profile=args.pressure_profile,
         contact_block_size=args.contact_block_size,
         egg_geometry=args.egg_geometry,
         use_gjk_collision={"auto": None, "mpr": False, "gjk": True}[args.collision_method],
@@ -593,6 +598,8 @@ def main() -> None:
             if args.contact_model == "intrinsic"
             else "finite_pad_adaptive_q10",
             "contact_model": args.contact_model,
+            "radius_model": args.radius_model,
+            "pressure_profile": args.pressure_profile,
             "public_default_stress": args.public_default_stress,
             "contact_block_size": args.contact_block_size,
             "intrinsic_support": args.intrinsic_support,

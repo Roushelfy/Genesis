@@ -61,7 +61,7 @@ def func_pipeline(
     packed_block_size: qd.template(),
     coalesced_residual: qd.template(),
     reuse_contact_moments: qd.template(),
-    automatic_radius: qd.template(),
+    automatic_radius: qd.types.Template | None,
 ):
     if qd.static(first):
         func_begin_step(state)
@@ -146,7 +146,7 @@ def kernel_pipeline(
     packed_block_size: qd.template(),
     coalesced_residual: qd.template(),
     reuse_contact_moments: qd.template(),
-    automatic_radius: qd.template(),
+    automatic_radius: qd.types.Template | None,
 ):
     func_pipeline(
         young,
