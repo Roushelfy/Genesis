@@ -1,4 +1,4 @@
-"""Solve a small frictionless two-face corner contact with vector half-space compliance."""
+"""Solve a small two-face corner contact with vector half-space compliance."""
 
 import argparse
 import json
@@ -58,8 +58,12 @@ def galerkin_tensor(points, widths, young, poisson, order):
     return (tensor + reciprocal) / 2, float(error)
 
 
-def normal_contact(compliance, gap, labels, loads):
-    """Minimize elastic energy with separate face resultants and unilateral reactions."""
+def normal_contact(compliance, gap, labels, loads, symmetric=True):
+    """Solve load-controlled normal compatibility with unilateral face reactions.
+
+    Symmetric normal compliance gives the complementary-energy minimum. Prescribed sliding directions give a
+    nonsymmetric normal-response matrix and require direct complementarity checks at the returned active set.
+    """
     total = loads.sum()
     scale = np.median(np.diag(compliance)) * total
     matrix, height, target = compliance * total / scale, gap / scale, loads / total
@@ -72,8 +76,14 @@ def normal_contact(compliance, gap, labels, loads):
     for iteration in range(5 * len(gap)):
         current = matrix[np.ix_(active, active)]
         constraint = equality[:, active]
-        response = solve(current, np.column_stack([constraint.T, height[active]]), assume_a="pos")
-        rigid = solve(constraint @ response[:, :-1], target + constraint @ response[:, -1], assume_a="pos")
+        response = solve(
+            current, np.column_stack([constraint.T, height[active]]), assume_a="pos" if symmetric else "gen"
+        )
+        rigid = solve(
+            constraint @ response[:, :-1],
+            target + constraint @ response[:, -1],
+            assume_a="pos" if symmetric else "gen",
+        )
         candidate = np.zeros_like(force)
         candidate[active] = response[:, :-1] @ rigid - response[:, -1]
         negative = np.flatnonzero(active & (candidate < -1e-12))
@@ -117,23 +127,29 @@ def main():
     cli.add_argument("--frame-check", type=Path, required=True)
     cli.add_argument("--moments", type=Path, required=True)
     cli.add_argument("--transverse", type=int, default=10)
+    cli.add_argument("--transverse-power", type=int, default=2)
     cli.add_argument("--longitudinal", type=int, default=20)
     cli.add_argument("--quadrature", type=int, default=4)
     cli.add_argument("--along-extent", type=float, default=2)
     cli.add_argument("--face-updates", type=int, default=1)
+    cli.add_argument("--motion", type=Path)
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
+    assert args.transverse_power >= 1
     args.output.mkdir(parents=True, exist_ok=False)
     write_json(
         args.output / "start.json",
         {
             "identity": runtime_identity(require_gpu_inventory=False),
-            "inputs": [file_id(p) for p in [args.hard, args.frame_check, args.moments]],
+            "inputs": [file_id(p) for p in [args.hard, args.frame_check, args.moments]]
+            + ([file_id(args.motion)] if args.motion else []),
             "grid": [args.transverse, args.longitudinal],
+            "transverse_power": args.transverse_power,
             "target_quadrature": args.quadrature,
             "along_extent": args.along_extent,
             "face_updates": args.face_updates,
-            "scope": "Frictionless two-face local quadratic-gap reference with specified normal resultants on both rigid box faces. Surface vector elasticity uses an undeformed flat material chart. Normal compatibility and complementary energy determine pressure. Deformed finite-face membership is checked separately. This is a local reference control, with zero along-edge force and no imposed original moment or friction history.",
+            "prescribed_sliding": args.motion is not None,
+            "scope": "Two-face local quadratic-gap contact control with specified face resultants. Default tractions are frictionless. Optional measured post-solve directions prescribe saturated Coulomb sliding on each face. Surface vector elasticity uses an undeformed flat material chart. Normal complementarity and deformed finite-face membership are checked. Original moments and elastic stick/slip history are separate requirements.",
         },
     )
     control = kernel_control()
@@ -147,8 +163,27 @@ def main():
     c = 1 / np.sqrt(1 + slope**2)
     normals = np.array([[slope * c, 0, c], [-c, 0, slope * c]])
     loads = np.array([frame["opposing_face_force_n"][2], -frame["opposing_face_force_n"][0]])
+    directions = normals.copy()
+    sliding = None
+    if args.motion:
+        motion = json.loads(args.motion.read_text())["rows"][-1]
+        assert motion["step"] == 428 and len(motion["motion"]) == 1
+        region = motion["motion"][0]
+        np.testing.assert_allclose(
+            region["force_in_face_frame_n"], frame["opposing_face_force_n"], rtol=1e-12, atol=1e-15
+        )
+        sliding = next(
+            row
+            for row in region["motions"]
+            if row["points"] == "opponent_point" and row["velocity_phase"] == "post_solve_frozen_geometry"
+        )
+        face_to_material = np.column_stack([-normals[1], [0, 1, 0], normals[0]])
+        directions = np.array(sliding["saturated_sliding_force_directions"]) @ face_to_material.T
+        loads = np.array(sliding["best_nonnegative_sliding_normal_loads_n"])
+        np.testing.assert_allclose(np.einsum("ij,ij->i", directions, normals), 1, atol=1e-13)
+        np.testing.assert_allclose(np.linalg.norm(directions - normals, axis=1), region["friction"], atol=1e-13)
     assert loads.min() > 0
-    edge = 4 * width * np.linspace(0, 1, args.transverse + 1) ** 2
+    edge = 4 * width * np.linspace(0, 1, args.transverse + 1) ** args.transverse_power
     edges = np.r_[-edge[:0:-1], edge]
     centers, xwidth = (edges[:-1] + edges[1:]) / 2, np.diff(edges)
     yedges = np.linspace(-args.along_extent * along, args.along_extent * along, args.longitudinal + 1)
@@ -161,11 +196,13 @@ def main():
     rows = []
     for update in range(args.face_updates):
         current_normals = normals[labels]
-        compliance = np.einsum("ia,ijab,jb->ij", current_normals, tensor, current_normals)
-        np.linalg.cholesky(compliance)
+        current_directions = directions[labels]
+        compliance = np.einsum("ia,ijab,jb->ij", current_normals, tensor, current_directions)
+        if args.motion is None:
+            np.linalg.cholesky(compliance)
         gap = np.einsum("ij,ij->i", current_normals, rest)
-        force, rigid, dual, iterations = normal_contact(compliance, gap, labels, loads)
-        vector_force = force[:, None] * current_normals
+        force, rigid, dual, iterations = normal_contact(compliance, gap, labels, loads, symmetric=args.motion is None)
+        vector_force = force[:, None] * current_directions
         displacement = np.einsum("ijab,jb->ia", tensor, vector_force)
         translation = rigid @ normals
         position = rest + displacement - translation
@@ -215,6 +252,9 @@ def main():
             "iterations": iterations,
             "face_updates": rows,
             "normal_loads_n": loads.tolist(),
+            "transverse_power": args.transverse_power,
+            "traction_directions_material": directions.tolist(),
+            "measured_sliding_control": sliding,
             "rigid_translation_material_m": translation.tolist(),
             "rigid_normal_indentation_m": rigid.tolist(),
             "resultant_force_material_n": vector_force.sum(axis=0).tolist(),
@@ -234,7 +274,7 @@ def main():
             "curvature_per_m": float(curvature),
             "poisson": float(poisson),
             "young_pa": float(young),
-            "scope": "Discrete frictionless force-controlled oblique-normal contact on a local quadratic material gap. Circular friction and tangential stick/slip history are absent. A positive finite-face check is necessary for the assigned face branch. Quadrature, grid and domain convergence, physical large-gradient validity and stresses require further checks. Numerical penetration is absent from this elastic solve.",
+            "scope": "Discrete load-controlled two-face contact on a local quadratic material gap. Optional measured directions prescribe saturated sliding with an explicitly recorded nearby force. Default tractions are frictionless. Elastic stick/slip history, the original moment, spatial convergence and physical large-gradient validity remain separate. Finite-face checks concern deformed cell averages. Numerical collision penetration is absent from this elastic solve.",
             "whole_goal_complete": False,
         },
     )

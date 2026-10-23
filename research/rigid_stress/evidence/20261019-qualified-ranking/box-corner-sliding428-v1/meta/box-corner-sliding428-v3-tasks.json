@@ -1,0 +1,81 @@
+[
+  [
+    {
+      "name": "sliding",
+      "module": "research.rigid_stress.qipc_comparison.study_box_corner_elasticity",
+      "args": [
+        "--hard",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-region-moments428-capture-v1/group0/capture428/failure-max-b4/hard0428.npz",
+        "--frame-check",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-contact-frame428-v2/group0/frames/result.json",
+        "--moments",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-region-moments428-v3/group1/order48/result.json",
+        "--longitudinal",
+        "50",
+        "--along-extent",
+        "3",
+        "--face-updates",
+        "32",
+        "--motion",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/box-corner-motion428-v1/group0/motion/result.json",
+        "--transverse",
+        "16",
+        "--transverse-power",
+        "3"
+      ]
+    },
+    {
+      "name": "surface",
+      "module": "research.rigid_stress.qipc_comparison.inspect_corner_sliding",
+      "args": [
+        "--controls",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/box-corner-sliding428-v3/group0/sliding"
+      ]
+    },
+    {
+      "name": "fields",
+      "module": "research.rigid_stress.qipc_comparison.compare_box_corner_fields",
+      "args": [
+        "--reference",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/box-corner-sliding428-v3/group0/sliding",
+        "--moments",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-region-moments428-v3/group1/order48/result.json",
+        "--source-order",
+        "4",
+        "--diagnose-face-profiles",
+        "--baseline-fields",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/box-corner-sliding428-v2/group1/fields/fields.npz"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "normal",
+      "module": "research.rigid_stress.qipc_comparison.study_box_corner_elasticity",
+      "args": [
+        "--hard",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-region-moments428-capture-v1/group0/capture428/failure-max-b4/hard0428.npz",
+        "--frame-check",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/edge-contact-frame428-v2/group0/frames/result.json",
+        "--moments",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-region-moments428-v3/group1/order48/result.json",
+        "--longitudinal",
+        "30",
+        "--along-extent",
+        "3",
+        "--face-updates",
+        "32"
+      ]
+    },
+    {
+      "name": "surface",
+      "module": "research.rigid_stress.qipc_comparison.inspect_corner_sliding",
+      "args": [
+        "--controls",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/box-corner-sliding428-v3/group1/normal",
+        "--normal-baseline",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/box-corner-elastic428-v2/group0/elastic/fields.npz"
+      ]
+    }
+  ]
+]

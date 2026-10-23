@@ -124,11 +124,12 @@ def main():
     if args.diagnose_face_profiles:
         knots, weights = np.polynomial.legendre.leggauss(128)
         normals = np.array([[slope, 0, 1], [-1, 0, slope]]) / np.sqrt(1 + slope**2)
+        directions = np.array(reference.get("traction_directions_material", normals))
         for face, moment in enumerate(face_moments):
             positions = np.tile(moment["centroid_m"], (len(knots), 1))
             positions[:, 1] += moment["parabolic_half_length_from_second_moment_m"] * knots
-            traction = (0.75 * (1 - knots**2) * weights * moment["normal_force_n"])[:, None] * normals[face]
-            np.testing.assert_allclose(traction.sum(axis=0), moment["normal_force_n"] * normals[face], atol=1e-15)
+            traction = (0.75 * (1 - knots**2) * weights * moment["normal_force_n"])[:, None] * directions[face]
+            np.testing.assert_allclose(traction.sum(axis=0), moment["normal_force_n"] * directions[face], atol=1e-15)
             profile_tensor += halfspace_stress(probes, positions, traction[:, 2], poisson) + cerruti_stress(
                 probes, positions, traction[:, :2], poisson
             )
@@ -165,10 +166,12 @@ def main():
             "passed": True,
             "rows": rows,
             "total_force_material_n": total.tolist(),
+            "reference_model_scope": reference["scope"],
+            "reference_sliding_control": reference.get("measured_sliding_control"),
             "reference_face_pressure_moments": face_moments,
             "effective_shape": {"width_m": width, "half_length_m": along, "exponent": exponent},
             "moment_fit_scope": "The optional two-face parabolic line diagnostic fits each reference centroid and longitudinal second moment. It isolates profile-shape sensitivity with measured inputs. Independent runtime prediction and accuracy qualification require separate evidence.",
-            "scope": "Same total force compares the native-shaped effective traction distribution with an independently solved frictionless two-face local elastic control. Both stresses use the undeformed flat material Green tensor. Pressure shape is transferred without fitting the reference forces. Positive-depth probes and discrete reference/source quadrature convergence limit this comparison. Frictional history, surface/global peaks and complete curved-shell physical accuracy remain separate requirements.",
+            "scope": "Same total force compares the native-shaped effective traction distribution with an independently solved two-face local elastic control. Reference metadata identifies frictionless or prescribed-sliding tractions. Both stresses use the undeformed flat material Green tensor. Positive-depth probes, reference geometry and discrete quadrature convergence limit this comparison. Elastic stick/slip history, surface/global peaks and complete curved-shell physical accuracy remain separate requirements.",
             "whole_goal_complete": False,
         },
     )

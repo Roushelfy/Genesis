@@ -1509,3 +1509,94 @@ retains the six terminal campaigns, source inventories and patches, numerical
 controls, original failed attempts, complete field differences and all primary
 timing samples. The49 source heads and12 original unfinished files are
 preserved. Runtime arrays and logs use the restored data root.
+
+## Contact motion and prescribed-sliding control
+
+The latest frozen engine `03ee8b02a` admits frames0--427 and reproduces the
+original frame428 max-mode refusal, `[False, True, True, True]` with input
+status `[32, 0, 0, 0]`. A diagnostic capture records rigid degrees of freedom
+at419,420,427,428. Reconstructed velocities at link origins agree with the
+public rigid-velocity getter. Contact velocities use the captured pre-solve
+geometry with either initial or final generalized rates; they do not combine
+old contact points with a post-integrated configuration. Common midpoints,
+opposing witnesses and separate witness pairs are retained. DLPack conversion
+fallback errors remain in the logs; all reconstruction and frame checks pass.
+
+At428 the resultant in opposing-face coordinates is
+`(-21.729458, -0.263837, 25.750091)mN`, with circular friction coefficient
+approximately0.719. Two orthogonal Coulomb cones give a minimum side normal
+load of2.118590mN. An explicit primal decomposition attains a dual lower
+bound. This is a force-only certificate, without moments, contact-support
+geometry or elastic slip history. The earlier frictionless assignment of
+21.729458mN to the side face substantially overestimates this minimum.
+
+At the opposing witnesses, the force-weighted relative velocity changes from
+`(0.092400, 0.020523, 1.209422)mm/s` before solving to
+`(36.549278, 0.519525, 30.841317)mm/s` using final rates at frozen geometry.
+Prescribing saturated friction opposite the two tangential velocities gives
+nonnegative face loads of27.273337mN and2.118619mN. Their resultant differs
+from the recorded force by0.120420% in vector norm. The along-edge component
+changes by40.571microN, about15.4% of that small original component; this is
+an explicitly nearby-force control. At419 the same gross-sliding hypothesis
+has much larger force mismatches. Rigid motion alone does not identify the
+elastic stick/slip history or justify this prescription throughout the grasp.
+
+The optional `study_box_corner_elasticity --motion` control uses these fixed
+traction directions with the existing local flat-material Green tensor and
+quadratic rest gap. Its normal response is nonsymmetric, so the active-set
+solve uses general linear systems and checks normal-force positivity, gaps,
+complementarity and separate face loads directly. The frictionless symmetric
+default retains its positive-definite solve. An executed default600-cell
+repeat exactly matches every saved original frictionless field array.
+Neither branch imposes the recorded original moment. Deformed cell-mean
+finite-face membership and unloaded remote boundaries pass in all cases below.
+
+| Control | Cells; transverse grading | Minimum transverse cell width | Peak cell-mean pressure | Reversed loaded adjacent pairs | Active principal Green strain range |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Frictionless | 600; quadratic | 24.00nm | 7.059GPa | 0 /38 | -0.000149 to0.4851 |
+| Prescribed sliding | 600; quadratic | 24.00nm | 1.711GPa | 0 /32 | -0.1357 to0.04449 |
+| Prescribed sliding | 1600; quadratic | 9.374nm | 4.170GPa | 0 /82 | -0.1587 to0.2467 |
+| Prescribed sliding | 1600; cubic | 0.5859nm | 27.956GPa | 4 /94 | -0.4655 to4.6586 |
+
+The1600-cell grids have32 transverse by50 longitudinal cells over the same
+domain, with7.914micrometre longitudinal spacing. Changing transverse grading
+at fixed cell count resolves much smaller edge scales. The cubic grid has
+minimum loaded adjacent x-ratio-0.02593 and maximum displacement x-gradient
+2.510. Fixed-force reintegration with target orders8 and16 preserves all4
+reversed pairs, with minimum ratios-0.02689/-0.02694. The quadratic1600 grid
+retains no reversal under the same reintegration. These are discrete
+cell-average ordering diagnostics, not pointwise continuum deformation bounds.
+Surface-metric eigenvalues remove rigid rotations from the Green-strain
+diagnostic. Its force-weighted RMS rises from0.07569 on quadratic1600 to0.50732
+on cubic1600. This rules out treating the earlier coarse-grid improvement as
+evidence of a converged small-strain reference. Finer pressure-cell maxima
+also supply no finite pointwise sharp-edge peak.
+
+Conditional stress comparisons retain the same nearby total force, predicted
+effective profile and11 by13 positive-depth probes per layer. The following
+errors compare the effective profile with the cubic1600 local control;
+they are not qualified physical errors. Refinement columns compare the old
+quadratic1600 control against the cubic control at identical probes.
+
+| Depth, micrometres | Tensor relative L2 | Sampled VM peak error | Sampled tensile peak error | Reference tensor change | Reference tensile peak change |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 6.595 | 5.486% | 0.461% | 1.540% | 4.859% | 21.240% |
+| 16.488 | 4.183% | 0.320% | 8.637% | 3.856% | 9.638% |
+| 32.976 | 2.592% | 1.076% | 0.463% | 2.240% | 0.196% |
+| 65.953 | 1.217% | 1.140% | 0.656% | 0.873% | 0.174% |
+
+The nearest tensor error still exceeds5%; changing the reference alone moves
+its nearest sampled tensile peak by21.24%. The reference's strain and ordering
+limitations prevent qualification even where conditional5% tensor/10% peak
+budgets pass. Peaks remain maxima of the declared coarse probe grid, without
+continuous peak-location refinement. Reference-fitted separate-face profiles
+remain sensitivity diagnostics. The next physical control must address
+consistent deformed geometry and constitutive validity while retaining sharp
+edges; another linear-grid sweep alone cannot establish that validity.
+
+The [motion/sliding packet](../evidence/20261019-qualified-ranking/box-corner-sliding428-v1/README.md)
+retains five terminal campaigns, executed sources, all original refusals,
+coarse and refined arrays by external receipts, and fixed-force integration
+checks. All49 engine heads and12 original unfinished files are preserved.
+All new runtime data and logs use the restored data root. These optional
+local controls change no production solver, tolerance or acceptance behavior.

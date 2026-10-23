@@ -1,0 +1,121 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "control": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/box-corner-sliding428-v3/group1/normal",
+      "normal_baseline_arrays_exact": true,
+      "finite_face_membership_passed": true,
+      "surface_ordering": {
+        "input": {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/box-corner-sliding428-v3/group1/normal/fields.npz",
+          "bytes": 1280417,
+          "sha256": "300688b9f4e38dbe73bba6db3859c4f4898a937321ae8489f47dc4fc1d9457a3"
+        },
+        "fixed_force_reintegration": null,
+        "grid": [
+          20,
+          30
+        ],
+        "active_cells": 48,
+        "adjacent_loaded_pairs": 38,
+        "reversed_adjacent_loaded_pairs": 0,
+        "minimum_adjacent_loaded_x_ratio": 1.0113635765969387,
+        "reversed_pair_force_weight_fraction": 0.0,
+        "negative_projected_orientation_active_cells": 0,
+        "negative_projected_orientation_force_fraction": 0.0,
+        "maximum_active_displacement_x_gradient": 0.4083882709312665,
+        "active_surface_area_ratio_range": [
+          1.0131240502608316,
+          1.4037072593115574
+        ],
+        "longitudinal_rows": [
+          {
+            "y_m": -5.935728839080198e-05,
+            "active_cells": 3,
+            "normal_face_changes": 1,
+            "reversed_face_changes": 0,
+            "minimum_loaded_x_increment_m": 3.604036158219328e-08
+          },
+          {
+            "y_m": -4.6166779859512666e-05,
+            "active_cells": 4,
+            "normal_face_changes": 1,
+            "reversed_face_changes": 0,
+            "minimum_loaded_x_increment_m": 3.543638035334125e-08
+          },
+          {
+            "y_m": -3.2976271328223335e-05,
+            "active_cells": 5,
+            "normal_face_changes": 1,
+            "reversed_face_changes": 0,
+            "minimum_loaded_x_increment_m": 3.552462492708993e-08
+          },
+          {
+            "y_m": -1.9785762796934003e-05,
+            "active_cells": 6,
+            "normal_face_changes": 1,
+            "reversed_face_changes": 0,
+            "minimum_loaded_x_increment_m": 3.562699101624665e-08
+          },
+          {
+            "y_m": -6.595254265644672e-06,
+            "active_cells": 6,
+            "normal_face_changes": 1,
+            "reversed_face_changes": 0,
+            "minimum_loaded_x_increment_m": 3.5702567754082784e-08
+          },
+          {
+            "y_m": 6.595254265644659e-06,
+            "active_cells": 6,
+            "normal_face_changes": 1,
+            "reversed_face_changes": 0,
+            "minimum_loaded_x_increment_m": 3.570256775408572e-08
+          },
+          {
+            "y_m": 1.9785762796933976e-05,
+            "active_cells": 6,
+            "normal_face_changes": 1,
+            "reversed_face_changes": 0,
+            "minimum_loaded_x_increment_m": 3.5626991016244304e-08
+          },
+          {
+            "y_m": 3.297627132822331e-05,
+            "active_cells": 5,
+            "normal_face_changes": 1,
+            "reversed_face_changes": 0,
+            "minimum_loaded_x_increment_m": 3.5524624927087826e-08
+          },
+          {
+            "y_m": 4.616677985951264e-05,
+            "active_cells": 4,
+            "normal_face_changes": 1,
+            "reversed_face_changes": 0,
+            "minimum_loaded_x_increment_m": 3.5436380353337004e-08
+          },
+          {
+            "y_m": 5.935728839080197e-05,
+            "active_cells": 3,
+            "normal_face_changes": 1,
+            "reversed_face_changes": 0,
+            "minimum_loaded_x_increment_m": 3.6040361582197306e-08
+          }
+        ],
+        "reversed_pair_examples": [],
+        "scope": "Deformed cell-average positions and nonuniform-grid finite differences. Both rigid face tangents have positive material-chart x projection in the intended single crossing of this convex corner. Negative increments between adjacent loaded cells or reversed face order contradict that discrete orientation. Gradient and area estimates depend on resolution and are diagnostics, rather than pointwise continuum deformation-gradient bounds."
+      },
+      "surface_metric": {
+        "active_principal_surface_stretch_range": [
+          0.9998511221557106,
+          1.403647164425108
+        ],
+        "active_principal_green_strain_range": [
+          -0.000148866761983113,
+          0.48511268109932326
+        ],
+        "force_weighted_green_strain_rms": 0.2490690925252117,
+        "scope": "Cell-grid finite differences compare the deformed and rest surface metrics. Principal Green strain removes rigid rotations. This is a discrete surface diagnostic; it supplies no continuum volume-strain or material-accuracy bound."
+      }
+    }
+  ],
+  "whole_goal_complete": false
+}
