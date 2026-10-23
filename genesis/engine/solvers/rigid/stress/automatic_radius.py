@@ -48,30 +48,28 @@ def func_witness_curvature(
     info: qd.template(),
 ):
     """Reuse an identified mesh vertex, otherwise query only the witnessed geom."""
-    normal = qd.Vector.zero(gs.qd_float, 3)
     tensor = qd.Matrix.zero(gs.qd_float, 3, 3)
     status = gs.qd_int(CurvatureStatus.UNSUPPORTED)
+    closest, face, query_surface = point, -1, False
     if info.geometry.geoms.type[i_g] == gs.GEOM_TYPE.MESH:
         if i_v >= 0 and i_v < info.geometry.verts.geom_idx.shape[0]:
             if info.geometry.verts.geom_idx[i_v] == i_g and info.curvature.vertices_weight[i_v] > 0.0:
                 rotation = geom.qd_quat_to_R(dyn.geoms.quat[i_g, i_b], info.epsilon)
-                normal = rotation @ info.geometry.verts.init_normal[i_v].normalized()
                 tensor = rotation @ info.curvature.vertices_tensor[i_v] @ rotation.transpose()
                 status = CurvatureStatus.SMOOTH_NORMAL_ESTIMATE
         if status == CurvatureStatus.UNSUPPORTED:
             closest, face = func_closest_surface(i_g, i_b, point, dyn, info.geometry, info.curvature, info.epsilon)
-            normal, tensor, status = func_surface_curvature(
-                i_g, face, i_b, closest, dyn, info.geometry, info.curvature, info.epsilon
-            )
+            query_surface = True
     else:
         closest, _normal, _gap, _face, boundary_status = func_opponent_candidate(
             i_g, i_b, -1, point, dyn, info.geometry, info.epsilon
         )
-        if boundary_status == PairGeometryStatus.SUCCESS:
-            normal, tensor, status = func_surface_curvature(
-                i_g, -1, i_b, closest, dyn, info.geometry, info.curvature, info.epsilon
-            )
-    return normal, tensor, status
+        query_surface = boundary_status == PairGeometryStatus.SUCCESS
+    if query_surface:
+        _normal, tensor, status = func_surface_curvature(
+            i_g, face, i_b, closest, dyn, info.geometry, info.curvature, info.epsilon
+        )
+    return tensor, status
 
 
 @qd.func
@@ -99,27 +97,24 @@ def func_estimate_radius(
             contacts.radius[i_c, i_b] = info.unloaded_radius
             contacts.radius_status[i_c, i_b] = StressRadiusStatus.UNLOADED
         elif load > 0.0:
-            normal_a, tensor_a, status_a = func_witness_curvature(
-                collider.contact_data.geom_a[i_contact, i_b],
-                collider.contact_data.witness.vertex_a[i_contact, i_b],
-                i_b,
-                collider.contact_data.witness.point_a[i_contact, i_b],
-                dyn,
-                info,
-            )
-            normal_b, tensor_b, status_b = func_witness_curvature(
-                collider.contact_data.geom_b[i_contact, i_b],
-                collider.contact_data.witness.vertex_b[i_contact, i_b],
-                i_b,
-                collider.contact_data.witness.point_b[i_contact, i_b],
-                dyn,
-                info,
-            )
+            combined = qd.Matrix.zero(gs.qd_float, 3, 3)
+            smooth = True
+            for side in range(2):
+                i_g = collider.contact_data.geom_a[i_contact, i_b]
+                i_v = collider.contact_data.witness.vertex_a[i_contact, i_b]
+                point = collider.contact_data.witness.point_a[i_contact, i_b]
+                if side == 1:
+                    i_g = collider.contact_data.geom_b[i_contact, i_b]
+                    i_v = collider.contact_data.witness.vertex_b[i_contact, i_b]
+                    point = collider.contact_data.witness.point_b[i_contact, i_b]
+                tensor, status = func_witness_curvature(i_g, i_v, i_b, point, dyn, info)
+                combined += tensor
+                smooth = smooth and status < CurvatureStatus.AMBIGUOUS
             contacts.radius_status[i_c, i_b] = StressRadiusStatus.UNSUPPORTED
-            if status_a < CurvatureStatus.AMBIGUOUS and status_b < CurvatureStatus.AMBIGUOUS:
+            if smooth:
                 direction = collider.contact_data.normal[i_contact, i_b].normalized()
                 projection = qd.Matrix.identity(gs.qd_float, 3) - direction.outer_product(direction)
-                curvature = projection @ (tensor_a + tensor_b) @ projection
+                curvature = projection @ combined @ projection
                 mean = 0.5 * curvature.trace()
                 span = qd.sqrt(qd.max(0.0, 0.5 * curvature.norm_sqr() - mean * mean))
                 if mean > span and mean < float("inf"):
