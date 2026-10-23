@@ -24,7 +24,7 @@ from genesis.utils.misc import (
 )
 
 from .association import kernel_associate
-from .automatic_radius import StressRadiusInfo
+from .automatic_radius import StressRadiusInfo, StressRadiusStatus
 from .curvature import StressCurvature
 from .contact import StressContactState, create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
 from .data import StressState
@@ -459,9 +459,9 @@ class RigidStressRecovery:
                 code = int(status[env, contact])
                 reason = reasons[code]
                 if entry.automatic_radius is not None:
-                    if radius_status[env, contact] == 3:
-                        reason = "automatic Hertz radius unsupported at this edge or relative curvature"
-                    elif radius_status[env, contact] == 4:
+                    if radius_status[env, contact] == StressRadiusStatus.UNSUPPORTED:
+                        reason = "automatic Hertz radius unsupported for the current surface geometry or relative curvature"
+                    elif radius_status[env, contact] == StressRadiusStatus.INVALID:
                         reason = "automatic Hertz radius requires finite compressive contact inputs"
                 details.append(
                     f"link={entry.link.idx}, env={env}, contact={contact}, status={code}: {reason}; "

@@ -6,7 +6,7 @@ import genesis as gs
 from genesis.utils import array_class, geom
 
 from .contact import StressContactState
-from .automatic_radius import StressRadiusInfo, func_estimate_radius
+from .automatic_radius import StressRadiusInfo, StressRadiusStatus, func_estimate_radius
 
 
 def kernel_associate(
@@ -115,7 +115,7 @@ def func_associate(
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         contact_state.valid[i_c, i_b] = False
         if qd.static(isinstance(automatic_radius, StressRadiusInfo)):
-            contact_state.radius_status[i_c, i_b] = 2
+            contact_state.radius_status[i_c, i_b] = StressRadiusStatus.UNLOADED
             contact_state.radius[i_c, i_b] = automatic_radius.unloaded_radius
         if enable_constraint and i_c < collider_state.n_contacts[i_b]:
             i_contact = collider_state.contact_sort_idx[i_c, i_b]
