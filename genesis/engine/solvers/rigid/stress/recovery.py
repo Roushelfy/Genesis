@@ -119,8 +119,7 @@ class RigidStressRecovery:
                     if surface is None:
                         surface = StressSurface(quadrature, model.load_info)
                     reuse_contact_moments = (
-                        options.backend == "volume"
-                        and options.contact_model == "pressure"
+                        options.contact_model == "pressure"
                         and options.load_transfer == "patch"
                         and gs.backend == gs.cuda
                         and options.face_parallel_scatter
@@ -129,8 +128,11 @@ class RigidStressRecovery:
                         and (
                             options.contact_moment_reuse
                             if options.contact_moment_reuse is not None
-                            else (options.radius_model == "hertz" and options.pressure_profile == "hertz")
-                            or solver._B >= 8192
+                            else options.backend == "volume"
+                            and (
+                                (options.radius_model == "hertz" and options.pressure_profile == "hertz")
+                                or solver._B >= 8192
+                            )
                         )
                     )
                     self.links.append(
@@ -659,12 +661,11 @@ def kernel_reset_impl(envs_idx: qd.types.ndarray(), stress_state: StressState, f
             i_b = envs_idx[i_selected]
             stress_state.stress_tensor[i_e, i_corner, i_b] = qd.Vector([float("nan") for _ in qd.static(range(6))])
             stress_state.von_mises[i_e, i_corner, i_b] = qd.Vector([float("nan")])
-        if stress_state.membrane_resultant.shape[0] > 0:
-            for i_e, i_q, i_selected in qd.ndrange(stress_state.membrane_resultant.shape[0], 4, envs_idx.shape[0]):
-                i_b = envs_idx[i_selected]
-                stress_state.membrane_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 6)
-                stress_state.bending_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 6)
-                stress_state.transverse_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 3)
+        for i_e, i_q, i_selected in qd.ndrange(stress_state.membrane_resultant.shape[0], 4, envs_idx.shape[0]):
+            i_b = envs_idx[i_selected]
+            stress_state.membrane_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 6)
+            stress_state.bending_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 6)
+            stress_state.transverse_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 3)
 
 
 @qd.kernel
