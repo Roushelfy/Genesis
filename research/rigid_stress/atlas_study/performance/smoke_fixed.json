@@ -1,0 +1,260 @@
+{
+  "scope": "Single-thread CPU 3D P2 FEM recovery at a fixed bank of common physical probes. Exact top-boundary nodal-response columns of each model; no point-response snapshots. No GPU/robot throughput, full continuum maximum or equal-accuracy claim.",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "python": "3.12.14",
+  "numpy": "2.3.5",
+  "scipy": "1.17.0",
+  "threads": 1,
+  "threadpools": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-fdde5778.so",
+      "version": "0.3.30",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    },
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/scipy.libs/libscipy_openblas-6cdc3b4a.so",
+      "version": "0.3.30",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    }
+  ],
+  "source_sha256": {
+    "performance/benchmark.py": "d4ffe5d915f5aab7ee052fb12a51530b248237645cfd70ff2954b38886cd44ca",
+    "volume/model.py": "b8bcac9e897e687097f9f7cc0930292916de81eeb4dacdc09a9ed00452448879"
+  },
+  "hmin_m": 0.002,
+  "core_m": 0.0015,
+  "pressure": "Finite Hertz-profile disk, true position/radius/force integrated every update. Radius varies as force^(1/3) in this prescribed-load control; independent physical Hertz contact has not been solved.",
+  "probes": 643,
+  "output_components": "xx,yy,zz,xy,xz,yz at each physical probe; shear unscaled",
+  "error_metric": "Unweighted relative Euclidean norm of stacked six-component coefficients; not tensor Frobenius or volume-weighted L2. Maximum is over declared samples only.",
+  "setup_seconds": 1.5214054160005617,
+  "atlas": [
+    {
+      "model": {
+        "dofs": 4230,
+        "tets": 870,
+        "vertices": 219,
+        "stiffness_bytes": 3687604,
+        "lu_nonzeros": 1535793,
+        "approximate_lu_bytes": 18461420,
+        "assembly_seconds": 0.3457644970003457,
+        "factor_seconds": 0.08791563299928384
+      },
+      "response_columns": 519,
+      "response_bytes": 16018416,
+      "response_build_seconds": 0.3404994140000781
+    },
+    {
+      "model": {
+        "dofs": 4365,
+        "tets": 892,
+        "vertices": 226,
+        "stiffness_bytes": 3805924,
+        "lu_nonzeros": 1431863,
+        "approximate_lu_bytes": 17215340,
+        "assembly_seconds": 0.15628962799928559,
+        "factor_seconds": 0.08006286799900408
+      },
+      "response_columns": 627,
+      "response_bytes": 19351728,
+      "response_build_seconds": 0.4124170579998463
+    },
+    {
+      "model": {
+        "dofs": 4251,
+        "tets": 874,
+        "vertices": 220,
+        "stiffness_bytes": 3706420,
+        "lu_nonzeros": 1545679,
+        "approximate_lu_bytes": 18580220,
+        "assembly_seconds": 0.14840449200164585,
+        "factor_seconds": 0.09617541400075424
+      },
+      "response_columns": 531,
+      "response_bytes": 16388784,
+      "response_build_seconds": 0.3817587840003398
+    }
+  ],
+  "coarse": {
+    "dofs": 1701,
+    "tets": 288,
+    "vertices": 100,
+    "stiffness_bytes": 1282072,
+    "lu_nonzeros": 347469,
+    "approximate_lu_bytes": 4181300,
+    "assembly_seconds": 0.058144392000031075,
+    "factor_seconds": 0.02115591399888217
+  },
+  "union": {
+    "dofs": 6285,
+    "tets": 1340,
+    "vertices": 316,
+    "stiffness_bytes": 5637868,
+    "lu_nonzeros": 2872879,
+    "approximate_lu_bytes": 34522892,
+    "assembly_seconds": 0.21997892499894078,
+    "factor_seconds": 0.18984299399926385
+  },
+  "rows": [
+    {
+      "batch": 1,
+      "admission": {
+        "sources": 2,
+        "force_error": 2.4801007208244734e-16,
+        "moment_error": 8.874713631804063e-16,
+        "active_environment_counts": {
+          "1": 1,
+          "0": 1
+        }
+      },
+      "errors": {
+        "response_vs_atlas_lu_full_sample_field": 2.0565882109472004e-15,
+        "response_vs_atlas_lu_vm_max": 9.731265087561298e-16,
+        "selected_vs_atlas_lu_full_sample_field": 2.0630050549610765e-15,
+        "atlas_vs_union_full_sample_field": 0.10499019350023601,
+        "coarse_vs_union_full_sample_field": 0.7259130047535545,
+        "max_excluded_load_relative": 1.8234495527154896e-16
+      },
+      "passed": true,
+      "methods": {
+        "atlas_reused_lu_full_samples": {
+          "median_ms": 3.8299880015983945,
+          "range_ms": [
+            3.8299880015983945,
+            3.8299880015983945
+          ],
+          "repeats_ms": [
+            3.8299880015983945
+          ]
+        },
+        "atlas_response_full_samples": {
+          "median_ms": 1.5438490008818917,
+          "range_ms": [
+            1.5438490008818917,
+            1.5438490008818917
+          ],
+          "repeats_ms": [
+            1.5438490008818917
+          ]
+        },
+        "atlas_response_selected_full_samples": {
+          "median_ms": 2.0451049986149883,
+          "range_ms": [
+            2.0451049986149883,
+            2.0451049986149883
+          ],
+          "repeats_ms": [
+            2.0451049986149883
+          ]
+        },
+        "union_reused_lu_full_samples": {
+          "median_ms": 3.0522940014634514,
+          "range_ms": [
+            3.0522940014634514,
+            3.0522940014634514
+          ],
+          "repeats_ms": [
+            3.0522940014634514
+          ]
+        },
+        "coarse_reused_lu_full_samples": {
+          "median_ms": 0.8930570002121385,
+          "range_ms": [
+            0.8930570002121385,
+            0.8930570002121385
+          ],
+          "repeats_ms": [
+            0.8930570002121385
+          ]
+        },
+        "atlas_current_transfer": {
+          "median_ms": 4.224031999910949,
+          "range_ms": [
+            4.224031999910949,
+            4.224031999910949
+          ],
+          "repeats_ms": [
+            4.224031999910949
+          ]
+        },
+        "atlas_transfer_plus_lu_full_samples": {
+          "median_ms": 7.418130999212735,
+          "range_ms": [
+            7.418130999212735,
+            7.418130999212735
+          ],
+          "repeats_ms": [
+            7.418130999212735
+          ]
+        },
+        "atlas_transfer_plus_response_full_samples": {
+          "median_ms": 5.788462000055006,
+          "range_ms": [
+            5.788462000055006,
+            5.788462000055006
+          ],
+          "repeats_ms": [
+            5.788462000055006
+          ]
+        },
+        "atlas_transfer_plus_response_selected_full_samples": {
+          "median_ms": 5.854511999132228,
+          "range_ms": [
+            5.854511999132228,
+            5.854511999132228
+          ],
+          "repeats_ms": [
+            5.854511999132228
+          ]
+        },
+        "atlas_transfer_plus_response_vm_max": {
+          "median_ms": 5.480117000843165,
+          "range_ms": [
+            5.480117000843165,
+            5.480117000843165
+          ],
+          "repeats_ms": [
+            5.480117000843165
+          ]
+        },
+        "union_transfer_plus_lu_full_samples": {
+          "median_ms": 6.0171179993631085,
+          "range_ms": [
+            6.0171179993631085,
+            6.0171179993631085
+          ],
+          "repeats_ms": [
+            6.0171179993631085
+          ]
+        }
+      },
+      "interleaved_orders": [
+        [
+          "atlas_reused_lu_full_samples",
+          "atlas_response_full_samples",
+          "atlas_response_selected_full_samples",
+          "union_reused_lu_full_samples",
+          "coarse_reused_lu_full_samples",
+          "atlas_current_transfer",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "union_transfer_plus_lu_full_samples"
+        ]
+      ]
+    }
+  ],
+  "source_unchanged_during_run": true,
+  "all_response_checks_passed": true
+}

@@ -1,0 +1,78 @@
+{
+  "scope": "Algebraic controls/counterexamples, not continuum FEM qualification",
+  "source_sha256": "9d31577d3fe4fd328070b2dae7743805940a0299c252f64cf27a2f6720981e91",
+  "mixed_mesh": {
+    "atlas_relative_energy_error": 0.48839484225936375,
+    "individual_energy_errors": [
+      0.46253186750752395,
+      0.330608805989789
+    ],
+    "triangle_bound": 0.793140673497313,
+    "actual_energy_error": 0.6897148557474333,
+    "triangle_bound_pass": true,
+    "joint_space_residual_of_atlas": 0.49051860786748414,
+    "coarse_test_residual_of_atlas": 6.542051911182396e-17,
+    "riesz_error_identity_relative": 2.33383994688571e-16,
+    "coarse_plus_full_delta_relative": 4.012253582017676e-17,
+    "condensed_vs_joint_relative": 1.397102825507805e-16,
+    "wrong_all_loads_all_meshes_relative": 0.47623199103740593,
+    "wrong_full_space_sum_relative": 1.0,
+    "hard_switch_jump_over_joint_norm": 0.501466275659824
+  },
+  "free_body": {
+    "projection_rigid_resultant_relative": 8.012971969991091e-17,
+    "linearity_relative": 5.53984865652565e-16,
+    "balanced_residual_relative": 5.671530818797877e-15,
+    "different_mass_projection_changes_solution_relative": 0.08492490951124097
+  },
+  "snapshot_blur": {
+    "scope": "1D cut through normalized circular Hertz pressure, not a stress solve",
+    "rows": [
+      {
+        "anchor_spacing_over_a": 0.5,
+        "true_center_value": 1.0,
+        "blended_center_value": 0.9682458365518543,
+        "blended_sampled_peak": 0.9682458365518543,
+        "peak_relative_error": 0.031754163448145745
+      },
+      {
+        "anchor_spacing_over_a": 1.0,
+        "true_center_value": 1.0,
+        "blended_center_value": 0.8660254037844386,
+        "blended_sampled_peak": 0.8660254037844386,
+        "peak_relative_error": 0.1339745962155614
+      },
+      {
+        "anchor_spacing_over_a": 2.0,
+        "true_center_value": 1.0,
+        "blended_center_value": 0.0,
+        "blended_sampled_peak": 0.5,
+        "peak_relative_error": 0.5
+      }
+    ],
+    "force8_radius_ratio": 2.0,
+    "force8_pressure_peak_ratio": 2.0,
+    "fixed_radius_snapshot_wrong_peak_ratio": 8.0
+  },
+  "stress_metrics": {
+    "vm_of_sum": 1.0,
+    "sum_of_vm": 21.284420290752262,
+    "maximum_vm_lipschitz_ratio": 0.9750831518542314,
+    "maximum_principal_lipschitz_ratio": 0.9985453747494613
+  },
+  "checks": {
+    "energy_triangle_bound": true,
+    "full_delta_identity": true,
+    "static_condensation_identity": true,
+    "mixed_mesh_is_not_joint_galerkin": true,
+    "coarse_test_can_miss_error": true,
+    "riesz_error_identity": true,
+    "full_load_sum_double_counts": true,
+    "same_mass_projection_linear": true,
+    "free_body_compatible": true,
+    "different_mass_warning_real": true,
+    "vm_bound": true,
+    "principal_bound": true
+  },
+  "all_checks_passed": true
+}
