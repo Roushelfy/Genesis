@@ -1,5 +1,24 @@
 # Working on native rigid stress recovery
 
+**Active priority, 2026-10-24:** implement and optimize the optional native
+thin-shell DPR backend. Read [GOAL.md](GOAL.md) and
+[the shell integration goal](docs/SHELL_DPR_INTEGRATION_GOAL_20261024.md).
+Keep mature DPR loading; production numerical work stays in the existing
+rigid solver in Quadrants. Preserve volume FEM, arbitrary moving/asymmetric
+convex/nonconvex contacts, normal/friction eccentricity, max/full and lifecycle
+behavior. First coarse integration and CPU/native numerical consistency, then
+detailed profiling and applicable throughput optimization on the complete
+Franka/hollow-egg workflow. Do not block this phase with high-resolution
+physical convergence sweeps. CPU shell in-plane results do not certify local
+three-dimensional contact peaks.
+
+This priority supersedes conflicting older task instructions below.
+The volume-DPR throughput deliverable is complete; historical enrichment,
+SCR-repair and physical-ranking campaigns are not active prerequisites.
+Keep historical evidence and existing storage/reproduction policies.
+
+## Historical directions and standing engineering policies
+
 **Immediate user goal, 2026-10-23:** maximize throughput of the now-integrated
 automatic-radius + Hertz-pressure DPR path. Follow
 [the optimization goal](docs/DPR_AUTOMATIC_RADIUS_GOAL_20261023.md#immediate-goal-maximize-native-automatic-dpr-throughput).

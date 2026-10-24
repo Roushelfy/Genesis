@@ -9,6 +9,16 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
+## Active target: native thin-shell DPR integration
+
+Follow [GOAL.md](GOAL.md) and
+[the shell integration goal](docs/SHELL_DPR_INTEGRATION_GOAL_20261024.md).
+Add a selectable shell recovery backend inside the rigid solver in Quadrants,
+retaining mature DPR pressure loading and volume FEM. Prioritize coarse
+CPU/native consistency, detailed profiling and useful small/large-batch
+throughput on the full Franka/hollow-egg workflow before physical convergence
+campaigns. Shell in-plane stress and unresolved 3D contact peaks remain distinct.
+
 ## CPU thin-shell feasibility study (2026-10-24)
 
 The [shell CPU study](shell_cpu/README.md) implements and tests fixed linear
@@ -23,7 +33,7 @@ egg stress peaks remain unresolved and shell in-plane stress does not certify
 a three-dimensional contact maximum. The production feature and defaults below
 are unchanged. See [the algorithm and migration notes](shell_cpu/ALGORITHM.md).
 
-## Current target: automatic contact radius for the existing DPR
+## Delivered baseline: automatic contact radius for volume DPR
 
 The [throughput optimization is delivered](docs/DPR_THROUGHPUT_20261023.md).
 Matched B64 full-scene Hertz DPR improves from 4.5836 to 3.1653 ms (31% lower
@@ -33,7 +43,7 @@ CPU/GPU checks, the 600-frame numerical cycle, diverse contacts and reset pass.
 The report includes max/full baselines, memory, failed alternatives, commands
 and the remaining physical sharp-edge limitations.
 
-**Current priority, 2026-10-23:** [maximize this native path's throughput](docs/DPR_AUTOMATIC_RADIUS_GOAL_20261023.md#immediate-goal-maximize-native-automatic-dpr-throughput),
+**Previous priority, 2026-10-23 (delivered):** [maximize this native path's throughput](docs/DPR_AUTOMATIC_RADIUS_GOAL_20261023.md#immediate-goal-maximize-native-automatic-dpr-throughput),
 especially small-footprint integration, geometry/moment reuse and batch tuning.
 Keep the original DPR/FEM and validate max/full complete-scene improvements;
 physical convergence campaigns do not block this performance phase.
