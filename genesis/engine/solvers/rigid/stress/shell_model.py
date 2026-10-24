@@ -1,6 +1,7 @@
 """Shared native quadrilateral shell assembly and prefactorized recovery."""
 
 import time
+from collections.abc import Iterator
 from pathlib import Path
 
 import numpy as np
@@ -8,7 +9,7 @@ import quadrants as qd
 
 import genesis as gs
 from genesis.options.rigid_stress import RigidStressOptions
-from genesis.utils.array_class import V_MAT, V_VEC, V
+from genesis.utils.array_class import V_MAT, V_VEC, DataItem, V, iter_data
 from genesis.utils.misc import qd_to_numpy
 
 from . import shell_operators
@@ -132,6 +133,11 @@ class ShellModel(StressModel):
             inverse_done - factor_done,
             time.perf_counter() - inverse_done,
         )
+
+    def iter_info_data(self, prefix: str) -> Iterator[DataItem]:
+        yield from super().iter_info_data(prefix)
+        yield from iter_data(self.shell, f"{prefix}.shell")
+        yield from iter_data(self.load_info, f"{prefix}.load_info")
 
     @property
     def n_output_elements(self) -> int:

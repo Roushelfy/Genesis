@@ -65,6 +65,8 @@ def main():
     cli.add_argument("--batch", type=int, default=4)
     cli.add_argument("--steps", type=int, default=130)
     cli.add_argument("--quadrature", type=int, default=10)
+    cli.add_argument("--stress-backend", choices=["volume", "shell"], default="volume")
+    cli.add_argument("--shell-gauge", choices=["translation", "legacy"], default="translation")
     cli.add_argument("--box-edge-policy", choices=("unsupported", "planar"), default="unsupported")
     cli.add_argument("--unfused", action="store_true")
     cli.add_argument("--contact-moment-reuse", choices=("auto", "on", "off"), default="auto")
@@ -82,6 +84,8 @@ def main():
             "batch": args.batch,
             "steps": args.steps,
             "quadrature": args.quadrature,
+            "stress_backend": args.stress_backend,
+            "shell_gauge": args.shell_gauge,
             "box_edge_policy": args.box_edge_policy,
             "unfused": args.unfused,
             "contact_moment_reuse": args.contact_moment_reuse,
@@ -101,6 +105,8 @@ def main():
         radius_model="manual" if args.mode == "manual" else "hertz",
         pressure_profile="hertz" if args.mode == "hertz" else "dpr",
         quadrature=args.quadrature,
+        stress_backend=args.stress_backend,
+        shell_gauge=args.shell_gauge,
         box_edge_policy=args.box_edge_policy,
         fused_pipeline=not args.unfused,
         fused_rigid_post=False if args.unfused else None,
@@ -109,7 +115,12 @@ def main():
     qd.sync()
     preparation = perf_counter() - begun
     entry = workload.scene.rigid_solver.stress_recovery.links[0]
-    if args.mode == "hertz" and args.backend == "gpu" and args.contact_moment_reuse == "auto":
+    if (
+        args.stress_backend == "volume"
+        and args.mode == "hertz"
+        and args.backend == "gpu"
+        and args.contact_moment_reuse == "auto"
+    ):
         assert entry.reuse_contact_moments
     rows, peaks, positions = [], [], []
     failure = None
@@ -244,8 +255,16 @@ def main():
         peak = tensor_to_array(workload.link.get_max_stress()).copy()
         tensor, vm = workload.link.get_stress_field()
         assert np.isfinite(tensor_to_array(tensor)).all()
-        np.testing.assert_allclose(peak, tensor_to_array(vm).max(axis=(1, 2)), rtol=1e-12, atol=1e-8)
+        np.testing.assert_allclose(
+            peak, tensor_to_array(vm).reshape((args.batch, -1)).max(axis=1), rtol=1e-12, atol=1e-8
+        )
+        if args.stress_backend == "shell":
+            resultants = dict(zip(("membrane", "bending", "transverse"), workload.link.get_shell_resultants()))
+            for label, value in resultants.items():
+                assert np.isfinite(tensor_to_array(value)).all(), label
         if step in args.field_steps:
+            if args.stress_backend == "shell":
+                fields.update({"shell_" + label: tensor_to_array(value) for label, value in resultants.items()})
             np.savez_compressed(
                 args.output / f"field-{step:04d}.npz",
                 stress_tensor=tensor_to_array(tensor),

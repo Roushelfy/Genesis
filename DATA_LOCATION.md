@@ -1,5 +1,14 @@
 # Rigid-stress data and artifact locations
 
+Native thin-shell DPR integration uses
+`/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/`.
+Operator/control arrays, asset authoring outputs, Slurm logs, source inventories
+and failed attempts remain there. Runs use Slurm `rtx-mid`, image `1_26`, the
+existing data-side physical environment and private node caches. Small matched
+shell assets and their geometry metadata are tracked with the examples; their
+authoring receipts and complete results stay on data. Frozen source checkouts
+remain in the existing workspace. No data or environment migration occurred.
+
 The throughput phase uses 31 `automatic-dpr-opt-*` campaigns under the same
 20261019 ranking data root. All runs use explicit data outputs, the existing
 data-side environment, Slurm `rtx-mid`/image `1_26` and private node caches;
