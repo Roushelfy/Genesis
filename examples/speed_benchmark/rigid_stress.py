@@ -506,6 +506,8 @@ def main() -> None:
     parser.add_argument("--stress-backend", choices=("volume", "shell"), default="volume")
     parser.add_argument("--stress-mesh", type=Path)
     parser.add_argument("--shell-gauge", choices=("translation", "legacy"), default="translation")
+    parser.add_argument("--factor-scaling", action="store_true")
+    parser.add_argument("--factor-ordering", choices=("minimum_degree", "natural"), default="minimum_degree")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--legacy-reset", action="store_true", help="Compare reset followed by separate pose setters.")
     parser.add_argument(
@@ -549,6 +551,8 @@ def main() -> None:
         stress_backend=args.stress_backend,
         stress_mesh=args.stress_mesh,
         shell_gauge=args.shell_gauge,
+        factor_scaling=args.factor_scaling,
+        factor_ordering=args.factor_ordering,
         saved_reset=not args.legacy_reset,
         cooperative_scatter=not args.serial_scatter,
         cooperative_balance=not args.serial_balance,
@@ -895,6 +899,9 @@ def main() -> None:
                 "shell in-plane membrane-plus-bending" if args.stress_backend == "shell" else "volume Cauchy"
             )
             result["method_selected"] = entry.model.selected_method
+            result["factor_block_entries"] = (
+                entry.model.factor.info.lower.shape[0] if entry.model.factor is not None else 0
+            )
             result["surface_inverse_selected"] = entry.model.surface_inverse is not None
             result["shell_recovery_graph_selected"] = (
                 entry.model.is_fused_recovery_enabled(entry.options, entry.history)
