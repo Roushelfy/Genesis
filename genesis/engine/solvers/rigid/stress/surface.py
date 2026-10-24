@@ -8,6 +8,7 @@ import quadrants as qd
 
 import genesis as gs
 from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
+from genesis.utils.misc import qd_to_numpy
 
 from .data import StressInfo
 from .grid import StressGridInfo, allocate_grid, build_grid
@@ -60,7 +61,7 @@ class StressSurface:
         kernel_gauss(self.info)
         if stress_info.load_nodes.shape[0] > 0:
             kernel_quad_surface(stress_info, self.info)
-            if not self.info.quad_valid.to_numpy().item():
+            if not qd_to_numpy(self.info.quad_valid):
                 gs.raise_exception("Shell physical sides require regular convex projected Q4 faces.")
         else:
             kernel_surface(stress_info, self.info)

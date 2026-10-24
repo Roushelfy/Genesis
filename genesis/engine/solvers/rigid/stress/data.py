@@ -114,8 +114,8 @@ def allocate_stress_info(
         diagonal_inverse=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_nodes,)),
         scalar_diagonal_inverse=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes,)),
         mass_properties=V(dtype=gs.qd_float, shape=(4,)),
-        load_nodes=V_VEC(2, dtype=gs.qd_int, shape=(n_load_nodes,)),
-        load_offsets=V_MAT(2, 3, dtype=gs.qd_float, shape=(n_load_nodes,)),
+        load_nodes=V_VEC(1, dtype=gs.qd_int, shape=(n_load_nodes,)),
+        load_offsets=V_VEC(3, dtype=gs.qd_float, shape=(n_load_nodes,)),
     )
 
 
@@ -125,12 +125,11 @@ def func_scatter_load(
 ):
     if stress_info.load_nodes.shape[0] > 0:
         # Consistent virtual work on the physical surface retains both surface eccentricity and supplied wrench.
-        for i_parent in qd.static(range(2)):
-            j_n = stress_info.load_nodes[i_n][i_parent]
-            moment = 0.5 * stress_info.load_offsets[i_n][i_parent, :].cross(force)
-            for a in qd.static(range(3)):
-                qd.atomic_add(stress_state.force[2 * j_n, i_b][a], 0.5 * force[a])
-                qd.atomic_add(stress_state.force[2 * j_n + 1, i_b][a], moment[a])
+        j_n = stress_info.load_nodes[i_n][0]
+        moment = stress_info.load_offsets[i_n].cross(force)
+        for a in qd.static(range(3)):
+            qd.atomic_add(stress_state.force[2 * j_n, i_b][a], force[a])
+            qd.atomic_add(stress_state.force[2 * j_n + 1, i_b][a], moment[a])
     else:
         for a in qd.static(range(3)):
             qd.atomic_add(stress_state.force[i_n, i_b][a], force[a])

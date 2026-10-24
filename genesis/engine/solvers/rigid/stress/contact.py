@@ -894,7 +894,7 @@ def kernel_scatter_serial(
                         total += sample_force
                         moment += (position - contact_state.position[i_c, i_b]).cross(sample_force)
                         if weight > 0.0:
-                            for i_local in range(6):
+                            for i_local in range(qd.select(stress_info.load_nodes.shape[0] > 0, 4, 6)):
                                 i_n = stress_info.surface_nodes[i_face, i_local]
                                 value = shape[i_local] * sample_force
                                 func_scatter_load(i_n, i_b, value, stress_state, stress_info)
@@ -991,7 +991,7 @@ def func_scatter_warp(
                     for a, b in qd.static(qd.ndrange(6, 3)):
                         load[a, b] = qd.simt.subgroup.reduce_all_add(load[a, b])
                     if lane == 0:
-                        for i_local in range(6):
+                        for i_local in range(qd.select(stress_info.load_nodes.shape[0] > 0, 4, 6)):
                             i_n = stress_info.surface_nodes[i_f, i_local]
                             func_scatter_load(i_n, i_b, load[i_local, :], stress_state, stress_info)
             for a in qd.static(range(3)):
