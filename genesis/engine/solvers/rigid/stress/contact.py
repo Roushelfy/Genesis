@@ -456,15 +456,40 @@ def func_anchor(source_epsilon: float, contact_state: StressContactState, surfac
                 distance = gs.qd_float(1e30)
                 line_first, line_second = func_force_frame(direction)
                 line_basis = qd.Matrix.rows([line_first, line_second])
+                inverse_direction = qd.Vector.zero(gs.qd_float, 3)
+                for a in qd.static(range(3)):
+                    if qd.abs(direction[a]) > 0.0:
+                        inverse_direction[a] = 1.0 / direction[a]
                 for i_f in range(surface_info.face_origin.shape[0]):
                     if surface_info.quad_vertices.shape[0] > 0:
-                        _shape, hit, outward, _ratio, regular = func_quad_inverse(
-                            surface_info.quad_vertices[i_f], point, line_basis, qd.Vector([0.0, 0.0])
-                        )
-                        parameter = (hit - point).dot(direction)
-                        if regular and outward.dot(direction) > 1e-12 and qd.abs(parameter) < distance:
-                            contact_state.anchor_face[i_c, i_b] = i_f
-                            best, distance = parameter, qd.abs(parameter)
+                        # The convex hull of Q4 corners bounds the complete bilinear physical surface.
+                        # Test the unchanged infinite force line before inverting a face; padding covers the
+                        # existing natural-coordinate roundoff allowance, without moving the physical anchor.
+                        low, high = surface_info.face_bounds_low[i_f], surface_info.face_bounds_high[i_f]
+                        padding = 4e-12 * (high - low).norm()
+                        near, far = gs.qd_float(-float("inf")), gs.qd_float(float("inf"))
+                        intersects = True
+                        for a in qd.static(range(3)):
+                            if qd.abs(direction[a]) > 0.0:
+                                first_hit = (low[a] - padding - point[a]) * inverse_direction[a]
+                                last_hit = (high[a] + padding - point[a]) * inverse_direction[a]
+                                near, far = (
+                                    qd.max(near, qd.min(first_hit, last_hit)),
+                                    qd.min(far, qd.max(first_hit, last_hit)),
+                                )
+                            else:
+                                intersects = (
+                                    intersects and point[a] >= low[a] - padding and point[a] <= high[a] + padding
+                                )
+                        lower_distance = qd.max(near, 0.0) - qd.min(far, 0.0)
+                        if intersects and near <= far and lower_distance <= distance + padding:
+                            _shape, hit, outward, _ratio, regular = func_quad_inverse(
+                                surface_info.quad_vertices[i_f], point, line_basis, qd.Vector([0.0, 0.0])
+                            )
+                            parameter = (hit - point).dot(direction)
+                            if regular and outward.dot(direction) > 1e-12 and qd.abs(parameter) < distance:
+                                contact_state.anchor_face[i_c, i_b] = i_f
+                                best, distance = parameter, qd.abs(parameter)
                     else:
                         denominator = surface_info.face_normal[i_f].dot(direction)
                         if denominator > 1e-12:
