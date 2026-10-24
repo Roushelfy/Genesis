@@ -7,7 +7,11 @@ import numpy as np
 
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.contact import create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
-from genesis.engine.solvers.rigid.stress.scatter import create_scatter_workspace, kernel_scatter_faces
+from genesis.engine.solvers.rigid.stress.scatter import (
+    create_scatter_workspace,
+    kernel_scatter_faces,
+    kernel_pressure_moments,
+)
 from genesis.engine.solvers.rigid.stress.shell_model import ShellModel
 from genesis.engine.solvers.rigid.stress.surface import StressSurface
 from genesis.utils.array_class import V_VEC
@@ -25,7 +29,7 @@ def field_components(stress):
     return np.stack([tensor[..., a, b] for a, b in ((0, 0), (1, 1), (2, 2), (0, 1), (0, 2), (1, 2))], axis=-1)
 
 
-def control(output, name, vertices, quads, quadrature, scatter):
+def control(output, name, vertices, quads, quadrature, scatter, reuse_moments=False):
     asset = output / f"{name}.npz"
     np.savez(asset, vertices=vertices, quads=quads)
     options = gs.options.RigidStressOptions.dpr(
@@ -39,7 +43,7 @@ def control(output, name, vertices, quads, quadrature, scatter):
     n_envs, n_contacts, radius = 6, 2, 8e-5
     state = native.create_state(n_envs, "full")
     contacts = create_contacts(n_contacts, n_envs, radius, hertz_profile=True)
-    workspace = create_scatter_workspace(n_envs, 16)
+    workspace = create_scatter_workspace(n_envs, 16, reuse_moments)
     omega = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,))
     omega.fill(0.0)
     positions, forces, normals = (np.zeros((n_contacts, n_envs, 3)) for _ in range(3))
@@ -82,9 +86,13 @@ def control(output, name, vertices, quads, quadrature, scatter):
     contacts.valid.from_numpy(valid)
     contacts.friction.fill(0.5)
     kernel_anchor(float(np.finfo(np.float64).eps), contacts, surface.info)
-    kernel_pressure(contacts, surface.info)
+    if reuse_moments:
+        assert gs.backend == gs.cuda and scatter == "faces"
+        kernel_pressure_moments(contacts, state, native.load_info, surface.info, workspace, True)
+    else:
+        kernel_pressure(contacts, surface.info)
     if scatter == "faces" and gs.backend == gs.cuda:
-        kernel_scatter_faces(contacts, state, native.load_info, surface.info, workspace, True, False)
+        kernel_scatter_faces(contacts, state, native.load_info, surface.info, workspace, True, reuse_moments)
     else:
         kernel_scatter(contacts, state, native.load_info, surface.info)
     actual = qd_to_numpy(state.force, transpose=True).reshape((n_envs, -1)).T
@@ -115,6 +123,7 @@ def control(output, name, vertices, quads, quadrature, scatter):
         name=name,
         quadrature=quadrature,
         scatter=scatter,
+        reuse_moments=reuse_moments,
         errors=errors,
         status=qd_to_numpy(contacts.status).tolist(),
         valid=qd_to_numpy(state.valid).tolist(),
@@ -160,6 +169,7 @@ def main():
     cli.add_argument("--backend", choices=["cpu", "gpu"], default="cpu")
     cli.add_argument("--scatter", choices=["contacts", "faces"], default="faces")
     cli.add_argument("--quadrature", type=int, default=16)
+    cli.add_argument("--reuse-moments", action="store_true")
     cli.add_argument(
         "--geometries", nargs="+", choices=["flat", "warped", "egg", "valley"], default=["flat", "warped", "egg"]
     )
@@ -183,7 +193,7 @@ def main():
         ("egg", *geometry.egg_mesh(2, axes=(0.022, 0.022, 0.03), asym=-0.18)),
     ]
     results = [
-        control(args.output, name, vertices, connectivity, args.quadrature, args.scatter)
+        control(args.output, name, vertices, connectivity, args.quadrature, args.scatter, args.reuse_moments)
         for name, vertices, connectivity in fixtures
         if name in args.geometries
     ]
