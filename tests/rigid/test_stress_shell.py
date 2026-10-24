@@ -32,7 +32,8 @@ def test_native_shell_nonconvex_contact_and_release(tmp_path):
 @pytest.mark.parametrize(
     "output_mode, update_mode", (("max", "every_step"), ("full", "every_step"), ("full", "manual"))
 )
-def test_native_shell_public_lifecycle(tmp_path, output_mode, update_mode):
+@pytest.mark.parametrize("method", ("direct", "inverse"))
+def test_native_shell_public_lifecycle(tmp_path, output_mode, update_mode, method):
     vertices, quads = geometry.sphere_mesh(2)
     asset = tmp_path / "shell.npz"
     np.savez(asset, vertices=vertices, quads=quads)
@@ -44,7 +45,7 @@ def test_native_shell_public_lifecycle(tmp_path, output_mode, update_mode):
         gs.options.RigidStressOptions.dpr(
             mesh=asset,
             backend="shell",
-            method="direct",
+            method=method,
             output_mode=output_mode,
             update_mode=update_mode,
             contact_radius=8e-5,
@@ -53,6 +54,8 @@ def test_native_shell_public_lifecycle(tmp_path, output_mode, update_mode):
     )
     scene.build(n_envs=3)
     entry = scene.rigid_solver.stress_recovery.links[0]
+    if method == "inverse" and gs.backend == gs.cuda:
+        assert entry.model.is_fused_recovery_enabled(entry.options)
     initial = np.array([[0.0, 0.0, 0.0195], [0.0, 0.0, 0.03], [0.0, 0.0, 0.0197]])
     body.set_pos(initial)
     if update_mode == "manual":
