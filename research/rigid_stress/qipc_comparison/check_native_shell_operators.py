@@ -20,11 +20,17 @@ def relative(actual, expected):
     return float(np.linalg.norm(actual - expected) / max(np.linalg.norm(expected), 1e-30))
 
 
-def control(output, name, vertices, quads, method, gauge, spinning=False):
+def control(output, name, vertices, quads, method, gauge, spinning=False, inverse_precision="64", surface_load=False):
     asset = output / f"{name}.npz"
     np.savez(asset, vertices=vertices, quads=quads)
     options = gs.options.RigidStressOptions.dpr(
-        mesh=asset, backend="shell", method=method, shell_gauge=gauge, output_mode="full", density=1000.0
+        mesh=asset,
+        backend="shell",
+        method=method,
+        shell_gauge=gauge,
+        output_mode="full",
+        density=1000.0,
+        inverse_precision=inverse_precision,
     )
     native = ShellModel(options)
     oracle = core.ShellModel(vertices, quads, density=options.density, gauge=gauge)
@@ -77,7 +83,7 @@ def control(output, name, vertices, quads, method, gauge, spinning=False):
     ).T
     errors["centrifugal"] = relative(qd_to_numpy(info.centrifugal).reshape((-1, 6)) @ angular_terms, centrifugal)
     reference_force = force + centrifugal
-    native.recover(omega, state)
+    native.recover(omega, state, surface_load=surface_load)
     displacement = qd_to_numpy(state.displacement, transpose=True).reshape((4, -1)).T
     reference_displacement = oracle.solve(reference_force)
     expected_load, _coeff = oracle.balance_load(reference_force)
@@ -132,6 +138,11 @@ def control(output, name, vertices, quads, method, gauge, spinning=False):
         "method": method,
         "spinning": spinning,
         "gauge": gauge,
+        "inverse_precision": inverse_precision,
+        "surface_load": surface_load,
+        "native_corrections": qd_to_numpy(state.corrections).tolist(),
+        "native_fallbacks": qd_to_numpy(state.fallbacks).tolist(),
+        "factor_block_entries": native.factor.info.lower.shape[0],
         "dofs": oracle.ndof,
         "quads": len(quads),
         "errors": errors,
@@ -170,6 +181,9 @@ def main():
     cli.add_argument("--method", choices=("direct", "inverse"), default="direct")
     cli.add_argument("--gauge", choices=("legacy", "translation"), default="translation")
     cli.add_argument("--spinning", action="store_true")
+    cli.add_argument("--inverse-precision", choices=("64", "32"), default="64")
+    cli.add_argument("--surface-load", action="store_true")
+    cli.add_argument("--precision", choices=("64", "32"), default="64")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -177,14 +191,24 @@ def main():
         args.output / "start.json",
         {"identity": runtime_identity(require_gpu_inventory=args.backend == "gpu"), "genesis": gs.__file__},
     )
-    gs.init(backend=gs.cuda if args.backend == "gpu" else gs.cpu, precision="64", logging_level="warning")
+    gs.init(backend=gs.cuda if args.backend == "gpu" else gs.cpu, precision=args.precision, logging_level="warning")
     fixtures = [
         ("plate", *geometry.plate_mesh(2, Lx=0.04)),
         ("sphere", *geometry.sphere_mesh(2)),
         ("egg", *geometry.egg_mesh(2, axes=(0.022, 0.022, 0.03), asym=-0.18)),
     ]
     results = [
-        control(args.output, name, vertices, quads, args.method, args.gauge, args.spinning)
+        control(
+            args.output,
+            name,
+            vertices,
+            quads,
+            args.method,
+            args.gauge,
+            args.spinning,
+            args.inverse_precision,
+            args.surface_load,
+        )
         for name, vertices, quads in fixtures
     ]
     write_json(args.output / "result.json", {"passed": True, "results": results})

@@ -714,20 +714,54 @@ def func_pressure_correct_warp(contact_state: StressContactState, surface_info: 
                     n_cells = surface_info.face_origin.shape[0]
                 for i_cell in range(n_cells):
                     start, end = func_contact_cell(i_cell, i_c, i_b, low, dimensions, contact_state, surface_info)
-                    for chunk in range((end - start + 31) // 32):
-                        entry = start + chunk * 32 + lane
-                        if entry < end:
-                            i_q = func_contact_index(entry, surface_info)
-                            coordinates, weight, _position, _shape, _face = func_contact_sample(
-                                i_q, i_c, i_b, first, second, contact_state, surface_info
-                            )
-                            weight /= weight_sum
-                            profile = qd.max(0.0, coordinates.dot(candidate))
-                            objective -= 0.5 * weight * profile * profile
-                            if not line:
-                                gradient += weight * profile * coordinates
-                                if profile > 0.0:
-                                    hessian += weight * coordinates.outer_product(coordinates)
+                    closest = qd.Vector.zero(gs.qd_float, 3)
+                    remaining, contained = gs.qd_float(0.0), False
+                    if contact_state.is_refined[i_c, i_b] and end > start:
+                        closest, remaining, contained = func_contact_section(i_cell, center, radius, surface_info)
+                    n = surface_info.gauss.shape[0]
+                    n_quadrature = surface_info.shape.shape[0]
+                    is_clipped = contact_state.is_refined[i_c, i_b] and not contained and end > start
+                    n_rays = qd.select(
+                        is_clipped, qd.select(surface_info.quad_vertices.shape[0] > 0, 4, 3) * n, end - start
+                    )
+                    for i_chunk in range((n_rays + 31) // 32):
+                        i_ray = i_chunk * 32 + lane
+                        if i_ray < n_rays:
+                            ray = qd.Vector.zero(gs.qd_float, 3)
+                            area, limit = gs.qd_float(0.0), gs.qd_float(0.0)
+                            n_radial = 1
+                            if is_clipped:
+                                ray, area, limit = func_contact_ray(
+                                    i_cell, i_ray // n, i_ray % n, closest, closest - center, remaining, surface_info
+                                )
+                                n_radial = qd.select(area > 0.0 and limit > 0.0, n, 0)
+                            for i_radial in range(n_radial):
+                                i_sample = qd.select(
+                                    is_clipped, (i_ray // n) * n_quadrature + i_radial * n + i_ray % n, i_ray
+                                )
+                                i_q = func_contact_index(start + i_sample, surface_info)
+                                coordinates, weight, _position, _shape, _face = func_contact_sample_prepared(
+                                    i_q,
+                                    i_c,
+                                    i_b,
+                                    first,
+                                    second,
+                                    contact_state,
+                                    surface_info,
+                                    closest,
+                                    remaining,
+                                    contained,
+                                    ray,
+                                    area,
+                                    limit,
+                                )
+                                weight /= weight_sum
+                                profile = qd.max(0.0, coordinates.dot(candidate))
+                                objective -= 0.5 * weight * profile * profile
+                                if not line:
+                                    gradient += weight * profile * coordinates
+                                    if profile > 0.0:
+                                        hessian += weight * coordinates.outer_product(coordinates)
                 objective = qd.simt.subgroup.reduce_all_add(objective) + candidate[0]
                 if not line:
                     for a in qd.static(range(3)):

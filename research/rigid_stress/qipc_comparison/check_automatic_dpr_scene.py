@@ -67,6 +67,9 @@ def main():
     cli.add_argument("--quadrature", type=int, default=10)
     cli.add_argument("--stress-backend", choices=["volume", "shell"], default="volume")
     cli.add_argument("--shell-gauge", choices=["translation", "legacy"], default="translation")
+    cli.add_argument("--method", choices=("auto", "direct", "inverse"), default="auto")
+    cli.add_argument("--inverse-precision", choices=("64", "32"), default="64")
+    cli.add_argument("--full-inverse", action="store_true")
     cli.add_argument("--box-edge-policy", choices=("unsupported", "planar"), default="unsupported")
     cli.add_argument("--unfused", action="store_true")
     cli.add_argument("--contact-moment-reuse", choices=("auto", "on", "off"), default="auto")
@@ -86,6 +89,9 @@ def main():
             "quadrature": args.quadrature,
             "stress_backend": args.stress_backend,
             "shell_gauge": args.shell_gauge,
+            "method": args.method,
+            "inverse_precision": args.inverse_precision,
+            "surface_inverse": not args.full_inverse,
             "box_edge_policy": args.box_edge_policy,
             "unfused": args.unfused,
             "contact_moment_reuse": args.contact_moment_reuse,
@@ -107,6 +113,9 @@ def main():
         quadrature=args.quadrature,
         stress_backend=args.stress_backend,
         shell_gauge=args.shell_gauge,
+        method=args.method,
+        inverse_precision=args.inverse_precision,
+        surface_inverse=not args.full_inverse,
         box_edge_policy=args.box_edge_policy,
         fused_pipeline=not args.unfused,
         fused_rigid_post=False if args.unfused else None,
