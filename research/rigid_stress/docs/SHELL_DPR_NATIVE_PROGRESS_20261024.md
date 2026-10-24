@@ -48,6 +48,8 @@ not complete robot throughput and not additive speedup estimates.
 | Conservative force-line bounds | 3.93 ms | 1.09 ms | Anchor stage |
 | Explicit Q4 integration-moment reuse | 12.63 ms | 7.49 ms | Pressure integration/fit, separate measurements |
 | Fixed bilinear coefficient preparation | 9.09 ms | 8.44 ms | Combined anchor/pressure/scatter |
+| Constrained-fit geometry reuse | 6.85 ms | 4.11 ms | Pressure integration/fit |
+| Four-warp Q4 face scheduling | 4.11 ms | 1.92 ms | Pressure integration/fit |
 
 The Q4 inverse change preserves bounded CPU/GPU full fields to approximately
 2e-15 relative difference. Force-line bounds, compact nodal scatter and fixed
@@ -59,8 +61,25 @@ The secondary profile disables CUDA graphs and exposes individual kernels.
 It identifies constrained pressure correction as the largest kernel, about
 6.75 ms at 64 environments. Graph-enabled profiler counters omit captured
 work, so their zero device times are not used to estimate launch overhead.
-Face/radial geometry reuse inside correction and shell recovery graph fusion
-are subsequent candidates under validation.
+Face/radial geometry reuse and four-warp face scheduling pass independent
+contacts, the 600-step scene and volume regression. At 1024 environments,
+pressure integration/fit decreases from 15.80 to 6.44 ms across these changes.
+Shell recovery graph fusion reduces matched module medians from 6.656 to
+6.426 ms at B4, 7.075 to 6.883 ms at B64, and 15.135 to 14.965 ms at B1024.
+These pairs predate the final four-warp pressure change.
+
+Diagonal equilibration and natural/minimum-degree ordering pass independent
+spinning controls (complete residual at most 1.37e-12). Equilibration produces
+no measured runtime benefit in the B64 response path. Natural ordering grows
+the coarse egg factor from 12,466 to 63,606 block entries and its preparation
+from about 1.47 to 17.70 seconds, with no response-application speed gain.
+Defaults retain the unscaled minimum-degree factor.
+
+An independent two-side analytic disk-moment fixture covers a support ball
+intersecting both physical shell faces. Hertz and original DPR laws pass on
+CPU/GPU, including moment reuse: generalized-load errors are below 1.8e-15
+and complete-field errors below 7e-12. This supplements the small-radius
+one-side warped, concave and inner/outer controls.
 
 FP32 inverse storage with FP64 arithmetic passes the focused spinning controls
 with one or two residual corrections and no factor fallback. Complete fields
