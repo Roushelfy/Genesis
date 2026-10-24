@@ -22,9 +22,8 @@ class RigidStressOptions(Options):
     Membrane, bending, assumed transverse shear and weak drilling stabilization are assembled in Quadrants.
     ``shell_drilling_factor`` scales that stabilization. ``shell_gauge="translation"`` selects six distributed
     translational constraints for rigid-mode ambiguity; ``"legacy"`` permits rotational gauge rows for comparison.
-    The contact boundary triangulates each offset quad along its (0,2) diagonal on both material sides.
-    This explicitly differs from the CPU study's bilinear Q4 contact surface on warped quads. The original
-    three-dimensional support-ball DPR pressure fit acts on that actual triangulated boundary, including
+    The contact boundary uses each bilinear offset Q4 on both material sides, with its consistent shape functions.
+    The original three-dimensional support-ball DPR pressure fit acts on that actual physical boundary, including
     inner and outer faces inside the support. Consistent generalized loads retain eccentric friction moments.
     Shell output is in-plane membrane-plus-bending stress at four Gauss points and both wall surfaces;
     it does not include three-dimensional near-contact normal stress. ``get_shell_resultants`` separately
