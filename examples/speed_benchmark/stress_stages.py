@@ -35,16 +35,23 @@ def kernel_moment_geometry_counts(
             if contained:
                 category = qd.select(contacts.hertz_profile[None], 1, 2)
             else:
-                vertices = qd.Matrix.rows(
-                    [
-                        surface.face_origin[i_f],
-                        surface.face_origin[i_f] + surface.face_edges[i_f][0, :],
-                        surface.face_origin[i_f] + surface.face_edges[i_f][1, :],
-                    ]
-                )
-                for i in qd.static(range(3)):
-                    area = (vertices[i, :] - closest).cross(vertices[(i + 1) % 3, :] - closest).norm()
-                    qd.atomic_add(counts[qd.select(area == 0.0, 4, 5)], 1)
+                vertices = qd.Matrix.zero(gs.qd_float, 4, 3)
+                n_fans = 3
+                if surface.quad_vertices.shape[0] > 0:
+                    n_fans = 4
+                    normal = surface.face_normal[i_f]
+                    origin = surface.face_origin[i_f]
+                    for i in qd.static(range(4)):
+                        vertex = surface.quad_vertices[i_f][i, :]
+                        vertices[i, :] = vertex - (vertex - origin).dot(normal) * normal
+                else:
+                    vertices[0, :] = surface.face_origin[i_f]
+                    vertices[1, :] = surface.face_origin[i_f] + surface.face_edges[i_f][0, :]
+                    vertices[2, :] = surface.face_origin[i_f] + surface.face_edges[i_f][1, :]
+                for i in range(n_fans):
+                    first, second = vertices[i, :] - closest, vertices[(i + 1) % n_fans, :] - closest
+                    area = first.cross(second).norm()
+                    qd.atomic_add(counts[qd.select(area <= 1e-14 * first.norm() * second.norm(), 4, 5)], 1)
         qd.atomic_add(counts[category], 1)
 
 

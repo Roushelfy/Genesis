@@ -1,5 +1,6 @@
 """Native positive quadrature of affine P2 and physical bilinear Q4 surfaces."""
 
+import time
 from dataclasses import dataclass
 from typing import ClassVar
 
@@ -35,6 +36,7 @@ class StressSurfaceInfo:
 
 class StressSurface:
     def __init__(self, quadrature: int, stress_info: StressInfo):
+        started = time.perf_counter()
         n_faces = stress_info.surface_nodes.shape[0]
         n_quadrature = quadrature * quadrature
         self.info = StressSurfaceInfo(
@@ -63,6 +65,8 @@ class StressSurface:
         else:
             kernel_surface(stress_info, self.info)
         build_grid(self.info.positions, self.info.grid)
+        qd.sync()
+        self.build_seconds = time.perf_counter() - started
 
 
 @qd.kernel

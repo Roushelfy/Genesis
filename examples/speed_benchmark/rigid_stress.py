@@ -259,7 +259,10 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
         ),
         "inertia_relief_centrifugal": lambda: (
             kernel_balance_contacts(entry.omega, entry.state, entry.model.info, entry.contacts, entry.scatter)
-            if entry.reuse_contact_wrench and entry.scatter.tasks.shape[0] > 0 and options.cooperative_balance
+            if entry.fused_pipeline
+            and entry.reuse_contact_wrench
+            and entry.scatter.tasks.shape[0] > 0
+            and options.cooperative_balance
             else kernel_balance(entry.omega, entry.state, entry.model.info, options.cooperative_balance)
         ),
         "rhs_reduction": lambda: kernel_direct_init(entry.state),
@@ -429,12 +432,8 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
         "candidate_count": qd_to_numpy(entry.contacts.candidate_count, transpose=True)[contacts].tolist(),
         "pressure_evaluations": qd_to_numpy(entry.contacts.evaluations, transpose=True)[contacts].tolist(),
         "pressure_subdivision_wall_ms": micro_times,
-        "grid_samples_visited": qd_to_numpy(visited, transpose=True)[contacts].tolist()
-        if entry.intrinsic is None
-        else [],
-        "grid_samples_inside": qd_to_numpy(inside, transpose=True)[contacts].tolist()
-        if entry.intrinsic is None
-        else [],
+        "grid_samples_visited": qd_to_numpy(visited, transpose=True)[contacts].tolist() if subdivisions else [],
+        "grid_samples_inside": qd_to_numpy(inside, transpose=True)[contacts].tolist() if subdivisions else [],
         "full_surface_samples": entry.surface.info.positions.shape[0],
         "complete_residual_N": np.sqrt(qd_to_numpy(entry.state.residual_norm_squared)).tolist(),
         "rhs_norm_N": np.sqrt(qd_to_numpy(entry.state.rhs_norm_squared)).tolist(),
@@ -898,6 +897,7 @@ def main() -> None:
             result["method_selected"] = entry.model.selected_method
             result["surface_inverse_selected"] = entry.model.surface_inverse is not None
             result["build_timings_including_JIT"] = asdict(entry.model.build_timings)
+            result["surface_quadrature_grid_seconds_including_JIT"] = entry.surface.build_seconds
             result["maximum_stress_Pa"] = tensor_to_array(workload.link.get_max_stress()).tolist()
             buffers = []
             configurations = []
