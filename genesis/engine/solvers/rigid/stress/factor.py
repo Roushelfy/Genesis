@@ -28,13 +28,14 @@ class StressFactorInfo:
     lower: qd.Tensor
     diagonal: qd.Tensor
     diagonal_inverse: qd.Tensor
+    scales: qd.Tensor
     valid: qd.Tensor
 
 
 class StressFactor:
     """Symbolically order mesh connectivity and numerically factor it in Quadrants."""
 
-    def __init__(self, stress_info: StressInfo):
+    def __init__(self, stress_info: StressInfo, scaling: bool = False, ordering: str = "minimum_degree"):
         row_start = qd_to_numpy(stress_info.row_start)
         columns = qd_to_numpy(stress_info.columns)
         n_nodes = stress_info.vertices.shape[0]
@@ -44,11 +45,13 @@ class StressFactor:
         order, upper = [], []
         live = [True] * n_nodes
         # This is symbolic graph elimination, independent of physical matrix values.
-        for _ in range(n_nodes):
-            while queue:
-                degree, node = heapq.heappop(queue)
-                if live[node] and degree == len(neighbors[node]):
-                    break
+        for i_n in range(n_nodes):
+            node = i_n
+            if ordering == "minimum_degree":
+                while queue:
+                    degree, node = heapq.heappop(queue)
+                    if live[node] and degree == len(neighbors[node]):
+                        break
             adjacent = sorted(neighbors[node])
             order.append(node)
             upper.append(adjacent)
@@ -57,7 +60,8 @@ class StressFactor:
                 neighbors[other].remove(node)
                 neighbors[other].update(adjacent)
                 neighbors[other].discard(other)
-                heapq.heappush(queue, (len(neighbors[other]), other))
+                if ordering == "minimum_degree":
+                    heapq.heappush(queue, (len(neighbors[other]), other))
         inverse_order = np.empty(n_nodes, dtype=gs.np_int)
         inverse_order[order] = np.arange(n_nodes)
         lower_rows = [[] for _ in range(n_nodes)]
@@ -89,6 +93,7 @@ class StressFactor:
             lower=V_MAT(3, 3, dtype=gs.qd_float, shape=(len(lower_columns),)),
             diagonal=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_nodes,)),
             diagonal_inverse=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_nodes,)),
+            scales=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes if scaling else 0,)),
             valid=V(dtype=gs.qd_bool, shape=()),
         )
         self.info.order.from_numpy(np.array(order, dtype=gs.np_int))
@@ -98,6 +103,8 @@ class StressFactor:
         self.info.column_start.from_numpy(column_start.astype(gs.np_int, copy=False))
         self.info.rows.from_numpy(row_indices[transpose_order].astype(gs.np_int, copy=False))
         self.info.transpose_entries.from_numpy(transpose_order.astype(gs.np_int, copy=False))
+        if scaling:
+            kernel_factor_scales(stress_info, self.info)
         kernel_factor_init(stress_info, self.info)
         kernel_factor(stress_info, self.info)
         if not qd_to_numpy(self.info.valid):
@@ -118,6 +125,18 @@ class StressFactor:
 
 
 @qd.kernel
+def kernel_factor_scales(stress_info: StressInfo, factor_info: StressFactorInfo):
+    for i_n in range(factor_info.scales.shape[0]):
+        scale = qd.Vector([1.0, 1.0, 1.0])
+        for i_e in range(stress_info.row_start[i_n], stress_info.row_start[i_n + 1]):
+            if stress_info.columns[i_e] == i_n:
+                for a in qd.static(range(3)):
+                    if stress_info.is_free[i_n][a]:
+                        scale[a] = 1.0 / qd.sqrt(stress_info.stiffness[i_e][a, a])
+        factor_info.scales[i_n] = scale
+
+
+@qd.kernel
 def kernel_factor_init(stress_info: StressInfo, factor_info: StressFactorInfo):
     for i in range(factor_info.order.shape[0]):
         node = factor_info.order[i]
@@ -131,6 +150,8 @@ def kernel_factor_init(stress_info: StressInfo, factor_info: StressFactorInfo):
         for a in qd.static(range(3)):
             if not stress_info.is_free[node][a]:
                 diagonal[a, a] = 1.0
+        if factor_info.scales.shape[0] > 0:
+            diagonal *= factor_info.scales[node].outer_product(factor_info.scales[node])
         factor_info.diagonal[i] = diagonal
         for entry in range(factor_info.row_start[i], factor_info.row_start[i + 1]):
             source = factor_info.sources[entry]
@@ -142,6 +163,8 @@ def kernel_factor_init(stress_info: StressInfo, factor_info: StressFactorInfo):
             for a, c in qd.static(qd.ndrange(3, 3)):
                 if not stress_info.is_free[node][a] or not stress_info.is_free[other][c]:
                     block[a, c] = 0.0
+            if factor_info.scales.shape[0] > 0:
+                block *= factor_info.scales[node].outer_product(factor_info.scales[other])
             factor_info.lower[entry] = block
     for _ in range(1):
         factor_info.valid[None] = True
@@ -197,6 +220,8 @@ def kernel_solve(
             for i in range(factor_info.order.shape[0]):
                 node = factor_info.order[i]
                 value = stress_state.rhs[node, i_b] * stress_info.is_free[node] / young
+                if factor_info.scales.shape[0] > 0:
+                    value *= factor_info.scales[node]
                 for entry in range(factor_info.row_start[i], factor_info.row_start[i + 1]):
                     j = factor_info.columns[entry]
                     other = factor_info.order[j]
@@ -218,6 +243,9 @@ def kernel_solve(
                     lower_entry = factor_info.transpose_entries[entry]
                     value -= factor_info.lower[lower_entry].transpose() @ stress_state.displacement[other, i_b]
                 stress_state.displacement[node, i_b] = value
+            if factor_info.scales.shape[0] > 0:
+                for i_n in range(factor_info.scales.shape[0]):
+                    stress_state.displacement[i_n, i_b] *= factor_info.scales[i_n]
     for i_b in range(stress_state.active.shape[0]):
         if qd.static(only_failed):
             stress_state.active[i_b] = gs.qd_int(not stress_state.valid[i_b])
@@ -266,7 +294,10 @@ def func_solve_cooperative(
                     product[a] = qd.simt.subgroup.reduce_all_add(product[a])
                 if lane == 0:
                     node = factor_info.order[i]
-                    value = stress_state.rhs[node, i_b] * stress_info.is_free[node] / young - product
+                    value = stress_state.rhs[node, i_b] * stress_info.is_free[node] / young
+                    if factor_info.scales.shape[0] > 0:
+                        value *= factor_info.scales[node]
+                    value -= product
                     for a in qd.static(range(3)):
                         sh_work[i, a] = value[a]
                 qd.simt.subgroup.sync()
@@ -299,7 +330,10 @@ def func_solve_cooperative(
                 i = 32 * chunk + lane
                 if i < factor_info.order.shape[0]:
                     node = factor_info.order[i]
-                    stress_state.displacement[node, i_b] = qd.Vector([sh_work[i, a] for a in qd.static(range(3))])
+                    value = qd.Vector([sh_work[i, a] for a in qd.static(range(3))])
+                    if factor_info.scales.shape[0] > 0:
+                        value *= factor_info.scales[node]
+                    stress_state.displacement[node, i_b] = value
     for i_b in range(stress_state.active.shape[0]):
         if qd.static(only_failed):
             stress_state.active[i_b] = gs.qd_int(not stress_state.valid[i_b])

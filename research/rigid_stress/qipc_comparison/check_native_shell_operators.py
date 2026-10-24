@@ -20,7 +20,19 @@ def relative(actual, expected):
     return float(np.linalg.norm(actual - expected) / max(np.linalg.norm(expected), 1e-30))
 
 
-def control(output, name, vertices, quads, method, gauge, spinning=False, inverse_precision="64", surface_load=False):
+def control(
+    output,
+    name,
+    vertices,
+    quads,
+    method,
+    gauge,
+    spinning=False,
+    inverse_precision="64",
+    surface_load=False,
+    factor_scaling=False,
+    factor_ordering="minimum_degree",
+):
     asset = output / f"{name}.npz"
     np.savez(asset, vertices=vertices, quads=quads)
     options = gs.options.RigidStressOptions.dpr(
@@ -31,6 +43,8 @@ def control(output, name, vertices, quads, method, gauge, spinning=False, invers
         output_mode="full",
         density=1000.0,
         inverse_precision=inverse_precision,
+        factor_scaling=factor_scaling,
+        factor_ordering=factor_ordering,
     )
     native = ShellModel(options)
     oracle = core.ShellModel(vertices, quads, density=options.density, gauge=gauge)
@@ -140,6 +154,8 @@ def control(output, name, vertices, quads, method, gauge, spinning=False, invers
         "gauge": gauge,
         "inverse_precision": inverse_precision,
         "surface_load": surface_load,
+        "factor_scaling": factor_scaling,
+        "factor_ordering": factor_ordering,
         "native_corrections": qd_to_numpy(state.corrections).tolist(),
         "native_fallbacks": qd_to_numpy(state.fallbacks).tolist(),
         "factor_block_entries": native.factor.info.lower.shape[0],
@@ -185,12 +201,18 @@ def main():
     cli.add_argument("--inverse-precision", choices=("64", "32"), default="64")
     cli.add_argument("--surface-load", action="store_true")
     cli.add_argument("--precision", choices=("64", "32"), default="64")
+    cli.add_argument("--factor-scaling", action="store_true")
+    cli.add_argument("--factor-ordering", choices=("minimum_degree", "natural"), default="minimum_degree")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     write_json(
         args.output / "start.json",
-        {"identity": runtime_identity(require_gpu_inventory=args.backend == "gpu"), "genesis": gs.__file__},
+        {
+            "identity": runtime_identity(require_gpu_inventory=args.backend == "gpu"),
+            "genesis": gs.__file__,
+            "arguments": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()},
+        },
     )
     gs.init(backend=gs.cuda if args.backend == "gpu" else gs.cpu, precision=args.precision, logging_level="warning")
     fixtures = [
@@ -209,6 +231,8 @@ def main():
             args.spinning,
             args.inverse_precision,
             args.surface_load,
+            args.factor_scaling,
+            args.factor_ordering,
         )
         for name, vertices, quads in fixtures
     ]

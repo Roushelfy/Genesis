@@ -133,7 +133,11 @@ class StressModel:
         self.selected_method = options.method
         if options.method == "auto":
             self.selected_method = "inverse" if inverse_bytes <= options.inverse_max_bytes else "direct"
-        self.factor = StressFactor(self.info) if self.selected_method != "pcg" else None
+        self.factor = (
+            StressFactor(self.info, options.factor_scaling, options.factor_ordering)
+            if self.selected_method != "pcg"
+            else None
+        )
         qd.sync()
         factor_done = time.perf_counter()
         self.inverse = (

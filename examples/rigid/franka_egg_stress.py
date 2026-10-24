@@ -65,6 +65,8 @@ class FrankaEgg:
         stress_backend: str = "volume",
         stress_mesh: Path | None = None,
         shell_gauge: str = "translation",
+        factor_scaling: bool = False,
+        factor_ordering: str = "minimum_degree",
     ):
         self.n_envs = n_envs
         self.radius_model = radius_model
@@ -117,6 +119,8 @@ class FrankaEgg:
                 mesh=stress_mesh,
                 backend=stress_backend,
                 shell_gauge=shell_gauge,
+                factor_scaling=factor_scaling,
+                factor_ordering=factor_ordering,
                 contact_model=contact_model,
                 radius_model=radius_model,
                 pressure_profile=pressure_profile,

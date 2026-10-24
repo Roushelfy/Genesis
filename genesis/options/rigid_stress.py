@@ -165,6 +165,9 @@ class RigidStressOptions(Options):
     block factor. Both are constructed and applied in Quadrants. The inverse
     handles arbitrary nodal loads and costs quadratic shared storage; it is
     intended for small meshes. ``method="direct"`` forces the sparse factor.
+    ``factor_scaling`` applies symmetric diagonal equilibration during factor construction and solves.
+    The complete residual is evaluated against the original operator. ``factor_ordering="minimum_degree"``
+    selects the symbolic fill-reducing order; ``"natural"`` provides the authored-node ordering comparison.
     ``surface_inverse`` accelerates exterior contact loads using their complete
     nodal space and the rigid inertia fields. It adds shared storage within
     the inverse budget. Disable it to compare the full-load inverse path.
@@ -237,6 +240,8 @@ class RigidStressOptions(Options):
     warm_start: StrictBool = True
     history_size: Literal[0, 4] = 0
     method: Literal["auto", "direct", "inverse", "pcg"] = "auto"
+    factor_scaling: StrictBool = False
+    factor_ordering: Literal["minimum_degree", "natural"] = "minimum_degree"
     cooperative_solve: StrictBool = True
     cooperative_pressure: StrictBool = True
     cooperative_scatter: StrictBool = True

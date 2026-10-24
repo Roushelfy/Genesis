@@ -106,6 +106,8 @@ class RigidStressRecovery:
                             and previous.poisson == options.poisson
                             and previous.density == options.density
                             and previous.method == options.method
+                            and previous.factor_scaling == options.factor_scaling
+                            and previous.factor_ordering == options.factor_ordering
                             and previous.inverse_precision == options.inverse_precision
                             and previous.inverse_max_bytes == options.inverse_max_bytes
                             and previous.surface_inverse == options.surface_inverse
