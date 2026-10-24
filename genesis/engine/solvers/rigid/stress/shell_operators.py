@@ -342,6 +342,11 @@ def func_tensor_components(local: qd.types.vector(3), axes: qd.types.matrix(3, 3
 
 @qd.kernel
 def kernel_peak(young: float, poisson: float, thickness: float, stress_state: StressState, shell_info: ShellInfo):
+    func_peak(young, poisson, thickness, stress_state, shell_info)
+
+
+@qd.func
+def func_peak(young: float, poisson: float, thickness: float, stress_state: StressState, shell_info: ShellInfo):
     for i_b in range(stress_state.peak.shape[0]):
         stress_state.peak[i_b] = 0.0
     for i_e, i_q, i_b in qd.ndrange(shell_info.quads.shape[0], 4, stress_state.peak.shape[0]):

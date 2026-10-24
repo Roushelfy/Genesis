@@ -896,6 +896,11 @@ def main() -> None:
             )
             result["method_selected"] = entry.model.selected_method
             result["surface_inverse_selected"] = entry.model.surface_inverse is not None
+            result["shell_recovery_graph_selected"] = (
+                entry.model.is_fused_recovery_enabled(entry.options, entry.history)
+                if args.stress_backend == "shell"
+                else False
+            )
             result["build_timings_including_JIT"] = asdict(entry.model.build_timings)
             result["surface_quadrature_grid_seconds_including_JIT"] = entry.surface.build_seconds
             result["maximum_stress_Pa"] = tensor_to_array(workload.link.get_max_stress()).tolist()

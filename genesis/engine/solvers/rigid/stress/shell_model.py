@@ -16,10 +16,12 @@ from . import shell_operators
 from .balance import kernel_centrifugal_wrench, kernel_relief_projection
 from .data import StressState, allocate_stress_info
 from .factor import StressFactor
+from .history import StressHistory
 from .inverse import StressInverse
 from .model import StressBuildTimings, StressModel
 from .operators import kernel_diagonal, kernel_gram_inverse
 from .shell_operators import ShellInfo
+from .shell_pipeline import kernel_recover
 from .shell_surface import build_shell_surface
 from .surface_inverse import StressSurfaceInverse
 
@@ -44,6 +46,7 @@ class ShellModel(StressModel):
         if directors is not None and (directors.shape != vertices.shape or not np.isfinite(directors).all()):
             gs.raise_exception("Shell directors must match the finite midsurface coordinates.")
         n_nodes, n_elements = len(vertices), len(quads)
+        self.recovery_capacity = next((size for size in (128, 256, 512, 1024) if 2 * n_nodes <= size), 0)
         # Each node contributes adjacent translation and rotation triplets to the shared block solver.
         element_blocks = (2 * quads[:, :, None] + np.arange(2)).reshape((-1, 8))
         pairs = np.stack(np.broadcast_arrays(element_blocks[:, :, None], element_blocks[:, None, :]), axis=-1)
@@ -149,3 +152,53 @@ class ShellModel(StressModel):
 
     def evaluate_stress(self, options: RigidStressOptions, state: StressState) -> None:
         shell_operators.kernel_peak(options.young, options.poisson, options.shell_thickness, state, self.shell)
+
+    def is_fused_recovery_enabled(self, options: RigidStressOptions, history: StressHistory | None = None) -> bool:
+        return (
+            gs.backend == gs.cuda
+            and options.fused_pipeline
+            and self.surface_inverse is not None
+            and options.packed_surface_loads
+            and options.cooperative_solve
+            and self.recovery_capacity > 0
+            and history is None
+        )
+
+    def recover(
+        self,
+        omega: qd.Tensor,
+        state: StressState,
+        options: RigidStressOptions | None = None,
+        history: StressHistory | None = None,
+        surface_load: bool = False,
+    ) -> None:
+        if options is None:
+            options = self.options
+        if surface_load and self.is_fused_recovery_enabled(options, history):
+            coalesced = options.coalesced_residual
+            if coalesced is None:
+                coalesced = state.active.shape[0] >= 8192
+            block_size = options.packed_block_size
+            if block_size is None:
+                block_size = 512 if state.active.shape[0] >= 8192 else 0
+            kernel_recover(
+                options.young,
+                options.poisson,
+                options.shell_thickness,
+                options.tolerance,
+                options.absolute_tolerance,
+                omega,
+                state,
+                self.info,
+                self.shell,
+                self.surface_inverse.info,
+                self.inverse.info,
+                self.factor.info,
+                options.inverse_corrections,
+                self.recovery_capacity,
+                block_size,
+                coalesced,
+                options.cooperative_balance,
+            )
+        else:
+            super().recover(omega, state, options, history, surface_load)

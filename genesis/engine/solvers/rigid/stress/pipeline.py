@@ -26,6 +26,33 @@ from .surface_inverse import StressSurfaceInverseInfo, func_surface_apply_packed
 
 
 @qd.func
+def func_solve_surface(
+    young: float,
+    tolerance: float,
+    absolute: float,
+    omega: qd.Tensor,
+    state: StressState,
+    info: StressInfo,
+    boundary: StressSurfaceInverseInfo,
+    inverse: StressInverseInfo,
+    factor: StressFactorInfo,
+    corrections: qd.template(),
+    n_nodes: qd.template(),
+    packed_block_size: qd.template(),
+    coalesced_residual: qd.template(),
+):
+    func_direct_init(state)
+    func_surface_pack(state, boundary)
+    func_surface_apply_packed(young, omega, state, boundary, packed_block_size)
+    func_full_residual(young, tolerance, absolute, state, info, False, coalesced_residual)
+    for _ in qd.static(range(corrections)):
+        func_apply_inverse(young, state, inverse, True, False)
+        func_full_residual(young, tolerance, absolute, state, info, True, coalesced_residual)
+    func_solve_cooperative(young, state, info, factor, n_nodes, True)
+    func_full_residual(young, tolerance, absolute, state, info, True, coalesced_residual)
+
+
+@qd.func
 def func_pipeline(
     young: float,
     poisson: float,
@@ -100,15 +127,21 @@ def func_pipeline(
         func_balance_contacts(omega, state, info, contacts, scatter)
     else:
         func_balance(omega, state, info, is_cooperative_balance)
-    func_direct_init(state)
-    func_surface_pack(state, boundary)
-    func_surface_apply_packed(young, omega, state, boundary, packed_block_size)
-    func_full_residual(young, tolerance, absolute, state, info, False, coalesced_residual)
-    for _ in qd.static(range(corrections)):
-        func_apply_inverse(young, state, inverse, True, False)
-        func_full_residual(young, tolerance, absolute, state, info, True, coalesced_residual)
-    func_solve_cooperative(young, state, info, factor, n_nodes, True)
-    func_full_residual(young, tolerance, absolute, state, info, True, coalesced_residual)
+    func_solve_surface(
+        young,
+        tolerance,
+        absolute,
+        omega,
+        state,
+        info,
+        boundary,
+        inverse,
+        factor,
+        corrections,
+        n_nodes,
+        packed_block_size,
+        coalesced_residual,
+    )
     func_peak_impl(young, poisson, state, info, cached_peak, full)
     func_accept(state, contacts, errno, full)
 
