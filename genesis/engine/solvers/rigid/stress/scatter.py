@@ -275,13 +275,13 @@ def func_scatter_faces(
         if qd.static(reuse_moments):
             use_moments = workspace.affine_pressure[i_pair] and contacts.status[i_c, i_b] == 0
         if use_moments:
-            if i_lane < 6:
+            if i_lane < qd.select(info.load_nodes.shape[0] > 0, 4, 6):
                 row = qd.Vector([workspace.load_moments[i_t][i_lane, a] for a in qd.static(range(3))])
                 nodal_force = row.dot(contacts.coefficient[i_c, i_b]) * force
                 load[i_lane, :] = nodal_force
                 total = nodal_force
                 node = info.surface_nodes[i_f, i_lane]
-                # P2 partition of unity and linear completeness preserve the wrench.
+                # The physical basis has partition of unity and linear completeness, preserving the wrench.
                 moment = (info.vertices[node] - contacts.position[i_c, i_b]).cross(nodal_force)
         else:
             for i_q_block in range((n_q_current + 31) // 32):
@@ -324,7 +324,7 @@ def func_scatter_faces(
             total[a] = qd.simt.subgroup.reduce_all_add(total[a])
             moment[a] = qd.simt.subgroup.reduce_all_add(moment[a])
         if i_lane == 0:
-            for i_local in range(6):
+            for i_local in range(qd.select(info.load_nodes.shape[0] > 0, 4, 6)):
                 i_n = info.surface_nodes[i_f, i_local]
                 func_scatter_load(i_n, i_b, load[i_local, :], state, info)
             for a in qd.static(range(3)):

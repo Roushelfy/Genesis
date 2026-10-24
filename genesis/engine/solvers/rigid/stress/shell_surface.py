@@ -31,5 +31,5 @@ def kernel_surface_geometry(thickness: float, stress_info: StressInfo, shell_inf
             i_surface = i_side * shell_info.directors.shape[0] + i_n
             offset = side * 0.5 * thickness * shell_info.directors[i_n]
             load_info.vertices[i_surface] = stress_info.vertices[2 * i_n] + offset
-            load_info.load_nodes[i_surface] = qd.Vector([i_n, i_n])
-            load_info.load_offsets[i_surface] = qd.Matrix.rows([offset, offset])
+            load_info.load_nodes[i_surface] = qd.Vector([i_n])
+            load_info.load_offsets[i_surface] = offset
