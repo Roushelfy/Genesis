@@ -1,0 +1,1059 @@
+{
+  "scope": "Additional finer union mesh, not continuum-contact qualification. The underlying geometry/BC/material and common probes remain unchanged. Primary atlas/coarse fields use archived general-pivot code; refined solve uses equivalent SPD-aware LU.",
+  "source_sha256": {
+    "model.py": "4bdf92475ec12055e95803946569f3d8537a7f433361f0a4bceb57e7957c8b3d",
+    "refinement.py": "97758b653c5d3a1098dfaf3d7540d0c40985d8dba04a4ba91e90bb0b080cb65b"
+  },
+  "hmin_m": 0.00075,
+  "model": {
+    "dofs": 55281,
+    "tets": 13022,
+    "vertices": 2529,
+    "factor_strategy": "scaled symmetric no-pivot LU",
+    "stiffness_bytes": 53821576,
+    "lu_nonzeros": 73773050,
+    "approximate_lu_bytes": 885716528,
+    "assembly_seconds": 1.8689539249990048,
+    "factor_seconds": 13.016133470000568
+  },
+  "rows": [
+    {
+      "case": "moving_00",
+      "checks": [
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 1.8798447839435306e-16,
+          "moment_normalized": 1.3080149551942514e-16,
+          "seconds": 0.04529941300097562
+        }
+      ],
+      "residual": 3.958668404975201e-14,
+      "reference_change": {
+        "full_sampled_tensor_relative": 0.09057391483033789,
+        "global_sampled_tensor_relative": 0.08860562747300757,
+        "near_sampled_tensor_relative": 0.09063480533443441,
+        "sampled_vm_peak_Pa": 16001.0936080672,
+        "reference_sampled_vm_peak_Pa": 15763.791040372198,
+        "sampled_vm_peak_relative": 0.01505364839506265,
+        "sampled_tensile_peak_Pa": 5310.426055997474,
+        "reference_sampled_tensile_peak_Pa": 5248.222897961907,
+        "sampled_tensile_peak_relative": 0.011852232507068804
+      },
+      "coarse": {
+        "full_sampled_tensor_relative": 0.8278105060666269,
+        "global_sampled_tensor_relative": 0.8586463803430473,
+        "near_sampled_tensor_relative": 0.8268272190058048,
+        "sampled_vm_peak_Pa": 4083.796755746858,
+        "reference_sampled_vm_peak_Pa": 15763.791040372198,
+        "sampled_vm_peak_relative": 0.7409381572435233,
+        "sampled_tensile_peak_Pa": 1441.8004523321688,
+        "reference_sampled_tensile_peak_Pa": 5248.222897961907,
+        "sampled_tensile_peak_relative": 0.7252783503360581
+      },
+      "hard_atlas": {
+        "full_sampled_tensor_relative": 0.1483257047714356,
+        "global_sampled_tensor_relative": 0.09179262429588123,
+        "near_sampled_tensor_relative": 0.14975049980383046,
+        "sampled_vm_peak_Pa": 17166.450806198034,
+        "reference_sampled_vm_peak_Pa": 15763.791040372198,
+        "sampled_vm_peak_relative": 0.0889798502297781,
+        "sampled_tensile_peak_Pa": 5684.160788842958,
+        "reference_sampled_tensile_peak_Pa": 5248.222897961907,
+        "sampled_tensile_peak_relative": 0.083063905507966
+      },
+      "blended_atlas": {
+        "full_sampled_tensor_relative": 0.1483257047714356,
+        "global_sampled_tensor_relative": 0.09179262429588123,
+        "near_sampled_tensor_relative": 0.14975049980383046,
+        "sampled_vm_peak_Pa": 17166.450806198034,
+        "reference_sampled_vm_peak_Pa": 15763.791040372198,
+        "sampled_vm_peak_relative": 0.0889798502297781,
+        "sampled_tensile_peak_Pa": 5684.160788842958,
+        "reference_sampled_tensile_peak_Pa": 5248.222897961907,
+        "sampled_tensile_peak_relative": 0.083063905507966
+      },
+      "union": {
+        "full_sampled_tensor_relative": 0.1489698975423835,
+        "global_sampled_tensor_relative": 0.10778810036339695,
+        "near_sampled_tensor_relative": 0.150076121315937,
+        "sampled_vm_peak_Pa": 17167.987288429133,
+        "reference_sampled_vm_peak_Pa": 15763.791040372198,
+        "sampled_vm_peak_relative": 0.08907731931111541,
+        "sampled_tensile_peak_Pa": 5682.003795389972,
+        "reference_sampled_tensile_peak_Pa": 5248.222897961907,
+        "sampled_tensile_peak_relative": 0.08265291049214382
+      }
+    },
+    {
+      "case": "moving_01",
+      "checks": [
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 1.522848324749071e-16,
+          "moment_normalized": 9.178929609099271e-17,
+          "seconds": 0.03034943300008308
+        }
+      ],
+      "residual": 4.326987141453381e-14,
+      "reference_change": {
+        "full_sampled_tensor_relative": 0.08215624188135137,
+        "global_sampled_tensor_relative": 0.0622586925862718,
+        "near_sampled_tensor_relative": 0.0826177160569235,
+        "sampled_vm_peak_Pa": 16212.413493037056,
+        "reference_sampled_vm_peak_Pa": 16247.016834480437,
+        "sampled_vm_peak_relative": 0.0021298273889852263,
+        "sampled_tensile_peak_Pa": 5770.413756112136,
+        "reference_sampled_tensile_peak_Pa": 6708.703748103724,
+        "sampled_tensile_peak_relative": 0.13986159282362173
+      },
+      "coarse": {
+        "full_sampled_tensor_relative": 0.800155652774103,
+        "global_sampled_tensor_relative": 0.8246451696915117,
+        "near_sampled_tensor_relative": 0.7994974210295509,
+        "sampled_vm_peak_Pa": 5844.989927894628,
+        "reference_sampled_vm_peak_Pa": 16247.016834480437,
+        "sampled_vm_peak_relative": 0.6402422680150103,
+        "sampled_tensile_peak_Pa": 2229.5959360631714,
+        "reference_sampled_tensile_peak_Pa": 6708.703748103724,
+        "sampled_tensile_peak_relative": 0.6676562239473778
+      },
+      "hard_atlas": {
+        "full_sampled_tensor_relative": 0.13171984951553142,
+        "global_sampled_tensor_relative": 0.16501613686043393,
+        "near_sampled_tensor_relative": 0.1307236312058147,
+        "sampled_vm_peak_Pa": 16727.95005587902,
+        "reference_sampled_vm_peak_Pa": 16247.016834480437,
+        "sampled_vm_peak_relative": 0.02960132474153144,
+        "sampled_tensile_peak_Pa": 6031.867154907457,
+        "reference_sampled_tensile_peak_Pa": 6708.703748103724,
+        "sampled_tensile_peak_relative": 0.10088932506336729
+      },
+      "blended_atlas": {
+        "full_sampled_tensor_relative": 0.13111590726191014,
+        "global_sampled_tensor_relative": 0.15527544989147876,
+        "near_sampled_tensor_relative": 0.13041582591976747,
+        "sampled_vm_peak_Pa": 16721.52947669477,
+        "reference_sampled_vm_peak_Pa": 16247.016834480437,
+        "sampled_vm_peak_relative": 0.029206139628494294,
+        "sampled_tensile_peak_Pa": 6041.534227973989,
+        "reference_sampled_tensile_peak_Pa": 6708.703748103724,
+        "sampled_tensile_peak_relative": 0.09944835025966331
+      },
+      "union": {
+        "full_sampled_tensor_relative": 0.13201174554299205,
+        "global_sampled_tensor_relative": 0.14982138799527334,
+        "near_sampled_tensor_relative": 0.1315077126949497,
+        "sampled_vm_peak_Pa": 16684.324099346213,
+        "reference_sampled_vm_peak_Pa": 16247.016834480437,
+        "sampled_vm_peak_relative": 0.026916157551932572,
+        "sampled_tensile_peak_Pa": 6061.541898450429,
+        "reference_sampled_tensile_peak_Pa": 6708.703748103724,
+        "sampled_tensile_peak_relative": 0.09646600505145599
+      }
+    },
+    {
+      "case": "moving_02",
+      "checks": [
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 1.458016267116088e-16,
+          "moment_normalized": 1.0384773393004927e-15,
+          "seconds": 0.028110884999478003
+        }
+      ],
+      "residual": 4.2773446474469493e-14,
+      "reference_change": {
+        "full_sampled_tensor_relative": 0.08955946689606559,
+        "global_sampled_tensor_relative": 0.07322895223762527,
+        "near_sampled_tensor_relative": 0.08992393289434031,
+        "sampled_vm_peak_Pa": 16229.654013804871,
+        "reference_sampled_vm_peak_Pa": 15724.189975030704,
+        "sampled_vm_peak_relative": 0.03214563291189061,
+        "sampled_tensile_peak_Pa": 7397.17054674291,
+        "reference_sampled_tensile_peak_Pa": 7507.927432783377,
+        "sampled_tensile_peak_relative": 0.01475199208197552
+      },
+      "coarse": {
+        "full_sampled_tensor_relative": 0.8058796129180025,
+        "global_sampled_tensor_relative": 0.8381149453753763,
+        "near_sampled_tensor_relative": 0.805070128550682,
+        "sampled_vm_peak_Pa": 5029.773349552712,
+        "reference_sampled_vm_peak_Pa": 15724.189975030704,
+        "sampled_vm_peak_relative": 0.6801251220228347,
+        "sampled_tensile_peak_Pa": 1591.3107439559185,
+        "reference_sampled_tensile_peak_Pa": 7507.927432783377,
+        "sampled_tensile_peak_relative": 0.7880492641674375
+      },
+      "hard_atlas": {
+        "full_sampled_tensor_relative": 0.1434028360913613,
+        "global_sampled_tensor_relative": 0.13527751132302393,
+        "near_sampled_tensor_relative": 0.1435969798270831,
+        "sampled_vm_peak_Pa": 17562.519486519606,
+        "reference_sampled_vm_peak_Pa": 15724.189975030704,
+        "sampled_vm_peak_relative": 0.11691091969812663,
+        "sampled_tensile_peak_Pa": 6496.792687653731,
+        "reference_sampled_tensile_peak_Pa": 7507.927432783377,
+        "sampled_tensile_peak_relative": 0.13467561509911838
+      },
+      "blended_atlas": {
+        "full_sampled_tensor_relative": 0.14050866723952699,
+        "global_sampled_tensor_relative": 0.08568166360536306,
+        "near_sampled_tensor_relative": 0.1415904120171751,
+        "sampled_vm_peak_Pa": 17493.442810373395,
+        "reference_sampled_vm_peak_Pa": 15724.189975030704,
+        "sampled_vm_peak_relative": 0.11251790000961476,
+        "sampled_tensile_peak_Pa": 6408.956210790444,
+        "reference_sampled_tensile_peak_Pa": 7507.927432783377,
+        "sampled_tensile_peak_relative": 0.14637477943570334
+      },
+      "union": {
+        "full_sampled_tensor_relative": 0.13907614120638317,
+        "global_sampled_tensor_relative": 0.11336732970589364,
+        "near_sampled_tensor_relative": 0.13964910576906758,
+        "sampled_vm_peak_Pa": 17461.47340505902,
+        "reference_sampled_vm_peak_Pa": 15724.189975030704,
+        "sampled_vm_peak_relative": 0.11048476473427518,
+        "sampled_tensile_peak_Pa": 6319.062679174244,
+        "reference_sampled_tensile_peak_Pa": 7507.927432783377,
+        "sampled_tensile_peak_relative": 0.1583479281403218
+      }
+    },
+    {
+      "case": "moving_03",
+      "checks": [
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 1.48614779121217e-16,
+          "moment_normalized": 1.0400290788143551e-15,
+          "seconds": 0.027729137998903752
+        }
+      ],
+      "residual": 4.239857752949706e-14,
+      "reference_change": {
+        "full_sampled_tensor_relative": 0.09274139870838785,
+        "global_sampled_tensor_relative": 0.05664664095115619,
+        "near_sampled_tensor_relative": 0.09364685092334603,
+        "sampled_vm_peak_Pa": 15429.758046588091,
+        "reference_sampled_vm_peak_Pa": 15528.27200012684,
+        "sampled_vm_peak_relative": 0.00634416717700109,
+        "sampled_tensile_peak_Pa": 6766.293043524512,
+        "reference_sampled_tensile_peak_Pa": 6148.906913614541,
+        "sampled_tensile_peak_relative": 0.10040583449767168
+      },
+      "coarse": {
+        "full_sampled_tensor_relative": 0.8244895295228177,
+        "global_sampled_tensor_relative": 0.850361416941355,
+        "near_sampled_tensor_relative": 0.8236666618232052,
+        "sampled_vm_peak_Pa": 4933.30829445711,
+        "reference_sampled_vm_peak_Pa": 15528.27200012684,
+        "sampled_vm_peak_relative": 0.6823015275352717,
+        "sampled_tensile_peak_Pa": 1809.35790666682,
+        "reference_sampled_tensile_peak_Pa": 6148.906913614541,
+        "sampled_tensile_peak_relative": 0.7057431618194369
+      },
+      "hard_atlas": {
+        "full_sampled_tensor_relative": 0.15504409480810943,
+        "global_sampled_tensor_relative": 0.10422217436440426,
+        "near_sampled_tensor_relative": 0.15636839113489384,
+        "sampled_vm_peak_Pa": 16870.183683124513,
+        "reference_sampled_vm_peak_Pa": 15528.27200012684,
+        "sampled_vm_peak_relative": 0.08641732209396581,
+        "sampled_tensile_peak_Pa": 5917.076895616815,
+        "reference_sampled_tensile_peak_Pa": 6148.906913614541,
+        "sampled_tensile_peak_relative": 0.037702639063281605
+      },
+      "blended_atlas": {
+        "full_sampled_tensor_relative": 0.1475589829923535,
+        "global_sampled_tensor_relative": 0.1178281144099985,
+        "near_sampled_tensor_relative": 0.14839341248898416,
+        "sampled_vm_peak_Pa": 16944.774018001208,
+        "reference_sampled_vm_peak_Pa": 15528.27200012684,
+        "sampled_vm_peak_relative": 0.09122084014646295,
+        "sampled_tensile_peak_Pa": 6077.479744379443,
+        "reference_sampled_tensile_peak_Pa": 6148.906913614541,
+        "sampled_tensile_peak_relative": 0.011616238501992582
+      },
+      "union": {
+        "full_sampled_tensor_relative": 0.14706251267878231,
+        "global_sampled_tensor_relative": 0.15357612181818314,
+        "near_sampled_tensor_relative": 0.1468539835982277,
+        "sampled_vm_peak_Pa": 16899.82021509358,
+        "reference_sampled_vm_peak_Pa": 15528.27200012684,
+        "sampled_vm_peak_relative": 0.08832587521364485,
+        "sampled_tensile_peak_Pa": 5888.248331700203,
+        "reference_sampled_tensile_peak_Pa": 6148.906913614541,
+        "sampled_tensile_peak_relative": 0.042391043737741885
+      }
+    },
+    {
+      "case": "moving_04",
+      "checks": [
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 6.646254971523154e-17,
+          "moment_normalized": 2.601259096186728e-16,
+          "seconds": 0.028653261999352253
+        }
+      ],
+      "residual": 4.538069353522458e-14,
+      "reference_change": {
+        "full_sampled_tensor_relative": 0.10223417413465086,
+        "global_sampled_tensor_relative": 0.2589822705099735,
+        "near_sampled_tensor_relative": 0.09681174183952146,
+        "sampled_vm_peak_Pa": 16193.294862186736,
+        "reference_sampled_vm_peak_Pa": 15871.851095036089,
+        "sampled_vm_peak_relative": 0.020252443475303198,
+        "sampled_tensile_peak_Pa": 6853.857900453463,
+        "reference_sampled_tensile_peak_Pa": 6913.163430706478,
+        "sampled_tensile_peak_relative": 0.008578638541885893
+      },
+      "coarse": {
+        "full_sampled_tensor_relative": 0.8177962204133334,
+        "global_sampled_tensor_relative": 0.7701006267821763,
+        "near_sampled_tensor_relative": 0.8186784241327743,
+        "sampled_vm_peak_Pa": 6534.831195491375,
+        "reference_sampled_vm_peak_Pa": 15871.851095036089,
+        "sampled_vm_peak_relative": 0.5882754219175393,
+        "sampled_tensile_peak_Pa": 2472.0162668502553,
+        "reference_sampled_tensile_peak_Pa": 6913.163430706478,
+        "sampled_tensile_peak_relative": 0.6424189458808104
+      },
+      "hard_atlas": {
+        "full_sampled_tensor_relative": 0.16056085572386103,
+        "global_sampled_tensor_relative": 0.1466046925002885,
+        "near_sampled_tensor_relative": 0.1608151301845901,
+        "sampled_vm_peak_Pa": 16863.675847440263,
+        "reference_sampled_vm_peak_Pa": 15871.851095036089,
+        "sampled_vm_peak_relative": 0.062489544947556055,
+        "sampled_tensile_peak_Pa": 5720.630955746392,
+        "reference_sampled_tensile_peak_Pa": 6913.163430706478,
+        "sampled_tensile_peak_relative": 0.17250170445315471
+      },
+      "blended_atlas": {
+        "full_sampled_tensor_relative": 0.16056085572386103,
+        "global_sampled_tensor_relative": 0.1466046925002885,
+        "near_sampled_tensor_relative": 0.1608151301845901,
+        "sampled_vm_peak_Pa": 16863.675847440263,
+        "reference_sampled_vm_peak_Pa": 15871.851095036089,
+        "sampled_vm_peak_relative": 0.062489544947556055,
+        "sampled_tensile_peak_Pa": 5720.630955746392,
+        "reference_sampled_tensile_peak_Pa": 6913.163430706478,
+        "sampled_tensile_peak_relative": 0.17250170445315471
+      },
+      "union": {
+        "full_sampled_tensor_relative": 0.16123770165576998,
+        "global_sampled_tensor_relative": 0.26883135940474806,
+        "near_sampled_tensor_relative": 0.15847879217585775,
+        "sampled_vm_peak_Pa": 18126.220475675407,
+        "reference_sampled_vm_peak_Pa": 15871.851095036089,
+        "sampled_vm_peak_relative": 0.1420356937033243,
+        "sampled_tensile_peak_Pa": 5725.317447228545,
+        "reference_sampled_tensile_peak_Pa": 6913.163430706478,
+        "sampled_tensile_peak_relative": 0.17182379606445145
+      }
+    },
+    {
+      "case": "moving_05",
+      "checks": [
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 2.839281368451454e-16,
+          "moment_normalized": 5.202518192373456e-16,
+          "seconds": 0.02764970899988839
+        }
+      ],
+      "residual": 4.6746595854790016e-14,
+      "reference_change": {
+        "full_sampled_tensor_relative": 0.114699153284884,
+        "global_sampled_tensor_relative": 0.29334433077555844,
+        "near_sampled_tensor_relative": 0.10755161000211937,
+        "sampled_vm_peak_Pa": 17186.062988308913,
+        "reference_sampled_vm_peak_Pa": 15921.393008038742,
+        "sampled_vm_peak_relative": 0.07943211876194735,
+        "sampled_tensile_peak_Pa": 6267.347698354502,
+        "reference_sampled_tensile_peak_Pa": 6598.301955965224,
+        "sampled_tensile_peak_relative": 0.05015748897510227
+      },
+      "coarse": {
+        "full_sampled_tensor_relative": 0.7970577927819837,
+        "global_sampled_tensor_relative": 0.8074283831705104,
+        "near_sampled_tensor_relative": 0.7968302914478274,
+        "sampled_vm_peak_Pa": 5944.241325207772,
+        "reference_sampled_vm_peak_Pa": 15921.393008038742,
+        "sampled_vm_peak_relative": 0.6266506754649851,
+        "sampled_tensile_peak_Pa": 2696.583425722038,
+        "reference_sampled_tensile_peak_Pa": 6598.301955965224,
+        "sampled_tensile_peak_relative": 0.5913216091476111
+      },
+      "hard_atlas": {
+        "full_sampled_tensor_relative": 0.15895233218983645,
+        "global_sampled_tensor_relative": 0.14442852070046092,
+        "near_sampled_tensor_relative": 0.15925409251455952,
+        "sampled_vm_peak_Pa": 17542.442928641256,
+        "reference_sampled_vm_peak_Pa": 15921.393008038742,
+        "sampled_vm_peak_relative": 0.10181583481948113,
+        "sampled_tensile_peak_Pa": 6324.409199904593,
+        "reference_sampled_tensile_peak_Pa": 6598.301955965224,
+        "sampled_tensile_peak_relative": 0.041509581993745645
+      },
+      "blended_atlas": {
+        "full_sampled_tensor_relative": 0.15895233218983645,
+        "global_sampled_tensor_relative": 0.14442852070046092,
+        "near_sampled_tensor_relative": 0.15925409251455952,
+        "sampled_vm_peak_Pa": 17542.442928641256,
+        "reference_sampled_vm_peak_Pa": 15921.393008038742,
+        "sampled_vm_peak_relative": 0.10181583481948113,
+        "sampled_tensile_peak_Pa": 6324.409199904593,
+        "reference_sampled_tensile_peak_Pa": 6598.301955965224,
+        "sampled_tensile_peak_relative": 0.041509581993745645
+      },
+      "union": {
+        "full_sampled_tensor_relative": 0.15287373533477447,
+        "global_sampled_tensor_relative": 0.3411650127161942,
+        "near_sampled_tensor_relative": 0.1460930980431746,
+        "sampled_vm_peak_Pa": 17936.12122902906,
+        "reference_sampled_vm_peak_Pa": 15921.393008038742,
+        "sampled_vm_peak_relative": 0.12654220770588845,
+        "sampled_tensile_peak_Pa": 6333.7186859198,
+        "reference_sampled_tensile_peak_Pa": 6598.301955965224,
+        "sampled_tensile_peak_relative": 0.040098690816388935
+      }
+    },
+    {
+      "case": "moving_06",
+      "checks": [
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 4.1238927582323297e-16,
+          "moment_normalized": 2.599487207334863e-15,
+          "seconds": 0.02843013600067934
+        }
+      ],
+      "residual": 5.147623620157869e-14,
+      "reference_change": {
+        "full_sampled_tensor_relative": 0.09400883245746702,
+        "global_sampled_tensor_relative": 0.05181119447063407,
+        "near_sampled_tensor_relative": 0.09501611171474825,
+        "sampled_vm_peak_Pa": 15391.393457298667,
+        "reference_sampled_vm_peak_Pa": 15074.977128086179,
+        "sampled_vm_peak_relative": 0.020989506420077648,
+        "sampled_tensile_peak_Pa": 6998.549087366648,
+        "reference_sampled_tensile_peak_Pa": 6099.557169130911,
+        "sampled_tensile_peak_relative": 0.14738642385145956
+      },
+      "coarse": {
+        "full_sampled_tensor_relative": 0.8556040452679469,
+        "global_sampled_tensor_relative": 0.8650608950266667,
+        "near_sampled_tensor_relative": 0.8553097533310475,
+        "sampled_vm_peak_Pa": 5259.410542459229,
+        "reference_sampled_vm_peak_Pa": 15074.977128086179,
+        "sampled_vm_peak_relative": 0.6511165159474488,
+        "sampled_tensile_peak_Pa": 1762.8361859471381,
+        "reference_sampled_tensile_peak_Pa": 6099.557169130911,
+        "sampled_tensile_peak_relative": 0.7109894805366151
+      },
+      "hard_atlas": {
+        "full_sampled_tensor_relative": 0.15646151914289363,
+        "global_sampled_tensor_relative": 0.10330788184167969,
+        "near_sampled_tensor_relative": 0.1578209730469405,
+        "sampled_vm_peak_Pa": 16657.583523435802,
+        "reference_sampled_vm_peak_Pa": 15074.977128086179,
+        "sampled_vm_peak_relative": 0.10498234139281515,
+        "sampled_tensile_peak_Pa": 5904.021650781941,
+        "reference_sampled_tensile_peak_Pa": 6099.557169130911,
+        "sampled_tensile_peak_relative": 0.03205733021710982
+      },
+      "blended_atlas": {
+        "full_sampled_tensor_relative": 0.1514429244072759,
+        "global_sampled_tensor_relative": 0.12212457585660348,
+        "near_sampled_tensor_relative": 0.15226010599604922,
+        "sampled_vm_peak_Pa": 16736.30130988873,
+        "reference_sampled_vm_peak_Pa": 15074.977128086179,
+        "sampled_vm_peak_relative": 0.11020409302693672,
+        "sampled_tensile_peak_Pa": 6045.2094468319665,
+        "reference_sampled_tensile_peak_Pa": 6099.557169130911,
+        "sampled_tensile_peak_relative": 0.008910109503357232
+      },
+      "union": {
+        "full_sampled_tensor_relative": 0.15079289474218005,
+        "global_sampled_tensor_relative": 0.1334530289227702,
+        "near_sampled_tensor_relative": 0.15129774943261254,
+        "sampled_vm_peak_Pa": 16676.99881559994,
+        "reference_sampled_vm_peak_Pa": 15074.977128086179,
+        "sampled_vm_peak_relative": 0.10627025659156972,
+        "sampled_tensile_peak_Pa": 5916.329485942081,
+        "reference_sampled_tensile_peak_Pa": 6099.557169130911,
+        "sampled_tensile_peak_relative": 0.03003950583759122
+      }
+    },
+    {
+      "case": "moving_07",
+      "checks": [
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 2.916032534232176e-16,
+          "moment_normalized": 5.232794984504912e-16,
+          "seconds": 0.029142702000171994
+        }
+      ],
+      "residual": 4.824588720204742e-14,
+      "reference_change": {
+        "full_sampled_tensor_relative": 0.09262534918752562,
+        "global_sampled_tensor_relative": 0.06949204443453597,
+        "near_sampled_tensor_relative": 0.0931800947868712,
+        "sampled_vm_peak_Pa": 16279.061644361498,
+        "reference_sampled_vm_peak_Pa": 16112.61338157603,
+        "sampled_vm_peak_relative": 0.010330308240114165,
+        "sampled_tensile_peak_Pa": 7161.534783036853,
+        "reference_sampled_tensile_peak_Pa": 7325.041476514836,
+        "sampled_tensile_peak_relative": 0.022321606505875766
+      },
+      "coarse": {
+        "full_sampled_tensor_relative": 0.842790360212876,
+        "global_sampled_tensor_relative": 0.8802405161828414,
+        "near_sampled_tensor_relative": 0.8417375417560243,
+        "sampled_vm_peak_Pa": 4532.486415788314,
+        "reference_sampled_vm_peak_Pa": 16112.61338157603,
+        "sampled_vm_peak_relative": 0.7186994866412555,
+        "sampled_tensile_peak_Pa": 1244.4377013672977,
+        "reference_sampled_tensile_peak_Pa": 7325.041476514836,
+        "sampled_tensile_peak_relative": 0.8301118559728093
+      },
+      "hard_atlas": {
+        "full_sampled_tensor_relative": 0.15246004697178603,
+        "global_sampled_tensor_relative": 0.156040783324408,
+        "near_sampled_tensor_relative": 0.15236044463411294,
+        "sampled_vm_peak_Pa": 17306.381310664485,
+        "reference_sampled_vm_peak_Pa": 16112.61338157603,
+        "sampled_vm_peak_relative": 0.07408903204079044,
+        "sampled_tensile_peak_Pa": 6052.136350000904,
+        "reference_sampled_tensile_peak_Pa": 7325.041476514836,
+        "sampled_tensile_peak_relative": 0.1737744599255928
+      },
+      "blended_atlas": {
+        "full_sampled_tensor_relative": 0.14828145408905788,
+        "global_sampled_tensor_relative": 0.13160048234493193,
+        "near_sampled_tensor_relative": 0.14871350223993451,
+        "sampled_vm_peak_Pa": 17247.988985643737,
+        "reference_sampled_vm_peak_Pa": 16112.61338157603,
+        "sampled_vm_peak_relative": 0.07046501875145547,
+        "sampled_tensile_peak_Pa": 6012.351344470493,
+        "reference_sampled_tensile_peak_Pa": 7325.041476514836,
+        "sampled_tensile_peak_relative": 0.17920582924383724
+      },
+      "union": {
+        "full_sampled_tensor_relative": 0.14700807154767126,
+        "global_sampled_tensor_relative": 0.14533646888217114,
+        "near_sampled_tensor_relative": 0.14705374611199148,
+        "sampled_vm_peak_Pa": 17194.44633290088,
+        "reference_sampled_vm_peak_Pa": 16112.61338157603,
+        "sampled_vm_peak_relative": 0.06714199153824867,
+        "sampled_tensile_peak_Pa": 5968.982361182754,
+        "reference_sampled_tensile_peak_Pa": 7325.041476514836,
+        "sampled_tensile_peak_relative": 0.18512647603154297
+      }
+    },
+    {
+      "case": "moving_08",
+      "checks": [
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 3.9912130729209638e-16,
+          "moment_normalized": 5.80526480942254e-16,
+          "seconds": 0.04730459799975506
+        }
+      ],
+      "residual": 4.586272599564489e-14,
+      "reference_change": {
+        "full_sampled_tensor_relative": 0.08480498613276352,
+        "global_sampled_tensor_relative": 0.07866723027693694,
+        "near_sampled_tensor_relative": 0.08495093977433801,
+        "sampled_vm_peak_Pa": 16325.953872786034,
+        "reference_sampled_vm_peak_Pa": 15630.65335441419,
+        "sampled_vm_peak_relative": 0.044483138523156364,
+        "sampled_tensile_peak_Pa": 6601.194691108769,
+        "reference_sampled_tensile_peak_Pa": 6618.3538512758705,
+        "sampled_tensile_peak_relative": 0.0025926628513212114
+      },
+      "coarse": {
+        "full_sampled_tensor_relative": 0.8306894739129678,
+        "global_sampled_tensor_relative": 0.8874645269851481,
+        "near_sampled_tensor_relative": 0.8292383090265661,
+        "sampled_vm_peak_Pa": 4941.94554951647,
+        "reference_sampled_vm_peak_Pa": 15630.65335441419,
+        "sampled_vm_peak_relative": 0.6838298798225965,
+        "sampled_tensile_peak_Pa": 2595.5652880347156,
+        "reference_sampled_tensile_peak_Pa": 6618.3538512758705,
+        "sampled_tensile_peak_relative": 0.6078231314975175
+      },
+      "hard_atlas": {
+        "full_sampled_tensor_relative": 0.13454067392684924,
+        "global_sampled_tensor_relative": 0.1862314693650371,
+        "near_sampled_tensor_relative": 0.13301032804853763,
+        "sampled_vm_peak_Pa": 15917.541985787433,
+        "reference_sampled_vm_peak_Pa": 15630.65335441419,
+        "sampled_vm_peak_relative": 0.018354231577416735,
+        "sampled_tensile_peak_Pa": 6876.981003615829,
+        "reference_sampled_tensile_peak_Pa": 6618.3538512758705,
+        "sampled_tensile_peak_relative": 0.03907726273809018
+      },
+      "blended_atlas": {
+        "full_sampled_tensor_relative": 0.13343282404213638,
+        "global_sampled_tensor_relative": 0.17851342535774264,
+        "near_sampled_tensor_relative": 0.13212515926619853,
+        "sampled_vm_peak_Pa": 15917.047762155298,
+        "reference_sampled_vm_peak_Pa": 15630.65335441419,
+        "sampled_vm_peak_relative": 0.018322612705132336,
+        "sampled_tensile_peak_Pa": 6874.309506755956,
+        "reference_sampled_tensile_peak_Pa": 6618.3538512758705,
+        "sampled_tensile_peak_relative": 0.03867361299075043
+      },
+      "union": {
+        "full_sampled_tensor_relative": 0.1309701119158306,
+        "global_sampled_tensor_relative": 0.18855863641107146,
+        "near_sampled_tensor_relative": 0.129223746319159,
+        "sampled_vm_peak_Pa": 15923.75138456844,
+        "reference_sampled_vm_peak_Pa": 15630.65335441419,
+        "sampled_vm_peak_relative": 0.018751489365700678,
+        "sampled_tensile_peak_Pa": 6871.567835849917,
+        "reference_sampled_tensile_peak_Pa": 6618.3538512758705,
+        "sampled_tensile_peak_relative": 0.03825936029776236
+      }
+    },
+    {
+      "case": "moving_09",
+      "checks": [
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 2.6585019886092615e-16,
+          "moment_normalized": 1.8357859218198542e-16,
+          "seconds": 0.044678885000394075
+        }
+      ],
+      "residual": 4.1879002907068484e-14,
+      "reference_change": {
+        "full_sampled_tensor_relative": 0.09360071017880653,
+        "global_sampled_tensor_relative": 0.19736668530800772,
+        "near_sampled_tensor_relative": 0.08937725025464253,
+        "sampled_vm_peak_Pa": 15756.192332542298,
+        "reference_sampled_vm_peak_Pa": 15997.275572575807,
+        "sampled_vm_peak_relative": 0.015070268617913872,
+        "sampled_tensile_peak_Pa": 6121.8071674248395,
+        "reference_sampled_tensile_peak_Pa": 6187.737789636156,
+        "sampled_tensile_peak_relative": 0.010655044614486351
+      },
+      "coarse": {
+        "full_sampled_tensor_relative": 0.8006174865053226,
+        "global_sampled_tensor_relative": 0.8000103735079956,
+        "near_sampled_tensor_relative": 0.8006330199753566,
+        "sampled_vm_peak_Pa": 4327.229417779686,
+        "reference_sampled_vm_peak_Pa": 15997.275572575807,
+        "sampled_vm_peak_relative": 0.7295021018955332,
+        "sampled_tensile_peak_Pa": 2028.0772462325128,
+        "reference_sampled_tensile_peak_Pa": 6187.737789636156,
+        "sampled_tensile_peak_relative": 0.6722425359346448
+      },
+      "hard_atlas": {
+        "full_sampled_tensor_relative": 0.1513255537615497,
+        "global_sampled_tensor_relative": 0.16484715388393895,
+        "near_sampled_tensor_relative": 0.15096356272471323,
+        "sampled_vm_peak_Pa": 16936.04973390703,
+        "reference_sampled_vm_peak_Pa": 15997.275572575807,
+        "sampled_vm_peak_relative": 0.058683377495888665,
+        "sampled_tensile_peak_Pa": 6217.593602408618,
+        "reference_sampled_tensile_peak_Pa": 6187.737789636156,
+        "sampled_tensile_peak_relative": 0.004824996434475187
+      },
+      "blended_atlas": {
+        "full_sampled_tensor_relative": 0.1513255537615497,
+        "global_sampled_tensor_relative": 0.16484715388393895,
+        "near_sampled_tensor_relative": 0.15096356272471323,
+        "sampled_vm_peak_Pa": 16936.04973390703,
+        "reference_sampled_vm_peak_Pa": 15997.275572575807,
+        "sampled_vm_peak_relative": 0.058683377495888665,
+        "sampled_tensile_peak_Pa": 6217.593602408618,
+        "reference_sampled_tensile_peak_Pa": 6187.737789636156,
+        "sampled_tensile_peak_relative": 0.004824996434475187
+      },
+      "union": {
+        "full_sampled_tensor_relative": 0.1514787327747385,
+        "global_sampled_tensor_relative": 0.16482980267979755,
+        "near_sampled_tensor_relative": 0.15112152117381364,
+        "sampled_vm_peak_Pa": 16933.29836206277,
+        "reference_sampled_vm_peak_Pa": 15997.275572575807,
+        "sampled_vm_peak_relative": 0.05851138746972588,
+        "sampled_tensile_peak_Pa": 6272.178236087822,
+        "reference_sampled_tensile_peak_Pa": 6187.737789636156,
+        "sampled_tensile_peak_relative": 0.013646416400044591
+      }
+    },
+    {
+      "case": "radius_0.00055",
+      "checks": [
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 3.3335419582021164e-17,
+          "moment_normalized": 1.3406084801555872e-15,
+          "seconds": 0.026878542999838828
+        }
+      ],
+      "residual": 2.87582584847323e-14,
+      "reference_change": {
+        "full_sampled_tensor_relative": 0.1914065542603808,
+        "global_sampled_tensor_relative": 0.5712245378652429,
+        "near_sampled_tensor_relative": 0.17847295927918502,
+        "sampled_vm_peak_Pa": 48092.029708308335,
+        "reference_sampled_vm_peak_Pa": 48119.1071274781,
+        "sampled_vm_peak_relative": 0.0005627165753102963,
+        "sampled_tensile_peak_Pa": 14902.32036216652,
+        "reference_sampled_tensile_peak_Pa": 11305.77420100226,
+        "sampled_tensile_peak_relative": 0.31811586692094257
+      },
+      "coarse": {
+        "full_sampled_tensor_relative": 0.8995074549870945,
+        "global_sampled_tensor_relative": 0.8958941313009248,
+        "near_sampled_tensor_relative": 0.8995670086991534,
+        "sampled_vm_peak_Pa": 6301.2642487936355,
+        "reference_sampled_vm_peak_Pa": 48119.1071274781,
+        "sampled_vm_peak_relative": 0.8690486040794522,
+        "sampled_tensile_peak_Pa": 2985.8023403258208,
+        "reference_sampled_tensile_peak_Pa": 11305.77420100226,
+        "sampled_tensile_peak_relative": 0.7359046548036375
+      },
+      "hard_atlas": {
+        "full_sampled_tensor_relative": 0.3166737497353101,
+        "global_sampled_tensor_relative": 0.27950719054838913,
+        "near_sampled_tensor_relative": 0.31725102403556626,
+        "sampled_vm_peak_Pa": 45074.76636917726,
+        "reference_sampled_vm_peak_Pa": 48119.1071274781,
+        "sampled_vm_peak_relative": 0.06326677571625984,
+        "sampled_tensile_peak_Pa": 10216.964066369705,
+        "reference_sampled_tensile_peak_Pa": 11305.77420100226,
+        "sampled_tensile_peak_relative": 0.09630566781848797
+      },
+      "blended_atlas": {
+        "full_sampled_tensor_relative": 0.3166737497353101,
+        "global_sampled_tensor_relative": 0.27950719054838913,
+        "near_sampled_tensor_relative": 0.31725102403556626,
+        "sampled_vm_peak_Pa": 45074.76636917726,
+        "reference_sampled_vm_peak_Pa": 48119.1071274781,
+        "sampled_vm_peak_relative": 0.06326677571625984,
+        "sampled_tensile_peak_Pa": 10216.964066369705,
+        "reference_sampled_tensile_peak_Pa": 11305.77420100226,
+        "sampled_tensile_peak_relative": 0.09630566781848797
+      },
+      "union": {
+        "full_sampled_tensor_relative": 0.31906888607993295,
+        "global_sampled_tensor_relative": 0.5364187479781514,
+        "near_sampled_tensor_relative": 0.3142197889136859,
+        "sampled_vm_peak_Pa": 44614.133015343796,
+        "reference_sampled_vm_peak_Pa": 48119.1071274781,
+        "sampled_vm_peak_relative": 0.07283955005334691,
+        "sampled_tensile_peak_Pa": 10213.347572706662,
+        "reference_sampled_tensile_peak_Pa": 11305.77420100226,
+        "sampled_tensile_peak_relative": 0.09662554804948731
+      },
+      "quadrature48_vs96": {
+        "load_relative": 6.295522852530282e-05,
+        "stress_relative": 4.914297616226733e-05
+      }
+    },
+    {
+      "case": "radius_0.0007",
+      "checks": [
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 1.3334167832808465e-16,
+          "moment_normalized": 7.441850133653782e-16,
+          "seconds": 0.026145718000407214
+        }
+      ],
+      "residual": 3.579736471753076e-14,
+      "reference_change": {
+        "full_sampled_tensor_relative": 0.16052434566691262,
+        "global_sampled_tensor_relative": 0.47582290739547645,
+        "near_sampled_tensor_relative": 0.14624852904815677,
+        "sampled_vm_peak_Pa": 32576.418938766798,
+        "reference_sampled_vm_peak_Pa": 32976.895753260906,
+        "sampled_vm_peak_relative": 0.012144163522562828,
+        "sampled_tensile_peak_Pa": 12160.721730350157,
+        "reference_sampled_tensile_peak_Pa": 8876.74341411646,
+        "sampled_tensile_peak_relative": 0.3699530518152941
+      },
+      "coarse": {
+        "full_sampled_tensor_relative": 0.8654505037200697,
+        "global_sampled_tensor_relative": 0.8731396910784818,
+        "near_sampled_tensor_relative": 0.8652819068546499,
+        "sampled_vm_peak_Pa": 6189.851955363427,
+        "reference_sampled_vm_peak_Pa": 32976.895753260906,
+        "sampled_vm_peak_relative": 0.8122973125888799,
+        "sampled_tensile_peak_Pa": 2900.5907702677428,
+        "reference_sampled_tensile_peak_Pa": 8876.74341411646,
+        "sampled_tensile_peak_relative": 0.6732370606032154
+      },
+      "hard_atlas": {
+        "full_sampled_tensor_relative": 0.2244096002468713,
+        "global_sampled_tensor_relative": 0.11264222876300994,
+        "near_sampled_tensor_relative": 0.22623425216473125,
+        "sampled_vm_peak_Pa": 30434.31852846794,
+        "reference_sampled_vm_peak_Pa": 32976.895753260906,
+        "sampled_vm_peak_relative": 0.07710177585595046,
+        "sampled_tensile_peak_Pa": 9429.244999356957,
+        "reference_sampled_tensile_peak_Pa": 8876.74341411646,
+        "sampled_tensile_peak_relative": 0.062241472966523784
+      },
+      "blended_atlas": {
+        "full_sampled_tensor_relative": 0.2244096002468713,
+        "global_sampled_tensor_relative": 0.11264222876300994,
+        "near_sampled_tensor_relative": 0.22623425216473125,
+        "sampled_vm_peak_Pa": 30434.31852846794,
+        "reference_sampled_vm_peak_Pa": 32976.895753260906,
+        "sampled_vm_peak_relative": 0.07710177585595046,
+        "sampled_tensile_peak_Pa": 9429.244999356957,
+        "reference_sampled_tensile_peak_Pa": 8876.74341411646,
+        "sampled_tensile_peak_relative": 0.062241472966523784
+      },
+      "union": {
+        "full_sampled_tensor_relative": 0.22200059965896468,
+        "global_sampled_tensor_relative": 0.4450454706871948,
+        "near_sampled_tensor_relative": 0.21456178895638287,
+        "sampled_vm_peak_Pa": 30173.564435786666,
+        "reference_sampled_vm_peak_Pa": 32976.895753260906,
+        "sampled_vm_peak_relative": 0.08500895106832587,
+        "sampled_tensile_peak_Pa": 9449.738731750927,
+        "reference_sampled_tensile_peak_Pa": 8876.74341411646,
+        "sampled_tensile_peak_relative": 0.06455017238903718
+      }
+    },
+    {
+      "case": "radius_0.0013",
+      "checks": [
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 2.708182289189936e-16,
+          "moment_normalized": 1.1334104855027615e-15,
+          "seconds": 0.04503756600024644
+        }
+      ],
+      "residual": 5.723101662653531e-14,
+      "reference_change": {
+        "full_sampled_tensor_relative": 0.07200169653283466,
+        "global_sampled_tensor_relative": 0.1596365723830665,
+        "near_sampled_tensor_relative": 0.06965397835998803,
+        "sampled_vm_peak_Pa": 9788.561863157398,
+        "reference_sampled_vm_peak_Pa": 9379.894548618911,
+        "sampled_vm_peak_relative": 0.04356843378358219,
+        "sampled_tensile_peak_Pa": 4170.149656151919,
+        "reference_sampled_tensile_peak_Pa": 4287.754635715044,
+        "sampled_tensile_peak_relative": 0.027428103880648688
+      },
+      "coarse": {
+        "full_sampled_tensor_relative": 0.7376347010147319,
+        "global_sampled_tensor_relative": 0.7597732466674716,
+        "near_sampled_tensor_relative": 0.7372664711967525,
+        "sampled_vm_peak_Pa": 5233.037493748024,
+        "reference_sampled_vm_peak_Pa": 9379.894548618911,
+        "sampled_vm_peak_relative": 0.4421006050096232,
+        "sampled_tensile_peak_Pa": 2110.9707553609214,
+        "reference_sampled_tensile_peak_Pa": 4287.754635715044,
+        "sampled_tensile_peak_relative": 0.5076745442060756
+      },
+      "hard_atlas": {
+        "full_sampled_tensor_relative": 0.11576980377190088,
+        "global_sampled_tensor_relative": 0.13630799464194687,
+        "near_sampled_tensor_relative": 0.11540289940208985,
+        "sampled_vm_peak_Pa": 9989.682073602226,
+        "reference_sampled_vm_peak_Pa": 9379.894548618911,
+        "sampled_vm_peak_relative": 0.06501006187464003,
+        "sampled_tensile_peak_Pa": 4210.938396738194,
+        "reference_sampled_tensile_peak_Pa": 4287.754635715044,
+        "sampled_tensile_peak_relative": 0.017915259967771033
+      },
+      "blended_atlas": {
+        "full_sampled_tensor_relative": 0.11576980377190088,
+        "global_sampled_tensor_relative": 0.13630799464194687,
+        "near_sampled_tensor_relative": 0.11540289940208985,
+        "sampled_vm_peak_Pa": 9989.682073602226,
+        "reference_sampled_vm_peak_Pa": 9379.894548618911,
+        "sampled_vm_peak_relative": 0.06501006187464003,
+        "sampled_tensile_peak_Pa": 4210.938396738194,
+        "reference_sampled_tensile_peak_Pa": 4287.754635715044,
+        "sampled_tensile_peak_relative": 0.017915259967771033
+      },
+      "union": {
+        "full_sampled_tensor_relative": 0.1144759911120277,
+        "global_sampled_tensor_relative": 0.24368140985842668,
+        "near_sampled_tensor_relative": 0.11111532840980773,
+        "sampled_vm_peak_Pa": 9492.766596011124,
+        "reference_sampled_vm_peak_Pa": 9379.894548618911,
+        "sampled_vm_peak_relative": 0.012033402593937717,
+        "sampled_tensile_peak_Pa": 4202.921406870118,
+        "reference_sampled_tensile_peak_Pa": 4287.754635715044,
+        "sampled_tensile_peak_relative": 0.01978500078766268
+      }
+    },
+    {
+      "case": "two_far",
+      "checks": [
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 4.187578178293664e-16,
+          "moment_normalized": 2.663903010353802e-16,
+          "seconds": 0.028247491998627083
+        },
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 1.914223151753565e-16,
+          "moment_normalized": 5.780672054943379e-16,
+          "seconds": 0.03178017299978819
+        }
+      ],
+      "residual": 4.598150550218324e-14,
+      "reference_change": {
+        "full_sampled_tensor_relative": 0.08813141651297411,
+        "global_sampled_tensor_relative": 0.0954072460384024,
+        "near_sampled_tensor_relative": 0.08798980257361977,
+        "sampled_vm_peak_Pa": 15972.442192939165,
+        "reference_sampled_vm_peak_Pa": 15198.135880110014,
+        "sampled_vm_peak_relative": 0.05094745295983928,
+        "sampled_tensile_peak_Pa": 5626.645523214744,
+        "reference_sampled_tensile_peak_Pa": 6019.2440333359955,
+        "sampled_tensile_peak_relative": 0.06522388990161364
+      },
+      "coarse": {
+        "full_sampled_tensor_relative": 0.8366219138148179,
+        "global_sampled_tensor_relative": 0.8089951674929188,
+        "near_sampled_tensor_relative": 0.8371292259489309,
+        "sampled_vm_peak_Pa": 4903.595616787133,
+        "reference_sampled_vm_peak_Pa": 15198.135880110014,
+        "sampled_vm_peak_relative": 0.6773554562566763,
+        "sampled_tensile_peak_Pa": 1384.139938585503,
+        "reference_sampled_tensile_peak_Pa": 6019.2440333359955,
+        "sampled_tensile_peak_relative": 0.770047545685171
+      },
+      "hard_atlas": {
+        "full_sampled_tensor_relative": 0.13155693214140934,
+        "global_sampled_tensor_relative": 0.19626166275375567,
+        "near_sampled_tensor_relative": 0.13004253292702397,
+        "sampled_vm_peak_Pa": 15858.82694244266,
+        "reference_sampled_vm_peak_Pa": 15198.135880110014,
+        "sampled_vm_peak_relative": 0.04347184862304727,
+        "sampled_tensile_peak_Pa": 5726.7490670388615,
+        "reference_sampled_tensile_peak_Pa": 6019.2440333359955,
+        "sampled_tensile_peak_relative": 0.04859330584990868
+      },
+      "blended_atlas": {
+        "full_sampled_tensor_relative": 0.13155693214140934,
+        "global_sampled_tensor_relative": 0.19626166275375567,
+        "near_sampled_tensor_relative": 0.13004253292702397,
+        "sampled_vm_peak_Pa": 15858.82694244266,
+        "reference_sampled_vm_peak_Pa": 15198.135880110014,
+        "sampled_vm_peak_relative": 0.04347184862304727,
+        "sampled_tensile_peak_Pa": 5726.7490670388615,
+        "reference_sampled_tensile_peak_Pa": 6019.2440333359955,
+        "sampled_tensile_peak_relative": 0.04859330584990868
+      },
+      "union": {
+        "full_sampled_tensor_relative": 0.13191443710302975,
+        "global_sampled_tensor_relative": 0.1809381197083935,
+        "near_sampled_tensor_relative": 0.1308241789529863,
+        "sampled_vm_peak_Pa": 15808.125498237821,
+        "reference_sampled_vm_peak_Pa": 15198.135880110014,
+        "sampled_vm_peak_relative": 0.040135818164786126,
+        "sampled_tensile_peak_Pa": 5710.292903250983,
+        "reference_sampled_tensile_peak_Pa": 6019.2440333359955,
+        "sampled_tensile_peak_relative": 0.05132723118949295
+      }
+    },
+    {
+      "case": "two_near",
+      "checks": [
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 2.755391750197064e-16,
+          "moment_normalized": 1.335174754232504e-16,
+          "seconds": 0.027761347000705427
+        },
+        {
+          "quadrature_order": 48,
+          "samples": 9216,
+          "force_relative": 1.9134951718254497e-16,
+          "moment_normalized": 1.0869187459602744e-15,
+          "seconds": 0.02511285000036878
+        }
+      ],
+      "residual": 5.4372423681444245e-14,
+      "reference_change": {
+        "full_sampled_tensor_relative": 0.09240319448775224,
+        "global_sampled_tensor_relative": 0.08336687093734191,
+        "near_sampled_tensor_relative": 0.09260496299414855,
+        "sampled_vm_peak_Pa": 25055.60729934678,
+        "reference_sampled_vm_peak_Pa": 22574.167194829733,
+        "sampled_vm_peak_relative": 0.1099238825999916,
+        "sampled_tensile_peak_Pa": 4670.318712047585,
+        "reference_sampled_tensile_peak_Pa": 4874.914800360031,
+        "sampled_tensile_peak_relative": 0.04196916186049775
+      },
+      "coarse": {
+        "full_sampled_tensor_relative": 0.788336381280969,
+        "global_sampled_tensor_relative": 0.8151429019849308,
+        "near_sampled_tensor_relative": 0.7876953984423233,
+        "sampled_vm_peak_Pa": 9691.918360026244,
+        "reference_sampled_vm_peak_Pa": 22574.167194829733,
+        "sampled_vm_peak_relative": 0.5706633039270645,
+        "sampled_tensile_peak_Pa": 3271.2416233673266,
+        "reference_sampled_tensile_peak_Pa": 4874.914800360031,
+        "sampled_tensile_peak_relative": 0.32896434966909927
+      },
+      "hard_atlas": {
+        "full_sampled_tensor_relative": 0.14888033317205052,
+        "global_sampled_tensor_relative": 0.11539302191715647,
+        "near_sampled_tensor_relative": 0.14957721423211479,
+        "sampled_vm_peak_Pa": 23694.913892502937,
+        "reference_sampled_vm_peak_Pa": 22574.167194829733,
+        "sampled_vm_peak_relative": 0.04964731092847992,
+        "sampled_tensile_peak_Pa": 4481.781118646013,
+        "reference_sampled_tensile_peak_Pa": 4874.914800360031,
+        "sampled_tensile_peak_relative": 0.08064421591224194
+      },
+      "blended_atlas": {
+        "full_sampled_tensor_relative": 0.14888033317205052,
+        "global_sampled_tensor_relative": 0.11539302191715647,
+        "near_sampled_tensor_relative": 0.14957721423211479,
+        "sampled_vm_peak_Pa": 23694.913892502937,
+        "reference_sampled_vm_peak_Pa": 22574.167194829733,
+        "sampled_vm_peak_relative": 0.04964731092847992,
+        "sampled_tensile_peak_Pa": 4481.781118646013,
+        "reference_sampled_tensile_peak_Pa": 4874.914800360031,
+        "sampled_tensile_peak_relative": 0.08064421591224194
+      },
+      "union": {
+        "full_sampled_tensor_relative": 0.14453443704144872,
+        "global_sampled_tensor_relative": 0.20523010620273693,
+        "near_sampled_tensor_relative": 0.14279801062994088,
+        "sampled_vm_peak_Pa": 23691.190601369435,
+        "reference_sampled_vm_peak_Pa": 22574.167194829733,
+        "sampled_vm_peak_relative": 0.04948237500409489,
+        "sampled_tensile_peak_Pa": 4469.426370440751,
+        "reference_sampled_tensile_peak_Pa": 4874.914800360031,
+        "sampled_tensile_peak_relative": 0.08317856752887928
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "date": "2026-10-24",
+  "stage": "Additional level-4 reference setup before bounded point-location batches",
+  "exit_code": 137,
+  "cgroup_memory_limit_bytes": 8589934592,
+  "classification": "Resource failure, not a numerical rejection of the atlas method",
+  "cause_and_fix": "The common-probe element finder could expand a search to all point-element pairs on anisotropic triangles. Limiting inverse-map searches to batches of 128 bounded the temporary allocation. The same finest resolution then ran successfully.",
+  "other_jobs": "Independent CPU studies were also running; the resource failure is not a measured per-model peak-memory result."
+}

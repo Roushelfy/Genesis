@@ -1,0 +1,109 @@
+{
+  "scope": "One bounded shared-coarse-exterior ablation, no new reference. Exact same two-far sources/probes as primary shell plate experiment; patch step remains1mm.",
+  "old_primary": {
+    "coarse": {
+      "tensor_Frobenius_relative": 0.27932024532682703,
+      "peak_vm_Pa": 239593.57186536552,
+      "reference_peak_vm_Pa": 419467.33042320795,
+      "peak_vm_relative": 0.4288147026286043
+    },
+    "atlas": {
+      "tensor_Frobenius_relative": 0.14550082683891227,
+      "peak_vm_Pa": 406127.95216830366,
+      "reference_peak_vm_Pa": 419467.33042320795,
+      "peak_vm_relative": 0.031800756071863716
+    },
+    "blend": {
+      "tensor_Frobenius_relative": 0.14550082683891227,
+      "peak_vm_Pa": 406127.95216830366,
+      "reference_peak_vm_Pa": 419467.33042320795,
+      "peak_vm_relative": 0.031800756071863716
+    },
+    "joint": {
+      "tensor_Frobenius_relative": 0.03666136596202304,
+      "peak_vm_Pa": 411963.33648183814,
+      "reference_peak_vm_Pa": 419467.33042320795,
+      "peak_vm_relative": 0.01788934059250551
+    },
+    "reference_check": {
+      "tensor_Frobenius_relative": 0.032380470591835325,
+      "peak_vm_Pa": 418363.51466421434,
+      "reference_peak_vm_Pa": 419467.33042320795,
+      "peak_vm_relative": 0.0026314701502020603
+    },
+    "far_atlas": {
+      "tensor_Frobenius_relative": 0.1668172603103066,
+      "peak_vm_Pa": 251255.5689082361,
+      "reference_peak_vm_Pa": 280700.6889870662,
+      "peak_vm_relative": 0.1048986384218916
+    },
+    "near_atlas": {
+      "tensor_Frobenius_relative": 0.07024704902824444,
+      "peak_vm_Pa": 406127.95216830366,
+      "reference_peak_vm_Pa": 419467.33042320795,
+      "peak_vm_relative": 0.031800756071863716
+    }
+  },
+  "models": [
+    {
+      "name": "coarse_2p5mm",
+      "quads": 256,
+      "dofs": 1734,
+      "assembly_s": 1.621142300999054,
+      "factor_s": 0.005826471000546007,
+      "lu_bytes": 1283492,
+      "lu_nnz": 106057,
+      "nx": 16,
+      "ny": 16
+    },
+    {
+      "name": "atlas0_exterior_2p5mm",
+      "quads": 780,
+      "dofs": 5022,
+      "assembly_s": 4.942102802999216,
+      "factor_s": 0.03434069099967019,
+      "lu_bytes": 5883500,
+      "lu_nnz": 487391,
+      "nx": 30,
+      "ny": 26
+    },
+    {
+      "name": "atlas2_exterior_2p5mm",
+      "quads": 780,
+      "dofs": 5022,
+      "assembly_s": 4.867005533000338,
+      "factor_s": 0.027999873000226216,
+      "lu_bytes": 5919524,
+      "lu_nnz": 490393,
+      "nx": 30,
+      "ny": 26
+    }
+  ],
+  "gates": [
+    {
+      "mass_error": 2.4424906541753444e-15,
+      "force_relative": 2.5830853332697263e-15,
+      "moment_normalized": 6.921824537104045e-15,
+      "min_weight": 0.0
+    },
+    {
+      "mass_error": 4.218847493575595e-15,
+      "force_relative": 3.833808128088064e-15,
+      "moment_normalized": 1.9116386655135993e-14,
+      "min_weight": 0.0
+    }
+  ],
+  "coarse_2p5mm": {
+    "tensor_Frobenius_relative": 0.18185082803683694,
+    "peak_vm_Pa": 320849.4664856702,
+    "reference_peak_vm_Pa": 419467.33042320795,
+    "peak_vm_relative": 0.2351026093928232
+  },
+  "atlas_exterior_2p5mm": {
+    "tensor_Frobenius_relative": 0.14226746813904645,
+    "peak_vm_Pa": 403687.8432624779,
+    "reference_peak_vm_Pa": 419467.33042320795,
+    "peak_vm_relative": 0.03761791685853069
+  },
+  "source_sha256": "c4a4efe92b91e0f4162da10b4eb6400563113aaeb706e7df5b18dfc09d0174c6"
+}
