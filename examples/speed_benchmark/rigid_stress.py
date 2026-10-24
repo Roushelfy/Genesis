@@ -50,7 +50,6 @@ from genesis.engine.solvers.rigid.stress.solve import (
     kernel_balance,
     kernel_direct_init,
     kernel_full_residual,
-    kernel_peak,
 )
 from genesis.utils import array_class, geom
 from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
@@ -243,7 +242,7 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
             kernel_scatter_faces(
                 entry.contacts,
                 entry.state,
-                entry.model.info,
+                entry.model.load_info,
                 entry.surface.info,
                 entry.scatter,
                 options.cached_face_bounds,
@@ -252,7 +251,7 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
             else kernel_scatter(
                 entry.contacts,
                 entry.state,
-                entry.model.info,
+                entry.model.load_info,
                 entry.surface.info,
                 options.cooperative_scatter,
                 options.cached_face_bounds,
@@ -274,9 +273,7 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
             False,
             entry.coalesced_residual,
         ),
-        "global_peak": lambda: kernel_peak(
-            options.young, options.poisson, entry.state, entry.model.info, options.cached_peak
-        ),
+        "global_peak": lambda: entry.model.evaluate_stress(options, entry.state),
         "accept": lambda: kernel_accept(entry.state, entry.contacts, solver._errno),
     }
     if entry.automatic_radius is not None:
@@ -300,7 +297,7 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
                         kernel_fit_scatter_moments(
                             entry.contacts,
                             entry.state,
-                            entry.model.info,
+                            entry.model.load_info,
                             entry.surface.info,
                             entry.scatter,
                             options.cached_face_bounds,
@@ -376,7 +373,7 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
             "pressure_integration_fit": lambda: kernel_pressure_moments(
                 entry.contacts,
                 entry.state,
-                entry.model.info,
+                entry.model.load_info,
                 entry.surface.info,
                 entry.scatter,
                 options.cached_face_bounds,
@@ -384,7 +381,7 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
             "nodal_scatter": lambda: kernel_scatter_faces(
                 entry.contacts,
                 entry.state,
-                entry.model.info,
+                entry.model.load_info,
                 entry.surface.info,
                 entry.scatter,
                 options.cached_face_bounds,
@@ -507,6 +504,9 @@ def main() -> None:
     parser.add_argument("--history", type=int, choices=(0, 4), default=0)
     parser.add_argument("--unfused-pipeline", action="store_true", help="Compare separate native recovery passes.")
     parser.add_argument("--policy-precision", choices=("64", "32"), default="32")
+    parser.add_argument("--stress-backend", choices=("volume", "shell"), default="volume")
+    parser.add_argument("--stress-mesh", type=Path)
+    parser.add_argument("--shell-gauge", choices=("translation", "legacy"), default="translation")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--legacy-reset", action="store_true", help="Compare reset followed by separate pose setters.")
     parser.add_argument(
@@ -547,6 +547,9 @@ def main() -> None:
         packed_surface_loads=not args.dense_surface_loads,
         fused_pipeline=not args.unfused_pipeline,
         output_mode=args.output_mode,
+        stress_backend=args.stress_backend,
+        stress_mesh=args.stress_mesh,
+        shell_gauge=args.shell_gauge,
         saved_reset=not args.legacy_reset,
         cooperative_scatter=not args.serial_scatter,
         cooperative_balance=not args.serial_balance,
@@ -887,7 +890,11 @@ def main() -> None:
         if workload.stress:
             entry = workload.scene.rigid_solver.stress_recovery.links[0]
             result["dofs"] = entry.model.info.vertices.shape[0] * 3
-            result["tetrahedra"] = entry.model.info.elements.shape[0]
+            result["tetrahedra"] = entry.model.info.elements.shape[0] if args.stress_backend == "volume" else 0
+            result["shell_quadrilaterals"] = entry.model.n_shell_elements
+            result["stress_quantity"] = (
+                "shell in-plane membrane-plus-bending" if args.stress_backend == "shell" else "volume Cauchy"
+            )
             result["method_selected"] = entry.model.selected_method
             result["surface_inverse_selected"] = entry.model.surface_inverse is not None
             result["build_timings_including_JIT"] = asdict(entry.model.build_timings)

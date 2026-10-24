@@ -16,6 +16,21 @@ class RigidStressOptions(Options):
     uses quadratic displacement on the complete tetrahedral mesh. The mesh
     does not change rigid collision geometry or feed displacement into motion.
 
+    ``backend="shell"`` selects a fixed curved quadrilateral shell with six degrees of freedom per node.
+    Its asset contains midsurface ``vertices``, outward-oriented ``quads`` and optional nodal ``directors``;
+    missing directors use area-weighted adjacent face normals. ``shell_thickness`` is the physical wall thickness.
+    Membrane, bending, assumed transverse shear and weak drilling stabilization are assembled in Quadrants.
+    ``shell_drilling_factor`` scales that stabilization. ``shell_gauge="translation"`` selects six distributed
+    translational constraints for rigid-mode ambiguity; ``"legacy"`` permits rotational gauge rows for comparison.
+    The contact boundary triangulates each offset quad along its (0,2) diagonal on both material sides.
+    This explicitly differs from the CPU study's bilinear Q4 contact surface on warped quads. The original
+    three-dimensional support-ball DPR pressure fit acts on that actual triangulated boundary, including
+    inner and outer faces inside the support. Consistent generalized loads retain eccentric friction moments.
+    Shell output is in-plane membrane-plus-bending stress at four Gauss points and both wall surfaces;
+    it does not include three-dimensional near-contact normal stress. ``get_shell_resultants`` separately
+    returns membrane, bending and transverse shear resultants. The default ``backend="volume"`` retains
+    the existing P2 tetrahedral discretization and observations.
+
     ``RigidStressOptions.dpr(mesh=...)`` selects Directional Patch Recovery:
     finite tractions aligned with each supplied normal-plus-friction force.
     ``RigidStressOptions.scr(mesh=...)`` selects Surface-Constrained Recovery:

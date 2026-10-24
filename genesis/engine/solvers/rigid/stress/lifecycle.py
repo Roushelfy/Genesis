@@ -38,3 +38,9 @@ def func_accept(
             if not stress_state.step_valid[i_b]:
                 stress_state.stress_tensor[i_e, i_corner, i_b] = qd.Vector([float("nan") for _ in qd.static(range(6))])
                 stress_state.von_mises[i_e, i_corner, i_b] = qd.Vector([float("nan")])
+        if stress_state.membrane_resultant.shape[0] > 0:
+            for i_e, i_q, i_b in qd.ndrange(stress_state.membrane_resultant.shape[0], 4, stress_state.active.shape[0]):
+                if not stress_state.step_valid[i_b]:
+                    stress_state.membrane_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 6)
+                    stress_state.bending_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 6)
+                    stress_state.transverse_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 3)

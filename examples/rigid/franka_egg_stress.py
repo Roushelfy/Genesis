@@ -62,6 +62,9 @@ class FrankaEgg:
         pressure_profile: str = "dpr",
         quadrature: int = 10,
         box_edge_policy: str = "unsupported",
+        stress_backend: str = "volume",
+        stress_mesh: Path | None = None,
+        shell_gauge: str = "translation",
     ):
         self.n_envs = n_envs
         self.radius_model = radius_model
@@ -108,8 +111,12 @@ class FrankaEgg:
         )
         self.link = self.egg.base_link
         if stress:
+            if stress_mesh is None:
+                stress_mesh = assets / ("shell.npz" if stress_backend == "shell" else "elastic.npz")
             options = gs.options.RigidStressOptions(
-                mesh=assets / "elastic.npz",
+                mesh=stress_mesh,
+                backend=stress_backend,
+                shell_gauge=shell_gauge,
                 contact_model=contact_model,
                 radius_model=radius_model,
                 pressure_profile=pressure_profile,
@@ -304,6 +311,9 @@ def main() -> None:
     parser.add_argument("--no-stress", action="store_true")
     parser.add_argument("--varied", action="store_true")
     parser.add_argument("--viewer", action="store_true")
+    parser.add_argument("--stress-backend", choices=("volume", "shell"), default="volume")
+    parser.add_argument("--stress-mesh", type=Path, help="Override the backend mesh asset.")
+    parser.add_argument("--shell-gauge", choices=("translation", "legacy"), default="translation")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--radius-model", choices=("manual", "hertz"), default="manual")
     parser.add_argument("--pressure-profile", choices=("dpr", "hertz"), default="dpr")
@@ -338,6 +348,9 @@ def main() -> None:
         viewer=args.viewer,
         conditions=args.conditions,
         output_mode=args.output_mode,
+        stress_backend=args.stress_backend,
+        stress_mesh=args.stress_mesh,
+        shell_gauge=args.shell_gauge,
         saved_reset=not args.legacy_reset,
         native_controller=not args.torch_controller,
         resident_reset_indices=not args.host_reset_indices,

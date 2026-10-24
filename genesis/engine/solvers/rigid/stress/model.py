@@ -165,10 +165,15 @@ class StressModel:
     def n_output_elements(self) -> int:
         return self.info.elements.shape[0]
 
+    @property
+    def n_shell_elements(self) -> int:
+        return 0
+
     def create_state(self, n_envs: int, output_mode: str = "max") -> StressState:
         n_nodes = self.info.vertices.shape[0]
         n_krylov_nodes = n_nodes if self.selected_method == "pcg" else 0
         n_output_elements = self.n_output_elements if output_mode == "full" else 0
+        n_shell_elements = self.n_shell_elements if output_mode == "full" else 0
         state = StressState(
             force=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
             rhs=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
@@ -192,6 +197,9 @@ class StressModel:
             step_valid=V(dtype=gs.qd_bool, shape=(n_envs,)),
             stress_tensor=V_VEC(6, dtype=gs.qd_float, shape=(n_output_elements, 4, n_envs)),
             von_mises=V_VEC(1, dtype=gs.qd_float, shape=(n_output_elements, 4, n_envs)),
+            membrane_resultant=V_VEC(6, dtype=gs.qd_float, shape=(n_shell_elements, 4, n_envs)),
+            bending_resultant=V_VEC(6, dtype=gs.qd_float, shape=(n_shell_elements, 4, n_envs)),
+            transverse_resultant=V_VEC(3, dtype=gs.qd_float, shape=(n_shell_elements, 4, n_envs)),
             valid=V(dtype=gs.qd_bool, shape=(n_envs,)),
             corrections=V(dtype=gs.qd_int, shape=(n_envs,)),
             fallbacks=V(dtype=gs.qd_int, shape=(n_envs,)),
@@ -207,6 +215,10 @@ class StressModel:
         if n_output_elements:
             state.stress_tensor.fill(float("nan"))
             state.von_mises.fill(float("nan"))
+        if n_shell_elements:
+            state.membrane_resultant.fill(float("nan"))
+            state.bending_resultant.fill(float("nan"))
+            state.transverse_resultant.fill(float("nan"))
         return state
 
     def recover(

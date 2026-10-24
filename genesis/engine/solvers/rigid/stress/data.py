@@ -70,6 +70,9 @@ class StressState:
     step_valid: qd.Tensor = of_kind(DataKind.DERIVED)  # noqa: RUF009 - typed array metadata
     stress_tensor: qd.Tensor = of_kind(DataKind.DERIVED)  # noqa: RUF009 - typed array metadata
     von_mises: qd.Tensor = of_kind(DataKind.DERIVED)  # noqa: RUF009 - typed array metadata
+    membrane_resultant: qd.Tensor = of_kind(DataKind.DERIVED)  # noqa: RUF009 - typed array metadata
+    bending_resultant: qd.Tensor = of_kind(DataKind.DERIVED)  # noqa: RUF009 - typed array metadata
+    transverse_resultant: qd.Tensor = of_kind(DataKind.DERIVED)  # noqa: RUF009 - typed array metadata
     valid: qd.Tensor
     corrections: qd.Tensor
     fallbacks: qd.Tensor
@@ -120,7 +123,7 @@ def allocate_stress_info(
 def func_scatter_load(
     i_n: int, i_b: int, force: qd.types.vector(3), stress_state: StressState, stress_info: StressInfo
 ):
-    if qd.static(stress_info.load_nodes.shape[0] > 0):
+    if stress_info.load_nodes.shape[0] > 0:
         # Linear virtual work on the physical triangle retains both surface eccentricity and supplied wrench.
         for i_parent in qd.static(range(2)):
             j_n = stress_info.load_nodes[i_n][i_parent]
