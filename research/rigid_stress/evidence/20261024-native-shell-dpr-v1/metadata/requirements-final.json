@@ -1,0 +1,128 @@
+{
+  "goal_source": "e156cbf43:research/rigid_stress/docs/SHELL_DPR_INTEGRATION_GOAL_20261024.md",
+  "requirements": [
+    {
+      "id": 1,
+      "requirement": "Optional Quadrants shell operator preparation and runtime; volume default retained",
+      "status": "verified",
+      "evidence": [
+        "operators-v5",
+        "operators-spinning-v1",
+        "regression-v5"
+      ]
+    },
+    {
+      "id": 2,
+      "requirement": "Native support-ball DPR, conservative actual-surface force and eccentric moment transfer",
+      "status": "verified",
+      "evidence": [
+        "contacts-v8",
+        "two-sides-v1"
+      ]
+    },
+    {
+      "id": 3,
+      "requirement": "Arbitrary moving asymmetric convex/nonconvex inner/outer contacts and contact count",
+      "status": "verified",
+      "evidence": [
+        "contacts-v8",
+        "scene-v7"
+      ]
+    },
+    {
+      "id": 4,
+      "requirement": "Maximum/full named in-plane stress and separate transverse resultants; frame semantics",
+      "status": "verified",
+      "evidence": [
+        "regression-v5",
+        "scene-audit-v3"
+      ]
+    },
+    {
+      "id": 5,
+      "requirement": "Batch isolation, cadence, release/recontact, slot changes, partial reset/checkpoint",
+      "status": "verified",
+      "evidence": [
+        "regression-v5",
+        "scene-v3"
+      ]
+    },
+    {
+      "id": 6,
+      "requirement": "Coarse CPU/native operators, loads, complete fields, rigid modes and numerical residuals",
+      "status": "verified",
+      "evidence": [
+        "operators-v5",
+        "contacts-v8",
+        "scene-audit-v3"
+      ]
+    },
+    {
+      "id": 7,
+      "requirement": "Full Franka hollow-egg approach/close/friction/move/open workflow with failures retained",
+      "status": "verified",
+      "evidence": [
+        "scene-v7",
+        "scene-audit-v3"
+      ]
+    },
+    {
+      "id": 8,
+      "requirement": "Detailed preparation, contact/radius, fit/scatter, solve/peak, launch/copy/sync profiles",
+      "status": "verified",
+      "evidence": [
+        "profile-v8",
+        "profile-device-v2",
+        "trace-v2"
+      ]
+    },
+    {
+      "id": 9,
+      "requirement": "Small and useful large batches; module and matched rigid/volume/shell max/full timings",
+      "status": "verified",
+      "evidence": [
+        "throughput-v1",
+        "manual-v1"
+      ]
+    },
+    {
+      "id": 10,
+      "requirement": "Measured applicable factor/compact response, gauge/scaling/precision, fusion and memory optimizations",
+      "status": "verified",
+      "evidence": [
+        "solve-trials-v1",
+        "fusion-v1",
+        "factor-controls-v1",
+        "factor-profile-v1",
+        "precision-v1",
+        "precision-v2",
+        "large-solve-v1"
+      ]
+    },
+    {
+      "id": 11,
+      "requirement": "Targeted analytical/independent physical checks after tuning; explicit unresolved 3D peaks",
+      "status": "verified",
+      "evidence": [
+        "physics-v2"
+      ]
+    },
+    {
+      "id": 12,
+      "requirement": "Runnable example, recommendations, focused regressions, reproducible compact report and branch delivery",
+      "status": "verified",
+      "evidence": [
+        "regression-v5",
+        "metadata/measurements-final.json",
+        "RUNNING_NATIVE_SHELL_DPR.md",
+        "SHELL_DPR_NATIVE_20261024.md"
+      ]
+    }
+  ],
+  "scope_limits": [
+    "No local 3D contact-peak certification; sharp-edge sampling limitations retained.",
+    "Code_Aster unavailable; independent pyfe3d reference executed.",
+    "Performance measured at level1, FP64, 4/64/1024/8192 synchronized environments on RTX PRO6000 Blackwell; no larger-batch/higher-level optimum claimed.",
+    "Complete-cycle reset is outside timed region; public reset correctness tested."
+  ]
+}

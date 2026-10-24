@@ -1,0 +1,28 @@
+[
+  [
+    {
+      "name": "sphere",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_physics",
+      "args": [
+        "--case",
+        "sphere",
+        "--sizes",
+        "4",
+        "8"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "plate",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_physics",
+      "args": [
+        "--case",
+        "plate",
+        "--sizes",
+        "8",
+        "16"
+      ]
+    }
+  ]
+]

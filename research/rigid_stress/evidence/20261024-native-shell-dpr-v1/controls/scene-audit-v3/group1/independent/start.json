@@ -1,0 +1,32 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "746119",
+      "SLURM_ARRAY_JOB_ID": "746119",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "asset": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-shell-v16/examples/rigid/assets/hollow_egg/level1/shell.npz",
+    "bytes": 20058,
+    "sha256": "2aba62cc134e6c41e6e7342b44b67c8c666ef8093324d82f1ddfeeba5e1f259d"
+  },
+  "arguments": {
+    "scene": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v7/group0/cycle",
+    "asset": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-shell-v16/examples/rigid/assets/hollow_egg/level1/shell.npz",
+    "young": 10000000000.0,
+    "poisson": 0.3,
+    "thickness": 0.0005,
+    "density": 2000.0,
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-audit-v3/group1/independent"
+  }
+}

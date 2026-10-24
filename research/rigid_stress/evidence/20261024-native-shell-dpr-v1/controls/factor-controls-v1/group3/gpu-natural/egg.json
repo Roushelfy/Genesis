@@ -1,0 +1,63 @@
+{
+  "name": "egg",
+  "method": "direct",
+  "spinning": true,
+  "gauge": "translation",
+  "inverse_precision": "64",
+  "surface_load": false,
+  "factor_scaling": false,
+  "factor_ordering": "natural",
+  "native_corrections": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "native_fallbacks": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "factor_block_entries": 770,
+  "dofs": 156,
+  "quads": 24,
+  "errors": {
+    "stiffness": 2.91645331741825e-16,
+    "directors": 1.4492094328622806e-16,
+    "membrane": 2.449649307526262e-16,
+    "bending": 4.2474570680855093e-16,
+    "shear": 3.2391436150719294e-16,
+    "mass_modes": 1.1051574224677693e-16,
+    "gram": 7.417355407101571e-19,
+    "rigid_null_residual": 1.262902568456201e-17,
+    "centrifugal": 1.7287217423374486e-16,
+    "balanced_load": 1.4771422185603587e-16,
+    "complete_residual": 1.8840447924349828e-13,
+    "complete_field": 9.570113213943675e-12,
+    "complete_von_mises": 5.17781537041316e-12,
+    "global_peak": 2.691822253182809e-12,
+    "N": 8.111982400947967e-13,
+    "M": 1.1969618481769073e-11,
+    "Q": 2.098177788754434e-12
+  },
+  "nonfinite_errors": [],
+  "native_valid": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "build_timings": {
+    "topology_seconds": 0.010463266633450985,
+    "operators_seconds": 0.002068398054689169,
+    "factor_seconds": 0.022461774293333292,
+    "inverse_seconds": 1.3797543942928314e-06,
+    "surface_inverse_seconds": 0.0030642179772257805
+  },
+  "asset": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/factor-controls-v1/group3/gpu-natural/egg.npz",
+    "bytes": 1904,
+    "sha256": "7e2be382c9d5b38fff8432197e48ca5df17016e662bc58b54ea539e696e73f6d"
+  }
+}

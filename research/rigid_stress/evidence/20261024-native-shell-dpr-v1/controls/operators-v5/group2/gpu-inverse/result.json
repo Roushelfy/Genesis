@@ -1,0 +1,134 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "name": "plate",
+      "method": "inverse",
+      "gauge": "translation",
+      "dofs": 54,
+      "quads": 4,
+      "errors": {
+        "stiffness": 3.635989176391347e-16,
+        "directors": 0.0,
+        "membrane": 1.5517725069052934e-16,
+        "bending": 1.5555805433231201e-16,
+        "shear": 1.5306286819281558e-16,
+        "mass_modes": 2.874798703339791e-16,
+        "gram": 2.710538452578051e-16,
+        "rigid_null_residual": 9.154229006988667e-18,
+        "balanced_load": 1.274558295853881e-16,
+        "complete_residual": 1.7085968906122733e-12,
+        "complete_field": 4.602900398534898e-12,
+        "complete_von_mises": 4.82918536024092e-12,
+        "global_peak": 4.127401635629681e-12,
+        "N": 2.633550157837132e-15,
+        "M": 4.6041439946211136e-12,
+        "Q": 4.4647007009766226e-12
+      },
+      "native_valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "build_timings": {
+        "topology_seconds": 0.41161826997995377,
+        "operators_seconds": 2.4958217390812933,
+        "factor_seconds": 0.4162476969650015,
+        "inverse_seconds": 0.4938040670240298,
+        "surface_inverse_seconds": 0.3594269809545949
+      },
+      "asset": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/operators-v5/group2/gpu-inverse/plate.npz",
+        "bytes": 856,
+        "sha256": "6254232406986d0e7c79669bbf117ce5c61f27c66ed319a4a1f7d82a4d98666c"
+      }
+    },
+    {
+      "name": "sphere",
+      "method": "inverse",
+      "gauge": "translation",
+      "dofs": 156,
+      "quads": 24,
+      "errors": {
+        "stiffness": 3.580032973022075e-16,
+        "directors": 7.6277027896788e-17,
+        "membrane": 2.696851764268336e-16,
+        "bending": 4.0768288447143817e-16,
+        "shear": 3.2881720362565067e-16,
+        "mass_modes": 1.5413356943156707e-16,
+        "gram": 5.558847540786652e-19,
+        "rigid_null_residual": 1.3423252744722614e-17,
+        "balanced_load": 1.411286609983462e-16,
+        "complete_residual": 2.1864742975378614e-13,
+        "complete_field": 7.356288525395412e-12,
+        "complete_von_mises": 4.654146384258931e-12,
+        "global_peak": 2.3029498367538765e-12,
+        "N": 5.765657662084687e-13,
+        "M": 9.140413663520915e-12,
+        "Q": 1.5076571483944404e-12
+      },
+      "native_valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "build_timings": {
+        "topology_seconds": 0.008620735025033355,
+        "operators_seconds": 0.0021236949833109975,
+        "factor_seconds": 0.01831358904018998,
+        "inverse_seconds": 0.21311545895878226,
+        "surface_inverse_seconds": 0.009169933968223631
+      },
+      "asset": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/operators-v5/group2/gpu-inverse/sphere.npz",
+        "bytes": 1904,
+        "sha256": "683151478a9703aa5d5f1751a9db8041129dfb463f8b9783906970875bb6393d"
+      }
+    },
+    {
+      "name": "egg",
+      "method": "inverse",
+      "gauge": "translation",
+      "dofs": 156,
+      "quads": 24,
+      "errors": {
+        "stiffness": 2.91645331741825e-16,
+        "directors": 1.4492094328622806e-16,
+        "membrane": 2.449649307526262e-16,
+        "bending": 4.2474570680855093e-16,
+        "shear": 3.2391436150719294e-16,
+        "mass_modes": 1.1051574224677693e-16,
+        "gram": 7.417355407101571e-19,
+        "rigid_null_residual": 1.262902568456201e-17,
+        "balanced_load": 1.3937787061362354e-16,
+        "complete_residual": 3.1865186206086577e-13,
+        "complete_field": 1.1335374643873616e-11,
+        "complete_von_mises": 7.048128863920015e-12,
+        "global_peak": 5.051587266044893e-12,
+        "N": 9.877203130064915e-13,
+        "M": 1.415328563169447e-11,
+        "Q": 2.574297619061987e-12
+      },
+      "native_valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "build_timings": {
+        "topology_seconds": 0.01004991598892957,
+        "operators_seconds": 0.002027560956776142,
+        "factor_seconds": 0.01820998906623572,
+        "inverse_seconds": 0.005023384932428598,
+        "surface_inverse_seconds": 0.008552782004699111
+      },
+      "asset": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/operators-v5/group2/gpu-inverse/egg.npz",
+        "bytes": 1904,
+        "sha256": "7e2be382c9d5b38fff8432197e48ca5df17016e662bc58b54ea539e696e73f6d"
+      }
+    }
+  ]
+}

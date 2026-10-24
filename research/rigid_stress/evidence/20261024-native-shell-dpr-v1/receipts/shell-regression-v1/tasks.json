@@ -1,0 +1,18 @@
+[
+  [
+    {
+      "name": "shell",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-shell-v5/tests/rigid/test_stress_shell.py",
+        "--select",
+        "native_shell",
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-shell-v5",
+        "--backend",
+        "gpu"
+      ]
+    }
+  ]
+]

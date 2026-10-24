@@ -1,0 +1,32 @@
+[
+  [
+    {
+      "name": "sphere",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_physics",
+      "args": [
+        "--case",
+        "sphere",
+        "--sizes",
+        "4",
+        "8",
+        "--reference-pythonpath",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/dependencies-v1/group0/pyfe3d/site"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "plate",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_physics",
+      "args": [
+        "--case",
+        "plate",
+        "--sizes",
+        "8",
+        "16",
+        "--reference-pythonpath",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/dependencies-v1/group0/pyfe3d/site"
+      ]
+    }
+  ]
+]

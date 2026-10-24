@@ -1,0 +1,24 @@
+[
+  [
+    {
+      "name": "cpu",
+      "module": "research.rigid_stress.qipc_comparison.audit_native_shell_contacts",
+      "args": [
+        "--before",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/contacts-v1/group0/cpu",
+        "--after",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/contacts-v2/group0/cpu"
+      ]
+    },
+    {
+      "name": "gpu",
+      "module": "research.rigid_stress.qipc_comparison.audit_native_shell_contacts",
+      "args": [
+        "--before",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/contacts-v1/group1/gpu",
+        "--after",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/contacts-v2/group1/gpu"
+      ]
+    }
+  ]
+]

@@ -1,0 +1,52 @@
+[
+  [
+    {
+      "name": "cycle",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--mode",
+        "hertz",
+        "--quadrature",
+        "16",
+        "--box-edge-policy",
+        "planar",
+        "--stress-backend",
+        "shell",
+        "--steps",
+        "600",
+        "--field-steps",
+        "2",
+        "110",
+        "129",
+        "179",
+        "299",
+        "449",
+        "599"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "reset",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--mode",
+        "hertz",
+        "--quadrature",
+        "16",
+        "--box-edge-policy",
+        "planar",
+        "--stress-backend",
+        "shell",
+        "--steps",
+        "130",
+        "--partial-reset-at",
+        "110"
+      ]
+    }
+  ]
+]

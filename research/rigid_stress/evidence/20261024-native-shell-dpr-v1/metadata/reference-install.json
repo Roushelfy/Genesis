@@ -1,0 +1,96 @@
+{
+  "version": "1",
+  "pip_version": "25.1.1",
+  "install": [
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/05/d5/7cd6a19e84b92d1db1aebf60092bcd60a08cea901d9656e7dc08425bb386/pyfe3d-0.10.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=693ca2bc229481ac730d14ffa3a378f25347a57b4ccc496481ba8eafa4708907",
+          "hashes": {
+            "sha256": "693ca2bc229481ac730d14ffa3a378f25347a57b4ccc496481ba8eafa4708907"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "pyfe3d",
+        "version": "0.10.0",
+        "dynamic": [
+          "author",
+          "author-email",
+          "classifier",
+          "description",
+          "description-content-type",
+          "home-page",
+          "keywords",
+          "license",
+          "license-file",
+          "summary"
+        ],
+        "summary": "General-purpose finite element solver for structural analysis and optimization based on Python and Cython",
+        "description_content_type": "text/markdown",
+        "keywords": [
+          "finite elements",
+          "structural analysis",
+          "structural optimization",
+          "static analysis",
+          "buckling",
+          "vibration",
+          "panel flutter",
+          "structural dynamics",
+          "implicit time integration",
+          "explicit time integration"
+        ],
+        "home_page": "https://github.com/saullocastro/pyfe3d",
+        "author": "Saullo G. P. Castro",
+        "author_email": "S.G.P.Castro@tudelft.nl",
+        "license": "3-Clause BSD",
+        "license_file": [
+          "LICENSE",
+          "AUTHORS"
+        ],
+        "classifier": [
+          "Development Status :: 4 - Beta",
+          "Intended Audience :: Education",
+          "Intended Audience :: Science/Research",
+          "Intended Audience :: Developers",
+          "Intended Audience :: End Users/Desktop",
+          "Topic :: Scientific/Engineering",
+          "Topic :: Scientific/Engineering :: Mathematics",
+          "Topic :: Education",
+          "Topic :: Software Development",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+          "Operating System :: POSIX :: BSD",
+          "Operating System :: Microsoft :: Windows",
+          "Operating System :: Unix",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "License :: OSI Approved :: BSD License"
+        ],
+        "requires_python": ">=3.8",
+        "description": "General-purpose finite element solver - pyfe3d\n==============================================\n\nGithub Actions status:\n\n[![Actions Status](https://github.com/saullocastro/pyfe3d/workflows/pytest/badge.svg)](https://github.com/saullocastro/pyfe3d/actions)\n\nCoverage status:\n\n[![Codecov Status](https://codecov.io/gh/saullocastro/pyfe3d/branch/main/graph/badge.svg?token=KVZCRIACL7)](https://codecov.io/gh/saullocastro/pyfe3d)\n\nAbout pyfe3d\n------------\n\nThe ``pyfe3d`` module is a general-purpose finite element solver for structural\nanalysis and optimization based on Python and Cython. The main principles\nguiding the development of ``pyfe3d`` are: simplicity, efficiency and\ncompatibility. The aimed level of compatibility allows one to run this solver\nin any platform, including the Google Colab environment.\n\n\nCiting this library\n-------------------\n\nSaullo G. P. Castro. (2026). General-purpose finite element solver based on Python and Cython (Version 0.10.0). Zenodo. DOI: https://doi.org/10.5281/zenodo.6573489.\n\n\nDocumentation\n-------------\n\nThe documentation is available on: https://saullocastro.github.io/pyfe3d.\n\n\nImportant features of this library\n----------------------------------\n- efficient and simple for linear and nonlinear analyses\n- importable and cimportable code\n- 6 degrees-of-freedom per node\n\n\nAvailable finite elements\n-------------------------\n- 'Quad4' - 4-node plate with linear interpolation, equivalent to Nastran's\n  CQUAD4. The recommended quadrilateral plate element.\n\n- 'Quad4R' - 4-node plate with linear interpolation, equivalent to Abaqus' S4R.\n  It has a not very robust hourglass control.\n\n- 'Tria3DSG' - 3-node plate with linear interpolation and a discrete shear\n  gap transverse shear field, after Bletzinger, Bischoff and Ramm (2000). The\n  recommended triangular plate element: it is free of shear locking by\n  construction and needs no tuning parameter.\n\n- 'Tria3R' - 3-node plate with linear interpolation, equivalent to Abaqus' S3R\n  or Nastran's CTRIA3. Its transverse shear is taken at the centroid and locks,\n  and it relies on the `alpha_shear_locking` stabilisation to unlock. No single\n  value of that parameter serves every problem class, so it has to be verified\n  per problem, see the element documentation. Prefer Tria3DSG for new work.\n\n- 'BeamC' - 2-node Timoshenko beam element with consistent shape functions and\nanalytical integration. The recommended beam element.\n\n- 'BeamLR' - 2-node Timoshenko beam element with linear interpolation and\nreduced integration. \n\n- 'Spring' - 2-node spring element with 6 stiffenesses defined in the element\n  coordinate system.\n\n- 'Truss' - 2-node truss element with only axial and torsion stiffness. I\nrecommend using the BeamLR instead, which is physically more consistent.\n\n\nDevelopment history\n-------------------\n\nSee [CHANGELOG.md](CHANGELOG.md) for the details of each version.\n\n| Main versions | Changes |\n| - | - |\n| 0.10.0 | New Tria3DSG element with discrete shear gap transverse shear, the recommended triangle; physics-based drilling stiffness (Allman, Hughes-Brezzi) as the default, with the K6ROT penalty kept through `drilling_model`; fixed lost K6ROT coefficient; new `pyfe3d.solver` module for linear buckling and natural frequencies; speedup with Cython and compiler flags. |\n| 0.9.0 | Shear correction factors as per Rohwer and Vlachoutsis. |\n| 0.8.0 | KCNL matrix for all elements, with more accurate nonlinear analyses; fixed KC0 and KG for beams; fixed KC0 for Tria3R. |\n| 0.7.0 | Drilling stiffness re-coupled with in-plane rotation using K6ROT; fixed drilling stiffness integration; restored missing `pid` attribute. |\n| 0.6.4 | Internal force vectors (finte) for all elements; fixed drilling stiffness (K6ROT) scaling; added Python 3.14 and removed Python 3.8 support; Linux wheels limited to 64-bit;  Exposed update_probe_finte to Python; new documentation examples. |\n| 0.5.2 | New Quad4 element; K6ROT drilling stiffness; probe.update_BL; removed alg3dpy dependency; topology optimization tutorial  |\n| 0.4.28 | Piston theory aerodynamics for Quad4R; fixed array casting on some systems; Quad4R less sensitive to small element sizes; new `pid` attribute for elements; exposed element orientation vectors; Python 3.12 support; fixed build for Linux and macOS wheels. |\n| 0.3.24 | New Tria3R element; fixed BeamC formulation; fixed beam torsion stiffness; fixed lamination parameters and added their gradients; fixed lumped mass for Tria3R; removed dependency on the NumPy C API; OpenMP build fixes; improved Zenodo metadata and documentation layout; Python 3.10 support. |\n| 0.2.8 | Material coordinate systems for plate elements; Fixed Truss mass matrix; more aggressive Cython directives; license changed to 3-clause BSD; license info in README, author metadata updates. |\n| 0.1.16 | New Spring element; Rotation matrices using direct `rij` terms instead of Euler angles; renamed `update_xe` to `update_probe_xe`; `probe` made a public attribute; KG with a given stress state; renamed `update_ue` to `update_probe_ue` |\n| 0.1.3 | First release: Quad4R, BeamC, BeamLR and Truss elements; shell properties; linear buckling |\n\n\n\nInstalling pyfe3d\n-----------------\n\nFirst, you should try to install from the distributed binaries by simply doing:\n\n```\npython -m pip install pyfe3d\n```\n\nIf a distribution could not be found, you can try to install from the source\ncode using:\n\n```\npython -m pip install .\n```\n\nAnother alternative is the following:\n\n```\npython -m pip install -r requirements.txt\npython setup.py install\n```\n\nIf none of the above alternatives worked for you, this link shares some\ninformation on how to set up a C compiler on different operating systems: \n\nhttps://cython2.readthedocs.io/en/latest/src/quickstart/install.html\n\n\nLicense\n-------\nDistrubuted under the 3-Clause BSD license\n(https://raw.github.com/saullocastro/pyfe3d/main/LICENSE):\n\n    Copyright (c) 2021-2026, Saullo G. P. Castro (S.G.P.Castro@tudelft.nl)\n    All rights reserved.\n\n    Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:\n\n    1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.\n\n    2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.\n\n    3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.\n\n    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n\nContacts:\n- Saullo G. P. Castro, S.G.P.Castro@tudelft.nl\n\n"
+      }
+    }
+  ],
+  "environment": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.10.12",
+    "os_name": "posix",
+    "platform_machine": "x86_64",
+    "platform_release": "7.0.12-319-ge90ae78b-coreweave-amd64",
+    "platform_system": "Linux",
+    "platform_version": "#1 SMP PREEMPT_DYNAMIC Fri Aug 28 23:36:46 UTC 2026",
+    "python_full_version": "3.10.12",
+    "platform_python_implementation": "CPython",
+    "python_version": "3.10",
+    "sys_platform": "linux"
+  }
+}

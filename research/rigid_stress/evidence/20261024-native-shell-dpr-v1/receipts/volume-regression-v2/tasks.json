@@ -1,0 +1,18 @@
+[
+  [
+    {
+      "name": "volume",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-shell-v12/tests/rigid/test_stress.py",
+        "--select",
+        "native_finite_pressure_matches_independent_cpu or native_constrained_pressure_and_invalid_inputs",
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-shell-v12",
+        "--backend",
+        "gpu"
+      ]
+    }
+  ]
+]

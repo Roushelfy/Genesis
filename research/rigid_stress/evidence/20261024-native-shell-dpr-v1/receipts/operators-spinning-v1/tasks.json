@@ -1,0 +1,41 @@
+[
+  [
+    {
+      "name": "cpu-direct",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_operators",
+      "args": [
+        "--backend",
+        "cpu",
+        "--method",
+        "direct",
+        "--spinning"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu-direct",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_operators",
+      "args": [
+        "--backend",
+        "gpu",
+        "--method",
+        "direct",
+        "--spinning"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu-inverse",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_operators",
+      "args": [
+        "--backend",
+        "gpu",
+        "--method",
+        "inverse",
+        "--spinning"
+      ]
+    }
+  ]
+]
