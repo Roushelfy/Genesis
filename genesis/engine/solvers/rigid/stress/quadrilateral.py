@@ -30,18 +30,41 @@ def func_quad_inverse(
     first = 0.25 * (-vertices[0, :] + vertices[1, :] + vertices[2, :] - vertices[3, :])
     second = 0.25 * (-vertices[0, :] - vertices[1, :] + vertices[2, :] + vertices[3, :])
     mixed = 0.25 * (vertices[0, :] - vertices[1, :] + vertices[2, :] - vertices[3, :])
-    local = qd.Vector.zero(gs.qd_float, 2)
-    regular = True
+    # In projection p = a*xi + b*eta + c*xi*eta. Eliminating eta gives a quadratic.
+    # Its two roots have opposite Jacobian signs; keep the outward, regular material chart.
+    a, b, c = basis @ first, basis @ second, basis @ mixed
+    p = target - basis @ (constant - origin)
+    quadratic = c[0] * a[1] - c[1] * a[0]
+    linear = p[0] * c[1] - p[1] * c[0] - (a[0] * b[1] - a[1] * b[0])
+    constant_term = p[0] * b[1] - p[1] * b[0]
     scale = qd.max(first.norm(), second.norm(), 1e-30)
-    for _ in range(16):
-        residual = (
-            basis @ (constant + local[0] * first + local[1] * second + local[0] * local[1] * mixed - origin) - target
-        )
-        jacobian = qd.Matrix.cols([basis @ (first + local[1] * mixed), basis @ (second + local[0] * mixed)])
-        if qd.abs(jacobian.determinant()) > 1e-14 * scale * scale:
-            local -= jacobian.inverse() @ residual
-        else:
-            regular = False
+    roots = qd.Vector.zero(gs.qd_float, 2)
+    count = 0
+    if qd.abs(quadratic) <= 1e-14 * qd.max(qd.abs(linear), qd.abs(constant_term), scale * scale):
+        if qd.abs(linear) > 1e-14 * scale * scale:
+            roots[0], count = -constant_term / linear, 1
+    else:
+        discriminant = linear * linear - 4.0 * quadratic * constant_term
+        if discriminant >= 0.0:
+            root = -0.5 * (linear + qd.select(linear >= 0.0, 1.0, -1.0) * qd.sqrt(discriminant))
+            if qd.abs(root) > 1e-30 * scale * scale:
+                roots[0], roots[1], count = root / quadratic, constant_term / root, 2
+    local = qd.Vector.zero(gs.qd_float, 2)
+    regular = False
+    for i_root in range(count):
+        xi = roots[i_root]
+        if qd.abs(xi) <= 1.0 + 4e-12:
+            column = b + xi * c
+            if column.norm_sqr() > 1e-28 * scale * scale:
+                eta = (p - xi * a).dot(column) / column.norm_sqr()
+                candidate = qd.Vector([xi, eta])
+                jacobian = qd.Matrix.cols([a + eta * c, b + xi * c])
+                if jacobian.determinant() > 1e-14 * scale * scale:
+                    # One residual correction removes cancellation without iterative face searches.
+                    residual = a * xi + b * eta + c * xi * eta - p
+                    candidate -= jacobian.inverse() @ residual
+                    if qd.abs(candidate[0]) <= 1.0 + 2e-12 and qd.abs(candidate[1]) <= 1.0 + 2e-12:
+                        local, regular = candidate, True
     shape, dxi, deta = func_quad_shape(local[0], local[1])
     position = shape @ vertices
     cross = (dxi @ vertices).cross(deta @ vertices)

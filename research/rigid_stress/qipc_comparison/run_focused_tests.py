@@ -33,6 +33,7 @@ def main():
         "-p",
         "no:cacheprovider",
         f"--junitxml={args.output / 'junit.xml'}",
+        f"--basetemp={args.output / 'pytest'}",
     ]
     write_json(
         args.output / "start.json",
