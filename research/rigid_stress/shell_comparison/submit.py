@@ -163,6 +163,13 @@ def main():
         shutil.copytree(
             qipc_analysis, tools / "research/rigid_stress/qipc_comparison", ignore=shutil.ignore_patterns("__pycache__")
         )
+    shell_cpu = here.parent / "shell_cpu"
+    if shell_cpu.is_dir():
+        shutil.copytree(
+            shell_cpu,
+            tools / "research/rigid_stress/shell_cpu",
+            ignore=shutil.ignore_patterns("__pycache__", "*.npz", "*.png", "*.json", "*.md"),
+        )
     (output / "tasks.json").write_text(json.dumps(groups, indent=2) + "\n")
     (output / "analysis-files.json").write_text(json.dumps(inventory(tools), indent=2) + "\n")
     (output / "logs").mkdir()

@@ -7,11 +7,11 @@ import quadrants as qd
 
 import genesis as gs
 from genesis.options.rigid_stress import RigidStressOptions
-from genesis.utils.array_class import V_MAT, V_VEC, V
+from genesis.utils.array_class import V_VEC, V
 from genesis.utils.misc import qd_to_numpy
 
 from .balance import kernel_centrifugal_wrench, kernel_relief_projection
-from .data import StressInfo, StressState
+from .data import StressState, allocate_stress_info
 from .factor import StressFactor
 from .history import StressHistory
 from .inverse import StressInverse
@@ -97,37 +97,7 @@ class StressModel:
         assembly_start = np.r_[0, np.cumsum(np.bincount(inverse, minlength=n_entries))]
         assembly_idx = np.argsort(inverse, kind="stable")
 
-        self.info = StressInfo(
-            vertices=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes,)),
-            elements=V(dtype=gs.qd_int, shape=(n_elements, 10)),
-            surface_nodes=V(dtype=gs.qd_int, shape=(len(surface), 6)),
-            surface_owners=V(dtype=gs.qd_int, shape=(len(surface),)),
-            surface_opposite_vertices=V(dtype=gs.qd_int, shape=(len(surface),)),
-            surface_neighbors=V(dtype=gs.qd_int, shape=(len(surface), 3)),
-            edges=V(dtype=gs.qd_int, shape=(6, 2)),
-            gradients=V_MAT(4, 3, dtype=gs.qd_float, shape=(n_elements,)),
-            corner_gradients=V_VEC(3, dtype=gs.qd_float, shape=(n_elements, 4, 7)),
-            corner_nodes=V(dtype=gs.qd_int, shape=(n_elements, 4, 7)),
-            volumes=V(dtype=gs.qd_float, shape=(n_elements,)),
-            row_start=V(dtype=gs.qd_int, shape=(n_nodes + 1,)),
-            columns=V(dtype=gs.qd_int, shape=(n_entries,)),
-            assembly_start=V(dtype=gs.qd_int, shape=(n_entries + 1,)),
-            assembly_idx=V(dtype=gs.qd_int, shape=(len(inverse),)),
-            stiffness=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_entries,)),
-            mass=V(dtype=gs.qd_float, shape=(n_entries,)),
-            modes=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
-            mass_modes=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
-            relief=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
-            centrifugal=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
-            centrifugal_wrench=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
-            gram=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
-            gram_inverse=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
-            pins=V(dtype=gs.qd_int, shape=(6,)),
-            is_free=V_VEC(3, dtype=gs.qd_int, shape=(n_nodes,)),
-            diagonal_inverse=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_nodes,)),
-            scalar_diagonal_inverse=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes,)),
-            mass_properties=V(dtype=gs.qd_float, shape=(4,)),
-        )
+        self.info = allocate_stress_info(n_nodes, n_elements, len(surface), n_entries, len(inverse))
         self.info.vertices.from_numpy(xyz.astype(gs.np_float, copy=False))
         self.info.elements.from_numpy(elements.astype(gs.np_int, copy=False))
         self.info.surface_nodes.from_numpy(surface_nodes.astype(gs.np_int, copy=False))
@@ -190,10 +160,14 @@ class StressModel:
             time.perf_counter() - inverse_done,
         )
 
+    @property
+    def n_output_elements(self) -> int:
+        return self.info.elements.shape[0]
+
     def create_state(self, n_envs: int, output_mode: str = "max") -> StressState:
         n_nodes = self.info.vertices.shape[0]
         n_krylov_nodes = n_nodes if self.selected_method == "pcg" else 0
-        n_output_elements = self.info.elements.shape[0] if output_mode == "full" else 0
+        n_output_elements = self.n_output_elements if output_mode == "full" else 0
         state = StressState(
             force=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
             rhs=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
@@ -306,6 +280,9 @@ class StressModel:
                 only_active=True,
                 coalesced=coalesced,
             )
+        self.evaluate_stress(options, state)
+
+    def evaluate_stress(self, options: RigidStressOptions, state: StressState) -> None:
         kernel_peak(options.young, options.poisson, state, self.info, options.cached_peak)
 
     def solve(

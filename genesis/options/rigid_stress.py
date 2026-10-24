@@ -189,6 +189,10 @@ class RigidStressOptions(Options):
     """
 
     mesh: PathType
+    backend: Literal["volume", "shell"] = "volume"
+    shell_thickness: PositiveFloat = 0.0005
+    shell_drilling_factor: PositiveFloat = 1e-3
+    shell_gauge: Literal["translation", "legacy"] = "translation"
     output_mode: Literal["max", "full"] = "max"
     update_mode: Literal["every_step", "manual"] = "every_step"
     young: PositiveFloat = 1e10
