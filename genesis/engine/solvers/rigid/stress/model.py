@@ -98,6 +98,7 @@ class StressModel:
         assembly_idx = np.argsort(inverse, kind="stable")
 
         self.info = allocate_stress_info(n_nodes, n_elements, len(surface), n_entries, len(inverse))
+        self.load_info = self.info
         self.info.vertices.from_numpy(xyz.astype(gs.np_float, copy=False))
         self.info.elements.from_numpy(elements.astype(gs.np_int, copy=False))
         self.info.surface_nodes.from_numpy(surface_nodes.astype(gs.np_int, copy=False))

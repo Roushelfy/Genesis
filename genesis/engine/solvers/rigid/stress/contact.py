@@ -8,7 +8,7 @@ import quadrants as qd
 import genesis as gs
 from genesis.utils.array_class import V_VEC, DataKind, V, of_kind
 
-from .data import StressInfo, StressState
+from .data import StressInfo, StressState, func_scatter_load
 from .grid import func_patch_cell, func_patch_grid
 from .surface import StressSurfaceInfo, func_closest_triangle
 
@@ -790,7 +790,7 @@ def kernel_scatter_serial(
     stress_info: StressInfo,
     surface_info: StressSurfaceInfo,
 ):
-    for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
+    for i_n, i_b in qd.ndrange(stress_state.force.shape[0], stress_state.active.shape[0]):
         stress_state.force[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         if contact_state.valid[i_c, i_b] and contact_state.status[i_c, i_b] == 0:
@@ -821,8 +821,7 @@ def kernel_scatter_serial(
                             for i_local in range(6):
                                 i_n = stress_info.surface_nodes[i_face, i_local]
                                 value = shape[i_local] * sample_force
-                                for i_a in qd.static(range(3)):
-                                    qd.atomic_add(stress_state.force[i_n, i_b][i_a], value[i_a])
+                                func_scatter_load(i_n, i_b, value, stress_state, stress_info)
                 contact_state.force_error[i_c, i_b] = (total - force).norm()
                 contact_state.moment_error[i_c, i_b] = moment.norm()
                 if (total - force).norm() > 1e-8 * magnitude or moment.norm() > 1e-8 * magnitude * contact_state.radius[
@@ -912,8 +911,7 @@ def func_scatter_warp(
                     if lane == 0:
                         for i_local in range(6):
                             i_n = stress_info.surface_nodes[i_f, i_local]
-                            for a in qd.static(range(3)):
-                                qd.atomic_add(stress_state.force[i_n, i_b][a], load[i_local, a])
+                            func_scatter_load(i_n, i_b, load[i_local, :], stress_state, stress_info)
             for a in qd.static(range(3)):
                 total[a] = qd.simt.subgroup.reduce_all_add(total[a])
                 moment[a] = qd.simt.subgroup.reduce_all_add(moment[a])
