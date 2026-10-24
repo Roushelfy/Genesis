@@ -22,7 +22,7 @@ from .contact import (
     func_refine_contacts,
     func_scatter_warp,
 )
-from .data import StressInfo, StressState
+from .data import StressInfo, StressState, func_scatter_load
 from .surface import StressSurfaceInfo
 
 
@@ -322,8 +322,7 @@ def func_scatter_faces(
         if i_lane == 0:
             for i_local in range(6):
                 i_n = info.surface_nodes[i_f, i_local]
-                for a in qd.static(range(3)):
-                    qd.atomic_add(state.force[i_n, i_b][a], load[i_local, a])
+                func_scatter_load(i_n, i_b, load[i_local, :], state, info)
             for a in qd.static(range(3)):
                 qd.atomic_add(workspace.wrench[i_pair][a], total[a])
                 qd.atomic_add(workspace.wrench[i_pair][a + 3], moment[a])

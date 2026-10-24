@@ -37,6 +37,7 @@ from .post import create_post_kernel
 from .provenance import kernel_capture_rigid_sources
 from .resolved import ResolvedContacts
 from .scatter import StressScatterWorkspace, create_scatter_workspace, kernel_pressure_moments, kernel_scatter_faces
+from .shell_model import ShellModel
 from .surface import StressSurface
 
 if TYPE_CHECKING:
@@ -77,6 +78,10 @@ class RigidStressRecovery:
             for link in entity.links:
                 options = link.stress_options
                 if options is not None:
+                    if options.backend == "shell" and (
+                        options.contact_model != "pressure" or options.load_transfer != "patch"
+                    ):
+                        gs.raise_exception("The shell backend requires DPR finite-pressure patch loading.")
                     if (options.radius_model != "manual" or options.pressure_profile != "dpr") and (
                         options.contact_model != "pressure" or options.load_transfer != "patch"
                     ):
@@ -93,6 +98,10 @@ class RigidStressRecovery:
                         previous = existing.model.options
                         if (
                             Path(previous.mesh).resolve() == Path(options.mesh).resolve()
+                            and previous.backend == options.backend
+                            and previous.shell_thickness == options.shell_thickness
+                            and previous.shell_drilling_factor == options.shell_drilling_factor
+                            and previous.shell_gauge == options.shell_gauge
                             and previous.young == options.young
                             and previous.poisson == options.poisson
                             and previous.density == options.density
@@ -106,9 +115,9 @@ class RigidStressRecovery:
                                 surface = existing.surface
                             break
                     if model is None:
-                        model = StressModel(options)
+                        model = ShellModel(options) if options.backend == "shell" else StressModel(options)
                     if surface is None:
-                        surface = StressSurface(quadrature, model.info)
+                        surface = StressSurface(quadrature, model.load_info)
                     reuse_contact_moments = (
                         options.contact_model == "pressure"
                         and options.load_transfer == "patch"
@@ -334,7 +343,7 @@ class RigidStressRecovery:
                     entry.link.idx, entry.contacts, entry.resolved.raw_sources, solver.collider.collider_state
                 )
                 entry.resolved.scatter(
-                    entry.contacts, entry.state, entry.model.info, entry.surface.info, options, self.source_epsilon
+                    entry.contacts, entry.state, entry.model.load_info, entry.surface.info, options, self.source_epsilon
                 )
             elif entry.intrinsic is not None:
                 kernel_capture_rigid_sources(
@@ -343,7 +352,7 @@ class RigidStressRecovery:
                 entry.intrinsic.scatter(
                     entry.contacts,
                     entry.state,
-                    entry.model.info,
+                    entry.model.load_info,
                     entry.surface.info,
                     options,
                     self.source_epsilon,
@@ -355,7 +364,7 @@ class RigidStressRecovery:
                     kernel_pressure_moments(
                         entry.contacts,
                         entry.state,
-                        entry.model.info,
+                        entry.model.load_info,
                         entry.surface.info,
                         entry.scatter,
                         options.cached_face_bounds,
@@ -366,7 +375,7 @@ class RigidStressRecovery:
                     kernel_scatter_faces(
                         entry.contacts,
                         entry.state,
-                        entry.model.info,
+                        entry.model.load_info,
                         entry.surface.info,
                         entry.scatter,
                         options.cached_face_bounds,
@@ -376,7 +385,7 @@ class RigidStressRecovery:
                     kernel_scatter(
                         entry.contacts,
                         entry.state,
-                        entry.model.info,
+                        entry.model.load_info,
                         entry.surface.info,
                         options.cooperative_scatter,
                         options.cached_face_bounds,
@@ -462,7 +471,9 @@ class RigidStressRecovery:
                 reason = reasons[code]
                 if entry.automatic_radius is not None:
                     if radius_status[env, contact] == StressRadiusStatus.UNSUPPORTED:
-                        reason = "automatic Hertz radius unsupported for the current surface geometry or relative curvature"
+                        reason = (
+                            "automatic Hertz radius unsupported for the current surface geometry or relative curvature"
+                        )
                     elif radius_status[env, contact] == StressRadiusStatus.INVALID:
                         reason = "automatic Hertz radius requires finite compressive contact inputs"
                 details.append(
@@ -495,6 +506,9 @@ class RigidStressRecovery:
             )
             if id(entry.model) not in seen:
                 yield from iter_data(entry.model.info, f"stress.{i}.info")
+                if isinstance(entry.model, ShellModel):
+                    yield from iter_data(entry.model.shell, f"stress.{i}.shell")
+                    yield from iter_data(entry.model.load_info, f"stress.{i}.load_info")
                 if entry.model.factor is not None:
                     yield from iter_data(entry.model.factor.info, f"stress.{i}.factor")
                 if entry.model.inverse is not None:

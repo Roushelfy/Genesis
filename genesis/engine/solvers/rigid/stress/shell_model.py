@@ -19,6 +19,7 @@ from .inverse import StressInverse
 from .model import StressBuildTimings, StressModel
 from .operators import kernel_diagonal, kernel_gram_inverse
 from .shell_operators import ShellInfo
+from .shell_surface import build_shell_surface
 
 
 class ShellModel(StressModel):
@@ -110,6 +111,7 @@ class ShellModel(StressModel):
             if self.selected_method == "inverse"
             else None
         )
+        self.load_info = build_shell_surface(quads, options.shell_thickness, self.info, self.shell)
         self.surface_inverse = None
         self.build_timings = StressBuildTimings(
             topology_done - started,
