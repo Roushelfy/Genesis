@@ -20,16 +20,13 @@ def func_quad_shape(xi: float, eta: float):
 
 @qd.func
 def func_quad_inverse(
-    vertices: qd.types.matrix(4, 3),
+    coefficients: qd.types.matrix(4, 3),
     origin: qd.types.vector(3),
     basis: qd.types.matrix(2, 3),
     target: qd.types.vector(2),
 ):
     """Invert an orthogonal projection; retain the true surface area and position."""
-    constant = 0.25 * (vertices[0, :] + vertices[1, :] + vertices[2, :] + vertices[3, :])
-    first = 0.25 * (-vertices[0, :] + vertices[1, :] + vertices[2, :] - vertices[3, :])
-    second = 0.25 * (-vertices[0, :] - vertices[1, :] + vertices[2, :] + vertices[3, :])
-    mixed = 0.25 * (vertices[0, :] - vertices[1, :] + vertices[2, :] - vertices[3, :])
+    constant, first, second, mixed = coefficients[0, :], coefficients[1, :], coefficients[2, :], coefficients[3, :]
     # In projection p = a*xi + b*eta + c*xi*eta. Eliminating eta gives a quadratic.
     # Its two roots have opposite Jacobian signs; keep the outward, regular material chart.
     a, b, c = basis @ first, basis @ second, basis @ mixed
@@ -65,10 +62,11 @@ def func_quad_inverse(
                     candidate -= jacobian.inverse() @ residual
                     if qd.abs(candidate[0]) <= 1.0 + 2e-12 and qd.abs(candidate[1]) <= 1.0 + 2e-12:
                         local, regular = candidate, True
-    shape, dxi, deta = func_quad_shape(local[0], local[1])
-    position = shape @ vertices
-    cross = (dxi @ vertices).cross(deta @ vertices)
-    projected_first, projected_second = basis @ (dxi @ vertices), basis @ (deta @ vertices)
+    shape, _dxi, _deta = func_quad_shape(local[0], local[1])
+    position = constant + first * local[0] + second * local[1] + mixed * local[0] * local[1]
+    tangent_first, tangent_second = first + mixed * local[1], second + mixed * local[0]
+    cross = tangent_first.cross(tangent_second)
+    projected_first, projected_second = basis @ tangent_first, basis @ tangent_second
     projected_area = qd.abs(projected_first[0] * projected_second[1] - projected_first[1] * projected_second[0])
     residual = basis @ (position - origin) - target
     regular = regular and projected_area > 1e-14 * scale * scale and residual.norm() <= 2e-12 * scale

@@ -326,7 +326,7 @@ def func_contact_sample_prepared(
             if weight > 0.0:
                 target = surface_info.face_dual[i_face] @ (position - surface_info.face_origin[i_face])
                 nodal, position, _normal, ratio, regular = func_quad_inverse(
-                    surface_info.quad_vertices[i_face],
+                    surface_info.quad_coefficients[i_face],
                     surface_info.face_origin[i_face],
                     surface_info.face_dual[i_face],
                     target,
@@ -484,7 +484,7 @@ def func_anchor(source_epsilon: float, contact_state: StressContactState, surfac
                         lower_distance = qd.max(near, 0.0) - qd.min(far, 0.0)
                         if intersects and near <= far and lower_distance <= distance + padding:
                             _shape, hit, outward, _ratio, regular = func_quad_inverse(
-                                surface_info.quad_vertices[i_f], point, line_basis, qd.Vector([0.0, 0.0])
+                                surface_info.quad_coefficients[i_f], point, line_basis, qd.Vector([0.0, 0.0])
                             )
                             parameter = (hit - point).dot(direction)
                             if regular and outward.dot(direction) > 1e-12 and qd.abs(parameter) < distance:
