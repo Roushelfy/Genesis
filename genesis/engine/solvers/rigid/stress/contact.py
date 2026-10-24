@@ -681,10 +681,13 @@ def kernel_pressure_correct_warp(contact_state: StressContactState, surface_info
 
 @qd.func
 def func_pressure_correct_warp(contact_state: StressContactState, surface_info: StressSurfaceInfo):
+    n_warps = qd.select(surface_info.quad_vertices.shape[0] > 0, 4, 1)
     qd.loop_config(block_dim=128)
-    for i_thread in range(contact_state.active_count[None] * 32):
+    for i_thread in range(contact_state.active_count[None] * 32 * n_warps):
         lane = i_thread % 32
-        slot = i_thread // 32
+        i_warp = (i_thread // 32) % n_warps
+        slot = i_thread // (32 * n_warps)
+        sh_fit = qd.simt.block.SharedArray((4, 13), gs.qd_float)
         pair = contact_state.active_pairs[slot]
         i_c, i_b = pair[0], pair[1]
         if contact_state.status[i_c, i_b] == 5:
@@ -712,8 +715,11 @@ def func_pressure_correct_warp(contact_state: StressContactState, surface_info: 
                 n_cells = dimensions[0] * dimensions[1] * dimensions[2] + 1
                 if contact_state.is_refined[i_c, i_b]:
                     n_cells = surface_info.face_origin.shape[0]
-                for i_cell in range(n_cells):
-                    start, end = func_contact_cell(i_cell, i_c, i_b, low, dimensions, contact_state, surface_info)
+                for i_group in range((n_cells + n_warps - 1) // n_warps):
+                    i_cell = i_group * n_warps + i_warp
+                    start, end = 0, 0
+                    if i_cell < n_cells:
+                        start, end = func_contact_cell(i_cell, i_c, i_b, low, dimensions, contact_state, surface_info)
                     closest = qd.Vector.zero(gs.qd_float, 3)
                     remaining, contained = gs.qd_float(0.0), False
                     if contact_state.is_refined[i_c, i_b] and end > start:
@@ -762,12 +768,32 @@ def func_pressure_correct_warp(contact_state: StressContactState, surface_info: 
                                     gradient += weight * profile * coordinates
                                     if profile > 0.0:
                                         hessian += weight * coordinates.outer_product(coordinates)
-                objective = qd.simt.subgroup.reduce_all_add(objective) + candidate[0]
+                objective = qd.simt.subgroup.reduce_all_add(objective)
                 if not line:
                     for a in qd.static(range(3)):
                         gradient[a] = qd.simt.subgroup.reduce_all_add(gradient[a])
                     for a, b in qd.static(qd.ndrange(3, 3)):
                         hessian[a, b] = qd.simt.subgroup.reduce_all_add(hessian[a, b])
+                if n_warps > 1:
+                    if lane == 0:
+                        sh_fit[i_warp, 0] = objective
+                        for a in qd.static(range(3)):
+                            sh_fit[i_warp, 1 + a] = gradient[a]
+                        for a, b in qd.static(qd.ndrange(3, 3)):
+                            sh_fit[i_warp, 4 + 3 * a + b] = hessian[a, b]
+                    qd.simt.block.sync()
+                    objective = 0.0
+                    gradient = qd.Vector.zero(gs.qd_float, 3)
+                    hessian = qd.Matrix.zero(gs.qd_float, 3, 3)
+                    for j_warp in qd.static(range(4)):
+                        objective += sh_fit[j_warp, 0]
+                        for a in qd.static(range(3)):
+                            gradient[a] += sh_fit[j_warp, 1 + a]
+                        for a, b in qd.static(qd.ndrange(3, 3)):
+                            hessian[a, b] += sh_fit[j_warp, 4 + 3 * a + b]
+                    qd.simt.block.sync()
+                objective += candidate[0]
+                if not line:
                     gradient[0] -= 1.0
                     iterations += 1
                     accepted = gradient.norm() <= _PRESSURE_FIT_TOLERANCE
@@ -786,7 +812,7 @@ def func_pressure_correct_warp(contact_state: StressContactState, surface_info: 
                         fraction *= 0.5
                         if line_evaluations == 40:
                             line = False
-            if lane == 0:
+            if lane == 0 and i_warp == 0:
                 contact_state.coefficient[i_c, i_b] = coefficient / weight_sum
                 contact_state.status[i_c, i_b] = 0 if accepted else 3
                 contact_state.evaluations[i_c, i_b] += iterations
