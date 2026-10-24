@@ -483,7 +483,11 @@ class RigidLink(KinematicLink):
 
     @gs.assert_built
     def get_max_stress(self, envs_idx=None, *, copy: bool = True) -> torch.Tensor:
-        """Return global maximum von Mises stress in Pa over the latest observed scene step's physical substeps."""
+        """Return the largest recovered von Mises stress in Pa over the latest observed scene step's substeps.
+
+        The shell backend scans sampled in-plane membrane-plus-bending stress; this does not include
+        three-dimensional near-contact normal stress or certify a physical global 3D maximum.
+        """
         recovery = self._solver.stress_recovery
         if recovery is None:
             gs.raise_exception("Stress recovery is not enabled for this link.")

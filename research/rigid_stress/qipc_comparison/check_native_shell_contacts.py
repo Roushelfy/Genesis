@@ -81,7 +81,7 @@ def control(output, name, vertices, quads, quadrature, scatter):
     contacts.normal.from_numpy(normals)
     contacts.valid.from_numpy(valid)
     contacts.friction.fill(0.5)
-    kernel_anchor(np.finfo(np.float64).eps, contacts, surface.info)
+    kernel_anchor(float(np.finfo(np.float64).eps), contacts, surface.info)
     kernel_pressure(contacts, surface.info)
     if scatter == "faces" and gs.backend == gs.cuda:
         kernel_scatter_faces(contacts, state, native.load_info, surface.info, workspace, True, False)
@@ -145,7 +145,7 @@ def control(output, name, vertices, quads, quadrature, scatter):
         contacts.force.from_numpy(forces[permutation].copy())
         contacts.normal.from_numpy(normals[permutation].copy())
         contacts.valid.from_numpy(mask[permutation].copy())
-        kernel_anchor(np.finfo(np.float64).eps, contacts, surface.info)
+        kernel_anchor(float(np.finfo(np.float64).eps), contacts, surface.info)
         kernel_pressure(contacts, surface.info)
         kernel_scatter(contacts, state, native.load_info, surface.info)
         updated = qd_to_numpy(state.force, transpose=True).reshape((n_envs, -1)).T
@@ -160,6 +160,9 @@ def main():
     cli.add_argument("--backend", choices=["cpu", "gpu"], default="cpu")
     cli.add_argument("--scatter", choices=["contacts", "faces"], default="faces")
     cli.add_argument("--quadrature", type=int, default=16)
+    cli.add_argument(
+        "--geometries", nargs="+", choices=["flat", "warped", "egg", "valley"], default=["flat", "warped", "egg"]
+    )
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -171,14 +174,18 @@ def main():
     flat, quads = geometry.plate_mesh(2, Lx=0.04)
     warped = flat.copy()
     warped[:, 2] = 2.5 * warped[:, 0] * warped[:, 1]
+    valley = flat.copy()
+    valley[:, 2] = 0.15 * np.abs(valley[:, 0])
     fixtures = [
         ("flat", flat, quads),
+        ("valley", valley, quads),
         ("warped", warped, quads),
         ("egg", *geometry.egg_mesh(2, axes=(0.022, 0.022, 0.03), asym=-0.18)),
     ]
     results = [
         control(args.output, name, vertices, connectivity, args.quadrature, args.scatter)
         for name, vertices, connectivity in fixtures
+        if name in args.geometries
     ]
     write_json(args.output / "result.json", dict(passed=True, results=results))
 

@@ -270,6 +270,8 @@ def main():
                 stress_tensor=tensor_to_array(tensor),
                 von_mises=tensor_to_array(vm),
                 nodal_force=qd_to_numpy(entry.state.force, transpose=True, copy=True),
+                angular_velocity=qd_to_numpy(entry.omega, transpose=True, copy=True),
+                displacement=qd_to_numpy(entry.state.displacement, transpose=True, copy=True),
                 **fields,
             )
         peaks.append(peak)
