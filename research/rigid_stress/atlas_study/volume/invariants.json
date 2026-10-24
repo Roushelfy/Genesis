@@ -1,0 +1,39 @@
+{
+  "source_sha256": "4bdf92475ec12055e95803946569f3d8537a7f433361f0a4bceb57e7957c8b3d",
+  "affine_tensor_relative": 1.2283254157501468e-15,
+  "quadratic_tensor_relative": 4.528298973658513e-16,
+  "rigid_stiffness_relative": [
+    2.7010065372262864e-18,
+    4.327511322337862e-18,
+    2.6976170156148826e-18,
+    4.222171901929157e-18,
+    5.4110164019768954e-18,
+    3.301893855662589e-18
+  ],
+  "reciprocity_relative": 1.7940126047271852e-16,
+  "independent_scatter_relative": 2.9997914357376197e-16,
+  "load_checks": [
+    {
+      "quadrature_order": 12,
+      "samples": 576,
+      "force_relative": 4.2187268437891354e-16,
+      "moment_normalized": 1.890195257753104e-15,
+      "seconds": 0.0019799090005108155
+    },
+    {
+      "quadrature_order": 12,
+      "samples": 576,
+      "force_relative": 1.2221218904610358e-15,
+      "moment_normalized": 7.745588515595309e-16,
+      "seconds": 0.0016290790008497424
+    }
+  ],
+  "checks": {
+    "affine_constitutive_map": true,
+    "quadratic_constitutive_map": true,
+    "rigid_zero_stiffness": true,
+    "reciprocity": true,
+    "independent_shape_scatter": true
+  },
+  "all_passed": true
+}

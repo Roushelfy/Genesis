@@ -1,0 +1,3613 @@
+{
+  "scope": "Closed egg supplemental shell-only common-material-coordinate stress comparison. Balanced source pairs preserve zero resultant and moment before any solve; inertia relief disabled. Same smooth authored geometry but differing Q4 approximations. No 3D peak qualification.",
+  "normal_fixture_note": "Pure normal prescribed source; no friction-cone law requested. Initial explicit mu=0 oracle rejects roundoff tangential components and is retained separately. Actual tangential roundoff is recorded; forces and integration gates unchanged.",
+  "models": [
+    {
+      "name": "coarse",
+      "dofs": 588,
+      "quads": 96,
+      "assembly_s": 0.6218844089999038,
+      "factor_s": 0.0036786910004593665
+    },
+    {
+      "name": "atlas0",
+      "dofs": 2172,
+      "quads": 360,
+      "assembly_s": 2.3288154050005687,
+      "factor_s": 0.0182225410007959
+    },
+    {
+      "name": "atlas1",
+      "dofs": 2508,
+      "quads": 416,
+      "assembly_s": 2.585295758999564,
+      "factor_s": 0.029636565001055715
+    },
+    {
+      "name": "atlas2",
+      "dofs": 2172,
+      "quads": 360,
+      "assembly_s": 2.2701947890000156,
+      "factor_s": 0.02141075400140835
+    },
+    {
+      "name": "joint",
+      "dofs": 6540,
+      "quads": 1088,
+      "assembly_s": 6.8453144499999325,
+      "factor_s": 0.1676316280008905
+    },
+    {
+      "name": "reference",
+      "dofs": 11676,
+      "quads": 1944,
+      "assembly_s": 12.485250019999512,
+      "factor_s": 0.3114944659992034
+    }
+  ],
+  "rows": [
+    {
+      "case": "angle_-0.23",
+      "pairs": [
+        [
+          -0.23,
+          0.05,
+          0.002
+        ]
+      ],
+      "metrics": {
+        "coarse": {
+          "tensor_relative": 0.9563392609979139,
+          "sampled_peak_vm_Pa": 8788.560228220778,
+          "peak_relative": 0.9311428726159185
+        },
+        "joint": {
+          "tensor_relative": 0.22769785789082098,
+          "sampled_peak_vm_Pa": 116095.5588298677,
+          "peak_relative": 0.0904077032544055
+        }
+      },
+      "atlas": {
+        "tensor_relative": 0.6022904887019581,
+        "sampled_peak_vm_Pa": 95285.46532431184,
+        "peak_relative": 0.2534518449768999
+      },
+      "checks": {
+        "coarse": [
+          {
+            "raw_wrench_norm": 6.130120684066636e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  5
+                ],
+                "n_samples": 256,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 6.858482838824884e-17,
+                "raw_mass_error": -7.750466934908218e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  21
+                ],
+                "n_samples": 256,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 1.3578971136640534e-16,
+                "raw_mass_error": -7.751577157932843e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              }
+            ],
+            "solve_residual": 6.210100705337042e-15
+          }
+        ],
+        "atlas0": [
+          {
+            "raw_wrench_norm": 4.492498934478997e-14,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  33,
+                  34,
+                  35,
+                  43,
+                  44,
+                  45
+                ],
+                "n_samples": 3456,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 4.492489880730703e-10,
+                "raw_mass_error": 4.3440362418323275e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 2,
+                "face_ids": [
+                  131,
+                  141
+                ],
+                "n_samples": 5120,
+                "force_error": 1.430489624538199e-16,
+                "moment_error": 1.3649178747044794e-15,
+                "raw_mass_error": 2.220446049250313e-16,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000002192182"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              }
+            ],
+            "solve_residual": 2.902631898878662e-11
+          }
+        ],
+        "atlas1": [
+          {
+            "raw_wrench_norm": 6.4508374738332524e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  38,
+                  39,
+                  40,
+                  50,
+                  51,
+                  52
+                ],
+                "n_samples": 12800,
+                "force_error": 3.469446951953614e-17,
+                "moment_error": 2.5968936960733182e-15,
+                "raw_mass_error": -2.6645352591003757e-15,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000001401885"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  158,
+                  159,
+                  160,
+                  170,
+                  171,
+                  172
+                ],
+                "n_samples": 12800,
+                "force_error": 1.430489624538199e-16,
+                "moment_error": 2.793256275129346e-15,
+                "raw_mass_error": -2.55351295663786e-15,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000001401885"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              }
+            ],
+            "solve_residual": 4.3036490040263725e-14
+          }
+        ],
+        "atlas2": [
+          {
+            "raw_wrench_norm": 4.4924947844484e-14,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 2,
+                "face_ids": [
+                  31,
+                  41
+                ],
+                "n_samples": 5120,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 6.278250063016016e-16,
+                "raw_mass_error": 4.440892098500626e-16,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000002192182"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  133,
+                  134,
+                  135,
+                  143,
+                  144,
+                  145
+                ],
+                "n_samples": 3456,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 4.492489880730703e-10,
+                "raw_mass_error": 4.3440362418323275e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              }
+            ],
+            "solve_residual": 2.9017522465899794e-11
+          }
+        ],
+        "joint": [
+          {
+            "raw_wrench_norm": 1.4192797134725055e-15,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 12,
+                "face_ids": [
+                  126,
+                  127,
+                  128,
+                  129,
+                  150,
+                  151,
+                  152,
+                  153,
+                  174,
+                  175,
+                  176,
+                  177
+                ],
+                "n_samples": 6400,
+                "force_error": 3.469446951953614e-17,
+                "moment_error": 2.4189499599513834e-10,
+                "raw_mass_error": -1.978630592702757e-10,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 12,
+                "face_ids": [
+                  510,
+                  511,
+                  512,
+                  513,
+                  534,
+                  535,
+                  536,
+                  537,
+                  558,
+                  559,
+                  560,
+                  561
+                ],
+                "n_samples": 6400,
+                "force_error": 3.469446951953614e-17,
+                "moment_error": 2.4189499599513834e-10,
+                "raw_mass_error": -1.978630592702757e-10,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              }
+            ],
+            "solve_residual": 3.275587377305301e-12
+          }
+        ],
+        "reference": [
+          {
+            "raw_wrench_norm": 2.2656756066269833e-16,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 25,
+                "face_ids": [
+                  247,
+                  248,
+                  249,
+                  250,
+                  280,
+                  281,
+                  282,
+                  283,
+                  284,
+                  285,
+                  314,
+                  315,
+                  316,
+                  317,
+                  318,
+                  319,
+                  348,
+                  349,
+                  350,
+                  351,
+                  352,
+                  353,
+                  384,
+                  385,
+                  386
+                ],
+                "n_samples": 12288,
+                "force_error": 2.7755575615628914e-16,
+                "moment_error": 8.009496420441587e-11,
+                "raw_mass_error": -2.1928014959371467e-12,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 25,
+                "face_ids": [
+                  995,
+                  996,
+                  997,
+                  998,
+                  1028,
+                  1029,
+                  1030,
+                  1031,
+                  1032,
+                  1033,
+                  1062,
+                  1063,
+                  1064,
+                  1065,
+                  1066,
+                  1067,
+                  1096,
+                  1097,
+                  1098,
+                  1099,
+                  1100,
+                  1101,
+                  1132,
+                  1133,
+                  1134
+                ],
+                "n_samples": 12288,
+                "force_error": 3.469446951953614e-17,
+                "moment_error": 8.009496363430781e-11,
+                "raw_mass_error": -2.192912518239609e-12,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              }
+            ],
+            "solve_residual": 7.375012295843231e-13
+          }
+        ]
+      },
+      "seconds": 1.023016794999421
+    },
+    {
+      "case": "angle_-0.12",
+      "pairs": [
+        [
+          -0.12,
+          0.05,
+          0.002
+        ]
+      ],
+      "metrics": {
+        "coarse": {
+          "tensor_relative": 0.9618685021545103,
+          "sampled_peak_vm_Pa": 9335.602189118583,
+          "peak_relative": 0.9274647551167198
+        },
+        "joint": {
+          "tensor_relative": 0.2311414540470724,
+          "sampled_peak_vm_Pa": 117493.15772339348,
+          "peak_relative": 0.08710816989291048
+        }
+      },
+      "atlas": {
+        "tensor_relative": 0.392210035462244,
+        "sampled_peak_vm_Pa": 92307.4530776053,
+        "peak_relative": 0.2827946630652053
+      },
+      "checks": {
+        "coarse": [
+          {
+            "raw_wrench_norm": 7.09691162219917e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  5
+                ],
+                "n_samples": 256,
+                "force_error": 1.734723475976807e-17,
+                "moment_error": 5.674528108653992e-16,
+                "raw_mass_error": -7.751577157932843e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  21
+                ],
+                "n_samples": 256,
+                "force_error": 1.734723475976807e-17,
+                "moment_error": 5.674528108653992e-16,
+                "raw_mass_error": -7.751577157932843e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              }
+            ],
+            "solve_residual": 5.366002514018264e-15
+          }
+        ],
+        "atlas0": [
+          {
+            "raw_wrench_norm": 6.877116219557327e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  34,
+                  35,
+                  36,
+                  44,
+                  45,
+                  46
+                ],
+                "n_samples": 13312,
+                "force_error": 1.734723475976807e-17,
+                "moment_error": 7.607397187130735e-16,
+                "raw_mass_error": 2.220446049250313e-16,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 0.9999999972566087"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 4,
+                "face_ids": [
+                  131,
+                  132,
+                  141,
+                  142
+                ],
+                "n_samples": 9216,
+                "force_error": 1.3985787785349405e-16,
+                "moment_error": 6.086043928267564e-16,
+                "raw_mass_error": 0.0,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 0.9999999973311473"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              }
+            ],
+            "solve_residual": 2.803448830621424e-14
+          }
+        ],
+        "atlas1": [
+          {
+            "raw_wrench_norm": 3.536313419327509e-15,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  39,
+                  40,
+                  41,
+                  51,
+                  52,
+                  53
+                ],
+                "n_samples": 3328,
+                "force_error": 1.3985787785349405e-16,
+                "moment_error": 6.221041536548144e-11,
+                "raw_mass_error": -6.121492202026957e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  159,
+                  160,
+                  161,
+                  171,
+                  172,
+                  173
+                ],
+                "n_samples": 3328,
+                "force_error": 1.3985787785349405e-16,
+                "moment_error": 6.221041536548144e-11,
+                "raw_mass_error": -6.121492202026957e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              }
+            ],
+            "solve_residual": 5.5985695030507965e-12
+          }
+        ],
+        "atlas2": [
+          {
+            "raw_wrench_norm": 6.594395538130678e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 4,
+                "face_ids": [
+                  31,
+                  32,
+                  41,
+                  42
+                ],
+                "n_samples": 9216,
+                "force_error": 1.3985787785349405e-16,
+                "moment_error": 6.086043928267564e-16,
+                "raw_mass_error": 0.0,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 0.9999999973311473"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  134,
+                  135,
+                  136,
+                  144,
+                  145,
+                  146
+                ],
+                "n_samples": 13312,
+                "force_error": 1.3985787785349405e-16,
+                "moment_error": 4.655977847881647e-16,
+                "raw_mass_error": 0.0,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 0.9999999972566087"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              }
+            ],
+            "solve_residual": 2.6697354144060203e-14
+          }
+        ],
+        "joint": [
+          {
+            "raw_wrench_norm": 4.138023108533969e-16,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 12,
+                "face_ids": [
+                  128,
+                  129,
+                  130,
+                  131,
+                  152,
+                  153,
+                  154,
+                  155,
+                  176,
+                  177,
+                  178,
+                  179
+                ],
+                "n_samples": 25088,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 4.24963890840065e-11,
+                "raw_mass_error": -4.395913633103987e-10,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000002444093393"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 12,
+                "face_ids": [
+                  512,
+                  513,
+                  514,
+                  515,
+                  536,
+                  537,
+                  538,
+                  539,
+                  560,
+                  561,
+                  562,
+                  563
+                ],
+                "n_samples": 25088,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 4.24963890840065e-11,
+                "raw_mass_error": -4.395913633103987e-10,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000002444093393"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              }
+            ],
+            "solve_residual": 7.65600989120273e-13
+          }
+        ],
+        "reference": [
+          {
+            "raw_wrench_norm": 2.0187905902785063e-17,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 25,
+                "face_ids": [
+                  250,
+                  251,
+                  252,
+                  253,
+                  283,
+                  284,
+                  285,
+                  286,
+                  287,
+                  288,
+                  317,
+                  318,
+                  319,
+                  320,
+                  321,
+                  322,
+                  351,
+                  352,
+                  353,
+                  354,
+                  355,
+                  356,
+                  387,
+                  388,
+                  389
+                ],
+                "n_samples": 47616,
+                "force_error": 3.469446951953614e-17,
+                "moment_error": 3.943255233643123e-11,
+                "raw_mass_error": -1.9878099166703578e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000644756083"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 25,
+                "face_ids": [
+                  998,
+                  999,
+                  1000,
+                  1001,
+                  1031,
+                  1032,
+                  1033,
+                  1034,
+                  1035,
+                  1036,
+                  1065,
+                  1066,
+                  1067,
+                  1068,
+                  1069,
+                  1070,
+                  1099,
+                  1100,
+                  1101,
+                  1102,
+                  1103,
+                  1104,
+                  1135,
+                  1136,
+                  1137
+                ],
+                "n_samples": 47616,
+                "force_error": 3.469446951953614e-17,
+                "moment_error": 3.943255233643123e-11,
+                "raw_mass_error": -1.9878099166703578e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000644756083"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              }
+            ],
+            "solve_residual": 3.8863461964908224e-13
+          }
+        ]
+      },
+      "seconds": 1.7333061240005918
+    },
+    {
+      "case": "angle_0.0",
+      "pairs": [
+        [
+          0.0,
+          0.05,
+          0.002
+        ]
+      ],
+      "metrics": {
+        "coarse": {
+          "tensor_relative": 0.9578714250574739,
+          "sampled_peak_vm_Pa": 11754.501882778739,
+          "peak_relative": 0.9089454625470458
+        },
+        "joint": {
+          "tensor_relative": 0.2580757998066301,
+          "sampled_peak_vm_Pa": 117391.32807353357,
+          "peak_relative": 0.09064516852187232
+        }
+      },
+      "atlas": {
+        "tensor_relative": 0.38863067050812344,
+        "sampled_peak_vm_Pa": 101433.67198655267,
+        "peak_relative": 0.2142588280647023
+      },
+      "checks": {
+        "coarse": [
+          {
+            "raw_wrench_norm": 7.501355881918536e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 2,
+                "face_ids": [
+                  5,
+                  6
+                ],
+                "n_samples": 768,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 1.6266616857040027e-15,
+                "raw_mass_error": -7.741585150711217e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 2,
+                "face_ids": [
+                  21,
+                  22
+                ],
+                "n_samples": 768,
+                "force_error": 0.0,
+                "moment_error": 3.414601568618898e-17,
+                "raw_mass_error": -7.740474927686591e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              }
+            ],
+            "solve_residual": 4.5094856934510036e-15
+          }
+        ],
+        "atlas0": [
+          {
+            "raw_wrench_norm": 6.618834515268434e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 4,
+                "face_ids": [
+                  36,
+                  37,
+                  46,
+                  47
+                ],
+                "n_samples": 1536,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 1.4140164733579259e-11,
+                "raw_mass_error": -4.704348022244176e-12,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 4,
+                "face_ids": [
+                  132,
+                  133,
+                  142,
+                  143
+                ],
+                "n_samples": 1536,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 1.414124893598689e-11,
+                "raw_mass_error": -4.704236999941713e-12,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              }
+            ],
+            "solve_residual": 2.723236029200791e-14
+          }
+        ],
+        "atlas1": [
+          {
+            "raw_wrench_norm": 7.455042923126095e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 8,
+                "face_ids": [
+                  40,
+                  41,
+                  42,
+                  43,
+                  52,
+                  53,
+                  54,
+                  55
+                ],
+                "n_samples": 3584,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 2.273517745598838e-11,
+                "raw_mass_error": -2.0905499553691698e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 8,
+                "face_ids": [
+                  160,
+                  161,
+                  162,
+                  163,
+                  172,
+                  173,
+                  174,
+                  175
+                ],
+                "n_samples": 3584,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 2.273680375919363e-11,
+                "raw_mass_error": -2.091660178393795e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              }
+            ],
+            "solve_residual": 4.655760405288111e-14
+          }
+        ],
+        "atlas2": [
+          {
+            "raw_wrench_norm": 6.618452500883035e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 4,
+                "face_ids": [
+                  32,
+                  33,
+                  42,
+                  43
+                ],
+                "n_samples": 1536,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 1.4140164733579259e-11,
+                "raw_mass_error": -4.704348022244176e-12,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 4,
+                "face_ids": [
+                  136,
+                  137,
+                  146,
+                  147
+                ],
+                "n_samples": 1536,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 1.414124893598689e-11,
+                "raw_mass_error": -4.704236999941713e-12,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              }
+            ],
+            "solve_residual": 3.0907941026371086e-14
+          }
+        ],
+        "joint": [
+          {
+            "raw_wrench_norm": 1.6272903658205198e-17,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 12,
+                "face_ids": [
+                  130,
+                  131,
+                  132,
+                  133,
+                  154,
+                  155,
+                  156,
+                  157,
+                  178,
+                  179,
+                  180,
+                  181
+                ],
+                "n_samples": 5120,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 8.185731497677784e-14,
+                "raw_mass_error": 2.2093438190040615e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 12,
+                "face_ids": [
+                  514,
+                  515,
+                  516,
+                  517,
+                  538,
+                  539,
+                  540,
+                  541,
+                  562,
+                  563,
+                  564,
+                  565
+                ],
+                "n_samples": 5120,
+                "force_error": 1.5407439555097887e-32,
+                "moment_error": 8.185727174900974e-14,
+                "raw_mass_error": 2.2093438190040615e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              }
+            ],
+            "solve_residual": 8.929017181309684e-14
+          }
+        ],
+        "reference": [
+          {
+            "raw_wrench_norm": 9.496661477596362e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 26,
+                "face_ids": [
+                  253,
+                  254,
+                  255,
+                  256,
+                  286,
+                  287,
+                  288,
+                  289,
+                  290,
+                  291,
+                  320,
+                  321,
+                  322,
+                  323,
+                  324,
+                  325,
+                  354,
+                  355,
+                  356,
+                  357,
+                  358,
+                  359,
+                  389,
+                  390,
+                  391,
+                  392
+                ],
+                "n_samples": 10240,
+                "force_error": 1.5407439555097887e-32,
+                "moment_error": 1.301096817103715e-11,
+                "raw_mass_error": 1.4622969501942862e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 26,
+                "face_ids": [
+                  1001,
+                  1002,
+                  1003,
+                  1004,
+                  1034,
+                  1035,
+                  1036,
+                  1037,
+                  1038,
+                  1039,
+                  1068,
+                  1069,
+                  1070,
+                  1071,
+                  1072,
+                  1073,
+                  1102,
+                  1103,
+                  1104,
+                  1105,
+                  1106,
+                  1107,
+                  1137,
+                  1138,
+                  1139,
+                  1140
+                ],
+                "n_samples": 10240,
+                "force_error": 2.7755575615628914e-16,
+                "moment_error": 1.3009341867663712e-11,
+                "raw_mass_error": 1.4622747457337937e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              }
+            ],
+            "solve_residual": 2.1993993620295746e-13
+          }
+        ]
+      },
+      "seconds": 0.8346551430004183
+    },
+    {
+      "case": "angle_0.12",
+      "pairs": [
+        [
+          0.12,
+          0.05,
+          0.002
+        ]
+      ],
+      "metrics": {
+        "coarse": {
+          "tensor_relative": 0.9592860940266412,
+          "sampled_peak_vm_Pa": 9330.00838589441,
+          "peak_relative": 0.9275082175404101
+        },
+        "joint": {
+          "tensor_relative": 0.23565512785537632,
+          "sampled_peak_vm_Pa": 117493.1577430563,
+          "peak_relative": 0.0871081697550462
+        }
+      },
+      "atlas": {
+        "tensor_relative": 0.3517821133097417,
+        "sampled_peak_vm_Pa": 92307.45303482098,
+        "peak_relative": 0.2827946634093431
+      },
+      "checks": {
+        "coarse": [
+          {
+            "raw_wrench_norm": 6.3717353656486626e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  6
+                ],
+                "n_samples": 256,
+                "force_error": 0.0,
+                "moment_error": 6.145514445103345e-16,
+                "raw_mass_error": -7.751577157932843e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  22
+                ],
+                "n_samples": 256,
+                "force_error": 0.0,
+                "moment_error": 6.145514445103345e-16,
+                "raw_mass_error": -7.751577157932843e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              }
+            ],
+            "solve_residual": 4.9974459900629415e-15
+          }
+        ],
+        "atlas0": [
+          {
+            "raw_wrench_norm": 2.348988948253032e-15,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 4,
+                "face_ids": [
+                  37,
+                  38,
+                  47,
+                  48
+                ],
+                "n_samples": 2432,
+                "force_error": 0.0,
+                "moment_error": 7.654195282649473e-10,
+                "raw_mass_error": 2.1816082274028759e-10,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  133,
+                  134,
+                  135,
+                  143,
+                  144,
+                  145
+                ],
+                "n_samples": 3328,
+                "force_error": 2.797157557069881e-16,
+                "moment_error": 7.821517262475467e-10,
+                "raw_mass_error": 1.4643197765451532e-10,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              }
+            ],
+            "solve_residual": 2.5997261498290665e-12
+          }
+        ],
+        "atlas1": [
+          {
+            "raw_wrench_norm": 3.799906522793105e-14,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  42,
+                  43,
+                  44,
+                  54,
+                  55,
+                  56
+                ],
+                "n_samples": 3328,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 1.6147668289794586e-09,
+                "raw_mass_error": 6.737503888132323e-10,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  162,
+                  163,
+                  164,
+                  174,
+                  175,
+                  176
+                ],
+                "n_samples": 3328,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 1.6147668289794586e-09,
+                "raw_mass_error": 6.737503888132323e-10,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              }
+            ],
+            "solve_residual": 6.004097778229328e-11
+          }
+        ],
+        "atlas2": [
+          {
+            "raw_wrench_norm": 2.349025046133365e-15,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  33,
+                  34,
+                  35,
+                  43,
+                  44,
+                  45
+                ],
+                "n_samples": 3328,
+                "force_error": 2.797157557069881e-16,
+                "moment_error": 7.821517262475467e-10,
+                "raw_mass_error": 1.4643197765451532e-10,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 4,
+                "face_ids": [
+                  137,
+                  138,
+                  147,
+                  148
+                ],
+                "n_samples": 2432,
+                "force_error": 0.0,
+                "moment_error": 7.654195282649473e-10,
+                "raw_mass_error": 2.1816082274028759e-10,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              }
+            ],
+            "solve_residual": 2.6115855471325918e-12
+          }
+        ],
+        "joint": [
+          {
+            "raw_wrench_norm": 2.289581277972396e-17,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 12,
+                "face_ids": [
+                  132,
+                  133,
+                  134,
+                  135,
+                  156,
+                  157,
+                  158,
+                  159,
+                  180,
+                  181,
+                  182,
+                  183
+                ],
+                "n_samples": 25600,
+                "force_error": 1.734723475976807e-17,
+                "moment_error": 1.1320612069839294e-11,
+                "raw_mass_error": 1.9253487693049465e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000229397038"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 12,
+                "face_ids": [
+                  516,
+                  517,
+                  518,
+                  519,
+                  540,
+                  541,
+                  542,
+                  543,
+                  564,
+                  565,
+                  566,
+                  567
+                ],
+                "n_samples": 25600,
+                "force_error": 1.734723475976807e-17,
+                "moment_error": 1.1320612069839294e-11,
+                "raw_mass_error": 1.9253487693049465e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000229397039"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              }
+            ],
+            "solve_residual": 2.874280109315163e-13
+          }
+        ],
+        "reference": [
+          {
+            "raw_wrench_norm": 2.4237559321761247e-17,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 25,
+                "face_ids": [
+                  256,
+                  257,
+                  258,
+                  259,
+                  289,
+                  290,
+                  291,
+                  292,
+                  293,
+                  294,
+                  323,
+                  324,
+                  325,
+                  326,
+                  327,
+                  328,
+                  357,
+                  358,
+                  359,
+                  360,
+                  361,
+                  362,
+                  392,
+                  393,
+                  394
+                ],
+                "n_samples": 48128,
+                "force_error": 2.7755575615628914e-16,
+                "moment_error": 6.699624116878254e-13,
+                "raw_mass_error": -2.573496971081113e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 0.9999999437705086"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 25,
+                "face_ids": [
+                  1004,
+                  1005,
+                  1006,
+                  1007,
+                  1037,
+                  1038,
+                  1039,
+                  1040,
+                  1041,
+                  1042,
+                  1071,
+                  1072,
+                  1073,
+                  1074,
+                  1075,
+                  1076,
+                  1105,
+                  1106,
+                  1107,
+                  1108,
+                  1109,
+                  1110,
+                  1140,
+                  1141,
+                  1142
+                ],
+                "n_samples": 48128,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 6.699662748956205e-13,
+                "raw_mass_error": -2.5723867480564877e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 0.9999999437705085"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.734723475976807e-17
+              }
+            ],
+            "solve_residual": 3.9999852606130127e-13
+          }
+        ]
+      },
+      "seconds": 1.6087435279987403
+    },
+    {
+      "case": "angle_0.23",
+      "pairs": [
+        [
+          0.23,
+          0.05,
+          0.002
+        ]
+      ],
+      "metrics": {
+        "coarse": {
+          "tensor_relative": 0.95640198462777,
+          "sampled_peak_vm_Pa": 9016.78226165167,
+          "peak_relative": 0.9293547852111227
+        },
+        "joint": {
+          "tensor_relative": 0.22770900813570727,
+          "sampled_peak_vm_Pa": 116095.55883210522,
+          "peak_relative": 0.09040770291080857
+        }
+      },
+      "atlas": {
+        "tensor_relative": 0.6038432369965672,
+        "sampled_peak_vm_Pa": 95285.46533828138,
+        "peak_relative": 0.2534518445998315
+      },
+      "checks": {
+        "coarse": [
+          {
+            "raw_wrench_norm": 6.145416313824153e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  6
+                ],
+                "n_samples": 256,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 1.5914304233871177e-16,
+                "raw_mass_error": -7.752687380957468e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  22
+                ],
+                "n_samples": 256,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 1.5914304233871177e-16,
+                "raw_mass_error": -7.752687380957468e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              }
+            ],
+            "solve_residual": 6.874577604155424e-15
+          }
+        ],
+        "atlas0": [
+          {
+            "raw_wrench_norm": 3.3104484779878843e-15,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 2,
+                "face_ids": [
+                  38,
+                  48
+                ],
+                "n_samples": 5120,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 6.30622153337472e-16,
+                "raw_mass_error": 4.440892098500626e-16,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000002192182"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  134,
+                  135,
+                  136,
+                  144,
+                  145,
+                  146
+                ],
+                "n_samples": 3456,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 3.310375464262317e-11,
+                "raw_mass_error": -3.3435476609611214e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              }
+            ],
+            "solve_residual": 2.468806740730524e-12
+          }
+        ],
+        "atlas1": [
+          {
+            "raw_wrench_norm": 1.7598650541788414e-17,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  43,
+                  44,
+                  45,
+                  55,
+                  56,
+                  57
+                ],
+                "n_samples": 12800,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 3.2727231599130994e-15,
+                "raw_mass_error": -2.7755575615628914e-15,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 0.9999999731451858"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  163,
+                  164,
+                  165,
+                  175,
+                  176,
+                  177
+                ],
+                "n_samples": 12800,
+                "force_error": 0.0,
+                "moment_error": 2.717249165487434e-15,
+                "raw_mass_error": -2.886579864025407e-15,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 0.9999999731451858"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              }
+            ],
+            "solve_residual": 5.818049481054704e-14
+          }
+        ],
+        "atlas2": [
+          {
+            "raw_wrench_norm": 3.3104254833261398e-15,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  34,
+                  35,
+                  36,
+                  44,
+                  45,
+                  46
+                ],
+                "n_samples": 3456,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 3.310375464262317e-11,
+                "raw_mass_error": -3.3435476609611214e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 2,
+                "face_ids": [
+                  138,
+                  148
+                ],
+                "n_samples": 5120,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 6.30622153337472e-16,
+                "raw_mass_error": 4.440892098500626e-16,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000002192182"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              }
+            ],
+            "solve_residual": 2.4562976603822846e-12
+          }
+        ],
+        "joint": [
+          {
+            "raw_wrench_norm": 8.229988381638628e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 12,
+                "face_ids": [
+                  134,
+                  135,
+                  136,
+                  137,
+                  158,
+                  159,
+                  160,
+                  161,
+                  182,
+                  183,
+                  184,
+                  185
+                ],
+                "n_samples": 25088,
+                "force_error": 6.938893903907228e-17,
+                "moment_error": 8.746638762329336e-16,
+                "raw_mass_error": 6.661338147750939e-16,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000003821092"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 12,
+                "face_ids": [
+                  518,
+                  519,
+                  520,
+                  521,
+                  542,
+                  543,
+                  544,
+                  545,
+                  566,
+                  567,
+                  568,
+                  569
+                ],
+                "n_samples": 25088,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 7.5135115580151735e-16,
+                "raw_mass_error": 4.440892098500626e-16,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000003821092"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              }
+            ],
+            "solve_residual": 2.8589372178630274e-13
+          }
+        ],
+        "reference": [
+          {
+            "raw_wrench_norm": 7.878352704537247e-15,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 25,
+                "face_ids": [
+                  259,
+                  260,
+                  261,
+                  262,
+                  292,
+                  293,
+                  294,
+                  295,
+                  296,
+                  297,
+                  326,
+                  327,
+                  328,
+                  329,
+                  330,
+                  331,
+                  360,
+                  361,
+                  362,
+                  363,
+                  364,
+                  365,
+                  395,
+                  396,
+                  397
+                ],
+                "n_samples": 12160,
+                "force_error": 6.938893903907228e-17,
+                "moment_error": 9.685206169635452e-10,
+                "raw_mass_error": -7.845952776364129e-10,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 25,
+                "face_ids": [
+                  1007,
+                  1008,
+                  1009,
+                  1010,
+                  1040,
+                  1041,
+                  1042,
+                  1043,
+                  1044,
+                  1045,
+                  1074,
+                  1075,
+                  1076,
+                  1077,
+                  1078,
+                  1079,
+                  1108,
+                  1109,
+                  1110,
+                  1111,
+                  1112,
+                  1113,
+                  1143,
+                  1144,
+                  1145
+                ],
+                "n_samples": 12160,
+                "force_error": 6.938893903907228e-17,
+                "moment_error": 9.685206169635452e-10,
+                "raw_mass_error": -7.845952776364129e-10,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.3877787807814454e-16
+              }
+            ],
+            "solve_residual": 2.3801361720200858e-11
+          }
+        ]
+      },
+      "seconds": 1.222977589999573
+    },
+    {
+      "case": "two_balanced_pairs",
+      "pairs": [
+        [
+          -0.17,
+          0.035,
+          0.002
+        ],
+        [
+          0.16,
+          0.05,
+          0.0015
+        ]
+      ],
+      "metrics": {
+        "coarse": {
+          "tensor_relative": 0.9396202003978619,
+          "sampled_peak_vm_Pa": 12858.47917448204,
+          "peak_relative": 0.9131570727410743
+        },
+        "joint": {
+          "tensor_relative": 0.24117174263492608,
+          "sampled_peak_vm_Pa": 131186.2081589486,
+          "peak_relative": 0.11400141665814223
+        }
+      },
+      "atlas": {
+        "tensor_relative": 0.6466856804236258,
+        "sampled_peak_vm_Pa": 95083.8441957077,
+        "peak_relative": 0.3578276829678425
+      },
+      "checks": {
+        "coarse": [
+          {
+            "raw_wrench_norm": 6.8006624324138244e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.035,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  5
+                ],
+                "n_samples": 256,
+                "force_error": 0.0,
+                "moment_error": 7.686671607942443e-16,
+                "raw_mass_error": -7.751577157932843e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.9979696836213434e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.035,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  21
+                ],
+                "n_samples": 256,
+                "force_error": 2.4781763942525817e-17,
+                "moment_error": 9.053192171744927e-16,
+                "raw_mass_error": -7.750466934908218e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.9979696836213434e-16
+              }
+            ],
+            "solve_residual": 5.666850614287991e-15
+          },
+          {
+            "raw_wrench_norm": 4.6278100302269966e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.0015,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 3.0,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  6
+                ],
+                "n_samples": 256,
+                "force_error": 3.469446951953614e-17,
+                "moment_error": 1.1289898554518237e-15,
+                "raw_mass_error": -7.752687380957468e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 2.7971575570698805e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.0015,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 3.0,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  22
+                ],
+                "n_samples": 256,
+                "force_error": 3.469446951953614e-17,
+                "moment_error": 1.1289898554518237e-15,
+                "raw_mass_error": -7.752687380957468e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 2.7971575570698805e-16
+              }
+            ],
+            "solve_residual": 5.45971083245397e-15
+          }
+        ],
+        "atlas0": [
+          {
+            "raw_wrench_norm": 3.951394483680079e-15,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.035,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  34,
+                  35,
+                  36,
+                  44,
+                  45,
+                  46
+                ],
+                "n_samples": 3328,
+                "force_error": 1.9825411154020654e-16,
+                "moment_error": 5.644896785701631e-11,
+                "raw_mass_error": -6.868350332922546e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.9979696836213434e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.035,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 4,
+                "face_ids": [
+                  131,
+                  132,
+                  141,
+                  142
+                ],
+                "n_samples": 8704,
+                "force_error": 1.997969683621344e-16,
+                "moment_error": 1.2772683908053797e-15,
+                "raw_mass_error": 0.0,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000001981232"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.9979696836213434e-16
+              }
+            ],
+            "solve_residual": 4.1686194766673834e-12
+          },
+          {
+            "raw_wrench_norm": 8.755355598077179e-15,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.0015,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 3.0,
+                "method": "face_polar",
+                "faces": 3,
+                "face_ids": [
+                  38,
+                  47,
+                  48
+                ],
+                "n_samples": 1792,
+                "force_error": 1.430489624538199e-16,
+                "moment_error": 3.824894043777634e-11,
+                "raw_mass_error": -5.4012350148013866e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 2.7971575570698805e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.0015,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 3.0,
+                "method": "face_polar",
+                "faces": 5,
+                "face_ids": [
+                  134,
+                  135,
+                  143,
+                  144,
+                  145
+                ],
+                "n_samples": 2944,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 7.888055306364146e-11,
+                "raw_mass_error": -5.0889070735138375e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 2.7971575570698805e-16
+              }
+            ],
+            "solve_residual": 1.0724640385960809e-11
+          }
+        ],
+        "atlas1": [
+          {
+            "raw_wrench_norm": 9.588052061467861e-15,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.035,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  38,
+                  39,
+                  40,
+                  50,
+                  51,
+                  52
+                ],
+                "n_samples": 3328,
+                "force_error": 1.997969683621344e-16,
+                "moment_error": 7.604861827294484e-09,
+                "raw_mass_error": -6.412134156974503e-10,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.9979696836213434e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.035,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  158,
+                  159,
+                  160,
+                  170,
+                  171,
+                  172
+                ],
+                "n_samples": 3328,
+                "force_error": 1.997969683621344e-16,
+                "moment_error": 7.604861827294484e-09,
+                "raw_mass_error": -6.412134156974503e-10,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.9979696836213434e-16
+              }
+            ],
+            "solve_residual": 2.153619145664406e-11
+          },
+          {
+            "raw_wrench_norm": 1.4179017144943908e-17,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.0015,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 3.0,
+                "method": "face_polar",
+                "faces": 4,
+                "face_ids": [
+                  43,
+                  44,
+                  55,
+                  56
+                ],
+                "n_samples": 9728,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 1.4498746625226872e-15,
+                "raw_mass_error": -7.771561172376096e-16,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000001043393"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 2.7971575570698805e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.0015,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 3.0,
+                "method": "face_polar",
+                "faces": 4,
+                "face_ids": [
+                  163,
+                  164,
+                  175,
+                  176
+                ],
+                "n_samples": 9728,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 7.2886954062109e-16,
+                "raw_mass_error": -8.881784197001252e-16,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000001043393"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 2.7971575570698805e-16
+              }
+            ],
+            "solve_residual": 4.3705909282180306e-14
+          }
+        ],
+        "atlas2": [
+          {
+            "raw_wrench_norm": 3.951402683424851e-15,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.035,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 4,
+                "face_ids": [
+                  31,
+                  32,
+                  41,
+                  42
+                ],
+                "n_samples": 8704,
+                "force_error": 1.1005313967927063e-32,
+                "moment_error": 1.0555514086360525e-15,
+                "raw_mass_error": 2.220446049250313e-16,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000001981232"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 1.9979696836213434e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.035,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 6,
+                "face_ids": [
+                  134,
+                  135,
+                  136,
+                  144,
+                  145,
+                  146
+                ],
+                "n_samples": 3328,
+                "force_error": 1.997969683621344e-16,
+                "moment_error": 5.6449298899400794e-11,
+                "raw_mass_error": -6.868372537383038e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.9979696836213434e-16
+              }
+            ],
+            "solve_residual": 4.1775292005114285e-12
+          },
+          {
+            "raw_wrench_norm": 8.755325730225404e-15,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.0015,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 3.0,
+                "method": "face_polar",
+                "faces": 5,
+                "face_ids": [
+                  34,
+                  35,
+                  43,
+                  44,
+                  45
+                ],
+                "n_samples": 2944,
+                "force_error": 0.0,
+                "moment_error": 7.888053190400404e-11,
+                "raw_mass_error": -5.088918175744084e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 2.7971575570698805e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.0015,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 3.0,
+                "method": "face_polar",
+                "faces": 3,
+                "face_ids": [
+                  138,
+                  147,
+                  148
+                ],
+                "n_samples": 1792,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 3.824883413349599e-11,
+                "raw_mass_error": -5.40122391257114e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 2.7971575570698805e-16
+              }
+            ],
+            "solve_residual": 1.0714719191015611e-11
+          }
+        ],
+        "joint": [
+          {
+            "raw_wrench_norm": 8.236763997676252e-16,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.035,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 12,
+                "face_ids": [
+                  127,
+                  128,
+                  129,
+                  130,
+                  151,
+                  152,
+                  153,
+                  154,
+                  175,
+                  176,
+                  177,
+                  178
+                ],
+                "n_samples": 6400,
+                "force_error": 1.1005313967927063e-32,
+                "moment_error": 2.1905269048586593e-11,
+                "raw_mass_error": 8.828937581029095e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.9979696836213434e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.035,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 12,
+                "face_ids": [
+                  511,
+                  512,
+                  513,
+                  514,
+                  535,
+                  536,
+                  537,
+                  538,
+                  559,
+                  560,
+                  561,
+                  562
+                ],
+                "n_samples": 6400,
+                "force_error": 1.1005313967927063e-32,
+                "moment_error": 2.1905269048586593e-11,
+                "raw_mass_error": 8.828937581029095e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.9979696836213434e-16
+              }
+            ],
+            "solve_residual": 2.3555166330072866e-12
+          },
+          {
+            "raw_wrench_norm": 1.0116370022254245e-15,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.0015,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 3.0,
+                "method": "face_polar",
+                "faces": 9,
+                "face_ids": [
+                  133,
+                  134,
+                  135,
+                  157,
+                  158,
+                  159,
+                  181,
+                  182,
+                  183
+                ],
+                "n_samples": 4864,
+                "force_error": 3.469446951953614e-17,
+                "moment_error": 1.4668309257923116e-10,
+                "raw_mass_error": 4.0248249177921025e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 2.7971575570698805e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.0015,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 3.0,
+                "method": "face_polar",
+                "faces": 9,
+                "face_ids": [
+                  517,
+                  518,
+                  519,
+                  541,
+                  542,
+                  543,
+                  565,
+                  566,
+                  567
+                ],
+                "n_samples": 4864,
+                "force_error": 3.469446951953614e-17,
+                "moment_error": 1.4668309257923116e-10,
+                "raw_mass_error": 4.0248249177921025e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 2.7971575570698805e-16
+              }
+            ],
+            "solve_residual": 1.6340348918629882e-12
+          }
+        ],
+        "reference": [
+          {
+            "raw_wrench_norm": 5.121771752418705e-16,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.035,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 22,
+                "face_ids": [
+                  249,
+                  250,
+                  251,
+                  252,
+                  282,
+                  283,
+                  284,
+                  285,
+                  286,
+                  316,
+                  317,
+                  318,
+                  319,
+                  320,
+                  350,
+                  351,
+                  352,
+                  353,
+                  354,
+                  385,
+                  386,
+                  387
+                ],
+                "n_samples": 10880,
+                "force_error": 3.9650822308041307e-16,
+                "moment_error": 2.4360651748602046e-11,
+                "raw_mass_error": 3.870859188737086e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.9979696836213434e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.002,
+                "normal_force": 0.035,
+                "a_over_h": 4.0,
+                "method": "face_polar",
+                "faces": 22,
+                "face_ids": [
+                  997,
+                  998,
+                  999,
+                  1000,
+                  1030,
+                  1031,
+                  1032,
+                  1033,
+                  1034,
+                  1064,
+                  1065,
+                  1066,
+                  1067,
+                  1068,
+                  1098,
+                  1099,
+                  1100,
+                  1101,
+                  1102,
+                  1133,
+                  1134,
+                  1135
+                ],
+                "n_samples": 10880,
+                "force_error": 1.997969683621344e-16,
+                "moment_error": 2.435988631497544e-11,
+                "raw_mass_error": 3.870836984276593e-11,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 1.9979696836213434e-16
+              }
+            ],
+            "solve_residual": 2.3209147323886716e-12
+          },
+          {
+            "raw_wrench_norm": 4.9899323358430186e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 0.0015,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 3.0,
+                "method": "face_polar",
+                "faces": 14,
+                "face_ids": [
+                  258,
+                  259,
+                  291,
+                  292,
+                  293,
+                  294,
+                  325,
+                  326,
+                  327,
+                  328,
+                  359,
+                  360,
+                  361,
+                  362
+                ],
+                "n_samples": 28672,
+                "force_error": 0.0,
+                "moment_error": 3.074769814080483e-14,
+                "raw_mass_error": 6.661338147750939e-15,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000011315188"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 2.7971575570698805e-16
+              },
+              {
+                "valid": true,
+                "radius_m": 0.0015,
+                "normal_force": 0.05000000000000001,
+                "a_over_h": 3.0,
+                "method": "face_polar",
+                "faces": 14,
+                "face_ids": [
+                  1006,
+                  1007,
+                  1039,
+                  1040,
+                  1041,
+                  1042,
+                  1073,
+                  1074,
+                  1075,
+                  1076,
+                  1107,
+                  1108,
+                  1109,
+                  1110
+                ],
+                "n_samples": 28672,
+                "force_error": 0.0,
+                "moment_error": 3.074769814080483e-14,
+                "raw_mass_error": 6.661338147750939e-15,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 32,
+                "adaptive_attempts": 1,
+                "retained_failures": [
+                  {
+                    "order": 16,
+                    "message": "Finite footprint not resolved/covered: normalized mass 1.000000011315188"
+                  }
+                ],
+                "fixture_relative_tangential_roundoff": 2.7971575570698805e-16
+              }
+            ],
+            "solve_residual": 3.264108955166157e-13
+          }
+        ]
+      },
+      "seconds": 2.350319405000846
+    },
+    {
+      "case": "auto_tiny",
+      "pairs": [
+        [
+          0.07,
+          0.05,
+          null
+        ]
+      ],
+      "metrics": {
+        "coarse": {
+          "tensor_relative": 0.9708899663281721,
+          "sampled_peak_vm_Pa": 10827.404654067419,
+          "peak_relative": 0.9436154265877371
+        },
+        "joint": {
+          "tensor_relative": 0.30108114632967,
+          "sampled_peak_vm_Pa": 153338.178661634,
+          "peak_relative": 0.2014792031992939
+        }
+      },
+      "atlas": {
+        "tensor_relative": 0.45252044871406355,
+        "sampled_peak_vm_Pa": 113114.8434366843,
+        "peak_relative": 0.41094542990259264
+      },
+      "checks": {
+        "coarse": [
+          {
+            "raw_wrench_norm": 6.372852865866624e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 4.547179486589858e-05,
+                "normal_force": 0.05,
+                "a_over_h": 0.09094358973179716,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  6
+                ],
+                "n_samples": 256,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 5.806221215777228e-15,
+                "raw_mass_error": -7.750466934908218e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              },
+              {
+                "valid": true,
+                "radius_m": 4.547179486589858e-05,
+                "normal_force": 0.05,
+                "a_over_h": 0.09094358973179716,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  22
+                ],
+                "n_samples": 256,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 2.45401692356189e-14,
+                "raw_mass_error": -7.749356711883593e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              }
+            ],
+            "solve_residual": 4.640912770979399e-15
+          }
+        ],
+        "atlas0": [
+          {
+            "raw_wrench_norm": 1.3623724918391379e-17,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 4.547179486589858e-05,
+                "normal_force": 0.05,
+                "a_over_h": 0.09094358973179716,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  47
+                ],
+                "n_samples": 256,
+                "force_error": 1.3904866443919908e-16,
+                "moment_error": 5.9899555956549e-15,
+                "raw_mass_error": -7.750466934908218e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              },
+              {
+                "valid": true,
+                "radius_m": 4.547179486589858e-05,
+                "normal_force": 0.05,
+                "a_over_h": 0.09094358973179716,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  143
+                ],
+                "n_samples": 256,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 2.4258901462768742e-14,
+                "raw_mass_error": -7.749356711883593e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              }
+            ],
+            "solve_residual": 2.0772852197353088e-14
+          }
+        ],
+        "atlas1": [
+          {
+            "raw_wrench_norm": 6.511621765940849e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 4.547179486589858e-05,
+                "normal_force": 0.05,
+                "a_over_h": 0.09094358973179716,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  55
+                ],
+                "n_samples": 256,
+                "force_error": 1.3904866443919908e-16,
+                "moment_error": 2.389269345487276e-14,
+                "raw_mass_error": -7.749356711883593e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              },
+              {
+                "valid": true,
+                "radius_m": 4.547179486589858e-05,
+                "normal_force": 0.05,
+                "a_over_h": 0.09094358973179716,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  175
+                ],
+                "n_samples": 256,
+                "force_error": 1.3904866443919908e-16,
+                "moment_error": 2.389269345487276e-14,
+                "raw_mass_error": -7.749356711883593e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              }
+            ],
+            "solve_residual": 3.3445306145504054e-14
+          }
+        ],
+        "atlas2": [
+          {
+            "raw_wrench_norm": 1.3623713503292377e-17,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 4.547179486589858e-05,
+                "normal_force": 0.05,
+                "a_over_h": 0.09094358973179716,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  43
+                ],
+                "n_samples": 256,
+                "force_error": 1.3904866443919908e-16,
+                "moment_error": 5.9899555956549e-15,
+                "raw_mass_error": -7.750466934908218e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              },
+              {
+                "valid": true,
+                "radius_m": 4.547179486589858e-05,
+                "normal_force": 0.05,
+                "a_over_h": 0.09094358973179716,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  147
+                ],
+                "n_samples": 256,
+                "force_error": 1.3877787807814457e-16,
+                "moment_error": 2.4258901462768742e-14,
+                "raw_mass_error": -7.749356711883593e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              }
+            ],
+            "solve_residual": 2.641506283954182e-14
+          }
+        ],
+        "joint": [
+          {
+            "raw_wrench_norm": 6.66021479181234e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 4.547179486589858e-05,
+                "normal_force": 0.05,
+                "a_over_h": 0.09094358973179716,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  157
+                ],
+                "n_samples": 256,
+                "force_error": 1.3904866443919908e-16,
+                "moment_error": 2.506168616904754e-14,
+                "raw_mass_error": -7.751577157932843e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              },
+              {
+                "valid": true,
+                "radius_m": 4.547179486589858e-05,
+                "normal_force": 0.05,
+                "a_over_h": 0.09094358973179716,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  541
+                ],
+                "n_samples": 256,
+                "force_error": 1.3904866443919908e-16,
+                "moment_error": 2.506168616904754e-14,
+                "raw_mass_error": -7.751577157932843e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              }
+            ],
+            "solve_residual": 1.2258685227001785e-13
+          }
+        ],
+        "reference": [
+          {
+            "raw_wrench_norm": 6.133838609575189e-18,
+            "contact_checks": [
+              {
+                "valid": true,
+                "radius_m": 4.547179486589858e-05,
+                "normal_force": 0.05,
+                "a_over_h": 0.09094358973179716,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  324
+                ],
+                "n_samples": 256,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 2.4005546178474397e-14,
+                "raw_mass_error": -7.750466934908218e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              },
+              {
+                "valid": true,
+                "radius_m": 4.547179486589858e-05,
+                "normal_force": 0.05,
+                "a_over_h": 0.09094358973179716,
+                "method": "face_polar",
+                "faces": 1,
+                "face_ids": [
+                  1072
+                ],
+                "n_samples": 256,
+                "force_error": 7.703719777548943e-33,
+                "moment_error": 2.4005546178474397e-14,
+                "raw_mass_error": -7.750466934908218e-13,
+                "min_nodal_weight": 0.0,
+                "embedded_relative_error": null,
+                "witness_complete_disk": false,
+                "requested_order": 16,
+                "quadrature_order": 16,
+                "adaptive_attempts": 0,
+                "retained_failures": [],
+                "fixture_relative_tangential_roundoff": 0.0
+              }
+            ],
+            "solve_residual": 1.5056092244880262e-13
+          }
+        ]
+      },
+      "seconds": 0.48265280200030247
+    }
+  ],
+  "failures": [],
+  "source_sha256": "bbdd5afcbc4ad5aac70020b6eeba439d997e8ca3d82bcde064d6627b4e719b94"
+}

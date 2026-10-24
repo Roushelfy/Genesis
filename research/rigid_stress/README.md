@@ -19,6 +19,20 @@ CPU/native consistency, detailed profiling and useful small/large-batch
 throughput on the full Franka/hollow-egg workflow before physical convergence
 campaigns. Shell in-plane stress and unresolved 3D contact peaks remain distinct.
 
+## Feature-mesh atlas: theory and CPU validation (2026-10-24)
+
+The [new CPU study](atlas_study/README.md) derives and tests a library of
+locally refined meshes for changing contact loads. It includes a
+[Chinese derivation](atlas_study/THEORY_ZH.md), extended proofs, 3D P2,
+shell and nonconvex controls, fair response-operator timing, and retained
+accuracy/resource/numerical failures. See [the measured report](atlas_study/REPORT.md).
+
+The method improves coarse sampled fields on the tested fixtures, but mixed
+mesh responses are not the joint-refined Galerkin solution. Hard switching,
+response storage, reference sensitivity and unresolved egg peaks remain
+explicit. This is supplementary CPU research, not a delivered native backend
+or a change to the active thin-shell integration goal.
+
 ## CPU thin-shell feasibility study (2026-10-24)
 
 The [shell CPU study](shell_cpu/README.md) implements and tests fixed linear

@@ -1,0 +1,1291 @@
+{
+  "scope": "2D plane-stress P2 exact nonconvex dogbone, prescribed finite edge Hertz-line traction; no 3D or contact-solve claim. Common physical stress probes exclude clamp x<0.113 and radius0.105 around four sharp reentrant corners; full mathematical corner maximum is singular.",
+  "E": 1.0,
+  "nu": 0.3,
+  "geometry": {
+    "length": 4.0,
+    "end_halfwidth": 1.0,
+    "neck_x": [
+      1.5,
+      2.5
+    ],
+    "neck_halfwidth": 0.2
+  },
+  "anchors": [
+    -0.65,
+    0.0,
+    0.65
+  ],
+  "probes": 6977,
+  "models": [
+    {
+      "label": "coarse",
+      "nodes": 75,
+      "triangles": 104,
+      "dofs": 506,
+      "setup_s": 0.19408981099877565,
+      "factor_s": 0.0017232400005013915,
+      "lu_nnz": 14566,
+      "lu_arrays_bytes": 178576
+    },
+    {
+      "label": "contact_only_-0.65",
+      "nodes": 328,
+      "triangles": 536,
+      "dofs": 2382,
+      "setup_s": 0.16331757900115917,
+      "factor_s": 0.005916157000683597,
+      "lu_nnz": 122654,
+      "lu_arrays_bytes": 1490128
+    },
+    {
+      "label": "contact_only_0",
+      "nodes": 336,
+      "triangles": 568,
+      "dofs": 2478,
+      "setup_s": 0.16736802000013995,
+      "factor_s": 0.006423140999686439,
+      "lu_nnz": 142323,
+      "lu_arrays_bytes": 1726924
+    },
+    {
+      "label": "contact_only_0.65",
+      "nodes": 328,
+      "triangles": 536,
+      "dofs": 2382,
+      "setup_s": 0.16061260800051969,
+      "factor_s": 0.006008266000208096,
+      "lu_nnz": 123307,
+      "lu_arrays_bytes": 1497964
+    },
+    {
+      "label": "contact_and_neck_-0.65",
+      "nodes": 747,
+      "triangles": 1318,
+      "dofs": 5622,
+      "setup_s": 0.19443266799862613,
+      "factor_s": 0.015986633001375594,
+      "lu_nnz": 381421,
+      "lu_arrays_bytes": 4620900
+    },
+    {
+      "label": "contact_and_neck_0",
+      "nodes": 642,
+      "triangles": 1144,
+      "dofs": 4854,
+      "setup_s": 0.1937244290002127,
+      "factor_s": 0.015881592998994165,
+      "lu_nnz": 356364,
+      "lu_arrays_bytes": 4314296
+    },
+    {
+      "label": "contact_and_neck_0.65",
+      "nodes": 747,
+      "triangles": 1318,
+      "dofs": 5622,
+      "setup_s": 0.19582950499898288,
+      "factor_s": 0.015781902999151498,
+      "lu_nnz": 379270,
+      "lu_arrays_bytes": 4595088
+    },
+    {
+      "label": "union_refined",
+      "nodes": 1174,
+      "triangles": 2096,
+      "dofs": 8886,
+      "setup_s": 0.21101245599857066,
+      "factor_s": 0.024882454999897163,
+      "lu_nnz": 636027,
+      "lu_arrays_bytes": 7701612
+    },
+    {
+      "label": "intermediate_reference",
+      "nodes": 3480,
+      "triangles": 6468,
+      "dofs": 26854,
+      "setup_s": 0.34704968000005465,
+      "factor_s": 0.09216771200044604,
+      "lu_nnz": 2505400,
+      "lu_arrays_bytes": 30275976
+    },
+    {
+      "label": "finer_reference",
+      "nodes": 10764,
+      "triangles": 20620,
+      "dofs": 84294,
+      "setup_s": 1.7179119869997521,
+      "factor_s": 0.45777094599907286,
+      "lu_nnz": 10182630,
+      "lu_arrays_bytes": 122859056
+    }
+  ],
+  "cases": [
+    {
+      "name": "move_-0.76",
+      "contacts": [
+        [
+          -0.76,
+          0.12,
+          [
+            -1.0,
+            0.2
+          ]
+        ]
+      ],
+      "reference_change": 0.04254729042078224,
+      "reference_last_change": 0.013721423327848807,
+      "coarse_error": 0.21120521853919577,
+      "coarse_neck_error": 0.09130272111656743,
+      "reference_sample_peak_vm": 18.271640037826284,
+      "reference_peak_position": [
+        2.391698113207547,
+        -0.1898536585365853
+      ],
+      "contact_only_hard": {
+        "full_error": 0.18411482573078536,
+        "neck_error": 0.09022036667428467,
+        "peak_vm": 18.259560585191927,
+        "peak_relative_error": 0.0006611039079879808,
+        "error_to_union": 0.17896055893512794
+      },
+      "contact_only_blend": {
+        "full_error": 0.18411482573078536,
+        "neck_error": 0.09022036667428467,
+        "peak_vm": 18.259560585191927,
+        "peak_relative_error": 0.0006611039079879808,
+        "error_to_union": 0.17896055893512794
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.03904978182179414,
+        "neck_error": 0.006734443286451319,
+        "peak_vm": 20.262527712569284,
+        "peak_relative_error": 0.1089605350489298,
+        "error_to_union": 0.02573562611295975
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.03904978182179414,
+        "neck_error": 0.006734443286451319,
+        "peak_vm": 20.262527712569284,
+        "peak_relative_error": 0.1089605350489298,
+        "error_to_union": 0.02573562611295975
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": -0.65,
+          "margin": 0.13,
+          "covered": true
+        }
+      ],
+      "reference_residual": 5.161651086249929e-10,
+      "reference_normwise_backward_error": 5.713118822298118e-19,
+      "load_force_relative": 1.088663243654553e-16,
+      "load_moment_relative": 1.1102230246251565e-16
+    },
+    {
+      "name": "move_-0.65",
+      "contacts": [
+        [
+          -0.65,
+          0.12,
+          [
+            -1.0,
+            0.2
+          ]
+        ]
+      ],
+      "reference_change": 0.04391969287135439,
+      "reference_last_change": 0.017018940727554693,
+      "coarse_error": 0.22186656753744988,
+      "coarse_neck_error": 0.10258297024878794,
+      "reference_sample_peak_vm": 14.34149724994886,
+      "reference_peak_position": [
+        2.391698113207547,
+        -0.1898536585365853
+      ],
+      "contact_only_hard": {
+        "full_error": 0.18505564192910415,
+        "neck_error": 0.10139767382368879,
+        "peak_vm": 14.364664325061913,
+        "peak_relative_error": 0.0016153874807691515,
+        "error_to_union": 0.17929327064566264
+      },
+      "contact_only_blend": {
+        "full_error": 0.18505564192910415,
+        "neck_error": 0.10139767382368879,
+        "peak_vm": 14.364664325061913,
+        "peak_relative_error": 0.0016153874807691515,
+        "error_to_union": 0.17929327064566264
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.041095088706835724,
+        "neck_error": 0.008054004485611915,
+        "peak_vm": 15.976183576654769,
+        "peak_relative_error": 0.1139829613474798,
+        "error_to_union": 0.024918500473017812
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.041095088706835724,
+        "neck_error": 0.008054004485611915,
+        "peak_vm": 15.976183576654769,
+        "peak_relative_error": 0.1139829613474798,
+        "error_to_union": 0.024918500473017812
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": -0.65,
+          "margin": 0.24,
+          "covered": true
+        }
+      ],
+      "reference_residual": 3.397825348100108e-10,
+      "reference_normwise_backward_error": 5.603039835716866e-19,
+      "load_force_relative": 0.0,
+      "load_moment_relative": 0.0
+    },
+    {
+      "name": "move_-0.48",
+      "contacts": [
+        [
+          -0.48,
+          0.12,
+          [
+            -1.0,
+            0.2
+          ]
+        ]
+      ],
+      "reference_change": 0.04453825242863458,
+      "reference_last_change": 0.023334982002354943,
+      "coarse_error": 0.2407056512753177,
+      "coarse_neck_error": 0.14023578193372452,
+      "reference_sample_peak_vm": 8.266547295961196,
+      "reference_peak_position": [
+        2.391698113207547,
+        -0.1898536585365853
+      ],
+      "contact_only_hard": {
+        "full_error": 0.19034588348257436,
+        "neck_error": 0.13907524385141043,
+        "peak_vm": 8.364322219069876,
+        "peak_relative_error": 0.011827782459606867,
+        "error_to_union": 0.1844934836255641
+      },
+      "contact_only_blend": {
+        "full_error": 0.17444176485715449,
+        "neck_error": 0.12364283403290967,
+        "peak_vm": 8.458831669979368,
+        "peak_relative_error": 0.02326054241679796,
+        "error_to_union": 0.16841997737739522
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.04483703483701172,
+        "neck_error": 0.011874287850836605,
+        "peak_vm": 9.352644691802928,
+        "peak_relative_error": 0.1313846466918986,
+        "error_to_union": 0.023446865481729473
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.045656503046684366,
+        "neck_error": 0.01042045930930876,
+        "peak_vm": 9.335129252713124,
+        "peak_relative_error": 0.12926581298022777,
+        "error_to_union": 0.02399562361649569
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": -0.65,
+          "margin": 0.06999999999999995,
+          "covered": true
+        }
+      ],
+      "reference_residual": 8.023177521257791e-11,
+      "reference_normwise_backward_error": 5.096472922283521e-19,
+      "load_force_relative": 1.088663243654553e-16,
+      "load_moment_relative": 0.0
+    },
+    {
+      "name": "move_-0.325",
+      "contacts": [
+        [
+          -0.325,
+          0.12,
+          [
+            -1.0,
+            0.2
+          ]
+        ]
+      ],
+      "reference_change": 0.04470351202691702,
+      "reference_last_change": 0.022632778441639398,
+      "coarse_error": 0.24134383212881,
+      "coarse_neck_error": 0.14474361858467152,
+      "reference_sample_peak_vm": 7.78620128579387,
+      "reference_peak_position": [
+        1.6321320754716981,
+        0.18985365853658542
+      ],
+      "contact_only_hard": {
+        "full_error": 0.19825586694276734,
+        "neck_error": 0.14425684965195254,
+        "peak_vm": 8.056701111619248,
+        "peak_relative_error": 0.03474092383392554,
+        "error_to_union": 0.19478755018785873
+      },
+      "contact_only_blend": {
+        "full_error": 0.1645172285219578,
+        "neck_error": 0.11798085920627052,
+        "peak_vm": 8.142488821923108,
+        "peak_relative_error": 0.04575883965128078,
+        "error_to_union": 0.16055224622663836
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.047601428287898706,
+        "neck_error": 0.011886988334668388,
+        "peak_vm": 7.7585119240092295,
+        "peak_relative_error": 0.0035562093462906067,
+        "error_to_union": 0.028158156526231774
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.04709751432936366,
+        "neck_error": 0.010330660775107787,
+        "peak_vm": 7.756531482732687,
+        "peak_relative_error": 0.0038105620407367976,
+        "error_to_union": 0.02623859482154908
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": -0.65,
+          "margin": -0.08500000000000002,
+          "covered": false
+        }
+      ],
+      "reference_residual": 1.5247157362973623e-10,
+      "reference_normwise_backward_error": 5.147095547388712e-19,
+      "load_force_relative": 0.0,
+      "load_moment_relative": 0.0
+    },
+    {
+      "name": "move_-0.16",
+      "contacts": [
+        [
+          -0.16,
+          0.12,
+          [
+            -1.0,
+            0.2
+          ]
+        ]
+      ],
+      "reference_change": 0.04097789528580471,
+      "reference_last_change": 0.018701121052517124,
+      "coarse_error": 0.20837701620530916,
+      "coarse_neck_error": 0.10999394368443546,
+      "reference_sample_peak_vm": 13.663703939853782,
+      "reference_peak_position": [
+        1.6321320754716981,
+        0.18985365853658542
+      ],
+      "contact_only_hard": {
+        "full_error": 0.1582260954617382,
+        "neck_error": 0.08633569388426858,
+        "peak_vm": 14.227177974544809,
+        "peak_relative_error": 0.041238747353673715,
+        "error_to_union": 0.15674870293059645
+      },
+      "contact_only_blend": {
+        "full_error": 0.1535643398284393,
+        "neck_error": 0.08206006659787675,
+        "peak_vm": 14.152687857434756,
+        "peak_relative_error": 0.03578706913831205,
+        "error_to_union": 0.15188685740418692
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.04352560242419485,
+        "neck_error": 0.00950229065622521,
+        "peak_vm": 13.62380310973749,
+        "peak_relative_error": 0.0029202059918694723,
+        "error_to_union": 0.019677405574788566
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.041300307012091746,
+        "neck_error": 0.008175541409136983,
+        "peak_vm": 13.625359983638367,
+        "peak_relative_error": 0.0028062636883967682,
+        "error_to_union": 0.020155841222433826
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": 0.0,
+          "margin": 0.07999999999999999,
+          "covered": true
+        }
+      ],
+      "reference_residual": 4.394632382988274e-10,
+      "reference_normwise_backward_error": 5.78174943768234e-19,
+      "load_force_relative": 2.7216581091363826e-17,
+      "load_moment_relative": 1.1102230246251565e-16
+    },
+    {
+      "name": "move_0",
+      "contacts": [
+        [
+          0.0,
+          0.12,
+          [
+            -1.0,
+            0.2
+          ]
+        ]
+      ],
+      "reference_change": 0.039242480668510535,
+      "reference_last_change": 0.015254718799560427,
+      "coarse_error": 0.19879558546359613,
+      "coarse_neck_error": 0.0943394780752499,
+      "reference_sample_peak_vm": 19.363504907074457,
+      "reference_peak_position": [
+        1.6321320754716981,
+        0.18985365853658542
+      ],
+      "contact_only_hard": {
+        "full_error": 0.16044136557983862,
+        "neck_error": 0.07267564104197141,
+        "peak_vm": 20.058966490306368,
+        "peak_relative_error": 0.035916100239570974,
+        "error_to_union": 0.15987718260011677
+      },
+      "contact_only_blend": {
+        "full_error": 0.16044136557983862,
+        "neck_error": 0.07267564104197141,
+        "peak_vm": 20.058966490306368,
+        "peak_relative_error": 0.035916100239570974,
+        "error_to_union": 0.15987718260011677
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.041240248839778074,
+        "neck_error": 0.007837334717028238,
+        "peak_vm": 19.315481210986473,
+        "peak_relative_error": 0.0024801138181568994,
+        "error_to_union": 0.017405928925882518
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.041240248839778074,
+        "neck_error": 0.007837334717028238,
+        "peak_vm": 19.315481210986473,
+        "peak_relative_error": 0.0024801138181568994,
+        "error_to_union": 0.017405928925882518
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": 0.0,
+          "margin": 0.24,
+          "covered": true
+        }
+      ],
+      "reference_residual": 6.777794344203313e-10,
+      "reference_normwise_backward_error": 5.605057396830064e-19,
+      "load_force_relative": 0.0,
+      "load_moment_relative": 1.1102230246251565e-16
+    },
+    {
+      "name": "move_0.16",
+      "contacts": [
+        [
+          0.16,
+          0.12,
+          [
+            -1.0,
+            0.2
+          ]
+        ]
+      ],
+      "reference_change": 0.03911904179648897,
+      "reference_last_change": 0.012507262146952252,
+      "coarse_error": 0.1966223222895631,
+      "coarse_neck_error": 0.08755982987669263,
+      "reference_sample_peak_vm": 25.06343413192535,
+      "reference_peak_position": [
+        1.6321320754716981,
+        0.18985365853658542
+      ],
+      "contact_only_hard": {
+        "full_error": 0.16231102998729044,
+        "neck_error": 0.06678787544016827,
+        "peak_vm": 25.895902093068475,
+        "peak_relative_error": 0.033214441275736466,
+        "error_to_union": 0.16149266147936503
+      },
+      "contact_only_blend": {
+        "full_error": 0.15122064397990878,
+        "neck_error": 0.06044632677948852,
+        "peak_vm": 25.719184005524216,
+        "peak_relative_error": 0.026163608312700537,
+        "error_to_union": 0.1502425026198464
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.04108685337134813,
+        "neck_error": 0.007009874002707271,
+        "peak_vm": 25.007250511409982,
+        "peak_relative_error": 0.0022416569181875974,
+        "error_to_union": 0.016769827245408205
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.03788316599598747,
+        "neck_error": 0.005944859062926951,
+        "peak_vm": 25.009754109380268,
+        "peak_relative_error": 0.002141766457961454,
+        "error_to_union": 0.014810580109733342
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": 0.0,
+          "margin": 0.07999999999999999,
+          "covered": true
+        }
+      ],
+      "reference_residual": 9.633022932107833e-10,
+      "reference_normwise_backward_error": 5.793195753955505e-19,
+      "load_force_relative": 2.7216581091363826e-17,
+      "load_moment_relative": 0.0
+    },
+    {
+      "name": "move_0.325",
+      "contacts": [
+        [
+          0.325,
+          0.12,
+          [
+            -1.0,
+            0.2
+          ]
+        ]
+      ],
+      "reference_change": 0.03963136584946436,
+      "reference_last_change": 0.011734864712059083,
+      "coarse_error": 0.19603977785458745,
+      "coarse_neck_error": 0.0841196182385995,
+      "reference_sample_peak_vm": 30.941548257013828,
+      "reference_peak_position": [
+        1.6321320754716981,
+        0.18985365853658542
+      ],
+      "contact_only_hard": {
+        "full_error": 0.1636673810330533,
+        "neck_error": 0.06380105766768224,
+        "peak_vm": 31.91775017049573,
+        "peak_relative_error": 0.031549872856172154,
+        "error_to_union": 0.16276628291655404
+      },
+      "contact_only_blend": {
+        "full_error": 0.15128621576587342,
+        "neck_error": 0.05885378117926866,
+        "peak_vm": 31.48120820970898,
+        "peak_relative_error": 0.017441271788098813,
+        "error_to_union": 0.15012779238477383
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.042245461748376685,
+        "neck_error": 0.006535193402027312,
+        "peak_vm": 30.876932651185097,
+        "peak_relative_error": 0.002088311977539262,
+        "error_to_union": 0.018407836705032828
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.03629470026103094,
+        "neck_error": 0.004847531608850802,
+        "peak_vm": 30.883126215657157,
+        "peak_relative_error": 0.0018881421469731422,
+        "error_to_union": 0.01711169398410148
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": 0.0,
+          "margin": -0.08500000000000002,
+          "covered": false
+        }
+      ],
+      "reference_residual": 1.1682657169886722e-09,
+      "reference_normwise_backward_error": 5.576995693269683e-19,
+      "load_force_relative": 0.0,
+      "load_moment_relative": 0.0
+    },
+    {
+      "name": "move_0.48",
+      "contacts": [
+        [
+          0.48,
+          0.12,
+          [
+            -1.0,
+            0.2
+          ]
+        ]
+      ],
+      "reference_change": 0.039917592848691036,
+      "reference_last_change": 0.011809471320781003,
+      "coarse_error": 0.19487694750615983,
+      "coarse_neck_error": 0.08231584244030161,
+      "reference_sample_peak_vm": 36.46344428157699,
+      "reference_peak_position": [
+        1.6321320754716981,
+        0.18985365853658542
+      ],
+      "contact_only_hard": {
+        "full_error": 0.18106263015241544,
+        "neck_error": 0.08166533131494222,
+        "peak_vm": 36.55936529270364,
+        "peak_relative_error": 0.002630607530817168,
+        "error_to_union": 0.1800340249761397
+      },
+      "contact_only_blend": {
+        "full_error": 0.16131144995569083,
+        "neck_error": 0.06614796768647942,
+        "peak_vm": 36.82425260150941,
+        "peak_relative_error": 0.009895069624969959,
+        "error_to_union": 0.1601380956337318
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.03649368832392878,
+        "neck_error": 0.004817407996234209,
+        "peak_vm": 36.405369772415405,
+        "peak_relative_error": 0.001592677551608234,
+        "error_to_union": 0.027403886847068442
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.03580545714603589,
+        "neck_error": 0.004458148731683168,
+        "peak_vm": 36.40158465117788,
+        "peak_relative_error": 0.0016964834677004692,
+        "error_to_union": 0.02153804167951287
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": 0.65,
+          "margin": 0.06999999999999995,
+          "covered": true
+        }
+      ],
+      "reference_residual": 1.3211837356690685e-09,
+      "reference_normwise_backward_error": 5.368229444306825e-19,
+      "load_force_relative": 0.0,
+      "load_moment_relative": 0.0
+    },
+    {
+      "name": "move_0.65",
+      "contacts": [
+        [
+          0.65,
+          0.12,
+          [
+            -1.0,
+            0.2
+          ]
+        ]
+      ],
+      "reference_change": 0.04025136083512114,
+      "reference_last_change": 0.01217085958113995,
+      "coarse_error": 0.19459265416987154,
+      "coarse_neck_error": 0.08110016142159396,
+      "reference_sample_peak_vm": 42.51973696276163,
+      "reference_peak_position": [
+        1.6321320754716981,
+        0.18985365853658542
+      ],
+      "contact_only_hard": {
+        "full_error": 0.18195154446825856,
+        "neck_error": 0.08051813204041532,
+        "peak_vm": 42.6067275826923,
+        "peak_relative_error": 0.0020458880074178155,
+        "error_to_union": 0.18085558302286225
+      },
+      "contact_only_blend": {
+        "full_error": 0.18195154446825856,
+        "neck_error": 0.08051813204041532,
+        "peak_vm": 42.6067275826923,
+        "peak_relative_error": 0.0020458880074178155,
+        "error_to_union": 0.18085558302286225
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.036694209108806664,
+        "neck_error": 0.004659071206066412,
+        "peak_vm": 42.4552440250178,
+        "peak_relative_error": 0.0015167764984132213,
+        "error_to_union": 0.027780928837391604
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.036694209108806664,
+        "neck_error": 0.004659071206066412,
+        "peak_vm": 42.4552440250178,
+        "peak_relative_error": 0.0015167764984132213,
+        "error_to_union": 0.027780928837391604
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": 0.65,
+          "margin": 0.24,
+          "covered": true
+        }
+      ],
+      "reference_residual": 1.7445105881724995e-09,
+      "reference_normwise_backward_error": 5.970198911835115e-19,
+      "load_force_relative": 0.0,
+      "load_moment_relative": 1.5313421029312503e-16
+    },
+    {
+      "name": "move_0.76",
+      "contacts": [
+        [
+          0.76,
+          0.12,
+          [
+            -1.0,
+            0.2
+          ]
+        ]
+      ],
+      "reference_change": 0.040322072487610314,
+      "reference_last_change": 0.011717144887885977,
+      "coarse_error": 0.19410983256448738,
+      "coarse_neck_error": 0.08054817229321827,
+      "reference_sample_peak_vm": 46.43852094671102,
+      "reference_peak_position": [
+        1.6321320754716981,
+        0.18985365853658542
+      ],
+      "contact_only_hard": {
+        "full_error": 0.1823462419964221,
+        "neck_error": 0.07999978611185116,
+        "peak_vm": 46.520131669097374,
+        "peak_relative_error": 0.0017573928006880497,
+        "error_to_union": 0.18123266807053107
+      },
+      "contact_only_blend": {
+        "full_error": 0.1823462419964221,
+        "neck_error": 0.07999978611185116,
+        "peak_vm": 46.520131669097374,
+        "peak_relative_error": 0.0017573928006880497,
+        "error_to_union": 0.18123266807053107
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.03669937995803791,
+        "neck_error": 0.004587973956518781,
+        "peak_vm": 46.36987286728334,
+        "peak_relative_error": 0.001478257231888514,
+        "error_to_union": 0.02795499096391391
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.03669937995803791,
+        "neck_error": 0.004587973956518781,
+        "peak_vm": 46.36987286728334,
+        "peak_relative_error": 0.001478257231888514,
+        "error_to_union": 0.02795499096391391
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": 0.65,
+          "margin": 0.13,
+          "covered": true
+        }
+      ],
+      "reference_residual": 1.9442469229610383e-09,
+      "reference_normwise_backward_error": 6.037373304499426e-19,
+      "load_force_relative": 0.0,
+      "load_moment_relative": 1.423362852083534e-16
+    },
+    {
+      "name": "radius_0.06",
+      "contacts": [
+        [
+          0.42,
+          0.06,
+          [
+            -1.0,
+            0.2
+          ]
+        ]
+      ],
+      "reference_change": 0.04027437594529525,
+      "reference_last_change": 0.01184972206786784,
+      "coarse_error": 0.19860773721139088,
+      "coarse_neck_error": 0.08290534969385303,
+      "reference_sample_peak_vm": 34.325933397424194,
+      "reference_peak_position": [
+        1.6321320754716981,
+        0.18985365853658542
+      ],
+      "contact_only_hard": {
+        "full_error": 0.18067015459886904,
+        "neck_error": 0.08222561197926141,
+        "peak_vm": 34.4252541161787,
+        "peak_relative_error": 0.0028934601021500064,
+        "error_to_union": 0.1795508928889331
+      },
+      "contact_only_blend": {
+        "full_error": 0.1565228417662325,
+        "neck_error": 0.06248891064450495,
+        "peak_vm": 34.763991529592346,
+        "peak_relative_error": 0.012761725284971378,
+        "error_to_union": 0.15516152922265436
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.036969625031874905,
+        "neck_error": 0.004894110552121735,
+        "peak_vm": 34.2701230362662,
+        "peak_relative_error": 0.0016258949323191075,
+        "error_to_union": 0.027226903975760584
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.0372774217818915,
+        "neck_error": 0.004538621424989161,
+        "peak_vm": 34.265287312234285,
+        "peak_relative_error": 0.0017667716267974673,
+        "error_to_union": 0.020896971388847413
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": 0.65,
+          "margin": 0.06999999999999995,
+          "covered": true
+        }
+      ],
+      "reference_residual": 9.011564059374715e-10,
+      "reference_normwise_backward_error": 5.542899368053194e-19,
+      "load_force_relative": 2.7216581091363826e-17,
+      "load_moment_relative": 0.0
+    },
+    {
+      "name": "radius_0.12",
+      "contacts": [
+        [
+          0.42,
+          0.12,
+          [
+            -1.0,
+            0.2
+          ]
+        ]
+      ],
+      "reference_change": 0.03985537920475704,
+      "reference_last_change": 0.011667068498797124,
+      "coarse_error": 0.19564429983564013,
+      "coarse_neck_error": 0.0829078410463396,
+      "reference_sample_peak_vm": 34.32593352110573,
+      "reference_peak_position": [
+        1.6321320754716981,
+        0.18985365853658542
+      ],
+      "contact_only_hard": {
+        "full_error": 0.1806730488106905,
+        "neck_error": 0.08222765700182615,
+        "peak_vm": 34.42525795674092,
+        "peak_relative_error": 0.002893568373722992,
+        "error_to_union": 0.17965584461075348
+      },
+      "contact_only_blend": {
+        "full_error": 0.15633754870781097,
+        "neck_error": 0.06249044370553161,
+        "peak_vm": 34.76399592495067,
+        "peak_relative_error": 0.012761849683580788,
+        "error_to_union": 0.15514138412377626
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.03651815664409892,
+        "neck_error": 0.004894101906313923,
+        "peak_vm": 34.27012316148252,
+        "peak_relative_error": 0.001625894881748605,
+        "error_to_union": 0.02725429515855422
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.036006715301261864,
+        "neck_error": 0.004538622900171843,
+        "peak_vm": 34.265287440183585,
+        "peak_relative_error": 0.001766771496100999,
+        "error_to_union": 0.019753853253866294
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": 0.65,
+          "margin": 0.009999999999999953,
+          "covered": true
+        }
+      ],
+      "reference_residual": 1.3122235002380238e-09,
+      "reference_normwise_backward_error": 5.690343706629694e-19,
+      "load_force_relative": 0.0,
+      "load_moment_relative": 0.0
+    },
+    {
+      "name": "radius_0.2",
+      "contacts": [
+        [
+          0.42,
+          0.2,
+          [
+            -1.0,
+            0.2
+          ]
+        ]
+      ],
+      "reference_change": 0.039726323631235246,
+      "reference_last_change": 0.011664487094657575,
+      "coarse_error": 0.19419957386570927,
+      "coarse_neck_error": 0.08291291309741282,
+      "reference_sample_peak_vm": 34.32593382735459,
+      "reference_peak_position": [
+        1.6321320754716981,
+        0.18985365853658542
+      ],
+      "contact_only_hard": {
+        "full_error": 0.18078591876787567,
+        "neck_error": 0.0822324514390052,
+        "peak_vm": 34.42526691412802,
+        "peak_relative_error": 0.002893820377124539,
+        "error_to_union": 0.17979926503464005
+      },
+      "contact_only_blend": {
+        "full_error": 0.15638859801535018,
+        "neck_error": 0.06249401820147594,
+        "peak_vm": 34.76400597645062,
+        "peak_relative_error": 0.012762133473173768,
+        "error_to_union": 0.155227555682808
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.036351922969475876,
+        "neck_error": 0.004894080966798688,
+        "peak_vm": 34.27012345692301,
+        "peak_relative_error": 0.001625895182117495,
+        "error_to_union": 0.027251628972860112
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.035638514457414644,
+        "neck_error": 0.0045386271290102165,
+        "peak_vm": 34.265287737639056,
+        "peak_relative_error": 0.0017667717365114671,
+        "error_to_union": 0.01934643699757825
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": 0.65,
+          "margin": -0.07000000000000006,
+          "covered": false
+        }
+      ],
+      "reference_residual": 1.6749159610986832e-09,
+      "reference_normwise_backward_error": 5.597604811447481e-19,
+      "load_force_relative": 1.088663243654553e-16,
+      "load_moment_relative": 0.0
+    },
+    {
+      "name": "two_far",
+      "contacts": [
+        [
+          -0.66,
+          0.12,
+          [
+            -1.0,
+            0.2
+          ]
+        ],
+        [
+          0.61,
+          0.14,
+          [
+            -1.0,
+            -0.15
+          ]
+        ]
+      ],
+      "reference_change": 0.033310863334867616,
+      "reference_last_change": 0.018321217909904,
+      "coarse_error": 0.18536396372764352,
+      "coarse_neck_error": 0.08404080026872618,
+      "reference_sample_peak_vm": 7.442973288982168,
+      "reference_peak_position": [
+        1.6321320754716981,
+        0.18985365853658542
+      ],
+      "contact_only_hard": {
+        "full_error": 0.15726599416319287,
+        "neck_error": 0.08037979670792826,
+        "peak_vm": 7.96381378375552,
+        "peak_relative_error": 0.06997747735362048,
+        "error_to_union": 0.15695391533251418
+      },
+      "contact_only_blend": {
+        "full_error": 0.1542980131094606,
+        "neck_error": 0.07943911972659488,
+        "peak_vm": 7.981615209958597,
+        "peak_relative_error": 0.0723691863537627,
+        "error_to_union": 0.15398036644568094
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.03323541479933329,
+        "neck_error": 0.006882485859677442,
+        "peak_vm": 7.427822150360266,
+        "peak_relative_error": 0.002035629852968853,
+        "error_to_union": 0.021377257377865496
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.03309911024782946,
+        "neck_error": 0.006855234009010383,
+        "peak_vm": 7.427559739962476,
+        "peak_relative_error": 0.002070885978122368,
+        "error_to_union": 0.019930036026484098
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": -0.65,
+          "margin": 0.22999999999999998,
+          "covered": true
+        },
+        {
+          "anchor": 0.65,
+          "margin": 0.17999999999999994,
+          "covered": true
+        }
+      ],
+      "reference_residual": 6.584450902453911e-11,
+      "reference_normwise_backward_error": 4.960420481154326e-19,
+      "load_force_relative": 6.9367265154726866e-18,
+      "load_moment_relative": 2.7755575615628914e-17
+    },
+    {
+      "name": "two_near",
+      "contacts": [
+        [
+          0.22,
+          0.1,
+          [
+            -1.0,
+            0.25
+          ]
+        ],
+        [
+          0.39,
+          0.13,
+          [
+            -1.0,
+            -0.1
+          ]
+        ]
+      ],
+      "reference_change": 0.04020251660858106,
+      "reference_last_change": 0.011548950042801898,
+      "coarse_error": 0.1916197861791564,
+      "coarse_neck_error": 0.07762871513429313,
+      "reference_sample_peak_vm": 39.38462620842399,
+      "reference_peak_position": [
+        1.6321320754716981,
+        0.18985365853658542
+      ],
+      "contact_only_hard": {
+        "full_error": 0.15073662518796288,
+        "neck_error": 0.057928598884626314,
+        "peak_vm": 40.66701205943822,
+        "peak_relative_error": 0.03256056930000628,
+        "error_to_union": 0.1501720540575502
+      },
+      "contact_only_blend": {
+        "full_error": 0.14652894608698075,
+        "neck_error": 0.05371116437339235,
+        "peak_vm": 40.44090234160529,
+        "peak_relative_error": 0.026819503823432813,
+        "error_to_union": 0.14588788842017006
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.03750473414654249,
+        "neck_error": 0.005561029064961133,
+        "peak_vm": 39.31328133900393,
+        "peak_relative_error": 0.0018114903272790077,
+        "error_to_union": 0.015596744924361998
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.036374111025621214,
+        "neck_error": 0.004854264120070213,
+        "peak_vm": 39.31638844456579,
+        "peak_relative_error": 0.0017325989968035875,
+        "error_to_union": 0.015865006253759282
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": 0.0,
+          "margin": 0.03999999999999998,
+          "covered": true
+        },
+        {
+          "anchor": 0.65,
+          "margin": -0.030000000000000027,
+          "covered": false
+        }
+      ],
+      "reference_residual": 9.529083498465804e-10,
+      "reference_normwise_backward_error": 5.690154047067759e-19,
+      "load_force_relative": 0.0,
+      "load_moment_relative": 1.8350793795457133e-16
+    },
+    {
+      "name": "asymmetric",
+      "contacts": [
+        [
+          -0.72,
+          0.09,
+          [
+            -1.0,
+            0.1
+          ]
+        ],
+        [
+          0.11,
+          0.16,
+          [
+            -1.0,
+            -0.2
+          ]
+        ],
+        [
+          0.61,
+          0.12,
+          [
+            -1.0,
+            0.3
+          ]
+        ]
+      ],
+      "reference_change": 0.03709403419336047,
+      "reference_last_change": 0.01606301012856816,
+      "coarse_error": 0.18763574615693346,
+      "coarse_neck_error": 0.08633547675448963,
+      "reference_sample_peak_vm": 24.372946066894386,
+      "reference_peak_position": [
+        1.6321320754716981,
+        0.18985365853658542
+      ],
+      "contact_only_hard": {
+        "full_error": 0.24422826982017617,
+        "neck_error": 0.11558312025925398,
+        "peak_vm": 24.63791533481766,
+        "peak_relative_error": 0.01087145013967678,
+        "error_to_union": 0.2457778558079381
+      },
+      "contact_only_blend": {
+        "full_error": 0.21948852024988003,
+        "neck_error": 0.09986385753668149,
+        "peak_vm": 24.777699815749497,
+        "peak_relative_error": 0.016606681348418733,
+        "error_to_union": 0.22105186742024918
+      },
+      "contact_and_neck_hard": {
+        "full_error": 0.0412792430325624,
+        "neck_error": 0.008000369017030173,
+        "peak_vm": 24.328232671496192,
+        "peak_relative_error": 0.0018345502950473387,
+        "error_to_union": 0.03569916623730408
+      },
+      "contact_and_neck_blend": {
+        "full_error": 0.038926263527176624,
+        "neck_error": 0.007290215262492947,
+        "peak_vm": 24.32629422549016,
+        "peak_relative_error": 0.0019140829867749902,
+        "error_to_union": 0.031234723764029457
+      },
+      "hard_fine_coverage": [
+        {
+          "anchor": -0.65,
+          "margin": 0.20000000000000004,
+          "covered": true
+        },
+        {
+          "anchor": 0.0,
+          "margin": 0.09,
+          "covered": true
+        },
+        {
+          "anchor": 0.65,
+          "margin": 0.19999999999999996,
+          "covered": true
+        }
+      ],
+      "reference_residual": 3.8163286739305667e-10,
+      "reference_normwise_backward_error": 5.686827045219138e-19,
+      "load_force_relative": 9.231367132347115e-18,
+      "load_moment_relative": 1.1102230246251565e-16
+    }
+  ],
+  "source_sha256": "1da2f9131dd62db052e8a6177c2ed779a7799456288ec19c08e4937081eb0867",
+  "factorization": "Equilibrated FP64 SuperLU MMD_AT_PLUS_A, SymmetricMode, no row threshold pivot for known SPD clamped elasticity; one FP64 residual correction",
+  "stress_metric": "Unweighted Frobenius norm over identical physical sampled points, not a continuum-domain integral",
+  "fine_region_halfwidth": 0.36,
+  "knot_quality": "minimum merged y-knot gap >=half requested contact step; exact domain boundaries retained",
+  "coverage_note": "Selected fine windows need not contain every tested pressure interval; coverage failures are recorded and all physical loads still integrated, no support truncation",
+  "algebra": {
+    "same_mesh_superposition": 9.477542918627178e-12,
+    "coarse_plus_delta": 2.411620683412672e-12,
+    "wrong_full_load_sum_vs_correct": 0.9978889101245292
+  },
+  "switches": [
+    {
+      "center": -0.325,
+      "reference_relative_motion": 1.0959242333625859e-07,
+      "hard_relative_jump": 0.03442487768863381,
+      "blend_relative_jump": 1.0952535058688738e-07
+    },
+    {
+      "center": 0.325,
+      "reference_relative_motion": 3.006188710962607e-08,
+      "hard_relative_jump": 0.030921165046854705,
+      "blend_relative_jump": 2.996332725257213e-08
+    }
+  ],
+  "timing_scope": "Sequential single-thread after setup, force integration+cached solve+all common stress probes; few contacts, no rigid robot/GPU. Same authored exact geometry, same load law; reference uncertainty/error not equal across methods.",
+  "timings": {
+    "coarse": {
+      "median_ms": 0.38177600072231144,
+      "range_ms": [
+        0.342768000336946,
+        1.0096140013047261
+      ]
+    },
+    "atlas_hard": {
+      "median_ms": 2.8173120008432306,
+      "range_ms": [
+        2.745613001025049,
+        3.2716069999878528
+      ]
+    },
+    "atlas_blend": {
+      "median_ms": 4.10777999968559,
+      "range_ms": [
+        3.984193001087988,
+        4.314129999329452
+      ]
+    },
+    "union": {
+      "median_ms": 2.3435370003426215,
+      "range_ms": [
+        2.2723590009263717,
+        2.553853999415878
+      ]
+    },
+    "fine": {
+      "median_ms": 34.18421899914392,
+      "range_ms": [
+        33.01598600046418,
+        34.40589300043939
+      ]
+    }
+  },
+  "selected_checks": {
+    "superposition": true,
+    "coarse_delta": true,
+    "all_loads_conservative": true,
+    "all_linear_residuals": false
+  },
+  "selected_checks_pass": false,
+  "strict_residual_gate": {
+    "tolerance": 1e-09,
+    "passed": false,
+    "observed_max": 1.9442469229610383e-09,
+    "note": "Preserved strict diagnostic: FP64 raw residual can reach its cancellation floor. This failure is not silently reclassified; see separately reported normwise backward error and precision_diagnostic.json."
+  },
+  "algebra_and_backward_checks_pass": true,
+  "source_unchanged_during_run": true
+}

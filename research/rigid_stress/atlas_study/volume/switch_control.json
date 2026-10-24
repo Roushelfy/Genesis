@@ -1,0 +1,269 @@
+{
+  "scope": "Same F,y,a on either side of a selector boundary; joint mesh supplies the physical-motion control, NOT continuum GT. Exact samepoint comparison isolates finite hard-switch jump. Smooth blend is an approximation, not a common-FEM equilibrium solve.",
+  "source_sha256": {
+    "model.py": "4bdf92475ec12055e95803946569f3d8537a7f433361f0a4bceb57e7957c8b3d",
+    "switch_control.py": "6f636a508a562f46c94586c6dcc75e48973bce98f522a28b2367655298742a5b"
+  },
+  "models": {
+    "joint": {
+      "dofs": 24432,
+      "tets": 5595,
+      "vertices": 1159,
+      "factor_strategy": "scaled symmetric no-pivot LU",
+      "stiffness_bytes": 23163748,
+      "lu_nonzeros": 21631909,
+      "approximate_lu_bytes": 259776428,
+      "assembly_seconds": 0.8334421979998297,
+      "factor_seconds": 2.5412164889985434
+    },
+    "0": {
+      "dofs": 13845,
+      "tets": 3122,
+      "vertices": 665,
+      "factor_strategy": "scaled symmetric no-pivot LU",
+      "stiffness_bytes": 12964720,
+      "lu_nonzeros": 9428826,
+      "approximate_lu_bytes": 113254736,
+      "assembly_seconds": 0.4380904979989282,
+      "factor_seconds": 0.7167244539996318
+    },
+    "1": {
+      "dofs": 13812,
+      "tets": 3128,
+      "vertices": 663,
+      "factor_strategy": "scaled symmetric no-pivot LU",
+      "stiffness_bytes": 12974428,
+      "lu_nonzeros": 9013752,
+      "approximate_lu_bytes": 108273584,
+      "assembly_seconds": 0.4263944599988463,
+      "factor_seconds": 0.7079261890012276
+    },
+    "2": {
+      "dofs": 13872,
+      "tets": 3130,
+      "vertices": 665,
+      "factor_strategy": "scaled symmetric no-pivot LU",
+      "stiffness_bytes": 12995860,
+      "lu_nonzeros": 9935114,
+      "approximate_lu_bytes": 119330408,
+      "assembly_seconds": 0.42637500000091677,
+      "factor_seconds": 0.8221999349989346
+    }
+  },
+  "rows": [
+    {
+      "boundary_x_m": -0.0015,
+      "epsilon_m": 1e-06,
+      "same_point_adjacent_mesh_field_difference": 0.08714613233386474,
+      "hard_relative_change": 0.08732941947031532,
+      "blend_relative_change": 0.0024936982929045196,
+      "joint_physical_motion_relative_change": 0.0024823591357413036
+    },
+    {
+      "boundary_x_m": -0.0015,
+      "epsilon_m": 1e-07,
+      "same_point_adjacent_mesh_field_difference": 0.08714613233386474,
+      "hard_relative_change": 0.08716137159940034,
+      "blend_relative_change": 0.00024946750060219844,
+      "joint_physical_motion_relative_change": 0.00024833044433922584
+    },
+    {
+      "boundary_x_m": 0.0015,
+      "epsilon_m": 1e-06,
+      "same_point_adjacent_mesh_field_difference": 0.08075391398633587,
+      "hard_relative_change": 0.08086148383189717,
+      "blend_relative_change": 0.0024724917275360005,
+      "joint_physical_motion_relative_change": 0.002467869408465472
+    },
+    {
+      "boundary_x_m": 0.0015,
+      "epsilon_m": 1e-07,
+      "same_point_adjacent_mesh_field_difference": 0.08075391398633587,
+      "hard_relative_change": 0.08076134580969478,
+      "blend_relative_change": 0.00024726303508162907,
+      "joint_physical_motion_relative_change": 0.0002468022831713303
+    }
+  ],
+  "coverage": [
+    {
+      "case": "moving_00",
+      "selected_mesh": 0,
+      "contact_center_distance_m": 0.0007999999999999999,
+      "radius_m": 0.001,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": true,
+      "outer_support_margin_m": 0.0004000000000000002
+    },
+    {
+      "case": "moving_01",
+      "selected_mesh": 0,
+      "contact_center_distance_m": 0.0012182998763203164,
+      "radius_m": 0.001,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": false,
+      "outer_support_margin_m": -1.8299876320316275e-05
+    },
+    {
+      "case": "moving_02",
+      "selected_mesh": 0,
+      "contact_center_distance_m": 0.0015072413088659652,
+      "radius_m": 0.001,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": false,
+      "outer_support_margin_m": -0.0003072413088659651
+    },
+    {
+      "case": "moving_03",
+      "selected_mesh": 1,
+      "contact_center_distance_m": 0.001490417618837813,
+      "radius_m": 0.001,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": false,
+      "outer_support_margin_m": -0.00029041761883781287
+    },
+    {
+      "case": "moving_04",
+      "selected_mesh": 1,
+      "contact_center_distance_m": 0.00044248940784669545,
+      "radius_m": 0.001,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": true,
+      "outer_support_margin_m": 0.0007575105921533046
+    },
+    {
+      "case": "moving_05",
+      "selected_mesh": 1,
+      "contact_center_distance_m": 0.0004663378445758388,
+      "radius_m": 0.001,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": true,
+      "outer_support_margin_m": 0.0007336621554241613
+    },
+    {
+      "case": "moving_06",
+      "selected_mesh": 1,
+      "contact_center_distance_m": 0.0014916365387686135,
+      "radius_m": 0.001,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": false,
+      "outer_support_margin_m": -0.00029163653876861334
+    },
+    {
+      "case": "moving_07",
+      "selected_mesh": 2,
+      "contact_center_distance_m": 0.0014990253373212228,
+      "radius_m": 0.001,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": false,
+      "outer_support_margin_m": -0.0002990253373212227
+    },
+    {
+      "case": "moving_08",
+      "selected_mesh": 2,
+      "contact_center_distance_m": 0.001225225227768391,
+      "radius_m": 0.001,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": false,
+      "outer_support_margin_m": -2.5225227768390984e-05
+    },
+    {
+      "case": "moving_09",
+      "selected_mesh": 2,
+      "contact_center_distance_m": 0.0008066071552294663,
+      "radius_m": 0.001,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": true,
+      "outer_support_margin_m": 0.0003933928447705337
+    },
+    {
+      "case": "radius_0.00055",
+      "selected_mesh": 1,
+      "contact_center_distance_m": 0.0005,
+      "radius_m": 0.00055,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": true,
+      "outer_support_margin_m": 0.00115
+    },
+    {
+      "case": "radius_0.0007",
+      "selected_mesh": 1,
+      "contact_center_distance_m": 0.0005,
+      "radius_m": 0.0007,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": true,
+      "outer_support_margin_m": 0.001
+    },
+    {
+      "case": "radius_0.0013",
+      "selected_mesh": 1,
+      "contact_center_distance_m": 0.0005,
+      "radius_m": 0.0013,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": true,
+      "outer_support_margin_m": 0.0004000000000000002
+    },
+    {
+      "case": "two_far",
+      "selected_mesh": 0,
+      "contact_center_distance_m": 0.000360555127546399,
+      "radius_m": 0.001,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": true,
+      "outer_support_margin_m": 0.0008394448724536011
+    },
+    {
+      "case": "two_far",
+      "selected_mesh": 2,
+      "contact_center_distance_m": 0.000447213595499958,
+      "radius_m": 0.001,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": true,
+      "outer_support_margin_m": 0.000752786404500042
+    },
+    {
+      "case": "two_near",
+      "selected_mesh": 1,
+      "contact_center_distance_m": 0.0005408326913195983,
+      "radius_m": 0.001,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": true,
+      "outer_support_margin_m": 0.0006591673086804018
+    },
+    {
+      "case": "two_near",
+      "selected_mesh": 1,
+      "contact_center_distance_m": 0.0006403124237432849,
+      "radius_m": 0.0007,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": true,
+      "outer_support_margin_m": 0.0008596875762567152
+    },
+    {
+      "case": "three_asymmetric",
+      "selected_mesh": 0,
+      "contact_center_distance_m": 0.0003,
+      "radius_m": 0.001,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": true,
+      "outer_support_margin_m": 0.0009000000000000002
+    },
+    {
+      "case": "three_asymmetric",
+      "selected_mesh": 1,
+      "contact_center_distance_m": 0.0006403124237432849,
+      "radius_m": 0.0007,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": true,
+      "outer_support_margin_m": 0.0008596875762567152
+    },
+    {
+      "case": "three_asymmetric",
+      "selected_mesh": 2,
+      "contact_center_distance_m": 0.0007071067811865475,
+      "radius_m": 0.0013,
+      "core_radius_m": 0.0022,
+      "pressure_disk_within_nominal_target_core": true,
+      "outer_support_margin_m": 0.00019289321881345257
+    }
+  ]
+}

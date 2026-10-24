@@ -1,0 +1,48 @@
+{
+  "scope": "Worst primary raw-residual case, complete identical physical probe field. Diagnostic uses longdouble residual accumulation on frozen FP64 K; not a new FEM/contact model or changed primary acceptance threshold.",
+  "case": "move_0.76",
+  "contacts": [
+    [
+      0.76,
+      0.12,
+      [
+        -1.0,
+        0.2
+      ]
+    ]
+  ],
+  "source_sha256": "3644ea29829f9ad8b045b63219472280cfc33697912696d32e022e27b89d1234",
+  "study_sha256": "1da2f9131dd62db052e8a6177c2ed779a7799456288ec19c08e4937081eb0867",
+  "rows": [
+    {
+      "iteration": 0,
+      "relative_residual_fp64": 1.9442469229610383e-09,
+      "relative_residual_longdouble": 1.4395343051380996e-09,
+      "normwise_backward": 4.470114306014029e-19,
+      "max_u": 590.2769322029974,
+      "correction_full_sampled_stress_relative": 9.209830478639019e-11,
+      "vm_peak_relative_change": 8.090545611395963e-11,
+      "cumulative_stress_change_relative": 0.0
+    },
+    {
+      "iteration": 1,
+      "relative_residual_fp64": 1.4187340016977904e-09,
+      "relative_residual_longdouble": 6.114995071067347e-10,
+      "normwise_backward": 1.8988590163998237e-19,
+      "max_u": 590.2769322216996,
+      "correction_full_sampled_stress_relative": 8.16018786288531e-13,
+      "vm_peak_relative_change": 2.478716394002111e-13,
+      "cumulative_stress_change_relative": 9.209951922139064e-11
+    },
+    {
+      "iteration": 2,
+      "relative_residual_fp64": 1.4421422439374207e-09,
+      "relative_residual_longdouble": 6.037188174666504e-10,
+      "normwise_backward": 1.8746980277074296e-19,
+      "max_u": 590.2769322215618,
+      "correction_full_sampled_stress_relative": 7.714666090727727e-13,
+      "vm_peak_relative_change": 1.0343285693492834e-13,
+      "cumulative_stress_change_relative": 9.202990581395342e-11
+    }
+  ]
+}
