@@ -20,7 +20,7 @@ def relative(actual, expected):
     return float(np.linalg.norm(actual - expected) / max(np.linalg.norm(expected), 1e-30))
 
 
-def control(output, name, vertices, quads, method, gauge):
+def control(output, name, vertices, quads, method, gauge, spinning=False):
     asset = output / f"{name}.npz"
     np.savez(asset, vertices=vertices, quads=quads)
     options = gs.options.RigidStressOptions.dpr(
@@ -53,14 +53,37 @@ def control(output, name, vertices, quads, method, gauge):
     state = native.create_state(4, "full")
     state.force.from_numpy(force.reshape((-1, 3, 4)).transpose(0, 2, 1).copy())
     omega = V_VEC(3, dtype=gs.qd_float, shape=(4,))
-    omega.fill(0.0)
+    angular = rng.normal(size=(4, 3)) * 3.0 if spinning else np.zeros((4, 3))
+    angular[3] = 0.0
+    omega.from_numpy(angular)
+    lever = vertices - oracle.center_of_mass
+    acceleration = np.cross(angular[None, :, :], np.cross(angular[None, :, :], lever[:, None, :]))
+    rotational_inertia = (
+        oracle.nodal_mass[:, None, None]
+        * options.shell_thickness**2
+        / 12.0
+        * (np.eye(3)[None, :, :] - oracle.directors[:, :, None] * oracle.directors[:, None, :])
+    )
+    spin_momentum = np.einsum("nij,bj->nbi", rotational_inertia, angular)
+    centrifugal = (
+        np.concatenate(
+            (-oracle.nodal_mass[:, None, None] * acceleration, -np.cross(angular[None, :, :], spin_momentum)), axis=2
+        )
+        .transpose(0, 2, 1)
+        .reshape((-1, 4))
+    )
+    angular_terms = np.column_stack(
+        (angular**2, angular[:, 0] * angular[:, 1], angular[:, 0] * angular[:, 2], angular[:, 1] * angular[:, 2])
+    ).T
+    errors["centrifugal"] = relative(qd_to_numpy(info.centrifugal).reshape((-1, 6)) @ angular_terms, centrifugal)
+    reference_force = force + centrifugal
     native.recover(omega, state)
     displacement = qd_to_numpy(state.displacement, transpose=True).reshape((4, -1)).T
-    reference_displacement = oracle.solve(force)
-    expected_load, _coeff = oracle.balance_load(force)
+    reference_displacement = oracle.solve(reference_force)
+    expected_load, _coeff = oracle.balance_load(reference_force)
     actual_load = qd_to_numpy(state.rhs, transpose=True).reshape((4, -1)).T
     errors["balanced_load"] = relative(actual_load, expected_load)
-    errors["complete_residual"] = float(oracle.residual(displacement, force))
+    errors["complete_residual"] = float(oracle.residual(displacement, reference_force))
     reference_stress = oracle.stress(reference_displacement)
     tensors = np.moveaxis(np.stack((reference_stress["sigma_top"], reference_stress["sigma_bottom"]), axis=1), -1, 0)
     expected_field = np.stack(
@@ -107,6 +130,7 @@ def control(output, name, vertices, quads, method, gauge):
     result = {
         "name": name,
         "method": method,
+        "spinning": spinning,
         "gauge": gauge,
         "dofs": oracle.ndof,
         "quads": len(quads),
@@ -128,6 +152,7 @@ def control(output, name, vertices, quads, method, gauge):
             "gram",
             "rigid_null_residual",
             "balanced_load",
+            "centrifugal",
         )
     ), result
     assert errors["complete_residual"] < options.tolerance, result
@@ -144,6 +169,7 @@ def main():
     cli.add_argument("--backend", choices=("cpu", "gpu"), default="cpu")
     cli.add_argument("--method", choices=("direct", "inverse"), default="direct")
     cli.add_argument("--gauge", choices=("legacy", "translation"), default="translation")
+    cli.add_argument("--spinning", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -158,7 +184,8 @@ def main():
         ("egg", *geometry.egg_mesh(2, axes=(0.022, 0.022, 0.03), asym=-0.18)),
     ]
     results = [
-        control(args.output, name, vertices, quads, args.method, args.gauge) for name, vertices, quads in fixtures
+        control(args.output, name, vertices, quads, args.method, args.gauge, args.spinning)
+        for name, vertices, quads in fixtures
     ]
     write_json(args.output / "result.json", {"passed": True, "results": results})
 

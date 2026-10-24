@@ -507,10 +507,7 @@ class RigidStressRecovery:
                 DataKind.CONFIG,
             )
             if id(entry.model) not in seen:
-                yield from iter_data(entry.model.info, f"stress.{i}.info")
-                if isinstance(entry.model, ShellModel):
-                    yield from iter_data(entry.model.shell, f"stress.{i}.shell")
-                    yield from iter_data(entry.model.load_info, f"stress.{i}.load_info")
+                yield from entry.model.iter_info_data(f"stress.{i}")
                 if entry.model.factor is not None:
                     yield from iter_data(entry.model.factor.info, f"stress.{i}.factor")
                 if entry.model.inverse is not None:
@@ -561,7 +558,7 @@ class RigidStressRecovery:
                     gs.raise_exception("Configure output_mode='full' before building to observe the stress field.")
                 tensor = qd_to_torch(entry.state.stress_tensor, envs_idx, transpose=True, copy=copy)
                 von_mises = qd_to_torch(entry.state.von_mises, envs_idx, transpose=True, copy=copy).squeeze(-1)
-                if isinstance(entry.model, ShellModel):
+                if entry.model.n_shell_elements:
                     tensor = tensor.reshape((tensor.shape[0], entry.model.n_shell_elements, 2, 4, 6))
                     von_mises = von_mises.reshape((von_mises.shape[0], entry.model.n_shell_elements, 2, 4))
                 if self.solver.n_envs == 0:
@@ -576,7 +573,7 @@ class RigidStressRecovery:
             if entry.link.idx == link_idx:
                 if entry.link.stress_options != entry.options:
                     gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
-                if not isinstance(entry.model, ShellModel) or entry.output_mode != "full":
+                if not entry.model.n_shell_elements or entry.output_mode != "full":
                     gs.raise_exception(
                         "Shell resultants require backend='shell' and output_mode='full' before building."
                     )

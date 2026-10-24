@@ -1,4 +1,5 @@
 import time
+from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -7,7 +8,7 @@ import quadrants as qd
 
 import genesis as gs
 from genesis.options.rigid_stress import RigidStressOptions
-from genesis.utils.array_class import V_VEC, V
+from genesis.utils.array_class import V_VEC, DataItem, V, iter_data
 from genesis.utils.misc import qd_to_numpy
 
 from .balance import kernel_centrifugal_wrench, kernel_relief_projection
@@ -160,6 +161,9 @@ class StressModel:
             inverse_done - factor_done,
             time.perf_counter() - inverse_done,
         )
+
+    def iter_info_data(self, prefix: str) -> Iterator[DataItem]:
+        yield from iter_data(self.info, f"{prefix}.info")
 
     @property
     def n_output_elements(self) -> int:
