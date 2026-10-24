@@ -1,0 +1,5 @@
+Actual CPU attempts: pip installed OpenSeesPy 3.8.0.0, then 3.7.1.2. Both imports aborted with exit code15 in MPI_Init. Observed failure:
+GetSockInterfaceAddr: The network interface, "<NULL>", specified in MPIR_CVAR_CH3_NETWORK_IFACE was not found.
+Separate socket.if_nameindex() probe raised PermissionError: [Errno1] Operation not permitted. No OpenSees reference solve was performed.
+Code_Aster run_aster/as_run binaries and code_aster module were absent.
+Fallback independent serial reference pyfe3d0.10.0 imported and actually assembled/solved plate, sphere and egg cases.

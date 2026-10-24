@@ -1,0 +1,406 @@
+{
+  "scope": "CPU research shell recovery only; not Genesis scene steps, RL transitions, GPU throughput or contact-reference qualification",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "numpy": "2.3.5",
+  "scipy": "1.17.0",
+  "threads": 1,
+  "threadpools": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-fdde5778.so",
+      "version": "0.3.30",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    },
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/scipy.libs/libscipy_openblas-6cdc3b4a.so",
+      "version": "0.3.30",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    }
+  ],
+  "models": [
+    {
+      "resolution": 2,
+      "vertices": 26,
+      "quads": 24,
+      "ndof": 156,
+      "stress_scalar_outputs": 576,
+      "global_symmetric_tensor_scalar_outputs": 1152,
+      "construction_seconds": 0.1495960069951252,
+      "factor_seconds": 0.0011085689984611236,
+      "stress_operator_seconds": 0.00098615499882726,
+      "contact_bank_transfer_seconds": 0.010653972000000067,
+      "dense_response_build_seconds": 0.0020613040032912977,
+      "dense_response_bytes": 718848,
+      "outer_surface_response_build_seconds": 0.0008362489970750175,
+      "outer_surface_response_bytes": 359424,
+      "on_demand_cache_allocated_bytes": 719004,
+      "stiffness_nnz": 7790,
+      "factor_nnz": 17012,
+      "rows": [
+        {
+          "batch": 1,
+          "active_dof_union": 24,
+          "mean_active_dofs_per_environment": 24.0,
+          "cache_cold_ms": 0.5852419999428093,
+          "cache_columns_valid": 24,
+          "cache_relative_field_error": 1.6217784197701925e-12,
+          "dense_response_relative_field_error": 1.6217701765941561e-12,
+          "scalar_loop_relative_field_error": 0.0,
+          "global_tensor_map_vs_core_relative_error": 2.6495638732021285e-15,
+          "surface_response_relative_field_error": 6.358415209330409e-13,
+          "taylor_relative_nodal_load_error": 1.3638446930759274e-12,
+          "taylor_relative_field_error": 1.2882734807575051e-12,
+          "fast_relative_nodal_load_error": 9.14684641701732e-16,
+          "fast_relative_field_error": 3.1147158511239046e-13,
+          "methods": {
+            "prefactorized_multi_rhs_full": {
+              "median_ms": 0.04493750020628795,
+              "minimum_ms": 0.04204300057608634,
+              "maximum_ms": 0.04783199983648956,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 22253.12924416017
+            },
+            "prefactorized_column_loop_full": {
+              "median_ms": 0.04011799865111243,
+              "minimum_ms": 0.03889849904226139,
+              "maximum_ms": 0.04133749825996347,
+              "repeats": 2,
+              "inner": 2
+            },
+            "warm_sparse_response_cache_full": {
+              "median_ms": 0.027759499062085524,
+              "minimum_ms": 0.022363998141372576,
+              "maximum_ms": 0.03315499998279847,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 36023.70481410524
+            },
+            "dense_precomputed_response_full": {
+              "median_ms": 0.00995224945654627,
+              "minimum_ms": 0.009739498636918142,
+              "maximum_ms": 0.010165000276174396,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 100479.79648884626
+            },
+            "outer_surface_response_full": {
+              "median_ms": 0.005135250830790028,
+              "minimum_ms": 0.0051125025493092835,
+              "maximum_ms": 0.0051579991122707725,
+              "repeats": 2,
+              "inner": 2
+            },
+            "prefactorized_multi_rhs_peak": {
+              "median_ms": 0.05928675091126934,
+              "minimum_ms": 0.05612450331682339,
+              "maximum_ms": 0.06244899850571528,
+              "repeats": 2,
+              "inner": 2
+            },
+            "dense_precomputed_response_peak": {
+              "median_ms": 0.022078502297517844,
+              "minimum_ms": 0.02187300196965225,
+              "maximum_ms": 0.022284002625383437,
+              "repeats": 2,
+              "inner": 2
+            },
+            "outer_surface_response_peak": {
+              "median_ms": 0.016044250514823943,
+              "minimum_ms": 0.015703499229857698,
+              "maximum_ms": 0.01638500179979019,
+              "repeats": 2,
+              "inner": 2
+            },
+            "tiled_precomputed_response_peak": {
+              "median_ms": 0.04487274964048993,
+              "minimum_ms": 0.04340049781603739,
+              "maximum_ms": 0.04634500146494247,
+              "repeats": 2,
+              "inner": 2
+            },
+            "prefactorized_multi_rhs_full_global_tensor": {
+              "median_ms": 0.09443199814995751,
+              "minimum_ms": 0.08667049769428559,
+              "maximum_ms": 0.10219349860562943,
+              "repeats": 2,
+              "inner": 2
+            },
+            "dense_precomputed_response_full_global_tensor": {
+              "median_ms": 0.04123725011595525,
+              "minimum_ms": 0.040486000216333196,
+              "maximum_ms": 0.0419885000155773,
+              "repeats": 2,
+              "inner": 2
+            },
+            "global_tensor_conversion": {
+              "median_ms": 0.027561751267057844,
+              "minimum_ms": 0.027406502340454608,
+              "maximum_ms": 0.02771700019366108,
+              "repeats": 2,
+              "inner": 2
+            },
+            "current_contact_transfer": {
+              "median_ms": 1.250560500920983,
+              "minimum_ms": 1.2476435003918596,
+              "maximum_ms": 1.2534775014501065,
+              "repeats": 2,
+              "inner": 2
+            },
+            "unhinted_contact_transfer": {
+              "median_ms": 2.5421472510060994,
+              "minimum_ms": 2.5415915006306022,
+              "maximum_ms": 2.5427030013815966,
+              "repeats": 2,
+              "inner": 2
+            },
+            "hinted_taylor_contact_transfer": {
+              "median_ms": 1.148701998317847,
+              "minimum_ms": 1.1417039968364406,
+              "maximum_ms": 1.1556999997992534,
+              "repeats": 2,
+              "inner": 2
+            },
+            "hinted_fast_contact_transfer": {
+              "median_ms": 1.0886865020438563,
+              "minimum_ms": 1.0672515018086415,
+              "maximum_ms": 1.1101215022790711,
+              "repeats": 2,
+              "inner": 2
+            },
+            "fast_transfer_plus_prefactorized_full": {
+              "median_ms": 1.2038125005346956,
+              "minimum_ms": 1.203777501359582,
+              "maximum_ms": 1.2038474997098092,
+              "repeats": 2,
+              "inner": 2
+            },
+            "fast_transfer_plus_surface_response_full": {
+              "median_ms": 1.109610750063439,
+              "minimum_ms": 1.092539998353459,
+              "maximum_ms": 1.1266815017734189,
+              "repeats": 2,
+              "inner": 2
+            },
+            "fast_transfer_plus_surface_response_peak": {
+              "median_ms": 1.1200987501069903,
+              "minimum_ms": 1.1129304984933697,
+              "maximum_ms": 1.127267001720611,
+              "repeats": 2,
+              "inner": 2
+            },
+            "refactor_scalar_full": {
+              "median_ms": 0.7510159994126298,
+              "minimum_ms": 0.7360079980571754,
+              "maximum_ms": 0.7660240007680841,
+              "repeats": 2,
+              "inner": 1
+            }
+          },
+          "radii_m": [
+            3.507848633687712e-05,
+            3.507848633687712e-05
+          ],
+          "radius_formula": {
+            "median_ms": 0.002181185009249021,
+            "minimum_ms": 0.002020350002567284,
+            "maximum_ms": 0.002342020015930757,
+            "repeats": 2,
+            "inner": 100
+          },
+          "tiled_peak_relative_error": 4.690845837611777e-13,
+          "numerical_checks_passed": true,
+          "fast_numerical_checks_passed": true,
+          "taylor_numerical_checks_passed": true
+        },
+        {
+          "batch": 8,
+          "active_dof_union": 113,
+          "mean_active_dofs_per_environment": 23.875,
+          "cache_cold_ms": 1.118964995839633,
+          "cache_columns_valid": 113,
+          "cache_relative_field_error": 1.8558273952749225e-12,
+          "dense_response_relative_field_error": 1.8558273952749225e-12,
+          "scalar_loop_relative_field_error": 2.872439588348651e-13,
+          "global_tensor_map_vs_core_relative_error": 3.2396019700998935e-15,
+          "surface_response_relative_field_error": 6.356464399747149e-13,
+          "taylor_relative_nodal_load_error": 2.4696197727371234e-12,
+          "taylor_relative_field_error": 2.366603518976498e-12,
+          "fast_relative_nodal_load_error": 1.3419215097407277e-15,
+          "fast_relative_field_error": 5.344598227516603e-13,
+          "methods": {
+            "prefactorized_multi_rhs_full": {
+              "median_ms": 0.11434474981797393,
+              "minimum_ms": 0.11132749932585284,
+              "maximum_ms": 0.11736200031009503,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 69963.85940530935
+            },
+            "prefactorized_column_loop_full": {
+              "median_ms": 0.30151875034789555,
+              "minimum_ms": 0.29828399783582427,
+              "maximum_ms": 0.30475350285996683,
+              "repeats": 2,
+              "inner": 2
+            },
+            "warm_sparse_response_cache_full": {
+              "median_ms": 0.07992774953891058,
+              "minimum_ms": 0.07937950067571364,
+              "maximum_ms": 0.08047599840210751,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 100090.39471460941
+            },
+            "dense_precomputed_response_full": {
+              "median_ms": 0.026519750463194214,
+              "minimum_ms": 0.026459500077180564,
+              "maximum_ms": 0.026580000849207863,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 301661.9636411325
+            },
+            "outer_surface_response_full": {
+              "median_ms": 0.013685748854186386,
+              "minimum_ms": 0.013660497643286362,
+              "maximum_ms": 0.01371100006508641,
+              "repeats": 2,
+              "inner": 2
+            },
+            "prefactorized_multi_rhs_peak": {
+              "median_ms": 0.15414974950545002,
+              "minimum_ms": 0.14714150165673345,
+              "maximum_ms": 0.16115799735416658,
+              "repeats": 2,
+              "inner": 2
+            },
+            "dense_precomputed_response_peak": {
+              "median_ms": 0.05686299846274778,
+              "minimum_ms": 0.05669999882229604,
+              "maximum_ms": 0.05702599810319953,
+              "repeats": 2,
+              "inner": 2
+            },
+            "outer_surface_response_peak": {
+              "median_ms": 0.04903124863631092,
+              "minimum_ms": 0.043189997086301446,
+              "maximum_ms": 0.054872500186320394,
+              "repeats": 2,
+              "inner": 2
+            },
+            "tiled_precomputed_response_peak": {
+              "median_ms": 0.08220350173360202,
+              "minimum_ms": 0.08165250255842693,
+              "maximum_ms": 0.08275450090877712,
+              "repeats": 2,
+              "inner": 2
+            },
+            "prefactorized_multi_rhs_full_global_tensor": {
+              "median_ms": 0.22636349967797287,
+              "minimum_ms": 0.21181400006753393,
+              "maximum_ms": 0.2409129992884118,
+              "repeats": 2,
+              "inner": 2
+            },
+            "dense_precomputed_response_full_global_tensor": {
+              "median_ms": 0.11998575064353645,
+              "minimum_ms": 0.11254450146225281,
+              "maximum_ms": 0.1274269998248201,
+              "repeats": 2,
+              "inner": 2
+            },
+            "global_tensor_conversion": {
+              "median_ms": 0.08696599797985982,
+              "minimum_ms": 0.0789439982327167,
+              "maximum_ms": 0.09498799772700295,
+              "repeats": 2,
+              "inner": 2
+            },
+            "current_contact_transfer": {
+              "median_ms": 9.895844499624218,
+              "minimum_ms": 9.826615500060143,
+              "maximum_ms": 9.965073499188293,
+              "repeats": 2,
+              "inner": 2
+            },
+            "unhinted_contact_transfer": {
+              "median_ms": 15.862087500863709,
+              "minimum_ms": 15.778066001075786,
+              "maximum_ms": 15.946109000651632,
+              "repeats": 2,
+              "inner": 2
+            },
+            "hinted_taylor_contact_transfer": {
+              "median_ms": 9.346793000077014,
+              "minimum_ms": 9.33184550012811,
+              "maximum_ms": 9.361740500025917,
+              "repeats": 2,
+              "inner": 2
+            },
+            "hinted_fast_contact_transfer": {
+              "median_ms": 9.230021998519078,
+              "minimum_ms": 9.18437349901069,
+              "maximum_ms": 9.275670498027466,
+              "repeats": 2,
+              "inner": 2
+            },
+            "fast_transfer_plus_prefactorized_full": {
+              "median_ms": 9.795821497391444,
+              "minimum_ms": 9.720255497086328,
+              "maximum_ms": 9.87138749769656,
+              "repeats": 2,
+              "inner": 2
+            },
+            "fast_transfer_plus_surface_response_full": {
+              "median_ms": 9.262816251066397,
+              "minimum_ms": 9.227438000380062,
+              "maximum_ms": 9.298194501752732,
+              "repeats": 2,
+              "inner": 2
+            },
+            "fast_transfer_plus_surface_response_peak": {
+              "median_ms": 9.370443749503465,
+              "minimum_ms": 9.227843998814933,
+              "maximum_ms": 9.513043500191998,
+              "repeats": 2,
+              "inner": 2
+            }
+          },
+          "radii_m": [
+            3.314275144670863e-05,
+            4.1588945256042855e-05
+          ],
+          "radius_formula": {
+            "median_ms": 0.002043980020971503,
+            "minimum_ms": 0.002034760036622174,
+            "maximum_ms": 0.002053200005320832,
+            "repeats": 2,
+            "inner": 100
+          },
+          "tiled_peak_relative_error": 7.183674572895619e-13,
+          "numerical_checks_passed": true,
+          "fast_numerical_checks_passed": true,
+          "taylor_numerical_checks_passed": true
+        }
+      ]
+    }
+  ],
+  "source_sha256": {
+    "core.py": "43d425e52af6d095535fbfcbdd4a8695060345fa3ee24648e019011f6f4fa8fc",
+    "geometry.py": "6fcf34eb4d83548da6e330b7b6ef1b318a48808b4dd2aa4de0a82c24e93ef90e",
+    "contacts.py": "d90f22b201dee4884bd68dd17760d146f44ecf4cb0e502ad1e1e7cc7734d6393",
+    "performance.py": "413e46275cfbcfb082e11d93dfbb498866269f9792e00a7ef73164d0d4483430"
+  },
+  "source_unchanged_during_run": true,
+  "all_numerical_checks_passed": true,
+  "semantics": "Same current generalized loads, free-body inertia relief, fixed shell stiffness, full local top/bottom in-plane stress and plane-stress von Mises maximum"
+}

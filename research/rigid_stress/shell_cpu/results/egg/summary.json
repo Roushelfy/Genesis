@@ -1,0 +1,1528 @@
+{
+  "scope": "Fixed linear shell under supplied contact loads, not an independent contact solution or 3D stress qualification.",
+  "shell_geometry": "Midsurface is half-thickness normal offset from authored outer egg.",
+  "axes_m": [
+    0.022,
+    0.022,
+    0.03
+  ],
+  "taper": -0.18,
+  "thickness_m": 0.0005,
+  "E_pa": 10000000000.0,
+  "nu": 0.3,
+  "transfer": "Projected Hertz disk along resultant force; differs from native surface-ball DPR on curved surfaces.",
+  "stress": "Top/bottom in-plane membrane+bending stress at four Gauss points per quad; transverse Q reported separately.",
+  "convergence": "Probe differences use nearest Gauss points and include interpolation/sampling error; peak is sampled, not continuum maximum.",
+  "rows": [
+    {
+      "n": 3,
+      "case": "automatic_normal",
+      "nodes": 56,
+      "elements": 54,
+      "dofs": 336,
+      "assembly_s": 0.3590490269998554,
+      "factor_s": 0.0027791829998022877,
+      "transfer_s": 0.004397447002702393,
+      "solve_s": 0.000278990002698265,
+      "stress_s": 0.00017533399659441784,
+      "valid": true,
+      "residual": 4.8175062385292965e-14,
+      "peak_vm_pa": 6690.567963404073,
+      "peak_tensile_pa": 2702.8973490756443,
+      "max_displacement_m": 3.834550425918809e-08,
+      "max_rotation": 3.474718966865683e-06,
+      "strain_energy_j": 8.763244790959703e-10,
+      "radii_m": [
+        4.547179486589857e-05,
+        4.547179486589857e-05
+      ],
+      "max_force_error": 7.703719777548943e-33,
+      "max_normalized_moment_error": 2.3843581443343815e-14,
+      "a_over_h": [
+        0.09094358973179714,
+        0.09094358973179714
+      ],
+      "generalized_raw_resultant": [
+        5.204170427930421e-18,
+        0.0,
+        -4.086546170640613e-18,
+        7.52316384526264e-37,
+        -7.782115202898884e-21,
+        -7.72917564369549e-20
+      ],
+      "relief_acceleration": [
+        1.4819427189010823e-15,
+        2.4039291075239668e-32,
+        -1.1636873593784857e-15,
+        1.1567493242865096e-30,
+        -5.04662573011863e-15,
+        -6.644314587084528e-14
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            4
+          ],
+          "n_samples": 256,
+          "force_error": 7.703719777548943e-33,
+          "moment_error": 1.2038122615951735e-14,
+          "raw_mass_error": -7.751577157932843e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            13
+          ],
+          "n_samples": 256,
+          "force_error": 0.0,
+          "moment_error": 2.3843581443343815e-14,
+          "raw_mass_error": -7.752687380957468e-13,
+          "min_nodal_weight": 0.0
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "case": "automatic_friction",
+      "nodes": 56,
+      "elements": 54,
+      "dofs": 336,
+      "assembly_s": 0.3590490269998554,
+      "factor_s": 0.0027791829998022877,
+      "transfer_s": 0.0032467650016769767,
+      "solve_s": 0.00019308100308990106,
+      "stress_s": 0.00017903999832924455,
+      "valid": true,
+      "residual": 5.095585073768628e-14,
+      "peak_vm_pa": 6359.557492590623,
+      "peak_tensile_pa": 2554.1189454397913,
+      "max_displacement_m": 4.2914910101662385e-08,
+      "max_rotation": 3.1871095711928318e-06,
+      "strain_energy_j": 8.807603353625793e-10,
+      "radii_m": [
+        4.547179486589857e-05,
+        4.547179486589857e-05
+      ],
+      "max_force_error": 0.0,
+      "max_normalized_moment_error": 2.4577224717390498e-14,
+      "a_over_h": [
+        0.09094358973179714,
+        0.09094358973179714
+      ],
+      "generalized_raw_resultant": [
+        -8.673617379884035e-19,
+        0.0,
+        0.024999999999999998,
+        1.6940658945086007e-21,
+        -3.070494433796839e-20,
+        1.768181277393352e-20
+      ],
+      "relief_acceleration": [
+        -2.469904531501804e-16,
+        -8.460609999504483e-33,
+        7.119015121735822,
+        -4.0923033643564765e-15,
+        -1.3371478277844445e-14,
+        1.5200007343056384e-14
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            4
+          ],
+          "n_samples": 256,
+          "force_error": 0.0,
+          "moment_error": 2.4577224717390498e-14,
+          "raw_mass_error": -7.753797603982093e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            13
+          ],
+          "n_samples": 256,
+          "force_error": 0.0,
+          "moment_error": 1.9032852710589713e-14,
+          "raw_mass_error": -7.753797603982093e-13,
+          "min_nodal_weight": 0.0
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "case": "manual_2mm_normal",
+      "nodes": 56,
+      "elements": 54,
+      "dofs": 336,
+      "assembly_s": 0.3590490269998554,
+      "factor_s": 0.0027791829998022877,
+      "transfer_s": 0.007584933999169152,
+      "solve_s": 0.0003302969998912886,
+      "stress_s": 0.00018282500241184607,
+      "valid": true,
+      "residual": 4.70145019690408e-14,
+      "peak_vm_pa": 6690.567963404078,
+      "peak_tensile_pa": 2702.8973490756443,
+      "max_displacement_m": 3.8345504259113293e-08,
+      "max_rotation": 3.4747189668646126e-06,
+      "strain_energy_j": 8.763244790959504e-10,
+      "radii_m": [
+        0.002,
+        0.002
+      ],
+      "max_force_error": 7.703719777548943e-33,
+      "max_normalized_moment_error": 6.406782549999011e-16,
+      "a_over_h": [
+        4.0,
+        4.0
+      ],
+      "generalized_raw_resultant": [
+        -1.734723475976807e-18,
+        0.0,
+        -4.086546170640613e-18,
+        0.0,
+        -6.246867986000465e-21,
+        5.4104229505868434e-20
+      ],
+      "relief_acceleration": [
+        -4.939809063003608e-16,
+        -1.6827503752667765e-32,
+        -1.1636873593784857e-15,
+        1.011163430101314e-30,
+        -4.051032899006788e-15,
+        4.651020210959169e-14
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 0.002,
+          "normal_force": 0.05,
+          "a_over_h": 4.0,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            4
+          ],
+          "n_samples": 256,
+          "force_error": 7.703719777548943e-33,
+          "moment_error": 6.406782549999011e-16,
+          "raw_mass_error": -7.750466934908218e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 0.002,
+          "normal_force": 0.05,
+          "a_over_h": 4.0,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            13
+          ],
+          "n_samples": 256,
+          "force_error": 7.703719777548943e-33,
+          "moment_error": 2.7316812548951186e-16,
+          "raw_mass_error": -7.750466934908218e-13,
+          "min_nodal_weight": 0.0
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "case": "automatic_asymmetric",
+      "nodes": 56,
+      "elements": 54,
+      "dofs": 336,
+      "assembly_s": 0.3590490269998554,
+      "factor_s": 0.0027791829998022877,
+      "transfer_s": 0.007646105004823767,
+      "solve_s": 0.00020315500296419486,
+      "stress_s": 0.00018149300012737513,
+      "valid": true,
+      "residual": 3.714529816270996e-14,
+      "peak_vm_pa": 7584.674483305154,
+      "peak_tensile_pa": 3142.641209492659,
+      "max_displacement_m": 3.753938216234519e-08,
+      "max_rotation": 6.283406428885502e-06,
+      "strain_energy_j": 8.385801115097567e-10,
+      "radii_m": [
+        4.1324258064344396e-05,
+        4.559603380122178e-05,
+        3.434766874341436e-05
+      ],
+      "max_force_error": 1.6615637428807883e-16,
+      "max_normalized_moment_error": 4.80883309617124e-14,
+      "a_over_h": [
+        0.08264851612868879,
+        0.09119206760244356,
+        0.06869533748682871
+      ],
+      "generalized_raw_resultant": [
+        0.010512934599617683,
+        0.008514348734859253,
+        -0.008482558819437365,
+        -0.00018205713807201783,
+        -0.0005177331009895657,
+        -2.8005026818595305e-20
+      ],
+      "relief_acceleration": [
+        2.9936696155399214,
+        2.424551095807812,
+        -2.415498580263527,
+        -118.06227656508547,
+        -335.7448612190632,
+        -2.8344061756034778e-14
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 4.1324258064344396e-05,
+          "normal_force": 0.03500000000000001,
+          "a_over_h": 0.08264851612868879,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            4
+          ],
+          "n_samples": 256,
+          "force_error": 0.0,
+          "moment_error": 4.80883309617124e-14,
+          "raw_mass_error": -7.749356711883593e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 4.559603380122178e-05,
+          "normal_force": 0.049999999999999996,
+          "a_over_h": 0.09119206760244356,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            13
+          ],
+          "n_samples": 256,
+          "force_error": 1.3724248860540158e-16,
+          "moment_error": 3.488338987308947e-14,
+          "raw_mass_error": -7.751577157932843e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 3.434766874341436e-05,
+          "normal_force": 0.020000000000000004,
+          "a_over_h": 0.06869533748682871,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            31
+          ],
+          "n_samples": 256,
+          "force_error": 1.6615637428807883e-16,
+          "moment_error": 8.119560003185015e-15,
+          "raw_mass_error": -7.753797603982093e-13,
+          "min_nodal_weight": 0.0
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "case": "automatic_normal",
+      "nodes": 152,
+      "elements": 150,
+      "dofs": 912,
+      "assembly_s": 0.9915769689978333,
+      "factor_s": 0.0229868370006443,
+      "transfer_s": 0.0034535049999249168,
+      "solve_s": 0.0005136660038260743,
+      "stress_s": 0.00031232099718181416,
+      "valid": true,
+      "residual": 1.199026267750108e-13,
+      "peak_vm_pa": 12792.92867914421,
+      "peak_tensile_pa": 4538.83920449959,
+      "max_displacement_m": 5.7447763553106764e-08,
+      "max_rotation": 7.513914001744932e-06,
+      "strain_energy_j": 2.2160717667432555e-09,
+      "radii_m": [
+        4.547179486589857e-05,
+        4.547179486589857e-05
+      ],
+      "max_force_error": 1.3877787807814457e-16,
+      "max_normalized_moment_error": 2.4599968983336654e-14,
+      "a_over_h": [
+        0.09094358973179714,
+        0.09094358973179714
+      ],
+      "generalized_raw_resultant": [
+        -1.951563910473908e-18,
+        0.0,
+        -4.086546170640614e-18,
+        2.3980084756774665e-36,
+        2.6999175193730823e-21,
+        -7.371833619072583e-21
+      ],
+      "relief_acceleration": [
+        -5.339126382389184e-16,
+        -8.794071680719304e-34,
+        -1.1180052241907094e-15,
+        -1.000616248972471e-30,
+        1.6900263723719918e-15,
+        -6.0718671037146114e-15
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            12
+          ],
+          "n_samples": 256,
+          "force_error": 7.703719777548943e-33,
+          "moment_error": 2.4599968983336654e-14,
+          "raw_mass_error": -7.752687380957468e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            37
+          ],
+          "n_samples": 256,
+          "force_error": 1.3877787807814457e-16,
+          "moment_error": 7.451062354167418e-16,
+          "raw_mass_error": -7.751577157932843e-13,
+          "min_nodal_weight": 0.0
+        }
+      ],
+      "adjacent_probe_tensor_change": 0.8915935183145411,
+      "adjacent_peak_change": 0.4770104538836808,
+      "adjacent_energy_change": 0.6045595218318137
+    },
+    {
+      "n": 5,
+      "case": "automatic_friction",
+      "nodes": 152,
+      "elements": 150,
+      "dofs": 912,
+      "assembly_s": 0.9915769689978333,
+      "factor_s": 0.0229868370006443,
+      "transfer_s": 0.0032036179982242174,
+      "solve_s": 0.0005477769955177791,
+      "stress_s": 0.0003002539961016737,
+      "valid": true,
+      "residual": 1.3656268580344162e-13,
+      "peak_vm_pa": 12294.482359179425,
+      "peak_tensile_pa": 4062.493152328215,
+      "max_displacement_m": 5.449912381137302e-08,
+      "max_rotation": 7.682855425994437e-06,
+      "strain_energy_j": 2.2175286631965565e-09,
+      "radii_m": [
+        4.547179486589857e-05,
+        4.547179486589857e-05
+      ],
+      "max_force_error": 1.3877787807814454e-16,
+      "max_normalized_moment_error": 7.442839733651761e-15,
+      "a_over_h": [
+        0.09094358973179714,
+        0.09094358973179714
+      ],
+      "generalized_raw_resultant": [
+        9.974659986866641e-18,
+        0.0,
+        0.024999999999999994,
+        -2.4352197233561135e-20,
+        1.2334917294390749e-20,
+        1.3896634290890865e-20
+      ],
+      "relief_acceleration": [
+        2.728886817665583e-15,
+        1.9760392445809712e-33,
+        6.839548468966942,
+        -2.4971529752758494e-16,
+        -7.593739356115614e-15,
+        1.1446069046499711e-14
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            12
+          ],
+          "n_samples": 256,
+          "force_error": 1.3877787807814454e-16,
+          "moment_error": 1.4457184522021482e-15,
+          "raw_mass_error": -7.752687380957468e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            37
+          ],
+          "n_samples": 256,
+          "force_error": 3.36585794008988e-17,
+          "moment_error": 7.442839733651761e-15,
+          "raw_mass_error": -7.753797603982093e-13,
+          "min_nodal_weight": 0.0
+        }
+      ],
+      "adjacent_probe_tensor_change": 0.8794798076129534,
+      "adjacent_peak_change": 0.48273076435443507,
+      "adjacent_energy_change": 0.6028189623971003
+    },
+    {
+      "n": 5,
+      "case": "manual_2mm_normal",
+      "nodes": 152,
+      "elements": 150,
+      "dofs": 912,
+      "assembly_s": 0.9915769689978333,
+      "factor_s": 0.0229868370006443,
+      "valid": false,
+      "error": "ValueError: Finite footprint not resolved/covered: normalized mass 1.000002767885743"
+    },
+    {
+      "n": 5,
+      "case": "automatic_asymmetric",
+      "nodes": 152,
+      "elements": 150,
+      "dofs": 912,
+      "assembly_s": 0.9915769689978333,
+      "factor_s": 0.0229868370006443,
+      "transfer_s": 0.007986412005266175,
+      "solve_s": 0.0006353299977490678,
+      "stress_s": 0.0003662429953692481,
+      "valid": true,
+      "residual": 1.205876143789095e-13,
+      "peak_vm_pa": 16062.485681254373,
+      "peak_tensile_pa": 8999.829477528563,
+      "max_displacement_m": 6.962874297319394e-08,
+      "max_rotation": 1.3906050397577078e-05,
+      "strain_energy_j": 2.466229705505847e-09,
+      "radii_m": [
+        4.1324258064344396e-05,
+        4.559603380122178e-05,
+        3.434766874341436e-05
+      ],
+      "max_force_error": 1.9440415065259875e-16,
+      "max_normalized_moment_error": 4.989032011711031e-14,
+      "a_over_h": [
+        0.08264851612868879,
+        0.09119206760244356,
+        0.06869533748682871
+      ],
+      "generalized_raw_resultant": [
+        0.010512934599617678,
+        0.00851434873485925,
+        -0.008482558819437365,
+        -0.0001828159152364692,
+        -0.0005167962149218266,
+        9.441248226163605e-20
+      ],
+      "relief_acceleration": [
+        2.8761490298065877,
+        2.3293720341502886,
+        -2.320674887456195,
+        -114.43450246980004,
+        -323.4910792988642,
+        7.979469656878302e-14
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 4.1324258064344396e-05,
+          "normal_force": 0.03500000000000001,
+          "a_over_h": 0.08264851612868879,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            12,
+            13
+          ],
+          "n_samples": 928,
+          "force_error": 1.9440415065259875e-16,
+          "moment_error": 7.20424834735345e-15,
+          "raw_mass_error": -7.747136265834342e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 4.559603380122178e-05,
+          "normal_force": 0.049999999999999996,
+          "a_over_h": 0.09119206760244356,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            37
+          ],
+          "n_samples": 256,
+          "force_error": 1.3831053964433427e-16,
+          "moment_error": 4.989032011711031e-14,
+          "raw_mass_error": -7.750466934908218e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 3.434766874341436e-05,
+          "normal_force": 0.020000000000000004,
+          "a_over_h": 0.06869533748682871,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            92,
+            93
+          ],
+          "n_samples": 1280,
+          "force_error": 1.6615637428807883e-16,
+          "moment_error": 1.6048345292815945e-14,
+          "raw_mass_error": -7.762679388179095e-13,
+          "min_nodal_weight": 0.0
+        }
+      ],
+      "adjacent_probe_tensor_change": 0.9532160276987064,
+      "adjacent_peak_change": 0.5278019458621649,
+      "adjacent_energy_change": 0.6599748556926266
+    },
+    {
+      "n": 8,
+      "case": "automatic_normal",
+      "nodes": 386,
+      "elements": 384,
+      "dofs": 2316,
+      "assembly_s": 2.9154054850005195,
+      "factor_s": 0.31589077699754853,
+      "transfer_s": 0.005449439995572902,
+      "solve_s": 0.002614018005260732,
+      "stress_s": 0.0007245539964060299,
+      "valid": true,
+      "residual": 4.243945896868329e-13,
+      "peak_vm_pa": 29537.215455517602,
+      "peak_tensile_pa": 17020.9090848082,
+      "max_displacement_m": 1.2456431402723103e-07,
+      "max_rotation": 2.743019786811294e-05,
+      "strain_energy_j": 4.791961052727741e-09,
+      "radii_m": [
+        4.547179486589857e-05,
+        4.547179486589857e-05
+      ],
+      "max_force_error": 1.3877787807814457e-16,
+      "max_normalized_moment_error": 2.3846374223292848e-14,
+      "a_over_h": [
+        0.09094358973179714,
+        0.09094358973179714
+      ],
+      "generalized_raw_resultant": [
+        -8.527927712956296e-18,
+        0.0,
+        -4.086546170640614e-18,
+        -4.158311266033842e-36,
+        1.429957464678076e-20,
+        1.0740940254001064e-21
+      ],
+      "relief_acceleration": [
+        -2.299678399313006e-15,
+        8.70513411986991e-35,
+        -1.1019959681576233e-15,
+        -7.542458579549161e-31,
+        8.8386190791925e-15,
+        8.711110248660951e-16
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            27,
+            28
+          ],
+          "n_samples": 768,
+          "force_error": 7.703719777548943e-33,
+          "moment_error": 2.3846374223292848e-14,
+          "raw_mass_error": -7.747136265834342e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            91,
+            92
+          ],
+          "n_samples": 768,
+          "force_error": 1.3877787807814457e-16,
+          "moment_error": 2.3843820096984134e-14,
+          "raw_mass_error": -7.744915819785092e-13,
+          "min_nodal_weight": 0.0
+        }
+      ],
+      "adjacent_probe_tensor_change": 0.8375740017673976,
+      "adjacent_peak_change": 0.5668877894597045,
+      "adjacent_energy_change": 0.537543869334707
+    },
+    {
+      "n": 8,
+      "case": "automatic_friction",
+      "nodes": 386,
+      "elements": 384,
+      "dofs": 2316,
+      "assembly_s": 2.9154054850005195,
+      "factor_s": 0.31589077699754853,
+      "transfer_s": 0.005517703000805341,
+      "solve_s": 0.002899849001551047,
+      "stress_s": 0.000622129999101162,
+      "valid": true,
+      "residual": 4.665229474824862e-13,
+      "peak_vm_pa": 30915.73554752421,
+      "peak_tensile_pa": 17266.14480054558,
+      "max_displacement_m": 1.2420687711103638e-07,
+      "max_rotation": 2.7410702322790426e-05,
+      "strain_energy_j": 4.852454340601437e-09,
+      "radii_m": [
+        4.547179486589857e-05,
+        4.547179486589857e-05
+      ],
+      "max_force_error": 1.3877787807814454e-16,
+      "max_normalized_moment_error": 1.7349420803847874e-14,
+      "a_over_h": [
+        0.09094358973179714,
+        0.09094358973179714
+      ],
+      "generalized_raw_resultant": [
+        -5.837751072476638e-18,
+        0.0,
+        0.024999999999999998,
+        2.4967619609300587e-20,
+        5.069500461123113e-20,
+        6.234873867118446e-22
+      ],
+      "relief_acceleration": [
+        -1.5742335645674649e-15,
+        -7.700660771247869e-33,
+        6.741609675640056,
+        4.1765841145315615e-15,
+        2.2276174406814536e-14,
+        5.05660327295201e-16
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            27,
+            28
+          ],
+          "n_samples": 768,
+          "force_error": 1.3877787807814454e-16,
+          "moment_error": 1.7349420803847874e-14,
+          "raw_mass_error": -7.747136265834342e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            91,
+            92
+          ],
+          "n_samples": 768,
+          "force_error": 3.36585794008988e-17,
+          "moment_error": 8.686458531450905e-15,
+          "raw_mass_error": -7.748246488858967e-13,
+          "min_nodal_weight": 0.0
+        }
+      ],
+      "adjacent_probe_tensor_change": 0.8352101447557843,
+      "adjacent_peak_change": 0.6023228255307034,
+      "adjacent_energy_change": 0.543008855407034
+    },
+    {
+      "n": 8,
+      "case": "manual_2mm_normal",
+      "nodes": 386,
+      "elements": 384,
+      "dofs": 2316,
+      "assembly_s": 2.9154054850005195,
+      "factor_s": 0.31589077699754853,
+      "transfer_s": 0.007940502997371368,
+      "solve_s": 0.0028274910000618547,
+      "stress_s": 0.0006351999982143752,
+      "valid": true,
+      "residual": 4.607861535354812e-13,
+      "peak_vm_pa": 26207.49658403614,
+      "peak_tensile_pa": 12815.304220983759,
+      "max_displacement_m": 1.1209849151957898e-07,
+      "max_rotation": 2.3080697933600717e-05,
+      "strain_energy_j": 3.9399231795270966e-09,
+      "radii_m": [
+        0.002,
+        0.002
+      ],
+      "max_force_error": 1.3877787807814457e-16,
+      "max_normalized_moment_error": 1.453190900133159e-16,
+      "a_over_h": [
+        4.0,
+        4.0
+      ],
+      "generalized_raw_resultant": [
+        -1.6046192152785466e-17,
+        0.0,
+        -4.086546170640613e-18,
+        -3.855621470697103e-36,
+        -8.650323973834542e-20,
+        2.4074264547743317e-20
+      ],
+      "relief_acceleration": [
+        -4.3270865709759224e-15,
+        1.9511299455116768e-33,
+        -1.1019959681576231e-15,
+        -3.2226706930763783e-31,
+        -5.346796698847471e-14,
+        1.952469408371426e-14
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 0.002,
+          "normal_force": 0.05,
+          "a_over_h": 4.0,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            27,
+            28
+          ],
+          "n_samples": 768,
+          "force_error": 1.3877787807814457e-16,
+          "moment_error": 1.028350937525924e-16,
+          "raw_mass_error": -7.744915819785092e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 0.002,
+          "normal_force": 0.05,
+          "a_over_h": 4.0,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            91,
+            92
+          ],
+          "n_samples": 768,
+          "force_error": 1.3877787807814457e-16,
+          "moment_error": 1.453190900133159e-16,
+          "raw_mass_error": -7.744915819785092e-13,
+          "min_nodal_weight": 0.0
+        }
+      ],
+      "adjacent_probe_tensor_change": 0.948066915798933,
+      "adjacent_peak_change": 0.7447078570839335,
+      "adjacent_energy_change": 0.7775782828331352
+    },
+    {
+      "n": 8,
+      "case": "automatic_asymmetric",
+      "nodes": 386,
+      "elements": 384,
+      "dofs": 2316,
+      "assembly_s": 2.9154054850005195,
+      "factor_s": 0.31589077699754853,
+      "transfer_s": 0.00738406200252939,
+      "solve_s": 0.0031850099985604174,
+      "stress_s": 0.0007324160033022054,
+      "valid": true,
+      "residual": 3.1072870792781076e-13,
+      "peak_vm_pa": 22382.143605494697,
+      "peak_tensile_pa": 10089.028196520288,
+      "max_displacement_m": 7.498229759405958e-08,
+      "max_rotation": 1.6299894427610133e-05,
+      "strain_energy_j": 3.0052625220286944e-09,
+      "radii_m": [
+        4.1324258064344396e-05,
+        4.559603380122178e-05,
+        3.434766874341436e-05
+      ],
+      "max_force_error": 1.7127007519384887e-16,
+      "max_normalized_moment_error": 1.4069726642863379e-09,
+      "a_over_h": [
+        0.08264851612868879,
+        0.09119206760244356,
+        0.06869533748682871
+      ],
+      "generalized_raw_resultant": [
+        0.010512934599617685,
+        0.00851434873485925,
+        -0.008482558819437361,
+        -0.00018312081365577524,
+        -0.0005164197472372688,
+        8.939417394067231e-17
+      ],
+      "relief_acceleration": [
+        2.8349640646461483,
+        2.296016632508032,
+        -2.2874440244521925,
+        -113.18764070647153,
+        -319.2009233526873,
+        7.251010441048088e-11
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 4.1324258064344396e-05,
+          "normal_force": 0.03500000000000001,
+          "a_over_h": 0.08264851612868879,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            36
+          ],
+          "n_samples": 256,
+          "force_error": 0.0,
+          "moment_error": 1.9115007449975624e-14,
+          "raw_mass_error": -7.752687380957468e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 4.559603380122178e-05,
+          "normal_force": 0.049999999999999996,
+          "a_over_h": 0.09119206760244356,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            91
+          ],
+          "n_samples": 256,
+          "force_error": 0.0,
+          "moment_error": 2.5373129114220015e-14,
+          "raw_mass_error": -7.756018050031344e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 3.434766874341436e-05,
+          "normal_force": 0.020000000000000004,
+          "a_over_h": 0.06869533748682871,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            228,
+            236
+          ],
+          "n_samples": 1152,
+          "force_error": 1.7127007519384887e-16,
+          "moment_error": 1.4069726642863379e-09,
+          "raw_mass_error": 1.5108603257374398e-09,
+          "min_nodal_weight": 0.0
+        }
+      ],
+      "adjacent_probe_tensor_change": 0.7128589573194667,
+      "adjacent_peak_change": 0.28235266628746325,
+      "adjacent_energy_change": 0.17936297164447879
+    },
+    {
+      "n": 12,
+      "case": "automatic_normal",
+      "nodes": 866,
+      "elements": 864,
+      "dofs": 5196,
+      "assembly_s": 6.416326169004606,
+      "factor_s": 3.6865873800052213,
+      "transfer_s": 0.006896055005199742,
+      "solve_s": 0.015606010005285498,
+      "stress_s": 0.001433639001334086,
+      "valid": true,
+      "residual": 7.388949515146009e-13,
+      "peak_vm_pa": 62980.28862658552,
+      "peak_tensile_pa": 25692.10854609106,
+      "max_displacement_m": 1.8537171139680832e-07,
+      "max_rotation": 5.033935372707987e-05,
+      "strain_energy_j": 8.725734822793744e-09,
+      "radii_m": [
+        4.547179486589857e-05,
+        4.547179486589857e-05
+      ],
+      "max_force_error": 1.3877787807814457e-16,
+      "max_normalized_moment_error": 1.8845948727825793e-16,
+      "a_over_h": [
+        0.09094358973179714,
+        0.09094358973179714
+      ],
+      "generalized_raw_resultant": [
+        6.451002926288751e-18,
+        0.0,
+        -4.086546170640614e-18,
+        7.011823802654945e-36,
+        4.697326054141364e-21,
+        -6.890414502566721e-22
+      ],
+      "relief_acceleration": [
+        1.7305192763259384e-15,
+        4.429204150353061e-34,
+        -1.0962399184583765e-15,
+        5.882340066459628e-30,
+        2.8901962589186194e-15,
+        -5.556992631737856e-16
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            53,
+            54
+          ],
+          "n_samples": 768,
+          "force_error": 1.3877787807814457e-16,
+          "moment_error": 1.4152652616069948e-16,
+          "raw_mass_error": -7.744915819785092e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            197,
+            198
+          ],
+          "n_samples": 768,
+          "force_error": 1.3877787807814457e-16,
+          "moment_error": 1.8845948727825793e-16,
+          "raw_mass_error": -7.744915819785092e-13,
+          "min_nodal_weight": 0.0
+        }
+      ],
+      "adjacent_probe_tensor_change": 0.7164850695653281,
+      "adjacent_peak_change": 0.531008572687785,
+      "adjacent_energy_change": 0.4508243546193987
+    },
+    {
+      "n": 12,
+      "case": "automatic_friction",
+      "nodes": 866,
+      "elements": 864,
+      "dofs": 5196,
+      "assembly_s": 6.416326169004606,
+      "factor_s": 3.6865873800052213,
+      "transfer_s": 0.005696797998098191,
+      "solve_s": 0.015504547998716589,
+      "stress_s": 0.0013751610022154637,
+      "valid": true,
+      "residual": 8.089894376082474e-13,
+      "peak_vm_pa": 63261.67915214933,
+      "peak_tensile_pa": 26176.392780539427,
+      "max_displacement_m": 1.847119297535322e-07,
+      "max_rotation": 5.040293723985022e-05,
+      "strain_energy_j": 8.784676561885205e-09,
+      "radii_m": [
+        4.547179486589857e-05,
+        4.547179486589857e-05
+      ],
+      "max_force_error": 1.3877787807814454e-16,
+      "max_normalized_moment_error": 2.9295128931612863e-15,
+      "a_over_h": [
+        0.09094358973179714,
+        0.09094358973179714
+      ],
+      "generalized_raw_resultant": [
+        -3.1577388273640317e-18,
+        0.0,
+        0.024999999999999998,
+        -4.2708989387337925e-20,
+        4.1979416087066154e-20,
+        -1.1903129014638068e-21
+      ],
+      "relief_acceleration": [
+        -8.470819146721507e-16,
+        -2.4860474403597194e-31,
+        6.706396261555807,
+        -3.5790256244217796e-14,
+        3.012690525492032e-14,
+        -9.599654738380348e-16
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            53,
+            54
+          ],
+          "n_samples": 768,
+          "force_error": 1.3877787807814454e-16,
+          "moment_error": 2.8922982383313545e-15,
+          "raw_mass_error": -7.747136265834342e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            197,
+            198
+          ],
+          "n_samples": 768,
+          "force_error": 1.3877787807814454e-16,
+          "moment_error": 2.9295128931612863e-15,
+          "raw_mass_error": -7.747136265834342e-13,
+          "min_nodal_weight": 0.0
+        }
+      ],
+      "adjacent_probe_tensor_change": 0.6967500926984027,
+      "adjacent_peak_change": 0.5113039052730575,
+      "adjacent_energy_change": 0.44762287986160154
+    },
+    {
+      "n": 12,
+      "case": "manual_2mm_normal",
+      "nodes": 866,
+      "elements": 864,
+      "dofs": 5196,
+      "assembly_s": 6.416326169004606,
+      "factor_s": 3.6865873800052213,
+      "valid": false,
+      "error": "ValueError: Finite footprint not resolved/covered: normalized mass 1.000008944699602"
+    },
+    {
+      "n": 12,
+      "case": "automatic_asymmetric",
+      "nodes": 866,
+      "elements": 864,
+      "dofs": 5196,
+      "assembly_s": 6.416326169004606,
+      "factor_s": 3.6865873800052213,
+      "transfer_s": 0.0054088149991002865,
+      "solve_s": 0.015013397998700384,
+      "stress_s": 0.0013930979985161684,
+      "valid": true,
+      "residual": 6.462203969133976e-13,
+      "peak_vm_pa": 52240.467517757745,
+      "peak_tensile_pa": 16641.985731808625,
+      "max_displacement_m": 1.3855782933474398e-07,
+      "max_rotation": 3.158972246903615e-05,
+      "strain_energy_j": 5.035347101369867e-09,
+      "radii_m": [
+        4.1324258064344396e-05,
+        4.559603380122178e-05,
+        3.434766874341436e-05
+      ],
+      "max_force_error": 1.3724248860540158e-16,
+      "max_normalized_moment_error": 7.584795103419799e-14,
+      "a_over_h": [
+        0.08264851612868879,
+        0.09119206760244356,
+        0.06869533748682871
+      ],
+      "generalized_raw_resultant": [
+        0.010512934599617685,
+        0.008514348734859246,
+        -0.008482558819437363,
+        -0.000183233802410376,
+        -0.0005162802364640362,
+        -5.992758101824175e-20
+      ],
+      "relief_acceleration": [
+        2.8201562118742722,
+        2.284023861001698,
+        -2.2754960302040796,
+        -112.74108804242059,
+        -317.6597048583518,
+        -3.5029244454787684e-14
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 4.1324258064344396e-05,
+          "normal_force": 0.03500000000000001,
+          "a_over_h": 0.08264851612868879,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            79
+          ],
+          "n_samples": 256,
+          "force_error": 0.0,
+          "moment_error": 1.1793592424371239e-14,
+          "raw_mass_error": -7.750466934908218e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 4.559603380122178e-05,
+          "normal_force": 0.049999999999999996,
+          "a_over_h": 0.09119206760244356,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            209
+          ],
+          "n_samples": 256,
+          "force_error": 1.3724248860540158e-16,
+          "moment_error": 3.248446248401344e-14,
+          "raw_mass_error": -7.751577157932843e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 3.434766874341436e-05,
+          "normal_force": 0.020000000000000004,
+          "a_over_h": 0.06869533748682871,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            523
+          ],
+          "n_samples": 256,
+          "force_error": 0.0,
+          "moment_error": 7.584795103419799e-14,
+          "raw_mass_error": -7.752687380957468e-13,
+          "min_nodal_weight": 0.0
+        }
+      ],
+      "adjacent_probe_tensor_change": 0.6296669887942223,
+      "adjacent_peak_change": 0.5715554498457257,
+      "adjacent_energy_change": 0.4031667605970774
+    },
+    {
+      "n": 16,
+      "case": "automatic_normal",
+      "nodes": 1538,
+      "elements": 1536,
+      "dofs": 9228,
+      "assembly_s": 10.51096432999475,
+      "factor_s": 19.781547121005133,
+      "transfer_s": 0.0068297190009616315,
+      "solve_s": 0.04695315400022082,
+      "stress_s": 0.002580316002422478,
+      "valid": true,
+      "residual": 1.7806536742808343e-12,
+      "peak_vm_pa": 77767.48744486232,
+      "peak_tensile_pa": 31565.686914894362,
+      "max_displacement_m": 1.7223235170953645e-07,
+      "max_rotation": 4.6519971310802e-05,
+      "strain_energy_j": 7.811549880348675e-09,
+      "radii_m": [
+        4.547179486589857e-05,
+        4.547179486589857e-05
+      ],
+      "max_force_error": 1.3877787807814457e-16,
+      "max_normalized_moment_error": 2.3843690018691852e-14,
+      "a_over_h": [
+        0.09094358973179714,
+        0.09094358973179714
+      ],
+      "generalized_raw_resultant": [
+        1.0679391398982219e-17,
+        0.0,
+        -4.086546170640613e-18,
+        -1.8660972819303814e-37,
+        -1.0966874298562267e-19,
+        -2.3781442610899546e-22
+      ],
+      "relief_acceleration": [
+        2.8595259393680235e-15,
+        -5.748858731815623e-35,
+        -1.094218232181805e-15,
+        6.372257071677613e-32,
+        -6.736908402571372e-14,
+        -1.9141416072619552e-16
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            103,
+            104
+          ],
+          "n_samples": 768,
+          "force_error": 1.3877787807814457e-16,
+          "moment_error": 2.38434109027519e-14,
+          "raw_mass_error": -7.747136265834342e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            359,
+            360
+          ],
+          "n_samples": 768,
+          "force_error": 1.3877787807814457e-16,
+          "moment_error": 2.3843690018691852e-14,
+          "raw_mass_error": -7.747136265834342e-13,
+          "min_nodal_weight": 0.0
+        }
+      ],
+      "adjacent_probe_tensor_change": 0.5287167912900047,
+      "adjacent_peak_change": 0.19014628483093302,
+      "adjacent_energy_change": 0.11702990526180497
+    },
+    {
+      "n": 16,
+      "case": "automatic_friction",
+      "nodes": 1538,
+      "elements": 1536,
+      "dofs": 9228,
+      "assembly_s": 10.51096432999475,
+      "factor_s": 19.781547121005133,
+      "transfer_s": 0.0065376810016459785,
+      "solve_s": 0.04684641299536452,
+      "stress_s": 0.0023749479951220565,
+      "valid": true,
+      "residual": 1.6205002975177295e-12,
+      "peak_vm_pa": 76407.85214496609,
+      "peak_tensile_pa": 32575.62370484703,
+      "max_displacement_m": 1.7199517624447372e-07,
+      "max_rotation": 4.68195789177488e-05,
+      "strain_energy_j": 7.860023129766599e-09,
+      "radii_m": [
+        4.547179486589857e-05,
+        4.547179486589857e-05
+      ],
+      "max_force_error": 3.36585794008988e-17,
+      "max_normalized_moment_error": 8.675106683104036e-15,
+      "a_over_h": [
+        0.09094358973179714,
+        0.09094358973179714
+      ],
+      "generalized_raw_resultant": [
+        3.7947076036992655e-19,
+        0.0,
+        0.024999999999999998,
+        1.0190865146653301e-21,
+        3.2343589131435935e-20,
+        6.183175078833882e-22
+      ],
+      "relief_acceleration": [
+        1.0160752068820385e-16,
+        1.769412452427253e-33,
+        6.694028321783733,
+        1.2867599824710179e-15,
+        2.233411322381741e-14,
+        4.976768178881025e-16
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            103,
+            104
+          ],
+          "n_samples": 768,
+          "force_error": 3.36585794008988e-17,
+          "moment_error": 8.675106683104036e-15,
+          "raw_mass_error": -7.744915819785092e-13,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 4.547179486589857e-05,
+          "normal_force": 0.05,
+          "a_over_h": 0.09094358973179714,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            359,
+            360
+          ],
+          "n_samples": 768,
+          "force_error": 3.36585794008988e-17,
+          "moment_error": 2.8990990631164856e-15,
+          "raw_mass_error": -7.744915819785092e-13,
+          "min_nodal_weight": 0.0
+        }
+      ],
+      "adjacent_probe_tensor_change": 0.49572117133552474,
+      "adjacent_peak_change": 0.17205264411666701,
+      "adjacent_energy_change": 0.11764003958421732
+    },
+    {
+      "n": 16,
+      "case": "manual_2mm_normal",
+      "nodes": 1538,
+      "elements": 1536,
+      "dofs": 9228,
+      "assembly_s": 10.51096432999475,
+      "factor_s": 19.781547121005133,
+      "transfer_s": 0.0163703619982698,
+      "solve_s": 0.046708335998118855,
+      "stress_s": 0.002351773000555113,
+      "valid": true,
+      "residual": 2.0299082887054384e-12,
+      "peak_vm_pa": 65489.26230914171,
+      "peak_tensile_pa": 22034.896159706193,
+      "max_displacement_m": 1.5306058597700208e-07,
+      "max_rotation": 3.6334852590463414e-05,
+      "strain_energy_j": 6.280046774878019e-09,
+      "radii_m": [
+        0.002,
+        0.002
+      ],
+      "max_force_error": 2.7755575615628914e-16,
+      "max_normalized_moment_error": 2.5081596413505103e-08,
+      "a_over_h": [
+        4.0,
+        4.0
+      ],
+      "generalized_raw_resultant": [
+        -2.004926986150929e-17,
+        0.0,
+        -4.086546170640614e-18,
+        9.477423203504693e-38,
+        -3.754086831768318e-20,
+        3.4245277359695346e-22
+      ],
+      "relief_acceleration": [
+        -5.368415211361129e-15,
+        8.278356573814403e-35,
+        -1.0942182321818052e-15,
+        6.207685979621142e-32,
+        -2.306120999694332e-14,
+        2.7563639144571786e-16
+      ],
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 0.002,
+          "normal_force": 0.05,
+          "a_over_h": 4.0,
+          "method": "face_polar",
+          "faces": 4,
+          "face_ids": [
+            103,
+            104,
+            119,
+            120
+          ],
+          "n_samples": 1536,
+          "force_error": 2.7755575615628914e-16,
+          "moment_error": 2.5081596413505103e-08,
+          "raw_mass_error": 3.634895406889882e-08,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 0.002,
+          "normal_force": 0.05,
+          "a_over_h": 4.0,
+          "method": "face_polar",
+          "faces": 4,
+          "face_ids": [
+            359,
+            360,
+            375,
+            376
+          ],
+          "n_samples": 1536,
+          "force_error": 1.3877787807814457e-16,
+          "moment_error": 2.5081596413505103e-08,
+          "raw_mass_error": 3.6348954290943425e-08,
+          "min_nodal_weight": 0.0
+        }
+      ],
+      "adjacent_probe_tensor_change": 0.4701541102640033,
+      "adjacent_peak_change": 0.5998199451335428,
+      "adjacent_energy_change": 0.37262837033508817
+    },
+    {
+      "n": 16,
+      "case": "automatic_asymmetric",
+      "nodes": 1538,
+      "elements": 1536,
+      "dofs": 9228,
+      "assembly_s": 10.51096432999475,
+      "factor_s": 19.781547121005133,
+      "valid": false,
+      "error": "ValueError: Finite footprint not resolved/covered: normalized mass 1.000002495159527"
+    }
+  ]
+}

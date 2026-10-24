@@ -1,0 +1,46 @@
+{
+  "availability": {
+    "pyfe3d_version": "0.10.0",
+    "code_aster_binary": null,
+    "as_run_binary": null,
+    "code_aster_module": false,
+    "opensees_note": "3.8.0.0 and 3.7.1.2 installed, but both imports aborted in MPI network-interface initialization; no OpenSees solve executed",
+    "reference_scope": "independent prescribed-load linear shell FEM, not an independent contact solve"
+  },
+  "analytic": {
+    "center_w_m": 3.548871284225155e-05,
+    "center_M_N": 0.004788635578645178,
+    "center_surface_stress_pa": 114927.25388748427,
+    "terms": 151
+  },
+  "rows": [
+    {
+      "n": 4,
+      "nodes": 25,
+      "dofs": 150,
+      "center_w_m": 3.778399578699205e-05,
+      "relative_w_error": 0.06467642134396652
+    },
+    {
+      "n": 8,
+      "nodes": 81,
+      "dofs": 486,
+      "center_w_m": 3.607700148823203e-05,
+      "relative_w_error": 0.01657678171072137
+    },
+    {
+      "n": 16,
+      "nodes": 289,
+      "dofs": 1734,
+      "center_w_m": 3.567615545048112e-05,
+      "relative_w_error": 0.005281752794550744
+    },
+    {
+      "n": 32,
+      "nodes": 1089,
+      "dofs": 6534,
+      "center_w_m": 3.563481645568641e-05,
+      "relative_w_error": 0.0041169037063782
+    }
+  ]
+}

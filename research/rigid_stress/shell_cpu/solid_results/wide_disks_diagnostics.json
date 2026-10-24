@@ -1,0 +1,100 @@
+{
+  "rows": [
+    {
+      "n": 8,
+      "layers": 1,
+      "Fn": 0.05,
+      "radius_m": 0.005,
+      "radius_over_h": 10.0,
+      "shell_dofs": 2316,
+      "solid_dofs": 13842,
+      "midpoint_displacement_relative_L2": 0.09403179150843806,
+      "farfield_exclusion_distance_m": 0.01,
+      "surface_linearized_membrane_relative_L2": 0.30741793849510163,
+      "surface_linearized_bending_relative_L2": 0.40266396628290596,
+      "shell_to_solid_inplane_stress_norm_ratio": 0.8934851144160185,
+      "shell_inplane_VM_peak_Pa": 21719.45596789791,
+      "solid_inplane_VM_peak_Pa": 25910.338820248126,
+      "shell_residual": 2.3480574848974486e-13,
+      "solid_residual": 8.952511112995955e-14,
+      "solid_transfer_checks": [
+        {
+          "force_relative": 8.384297404680616e-16,
+          "moment_normalized": 8.48317955116173e-16
+        },
+        {
+          "force_relative": 5.815852873680766e-16,
+          "moment_normalized": 8.525463192713109e-16
+        }
+      ],
+      "scope": "Projected finite Hertz-disk load on differently approximated Q4/tri surfaces. Same coarse vertex mesh, NOT a converged contact or continuum reference; shell in-plane stress only.",
+      "common_surface_inplane_voigt_relative_L2": 0.3423216331410219,
+      "farfield_inplane_voigt_relative_L2": 0.3335585758501144,
+      "stress_metric": "Area-weighted equal-component (xx,yy,xy) Voigt-vector L2; not full tensor Frobenius norm"
+    },
+    {
+      "n": 12,
+      "layers": 1,
+      "Fn": 0.05,
+      "radius_m": 0.005,
+      "radius_over_h": 10.0,
+      "shell_dofs": 5196,
+      "solid_dofs": 31122,
+      "midpoint_displacement_relative_L2": 0.04632847353697826,
+      "farfield_exclusion_distance_m": 0.01,
+      "surface_linearized_membrane_relative_L2": 0.20147315246632477,
+      "surface_linearized_bending_relative_L2": 0.2483347011915543,
+      "shell_to_solid_inplane_stress_norm_ratio": 0.9417029190265471,
+      "shell_inplane_VM_peak_Pa": 28398.849041772664,
+      "solid_inplane_VM_peak_Pa": 29340.038666263667,
+      "shell_residual": 8.921897644360198e-13,
+      "solid_residual": 6.702799623227041e-14,
+      "solid_transfer_checks": [
+        {
+          "force_relative": 4.628819572127218e-16,
+          "moment_normalized": 8.574602132096405e-16
+        },
+        {
+          "force_relative": 4.563344992840995e-16,
+          "moment_normalized": 8.64217634721524e-16
+        }
+      ],
+      "scope": "Projected finite Hertz-disk load on differently approximated Q4/tri surfaces. Same coarse vertex mesh, NOT a converged contact or continuum reference; shell in-plane stress only.",
+      "common_surface_inplane_voigt_relative_L2": 0.219512393797293,
+      "farfield_inplane_voigt_relative_L2": 0.18567804955895256,
+      "stress_metric": "Area-weighted equal-component (xx,yy,xy) Voigt-vector L2; not full tensor Frobenius norm"
+    },
+    {
+      "n": 16,
+      "layers": 1,
+      "Fn": 0.05,
+      "radius_m": 0.005,
+      "radius_over_h": 10.0,
+      "shell_dofs": 9228,
+      "solid_dofs": 55314,
+      "midpoint_displacement_relative_L2": 0.02533731595360517,
+      "farfield_exclusion_distance_m": 0.01,
+      "surface_linearized_membrane_relative_L2": 0.1476964806697102,
+      "surface_linearized_bending_relative_L2": 0.17188655284045232,
+      "shell_to_solid_inplane_stress_norm_ratio": 0.9637985161844203,
+      "shell_inplane_VM_peak_Pa": 30334.998822812366,
+      "solid_inplane_VM_peak_Pa": 31302.975176995446,
+      "shell_residual": 2.9987739897138076e-12,
+      "solid_residual": 4.030350242053233e-14,
+      "solid_transfer_checks": [
+        {
+          "force_relative": 8.582937747229194e-16,
+          "moment_normalized": 8.657931096488177e-16
+        },
+        {
+          "force_relative": 4.277421474636178e-16,
+          "moment_normalized": 8.259571464325233e-16
+        }
+      ],
+      "scope": "Projected finite Hertz-disk load on differently approximated Q4/tri surfaces. Same coarse vertex mesh, NOT a converged contact or continuum reference; shell in-plane stress only.",
+      "common_surface_inplane_voigt_relative_L2": 0.1569747456762398,
+      "farfield_inplane_voigt_relative_L2": 0.11542030700737298,
+      "stress_metric": "Area-weighted equal-component (xx,yy,xy) Voigt-vector L2; not full tensor Frobenius norm"
+    }
+  ]
+}

@@ -1,0 +1,262 @@
+{
+  "rows": [
+    {
+      "n": 3,
+      "layers": 1,
+      "shell_vertices": 56,
+      "shell_quads": 54,
+      "shell_dofs": 336,
+      "solid_tets": 324,
+      "solid_dofs": 1962,
+      "parameters": {
+        "R": 0.02,
+        "h": 0.0005,
+        "E": 10000000000.0,
+        "nu": 0.3,
+        "inner_pressure": 100.0
+      },
+      "shell_mid_radial_displacement_m": 2.5227102709471657e-09,
+      "exact_mid_radial_displacement_m": 2.759541817476854e-09,
+      "shell_displacement_relative_error": 0.08582277863295129,
+      "solid_base_radial_displacement_relative_L2": 0.28799745363812174,
+      "shell_mean_hoop_stress_Pa": 1789.5007551567212,
+      "exact_mid_hoop_stress_Pa": 1950.2083713062436,
+      "shell_mean_hoop_relative_error": 0.08240535653217451,
+      "solid_volume_hoop_relative_L2": 0.1195286069668924,
+      "solid_radial_absolute_error_normalized_by_hoop": 0.1412887854648123,
+      "exact_mid_radial_stress_Pa": -48.75016274685413,
+      "shell_load_wrench": [
+        2.168404344971009e-18,
+        3.0357660829594124e-18,
+        8.673617379884035e-18,
+        1.3552527156068805e-20,
+        5.254251250936832e-20,
+        1.096544527807613e-19
+      ],
+      "shell_residual": 2.960148002370729e-15,
+      "solid_residual": 5.810831035345266e-14,
+      "seconds": {
+        "shell_assembly_load": 0.4052694510028232,
+        "shell_factor_solve": 0.0035766859946306795,
+        "solid_assembly_factor_load": 0.04446784300671425,
+        "solid_solve": 0.0009026689949678257
+      },
+      "scope": "Prescribed inner pressure, same normal-offset reference geometry. 3D P2 solid and MITC4 shell; not a unilateral-contact or Code_Aster reference."
+    },
+    {
+      "n": 3,
+      "layers": 2,
+      "shell_vertices": 56,
+      "shell_quads": 54,
+      "shell_dofs": 336,
+      "solid_tets": 648,
+      "solid_dofs": 3270,
+      "parameters": {
+        "R": 0.02,
+        "h": 0.0005,
+        "E": 10000000000.0,
+        "nu": 0.3,
+        "inner_pressure": 100.0
+      },
+      "shell_mid_radial_displacement_m": 2.5227102709471657e-09,
+      "exact_mid_radial_displacement_m": 2.759541817476854e-09,
+      "shell_displacement_relative_error": 0.08582277863295129,
+      "solid_base_radial_displacement_relative_L2": 0.2884068348839794,
+      "shell_mean_hoop_stress_Pa": 1789.5007551567212,
+      "exact_mid_hoop_stress_Pa": 1950.2083713062436,
+      "shell_mean_hoop_relative_error": 0.08240535653217451,
+      "solid_volume_hoop_relative_L2": 0.12173747900658048,
+      "solid_radial_absolute_error_normalized_by_hoop": 0.14134803314524036,
+      "exact_mid_radial_stress_Pa": -48.75016274685413,
+      "shell_load_wrench": [
+        2.168404344971009e-18,
+        3.0357660829594124e-18,
+        8.673617379884035e-18,
+        1.3552527156068805e-20,
+        5.254251250936832e-20,
+        1.096544527807613e-19
+      ],
+      "shell_residual": 2.960148002370729e-15,
+      "solid_residual": 2.3212629087741274e-13,
+      "seconds": {
+        "shell_assembly_load": 0.38812948299892014,
+        "shell_factor_solve": 0.002777652996883262,
+        "solid_assembly_factor_load": 0.10905208499752916,
+        "solid_solve": 0.0014326880045700818
+      },
+      "scope": "Prescribed inner pressure, same normal-offset reference geometry. 3D P2 solid and MITC4 shell; not a unilateral-contact or Code_Aster reference."
+    },
+    {
+      "n": 6,
+      "layers": 1,
+      "shell_vertices": 218,
+      "shell_quads": 216,
+      "shell_dofs": 1308,
+      "solid_tets": 1296,
+      "solid_dofs": 7794,
+      "parameters": {
+        "R": 0.02,
+        "h": 0.0005,
+        "E": 10000000000.0,
+        "nu": 0.3,
+        "inner_pressure": 100.0
+      },
+      "shell_mid_radial_displacement_m": 2.672288077186339e-09,
+      "exact_mid_radial_displacement_m": 2.759541817476854e-09,
+      "shell_displacement_relative_error": 0.031618923017551426,
+      "solid_base_radial_displacement_relative_L2": 0.11763593362174211,
+      "shell_mean_hoop_stress_Pa": 1907.7171666653967,
+      "exact_mid_hoop_stress_Pa": 1950.2083713062436,
+      "shell_mean_hoop_relative_error": 0.0217880331486765,
+      "solid_volume_hoop_relative_L2": 0.040302427172780445,
+      "solid_radial_absolute_error_normalized_by_hoop": 0.03633509201670928,
+      "exact_mid_radial_stress_Pa": -48.75016274685413,
+      "shell_load_wrench": [
+        -3.577867169202165e-18,
+        -6.505213034913027e-19,
+        -1.1275702593849246e-17,
+        -1.8634724839594607e-20,
+        1.0382440176520582e-19,
+        1.9808545518692615e-19
+      ],
+      "shell_residual": 3.1621696540440894e-14,
+      "solid_residual": 3.7504645072604304e-14,
+      "seconds": {
+        "shell_assembly_load": 1.7061875040017185,
+        "shell_factor_solve": 0.07062065100035397,
+        "solid_assembly_factor_load": 0.2689314910021494,
+        "solid_solve": 0.004558034001092892
+      },
+      "scope": "Prescribed inner pressure, same normal-offset reference geometry. 3D P2 solid and MITC4 shell; not a unilateral-contact or Code_Aster reference."
+    },
+    {
+      "n": 6,
+      "layers": 2,
+      "shell_vertices": 218,
+      "shell_quads": 216,
+      "shell_dofs": 1308,
+      "solid_tets": 2592,
+      "solid_dofs": 12990,
+      "parameters": {
+        "R": 0.02,
+        "h": 0.0005,
+        "E": 10000000000.0,
+        "nu": 0.3,
+        "inner_pressure": 100.0
+      },
+      "shell_mid_radial_displacement_m": 2.672288077186339e-09,
+      "exact_mid_radial_displacement_m": 2.759541817476854e-09,
+      "shell_displacement_relative_error": 0.031618923017551426,
+      "solid_base_radial_displacement_relative_L2": 0.11780027467406667,
+      "shell_mean_hoop_stress_Pa": 1907.7171666653967,
+      "exact_mid_hoop_stress_Pa": 1950.2083713062436,
+      "shell_mean_hoop_relative_error": 0.0217880331486765,
+      "solid_volume_hoop_relative_L2": 0.04254931513398155,
+      "solid_radial_absolute_error_normalized_by_hoop": 0.03657308800717593,
+      "exact_mid_radial_stress_Pa": -48.75016274685413,
+      "shell_load_wrench": [
+        -3.577867169202165e-18,
+        -6.505213034913027e-19,
+        -1.1275702593849246e-17,
+        -1.8634724839594607e-20,
+        1.0382440176520582e-19,
+        1.9808545518692615e-19
+      ],
+      "shell_residual": 3.1621696540440894e-14,
+      "solid_residual": 1.2050829767611964e-13,
+      "seconds": {
+        "shell_assembly_load": 1.5405995710025309,
+        "shell_factor_solve": 0.05893117500090739,
+        "solid_assembly_factor_load": 3.5270336309986305,
+        "solid_solve": 0.02262851200066507
+      },
+      "scope": "Prescribed inner pressure, same normal-offset reference geometry. 3D P2 solid and MITC4 shell; not a unilateral-contact or Code_Aster reference."
+    },
+    {
+      "n": 8,
+      "layers": 1,
+      "shell_vertices": 386,
+      "shell_quads": 384,
+      "shell_dofs": 2316,
+      "solid_tets": 2304,
+      "solid_dofs": 13842,
+      "parameters": {
+        "R": 0.02,
+        "h": 0.0005,
+        "E": 10000000000.0,
+        "nu": 0.3,
+        "inner_pressure": 100.0
+      },
+      "shell_mid_radial_displacement_m": 2.697092426148149e-09,
+      "exact_mid_radial_displacement_m": 2.759541817476854e-09,
+      "shell_displacement_relative_error": 0.022630347883550006,
+      "solid_base_radial_displacement_relative_L2": 0.07111386551696319,
+      "shell_mean_hoop_stress_Pa": 1926.095719214151,
+      "exact_mid_hoop_stress_Pa": 1950.2083713062436,
+      "shell_mean_hoop_relative_error": 0.01236414141527975,
+      "solid_volume_hoop_relative_L2": 0.024554594824909102,
+      "solid_radial_absolute_error_normalized_by_hoop": 0.020535038713331705,
+      "exact_mid_radial_stress_Pa": -48.75016274685413,
+      "shell_load_wrench": [
+        1.4257258568184383e-17,
+        3.2146594414195206e-17,
+        4.7704895589362195e-17,
+        8.470329472543003e-21,
+        4.2268929301459714e-22,
+        2.188086494592592e-20
+      ],
+      "shell_residual": 1.5265036250571937e-13,
+      "solid_residual": 2.3377232343382967e-14,
+      "seconds": {
+        "shell_assembly_load": 2.9609307249993435,
+        "shell_factor_solve": 0.3397713800004567,
+        "solid_assembly_factor_load": 0.5466317320024245,
+        "solid_solve": 0.008373707998543978
+      },
+      "scope": "Prescribed inner pressure, same normal-offset reference geometry. 3D P2 solid and MITC4 shell; not a unilateral-contact or Code_Aster reference."
+    },
+    {
+      "n": 8,
+      "layers": 2,
+      "shell_vertices": 386,
+      "shell_quads": 384,
+      "shell_dofs": 2316,
+      "solid_tets": 4608,
+      "solid_dofs": 23070,
+      "parameters": {
+        "R": 0.02,
+        "h": 0.0005,
+        "E": 10000000000.0,
+        "nu": 0.3,
+        "inner_pressure": 100.0
+      },
+      "shell_mid_radial_displacement_m": 2.697092426148149e-09,
+      "exact_mid_radial_displacement_m": 2.759541817476854e-09,
+      "shell_displacement_relative_error": 0.022630347883550006,
+      "solid_base_radial_displacement_relative_L2": 0.07125398180293217,
+      "shell_mean_hoop_stress_Pa": 1926.095719214151,
+      "exact_mid_hoop_stress_Pa": 1950.2083713062436,
+      "shell_mean_hoop_relative_error": 0.01236414141527975,
+      "solid_volume_hoop_relative_L2": 0.02651685494236212,
+      "solid_radial_absolute_error_normalized_by_hoop": 0.020763939081651805,
+      "exact_mid_radial_stress_Pa": -48.75016274685413,
+      "shell_load_wrench": [
+        1.4257258568184383e-17,
+        3.2146594414195206e-17,
+        4.7704895589362195e-17,
+        8.470329472543003e-21,
+        4.2268929301459714e-22,
+        2.188086494592592e-20
+      ],
+      "shell_residual": 1.5265036250571937e-13,
+      "solid_residual": 8.667474707329559e-14,
+      "seconds": {
+        "shell_assembly_load": 2.798997675999999,
+        "shell_factor_solve": 0.3218398130047717,
+        "solid_assembly_factor_load": 4.074649128997407,
+        "solid_solve": 0.02930409400141798
+      },
+      "scope": "Prescribed inner pressure, same normal-offset reference geometry. 3D P2 solid and MITC4 shell; not a unilateral-contact or Code_Aster reference."
+    }
+  ]
+}

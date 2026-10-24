@@ -1,0 +1,50 @@
+{
+  "availability": {
+    "pyfe3d_version": "0.10.0",
+    "code_aster_binary": null,
+    "as_run_binary": null,
+    "code_aster_module": false,
+    "opensees_note": "3.8.0.0 and 3.7.1.2 installed, but both imports aborted in MPI network-interface initialization; no OpenSees solve executed",
+    "reference_scope": "independent prescribed-load linear shell FEM, not an independent contact solve"
+  },
+  "analytic": {
+    "center_w_m": 3.548871284225155e-05,
+    "center_M_N": 0.004788635578645178,
+    "center_surface_stress_pa": 114927.25388748427,
+    "terms": 151
+  },
+  "rows": [
+    {
+      "displacement_relative": 0.09471398892446319,
+      "surface_tensor_relative_L2": 0.26062028366522694,
+      "core_max_surface_stress_pa": 152061.5436565822,
+      "reference_max_surface_stress_pa": 181995.10569109835,
+      "surface_stress_max_metric": "Frobenius tensor norm; additional explicit VM/tensile maxima below",
+      "core_max_surface_vm_pa": 107658.02213862065,
+      "reference_max_surface_vm_pa": 129363.44079098896,
+      "core_max_surface_tensile_pa": 111257.41742805886,
+      "reference_max_surface_tensile_pa": 137673.67846563144,
+      "relative_compliance_difference": 0.09555013327221219,
+      "explicit_relief_coefficients": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "same_applied_load": true,
+      "reference": "pyfe3d0.10.0 Quad4 mixed integration; independent flat-faceted shell discretization",
+      "scope": "prescribed-load shell-discretization comparison, not physical contact-reference validation",
+      "n": 4,
+      "nodes": 25,
+      "dofs": 150,
+      "core_center_w_m": 3.468133827207779e-05,
+      "reference_center_w_m": 3.778399578699205e-05,
+      "core_center_w_vs_Kirchhoff": 0.02275017901501719,
+      "reference_center_w_vs_Kirchhoff": 0.06467642134396656,
+      "core_surface_tensor_vs_Kirchhoff": 0.18609475674141748,
+      "reference_surface_tensor_vs_Kirchhoff": 0.33037958760378056
+    }
+  ]
+}

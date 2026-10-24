@@ -1,0 +1,226 @@
+{
+  "scope": "CPU research shell recovery only; not Genesis scene steps, RL transitions, GPU throughput or contact-reference qualification",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "numpy": "2.3.5",
+  "scipy": "1.17.0",
+  "threads": 1,
+  "threadpools": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-fdde5778.so",
+      "version": "0.3.30",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    },
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/scipy.libs/libscipy_openblas-6cdc3b4a.so",
+      "version": "0.3.30",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    }
+  ],
+  "models": [
+    {
+      "resolution": 2,
+      "vertices": 26,
+      "quads": 24,
+      "ndof": 156,
+      "stress_scalar_outputs": 576,
+      "construction_seconds": 0.17792397800076287,
+      "factor_seconds": 0.0010464360020705499,
+      "stress_operator_seconds": 0.00038723299803677946,
+      "contact_bank_transfer_seconds": 0.022591762004594784,
+      "dense_response_build_seconds": 0.001959570996405091,
+      "dense_response_bytes": 718848,
+      "on_demand_cache_allocated_bytes": 719004,
+      "stiffness_nnz": 7790,
+      "factor_nnz": 17012,
+      "rows": [
+        {
+          "batch": 1,
+          "active_dof_union": 24,
+          "mean_active_dofs_per_environment": 24.0,
+          "cache_cold_ms": 0.49617700278759,
+          "cache_columns_valid": 24,
+          "cache_relative_field_error": 1.7637087009450313e-12,
+          "dense_response_relative_field_error": 1.7637108173854453e-12,
+          "scalar_loop_relative_field_error": 0.0,
+          "methods": {
+            "prefactorized_multi_rhs_full": {
+              "median_ms": 0.05596400114882272,
+              "minimum_ms": 0.0443265016656369,
+              "maximum_ms": 0.06760150063200854,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 17868.62946665915
+            },
+            "prefactorized_column_loop_full": {
+              "median_ms": 0.04257174987287726,
+              "minimum_ms": 0.04075149990967475,
+              "maximum_ms": 0.044391999836079776,
+              "repeats": 2,
+              "inner": 2
+            },
+            "warm_sparse_response_cache_full": {
+              "median_ms": 0.021429748812806793,
+              "minimum_ms": 0.020315499568823725,
+              "maximum_ms": 0.02254399805678986,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 46664.10272631766
+            },
+            "dense_precomputed_response_full": {
+              "median_ms": 0.009046249033417553,
+              "minimum_ms": 0.00883350003277883,
+              "maximum_ms": 0.009258998034056276,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 110543.05450866118
+            },
+            "prefactorized_multi_rhs_peak": {
+              "median_ms": 0.06093399861129001,
+              "minimum_ms": 0.05824749678140506,
+              "maximum_ms": 0.06362050044117495,
+              "repeats": 2,
+              "inner": 2
+            },
+            "dense_precomputed_response_peak": {
+              "median_ms": 0.028856251446995884,
+              "minimum_ms": 0.02230400059488602,
+              "maximum_ms": 0.03540850229910575,
+              "repeats": 2,
+              "inner": 2
+            },
+            "tiled_precomputed_response_peak": {
+              "median_ms": 0.043718499000533484,
+              "minimum_ms": 0.04321999949752353,
+              "maximum_ms": 0.044216998503543437,
+              "repeats": 2,
+              "inner": 2
+            },
+            "current_contact_transfer": {
+              "median_ms": 3.345665998494951,
+              "minimum_ms": 3.148686999338679,
+              "maximum_ms": 3.542644997651223,
+              "repeats": 2,
+              "inner": 2
+            },
+            "refactor_scalar_full": {
+              "median_ms": 0.7347014980041422,
+              "minimum_ms": 0.7343359975493513,
+              "maximum_ms": 0.7350669984589331,
+              "repeats": 2,
+              "inner": 1
+            }
+          },
+          "radii_m": [
+            3.507848633687712e-05,
+            3.507848633687712e-05
+          ],
+          "radius_formula": {
+            "median_ms": 0.0021828349781571887,
+            "minimum_ms": 0.002179079965571873,
+            "maximum_ms": 0.0021865899907425046,
+            "repeats": 2,
+            "inner": 100
+          },
+          "tiled_peak_relative_error": 6.687102684306119e-13,
+          "numerical_checks_passed": true
+        },
+        {
+          "batch": 8,
+          "active_dof_union": 113,
+          "mean_active_dofs_per_environment": 23.875,
+          "cache_cold_ms": 1.2775139985023998,
+          "cache_columns_valid": 113,
+          "cache_relative_field_error": 1.903534881077831e-12,
+          "dense_response_relative_field_error": 1.903534881077831e-12,
+          "scalar_loop_relative_field_error": 2.9913126511266974e-13,
+          "methods": {
+            "prefactorized_multi_rhs_full": {
+              "median_ms": 0.11603200073295739,
+              "minimum_ms": 0.11266950241406448,
+              "maximum_ms": 0.11939449905185029,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 68946.49708240102
+            },
+            "prefactorized_column_loop_full": {
+              "median_ms": 0.3239429988752818,
+              "minimum_ms": 0.30062799851293676,
+              "maximum_ms": 0.3472579992376268,
+              "repeats": 2,
+              "inner": 2
+            },
+            "warm_sparse_response_cache_full": {
+              "median_ms": 0.0857914983498631,
+              "minimum_ms": 0.07978999929036945,
+              "maximum_ms": 0.09179299740935676,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 93249.33302103548
+            },
+            "dense_precomputed_response_full": {
+              "median_ms": 0.03414899947529193,
+              "minimum_ms": 0.026454999897396192,
+              "maximum_ms": 0.04184299905318767,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 234267.47848903443
+            },
+            "prefactorized_multi_rhs_peak": {
+              "median_ms": 0.15170824917731807,
+              "minimum_ms": 0.1488189991505351,
+              "maximum_ms": 0.15459749920410104,
+              "repeats": 2,
+              "inner": 2
+            },
+            "dense_precomputed_response_peak": {
+              "median_ms": 0.06402649887604639,
+              "minimum_ms": 0.057666999055072665,
+              "maximum_ms": 0.07038599869702011,
+              "repeats": 2,
+              "inner": 2
+            },
+            "tiled_precomputed_response_peak": {
+              "median_ms": 0.08238900045398623,
+              "minimum_ms": 0.08180800068657845,
+              "maximum_ms": 0.082970000221394,
+              "repeats": 2,
+              "inner": 2
+            },
+            "current_contact_transfer": {
+              "median_ms": 34.092045250872616,
+              "minimum_ms": 27.74973000123282,
+              "maximum_ms": 40.43436050051241,
+              "repeats": 2,
+              "inner": 2
+            }
+          },
+          "radii_m": [
+            3.314275144670863e-05,
+            4.1588945256042855e-05
+          ],
+          "radius_formula": {
+            "median_ms": 0.002333410011488013,
+            "minimum_ms": 0.0022075200104154646,
+            "maximum_ms": 0.0024593000125605613,
+            "repeats": 2,
+            "inner": 100
+          },
+          "tiled_peak_relative_error": 6.792954435452881e-13,
+          "numerical_checks_passed": true
+        }
+      ]
+    }
+  ],
+  "all_numerical_checks_passed": true,
+  "semantics": "Same current generalized loads, free-body inertia relief, fixed shell stiffness, full local top/bottom in-plane stress and plane-stress von Mises maximum"
+}

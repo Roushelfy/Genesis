@@ -1,0 +1,45 @@
+{
+  "analytic_radial_u_m": 2.8e-09,
+  "analytic_membrane_stress_pa": 2000.0,
+  "availability": {
+    "pyfe3d_version": "0.10.0",
+    "code_aster_binary": null,
+    "as_run_binary": null,
+    "code_aster_module": false,
+    "opensees_note": "3.8.0.0 and 3.7.1.2 installed, but both imports aborted in MPI network-interface initialization; no OpenSees solve executed",
+    "reference_scope": "independent prescribed-load linear shell FEM, not an independent contact solve"
+  },
+  "rows": [
+    {
+      "displacement_relative": 0.0153116685058809,
+      "surface_tensor_relative_L2": 0.015968641528752624,
+      "core_max_surface_stress_pa": 2922.9571593052633,
+      "reference_max_surface_stress_pa": 2880.4194035118417,
+      "relative_compliance_difference": 0.0007972322431212046,
+      "explicit_relief_coefficients": [
+        1.6539640855506182e-15,
+        2.6106688017024463e-15,
+        2.82146814593929e-15,
+        -9.500677539489112e-16,
+        1.655367004118033e-14,
+        1.7560731689324213e-14
+      ],
+      "same_applied_load": true,
+      "reference": "pyfe3d0.10.0 Quad4 mixed integration; independent flat-faceted shell discretization",
+      "scope": "prescribed-load shell-discretization comparison, not physical contact-reference validation",
+      "core_mean_radial_u_m": 2.785278252993486e-09,
+      "core_mean_radial_u_error": 0.005257766788040685,
+      "core_mean_membrane_stress_pa": 1993.6594827571168,
+      "core_mean_membrane_stress_error": 0.0031702586214416018,
+      "reference_mean_radial_u_m": 2.7990259933562503e-09,
+      "reference_mean_radial_u_error": 0.00034785951562488204,
+      "reference_mean_membrane_stress_pa": 1995.2503664988703,
+      "reference_mean_membrane_stress_error": 0.0023748167505648343,
+      "n": 16,
+      "nodes": 1538,
+      "quads": 1536,
+      "dofs": 9228
+    }
+  ],
+  "scope": "uniform pressure control of shell discretization, not local contact model"
+}

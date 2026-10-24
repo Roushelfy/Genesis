@@ -1,0 +1,750 @@
+{
+  "scope": "Independent axisymmetric halfspace contact; no imposed Hertz pressure/support. This does not validate a thin-shell contact radius.",
+  "source_sha256": "64239148c05e46b58e510a2b98d4a3574027da875452e2a3d5a8a6f670c0945b",
+  "rows": [
+    {
+      "n": 160,
+      "force_N": 0.005,
+      "domain_m": 0.0003,
+      "indenter_radius_m": 0.02,
+      "E_Pa": 10000000000.0,
+      "nu": 0.3,
+      "reduced_modulus_Pa": 10989010989.010988,
+      "quadrature_order": 24,
+      "contact_radius_m": 1.875e-05,
+      "hertz_radius_m": 1.8968553707799238e-05,
+      "radius_relative_difference": 0.0115218962481772,
+      "indentation_m": 1.7983647602131103e-08,
+      "hertz_indentation_m": 1.799030148828321e-08,
+      "indentation_relative_difference": 0.0003698596244449768,
+      "pressure_relative_area_L2": 0.008605829608758782,
+      "pressure_relative_continuous_L2": 0.0664828772801392,
+      "force_relative_residual": 1.734723475976807e-16,
+      "minimum_pressure_Pa": 0.0,
+      "minimum_gap_m": -3.308722450212111e-24,
+      "between_nodes_minimum_gap_m": -3.5335372764758405e-11,
+      "between_nodes_penetration_over_indentation": 0.0019648612754495413,
+      "complementarity_scaled": 1.8398505817140342e-16,
+      "active_rings": 10,
+      "outer_domain_loaded": false,
+      "iterations": 10,
+      "assembly_seconds": 0.017026544999680482,
+      "solve_seconds": 0.001687661002506502,
+      "passed_numerical": true,
+      "history": [
+        {
+          "iteration": 0,
+          "active": 40,
+          "min_pressure_scaled": -3976.6757959878205,
+          "min_gap_scaled": -1.4210854715202004e-14
+        },
+        {
+          "iteration": 1,
+          "active": 33,
+          "min_pressure_scaled": -2911.7324034178782,
+          "min_gap_scaled": -7.105427357601002e-15
+        },
+        {
+          "iteration": 2,
+          "active": 27,
+          "min_pressure_scaled": -2072.407004549016,
+          "min_gap_scaled": -3.552713678800501e-15
+        },
+        {
+          "iteration": 3,
+          "active": 22,
+          "min_pressure_scaled": -1422.232346503115,
+          "min_gap_scaled": -3.552713678800501e-15
+        },
+        {
+          "iteration": 4,
+          "active": 18,
+          "min_pressure_scaled": -926.8871645453195,
+          "min_gap_scaled": -1.7763568394002505e-15
+        },
+        {
+          "iteration": 5,
+          "active": 15,
+          "min_pressure_scaled": -558.8363993011,
+          "min_gap_scaled": -2.6645352591003757e-15
+        },
+        {
+          "iteration": 6,
+          "active": 13,
+          "min_pressure_scaled": -305.03010147409157,
+          "min_gap_scaled": -8.881784197001252e-16
+        },
+        {
+          "iteration": 7,
+          "active": 12,
+          "min_pressure_scaled": -171.36758848772124,
+          "min_gap_scaled": -8.881784197001252e-16
+        },
+        {
+          "iteration": 8,
+          "active": 11,
+          "min_pressure_scaled": -29.816347645277055,
+          "min_gap_scaled": -8.881784197001252e-16
+        },
+        {
+          "iteration": 9,
+          "active": 10,
+          "min_pressure_scaled": 0.0,
+          "min_gap_scaled": -8.881784197001252e-16
+        }
+      ]
+    },
+    {
+      "n": 320,
+      "force_N": 0.005,
+      "domain_m": 0.0003,
+      "indenter_radius_m": 0.02,
+      "E_Pa": 10000000000.0,
+      "nu": 0.3,
+      "reduced_modulus_Pa": 10989010989.010988,
+      "quadrature_order": 24,
+      "contact_radius_m": 1.875e-05,
+      "hertz_radius_m": 1.8968553707799238e-05,
+      "radius_relative_difference": 0.0115218962481772,
+      "indentation_m": 1.799222823605504e-08,
+      "hertz_indentation_m": 1.799030148828321e-08,
+      "indentation_relative_difference": 0.00010709924861920762,
+      "pressure_relative_area_L2": 0.002154612334423419,
+      "pressure_relative_continuous_L2": 0.04019584751101123,
+      "force_relative_residual": 1.734723475976807e-16,
+      "minimum_pressure_Pa": 0.0,
+      "minimum_gap_m": -6.617444900424222e-24,
+      "between_nodes_minimum_gap_m": -7.730679605002711e-12,
+      "between_nodes_penetration_over_indentation": 0.00042966771561462437,
+      "complementarity_scaled": 3.4842808882381734e-16,
+      "active_rings": 20,
+      "outer_domain_loaded": false,
+      "iterations": 11,
+      "assembly_seconds": 0.05270850600209087,
+      "solve_seconds": 0.00246043400693452,
+      "passed_numerical": true,
+      "history": [
+        {
+          "iteration": 0,
+          "active": 80,
+          "min_pressure_scaled": -5748.181810754446,
+          "min_gap_scaled": -1.4210854715202004e-14
+        },
+        {
+          "iteration": 1,
+          "active": 65,
+          "min_pressure_scaled": -4127.298461220341,
+          "min_gap_scaled": -7.105427357601002e-15
+        },
+        {
+          "iteration": 2,
+          "active": 53,
+          "min_pressure_scaled": -2937.5516121812375,
+          "min_gap_scaled": -1.0658141036401503e-14
+        },
+        {
+          "iteration": 3,
+          "active": 44,
+          "min_pressure_scaled": -2104.1731910874155,
+          "min_gap_scaled": -1.7763568394002505e-15
+        },
+        {
+          "iteration": 4,
+          "active": 37,
+          "min_pressure_scaled": -1483.313694019066,
+          "min_gap_scaled": -5.329070518200751e-15
+        },
+        {
+          "iteration": 5,
+          "active": 31,
+          "min_pressure_scaled": -957.959418352671,
+          "min_gap_scaled": -2.6645352591003757e-15
+        },
+        {
+          "iteration": 6,
+          "active": 27,
+          "min_pressure_scaled": -599.6483154226574,
+          "min_gap_scaled": -1.7763568394002505e-15
+        },
+        {
+          "iteration": 7,
+          "active": 24,
+          "min_pressure_scaled": -316.9337359778902,
+          "min_gap_scaled": -1.7763568394002505e-15
+        },
+        {
+          "iteration": 8,
+          "active": 22,
+          "min_pressure_scaled": -115.84375009332234,
+          "min_gap_scaled": -8.881784197001252e-16
+        },
+        {
+          "iteration": 9,
+          "active": 21,
+          "min_pressure_scaled": -9.635016201946721,
+          "min_gap_scaled": -1.7763568394002505e-15
+        },
+        {
+          "iteration": 10,
+          "active": 20,
+          "min_pressure_scaled": 0.0,
+          "min_gap_scaled": -1.7763568394002505e-15
+        }
+      ]
+    },
+    {
+      "n": 640,
+      "force_N": 0.005,
+      "domain_m": 0.0003,
+      "indenter_radius_m": 0.02,
+      "E_Pa": 10000000000.0,
+      "nu": 0.3,
+      "reduced_modulus_Pa": 10989010989.010988,
+      "quadrature_order": 24,
+      "contact_radius_m": 1.921875e-05,
+      "hertz_radius_m": 1.8968553707799238e-05,
+      "radius_relative_difference": 0.013190056345618437,
+      "indentation_m": 1.7990342885897036e-08,
+      "hertz_indentation_m": 1.799030148828321e-08,
+      "indentation_relative_difference": 2.301107285633504e-06,
+      "pressure_relative_area_L2": 0.009610097875238588,
+      "pressure_relative_continuous_L2": 0.02498171630751867,
+      "force_relative_residual": 1.734723475976807e-16,
+      "minimum_pressure_Pa": 0.0,
+      "minimum_gap_m": -6.617444900424222e-24,
+      "between_nodes_minimum_gap_m": -7.792112843703556e-12,
+      "between_nodes_penetration_over_indentation": 0.00043312753365095324,
+      "complementarity_scaled": 3.678331726301759e-16,
+      "active_rings": 41,
+      "outer_domain_loaded": false,
+      "iterations": 12,
+      "assembly_seconds": 0.19664631400519283,
+      "solve_seconds": 0.00457908400130691,
+      "passed_numerical": true,
+      "history": [
+        {
+          "iteration": 0,
+          "active": 160,
+          "min_pressure_scaled": -8217.59800123019,
+          "min_gap_scaled": -2.4868995751603507e-14
+        },
+        {
+          "iteration": 1,
+          "active": 131,
+          "min_pressure_scaled": -5990.03694764891,
+          "min_gap_scaled": -1.4210854715202004e-14
+        },
+        {
+          "iteration": 2,
+          "active": 108,
+          "min_pressure_scaled": -4362.493189820422,
+          "min_gap_scaled": -8.881784197001252e-15
+        },
+        {
+          "iteration": 3,
+          "active": 89,
+          "min_pressure_scaled": -3106.270664456921,
+          "min_gap_scaled": -5.329070518200751e-15
+        },
+        {
+          "iteration": 4,
+          "active": 74,
+          "min_pressure_scaled": -2159.278193643374,
+          "min_gap_scaled": -5.329070518200751e-15
+        },
+        {
+          "iteration": 5,
+          "active": 63,
+          "min_pressure_scaled": -1474.8513589657757,
+          "min_gap_scaled": -2.6645352591003757e-15
+        },
+        {
+          "iteration": 6,
+          "active": 55,
+          "min_pressure_scaled": -967.9484289670041,
+          "min_gap_scaled": -2.6645352591003757e-15
+        },
+        {
+          "iteration": 7,
+          "active": 49,
+          "min_pressure_scaled": -570.5352492694554,
+          "min_gap_scaled": -1.7763568394002505e-15
+        },
+        {
+          "iteration": 8,
+          "active": 45,
+          "min_pressure_scaled": -289.84623955121396,
+          "min_gap_scaled": -1.7763568394002505e-15
+        },
+        {
+          "iteration": 9,
+          "active": 43,
+          "min_pressure_scaled": -142.42173813633968,
+          "min_gap_scaled": -1.7763568394002505e-15
+        },
+        {
+          "iteration": 10,
+          "active": 42,
+          "min_pressure_scaled": -66.46985914807166,
+          "min_gap_scaled": -2.6645352591003757e-15
+        },
+        {
+          "iteration": 11,
+          "active": 41,
+          "min_pressure_scaled": 0.0,
+          "min_gap_scaled": -1.7763568394002505e-15
+        }
+      ]
+    },
+    {
+      "n": 160,
+      "force_N": 0.05,
+      "domain_m": 0.0003,
+      "indenter_radius_m": 0.02,
+      "E_Pa": 10000000000.0,
+      "nu": 0.3,
+      "reduced_modulus_Pa": 10989010989.010988,
+      "quadrature_order": 24,
+      "contact_radius_m": 4.125e-05,
+      "hertz_radius_m": 4.086651012781559e-05,
+      "radius_relative_difference": 0.009383964301942882,
+      "indentation_m": 8.348188874887773e-08,
+      "hertz_indentation_m": 8.350358250134272e-08,
+      "indentation_relative_difference": 0.0002597942724749019,
+      "pressure_relative_area_L2": 0.012756334889578749,
+      "pressure_relative_continuous_L2": 0.04608118934428348,
+      "force_relative_residual": 0.0,
+      "minimum_pressure_Pa": 0.0,
+      "minimum_gap_m": -2.6469779601696886e-23,
+      "between_nodes_minimum_gap_m": -7.366170233038374e-11,
+      "between_nodes_penetration_over_indentation": 0.0008823674623841568,
+      "complementarity_scaled": 2.9778430515118977e-16,
+      "active_rings": 22,
+      "outer_domain_loaded": false,
+      "iterations": 7,
+      "assembly_seconds": 0.015021605002402794,
+      "solve_seconds": 0.0011016989956260659,
+      "passed_numerical": true,
+      "history": [
+        {
+          "iteration": 0,
+          "active": 40,
+          "min_pressure_scaled": -335.67154919405044,
+          "min_gap_scaled": -1.7763568394002505e-15
+        },
+        {
+          "iteration": 1,
+          "active": 34,
+          "min_pressure_scaled": -226.5905644471586,
+          "min_gap_scaled": -1.3322676295501878e-15
+        },
+        {
+          "iteration": 2,
+          "active": 29,
+          "min_pressure_scaled": -133.71253211883246,
+          "min_gap_scaled": -8.881784197001252e-16
+        },
+        {
+          "iteration": 3,
+          "active": 26,
+          "min_pressure_scaled": -75.0446870355073,
+          "min_gap_scaled": 0.0
+        },
+        {
+          "iteration": 4,
+          "active": 24,
+          "min_pressure_scaled": -33.57239497949909,
+          "min_gap_scaled": 0.0
+        },
+        {
+          "iteration": 5,
+          "active": 23,
+          "min_pressure_scaled": -11.805354984207085,
+          "min_gap_scaled": 0.0
+        },
+        {
+          "iteration": 6,
+          "active": 22,
+          "min_pressure_scaled": 0.0,
+          "min_gap_scaled": -4.440892098500626e-16
+        }
+      ]
+    },
+    {
+      "n": 320,
+      "force_N": 0.05,
+      "domain_m": 0.0003,
+      "indenter_radius_m": 0.02,
+      "E_Pa": 10000000000.0,
+      "nu": 0.3,
+      "reduced_modulus_Pa": 10989010989.010988,
+      "quadrature_order": 24,
+      "contact_radius_m": 4.125e-05,
+      "hertz_radius_m": 4.086651012781559e-05,
+      "radius_relative_difference": 0.009383964301942882,
+      "indentation_m": 8.3500516293843e-08,
+      "hertz_indentation_m": 8.350358250134272e-08,
+      "indentation_relative_difference": 3.671947248092956e-05,
+      "pressure_relative_area_L2": 0.003403880781274468,
+      "pressure_relative_continuous_L2": 0.02422773988849112,
+      "force_relative_residual": 0.0,
+      "minimum_pressure_Pa": 0.0,
+      "minimum_gap_m": -1.3234889800848443e-23,
+      "between_nodes_minimum_gap_m": -2.810503845459671e-11,
+      "between_nodes_penetration_over_indentation": 0.00033658520572128563,
+      "complementarity_scaled": 4.555643666152322e-16,
+      "active_rings": 44,
+      "outer_domain_loaded": false,
+      "iterations": 8,
+      "assembly_seconds": 0.05228483799874084,
+      "solve_seconds": 0.0018630350023158826,
+      "passed_numerical": true,
+      "history": [
+        {
+          "iteration": 0,
+          "active": 80,
+          "min_pressure_scaled": -487.5193479635721,
+          "min_gap_scaled": -1.7763568394002505e-15
+        },
+        {
+          "iteration": 1,
+          "active": 68,
+          "min_pressure_scaled": -332.4746542461769,
+          "min_gap_scaled": -8.881784197001252e-16
+        },
+        {
+          "iteration": 2,
+          "active": 59,
+          "min_pressure_scaled": -214.01668410826377,
+          "min_gap_scaled": -8.881784197001252e-16
+        },
+        {
+          "iteration": 3,
+          "active": 53,
+          "min_pressure_scaled": -131.50620057108168,
+          "min_gap_scaled": -4.440892098500626e-16
+        },
+        {
+          "iteration": 4,
+          "active": 49,
+          "min_pressure_scaled": -73.52634306497545,
+          "min_gap_scaled": -8.881784197001252e-16
+        },
+        {
+          "iteration": 5,
+          "active": 46,
+          "min_pressure_scaled": -27.686423549653114,
+          "min_gap_scaled": -8.881784197001252e-16
+        },
+        {
+          "iteration": 6,
+          "active": 45,
+          "min_pressure_scaled": -11.830422247664204,
+          "min_gap_scaled": -8.881784197001252e-16
+        },
+        {
+          "iteration": 7,
+          "active": 44,
+          "min_pressure_scaled": 0.0,
+          "min_gap_scaled": -8.881784197001252e-16
+        }
+      ]
+    },
+    {
+      "n": 640,
+      "force_N": 0.05,
+      "domain_m": 0.0003,
+      "indenter_radius_m": 0.02,
+      "E_Pa": 10000000000.0,
+      "nu": 0.3,
+      "reduced_modulus_Pa": 10989010989.010988,
+      "quadrature_order": 24,
+      "contact_radius_m": 4.078125e-05,
+      "hertz_radius_m": 4.086651012781559e-05,
+      "radius_relative_difference": 0.002086308019670136,
+      "indentation_m": 8.350361091967434e-08,
+      "hertz_indentation_m": 8.350358250134272e-08,
+      "indentation_relative_difference": 3.403246994986362e-07,
+      "pressure_relative_area_L2": 0.00034107944027277905,
+      "pressure_relative_continuous_L2": 0.01051578549132241,
+      "force_relative_residual": 2.7755575615628914e-16,
+      "minimum_pressure_Pa": 0.0,
+      "minimum_gap_m": -2.6469779601696886e-23,
+      "between_nodes_minimum_gap_m": -2.8744226374218053e-12,
+      "between_nodes_penetration_over_indentation": 3.442273460709183e-05,
+      "complementarity_scaled": 3.1686485726919503e-16,
+      "active_rings": 87,
+      "outer_domain_loaded": false,
+      "iterations": 10,
+      "assembly_seconds": 0.1991376149962889,
+      "solve_seconds": 0.0042746760009322315,
+      "passed_numerical": true,
+      "history": [
+        {
+          "iteration": 0,
+          "active": 160,
+          "min_pressure_scaled": -698.565705216596,
+          "min_gap_scaled": -2.6645352591003757e-15
+        },
+        {
+          "iteration": 1,
+          "active": 136,
+          "min_pressure_scaled": -478.75070804553786,
+          "min_gap_scaled": -2.6645352591003757e-15
+        },
+        {
+          "iteration": 2,
+          "active": 118,
+          "min_pressure_scaled": -310.8503885612798,
+          "min_gap_scaled": -8.881784197001252e-16
+        },
+        {
+          "iteration": 3,
+          "active": 106,
+          "min_pressure_scaled": -193.9567246977785,
+          "min_gap_scaled": -1.3322676295501878e-15
+        },
+        {
+          "iteration": 4,
+          "active": 98,
+          "min_pressure_scaled": -111.86021354656242,
+          "min_gap_scaled": -8.881784197001252e-16
+        },
+        {
+          "iteration": 5,
+          "active": 93,
+          "min_pressure_scaled": -58.03970608570963,
+          "min_gap_scaled": -1.3322676295501878e-15
+        },
+        {
+          "iteration": 6,
+          "active": 90,
+          "min_pressure_scaled": -24.556353324974598,
+          "min_gap_scaled": -8.881784197001252e-16
+        },
+        {
+          "iteration": 7,
+          "active": 89,
+          "min_pressure_scaled": -13.166428853156003,
+          "min_gap_scaled": -8.881784197001252e-16
+        },
+        {
+          "iteration": 8,
+          "active": 88,
+          "min_pressure_scaled": -1.6525745770564813,
+          "min_gap_scaled": -1.3322676295501878e-15
+        },
+        {
+          "iteration": 9,
+          "active": 87,
+          "min_pressure_scaled": 0.0,
+          "min_gap_scaled": -8.881784197001252e-16
+        }
+      ]
+    },
+    {
+      "n": 160,
+      "force_N": 0.5,
+      "domain_m": 0.0003,
+      "indenter_radius_m": 0.02,
+      "E_Pa": 10000000000.0,
+      "nu": 0.3,
+      "reduced_modulus_Pa": 10989010989.010988,
+      "quadrature_order": 24,
+      "contact_radius_m": 8.812499999999999e-05,
+      "hertz_radius_m": 8.804422707990521e-05,
+      "radius_relative_difference": 0.0009174130181354037,
+      "indentation_m": 3.875704227840379e-07,
+      "hertz_indentation_m": 3.8758929610489575e-07,
+      "indentation_relative_difference": 4.869412299954346e-05,
+      "pressure_relative_area_L2": 0.004475814315884407,
+      "pressure_relative_continuous_L2": 0.020355708633017014,
+      "force_relative_residual": 3.3306690738754696e-16,
+      "minimum_pressure_Pa": 0.0,
+      "minimum_gap_m": -1.0587911840678754e-22,
+      "between_nodes_minimum_gap_m": -6.933343822328411e-11,
+      "between_nodes_penetration_over_indentation": 0.00017889249062206716,
+      "complementarity_scaled": 2.7306394701845137e-16,
+      "active_rings": 47,
+      "outer_domain_loaded": false,
+      "iterations": 5,
+      "assembly_seconds": 0.013627135995193385,
+      "solve_seconds": 0.0012445030006347224,
+      "passed_numerical": true,
+      "history": [
+        {
+          "iteration": 0,
+          "active": 40,
+          "min_pressure_scaled": 0.0,
+          "min_gap_scaled": -0.08067858166606756
+        },
+        {
+          "iteration": 1,
+          "active": 51,
+          "min_pressure_scaled": -11.027543056050316,
+          "min_gap_scaled": -6.661338147750939e-16
+        },
+        {
+          "iteration": 2,
+          "active": 49,
+          "min_pressure_scaled": -4.5600919157663355,
+          "min_gap_scaled": -4.440892098500626e-16
+        },
+        {
+          "iteration": 3,
+          "active": 48,
+          "min_pressure_scaled": -1.2361268830508296,
+          "min_gap_scaled": -4.440892098500626e-16
+        },
+        {
+          "iteration": 4,
+          "active": 47,
+          "min_pressure_scaled": 0.0,
+          "min_gap_scaled": -4.440892098500626e-16
+        }
+      ]
+    },
+    {
+      "n": 320,
+      "force_N": 0.5,
+      "domain_m": 0.0003,
+      "indenter_radius_m": 0.02,
+      "E_Pa": 10000000000.0,
+      "nu": 0.3,
+      "reduced_modulus_Pa": 10989010989.010988,
+      "quadrature_order": 24,
+      "contact_radius_m": 8.812499999999999e-05,
+      "hertz_radius_m": 8.804422707990521e-05,
+      "radius_relative_difference": 0.0009174130181354037,
+      "indentation_m": 3.8758415478139045e-07,
+      "hertz_indentation_m": 3.8758929610489575e-07,
+      "indentation_relative_difference": 1.3264874848103734e-05,
+      "pressure_relative_area_L2": 0.002480531293479644,
+      "pressure_relative_continuous_L2": 0.011252611229784722,
+      "force_relative_residual": 4.440892098500626e-16,
+      "minimum_pressure_Pa": 0.0,
+      "minimum_gap_m": -1.0587911840678754e-22,
+      "between_nodes_minimum_gap_m": -2.2553355521081852e-11,
+      "between_nodes_penetration_over_indentation": 5.818957055610967e-05,
+      "complementarity_scaled": 2.7314640840939995e-16,
+      "active_rings": 94,
+      "outer_domain_loaded": false,
+      "iterations": 6,
+      "assembly_seconds": 0.051259344996651635,
+      "solve_seconds": 0.002114072995027527,
+      "passed_numerical": true,
+      "history": [
+        {
+          "iteration": 0,
+          "active": 80,
+          "min_pressure_scaled": 0.0,
+          "min_gap_scaled": -0.07341156588206244
+        },
+        {
+          "iteration": 1,
+          "active": 103,
+          "min_pressure_scaled": -19.465765269834833,
+          "min_gap_scaled": -6.661338147750939e-16
+        },
+        {
+          "iteration": 2,
+          "active": 99,
+          "min_pressure_scaled": -10.392797120882909,
+          "min_gap_scaled": -4.440892098500626e-16
+        },
+        {
+          "iteration": 3,
+          "active": 96,
+          "min_pressure_scaled": -3.3730947727005556,
+          "min_gap_scaled": -4.440892098500626e-16
+        },
+        {
+          "iteration": 4,
+          "active": 95,
+          "min_pressure_scaled": -0.9871145210306037,
+          "min_gap_scaled": -4.440892098500626e-16
+        },
+        {
+          "iteration": 5,
+          "active": 94,
+          "min_pressure_scaled": 0.0,
+          "min_gap_scaled": -4.440892098500626e-16
+        }
+      ]
+    },
+    {
+      "n": 640,
+      "force_N": 0.5,
+      "domain_m": 0.0003,
+      "indenter_radius_m": 0.02,
+      "E_Pa": 10000000000.0,
+      "nu": 0.3,
+      "reduced_modulus_Pa": 10989010989.010988,
+      "quadrature_order": 24,
+      "contact_radius_m": 8.812499999999999e-05,
+      "hertz_radius_m": 8.804422707990521e-05,
+      "radius_relative_difference": 0.0009174130181354037,
+      "indentation_m": 3.8758792400510113e-07,
+      "hertz_indentation_m": 3.8758929610489575e-07,
+      "indentation_relative_difference": 3.54008691263061e-06,
+      "pressure_relative_area_L2": 0.0014091028160043966,
+      "pressure_relative_continuous_L2": 0.006178715602831884,
+      "force_relative_residual": 2.220446049250313e-16,
+      "minimum_pressure_Pa": 0.0,
+      "minimum_gap_m": -2.117582368135751e-22,
+      "between_nodes_minimum_gap_m": -8.241037543871679e-12,
+      "between_nodes_penetration_over_indentation": 2.1262369216031657e-05,
+      "complementarity_scaled": 5.052169095018012e-16,
+      "active_rings": 188,
+      "outer_domain_loaded": false,
+      "iterations": 7,
+      "assembly_seconds": 0.2047474310020334,
+      "solve_seconds": 0.005390885999077,
+      "passed_numerical": true,
+      "history": [
+        {
+          "iteration": 0,
+          "active": 160,
+          "min_pressure_scaled": 0.0,
+          "min_gap_scaled": -0.06776477429254513
+        },
+        {
+          "iteration": 1,
+          "active": 205,
+          "min_pressure_scaled": -27.10526987387161,
+          "min_gap_scaled": -6.661338147750939e-16
+        },
+        {
+          "iteration": 2,
+          "active": 197,
+          "min_pressure_scaled": -14.216550763095984,
+          "min_gap_scaled": -4.440892098500626e-16
+        },
+        {
+          "iteration": 3,
+          "active": 192,
+          "min_pressure_scaled": -5.923433537538199,
+          "min_gap_scaled": -6.661338147750939e-16
+        },
+        {
+          "iteration": 4,
+          "active": 190,
+          "min_pressure_scaled": -2.5490059532960103,
+          "min_gap_scaled": -6.661338147750939e-16
+        },
+        {
+          "iteration": 5,
+          "active": 189,
+          "min_pressure_scaled": -0.8487876057040432,
+          "min_gap_scaled": -8.881784197001252e-16
+        },
+        {
+          "iteration": 6,
+          "active": 188,
+          "min_pressure_scaled": 0.0,
+          "min_gap_scaled": -6.661338147750939e-16
+        }
+      ]
+    }
+  ]
+}
