@@ -1,4 +1,4 @@
-"""Native positive quadrature of an affine exterior P2 surface."""
+"""Native positive quadrature of affine P2 and physical bilinear Q4 surfaces."""
 
 from dataclasses import dataclass
 from typing import ClassVar
@@ -10,6 +10,7 @@ from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
 
 from .data import StressInfo
 from .grid import StressGridInfo, allocate_grid, build_grid
+from .quadrilateral import func_quad_shape
 
 
 @dataclass(frozen=True)
@@ -27,6 +28,8 @@ class StressSurfaceInfo:
     face_normal: qd.Tensor
     face_bounds_low: qd.Tensor
     face_bounds_high: qd.Tensor
+    quad_vertices: qd.Tensor
+    quad_valid: qd.Tensor
     grid: StressGridInfo
 
 
@@ -46,10 +49,19 @@ class StressSurface:
             face_normal=V_VEC(3, dtype=gs.qd_float, shape=(n_faces,)),
             face_bounds_low=V_VEC(3, dtype=gs.qd_float, shape=(n_faces,)),
             face_bounds_high=V_VEC(3, dtype=gs.qd_float, shape=(n_faces,)),
+            quad_vertices=V_MAT(
+                4, 3, dtype=gs.qd_float, shape=(n_faces if stress_info.load_nodes.shape[0] > 0 else 0,)
+            ),
+            quad_valid=V(dtype=gs.qd_bool, shape=()),
             grid=allocate_grid(n_faces * n_quadrature),
         )
         kernel_gauss(self.info)
-        kernel_surface(stress_info, self.info)
+        if stress_info.load_nodes.shape[0] > 0:
+            kernel_quad_surface(stress_info, self.info)
+            if not self.info.quad_valid.to_numpy().item():
+                gs.raise_exception("Shell physical sides require regular convex projected Q4 faces.")
+        else:
+            kernel_surface(stress_info, self.info)
         build_grid(self.info.positions, self.info.grid)
 
 
@@ -116,6 +128,50 @@ def kernel_surface(stress_info: StressInfo, surface_info: StressSurfaceInfo):
                 4.0 * bary[1] * bary[2],
             ]
         )
+
+
+@qd.kernel
+def kernel_quad_surface(stress_info: StressInfo, surface_info: StressSurfaceInfo):
+    for _ in range(1):
+        surface_info.quad_valid[None] = True
+    for i_f in range(stress_info.surface_nodes.shape[0]):
+        vertices = qd.Matrix.zero(gs.qd_float, 4, 3)
+        for i in qd.static(range(4)):
+            i_n = stress_info.surface_nodes[i_f, i]
+            vertices[i, :] = stress_info.vertices[i_n]
+        origin = 0.25 * (vertices[0, :] + vertices[1, :] + vertices[2, :] + vertices[3, :])
+        first = 0.25 * (-vertices[0, :] + vertices[1, :] + vertices[2, :] - vertices[3, :])
+        second = 0.25 * (-vertices[0, :] - vertices[1, :] + vertices[2, :] + vertices[3, :])
+        normal = first.cross(second).normalized()
+        tangent = first.normalized()
+        surface_info.quad_vertices[i_f] = vertices
+        surface_info.face_origin[i_f] = origin
+        surface_info.face_edges[i_f] = qd.Matrix.rows([2.0 * first, 2.0 * second])
+        surface_info.face_dual[i_f] = qd.Matrix.rows([tangent, normal.cross(tangent)])
+        surface_info.face_normal[i_f] = normal
+        surface_info.face_bounds_low[i_f] = qd.min(vertices[0, :], vertices[1, :], vertices[2, :], vertices[3, :])
+        surface_info.face_bounds_high[i_f] = qd.max(vertices[0, :], vertices[1, :], vertices[2, :], vertices[3, :])
+        for i in range(4):
+            edge = vertices[(i + 1) % 4, :] - vertices[i, :]
+            following = vertices[(i + 2) % 4, :] - vertices[(i + 1) % 4, :]
+            if edge.cross(following).dot(normal) <= 1e-12 * edge.norm() * following.norm():
+                surface_info.quad_valid[None] = False
+        for i_q in range(surface_info.shape.shape[0]):
+            n = surface_info.gauss.shape[0]
+            u, v = surface_info.gauss[i_q // n], surface_info.gauss[i_q % n]
+            shape, dxi, deta = func_quad_shape(2.0 * u - 1.0, 2.0 * v - 1.0)
+            i_sample = i_f * surface_info.shape.shape[0] + i_q
+            surface_info.positions[i_sample] = shape @ vertices
+            surface_info.weights[i_sample] = (
+                4.0
+                * (dxi @ vertices).cross(deta @ vertices).norm()
+                * surface_info.gauss_weights[i_q // n]
+                * surface_info.gauss_weights[i_q % n]
+            )
+    for i_q in range(surface_info.shape.shape[0]):
+        n = surface_info.gauss.shape[0]
+        u, v = surface_info.gauss[i_q // n], surface_info.gauss[i_q % n]
+        surface_info.shape[i_q] = qd.Vector([(1.0 - u) * (1.0 - v), u * (1.0 - v), u * v, (1.0 - u) * v, 0.0, 0.0])
 
 
 @qd.func

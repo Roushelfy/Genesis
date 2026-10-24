@@ -89,6 +89,8 @@ def func_prepare_scatter(
                 first = origin + surface.face_edges[i_f][0, :]
                 second = origin + surface.face_edges[i_f][1, :]
                 low, high = qd.min(origin, first, second), qd.max(origin, first, second)
+                if surface.quad_vertices.shape[0] > 0:
+                    low, high = surface.face_bounds_low[i_f], surface.face_bounds_high[i_f]
             center = contacts.center[i_c, i_b]
             distance = qd.max(low - center, 0.0) + qd.max(center - high, 0.0)
             intersects = distance.dot(distance) < contacts.radius[i_c, i_b] ** 2
@@ -140,9 +142,9 @@ def func_pressure_moments(
             closest, remaining, contained = func_contact_section(
                 i_f, contacts.center[i_c, i_b], contacts.radius[i_c, i_b], surface
             )
-            start = surface.positions.shape[0] + i_f * 3 * n_q
-            count = qd.select(contained, n_q, 3 * n_q)
-        analytical = contained and contacts.hertz_profile[None]
+            start = surface.positions.shape[0] + i_f * qd.select(surface.quad_vertices.shape[0] > 0, 4, 3) * n_q
+            count = qd.select(contained, n_q, qd.select(surface.quad_vertices.shape[0] > 0, 4, 3) * n_q)
+        analytical = surface.quad_vertices.shape[0] == 0 and contained and contacts.hertz_profile[None]
         if analytical:
             if lane == 0:
                 gram, load = func_hertz_disk_moments(
@@ -159,7 +161,7 @@ def func_pressure_moments(
             count = 0
         n = surface.gauss.shape[0]
         is_clipped = contacts.is_refined[i_c, i_b] and not contained
-        n_rays = qd.select(is_clipped, 3 * n, count)
+        n_rays = qd.select(is_clipped, qd.select(surface.quad_vertices.shape[0] > 0, 4, 3) * n, count)
         for chunk in range((n_rays + 31) // 32):
             i_ray = chunk * 32 + lane
             if i_ray < n_rays:
@@ -261,8 +263,10 @@ def func_scatter_faces(
             closest, remaining, contained = func_contact_section(
                 i_f, contacts.center[i_c, i_b], contacts.radius[i_c, i_b], surface
             )
-            i_q_start = surface.positions.shape[0] + i_f * 3 * n_q
-            n_q_current = qd.select(remaining > 0.0, qd.select(contained, n_q, 3 * n_q), 0)
+            i_q_start = surface.positions.shape[0] + i_f * qd.select(surface.quad_vertices.shape[0] > 0, 4, 3) * n_q
+            n_q_current = qd.select(
+                remaining > 0.0, qd.select(contained, n_q, qd.select(surface.quad_vertices.shape[0] > 0, 4, 3) * n_q), 0
+            )
         if qd.static(reuse_moments):
             n_q_current = qd.select(contacts.status[i_c, i_b] == 0, n_q_current, 0)
         total, moment = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)

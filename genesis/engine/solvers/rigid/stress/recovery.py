@@ -119,7 +119,8 @@ class RigidStressRecovery:
                     if surface is None:
                         surface = StressSurface(quadrature, model.load_info)
                     reuse_contact_moments = (
-                        options.contact_model == "pressure"
+                        options.backend == "volume"
+                        and options.contact_model == "pressure"
                         and options.load_transfer == "patch"
                         and gs.backend == gs.cuda
                         and options.face_parallel_scatter
