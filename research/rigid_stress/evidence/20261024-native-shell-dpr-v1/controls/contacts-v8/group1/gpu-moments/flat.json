@@ -1,0 +1,125 @@
+{
+  "name": "flat",
+  "quadrature": 16,
+  "scatter": "faces",
+  "reuse_moments": true,
+  "errors": {
+    "generalized_load": 5.080141567771999e-15,
+    "translation_load": 5.080141564842834e-15,
+    "rotational_load": 7.014508274554502e-15,
+    "oracle_quadrature": 5.4611921593266176e-15,
+    "complete_field": 4.434934882071374e-12,
+    "same_load_complete_field": 4.417963470474551e-12,
+    "force": 1.7261143733272677e-16,
+    "moment": 3.3223365590043726e-14
+  },
+  "status": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "valid": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "contacts": [
+    {
+      "slot": 0,
+      "env": 0,
+      "side": 1,
+      "diagnostic": {
+        "radius_m": 8e-05,
+        "source_anchor_distance_m": 0.0,
+        "seed_face": 0,
+        "samples": 9216,
+        "native_base_mass": 0.9999999999999973,
+        "force_relative_error": 6.2450045135165055e-15,
+        "moment_normalized_error": 1.0304600546973053e-12,
+        "pressure_fit_evaluations": 1,
+        "quadrature_order": 96
+      }
+    },
+    {
+      "slot": 1,
+      "env": 0,
+      "side": 1,
+      "diagnostic": {
+        "radius_m": 8e-05,
+        "source_anchor_distance_m": 8.673617379884035e-19,
+        "seed_face": 3,
+        "samples": 9216,
+        "native_base_mass": 0.9999999999999963,
+        "force_relative_error": 6.443947606789669e-15,
+        "moment_normalized_error": 1.3894591657116933e-12,
+        "pressure_fit_evaluations": 1,
+        "quadrature_order": 96
+      }
+    },
+    {
+      "slot": 0,
+      "env": 1,
+      "side": -1,
+      "diagnostic": {
+        "radius_m": 8e-05,
+        "source_anchor_distance_m": 2.4532694666933987e-18,
+        "seed_face": 0,
+        "samples": 9216,
+        "native_base_mass": 0.9999999999999964,
+        "force_relative_error": 7.631119848340484e-15,
+        "moment_normalized_error": 1.444171828652983e-12,
+        "pressure_fit_evaluations": 1,
+        "quadrature_order": 96
+      }
+    },
+    {
+      "slot": 0,
+      "env": 2,
+      "side": 1,
+      "diagnostic": {
+        "radius_m": 8e-05,
+        "source_anchor_distance_m": 0.0,
+        "seed_face": 0,
+        "samples": 32256,
+        "native_base_mass": 0.9999999999999964,
+        "force_relative_error": 1.7395473726009072e-16,
+        "moment_normalized_error": 6.757795893607905e-14,
+        "pressure_fit_evaluations": 1,
+        "quadrature_order": 96
+      }
+    },
+    {
+      "slot": 0,
+      "env": 3,
+      "side": 1,
+      "diagnostic": {
+        "radius_m": 8e-05,
+        "source_anchor_distance_m": 1.6000000000000325e-05,
+        "seed_face": 0,
+        "samples": 9216,
+        "native_base_mass": 0.9999999999999959,
+        "force_relative_error": 3.539882735312793e-15,
+        "moment_normalized_error": 6.616190521210657e-13,
+        "pressure_fit_evaluations": 1,
+        "quadrature_order": 96
+      }
+    }
+  ],
+  "slot_release_recontact_passed": true
+}

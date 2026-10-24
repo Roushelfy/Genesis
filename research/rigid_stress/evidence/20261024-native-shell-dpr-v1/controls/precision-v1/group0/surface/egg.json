@@ -1,0 +1,60 @@
+{
+  "name": "egg",
+  "method": "inverse",
+  "spinning": true,
+  "gauge": "translation",
+  "inverse_precision": "64",
+  "surface_load": true,
+  "native_corrections": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "native_fallbacks": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "factor_block_entries": 674,
+  "dofs": 156,
+  "quads": 24,
+  "errors": {
+    "stiffness": 2.91645331741825e-16,
+    "directors": 1.4492094328622806e-16,
+    "membrane": 2.449649307526262e-16,
+    "bending": 4.2474570680855093e-16,
+    "shear": 3.2391436150719294e-16,
+    "mass_modes": 1.1051574224677693e-16,
+    "gram": 7.417355407101571e-19,
+    "rigid_null_residual": 1.262902568456201e-17,
+    "centrifugal": 1.7287217423374486e-16,
+    "balanced_load": 1.4645244970904924e-16,
+    "complete_residual": 3.1770282027704716e-13,
+    "complete_field": 1.0951986464435019e-11,
+    "complete_von_mises": 6.8375558322838215e-12,
+    "global_peak": 5.111743028013531e-12,
+    "N": 9.679101578372289e-13,
+    "M": 1.3696408419852084e-11,
+    "Q": 2.531249255926399e-12
+  },
+  "native_valid": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "build_timings": {
+    "topology_seconds": 0.008314650040119886,
+    "operators_seconds": 0.002067791996523738,
+    "factor_seconds": 0.018418489024043083,
+    "inverse_seconds": 0.00503016693983227,
+    "surface_inverse_seconds": 0.008188004023395479
+  },
+  "asset": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/precision-v1/group0/surface/egg.npz",
+    "bytes": 1904,
+    "sha256": "7e2be382c9d5b38fff8432197e48ca5df17016e662bc58b54ea539e696e73f6d"
+  }
+}

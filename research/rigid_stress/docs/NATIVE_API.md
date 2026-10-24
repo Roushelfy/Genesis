@@ -6,6 +6,17 @@ assembly, contact mapping, factor/inverse construction, recovery, residuals
 and peak reduction run in Quadrants. NumPy handles mesh topology at build time;
 the SciPy/Numba research implementation is an independent test oracle.
 
+`backend="volume"` remains the default. `backend="shell"` selects the native
+curved Q4 shell with an authored midsurface NPZ, thickness and optional directors.
+It supports DPR finite-pressure patch loading, including eccentric friction;
+SCR/intrinsic and resolved-sample transfer are not shell routes. Its maximum
+is sampled in-plane membrane-plus-bending stress. Full stress has shape
+`[B,n_quads,2,4,6]`; `get_shell_resultants()` returns separate membrane, bending
+and transverse resultants. See the [shell API/running guide](RUNNING_NATIVE_SHELL_DPR.md)
+for units, frames and lifecycle, and the [measured report](SHELL_DPR_NATIVE_20261024.md)
+for configuration recommendations and physical limits. The volume-specific
+load-route qualifications below do not establish a shell contact-peak reference.
+
 The [practical application report](PRACTICAL_APPLICATION_RESULTS_20261016.md)
 gives measured settings, costs and operating limits. Prefer the intrinsic
 source-prior configuration below when requiring local friction-admissible

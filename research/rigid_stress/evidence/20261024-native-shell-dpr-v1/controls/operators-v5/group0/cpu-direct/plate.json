@@ -1,0 +1,43 @@
+{
+  "name": "plate",
+  "method": "direct",
+  "gauge": "translation",
+  "dofs": 54,
+  "quads": 4,
+  "errors": {
+    "stiffness": 2.0816002739025067e-16,
+    "directors": 0.0,
+    "membrane": 1.8170772984473382e-16,
+    "bending": 1.817077298447338e-16,
+    "shear": 1.7439920285002787e-16,
+    "mass_modes": 5.651266301560163e-16,
+    "gram": 6.776274641310228e-16,
+    "rigid_null_residual": 7.480621745765291e-18,
+    "balanced_load": 1.7387015579009917e-16,
+    "complete_residual": 8.855534424275904e-13,
+    "complete_field": 2.112066138711047e-12,
+    "complete_von_mises": 1.4852072928821897e-12,
+    "global_peak": 1.265121651578364e-12,
+    "N": 3.820266833606459e-15,
+    "M": 2.1126463253515766e-12,
+    "Q": 2.099015229962338e-12
+  },
+  "native_valid": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "build_timings": {
+    "topology_seconds": 0.4047642620280385,
+    "operators_seconds": 2.1225333069451153,
+    "factor_seconds": 0.34584392805118114,
+    "inverse_seconds": 1.1479714885354042e-06,
+    "surface_inverse_seconds": 0.06001134496182203
+  },
+  "asset": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/operators-v5/group0/cpu-direct/plate.npz",
+    "bytes": 856,
+    "sha256": "6254232406986d0e7c79669bbf117ce5c61f27c66ed319a4a1f7d82a4d98666c"
+  }
+}

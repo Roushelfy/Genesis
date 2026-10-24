@@ -8,6 +8,12 @@ existing data-side physical environment and private node caches. Small matched
 shell assets and their geometry metadata are tracked with the examples; their
 authoring receipts and complete results stay on data. Frozen source checkouts
 remain in the existing workspace. No data or environment migration occurred.
+The small tracked `research/rigid_stress/evidence/20261024-native-shell-dpr-v1`
+packet contains final measurements, controls, requirement/source audits and a
+condition fixture. Full arrays and traces stay on data, referenced by hashes.
+The pinned optional pyfe3d reference is under the same run root at
+`dependencies-v1/group0/pyfe3d/site`; it does not modify the active environment.
+See the [native shell report](research/rigid_stress/docs/SHELL_DPR_NATIVE_20261024.md).
 
 The throughput phase uses 31 `automatic-dpr-opt-*` campaigns under the same
 20261019 ranking data root. All runs use explicit data outputs, the existing

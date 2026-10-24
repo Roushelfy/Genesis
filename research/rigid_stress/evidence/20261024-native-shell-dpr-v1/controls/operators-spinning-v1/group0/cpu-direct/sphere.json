@@ -1,0 +1,45 @@
+{
+  "name": "sphere",
+  "method": "direct",
+  "spinning": true,
+  "gauge": "translation",
+  "dofs": 156,
+  "quads": 24,
+  "errors": {
+    "stiffness": 3.2789682388736045e-16,
+    "directors": 7.605733707304287e-17,
+    "membrane": 2.8041290319419945e-16,
+    "bending": 4.0195226670241907e-16,
+    "shear": 3.11036936347879e-16,
+    "mass_modes": 1.0679070978662358e-16,
+    "gram": 2.4697456647948593e-19,
+    "rigid_null_residual": 1.6881934890984716e-17,
+    "centrifugal": 1.0994152603816865e-16,
+    "balanced_load": 1.4168943472061364e-16,
+    "complete_residual": 2.0260719737508009e-13,
+    "complete_field": 7.74376403797535e-12,
+    "complete_von_mises": 4.495568727319207e-12,
+    "global_peak": 3.690043911628637e-12,
+    "N": 9.567033509666442e-13,
+    "M": 9.610982192646545e-12,
+    "Q": 2.6602038665824293e-12
+  },
+  "native_valid": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "build_timings": {
+    "topology_seconds": 0.008403652987908572,
+    "operators_seconds": 0.0013916860043536872,
+    "factor_seconds": 0.004069521004566923,
+    "inverse_seconds": 5.999754648655653e-07,
+    "surface_inverse_seconds": 0.0029472810274455696
+  },
+  "asset": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/operators-spinning-v1/group0/cpu-direct/sphere.npz",
+    "bytes": 1904,
+    "sha256": "683151478a9703aa5d5f1751a9db8041129dfb463f8b9783906970875bb6393d"
+  }
+}

@@ -37,10 +37,30 @@ def summarize_measurements(campaign):
                     setup_seconds=result["setup_seconds"],
                     native_buffer_bytes=result.get("native_buffer_bytes"),
                     torch_peak_allocated_bytes=result["torch_peak_allocated_bytes"],
+                    device_free_bytes=result["device_free_bytes"],
+                    gpu_total_bytes=result["gpu_total_bytes"],
+                    saved_reset_state_bytes=result["saved_reset_state_bytes"],
+                    build_timings_including_JIT=result.get("build_timings_including_JIT"),
+                    surface_quadrature_grid_seconds_including_JIT=result.get(
+                        "surface_quadrature_grid_seconds_including_JIT"
+                    ),
+                    method_selected=result.get("method_selected"),
+                    surface_inverse_selected=result.get("surface_inverse_selected"),
+                    shell_recovery_graph_selected=result.get("shell_recovery_graph_selected"),
+                    inverse_precision=result["inverse_precision"],
+                    packed_surface_loads=result["packed_surface_loads"],
+                    factor_scaling=args.get("factor_scaling", False),
+                    factor_ordering=args.get("factor_ordering", "minimum_degree"),
+                    shell_gauge=args.get("shell_gauge", "translation"),
                     effective_moment_reuse=result.get("effective_contact_moment_reuse"),
                     effective_packed_block_size=result.get("effective_packed_block_sizes"),
                     factor_blocks=result.get("factor_block_entries"),
                 )
+                unique_buffers = [b for b in result.get("native_buffers", []) if b.get("alias_of") is None]
+                row["inverse_response_bytes"] = sum(
+                    b["bytes"] for b in unique_buffers if ".inverse." in b["name"] or ".surface_inverse." in b["name"]
+                )
+                row["factor_bytes"] = sum(b["bytes"] for b in unique_buffers if ".factor." in b["name"])
                 if repeats:
                     row.update(
                         median_batch_ms=median(r["seconds"] / r["steps"] * 1000 for r in repeats),
@@ -61,10 +81,12 @@ def summarize_measurements(campaign):
 def summarize_trace(path):
     data = json.loads(path.read_text())
     events = [e for e in data["traceEvents"] if e.get("ph") == "X"]
-    steps = sum(
-        e.get("name") == "rigid_stress_trace_step" and e.get("cat") == "user_annotation" for e in events
-    )
+    steps = sum(e.get("name") == "rigid_stress_trace_step" and e.get("cat") == "user_annotation" for e in events)
     assert steps > 0, path
+    receipt = path.with_name(path.name.removesuffix(".trace.json"))
+    metadata = json.loads(receipt.read_text()).get("trace_metadata") if receipt.is_file() else None
+    if metadata is not None:
+        assert steps == metadata["steps"], path
     by_category = Counter(e.get("cat", "") for e in events)
     copy_bytes = Counter()
     durations = defaultdict(list)
@@ -88,6 +110,7 @@ def summarize_trace(path):
     return {
         "trace": str(path),
         "steps": steps,
+        "trace_metadata": metadata,
         "categories": dict(by_category),
         "copy_bytes_per_step": {name: count / steps for name, count in copy_bytes.items()},
         "events": rows,

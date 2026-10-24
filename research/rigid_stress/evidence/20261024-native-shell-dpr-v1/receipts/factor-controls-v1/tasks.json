@@ -1,0 +1,60 @@
+[
+  [
+    {
+      "name": "cpu-scaled",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_operators",
+      "args": [
+        "--backend",
+        "cpu",
+        "--method",
+        "direct",
+        "--factor-scaling",
+        "--spinning"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu-scaled",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_operators",
+      "args": [
+        "--backend",
+        "gpu",
+        "--method",
+        "direct",
+        "--factor-scaling",
+        "--spinning"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu-scaled-response",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_operators",
+      "args": [
+        "--backend",
+        "gpu",
+        "--method",
+        "inverse",
+        "--factor-scaling",
+        "--surface-load",
+        "--spinning"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu-natural",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_operators",
+      "args": [
+        "--backend",
+        "gpu",
+        "--method",
+        "direct",
+        "--factor-ordering",
+        "natural",
+        "--spinning"
+      ]
+    }
+  ]
+]

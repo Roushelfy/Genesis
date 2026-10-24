@@ -1,0 +1,33 @@
+[
+  [
+    {
+      "name": "cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_two_sides",
+      "args": [
+        "--backend",
+        "cpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_two_sides",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu-moments",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_two_sides",
+      "args": [
+        "--backend",
+        "gpu",
+        "--reuse-moments"
+      ]
+    }
+  ]
+]

@@ -72,6 +72,7 @@ On a compute node with the project environment and explicit data/cache paths:
 ```bash
 python -m examples.rigid.franka_egg_stress \
   --envs 64 --steps 600 --level 1 --stress-backend shell \
+  --conditions research/rigid_stress/evidence/20261024-native-shell-dpr-v1/conditions.npz \
   --radius-model hertz --pressure-profile hertz \
   --box-edge-policy planar --quadrature 16 --output-mode full
 ```

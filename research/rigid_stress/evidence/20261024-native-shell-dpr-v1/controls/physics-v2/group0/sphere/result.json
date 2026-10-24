@@ -1,0 +1,60 @@
+{
+  "rows": [
+    {
+      "case": "sphere",
+      "n": 4,
+      "nodes": 98,
+      "quadrilaterals": 96,
+      "dofs": 588,
+      "free_row_residual": 3.1819311518988188e-15,
+      "same_applied_load": true,
+      "native_vs_independent_surface_tensor_L2": 0.09035087760168821,
+      "load_relief_relative": 1.8067353102638834e-17,
+      "asset": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/physics-v2/group0/sphere/sphere-4.npz",
+        "bytes": 8538,
+        "sha256": "8d5cb496fe776c50a47fbf19c291e30d094f8c4bcc10e196570935b8580dad02"
+      },
+      "analytic_membrane_stress_Pa": 2500.0,
+      "analytic_radial_displacement_m": 4.375e-09,
+      "native_mean_membrane_relative_error": 0.04787389184008406,
+      "native_mean_radial_relative_error": 0.06950245984116676,
+      "independent_mean_membrane_relative_error": 0.036445844126100524,
+      "independent_mean_radial_relative_error": 0.010649811759837702,
+      "complete_residual": 3.2584509738150447e-15
+    },
+    {
+      "case": "sphere",
+      "n": 8,
+      "nodes": 386,
+      "quadrilaterals": 384,
+      "dofs": 2316,
+      "free_row_residual": 6.369531286815086e-15,
+      "same_applied_load": true,
+      "native_vs_independent_surface_tensor_L2": 0.03362130481730691,
+      "load_relief_relative": 8.93924512758658e-18,
+      "asset": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/physics-v2/group0/sphere/sphere-8.npz",
+        "bytes": 31578,
+        "sha256": "90a6e7c511df6e23f537fc9b64b2838cde2d6a25fc336a4e5469def520e72b25"
+      },
+      "analytic_membrane_stress_Pa": 2500.0,
+      "analytic_radial_displacement_m": 4.375e-09,
+      "native_mean_membrane_relative_error": 0.012398098188482809,
+      "native_mean_radial_relative_error": 0.020394132351132077,
+      "independent_mean_membrane_relative_error": 0.009418057196987295,
+      "independent_mean_radial_relative_error": 0.001404545757958342,
+      "complete_residual": 6.74811363930289e-15
+    }
+  ],
+  "availability": {
+    "pyfe3d_version": "0.10.0",
+    "code_aster_binary": null,
+    "as_run_binary": null,
+    "code_aster_module": false,
+    "opensees_note": "3.8.0.0 and 3.7.1.2 installed, but both imports aborted in MPI network-interface initialization; no OpenSees solve executed",
+    "reference_scope": "independent prescribed-load linear shell FEM, not an independent contact solve"
+  },
+  "scope": "Global linear shell membrane/bending at resolved load scales; no local 3D contact-peak certification.",
+  "supported_plate": "Native operators and factor with research-only prescribed supports; production sphere uses native inertia relief."
+}

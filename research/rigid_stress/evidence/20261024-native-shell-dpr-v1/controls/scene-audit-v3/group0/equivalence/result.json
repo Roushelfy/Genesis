@@ -1,0 +1,172 @@
+{
+  "passed": true,
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "746148",
+      "SLURM_ARRAY_JOB_ID": "746119",
+      "SLURM_ARRAY_TASK_ID": "0",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "accepted_frames": 600,
+  "rigid_positions_exactly_equal": true,
+  "rows": [
+    {
+      "field": "field-0002.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v3/group0/cycle/field-0002.npz",
+        "bytes": 510894,
+        "sha256": "7bec613bb90306fd54128fb33bbae42fa82e61ba89aa09dc5cb3b841d6ab9071"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v7/group0/cycle/field-0002.npz",
+        "bytes": 510900,
+        "sha256": "2b72cbe19a41bf34b8b16b8e7f921a93febefcb0af685ba42cf25d0f6ccae68c"
+      },
+      "tensor_max_absolute_difference_pa": 3.637978807091713e-11,
+      "tensor_relative_difference": 5.945036954979879e-16,
+      "relative_load_difference_per_environment": [
+        0.0,
+        3.037887824565566e-16,
+        1.459824230448027e-16,
+        2.8856065390574745e-16
+      ]
+    },
+    {
+      "field": "field-0110.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v3/group0/cycle/field-0110.npz",
+        "bytes": 687658,
+        "sha256": "5370ad4d4c0d1d1bdb2eaeece6f2c6b7af4593a8189575dcbd667a29d9c78eee"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v7/group0/cycle/field-0110.npz",
+        "bytes": 687648,
+        "sha256": "396c7a1f6ed8c1f9da4eb4bd403bd29f9ec345beb4cc8fc7cb6e04bdce501a29"
+      },
+      "tensor_max_absolute_difference_pa": 1.9463186617940664e-10,
+      "tensor_relative_difference": 1.425052355464987e-15,
+      "relative_load_difference_per_environment": [
+        2.588708673677738e-16,
+        2.192853821152798e-16,
+        2.7113733288192932e-17,
+        2.1959491773073495e-16
+      ]
+    },
+    {
+      "field": "field-0129.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v3/group0/cycle/field-0129.npz",
+        "bytes": 682761,
+        "sha256": "021ba9744e447088735e9f146c52daa4b9e9d963f346b1901cf8583dcab7198c"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v7/group0/cycle/field-0129.npz",
+        "bytes": 683585,
+        "sha256": "a714b1a635ec0352e0a0d152f477b7e56c74e175ef1ea605f45960685da076c6"
+      },
+      "tensor_max_absolute_difference_pa": 7.275957614183426e-11,
+      "tensor_relative_difference": 8.497914967715162e-16,
+      "relative_load_difference_per_environment": [
+        3.176355441804317e-16,
+        4.358740240262995e-16,
+        4.3581754300042377e-16,
+        2.685309974176052e-17
+      ]
+    },
+    {
+      "field": "field-0179.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v3/group0/cycle/field-0179.npz",
+        "bytes": 769031,
+        "sha256": "56827a623e9d770936c1b5ac4828cf5ca7360ad1cc70196756d0d57b74dd1098"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v7/group0/cycle/field-0179.npz",
+        "bytes": 769114,
+        "sha256": "244130753863b46bbd32c96da78ab43b7d9336bc4d0bf0724685b8ace244a5b7"
+      },
+      "tensor_max_absolute_difference_pa": 1.3460521586239338e-10,
+      "tensor_relative_difference": 1.328351274055167e-15,
+      "relative_load_difference_per_environment": [
+        3.537749611058371e-16,
+        3.709472280722767e-16,
+        2.1909881957186664e-16,
+        2.1902037508842254e-16
+      ]
+    },
+    {
+      "field": "field-0299.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v3/group0/cycle/field-0299.npz",
+        "bytes": 916647,
+        "sha256": "0299a329056755ff9cfb6b5febc2b40c65a144396daa9ea872ca9d2f15f0eedd"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v7/group0/cycle/field-0299.npz",
+        "bytes": 916622,
+        "sha256": "634315a8b50ee6af52cdc2f8289bcae2df5995dcc3696d140eb70135ddc9c678"
+      },
+      "tensor_max_absolute_difference_pa": 1.7462298274040222e-10,
+      "tensor_relative_difference": 1.3166388660392967e-15,
+      "relative_load_difference_per_environment": [
+        4.649916315109223e-16,
+        4.994067371035942e-16,
+        3.523684632396598e-16,
+        2.970948530683561e-16
+      ]
+    },
+    {
+      "field": "field-0449.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v3/group0/cycle/field-0449.npz",
+        "bytes": 915622,
+        "sha256": "a8fdc69074ff0442046ad3995ce7b73c3edfc4729ccd0d4737ed23e94d792702"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v7/group0/cycle/field-0449.npz",
+        "bytes": 915609,
+        "sha256": "a349956650f9ff7b1c9f8bb84a94b8a412f80983341bef8a1dcc7dcb487d7be0"
+      },
+      "tensor_max_absolute_difference_pa": 1.6007106751203537e-10,
+      "tensor_relative_difference": 1.2568104985177762e-15,
+      "relative_load_difference_per_environment": [
+        1.9348276356286569e-16,
+        2.0331366868943392e-16,
+        5.556393073677647e-16,
+        5.448672588084893e-16
+      ]
+    },
+    {
+      "field": "field-0599.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v3/group0/cycle/field-0599.npz",
+        "bytes": 913206,
+        "sha256": "247365dd026e83787b2a7643882b4dbf290ee503cdf9a7bb6d442f82003b70f4"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v7/group0/cycle/field-0599.npz",
+        "bytes": 913202,
+        "sha256": "cd98d53cfcc4952383b7e5416b6eaf250b46ccab4d6769e832f9591314f57436"
+      },
+      "tensor_max_absolute_difference_pa": 2.8194335754960775e-11,
+      "tensor_relative_difference": 1.0290300504759102e-15,
+      "relative_load_difference_per_environment": [
+        1.7212910399118487e-16,
+        1.3958624452307018e-16,
+        1.866509192111714e-16,
+        6.153471435996757e-16
+      ]
+    }
+  ],
+  "failures": [],
+  "scope": "Equivalent inputs and unchanged numerical budgets: load relative 1e-9, stress rtol/atol 1e-8, radius rtol 1e-12, original wrench 1e-8. Does not change or replace the historical bitwise audit."
+}

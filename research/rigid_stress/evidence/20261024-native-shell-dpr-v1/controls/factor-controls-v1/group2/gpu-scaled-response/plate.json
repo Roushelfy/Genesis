@@ -1,0 +1,63 @@
+{
+  "name": "plate",
+  "method": "inverse",
+  "spinning": true,
+  "gauge": "translation",
+  "inverse_precision": "64",
+  "surface_load": true,
+  "factor_scaling": true,
+  "factor_ordering": "minimum_degree",
+  "native_corrections": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "native_fallbacks": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "factor_block_entries": 93,
+  "dofs": 54,
+  "quads": 4,
+  "errors": {
+    "stiffness": 3.635989176391347e-16,
+    "directors": 0.0,
+    "membrane": 1.5517725069052934e-16,
+    "bending": 1.5555805433231201e-16,
+    "shear": 1.5306286819281558e-16,
+    "mass_modes": 2.874798703339791e-16,
+    "gram": 2.710538452578051e-16,
+    "rigid_null_residual": 9.154229006988667e-18,
+    "centrifugal": 1.6824854489917984e-16,
+    "balanced_load": 1.6041694320820758e-16,
+    "complete_residual": 1.0524766424118428e-12,
+    "complete_field": 4.402919579753662e-12,
+    "complete_von_mises": 1.998039500340402e-12,
+    "global_peak": 7.522704102733019e-13,
+    "N": 3.422930453613373e-15,
+    "M": 4.404094876666852e-12,
+    "Q": 3.6229917302624987e-12
+  },
+  "nonfinite_errors": [],
+  "native_valid": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "build_timings": {
+    "topology_seconds": 0.4458992660001968,
+    "operators_seconds": 2.5121994180008187,
+    "factor_seconds": 0.49702417099979357,
+    "inverse_seconds": 0.4924235090002185,
+    "surface_inverse_seconds": 0.3252722309989622
+  },
+  "asset": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/factor-controls-v1/group2/gpu-scaled-response/plate.npz",
+    "bytes": 856,
+    "sha256": "6254232406986d0e7c79669bbf117ce5c61f27c66ed319a4a1f7d82a4d98666c"
+  }
+}

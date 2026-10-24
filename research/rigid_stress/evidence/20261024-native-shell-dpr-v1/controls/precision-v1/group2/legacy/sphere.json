@@ -1,0 +1,60 @@
+{
+  "name": "sphere",
+  "method": "inverse",
+  "spinning": true,
+  "gauge": "legacy",
+  "inverse_precision": "64",
+  "surface_load": false,
+  "native_corrections": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "native_fallbacks": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "factor_block_entries": 674,
+  "dofs": 156,
+  "quads": 24,
+  "errors": {
+    "stiffness": 3.580032973022075e-16,
+    "directors": 7.6277027896788e-17,
+    "membrane": 2.696851764268336e-16,
+    "bending": 4.0768288447143817e-16,
+    "shear": 3.2881720362565067e-16,
+    "mass_modes": 1.5413356943156707e-16,
+    "gram": 5.558847540786652e-19,
+    "rigid_null_residual": 1.3423252744722614e-17,
+    "centrifugal": 1.546738303446883e-16,
+    "balanced_load": 1.2536685691280182e-16,
+    "complete_residual": 5.1932809983001505e-11,
+    "complete_field": 3.5164055315862716e-11,
+    "complete_von_mises": 1.8559915572475777e-11,
+    "global_peak": 1.1820291378547948e-11,
+    "N": 3.382787578987002e-11,
+    "M": 3.587617003165057e-11,
+    "Q": 5.024185097596217e-11
+  },
+  "native_valid": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "build_timings": {
+    "topology_seconds": 0.012076379003701732,
+    "operators_seconds": 0.002197117981268093,
+    "factor_seconds": 0.018493280018446967,
+    "inverse_seconds": 0.22957906100782566,
+    "surface_inverse_seconds": 0.010050318989669904
+  },
+  "asset": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/precision-v1/group2/legacy/sphere.npz",
+    "bytes": 1904,
+    "sha256": "683151478a9703aa5d5f1751a9db8041129dfb463f8b9783906970875bb6393d"
+  }
+}

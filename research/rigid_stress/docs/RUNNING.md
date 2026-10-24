@@ -7,6 +7,10 @@ units, reset behavior and supported loads. The
 [source-prior model](BODY_SOURCE_PRIOR_MODEL.md) records footprint assumptions;
 [application results](PRACTICAL_APPLICATION_RESULTS_20261016.md) retain physical
 uncertainty and phase-dependent reward limitations.
+For the optional thin-shell DPR backend, use the
+[shell running guide](RUNNING_NATIVE_SHELL_DPR.md) and its matched condition
+fixture. Shell outputs are in-plane membrane/bending stress with separate
+resultants; volume remains the default.
 
 ## Environment and outputs
 

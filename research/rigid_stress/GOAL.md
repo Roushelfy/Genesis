@@ -1,4 +1,12 @@
-# Active goal: native thin-shell DPR integration and throughput
+# Native thin-shell DPR integration and throughput — delivered
+
+**Completion, 2026-10-24:** the native implementation, focused regressions,
+complete-scene/module throughput, profiles, memory, configuration comparisons
+and targeted global physical checks are delivered. Read
+[the final report](docs/SHELL_DPR_NATIVE_20261024.md) and
+[the requirement audit](evidence/20261024-native-shell-dpr-v1/metadata/requirements-final.json).
+The task is complete within that scope; local three-dimensional contact peaks
+remain explicitly unqualified. The requirements below record the delivered goal.
 
 **User direction, 2026-10-24:** implement an optional thin-shell elastic-recovery
 backend inside the existing rigid stress feature, entirely in Quadrants.

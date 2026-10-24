@@ -9,15 +9,16 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
-## Active target: native thin-shell DPR integration
+## Delivered: native thin-shell DPR integration (2026-10-24)
 
-Follow [GOAL.md](GOAL.md) and
-[the shell integration goal](docs/SHELL_DPR_INTEGRATION_GOAL_20261024.md).
-Add a selectable shell recovery backend inside the rigid solver in Quadrants,
-retaining mature DPR pressure loading and volume FEM. Prioritize coarse
-CPU/native consistency, detailed profiling and useful small/large-batch
-throughput on the full Franka/hollow-egg workflow before physical convergence
-campaigns. Shell in-plane stress and unresolved 3D contact peaks remain distinct.
+The optional native shell backend retains DPR pressure and eccentric friction,
+max/full output, separate resultants and lifecycle behavior. See the
+[measured report](docs/SHELL_DPR_NATIVE_20261024.md),
+[running guide](docs/RUNNING_NATIVE_SHELL_DPR.md) and [GOAL.md](GOAL.md).
+Independent controls, complete Franka timings at 4–8,192 environments and
+targeted analytical/independent FEM checks are complete. Volume remains the
+default and is faster on the measured coarse egg. Shell in-plane stress and
+unresolved local 3D contact peaks remain distinct.
 
 ## Feature-mesh atlas: theory and CPU validation (2026-10-24)
 

@@ -1,9 +1,10 @@
 # Native shell DPR: integration and tuning in progress
 
 The optional native Q4 shell now runs through the existing rigid stress API.
-This is an interim engineering record. The complete throughput matrix,
-targeted physical checks and final configuration recommendations remain open.
-The [active goal](SHELL_DPR_INTEGRATION_GOAL_20261024.md) remains in force.
+This is a preserved interim engineering record. The complete throughput matrix,
+targeted physical checks and final recommendations are now delivered in
+[the final report](SHELL_DPR_NATIVE_20261024.md), following
+[the original requirements](SHELL_DPR_INTEGRATION_GOAL_20261024.md).
 
 The gripper retains the user's requested sharp box geometry. Automatic radius
 uses the explicitly selected planar edge surrogate, whose distinct status and
@@ -106,7 +107,7 @@ Primary evidence includes `operators-v5`, `operators-spinning-v1`,
 Earlier failed builds and tests remain available beside their successful
 replays. Ongoing campaigns are not represented as completed evidence here.
 
-Next: finish pressure/fusion tuning, compare factor/response/gauge/precision
+At this checkpoint, the next work was to finish pressure/fusion tuning, compare factor/response/gauge/precision
 choices and useful batch sizes, measure matched complete 600-step rigid,
 volume and shell workflows in max/full modes, and record setup, memory,
 launch/copy/synchronization costs. Then run targeted global membrane/bending

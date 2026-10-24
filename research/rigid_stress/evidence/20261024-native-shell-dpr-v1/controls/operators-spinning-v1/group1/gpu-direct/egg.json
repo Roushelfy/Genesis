@@ -1,0 +1,45 @@
+{
+  "name": "egg",
+  "method": "direct",
+  "spinning": true,
+  "gauge": "translation",
+  "dofs": 156,
+  "quads": 24,
+  "errors": {
+    "stiffness": 2.91645331741825e-16,
+    "directors": 1.4492094328622806e-16,
+    "membrane": 2.449649307526262e-16,
+    "bending": 4.2474570680855093e-16,
+    "shear": 3.2391436150719294e-16,
+    "mass_modes": 1.1051574224677693e-16,
+    "gram": 7.417355407101571e-19,
+    "rigid_null_residual": 1.262902568456201e-17,
+    "centrifugal": 1.7287217423374486e-16,
+    "balanced_load": 1.4645244970904924e-16,
+    "complete_residual": 3.1680684759996043e-13,
+    "complete_field": 1.0951774808189242e-11,
+    "complete_von_mises": 6.837387225837763e-12,
+    "global_peak": 5.11161566846241e-12,
+    "N": 9.67930814104802e-13,
+    "M": 1.3696148876166138e-11,
+    "Q": 2.525979460851148e-12
+  },
+  "native_valid": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "build_timings": {
+    "topology_seconds": 0.008036312996409833,
+    "operators_seconds": 0.002028125978540629,
+    "factor_seconds": 0.01835548601229675,
+    "inverse_seconds": 6.179907359182835e-07,
+    "surface_inverse_seconds": 0.0030273850134108216
+  },
+  "asset": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/operators-spinning-v1/group1/gpu-direct/egg.npz",
+    "bytes": 1904,
+    "sha256": "7e2be382c9d5b38fff8432197e48ca5df17016e662bc58b54ea539e696e73f6d"
+  }
+}

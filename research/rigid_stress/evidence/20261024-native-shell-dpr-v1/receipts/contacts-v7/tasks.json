@@ -1,0 +1,48 @@
+[
+  [
+    {
+      "name": "cpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_contacts",
+      "args": [
+        "--backend",
+        "cpu",
+        "--geometries",
+        "flat",
+        "warped",
+        "egg",
+        "valley"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_contacts",
+      "args": [
+        "--backend",
+        "gpu",
+        "--geometries",
+        "flat",
+        "warped",
+        "egg",
+        "valley"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu-moments",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_contacts",
+      "args": [
+        "--backend",
+        "gpu",
+        "--geometries",
+        "flat",
+        "warped",
+        "egg",
+        "valley",
+        "--reuse-moments"
+      ]
+    }
+  ]
+]

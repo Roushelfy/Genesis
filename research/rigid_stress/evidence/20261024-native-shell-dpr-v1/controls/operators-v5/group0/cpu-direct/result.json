@@ -1,0 +1,134 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "name": "plate",
+      "method": "direct",
+      "gauge": "translation",
+      "dofs": 54,
+      "quads": 4,
+      "errors": {
+        "stiffness": 2.0816002739025067e-16,
+        "directors": 0.0,
+        "membrane": 1.8170772984473382e-16,
+        "bending": 1.817077298447338e-16,
+        "shear": 1.7439920285002787e-16,
+        "mass_modes": 5.651266301560163e-16,
+        "gram": 6.776274641310228e-16,
+        "rigid_null_residual": 7.480621745765291e-18,
+        "balanced_load": 1.7387015579009917e-16,
+        "complete_residual": 8.855534424275904e-13,
+        "complete_field": 2.112066138711047e-12,
+        "complete_von_mises": 1.4852072928821897e-12,
+        "global_peak": 1.265121651578364e-12,
+        "N": 3.820266833606459e-15,
+        "M": 2.1126463253515766e-12,
+        "Q": 2.099015229962338e-12
+      },
+      "native_valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "build_timings": {
+        "topology_seconds": 0.4047642620280385,
+        "operators_seconds": 2.1225333069451153,
+        "factor_seconds": 0.34584392805118114,
+        "inverse_seconds": 1.1479714885354042e-06,
+        "surface_inverse_seconds": 0.06001134496182203
+      },
+      "asset": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/operators-v5/group0/cpu-direct/plate.npz",
+        "bytes": 856,
+        "sha256": "6254232406986d0e7c79669bbf117ce5c61f27c66ed319a4a1f7d82a4d98666c"
+      }
+    },
+    {
+      "name": "sphere",
+      "method": "direct",
+      "gauge": "translation",
+      "dofs": 156,
+      "quads": 24,
+      "errors": {
+        "stiffness": 3.2789682388736045e-16,
+        "directors": 7.605733707304287e-17,
+        "membrane": 2.8041290319419945e-16,
+        "bending": 4.0195226670241907e-16,
+        "shear": 3.11036936347879e-16,
+        "mass_modes": 1.0679070978662358e-16,
+        "gram": 2.4697456647948593e-19,
+        "rigid_null_residual": 1.6881934890984716e-17,
+        "balanced_load": 1.0152964319675586e-16,
+        "complete_residual": 2.0210449409775466e-13,
+        "complete_field": 7.81291860921927e-12,
+        "complete_von_mises": 4.565064295133044e-12,
+        "global_peak": 3.737129306352293e-12,
+        "N": 9.573156702859239e-13,
+        "M": 9.692511079845986e-12,
+        "Q": 2.6551253220336725e-12
+      },
+      "native_valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "build_timings": {
+        "topology_seconds": 0.00861979101318866,
+        "operators_seconds": 0.0013176200445741415,
+        "factor_seconds": 0.00389218598138541,
+        "inverse_seconds": 3.5902485251426697e-07,
+        "surface_inverse_seconds": 0.00320920895319432
+      },
+      "asset": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/operators-v5/group0/cpu-direct/sphere.npz",
+        "bytes": 1904,
+        "sha256": "683151478a9703aa5d5f1751a9db8041129dfb463f8b9783906970875bb6393d"
+      }
+    },
+    {
+      "name": "egg",
+      "method": "direct",
+      "gauge": "translation",
+      "dofs": 156,
+      "quads": 24,
+      "errors": {
+        "stiffness": 4.630032676635605e-16,
+        "directors": 1.1783506331887685e-16,
+        "membrane": 3.2018289542094454e-16,
+        "bending": 4.687208994997533e-16,
+        "shear": 4.103904591101494e-16,
+        "mass_modes": 9.024807249003478e-17,
+        "gram": 1.2934295731576531e-16,
+        "rigid_null_residual": 1.3117689881710006e-17,
+        "balanced_load": 8.981679301025945e-17,
+        "complete_residual": 2.29739612138949e-13,
+        "complete_field": 8.001994363815114e-12,
+        "complete_von_mises": 4.3994530253525614e-12,
+        "global_peak": 4.337601376727472e-12,
+        "N": 8.911462868519076e-13,
+        "M": 9.982576551288728e-12,
+        "Q": 2.3560656580522535e-12
+      },
+      "native_valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "build_timings": {
+        "topology_seconds": 0.00980933802202344,
+        "operators_seconds": 0.0013498170301318169,
+        "factor_seconds": 0.004047731985338032,
+        "inverse_seconds": 4.139728844165802e-07,
+        "surface_inverse_seconds": 0.0032365330262109637
+      },
+      "asset": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/operators-v5/group0/cpu-direct/egg.npz",
+        "bytes": 1904,
+        "sha256": "7e2be382c9d5b38fff8432197e48ca5df17016e662bc58b54ea539e696e73f6d"
+      }
+    }
+  ]
+}

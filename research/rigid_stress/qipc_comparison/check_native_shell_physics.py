@@ -23,6 +23,13 @@ from research.rigid_stress.shell_cpu import geometry, reference
 from .artifacts import file_id, runtime_identity, write_json
 
 
+def reference_availability():
+    current = reference.availability()
+    # The CPU study also returns a historical OpenSees note, not a current probe.
+    current.pop("opensees_note")
+    return current
+
+
 def tensor(components):
     result = np.zeros((*components.shape[:-1], 3, 3))
     for k, (a, b) in enumerate(((0, 0), (1, 1), (2, 2), (0, 1), (0, 2), (1, 2))):
@@ -175,13 +182,13 @@ def main():
         sys.path.insert(0, str(args.reference_pythonpath.resolve()))
     args.output.mkdir(parents=True, exist_ok=False)
     gs.init(backend=gs.gpu, precision="64", logging_level="warning")
-    write_json(args.output / "start.json", {"identity": runtime_identity(), "availability": reference.availability()})
+    write_json(args.output / "start.json", {"identity": runtime_identity(), "availability": reference_availability()})
     rows = [control(args.output, args.case, n) for n in args.sizes]
     write_json(
         args.output / "result.json",
         {
             "rows": rows,
-            "availability": reference.availability(),
+            "availability": reference_availability(),
             "scope": "Global linear shell membrane/bending at resolved load scales; no local 3D contact-peak certification.",
             "supported_plate": "Native operators and factor with research-only prescribed supports; production sphere uses native inertia relief.",
         },

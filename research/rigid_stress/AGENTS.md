@@ -1,20 +1,21 @@
 # Working on native rigid stress recovery
 
-**Active priority, 2026-10-24:** implement and optimize the optional native
-thin-shell DPR backend. Read [GOAL.md](GOAL.md) and
-[the shell integration goal](docs/SHELL_DPR_INTEGRATION_GOAL_20261024.md).
+**Latest delivery, 2026-10-24:** the optional native thin-shell DPR backend,
+focused numerical/lifecycle tests, matched throughput/profiling and targeted
+global physical checks are complete. Read [GOAL.md](GOAL.md) and
+[the final report](docs/SHELL_DPR_NATIVE_20261024.md).
 Keep mature DPR loading; production numerical work stays in the existing
 rigid solver in Quadrants. Preserve volume FEM, arbitrary moving/asymmetric
 convex/nonconvex contacts, normal/friction eccentricity, max/full and lifecycle
-behavior. First coarse integration and CPU/native numerical consistency, then
-detailed profiling and applicable throughput optimization on the complete
-Franka/hollow-egg workflow. Do not block this phase with high-resolution
-physical convergence sweeps. CPU shell in-plane results do not certify local
-three-dimensional contact peaks.
+behavior in future changes. The delivered sequence was coarse integration,
+CPU/native consistency, detailed performance tuning, then targeted physical
+checks. Shell in-plane results do not certify local three-dimensional contact
+peaks; that unresolved quantity is not a hidden completion claim.
 
-This priority supersedes conflicting older task instructions below.
-The volume-DPR throughput deliverable is complete; historical enrichment,
-SCR-repair and physical-ranking campaigns are not active prerequisites.
+This closes the shell integration priority. The volume-DPR deliverable is
+also complete. Older enrichment, SCR-repair and physical-ranking directions
+below remain historical, not active follow-up tasks. The atlas CPU study is
+supplementary research, not an implicit native implementation request.
 Keep historical evidence and existing storage/reproduction policies.
 
 ## Historical directions and standing engineering policies
