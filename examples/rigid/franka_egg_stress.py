@@ -377,7 +377,12 @@ def main() -> None:
         workload.step()
     workload.scene.rigid_solver.check_errno()
     if workload.stress:
-        print("Maximum VM stress, Pa:", tensor_to_array(workload.link.get_max_stress()))
+        quantity = (
+            "Maximum sampled shell in-plane VM stress, Pa:"
+            if args.stress_backend == "shell"
+            else "Maximum VM stress, Pa:"
+        )
+        print(quantity, tensor_to_array(workload.link.get_max_stress()))
 
 
 if __name__ == "__main__":

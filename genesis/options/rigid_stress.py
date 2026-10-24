@@ -177,8 +177,11 @@ class RigidStressOptions(Options):
     vectors and preserves node order. Disable it to measure dense application.
     ``fused_pipeline`` captures the serial CUDA association, contact fit,
     complete solve/residual/peak and acceptance passes in one native graph
-    for cooperative exterior inverse recovery without load history. Other
-    configurations retain the independently callable native passes.
+    for cooperative volume exterior inverse recovery without load history.
+    Shell recovery fuses balance, packed response, complete residual/corrections
+    and sampled stress in a separate graph; association, DPR transfer and
+    acceptance remain separate. Other configurations retain the independently
+    callable native passes.
     CUDA meshes up to 1,024 P2 nodes use a cooperative warp solve when
     ``cooperative_solve`` is enabled; other cases use the serial native path.
     ``method="inverse"`` explicitly requests the inverse and rejects an

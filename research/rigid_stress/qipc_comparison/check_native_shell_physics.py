@@ -8,6 +8,7 @@ contact peaks. Run on a compute node after performance tuning.
 
 import argparse
 from pathlib import Path
+import sys
 
 import numpy as np
 from scipy import sparse
@@ -163,8 +164,15 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("--case", choices=("sphere", "plate"), required=True)
     cli.add_argument("--sizes", type=int, nargs="+", required=True)
+    cli.add_argument(
+        "--reference-pythonpath",
+        type=Path,
+        help="Optional isolated pyfe3d installation; leave the active environment unchanged.",
+    )
     cli.add_argument("--output", type=Path, required=True)
     args = cli.parse_args()
+    if args.reference_pythonpath is not None:
+        sys.path.insert(0, str(args.reference_pythonpath.resolve()))
     args.output.mkdir(parents=True, exist_ok=False)
     gs.init(backend=gs.gpu, precision="64", logging_level="warning")
     write_json(args.output / "start.json", {"identity": runtime_identity(), "availability": reference.availability()})
