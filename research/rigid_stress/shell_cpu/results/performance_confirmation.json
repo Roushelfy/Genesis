@@ -1,0 +1,575 @@
+{
+  "scope": "Bounded single-thread CPU recovery confirmation, not Genesis/GPU/RL throughput; full local output means top/bottom in-plane tensors at four points per element",
+  "reason": "Original broad scan overlapped other heavy CPU tasks; this confirmation interleaves reverse orders after those tasks finished",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "ndof": 588,
+  "quads": 96,
+  "young_pa": 10000000000.0,
+  "poisson": 0.3,
+  "thickness_m": 0.0005,
+  "numpy": "2.3.5",
+  "scipy": "1.17.0",
+  "threads": 1,
+  "threadpools": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-fdde5778.so",
+      "version": "0.3.30",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    },
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/scipy.libs/libscipy_openblas-6cdc3b4a.so",
+      "version": "0.3.30",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    }
+  ],
+  "source_sha256": {
+    "shell_cpu/core.py": "43d425e52af6d095535fbfcbdd4a8695060345fa3ee24648e019011f6f4fa8fc",
+    "shell_cpu/geometry.py": "6fcf34eb4d83548da6e330b7b6ef1b318a48808b4dd2aa4de0a82c24e93ef90e",
+    "shell_cpu/contacts.py": "d90f22b201dee4884bd68dd17760d146f44ecf4cb0e502ad1e1e7cc7734d6393",
+    "shell_cpu/performance.py": "142a3460e11a6320b6700e7228238cc432f6f3d3736734069281663d6d3bcfce"
+  },
+  "source_unchanged_during_run": true,
+  "compact_response_build_ms": 27.981182996882126,
+  "compact_response_bytes": 5419008,
+  "all_checks_passed": true,
+  "rows": [
+    {
+      "batch": 1,
+      "interleaved_orders": [
+        [
+          "reused_lu_full_local",
+          "column_loop_lu_full_local",
+          "compact_surface_full_local",
+          "scalar_hinted_fast_transfer",
+          "batched_witness_fast_transfer",
+          "batched_transfer_plus_lu_full_local",
+          "batched_transfer_plus_surface_full_local",
+          "batched_transfer_plus_surface_peak",
+          "reused_lu_full_global_tensor",
+          "compact_surface_full_global_tensor"
+        ],
+        [
+          "compact_surface_full_global_tensor",
+          "reused_lu_full_global_tensor",
+          "batched_transfer_plus_surface_peak",
+          "batched_transfer_plus_surface_full_local",
+          "batched_transfer_plus_lu_full_local",
+          "batched_witness_fast_transfer",
+          "scalar_hinted_fast_transfer",
+          "compact_surface_full_local",
+          "column_loop_lu_full_local",
+          "reused_lu_full_local"
+        ],
+        [
+          "reused_lu_full_local",
+          "column_loop_lu_full_local",
+          "compact_surface_full_local",
+          "scalar_hinted_fast_transfer",
+          "batched_witness_fast_transfer",
+          "batched_transfer_plus_lu_full_local",
+          "batched_transfer_plus_surface_full_local",
+          "batched_transfer_plus_surface_peak",
+          "reused_lu_full_global_tensor",
+          "compact_surface_full_global_tensor"
+        ],
+        [
+          "compact_surface_full_global_tensor",
+          "reused_lu_full_global_tensor",
+          "batched_transfer_plus_surface_peak",
+          "batched_transfer_plus_surface_full_local",
+          "batched_transfer_plus_lu_full_local",
+          "batched_witness_fast_transfer",
+          "scalar_hinted_fast_transfer",
+          "compact_surface_full_local",
+          "column_loop_lu_full_local",
+          "reused_lu_full_local"
+        ],
+        [
+          "reused_lu_full_local",
+          "column_loop_lu_full_local",
+          "compact_surface_full_local",
+          "scalar_hinted_fast_transfer",
+          "batched_witness_fast_transfer",
+          "batched_transfer_plus_lu_full_local",
+          "batched_transfer_plus_surface_full_local",
+          "batched_transfer_plus_surface_peak",
+          "reused_lu_full_global_tensor",
+          "compact_surface_full_global_tensor"
+        ],
+        [
+          "compact_surface_full_global_tensor",
+          "reused_lu_full_global_tensor",
+          "batched_transfer_plus_surface_peak",
+          "batched_transfer_plus_surface_full_local",
+          "batched_transfer_plus_lu_full_local",
+          "batched_witness_fast_transfer",
+          "scalar_hinted_fast_transfer",
+          "compact_surface_full_local",
+          "column_loop_lu_full_local",
+          "reused_lu_full_local"
+        ],
+        [
+          "reused_lu_full_local",
+          "column_loop_lu_full_local",
+          "compact_surface_full_local",
+          "scalar_hinted_fast_transfer",
+          "batched_witness_fast_transfer",
+          "batched_transfer_plus_lu_full_local",
+          "batched_transfer_plus_surface_full_local",
+          "batched_transfer_plus_surface_peak",
+          "reused_lu_full_global_tensor",
+          "compact_surface_full_global_tensor"
+        ]
+      ],
+      "inner": 5,
+      "repeats": 7,
+      "transfer_info": {
+        "fast_environments": 1,
+        "fallback_environments": 0
+      },
+      "errors": {
+        "compact_relative_field_error": 1.7970670461716756e-11,
+        "batched_relative_load_error": 2.5768379039634505e-16,
+        "batched_relative_field_error": 9.071827965623006e-12,
+        "compact_relative_peak_error": 1.9791349982349333e-13
+      },
+      "passed": true,
+      "methods": {
+        "reused_lu_full_local": {
+          "median_ms": 0.18874999950639904,
+          "range_ms": [
+            0.17038859950844198,
+            0.22905680089024827
+          ],
+          "repeats_ms": [
+            0.2183688004151918,
+            0.22905680089024827,
+            0.22884659992996603,
+            0.18789879977703094,
+            0.18828540050890297,
+            0.18874999950639904,
+            0.17038859950844198
+          ]
+        },
+        "column_loop_lu_full_local": {
+          "median_ms": 0.219217999256216,
+          "range_ms": [
+            0.17636359989410266,
+            0.41650299972388893
+          ],
+          "repeats_ms": [
+            0.18578180024633184,
+            0.22892079869052395,
+            0.1875564004876651,
+            0.23212740052258596,
+            0.17636359989410266,
+            0.219217999256216,
+            0.41650299972388893
+          ]
+        },
+        "compact_surface_full_local": {
+          "median_ms": 0.09857639961410314,
+          "range_ms": [
+            0.07285980100277811,
+            0.12996360019315034
+          ],
+          "repeats_ms": [
+            0.07644519937457517,
+            0.10926460090558976,
+            0.07285980100277811,
+            0.1109150005504489,
+            0.07992020109668374,
+            0.12996360019315034,
+            0.09857639961410314
+          ]
+        },
+        "scalar_hinted_fast_transfer": {
+          "median_ms": 1.2997028010431677,
+          "range_ms": [
+            1.1836741992738098,
+            1.402297399181407
+          ],
+          "repeats_ms": [
+            1.297820000036154,
+            1.3270559997181408,
+            1.1836741992738098,
+            1.402297399181407,
+            1.2366377995931543,
+            1.386237000406254,
+            1.2997028010431677
+          ]
+        },
+        "batched_witness_fast_transfer": {
+          "median_ms": 0.727090600412339,
+          "range_ms": [
+            0.6798433998483233,
+            0.8476761999190785
+          ],
+          "repeats_ms": [
+            0.7131136007956229,
+            0.7687374003580771,
+            0.6798433998483233,
+            0.727090600412339,
+            0.7345499994698912,
+            0.6869001997984014,
+            0.8476761999190785
+          ]
+        },
+        "batched_transfer_plus_lu_full_local": {
+          "median_ms": 0.9725362004246563,
+          "range_ms": [
+            0.9343085999717005,
+            1.31802840041928
+          ],
+          "repeats_ms": [
+            0.9356165988720022,
+            0.9604399994714186,
+            0.9343085999717005,
+            0.9725362004246563,
+            1.0114146003616042,
+            1.0377263999544084,
+            1.31802840041928
+          ]
+        },
+        "batched_transfer_plus_surface_full_local": {
+          "median_ms": 0.8453547998215072,
+          "range_ms": [
+            0.7836877994122915,
+            0.9435786007088609
+          ],
+          "repeats_ms": [
+            0.8921532004023902,
+            0.8453547998215072,
+            0.802722800290212,
+            0.8617856001364999,
+            0.8024399998248555,
+            0.7836877994122915,
+            0.9435786007088609
+          ]
+        },
+        "batched_transfer_plus_surface_peak": {
+          "median_ms": 0.8845015996485017,
+          "range_ms": [
+            0.7811121991835535,
+            1.072935399133712
+          ],
+          "repeats_ms": [
+            0.7811121991835535,
+            0.8630131997051649,
+            0.8845015996485017,
+            0.8870795994880609,
+            0.8314838007208891,
+            0.9110055994824506,
+            1.072935399133712
+          ]
+        },
+        "reused_lu_full_global_tensor": {
+          "median_ms": 0.31776240066392347,
+          "range_ms": [
+            0.2769729995634407,
+            0.34513360005803406
+          ],
+          "repeats_ms": [
+            0.3437655992456712,
+            0.2769729995634407,
+            0.32985860016196966,
+            0.2808468008879572,
+            0.31776240066392347,
+            0.30927960033295676,
+            0.34513360005803406
+          ]
+        },
+        "compact_surface_full_global_tensor": {
+          "median_ms": 0.14991380012361333,
+          "range_ms": [
+            0.14421300002140924,
+            0.16451760020572692
+          ],
+          "repeats_ms": [
+            0.14991380012361333,
+            0.14421300002140924,
+            0.1519105993793346,
+            0.1444295994588174,
+            0.15533400001004338,
+            0.14709539973409846,
+            0.16451760020572692
+          ]
+        }
+      }
+    },
+    {
+      "batch": 128,
+      "interleaved_orders": [
+        [
+          "reused_lu_full_local",
+          "column_loop_lu_full_local",
+          "compact_surface_full_local",
+          "scalar_hinted_fast_transfer",
+          "batched_witness_fast_transfer",
+          "batched_transfer_plus_lu_full_local",
+          "batched_transfer_plus_surface_full_local",
+          "batched_transfer_plus_surface_peak",
+          "reused_lu_full_global_tensor",
+          "compact_surface_full_global_tensor"
+        ],
+        [
+          "compact_surface_full_global_tensor",
+          "reused_lu_full_global_tensor",
+          "batched_transfer_plus_surface_peak",
+          "batched_transfer_plus_surface_full_local",
+          "batched_transfer_plus_lu_full_local",
+          "batched_witness_fast_transfer",
+          "scalar_hinted_fast_transfer",
+          "compact_surface_full_local",
+          "column_loop_lu_full_local",
+          "reused_lu_full_local"
+        ],
+        [
+          "reused_lu_full_local",
+          "column_loop_lu_full_local",
+          "compact_surface_full_local",
+          "scalar_hinted_fast_transfer",
+          "batched_witness_fast_transfer",
+          "batched_transfer_plus_lu_full_local",
+          "batched_transfer_plus_surface_full_local",
+          "batched_transfer_plus_surface_peak",
+          "reused_lu_full_global_tensor",
+          "compact_surface_full_global_tensor"
+        ],
+        [
+          "compact_surface_full_global_tensor",
+          "reused_lu_full_global_tensor",
+          "batched_transfer_plus_surface_peak",
+          "batched_transfer_plus_surface_full_local",
+          "batched_transfer_plus_lu_full_local",
+          "batched_witness_fast_transfer",
+          "scalar_hinted_fast_transfer",
+          "compact_surface_full_local",
+          "column_loop_lu_full_local",
+          "reused_lu_full_local"
+        ],
+        [
+          "reused_lu_full_local",
+          "column_loop_lu_full_local",
+          "compact_surface_full_local",
+          "scalar_hinted_fast_transfer",
+          "batched_witness_fast_transfer",
+          "batched_transfer_plus_lu_full_local",
+          "batched_transfer_plus_surface_full_local",
+          "batched_transfer_plus_surface_peak",
+          "reused_lu_full_global_tensor",
+          "compact_surface_full_global_tensor"
+        ],
+        [
+          "compact_surface_full_global_tensor",
+          "reused_lu_full_global_tensor",
+          "batched_transfer_plus_surface_peak",
+          "batched_transfer_plus_surface_full_local",
+          "batched_transfer_plus_lu_full_local",
+          "batched_witness_fast_transfer",
+          "scalar_hinted_fast_transfer",
+          "compact_surface_full_local",
+          "column_loop_lu_full_local",
+          "reused_lu_full_local"
+        ],
+        [
+          "reused_lu_full_local",
+          "column_loop_lu_full_local",
+          "compact_surface_full_local",
+          "scalar_hinted_fast_transfer",
+          "batched_witness_fast_transfer",
+          "batched_transfer_plus_lu_full_local",
+          "batched_transfer_plus_surface_full_local",
+          "batched_transfer_plus_surface_peak",
+          "reused_lu_full_global_tensor",
+          "compact_surface_full_global_tensor"
+        ]
+      ],
+      "inner": 1,
+      "repeats": 7,
+      "transfer_info": {
+        "fast_environments": 128,
+        "fallback_environments": 0
+      },
+      "errors": {
+        "compact_relative_field_error": 8.551532438571805e-12,
+        "batched_relative_load_error": 2.38402182164093e-16,
+        "batched_relative_field_error": 6.773400027548366e-12,
+        "compact_relative_peak_error": 6.877764201828646e-13
+      },
+      "passed": true,
+      "methods": {
+        "reused_lu_full_local": {
+          "median_ms": 10.392406002210919,
+          "range_ms": [
+            10.06360199971823,
+            11.940116994082928
+          ],
+          "repeats_ms": [
+            10.945237998384982,
+            10.06360199971823,
+            10.254087996145245,
+            10.249010992993135,
+            11.940116994082928,
+            10.392406002210919,
+            10.39360799768474
+          ]
+        },
+        "column_loop_lu_full_local": {
+          "median_ms": 23.121531994547695,
+          "range_ms": [
+            22.431912999309134,
+            24.905566999223083
+          ],
+          "repeats_ms": [
+            23.088071997335646,
+            24.905566999223083,
+            23.121531994547695,
+            24.07017000223277,
+            24.375629000132903,
+            22.743230998457875,
+            22.431912999309134
+          ]
+        },
+        "compact_surface_full_local": {
+          "median_ms": 4.128175001824275,
+          "range_ms": [
+            3.9595420021214522,
+            4.312402998039033
+          ],
+          "repeats_ms": [
+            4.1937240021070465,
+            4.312402998039033,
+            4.040722997160628,
+            4.128175001824275,
+            4.062215994053986,
+            4.133203001401853,
+            3.9595420021214522
+          ]
+        },
+        "scalar_hinted_fast_transfer": {
+          "median_ms": 153.3155409997562,
+          "range_ms": [
+            151.40133800014155,
+            166.76428799837595
+          ],
+          "repeats_ms": [
+            156.17686800396768,
+            151.40133800014155,
+            154.11464199860347,
+            166.76428799837595,
+            153.3155409997562,
+            152.4638170012622,
+            153.22255999490153
+          ]
+        },
+        "batched_witness_fast_transfer": {
+          "median_ms": 9.029824999743141,
+          "range_ms": [
+            8.564764997572638,
+            9.807015005208086
+          ],
+          "repeats_ms": [
+            9.029824999743141,
+            8.750515000429004,
+            8.564764997572638,
+            9.807015005208086,
+            8.592856996983755,
+            9.113550993788522,
+            9.14874400041299
+          ]
+        },
+        "batched_transfer_plus_lu_full_local": {
+          "median_ms": 19.86281599965878,
+          "range_ms": [
+            18.851633001759183,
+            21.703046004404314
+          ],
+          "repeats_ms": [
+            19.86281599965878,
+            20.091238999157213,
+            18.851633001759183,
+            21.703046004404314,
+            19.570333999581635,
+            19.97715700417757,
+            19.491727005515713
+          ]
+        },
+        "batched_transfer_plus_surface_full_local": {
+          "median_ms": 12.889285004348494,
+          "range_ms": [
+            12.583436000568327,
+            16.705111003830098
+          ],
+          "repeats_ms": [
+            12.583436000568327,
+            12.749515000905376,
+            12.726560998999048,
+            16.705111003830098,
+            12.953192002896685,
+            13.4626780054532,
+            12.889285004348494
+          ]
+        },
+        "batched_transfer_plus_surface_peak": {
+          "median_ms": 13.684864003153052,
+          "range_ms": [
+            12.995686003705487,
+            18.637779998243786
+          ],
+          "repeats_ms": [
+            12.995686003705487,
+            14.106748996709939,
+            13.622570004372392,
+            18.637779998243786,
+            13.684864003153052,
+            13.840428000548854,
+            13.311210997926537
+          ]
+        },
+        "reused_lu_full_global_tensor": {
+          "median_ms": 11.478731998067815,
+          "range_ms": [
+            11.12421799916774,
+            13.691858999663964
+          ],
+          "repeats_ms": [
+            11.12421799916774,
+            11.194573999091517,
+            13.691858999663964,
+            12.019005000183824,
+            11.478731998067815,
+            11.750050995033234,
+            11.372902998118661
+          ]
+        },
+        "compact_surface_full_global_tensor": {
+          "median_ms": 4.868078998697456,
+          "range_ms": [
+            4.423879996465985,
+            5.049031999078579
+          ],
+          "repeats_ms": [
+            4.903643006400671,
+            4.423879996465985,
+            5.049031999078579,
+            4.445452999789268,
+            4.868078998697456,
+            4.7786539944354445,
+            4.971735004801303
+          ]
+        }
+      }
+    }
+  ]
+}

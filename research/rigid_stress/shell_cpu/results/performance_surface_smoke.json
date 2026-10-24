@@ -1,0 +1,303 @@
+{
+  "scope": "CPU research shell recovery only; not Genesis scene steps, RL transitions, GPU throughput or contact-reference qualification",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "numpy": "2.3.5",
+  "scipy": "1.17.0",
+  "threads": 1,
+  "threadpools": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-fdde5778.so",
+      "version": "0.3.30",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    },
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/scipy.libs/libscipy_openblas-6cdc3b4a.so",
+      "version": "0.3.30",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    }
+  ],
+  "models": [
+    {
+      "resolution": 2,
+      "vertices": 26,
+      "quads": 24,
+      "ndof": 156,
+      "stress_scalar_outputs": 576,
+      "global_symmetric_tensor_scalar_outputs": 1152,
+      "construction_seconds": 0.16797242000029655,
+      "factor_seconds": 0.001057712004694622,
+      "stress_operator_seconds": 0.0003642980009317398,
+      "contact_bank_transfer_seconds": 0.017584276996785775,
+      "dense_response_build_seconds": 0.00257864200102631,
+      "dense_response_bytes": 718848,
+      "outer_surface_response_build_seconds": 0.0013467579992720857,
+      "outer_surface_response_bytes": 359424,
+      "on_demand_cache_allocated_bytes": 719004,
+      "stiffness_nnz": 7790,
+      "factor_nnz": 17012,
+      "rows": [
+        {
+          "batch": 1,
+          "active_dof_union": 24,
+          "mean_active_dofs_per_environment": 24.0,
+          "cache_cold_ms": 0.7879769982537255,
+          "cache_columns_valid": 24,
+          "cache_relative_field_error": 1.6217784197701925e-12,
+          "dense_response_relative_field_error": 1.6217701765941561e-12,
+          "scalar_loop_relative_field_error": 0.0,
+          "global_tensor_map_vs_core_relative_error": 2.6495638732021285e-15,
+          "surface_response_relative_field_error": 6.358415209330409e-13,
+          "methods": {
+            "prefactorized_multi_rhs_full": {
+              "median_ms": 0.12837350004701875,
+              "minimum_ms": 0.05597449853667058,
+              "maximum_ms": 0.20077250155736692,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 7789.769692605832
+            },
+            "prefactorized_column_loop_full": {
+              "median_ms": 0.042418998418725096,
+              "minimum_ms": 0.03991499761468731,
+              "maximum_ms": 0.04492299922276288,
+              "repeats": 2,
+              "inner": 2
+            },
+            "warm_sparse_response_cache_full": {
+              "median_ms": 0.022308500774670392,
+              "minimum_ms": 0.019775001419475302,
+              "maximum_ms": 0.024842000129865482,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 44825.96164128716
+            },
+            "dense_precomputed_response_full": {
+              "median_ms": 0.018565751815913245,
+              "minimum_ms": 0.010516003385419026,
+              "maximum_ms": 0.026615500246407464,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 53862.61811077702
+            },
+            "outer_surface_response_full": {
+              "median_ms": 0.005027502993470989,
+              "minimum_ms": 0.004997502401238307,
+              "maximum_ms": 0.005057503585703671,
+              "repeats": 2,
+              "inner": 2
+            },
+            "prefactorized_multi_rhs_peak": {
+              "median_ms": 0.06047850001777988,
+              "minimum_ms": 0.05614949986920692,
+              "maximum_ms": 0.06480750016635284,
+              "repeats": 2,
+              "inner": 2
+            },
+            "dense_precomputed_response_peak": {
+              "median_ms": 0.021772499167127535,
+              "minimum_ms": 0.021421998098958284,
+              "maximum_ms": 0.022123000235296786,
+              "repeats": 2,
+              "inner": 2
+            },
+            "outer_surface_response_peak": {
+              "median_ms": 0.015545998394372873,
+              "minimum_ms": 0.015382996934931725,
+              "maximum_ms": 0.01570899985381402,
+              "repeats": 2,
+              "inner": 2
+            },
+            "tiled_precomputed_response_peak": {
+              "median_ms": 0.05508799949893728,
+              "minimum_ms": 0.042899500840576366,
+              "maximum_ms": 0.06727649815729819,
+              "repeats": 2,
+              "inner": 2
+            },
+            "prefactorized_multi_rhs_full_global_tensor": {
+              "median_ms": 0.09597724965715315,
+              "minimum_ms": 0.08658049773657694,
+              "maximum_ms": 0.10537400157772936,
+              "repeats": 2,
+              "inner": 2
+            },
+            "dense_precomputed_response_full_global_tensor": {
+              "median_ms": 0.041209501432604156,
+              "minimum_ms": 0.04013550278614275,
+              "maximum_ms": 0.04228350007906556,
+              "repeats": 2,
+              "inner": 2
+            },
+            "global_tensor_conversion": {
+              "median_ms": 0.027310750738251954,
+              "minimum_ms": 0.02653949923114851,
+              "maximum_ms": 0.028082002245355397,
+              "repeats": 2,
+              "inner": 2
+            },
+            "current_contact_transfer": {
+              "median_ms": 2.6328892508900026,
+              "minimum_ms": 2.5069895018532407,
+              "maximum_ms": 2.7587889999267645,
+              "repeats": 2,
+              "inner": 2
+            },
+            "refactor_scalar_full": {
+              "median_ms": 0.8915924991015345,
+              "minimum_ms": 0.8235999994212762,
+              "maximum_ms": 0.9595849987817928,
+              "repeats": 2,
+              "inner": 1
+            }
+          },
+          "radii_m": [
+            3.507848633687712e-05,
+            3.507848633687712e-05
+          ],
+          "radius_formula": {
+            "median_ms": 0.0021844399816473015,
+            "minimum_ms": 0.0019961099314969033,
+            "maximum_ms": 0.0023727700317976996,
+            "repeats": 2,
+            "inner": 100
+          },
+          "tiled_peak_relative_error": 4.690845837611777e-13,
+          "numerical_checks_passed": true
+        },
+        {
+          "batch": 8,
+          "active_dof_union": 113,
+          "mean_active_dofs_per_environment": 23.875,
+          "cache_cold_ms": 1.1556699973880313,
+          "cache_columns_valid": 113,
+          "cache_relative_field_error": 1.8558273952749225e-12,
+          "dense_response_relative_field_error": 1.8558273952749225e-12,
+          "scalar_loop_relative_field_error": 2.872439588348651e-13,
+          "global_tensor_map_vs_core_relative_error": 3.2396019700998935e-15,
+          "surface_response_relative_field_error": 6.356464399747149e-13,
+          "methods": {
+            "prefactorized_multi_rhs_full": {
+              "median_ms": 0.11412675121391658,
+              "minimum_ms": 0.11129750055260956,
+              "maximum_ms": 0.11695600187522359,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 70097.50049753877
+            },
+            "prefactorized_column_loop_full": {
+              "median_ms": 0.2969095003209077,
+              "minimum_ms": 0.2921900013461709,
+              "maximum_ms": 0.30162899929564446,
+              "repeats": 2,
+              "inner": 2
+            },
+            "warm_sparse_response_cache_full": {
+              "median_ms": 0.07714624916843604,
+              "minimum_ms": 0.07656050001969561,
+              "maximum_ms": 0.07773199831717648,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 103699.14397955145
+            },
+            "dense_precomputed_response_full": {
+              "median_ms": 0.02651275099196937,
+              "minimum_ms": 0.026325000362703577,
+              "maximum_ms": 0.026700501621235162,
+              "repeats": 2,
+              "inner": 2,
+              "environment_recoveries_per_second": 301741.6035938019
+            },
+            "outer_surface_response_full": {
+              "median_ms": 0.013758250133832917,
+              "minimum_ms": 0.01364049967378378,
+              "maximum_ms": 0.013876000593882054,
+              "repeats": 2,
+              "inner": 2
+            },
+            "prefactorized_multi_rhs_peak": {
+              "median_ms": 0.1515754993306473,
+              "minimum_ms": 0.14993549848441035,
+              "maximum_ms": 0.15321550017688423,
+              "repeats": 2,
+              "inner": 2
+            },
+            "dense_precomputed_response_peak": {
+              "median_ms": 0.06285225026658736,
+              "minimum_ms": 0.05641999814542942,
+              "maximum_ms": 0.0692845023877453,
+              "repeats": 2,
+              "inner": 2
+            },
+            "outer_surface_response_peak": {
+              "median_ms": 0.042621752072591335,
+              "minimum_ms": 0.04258950139046647,
+              "maximum_ms": 0.0426540027547162,
+              "repeats": 2,
+              "inner": 2
+            },
+            "tiled_precomputed_response_peak": {
+              "median_ms": 0.08153999988280702,
+              "minimum_ms": 0.0804960000095889,
+              "maximum_ms": 0.08258399975602515,
+              "repeats": 2,
+              "inner": 2
+            },
+            "prefactorized_multi_rhs_full_global_tensor": {
+              "median_ms": 0.31391499942401424,
+              "minimum_ms": 0.2743379991443362,
+              "maximum_ms": 0.3534919997036923,
+              "repeats": 2,
+              "inner": 2
+            },
+            "dense_precomputed_response_full_global_tensor": {
+              "median_ms": 0.11877900033141486,
+              "minimum_ms": 0.11335100134601817,
+              "maximum_ms": 0.12420699931681156,
+              "repeats": 2,
+              "inner": 2
+            },
+            "global_tensor_conversion": {
+              "median_ms": 0.0782530005380977,
+              "minimum_ms": 0.07688600089750253,
+              "maximum_ms": 0.07962000017869286,
+              "repeats": 2,
+              "inner": 2
+            },
+            "current_contact_transfer": {
+              "median_ms": 17.46815975093341,
+              "minimum_ms": 17.38773100078106,
+              "maximum_ms": 17.54858850108576,
+              "repeats": 2,
+              "inner": 2
+            }
+          },
+          "radii_m": [
+            3.314275144670863e-05,
+            4.1588945256042855e-05
+          ],
+          "radius_formula": {
+            "median_ms": 0.0021816899970872328,
+            "minimum_ms": 0.002056800003629178,
+            "maximum_ms": 0.0023065799905452877,
+            "repeats": 2,
+            "inner": 100
+          },
+          "tiled_peak_relative_error": 7.183674572895619e-13,
+          "numerical_checks_passed": true
+        }
+      ]
+    }
+  ],
+  "all_numerical_checks_passed": true,
+  "semantics": "Same current generalized loads, free-body inertia relief, fixed shell stiffness, full local top/bottom in-plane stress and plane-stress von Mises maximum"
+}

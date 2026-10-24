@@ -1,0 +1,36 @@
+{
+  "valid": true,
+  "geometry": "Nonconvex torus inner ring",
+  "dofs": 1728,
+  "combined_curvatures_per_m": [
+    325.0,
+    141.1764705882353
+  ],
+  "contact": {
+    "valid": true,
+    "radius_m": 2.0633260068023124e-05,
+    "normal_force": 0.03,
+    "a_over_h": 0.041266520136046245,
+    "method": "face_polar",
+    "faces": 4,
+    "face_ids": [
+      120,
+      143,
+      144,
+      167
+    ],
+    "n_samples": 1568,
+    "force_error": 1.2678776132380195e-16,
+    "moment_error": 2.1474123365798694e-14,
+    "raw_mass_error": -7.743805596760467e-13,
+    "min_nodal_weight": 0.0,
+    "requested_order": 16,
+    "quadrature_order": 16,
+    "adaptive_attempts": 0,
+    "retained_failures": []
+  },
+  "negative_relative_curvature_rejected": true,
+  "residual": 8.217336595733637e-13,
+  "peak_vm_pa": 30326.557907903254,
+  "peak_tensile_pa": 29289.50879586044
+}

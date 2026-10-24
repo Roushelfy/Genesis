@@ -1,0 +1,511 @@
+{
+  "availability": {
+    "pyfe3d_version": "0.10.0",
+    "code_aster_binary": null,
+    "as_run_binary": null,
+    "code_aster_module": false,
+    "opensees_note": "3.8.0.0 and 3.7.1.2 installed, but both imports aborted in MPI network-interface initialization; no OpenSees solve executed",
+    "reference_scope": "independent prescribed-load linear shell FEM, not an independent contact solve"
+  },
+  "rows": [
+    {
+      "displacement_relative": 0.17752165287302638,
+      "surface_tensor_relative_L2": 0.43334323262419167,
+      "core_max_surface_stress_pa": 63214.29134727721,
+      "reference_max_surface_stress_pa": 52060.509806252994,
+      "surface_stress_max_metric": "Frobenius tensor norm; additional explicit VM/tensile maxima below",
+      "core_max_surface_vm_pa": 49942.52703320904,
+      "reference_max_surface_vm_pa": 37553.84508702738,
+      "core_max_surface_tensile_pa": 31299.857001140706,
+      "reference_max_surface_tensile_pa": 27914.60001863787,
+      "relative_compliance_difference": 0.1261320630365166,
+      "explicit_relief_coefficients": [
+        3.7395226794719887e-16,
+        7.367676958915286e-33,
+        3.0786233148678657e-14,
+        -7.041740123082795e-29,
+        5.205210227144704e-13,
+        -2.557906600149911e-14
+      ],
+      "same_applied_load": true,
+      "reference": "pyfe3d0.10.0 Quad4 mixed integration; independent flat-faceted shell discretization",
+      "scope": "prescribed-load shell-discretization comparison, not physical contact-reference validation",
+      "passed": true,
+      "n": 4,
+      "nodes": 98,
+      "quads": 96,
+      "dofs": 588,
+      "radius_mode": "automatic_hertz",
+      "shear_N": 0.0,
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 6.870386052136025e-05,
+          "normal_force": 0.2,
+          "a_over_h": 0.13740772104272048,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            9,
+            10
+          ],
+          "n_samples": 1728,
+          "force_error": 1.3877787807814457e-16,
+          "moment_error": 7.908262425212482e-15,
+          "raw_mass_error": -2.220446049250313e-16,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 6.870386052136025e-05,
+          "normal_force": 0.2,
+          "a_over_h": 0.13740772104272048,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            25,
+            26
+          ],
+          "n_samples": 1728,
+          "force_error": 2.7755575615628914e-16,
+          "moment_error": 3.1566479963270094e-14,
+          "raw_mass_error": -4.440892098500626e-16,
+          "min_nodal_weight": 0.0
+        }
+      ]
+    },
+    {
+      "displacement_relative": 0.1768129080133623,
+      "surface_tensor_relative_L2": 0.43270855846146894,
+      "core_max_surface_stress_pa": 65322.6549015136,
+      "reference_max_surface_stress_pa": 54522.445686325365,
+      "surface_stress_max_metric": "Frobenius tensor norm; additional explicit VM/tensile maxima below",
+      "core_max_surface_vm_pa": 51450.318349846246,
+      "reference_max_surface_vm_pa": 39168.87563010557,
+      "core_max_surface_tensile_pa": 32731.833419819413,
+      "reference_max_surface_tensile_pa": 29504.372861807034,
+      "relative_compliance_difference": 0.1250157994835811,
+      "explicit_relief_coefficients": [
+        -1.0642829013641416e-14,
+        1.350945801502105e-15,
+        3.078623314867865e-14,
+        4.0043703745897516e-14,
+        1.5503833439077006e-13,
+        1892.6499019905166
+      ],
+      "same_applied_load": true,
+      "reference": "pyfe3d0.10.0 Quad4 mixed integration; independent flat-faceted shell discretization",
+      "scope": "prescribed-load shell-discretization comparison, not physical contact-reference validation",
+      "passed": true,
+      "n": 4,
+      "nodes": 98,
+      "quads": 96,
+      "dofs": 588,
+      "radius_mode": "automatic_hertz",
+      "shear_N": 0.03,
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 6.870386052136025e-05,
+          "normal_force": 0.2,
+          "a_over_h": 0.13740772104272048,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            10
+          ],
+          "n_samples": 1440,
+          "force_error": 1.7155311075675192e-17,
+          "moment_error": 1.7879160778371136e-14,
+          "raw_mass_error": 2.220446049250313e-16,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 6.870386052136025e-05,
+          "normal_force": 0.2,
+          "a_over_h": 0.13740772104272048,
+          "method": "face_polar",
+          "faces": 1,
+          "face_ids": [
+            26
+          ],
+          "n_samples": 1440,
+          "force_error": 1.3831053964433422e-16,
+          "moment_error": 3.28895342481332e-14,
+          "raw_mass_error": -2.220446049250313e-16,
+          "min_nodal_weight": 0.0
+        }
+      ]
+    },
+    {
+      "displacement_relative": 0.1681163648647442,
+      "surface_tensor_relative_L2": 0.42382089548514046,
+      "core_max_surface_stress_pa": 57603.32983396925,
+      "reference_max_surface_stress_pa": 47472.11529347041,
+      "surface_stress_max_metric": "Frobenius tensor norm; additional explicit VM/tensile maxima below",
+      "core_max_surface_vm_pa": 45291.814323179125,
+      "reference_max_surface_vm_pa": 34218.1605194564,
+      "core_max_surface_tensile_pa": 26948.651196136096,
+      "reference_max_surface_tensile_pa": 23908.065986377587,
+      "relative_compliance_difference": 0.12233721810019944,
+      "explicit_relief_coefficients": [
+        -1.1292305105335121e-14,
+        4.0467629781858736e-32,
+        3.078623314867865e-14,
+        -5.692443142238541e-29,
+        -7.636284038958277e-13,
+        -1.404953255804525e-13
+      ],
+      "same_applied_load": true,
+      "reference": "pyfe3d0.10.0 Quad4 mixed integration; independent flat-faceted shell discretization",
+      "scope": "prescribed-load shell-discretization comparison, not physical contact-reference validation",
+      "passed": true,
+      "n": 4,
+      "nodes": 98,
+      "quads": 96,
+      "dofs": 588,
+      "radius_mode": "manual_2mm",
+      "shear_N": 0.0,
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 0.002,
+          "normal_force": 0.2,
+          "a_over_h": 4.0,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            9,
+            10
+          ],
+          "n_samples": 1728,
+          "force_error": 1.3877787807814457e-16,
+          "moment_error": 8.147881878395355e-16,
+          "raw_mass_error": 0.0,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 0.002,
+          "normal_force": 0.2,
+          "a_over_h": 4.0,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            25,
+            26
+          ],
+          "n_samples": 1728,
+          "force_error": 0.0,
+          "moment_error": 3.079244376305239e-16,
+          "raw_mass_error": 4.440892098500626e-16,
+          "min_nodal_weight": 0.0
+        }
+      ]
+    },
+    {
+      "passed": false,
+      "n": 4,
+      "radius_mode": "manual_2mm",
+      "shear_N": 0.03,
+      "error": "ValueError('Finite footprint not resolved/covered: normalized mass 1.000035555419496')"
+    },
+    {
+      "displacement_relative": 0.10620062374556827,
+      "surface_tensor_relative_L2": 0.26251059152952777,
+      "core_max_surface_stress_pa": 181312.53621909214,
+      "reference_max_surface_stress_pa": 164904.3244684968,
+      "surface_stress_max_metric": "Frobenius tensor norm; additional explicit VM/tensile maxima below",
+      "core_max_surface_vm_pa": 130733.11336561166,
+      "reference_max_surface_vm_pa": 116842.9936972566,
+      "core_max_surface_tensile_pa": 74014.8755659821,
+      "reference_max_surface_tensile_pa": 54585.427510564994,
+      "relative_compliance_difference": 0.08742855318572931,
+      "explicit_relief_coefficients": [
+        2.787727832075673e-15,
+        1.5775324559005666e-34,
+        2.995368115417042e-14,
+        5.045510832363439e-29,
+        5.5926931205398956e-14,
+        7.0838079336724e-16
+      ],
+      "same_applied_load": true,
+      "reference": "pyfe3d0.10.0 Quad4 mixed integration; independent flat-faceted shell discretization",
+      "scope": "prescribed-load shell-discretization comparison, not physical contact-reference validation",
+      "passed": true,
+      "n": 8,
+      "nodes": 386,
+      "quads": 384,
+      "dofs": 2316,
+      "radius_mode": "automatic_hertz",
+      "shear_N": 0.0,
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 6.870386052136025e-05,
+          "normal_force": 0.2,
+          "a_over_h": 0.13740772104272048,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            35,
+            36
+          ],
+          "n_samples": 1728,
+          "force_error": 1.3877787807814457e-16,
+          "moment_error": 1.5780873368375845e-14,
+          "raw_mass_error": -2.220446049250313e-16,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 6.870386052136025e-05,
+          "normal_force": 0.2,
+          "a_over_h": 0.13740772104272048,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            99,
+            100
+          ],
+          "n_samples": 1728,
+          "force_error": 1.3877787807814457e-16,
+          "moment_error": 1.5780874083015257e-14,
+          "raw_mass_error": -2.220446049250313e-16,
+          "min_nodal_weight": 0.0
+        }
+      ]
+    },
+    {
+      "passed": false,
+      "n": 8,
+      "radius_mode": "automatic_hertz",
+      "shear_N": 0.03,
+      "error": "ValueError('Finite footprint not resolved/covered: normalized mass 1.000000478571661')"
+    },
+    {
+      "displacement_relative": 0.10147023398126834,
+      "surface_tensor_relative_L2": 0.26155808798869895,
+      "core_max_surface_stress_pa": 158363.491237448,
+      "reference_max_surface_stress_pa": 143328.03262617943,
+      "surface_stress_max_metric": "Frobenius tensor norm; additional explicit VM/tensile maxima below",
+      "core_max_surface_vm_pa": 113974.63331305023,
+      "reference_max_surface_vm_pa": 101551.26853920017,
+      "core_max_surface_tensile_pa": 52337.91519618899,
+      "reference_max_surface_tensile_pa": 41782.32481768334,
+      "relative_compliance_difference": 0.0857420798452664,
+      "explicit_relief_coefficients": [
+        2.6237438419535766e-15,
+        1.6435686982386157e-32,
+        2.9953681154170426e-14,
+        6.116097428708021e-29,
+        -4.208380257718097e-13,
+        7.380339428570321e-14
+      ],
+      "same_applied_load": true,
+      "reference": "pyfe3d0.10.0 Quad4 mixed integration; independent flat-faceted shell discretization",
+      "scope": "prescribed-load shell-discretization comparison, not physical contact-reference validation",
+      "passed": true,
+      "n": 8,
+      "nodes": 386,
+      "quads": 384,
+      "dofs": 2316,
+      "radius_mode": "manual_2mm",
+      "shear_N": 0.0,
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 0.002,
+          "normal_force": 0.2,
+          "a_over_h": 4.0,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            35,
+            36
+          ],
+          "n_samples": 1728,
+          "force_error": 0.0,
+          "moment_error": 1.0270274485458392e-16,
+          "raw_mass_error": 2.220446049250313e-16,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 0.002,
+          "normal_force": 0.2,
+          "a_over_h": 4.0,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            99,
+            100
+          ],
+          "n_samples": 1728,
+          "force_error": 0.0,
+          "moment_error": 8.138571840559691e-16,
+          "raw_mass_error": 0.0,
+          "min_nodal_weight": 0.0
+        }
+      ]
+    },
+    {
+      "passed": false,
+      "n": 8,
+      "radius_mode": "manual_2mm",
+      "shear_N": 0.03,
+      "error": "ValueError('Finite footprint not resolved/covered: normalized mass 0.9999028530640628')"
+    },
+    {
+      "displacement_relative": 0.10869243105143465,
+      "surface_tensor_relative_L2": 0.19292508552674117,
+      "core_max_surface_stress_pa": 371493.4856697618,
+      "reference_max_surface_stress_pa": 350994.9552424725,
+      "surface_stress_max_metric": "Frobenius tensor norm; additional explicit VM/tensile maxima below",
+      "core_max_surface_vm_pa": 265836.23104048846,
+      "reference_max_surface_vm_pa": 248885.46919819384,
+      "core_max_surface_tensile_pa": 119018.46905602241,
+      "reference_max_surface_tensile_pa": 119488.2721042689,
+      "relative_compliance_difference": 0.03310614207993183,
+      "explicit_relief_coefficients": [
+        6.117221211431541e-16,
+        1.270498520647295e-33,
+        2.979694031192801e-14,
+        -1.990382303887405e-29,
+        1.4149924776389513e-13,
+        -4.826705488360111e-15
+      ],
+      "same_applied_load": true,
+      "reference": "pyfe3d0.10.0 Quad4 mixed integration; independent flat-faceted shell discretization",
+      "scope": "prescribed-load shell-discretization comparison, not physical contact-reference validation",
+      "passed": true,
+      "n": 12,
+      "nodes": 866,
+      "quads": 864,
+      "dofs": 5196,
+      "radius_mode": "automatic_hertz",
+      "shear_N": 0.0,
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 6.870386052136025e-05,
+          "normal_force": 0.2,
+          "a_over_h": 0.13740772104272048,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            77,
+            78
+          ],
+          "n_samples": 1728,
+          "force_error": 0.0,
+          "moment_error": 7.890955230828831e-15,
+          "raw_mass_error": -4.440892098500626e-16,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 6.870386052136025e-05,
+          "normal_force": 0.2,
+          "a_over_h": 0.13740772104272048,
+          "method": "face_polar",
+          "faces": 2,
+          "face_ids": [
+            221,
+            222
+          ],
+          "n_samples": 1728,
+          "force_error": 3.0814879110195774e-32,
+          "moment_error": 7.890955230828831e-15,
+          "raw_mass_error": -2.220446049250313e-16,
+          "min_nodal_weight": 0.0
+        }
+      ]
+    },
+    {
+      "passed": false,
+      "n": 12,
+      "radius_mode": "automatic_hertz",
+      "shear_N": 0.03,
+      "error": "ValueError('Finite footprint not resolved/covered: normalized mass 1.000013317295277')"
+    },
+    {
+      "displacement_relative": 0.07590226803246289,
+      "surface_tensor_relative_L2": 0.1834843954257538,
+      "core_max_surface_stress_pa": 296081.55105165206,
+      "reference_max_surface_stress_pa": 278701.05247103714,
+      "surface_stress_max_metric": "Frobenius tensor norm; additional explicit VM/tensile maxima below",
+      "core_max_surface_vm_pa": 211424.92203062022,
+      "reference_max_surface_vm_pa": 197341.69855131145,
+      "core_max_surface_tensile_pa": 77110.99959463501,
+      "reference_max_surface_tensile_pa": 81876.86623045261,
+      "relative_compliance_difference": 0.05386180525487119,
+      "explicit_relief_coefficients": [
+        -1.7739941513151457e-14,
+        5.119361686137394e-32,
+        2.9796940311928e-14,
+        -4.794720888693916e-30,
+        -3.483253978457435e-13,
+        -1.9448783879568705e-13
+      ],
+      "same_applied_load": true,
+      "reference": "pyfe3d0.10.0 Quad4 mixed integration; independent flat-faceted shell discretization",
+      "scope": "prescribed-load shell-discretization comparison, not physical contact-reference validation",
+      "passed": true,
+      "n": 12,
+      "nodes": 866,
+      "quads": 864,
+      "dofs": 5196,
+      "radius_mode": "manual_2mm",
+      "shear_N": 0.0,
+      "contacts": [
+        {
+          "valid": true,
+          "radius_m": 0.002,
+          "normal_force": 0.2,
+          "a_over_h": 4.0,
+          "method": "face_polar",
+          "faces": 4,
+          "face_ids": [
+            77,
+            78,
+            89,
+            90
+          ],
+          "n_samples": 3456,
+          "force_error": 1.3877787807814457e-16,
+          "moment_error": 2.2835706036620357e-08,
+          "raw_mass_error": 9.154486990681221e-08,
+          "min_nodal_weight": 0.0
+        },
+        {
+          "valid": true,
+          "radius_m": 0.002,
+          "normal_force": 0.2,
+          "a_over_h": 4.0,
+          "method": "face_polar",
+          "faces": 4,
+          "face_ids": [
+            221,
+            222,
+            233,
+            234
+          ],
+          "n_samples": 3456,
+          "force_error": 1.3877787807814457e-16,
+          "moment_error": 2.2835705223468727e-08,
+          "raw_mass_error": 9.15448696847676e-08,
+          "min_nodal_weight": 0.0
+        }
+      ]
+    },
+    {
+      "passed": false,
+      "n": 12,
+      "radius_mode": "manual_2mm",
+      "shear_N": 0.03,
+      "error": "ValueError('Finite footprint not resolved/covered: normalized mass 0.9998041580420405')"
+    }
+  ]
+}

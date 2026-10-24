@@ -1,0 +1,43 @@
+{
+  "availability": {
+    "pyfe3d_version": "0.10.0",
+    "code_aster_binary": null,
+    "as_run_binary": null,
+    "code_aster_module": false,
+    "opensees_note": "3.8.0.0 and 3.7.1.2 installed, but both imports aborted in MPI network-interface initialization; no OpenSees solve executed",
+    "reference_scope": "independent prescribed-load linear shell FEM, not an independent contact solve"
+  },
+  "analytic": {
+    "center_w_m": 3.548871284225155e-05,
+    "center_M_N": 0.004788635578645178,
+    "center_surface_stress_pa": 114927.25388748427,
+    "terms": 151
+  },
+  "rows": [
+    {
+      "displacement_relative": 0.0038688676183837047,
+      "surface_tensor_relative_L2": 0.03799977829141244,
+      "core_max_surface_stress_pa": 162465.74828518578,
+      "reference_max_surface_stress_pa": 162976.17028072532,
+      "relative_compliance_difference": 0.004012081369750994,
+      "explicit_relief_coefficients": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "same_applied_load": true,
+      "reference": "pyfe3d0.10.0 Quad4 mixed integration; independent flat-faceted shell discretization",
+      "scope": "prescribed-load shell-discretization comparison, not physical contact-reference validation",
+      "n": 32,
+      "nodes": 1089,
+      "dofs": 6534,
+      "core_center_w_m": 3.5508318182645866e-05,
+      "reference_center_w_m": 3.563481645568641e-05,
+      "core_center_w_vs_Kirchhoff": 0.0005524387565551958,
+      "reference_center_w_vs_Kirchhoff": 0.004116903706378183
+    }
+  ]
+}

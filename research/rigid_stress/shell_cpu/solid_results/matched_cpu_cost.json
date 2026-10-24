@@ -1,0 +1,239 @@
+{
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "threads": 1,
+  "cases": [
+    {
+      "n": 4,
+      "shell_dofs": 588,
+      "solid_dofs": 3474,
+      "quads": 96,
+      "solid_tets": 576,
+      "common_inplane_stress_components": 2304,
+      "shell_setup_factor_seconds": 0.6955503299977863,
+      "solid_setup_factor_seconds": 0.09815027400327381,
+      "stress_map_setup_seconds": 0.02102082900091773,
+      "numerical_checks": {
+        "solid_stress_map_relative": 2.008221414814506e-14,
+        "shell_stress_map_relative": 6.518905710894084e-16,
+        "solid_residual": 1.1908632670672372e-13,
+        "shell_residual": 3.1218566086036715e-14
+      },
+      "rows": [
+        {
+          "batch": 1,
+          "median_ms": {
+            "shell_solve": 0.1975534003577195,
+            "solid_solve": 1.0526217993174214,
+            "shell_solve_stress": 0.2671190995897632,
+            "solid_solve_stress": 1.0820431001775432
+          },
+          "repeats_ms": {
+            "shell_solve": [
+              0.2037117003055755,
+              0.19428649975452572,
+              0.1975534003577195,
+              0.24688269986654632,
+              0.17252879988518544
+            ],
+            "solid_solve": [
+              0.8734770999581087,
+              1.108292699791491,
+              1.0526217993174214,
+              0.9979904993087986,
+              1.1278300997219048
+            ],
+            "shell_solve_stress": [
+              0.26211559961666353,
+              0.2671190995897632,
+              0.28713930005324073,
+              0.2531600999645889,
+              0.2934857999207452
+            ],
+            "solid_solve_stress": [
+              1.2525679005193524,
+              1.0111784002219792,
+              1.0248370002955198,
+              1.0820431001775432,
+              1.1613204995228443
+            ]
+          },
+          "solve_stress_ratio_solid_over_shell": 4.050788962074692,
+          "shell_rhs_shape": [
+            588,
+            1
+          ],
+          "solid_rhs_shape": [
+            3474,
+            1
+          ]
+        },
+        {
+          "batch": 32,
+          "median_ms": {
+            "shell_solve": 3.017042334249709,
+            "solid_solve": 18.175908999789197,
+            "shell_solve_stress": 3.7455763328277194,
+            "solid_solve_stress": 18.300443000043742
+          },
+          "repeats_ms": {
+            "shell_solve": [
+              3.2713053345408603,
+              2.8686890000244603,
+              2.8291596657557725,
+              4.031341333757155,
+              3.017042334249709
+            ],
+            "solid_solve": [
+              18.259321334577788,
+              17.775469001207966,
+              18.189055333399057,
+              18.175908999789197,
+              17.83878133331503
+            ],
+            "shell_solve_stress": [
+              3.7455763328277194,
+              3.409910665747399,
+              4.173764000976614,
+              3.2909279980231076,
+              3.899357332556974
+            ],
+            "solid_solve_stress": [
+              18.317986333083052,
+              17.77680766584429,
+              18.92458433333862,
+              18.300443000043742,
+              18.075297331961337
+            ]
+          },
+          "solve_stress_ratio_solid_over_shell": 4.885881737251324,
+          "shell_rhs_shape": [
+            588,
+            32
+          ],
+          "solid_rhs_shape": [
+            3474,
+            32
+          ]
+        }
+      ],
+      "scope": "CPU single thread, same authored spherical surface/normal-offset wall; different Q4 shell and P2 affine solid geometry. Cached sparse LU + cached common-sample in-plane stress maps. No transfer, assembly/factor, 3D full-volume output or GPU/Franka timing included; RHS amplitudes vary at fixed authored patch locations."
+    },
+    {
+      "n": 8,
+      "shell_dofs": 2316,
+      "solid_dofs": 13842,
+      "quads": 384,
+      "solid_tets": 2304,
+      "common_inplane_stress_components": 9216,
+      "shell_setup_factor_seconds": 3.201219962000323,
+      "solid_setup_factor_seconds": 0.66340909399878,
+      "stress_map_setup_seconds": 0.07630959699599771,
+      "numerical_checks": {
+        "solid_stress_map_relative": 1.9000439664802094e-14,
+        "shell_stress_map_relative": 9.240615000452863e-16,
+        "solid_residual": 8.952511112995955e-14,
+        "shell_residual": 2.346131174572262e-13
+      },
+      "rows": [
+        {
+          "batch": 1,
+          "median_ms": {
+            "shell_solve": 3.0616149997513276,
+            "solid_solve": 8.417585399729433,
+            "shell_solve_stress": 3.371413500281051,
+            "solid_solve_stress": 8.349235499917995
+          },
+          "repeats_ms": {
+            "shell_solve": [
+              3.1527672996162437,
+              3.0616149997513276,
+              2.9329131000849884,
+              3.151457300555194,
+              2.750130799540784
+            ],
+            "solid_solve": [
+              8.686599499924341,
+              8.509547399444273,
+              8.417585399729433,
+              8.121669799584197,
+              8.136957699753111
+            ],
+            "shell_solve_stress": [
+              3.371413500281051,
+              3.3763539002393372,
+              3.2692026004951913,
+              3.292803200019989,
+              3.4209441000712104
+            ],
+            "solid_solve_stress": [
+              9.486835799907567,
+              8.312932700209785,
+              8.409094600210665,
+              8.213513000373496,
+              8.349235499917995
+            ]
+          },
+          "solve_stress_ratio_solid_over_shell": 2.4764792272505223,
+          "shell_rhs_shape": [
+            2316,
+            1
+          ],
+          "solid_rhs_shape": [
+            13842,
+            1
+          ]
+        },
+        {
+          "batch": 32,
+          "median_ms": {
+            "shell_solve": 39.017695666795284,
+            "solid_solve": 99.07127499900525,
+            "shell_solve_stress": 40.712417666024216,
+            "solid_solve_stress": 99.10242866559808
+          },
+          "repeats_ms": {
+            "shell_solve": [
+              38.80136333464179,
+              39.57033800058222,
+              38.992077000633195,
+              39.017695666795284,
+              39.400538667299166
+            ],
+            "solid_solve": [
+              99.07127499900525,
+              94.90159999889632,
+              104.35563166781019,
+              104.82122599933064,
+              96.79072300059488
+            ],
+            "shell_solve_stress": [
+              41.2677969992122,
+              39.719081668105595,
+              40.712417666024216,
+              41.67166166492583,
+              39.83765366865555
+            ],
+            "solid_solve_stress": [
+              99.10242866559808,
+              98.00313366577029,
+              111.60832500172546,
+              105.61792066679725,
+              97.18467800121289
+            ]
+          },
+          "solve_stress_ratio_solid_over_shell": 2.4342064251394766,
+          "shell_rhs_shape": [
+            2316,
+            32
+          ],
+          "solid_rhs_shape": [
+            13842,
+            32
+          ]
+        }
+      ],
+      "scope": "CPU single thread, same authored spherical surface/normal-offset wall; different Q4 shell and P2 affine solid geometry. Cached sparse LU + cached common-sample in-plane stress maps. No transfer, assembly/factor, 3D full-volume output or GPU/Franka timing included; RHS amplitudes vary at fixed authored patch locations."
+    }
+  ],
+  "metadata_note": "CPU identity filled after timing; benchmark numerical/timing values unchanged. Script subsequently adds only metadata capture."
+}

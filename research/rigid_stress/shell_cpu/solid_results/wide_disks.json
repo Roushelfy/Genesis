@@ -1,0 +1,79 @@
+{
+  "rows": [
+    {
+      "n": 6,
+      "layers": 1,
+      "Fn": 0.05,
+      "radius_m": 0.005,
+      "radius_over_h": 10.0,
+      "shell_dofs": 1308,
+      "solid_dofs": 7794,
+      "midpoint_displacement_relative_L2": 0.13867740488186078,
+      "shell_residual": 1.124541967910825e-13,
+      "solid_residual": 1.0839589266008909e-13,
+      "solid_transfer_checks": [
+        {
+          "force_relative": 7.084811160192792e-16,
+          "moment_normalized": 8.017027294415108e-16
+        },
+        {
+          "force_relative": 3.8321294114307615e-16,
+          "moment_normalized": 8.665911581876977e-16
+        }
+      ],
+      "scope": "Projected finite Hertz-disk load on differently approximated Q4/tri surfaces. Same coarse vertex mesh, NOT a converged contact or continuum reference; shell in-plane stress only.",
+      "common_surface_inplane_voigt_relative_L2": 0.45761465842181626,
+      "stress_metric": "Area-weighted equal-component (xx,yy,xy) Voigt-vector L2; not full tensor Frobenius norm"
+    },
+    {
+      "n": 8,
+      "layers": 1,
+      "Fn": 0.05,
+      "radius_m": 0.005,
+      "radius_over_h": 10.0,
+      "shell_dofs": 2316,
+      "solid_dofs": 13842,
+      "midpoint_displacement_relative_L2": 0.09403179150843806,
+      "shell_residual": 2.3480574848974486e-13,
+      "solid_residual": 8.952511112995955e-14,
+      "solid_transfer_checks": [
+        {
+          "force_relative": 8.384297404680616e-16,
+          "moment_normalized": 8.48317955116173e-16
+        },
+        {
+          "force_relative": 5.815852873680766e-16,
+          "moment_normalized": 8.525463192713109e-16
+        }
+      ],
+      "scope": "Projected finite Hertz-disk load on differently approximated Q4/tri surfaces. Same coarse vertex mesh, NOT a converged contact or continuum reference; shell in-plane stress only.",
+      "common_surface_inplane_voigt_relative_L2": 0.3423216331410219,
+      "stress_metric": "Area-weighted equal-component (xx,yy,xy) Voigt-vector L2; not full tensor Frobenius norm"
+    },
+    {
+      "n": 12,
+      "layers": 1,
+      "Fn": 0.05,
+      "radius_m": 0.005,
+      "radius_over_h": 10.0,
+      "shell_dofs": 5196,
+      "solid_dofs": 31122,
+      "midpoint_displacement_relative_L2": 0.04632847353697826,
+      "shell_residual": 8.921897644360198e-13,
+      "solid_residual": 6.702799623227041e-14,
+      "solid_transfer_checks": [
+        {
+          "force_relative": 4.628819572127218e-16,
+          "moment_normalized": 8.574602132096405e-16
+        },
+        {
+          "force_relative": 4.563344992840995e-16,
+          "moment_normalized": 8.64217634721524e-16
+        }
+      ],
+      "scope": "Projected finite Hertz-disk load on differently approximated Q4/tri surfaces. Same coarse vertex mesh, NOT a converged contact or continuum reference; shell in-plane stress only.",
+      "common_surface_inplane_voigt_relative_L2": 0.219512393797293,
+      "stress_metric": "Area-weighted equal-component (xx,yy,xy) Voigt-vector L2; not full tensor Frobenius norm"
+    }
+  ]
+}

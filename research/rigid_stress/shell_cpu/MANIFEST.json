@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-24",
+  "baseline_revision": "58a61834cb8e2c536a52887f032dce9898adaafd",
+  "scope": "CPU fixed-reference shell recovery; primary projected-Hertz plus separate native-law control. No GPU or full robot rollout.",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "versions": {
+    "numpy": "2.3.5",
+    "scipy": "1.17.0",
+    "matplotlib": "3.10.8",
+    "threadpoolctl": "3.6.0"
+  },
+  "source_sha256": {
+    "__init__.py": "75f1edd6395fac6c48836befa305971d9ded13629a50526ed51e62a50f670d60",
+    "contact_reference.py": "64239148c05e46b58e510a2b98d4a3574027da875452e2a3d5a8a6f670c0945b",
+    "contacts.py": "d90f22b201dee4884bd68dd17760d146f44ecf4cb0e502ad1e1e7cc7734d6393",
+    "core.py": "4e2c6a2400f851433a8f9b5c52017a7f79346381d29365a1ca6e43e8d5918b9f",
+    "geometry.py": "6fcf34eb4d83548da6e330b7b6ef1b318a48808b4dd2aa4de0a82c24e93ef90e",
+    "make_report.py": "03f2ec4b7a5986cd0e0f7e819b9dd53150c3687550a2587270fc04620198254d",
+    "matched_cpu_cost.py": "0584379a3f4c97ee499d13dc5cadf719b980a09f30457036ea0dc487471bff75",
+    "native_dpr_control.py": "9a3741a2932cac2b14cfbda5961e38d278013ed77eb184205923ae7344be4baa",
+    "performance.py": "142a3460e11a6320b6700e7228238cc432f6f3d3736734069281663d6d3bcfce",
+    "precision_study.py": "bf766c8b1fdf726de54d655627efa8cc4ff526fab55c22e55022ca34a66addaa",
+    "reference.py": "a5043d7731e1b9b4833a079a5115c3735925c759e2ece8c7bab9f4c11a91f6dc",
+    "results/performance_confirm.py": "e854e14b5b89b07f8f607086358361c66987228eee5dd9d8b64291a8f6ef065e",
+    "review_checks.py": "3c32e7c233ec51ed7ba25f990ed383067e638c7b6f83ba8ffb0c3d2ec0570b7c",
+    "review_results/check_translation_gauge.py": "6c6db3fc8e9373728e25e8533b09c4b6e5d99cc1c62a704c4df9af71b5c6345a",
+    "review_results/plot_review.py": "865ed89d8a0ccfa297df4df59cc2416821cd12a3a05fb3ada3fc60a338121f92",
+    "review_results/source_at_primary_runs/core.py": "43d425e52af6d095535fbfcbdd4a8695060345fa3ee24648e019011f6f4fa8fc",
+    "solid_comparison.py": "aa6e54f7bafe6393118f40c8fc0da278cd04f79a2f43650a6d3eafb6fa0c3c73",
+    "study.py": "518ceb987b8a3a02841622f9cb391e2051820000e86994c4f73fe909dc75e48c"
+  },
+  "policy": "Original result JSON and its recorded source hashes retained. Legacy core source is preserved for primary runs; current default remains legacy with optional translation gauge. Generated large field NPZs/logs excluded; regenerate with study.py.",
+  "required_oracles": [
+    "research/rigid_stress/mechanics.py",
+    "research/rigid_stress/wrench.py"
+  ]
+}

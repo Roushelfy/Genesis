@@ -1,0 +1,36 @@
+{
+  "source_sha256": "64239148c05e46b58e510a2b98d4a3574027da875452e2a3d5a8a6f670c0945b",
+  "domain": {
+    "base_n": 320,
+    "base_domain": 0.0003,
+    "extended_n": 640,
+    "extended_domain": 0.0006,
+    "same_radial_spacing": true,
+    "pressure_relative_difference": 1.0367023785453544e-14,
+    "indentation_relative_difference": 1.5850069422653774e-16,
+    "both_domains_unloaded": true
+  },
+  "quadrature": [
+    {
+      "order": 12,
+      "pressure_relative_vs_order24": 1.3829779870898558e-09,
+      "indentation_relative_vs_order24": 3.7770715434183946e-13,
+      "contact_radius_m": 4.125e-05,
+      "passed_numerical": true
+    },
+    {
+      "order": 24,
+      "pressure_relative_vs_order24": 0.0,
+      "indentation_relative_vs_order24": 0.0,
+      "contact_radius_m": 4.125e-05,
+      "passed_numerical": true
+    },
+    {
+      "order": 48,
+      "pressure_relative_vs_order24": 5.502938098258862e-10,
+      "indentation_relative_vs_order24": 2.9164127737682946e-13,
+      "contact_radius_m": 4.125e-05,
+      "passed_numerical": true
+    }
+  ]
+}

@@ -9,6 +9,20 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
+## CPU thin-shell feasibility study (2026-10-24)
+
+The [shell CPU study](shell_cpu/README.md) implements and tests fixed linear
+shell recovery with automatic radius, friction eccentricity, prefactorized
+solves, exact compact responses and batched transfer. It includes analytical,
+independent pyfe3d, halfspace-contact and volume-P2 controls, numerical failures,
+and measured CPU optimization results. A supplementary control keeps the
+existing DPR pressure-fit law while changing the recovery backend.
+
+This is research evidence, not a native backend or GPU benchmark. Tiny-contact
+egg stress peaks remain unresolved and shell in-plane stress does not certify
+a three-dimensional contact maximum. The production feature and defaults below
+are unchanged. See [the algorithm and migration notes](shell_cpu/ALGORITHM.md).
+
 ## Current target: automatic contact radius for the existing DPR
 
 The [throughput optimization is delivered](docs/DPR_THROUGHPUT_20261023.md).

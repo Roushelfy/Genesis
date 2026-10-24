@@ -1,0 +1,446 @@
+{
+  "scope": "OPTIONAL distributed translation-only gauge. Stiffness/load/mass projection are unchanged; legacy remains default. This is a separate experiment from historical primary performance results.",
+  "source_sha256": {
+    "shell_cpu/core.py": "4e2c6a2400f851433a8f9b5c52017a7f79346381d29365a1ca6e43e8d5918b9f",
+    "shell_cpu/contacts.py": "d90f22b201dee4884bd68dd17760d146f44ecf4cb0e502ad1e1e7cc7734d6393",
+    "shell_cpu/precision_study.py": "bf766c8b1fdf726de54d655627efa8cc4ff526fab55c22e55022ca34a66addaa",
+    "/workspace/scratch/f920717c57eb/shell_cpu/review_results/check_translation_gauge.py": "6c6db3fc8e9373728e25e8533b09c4b6e5d99cc1c62a704c4df9af71b5c6345a"
+  },
+  "invariants": {
+    "symmetry_relative": 0.0,
+    "rigid_relative": [
+      1.7853128490329796e-17,
+      2.4818287615489615e-17,
+      1.1984238959454626e-17,
+      4.563689742394048e-19,
+      4.265687906343454e-19,
+      1.0923726183991664e-18
+    ],
+    "eigenvalues_scaled": [
+      -1.2712192657474145e-16,
+      -8.200853627695289e-17,
+      -3.864488601046405e-17,
+      -2.792128313970142e-17,
+      2.5419185527272858e-17,
+      1.985539216729124e-16,
+      5.404119486111456e-09,
+      8.810625003975724e-09,
+      8.810625013731977e-09,
+      8.879798149780792e-09,
+      1.1599521888495848e-08,
+      1.230855561047522e-08
+    ],
+    "near_zero_eigenvalues": 6,
+    "negative_eigenvalues": 0,
+    "rotation_energy_relative": 1.1700925539334334e-16,
+    "rotation_operator_relative": 1.3146743302495082e-15
+  },
+  "patches": {
+    "membrane_energy": 2.9986263736263756e-06,
+    "membrane_analytic": 2.9986263736263748e-06,
+    "membrane_relative": 2.824736535048696e-16,
+    "bending_energy": 3.0586080586216145e-07,
+    "bending_analytic": 3.0586080586080594e-07,
+    "bending_relative": 4.431811423460969e-12
+  },
+  "sphere": {
+    "rows": [
+      {
+        "n": 4,
+        "nodes": 98,
+        "elements": 96,
+        "dofs": 588,
+        "radial_mean": 4.0709267381948815e-09,
+        "radial_std": 4.0157764902142693e-10,
+        "analytic_radial": 4.3749999999999995e-09,
+        "relative_radial_mean": 0.06950245984116984,
+        "relative_radial_L2": 0.11513403025810649,
+        "analytic_membrane_stress": 2500.0,
+        "membrane_stress_mean": [
+          2383.1239871037205,
+          2377.5065536958587,
+          1.6821501118600743e-11
+        ],
+        "relative_membrane_stress_L2": 0.06114529097323843,
+        "total_force": [
+          -1.431146867680866e-17,
+          -8.673617379884035e-19,
+          -8.673617379884035e-18
+        ]
+      },
+      {
+        "n": 8,
+        "nodes": 386,
+        "elements": 384,
+        "dofs": 2316,
+        "radial_mean": 4.28577567096337e-09,
+        "radial_std": 1.3763632758601622e-10,
+        "analytic_radial": 4.3749999999999995e-09,
+        "relative_radial_mean": 0.020394132351229662,
+        "relative_radial_L2": 0.0374918040791364,
+        "analytic_membrane_stress": 2500.0,
+        "membrane_stress_mean": [
+          2469.6302698234263,
+          2468.3792392341575,
+          -3.1629047060791465e-11
+        ],
+        "relative_membrane_stress_L2": 0.017174365183013168,
+        "total_force": [
+          2.6237692574149207e-17,
+          2.5153490401663703e-17,
+          8.131516293641283e-18
+        ]
+      }
+    ]
+  },
+  "cases": [
+    {
+      "resolution": 4,
+      "dofs": 588,
+      "stiffness_identical": true,
+      "mass_projection_identical": true,
+      "legacy_gauge": [
+        3,
+        4,
+        5,
+        68,
+        558,
+        559
+      ],
+      "translation_gauge": [
+        68,
+        73,
+        504,
+        505,
+        558,
+        559
+      ],
+      "equilibrated_condition_one_norm_lower_estimate": 12737.037731793636,
+      "legacy_vs_translation_fp64_stress_relative": 3.082476492823292e-11,
+      "rows": [
+        {
+          "full_stress_relative_by_rhs": [
+            2.040051352829643e-06,
+            2.282408233671564e-06,
+            2.1422932468549456e-06,
+            1.92133887485482e-06,
+            1.6913859700681166e-06,
+            2.0464828609239167e-06,
+            2.354030223586545e-06,
+            1.805684433213826e-06
+          ],
+          "full_stress_relative_max": 2.354030223586545e-06,
+          "physical_residual_scaled_by_rhs": [
+            4.02241544343796e-06,
+            3.5753737536933817e-06,
+            3.359960175540065e-06,
+            3.7209910140539495e-06,
+            2.1425238406453255e-06,
+            2.613806854794752e-06,
+            4.526700577790455e-06,
+            3.099758303938721e-06
+          ],
+          "physical_residual_scaled_max": 4.526700577790455e-06,
+          "translation_residual_max_N": 5.912886642247747e-08,
+          "rotation_residual_max_Nm": 3.8270876405657776e-11,
+          "refinement_iterations": 0,
+          "solve_and_stress_time": {
+            "median_ms": 0.45404399861581624,
+            "range_ms": [
+              0.4439190015546046,
+              0.46473000111291185
+            ]
+          }
+        },
+        {
+          "full_stress_relative_by_rhs": [
+            4.554854078739245e-11,
+            5.3499202426723156e-11,
+            4.919566741229654e-11,
+            4.393441354661712e-11,
+            3.068918930296284e-11,
+            3.4707120822051014e-11,
+            5.1893058542349676e-11,
+            2.0538986818959943e-11
+          ],
+          "full_stress_relative_max": 5.3499202426723156e-11,
+          "physical_residual_scaled_by_rhs": [
+            2.852809985506779e-11,
+            2.5698426029186207e-11,
+            2.5579701988791893e-11,
+            1.5496515503210843e-11,
+            1.2984956883998983e-11,
+            1.841100847720676e-11,
+            3.0397667942615435e-11,
+            8.802490501790152e-12
+          ],
+          "physical_residual_scaled_max": 3.0397667942615435e-11,
+          "translation_residual_max_N": 3.630731240829299e-13,
+          "rotation_residual_max_Nm": 1.0492675691254217e-15,
+          "refinement_iterations": 1,
+          "solve_and_stress_time": {
+            "median_ms": 0.8819079957902431,
+            "range_ms": [
+              0.8730850022402592,
+              0.9600159974070266
+            ]
+          }
+        },
+        {
+          "full_stress_relative_by_rhs": [
+            1.4554954045916018e-12,
+            9.42048222259435e-13,
+            1.0840508597567126e-12,
+            9.156689175106898e-13,
+            2.2390256001389856e-12,
+            2.5488695921564852e-12,
+            1.9366536015262737e-12,
+            1.3549740758863349e-12
+          ],
+          "full_stress_relative_max": 2.5488695921564852e-12,
+          "physical_residual_scaled_by_rhs": [
+            7.375720134235938e-15,
+            4.993211005023285e-15,
+            7.1002623980570895e-15,
+            7.576800372736496e-15,
+            5.137600311236785e-15,
+            4.0624338388399754e-15,
+            8.562300784779843e-15,
+            4.8873832104998e-15
+          ],
+          "physical_residual_scaled_max": 8.562300784779843e-15,
+          "translation_residual_max_N": 1.1045309632196076e-16,
+          "rotation_residual_max_Nm": 2.0519373147235426e-19,
+          "refinement_iterations": 2,
+          "solve_and_stress_time": {
+            "median_ms": 1.3940090066171251,
+            "range_ms": [
+              1.3157709981896915,
+              1.402691996190697
+            ]
+          }
+        }
+      ],
+      "fp64_solve_and_stress_time": {
+        "median_ms": 0.8162090016412549,
+        "range_ms": [
+          0.7782020038575865,
+          0.9005960018839687
+        ]
+      },
+      "equilibrated_fp64_solve_and_stress_time": {
+        "median_ms": 0.48087399773066863,
+        "range_ms": [
+          0.46588099939981475,
+          0.52408900228329
+        ]
+      },
+      "equilibrated_fp64_accuracy": {
+        "full_stress_relative_by_rhs": [
+          1.454902720075341e-12,
+          9.402768360609837e-13,
+          1.084204591483514e-12,
+          9.147877144753324e-13,
+          2.2393440383498747e-12,
+          2.548864410300056e-12,
+          1.936877316689632e-12,
+          1.3541177589332186e-12
+        ],
+        "full_stress_relative_max": 2.548864410300056e-12,
+        "physical_residual_scaled_by_rhs": [
+          1.0823148137191453e-14,
+          6.917721575922604e-15,
+          8.35183938997836e-15,
+          8.369182620991281e-15,
+          5.945829857272255e-15,
+          5.215933164217995e-15,
+          9.405606351386638e-15,
+          7.746110424341124e-15
+        ],
+        "physical_residual_scaled_max": 1.0823148137191453e-14,
+        "translation_residual_max_N": 7.979727989493313e-17,
+        "rotation_residual_max_Nm": 1.562180217643146e-19
+      },
+      "factor_nonzeros": {
+        "fp64_original_units": 250749,
+        "fp64_equilibrated": 102127,
+        "fp32_equilibrated": 102131
+      }
+    },
+    {
+      "resolution": 8,
+      "dofs": 2316,
+      "stiffness_identical": true,
+      "mass_projection_identical": true,
+      "legacy_gauge": [
+        3,
+        4,
+        5,
+        272,
+        2166,
+        2167
+      ],
+      "translation_gauge": [
+        295,
+        998,
+        1872,
+        1873,
+        2166,
+        2167
+      ],
+      "equilibrated_condition_one_norm_lower_estimate": 35374.77833729095,
+      "legacy_vs_translation_fp64_stress_relative": 3.4640181335284717e-10,
+      "rows": [
+        {
+          "full_stress_relative_by_rhs": [
+            2.376023138577248e-06,
+            3.1555826088586343e-06,
+            5.540467373615343e-06,
+            2.7162585427968135e-06,
+            2.7322676620395203e-06,
+            3.57809095557873e-06,
+            3.5122585446372036e-06,
+            2.152632149963617e-06
+          ],
+          "full_stress_relative_max": 5.540467373615343e-06,
+          "physical_residual_scaled_by_rhs": [
+            1.029554961740518e-05,
+            1.0784919092244698e-05,
+            1.7522418750475385e-05,
+            6.983921246034128e-06,
+            7.786073415467185e-06,
+            8.222932969001848e-06,
+            1.1373740065439497e-05,
+            7.580750833998779e-06
+          ],
+          "physical_residual_scaled_max": 1.7522418750475385e-05,
+          "translation_residual_max_N": 1.6638704038065937e-07,
+          "rotation_residual_max_Nm": 1.1529590596114465e-10,
+          "refinement_iterations": 0,
+          "solve_and_stress_time": {
+            "median_ms": 3.182852000463754,
+            "range_ms": [
+              3.0698830014443956,
+              3.522134000377264
+            ]
+          }
+        },
+        {
+          "full_stress_relative_by_rhs": [
+            2.886151104725072e-11,
+            3.5606464913141734e-11,
+            9.717816492249077e-11,
+            6.891501044414945e-11,
+            5.1465244004922615e-11,
+            1.0250707747430091e-10,
+            8.375344586812206e-11,
+            2.9167741768116914e-11
+          ],
+          "full_stress_relative_max": 1.0250707747430091e-10,
+          "physical_residual_scaled_by_rhs": [
+            8.956331829930606e-11,
+            7.468839133183206e-11,
+            2.6235571930711244e-10,
+            1.2754228630385608e-10,
+            6.450571292130326e-11,
+            1.3202746106467227e-10,
+            1.590326695943577e-10,
+            5.3647091129666414e-11
+          ],
+          "physical_residual_scaled_max": 2.6235571930711244e-10,
+          "translation_residual_max_N": 3.2705736448084e-12,
+          "rotation_residual_max_Nm": 1.193820054151211e-15,
+          "refinement_iterations": 1,
+          "solve_and_stress_time": {
+            "median_ms": 5.548315006308258,
+            "range_ms": [
+              5.542655999306589,
+              5.580111996096093
+            ]
+          }
+        },
+        {
+          "full_stress_relative_by_rhs": [
+            1.3345936544542705e-11,
+            1.3005452017864142e-11,
+            2.489650677313272e-11,
+            1.1521800161357028e-11,
+            8.39404588711843e-12,
+            1.4867993180789313e-11,
+            2.0894618815570953e-11,
+            1.1431861088060767e-11
+          ],
+          "full_stress_relative_max": 2.489650677313272e-11,
+          "physical_residual_scaled_by_rhs": [
+            1.7087026883954183e-14,
+            2.0672574359829327e-14,
+            4.7588615314707556e-14,
+            1.5628871237530578e-14,
+            1.6157096534867753e-14,
+            1.346645554612227e-14,
+            1.0417395063308896e-14,
+            1.4215260937893567e-14
+          ],
+          "physical_residual_scaled_max": 4.7588615314707556e-14,
+          "translation_residual_max_N": 7.132966092782134e-16,
+          "rotation_residual_max_Nm": 1.394427989417392e-19,
+          "refinement_iterations": 2,
+          "solve_and_stress_time": {
+            "median_ms": 8.459306998702232,
+            "range_ms": [
+              8.068317998549901,
+              8.77125799888745
+            ]
+          }
+        }
+      ],
+      "fp64_solve_and_stress_time": {
+        "median_ms": 11.967129001277499,
+        "range_ms": [
+          11.698726004397031,
+          12.332370002695825
+        ]
+      },
+      "equilibrated_fp64_solve_and_stress_time": {
+        "median_ms": 3.1358410051325336,
+        "range_ms": [
+          3.0821709951851517,
+          3.5834050067933276
+        ]
+      },
+      "equilibrated_fp64_accuracy": {
+        "full_stress_relative_by_rhs": [
+          1.3345901977839027e-11,
+          1.3004830567339855e-11,
+          2.4897457667014753e-11,
+          1.1521833606403147e-11,
+          8.394013924252081e-12,
+          1.4867890898664478e-11,
+          2.0894573196986983e-11,
+          1.1432035914466976e-11
+        ],
+        "full_stress_relative_max": 2.4897457667014753e-11,
+        "physical_residual_scaled_by_rhs": [
+          3.591478270202825e-14,
+          2.929878869519996e-14,
+          4.239982439034046e-14,
+          1.4113984556046653e-14,
+          1.589630450155912e-14,
+          2.1639800541467308e-14,
+          3.854364613002796e-14,
+          1.83867556563016e-14
+        ],
+        "physical_residual_scaled_max": 4.239982439034046e-14,
+        "translation_residual_max_N": 5.550844072582661e-16,
+        "rotation_residual_max_Nm": 1.7692400685774198e-19
+      },
+      "factor_nonzeros": {
+        "fp64_original_units": 3675082,
+        "fp64_equilibrated": 664049,
+        "fp32_equilibrated": 664004
+      }
+    }
+  ],
+  "source_unchanged_during_run": true,
+  "selected_checks_passed": true
+}
