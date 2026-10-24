@@ -1,0 +1,127 @@
+"""Shared native quadrilateral shell assembly and prefactorized recovery."""
+
+import time
+from pathlib import Path
+
+import numpy as np
+import quadrants as qd
+
+import genesis as gs
+from genesis.options.rigid_stress import RigidStressOptions
+from genesis.utils.array_class import V_MAT, V_VEC, V
+from genesis.utils.misc import qd_to_numpy
+
+from . import shell_operators
+from .balance import kernel_centrifugal_wrench, kernel_relief_projection
+from .data import StressState, allocate_stress_info
+from .factor import StressFactor
+from .inverse import StressInverse
+from .model import StressBuildTimings, StressModel
+from .operators import kernel_diagonal, kernel_gram_inverse
+from .shell_operators import ShellInfo
+
+
+class ShellModel(StressModel):
+    """Recover a fixed linear shell using translation and rotation block rows."""
+
+    def __init__(self, options: RigidStressOptions):
+        started = time.perf_counter()
+        self.options = options.model_copy(deep=True)
+        with np.load(Path(options.mesh), allow_pickle=False) as asset:
+            vertices, quads = asset["vertices"], asset["quads"]
+            directors = asset["directors"] if "directors" in asset else None
+        if vertices.ndim != 2 or vertices.shape[1] != 3 or not np.isfinite(vertices).all():
+            gs.raise_exception("Shell midsurface vertices must be a finite (n, 3) array.")
+        if quads.ndim != 2 or quads.shape[1] != 4 or not len(quads):
+            gs.raise_exception("Shell connectivity must be a nonempty (n, 4) array.")
+        if not np.issubdtype(quads.dtype, np.integer) or quads.min() < 0 or quads.max() >= len(vertices):
+            gs.raise_exception("Shell connectivity must contain in-range integer vertex indices.")
+        if len(np.unique(quads)) != len(vertices):
+            gs.raise_exception("Every shell vertex must belong to a quadrilateral.")
+        if directors is not None and (directors.shape != vertices.shape or not np.isfinite(directors).all()):
+            gs.raise_exception("Shell directors must match the finite midsurface coordinates.")
+        n_nodes, n_elements = len(vertices), len(quads)
+        # Each node contributes adjacent translation and rotation triplets to the shared block solver.
+        element_blocks = (2 * quads[:, :, None] + np.arange(2)).reshape((-1, 8))
+        pairs = np.stack(np.broadcast_arrays(element_blocks[:, :, None], element_blocks[:, None, :]), axis=-1)
+        entries, inverse = np.unique(pairs.reshape((-1, 2)), axis=0, return_inverse=True)
+        row_start = np.r_[0, np.cumsum(np.bincount(entries[:, 0], minlength=2 * n_nodes))]
+        assembly_start = np.r_[0, np.cumsum(np.bincount(inverse, minlength=len(entries)))]
+        assembly_idx = np.argsort(inverse, kind="stable")
+        self.n_boundary_nodes = 2 * n_nodes
+        self.info = allocate_stress_info(2 * n_nodes, 0, 0, len(entries), len(inverse))
+        self.info.vertices.from_numpy(np.repeat(vertices, 2, axis=0).astype(gs.np_float, copy=False))
+        self.info.row_start.from_numpy(row_start.astype(gs.np_int, copy=False))
+        self.info.columns.from_numpy(entries[:, 1].astype(gs.np_int, copy=False))
+        self.info.assembly_start.from_numpy(assembly_start.astype(gs.np_int, copy=False))
+        self.info.assembly_idx.from_numpy(assembly_idx.astype(gs.np_int, copy=False))
+        self.info.is_free.fill(1)
+        self.shell = ShellInfo(
+            quads=V(dtype=gs.qd_int, shape=(n_elements, 4)),
+            directors=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes,)),
+            membrane=V_VEC(3, dtype=gs.qd_float, shape=(n_elements, 4, 24)),
+            bending=V_VEC(3, dtype=gs.qd_float, shape=(n_elements, 4, 24)),
+            shear=V_VEC(2, dtype=gs.qd_float, shape=(n_elements, 4, 24)),
+            drilling=V(dtype=gs.qd_float, shape=(n_elements, 4, 24)),
+            axes=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_elements, 4)),
+            inverse=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_elements, 4)),
+            derivative=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_elements, 4)),
+            tangents=V_MAT(3, 2, dtype=gs.qd_float, shape=(n_elements, 4)),
+            interpolated_director=V_VEC(3, dtype=gs.qd_float, shape=(n_elements, 4)),
+            weights=V(dtype=gs.qd_float, shape=(n_elements, 4)),
+            nodal_mass=V(dtype=gs.qd_float, shape=(n_nodes,)),
+            is_valid=V(dtype=gs.qd_bool, shape=()),
+        )
+        self.shell.quads.from_numpy(quads.astype(gs.np_int, copy=False))
+        if directors is not None:
+            self.shell.directors.from_numpy(directors.astype(gs.np_float, copy=False))
+        self.shell.is_valid.fill(True)
+        topology_done = time.perf_counter()
+        shell_operators.kernel_directors(self.info, self.shell, supplied=directors is not None)
+        shell_operators.kernel_geometry(self.info, self.shell)
+        if not qd_to_numpy(self.shell.is_valid):
+            gs.raise_exception("Shell directors and quadrilateral Jacobians must have consistent positive orientation.")
+        shell_operators.kernel_operators(self.info, self.shell)
+        shell_operators.kernel_assemble(
+            options.shell_thickness, options.poisson, options.shell_drilling_factor, self.info, self.shell
+        )
+        shell_operators.kernel_mass(options.shell_thickness, options.density, self.info, self.shell)
+        shell_operators.kernel_modes(options.shell_thickness, self.info, self.shell)
+        kernel_gram_inverse(self.info)
+        kernel_relief_projection(self.info)
+        kernel_centrifugal_wrench(self.info)
+        shell_operators.kernel_gauge(self.info, self.shell, translation_only=options.shell_gauge == "translation")
+        if not qd_to_numpy(self.shell.is_valid):
+            gs.raise_exception("Shell gauge must span all six rigid modes.")
+        kernel_diagonal(self.info)
+        qd.sync()
+        operators_done = time.perf_counter()
+        inverse_bytes = (6 * n_nodes) ** 2 * (8 if options.inverse_precision == "64" else 4)
+        self.selected_method = options.method
+        if options.method == "auto":
+            self.selected_method = "inverse" if inverse_bytes <= options.inverse_max_bytes else "direct"
+        self.factor = StressFactor(self.info) if self.selected_method != "pcg" else None
+        qd.sync()
+        factor_done = time.perf_counter()
+        self.inverse = (
+            StressInverse(
+                self.info, self.factor, self.create_state, options.inverse_max_bytes, options.inverse_precision
+            )
+            if self.selected_method == "inverse"
+            else None
+        )
+        self.surface_inverse = None
+        self.build_timings = StressBuildTimings(
+            topology_done - started,
+            operators_done - topology_done,
+            factor_done - operators_done,
+            time.perf_counter() - factor_done,
+            0.0,
+        )
+
+    @property
+    def n_output_elements(self) -> int:
+        return 2 * self.shell.quads.shape[0]
+
+    def evaluate_stress(self, options: RigidStressOptions, state: StressState) -> None:
+        shell_operators.kernel_peak(options.young, options.poisson, options.shell_thickness, state, self.shell)
