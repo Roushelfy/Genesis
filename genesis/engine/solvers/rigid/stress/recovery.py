@@ -177,6 +177,7 @@ class RigidStressRecovery:
                             and options.load_transfer == "patch"
                             and gs.backend == gs.cuda
                             and options.fused_pipeline
+                            and options.backend == "volume"
                             and model.surface_inverse is not None
                             and options.packed_surface_loads
                             and options.cooperative_pressure
@@ -559,9 +560,34 @@ class RigidStressRecovery:
                     gs.raise_exception("Configure output_mode='full' before building to observe the stress field.")
                 tensor = qd_to_torch(entry.state.stress_tensor, envs_idx, transpose=True, copy=copy)
                 von_mises = qd_to_torch(entry.state.von_mises, envs_idx, transpose=True, copy=copy).squeeze(-1)
+                if isinstance(entry.model, ShellModel):
+                    tensor = tensor.reshape((tensor.shape[0], entry.model.n_shell_elements, 2, 4, 6))
+                    von_mises = von_mises.reshape((von_mises.shape[0], entry.model.n_shell_elements, 2, 4))
                 if self.solver.n_envs == 0:
                     tensor, von_mises = tensor[0], von_mises[0]
                 return tensor, von_mises
+        gs.raise_exception("Stress recovery is not enabled for this link.")
+
+    def get_shell_resultants(
+        self, link_idx: int, envs_idx=None, *, copy: bool = True
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        for entry in self.links:
+            if entry.link.idx == link_idx:
+                if entry.link.stress_options != entry.options:
+                    gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
+                if not isinstance(entry.model, ShellModel) or entry.output_mode != "full":
+                    gs.raise_exception(
+                        "Shell resultants require backend='shell' and output_mode='full' before building."
+                    )
+                values = tuple(
+                    qd_to_torch(value, envs_idx, transpose=True, copy=copy)
+                    for value in (
+                        entry.state.membrane_resultant,
+                        entry.state.bending_resultant,
+                        entry.state.transverse_resultant,
+                    )
+                )
+                return tuple(value[0] for value in values) if self.solver.n_envs == 0 else values
         gs.raise_exception("Stress recovery is not enabled for this link.")
 
     def set_radius(self, link_idx: int, radius, envs_idx=None) -> None:
@@ -635,6 +661,12 @@ def kernel_reset_impl(envs_idx: qd.types.ndarray(), stress_state: StressState, f
             i_b = envs_idx[i_selected]
             stress_state.stress_tensor[i_e, i_corner, i_b] = qd.Vector([float("nan") for _ in qd.static(range(6))])
             stress_state.von_mises[i_e, i_corner, i_b] = qd.Vector([float("nan")])
+        if stress_state.membrane_resultant.shape[0] > 0:
+            for i_e, i_q, i_selected in qd.ndrange(stress_state.membrane_resultant.shape[0], 4, envs_idx.shape[0]):
+                i_b = envs_idx[i_selected]
+                stress_state.membrane_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 6)
+                stress_state.bending_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 6)
+                stress_state.transverse_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 3)
 
 
 @qd.kernel

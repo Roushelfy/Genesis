@@ -9,6 +9,10 @@ checks. Preserve arbitrary changing convex/nonconvex and asymmetric contacts,
 normal/friction forces including eccentric moments, max/full outputs, batching,
 isolation and lifecycle behavior. Keep volume FEM available.
 
+The gripper box keeps ideal sharp edges for the current implementation, as
+confirmed by the user. Fillet/chamfer dimensions are not a prerequisite; any
+reported edge peak must retain its sampling and convergence limitations.
+
 Start from the completed [CPU study](shell_cpu/README.md) and
 [algorithm notes](shell_cpu/ALGORITHM.md). First integrate a low-resolution
 native path and verify numerical consistency. Prioritize detailed profiling

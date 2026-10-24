@@ -20,6 +20,7 @@ from .model import StressBuildTimings, StressModel
 from .operators import kernel_diagonal, kernel_gram_inverse
 from .shell_operators import ShellInfo
 from .shell_surface import build_shell_surface
+from .surface_inverse import StressSurfaceInverse
 
 
 class ShellModel(StressModel):
@@ -111,19 +112,34 @@ class ShellModel(StressModel):
             if self.selected_method == "inverse"
             else None
         )
+        inverse_done = time.perf_counter()
         self.load_info = build_shell_surface(quads, options.shell_thickness, self.info, self.shell)
+        boundary_bytes = ((2 * n_nodes) ** 2 * 9 + 2 * n_nodes * 18) * np.dtype(gs.np_float).itemsize
+        boundary_nodes = np.arange(2 * n_nodes, dtype=gs.np_int)
+        boundary_bytes += boundary_nodes.nbytes
         self.surface_inverse = None
+        if (
+            self.inverse is not None
+            and options.surface_inverse
+            and options.inverse_precision == "64"
+            and inverse_bytes + boundary_bytes <= options.inverse_max_bytes
+        ):
+            self.surface_inverse = StressSurfaceInverse(self.info, self.factor, self.create_state, boundary_nodes)
         self.build_timings = StressBuildTimings(
             topology_done - started,
             operators_done - topology_done,
             factor_done - operators_done,
-            time.perf_counter() - factor_done,
-            0.0,
+            inverse_done - factor_done,
+            time.perf_counter() - inverse_done,
         )
 
     @property
     def n_output_elements(self) -> int:
         return 2 * self.shell.quads.shape[0]
+
+    @property
+    def n_shell_elements(self) -> int:
+        return self.shell.quads.shape[0]
 
     def evaluate_stress(self, options: RigidStressOptions, state: StressState) -> None:
         shell_operators.kernel_peak(options.young, options.poisson, options.shell_thickness, state, self.shell)

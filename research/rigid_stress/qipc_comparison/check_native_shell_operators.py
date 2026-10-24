@@ -81,6 +81,22 @@ def control(output, name, vertices, quads, method, gauge):
     )
     errors["complete_von_mises"] = relative(actual_vm, expected_vm)
     errors["global_peak"] = relative(qd_to_numpy(state.step_peak), expected_vm.max(axis=(1, 2)))
+    e1, e2 = oracle.axes[:, :, :, 0], oracle.axes[:, :, :, 1]
+    tensor_basis = np.stack(
+        (
+            e1[:, :, :, None] * e1[:, :, None, :],
+            e2[:, :, :, None] * e2[:, :, None, :],
+            e1[:, :, :, None] * e2[:, :, None, :] + e2[:, :, :, None] * e1[:, :, None, :],
+        ),
+        axis=2,
+    )
+    for label, buffer in (("N", state.membrane_resultant), ("M", state.bending_resultant)):
+        tensor = np.einsum("egkij,egkb->begij", tensor_basis, reference_stress[label])
+        components = np.stack([tensor[..., a, b] for a, b in ((0, 0), (1, 1), (2, 2), (0, 1), (0, 2), (1, 2))], axis=-1)
+        errors[label] = relative(qd_to_numpy(buffer, transpose=True), components)
+    transverse = np.einsum("egij,egjb->begi", oracle.axes[:, :, :, :2], reference_stress["Q"])
+    errors["Q"] = relative(qd_to_numpy(state.transverse_resultant, transpose=True), transverse)
+
     np.savez(
         output / f"{name}-fields.npz",
         expected=expected_field,
@@ -115,7 +131,9 @@ def control(output, name, vertices, quads, method, gauge):
         )
     ), result
     assert errors["complete_residual"] < options.tolerance, result
-    assert max(errors[key] for key in ("complete_field", "complete_von_mises", "global_peak")) < 1e-8, result
+    assert max(errors[key] for key in ("complete_field", "complete_von_mises", "global_peak", "N", "M", "Q")) < 1e-8, (
+        result
+    )
     assert qd_to_numpy(state.valid).all(), result
     np.testing.assert_array_equal(actual_field[3], 0.0)
     return result

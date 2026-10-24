@@ -495,7 +495,12 @@ class RigidLink(KinematicLink):
 
         Returns tensors shaped ``[B, n_tets, 4, 6]`` and von Mises values
         ``[B, n_tets, 4]`` (without B for unbatched scenes). Corner order is
-        mesh tetrahedron vertex order; components are xx, yy, zz, xy, xz, yz
+        mesh tetrahedron vertex order. With ``backend='shell'``, the shapes are
+        ``[B, n_quads, 2, 4, 6]`` and ``[B, n_quads, 2, 4]``: outer/inner sides
+        and four in-plane Gauss points in counterclockwise order from (-g,-g),
+        where g=1/sqrt(3). Shell tensors contain in-plane membrane-plus-bending
+        stress; transverse resultants are returned separately by ``get_shell_resultants``.
+        Components are xx, yy, zz, xy, xz, yz
         in the authored link frame. Fields are NaN before recovery or after
         reset, restore or invalid recovery. ``copy=False`` aliases read-only
         observation buffers. Fields describe the last observed physical substep,
@@ -505,6 +510,22 @@ class RigidLink(KinematicLink):
         if recovery is None:
             gs.raise_exception("Stress recovery is not enabled for this link.")
         return recovery.get_field(self.idx, envs_idx, copy=copy)
+
+    @gs.assert_built
+    def get_shell_resultants(
+        self, envs_idx=None, *, copy: bool = True
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        """Return shell membrane, bending and transverse shear resultants in the authored link frame.
+
+        Requires ``backend='shell', output_mode='full'``. Membrane (N/m) and bending (N)
+        tensors have shape [B, n_quads, 4, 6] and components xx, yy, zz, xy, xz, yz.
+        Transverse shear (N/m) has shape [B, n_quads, 4, 3]. Unbatched scenes omit B.
+        The four points, observation cadence, invalidation and copy behavior match ``get_stress_field``.
+        """
+        recovery = self._solver.stress_recovery
+        if recovery is None:
+            gs.raise_exception("Stress recovery is not enabled for this link.")
+        return recovery.get_shell_resultants(self.idx, envs_idx, copy=copy)
 
     @gs.assert_built
     def set_stress_contact_radius(self, radius, envs_idx=None) -> None:
