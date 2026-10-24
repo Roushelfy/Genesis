@@ -1,0 +1,115 @@
+{
+  "scope": "Numerical implementation controls only. Physical/reference convergence is not a pass gate in this audit and remains explicitly unresolved.",
+  "operator_relative": 2.802761725018332e-16,
+  "finite_pressure_controls": [
+    {
+      "center": [
+        0.0007,
+        0.0003
+      ],
+      "radius": 0.0024,
+      "cartesian_vs_existing_transfer_relative": 2.788527793054609e-16,
+      "info": {
+        "valid": true,
+        "radius_m": 0.0024,
+        "normal_force": 0.05,
+        "a_over_h": 4.8,
+        "method": "analytic_affine_disk",
+        "faces": 1,
+        "face_ids": [
+          4
+        ],
+        "n_samples": 0,
+        "force_error": 0.0,
+        "moment_error": 2.93255886361317e-16,
+        "raw_mass_error": 0.0,
+        "min_nodal_weight": 0.0,
+        "embedded_relative_error": null,
+        "witness_complete_disk": false,
+        "requested_order": 32,
+        "quadrature_order": 32,
+        "adaptive_attempts": 0,
+        "retained_failures": []
+      }
+    },
+    {
+      "center": [
+        -0.003,
+        -0.006
+      ],
+      "radius": 0.0024,
+      "cartesian_vs_existing_transfer_relative": 3.246454806759447e-16,
+      "info": {
+        "valid": true,
+        "radius_m": 0.0024,
+        "normal_force": 0.05,
+        "a_over_h": 4.8,
+        "method": "face_polar",
+        "faces": 4,
+        "face_ids": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "n_samples": 4096,
+        "force_error": 2.6997386133845736e-16,
+        "moment_error": 1.3280162309125335e-15,
+        "raw_mass_error": 2.220446049250313e-16,
+        "min_nodal_weight": 0.0,
+        "embedded_relative_error": null,
+        "witness_complete_disk": false,
+        "requested_order": 32,
+        "quadrature_order": 32,
+        "adaptive_attempts": 0,
+        "retained_failures": []
+      }
+    },
+    {
+      "center": [
+        0.0052,
+        -0.004
+      ],
+      "radius": 0.0036,
+      "cartesian_vs_existing_transfer_relative": 3.114828241799847e-15,
+      "info": {
+        "valid": true,
+        "radius_m": 0.0036,
+        "normal_force": 0.05,
+        "a_over_h": 7.199999999999999,
+        "method": "face_polar",
+        "faces": 4,
+        "face_ids": [
+          1,
+          2,
+          4,
+          5
+        ],
+        "n_samples": 9216,
+        "force_error": 1.3780212693207226e-16,
+        "moment_error": 5.342184229995125e-16,
+        "raw_mass_error": -2.220446049250313e-16,
+        "min_nodal_weight": 0.0,
+        "embedded_relative_error": null,
+        "witness_complete_disk": false,
+        "requested_order": 32,
+        "quadrature_order": 32,
+        "adaptive_attempts": 0,
+        "retained_failures": []
+      }
+    }
+  ],
+  "checks": {
+    "flat_common_probe_operator_matches_core": true,
+    "cartesian_hertz_weights_match_existing_transfer": true,
+    "all_plate_source_wrenches_pass": true,
+    "all_plate_linear_solves_pass": true,
+    "coarse_plus_delta_identity": true,
+    "unload_exact": true,
+    "all_egg_sources_numerically_admitted": true,
+    "balanced_egg_no_inertia_relief_needed": true,
+    "egg_source_is_normal_only": true
+  },
+  "all_checks_passed": true,
+  "source_sha256": "453d75eaf4e09b4a9ba7650e53ba92586e903661f467a4de3f868e2310f4d144"
+}

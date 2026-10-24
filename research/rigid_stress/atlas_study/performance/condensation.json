@@ -1,0 +1,160 @@
+{
+  "scope": "Exact static-condensation check on the independent 3D P2 box model.\n\nThe retained DOFs are the complete loaded top boundary. No reduction/truncation\nof the interface is performed. The particular control has zero interior load\nand a fixed bottom clamp; free-body inertia-relief loads would need their\ncorresponding particular response rather than assuming zero interior RHS.\n",
+  "dofs": 1701,
+  "retained_top_dofs": 243,
+  "eliminated_interior_dofs": 1215,
+  "schur_symmetry_relative": 2.0080751598981877e-16,
+  "schur_smallest_eigenvalue": 1025684.1958492106,
+  "rows": [
+    {
+      "contact": {
+        "center": [
+          0.0020670965831797025,
+          -7.099747095116668e-05
+        ],
+        "radius": 0.0011370471341884663,
+        "force": [
+          0.0072859659059258675,
+          0.005842035894624457,
+          -0.05
+        ]
+      },
+      "force_info": {
+        "quadrature_order": 24,
+        "samples": 2304,
+        "force_relative": 5.564918783253129e-16,
+        "moment_normalized": 2.8616964450726677e-15,
+        "seconds": 0.005759442999988096
+      },
+      "interior_load_relative": 3.694869375540462e-16,
+      "displacement_relative": 1.976785129643829e-15,
+      "physical_residual": 3.592411889410928e-15
+    },
+    {
+      "contact": {
+        "center": [
+          -0.003684775813343215,
+          0.0021426451579667745
+        ],
+        "radius": 0.001195889966104591,
+        "force": [
+          -0.007476827672409906,
+          -0.0003749826654042415,
+          -0.05
+        ]
+      },
+      "force_info": {
+        "quadrature_order": 24,
+        "samples": 2304,
+        "force_relative": 4.149608425487125e-16,
+        "moment_normalized": 2.393301230378012e-15,
+        "seconds": 0.00555572499979462
+      },
+      "interior_load_relative": 4.792262423144326e-16,
+      "displacement_relative": 2.639869532870755e-15,
+      "physical_residual": 4.03347279489013e-15
+    },
+    {
+      "contact": {
+        "center": [
+          0.003892185790254247,
+          -6.676780232050747e-05
+        ],
+        "radius": 0.0008815277753662004,
+        "force": [
+          -0.004116817360219446,
+          0.0019286699895579226,
+          -0.05
+        ]
+      },
+      "force_info": {
+        "quadrature_order": 24,
+        "samples": 2304,
+        "force_relative": 6.934639760936282e-16,
+        "moment_normalized": 2.452783251316997e-15,
+        "seconds": 0.0052786569995078025
+      },
+      "interior_load_relative": 3.7999452355269796e-16,
+      "displacement_relative": 1.7690750602358896e-15,
+      "physical_residual": 3.98449401237682e-15
+    },
+    {
+      "contact": {
+        "center": [
+          0.0017286703354884398,
+          0.002327990430889817
+        ],
+        "radius": 0.0014189644625292644,
+        "force": [
+          0.0074951818327480026,
+          -0.008726599680146623,
+          -0.05
+        ]
+      },
+      "force_info": {
+        "quadrature_order": 24,
+        "samples": 2304,
+        "force_relative": 2.7311794780894565e-16,
+        "moment_normalized": 1.6148483576772337e-15,
+        "seconds": 0.005104154000946437
+      },
+      "interior_load_relative": 4.1418523540271803e-16,
+      "displacement_relative": 2.3750106404125457e-15,
+      "physical_residual": 3.3974799415806005e-15
+    },
+    {
+      "contact": {
+        "center": [
+          0.002892402101990675,
+          -0.0033887994536995515
+        ],
+        "radius": 0.0014555711156194577,
+        "force": [
+          0.0179724280278416,
+          0.01629813118509139,
+          -0.05
+        ]
+      },
+      "force_info": {
+        "quadrature_order": 24,
+        "samples": 2304,
+        "force_relative": 1.1114922277974574e-15,
+        "moment_normalized": 3.2105859968590733e-15,
+        "seconds": 0.005316143000527518
+      },
+      "interior_load_relative": 4.206677653210163e-16,
+      "displacement_relative": 3.379669788198139e-15,
+      "physical_residual": 4.06320812824454e-15
+    },
+    {
+      "contact": {
+        "center": [
+          0.0008255400728867882,
+          -0.001800735460468637
+        ],
+        "radius": 0.0015785511913631962,
+        "force": [
+          0.004641514967949099,
+          0.012543623605102912,
+          -0.05
+        ]
+      },
+      "force_info": {
+        "quadrature_order": 24,
+        "samples": 2304,
+        "force_relative": 2.7840541135380474e-16,
+        "moment_normalized": 3.518768892177759e-16,
+        "seconds": 0.005439720000140369
+      },
+      "interior_load_relative": 4.955770194317919e-16,
+      "displacement_relative": 1.8564485905537534e-15,
+      "physical_residual": 4.268060822836566e-15
+    }
+  ],
+  "source_sha256": {
+    "performance/condensation_check.py": "fde6cccaad2f4345e224d40ca027ca89521c7706bbfdf11e4b1ad57d306bee4f",
+    "volume/model.py": "4bdf92475ec12055e95803946569f3d8537a7f433361f0a4bceb57e7957c8b3d"
+  },
+  "source_unchanged_during_run": true,
+  "passed": true
+}

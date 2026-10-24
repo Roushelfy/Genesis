@@ -1,0 +1,44 @@
+{
+  "scope": "Execution-record integrity; no numerical success inferred from interrupted setup or absent final summary.",
+  "attempts": [
+    {
+      "name": "initial_unbatched_locator",
+      "status": "interrupted_exit130_before_first_model_record",
+      "source_snapshot": "model_initial_unbatched.py",
+      "log": "initial_unbatched_locator.log",
+      "numerical_results_claimed": false
+    },
+    {
+      "name": "chunked_large_general_pivot_reference",
+      "status": "interrupted_exit130_before_first_model_record",
+      "source_snapshot": "model_primary_general_pivot.py",
+      "log": "run_chunked.log",
+      "numerical_results_claimed": false
+    },
+    {
+      "name": "bounded_h0.9mm_reference_suite",
+      "status": "complete_16_cases_all_selected_checks_pass",
+      "results": "results_bounded/results.json",
+      "source_snapshot": "model_primary_general_pivot.py"
+    },
+    {
+      "name": "finer_h0.75mm_reference",
+      "status": "15_complete_rows_and_16th_cached_field_only_final_summary_not_persisted",
+      "results": "refined_reference/results.json",
+      "integrity_audit": "refinement_summary.json",
+      "all16_finer_numerical_pass_claimed": false
+    },
+    {
+      "name": "finer_case16_fresh_completion",
+      "status": "fresh_rebuild_actual_case48and96quadrature_and_residual_pass; complete16finer_records",
+      "receipt": "finer_case16_receipt.json",
+      "complete_record": "refinement_complete.json",
+      "old_partial_report_unchanged": true
+    }
+  ],
+  "source_snapshots": {
+    "model_initial_unbatched.py": "68ac17b2ccc3a24bcf19051388abc58e625b5df53be1efda3b8c4056bce4d3a5",
+    "model_primary_general_pivot.py": "b8bcac9e897e687097f9f7cc0930292916de81eeb4dacdc09a9ed00452448879",
+    "model.py": "4bdf92475ec12055e95803946569f3d8537a7f433361f0a4bceb57e7957c8b3d"
+  }
+}

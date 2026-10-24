@@ -1,0 +1,1200 @@
+{
+  "scope": "Single-thread CPU 3D P2 FEM recovery at a fixed bank of common physical probes. Exact top-boundary nodal-response columns of each model; no point-response snapshots. No GPU/robot throughput, full continuum maximum or equal-accuracy claim.",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "python": "3.12.14",
+  "numpy": "2.3.5",
+  "scipy": "1.17.0",
+  "threads": 1,
+  "threadpools": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-fdde5778.so",
+      "version": "0.3.30",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    },
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/scipy.libs/libscipy_openblas-6cdc3b4a.so",
+      "version": "0.3.30",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    }
+  ],
+  "source_sha256": {
+    "performance/benchmark.py": "e31e1ba784669774ba145a3ff5fe01343b586808477f8ca75e4f7a6ff339d8e3",
+    "volume/model.py": "4bdf92475ec12055e95803946569f3d8537a7f433361f0a4bceb57e7957c8b3d",
+    "volume/study.py": "8bfa894fe981e03b384d2b808c8137e6934a1b51ff27e91af8058f8e0265cabd"
+  },
+  "hmin_m": 0.0011,
+  "core_m": 0.0022,
+  "pressure": "Finite Hertz-profile disk, true position/radius/force integrated every update. These are prescribed tractions; independent physical Hertz contact has not been solved.",
+  "probe_bank": "accuracy",
+  "query_bank": "accuracy",
+  "query_bank_note": "accuracy: exact 16 accuracy-suite cases, tiled in original order when B>16. smoke: synthetic smooth asymmetric source bank.",
+  "probes": 3822,
+  "output_components": "xx,yy,zz,xy,xz,yz at each physical probe; shear unscaled",
+  "error_metric": "Unweighted-probe relative Frobenius tensor norm (shears weighted twice), matching the volume accuracy suite. Not volume-weighted L2. Maximum is over declared samples only.",
+  "setup_seconds": 7.760246469999402,
+  "release_checks": {
+    "no_load_buckets": true,
+    "exact_zero_field": true,
+    "exact_zero_vm": true
+  },
+  "atlas": [
+    {
+      "model": {
+        "dofs": 13845,
+        "tets": 3122,
+        "vertices": 665,
+        "factor_strategy": "scaled symmetric no-pivot LU",
+        "stiffness_bytes": 12964720,
+        "lu_nonzeros": 9428826,
+        "approximate_lu_bytes": 113254736,
+        "assembly_seconds": 0.506636015001277,
+        "factor_seconds": 0.8275485370013484
+      },
+      "response_columns": 1173,
+      "response_bytes": 215193888,
+      "response_build_seconds": 4.435849727999084
+    },
+    {
+      "model": {
+        "dofs": 13812,
+        "tets": 3128,
+        "vertices": 663,
+        "factor_strategy": "scaled symmetric no-pivot LU",
+        "stiffness_bytes": 12974428,
+        "lu_nonzeros": 9013752,
+        "approximate_lu_bytes": 108273584,
+        "assembly_seconds": 0.43525489999956335,
+        "factor_seconds": 0.7808356519999506
+      },
+      "response_columns": 1095,
+      "response_bytes": 200884320,
+      "response_build_seconds": 3.9781452660008654
+    },
+    {
+      "model": {
+        "dofs": 13872,
+        "tets": 3130,
+        "vertices": 665,
+        "factor_strategy": "scaled symmetric no-pivot LU",
+        "stiffness_bytes": 12995860,
+        "lu_nonzeros": 9935114,
+        "approximate_lu_bytes": 119330408,
+        "assembly_seconds": 0.42875357599950803,
+        "factor_seconds": 0.9423238780000247
+      },
+      "response_columns": 1185,
+      "response_bytes": 217395360,
+      "response_build_seconds": 4.697343779000221
+    }
+  ],
+  "coarse": {
+    "dofs": 1701,
+    "tets": 288,
+    "vertices": 100,
+    "factor_strategy": "scaled symmetric no-pivot LU",
+    "stiffness_bytes": 1282072,
+    "lu_nonzeros": 347469,
+    "approximate_lu_bytes": 4181300,
+    "assembly_seconds": 0.05945375200099079,
+    "factor_seconds": 0.020500565000475035
+  },
+  "union": {
+    "dofs": 24432,
+    "tets": 5595,
+    "vertices": 1159,
+    "factor_strategy": "scaled symmetric no-pivot LU",
+    "stiffness_bytes": 23163748,
+    "lu_nonzeros": 21631909,
+    "approximate_lu_bytes": 259776428,
+    "assembly_seconds": 0.8187065960009932,
+    "factor_seconds": 2.65781964999951
+  },
+  "union_response": {
+    "response_columns": 1911,
+    "response_bytes": 350584416,
+    "response_build_seconds": 16.509406594999746
+  },
+  "rows": [
+    {
+      "batch": 1,
+      "admission": {
+        "sources": 1,
+        "force_error": 5.317003977218523e-16,
+        "moment_error": 3.2560793539969424e-17,
+        "active_environment_counts": {
+          "0": 1
+        }
+      },
+      "errors": {
+        "response_vs_atlas_lu_full_sample_field": 4.793355526019967e-15,
+        "response_vs_atlas_lu_vm_max": 1.695390082976598e-15,
+        "selected_vs_atlas_lu_full_sample_field": 4.7845611157414216e-15,
+        "response_vs_atlas_lu_by_environment": [
+          4.793355526019967e-15
+        ],
+        "union_response_vs_union_lu": 4.83170082946317e-15,
+        "union_selected_vs_union_lu": 4.838285750377385e-15,
+        "atlas_vs_union_full_sample_field": 0.029157528159709168,
+        "coarse_vs_union_full_sample_field": 0.8241207407782951,
+        "max_excluded_load_relative": 6.819172542149322e-17
+      },
+      "passed": true,
+      "active_surface_input_columns": {
+        "0": 82
+      },
+      "methods": {
+        "atlas_reused_lu_full_samples": {
+          "median_ms": 9.53415000003588,
+          "range_ms": [
+            8.89038799869013,
+            41.599897000196506
+          ],
+          "repeats_ms": [
+            41.599897000196506,
+            9.53415000003588,
+            8.89038799869013,
+            13.442188999761129,
+            9.370923000460607
+          ]
+        },
+        "atlas_response_full_samples": {
+          "median_ms": 7.646961999853374,
+          "range_ms": [
+            7.250892998854397,
+            10.240165000141133
+          ],
+          "repeats_ms": [
+            7.646961999853374,
+            10.240165000141133,
+            7.250892998854397,
+            8.797258000413422,
+            7.294650000403635
+          ]
+        },
+        "atlas_response_selected_full_samples": {
+          "median_ms": 7.346618000156013,
+          "range_ms": [
+            6.984791998547735,
+            8.952001999205095
+          ],
+          "repeats_ms": [
+            6.984791998547735,
+            8.952001999205095,
+            7.065253999826382,
+            7.346618000156013,
+            7.372467000095639
+          ]
+        },
+        "union_reused_lu_full_samples": {
+          "median_ms": 20.38570799959416,
+          "range_ms": [
+            19.8229090001405,
+            42.32383000089612
+          ],
+          "repeats_ms": [
+            20.38570799959416,
+            21.321780999642215,
+            19.996189999801572,
+            19.8229090001405,
+            42.32383000089612
+          ]
+        },
+        "union_response_full_samples": {
+          "median_ms": 11.109487999419798,
+          "range_ms": [
+            10.912279001786374,
+            11.228217001189478
+          ],
+          "repeats_ms": [
+            10.971288000291679,
+            11.109487999419798,
+            11.228217001189478,
+            10.912279001786374,
+            11.157570001159911
+          ]
+        },
+        "union_response_selected_full_samples": {
+          "median_ms": 7.876437000959413,
+          "range_ms": [
+            7.483064000552986,
+            8.406057000684086
+          ],
+          "repeats_ms": [
+            7.483064000552986,
+            8.036709999942104,
+            8.406057000684086,
+            7.876437000959413,
+            7.5537909997365205
+          ]
+        },
+        "coarse_reused_lu_full_samples": {
+          "median_ms": 0.9833740004978608,
+          "range_ms": [
+            0.9613809997972567,
+            1.1476219988253433
+          ],
+          "repeats_ms": [
+            1.1476219988253433,
+            0.9833740004978608,
+            0.981901999693946,
+            0.9613809997972567,
+            1.1191190005774843
+          ]
+        },
+        "atlas_current_transfer": {
+          "median_ms": 14.539364001393551,
+          "range_ms": [
+            14.235826000003726,
+            15.554526999039808
+          ],
+          "repeats_ms": [
+            14.235826000003726,
+            15.554526999039808,
+            14.539364001393551,
+            15.054742001666455,
+            14.368286001626984
+          ]
+        },
+        "atlas_transfer_plus_lu_full_samples": {
+          "median_ms": 24.040463998971973,
+          "range_ms": [
+            23.53581200077315,
+            26.174245000220253
+          ],
+          "repeats_ms": [
+            23.694813000474824,
+            24.262488999738707,
+            23.53581200077315,
+            26.174245000220253,
+            24.040463998971973
+          ]
+        },
+        "atlas_transfer_plus_response_full_samples": {
+          "median_ms": 23.14647499952116,
+          "range_ms": [
+            21.35308800097846,
+            23.603274999913992
+          ],
+          "repeats_ms": [
+            23.30432300004759,
+            22.24614599981578,
+            23.14647499952116,
+            21.35308800097846,
+            23.603274999913992
+          ]
+        },
+        "atlas_transfer_plus_response_selected_full_samples": {
+          "median_ms": 22.576184001081856,
+          "range_ms": [
+            21.790999000586453,
+            23.571477000587038
+          ],
+          "repeats_ms": [
+            22.702434998791432,
+            23.571477000587038,
+            21.790999000586453,
+            22.576184001081856,
+            22.319496998534305
+          ]
+        },
+        "atlas_transfer_plus_response_vm_max": {
+          "median_ms": 22.423663998779375,
+          "range_ms": [
+            21.664628000507946,
+            22.944149999602814
+          ],
+          "repeats_ms": [
+            22.046975000193925,
+            22.423663998779375,
+            22.741594000763143,
+            22.944149999602814,
+            21.664628000507946
+          ]
+        },
+        "union_transfer_plus_lu_full_samples": {
+          "median_ms": 41.36126699995657,
+          "range_ms": [
+            40.19524700015609,
+            42.208484999719076
+          ],
+          "repeats_ms": [
+            41.32307899999432,
+            40.19524700015609,
+            41.36126699995657,
+            42.208484999719076,
+            42.097718998775235
+          ]
+        },
+        "union_transfer_plus_response_full_samples": {
+          "median_ms": 32.96883900111425,
+          "range_ms": [
+            31.634465000024647,
+            33.73886200097331
+          ],
+          "repeats_ms": [
+            32.74564300045313,
+            33.73886200097331,
+            32.96883900111425,
+            31.634465000024647,
+            33.12184099922888
+          ]
+        },
+        "union_transfer_plus_response_selected_full_samples": {
+          "median_ms": 27.629280999462935,
+          "range_ms": [
+            27.18709399960062,
+            28.995623000810156
+          ],
+          "repeats_ms": [
+            27.629280999462935,
+            27.41605899973365,
+            28.302197000812157,
+            28.995623000810156,
+            27.18709399960062
+          ]
+        }
+      },
+      "interleaved_orders": [
+        [
+          "atlas_reused_lu_full_samples",
+          "atlas_response_full_samples",
+          "atlas_response_selected_full_samples",
+          "union_reused_lu_full_samples",
+          "union_response_full_samples",
+          "union_response_selected_full_samples",
+          "coarse_reused_lu_full_samples",
+          "atlas_current_transfer",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "union_transfer_plus_lu_full_samples",
+          "union_transfer_plus_response_full_samples",
+          "union_transfer_plus_response_selected_full_samples"
+        ],
+        [
+          "union_transfer_plus_response_selected_full_samples",
+          "union_transfer_plus_response_full_samples",
+          "union_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_current_transfer",
+          "coarse_reused_lu_full_samples",
+          "union_response_selected_full_samples",
+          "union_response_full_samples",
+          "union_reused_lu_full_samples",
+          "atlas_response_selected_full_samples",
+          "atlas_response_full_samples",
+          "atlas_reused_lu_full_samples"
+        ],
+        [
+          "atlas_reused_lu_full_samples",
+          "atlas_response_full_samples",
+          "atlas_response_selected_full_samples",
+          "union_reused_lu_full_samples",
+          "union_response_full_samples",
+          "union_response_selected_full_samples",
+          "coarse_reused_lu_full_samples",
+          "atlas_current_transfer",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "union_transfer_plus_lu_full_samples",
+          "union_transfer_plus_response_full_samples",
+          "union_transfer_plus_response_selected_full_samples"
+        ],
+        [
+          "union_transfer_plus_response_selected_full_samples",
+          "union_transfer_plus_response_full_samples",
+          "union_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_current_transfer",
+          "coarse_reused_lu_full_samples",
+          "union_response_selected_full_samples",
+          "union_response_full_samples",
+          "union_reused_lu_full_samples",
+          "atlas_response_selected_full_samples",
+          "atlas_response_full_samples",
+          "atlas_reused_lu_full_samples"
+        ],
+        [
+          "atlas_reused_lu_full_samples",
+          "atlas_response_full_samples",
+          "atlas_response_selected_full_samples",
+          "union_reused_lu_full_samples",
+          "union_response_full_samples",
+          "union_response_selected_full_samples",
+          "coarse_reused_lu_full_samples",
+          "atlas_current_transfer",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "union_transfer_plus_lu_full_samples",
+          "union_transfer_plus_response_full_samples",
+          "union_transfer_plus_response_selected_full_samples"
+        ]
+      ]
+    },
+    {
+      "batch": 16,
+      "admission": {
+        "sources": 20,
+        "force_error": 8.172278564906788e-16,
+        "moment_error": 3.62101339570454e-15,
+        "active_environment_counts": {
+          "0": 5,
+          "1": 9,
+          "2": 5
+        }
+      },
+      "errors": {
+        "response_vs_atlas_lu_full_sample_field": 4.31569240697977e-15,
+        "response_vs_atlas_lu_vm_max": 3.1637157585964713e-15,
+        "selected_vs_atlas_lu_full_sample_field": 4.320947570314533e-15,
+        "response_vs_atlas_lu_by_environment": [
+          4.8234834315235186e-15,
+          4.3007499253418934e-15,
+          4.233789282917256e-15,
+          4.148549969342346e-15,
+          4.4603276585224e-15,
+          4.290008825143469e-15,
+          4.841864472343725e-15,
+          4.449899656411366e-15,
+          4.102232163818782e-15,
+          4.400689237889755e-15,
+          3.61903014627202e-15,
+          3.895982484502727e-15,
+          4.791602426301202e-15,
+          4.413618901271823e-15,
+          4.4159979224255725e-15,
+          4.5092258030626405e-15
+        ],
+        "union_response_vs_union_lu": 5.230770298828474e-15,
+        "union_selected_vs_union_lu": 5.233605059346303e-15,
+        "atlas_vs_union_full_sample_field": 0.086228563422013,
+        "coarse_vs_union_full_sample_field": 0.8201517035228898,
+        "max_excluded_load_relative": 4.922711641436804e-17
+      },
+      "passed": true,
+      "active_surface_input_columns": {
+        "0": 220,
+        "1": 270,
+        "2": 276
+      },
+      "methods": {
+        "atlas_reused_lu_full_samples": {
+          "median_ms": 94.66738700029964,
+          "range_ms": [
+            88.66929600117146,
+            150.88221000041813
+          ],
+          "repeats_ms": [
+            150.88221000041813,
+            136.16238099893962,
+            94.66738700029964,
+            88.66929600117146,
+            89.5953039998858
+          ]
+        },
+        "atlas_response_full_samples": {
+          "median_ms": 100.66787499999919,
+          "range_ms": [
+            99.29971100063995,
+            105.09950300001947
+          ],
+          "repeats_ms": [
+            100.37034499873698,
+            104.33911499967508,
+            105.09950300001947,
+            99.29971100063995,
+            100.66787499999919
+          ]
+        },
+        "atlas_response_selected_full_samples": {
+          "median_ms": 97.00708099990152,
+          "range_ms": [
+            92.81256000031135,
+            99.90499200102931
+          ],
+          "repeats_ms": [
+            96.02611700029229,
+            98.842938999951,
+            99.90499200102931,
+            97.00708099990152,
+            92.81256000031135
+          ]
+        },
+        "union_reused_lu_full_samples": {
+          "median_ms": 146.43633700143255,
+          "range_ms": [
+            138.54235200051335,
+            179.08758399971703
+          ],
+          "repeats_ms": [
+            173.13113399904978,
+            179.08758399971703,
+            146.43633700143255,
+            138.54235200051335,
+            138.82856399868615
+          ]
+        },
+        "union_response_full_samples": {
+          "median_ms": 61.90356899969629,
+          "range_ms": [
+            60.39613999928406,
+            63.88535199948819
+          ],
+          "repeats_ms": [
+            63.40013899898622,
+            63.88535199948819,
+            61.90356899969629,
+            60.39613999928406,
+            60.97892000070715
+          ]
+        },
+        "union_response_selected_full_samples": {
+          "median_ms": 80.84603200040874,
+          "range_ms": [
+            77.24246799989487,
+            82.42579800025851
+          ],
+          "repeats_ms": [
+            82.42579800025851,
+            81.31799600050726,
+            80.84603200040874,
+            77.24246799989487,
+            79.63106399984099
+          ]
+        },
+        "coarse_reused_lu_full_samples": {
+          "median_ms": 7.5281930003257,
+          "range_ms": [
+            7.1518659988214495,
+            8.612850000645267
+          ],
+          "repeats_ms": [
+            7.5964370007568505,
+            7.5281930003257,
+            8.612850000645267,
+            7.216873000288615,
+            7.1518659988214495
+          ]
+        },
+        "atlas_current_transfer": {
+          "median_ms": 353.11799599912774,
+          "range_ms": [
+            330.4075500000181,
+            378.1258950002666
+          ],
+          "repeats_ms": [
+            353.11799599912774,
+            370.7964000004722,
+            378.1258950002666,
+            330.4075500000181,
+            330.8423059988854
+          ]
+        },
+        "atlas_transfer_plus_lu_full_samples": {
+          "median_ms": 458.1034449984145,
+          "range_ms": [
+            422.053139000127,
+            488.62100100086536
+          ],
+          "repeats_ms": [
+            459.5870360008121,
+            488.62100100086536,
+            458.1034449984145,
+            437.0813639998232,
+            422.053139000127
+          ]
+        },
+        "atlas_transfer_plus_response_full_samples": {
+          "median_ms": 467.12883799955307,
+          "range_ms": [
+            434.18715500047256,
+            479.8155600001337
+          ],
+          "repeats_ms": [
+            467.7143150001939,
+            479.8155600001337,
+            467.12883799955307,
+            434.18715500047256,
+            465.87325899963616
+          ]
+        },
+        "atlas_transfer_plus_response_selected_full_samples": {
+          "median_ms": 444.9148679996142,
+          "range_ms": [
+            434.82974499966076,
+            459.51386500019
+          ],
+          "repeats_ms": [
+            459.51386500019,
+            444.9148679996142,
+            446.2646650008537,
+            434.82974499966076,
+            437.99188599950867
+          ]
+        },
+        "atlas_transfer_plus_response_vm_max": {
+          "median_ms": 459.4303169997147,
+          "range_ms": [
+            453.92183200056024,
+            475.7006679992628
+          ],
+          "repeats_ms": [
+            475.7006679992628,
+            457.3105299987219,
+            459.4303169997147,
+            453.92183200056024,
+            468.5973710002145
+          ]
+        },
+        "union_transfer_plus_lu_full_samples": {
+          "median_ms": 654.3971160008368,
+          "range_ms": [
+            637.1036210002785,
+            718.918554000993
+          ],
+          "repeats_ms": [
+            718.918554000993,
+            704.2697320011939,
+            654.3971160008368,
+            649.9558320010692,
+            637.1036210002785
+          ]
+        },
+        "union_transfer_plus_response_full_samples": {
+          "median_ms": 569.1673579985945,
+          "range_ms": [
+            555.4872290013009,
+            592.6485859999957
+          ],
+          "repeats_ms": [
+            592.6485859999957,
+            590.6631079997169,
+            569.1673579985945,
+            555.4872290013009,
+            562.4648180000804
+          ]
+        },
+        "union_transfer_plus_response_selected_full_samples": {
+          "median_ms": 579.7923560003255,
+          "range_ms": [
+            569.2648570002348,
+            643.5302879999654
+          ],
+          "repeats_ms": [
+            643.5302879999654,
+            615.3498429994215,
+            579.7923560003255,
+            572.3394460001145,
+            569.2648570002348
+          ]
+        }
+      },
+      "interleaved_orders": [
+        [
+          "atlas_reused_lu_full_samples",
+          "atlas_response_full_samples",
+          "atlas_response_selected_full_samples",
+          "union_reused_lu_full_samples",
+          "union_response_full_samples",
+          "union_response_selected_full_samples",
+          "coarse_reused_lu_full_samples",
+          "atlas_current_transfer",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "union_transfer_plus_lu_full_samples",
+          "union_transfer_plus_response_full_samples",
+          "union_transfer_plus_response_selected_full_samples"
+        ],
+        [
+          "union_transfer_plus_response_selected_full_samples",
+          "union_transfer_plus_response_full_samples",
+          "union_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_current_transfer",
+          "coarse_reused_lu_full_samples",
+          "union_response_selected_full_samples",
+          "union_response_full_samples",
+          "union_reused_lu_full_samples",
+          "atlas_response_selected_full_samples",
+          "atlas_response_full_samples",
+          "atlas_reused_lu_full_samples"
+        ],
+        [
+          "atlas_reused_lu_full_samples",
+          "atlas_response_full_samples",
+          "atlas_response_selected_full_samples",
+          "union_reused_lu_full_samples",
+          "union_response_full_samples",
+          "union_response_selected_full_samples",
+          "coarse_reused_lu_full_samples",
+          "atlas_current_transfer",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "union_transfer_plus_lu_full_samples",
+          "union_transfer_plus_response_full_samples",
+          "union_transfer_plus_response_selected_full_samples"
+        ],
+        [
+          "union_transfer_plus_response_selected_full_samples",
+          "union_transfer_plus_response_full_samples",
+          "union_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_current_transfer",
+          "coarse_reused_lu_full_samples",
+          "union_response_selected_full_samples",
+          "union_response_full_samples",
+          "union_reused_lu_full_samples",
+          "atlas_response_selected_full_samples",
+          "atlas_response_full_samples",
+          "atlas_reused_lu_full_samples"
+        ],
+        [
+          "atlas_reused_lu_full_samples",
+          "atlas_response_full_samples",
+          "atlas_response_selected_full_samples",
+          "union_reused_lu_full_samples",
+          "union_response_full_samples",
+          "union_response_selected_full_samples",
+          "coarse_reused_lu_full_samples",
+          "atlas_current_transfer",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "union_transfer_plus_lu_full_samples",
+          "union_transfer_plus_response_full_samples",
+          "union_transfer_plus_response_selected_full_samples"
+        ]
+      ]
+    },
+    {
+      "batch": 64,
+      "admission": {
+        "sources": 80,
+        "force_error": 8.172278564906788e-16,
+        "moment_error": 3.62101339570454e-15,
+        "active_environment_counts": {
+          "0": 20,
+          "1": 36,
+          "2": 20
+        }
+      },
+      "errors": {
+        "response_vs_atlas_lu_full_sample_field": 4.312534503819976e-15,
+        "response_vs_atlas_lu_vm_max": 3.1530512285934413e-15,
+        "selected_vs_atlas_lu_full_sample_field": 4.3169614248743995e-15,
+        "response_vs_atlas_lu_by_environment": [
+          4.8234834315235186e-15,
+          4.294325709829444e-15,
+          4.233789282917256e-15,
+          4.148549969342346e-15,
+          4.344247747329001e-15,
+          4.318691488917032e-15,
+          4.841864472343725e-15,
+          4.451878702121678e-15,
+          4.1070689673610134e-15,
+          4.400685502015903e-15,
+          3.6553869642609235e-15,
+          3.895982484502727e-15,
+          4.791602426301202e-15,
+          4.4242052166517574e-15,
+          4.4159979224255725e-15,
+          4.488887527729823e-15,
+          4.8234834315235186e-15,
+          4.294325709829444e-15,
+          4.233789282917256e-15,
+          4.148549969342346e-15,
+          4.344247747329001e-15,
+          4.318691488917032e-15,
+          4.841864472343725e-15,
+          4.451878702121678e-15,
+          4.1070689673610134e-15,
+          4.400685502015903e-15,
+          3.6553869642609235e-15,
+          3.895982484502727e-15,
+          4.791602426301202e-15,
+          4.4242052166517574e-15,
+          4.4159979224255725e-15,
+          4.488887527729823e-15,
+          4.8234834315235186e-15,
+          4.294325709829444e-15,
+          4.233789282917256e-15,
+          4.148549969342346e-15,
+          4.344247747329001e-15,
+          4.318691488917032e-15,
+          4.841864472343725e-15,
+          4.451878702121678e-15,
+          4.1070689673610134e-15,
+          4.400689237889755e-15,
+          3.6553869642609235e-15,
+          3.895982484502727e-15,
+          4.791602426301202e-15,
+          4.413618901271823e-15,
+          4.4159979224255725e-15,
+          4.480507095987678e-15,
+          4.8234834315235186e-15,
+          4.3007499253418934e-15,
+          4.233789282917256e-15,
+          4.148549969342346e-15,
+          4.344247747329001e-15,
+          4.318691488917032e-15,
+          4.841864472343725e-15,
+          4.449899656411366e-15,
+          4.102232163818782e-15,
+          4.400689237889755e-15,
+          3.6553869642609235e-15,
+          3.895982484502727e-15,
+          4.791602426301202e-15,
+          4.413618901271823e-15,
+          4.4159979224255725e-15,
+          4.480507095987678e-15
+        ],
+        "union_response_vs_union_lu": 5.251600221665145e-15,
+        "union_selected_vs_union_lu": 5.2544076711743115e-15,
+        "atlas_vs_union_full_sample_field": 0.086228563422013,
+        "coarse_vs_union_full_sample_field": 0.8201517035228898,
+        "max_excluded_load_relative": 4.9227116414368047e-17
+      },
+      "passed": true,
+      "active_surface_input_columns": {
+        "0": 220,
+        "1": 270,
+        "2": 276
+      },
+      "methods": {
+        "atlas_reused_lu_full_samples": {
+          "median_ms": 309.4211119987449,
+          "range_ms": [
+            290.6709620001493,
+            312.70764699911524
+          ],
+          "repeats_ms": [
+            312.70764699911524,
+            309.4211119987449,
+            297.086323998883,
+            311.5483769997809,
+            290.6709620001493
+          ]
+        },
+        "atlas_response_full_samples": {
+          "median_ms": 157.41113900003256,
+          "range_ms": [
+            156.60272300010547,
+            162.3511489997327
+          ],
+          "repeats_ms": [
+            162.3511489997327,
+            159.86705999966944,
+            156.60272300010547,
+            157.41113900003256,
+            156.95623399915348
+          ]
+        },
+        "atlas_response_selected_full_samples": {
+          "median_ms": 128.66291499994986,
+          "range_ms": [
+            126.18764800026838,
+            134.36155499948654
+          ],
+          "repeats_ms": [
+            134.36155499948654,
+            132.1116749986686,
+            128.51571600003808,
+            128.66291499994986,
+            126.18764800026838
+          ]
+        },
+        "union_reused_lu_full_samples": {
+          "median_ms": 566.6420710003877,
+          "range_ms": [
+            554.0326830014237,
+            582.5946519998979
+          ],
+          "repeats_ms": [
+            566.6420710003877,
+            582.5946519998979,
+            559.6958470014215,
+            577.6219300005323,
+            554.0326830014237
+          ]
+        },
+        "union_response_full_samples": {
+          "median_ms": 152.45338900058414,
+          "range_ms": [
+            151.12818600027822,
+            164.96894099873316
+          ],
+          "repeats_ms": [
+            164.96894099873316,
+            152.1388040000602,
+            152.45338900058414,
+            151.12818600027822,
+            152.91463200082944
+          ]
+        },
+        "union_response_selected_full_samples": {
+          "median_ms": 110.80882900023425,
+          "range_ms": [
+            108.27749300005962,
+            115.01078199944459
+          ],
+          "repeats_ms": [
+            115.01078199944459,
+            112.48746299861523,
+            110.80882900023425,
+            108.91659799926856,
+            108.27749300005962
+          ]
+        },
+        "coarse_reused_lu_full_samples": {
+          "median_ms": 30.607480000981013,
+          "range_ms": [
+            28.098184000555193,
+            33.71503100061091
+          ],
+          "repeats_ms": [
+            30.607480000981013,
+            33.71503100061091,
+            28.797507999115624,
+            32.41124399937689,
+            28.098184000555193
+          ]
+        },
+        "atlas_current_transfer": {
+          "median_ms": 1369.6566319995327,
+          "range_ms": [
+            1344.8596529997303,
+            1401.029438000478
+          ],
+          "repeats_ms": [
+            1401.029438000478,
+            1369.6566319995327,
+            1352.417513000546,
+            1389.6461770000315,
+            1344.8596529997303
+          ]
+        },
+        "atlas_transfer_plus_lu_full_samples": {
+          "median_ms": 1729.8173180006415,
+          "range_ms": [
+            1665.9444950000761,
+            1842.7137569997285
+          ],
+          "repeats_ms": [
+            1685.126645001219,
+            1729.8173180006415,
+            1738.8077859995974,
+            1842.7137569997285,
+            1665.9444950000761
+          ]
+        },
+        "atlas_transfer_plus_response_full_samples": {
+          "median_ms": 1527.347593999366,
+          "range_ms": [
+            1499.771946000692,
+            1547.5184440001613
+          ],
+          "repeats_ms": [
+            1547.5184440001613,
+            1499.771946000692,
+            1532.1232480000617,
+            1527.347593999366,
+            1522.9067000000214
+          ]
+        },
+        "atlas_transfer_plus_response_selected_full_samples": {
+          "median_ms": 1482.4727380000695,
+          "range_ms": [
+            1445.8786169998348,
+            1527.4174219994165
+          ],
+          "repeats_ms": [
+            1527.4174219994165,
+            1445.8786169998348,
+            1492.8716060003353,
+            1482.4727380000695,
+            1479.9309339996398
+          ]
+        },
+        "atlas_transfer_plus_response_vm_max": {
+          "median_ms": 1537.5518269993336,
+          "range_ms": [
+            1495.9541330008506,
+            1551.2060529999872
+          ],
+          "repeats_ms": [
+            1543.8116879995505,
+            1495.9541330008506,
+            1551.2060529999872,
+            1537.5518269993336,
+            1517.8047909994348
+          ]
+        },
+        "union_transfer_plus_lu_full_samples": {
+          "median_ms": 2655.525599999237,
+          "range_ms": [
+            2577.2119520006527,
+            2787.853854999412
+          ],
+          "repeats_ms": [
+            2577.2119520006527,
+            2594.9731199998496,
+            2787.853854999412,
+            2655.525599999237,
+            2662.4171149996982
+          ]
+        },
+        "union_transfer_plus_response_full_samples": {
+          "median_ms": 2203.8673229999404,
+          "range_ms": [
+            2166.5830929996446,
+            2257.9276800006483
+          ],
+          "repeats_ms": [
+            2207.6604250014498,
+            2203.8673229999404,
+            2257.9276800006483,
+            2196.214655001313,
+            2166.5830929996446
+          ]
+        },
+        "union_transfer_plus_response_selected_full_samples": {
+          "median_ms": 2146.8976289997954,
+          "range_ms": [
+            2127.1885740006837,
+            2201.8451549993188
+          ],
+          "repeats_ms": [
+            2201.8451549993188,
+            2168.8822560008703,
+            2127.8451800008042,
+            2127.1885740006837,
+            2146.8976289997954
+          ]
+        }
+      },
+      "interleaved_orders": [
+        [
+          "atlas_reused_lu_full_samples",
+          "atlas_response_full_samples",
+          "atlas_response_selected_full_samples",
+          "union_reused_lu_full_samples",
+          "union_response_full_samples",
+          "union_response_selected_full_samples",
+          "coarse_reused_lu_full_samples",
+          "atlas_current_transfer",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "union_transfer_plus_lu_full_samples",
+          "union_transfer_plus_response_full_samples",
+          "union_transfer_plus_response_selected_full_samples"
+        ],
+        [
+          "union_transfer_plus_response_selected_full_samples",
+          "union_transfer_plus_response_full_samples",
+          "union_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_current_transfer",
+          "coarse_reused_lu_full_samples",
+          "union_response_selected_full_samples",
+          "union_response_full_samples",
+          "union_reused_lu_full_samples",
+          "atlas_response_selected_full_samples",
+          "atlas_response_full_samples",
+          "atlas_reused_lu_full_samples"
+        ],
+        [
+          "atlas_reused_lu_full_samples",
+          "atlas_response_full_samples",
+          "atlas_response_selected_full_samples",
+          "union_reused_lu_full_samples",
+          "union_response_full_samples",
+          "union_response_selected_full_samples",
+          "coarse_reused_lu_full_samples",
+          "atlas_current_transfer",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "union_transfer_plus_lu_full_samples",
+          "union_transfer_plus_response_full_samples",
+          "union_transfer_plus_response_selected_full_samples"
+        ],
+        [
+          "union_transfer_plus_response_selected_full_samples",
+          "union_transfer_plus_response_full_samples",
+          "union_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_current_transfer",
+          "coarse_reused_lu_full_samples",
+          "union_response_selected_full_samples",
+          "union_response_full_samples",
+          "union_reused_lu_full_samples",
+          "atlas_response_selected_full_samples",
+          "atlas_response_full_samples",
+          "atlas_reused_lu_full_samples"
+        ],
+        [
+          "atlas_reused_lu_full_samples",
+          "atlas_response_full_samples",
+          "atlas_response_selected_full_samples",
+          "union_reused_lu_full_samples",
+          "union_response_full_samples",
+          "union_response_selected_full_samples",
+          "coarse_reused_lu_full_samples",
+          "atlas_current_transfer",
+          "atlas_transfer_plus_lu_full_samples",
+          "atlas_transfer_plus_response_full_samples",
+          "atlas_transfer_plus_response_selected_full_samples",
+          "atlas_transfer_plus_response_vm_max",
+          "union_transfer_plus_lu_full_samples",
+          "union_transfer_plus_response_full_samples",
+          "union_transfer_plus_response_selected_full_samples"
+        ]
+      ]
+    }
+  ],
+  "source_unchanged_during_run": true,
+  "all_response_checks_passed": true,
+  "process_peak_rss_bytes": 2805813248
+}

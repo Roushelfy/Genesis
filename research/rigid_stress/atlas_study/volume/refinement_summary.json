@@ -1,0 +1,47 @@
+{
+  "scope": "Post-run integrity audit. Finer reference JSON persists15 rows; 16thcachedfield exists but final numerical-check flags were not persisted. Do notinvent missing residual/quadrature gates. Fulloriginalbounded16-case suite remains complete.",
+  "expected_cases": 16,
+  "persisted_complete_rows": 15,
+  "all_reference_field_changes_below_5_percent": false,
+  "current_source_sha256": "4bdf92475ec12055e95803946569f3d8537a7f433361f0a4bceb57e7957c8b3d",
+  "primary_source_sha256": "b8bcac9e897e687097f9f7cc0930292916de81eeb4dacdc09a9ed00452448879",
+  "recovered_field_only": {
+    "case": "three_asymmetric",
+    "cached_npz_sha256": "47dc4cbb0f10964de87d47b83622302e5c44c4805a646f922360ca34fc2079fd",
+    "numerical_gate_status": "notpersisted; no new passclaimed",
+    "reference_change": {
+      "full_sampled_tensor_relative": 0.10332962710930457,
+      "global_sampled_tensor_relative": 0.2620919502448411,
+      "near_sampled_tensor_relative": 0.09858605910517422,
+      "sampled_vm_peak_Pa": 20560.78982021829,
+      "reference_sampled_vm_peak_Pa": 20605.8413453717,
+      "sampled_vm_peak_relative": 0.002186347278827707,
+      "sampled_tensile_peak_Pa": 6862.40840383363,
+      "reference_sampled_tensile_peak_Pa": 5843.285936070251,
+      "sampled_tensile_peak_relative": 0.1744091387813827
+    },
+    "hard_atlas": {
+      "full_sampled_tensor_relative": 0.16161248880775886,
+      "global_sampled_tensor_relative": 0.17995173129253164,
+      "near_sampled_tensor_relative": 0.16129222125530804,
+      "sampled_vm_peak_Pa": 19345.386791603996,
+      "reference_sampled_vm_peak_Pa": 20605.8413453717,
+      "sampled_vm_peak_relative": 0.061169768933061114,
+      "sampled_tensile_peak_Pa": 5281.356432297818,
+      "reference_sampled_tensile_peak_Pa": 5843.285936070251,
+      "sampled_tensile_peak_relative": 0.09616669625966381
+    },
+    "coarse": {
+      "full_sampled_tensor_relative": 0.7937194727601632,
+      "global_sampled_tensor_relative": 0.7577289371796426,
+      "near_sampled_tensor_relative": 0.7942999743169363,
+      "sampled_vm_peak_Pa": 5674.6774810101815,
+      "reference_sampled_vm_peak_Pa": 20605.8413453717,
+      "sampled_vm_peak_relative": 0.7246083095614644,
+      "sampled_tensile_peak_Pa": 1777.5987895758972,
+      "reference_sampled_tensile_peak_Pa": 5843.285936070251,
+      "sampled_tensile_peak_relative": 0.695787813736294
+    }
+  },
+  "all_persisted_linear_residuals_below_1e_minus9": true
+}
