@@ -57,11 +57,12 @@ class StressResponseInventory:
             gs.raise_exception(
                 f"Complete stress responses require {required_bytes} bytes, exceeding response_max_bytes."
             )
+        # Keep adjacent output samples contiguous for the screening warp and output tiles.
         self.info = StressResponseInfo(
             values=V_VEC(
-                6, dtype=gs.qd_float if options.response_precision == "64" else qd.f32, shape=(n_output, n_input)
+                6, dtype=gs.qd_float if options.response_precision == "64" else qd.f32, shape=(n_input, n_output)
             ),
-            bounds=V(dtype=gs.qd_float, shape=(n_blocks, n_input)),
+            bounds=V(dtype=gs.qd_float, shape=(n_input, n_blocks)),
         )
         temporary = model.create_state(n_input, "full")
         kernel_unit_displacements(options.young, temporary, model.surface_inverse.info)
@@ -74,7 +75,7 @@ class StressResponseInventory:
 class StressResponse:
     def __init__(self, inventory: StressResponseInventory, n_envs: int):
         self.inventory = inventory
-        n_input = inventory.info.values.shape[1]
+        n_input = inventory.info.values.shape[0]
         self.state = StressResponseState(
             loads=V(dtype=gs.qd_float, shape=(n_input, n_envs)),
             columns=V(dtype=gs.qd_int, shape=(n_input, n_envs)),
@@ -117,7 +118,7 @@ class StressResponse:
                 self.inventory.screen_block,
             )
         else:
-            n_output = self.inventory.info.values.shape[0] if state.stress_tensor.shape[0] else self.inventory.n_stress
+            n_output = self.inventory.info.values.shape[1] if state.stress_tensor.shape[0] else self.inventory.n_stress
             mode = 0 if options.stress_response == "dense" else 2 if options.stress_response == "hybrid" else 1
             kernel = kernel_apply if options.response_output_tile == 1 else kernel_apply_tiled
             kernel(
@@ -150,7 +151,7 @@ def kernel_unit_displacements(young: float, state: StressState, response: Stress
 
 @qd.kernel
 def kernel_store(state: StressState, response: StressResponseInfo):
-    for i_p, i_j in qd.ndrange(response.values.shape[0], response.values.shape[1]):
+    for i_j, i_p in qd.ndrange(response.values.shape[0], response.values.shape[1]):
         n_stress = state.stress_tensor.shape[0] * 4
         value = qd.Vector.zero(gs.qd_float, 6)
         if i_p < n_stress:
@@ -165,7 +166,7 @@ def kernel_store(state: StressState, response: StressResponseInfo):
             else:
                 for a in qd.static(range(3)):
                     value[a] = state.transverse_resultant[i_q // 4, i_q % 4, i_j][a]
-        response.values[i_p, i_j] = value
+        response.values[i_j, i_p] = value
 
 
 @qd.func
@@ -250,13 +251,13 @@ def kernel_apply(
             if qd.static(mode == 0):
                 sparse = False
             elif qd.static(mode == 2):
-                sparse = workspace.counts[i_b] < response.values.shape[1] // 2
-            n_columns = qd.select(sparse, workspace.counts[i_b], response.values.shape[1])
+                sparse = workspace.counts[i_b] < response.values.shape[0] // 2
+            n_columns = qd.select(sparse, workspace.counts[i_b], response.values.shape[0])
             for slot in range(n_columns):
                 j = slot
                 if sparse:
                     j = workspace.columns[slot, i_b]
-                value += qd.cast(response.values[i_p, j], (gs.qd_float, qd.f32)[single]) * qd.cast(
+                value += qd.cast(response.values[j, i_p], (gs.qd_float, qd.f32)[single]) * qd.cast(
                     workspace.loads[j, i_b], (gs.qd_float, qd.f32)[single]
                 )
             components = value.cast(gs.qd_float)
@@ -286,8 +287,8 @@ def kernel_apply_tiled(
             if qd.static(mode == 0):
                 sparse = False
             elif qd.static(mode == 2):
-                sparse = workspace.counts[i_b] < response.values.shape[1] // 2
-            n_columns = qd.select(sparse, workspace.counts[i_b], response.values.shape[1])
+                sparse = workspace.counts[i_b] < response.values.shape[0] // 2
+            n_columns = qd.select(sparse, workspace.counts[i_b], response.values.shape[0])
             for slot in range(n_columns):
                 j = slot
                 if sparse:
@@ -296,7 +297,7 @@ def kernel_apply_tiled(
                 for lane in qd.static(range(output_tile)):
                     i_p = output_tile * i_tile + lane
                     if i_p < n_output:
-                        column = response.values[i_p, j].cast((gs.qd_float, qd.f32)[single])
+                        column = response.values[j, i_p].cast((gs.qd_float, qd.f32)[single])
                         for a in qd.static(range(6)):
                             values[lane, a] += column[a] * load
             maximum = gs.qd_float(0.0)
@@ -313,12 +314,12 @@ def kernel_apply_tiled(
 
 @qd.kernel
 def kernel_bounds(n_stress: int, screen_block: int, response: StressResponseInfo):
-    for i_block, j in qd.ndrange(response.bounds.shape[0], response.bounds.shape[1]):
+    for j, i_block in qd.ndrange(response.bounds.shape[0], response.bounds.shape[1]):
         value, magnitude = gs.qd_float(0.0), gs.qd_float(0.0)
         for lane in range(screen_block):
             i_p = screen_block * i_block + lane
             if i_p < n_stress:
-                tensor = response.values[i_p, j].cast(gs.qd_float)
+                tensor = response.values[j, i_p].cast(gs.qd_float)
                 value = qd.max(value, func_von_mises(tensor))
                 norm = qd.sqrt(
                     tensor[0] ** 2
@@ -329,9 +330,9 @@ def kernel_bounds(n_stress: int, screen_block: int, response: StressResponseInfo
                 magnitude = qd.max(magnitude, norm)
         # The tensor norm term covers cancellation/hydrostatic columns, for which
         # a relative VM margin alone is insufficient. Screening uses FP64 only.
-        roundoff = (2.0 * response.values.shape[1] + 32.0) * 1.1102230246251565e-16
+        roundoff = (2.0 * response.values.shape[0] + 32.0) * 1.1102230246251565e-16
         allowance = 16.0 * roundoff / (1.0 - roundoff)
-        response.bounds[i_block, j] = (value + allowance * magnitude) * (1.0 + 1e-10)
+        response.bounds[j, i_block] = (value + allowance * magnitude) * (1.0 + 1e-10)
 
 
 @qd.kernel(graph=True)
@@ -348,24 +349,24 @@ def kernel_screen(
         lane, i_b = i_thread % 32, i_thread // 32
         sh_upper = qd.simt.block.SharedArray((capacity,), gs.qd_float)
         if not workspace.recover_displacement[i_b]:
-            for chunk in range((response.bounds.shape[0] + 31) // 32):
+            for chunk in range((response.bounds.shape[1] + 31) // 32):
                 i_block = 32 * chunk + lane
-                if i_block < response.bounds.shape[0]:
+                if i_block < response.bounds.shape[1]:
                     upper = gs.qd_float(0.0)
                     for slot in range(workspace.counts[i_b]):
                         j = workspace.columns[slot, i_b]
-                        upper += qd.abs(workspace.loads[j, i_b]) * response.bounds[i_block, j]
+                        upper += qd.abs(workspace.loads[j, i_b]) * response.bounds[j, i_block]
                     sh_upper[i_block] = upper * (1.0 + 1e-10)
             qd.simt.block.sync()
             maximum, n_evaluated = gs.qd_float(0.0), 0
-            for _ in range(response.bounds.shape[0]):
-                best, chosen = gs.qd_float(-1.0), response.bounds.shape[0]
-                for chunk in range((response.bounds.shape[0] + 31) // 32):
+            for _ in range(response.bounds.shape[1]):
+                best, chosen = gs.qd_float(-1.0), response.bounds.shape[1]
+                for chunk in range((response.bounds.shape[1] + 31) // 32):
                     i_block = 32 * chunk + lane
-                    if i_block < response.bounds.shape[0] and sh_upper[i_block] > best:
+                    if i_block < response.bounds.shape[1] and sh_upper[i_block] > best:
                         best, chosen = sh_upper[i_block], i_block
                 upper = qd.simt.subgroup.reduce_all_max(best)
-                chosen = qd.simt.subgroup.reduce_all_min(qd.select(best >= upper, chosen, response.bounds.shape[0]))
+                chosen = qd.simt.subgroup.reduce_all_min(qd.select(best >= upper, chosen, response.bounds.shape[1]))
                 if upper <= maximum:
                     break
                 local_maximum = gs.qd_float(0.0)
@@ -375,7 +376,7 @@ def kernel_screen(
                     if i_p < n_stress:
                         for slot in range(workspace.counts[i_b]):
                             j = workspace.columns[slot, i_b]
-                            value += response.values[i_p, j] * workspace.loads[j, i_b]
+                            value += response.values[j, i_p] * workspace.loads[j, i_b]
                     local_maximum = qd.max(local_maximum, func_von_mises(value))
                 maximum = qd.max(maximum, qd.simt.subgroup.reduce_all_max(local_maximum))
                 n_evaluated += 1
