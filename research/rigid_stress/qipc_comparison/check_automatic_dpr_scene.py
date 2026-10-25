@@ -70,6 +70,7 @@ def main():
     cli.add_argument("--method", choices=("auto", "direct", "inverse"), default="auto")
     cli.add_argument("--inverse-precision", choices=("64", "32"), default="64")
     cli.add_argument("--full-inverse", action="store_true")
+    cli.add_argument("--history", type=int, choices=(0, 4), default=0)
     cli.add_argument("--box-edge-policy", choices=("unsupported", "planar"), default="unsupported")
     cli.add_argument("--unfused", action="store_true")
     cli.add_argument("--contact-moment-reuse", choices=("auto", "on", "off"), default="auto")
@@ -92,6 +93,7 @@ def main():
             "method": args.method,
             "inverse_precision": args.inverse_precision,
             "surface_inverse": not args.full_inverse,
+            "history": args.history,
             "box_edge_policy": args.box_edge_policy,
             "unfused": args.unfused,
             "contact_moment_reuse": args.contact_moment_reuse,
@@ -115,6 +117,7 @@ def main():
         shell_gauge=args.shell_gauge,
         method=args.method,
         inverse_precision=args.inverse_precision,
+        history_size=args.history,
         surface_inverse=not args.full_inverse,
         box_edge_policy=args.box_edge_policy,
         fused_pipeline=not args.unfused,

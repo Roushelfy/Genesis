@@ -170,6 +170,13 @@ def main():
             tools / "research/rigid_stress/shell_cpu",
             ignore=shutil.ignore_patterns("__pycache__", "*.npz", "*.png", "*.json", "*.md"),
         )
+    atlas = here.parent / "atlas_study"
+    if atlas.is_dir():
+        shutil.copytree(
+            atlas,
+            tools / "research/rigid_stress/atlas_study",
+            ignore=shutil.ignore_patterns("__pycache__", "*.npz", "*.png", "*.json", "*.md", "*.html"),
+        )
     (output / "tasks.json").write_text(json.dumps(groups, indent=2) + "\n")
     (output / "analysis-files.json").write_text(json.dumps(inventory(tools), indent=2) + "\n")
     (output / "logs").mkdir()

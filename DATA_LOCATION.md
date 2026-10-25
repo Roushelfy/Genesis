@@ -1,5 +1,11 @@
 # Rigid-stress data and artifact locations
 
+The 2026-10-25 GPU throughput follow-up uses
+`/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/`.
+Fresh baseline timings, profiles, candidate results, source inventories and
+Slurm logs stay there. Frozen source variants remain in workspace. The prior
+native-shell campaign, environments and unrelated unfinished files are preserved.
+
 Native thin-shell DPR integration uses
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/`.
 Operator/control arrays, asset authoring outputs, Slurm logs, source inventories
