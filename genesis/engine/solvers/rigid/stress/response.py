@@ -166,7 +166,7 @@ def kernel_inputs(
     state: StressState,
     response: StressResponseState,
     boundary: StressSurfaceInverseInfo,
-    history_hits: qd.template(),
+    history_hits: qd.Tensor | None,
 ):
     for i_b in range(state.active.shape[0]):
         fallback = not state.valid[i_b] or state.corrections[i_b] > 0 or state.fallbacks[i_b] > 0

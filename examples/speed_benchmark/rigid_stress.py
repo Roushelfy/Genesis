@@ -506,7 +506,7 @@ def main() -> None:
     parser.add_argument("--response-block-size", type=int, choices=(64, 128, 256, 512), default=128)
     parser.add_argument("--atlas-regions", type=int, default=0)
     parser.add_argument("--atlas-transition", type=float, default=0.003)
-    parser.add_argument("--history", type=int, choices=(0, 4), default=0)
+    parser.add_argument("--history", type=int, choices=(0, 2, 4), default=0)
     parser.add_argument("--unfused-pipeline", action="store_true", help="Compare separate native recovery passes.")
     parser.add_argument("--policy-precision", choices=("64", "32"), default="32")
     parser.add_argument("--stress-backend", choices=("volume", "shell"), default="volume")

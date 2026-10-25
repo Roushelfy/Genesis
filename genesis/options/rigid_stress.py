@@ -196,6 +196,9 @@ class RigidStressOptions(Options):
     ``history_size=4`` enables a checked four-column load/displacement
     predictor per environment. The default zero avoids its extra memory
     and basis maintenance cost on changing-contact workloads.
+    ``history_size=2`` tests extrapolation from the two preceding accepted
+    displacements. Accepted predictions feed the next prediction; the complete
+    original residual and exact failed-environment fallback remain mandatory.
 
     ``atlas_regions`` enables an experimental common-mother response atlas for DPR loads.
     Its surface graph preserves connected material sheets; ``atlas_transition`` is the transition width in metres.
@@ -255,7 +258,7 @@ class RigidStressOptions(Options):
     absolute_tolerance: PositiveFloat = 1e-11
     max_iterations: PositiveInt = 2000
     warm_start: StrictBool = True
-    history_size: Literal[0, 4] = 0
+    history_size: Literal[0, 2, 4] = 0
     atlas_regions: Annotated[int, Field(ge=0, le=32)] = 0
     atlas_transition: PositiveFloat = 0.003
     stress_response: Literal["none", "sparse", "dense", "hybrid", "screen"] = "none"

@@ -353,7 +353,7 @@ def kernel_peak_impl(
     thickness: float,
     stress_state: StressState,
     shell_info: ShellInfo,
-    mask: qd.template(),
+    mask: qd.Tensor | None,
 ):
     func_peak(young, poisson, thickness, stress_state, shell_info, mask)
 
@@ -365,7 +365,7 @@ def func_peak(
     thickness: float,
     stress_state: StressState,
     shell_info: ShellInfo,
-    mask: qd.template() = None,
+    mask: qd.Tensor | None = None,
 ):
     for i_b in range(stress_state.peak.shape[0]):
         stress_state.peak[i_b] = 0.0

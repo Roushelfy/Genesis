@@ -165,7 +165,9 @@ class RigidStressRecovery:
                                 options.pressure_profile == "hertz",
                             ),
                             V_VEC(3, dtype=gs.qd_float, shape=(solver._B,)),
-                            StressHistory(model.info.vertices.shape[0], solver._B) if options.history_size else None,
+                            StressHistory(model.info.vertices.shape[0], solver._B, options.history_size)
+                            if options.history_size
+                            else None,
                             options.output_mode,
                             create_scatter_workspace(
                                 solver._B,
@@ -407,7 +409,7 @@ class RigidStressRecovery:
                         entry.scatter,
                         options.cached_face_bounds,
                         entry.reuse_contact_moments,
-                        entry.atlas,
+                        entry.atlas.scatter if entry.atlas is not None else None,
                     )
                 else:
                     kernel_scatter(
@@ -417,7 +419,7 @@ class RigidStressRecovery:
                         entry.surface.info,
                         options.cooperative_scatter,
                         options.cached_face_bounds,
-                        entry.atlas,
+                        entry.atlas.scatter if entry.atlas is not None else None,
                     )
             entry.model.recover(
                 entry.omega,

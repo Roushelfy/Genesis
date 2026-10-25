@@ -19,7 +19,7 @@ from genesis.utils.array_class import V_VEC, DataKind, V
 from genesis.utils.misc import qd_to_numpy
 
 from .contact import StressContactState
-from .data import StressInfo, StressState
+from .data import StressAtlasScatter, StressInfo, StressState
 from .quadrilateral import func_quad_inverse_prepared
 from .surface import StressSurfaceInfo
 from .surface_inverse import StressSurfaceInverseInfo
@@ -94,6 +94,7 @@ class StressAtlas:
             count=V(dtype=gs.qd_int, shape=()),
         )
         self.response = model.surface_inverse.info
+        self.scatter = StressAtlasScatter(self.state.weights, self.state.force)
 
     def prepare(self, contacts: StressContactState, load_info: StressInfo, surface: StressSurfaceInfo, width: float):
         kernel_select(width, contacts, load_info, surface, self.info, self.state)

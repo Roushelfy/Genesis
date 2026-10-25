@@ -29,37 +29,79 @@ class StressHistoryState:
 
 
 class StressHistory:
-    def __init__(self, n_nodes: int, n_envs: int):
-        shape = (n_nodes, n_envs, 4)
+    def __init__(self, n_nodes: int, n_envs: int, size: int = 4):
+        assert size in (2, 4)
+        self.size = size
+        shape = (n_nodes if size == 4 else 0, n_envs, 4)
         self.state = StressHistoryState(
             V_VEC(3, dtype=gs.qd_float, shape=shape),
+            V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs, size)),
             V_VEC(3, dtype=gs.qd_float, shape=shape),
             V_VEC(3, dtype=gs.qd_float, shape=shape),
-            V_VEC(3, dtype=gs.qd_float, shape=shape),
-            V_VEC(4, dtype=gs.qd_float, shape=(n_envs,)),
-            V(dtype=gs.qd_float, shape=(n_envs,)),
-            V(dtype=gs.qd_float, shape=(n_envs,)),
+            V_VEC(4, dtype=gs.qd_float, shape=(n_envs if size == 4 else 0,)),
+            V(dtype=gs.qd_float, shape=(n_envs if size == 4 else 0,)),
+            V(dtype=gs.qd_float, shape=(n_envs if size == 4 else 0,)),
             V(dtype=gs.qd_int, shape=(n_envs,)),
             V(dtype=gs.qd_int, shape=(n_envs,)),
             V(dtype=gs.qd_bool, shape=(n_envs,)),
             V(dtype=gs.qd_bool, shape=(n_envs,)),
         )
+        if size == 2:
+            self.state.displacements.fill(0)
         self.state.count.fill(0)
         self.state.head.fill(0)
         self.state.dirty.fill(True)
         self.state.hit.fill(False)
 
     def predict(self, state: StressState):
-        kernel_predict(self.state, state)
+        if self.size == 2:
+            kernel_predict_two_frame(self.state, state)
+        else:
+            kernel_predict(self.state, state)
 
     def mark_hits(self, state: StressState):
-        kernel_hits(self.state, state)
+        if self.size == 2:
+            kernel_hits_two_frame(self.state, state)
+        else:
+            kernel_hits(self.state, state)
 
     def append(self, state: StressState):
-        kernel_append(self.state, state)
+        if self.size == 2:
+            kernel_append_two_frame(self.state, state)
+        else:
+            kernel_append(self.state, state)
 
     def reset(self, envs_idx):
         kernel_reset(envs_idx, self.state)
+
+
+@qd.kernel(graph=True)
+def kernel_predict_two_frame(history: StressHistoryState, state: StressState):
+    for i_n, i_b in qd.ndrange(state.displacement.shape[0], state.active.shape[0]):
+        value = qd.Vector.zero(gs.qd_float, 3)
+        if history.count[i_b] == 2:
+            value = 2.0 * history.displacements[i_n, i_b, 0] - history.displacements[i_n, i_b, 1]
+        state.displacement[i_n, i_b] = value
+
+
+@qd.kernel(graph=True)
+def kernel_hits_two_frame(history: StressHistoryState, state: StressState):
+    for i_b in range(history.count.shape[0]):
+        state.valid[i_b] = state.valid[i_b] and history.count[i_b] == 2
+        history.hit[i_b] = state.valid[i_b]
+
+
+@qd.kernel(graph=True)
+def kernel_append_two_frame(history: StressHistoryState, state: StressState):
+    # Every accepted prediction participates in the next prediction. The current
+    # original-operator gate and compact exact fallback remain in model.recover.
+    for i_n, i_b in qd.ndrange(state.displacement.shape[0], state.active.shape[0]):
+        if state.valid[i_b] and state.step_valid[i_b]:
+            history.displacements[i_n, i_b, 1] = history.displacements[i_n, i_b, 0]
+            history.displacements[i_n, i_b, 0] = state.displacement[i_n, i_b]
+    for i_b in range(history.count.shape[0]):
+        if state.valid[i_b] and state.step_valid[i_b]:
+            history.count[i_b] = qd.min(2, history.count[i_b] + 1)
 
 
 @qd.kernel(graph=True)

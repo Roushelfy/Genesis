@@ -293,7 +293,7 @@ def kernel_peak_impl(
     stress_info: StressInfo,
     cached: qd.template(),
     full: qd.template(),
-    mask: qd.template(),
+    mask: qd.Tensor | None,
 ):
     func_peak_impl(young, poisson, stress_state, stress_info, cached, full, mask)
 
@@ -306,7 +306,7 @@ def func_peak_impl(
     stress_info: StressInfo,
     cached: qd.template(),
     full: qd.template() = False,
-    mask: qd.template() = None,
+    mask: qd.Tensor | None = None,
 ):
     for i_b in range(stress_state.active.shape[0]):
         stress_state.peak[i_b] = 0.0
