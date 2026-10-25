@@ -79,9 +79,9 @@ class StressHistory:
         else:
             kernel_predict(self.state, state)
 
-    def mark_hits(self, state: StressState):
+    def mark_hits(self, state: StressState, tolerance: float, absolute_tolerance: float):
         if self.size == 2:
-            kernel_hits_two_frame(self.state, state)
+            kernel_hits_two_frame(0.1 * tolerance, 0.1 * absolute_tolerance, self.state, state)
         else:
             kernel_hits(self.state, state)
 
@@ -109,9 +109,14 @@ def kernel_predict_two_frame(history: StressTwoFrameState, state: StressState):
 
 
 @qd.kernel(graph=True)
-def kernel_hits_two_frame(history: StressTwoFrameState, state: StressState):
+def kernel_hits_two_frame(
+    tolerance: float, absolute_tolerance: float, history: StressTwoFrameState, state: StressState
+):
     for i_b in range(history.count.shape[0]):
-        state.valid[i_b] = state.valid[i_b] and history.count[i_b] == 2
+        # Keep the original operator gate and add a stricter predictor-only guard.
+        # Reuse its actual residual; exact solves retain their original thresholds.
+        budget = qd.max(absolute_tolerance**2, tolerance**2 * state.rhs_norm_squared[i_b])
+        state.valid[i_b] = state.valid[i_b] and history.count[i_b] == 2 and state.residual_norm_squared[i_b] <= budget
         history.hit[i_b] = state.valid[i_b]
 
 

@@ -276,7 +276,7 @@ class StressModel:
                 kernel_full_residual(
                     options.young, options.tolerance, options.absolute_tolerance, state, self.info, False, coalesced
                 )
-                history.mark_hits(state)
+                history.mark_hits(state, options.tolerance, options.absolute_tolerance)
                 self.solve(options, state, omega, surface_load, only_failed=True, atlas=atlas)
         else:
             kernel_pcg_init(options.young, state, self.info, block, options.warm_start)

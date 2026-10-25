@@ -47,7 +47,7 @@ def main():
     parser.add_argument("--run", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    result = dict(run=str(args.run), campaigns=[], benchmarks=[], profiles=[], traces=[])
+    result = dict(run=str(args.run), campaigns=[], benchmarks=[], profiles=[], traces=[], numerics=[], memory=[])
     for campaign in sorted(args.run.iterdir()):
         submission = campaign / "submission.json"
         if not submission.is_file():
@@ -133,6 +133,58 @@ def main():
                 result["profiles"].append(row)
         for path in sorted(campaign.glob("group*/*.trace.json")):
             result["traces"].append(trace_summary(path))
+        for path in sorted(campaign.glob("group*/*/result.json")):
+            try:
+                data = json.loads(path.read_text())
+            except json.JSONDecodeError:
+                # A still-running worker may be replacing its progress receipt.
+                continue
+            item = dict(campaign=campaign.name, name=path.parent.name, source=identity(path))
+            if "sampled_peak_MiB" in data:
+                item.update({key: value for key, value in data.items() if key != "rows"})
+                benchmark = path.parent / "benchmark.json"
+                if benchmark.is_file():
+                    measured = json.loads(benchmark.read_text())
+                    item["benchmark"] = identity(benchmark)
+                    item["memory_inventory"] = {
+                        key: value for key, value in measured.items() if "memory" in key or "bytes" in key
+                    }
+                    item["native_buffers"] = measured.get("native_buffers")
+                    item["stress_configurations"] = measured.get("stress_configurations")
+                result["memory"].append(item)
+                continue
+            rows = data.get("rows", [])
+            errors = defaultdict(float)
+            for row in rows:
+                for key, value in row.get("errors", {}).items():
+                    if isinstance(value, (int, float)):
+                        errors[key] = max(errors[key], value)
+                for key in ("load_error", "grouped_error", "grouped_load_relative", "force_error", "moment_error"):
+                    if key in row:
+                        errors[key] = max(errors[key], row[key])
+            item.update({key: value for key, value in data.items() if key not in ("rows", "comparisons")})
+            item["observation_count"] = len(rows)
+            item["worst_errors"] = dict(errors)
+            loaded = sum(row.get("loaded", 0) for row in rows)
+            if loaded:
+                item["loaded_prediction_hit_fraction"] = sum(row.get("loaded_hits", 0) for row in rows) / loaded
+            blocks = [value for row in rows for value in row.get("evaluated_blocks", [])]
+            if blocks:
+                item["evaluated_blocks"] = dict(mean=statistics.mean(blocks), maximum=max(blocks))
+            contributors = [row.get("contributors", row.get("maximum_contributors", 0)) for row in rows]
+            if contributors:
+                item["maximum_contributors"] = max(contributors)
+                item["coverage_fallbacks"] = sum(row.get("coverage_fallbacks", 0) for row in rows)
+            if "comparisons" in data:
+                item["comparisons"] = [
+                    dict(
+                        quadrature=row["quadrature"],
+                        passed=row["passed"],
+                        worst_errors={key: max(values) for key, values in row["errors"].items()},
+                    )
+                    for row in data["comparisons"]
+                ]
+            result["numerics"].append(item)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps({k: len(v) for k, v in result.items() if isinstance(v, list)}))

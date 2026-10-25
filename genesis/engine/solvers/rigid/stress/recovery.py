@@ -228,6 +228,7 @@ class RigidStressRecovery:
                     entry.options.atlas_regions,
                     entry.options.atlas_transition,
                     entry.options.atlas_partition,
+                    retain_contributions=entry.options.atlas_output == "independent",
                 )
                 if entry.options.atlas_output == "independent":
                     entry.atlas.output = StressAtlasOutput(entry.model, solver._B, entry.options.atlas_regions + 1)

@@ -84,6 +84,32 @@ def cpu_control(entry):
     return result
 
 
+class NativeLifecycle:
+    def __init__(self):
+        self.checkpoint = None
+        self.rows = []
+
+    def before_step(self, workload, step, fields):
+        if step == 350:
+            self.checkpoint = workload.scene.get_state()
+        if step not in (250, 400):
+            return
+        before = {name: qd_to_numpy(array, transpose=True) for name, array in fields}
+        n_envs = len(before["peak"])
+        assert n_envs > 1
+        if step == 250:
+            workload.reset(np.array([1]))
+        else:
+            workload.scene.reset(state=self.checkpoint, envs_idx=[1])
+        others = np.arange(n_envs) != 1
+        for name, array in fields:
+            after = qd_to_numpy(array, transpose=True)
+            np.testing.assert_array_equal(after[others], before[name][others])
+            if name == "peak":
+                assert after[1] == 0.0
+        self.rows.append(dict(step=step, kind="partial_reset" if step == 250 else "checkpoint", passed=True))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--conditions", type=Path, required=True)
@@ -96,6 +122,7 @@ def main():
     parser.add_argument("--atlas-transition", type=float, default=0.003)
     parser.add_argument("--atlas-output", choices=("merged", "independent"), default="merged")
     parser.add_argument("--atlas-partition", choices=("direct", "coarse_local"), default="direct")
+    parser.add_argument("--lifecycle", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -133,7 +160,12 @@ def main():
             ("bending_resultant", state.bending_resultant),
             ("transverse_resultant", state.transverse_resultant),
         )
+    lifecycle = NativeLifecycle() if args.lifecycle else None
+    if lifecycle is not None:
+        result["lifecycle"] = lifecycle.rows
     for step in range(args.steps):
+        if lifecycle is not None:
+            lifecycle.before_step(workload, step, fields)
         workload.step()
         # All requested fields are checked at every evolving physical observation.
         candidate = {name: qd_to_numpy(array, transpose=True) for name, array in fields}

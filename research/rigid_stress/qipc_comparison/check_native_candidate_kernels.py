@@ -76,6 +76,7 @@ def main():
     parser.add_argument("--stress-response", choices=("sparse", "dense", "hybrid"), default="sparse")
     parser.add_argument("--envs", type=int, default=2)
     parser.add_argument("--without-atlas", action="store_true")
+    parser.add_argument("--direct-merge", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -101,7 +102,7 @@ def main():
     contacts.valid.fill(False)
     contacts.force.fill(0)
     surface = StressSurface(16, model.load_info)
-    atlas = StressAtlas(model, contacts, 6, 0.003, args.atlas_partition)
+    atlas = StressAtlas(model, contacts, 6, 0.003, args.atlas_partition, retain_contributions=not args.direct_merge)
     if args.atlas_output == "independent":
         atlas.output = StressAtlasOutput(model, args.envs, 7)
     history = StressHistory(model.info.vertices.shape[0], args.envs, 2)

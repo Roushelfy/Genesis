@@ -65,6 +65,7 @@ class StressAtlas:
         n_features: int,
         width: float,
         partition: str = "direct",
+        retain_contributions: bool = True,
     ):
         if model.surface_inverse is None:
             gs.raise_exception("A response atlas requires the FP64 native surface inverse.")
@@ -99,7 +100,7 @@ class StressAtlas:
             weights=V(dtype=gs.qd_float, shape=(n_groups, n_contacts, n_envs)),
             fallback=V(dtype=gs.qd_bool, shape=(n_contacts, n_envs)),
             force=V_VEC(3, dtype=gs.qd_float, shape=(n_boundary, n_groups, n_envs)),
-            displacement=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_groups, n_envs)),
+            displacement=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes if retain_contributions else 0, n_groups, n_envs)),
             columns=V(dtype=gs.qd_int, shape=(n_boundary, n_groups, n_envs)),
             counts=V(dtype=gs.qd_int, shape=(n_groups, n_envs)),
             pairs=V_VEC(2, dtype=gs.qd_int, shape=(n_groups * n_envs,)),
@@ -120,8 +121,12 @@ class StressAtlas:
         if self.coarse is not None:
             self.coarse.apply(state)
         kernel_pack(state, self.response, self.state, only_failed)
-        kernel_apply(young, self.response, self.state)
-        kernel_merge(young, omega, state, self.response, self.state, self.coarse, only_failed)
+        buffered = self.state.displacement.shape[0] > 0
+        if not buffered:
+            kernel_merge(young, omega, state, self.response, self.state, self.coarse, only_failed, False)
+        kernel_apply(young, state, self.response, self.state, buffered)
+        if buffered:
+            kernel_merge(young, omega, state, self.response, self.state, self.coarse, only_failed, True)
 
 
 @qd.kernel
@@ -286,14 +291,23 @@ def kernel_pack(
 
 
 @qd.kernel(graph=True)
-def kernel_apply(young: float, response: StressSurfaceInverseInfo, atlas: StressAtlasState):
-    for i_n, i_pair in qd.ndrange(atlas.displacement.shape[0], atlas.count[None]):
+def kernel_apply(
+    young: float,
+    state: StressState,
+    response: StressSurfaceInverseInfo,
+    atlas: StressAtlasState,
+    buffered: qd.template(),
+):
+    for i_n, i_pair in qd.ndrange(state.displacement.shape[0], atlas.count[None]):
         i_g, i_b = atlas.pairs[i_pair][0], atlas.pairs[i_pair][1]
         value = qd.Vector.zero(gs.qd_float, 3)
         for slot in range(atlas.counts[i_g, i_b]):
             j = atlas.columns[slot, i_g, i_b]
             value += response.force_blocks[i_n, j] @ atlas.force[j, i_g, i_b]
-        atlas.displacement[i_n, i_g, i_b] = value / young
+        if qd.static(buffered):
+            atlas.displacement[i_n, i_g, i_b] = value / young
+        else:
+            qd.atomic_add(state.displacement[i_n, i_b], value / young)
 
 
 @qd.kernel(graph=True)
@@ -305,6 +319,7 @@ def kernel_merge(
     atlas: StressAtlasState,
     coarse: qd.template(),
     only_failed: qd.template(),
+    accumulate_regions: qd.template(),
 ):
     for i_n, i_b in qd.ndrange(state.displacement.shape[0], state.active.shape[0]):
         enabled = True
@@ -317,9 +332,10 @@ def kernel_merge(
             if qd.static(isinstance(coarse, StressAtlasCoarse)):
                 for i_c in range(coarse.info.basis.shape[1]):
                     value += coarse.info.basis[i_n, i_c] * coarse.state.coefficients[i_c, i_b] / young
-            for i_g in range(atlas.counts.shape[0]):
-                if atlas.counts[i_g, i_b]:
-                    value += atlas.displacement[i_n, i_g, i_b]
+            if qd.static(accumulate_regions):
+                for i_g in range(atlas.counts.shape[0]):
+                    if atlas.counts[i_g, i_b]:
+                        value += atlas.displacement[i_n, i_g, i_b]
             state.displacement[i_n, i_b] = value
     for i_b in range(state.active.shape[0]):
         state.active[i_b] = 1

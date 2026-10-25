@@ -14,7 +14,7 @@ from genesis.utils.misc import qd_to_numpy, tensor_to_array
 
 from .artifacts import runtime_identity, write_json
 from .audit_gpu_candidates import per_environment
-from .check_native_atlas import cpu_control
+from .check_native_atlas import NativeLifecycle, cpu_control
 
 
 @qd.kernel
@@ -38,6 +38,7 @@ def main():
     parser.add_argument("--response-block-size", type=int, choices=(64, 128, 256, 512), default=128)
     parser.add_argument("--response-screen-block", type=int, choices=(32, 64, 128), default=32)
     parser.add_argument("--correction-probe", action="store_true")
+    parser.add_argument("--lifecycle", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -89,7 +90,12 @@ def main():
             centrifugal=original.centrifugal,
         )
         kernel_perturb(original, perturbed)
+    lifecycle = NativeLifecycle() if args.lifecycle else None
+    if lifecycle is not None:
+        result["lifecycle"] = lifecycle.rows
     for step in range(args.steps):
+        if lifecycle is not None:
+            lifecycle.before_step(workload, step, fields)
         if perturbed is not None and step == 130:
             entry.model.surface_inverse.info = perturbed
         workload.step()
