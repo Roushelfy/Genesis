@@ -945,13 +945,17 @@ def kernel_pressure_correct(contact_state: StressContactState, surface_info: Str
             contact_state.status[i_c, i_b] = 0 if accepted else 3
 
 
+def kernel_scatter_serial(contact_state, stress_state, stress_info, surface_info, atlas=None):
+    kernel_scatter_serial_impl(contact_state, stress_state, stress_info, surface_info, atlas)
+
+
 @qd.kernel(graph=True)
-def kernel_scatter_serial(
+def kernel_scatter_serial_impl(
     contact_state: StressContactState,
     stress_state: StressState,
     stress_info: StressInfo,
     surface_info: StressSurfaceInfo,
-    atlas: qd.template() = None,
+    atlas: qd.template(),
 ):
     for i_n, i_b in qd.ndrange(stress_state.force.shape[0], stress_state.active.shape[0]):
         stress_state.force[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
@@ -1009,14 +1013,18 @@ def kernel_scatter(
         kernel_scatter_serial(contact_state, stress_state, stress_info, surface_info, atlas)
 
 
+def kernel_scatter_warp(contact_state, stress_state, stress_info, surface_info, cached_bounds, atlas=None):
+    kernel_scatter_warp_impl(contact_state, stress_state, stress_info, surface_info, cached_bounds, atlas)
+
+
 @qd.kernel(graph=True)
-def kernel_scatter_warp(
+def kernel_scatter_warp_impl(
     contact_state: StressContactState,
     stress_state: StressState,
     stress_info: StressInfo,
     surface_info: StressSurfaceInfo,
     cached_bounds: qd.template(),
-    atlas: qd.template() = None,
+    atlas: qd.template(),
 ):
     func_scatter_warp(contact_state, stress_state, stress_info, surface_info, cached_bounds, atlas=atlas)
 

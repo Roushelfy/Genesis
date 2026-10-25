@@ -375,7 +375,7 @@ def kernel_scatter_faces_impl(
     workspace: StressScatterWorkspace,
     cached_bounds: qd.template(),
     reuse_moments: qd.template(),
-    atlas: qd.template() = None,
+    atlas: qd.template(),
 ):
     if qd.static(not reuse_moments):
         func_pack_contacts(contacts)
