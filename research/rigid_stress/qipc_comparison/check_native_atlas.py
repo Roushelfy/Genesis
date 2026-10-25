@@ -131,7 +131,7 @@ def main():
         )
         entry.model.recover(entry.omega, state, reference_options, surface_load=True)
         row["errors"] = {
-            name: relative(candidate[name], qd_to_numpy(state.__dict__[name], transpose=True)) for name in fields
+            name: relative(candidate[name], qd_to_numpy(array, transpose=True)) for name, array in fields
         }
         result["rows"].append(row)
         write_json(args.output / "result.json", result)
