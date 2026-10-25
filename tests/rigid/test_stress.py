@@ -1255,7 +1255,8 @@ def test_native_history_reuse_abrupt_load_and_reset(tmp_path, surface_mode):
 @pytest.mark.required
 @pytest.mark.precision("64")
 @pytest.mark.parametrize("packed,block_size", ((False, 0), (True, 0), (True, 512)))
-def test_native_surface_inverse_preserves_history_hits(tmp_path, packed, block_size):
+@pytest.mark.parametrize("n_envs", (3, 1024))
+def test_native_surface_inverse_preserves_history_hits(tmp_path, packed, block_size, n_envs):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
@@ -1265,13 +1266,13 @@ def test_native_surface_inverse_preserves_history_hits(tmp_path, packed, block_s
         )
     )
     assert model.surface_inverse is not None
-    state = model.create_state(3)
+    state = model.create_state(n_envs)
     random = np.random.default_rng(9173)
-    omega = V_VEC(3, dtype=gs.qd_float, shape=(3,))
-    omega.from_numpy(random.normal(size=(3, 3)))
+    omega = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,))
+    omega.from_numpy(random.normal(size=(n_envs, 3)))
     boundary = qd_to_numpy(model.surface_inverse.info.nodes)
-    force = np.zeros((model.info.vertices.shape[0], 3, 3))
-    force[boundary[:5]] = random.normal(size=(5, 3, 3)) * 0.01
+    force = np.zeros((model.info.vertices.shape[0], n_envs, 3))
+    force[boundary[:5]] = random.normal(size=(5, n_envs, 3)) * 0.01
     for release in (False, True):
         if release:
             force.fill(0.0)
@@ -1283,13 +1284,13 @@ def test_native_surface_inverse_preserves_history_hits(tmp_path, packed, block_s
         changed[0] = -3.0 * expected[0] + 1.0
         changed[1:] = 0.0
         state.displacement.from_numpy(changed.transpose((1, 0, 2)).copy())
-        state.valid.from_numpy(np.array([True, False, False]))
+        state.valid.from_numpy(np.arange(n_envs) == 0)
         state.boundary_count.fill(0)
         model.surface_inverse.apply(model.options.young, omega, state, packed, block_size, only_failed=True)
         actual = qd_to_numpy(state.displacement, transpose=True)
         np.testing.assert_array_equal(actual[0], changed[0])
         np.testing.assert_array_equal(actual[1:], expected[1:])
-        np.testing.assert_array_equal(qd_to_numpy(state.active, transpose=True), [0, 1, 1])
+        np.testing.assert_array_equal(qd_to_numpy(state.active, transpose=True), np.arange(n_envs) != 0)
         assert qd_to_numpy(state.valid, transpose=True).all()
         if packed and gs.backend == gs.cuda:
             counts = qd_to_numpy(state.boundary_count, transpose=True)

@@ -62,6 +62,28 @@ def fields(models, contacts):
     return loads, solutions, tensors
 
 
+def recovery_timings(models, mother, embeddings, grouped, fallback):
+    solutions = [model.solve(load) for model, load in zip(models, grouped)]
+    rows = {}
+    for common in [False, True]:
+        samples = []
+        for _ in range(7):
+            started = time.perf_counter()
+            for _ in range(20):
+                if common:
+                    displacement = fallback.copy()
+                    for transform, solution in zip(embeddings, solutions):
+                        displacement += transform @ solution
+                    tensor = mother.S @ displacement
+                else:
+                    tensor = mother.S @ fallback
+                    for model, solution in zip(models, solutions):
+                        tensor += model.S @ solution
+            samples.append((time.perf_counter() - started) / 20)
+        rows["common_mother" if common else "independent_fields"] = samples
+    return rows
+
+
 def condensation(output):
     axis = knots(-L / 2, L / 2, 0.005)
     fine_axis = np.sort(np.unique(np.r_[axis, [-0.0075, -0.0025, 0.0025, 0.0075]]))
@@ -80,6 +102,11 @@ def condensation(output):
     load = np.column_stack([mother.load(c)[0] for c in contacts])
     rhs = transform.T @ load[mother.free]
     reference = mother.solve(load)
+    direct_times = []
+    for _ in range(5):
+        started = time.perf_counter()
+        mother.solve(load)
+        direct_times.append(time.perf_counter() - started)
     rows = []
     for reverse in [False, True]:
         coarse_ids = np.arange(len(coarse.free))
@@ -124,6 +151,8 @@ def condensation(output):
         output / "condensation.json",
         dict(
             passed=True,
+            direct_solve_seconds=direct_times,
+            direct=mother.metadata(),
             rows=rows,
             scope="Exact hierarchical coarse/local Schur coupling, all distributed load terms retained.",
         ),
@@ -139,6 +168,9 @@ def run(args):
     p = np.linspace(-0.0193, 0.0193, 29)
     probes = np.array([[x, y] for y in p for x in p])
     anchors = np.array([[-0.006, -0.003464101615], [0.006, -0.003464101615], [0.0, 0.00692820323]])
+    if args.library_size == 5:
+        anchors = np.concatenate((anchors, [[-0.007, 0.006], [0.007, 0.006]]))
+    result["library_size"] = args.library_size
     base = knots(-L / 2, L / 2, 0.005)
     modes = ["blend", "nearest", "top_two", "overlap"]
     for halfwidth in [0.006, 0.009]:
@@ -173,6 +205,7 @@ def run(args):
                     total = np.zeros_like(reference)
                     common = np.zeros(mother.m.ndof)
                     grouped = [np.zeros(m.m.ndof) for m in models]
+                    fallback_solution = np.zeros(mother.m.ndof)
                     fallback, contributors = 0, []
                     for j, contact in enumerate(contacts):
                         w = weights(np.array(contact[:2]), anchors, mode, overlap)
@@ -181,6 +214,7 @@ def run(args):
                             fallback += 1
                             total += tensors[-1][..., j]
                             common += solutions[-1][:, j]
+                            fallback_solution += solutions[-1][:, j]
                             contributors.append(["mother"])
                         else:
                             contributors.append(np.flatnonzero(w > 0).tolist())
@@ -211,6 +245,20 @@ def run(args):
                             and metrics["peak_vm_relative"] < 0.2,
                         )
                     )
+                    if case == 5 and mode == "nearest":
+                        result.setdefault("recovery_timings", []).append(
+                            dict(
+                                halfwidth=halfwidth,
+                                **recovery_timings(models, mother, embeddings, grouped, fallback_solution),
+                            )
+                        )
+                        np.savez_compressed(
+                            args.output / f"two-contact-width{halfwidth}.npz",
+                            probes=probes,
+                            tensor=total,
+                            reference=reference,
+                            mother_recovery=recovered,
+                        )
             write_json(args.output / "result.json", result)
         # Cross the three-region junction with smooth physical loads and full raw selector responses.
         for mode in modes:
@@ -245,6 +293,7 @@ def run(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--library-size", type=int, choices=(3, 5), default=3)
     args = parser.parse_args()
     with threadpool_limits(limits=1):
         run(args)
