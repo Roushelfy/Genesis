@@ -500,6 +500,8 @@ def main() -> None:
     parser.add_argument(
         "--dense-surface-loads", action="store_true", help="Apply all boundary columns without packing."
     )
+    parser.add_argument("--atlas-regions", type=int, default=0)
+    parser.add_argument("--atlas-transition", type=float, default=0.003)
     parser.add_argument("--history", type=int, choices=(0, 4), default=0)
     parser.add_argument("--unfused-pipeline", action="store_true", help="Compare separate native recovery passes.")
     parser.add_argument("--policy-precision", choices=("64", "32"), default="32")
@@ -542,6 +544,8 @@ def main() -> None:
         method=args.method,
         inverse_precision=args.inverse_precision,
         history_size=args.history,
+        atlas_regions=args.atlas_regions,
+        atlas_transition=args.atlas_transition,
         cooperative_pressure=not args.serial_pressure,
         conditions=args.conditions,
         surface_inverse=not args.full_inverse,
@@ -773,6 +777,8 @@ def main() -> None:
                 for name, value in (workload.controller_inputs or {}).items()
             },
             "history": args.history,
+            "atlas_regions": args.atlas_regions,
+            "atlas_transition": args.atlas_transition,
             "host": platform.node(),
             "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
             "source_revision": args.source_revision,

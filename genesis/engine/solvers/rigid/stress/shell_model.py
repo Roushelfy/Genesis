@@ -13,6 +13,7 @@ from genesis.utils.array_class import V_MAT, V_VEC, DataItem, V, iter_data
 from genesis.utils.misc import qd_to_numpy
 
 from . import shell_operators
+from .atlas import StressAtlas
 from .balance import kernel_centrifugal_wrench, kernel_relief_projection
 from .data import StressState, allocate_stress_info
 from .factor import StressFactor
@@ -166,6 +167,7 @@ class ShellModel(StressModel):
             and options.cooperative_solve
             and self.recovery_capacity > 0
             and history is None
+            and not options.atlas_regions
         )
 
     def recover(
@@ -175,6 +177,7 @@ class ShellModel(StressModel):
         options: RigidStressOptions | None = None,
         history: StressHistory | None = None,
         surface_load: bool = False,
+        atlas: StressAtlas | None = None,
     ) -> None:
         if options is None:
             options = self.options
@@ -205,4 +208,4 @@ class ShellModel(StressModel):
                 options.cooperative_balance,
             )
         else:
-            super().recover(omega, state, options, history, surface_load)
+            super().recover(omega, state, options, history, surface_load, atlas)

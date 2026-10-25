@@ -11,6 +11,7 @@ from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils.array_class import V_VEC, DataItem, V, iter_data
 from genesis.utils.misc import qd_to_numpy
 
+from .atlas import StressAtlas
 from .balance import kernel_centrifugal_wrench, kernel_relief_projection
 from .data import StressState, allocate_stress_info
 from .factor import StressFactor
@@ -238,6 +239,7 @@ class StressModel:
         options: RigidStressOptions | None = None,
         history: StressHistory | None = None,
         surface_load: bool = False,
+        atlas: StressAtlas | None = None,
     ) -> None:
         """Balance the complete load, recover displacement and scan the full-domain peak."""
         if options is None:
@@ -250,14 +252,14 @@ class StressModel:
         if self.factor is not None:
             kernel_direct_init(state)
             if history is None:
-                self.solve(options, state, omega, surface_load)
+                self.solve(options, state, omega, surface_load, atlas=atlas)
             else:
                 history.predict(state)
                 kernel_full_residual(
                     options.young, options.tolerance, options.absolute_tolerance, state, self.info, False, coalesced
                 )
                 history.mark_hits(state)
-                self.solve(options, state, omega, surface_load, only_failed=True)
+                self.solve(options, state, omega, surface_load, only_failed=True, atlas=atlas)
         else:
             kernel_pcg_init(options.young, state, self.info, block, options.warm_start)
             for _ in range((options.max_iterations + 15) // 16):
@@ -315,8 +317,12 @@ class StressModel:
         omega: qd.Tensor | None = None,
         surface_load: bool = False,
         only_failed: bool = False,
+        atlas: StressAtlas | None = None,
     ) -> None:
-        if surface_load and self.surface_inverse is not None:
+        if atlas is not None:
+            assert omega is not None
+            atlas.apply(options.young, omega, state, only_failed)
+        elif surface_load and self.surface_inverse is not None:
             assert omega is not None
             block_size = options.packed_block_size
             if block_size is None:

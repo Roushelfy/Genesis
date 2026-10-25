@@ -65,6 +65,8 @@ class FrankaEgg:
         stress_backend: str = "volume",
         stress_mesh: Path | None = None,
         shell_gauge: str = "translation",
+        atlas_regions: int = 0,
+        atlas_transition: float = 0.003,
         factor_scaling: bool = False,
         factor_ordering: str = "minimum_degree",
     ):
@@ -136,6 +138,8 @@ class FrankaEgg:
                 method=method,
                 inverse_precision=inverse_precision,
                 history_size=history_size,
+                atlas_regions=atlas_regions,
+                atlas_transition=atlas_transition,
                 cooperative_pressure=cooperative_pressure,
                 surface_inverse=surface_inverse,
                 packed_surface_loads=packed_surface_loads,

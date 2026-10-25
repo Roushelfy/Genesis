@@ -242,6 +242,7 @@ def func_scatter_faces(
     workspace: StressScatterWorkspace,
     cached_bounds: qd.template(),
     reuse_moments: qd.template() = False,
+    atlas: qd.template() = None,
 ):
     if qd.static(not reuse_moments):
         func_prepare_scatter(contacts, state, info, surface, workspace, cached_bounds)
@@ -326,7 +327,7 @@ def func_scatter_faces(
         if i_lane == 0:
             for i_local in range(qd.select(info.load_nodes.shape[0] > 0, 4, 6)):
                 i_n = info.surface_nodes[i_f, i_local]
-                func_scatter_load(i_n, i_b, load[i_local, :], state, info)
+                func_scatter_load(i_n, i_b, load[i_local, :], state, info, atlas, i_c)
             for a in qd.static(range(3)):
                 qd.atomic_add(workspace.wrench[i_pair][a], total[a])
                 qd.atomic_add(workspace.wrench[i_pair][a + 3], moment[a])
@@ -349,7 +350,7 @@ def func_scatter_faces(
         workspace.overflow_calls[None] += 1
     # The incomplete task buffer contributes no loads. Overflow starts from zero
     # and integrates every original contact/face/sample, without a host transfer.
-    func_scatter_warp(contacts, state, info, surface, cached_bounds, is_overflow)
+    func_scatter_warp(contacts, state, info, surface, cached_bounds, is_overflow, atlas)
 
 
 def kernel_scatter_faces(
@@ -360,8 +361,9 @@ def kernel_scatter_faces(
     workspace: StressScatterWorkspace,
     cached_bounds: bool,
     reuse_moments: bool = False,
+    atlas=None,
 ):
-    kernel_scatter_faces_impl(contacts, state, info, surface, workspace, cached_bounds, reuse_moments)
+    kernel_scatter_faces_impl(contacts, state, info, surface, workspace, cached_bounds, reuse_moments, atlas)
 
 
 @qd.kernel(graph=True)
@@ -373,10 +375,11 @@ def kernel_scatter_faces_impl(
     workspace: StressScatterWorkspace,
     cached_bounds: qd.template(),
     reuse_moments: qd.template(),
+    atlas: qd.template() = None,
 ):
     if qd.static(not reuse_moments):
         func_pack_contacts(contacts)
-    func_scatter_faces(contacts, state, info, surface, workspace, cached_bounds, reuse_moments)
+    func_scatter_faces(contacts, state, info, surface, workspace, cached_bounds, reuse_moments, atlas)
 
 
 @qd.kernel(graph=True)

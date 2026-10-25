@@ -1,5 +1,13 @@
 # Rigid-stress data and artifact locations
 
+The native candidate integration goal from revision `b8e63b195` uses
+`/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-native-candidate-integration/`.
+All generated numerical arrays, profiles, execution logs and source receipts
+stay there. Existing environments, prior campaigns and frozen sources are
+reused without migration. Scientific execution stays on Slurm `rtx-mid`,
+image `1_26`, with private node caches and explicit output paths. The start
+receipt preserves the twelve original unfinished files and existing worktrees.
+
 The 2026-10-25 GPU throughput follow-up uses
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/`.
 Fresh baseline timings, profiles, candidate results, source inventories and

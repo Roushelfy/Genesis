@@ -24,6 +24,7 @@ from genesis.utils.misc import (
 )
 
 from .association import kernel_associate
+from .atlas import StressAtlas
 from .automatic_radius import StressRadiusInfo, StressRadiusStatus
 from .curvature import StressCurvature
 from .contact import StressContactState, create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
@@ -66,6 +67,7 @@ class StressLink:
     resolved: ResolvedContacts | None = None
     requested_step: int = -1
     automatic_radius: StressRadiusInfo | None = None
+    atlas: StressAtlas | None = None
 
 
 class RigidStressRecovery:
@@ -78,6 +80,10 @@ class RigidStressRecovery:
             for link in entity.links:
                 options = link.stress_options
                 if options is not None:
+                    if options.atlas_regions and (
+                        options.contact_model != "pressure" or options.load_transfer != "patch"
+                    ):
+                        gs.raise_exception("A response atlas requires DPR finite-pressure patch loading.")
                     if options.backend == "shell" and (
                         options.contact_model != "pressure" or options.load_transfer != "patch"
                     ):
@@ -186,12 +192,17 @@ class RigidStressRecovery:
                             and options.cooperative_scatter
                             and options.cooperative_solve
                             and model.info.vertices.shape[0] <= 1024
-                            and not options.history_size,
+                            and not options.history_size
+                            and not options.atlas_regions,
                             options.coalesced_residual if options.coalesced_residual is not None else solver._B >= 8192,
                             reuse_contact_moments,
                         )
                     )
         for entry in self.links:
+            if entry.options.atlas_regions:
+                entry.atlas = StressAtlas(
+                    entry.model, entry.contacts, entry.options.atlas_regions, entry.options.atlas_transition
+                )
             if entry.options.radius_model == "hertz":
                 if self.curvature is None:
                     self.curvature = StressCurvature(solver.dyn_info, self.source_epsilon)
@@ -374,6 +385,10 @@ class RigidStressRecovery:
                     )
                 else:
                     kernel_pressure(entry.contacts, entry.surface.info, options.cooperative_pressure)
+                if entry.atlas is not None:
+                    entry.atlas.prepare(
+                        entry.contacts, entry.model.load_info, entry.surface.info, options.atlas_transition
+                    )
                 if entry.scatter.tasks.shape[0] and options.cooperative_scatter:
                     kernel_scatter_faces(
                         entry.contacts,
@@ -383,6 +398,7 @@ class RigidStressRecovery:
                         entry.scatter,
                         options.cached_face_bounds,
                         entry.reuse_contact_moments,
+                        entry.atlas.state if entry.atlas is not None else None,
                     )
                 else:
                     kernel_scatter(
@@ -392,8 +408,11 @@ class RigidStressRecovery:
                         entry.surface.info,
                         options.cooperative_scatter,
                         options.cached_face_bounds,
+                        entry.atlas.state if entry.atlas is not None else None,
                     )
-            entry.model.recover(entry.omega, entry.state, entry.link.stress_options, entry.history, surface_load=True)
+            entry.model.recover(
+                entry.omega, entry.state, entry.link.stress_options, entry.history, surface_load=True, atlas=entry.atlas
+            )
             kernel_accept(entry.state, entry.contacts, solver._errno)
             if entry.history is not None:
                 entry.history.append(entry.state)
@@ -533,6 +552,9 @@ class RigidStressRecovery:
                     yield from iter_data(entry.intrinsic.paths.info, f"stress.{i}.intrinsic.paths")
                     seen_paths.add(id(entry.intrinsic.paths))
                 yield from entry.intrinsic.data(f"stress.{i}.intrinsic")
+            if entry.atlas is not None:
+                yield from iter_data(entry.atlas.info, f"stress.{i}.atlas.info")
+                yield from iter_data(entry.atlas.state, f"stress.{i}.atlas.state")
             if entry.history is not None:
                 yield from iter_data(entry.history.state, f"stress.{i}.history")
             if entry.resolved is not None:

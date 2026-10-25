@@ -243,6 +243,8 @@ class RigidStressOptions(Options):
     max_iterations: PositiveInt = 2000
     warm_start: StrictBool = True
     history_size: Literal[0, 4] = 0
+    atlas_regions: Annotated[int, Field(ge=0, le=32)] = 0
+    atlas_transition: PositiveFloat = 0.003
     method: Literal["auto", "direct", "inverse", "pcg"] = "auto"
     factor_scaling: StrictBool = False
     factor_ordering: Literal["minimum_degree", "natural"] = "minimum_degree"
