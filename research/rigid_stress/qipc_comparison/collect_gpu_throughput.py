@@ -73,8 +73,19 @@ def main():
                 "stress_backend",
                 "output_mode",
                 "quadrature",
+                "pressure_quadrature",
                 "precision",
                 "history",
+                "atlas_regions",
+                "atlas_transition",
+                "atlas_output",
+                "atlas_partition",
+                "stress_response",
+                "response_precision",
+                "response_accumulation",
+                "response_block_size",
+                "response_output_tile",
+                "response_screen_block",
                 "condition_count",
                 "conditions_sha256",
                 "varied",
@@ -96,6 +107,8 @@ def main():
             ]:
                 if key in data:
                     row[key] = data[key]
+            if "stress_backend" not in row:
+                row["stress_backend"] = data.get("arguments", {}).get("stress_backend")
             # Preserve exact memory inventory keys without guessing the benchmark schema.
             row["memory_inventory"] = {k: v for k, v in data.items() if "memory" in k or "bytes" in k}
             by_kind = Counter()
@@ -125,6 +138,10 @@ def main():
                     admitted_environment_steps_per_second=statistics.median(
                         repeat["transitions_per_second"] for repeat in repeats
                     ),
+                    attempted_environment_steps_per_second=statistics.median(
+                        repeat["attempted_transitions_per_second"] for repeat in repeats
+                    ),
+                    admission_scope="Runtime validity only; independent numerical budgets require their separate controls.",
                     invalid_environment_steps=sum(repeat["invalid_environment_steps"] for repeat in repeats),
                 )
                 result["benchmarks"].append(row)

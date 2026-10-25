@@ -7,13 +7,13 @@ Previous prototype timings are supporting evidence only.
 
 | Candidate | Shell | Volume |
 | --- | --- | --- |
-| Curved feature atlas with continuous selection | 600-frame and curved/nonconvex junction controls pass; tuned scene/memory open | 600-frame and inner/outer/nonconvex controls pass; tuned scene/memory open |
-| Same-mesh contact aggregation / multiple RHS | Native grouping passes; compact layout timing in progress | Native grouping passes; compact boundary layout timing in progress |
-| Common displacement then one stress recovery | Merged/independent/coarse numerics pass; full comparisons in progress | Merged/independent/coarse numerics pass; full comparisons in progress |
-| Complete H including state and acceptance | FP64/correction and tiled controls pass; tuning/scene/memory open | FP64/correction and tiled controls pass; tuning/scene/memory open |
-| FP32 storage and accumulation | Both 600-frame controls pass; tiled timing/memory open | Both 600-frame controls pass; tiled timing/memory open |
-| Conservative global maximum screening | 600-frame and distant-peak controls pass; block tuning/scene open | 600-frame and distant-peak controls pass; block tuning/scene open |
-| Sustained prediction and compact fallback | 600-frame/lifecycle pass; rotating-buffer and packed-residual timing open | 600-frame/lifecycle pass; rotating-buffer and packed-residual timing open |
+| Curved feature atlas with continuous selection | Geometry, 600-frame, module/scene and memory measured; native tuned loss, cleanup pending | Inner/outer/nonconvex and 600-frame controls pass; module gain loses in scene, cleanup pending |
+| Same-mesh contact aggregation / multiple RHS | Native grouping and compact/direct layout measured; scene loss, cleanup pending | Native grouping and compact/direct layout measured; scene loss, cleanup pending |
+| Common displacement then one stress recovery | Merged/independent/coarse controls and full comparisons measured; cleanup pending | Merged/independent/coarse controls and full comparisons measured; cleanup pending |
+| Complete H including state and acceptance | FP64/correction and 600-frame controls pass; final input-major layout trial running | FP64/correction and 600-frame controls pass; final input-major layout trial running |
+| FP32 storage and accumulation | Both precisions validated and tiled/module/memory measured; final layout trial running | Both precisions validated and tiled/module/memory measured; final layout trial running |
+| Conservative global maximum screening | 600-frame/distant-peak controls and block tuning complete; final layout trial running | 600-frame/distant-peak controls and block tuning complete; final layout trial running |
+| Sustained prediction and compact fallback | Stricter guard passes both 600-frame lifecycle banks; final scene bookend pending | Stricter guard passes both 600-frame lifecycle banks; final scene bookends pending |
 
 ## Numerical budgets declared before selection
 
@@ -52,8 +52,9 @@ as a stress-error certificate.
 4. Record a retained regime or a pinned runnable native tuned negative for
    each of fourteen cells. Missing native work remains open.
 
-The heterogeneous volume frame-221 pressure-fit rejection remains an open
-robustness item; preserve it and validate any repair separately from scheduling.
+The original heterogeneous volume frame-221 pressure-fit rejection is retained.
+The angular/q128 repair now passes the complete-bank controls below and its
+substantial cost is measured separately from scheduling.
 Keep all earlier negative experiments and protected sources. New runtime data
 and job receipts use the explicit run directory in `DATA_LOCATION.md`.
 
