@@ -505,6 +505,8 @@ def main() -> None:
     parser.add_argument("--response-precision", choices=("64", "32"), default="64")
     parser.add_argument("--response-accumulation", choices=("64", "32"), default="64")
     parser.add_argument("--response-block-size", type=int, choices=(64, 128, 256, 512), default=128)
+    parser.add_argument("--response-output-tile", type=int, choices=(1, 2, 4, 8), default=1)
+    parser.add_argument("--response-screen-block", type=int, choices=(32, 64, 128), default=32)
     parser.add_argument("--atlas-regions", type=int, default=0)
     parser.add_argument("--atlas-transition", type=float, default=0.003)
     parser.add_argument("--atlas-output", choices=("merged", "independent"), default="merged")
@@ -559,6 +561,8 @@ def main() -> None:
         response_precision=args.response_precision,
         response_accumulation=args.response_accumulation,
         response_block_size=args.response_block_size,
+        response_output_tile=args.response_output_tile,
+        response_screen_block=args.response_screen_block,
         cooperative_pressure=not args.serial_pressure,
         conditions=args.conditions,
         surface_inverse=not args.full_inverse,
@@ -800,6 +804,8 @@ def main() -> None:
             "response_precision": args.response_precision,
             "response_accumulation": args.response_accumulation,
             "response_block_size": args.response_block_size,
+            "response_output_tile": args.response_output_tile,
+            "response_screen_block": args.response_screen_block,
             "host": platform.node(),
             "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
             "source_revision": args.source_revision,

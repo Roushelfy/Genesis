@@ -74,6 +74,8 @@ class FrankaEgg:
         response_precision: str = "64",
         response_accumulation: str = "64",
         response_block_size: int = 128,
+        response_output_tile: int = 1,
+        response_screen_block: int = 32,
         factor_scaling: bool = False,
         factor_ordering: str = "minimum_degree",
     ):
@@ -154,6 +156,8 @@ class FrankaEgg:
                 response_precision=response_precision,
                 response_accumulation=response_accumulation,
                 response_block_size=response_block_size,
+                response_output_tile=response_output_tile,
+                response_screen_block=response_screen_block,
                 cooperative_pressure=cooperative_pressure,
                 surface_inverse=surface_inverse,
                 packed_surface_loads=packed_surface_loads,

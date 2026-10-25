@@ -10,6 +10,7 @@ import genesis as gs
 from genesis.engine.solvers.rigid.stress.atlas import StressAtlas
 from genesis.engine.solvers.rigid.stress.contact import create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
 from genesis.engine.solvers.rigid.stress.model import StressModel
+from genesis.engine.solvers.rigid.stress.response import StressResponse, StressResponseInventory
 from genesis.engine.solvers.rigid.stress.scatter import create_scatter_workspace, kernel_scatter_faces
 from genesis.engine.solvers.rigid.stress.shell_model import ShellModel
 from genesis.engine.solvers.rigid.stress.surface import StressSurface
@@ -93,6 +94,16 @@ def main():
     result["complete_boundary"] = args.complete_boundary
     distances = qd_to_numpy(atlas.info.distances)
     boundary_nodes = qd_to_numpy(model.surface_inverse.info.nodes)
+    mechanical_vertices = qd_to_numpy(model.info.vertices)
+    if args.stress_backend == "volume":
+        sample_positions = mechanical_vertices[qd_to_numpy(model.info.elements)[:, :4]]
+    else:
+        gauss = np.array([[-1, -1], [1, -1], [-1, 1], [1, 1]]) / np.sqrt(3.0)
+        corners = np.array([[-1, -1], [1, -1], [1, 1], [-1, 1]])
+        shape = 0.25 * np.prod(1 + gauss[:, None] * corners[None], axis=-1)
+        midsurface = np.einsum("qa,eac->eqc", shape, mechanical_vertices[::2][qd_to_numpy(model.shell.quads)])
+        offset = 0.5 * options.shell_thickness * qd_to_numpy(model.shell.interpolated_director)
+        sample_positions = np.stack((midsurface + offset, midsurface - offset), axis=1).reshape((-1, 4, 3))
     axis = np.linspace(-0.95, 0.95, 17) if args.stress_backend == "shell" else np.linspace(0.02, 0.96, 17)
     coordinates = np.array([(x, y) for x in axis for y in axis if args.stress_backend == "shell" or x + y < 0.99])
     best = (np.inf, 0, coordinates[0])
@@ -180,7 +191,37 @@ def main():
         assert max(row["errors"].values()) < 1e-8
         if step == 0:
             result["cpu_control"] = cpu_control(Control(model, state, omega, options))
-            np.savez_compressed(args.output / "fields.npz", **actual, load=actual_load, weights=weights)
+            tensor = actual["stress_tensor"].reshape((4, -1, 6))
+            vm = np.sqrt(
+                0.5
+                * (
+                    (tensor[..., 0] - tensor[..., 1]) ** 2
+                    + (tensor[..., 1] - tensor[..., 2]) ** 2
+                    + (tensor[..., 2] - tensor[..., 0]) ** 2
+                )
+                + 3.0 * np.sum(tensor[..., 3:] ** 2, axis=-1)
+            )
+            peak_positions = sample_positions.reshape((-1, 3))[np.argmax(vm, axis=1)]
+            distances_to_contacts = np.linalg.norm(peak_positions[:, None] - positions.transpose((1, 0, 2)), axis=-1)
+            result["peak_distance_in_contact_radii"] = (distances_to_contacts.min(axis=1) / radius).tolist()
+            if args.geometry == "nonconvex":
+                assert max(result["peak_distance_in_contact_radii"]) > 5.0
+            screen_options = reference.model_copy(update={"stress_response": "screen"})
+            response = StressResponse(StressResponseInventory(model, screen_options), 4)
+            maximum = model.create_state(4)
+            maximum.force.from_numpy(np.ascontiguousarray(actual_load.transpose((1, 0, 2))))
+            model.recover(omega, maximum, screen_options, surface_load=True, response=response)
+            result["global_screen_error"] = float(per_environment(qd_to_numpy(maximum.peak), actual["peak"]).max())
+            assert result["global_screen_error"] < 1e-8
+            np.savez_compressed(
+                args.output / "fields.npz",
+                **actual,
+                load=actual_load,
+                weights=weights,
+                contact_positions=positions,
+                peak_positions=peak_positions,
+                sample_positions=sample_positions,
+            )
         if step == 5:
             assert np.count_nonzero(actual_load) == 0 and np.count_nonzero(actual["stress_tensor"]) == 0
     assert max(row["contributors"] for row in result["rows"]) >= 3

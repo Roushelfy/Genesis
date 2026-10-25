@@ -34,6 +34,9 @@ def main():
     parser.add_argument("--stress-response", choices=("sparse", "dense", "hybrid", "screen"), default="sparse")
     parser.add_argument("--response-precision", choices=("64", "32"), default="64")
     parser.add_argument("--response-accumulation", choices=("64", "32"), default="64")
+    parser.add_argument("--response-output-tile", type=int, choices=(1, 2, 4, 8), default=1)
+    parser.add_argument("--response-block-size", type=int, choices=(64, 128, 256, 512), default=128)
+    parser.add_argument("--response-screen-block", type=int, choices=(32, 64, 128), default=32)
     parser.add_argument("--correction-probe", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -61,6 +64,9 @@ def main():
         stress_response=args.stress_response,
         response_precision=args.response_precision,
         response_accumulation=args.response_accumulation,
+        response_output_tile=args.response_output_tile,
+        response_block_size=args.response_block_size,
+        response_screen_block=args.response_screen_block,
     )
     entry = workload.scene.rigid_solver.stress_recovery.links[0]
     state = entry.state

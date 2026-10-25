@@ -103,7 +103,8 @@ def kernel_predict_two_frame(history: StressTwoFrameState, state: StressState):
     for i_n, i_b in qd.ndrange(state.displacement.shape[0], state.active.shape[0]):
         value = qd.Vector.zero(gs.qd_float, 3)
         if history.count[i_b] == 2:
-            value = 2.0 * history.displacements[i_n, i_b, 0] - history.displacements[i_n, i_b, 1]
+            latest = history.head[i_b]
+            value = 2.0 * history.displacements[i_n, i_b, latest] - history.displacements[i_n, i_b, 1 - latest]
         state.displacement[i_n, i_b] = value
 
 
@@ -120,11 +121,12 @@ def kernel_append_two_frame(history: StressTwoFrameState, state: StressState):
     # original-operator gate and compact exact fallback remain in model.recover.
     for i_n, i_b in qd.ndrange(state.displacement.shape[0], state.active.shape[0]):
         if state.valid[i_b] and state.step_valid[i_b]:
-            history.displacements[i_n, i_b, 1] = history.displacements[i_n, i_b, 0]
-            history.displacements[i_n, i_b, 0] = state.displacement[i_n, i_b]
+            next_slot = 1 - history.head[i_b]
+            history.displacements[i_n, i_b, next_slot] = state.displacement[i_n, i_b]
     for i_b in range(history.count.shape[0]):
         if state.valid[i_b] and state.step_valid[i_b]:
             history.count[i_b] = qd.min(2, history.count[i_b] + 1)
+            history.head[i_b] = 1 - history.head[i_b]
 
 
 @qd.kernel

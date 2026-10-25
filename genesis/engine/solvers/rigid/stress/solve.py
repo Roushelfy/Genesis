@@ -198,6 +198,7 @@ def kernel_full_residual(
     stress_info: StressInfo,
     only_active: bool,
     coalesced: bool = False,
+    packed_failed: bool = False,
 ):
     kernel_full_residual_impl(
         young,
@@ -207,6 +208,7 @@ def kernel_full_residual(
         stress_info,
         only_active,
         coalesced and gs.backend == gs.cuda,
+        packed_failed,
     )
 
 
@@ -219,8 +221,11 @@ def kernel_full_residual_impl(
     stress_info: StressInfo,
     only_active: qd.template(),
     coalesced: qd.template(),
+    packed_failed: qd.template(),
 ):
-    func_full_residual(young, tolerance, absolute_tolerance, stress_state, stress_info, only_active, coalesced)
+    func_full_residual(
+        young, tolerance, absolute_tolerance, stress_state, stress_info, only_active, coalesced, packed_failed
+    )
 
 
 @qd.func
@@ -243,11 +248,20 @@ def func_full_residual(
     stress_info: StressInfo,
     only_active: qd.template(),
     coalesced: qd.template() = False,
+    packed_failed: qd.template() = False,
 ):
     for i_b in range(stress_state.active.shape[0]):
         if qd.static(not only_active) or stress_state.active[i_b]:
             stress_state.residual_norm_squared[i_b] = 0.0
-    if qd.static(coalesced):
+    if qd.static(packed_failed):
+        qd.loop_config(block_dim=256)
+        for i_task in range(stress_info.vertices.shape[0] * stress_state.failed_count[None]):
+            i_n = i_task // stress_state.failed_count[None]
+            i_failed = i_task % stress_state.failed_count[None]
+            i_b = stress_state.failed_environments[i_failed]
+            if stress_state.active[i_b]:
+                func_residual_row(young, stress_state, stress_info, i_n, i_b)
+    elif qd.static(coalesced):
         qd.loop_config(block_dim=256)
         for i_thread in range(stress_info.vertices.shape[0] * ((stress_state.active.shape[0] + 31) // 32) * 32):
             i_index = i_thread // 32

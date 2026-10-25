@@ -128,6 +128,7 @@ class RigidStressRecovery:
                             and previous.response_precision == options.response_precision
                             and previous.response_accumulation == options.response_accumulation
                             and previous.response_max_bytes == options.response_max_bytes
+                            and previous.response_screen_block == options.response_screen_block
                         ):
                             model = existing.model
                             if (

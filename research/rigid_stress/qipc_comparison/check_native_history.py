@@ -74,8 +74,10 @@ def main():
         workload.step()
         candidate = {name: qd_to_numpy(array, transpose=True) for name, array in fields}
         # Includes predicted hits: the accepted state must actually feed future prediction.
+        buffers = qd_to_numpy(history.displacements)
+        heads = qd_to_numpy(history.head)
         np.testing.assert_array_equal(
-            qd_to_numpy(history.displacements)[:, :, 0].transpose(1, 0, 2), candidate["displacement"]
+            buffers[:, np.arange(args.envs), heads].transpose(1, 0, 2), candidate["displacement"]
         )
         force = qd_to_numpy(state.force, transpose=True)
         loaded = np.linalg.norm(force, axis=(1, 2)) > 1e-30

@@ -37,7 +37,12 @@ class Control:
 
 @qd.kernel
 def kernel_load(
-    step: int, omega: qd.Tensor, state: StressState, atlas: StressAtlasState, boundary: StressSurfaceInverseInfo
+    step: int,
+    mixed: bool,
+    omega: qd.Tensor,
+    state: StressState,
+    atlas: StressAtlasState,
+    boundary: StressSurfaceInverseInfo,
 ):
     for i_n, i_b in qd.ndrange(state.force.shape[0], state.active.shape[0]):
         state.force[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
@@ -45,6 +50,8 @@ def kernel_load(
         atlas.force[i_n, i_g, i_b] = qd.Vector.zero(gs.qd_float, 3)
     for i_b in range(state.active.shape[0]):
         scale = qd.select(step == 3, 0.0, 0.001 * (step + 1) * (i_b + 1))
+        if mixed and step == 2 and i_b == 0:
+            scale *= 1.1
         first = scale * qd.Vector([1.0, 2.0, -3.0])
         second = scale * qd.Vector([-0.4, 0.3, 0.1])
         first_node, second_node = boundary.nodes[0], boundary.nodes[1]
@@ -64,6 +71,11 @@ def main():
     parser.add_argument("--atlas-partition", choices=("direct", "coarse_local"), default="direct")
     parser.add_argument("--response-precision", choices=("64", "32"), default="64")
     parser.add_argument("--response-accumulation", choices=("64", "32"), default="64")
+    parser.add_argument("--response-output-tile", type=int, choices=(1, 2, 4, 8), default=1)
+    parser.add_argument("--response-screen-block", type=int, choices=(32, 64, 128), default=32)
+    parser.add_argument("--stress-response", choices=("sparse", "dense", "hybrid"), default="sparse")
+    parser.add_argument("--envs", type=int, default=2)
+    parser.add_argument("--without-atlas", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -77,23 +89,25 @@ def main():
         output_mode="full",
         quadrature=16,
         atlas_regions=6,
-        stress_response="none" if args.atlas_output == "independent" else "sparse",
+        stress_response="none" if args.atlas_output == "independent" else args.stress_response,
         response_precision=args.response_precision,
         response_accumulation=args.response_accumulation,
+        response_output_tile=args.response_output_tile,
+        response_screen_block=args.response_screen_block,
     )
     model = ShellModel(options) if args.stress_backend == "shell" else StressModel(options)
-    state = model.create_state(2, "full")
-    contacts = create_contacts(1, 2, 0.001, hertz_profile=True)
+    state = model.create_state(args.envs, "full")
+    contacts = create_contacts(1, args.envs, 0.001, hertz_profile=True)
     contacts.valid.fill(False)
     contacts.force.fill(0)
     surface = StressSurface(16, model.load_info)
     atlas = StressAtlas(model, contacts, 6, 0.003, args.atlas_partition)
     if args.atlas_output == "independent":
-        atlas.output = StressAtlasOutput(model, 2, 7)
-    history = StressHistory(model.info.vertices.shape[0], 2, 2)
-    response = StressResponse(model.output_response, 2) if model.output_response is not None else None
-    omega = V_VEC(3, dtype=gs.qd_float, shape=(2,))
-    workspace = create_scatter_workspace(2, 32)
+        atlas.output = StressAtlasOutput(model, args.envs, 7)
+    history = StressHistory(model.info.vertices.shape[0], args.envs, 2)
+    response = StressResponse(model.output_response, args.envs) if model.output_response is not None else None
+    omega = V_VEC(3, dtype=gs.qd_float, shape=(args.envs,))
+    workspace = create_scatter_workspace(args.envs, 32)
     kernel_pack_contacts(contacts)
     atlas.prepare(contacts, model.load_info, surface.info, 0.003)
     kernel_scatter_faces(contacts, state, model.load_info, surface.info, workspace, True, atlas=atlas.scatter)
@@ -106,8 +120,8 @@ def main():
             ("shear", state.transverse_resultant),
         )
     for step in range(4):
-        kernel_load(step, omega, state, atlas.state, model.surface_inverse.info)
-        model.recover(omega, state, options, history, True, atlas, response)
+        kernel_load(step, args.without_atlas, omega, state, atlas.state, model.surface_inverse.info)
+        model.recover(omega, state, options, history, True, None if args.without_atlas else atlas, response)
         assert qd_to_numpy(state.valid).all()
         history.append(state)
         candidate = {name: qd_to_numpy(array, transpose=True) for name, array in fields}
@@ -125,7 +139,8 @@ def main():
         if step == 0:
             result["cpu_control"] = cpu_control(Control(model, state, omega, options))
         if step == 2:
-            assert hits.all()
+            assert hits[1:].all()
+            assert bool(hits[0]) != args.without_atlas
     if atlas.coarse is not None:
         matrix = cpu_operator(model.info).matrix
         basis = qd_to_numpy(atlas.coarse.info.basis).transpose(0, 2, 1).reshape((matrix.shape[0], -1))
@@ -139,10 +154,10 @@ def main():
         assert result["coarse_reconstruction_error"] < 1e-12
         assert result["coarse_galerkin_error"] < 1e-8
     if response is None:
-        response = StressResponse(StressResponseInventory(model, options), 2)
+        response = StressResponse(StressResponseInventory(model, options), args.envs)
     if exact_output:
-        maximum = model.create_state(2)
-        kernel_load(0, omega, maximum, atlas.state, model.surface_inverse.info)
+        maximum = model.create_state(args.envs)
+        kernel_load(0, False, omega, maximum, atlas.state, model.surface_inverse.info)
         model.recover(
             omega,
             maximum,

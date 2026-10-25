@@ -258,6 +258,14 @@ class StressModel:
         coalesced = options.coalesced_residual
         if coalesced is None:
             coalesced = state.active.shape[0] >= 8192
+        packed_failed = (
+            history is not None
+            and atlas is None
+            and surface_load
+            and self.surface_inverse is not None
+            and options.packed_surface_loads
+            and state.active.shape[0] >= 1024
+        )
         kernel_balance(omega, state, self.info, options.cooperative_balance)
         if self.factor is not None:
             kernel_direct_init(state)
@@ -292,6 +300,7 @@ class StressModel:
             self.info,
             history is not None,
             coalesced,
+            packed_failed,
         )
         if self.inverse is not None:
             for _ in range(options.inverse_corrections):
@@ -304,6 +313,7 @@ class StressModel:
                     self.info,
                     only_active=True,
                     coalesced=coalesced,
+                    packed_failed=packed_failed,
                 )
             self.factor.solve(options.young, state, self.info, options.cooperative_solve, only_failed=True)
             kernel_full_residual(
@@ -314,6 +324,7 @@ class StressModel:
                 self.info,
                 only_active=True,
                 coalesced=coalesced,
+                packed_failed=packed_failed,
             )
         if atlas is not None and atlas.output is not None:
             atlas.output.evaluate(options, self, state, atlas.state)

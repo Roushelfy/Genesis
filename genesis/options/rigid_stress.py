@@ -220,6 +220,8 @@ class RigidStressOptions(Options):
     Corrected or history-predicted states recover output from their actual displacement. ``response_precision``
     and ``response_accumulation`` independently select H storage and product precision; they do not reduce
     the precision of displacement acceptance. ``response_max_bytes`` bounds the additional shared H inventory.
+    ``response_output_tile`` reuses packed loads across a bounded group of output samples;
+    ``response_screen_block`` controls the number of samples sharing a conservative bound.
     These candidates remain opt-in while their numerical and complete-scene regimes are measured.
 
     ``output_mode="max"`` stores only the global von Mises maximum.
@@ -277,6 +279,8 @@ class RigidStressOptions(Options):
     response_precision: Literal["64", "32"] = "64"
     response_accumulation: Literal["64", "32"] = "64"
     response_block_size: Literal[64, 128, 256, 512] = 128
+    response_output_tile: Literal[1, 2, 4, 8] = 1
+    response_screen_block: Literal[32, 64, 128] = 32
     response_max_bytes: PositiveInt = 512 * 1024 * 1024
     method: Literal["auto", "direct", "inverse", "pcg"] = "auto"
     factor_scaling: StrictBool = False
