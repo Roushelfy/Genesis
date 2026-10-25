@@ -7,13 +7,13 @@ Previous prototype timings are supporting evidence only.
 
 | Candidate | Shell | Volume |
 | --- | --- | --- |
-| Curved feature atlas with continuous selection | 140-frame native agreement; geometry/lifecycle/tuning open | 140-frame native agreement; geometry/lifecycle/tuning open |
-| Same-mesh contact aggregation / multiple RHS | Native grouping passes; tuning/measurement open | Native grouping passes; tuning/measurement open |
-| Common displacement then one stress recovery | Merged path passes; independent/coarse comparisons open | Merged path passes; independent/coarse comparisons open |
-| Complete H including state and acceptance | FP64/correction pilot passes; tuning/measurement open | FP64/correction pilot passes; tuning/measurement open |
-| FP32 storage and accumulation | Both precision pilots pass; tuning/memory open | Both precision pilots pass; tuning/memory open |
-| Conservative global maximum screening | Native max pilot passes; tuning/measurement open | Native max pilot passes; tuning/measurement open |
-| Sustained prediction and compact fallback | 140-frame feedback passes; lifecycle/long-cycle/tuning open | 140-frame feedback passes; lifecycle/long-cycle/tuning open |
+| Curved feature atlas with continuous selection | 600-frame and curved/nonconvex junction controls pass; tuned scene/memory open | 600-frame and inner/outer/nonconvex controls pass; tuned scene/memory open |
+| Same-mesh contact aggregation / multiple RHS | Native grouping passes; compact layout timing in progress | Native grouping passes; compact boundary layout timing in progress |
+| Common displacement then one stress recovery | Merged/independent/coarse numerics pass; full comparisons in progress | Merged/independent/coarse numerics pass; full comparisons in progress |
+| Complete H including state and acceptance | FP64/correction and tiled controls pass; tuning/scene/memory open | FP64/correction and tiled controls pass; tuning/scene/memory open |
+| FP32 storage and accumulation | Both 600-frame controls pass; tiled timing/memory open | Both 600-frame controls pass; tiled timing/memory open |
+| Conservative global maximum screening | 600-frame and distant-peak controls pass; block tuning/scene open | 600-frame and distant-peak controls pass; block tuning/scene open |
+| Sustained prediction and compact fallback | 600-frame/lifecycle pass; rotating-buffer and packed-residual timing open | 600-frame/lifecycle pass; rotating-buffer and packed-residual timing open |
 
 ## Numerical budgets declared before selection
 
@@ -156,3 +156,47 @@ full-cycle controls continue. Angular q32 completes the heterogeneous volume
 cycle and passes the separate saved-frame load/field budget. Initial native
 module timing and actual CUDA traces are running at B64 and B8192; no candidate
 has a final retention decision yet.
+
+## Completed controls and profile-driven tuning
+
+All v7 600-frame controls now pass. Worst full-field/peak errors are:
+
+| Path | Shell | Volume |
+| --- | --- | --- |
+| Merged atlas | 3.515e-14 | 4.729e-13 |
+| H FP32 storage / FP64 accumulation | 3.931e-8 | 3.847e-8 |
+| H FP32 storage / FP32 accumulation | 1.059e-6 | 5.962e-7 |
+| Conservative screened maximum | 7.204e-15 | 6.027e-13 |
+| Two-frame prediction, including lifecycle changes | 2.286e-7 | 2.275e-7 |
+
+Both history controls include partial reset and checkpoint restoration, accepted
+prediction feedback and unaffected-environment checks. Loaded-frame hit rate is
+22.979%; frozen-snapshot hit rates are not used to claim complete-scene speed.
+
+The conservative face-slab exclusion in v8 fixes the shell junction fallback.
+V9 (`274b2d62e`) additionally compacts grouped loads to authored boundary rows
+and avoids clearing inactive selector scratch. All five geometry controls pass:
+shell egg/valley, volume egg/U and a separate volume egg with its complete
+tetrahedral exterior boundary, including explicit inner/outer loads. Junctions
+have three or more contributors. Complete-field errors are below `2.0e-13`.
+V9 also fixes the failed v8 H dtype compilation; all six small precision/backend
+controls pass. Failed v8 runs remain available, with cancelled duplicate work
+recorded in `meta/response-v8-stop.json`.
+
+The v6 module pilot is complete on NVIDIA RTX PRO 6000 Blackwell Server Edition
+GPUs (96 GB), with five repetitions and matched baseline bookends. These are
+native stress-module timings at one frozen contact snapshot, not complete-scene
+rates. At B8192, shell/volume baseline medians are `53.549 / 23.143 ms`; atlas
+is `56.488 / 25.312`, H FP64 `79.918 / 42.636`, H FP32/FP32 `63.661 / 31.440`,
+screening `54.923 / 30.752`, and two-frame prediction `52.640 / 24.432`.
+The B64 paths also lose to baseline. Actual moving-step CUDA traces identify
+grouped-buffer clearing and selection, H multiplication, screening evaluation,
+and history append plus duplicate residual work as targets. They do not omit
+load fitting or numerical acceptance from accounting.
+
+Frozen v10 (`8956740bf`) tests bounded H output tiles (1/2/4/8), conservative
+screening blocks (32/64/128), rotating two-frame buffers and exact failed-list
+residual work for large batches. The original residual thresholds are unchanged.
+`native-kernels-v10`, `atlas-geometry-v10`, `complete-atlas-v10` and
+`module-atlas-v10` are in progress. Full evolving-scene, tuned module and memory
+comparisons remain required before any of the fourteen retention decisions.
