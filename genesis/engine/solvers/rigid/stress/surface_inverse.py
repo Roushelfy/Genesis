@@ -111,13 +111,7 @@ def kernel_surface_apply_compacted(
         i_n = i_task // stress_state.failed_count[None]
         i_failed = i_task % stress_state.failed_count[None]
         i_b = stress_state.failed_environments[i_failed]
-        w = omega[i_b]
-        terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
-        value = surface_inverse_info.centrifugal[i_n] @ terms
-        for slot in range(stress_state.boundary_count[i_b]):
-            j = stress_state.boundary_columns[slot, i_b]
-            node = surface_inverse_info.nodes[j]
-            value += surface_inverse_info.force_blocks[i_n, j] @ stress_state.force[node, i_b]
+        value = func_surface_value(i_n, i_b, omega, stress_state, surface_inverse_info, True)
         stress_state.displacement[i_n, i_b] = value / young
     for i_b in range(stress_state.active.shape[0]):
         stress_state.active[i_b] = gs.qd_int(not stress_state.valid[i_b])
@@ -136,6 +130,30 @@ def kernel_surface_apply_packed(
 
 
 @qd.func
+def func_surface_value(
+    i_n: int,
+    i_b: int,
+    omega: qd.Tensor,
+    stress_state: StressState,
+    surface_inverse_info: StressSurfaceInverseInfo,
+    packed: qd.template(),
+):
+    w = omega[i_b]
+    terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
+    value = surface_inverse_info.centrifugal[i_n] @ terms
+    n_columns = surface_inverse_info.nodes.shape[0]
+    if qd.static(packed):
+        n_columns = stress_state.boundary_count[i_b]
+    for slot in range(n_columns):
+        j = slot
+        if qd.static(packed):
+            j = stress_state.boundary_columns[slot, i_b]
+        node = surface_inverse_info.nodes[j]
+        value += surface_inverse_info.force_blocks[i_n, j] @ stress_state.force[node, i_b]
+    return value
+
+
+@qd.func
 def func_surface_apply_packed(
     young: float,
     omega: qd.Tensor,
@@ -151,13 +169,7 @@ def func_surface_apply_packed(
         if qd.static(only_failed):
             solve_env = not stress_state.valid[i_b]
         if solve_env:
-            w = omega[i_b]
-            terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
-            value = surface_inverse_info.centrifugal[i_n] @ terms
-            for slot in range(stress_state.boundary_count[i_b]):
-                j = stress_state.boundary_columns[slot, i_b]
-                node = surface_inverse_info.nodes[j]
-                value += surface_inverse_info.force_blocks[i_n, j] @ stress_state.force[node, i_b]
+            value = func_surface_value(i_n, i_b, omega, stress_state, surface_inverse_info, True)
             stress_state.displacement[i_n, i_b] = value / young
     for i_b in range(stress_state.active.shape[0]):
         stress_state.active[i_b] = 1
@@ -230,12 +242,7 @@ def kernel_surface_apply(
         if qd.static(only_failed):
             solve_env = not stress_state.valid[i_b]
         if solve_env:
-            w = omega[i_b]
-            terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
-            value = surface_inverse_info.centrifugal[i_n] @ terms
-            for j in range(surface_inverse_info.nodes.shape[0]):
-                j_n = surface_inverse_info.nodes[j]
-                value += surface_inverse_info.force_blocks[i_n, j] @ stress_state.force[j_n, i_b]
+            value = func_surface_value(i_n, i_b, omega, stress_state, surface_inverse_info, False)
             stress_state.displacement[i_n, i_b] = value / young
     for i_b in range(stress_state.active.shape[0]):
         stress_state.active[i_b] = 1
