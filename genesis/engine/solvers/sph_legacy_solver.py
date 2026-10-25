@@ -1,6 +1,5 @@
-from typing import TYPE_CHECKING
-
 import numpy as np
+
 import quadrants as qd
 
 import genesis as gs
@@ -9,11 +8,9 @@ from genesis.engine.boundaries import CubeBoundary
 from genesis.engine.entities import SPHEntity
 from genesis.engine.materials import SPH
 from genesis.engine.states.solvers import SPHSolverState
+from genesis.utils import array_class
 
 from .base_solver import GravityMixin, Solver, TimeBasedMixin
-
-if TYPE_CHECKING:
-    from genesis.engine.entities import SPHEntity
 
 
 @qd.data_oriented
@@ -41,7 +38,7 @@ class SPHLegacySolver(GravityMixin, TimeBasedMixin, Solver):
         self._upper_bound = np.array(options.upper_bound)
         self._lower_bound = np.array(options.lower_bound)
 
-        self._particle_volume = 0.8 * self._particle_size**3  # 0.8 is an empirical value
+        self._particle_volume = options.particle_volume_factor * self._particle_size**3
 
         # spatial hasher
         self.sh = gu.SpatialHasher(
@@ -834,12 +831,8 @@ class SPHLegacySolver(GravityMixin, TimeBasedMixin, Solver):
         n_particles: qd.i32,
         # Material slots only apply to the default SPH solver, which stores material properties per entity.
         material_idx: qd.i32,
-        mat_rest_density: qd.f32,
-        mat_stiffness: qd.f32,
-        mat_exponent: qd.f32,
-        mat_viscosity: qd.f32,
-        mat_surface_tension: qd.f32,
         pos: qd.types.ndarray(),
+        material: array_class.SPHMaterialInfo,
     ):
         for i_p_, i_b in qd.ndrange(n_particles, self._B):
             i_p = i_p_ + particle_start
@@ -851,12 +844,12 @@ class SPHLegacySolver(GravityMixin, TimeBasedMixin, Solver):
 
         for i_p_ in range(n_particles):
             i_p = i_p_ + particle_start
-            self.particles_info[i_p].rest_density = mat_rest_density
-            self.particles_info[i_p].stiffness = mat_stiffness
-            self.particles_info[i_p].exponent = mat_exponent
-            self.particles_info[i_p].viscosity = mat_viscosity
-            self.particles_info[i_p].surface_tension = mat_surface_tension
-            self.particles_info[i_p].mass = self._particle_volume * mat_rest_density
+            self.particles_info[i_p].rest_density = material.rest_density
+            self.particles_info[i_p].stiffness = material.stiffness
+            self.particles_info[i_p].exponent = material.exponent
+            self.particles_info[i_p].viscosity = material.viscosity
+            self.particles_info[i_p].surface_tension = material.surface_tension
+            self.particles_info[i_p].mass = self._particle_volume * material.rest_density
 
     # ----------------------------------------------------------------------
 

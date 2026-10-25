@@ -46,11 +46,12 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self._df_min_den_iters = options.min_density_solver_iterations
         self._df_skip_div = options.skip_divergence_solver
         self._df_warm_start = options.warm_start
+        self._micropolar = options.micropolar
         self._df_eps = 1e-5
         # A particle with fewer neighbors sits at a free surface, where the divergence estimate is unreliable.
         self._df_min_div_neighbors = 20
 
-        self._particle_volume = 0.75 * self._particle_size**3  # 0.8 overpressurizes by a little when using normal smapling
+        self._particle_volume = options.particle_volume_factor * self._particle_size**3
 
         # Boundary particles sampled on the surface of the rigid geoms. The spacing is the one of the regular triangle
         # sampling of Akinci et al. 2012 boundaries, denser than the fluid so that the fluid cannot leak through.
@@ -79,7 +80,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             material=gs.qd_int,  # material index
             reordered_idx=gs.qd_int,  # TODO: see above.
             active=gs.qd_bool,
-            # TODO: Add micropolar rotation and angular velocity
+            # Micro-rotation (Bender et al. 2017, "Turbulent Micropolar SPH Fluids with Foam"), allocated on demand.
+            **(dict(angular_vel=gs.qd_vec3, angular_acc=gs.qd_vec3) if self._micropolar else {}),
             # --- DFSPH fields ---
             # 1 / (|sum_j V_j grad W_ij|^2 + sum_j |V_j grad W_ij|^2), i.e. alpha * rho_0^2 / rho
             alpha_factor_adj=gs.qd_float,
@@ -106,6 +108,9 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             rest_density=gs.qd_float,  # mass / rest_volume
             viscosity=gs.qd_float,
             surface_tension=gs.qd_float,
+            vorticity=gs.qd_float,
+            angular_viscosity=gs.qd_float,
+            inverse_microinertia=gs.qd_float,  # 1 / microinertia
         )
 
         # single frame particle state for rendering
@@ -344,41 +349,84 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         # Surface tension (cohesion). The kernel is evaluated no closer than one particle size so that the attraction
         # vanishes as particles touch instead of peaking at the kernel center.
         effective_dist = qd.max(dist, self._particle_size)
-        ret -= self.materials[i_m_i].surface_tension / mass_i * mass_j * x_ij * self.cubic_kernel(effective_dist)
+        ret.acc -= self.materials[i_m_i].surface_tension / mass_i * mass_j * x_ij * self.cubic_kernel(effective_dist)
 
         # Viscosity, using the 2 * (d + 2) Laplacian approximation in 3D with a regularized denominator.
         v_ij = (self.particles_reordered[i, i_b].vel - self.particles_reordered[j, i_b].vel).dot(x_ij)
         rho_j = self.particles_reordered[j, i_b].density_norm * self.materials[i_m_j].rest_density
-        ret += (
+        grad_W = self.cubic_kernel_derivative(x_ij)
+        ret.acc += (
             2.0
             * (3.0 + 2.0)
             * self.materials[i_m_i].viscosity
             * (mass_j / rho_j)
             * v_ij
             / (dist**2 + 0.01 * self._support_radius**2)
-            * self.cubic_kernel_derivative(x_ij)
+            * grad_W
         )
+
+        if qd.static(self._micropolar):
+            # The micro-rotation field only couples particles of the same material.
+            if i_m_i == i_m_j:
+                vorticity = self.materials[i_m_i].vorticity
+                inverse_microinertia = self.materials[i_m_i].inverse_microinertia
+                rho_i = self.particles_reordered[i, i_b].density_norm * self.materials[i_m_i].rest_density
+                omega_ij = self.particles_reordered[i, i_b].angular_vel - self.particles_reordered[j, i_b].angular_vel
+                vel_ij = self.particles_reordered[i, i_b].vel - self.particles_reordered[j, i_b].vel
+
+                # Smoothing of the micro-rotation field between neighbors (XSPH-like angular viscosity).
+                ret.angular_acc -= (
+                    inverse_microinertia
+                    * self.materials[i_m_i].angular_viscosity
+                    / self._substep_dt
+                    * (mass_j / rho_j)
+                    * omega_ij
+                    * self.cubic_kernel(dist)
+                )
+                # Exchange between the curl of the velocity field and the micro-rotation field.
+                ret.acc += vorticity / rho_i * mass_j * omega_ij.cross(grad_W)
+                ret.angular_acc += vorticity / rho_i * inverse_microinertia * mass_j * vel_ij.cross(grad_W)
 
     @qd.kernel
     def _kernel_compute_non_pressure_forces(self, f: qd.i32, t: qd.f32):
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             if self.particles_reordered[i_p, i_b].active:
-                acc = self._gravity[i_b]
+                ret = qd.Struct(acc=self._gravity[i_b], angular_acc=qd.Vector.zero(gs.qd_float, 3))
                 self.sh.for_all_neighbors(
                     i_p,
                     self.particles_reordered.pos,
                     self._support_radius,
-                    acc,
+                    ret,
                     self._task_compute_non_pressure_forces,
                     i_b,
                 )
 
                 for i_ff in qd.static(range(len(self._ffs))):
-                    acc += self._ffs[i_ff].get_acc(
+                    ret.acc += self._ffs[i_ff].get_acc(
                         self.particles_reordered[i_p, i_b].pos, self.particles_reordered[i_p, i_b].vel, t, i_p
                     )
-                self.particles_reordered[i_p, i_b].acc = acc
-                self.particles_reordered[i_p, i_b].vel += self._substep_dt * acc
+                self.particles_reordered[i_p, i_b].acc = ret.acc
+
+                if qd.static(self._micropolar):
+                    # Decay of the micro-rotation towards zero, which balances the vorticity injected by the flow.
+                    i_m = self.particles_reordered[i_p, i_b].material
+                    ret.angular_acc -= (
+                        2.0
+                        * self.materials[i_m].inverse_microinertia
+                        * self.materials[i_m].vorticity
+                        * self.particles_reordered[i_p, i_b].angular_vel
+                    )
+                    self.particles_reordered[i_p, i_b].angular_acc = ret.angular_acc
+
+        # Velocities and micro-rotations are integrated in a separate pass, since the accelerations above read the
+        # velocities and micro-rotations of the neighbors.
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                self.particles_reordered[i_p, i_b].vel += self._substep_dt * self.particles_reordered[i_p, i_b].acc
+                if qd.static(self._micropolar):
+                    self.particles_reordered[i_p, i_b].angular_vel += (
+                        self._substep_dt * self.particles_reordered[i_p, i_b].angular_acc
+                    )
 
     @qd.kernel
     def _kernel_advect_position(self, f: qd.i32):
@@ -971,13 +1019,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         particle_start: qd.i32,
         n_particles: qd.i32,
         material_idx: qd.i32,
-        mat_rest_density: qd.f32,
-        # The stiffness and exponent of the equation of state only apply to the legacy 'WCSPH' pressure solver.
-        mat_stiffness: qd.f32,
-        mat_exponent: qd.f32,
-        mat_viscosity: qd.f32,
-        mat_surface_tension: qd.f32,
         pos: qd.types.ndarray(),
+        material: array_class.SPHMaterialInfo,
     ):
         for i_p_, i_b in qd.ndrange(n_particles, self._B):
             i_p = i_p_ + particle_start
@@ -988,12 +1031,17 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             self.particles[i_p, i_b].material = material_idx
             self.particles[i_p, i_b].pressure_density2_norm_p = 0.0
             self.particles[i_p, i_b].pressure_density2_norm_d = 0.0
+            if qd.static(self._micropolar):
+                self.particles[i_p, i_b].angular_vel = qd.Vector.zero(gs.qd_float, 3)
 
         self.materials[material_idx].rest_volume = self._particle_volume
-        self.materials[material_idx].mass = self._particle_volume * mat_rest_density
-        self.materials[material_idx].rest_density = mat_rest_density
-        self.materials[material_idx].viscosity = mat_viscosity
-        self.materials[material_idx].surface_tension = mat_surface_tension
+        self.materials[material_idx].mass = self._particle_volume * material.rest_density
+        self.materials[material_idx].rest_density = material.rest_density
+        self.materials[material_idx].viscosity = material.viscosity
+        self.materials[material_idx].surface_tension = material.surface_tension
+        self.materials[material_idx].vorticity = material.vorticity
+        self.materials[material_idx].angular_viscosity = material.angular_viscosity
+        self.materials[material_idx].inverse_microinertia = 1.0 / material.microinertia
 
     # ----------------------------------------------------------------------
 

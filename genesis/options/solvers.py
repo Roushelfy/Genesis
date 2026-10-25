@@ -738,6 +738,11 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     ----------
     particle_size : float, optional
         Particle diameter in meters. Defaults to 0.02.
+    particle_volume_factor : float, optional
+        Rest volume of a particle, as a fraction of the cube of `particle_size`. The fluid settles where its particles
+        fill their rest volume, so this sets how densely the fluid packs relative to the spacing it is sampled at:
+        higher values make freshly sampled fluid start compressed and expand, lower values make it start sparse and
+        contract. The mass of a particle scales with it as well. Defaults to 0.75.
     use_legacy_solver : bool, optional
         Whether to use the legacy SPH solver. The legacy solver offers the weakly compressible 'WCSPH' pressure solver
         and two-way coupling with rigid, MPM and FEM entities, but its 'DFSPH' pressure solver lets the fluid compress
@@ -777,6 +782,11 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
         Whether DFSPH starts each pressure solve from half the pressure of the previous substep. This reduces the
         number of solver iterations for fluid at rest or in slow motion, but it can carry pressure spikes from
         violent impacts over to the next substep. Defaults to True.
+    micropolar : bool, optional
+        Whether to model the micro-rotation of the fluid particles, which restores the small-scale vortices that
+        particle-based fluids damp out, yielding livelier splashes and swirls. Its strength is set per material by
+        `vorticity`, `angular_viscosity` and `microinertia`. It costs one more neighbor pass per substep and
+        adds turbulent motion to slow, laminar flows. Only used by the default solver. Defaults to False.
     boundary_offset : float, optional
         Distance in meters by which the boundary particles sampled on rigid geoms are moved inside the geom, along its
         surface normal. Fluid particles rest about one particle spacing away from the boundary particles. With half
@@ -787,6 +797,7 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     """
 
     particle_size: PositiveFloat = 0.02
+    particle_volume_factor: PositiveFloat = 0.75
     use_legacy_solver: StrictBool = False
     pressure_solver: Literal["WCSPH", "DFSPH"] | None = None
 
@@ -806,6 +817,7 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     min_density_solver_iterations: PositiveInt = 1
     skip_divergence_solver: StrictBool = False
     warm_start: StrictBool = True
+    micropolar: StrictBool = False
     boundary_offset: NonNegativeFloat | None = None
 
     _support_radius: float = PrivateAttr(default=0.0)

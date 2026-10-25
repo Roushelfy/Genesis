@@ -2,6 +2,7 @@ import quadrants as qd
 
 import genesis as gs
 from genesis.engine.states.entities import SPHEntityState
+from genesis.utils import array_class
 
 from .particle_entity import ParticleEntity
 
@@ -72,12 +73,17 @@ class SPHEntity(ParticleEntity):
             self._particle_start,
             self._n_particles,
             self._solver.entities.index(self),
-            self._material.rest_density,
-            self._material.stiffness,
-            self._material.exponent,
-            self._material.viscosity,
-            self._material.surface_tension,
             self._particles,
+            array_class.SPHMaterialInfo(
+                rest_density=self._material.rest_density,
+                stiffness=self._material.stiffness,
+                exponent=self._material.exponent,
+                viscosity=self._material.viscosity,
+                surface_tension=self._material.surface_tension,
+                vorticity=self._material.vorticity,
+                angular_viscosity=self._material.angular_viscosity,
+                microinertia=self._material.microinertia,
+            ),
         )
 
     def _reset_grad(self):

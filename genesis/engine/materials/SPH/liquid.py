@@ -15,6 +15,17 @@ class Liquid(Base):
         The viscosity of the liquid. Default is 0.005.
     surface_tension : float, optional
         The surface tension of the liquid. Default is 0.01.
+    vorticity : float, optional
+        Coupling strength between the flow and the micro-rotation of the particles, which only applies when the SPH
+        solver models micro-rotation (`micropolar=True`). Higher values inject more small-scale swirl, but too high
+        values make the flow noisy. Default is 0.01.
+    angular_viscosity : float, optional
+        Viscosity of the micro-rotation field, which only applies when the SPH solver models micro-rotation. Higher
+        values smooth the micro-rotation between neighbors and keep the swirls coherent, but damp them faster.
+        Default is 0.1.
+    microinertia : float, optional
+        Micro-inertia of the particles, which only applies when the SPH solver models micro-rotation. Lower values let
+        the micro-rotation follow the flow faster, but require a smaller time step to stay stable. Default is 2.0.
     sampler : str, optional
         Particle sampler. Defaults to 'regular' for numerical stability with SPH.
     """
@@ -24,4 +35,7 @@ class Liquid(Base):
     exponent: PositiveFloat = 7.0
     viscosity: NonNegativeFloat = 0.005
     surface_tension: NonNegativeFloat = 0.01
+    vorticity: NonNegativeFloat = 0.01
+    angular_viscosity: NonNegativeFloat = 0.1
+    microinertia: PositiveFloat = 2.0
     sampler: SamplerType = "regular"

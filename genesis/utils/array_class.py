@@ -322,6 +322,24 @@ class ErrorCode(IntEnum):
     INVALID_ACC_NAN = 0b00000000000000000000000001000000
 
 
+# ========================================= SPHMaterialInfo =========================================
+
+# Properties of an SPH material, passed by value to the kernels adding particles. Members are single precision because
+# the struct type is fixed at import, before the precision of Genesis is selected.
+SPHMaterialInfo = qd.types.struct(
+    rest_density=qd.f32,
+    # The stiffness and exponent of the equation of state only apply to the legacy 'WCSPH' pressure solver.
+    stiffness=qd.f32,
+    exponent=qd.f32,
+    viscosity=qd.f32,
+    surface_tension=qd.f32,
+    # Micro-rotation only applies to the default SPH solver.
+    vorticity=qd.f32,
+    angular_viscosity=qd.f32,
+    microinertia=qd.f32,
+)
+
+
 # =========================================== RigidInfo ===========================================
 
 
