@@ -688,12 +688,32 @@ def func_pressure_correct_warp(contact_state: StressContactState, surface_info: 
         i_warp = (i_thread // 32) % n_warps
         slot = i_thread // (32 * n_warps)
         sh_fit = qd.simt.block.SharedArray((4, 13), gs.qd_float)
+        sh_faces = qd.simt.block.SharedArray((128,), gs.qd_int)
+        sh_count = qd.simt.block.SharedArray((1,), gs.qd_int)
         pair = contact_state.active_pairs[slot]
         i_c, i_b = pair[0], pair[1]
         if contact_state.status[i_c, i_b] == 5:
             first, second = func_force_frame(contact_state.force[i_c, i_b])
             center, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
             low, dimensions = func_patch_grid(center, radius, surface_info.grid)
+            is_cached = n_warps > 1 and contact_state.is_refined[i_c, i_b]
+            n_faces = surface_info.face_origin.shape[0]
+            if is_cached:
+                if lane == 0 and i_warp == 0:
+                    sh_count[0] = 0
+                qd.simt.block.sync()
+                for i_chunk in range((n_faces + 127) // 128):
+                    i_f = i_chunk * 128 + i_warp * 32 + lane
+                    if i_f < n_faces:
+                        distance = qd.max(surface_info.face_bounds_low[i_f] - center, 0.0)
+                        distance += qd.max(center - surface_info.face_bounds_high[i_f], 0.0)
+                        if distance.norm_sqr() < radius * radius:
+                            i_cached = qd.atomic_add(sh_count[0], 1)
+                            if i_cached < 128:
+                                sh_faces[i_cached] = i_f
+                qd.simt.block.sync()
+                # Oversized footprints retain the exhaustive face walk and all original samples.
+                is_cached = sh_count[0] <= 128
             weight_sum = contact_state.weight_sum[i_c, i_b]
             coefficient = contact_state.coefficient[i_c, i_b] * weight_sum
             accepted, line = False, False
@@ -714,11 +734,15 @@ def func_pressure_correct_warp(contact_state: StressContactState, surface_info: 
                 hessian = qd.Matrix.zero(gs.qd_float, 3, 3)
                 n_cells = dimensions[0] * dimensions[1] * dimensions[2] + 1
                 if contact_state.is_refined[i_c, i_b]:
-                    n_cells = surface_info.face_origin.shape[0]
+                    n_cells = n_faces
+                    if is_cached:
+                        n_cells = sh_count[0]
                 for i_group in range((n_cells + n_warps - 1) // n_warps):
                     i_cell = i_group * n_warps + i_warp
                     start, end = 0, 0
                     if i_cell < n_cells:
+                        if is_cached:
+                            i_cell = sh_faces[i_cell]
                         start, end = func_contact_cell(i_cell, i_c, i_b, low, dimensions, contact_state, surface_info)
                     closest = qd.Vector.zero(gs.qd_float, 3)
                     remaining, contained = gs.qd_float(0.0), False
