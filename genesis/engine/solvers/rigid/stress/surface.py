@@ -32,6 +32,8 @@ class StressSurfaceInfo:
     face_bounds_high: qd.Tensor
     quad_vertices: qd.Tensor
     quad_coefficients: qd.Tensor
+    quad_projection: qd.Tensor
+    quad_scale: qd.Tensor
     quad_valid: qd.Tensor
     grid: StressGridInfo
 
@@ -59,6 +61,10 @@ class StressSurface:
             quad_coefficients=V_MAT(
                 4, 3, dtype=gs.qd_float, shape=(n_faces if stress_info.load_nodes.shape[0] > 0 else 0,)
             ),
+            quad_projection=V_MAT(
+                4, 2, dtype=gs.qd_float, shape=(n_faces if stress_info.load_nodes.shape[0] > 0 else 0,)
+            ),
+            quad_scale=V(dtype=gs.qd_float, shape=(max(1, n_faces if stress_info.load_nodes.shape[0] > 0 else 0),)),
             quad_valid=V(dtype=gs.qd_bool, shape=()),
             grid=allocate_grid(n_faces * n_quadrature),
         )
@@ -158,7 +164,12 @@ def kernel_quad_surface(stress_info: StressInfo, surface_info: StressSurfaceInfo
         surface_info.quad_coefficients[i_f] = qd.Matrix.rows([origin, first, second, mixed])
         surface_info.face_origin[i_f] = origin
         surface_info.face_edges[i_f] = qd.Matrix.rows([2.0 * first, 2.0 * second])
-        surface_info.face_dual[i_f] = qd.Matrix.rows([tangent, normal.cross(tangent)])
+        basis = qd.Matrix.rows([tangent, normal.cross(tangent)])
+        surface_info.face_dual[i_f] = basis
+        surface_info.quad_projection[i_f] = qd.Matrix.rows(
+            [qd.Vector.zero(gs.qd_float, 2), basis @ first, basis @ second, basis @ mixed]
+        )
+        surface_info.quad_scale[i_f] = qd.max(first.norm(), second.norm(), 1e-30)
         surface_info.face_normal[i_f] = normal
         surface_info.face_bounds_low[i_f] = qd.min(vertices[0, :], vertices[1, :], vertices[2, :], vertices[3, :])
         surface_info.face_bounds_high[i_f] = qd.max(vertices[0, :], vertices[1, :], vertices[2, :], vertices[3, :])

@@ -11,7 +11,7 @@ from genesis.utils.array_class import V_VEC, DataKind, V, of_kind
 from .data import StressInfo, StressState, func_scatter_load
 from .grid import func_patch_cell, func_patch_grid
 from .surface import StressSurfaceInfo, func_closest_triangle
-from .quadrilateral import func_quad_inverse, func_quad_section
+from .quadrilateral import func_quad_inverse, func_quad_inverse_prepared, func_quad_section
 
 # The normalized dual gradient bounds relative resultant force and moment/radius.
 # Stop at 10% of the independently checked 1e-8 contact wrench budget; the final
@@ -325,11 +325,13 @@ def func_contact_sample_prepared(
         if surface_info.quad_vertices.shape[0] > 0:
             if weight > 0.0:
                 target = surface_info.face_dual[i_face] @ (position - surface_info.face_origin[i_face])
-                nodal, position, _normal, ratio, regular = func_quad_inverse(
+                nodal, position, _normal, ratio, regular = func_quad_inverse_prepared(
                     surface_info.quad_coefficients[i_face],
                     surface_info.face_origin[i_face],
                     surface_info.face_dual[i_face],
                     target,
+                    surface_info.quad_projection[i_face],
+                    surface_info.quad_scale[i_face],
                 )
                 shape = qd.Vector([nodal[0], nodal[1], nodal[2], nodal[3], 0.0, 0.0])
                 weight *= ratio

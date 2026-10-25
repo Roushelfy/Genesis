@@ -26,15 +26,36 @@ def func_quad_inverse(
     target: qd.types.vector(2),
 ):
     """Invert an orthogonal projection; retain the true surface area and position."""
+    projection = qd.Matrix.rows(
+        [
+            basis @ (coefficients[0, :] - origin),
+            basis @ coefficients[1, :],
+            basis @ coefficients[2, :],
+            basis @ coefficients[3, :],
+        ]
+    )
+    scale = qd.max(coefficients[1, :].norm(), coefficients[2, :].norm(), 1e-30)
+    return func_quad_inverse_prepared(coefficients, origin, basis, target, projection, scale)
+
+
+@qd.func
+def func_quad_inverse_prepared(
+    coefficients: qd.types.matrix(4, 3),
+    origin: qd.types.vector(3),
+    basis: qd.types.matrix(2, 3),
+    target: qd.types.vector(2),
+    projection: qd.types.matrix(4, 2),
+    scale: float,
+):
+    """Invert a prepared physical chart while checking the physical-space residual."""
     constant, first, second, mixed = coefficients[0, :], coefficients[1, :], coefficients[2, :], coefficients[3, :]
     # In projection p = a*xi + b*eta + c*xi*eta. Eliminating eta gives a quadratic.
     # Its two roots have opposite Jacobian signs; keep the outward, regular material chart.
-    a, b, c = basis @ first, basis @ second, basis @ mixed
-    p = target - basis @ (constant - origin)
+    a, b, c = projection[1, :], projection[2, :], projection[3, :]
+    p = target - projection[0, :]
     quadratic = c[0] * a[1] - c[1] * a[0]
     linear = p[0] * c[1] - p[1] * c[0] - (a[0] * b[1] - a[1] * b[0])
     constant_term = p[0] * b[1] - p[1] * b[0]
-    scale = qd.max(first.norm(), second.norm(), 1e-30)
     roots = qd.Vector.zero(gs.qd_float, 2)
     count = 0
     if qd.abs(quadratic) <= 1e-14 * qd.max(qd.abs(linear), qd.abs(constant_term), scale * scale):
@@ -66,7 +87,7 @@ def func_quad_inverse(
     position = constant + first * local[0] + second * local[1] + mixed * local[0] * local[1]
     tangent_first, tangent_second = first + mixed * local[1], second + mixed * local[0]
     cross = tangent_first.cross(tangent_second)
-    projected_first, projected_second = basis @ tangent_first, basis @ tangent_second
+    projected_first, projected_second = a + c * local[1], b + c * local[0]
     projected_area = qd.abs(projected_first[0] * projected_second[1] - projected_first[1] * projected_second[0])
     residual = basis @ (position - origin) - target
     regular = regular and projected_area > 1e-14 * scale * scale and residual.norm() <= 2e-12 * scale
