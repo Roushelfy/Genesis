@@ -192,6 +192,8 @@ class StressModel:
             preconditioned=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
             boundary_columns=V(dtype=gs.qd_int, shape=(self.n_boundary_nodes, n_envs)),
             boundary_count=V(dtype=gs.qd_int, shape=(n_envs,)),
+            failed_environments=V(dtype=gs.qd_int, shape=(n_envs,)),
+            failed_count=V(dtype=gs.qd_int, shape=()),
             wrench=V_VEC(6, dtype=gs.qd_float, shape=(n_envs,)),
             rhs_norm_squared=V(dtype=gs.qd_float, shape=(n_envs,)),
             residual_norm_squared=V(dtype=gs.qd_float, shape=(n_envs,)),

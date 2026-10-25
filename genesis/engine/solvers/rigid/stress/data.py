@@ -57,6 +57,8 @@ class StressState:
     preconditioned: qd.Tensor
     boundary_columns: qd.Tensor
     boundary_count: qd.Tensor
+    failed_environments: qd.Tensor
+    failed_count: qd.Tensor
     wrench: qd.Tensor
     rhs_norm_squared: qd.Tensor
     residual_norm_squared: qd.Tensor
