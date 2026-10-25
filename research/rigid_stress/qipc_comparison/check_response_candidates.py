@@ -135,11 +135,24 @@ def kernel_apply(
 def kernel_bounds(response: qd.Tensor, bounds: qd.Tensor, n_stress: int):
     for i_block, j in qd.ndrange(bounds.shape[0], bounds.shape[1]):
         value = gs.qd_float(0.0)
+        magnitude = gs.qd_float(0.0)
         for lane in range(32):
             i_p = 32 * i_block + lane
             if i_p < n_stress:
                 value = qd.max(value, func_vm(response[i_p, j]))
-        bounds[i_block, j] = value * (1.0 + 1e-10)
+                tensor = response[i_p, j]
+                norm = qd.sqrt(
+                    tensor[0] ** 2
+                    + tensor[1] ** 2
+                    + tensor[2] ** 2
+                    + 2.0 * (tensor[3] ** 2 + tensor[4] ** 2 + tensor[5] ** 2)
+                )
+                magnitude = qd.max(magnitude, norm)
+        # Account for componentwise product/sum rounding even when a column is
+        # almost hydrostatic. A relative margin on VM alone cannot cover that.
+        roundoff = (2.0 * response.shape[1] + 32.0) * 1.1102230246251565e-16
+        allowance = 16.0 * roundoff / (1.0 - roundoff)
+        bounds[i_block, j] = (value + allowance * magnitude) * (1.0 + 1e-10)
 
 
 @qd.kernel
@@ -381,6 +394,7 @@ def main():
                 total_blocks=n_blocks,
                 bounds_bytes=n_blocks * n_inputs * 8,
                 relative_bound_inflation=1e-10,
+                component_rounding_allowance="16*gamma_(2*n_inputs+32) times each block-column Frobenius norm, plus relative inflation; finite FP64 normal-range fixture.",
             )
             assert error < 1e-8
             write_json(args.output / "result.json", result)

@@ -1,6 +1,7 @@
 """Test two-frame prediction with accepted results feeding subsequent native history."""
 
 import argparse
+import time
 from functools import partial
 from pathlib import Path
 
@@ -81,6 +82,7 @@ def main():
     parser.add_argument("--envs", type=int, default=4)
     parser.add_argument("--steps", type=int, default=600)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--timing-only", action="store_true")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     result = dict(identity=runtime_identity(), complete=False, budget=1e-5, rows=[])
@@ -112,6 +114,14 @@ def main():
             kernel_reset(1, counts)
         workload.step()
         workload.scene.rigid_solver.check_errno()
+        exact_seconds = None
+        if args.timing_only:
+            qd.sync()
+            started = time.perf_counter()
+            entry.model.recover(entry.omega, entry.state, surface_load=True)
+            qd.sync()
+            exact_seconds = time.perf_counter() - started
+        started = time.perf_counter()
         kernel_predict(previous, counts, heads, state, entry.state)
         kernel_full_residual(
             options.young,
@@ -134,6 +144,22 @@ def main():
             args.envs >= 8192,
         )
         entry.model.evaluate_stress(options, state)
+        if args.timing_only:
+            kernel_append(previous, counts, heads, state, True)
+            qd.sync()
+            prediction_seconds = time.perf_counter() - started
+            assert qd_to_numpy(state.valid).all()
+            result["rows"].append(
+                dict(
+                    step=step,
+                    exact_seconds=exact_seconds,
+                    prediction_seconds=prediction_seconds,
+                    predicted_count=int(qd_to_numpy(hits).sum()),
+                )
+            )
+            if step % 50 == 0:
+                write_json(args.output / "result.json", result)
+            continue
         assert qd_to_numpy(state.valid).all()
         actual = qd_to_numpy(state.stress_tensor, transpose=True)
         expected = qd_to_numpy(entry.state.stress_tensor, transpose=True)
@@ -165,7 +191,12 @@ def main():
     result["rotation_seconds"] = timings(partial(kernel_append, previous, counts, heads, state, True), 5, 100)
     result["copy_seconds"] = timings(partial(kernel_append, previous, counts, heads, state, False), 5, 100)
     result["complete"] = True
-    result["budget_passed"] = all(max(row["field_relative"] + row["peak_relative"]) <= 1e-5 for row in result["rows"])
+    result["timing_only"] = args.timing_only
+    result["budget_passed"] = (
+        None
+        if args.timing_only
+        else all(max(row["field_relative"] + row["peak_relative"]) <= 1e-5 for row in result["rows"])
+    )
     write_json(args.output / "result.json", result)
 
 

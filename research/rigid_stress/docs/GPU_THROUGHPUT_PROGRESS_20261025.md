@@ -94,3 +94,70 @@ It tests full-footprint coverage/fallback, a three-region junction, common-mothe
 embedding, per-(mesh, environment) aggregation and both exact hierarchical
 Schur directions. This is a planar spatial/algebra control, separate from native
 Franka throughput.
+
+## Paired pressure and qualification results
+
+The paired v0/v1/v2 B64 complete-scene medians are 7.274/6.714/6.461 ms;
+B8192 is 85.890/78.283/70.049 ms. Frozen module medians are
+4.464/4.103/3.828 ms and 65.480/62.005/55.086 ms respectively. All repeats
+have zero invalid environment-steps. The v2 pressure device stages are
+1.449/36.571 ms. Complete q16 scene fields, N/M/Q, loads and every-step
+sampled peaks pass exact paired budgets; a 64-condition heterogeneous cycle
+also passes. The maximum paired peak difference is about 2.1e-15 relative.
+
+Quadrature 8 passes the static fixtures but fails the evolving native pressure
+fit at frame 108. Quadrature 12 completes the native cycle, but its worst paired
+peak difference is 6.901e-4 (frame 476, environment 1), exceeding the predeclared
+1e-4 budget. Keep q16. Existing four-column history passes native acceptance,
+but fails the separate 1e-5 peak budget (4.548e-5 at frame 545, environment 0).
+Its B8192 complete-scene timings are slower: shell 71.303 to 84.282 ms;
+volume 47.217 to 69.942 ms. Keep history disabled for the recommended path.
+
+The first new paired audit mistakenly demanded bitwise equality of contact
+radii. Its failure is preserved. The corrected audit uses the established
+rtol=1e-12 radius contract and independently records the stronger bitwise
+observation; all original baseline assertions remain unchanged.
+
+Output transform sharing (v3) passes numerics but does not improve the measured
+stress stage (B8192 5.054 to 5.168 ms). It was reverted. Only the measured
+pressure changes and device failed-environment compaction remain in v5/v6.
+Compaction applies only to packed CUDA exact fallback at B>=1024; the ordinary
+history-free fused path retains its schedule. The controlled B8192 shell
+1%-failure case falls from 1.261 to 0.658 ms including residual checking.
+Final native poisoned-displacement/isolation controls and scene timings are
+running. The scratch allocation is 4*B+4 bytes per state, not persistent history.
+
+## Remaining candidate evidence
+
+Isolated FP32 response storage with FP64 arithmetic requires one correction and
+is slower (shell B8192 10.993 to 37.533 ms); it is not a recommended default.
+A sustained two-frame prototype feeds every accepted prediction into subsequent
+history and resets one environment mid-cycle. All 600 steps pass the 1e-5 field
+and peak budget; maximum field differences are 1.70e-7 shell and 1.79e-7 volume.
+Only 442/2350 loaded environment-steps predict successfully. Module timings are
+being collected before drawing a performance conclusion.
+
+Actual cached Kq matches the direct CSR product, but refreshing plus checking
+costs more than the direct residual: shell B8192 1.260 versus 1.104 ms; volume
+2.877 versus 2.625 ms. Two-buffer rotation also loses at large batches (shell
+0.419 versus 0.360 ms, volume 0.697 versus 0.591 ms). No stale RHS-as-Kq shortcut
+is used. The installed Quadrants Python API probe found no TF32/WMMA entrypoint;
+TF32 was not executed or claimed.
+
+CPU atlas controls cover 3/5 libraries, two refinement widths, continuous blend,
+nearest, top-two and narrow overlap, with complete finite-footprint fallback.
+The three-library cases meet the spatial budgets, but 19/80 five-library cases
+exceed the 10% field budget (worst 15.9%). Nearest and hard top-two exhibit
+junction jumps; smooth overlap allows three or more contributors. Both exact
+coarse/local Schur directions reproduce the direct solve, but cost roughly
+twice as much in these CPU controls. No improved POD basis is justified.
+
+The nested planar common-mother identity also passes an actual Quadrants GPU
+recovery prototype. At B1024, three-library independent recovery takes 0.987 ms
+versus 0.545 ms common-mother; five-library 1.393 versus 0.773 ms. Selection and
+grouping add about 0.205/0.326 ms respectively. These timings use independently
+prepared fixture operators/solutions, exclude pressure and solve costs, and
+are not native curved-egg end-to-end claims. Native nonnested offset surfaces
+lack a validated common embedding; independently refined models also change
+lumped inertia relief. The clamped planar identity does not authorize changing
+those production semantics. Retain the promising prototype and its limitation.
