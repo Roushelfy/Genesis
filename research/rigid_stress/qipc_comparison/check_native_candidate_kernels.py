@@ -9,11 +9,12 @@ import quadrants as qd
 
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.atlas import StressAtlas, StressAtlasState
+from genesis.engine.solvers.rigid.stress.atlas_output import StressAtlasOutput
 from genesis.engine.solvers.rigid.stress.contact import create_contacts, kernel_pack_contacts
 from genesis.engine.solvers.rigid.stress.data import StressState
 from genesis.engine.solvers.rigid.stress.history import StressHistory
 from genesis.engine.solvers.rigid.stress.model import StressModel
-from genesis.engine.solvers.rigid.stress.response import StressResponse
+from genesis.engine.solvers.rigid.stress.response import StressResponse, StressResponseInventory
 from genesis.engine.solvers.rigid.stress.scatter import create_scatter_workspace, kernel_scatter_faces
 from genesis.engine.solvers.rigid.stress.shell_model import ShellModel
 from genesis.engine.solvers.rigid.stress.surface import StressSurface
@@ -23,7 +24,7 @@ from genesis.utils.misc import qd_to_numpy
 
 from .artifacts import runtime_identity, write_json
 from .audit_gpu_candidates import per_environment
-from .check_native_atlas import cpu_control
+from .check_native_atlas import cpu_control, cpu_operator, relative
 
 
 @dataclass
@@ -58,6 +59,8 @@ def kernel_load(
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stress-backend", choices=("shell", "volume"), required=True)
+    parser.add_argument("--atlas-output", choices=("merged", "independent"), default="merged")
+    parser.add_argument("--atlas-partition", choices=("direct", "coarse_local"), default="direct")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -71,7 +74,7 @@ def main():
         output_mode="full",
         quadrature=16,
         atlas_regions=6,
-        stress_response="sparse",
+        stress_response="none" if args.atlas_output == "independent" else "sparse",
     )
     model = ShellModel(options) if args.stress_backend == "shell" else StressModel(options)
     state = model.create_state(2, "full")
@@ -79,9 +82,11 @@ def main():
     contacts.valid.fill(False)
     contacts.force.fill(0)
     surface = StressSurface(16, model.load_info)
-    atlas = StressAtlas(model, contacts, 6, 0.003)
+    atlas = StressAtlas(model, contacts, 6, 0.003, args.atlas_partition)
+    if args.atlas_output == "independent":
+        atlas.output = StressAtlasOutput(model, 2, 7)
     history = StressHistory(model.info.vertices.shape[0], 2, 2)
-    response = StressResponse(model.output_response, 2)
+    response = StressResponse(model.output_response, 2) if model.output_response is not None else None
     omega = V_VEC(3, dtype=gs.qd_float, shape=(2,))
     workspace = create_scatter_workspace(2, 32)
     kernel_pack_contacts(contacts)
@@ -114,6 +119,20 @@ def main():
             result["cpu_control"] = cpu_control(Control(model, state, omega, options))
         if step == 2:
             assert hits.all()
+    if atlas.coarse is not None:
+        matrix = cpu_operator(model.info).matrix
+        basis = qd_to_numpy(atlas.coarse.info.basis).transpose(0, 2, 1).reshape((matrix.shape[0], -1))
+        projection = qd_to_numpy(atlas.coarse.info.projection)
+        native = (
+            qd_to_numpy(model.surface_inverse.info.force_blocks).transpose(0, 2, 1, 3).reshape((matrix.shape[0], -1))
+        )
+        residual = qd_to_numpy(atlas.response.force_blocks).transpose(0, 2, 1, 3).reshape(native.shape)
+        result["coarse_reconstruction_error"] = relative(basis @ projection + residual, native)
+        result["coarse_galerkin_error"] = relative(basis.T @ matrix @ (native - residual), basis.T @ matrix @ native)
+        assert result["coarse_reconstruction_error"] < 1e-12
+        assert result["coarse_galerkin_error"] < 1e-8
+    if response is None:
+        response = StressResponse(StressResponseInventory(model, options), 2)
     maximum = model.create_state(2)
     kernel_load(0, omega, maximum, atlas.state, model.surface_inverse.info)
     model.recover(

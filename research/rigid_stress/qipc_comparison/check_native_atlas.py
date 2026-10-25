@@ -90,8 +90,11 @@ def main():
     parser.add_argument("--stress-backend", choices=("shell", "volume"), required=True)
     parser.add_argument("--envs", type=int, default=4)
     parser.add_argument("--steps", type=int, default=140)
+    parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
     parser.add_argument("--atlas-regions", type=int, default=6)
     parser.add_argument("--atlas-transition", type=float, default=0.003)
+    parser.add_argument("--atlas-output", choices=("merged", "independent"), default="merged")
+    parser.add_argument("--atlas-partition", choices=("direct", "coarse_local"), default="direct")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -110,10 +113,13 @@ def main():
         radius_model="hertz",
         pressure_profile="hertz",
         quadrature=16,
+        pressure_quadrature=args.pressure_quadrature,
         box_edge_policy="planar",
         stress_backend=args.stress_backend,
         atlas_regions=args.atlas_regions,
         atlas_transition=args.atlas_transition,
+        atlas_output=args.atlas_output,
+        atlas_partition=args.atlas_partition,
     )
     entry = workload.scene.rigid_solver.stress_recovery.links[0]
     state, atlas = entry.state, entry.atlas.state

@@ -1,7 +1,6 @@
 """Check small Hertz footprints against independent boundary projection and P2 work transfer."""
 
 import argparse
-from itertools import permutations
 from pathlib import Path
 from time import perf_counter
 
@@ -21,6 +20,7 @@ from .artifacts import file_id, runtime_identity, write_json
 from .native_hertz import NativeHertz
 from .native_hertz_transfer import HertzSurfaceTransfer, func_projected_surface_walk
 from .p2_elastic import FreeElasticP2
+from .voxel_mesh import voxel_mesh
 
 
 @qd.kernel
@@ -45,29 +45,6 @@ def kernel_walk_queries(
         faces[i] = face
         for a in qd.static(range(3)):
             points[i, a] = point[a]
-
-
-def voxel_mesh(kind):
-    shape = (3, 3, 3) if kind == "cavity" else (3, 3, 1) if kind == "u" else (2, 2, 1)
-    cells = np.indices(shape).reshape(3, -1).T
-    if kind == "cavity":
-        cells = cells[(cells != 1).any(axis=1)]
-    elif kind == "u":
-        cells = cells[(cells[:, 0] != 1) | (cells[:, 1] == 0)]
-    steps = np.eye(3, dtype=int)[np.array(list(permutations(range(3))))]
-    offsets = np.concatenate((np.zeros((6, 1, 3), dtype=int), steps.cumsum(axis=1)), axis=1)
-    coordinates = cells[:, None, None] + offsets
-    grid_shape = tuple(size + 1 for size in shape)
-    tets = np.ravel_multi_index(np.moveaxis(coordinates, -1, 0), grid_shape).reshape(-1, 4)
-    used, inverse = np.unique(tets, return_inverse=True)
-    vertices = np.indices(grid_shape).reshape(3, -1).T[used] * 0.001
-    tets = inverse.reshape(-1, 4)
-    faces, counts = np.unique(
-        np.sort(tets[:, [[1, 2, 3], [0, 2, 3], [0, 1, 3], [0, 1, 2]]].reshape(-1, 3), axis=1),
-        axis=0,
-        return_counts=True,
-    )
-    return vertices, tets, faces[counts == 1]
 
 
 def project_oracle(center, offsets, normal, nodes, coordinates, normals):

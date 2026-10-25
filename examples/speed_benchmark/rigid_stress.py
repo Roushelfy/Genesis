@@ -507,6 +507,8 @@ def main() -> None:
     parser.add_argument("--response-block-size", type=int, choices=(64, 128, 256, 512), default=128)
     parser.add_argument("--atlas-regions", type=int, default=0)
     parser.add_argument("--atlas-transition", type=float, default=0.003)
+    parser.add_argument("--atlas-output", choices=("merged", "independent"), default="merged")
+    parser.add_argument("--atlas-partition", choices=("direct", "coarse_local"), default="direct")
     parser.add_argument("--history", type=int, choices=(0, 2, 4), default=0)
     parser.add_argument("--unfused-pipeline", action="store_true", help="Compare separate native recovery passes.")
     parser.add_argument("--policy-precision", choices=("64", "32"), default="32")
@@ -551,6 +553,8 @@ def main() -> None:
         history_size=args.history,
         atlas_regions=args.atlas_regions,
         atlas_transition=args.atlas_transition,
+        atlas_output=args.atlas_output,
+        atlas_partition=args.atlas_partition,
         stress_response=args.stress_response,
         response_precision=args.response_precision,
         response_accumulation=args.response_accumulation,
@@ -790,6 +794,8 @@ def main() -> None:
             "history": args.history,
             "atlas_regions": args.atlas_regions,
             "atlas_transition": args.atlas_transition,
+            "atlas_output": args.atlas_output,
+            "atlas_partition": args.atlas_partition,
             "stress_response": args.stress_response,
             "response_precision": args.response_precision,
             "response_accumulation": args.response_accumulation,

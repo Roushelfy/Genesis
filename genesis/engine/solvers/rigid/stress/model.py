@@ -315,7 +315,9 @@ class StressModel:
                 only_active=True,
                 coalesced=coalesced,
             )
-        if response is None:
+        if atlas is not None and atlas.output is not None:
+            atlas.output.evaluate(options, self, state, atlas.state)
+        elif response is None:
             self.evaluate_stress(options, state)
         else:
             assert omega is not None

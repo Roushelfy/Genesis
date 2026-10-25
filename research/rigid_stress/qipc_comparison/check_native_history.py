@@ -20,6 +20,7 @@ def main():
     parser.add_argument("--stress-backend", choices=("shell", "volume"), required=True)
     parser.add_argument("--envs", type=int, default=4)
     parser.add_argument("--steps", type=int, default=600)
+    parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
     parser.add_argument("--lifecycle", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -35,6 +36,7 @@ def main():
         radius_model="hertz",
         pressure_profile="hertz",
         quadrature=16,
+        pressure_quadrature=args.pressure_quadrature,
         box_edge_policy="planar",
         stress_backend=args.stress_backend,
     )

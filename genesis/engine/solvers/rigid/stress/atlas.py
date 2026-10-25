@@ -19,12 +19,14 @@ from genesis.utils.array_class import V_VEC, DataKind, V
 from genesis.utils.misc import qd_to_numpy
 
 from .contact import StressContactState
+from .atlas_coarse import StressAtlasCoarse
 from .data import StressAtlasScatter, StressInfo, StressState
 from .quadrilateral import func_quad_inverse_prepared
 from .surface import StressSurfaceInfo
 from .surface_inverse import StressSurfaceInverseInfo
 
 if TYPE_CHECKING:
+    from .atlas_output import StressAtlasOutput
     from .model import StressModel
 
 
@@ -55,7 +57,14 @@ class StressAtlasState:
 
 
 class StressAtlas:
-    def __init__(self, model: "StressModel", contacts: StressContactState, n_features: int, width: float):
+    def __init__(
+        self,
+        model: "StressModel",
+        contacts: StressContactState,
+        n_features: int,
+        width: float,
+        partition: str = "direct",
+    ):
         if model.surface_inverse is None:
             gs.raise_exception("A response atlas requires the FP64 native surface inverse.")
         n_nodes = model.info.vertices.shape[0]
@@ -94,15 +103,21 @@ class StressAtlas:
             count=V(dtype=gs.qd_int, shape=()),
         )
         self.response = model.surface_inverse.info
+        self.coarse = StressAtlasCoarse(model, n_envs) if partition == "coarse_local" else None
+        if self.coarse is not None:
+            self.response = self.coarse.response
         self.scatter = StressAtlasScatter(self.state.weights, self.state.force)
+        self.output: StressAtlasOutput | None = None
 
     def prepare(self, contacts: StressContactState, load_info: StressInfo, surface: StressSurfaceInfo, width: float):
         kernel_select(width, contacts, load_info, surface, self.info, self.state)
 
     def apply(self, young: float, omega: qd.Tensor, state: StressState, only_failed: bool = False):
+        if self.coarse is not None:
+            self.coarse.apply(state)
         kernel_pack(state, self.response, self.state, only_failed)
         kernel_apply(young, self.response, self.state)
-        kernel_merge(young, omega, state, self.response, self.state, only_failed)
+        kernel_merge(young, omega, state, self.response, self.state, self.coarse, only_failed)
 
 
 @qd.kernel
@@ -264,6 +279,7 @@ def kernel_merge(
     state: StressState,
     response: StressSurfaceInverseInfo,
     atlas: StressAtlasState,
+    coarse: qd.template(),
     only_failed: qd.template(),
 ):
     for i_n, i_b in qd.ndrange(state.displacement.shape[0], state.active.shape[0]):
@@ -274,6 +290,9 @@ def kernel_merge(
             w = omega[i_b]
             terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
             value = response.centrifugal[i_n] @ terms / young
+            if qd.static(isinstance(coarse, StressAtlasCoarse)):
+                for i_c in range(coarse.info.basis.shape[1]):
+                    value += coarse.info.basis[i_n, i_c] * coarse.state.coefficients[i_c, i_b] / young
             for i_g in range(atlas.counts.shape[0]):
                 if atlas.counts[i_g, i_b]:
                     value += atlas.displacement[i_n, i_g, i_b]

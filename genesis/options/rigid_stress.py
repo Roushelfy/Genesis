@@ -209,6 +209,11 @@ class RigidStressOptions(Options):
     Complete finite-support coverage is checked before per-contact selection, with a full-mother fallback.
     Each feature uses exact globally extended responses in the original gauge and inertia relief. This changes
     scheduling and working memory, not the physical mesh or stress sampling; zero keeps the single-mesh route.
+    ``atlas_output="independent"`` compares separate regional tensor recovery and tensor accumulation with
+    the default merged displacement. It includes the remaining spin/correction displacement, and requires
+    ``stress_response="none"``. Its additional regional full-field workspace is experimental.
+    ``atlas_partition="coarse_local"`` first accumulates a common Galerkin coarse response, then each region's
+    complementary response. Both parts use the same gauge and relief; their sum retains the full mother solution.
     ``stress_response`` selects experimental complete H output after the original displacement/residual solve.
     Sparse, dense and hybrid products include every nodal force/moment and spin channel. ``screen`` uses conservative
     FP64 bounds for max output and sparse H for full output; oversized bound workspaces use exhaustive H.
@@ -257,7 +262,7 @@ class RigidStressOptions(Options):
     source_projection_limit: PositiveFloat = 1e-4
     source_geometry_tolerance: PositiveFloat = 1e-8
     source_uncertainty: Annotated[ValidFloat, Field(ge=0)] = 0.0
-    quadrature: Annotated[PositiveInt, Field(le=16)] = 10
+    quadrature: Annotated[PositiveInt, Field(le=32)] = 10
     pressure_quadrature: Literal["edge", "angle"] = "edge"
     tolerance: PositiveFloat = 1e-8
     absolute_tolerance: PositiveFloat = 1e-11
@@ -266,6 +271,8 @@ class RigidStressOptions(Options):
     history_size: Literal[0, 2, 4] = 0
     atlas_regions: Annotated[int, Field(ge=0, le=32)] = 0
     atlas_transition: PositiveFloat = 0.003
+    atlas_output: Literal["merged", "independent"] = "merged"
+    atlas_partition: Literal["direct", "coarse_local"] = "direct"
     stress_response: Literal["none", "sparse", "dense", "hybrid", "screen"] = "none"
     response_precision: Literal["64", "32"] = "64"
     response_accumulation: Literal["64", "32"] = "64"
