@@ -200,3 +200,88 @@ residual work for large batches. The original residual thresholds are unchanged.
 `native-kernels-v10`, `atlas-geometry-v10`, `complete-atlas-v10` and
 `module-atlas-v10` are in progress. Full evolving-scene, tuned module and memory
 comparisons remain required before any of the fourteen retention decisions.
+
+## V10 results and follow-up controls
+
+All fourteen v10 small kernel cases pass (both backends, tiled FP64/FP32,
+dense/hybrid and B1024 mixed prediction hits/misses). All five geometry cases
+also pass. In the nonconvex shell and volume controls, the sampled global peak
+is respectively at least `12.09` and `14.47` contact radii from the nearest
+contact. Conservative screening agrees with exhaustive recovery there.
+The eight complete atlas controls and fourteen complete response controls
+pass all 600 frames, including heterogeneous inputs. Their volume heterogeneous
+q32 evidence is same-model scheduling/precision evidence, subject to the
+stronger quadrature finding below.
+
+V10 history passes uniform 600-frame lifecycle controls but fails the
+heterogeneous displacement check at frame 579: shell `1.0653e-5`, volume
+`1.1914e-5`. At this frame the tensor errors are `7.974e-6` and `8.416e-6`;
+the stricter complete-state control is not relabeled passing. Both failures
+remain in `complete-history-v10`. V11 (`7bbfa4faa`) keeps the original residual
+gate and adds a predictor-only guard at one tenth of its relative/absolute
+thresholds, reusing the already computed original-operator residual. Exact
+solve/correction thresholds remain unchanged. Its numerical and hit-rate
+effects still need validation.
+
+V10 module tuning brings the volume three-region atlas to `22.998 ms` against
+its `23.075 ms` initial baseline bookend at B8192; this tiny difference alone
+does not establish a gain. Shell atlas remains slower. Independent tensor
+recovery and the coarse complement cost more than merged recovery. H FP32/FP32
+tile 4 improves the shell/volume module medians to `57.033 / 25.872 ms`, still
+above their matched baselines. Tile 8 and FP64-accumulation tile 4 incur worse
+costs; screening blocks 64/128 also lose to block 32. Complete-scene and final
+bookend results remain pending. V11 therefore additionally tests direct
+common-displacement accumulation, eliminating the regional displacement
+allocation for merged recovery while retaining it for independent recovery.
+
+The broader four-keyframe quadrature control reproduces the saved q32 fields
+within `1.1e-13` and rejects q32's load accuracy: errors against q128 range
+from `1.496e-6` to `2.807e-6`. Q64 is below `1e-6` at these four frames, but
+frame 599 is close to the limit. The q256 reference initially switches some
+contacts from the clipped fan to ordinary face quadrature under the existing
+spacing heuristic, causing a non-monotone `6e-5`--`7e-5` load discrepancy.
+This failed reference attempt is retained. A fixed-fan q128/q256 control
+confirms that switch for the first two frames (q128 refines all 8/25 active
+contacts; q256 automatically refines only 6/18). Fixed-fan q128/q256 load
+differences are `1.03e-7` and `6.52e-8` there. Remaining fixed-fan controls
+and a complete native robustness/cost trial are still required; q32 is no
+longer called qualified for the whole heterogeneous comparison.
+
+## Complete-bank quadrature and response layout follow-up
+
+The stronger two-frame predictor guard passes all 600 heterogeneous frames in
+both backends, including partial reset and checkpoint restoration. The v10
+frame-579 displacement failures remain retained. V11's direct merged atlas
+passes the six small kernel controls and all five geometry controls, including
+complete volume inner/outer boundaries and distant nonconvex maxima.
+
+V12 (`b8b3ac7ed`) makes explicitly selected angular pressure quadrature keep the
+clipped fan at every supported degree; ordinary edge/q16 defaults stay unchanged.
+The first four conditions were insufficient to select q64: on the complete
+64-condition bank, its load errors at frames 129 and 400 are `1.0452e-6` and
+`1.0667e-6`, exceeding the unchanged `1e-6` budget. Those failures and the earlier
+automatic q256 path-switch failure remain in the data directory.
+
+Angular q128 completes all 600 frames for all 64 conditions. The independent
+native-to-fixed-fan-q256 audit (`heterogeneous-bank128-audit-v12`, job 750167)
+passes all four keyframes, with worst load `2.2989e-7`, displacement `2.2487e-8`,
+tensor `8.8433e-8`, and sampled peak `9.1315e-8` errors. Mechanical inputs are
+bitwise unchanged; radii satisfy the pre-existing `rtol=1e-12` contract, with
+bitwise comparisons recorded separately. The earlier audit requiring bitwise
+radii failed on a one-ULP difference and remains preserved. No load or field
+budget was widened. Final heterogeneous volume numerical and timing controls
+therefore use angle/q128, with separate repair-cost comparisons against the
+unqualified q32/q64 paths. This is quadrature consistency, not continuum peak
+qualification.
+
+V11 module tuning gives volume atlas3 direct accumulation `22.568 ms` at B8192
+against baseline bookends `22.786 / 22.775 ms`; the complete scene must determine
+whether that small snapshot difference is useful. Shell atlas3 remains slower.
+H FP32/FP32 tile4 block64/128/256 has no material block-size gain. Its measured
+CUDA product uses 80 registers/thread and an estimated 50% occupancy; these
+trace facts do not establish spilling. V13 (`d5641351a`) transposes H and its
+bounds to input-major storage so adjacent output samples are contiguous during
+screening and tiled evaluation. Numerical formulas, input order, FP64 state,
+original-operator gates and correction fallback are unchanged. Small native
+controls precede matched layout timings. All fourteen retention decisions
+remain open pending complete evidence and final production-path cleanup.

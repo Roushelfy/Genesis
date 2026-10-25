@@ -23,6 +23,8 @@ def main():
     parser.add_argument("--frame", type=int, required=True)
     parser.add_argument("--reference", type=int, choices=(128, 256), default=128)
     parser.add_argument("--candidate", type=int, choices=(32, 64, 128), default=32)
+    parser.add_argument("--saved-quadrature", type=int, choices=(32, 64, 128), default=32)
+    parser.add_argument("--minimum-degree", type=int, choices=(32, 64), default=32)
     parser.add_argument(
         "--force-fan", action="store_true", help="Keep the clipped fan for high-order reference integration."
     )
@@ -57,7 +59,7 @@ def main():
         previous = json.loads((args.reuse / "result.json").read_text())
         assert previous["complete"] and previous["source"]["sha256"] == result["source"]["sha256"]
         result["reused"] = file_id(args.reuse / "result.json")
-    degrees = (32, 64, 128) if args.reference == 128 else (32, 64, 128, 256)
+    degrees = tuple(degree for degree in (32, 64, 128, 256) if args.minimum_degree <= degree <= args.reference)
     result["reference_quadrature"] = args.reference
     result["candidate_quadrature"] = args.candidate
     result["force_fan_reference"] = args.force_fan
@@ -102,7 +104,7 @@ def main():
             "peak": qd_to_numpy(state.peak),
         }
         np.savez_compressed(args.output / f"angle{degree}.npz", **fields[degree])
-        if degree == 32:
+        if degree == args.saved_quadrature:
             row["saved_replay_errors"] = {
                 key: float(per_environment(value, saved[key]).max())
                 for key, value in fields[degree].items()
@@ -118,7 +120,8 @@ def main():
         result["comparisons"].append(
             dict(quadrature=degree, passed=passed, errors={key: values.tolist() for key, values in errors.items()})
         )
-    result["saved_replay_passed"] = max(result["rows"][0]["saved_replay_errors"].values()) < 1e-8
+    replay = next(row["saved_replay_errors"] for row in result["rows"] if row["quadrature"] == args.saved_quadrature)
+    result["saved_replay_passed"] = max(replay.values()) < 1e-8
     result["complete"] = True
     write_json(args.output / "result.json", result)
     assert result["saved_replay_passed"]
