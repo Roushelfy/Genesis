@@ -200,29 +200,6 @@ class RigidStressOptions(Options):
     ``history_size=4`` enables a checked four-column load/displacement
     predictor per environment. The default zero avoids its extra memory
     and basis maintenance cost on changing-contact workloads.
-    ``history_size=2`` tests extrapolation from the two preceding accepted
-    displacements. Accepted predictions feed the next prediction; the complete
-    original residual and exact failed-environment fallback remain mandatory.
-
-    ``atlas_regions`` enables an experimental common-mother response atlas for DPR loads.
-    Its surface graph preserves connected material sheets; ``atlas_transition`` is the transition width in metres.
-    Complete finite-support coverage is checked before per-contact selection, with a full-mother fallback.
-    Each feature uses exact globally extended responses in the original gauge and inertia relief. This changes
-    scheduling and working memory, not the physical mesh or stress sampling; zero keeps the single-mesh route.
-    ``atlas_output="independent"`` compares separate regional tensor recovery and tensor accumulation with
-    the default merged displacement. It includes the remaining spin/correction displacement, and requires
-    ``stress_response="none"``. Its additional regional full-field workspace is experimental.
-    ``atlas_partition="coarse_local"`` first accumulates a common Galerkin coarse response, then each region's
-    complementary response. Both parts use the same gauge and relief; their sum retains the full mother solution.
-    ``stress_response`` selects experimental complete H output after the original displacement/residual solve.
-    Sparse, dense and hybrid products include every nodal force/moment and spin channel. ``screen`` uses conservative
-    FP64 bounds for max output and sparse H for full output; oversized bound workspaces use exhaustive H.
-    Corrected or history-predicted states recover output from their actual displacement. ``response_precision``
-    and ``response_accumulation`` independently select H storage and product precision; they do not reduce
-    the precision of displacement acceptance. ``response_max_bytes`` bounds the additional shared H inventory.
-    ``response_output_tile`` reuses packed loads across a bounded group of output samples;
-    ``response_screen_block`` controls the number of samples sharing a conservative bound.
-    These candidates remain opt-in while their numerical and complete-scene regimes are measured.
 
     ``output_mode="max"`` stores only the global von Mises maximum.
     ``output_mode="full"`` also stores the authored-frame symmetric stress
@@ -270,18 +247,7 @@ class RigidStressOptions(Options):
     absolute_tolerance: PositiveFloat = 1e-11
     max_iterations: PositiveInt = 2000
     warm_start: StrictBool = True
-    history_size: Literal[0, 2, 4] = 0
-    atlas_regions: Annotated[int, Field(ge=0, le=32)] = 0
-    atlas_transition: PositiveFloat = 0.003
-    atlas_output: Literal["merged", "independent"] = "merged"
-    atlas_partition: Literal["direct", "coarse_local"] = "direct"
-    stress_response: Literal["none", "sparse", "dense", "hybrid", "screen"] = "none"
-    response_precision: Literal["64", "32"] = "64"
-    response_accumulation: Literal["64", "32"] = "64"
-    response_block_size: Literal[64, 128, 256, 512] = 128
-    response_output_tile: Literal[1, 2, 4, 8] = 1
-    response_screen_block: Literal[32, 64, 128] = 32
-    response_max_bytes: PositiveInt = 512 * 1024 * 1024
+    history_size: Literal[0, 4] = 0
     method: Literal["auto", "direct", "inverse", "pcg"] = "auto"
     factor_scaling: StrictBool = False
     factor_ordering: Literal["minimum_degree", "natural"] = "minimum_degree"

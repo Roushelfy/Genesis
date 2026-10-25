@@ -198,7 +198,6 @@ def kernel_full_residual(
     stress_info: StressInfo,
     only_active: bool,
     coalesced: bool = False,
-    packed_failed: bool = False,
 ):
     kernel_full_residual_impl(
         young,
@@ -208,7 +207,6 @@ def kernel_full_residual(
         stress_info,
         only_active,
         coalesced and gs.backend == gs.cuda,
-        packed_failed,
     )
 
 
@@ -221,11 +219,8 @@ def kernel_full_residual_impl(
     stress_info: StressInfo,
     only_active: qd.template(),
     coalesced: qd.template(),
-    packed_failed: qd.template(),
 ):
-    func_full_residual(
-        young, tolerance, absolute_tolerance, stress_state, stress_info, only_active, coalesced, packed_failed
-    )
+    func_full_residual(young, tolerance, absolute_tolerance, stress_state, stress_info, only_active, coalesced)
 
 
 @qd.func
@@ -248,20 +243,11 @@ def func_full_residual(
     stress_info: StressInfo,
     only_active: qd.template(),
     coalesced: qd.template() = False,
-    packed_failed: qd.template() = False,
 ):
     for i_b in range(stress_state.active.shape[0]):
         if qd.static(not only_active) or stress_state.active[i_b]:
             stress_state.residual_norm_squared[i_b] = 0.0
-    if qd.static(packed_failed):
-        qd.loop_config(block_dim=256)
-        for i_task in range(stress_info.vertices.shape[0] * stress_state.failed_count[None]):
-            i_n = i_task // stress_state.failed_count[None]
-            i_failed = i_task % stress_state.failed_count[None]
-            i_b = stress_state.failed_environments[i_failed]
-            if stress_state.active[i_b]:
-                func_residual_row(young, stress_state, stress_info, i_n, i_b)
-    elif qd.static(coalesced):
+    if qd.static(coalesced):
         qd.loop_config(block_dim=256)
         for i_thread in range(stress_info.vertices.shape[0] * ((stress_state.active.shape[0] + 31) // 32) * 32):
             i_index = i_thread // 32
@@ -285,9 +271,7 @@ def func_full_residual(
             )
 
 
-def kernel_peak(
-    young: float, poisson: float, stress_state: StressState, stress_info: StressInfo, cached: bool = True, mask=None
-):
+def kernel_peak(young: float, poisson: float, stress_state: StressState, stress_info: StressInfo, cached: bool = True):
     kernel_peak_impl(
         young,
         poisson,
@@ -295,8 +279,6 @@ def kernel_peak(
         stress_info,
         cached and gs.backend == gs.cuda,
         stress_state.stress_tensor.shape[0] > 0,
-        stress_state.valid if mask is None else mask,
-        mask is not None,
     )
 
 
@@ -308,10 +290,8 @@ def kernel_peak_impl(
     stress_info: StressInfo,
     cached: qd.template(),
     full: qd.template(),
-    mask: qd.Tensor,
-    masked: qd.template(),
 ):
-    func_peak_impl(young, poisson, stress_state, stress_info, cached, full, mask, masked)
+    func_peak_impl(young, poisson, stress_state, stress_info, cached, full)
 
 
 @qd.func
@@ -322,63 +302,53 @@ def func_peak_impl(
     stress_info: StressInfo,
     cached: qd.template(),
     full: qd.template() = False,
-    mask: qd.template() = None,
-    masked: qd.template() = False,
 ):
     for i_b in range(stress_state.active.shape[0]):
         stress_state.peak[i_b] = 0.0
     for i_e, i_b in qd.ndrange(stress_info.elements.shape[0], stress_state.active.shape[0]):
-        enabled = True
-        if qd.static(masked):
-            enabled = mask[i_b]
-        if enabled:
-            lam = young * poisson / ((1.0 + poisson) * (1.0 - 2.0 * poisson))
-            mu = young / (2.0 * (1.0 + poisson))
-            peak_squared = gs.qd_float(0.0)
-            for i_corner in range(4):
-                derivative = qd.Matrix.zero(gs.qd_float, 3, 3)
-                i_n = stress_info.elements[i_e, i_corner]
-                origin_displacement = stress_state.displacement[i_n, i_b]
-                i_slot = 4
-                # The three quadratic edge tangents preserve translation cancellation before multiplying by geometry.
-                for i_edge in range(6):
-                    i_a, i_c = stress_info.edges[i_edge, 0], stress_info.edges[i_edge, 1]
-                    if i_a == i_corner or i_c == i_corner:
-                        i_other = i_a
-                        if i_a == i_corner:
-                            i_other = i_c
-                        j_n = stress_info.elements[i_e, i_other]
-                        i_n_mid = stress_info.elements[i_e, 4 + i_edge]
-                        gradient = stress_info.gradients[i_e][i_other, :]
-                        if qd.static(cached):
-                            j_n = stress_info.corner_nodes[i_e, i_corner, i_other]
-                            i_n_mid = stress_info.corner_nodes[i_e, i_corner, i_slot]
-                            gradient = -stress_info.corner_gradients[i_e, i_corner, i_other]
-                        tangent = 4.0 * (stress_state.displacement[i_n_mid, i_b] - origin_displacement) - (
-                            stress_state.displacement[j_n, i_b] - origin_displacement
-                        )
-                        derivative += tangent.outer_product(gradient)
-                        i_slot += 1
-                sigma = mu * (derivative + derivative.transpose())
-                for i_a in qd.static(range(3)):
-                    sigma[i_a, i_a] += lam * derivative.trace()
-                value = 0.5 * (
-                    (sigma[0, 0] - sigma[1, 1]) ** 2
-                    + (sigma[1, 1] - sigma[2, 2]) ** 2
-                    + (sigma[2, 2] - sigma[0, 0]) ** 2
-                )
-                value += 3.0 * (sigma[0, 1] ** 2 + sigma[0, 2] ** 2 + sigma[1, 2] ** 2)
-                if qd.static(full):
-                    components = qd.Vector(
-                        [sigma[0, 0], sigma[1, 1], sigma[2, 2], sigma[0, 1], sigma[0, 2], sigma[1, 2]]
+        lam = young * poisson / ((1.0 + poisson) * (1.0 - 2.0 * poisson))
+        mu = young / (2.0 * (1.0 + poisson))
+        peak_squared = gs.qd_float(0.0)
+        for i_corner in range(4):
+            derivative = qd.Matrix.zero(gs.qd_float, 3, 3)
+            i_n = stress_info.elements[i_e, i_corner]
+            origin_displacement = stress_state.displacement[i_n, i_b]
+            i_slot = 4
+            # The three quadratic edge tangents preserve translation cancellation before multiplying by geometry.
+            for i_edge in range(6):
+                i_a, i_c = stress_info.edges[i_edge, 0], stress_info.edges[i_edge, 1]
+                if i_a == i_corner or i_c == i_corner:
+                    i_other = i_a
+                    if i_a == i_corner:
+                        i_other = i_c
+                    j_n = stress_info.elements[i_e, i_other]
+                    i_n_mid = stress_info.elements[i_e, 4 + i_edge]
+                    gradient = stress_info.gradients[i_e][i_other, :]
+                    if qd.static(cached):
+                        j_n = stress_info.corner_nodes[i_e, i_corner, i_other]
+                        i_n_mid = stress_info.corner_nodes[i_e, i_corner, i_slot]
+                        gradient = -stress_info.corner_gradients[i_e, i_corner, i_other]
+                    tangent = 4.0 * (stress_state.displacement[i_n_mid, i_b] - origin_displacement) - (
+                        stress_state.displacement[j_n, i_b] - origin_displacement
                     )
-                    von_mises = qd.sqrt(value)
-                    if not stress_state.valid[i_b]:
-                        components = qd.Vector([float("nan") for _ in qd.static(range(6))])
-                        von_mises = float("nan")
-                    stress_state.stress_tensor[i_e, i_corner, i_b] = components
-                    stress_state.von_mises[i_e, i_corner, i_b] = qd.Vector([von_mises])
-                peak_squared = qd.max(peak_squared, value)
-            qd.atomic_max(stress_state.peak[i_b], qd.sqrt(peak_squared))
+                    derivative += tangent.outer_product(gradient)
+                    i_slot += 1
+            sigma = mu * (derivative + derivative.transpose())
+            for i_a in qd.static(range(3)):
+                sigma[i_a, i_a] += lam * derivative.trace()
+            value = 0.5 * (
+                (sigma[0, 0] - sigma[1, 1]) ** 2 + (sigma[1, 1] - sigma[2, 2]) ** 2 + (sigma[2, 2] - sigma[0, 0]) ** 2
+            )
+            value += 3.0 * (sigma[0, 1] ** 2 + sigma[0, 2] ** 2 + sigma[1, 2] ** 2)
+            if qd.static(full):
+                components = qd.Vector([sigma[0, 0], sigma[1, 1], sigma[2, 2], sigma[0, 1], sigma[0, 2], sigma[1, 2]])
+                von_mises = qd.sqrt(value)
+                if not stress_state.valid[i_b]:
+                    components = qd.Vector([float("nan") for _ in qd.static(range(6))])
+                    von_mises = float("nan")
+                stress_state.stress_tensor[i_e, i_corner, i_b] = components
+                stress_state.von_mises[i_e, i_corner, i_b] = qd.Vector([von_mises])
+            peak_squared = qd.max(peak_squared, value)
+        qd.atomic_max(stress_state.peak[i_b], qd.sqrt(peak_squared))
     for i_b in range(stress_state.active.shape[0]):
         stress_state.step_peak[i_b] = qd.max(stress_state.step_peak[i_b], stress_state.peak[i_b])

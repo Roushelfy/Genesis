@@ -13,7 +13,6 @@ from genesis.utils.array_class import V_MAT, V_VEC, DataItem, V, iter_data
 from genesis.utils.misc import qd_to_numpy
 
 from . import shell_operators
-from .atlas import StressAtlas
 from .balance import kernel_centrifugal_wrench, kernel_relief_projection
 from .data import StressState, allocate_stress_info
 from .factor import StressFactor
@@ -21,7 +20,6 @@ from .history import StressHistory
 from .inverse import StressInverse
 from .model import StressBuildTimings, StressModel
 from .operators import kernel_diagonal, kernel_gram_inverse
-from .response import StressResponse, StressResponseInventory
 from .shell_operators import ShellInfo
 from .shell_pipeline import kernel_recover
 from .shell_surface import build_shell_surface
@@ -135,17 +133,12 @@ class ShellModel(StressModel):
             and inverse_bytes + boundary_bytes <= options.inverse_max_bytes
         ):
             self.surface_inverse = StressSurfaceInverse(self.info, self.factor, self.create_state, boundary_nodes)
-        surface_inverse_done = time.perf_counter()
-        self.output_response = None
-        if options.stress_response != "none":
-            self.output_response = StressResponseInventory(self, options)
         self.build_timings = StressBuildTimings(
             topology_done - started,
             operators_done - topology_done,
             factor_done - operators_done,
             inverse_done - factor_done,
-            surface_inverse_done - inverse_done,
-            time.perf_counter() - surface_inverse_done,
+            time.perf_counter() - inverse_done,
         )
 
     def iter_info_data(self, prefix: str) -> Iterator[DataItem]:
@@ -161,8 +154,8 @@ class ShellModel(StressModel):
     def n_shell_elements(self) -> int:
         return self.shell.quads.shape[0]
 
-    def evaluate_stress(self, options: RigidStressOptions, state: StressState, mask=None) -> None:
-        shell_operators.kernel_peak(options.young, options.poisson, options.shell_thickness, state, self.shell, mask)
+    def evaluate_stress(self, options: RigidStressOptions, state: StressState) -> None:
+        shell_operators.kernel_peak(options.young, options.poisson, options.shell_thickness, state, self.shell)
 
     def is_fused_recovery_enabled(self, options: RigidStressOptions, history: StressHistory | None = None) -> bool:
         return (
@@ -173,8 +166,6 @@ class ShellModel(StressModel):
             and options.cooperative_solve
             and self.recovery_capacity > 0
             and history is None
-            and not options.atlas_regions
-            and options.stress_response == "none"
         )
 
     def recover(
@@ -184,8 +175,6 @@ class ShellModel(StressModel):
         options: RigidStressOptions | None = None,
         history: StressHistory | None = None,
         surface_load: bool = False,
-        atlas: StressAtlas | None = None,
-        response: StressResponse | None = None,
     ) -> None:
         if options is None:
             options = self.options
@@ -216,4 +205,4 @@ class ShellModel(StressModel):
                 options.cooperative_balance,
             )
         else:
-            super().recover(omega, state, options, history, surface_load, atlas, response)
+            super().recover(omega, state, options, history, surface_load)

@@ -24,8 +24,6 @@ from genesis.utils.misc import (
 )
 
 from .association import kernel_associate
-from .atlas import StressAtlas
-from .atlas_output import StressAtlasOutput
 from .automatic_radius import StressRadiusInfo, StressRadiusStatus
 from .curvature import StressCurvature
 from .contact import StressContactState, create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
@@ -38,7 +36,6 @@ from .pipeline import kernel_pipeline
 from .post import create_post_kernel
 from .provenance import kernel_capture_rigid_sources
 from .resolved import ResolvedContacts
-from .response import StressResponse
 from .scatter import StressScatterWorkspace, create_scatter_workspace, kernel_pressure_moments, kernel_scatter_faces
 from .shell_model import ShellModel
 from .surface import StressSurface
@@ -69,8 +66,6 @@ class StressLink:
     resolved: ResolvedContacts | None = None
     requested_step: int = -1
     automatic_radius: StressRadiusInfo | None = None
-    atlas: StressAtlas | None = None
-    response: StressResponse | None = None
 
 
 class RigidStressRecovery:
@@ -83,14 +78,6 @@ class RigidStressRecovery:
             for link in entity.links:
                 options = link.stress_options
                 if options is not None:
-                    if options.atlas_output == "independent" and (
-                        not options.atlas_regions or options.stress_response != "none"
-                    ):
-                        gs.raise_exception("Independent regional output requires an atlas and stress_response='none'.")
-                    if options.atlas_regions and (
-                        options.contact_model != "pressure" or options.load_transfer != "patch"
-                    ):
-                        gs.raise_exception("A response atlas requires DPR finite-pressure patch loading.")
                     if options.backend == "shell" and (
                         options.contact_model != "pressure" or options.load_transfer != "patch"
                     ):
@@ -124,11 +111,6 @@ class RigidStressRecovery:
                             and previous.inverse_precision == options.inverse_precision
                             and previous.inverse_max_bytes == options.inverse_max_bytes
                             and previous.surface_inverse == options.surface_inverse
-                            and previous.stress_response == options.stress_response
-                            and previous.response_precision == options.response_precision
-                            and previous.response_accumulation == options.response_accumulation
-                            and previous.response_max_bytes == options.response_max_bytes
-                            and previous.response_screen_block == options.response_screen_block
                         ):
                             model = existing.model
                             if (
@@ -176,9 +158,7 @@ class RigidStressRecovery:
                                 options.pressure_profile == "hertz",
                             ),
                             V_VEC(3, dtype=gs.qd_float, shape=(solver._B,)),
-                            StressHistory(model.info.vertices.shape[0], solver._B, options.history_size)
-                            if options.history_size
-                            else None,
+                            StressHistory(model.info.vertices.shape[0], solver._B) if options.history_size else None,
                             options.output_mode,
                             create_scatter_workspace(
                                 solver._B,
@@ -211,27 +191,12 @@ class RigidStressRecovery:
                             and options.cooperative_scatter
                             and options.cooperative_solve
                             and model.info.vertices.shape[0] <= 1024
-                            and not options.history_size
-                            and not options.atlas_regions
-                            and options.stress_response == "none",
+                            and not options.history_size,
                             options.coalesced_residual if options.coalesced_residual is not None else solver._B >= 8192,
                             reuse_contact_moments,
                         )
                     )
         for entry in self.links:
-            if entry.model.output_response is not None:
-                entry.response = StressResponse(entry.model.output_response, solver._B)
-            if entry.options.atlas_regions:
-                entry.atlas = StressAtlas(
-                    entry.model,
-                    entry.contacts,
-                    entry.options.atlas_regions,
-                    entry.options.atlas_transition,
-                    entry.options.atlas_partition,
-                    retain_contributions=entry.options.atlas_output == "independent",
-                )
-                if entry.options.atlas_output == "independent":
-                    entry.atlas.output = StressAtlasOutput(entry.model, solver._B, entry.options.atlas_regions + 1)
             if entry.options.radius_model == "hertz":
                 if self.curvature is None:
                     self.curvature = StressCurvature(solver.dyn_info, self.source_epsilon)
@@ -414,10 +379,6 @@ class RigidStressRecovery:
                     )
                 else:
                     kernel_pressure(entry.contacts, entry.surface.info, options.cooperative_pressure)
-                if entry.atlas is not None:
-                    entry.atlas.prepare(
-                        entry.contacts, entry.model.load_info, entry.surface.info, options.atlas_transition
-                    )
                 if entry.scatter.tasks.shape[0] and options.cooperative_scatter:
                     kernel_scatter_faces(
                         entry.contacts,
@@ -427,7 +388,6 @@ class RigidStressRecovery:
                         entry.scatter,
                         options.cached_face_bounds,
                         entry.reuse_contact_moments,
-                        entry.atlas.scatter if entry.atlas is not None else None,
                     )
                 else:
                     kernel_scatter(
@@ -437,17 +397,8 @@ class RigidStressRecovery:
                         entry.surface.info,
                         options.cooperative_scatter,
                         options.cached_face_bounds,
-                        entry.atlas.scatter if entry.atlas is not None else None,
                     )
-            entry.model.recover(
-                entry.omega,
-                entry.state,
-                entry.link.stress_options,
-                entry.history,
-                surface_load=True,
-                atlas=entry.atlas,
-                response=entry.response,
-            )
+            entry.model.recover(entry.omega, entry.state, entry.link.stress_options, entry.history, surface_load=True)
             kernel_accept(entry.state, entry.contacts, solver._errno)
             if entry.history is not None:
                 entry.history.append(entry.state)
@@ -587,23 +538,6 @@ class RigidStressRecovery:
                     yield from iter_data(entry.intrinsic.paths.info, f"stress.{i}.intrinsic.paths")
                     seen_paths.add(id(entry.intrinsic.paths))
                 yield from entry.intrinsic.data(f"stress.{i}.intrinsic")
-            if entry.response is not None:
-                yield from iter_data(entry.response.state, f"stress.{i}.output_response.state")
-            if entry.atlas is not None:
-                yield from iter_data(entry.atlas.info, f"stress.{i}.atlas.info")
-                yield from iter_data(entry.atlas.state, f"stress.{i}.atlas.state")
-                if entry.atlas.coarse is not None:
-                    yield from iter_data(entry.atlas.coarse.info, f"stress.{i}.atlas.coarse.info")
-                    yield from iter_data(entry.atlas.coarse.state, f"stress.{i}.atlas.coarse.state")
-                    yield DataItem(
-                        f"stress.{i}.atlas.coarse.response",
-                        entry.atlas.coarse.response.force_blocks,
-                        DataKind.CONSTANT,
-                    )
-                if entry.atlas.output is not None:
-                    for item in iter_data(entry.atlas.output.state, f"stress.{i}.atlas.output"):
-                        if 0 not in item.value.shape:
-                            yield DataItem(item.name, item.value, DataKind.SCRATCH)
             if entry.history is not None:
                 yield from iter_data(entry.history.state, f"stress.{i}.history")
             if entry.resolved is not None:

@@ -28,36 +28,12 @@ class StressHistoryState:
     hit: qd.Tensor
 
 
-@dataclass(frozen=True)
-class StressTwoFrameState:
-    kind: ClassVar[DataKind] = DataKind.WARMSTART
-
-    displacements: qd.Tensor
-    count: qd.Tensor
-    head: qd.Tensor
-    hit: qd.Tensor
-
-
 class StressHistory:
-    def __init__(self, n_nodes: int, n_envs: int, size: int = 4):
-        assert size in (2, 4)
-        self.size = size
-        if size == 2:
-            self.state = StressTwoFrameState(
-                V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs, 2)),
-                V(dtype=gs.qd_int, shape=(n_envs,)),
-                V(dtype=gs.qd_int, shape=(n_envs,)),
-                V(dtype=gs.qd_bool, shape=(n_envs,)),
-            )
-            self.state.displacements.fill(0)
-            self.state.count.fill(0)
-            self.state.head.fill(0)
-            self.state.hit.fill(False)
-            return
+    def __init__(self, n_nodes: int, n_envs: int):
         shape = (n_nodes, n_envs, 4)
         self.state = StressHistoryState(
             V_VEC(3, dtype=gs.qd_float, shape=shape),
-            V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs, size)),
+            V_VEC(3, dtype=gs.qd_float, shape=shape),
             V_VEC(3, dtype=gs.qd_float, shape=shape),
             V_VEC(3, dtype=gs.qd_float, shape=shape),
             V_VEC(4, dtype=gs.qd_float, shape=(n_envs,)),
@@ -74,73 +50,16 @@ class StressHistory:
         self.state.hit.fill(False)
 
     def predict(self, state: StressState):
-        if self.size == 2:
-            kernel_predict_two_frame(self.state, state)
-        else:
-            kernel_predict(self.state, state)
+        kernel_predict(self.state, state)
 
-    def mark_hits(self, state: StressState, tolerance: float, absolute_tolerance: float):
-        if self.size == 2:
-            kernel_hits_two_frame(0.1 * tolerance, 0.1 * absolute_tolerance, self.state, state)
-        else:
-            kernel_hits(self.state, state)
+    def mark_hits(self, state: StressState):
+        kernel_hits(self.state, state)
 
     def append(self, state: StressState):
-        if self.size == 2:
-            kernel_append_two_frame(self.state, state)
-        else:
-            kernel_append(self.state, state)
+        kernel_append(self.state, state)
 
     def reset(self, envs_idx):
-        if self.size == 2:
-            kernel_reset_two_frame(envs_idx, self.state)
-        else:
-            kernel_reset(envs_idx, self.state)
-
-
-@qd.kernel(graph=True)
-def kernel_predict_two_frame(history: StressTwoFrameState, state: StressState):
-    for i_n, i_b in qd.ndrange(state.displacement.shape[0], state.active.shape[0]):
-        value = qd.Vector.zero(gs.qd_float, 3)
-        if history.count[i_b] == 2:
-            latest = history.head[i_b]
-            value = 2.0 * history.displacements[i_n, i_b, latest] - history.displacements[i_n, i_b, 1 - latest]
-        state.displacement[i_n, i_b] = value
-
-
-@qd.kernel(graph=True)
-def kernel_hits_two_frame(
-    tolerance: float, absolute_tolerance: float, history: StressTwoFrameState, state: StressState
-):
-    for i_b in range(history.count.shape[0]):
-        # Keep the original operator gate and add a stricter predictor-only guard.
-        # Reuse its actual residual; exact solves retain their original thresholds.
-        budget = qd.max(absolute_tolerance**2, tolerance**2 * state.rhs_norm_squared[i_b])
-        state.valid[i_b] = state.valid[i_b] and history.count[i_b] == 2 and state.residual_norm_squared[i_b] <= budget
-        history.hit[i_b] = state.valid[i_b]
-
-
-@qd.kernel(graph=True)
-def kernel_append_two_frame(history: StressTwoFrameState, state: StressState):
-    # Every accepted prediction participates in the next prediction. The current
-    # original-operator gate and compact exact fallback remain in model.recover.
-    for i_n, i_b in qd.ndrange(state.displacement.shape[0], state.active.shape[0]):
-        if state.valid[i_b] and state.step_valid[i_b]:
-            next_slot = 1 - history.head[i_b]
-            history.displacements[i_n, i_b, next_slot] = state.displacement[i_n, i_b]
-    for i_b in range(history.count.shape[0]):
-        if state.valid[i_b] and state.step_valid[i_b]:
-            history.count[i_b] = qd.min(2, history.count[i_b] + 1)
-            history.head[i_b] = 1 - history.head[i_b]
-
-
-@qd.kernel
-def kernel_reset_two_frame(envs_idx: qd.types.ndarray(), history: StressTwoFrameState):
-    for i_selected in range(envs_idx.shape[0]):
-        i_b = envs_idx[i_selected]
-        history.count[i_b] = 0
-        history.head[i_b] = 0
-        history.hit[i_b] = False
+        kernel_reset(envs_idx, self.state)
 
 
 @qd.kernel(graph=True)

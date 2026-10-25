@@ -340,87 +340,49 @@ def func_tensor_components(local: qd.types.vector(3), axes: qd.types.matrix(3, 3
     return qd.Vector([tensor[0, 0], tensor[1, 1], tensor[2, 2], tensor[0, 1], tensor[0, 2], tensor[1, 2]])
 
 
-def kernel_peak(
-    young: float, poisson: float, thickness: float, stress_state: StressState, shell_info: ShellInfo, mask=None
-):
-    kernel_peak_impl(
-        young,
-        poisson,
-        thickness,
-        stress_state,
-        shell_info,
-        stress_state.valid if mask is None else mask,
-        mask is not None,
-    )
-
-
-@qd.kernel(graph=True)
-def kernel_peak_impl(
-    young: float,
-    poisson: float,
-    thickness: float,
-    stress_state: StressState,
-    shell_info: ShellInfo,
-    mask: qd.Tensor,
-    masked: qd.template(),
-):
-    func_peak(young, poisson, thickness, stress_state, shell_info, mask, masked)
+@qd.kernel
+def kernel_peak(young: float, poisson: float, thickness: float, stress_state: StressState, shell_info: ShellInfo):
+    func_peak(young, poisson, thickness, stress_state, shell_info)
 
 
 @qd.func
-def func_peak(
-    young: float,
-    poisson: float,
-    thickness: float,
-    stress_state: StressState,
-    shell_info: ShellInfo,
-    mask: qd.template() = None,
-    masked: qd.template() = False,
-):
+def func_peak(young: float, poisson: float, thickness: float, stress_state: StressState, shell_info: ShellInfo):
     for i_b in range(stress_state.peak.shape[0]):
         stress_state.peak[i_b] = 0.0
     for i_e, i_q, i_b in qd.ndrange(shell_info.quads.shape[0], 4, stress_state.peak.shape[0]):
-        enabled = True
-        if qd.static(masked):
-            enabled = mask[i_b]
-        if enabled:
-            membrane = qd.Vector.zero(gs.qd_float, 3)
-            bending = qd.Vector.zero(gs.qd_float, 3)
-            shear = qd.Vector.zero(gs.qd_float, 2)
-            for i_local in range(24):
-                i_n = shell_info.quads[i_e, i_local // 6]
-                i_block = 2 * i_n + (i_local % 6) // 3
-                value = stress_state.displacement[i_block, i_b][i_local % 3]
-                membrane += value * shell_info.membrane[i_e, i_q, i_local]
-                bending += value * shell_info.bending[i_e, i_q, i_local]
-                if stress_state.transverse_resultant.shape[0] > 0:
-                    shear += value * shell_info.shear[i_e, i_q, i_local]
-            constitutive = young * func_constitutive(poisson)
-            membrane = constitutive @ membrane
-            bending = constitutive @ bending
-            axes = shell_info.axes[i_e, i_q]
-            if stress_state.membrane_resultant.shape[0] > 0:
-                stress_state.membrane_resultant[i_e, i_q, i_b] = thickness * func_tensor_components(membrane, axes)
-                stress_state.bending_resultant[i_e, i_q, i_b] = (
-                    thickness**3 / 12.0 * func_tensor_components(bending, axes)
-                )
-                transverse = 5.0 / 6.0 * young / (2.0 * (1.0 + poisson)) * thickness * shear
-                stress_state.transverse_resultant[i_e, i_q, i_b] = (
-                    transverse[0] * axes[:, 0] + transverse[1] * axes[:, 1]
-                )
+        membrane = qd.Vector.zero(gs.qd_float, 3)
+        bending = qd.Vector.zero(gs.qd_float, 3)
+        shear = qd.Vector.zero(gs.qd_float, 2)
+        for i_local in range(24):
+            i_n = shell_info.quads[i_e, i_local // 6]
+            i_block = 2 * i_n + (i_local % 6) // 3
+            value = stress_state.displacement[i_block, i_b][i_local % 3]
+            membrane += value * shell_info.membrane[i_e, i_q, i_local]
+            bending += value * shell_info.bending[i_e, i_q, i_local]
+            if stress_state.transverse_resultant.shape[0] > 0:
+                shear += value * shell_info.shear[i_e, i_q, i_local]
+        constitutive = young * func_constitutive(poisson)
+        membrane = constitutive @ membrane
+        bending = constitutive @ bending
+        axes = shell_info.axes[i_e, i_q]
+        if stress_state.membrane_resultant.shape[0] > 0:
+            stress_state.membrane_resultant[i_e, i_q, i_b] = thickness * func_tensor_components(membrane, axes)
+            stress_state.bending_resultant[i_e, i_q, i_b] = thickness**3 / 12.0 * func_tensor_components(bending, axes)
+            transverse = 5.0 / 6.0 * young / (2.0 * (1.0 + poisson)) * thickness * shear
+            stress_state.transverse_resultant[i_e, i_q, i_b] = transverse[0] * axes[:, 0] + transverse[1] * axes[:, 1]
+            if not stress_state.valid[i_b]:
+                stress_state.membrane_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 6)
+                stress_state.bending_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 6)
+                stress_state.transverse_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 3)
+        for i_side in range(2):
+            local = membrane + qd.select(i_side == 0, 0.5, -0.5) * thickness * bending
+            vm = qd.sqrt(qd.max(0.0, local[0] ** 2 + local[1] ** 2 - local[0] * local[1] + 3.0 * local[2] ** 2))
+            qd.atomic_max(stress_state.peak[i_b], vm)
+            if stress_state.stress_tensor.shape[0] > 0:
+                stress_state.stress_tensor[2 * i_e + i_side, i_q, i_b] = func_tensor_components(local, axes)
+                stress_state.von_mises[2 * i_e + i_side, i_q, i_b] = qd.Vector([vm])
                 if not stress_state.valid[i_b]:
-                    stress_state.membrane_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 6)
-                    stress_state.bending_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 6)
-                    stress_state.transverse_resultant[i_e, i_q, i_b] = qd.Vector([float("nan")] * 3)
-            for i_side in range(2):
-                local = membrane + qd.select(i_side == 0, 0.5, -0.5) * thickness * bending
-                vm = qd.sqrt(qd.max(0.0, local[0] ** 2 + local[1] ** 2 - local[0] * local[1] + 3.0 * local[2] ** 2))
-                qd.atomic_max(stress_state.peak[i_b], vm)
-                if stress_state.stress_tensor.shape[0] > 0:
-                    stress_state.stress_tensor[2 * i_e + i_side, i_q, i_b] = func_tensor_components(local, axes)
-                    stress_state.von_mises[2 * i_e + i_side, i_q, i_b] = qd.Vector([vm])
-                    if not stress_state.valid[i_b]:
-                        stress_state.stress_tensor[2 * i_e + i_side, i_q, i_b] = qd.Vector([float("nan")] * 6)
-                        stress_state.von_mises[2 * i_e + i_side, i_q, i_b] = qd.Vector([float("nan")])
+                    stress_state.stress_tensor[2 * i_e + i_side, i_q, i_b] = qd.Vector([float("nan")] * 6)
+                    stress_state.von_mises[2 * i_e + i_side, i_q, i_b] = qd.Vector([float("nan")])
     for i_b in range(stress_state.peak.shape[0]):
         stress_state.step_peak[i_b] = qd.max(stress_state.step_peak[i_b], stress_state.peak[i_b])

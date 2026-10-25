@@ -11,7 +11,6 @@ from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils.array_class import V_VEC, DataItem, V, iter_data
 from genesis.utils.misc import qd_to_numpy
 
-from .atlas import StressAtlas
 from .balance import kernel_centrifugal_wrench, kernel_relief_projection
 from .data import StressState, allocate_stress_info
 from .factor import StressFactor
@@ -30,7 +29,6 @@ from .operators import (
     kernel_modes,
     kernel_valid_geometry,
 )
-from .response import StressResponse, StressResponseInventory
 from .solve import (
     kernel_active,
     kernel_balance,
@@ -51,7 +49,6 @@ class StressBuildTimings:
     factor_seconds: float
     inverse_seconds: float
     surface_inverse_seconds: float
-    response_seconds: float = 0.0
 
 
 class StressModel:
@@ -161,23 +158,16 @@ class StressModel:
             and inverse_bytes + boundary_bytes <= options.inverse_max_bytes
         ):
             self.surface_inverse = StressSurfaceInverse(self.info, self.factor, self.create_state, boundary_nodes)
-        surface_inverse_done = time.perf_counter()
-        self.output_response = None
-        if options.stress_response != "none":
-            self.output_response = StressResponseInventory(self, options)
         self.build_timings = StressBuildTimings(
             topology_done - started,
             operators_done - topology_done,
             factor_done - operators_done,
             inverse_done - factor_done,
-            surface_inverse_done - inverse_done,
-            time.perf_counter() - surface_inverse_done,
+            time.perf_counter() - inverse_done,
         )
 
     def iter_info_data(self, prefix: str) -> Iterator[DataItem]:
         yield from iter_data(self.info, f"{prefix}.info")
-        if self.output_response is not None:
-            yield from iter_data(self.output_response.info, f"{prefix}.output_response")
 
     @property
     def n_output_elements(self) -> int:
@@ -248,8 +238,6 @@ class StressModel:
         options: RigidStressOptions | None = None,
         history: StressHistory | None = None,
         surface_load: bool = False,
-        atlas: StressAtlas | None = None,
-        response: StressResponse | None = None,
     ) -> None:
         """Balance the complete load, recover displacement and scan the full-domain peak."""
         if options is None:
@@ -258,26 +246,18 @@ class StressModel:
         coalesced = options.coalesced_residual
         if coalesced is None:
             coalesced = state.active.shape[0] >= 8192
-        packed_failed = (
-            history is not None
-            and atlas is None
-            and surface_load
-            and self.surface_inverse is not None
-            and options.packed_surface_loads
-            and state.active.shape[0] >= 1024
-        )
         kernel_balance(omega, state, self.info, options.cooperative_balance)
         if self.factor is not None:
             kernel_direct_init(state)
             if history is None:
-                self.solve(options, state, omega, surface_load, atlas=atlas)
+                self.solve(options, state, omega, surface_load)
             else:
                 history.predict(state)
                 kernel_full_residual(
                     options.young, options.tolerance, options.absolute_tolerance, state, self.info, False, coalesced
                 )
-                history.mark_hits(state, options.tolerance, options.absolute_tolerance)
-                self.solve(options, state, omega, surface_load, only_failed=True, atlas=atlas)
+                history.mark_hits(state)
+                self.solve(options, state, omega, surface_load, only_failed=True)
         else:
             kernel_pcg_init(options.young, state, self.info, block, options.warm_start)
             for _ in range((options.max_iterations + 15) // 16):
@@ -300,7 +280,6 @@ class StressModel:
             self.info,
             history is not None,
             coalesced,
-            packed_failed,
         )
         if self.inverse is not None:
             for _ in range(options.inverse_corrections):
@@ -313,7 +292,6 @@ class StressModel:
                     self.info,
                     only_active=True,
                     coalesced=coalesced,
-                    packed_failed=packed_failed,
                 )
             self.factor.solve(options.young, state, self.info, options.cooperative_solve, only_failed=True)
             kernel_full_residual(
@@ -324,18 +302,11 @@ class StressModel:
                 self.info,
                 only_active=True,
                 coalesced=coalesced,
-                packed_failed=packed_failed,
             )
-        if atlas is not None and atlas.output is not None:
-            atlas.output.evaluate(options, self, state, atlas.state)
-        elif response is None:
-            self.evaluate_stress(options, state)
-        else:
-            assert omega is not None
-            response.evaluate(options, omega, state, self, history)
+        self.evaluate_stress(options, state)
 
-    def evaluate_stress(self, options: RigidStressOptions, state: StressState, mask=None) -> None:
-        kernel_peak(options.young, options.poisson, state, self.info, options.cached_peak, mask)
+    def evaluate_stress(self, options: RigidStressOptions, state: StressState) -> None:
+        kernel_peak(options.young, options.poisson, state, self.info, options.cached_peak)
 
     def solve(
         self,
@@ -344,12 +315,8 @@ class StressModel:
         omega: qd.Tensor | None = None,
         surface_load: bool = False,
         only_failed: bool = False,
-        atlas: StressAtlas | None = None,
     ) -> None:
-        if atlas is not None:
-            assert omega is not None
-            atlas.apply(options.young, omega, state, only_failed)
-        elif surface_load and self.surface_inverse is not None:
+        if surface_load and self.surface_inverse is not None:
             assert omega is not None
             block_size = options.packed_block_size
             if block_size is None:

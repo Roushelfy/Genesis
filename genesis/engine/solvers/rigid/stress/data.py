@@ -121,24 +121,9 @@ def allocate_stress_info(
     )
 
 
-class StressAtlasScatter:
-    """Optional immutable tensor references for scatter specialization."""
-
-    def __init__(self, weights: qd.Tensor, force: qd.Tensor, rows: qd.Tensor):
-        self.weights = weights
-        self.force = force
-        self.rows = rows
-
-
 @qd.func
 def func_scatter_load(
-    i_n: int,
-    i_b: int,
-    force: qd.types.vector(3),
-    stress_state: StressState,
-    stress_info: StressInfo,
-    atlas: qd.template() = None,
-    i_c: int = 0,
+    i_n: int, i_b: int, force: qd.types.vector(3), stress_state: StressState, stress_info: StressInfo
 ):
     if stress_info.load_nodes.shape[0] > 0:
         # Consistent virtual work on the physical surface retains both surface eccentricity and supplied wrench.
@@ -147,22 +132,6 @@ def func_scatter_load(
         for a in qd.static(range(3)):
             qd.atomic_add(stress_state.force[2 * j_n, i_b][a], force[a])
             qd.atomic_add(stress_state.force[2 * j_n + 1, i_b][a], moment[a])
-        if qd.static(isinstance(atlas, StressAtlasScatter)):
-            translation_row = atlas.rows[2 * j_n]
-            rotation_row = atlas.rows[2 * j_n + 1]
-            for i_g in range(atlas.weights.shape[0]):
-                weight = atlas.weights[i_g, i_c, i_b]
-                if weight > 0.0:
-                    for a in qd.static(range(3)):
-                        qd.atomic_add(atlas.force[translation_row, i_g, i_b][a], weight * force[a])
-                        qd.atomic_add(atlas.force[rotation_row, i_g, i_b][a], weight * moment[a])
     else:
         for a in qd.static(range(3)):
             qd.atomic_add(stress_state.force[i_n, i_b][a], force[a])
-        if qd.static(isinstance(atlas, StressAtlasScatter)):
-            row = atlas.rows[i_n]
-            for i_g in range(atlas.weights.shape[0]):
-                weight = atlas.weights[i_g, i_c, i_b]
-                if weight > 0.0:
-                    for a in qd.static(range(3)):
-                        qd.atomic_add(atlas.force[row, i_g, i_b][a], weight * force[a])
