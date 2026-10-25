@@ -1,5 +1,21 @@
 # Working on native rigid stress recovery
 
+**Active user goal, 2026-10-25:** follow [GOAL.md](GOAL.md) and
+[the GPU throughput follow-up](docs/GPU_THROUGHPUT_FOLLOWUP_GOAL_20261025.md).
+The user explicitly requests evaluating and implementing the applicable GPU
+optimizations from the CPU/atlas discussion. This activates the scoped
+few-mesh/response/batching/fusion/screening/history work despite the previous
+atlas-only scope below. Start from the delivered native implementation;
+profile pressure/source work as well as recovery and output. Keep production
+numerical work entirely in Quadrants and preserve arbitrary changing contacts,
+friction, surface sides, max/full and lifecycle behavior.
+
+Optimize low-resolution numerical consistency and measured module/complete
+Franka throughput first. Evaluate every applicable candidate and retain
+positive/negative evidence; use judgment rather than stacking all methods or
+adding many public knobs. The detailed goal defines comparison and completion.
+The directions below describe prior deliveries and standing policies.
+
 **Latest delivery, 2026-10-24:** the optional native thin-shell DPR backend,
 focused numerical/lifecycle tests, matched throughput/profiling and targeted
 global physical checks are complete. Read [GOAL.md](GOAL.md) and

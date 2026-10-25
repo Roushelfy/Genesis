@@ -9,6 +9,17 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
+## Active: GPU throughput follow-up (2026-10-25)
+
+Follow [the current goal](GOAL.md) and
+[the optimization/validation requirements](docs/GPU_THROUGHPUT_FOLLOWUP_GOAL_20261025.md).
+Evaluate shared load preparation and grouped batches, few feature meshes with
+continuous transitions, recovery/max fusion, FP32 complete/packed response
+alternatives, global max screening and history/compaction. Start from the
+existing native optimizations and prioritize the measured bottleneck,
+including pressure integration. Report matched module and complete Franka
+throughput, memory and numerical errors, with negative results retained.
+
 ## Delivered: native thin-shell DPR integration (2026-10-24)
 
 The optional native shell backend retains DPR pressure and eccentric friction,
@@ -31,8 +42,8 @@ accuracy/resource/numerical failures. See [the measured report](atlas_study/REPO
 The method improves coarse sampled fields on the tested fixtures, but mixed
 mesh responses are not the joint-refined Galerkin solution. Hard switching,
 response storage, reference sensitivity and unresolved egg peaks remain
-explicit. This is supplementary CPU research, not a delivered native backend
-or a change to the active thin-shell integration goal.
+explicit. This is supplementary CPU evidence. The GPU follow-up now explicitly evaluates
+applicable ideas; native implementation and GPU gains require their own checks.
 
 ## CPU thin-shell feasibility study (2026-10-24)
 
