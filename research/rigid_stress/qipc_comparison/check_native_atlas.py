@@ -124,6 +124,7 @@ def main():
     )
     entry = workload.scene.rigid_solver.stress_recovery.links[0]
     state, atlas = entry.state, entry.atlas.state
+    boundary_nodes = qd_to_numpy(entry.model.surface_inverse.info.nodes)
     reference_options = entry.options.model_copy(update={"atlas_regions": 0})
     fields = (("displacement", state.displacement), ("stress_tensor", state.stress_tensor), ("peak", state.peak))
     if args.stress_backend == "shell":
@@ -137,9 +138,11 @@ def main():
         # All requested fields are checked at every evolving physical observation.
         candidate = {name: qd_to_numpy(array, transpose=True) for name, array in fields}
         force = qd_to_numpy(state.force, transpose=True)
-        grouped = qd_to_numpy(atlas.force).sum(axis=1).transpose(1, 0, 2)
+        grouped = np.zeros_like(force)
+        grouped[:, boundary_nodes] = qd_to_numpy(atlas.force).sum(axis=1).transpose(1, 0, 2)
         weights = qd_to_numpy(atlas.weights)
         active = qd_to_numpy(entry.contacts.valid) & (qd_to_numpy(entry.contacts.status) == 0)
+        weights *= active[None]
         assert qd_to_numpy(state.valid).all()
         assert (np.abs(weights.sum(axis=0)[active] - 1.0) < 1e-14).all()
         row = dict(

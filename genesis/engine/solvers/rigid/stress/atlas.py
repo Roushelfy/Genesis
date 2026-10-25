@@ -40,6 +40,7 @@ class StressAtlasInfo:
     seeds: qd.Tensor
     radii: qd.Tensor
     coverage: qd.Tensor
+    force_rows: qd.Tensor
 
 
 @dataclass(frozen=True)
@@ -86,16 +87,18 @@ class StressAtlas:
             seeds=V(dtype=gs.qd_int, shape=(n_features,)),
             radii=V(dtype=gs.qd_float, shape=(n_features,)),
             coverage=V(dtype=gs.qd_bool, shape=(n_features, n_physical)),
+            force_rows=V(dtype=gs.qd_int, shape=(n_nodes,)),
         )
         self.info.starts.from_numpy(starts.astype(gs.np_int, copy=False))
         self.info.neighbors.from_numpy(pairs[:, 1].astype(gs.np_int, copy=False))
         visited = V(dtype=gs.qd_bool, shape=(n_physical,))
         kernel_distances(model.load_info, self.info, visited)
         kernel_coverage(width, model.load_info, self.info)
+        kernel_force_rows(model.surface_inverse.info, self.info)
         self.state = StressAtlasState(
             weights=V(dtype=gs.qd_float, shape=(n_groups, n_contacts, n_envs)),
             fallback=V(dtype=gs.qd_bool, shape=(n_contacts, n_envs)),
-            force=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_groups, n_envs)),
+            force=V_VEC(3, dtype=gs.qd_float, shape=(n_boundary, n_groups, n_envs)),
             displacement=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_groups, n_envs)),
             columns=V(dtype=gs.qd_int, shape=(n_boundary, n_groups, n_envs)),
             counts=V(dtype=gs.qd_int, shape=(n_groups, n_envs)),
@@ -106,7 +109,8 @@ class StressAtlas:
         self.coarse = StressAtlasCoarse(model, n_envs) if partition == "coarse_local" else None
         if self.coarse is not None:
             self.response = self.coarse.response
-        self.scatter = StressAtlasScatter(self.state.weights, self.state.force)
+        self.state.weights.fill(0)
+        self.scatter = StressAtlasScatter(self.state.weights, self.state.force, self.info.force_rows)
         self.output: StressAtlasOutput | None = None
 
     def prepare(self, contacts: StressContactState, load_info: StressInfo, surface: StressSurfaceInfo, width: float):
@@ -118,6 +122,15 @@ class StressAtlas:
         kernel_pack(state, self.response, self.state, only_failed)
         kernel_apply(young, self.response, self.state)
         kernel_merge(young, omega, state, self.response, self.state, self.coarse, only_failed)
+
+
+@qd.kernel
+def kernel_force_rows(response: StressSurfaceInverseInfo, atlas: StressAtlasInfo):
+    for i_n in range(atlas.force_rows.shape[0]):
+        atlas.force_rows[i_n] = -1
+    for j in range(response.nodes.shape[0]):
+        i_n = response.nodes[j]
+        atlas.force_rows[i_n] = j
 
 
 @qd.kernel
@@ -178,10 +191,10 @@ def kernel_select(
     for i_n, i_g, i_b in qd.ndrange(state.force.shape[0], state.force.shape[1], state.force.shape[2]):
         state.force[i_n, i_g, i_b] = qd.Vector.zero(gs.qd_float, 3)
     for i_c, i_b in qd.ndrange(contacts.valid.shape[0], contacts.valid.shape[1]):
-        for i_g in range(state.weights.shape[0]):
-            state.weights[i_g, i_c, i_b] = 0.0
         state.fallback[i_c, i_b] = False
         if contacts.valid[i_c, i_b] and contacts.status[i_c, i_b] == 0:
+            for i_g in range(state.weights.shape[0]):
+                state.weights[i_g, i_c, i_b] = 0.0
             i_f = contacts.anchor_face[i_c, i_b]
             shape = qd.Vector.zero(gs.qd_float, 4)
             regular = i_f >= 0
@@ -262,7 +275,7 @@ def kernel_pack(
             enabled = not state.valid[i_b]
         if enabled:
             for j in range(response.nodes.shape[0]):
-                force = atlas.force[response.nodes[j], i_g, i_b]
+                force = atlas.force[j, i_g, i_b]
                 if force[0] != 0.0 or force[1] != 0.0 or force[2] != 0.0:
                     atlas.columns[count, i_g, i_b] = j
                     count += 1
@@ -274,12 +287,12 @@ def kernel_pack(
 
 @qd.kernel(graph=True)
 def kernel_apply(young: float, response: StressSurfaceInverseInfo, atlas: StressAtlasState):
-    for i_n, i_pair in qd.ndrange(atlas.force.shape[0], atlas.count[None]):
+    for i_n, i_pair in qd.ndrange(atlas.displacement.shape[0], atlas.count[None]):
         i_g, i_b = atlas.pairs[i_pair][0], atlas.pairs[i_pair][1]
         value = qd.Vector.zero(gs.qd_float, 3)
         for slot in range(atlas.counts[i_g, i_b]):
             j = atlas.columns[slot, i_g, i_b]
-            value += response.force_blocks[i_n, j] @ atlas.force[response.nodes[j], i_g, i_b]
+            value += response.force_blocks[i_n, j] @ atlas.force[j, i_g, i_b]
         atlas.displacement[i_n, i_g, i_b] = value / young
 
 

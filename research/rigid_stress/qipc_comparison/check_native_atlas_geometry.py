@@ -43,6 +43,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stress-backend", choices=("shell", "volume"), required=True)
     parser.add_argument("--geometry", choices=("egg", "nonconvex"), default="egg")
+    parser.add_argument("--complete-boundary", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -52,6 +53,16 @@ def main():
     if args.geometry == "egg":
         asset = Path(gs.__file__).parent.parent / "examples/rigid/assets/hollow_egg/level1"
         asset = asset / ("shell.npz" if args.stress_backend == "shell" else "elastic.npz")
+        if args.complete_boundary and args.stress_backend == "volume":
+            with np.load(asset) as original:
+                vertices, tetrahedra = original["vertices"], original["tetrahedra"]
+            faces, counts = np.unique(
+                np.sort(tetrahedra[:, [[1, 2, 3], [0, 2, 3], [0, 1, 3], [0, 1, 2]]].reshape((-1, 3)), axis=1),
+                axis=0,
+                return_counts=True,
+            )
+            asset = args.output / "complete-boundary.npz"
+            np.savez(asset, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces[counts == 1])
         width, radius = 0.003, 8e-5
     else:
         asset = args.output / "nonconvex.npz"
@@ -77,7 +88,11 @@ def main():
     vertices = qd_to_numpy(model.load_info.vertices)
     faces = qd_to_numpy(model.load_info.surface_nodes)[:, : (4 if args.stress_backend == "shell" else 3)]
     normals = qd_to_numpy(surface.info.face_normal)
+    inner = np.einsum("ij,ij->i", vertices[faces].mean(axis=1) - vertices.mean(axis=0), normals) < 0
+    result["authored_inner_faces"] = int(np.count_nonzero(inner))
+    result["complete_boundary"] = args.complete_boundary
     distances = qd_to_numpy(atlas.info.distances)
+    boundary_nodes = qd_to_numpy(model.surface_inverse.info.nodes)
     axis = np.linspace(-0.95, 0.95, 17) if args.stress_backend == "shell" else np.linspace(0.02, 0.96, 17)
     coordinates = np.array([(x, y) for x in axis for y in axis if args.stress_backend == "shell" or x + y < 0.99])
     best = (np.inf, 0, coordinates[0])
@@ -104,6 +119,9 @@ def main():
         valid = np.ones((4, 4), dtype=bool)
         for i_c in range(4):
             i_f = junction if i_c == 0 else (junction + i_c * len(faces) // 4) % len(faces)
+            if args.complete_boundary and i_c in (1, 2):
+                available = np.flatnonzero(inner if i_c == 1 else ~inner)
+                i_f = available[len(available) // 2]
             for i_b in range(4):
                 location = local.copy() if i_c == 0 else np.array([0.17, 0.21])
                 location[0] += (1 if step % 2 else -1) * 1e-7
@@ -135,10 +153,12 @@ def main():
         atlas.prepare(contacts, model.load_info, surface.info, width)
         kernel_scatter_faces(contacts, state, model.load_info, surface.info, workspace, True, atlas=atlas.scatter)
         actual_load = qd_to_numpy(state.force, transpose=True)
-        grouped = qd_to_numpy(atlas.state.force).sum(axis=1).transpose(1, 0, 2)
+        grouped = np.zeros_like(reference_load)
+        grouped[:, boundary_nodes] = qd_to_numpy(atlas.state.force).sum(axis=1).transpose(1, 0, 2)
         model.recover(omega, state, options, surface_load=True, atlas=atlas)
         actual = {name: qd_to_numpy(array, transpose=True) for name, array in fields}
         weights = qd_to_numpy(atlas.state.weights)
+        weights *= valid[None]
         row = dict(
             step=step,
             load_error=float(per_environment(actual_load, reference_load).max()),

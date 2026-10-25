@@ -41,18 +41,19 @@ def kernel_load(
 ):
     for i_n, i_b in qd.ndrange(state.force.shape[0], state.active.shape[0]):
         state.force[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
-        for i_g in range(atlas.force.shape[1]):
-            atlas.force[i_n, i_g, i_b] = qd.Vector.zero(gs.qd_float, 3)
+    for i_n, i_g, i_b in qd.ndrange(atlas.force.shape[0], atlas.force.shape[1], state.active.shape[0]):
+        atlas.force[i_n, i_g, i_b] = qd.Vector.zero(gs.qd_float, 3)
     for i_b in range(state.active.shape[0]):
         scale = qd.select(step == 3, 0.0, 0.001 * (step + 1) * (i_b + 1))
         first = scale * qd.Vector([1.0, 2.0, -3.0])
         second = scale * qd.Vector([-0.4, 0.3, 0.1])
-        state.force[boundary.nodes[0], i_b] = first
-        state.force[boundary.nodes[1], i_b] = second
+        first_node, second_node = boundary.nodes[0], boundary.nodes[1]
+        state.force[first_node, i_b] = first
+        state.force[second_node, i_b] = second
         for i_g in range(1, 4):
             fraction = qd.select(i_g == 1, 0.2, qd.select(i_g == 2, 0.3, 0.5))
-            atlas.force[boundary.nodes[0], i_g, i_b] = fraction * first
-            atlas.force[boundary.nodes[1], i_g, i_b] = fraction * second
+            atlas.force[0, i_g, i_b] = fraction * first
+            atlas.force[1, i_g, i_b] = fraction * second
         omega[i_b] = qd.Vector([0.2, 0.3, 0.4]) * qd.select(step == 3, 0.0, 1.0)
 
 
@@ -61,6 +62,8 @@ def main():
     parser.add_argument("--stress-backend", choices=("shell", "volume"), required=True)
     parser.add_argument("--atlas-output", choices=("merged", "independent"), default="merged")
     parser.add_argument("--atlas-partition", choices=("direct", "coarse_local"), default="direct")
+    parser.add_argument("--response-precision", choices=("64", "32"), default="64")
+    parser.add_argument("--response-accumulation", choices=("64", "32"), default="64")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -75,6 +78,8 @@ def main():
         quadrature=16,
         atlas_regions=6,
         stress_response="none" if args.atlas_output == "independent" else "sparse",
+        response_precision=args.response_precision,
+        response_accumulation=args.response_accumulation,
     )
     model = ShellModel(options) if args.stress_backend == "shell" else StressModel(options)
     state = model.create_state(2, "full")
@@ -114,7 +119,9 @@ def main():
         }
         result["rows"].append(dict(step=step, history_hits=hits.tolist(), errors=errors))
         write_json(args.output / "result.json", result)
-        assert max(errors.values()) < 1e-8
+        exact_output = args.response_precision == args.response_accumulation == "64"
+        assert errors["displacement"] < 1e-8
+        assert max(errors.values()) < (1e-8 if exact_output else 1e-4)
         if step == 0:
             result["cpu_control"] = cpu_control(Control(model, state, omega, options))
         if step == 2:
@@ -133,15 +140,20 @@ def main():
         assert result["coarse_galerkin_error"] < 1e-8
     if response is None:
         response = StressResponse(StressResponseInventory(model, options), 2)
-    maximum = model.create_state(2)
-    kernel_load(0, omega, maximum, atlas.state, model.surface_inverse.info)
-    model.recover(
-        omega, maximum, reference.model_copy(update={"stress_response": "screen"}), surface_load=True, response=response
-    )
-    candidate_peak = qd_to_numpy(maximum.peak)
-    model.recover(omega, maximum, reference, surface_load=True)
-    result["screen_error"] = float(per_environment(candidate_peak, qd_to_numpy(maximum.peak)).max())
-    assert result["screen_error"] < 1e-8
+    if exact_output:
+        maximum = model.create_state(2)
+        kernel_load(0, omega, maximum, atlas.state, model.surface_inverse.info)
+        model.recover(
+            omega,
+            maximum,
+            reference.model_copy(update={"stress_response": "screen"}),
+            surface_load=True,
+            response=response,
+        )
+        candidate_peak = qd_to_numpy(maximum.peak)
+        model.recover(omega, maximum, reference, surface_load=True)
+        result["screen_error"] = float(per_environment(candidate_peak, qd_to_numpy(maximum.peak)).max())
+        assert result["screen_error"] < 1e-8
     result["complete"] = True
     write_json(args.output / "result.json", result)
 

@@ -212,10 +212,7 @@ def kernel_apply(
     qd.loop_config(block_dim=block_size)
     for i_p, i_b in qd.ndrange(n_output, state.active.shape[0]):
         if not workspace.recover_displacement[i_b]:
-            if qd.static(single):
-                value = qd.Vector.zero(qd.f32, 6)
-            else:
-                value = qd.Vector.zero(gs.qd_float, 6)
+            value = qd.Vector.zero((gs.qd_float, qd.f32)[single], 6)
             sparse = True
             if qd.static(mode == 0):
                 sparse = False
@@ -226,10 +223,9 @@ def kernel_apply(
                 j = slot
                 if sparse:
                     j = workspace.columns[slot, i_b]
-                if qd.static(single):
-                    value += qd.cast(response.values[i_p, j], qd.f32) * qd.cast(workspace.loads[j, i_b], qd.f32)
-                else:
-                    value += response.values[i_p, j].cast(gs.qd_float) * workspace.loads[j, i_b]
+                value += qd.cast(response.values[i_p, j], (gs.qd_float, qd.f32)[single]) * qd.cast(
+                    workspace.loads[j, i_b], (gs.qd_float, qd.f32)[single]
+                )
             components = value.cast(gs.qd_float)
             if i_p < n_stress:
                 vm = func_von_mises(components)
