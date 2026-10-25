@@ -532,7 +532,9 @@ def func_anchor(source_epsilon: float, contact_state: StressContactState, surfac
                     # A solvable moment fit does not certify integration accuracy when the support is smaller
                     # than the face rule's spacing. Integrate these patches at their physical scale immediately.
                     contact_state.is_refined[i_c, i_b] = (
-                        surface_info.quad_vertices.shape[0] > 0 or radius * surface_info.gauss.shape[0] < diameter
+                        surface_info.quad_vertices.shape[0] > 0
+                        or surface_info.angular_quadrature[None]
+                        or radius * surface_info.gauss.shape[0] < diameter
                     )
                 else:
                     contact_state.status[i_c, i_b] = 2

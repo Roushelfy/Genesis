@@ -264,7 +264,7 @@ class RigidStressOptions(Options):
     source_projection_limit: PositiveFloat = 1e-4
     source_geometry_tolerance: PositiveFloat = 1e-8
     source_uncertainty: Annotated[ValidFloat, Field(ge=0)] = 0.0
-    quadrature: Annotated[PositiveInt, Field(le=32)] = 10
+    quadrature: Annotated[PositiveInt, Field(le=128)] = 10
     pressure_quadrature: Literal["edge", "angle"] = "edge"
     tolerance: PositiveFloat = 1e-8
     absolute_tolerance: PositiveFloat = 1e-11
