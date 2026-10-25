@@ -1,4 +1,30 @@
-# Native rigid stress recovery: GPU throughput follow-up
+# Native rigid stress recovery: native candidate integration and tuning
+
+**Active user goal, 2026-10-25:** take all seven GPU candidates through
+real native integration, targeted tuning and matched end-to-end measurement
+for both midsurface shell and three-dimensional volume FEM. Track the seven
+candidates separately for each backend; neither backend's result closes the
+other. Each has its own mother space, gauge/relief, load maps and outputs.
+Follow [the integration goal](docs/NATIVE_CANDIDATE_INTEGRATION_GOAL_20261025.md).
+
+The curved atlas mapping and common gauge/inertia relief are now explicit
+implementation work. Simplified planar, H-only or recovery-only prototypes
+cannot close these items. Connect each candidate to real native inputs,
+required acceptance/state, max/full output and lifecycle. Keep measured
+winners; revert production candidates only after a reasonably tuned native
+comparison supports the negative result.
+
+Keep all production numerical preparation/runtime in Quadrants. Preserve
+the mature DPR load model and arbitrary moving/asymmetric convex/nonconvex
+contacts, friction, surface sides, batching, volume/shell choice and lifecycle.
+Use low-resolution numerical consistency and full Franka throughput first.
+The [earlier candidate report](docs/GPU_THROUGHPUT_20261025.md) is the baseline
+and historical evidence, with its unintegrated candidates still open under
+this stronger goal.
+
+---
+
+## Previous delivery: GPU candidate evaluation
 
 **Completed, 2026-10-25:** the applicable candidates, integrated pressure and
 exact-fallback improvements, focused regressions, paired module/scene timings,

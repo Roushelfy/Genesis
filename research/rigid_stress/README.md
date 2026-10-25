@@ -9,6 +9,19 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
+## Active: native candidate integration and tuning (2026-10-25)
+
+Follow [GOAL.md](GOAL.md) and
+[the native integration requirements](docs/NATIVE_CANDIDATE_INTEGRATION_GOAL_20261025.md).
+Take all seven GPU candidates through real native integration and targeted
+tuning in both midsurface shell and three-dimensional volume FEM. Record a
+separate decision for each candidate/backend, then retain useful winners and
+preserve reproducible negative results.
+The curved atlas mapping and common inertia relief are now implementation
+work; simplified prototypes alone cannot complete the task. Prioritize
+low-resolution numerical consistency and complete Franka throughput in
+Quadrants, keeping existing load/acceptance/lifecycle behavior.
+
 ## Delivered: GPU throughput follow-up (2026-10-25)
 
 Shared shell-pressure face preparation and fixed Q4 projection reuse improve

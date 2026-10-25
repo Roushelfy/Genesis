@@ -1,5 +1,25 @@
 # Working on native rigid stress recovery
 
+**Active user goal, 2026-10-25:** follow [GOAL.md](GOAL.md) and
+[the native integration/tuning goal](docs/NATIVE_CANDIDATE_INTEGRATION_GOAL_20261025.md).
+All seven candidates now require real native trials and targeted tuning in
+both midsurface shell and three-dimensional volume FEM before separate
+retention/reversion decisions. Keep a seven-by-two completion matrix and each
+backend's own mother space, gauge/relief, H, output and numerical baseline. Curved atlas mapping and common
+gauge/inertia relief are implementation tasks. Earlier standalone planar,
+H-only or recovery-only evidence and "mapping not implemented" cannot close
+this stage. Preserve and reuse prior evidence; measure the costs and
+interactions that native integration changes.
+
+Keep numerical preparation/runtime in Quadrants and preserve the existing
+load, acceptance, output and lifecycle contracts. Prioritize low-resolution
+numerics, profiling and complete Franka throughput. Keep useful winners and
+reproducible native negative results with a small public configuration.
+This explicit user goal supersedes prior completion/no-reopening language
+for these candidates. Earlier deliveries and standing policies follow.
+
+## Previous deliveries
+
 **Latest delivery, 2026-10-25:** the GPU throughput follow-up is complete.
 Read [GOAL.md](GOAL.md), [the measured report](docs/GPU_THROUGHPUT_20261025.md)
 and [the requirement audit](evidence/20261025-gpu-throughput-v1/metadata/requirements-final.json).
