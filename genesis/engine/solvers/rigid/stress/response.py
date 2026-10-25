@@ -91,7 +91,12 @@ class StressResponse:
         history: StressHistory | None,
     ):
         kernel_inputs(
-            omega, state, self.state, model.surface_inverse.info, history.state.hit if history is not None else None
+            omega,
+            state,
+            self.state,
+            model.surface_inverse.info,
+            history.state.hit if history is not None else state.valid,
+            history is not None,
         )
         # Corrected/predicted/invalid states retain ordinary recovery from their actual
         # displacement. H is used only for an accepted uncorrected exact response.
@@ -166,11 +171,12 @@ def kernel_inputs(
     state: StressState,
     response: StressResponseState,
     boundary: StressSurfaceInverseInfo,
-    history_hits: qd.Tensor | None,
+    history_hits: qd.Tensor,
+    has_history: qd.template(),
 ):
     for i_b in range(state.active.shape[0]):
         fallback = not state.valid[i_b] or state.corrections[i_b] > 0 or state.fallbacks[i_b] > 0
-        if qd.static(history_hits is not None):
+        if qd.static(has_history):
             fallback = fallback or history_hits[i_b]
         response.recover_displacement[i_b] = fallback
         response.evaluated[i_b] = 0

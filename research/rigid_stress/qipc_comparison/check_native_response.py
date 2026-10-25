@@ -13,7 +13,8 @@ from genesis.utils.array_class import V_MAT
 from genesis.utils.misc import qd_to_numpy, tensor_to_array
 
 from .artifacts import runtime_identity, write_json
-from .check_native_atlas import cpu_control, relative
+from .audit_gpu_candidates import per_environment
+from .check_native_atlas import cpu_control
 
 
 @qd.kernel
@@ -96,7 +97,10 @@ def main():
         )
         entry.model.surface_inverse.info = original
         entry.model.recover(entry.omega, state, reference_options, surface_load=True)
-        row["errors"] = {name: relative(candidate[name], qd_to_numpy(array, transpose=True)) for name, array in fields}
+        row["errors"] = {
+            name: float(per_environment(candidate[name], qd_to_numpy(array, transpose=True)).max())
+            for name, array in fields
+        }
         result["rows"].append(row)
         write_json(args.output / "result.json", result)
         assert qd_to_numpy(state.valid).all()

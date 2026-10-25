@@ -125,13 +125,18 @@ class RigidStressRecovery:
                             and previous.response_max_bytes == options.response_max_bytes
                         ):
                             model = existing.model
-                            if existing.surface.info.gauss.shape[0] == quadrature:
+                            if (
+                                existing.surface.info.gauss.shape[0] == quadrature
+                                and existing.options.pressure_quadrature == options.pressure_quadrature
+                            ):
                                 surface = existing.surface
                             break
                     if model is None:
                         model = ShellModel(options) if options.backend == "shell" else StressModel(options)
                     if surface is None:
-                        surface = StressSurface(quadrature, model.load_info)
+                        surface = StressSurface(
+                            quadrature, model.load_info, angular=options.pressure_quadrature == "angle"
+                        )
                     reuse_contact_moments = (
                         options.contact_model == "pressure"
                         and options.load_transfer == "patch"

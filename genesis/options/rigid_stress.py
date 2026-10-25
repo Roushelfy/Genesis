@@ -60,6 +60,10 @@ class RigidStressOptions(Options):
     the original Gaussian/taper profile, including when only the radius is estimated. Changing the profile changes
     the load model and its quadrature error; neither choice introduces a friction-history solver.
     ``quadrature`` controls surface integration cost and accuracy.
+    ``pressure_quadrature="angle"`` samples each surface fan uniformly in angle
+    to resolve small footprints near a long edge. It preserves the physical
+    radius and pressure profile. The default ``"edge"`` retains edge-parameter
+    quadrature; the angular variant remains experimental.
     ``load_transfer="resolved"`` declares that pressure-mode input forces are
     already integrated boundary samples. It transfers each sample through the
     P2 shape functions of its witnessed material face, without another finite
@@ -254,6 +258,7 @@ class RigidStressOptions(Options):
     source_geometry_tolerance: PositiveFloat = 1e-8
     source_uncertainty: Annotated[ValidFloat, Field(ge=0)] = 0.0
     quadrature: Annotated[PositiveInt, Field(le=16)] = 10
+    pressure_quadrature: Literal["edge", "angle"] = "edge"
     tolerance: PositiveFloat = 1e-8
     absolute_tolerance: PositiveFloat = 1e-11
     max_iterations: PositiveInt = 2000

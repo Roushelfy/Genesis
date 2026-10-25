@@ -343,7 +343,15 @@ def func_tensor_components(local: qd.types.vector(3), axes: qd.types.matrix(3, 3
 def kernel_peak(
     young: float, poisson: float, thickness: float, stress_state: StressState, shell_info: ShellInfo, mask=None
 ):
-    kernel_peak_impl(young, poisson, thickness, stress_state, shell_info, mask)
+    kernel_peak_impl(
+        young,
+        poisson,
+        thickness,
+        stress_state,
+        shell_info,
+        stress_state.valid if mask is None else mask,
+        mask is not None,
+    )
 
 
 @qd.kernel(graph=True)
@@ -353,9 +361,10 @@ def kernel_peak_impl(
     thickness: float,
     stress_state: StressState,
     shell_info: ShellInfo,
-    mask: qd.Tensor | None,
+    mask: qd.Tensor,
+    masked: qd.template(),
 ):
-    func_peak(young, poisson, thickness, stress_state, shell_info, mask)
+    func_peak(young, poisson, thickness, stress_state, shell_info, mask, masked)
 
 
 @qd.func
@@ -365,13 +374,14 @@ def func_peak(
     thickness: float,
     stress_state: StressState,
     shell_info: ShellInfo,
-    mask: qd.Tensor | None = None,
+    mask: qd.template() = None,
+    masked: qd.template() = False,
 ):
     for i_b in range(stress_state.peak.shape[0]):
         stress_state.peak[i_b] = 0.0
     for i_e, i_q, i_b in qd.ndrange(shell_info.quads.shape[0], 4, stress_state.peak.shape[0]):
         enabled = True
-        if qd.static(mask is not None):
+        if qd.static(masked):
             enabled = mask[i_b]
         if enabled:
             membrane = qd.Vector.zero(gs.qd_float, 3)

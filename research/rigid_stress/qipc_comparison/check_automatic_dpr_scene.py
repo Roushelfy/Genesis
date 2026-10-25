@@ -64,6 +64,7 @@ def main():
     cli.add_argument("--backend", choices=["cpu", "gpu"], default="gpu")
     cli.add_argument("--batch", type=int, default=4)
     cli.add_argument("--steps", type=int, default=130)
+    cli.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
     cli.add_argument("--quadrature", type=int, default=10)
     cli.add_argument("--stress-backend", choices=["volume", "shell"], default="volume")
     cli.add_argument("--shell-gauge", choices=["translation", "legacy"], default="translation")
@@ -88,6 +89,7 @@ def main():
             "batch": args.batch,
             "steps": args.steps,
             "quadrature": args.quadrature,
+            "pressure_quadrature": args.pressure_quadrature,
             "stress_backend": args.stress_backend,
             "shell_gauge": args.shell_gauge,
             "method": args.method,
@@ -113,6 +115,7 @@ def main():
         radius_model="manual" if args.mode == "manual" else "hertz",
         pressure_profile="hertz" if args.mode == "hertz" else "dpr",
         quadrature=args.quadrature,
+        pressure_quadrature=args.pressure_quadrature,
         stress_backend=args.stress_backend,
         shell_gauge=args.shell_gauge,
         method=args.method,

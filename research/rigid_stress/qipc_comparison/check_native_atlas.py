@@ -2,6 +2,7 @@
 
 import argparse
 from pathlib import Path
+from typing import NamedTuple
 
 import numpy as np
 import quadrants as qd
@@ -12,14 +13,22 @@ from examples.rigid.franka_egg_stress import FrankaEgg
 from genesis.utils.misc import qd_to_numpy
 
 from .artifacts import runtime_identity, write_json
+from .audit_gpu_candidates import per_environment
 
 
 def relative(actual, expected):
     return float(np.linalg.norm(actual - expected) / max(np.linalg.norm(expected), 1e-30))
 
 
-def cpu_control(entry):
-    info = entry.model.info
+class CpuStressOperator(NamedTuple):
+    matrix: np.ndarray
+    free: np.ndarray
+    modes: np.ndarray
+    relief: np.ndarray
+    factor: tuple[np.ndarray, bool]
+
+
+def cpu_operator(info):
     starts = qd_to_numpy(info.row_start)
     columns = qd_to_numpy(info.columns)
     blocks = qd_to_numpy(info.stiffness)
@@ -34,6 +43,13 @@ def cpu_control(entry):
     # Recompute the six-dimensional relief independently from the native mass/mode inputs.
     relief = scipy.linalg.solve(modes.T @ mass_modes, mass_modes.T, assume_a="sym").T
     factor = scipy.linalg.cho_factor(matrix[np.ix_(free, free)])
+    return CpuStressOperator(matrix, free, modes, relief, factor)
+
+
+def cpu_control(entry):
+    info = entry.model.info
+    matrix, free, modes, relief, factor = cpu_operator(info)
+    n = info.vertices.shape[0]
     force = qd_to_numpy(entry.state.force, transpose=True)[0].reshape(-1)
     spin = qd_to_numpy(entry.omega, transpose=True)[0]
     terms = np.r_[spin**2, spin[0] * spin[1], spin[0] * spin[2], spin[1] * spin[2]]
@@ -122,7 +138,7 @@ def main():
         row = dict(
             step=step,
             contacts=int(np.count_nonzero(active)),
-            grouped_load_relative=relative(grouped, force),
+            grouped_load_relative=float(per_environment(grouped, force).max()),
             maximum_contributors=int(np.count_nonzero(weights, axis=0).max()),
             coverage_fallbacks=int(np.count_nonzero(qd_to_numpy(atlas.fallback) & active)),
             active_groups=int(qd_to_numpy(atlas.count)),
@@ -131,7 +147,8 @@ def main():
         )
         entry.model.recover(entry.omega, state, reference_options, surface_load=True)
         row["errors"] = {
-            name: relative(candidate[name], qd_to_numpy(array, transpose=True)) for name, array in fields
+            name: float(per_environment(candidate[name], qd_to_numpy(array, transpose=True)).max())
+            for name, array in fields
         }
         result["rows"].append(row)
         write_json(args.output / "result.json", result)

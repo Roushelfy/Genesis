@@ -5,6 +5,7 @@ from pathlib import Path
 
 import numpy as np
 import quadrants as qd
+import scipy.linalg
 import scipy.optimize
 import scipy.spatial
 
@@ -16,13 +17,16 @@ from genesis.engine.solvers.rigid.stress.contact import (
     func_force_frame,
     kernel_anchor,
     kernel_pressure,
+    kernel_scatter,
 )
 from genesis.engine.solvers.rigid.stress.model import StressModel
+from genesis.engine.solvers.rigid.stress.solve import kernel_direct_init, kernel_full_residual
 from genesis.engine.solvers.rigid.stress.surface import StressSurface, StressSurfaceInfo
 from genesis.utils.array_class import V_VEC, V
 from genesis.utils.misc import qd_to_numpy
 
 from .artifacts import file_id, runtime_identity, write_json
+from .check_native_atlas import cpu_operator
 
 
 @qd.kernel
@@ -126,6 +130,32 @@ def main():
             active_hessian_eigenvalues=np.linalg.eigvalsh(hessian(fit.x, x, w)).tolist(),
         )
     np.savez_compressed(args.output / "sampled-problem.npz", coordinates=x, weights=w, **starts)
+    if result["replay_status"] == 0:
+        state = model.create_state(1, "full")
+        kernel_scatter(contacts, state, model.load_info, surface.info)
+        force = qd_to_numpy(state.force, transpose=True)[0]
+        matrix, free, modes, relief, factor = cpu_operator(model.info)
+        flat = force.reshape(-1)
+        rhs = flat - relief @ (modes.T @ flat)
+        displacement = np.zeros_like(flat)
+        displacement[free] = scipy.linalg.cho_solve(factor, rhs[free]) / options.young
+        state.rhs.from_numpy(rhs.reshape((-1, 1, 3)))
+        state.displacement.from_numpy(displacement.reshape((-1, 1, 3)))
+        kernel_direct_init(state)
+        kernel_full_residual(options.young, options.tolerance, options.absolute_tolerance, state, model.info, False)
+        model.evaluate_stress(options, state)
+        result["field_valid"] = bool(qd_to_numpy(state.valid)[0])
+        result["force_error"] = float(qd_to_numpy(contacts.force_error)[0, 0])
+        result["moment_error"] = float(qd_to_numpy(contacts.moment_error)[0, 0])
+        result["scatter_status"] = int(qd_to_numpy(contacts.status)[0, 0])
+        assert result["field_valid"] and result["scatter_status"] == 0
+        np.savez_compressed(
+            args.output / "load-field.npz",
+            force=force,
+            displacement=displacement,
+            stress_tensor=qd_to_numpy(state.stress_tensor, transpose=True),
+            peak=qd_to_numpy(state.peak),
+        )
     result["complete"] = True
     write_json(args.output / "result.json", result)
 

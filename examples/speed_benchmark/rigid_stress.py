@@ -500,6 +500,7 @@ def main() -> None:
     parser.add_argument(
         "--dense-surface-loads", action="store_true", help="Apply all boundary columns without packing."
     )
+    parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
     parser.add_argument("--stress-response", choices=("none", "sparse", "dense", "hybrid", "screen"), default="none")
     parser.add_argument("--response-precision", choices=("64", "32"), default="64")
     parser.add_argument("--response-accumulation", choices=("64", "32"), default="64")
@@ -584,6 +585,7 @@ def main() -> None:
         pressure_profile=args.pressure_profile,
         box_edge_policy=args.box_edge_policy,
         quadrature=args.quadrature,
+        pressure_quadrature=args.pressure_quadrature,
         contact_block_size=args.contact_block_size,
         egg_geometry=args.egg_geometry,
         use_gjk_collision={"auto": None, "mpr": False, "gjk": True}[args.collision_method],
@@ -708,6 +710,7 @@ def main() -> None:
             "level": args.level,
             "precision": "64",
             "quadrature": args.quadrature,
+            "pressure_quadrature": args.pressure_quadrature,
             "dt": 0.01,
             "substeps": 1,
             "varied": args.varied,

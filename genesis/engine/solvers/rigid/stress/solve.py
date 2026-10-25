@@ -281,7 +281,8 @@ def kernel_peak(
         stress_info,
         cached and gs.backend == gs.cuda,
         stress_state.stress_tensor.shape[0] > 0,
-        mask,
+        stress_state.valid if mask is None else mask,
+        mask is not None,
     )
 
 
@@ -293,9 +294,10 @@ def kernel_peak_impl(
     stress_info: StressInfo,
     cached: qd.template(),
     full: qd.template(),
-    mask: qd.Tensor | None,
+    mask: qd.Tensor,
+    masked: qd.template(),
 ):
-    func_peak_impl(young, poisson, stress_state, stress_info, cached, full, mask)
+    func_peak_impl(young, poisson, stress_state, stress_info, cached, full, mask, masked)
 
 
 @qd.func
@@ -306,13 +308,14 @@ def func_peak_impl(
     stress_info: StressInfo,
     cached: qd.template(),
     full: qd.template() = False,
-    mask: qd.Tensor | None = None,
+    mask: qd.template() = None,
+    masked: qd.template() = False,
 ):
     for i_b in range(stress_state.active.shape[0]):
         stress_state.peak[i_b] = 0.0
     for i_e, i_b in qd.ndrange(stress_info.elements.shape[0], stress_state.active.shape[0]):
         enabled = True
-        if qd.static(mask is not None):
+        if qd.static(masked):
             enabled = mask[i_b]
         if enabled:
             lam = young * poisson / ((1.0 + poisson) * (1.0 - 2.0 * poisson))
