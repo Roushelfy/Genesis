@@ -37,6 +37,7 @@ from .pipeline import kernel_pipeline
 from .post import create_post_kernel
 from .provenance import kernel_capture_rigid_sources
 from .resolved import ResolvedContacts
+from .response import StressResponse
 from .scatter import StressScatterWorkspace, create_scatter_workspace, kernel_pressure_moments, kernel_scatter_faces
 from .shell_model import ShellModel
 from .surface import StressSurface
@@ -68,6 +69,7 @@ class StressLink:
     requested_step: int = -1
     automatic_radius: StressRadiusInfo | None = None
     atlas: StressAtlas | None = None
+    response: StressResponse | None = None
 
 
 class RigidStressRecovery:
@@ -117,6 +119,10 @@ class RigidStressRecovery:
                             and previous.inverse_precision == options.inverse_precision
                             and previous.inverse_max_bytes == options.inverse_max_bytes
                             and previous.surface_inverse == options.surface_inverse
+                            and previous.stress_response == options.stress_response
+                            and previous.response_precision == options.response_precision
+                            and previous.response_accumulation == options.response_accumulation
+                            and previous.response_max_bytes == options.response_max_bytes
                         ):
                             model = existing.model
                             if existing.surface.info.gauss.shape[0] == quadrature:
@@ -193,12 +199,15 @@ class RigidStressRecovery:
                             and options.cooperative_solve
                             and model.info.vertices.shape[0] <= 1024
                             and not options.history_size
-                            and not options.atlas_regions,
+                            and not options.atlas_regions
+                            and options.stress_response == "none",
                             options.coalesced_residual if options.coalesced_residual is not None else solver._B >= 8192,
                             reuse_contact_moments,
                         )
                     )
         for entry in self.links:
+            if entry.model.output_response is not None:
+                entry.response = StressResponse(entry.model.output_response, solver._B)
             if entry.options.atlas_regions:
                 entry.atlas = StressAtlas(
                     entry.model, entry.contacts, entry.options.atlas_regions, entry.options.atlas_transition
@@ -411,7 +420,13 @@ class RigidStressRecovery:
                         entry.atlas.state if entry.atlas is not None else None,
                     )
             entry.model.recover(
-                entry.omega, entry.state, entry.link.stress_options, entry.history, surface_load=True, atlas=entry.atlas
+                entry.omega,
+                entry.state,
+                entry.link.stress_options,
+                entry.history,
+                surface_load=True,
+                atlas=entry.atlas,
+                response=entry.response,
             )
             kernel_accept(entry.state, entry.contacts, solver._errno)
             if entry.history is not None:
@@ -552,6 +567,8 @@ class RigidStressRecovery:
                     yield from iter_data(entry.intrinsic.paths.info, f"stress.{i}.intrinsic.paths")
                     seen_paths.add(id(entry.intrinsic.paths))
                 yield from entry.intrinsic.data(f"stress.{i}.intrinsic")
+            if entry.response is not None:
+                yield from iter_data(entry.response.state, f"stress.{i}.output_response.state")
             if entry.atlas is not None:
                 yield from iter_data(entry.atlas.info, f"stress.{i}.atlas.info")
                 yield from iter_data(entry.atlas.state, f"stress.{i}.atlas.state")

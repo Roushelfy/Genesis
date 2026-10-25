@@ -6,6 +6,7 @@ from pathlib import Path
 import numpy as np
 import quadrants as qd
 import scipy.optimize
+import scipy.spatial
 
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.contact import (
@@ -48,6 +49,7 @@ def hessian(coefficient, coordinates, weights):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--failure", type=Path, required=True)
+    parser.add_argument("--quadrature", type=int, default=16)
     parser.add_argument("--backend", choices=("cpu", "gpu"), default="cpu")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -56,7 +58,7 @@ def main():
     mesh = Path(gs.__file__).parent.parent / "examples/rigid/assets/hollow_egg/level1/elastic.npz"
     options = gs.options.RigidStressOptions.dpr(mesh=mesh, method="pcg", quadrature=16)
     model = StressModel(options)
-    surface = StressSurface(16, model.load_info)
+    surface = StressSurface(args.quadrature, model.load_info)
     saved = np.load(args.failure)
     env, slot = saved["failed_selection"][0]
     contacts = create_contacts(1, 1, float(saved["radius"][env, slot]), hertz_profile=True)
@@ -74,6 +76,7 @@ def main():
         replay_evaluations=int(qd_to_numpy(contacts.evaluations)[0, 0]),
         center_difference=float(np.linalg.norm(qd_to_numpy(contacts.center)[0, 0] - saved["center"][env, slot])),
         radius=float(saved["radius"][env, slot]),
+        quadrature=args.quadrature,
         complete=False,
     )
     write_json(args.output / "result.json", result)
@@ -103,6 +106,10 @@ def main():
         feasibility=dict(success=bool(feasible.success), status=int(feasible.status), message=feasible.message),
         fits={},
     )
+    hull = scipy.spatial.ConvexHull(x[:, 1:])
+    separating = hull.equations[np.argmax(hull.equations[:, 2])]
+    result["separating_halfspace"] = separating.tolist()
+    result["sample_target_distance_lower_bound"] = float(max(0.0, separating[2]))
     for name, start in starts.items():
         fit = scipy.optimize.least_squares(
             gradient, start, jac=hessian, args=(x, w), xtol=1e-15, ftol=1e-15, gtol=1e-15, max_nfev=1000, x_scale="jac"

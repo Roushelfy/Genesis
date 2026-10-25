@@ -56,3 +56,32 @@ The heterogeneous volume frame-221 pressure-fit rejection remains an open
 robustness item; preserve it and validate any repair separately from scheduling.
 Keep all earlier negative experiments and protected sources. New runtime data
 and job receipts use the explicit run directory in `DATA_LOCATION.md`.
+
+## Initial implementation and unresolved checks
+
+`native-candidates-v0` (`0559287e2`) and `v1` (`1561e94eb`) preserve the
+first native curved atlas and its kernel-wrapper correction. Regions live on
+the original physical surface graph, without connections across disconnected
+inner/outer sheets. Smooth weights interpolate graph-distance fields on the
+witnessed face. Every intersecting face AABB must be covered by every selected
+region; otherwise the complete contact uses the mother response.
+
+The initial feature spaces use `U_i = K_g^{-1} R E_i`, where the mother gauge
+and relief are shared before the regional boundary injection. Consequently
+`U_i f_i` is a Galerkin solution in `range(U_i)`, with exact global extension
+through the wall. This is a condensed response-space atlas, not independently
+remeshed geometry. Equal region/environment loads aggregate during native
+scatter. Device grouping applies the shared response columns, and the initial
+path merges displacements before the original residual/correction and stress
+passes. Spatial truncation is absent in this first control. Independent and
+coarse-plus-local recovery, lifecycle coverage and tuning remain open.
+
+The first pilot failed at import because Quadrants kernels cannot have default
+arguments; `v1` moves these defaults to Python wrappers. Both original failures
+are retained. No numerical success or performance decision follows from them.
+
+The preserved volume frame-221 load reproduces status 3 on the CPU with the
+unchanged q16 geometry and pressure law. Independent LP on its 1,536 positive
+quadrature samples reports infeasibility; least-squares pressure fitting cannot
+reach the original tolerance. This is a sampled-problem result, not a proof of
+continuous physical infeasibility. Local quadrature diagnostics are running.

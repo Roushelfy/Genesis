@@ -30,6 +30,7 @@ from .operators import (
     kernel_modes,
     kernel_valid_geometry,
 )
+from .response import StressResponse, StressResponseInventory
 from .solve import (
     kernel_active,
     kernel_balance,
@@ -50,6 +51,7 @@ class StressBuildTimings:
     factor_seconds: float
     inverse_seconds: float
     surface_inverse_seconds: float
+    response_seconds: float = 0.0
 
 
 class StressModel:
@@ -159,16 +161,23 @@ class StressModel:
             and inverse_bytes + boundary_bytes <= options.inverse_max_bytes
         ):
             self.surface_inverse = StressSurfaceInverse(self.info, self.factor, self.create_state, boundary_nodes)
+        surface_inverse_done = time.perf_counter()
+        self.output_response = None
+        if options.stress_response != "none":
+            self.output_response = StressResponseInventory(self, options)
         self.build_timings = StressBuildTimings(
             topology_done - started,
             operators_done - topology_done,
             factor_done - operators_done,
             inverse_done - factor_done,
-            time.perf_counter() - inverse_done,
+            surface_inverse_done - inverse_done,
+            time.perf_counter() - surface_inverse_done,
         )
 
     def iter_info_data(self, prefix: str) -> Iterator[DataItem]:
         yield from iter_data(self.info, f"{prefix}.info")
+        if self.output_response is not None:
+            yield from iter_data(self.output_response.info, f"{prefix}.output_response")
 
     @property
     def n_output_elements(self) -> int:
@@ -240,6 +249,7 @@ class StressModel:
         history: StressHistory | None = None,
         surface_load: bool = False,
         atlas: StressAtlas | None = None,
+        response: StressResponse | None = None,
     ) -> None:
         """Balance the complete load, recover displacement and scan the full-domain peak."""
         if options is None:
@@ -305,10 +315,14 @@ class StressModel:
                 only_active=True,
                 coalesced=coalesced,
             )
-        self.evaluate_stress(options, state)
+        if response is None:
+            self.evaluate_stress(options, state)
+        else:
+            assert omega is not None
+            response.evaluate(options, omega, state, self, history)
 
-    def evaluate_stress(self, options: RigidStressOptions, state: StressState) -> None:
-        kernel_peak(options.young, options.poisson, state, self.info, options.cached_peak)
+    def evaluate_stress(self, options: RigidStressOptions, state: StressState, mask=None) -> None:
+        kernel_peak(options.young, options.poisson, state, self.info, options.cached_peak, mask)
 
     def solve(
         self,

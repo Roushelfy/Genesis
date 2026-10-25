@@ -500,6 +500,10 @@ def main() -> None:
     parser.add_argument(
         "--dense-surface-loads", action="store_true", help="Apply all boundary columns without packing."
     )
+    parser.add_argument("--stress-response", choices=("none", "sparse", "dense", "hybrid", "screen"), default="none")
+    parser.add_argument("--response-precision", choices=("64", "32"), default="64")
+    parser.add_argument("--response-accumulation", choices=("64", "32"), default="64")
+    parser.add_argument("--response-block-size", type=int, choices=(64, 128, 256, 512), default=128)
     parser.add_argument("--atlas-regions", type=int, default=0)
     parser.add_argument("--atlas-transition", type=float, default=0.003)
     parser.add_argument("--history", type=int, choices=(0, 4), default=0)
@@ -546,6 +550,10 @@ def main() -> None:
         history_size=args.history,
         atlas_regions=args.atlas_regions,
         atlas_transition=args.atlas_transition,
+        stress_response=args.stress_response,
+        response_precision=args.response_precision,
+        response_accumulation=args.response_accumulation,
+        response_block_size=args.response_block_size,
         cooperative_pressure=not args.serial_pressure,
         conditions=args.conditions,
         surface_inverse=not args.full_inverse,
@@ -779,6 +787,10 @@ def main() -> None:
             "history": args.history,
             "atlas_regions": args.atlas_regions,
             "atlas_transition": args.atlas_transition,
+            "stress_response": args.stress_response,
+            "response_precision": args.response_precision,
+            "response_accumulation": args.response_accumulation,
+            "response_block_size": args.response_block_size,
             "host": platform.node(),
             "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
             "source_revision": args.source_revision,

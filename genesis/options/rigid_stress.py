@@ -197,6 +197,19 @@ class RigidStressOptions(Options):
     predictor per environment. The default zero avoids its extra memory
     and basis maintenance cost on changing-contact workloads.
 
+    ``atlas_regions`` enables an experimental common-mother response atlas for DPR loads.
+    Its surface graph preserves connected material sheets; ``atlas_transition`` is the transition width in metres.
+    Complete finite-support coverage is checked before per-contact selection, with a full-mother fallback.
+    Each feature uses exact globally extended responses in the original gauge and inertia relief. This changes
+    scheduling and working memory, not the physical mesh or stress sampling; zero keeps the single-mesh route.
+    ``stress_response`` selects experimental complete H output after the original displacement/residual solve.
+    Sparse, dense and hybrid products include every nodal force/moment and spin channel. ``screen`` uses conservative
+    FP64 bounds for max output and sparse H for full output; oversized bound workspaces use exhaustive H.
+    Corrected or history-predicted states recover output from their actual displacement. ``response_precision``
+    and ``response_accumulation`` independently select H storage and product precision; they do not reduce
+    the precision of displacement acceptance. ``response_max_bytes`` bounds the additional shared H inventory.
+    These candidates remain opt-in while their numerical and complete-scene regimes are measured.
+
     ``output_mode="max"`` stores only the global von Mises maximum.
     ``output_mode="full"`` also stores the authored-frame symmetric stress
     tensor and von Mises value at all four corners of every tetrahedron.
@@ -245,6 +258,11 @@ class RigidStressOptions(Options):
     history_size: Literal[0, 4] = 0
     atlas_regions: Annotated[int, Field(ge=0, le=32)] = 0
     atlas_transition: PositiveFloat = 0.003
+    stress_response: Literal["none", "sparse", "dense", "hybrid", "screen"] = "none"
+    response_precision: Literal["64", "32"] = "64"
+    response_accumulation: Literal["64", "32"] = "64"
+    response_block_size: Literal[64, 128, 256, 512] = 128
+    response_max_bytes: PositiveInt = 512 * 1024 * 1024
     method: Literal["auto", "direct", "inverse", "pcg"] = "auto"
     factor_scaling: StrictBool = False
     factor_ordering: Literal["minimum_degree", "natural"] = "minimum_degree"
