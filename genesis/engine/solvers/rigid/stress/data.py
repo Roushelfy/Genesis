@@ -139,18 +139,18 @@ def func_scatter_load(
             qd.atomic_add(stress_state.force[2 * j_n, i_b][a], force[a])
             qd.atomic_add(stress_state.force[2 * j_n + 1, i_b][a], moment[a])
         if qd.static(atlas is not None):
-            for i_g in range(atlas.weights.shape[0]):
-                weight = atlas.weights[i_g, i_c, i_b]
+            for i_g in range(atlas.state.weights.shape[0]):
+                weight = atlas.state.weights[i_g, i_c, i_b]
                 if weight > 0.0:
                     for a in qd.static(range(3)):
-                        qd.atomic_add(atlas.force[2 * j_n, i_g, i_b][a], weight * force[a])
-                        qd.atomic_add(atlas.force[2 * j_n + 1, i_g, i_b][a], weight * moment[a])
+                        qd.atomic_add(atlas.state.force[2 * j_n, i_g, i_b][a], weight * force[a])
+                        qd.atomic_add(atlas.state.force[2 * j_n + 1, i_g, i_b][a], weight * moment[a])
     else:
         for a in qd.static(range(3)):
             qd.atomic_add(stress_state.force[i_n, i_b][a], force[a])
         if qd.static(atlas is not None):
-            for i_g in range(atlas.weights.shape[0]):
-                weight = atlas.weights[i_g, i_c, i_b]
+            for i_g in range(atlas.state.weights.shape[0]):
+                weight = atlas.state.weights[i_g, i_c, i_b]
                 if weight > 0.0:
                     for a in qd.static(range(3)):
-                        qd.atomic_add(atlas.force[i_n, i_g, i_b][a], weight * force[a])
+                        qd.atomic_add(atlas.state.force[i_n, i_g, i_b][a], weight * force[a])

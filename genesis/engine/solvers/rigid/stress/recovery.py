@@ -407,7 +407,7 @@ class RigidStressRecovery:
                         entry.scatter,
                         options.cached_face_bounds,
                         entry.reuse_contact_moments,
-                        entry.atlas.state if entry.atlas is not None else None,
+                        entry.atlas,
                     )
                 else:
                     kernel_scatter(
@@ -417,7 +417,7 @@ class RigidStressRecovery:
                         entry.surface.info,
                         options.cooperative_scatter,
                         options.cached_face_bounds,
-                        entry.atlas.state if entry.atlas is not None else None,
+                        entry.atlas,
                     )
             entry.model.recover(
                 entry.omega,
