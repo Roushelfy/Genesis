@@ -19,6 +19,7 @@ from .quadrilateral import func_quad_shape
 class StressSurfaceInfo:
     kind: ClassVar[DataKind] = DataKind.CONSTANT
 
+    angular_quadrature: qd.Tensor
     gauss: qd.Tensor
     gauss_weights: qd.Tensor
     positions: qd.Tensor
@@ -39,11 +40,12 @@ class StressSurfaceInfo:
 
 
 class StressSurface:
-    def __init__(self, quadrature: int, stress_info: StressInfo):
+    def __init__(self, quadrature: int, stress_info: StressInfo, angular: bool = False):
         started = time.perf_counter()
         n_faces = stress_info.surface_nodes.shape[0]
         n_quadrature = quadrature * quadrature
         self.info = StressSurfaceInfo(
+            angular_quadrature=V(dtype=gs.qd_bool, shape=()),
             gauss=V(dtype=gs.qd_float, shape=(quadrature,)),
             gauss_weights=V(dtype=gs.qd_float, shape=(quadrature,)),
             positions=V_VEC(3, dtype=gs.qd_float, shape=(n_faces * n_quadrature,)),
@@ -68,6 +70,7 @@ class StressSurface:
             quad_valid=V(dtype=gs.qd_bool, shape=()),
             grid=allocate_grid(n_faces * n_quadrature),
         )
+        self.info.angular_quadrature.fill(angular)
         kernel_gauss(self.info)
         if stress_info.load_nodes.shape[0] > 0:
             kernel_quad_surface(stress_info, self.info)

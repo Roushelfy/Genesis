@@ -214,8 +214,21 @@ def func_contact_ray(
     edge_b = vertices[(i_triangle + 1) % n_fans, :] - closest
     v = surface.gauss[i_angular]
     direction = (1.0 - v) * edge_a + v * edge_b
+    cross = edge_a.cross(edge_b)
+    area = cross.norm()
+    if surface.angular_quadrature[None] and area > 0.0:
+        # Uniform edge parameters undersample a tiny disk close to a long edge's
+        # endpoint. Uniform fan angle instead has Jacobian angle * ray_length**2.
+        normal = cross / area
+        tangent = edge_a.normalized()
+        angle = qd.atan2(area, edge_a.dot(edge_b))
+        unit = qd.cos(v * angle) * tangent + qd.sin(v * angle) * normal.cross(tangent)
+        denominator = unit.cross(edge_b - edge_a).dot(normal)
+        if denominator > 0.0:
+            length = area / denominator
+            direction = length * unit
+            area = angle * length * length
     squared = direction.norm_sqr()
-    area = edge_a.cross(edge_b).norm()
     limit = gs.qd_float(0.0)
     if squared > 0.0 and area > 0.0 and remaining > 0.0:
         projection = offset.dot(direction)

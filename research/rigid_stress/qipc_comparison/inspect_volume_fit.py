@@ -49,6 +49,7 @@ def hessian(coefficient, coordinates, weights):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--failure", type=Path, required=True)
+    parser.add_argument("--angular", action="store_true")
     parser.add_argument("--quadrature", type=int, default=16)
     parser.add_argument("--backend", choices=("cpu", "gpu"), default="cpu")
     parser.add_argument("--output", type=Path, required=True)
@@ -58,7 +59,7 @@ def main():
     mesh = Path(gs.__file__).parent.parent / "examples/rigid/assets/hollow_egg/level1/elastic.npz"
     options = gs.options.RigidStressOptions.dpr(mesh=mesh, method="pcg", quadrature=16)
     model = StressModel(options)
-    surface = StressSurface(args.quadrature, model.load_info)
+    surface = StressSurface(args.quadrature, model.load_info, angular=args.angular)
     saved = np.load(args.failure)
     env, slot = saved["failed_selection"][0]
     contacts = create_contacts(1, 1, float(saved["radius"][env, slot]), hertz_profile=True)
@@ -77,6 +78,7 @@ def main():
         center_difference=float(np.linalg.norm(qd_to_numpy(contacts.center)[0, 0] - saved["center"][env, slot])),
         radius=float(saved["radius"][env, slot]),
         quadrature=args.quadrature,
+        angular=args.angular,
         complete=False,
     )
     write_json(args.output / "result.json", result)
