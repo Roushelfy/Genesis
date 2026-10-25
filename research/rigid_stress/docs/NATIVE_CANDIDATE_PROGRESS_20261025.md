@@ -130,3 +130,29 @@ Keep all refinement results; do not widen the budget to admit q16.
 q16. This establishes trajectory robustness only. The qualified q32 variant
 still needs its full-cycle control and separate cost measurement. Equivalent
 scheduling comparisons keep their original q16 edge baseline where admitted.
+
+## Native alternative recovery and coverage diagnosis
+
+Frozen v7 (`28b98e896`) adds independent regional tensor recovery, with spin,
+correction and predicted-state remainder included before the nonlinear criterion.
+It also adds an eighteen-direction common Galerkin coarse space and exact
+complementary regional response banks. Both backends pass the small native
+controls for these paths. Coarse reconstruction errors are below `2.0e-16`;
+the shell/volume Galerkin work errors are `2.07e-14` and `6.40e-12`.
+The complementary responses retain their global mother extension; this is
+not a spatially truncated local solve.
+
+The q32 curved/valley/U controls pass load, full-field, release, reordering and
+friction-reversal checks. The volume egg and both nonconvex fixtures exercise
+three or more contributors. The shell-egg junction correctly fails that coverage
+assertion: all contacts fall back because opposite-sheet AABBs overlap. A
+conservative vertex-slab exclusion is being validated to remove this unnecessary
+fallback while preserving complete finite-support coverage. The failed assertion
+remains in `atlas-geometry-v7` and is not counted as a passing junction test.
+
+Both backends' merged-atlas and H FP32-storage/FP64-accumulation checks now pass
+all 600 evolving frames. History lifecycle and FP32 accumulation/screening
+full-cycle controls continue. Angular q32 completes the heterogeneous volume
+cycle and passes the separate saved-frame load/field budget. Initial native
+module timing and actual CUDA traces are running at B64 and B8192; no candidate
+has a final retention decision yet.

@@ -119,7 +119,7 @@ class StressResponse:
                 self.state,
                 self.inventory.info,
                 mode,
-                qd.f32 if options.response_accumulation == "32" else gs.qd_float,
+                options.response_accumulation == "32",
                 options.response_block_size,
             )
         kernel_finish(state)
@@ -206,13 +206,16 @@ def kernel_apply(
     workspace: StressResponseState,
     response: StressResponseInfo,
     mode: qd.template(),
-    accumulation: qd.template(),
+    single: qd.template(),
     block_size: qd.template(),
 ):
     qd.loop_config(block_dim=block_size)
     for i_p, i_b in qd.ndrange(n_output, state.active.shape[0]):
         if not workspace.recover_displacement[i_b]:
-            value = qd.Vector.zero(accumulation, 6)
+            if qd.static(single):
+                value = qd.Vector.zero(qd.f32, 6)
+            else:
+                value = qd.Vector.zero(gs.qd_float, 6)
             sparse = True
             if qd.static(mode == 0):
                 sparse = False
@@ -223,7 +226,10 @@ def kernel_apply(
                 j = slot
                 if sparse:
                     j = workspace.columns[slot, i_b]
-                value += qd.cast(response.values[i_p, j], accumulation) * qd.cast(workspace.loads[j, i_b], accumulation)
+                if qd.static(single):
+                    value += qd.cast(response.values[i_p, j], qd.f32) * qd.cast(workspace.loads[j, i_b], qd.f32)
+                else:
+                    value += response.values[i_p, j].cast(gs.qd_float) * workspace.loads[j, i_b]
             components = value.cast(gs.qd_float)
             if i_p < n_stress:
                 vm = func_von_mises(components)

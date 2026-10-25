@@ -31,7 +31,8 @@ def main():
     parser.add_argument("--stress-backend", choices=("shell", "volume"), required=True)
     parser.add_argument("--output-mode", choices=("max", "full"), required=True)
     parser.add_argument("--envs", type=int, default=8192)
-    args = parser.parse_args()
+    parser.add_argument("--source-revision", default="5c44042a4")
+    args, forwarded = parser.parse_known_args()
     args.output.mkdir(parents=True, exist_ok=False)
     command = [
         sys.executable,
@@ -65,7 +66,8 @@ def main():
         "0",
         "--compact-log",
         "--source-revision",
-        "5c44042a4",
+        args.source_revision,
+        *forwarded,
         "--output",
         str(args.output / "benchmark.json"),
     ]

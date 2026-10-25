@@ -91,6 +91,7 @@ def main():
     parser.add_argument("--envs", type=int, default=4)
     parser.add_argument("--steps", type=int, default=140)
     parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
+    parser.add_argument("--quadrature", type=int, default=16)
     parser.add_argument("--atlas-regions", type=int, default=6)
     parser.add_argument("--atlas-transition", type=float, default=0.003)
     parser.add_argument("--atlas-output", choices=("merged", "independent"), default="merged")
@@ -112,7 +113,7 @@ def main():
         output_mode="full",
         radius_model="hertz",
         pressure_profile="hertz",
-        quadrature=16,
+        quadrature=args.quadrature,
         pressure_quadrature=args.pressure_quadrature,
         box_edge_policy="planar",
         stress_backend=args.stress_backend,

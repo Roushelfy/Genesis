@@ -225,7 +225,18 @@ def kernel_select(
                 center, radius = contacts.center[i_c, i_b], contacts.radius[i_c, i_b]
                 delta = qd.max(surface.face_bounds_low[j_f] - center, 0.0)
                 delta += qd.max(center - surface.face_bounds_high[j_f], 0.0)
-                if delta.norm_sqr() < radius * radius:
+                normal, origin = surface.face_normal[j_f], surface.face_origin[j_f]
+                warp = gs.qd_float(0.0)
+                if surface.quad_vertices.shape[0] > 0:
+                    for a in qd.static(range(4)):
+                        warp = qd.max(warp, qd.abs((surface.quad_vertices[j_f][a, :] - origin).dot(normal)))
+                # A bilinear Q4 lies in its vertex convex hull. This slab test
+                # safely excludes nearby opposite sheets whose AABBs overlap.
+                intersects = delta.norm_sqr() < radius * radius
+                epsilon = 1.1920928955078125e-7 if qd.static(gs.qd_float == qd.f32) else 2.220446049250313e-16
+                margin = 16.0 * epsilon * (center.norm() + origin.norm() + radius + warp)
+                intersects = intersects and qd.abs((center - origin).dot(normal)) <= radius + warp + margin
+                if intersects:
                     for i_feature in range(atlas.seeds.shape[0]):
                         if state.weights[i_feature + 1, i_c, i_b] > 0.0:
                             for a in range(qd.select(surface.quad_vertices.shape[0] > 0, 4, 6)):

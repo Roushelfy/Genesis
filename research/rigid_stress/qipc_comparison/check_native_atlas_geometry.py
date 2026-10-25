@@ -47,7 +47,7 @@ def main():
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     gs.init(backend=gs.gpu, precision="64", logging_level="warning")
-    result = dict(identity=runtime_identity(), complete=False, rows=[])
+    result = dict(identity=runtime_identity(), quadrature=32, pressure_quadrature="edge", complete=False, rows=[])
     write_json(args.output / "result.json", result)
     if args.geometry == "egg":
         asset = Path(gs.__file__).parent.parent / "examples/rigid/assets/hollow_egg/level1"
@@ -64,7 +64,7 @@ def main():
             vertices[:, 2] = 0.15 * np.abs(vertices[:, 0])
             np.savez(asset, vertices=vertices, quads=quads)
     options = gs.options.RigidStressOptions.dpr(
-        mesh=asset, backend=args.stress_backend, output_mode="full", quadrature=16, atlas_regions=6
+        mesh=asset, backend=args.stress_backend, output_mode="full", quadrature=32, atlas_regions=6
     )
     model = ShellModel(options) if args.stress_backend == "shell" else StressModel(options)
     state = model.create_state(4, "full")
