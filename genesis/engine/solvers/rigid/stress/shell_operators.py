@@ -365,9 +365,16 @@ def func_peak(young: float, poisson: float, thickness: float, stress_state: Stre
         membrane = constitutive @ membrane
         bending = constitutive @ bending
         axes = shell_info.axes[i_e, i_q]
+        tensors = qd.Matrix.zero(gs.qd_float, 2, 6)
+        if stress_state.stress_tensor.shape[0] > 0 or stress_state.membrane_resultant.shape[0] > 0:
+            for i_component in range(2):
+                local = membrane
+                if i_component == 1:
+                    local = bending
+                tensors[i_component, :] = func_tensor_components(local, axes)
         if stress_state.membrane_resultant.shape[0] > 0:
-            stress_state.membrane_resultant[i_e, i_q, i_b] = thickness * func_tensor_components(membrane, axes)
-            stress_state.bending_resultant[i_e, i_q, i_b] = thickness**3 / 12.0 * func_tensor_components(bending, axes)
+            stress_state.membrane_resultant[i_e, i_q, i_b] = thickness * tensors[0, :]
+            stress_state.bending_resultant[i_e, i_q, i_b] = thickness**3 / 12.0 * tensors[1, :]
             transverse = 5.0 / 6.0 * young / (2.0 * (1.0 + poisson)) * thickness * shear
             stress_state.transverse_resultant[i_e, i_q, i_b] = transverse[0] * axes[:, 0] + transverse[1] * axes[:, 1]
             if not stress_state.valid[i_b]:
@@ -379,7 +386,9 @@ def func_peak(young: float, poisson: float, thickness: float, stress_state: Stre
             vm = qd.sqrt(qd.max(0.0, local[0] ** 2 + local[1] ** 2 - local[0] * local[1] + 3.0 * local[2] ** 2))
             qd.atomic_max(stress_state.peak[i_b], vm)
             if stress_state.stress_tensor.shape[0] > 0:
-                stress_state.stress_tensor[2 * i_e + i_side, i_q, i_b] = func_tensor_components(local, axes)
+                stress_state.stress_tensor[2 * i_e + i_side, i_q, i_b] = (
+                    tensors[0, :] + qd.select(i_side == 0, 0.5, -0.5) * thickness * tensors[1, :]
+                )
                 stress_state.von_mises[2 * i_e + i_side, i_q, i_b] = qd.Vector([vm])
                 if not stress_state.valid[i_b]:
                     stress_state.stress_tensor[2 * i_e + i_side, i_q, i_b] = qd.Vector([float("nan")] * 6)
