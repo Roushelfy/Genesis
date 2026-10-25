@@ -1,0 +1,117 @@
+[
+  [
+    {
+      "name": "shell",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/gpu-throughput-v2/tests/rigid/test_stress_shell.py",
+        "--select",
+        "native_shell",
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/gpu-throughput-v2",
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/gpu-throughput-v2/tests/rigid/test_stress.py",
+        "--select",
+        "native_finite_pressure_matches_independent_cpu or native_constrained_pressure_and_invalid_inputs",
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/gpu-throughput-v2",
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_two_sides",
+      "args": [
+        "--backend",
+        "gpu"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "gpu-moments",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_two_sides",
+      "args": [
+        "--backend",
+        "gpu",
+        "--reuse-moments"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "cycle",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--mode",
+        "hertz",
+        "--quadrature",
+        "16",
+        "--box-edge-policy",
+        "planar",
+        "--stress-backend",
+        "shell",
+        "--steps",
+        "600",
+        "--field-steps",
+        "2",
+        "110",
+        "129",
+        "179",
+        "299",
+        "449",
+        "599",
+        "--contact-moment-reuse",
+        "auto"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "cycle",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--mode",
+        "hertz",
+        "--quadrature",
+        "16",
+        "--box-edge-policy",
+        "planar",
+        "--stress-backend",
+        "shell",
+        "--steps",
+        "600",
+        "--field-steps",
+        "2",
+        "110",
+        "129",
+        "179",
+        "299",
+        "449",
+        "599",
+        "--contact-moment-reuse",
+        "auto",
+        "--history",
+        "4"
+      ]
+    }
+  ]
+]

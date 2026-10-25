@@ -1,20 +1,18 @@
 # Working on native rigid stress recovery
 
-**Active user goal, 2026-10-25:** follow [GOAL.md](GOAL.md) and
-[the GPU throughput follow-up](docs/GPU_THROUGHPUT_FOLLOWUP_GOAL_20261025.md).
-The user explicitly requests evaluating and implementing the applicable GPU
-optimizations from the CPU/atlas discussion. This activates the scoped
-few-mesh/response/batching/fusion/screening/history work despite the previous
-atlas-only scope below. Start from the delivered native implementation;
-profile pressure/source work as well as recovery and output. Keep production
-numerical work entirely in Quadrants and preserve arbitrary changing contacts,
-friction, surface sides, max/full and lifecycle behavior.
-
-Optimize low-resolution numerical consistency and measured module/complete
-Franka throughput first. Evaluate every applicable candidate and retain
-positive/negative evidence; use judgment rather than stacking all methods or
-adding many public knobs. The detailed goal defines comparison and completion.
-The directions below describe prior deliveries and standing policies.
+**Latest delivery, 2026-10-25:** the GPU throughput follow-up is complete.
+Read [GOAL.md](GOAL.md), [the measured report](docs/GPU_THROUGHPUT_20261025.md)
+and [the requirement audit](evidence/20261025-gpu-throughput-v1/metadata/requirements-final.json).
+The integrated winners are shared shell-pressure face preparation, fixed Q4
+projection reuse and large-batch exact failed-environment compaction. Keep
+FP64/q16/history-off recommendations, original acceptance/lifecycle behavior
+and all retained negative evidence. The heterogeneous volume trajectory still
+rejects the same frame-221 pressure fit as its baseline; this workload has no
+qualified complete-cycle volume rate. Few-mesh/common-mother GPU controls remain
+conditional planar prototypes, not validated arbitrary curved native atlases.
+No implicit physical-reference or atlas integration task is reopened by this
+delivery. Standing storage, source preservation and engineering policies below
+remain in force.
 
 **Latest delivery, 2026-10-24:** the optional native thin-shell DPR backend,
 focused numerical/lifecycle tests, matched throughput/profiling and targeted

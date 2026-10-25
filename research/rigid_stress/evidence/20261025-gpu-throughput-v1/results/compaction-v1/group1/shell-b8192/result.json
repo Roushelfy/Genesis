@@ -1,0 +1,472 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-191",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "749462",
+      "SLURM_ARRAY_JOB_ID": "749460",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-a42d9ecc-899d-13f4-6348-ff0be2cd2bfd, 00000000:21:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "complete": true,
+  "rows": [
+    {
+      "failure_count": 0,
+      "fraction": 0.0,
+      "compact": false,
+      "block_size": 128,
+      "seconds": [
+        0.00011045010372375448,
+        0.00010439726756885647,
+        0.0001042301650159061,
+        0.00010389113255466024,
+        0.00010450006617854038
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 0,
+      "fraction": 0.0,
+      "compact": false,
+      "block_size": 256,
+      "seconds": [
+        0.00010936596663668752,
+        0.00010756153302888075,
+        0.00010692526896794637,
+        0.00010756543294216196,
+        0.0001075001317076385
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 0,
+      "fraction": 0.0,
+      "compact": false,
+      "block_size": 512,
+      "seconds": [
+        0.00010570709904034932,
+        0.0001036899668785433,
+        0.00010523456536854307,
+        0.00010399173091476162,
+        0.00010461623314768076
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 0,
+      "fraction": 0.0,
+      "compact": true,
+      "block_size": 128,
+      "seconds": [
+        0.00010145403211936355,
+        9.943626743430893e-05,
+        9.918956784531474e-05,
+        9.988399688154459e-05,
+        9.952476636196176e-05
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 0,
+      "fraction": 0.0,
+      "compact": true,
+      "block_size": 256,
+      "seconds": [
+        0.0001018828673598667,
+        9.972729797785481e-05,
+        9.992093546316028e-05,
+        9.990996913984418e-05,
+        0.00010395863403876623
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 0,
+      "fraction": 0.0,
+      "compact": true,
+      "block_size": 512,
+      "seconds": [
+        0.00010493389951686065,
+        0.0001015395352927347,
+        0.00010015666484832763,
+        9.976049962763985e-05,
+        0.00010017980045328538
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 81,
+      "fraction": 0.0098876953125,
+      "compact": false,
+      "block_size": 128,
+      "seconds": [
+        0.0013306724334446092,
+        0.0013303213675195972,
+        0.0013309577014297246,
+        0.001329653465654701,
+        0.001326090698906531
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 81,
+      "fraction": 0.0098876953125,
+      "compact": false,
+      "block_size": 256,
+      "seconds": [
+        0.0013049990016346176,
+        0.0013042292984512946,
+        0.0013040073642817636,
+        0.0013031912657121816,
+        0.001305308002823343
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 81,
+      "fraction": 0.0098876953125,
+      "compact": false,
+      "block_size": 512,
+      "seconds": [
+        0.001260648601843665,
+        0.0012615033658221364,
+        0.0012624002682665983,
+        0.0012611289004174373,
+        0.0012605639679046968
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 81,
+      "fraction": 0.0098876953125,
+      "compact": true,
+      "block_size": 128,
+      "seconds": [
+        0.0006583444696540634,
+        0.000658327197500815,
+        0.0006583711015991867,
+        0.000657512767550846,
+        0.0006579740011754136
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 81,
+      "fraction": 0.0098876953125,
+      "compact": true,
+      "block_size": 256,
+      "seconds": [
+        0.0006671678352480133,
+        0.0006657502342325946,
+        0.0006652147664378086,
+        0.000663604800744603,
+        0.0006631874673378964
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 81,
+      "fraction": 0.0098876953125,
+      "compact": true,
+      "block_size": 512,
+      "seconds": [
+        0.0006898808642290533,
+        0.0006888124005248149,
+        0.0006892021008146306,
+        0.0006890931321928899,
+        0.0006893836349869767
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 819,
+      "fraction": 0.0999755859375,
+      "compact": false,
+      "block_size": 128,
+      "seconds": [
+        0.0024171609353894987,
+        0.0024174827345026036,
+        0.002412853529676795,
+        0.0024137236992828547,
+        0.002417985532277574
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 819,
+      "fraction": 0.0999755859375,
+      "compact": false,
+      "block_size": 256,
+      "seconds": [
+        0.0023960640343526998,
+        0.0023963288326437275,
+        0.00239254180341959,
+        0.002394347602967173,
+        0.0023916332672039666
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 819,
+      "fraction": 0.0999755859375,
+      "compact": false,
+      "block_size": 512,
+      "seconds": [
+        0.002301181402678291,
+        0.00230275959863017,
+        0.0023034791345708074,
+        0.0023033226335731644,
+        0.0023039944663954277
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 819,
+      "fraction": 0.0999755859375,
+      "compact": true,
+      "block_size": 128,
+      "seconds": [
+        0.0013526941339174906,
+        0.001353640501232197,
+        0.0013524846329043309,
+        0.001354361732956022,
+        0.0013557440678899487
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 819,
+      "fraction": 0.0999755859375,
+      "compact": true,
+      "block_size": 256,
+      "seconds": [
+        0.0013787378983882567,
+        0.0014660429325886071,
+        0.0013752893001462022,
+        0.0013746795011684299,
+        0.001373356165519605
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 819,
+      "fraction": 0.0999755859375,
+      "compact": true,
+      "block_size": 512,
+      "seconds": [
+        0.0014306981310558816,
+        0.0014291572306926051,
+        0.001431175332982093,
+        0.001427870833625396,
+        0.0014276066018889348
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 4096,
+      "fraction": 0.5,
+      "compact": false,
+      "block_size": 128,
+      "seconds": [
+        0.004478943336289376,
+        0.004490050902434936,
+        0.004487830303454151,
+        0.004486697268051406,
+        0.004480536767126371
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 4096,
+      "fraction": 0.5,
+      "compact": false,
+      "block_size": 256,
+      "seconds": [
+        0.004434114997275173,
+        0.004432391231724371,
+        0.004435399702439706,
+        0.004435467467798541,
+        0.004434084601234645
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 4096,
+      "fraction": 0.5,
+      "compact": false,
+      "block_size": 512,
+      "seconds": [
+        0.004374643267753223,
+        0.004379488000025352,
+        0.004380092265394827,
+        0.004383413668256253,
+        0.0043852559989318255
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 4096,
+      "fraction": 0.5,
+      "compact": true,
+      "block_size": 128,
+      "seconds": [
+        0.0032862227332467833,
+        0.003289891965687275,
+        0.0032822321673544744,
+        0.003284270300840338,
+        0.003279491498445471
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 4096,
+      "fraction": 0.5,
+      "compact": true,
+      "block_size": 256,
+      "seconds": [
+        0.0032821665323960283,
+        0.0032819124326730767,
+        0.003285849967505783,
+        0.003284005199869474,
+        0.003282904465838025
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 4096,
+      "fraction": 0.5,
+      "compact": true,
+      "block_size": 512,
+      "seconds": [
+        0.0032873572005579868,
+        0.003285764732087652,
+        0.003294269965651135,
+        0.0033128624005864062,
+        0.0033039130348091325
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 8192,
+      "fraction": 1.0,
+      "compact": false,
+      "block_size": 128,
+      "seconds": [
+        0.005207669199444353,
+        0.005208423966541887,
+        0.005231719002282868,
+        0.005236906868716081,
+        0.005235732098420461
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 8192,
+      "fraction": 1.0,
+      "compact": false,
+      "block_size": 256,
+      "seconds": [
+        0.005218171731879314,
+        0.005217742500826716,
+        0.005241248232778162,
+        0.005248799066369732,
+        0.005250007500095914
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 8192,
+      "fraction": 1.0,
+      "compact": false,
+      "block_size": 512,
+      "seconds": [
+        0.005211396332985411,
+        0.005227978667244315,
+        0.005229474464431405,
+        0.005230005333820979,
+        0.005230161365276823
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 8192,
+      "fraction": 1.0,
+      "compact": true,
+      "block_size": 128,
+      "seconds": [
+        0.005220171168912202,
+        0.0052393403641569115,
+        0.0052400822013927,
+        0.005236321835157772,
+        0.005239148732895652
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 8192,
+      "fraction": 1.0,
+      "compact": true,
+      "block_size": 256,
+      "seconds": [
+        0.005229564934658508,
+        0.005241861466007928,
+        0.0052415762019033234,
+        0.005241663901445767,
+        0.005246561168072124
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    },
+    {
+      "failure_count": 8192,
+      "fraction": 1.0,
+      "compact": true,
+      "block_size": 512,
+      "seconds": [
+        0.005224560930704077,
+        0.0052429601006830735,
+        0.005240458599291742,
+        0.005242592934519052,
+        0.005241842633889367
+      ],
+      "displacement_relative": 0.0,
+      "untouched_environments_equal": true
+    }
+  ],
+  "workspace_bytes": 32772
+}

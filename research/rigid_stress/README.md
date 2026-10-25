@@ -9,16 +9,19 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
-## Active: GPU throughput follow-up (2026-10-25)
+## Delivered: GPU throughput follow-up (2026-10-25)
 
-Follow [the current goal](GOAL.md) and
-[the optimization/validation requirements](docs/GPU_THROUGHPUT_FOLLOWUP_GOAL_20261025.md).
-Evaluate shared load preparation and grouped batches, few feature meshes with
-continuous transitions, recovery/max fusion, FP32 complete/packed response
-alternatives, global max screening and history/compaction. Start from the
-existing native optimizations and prioritize the measured bottleneck,
-including pressure integration. Report matched module and complete Franka
-throughput, memory and numerical errors, with negative results retained.
+Shared shell-pressure face preparation and fixed Q4 projection reuse improve
+paired complete-scene and frozen-module throughput. Large-batch exact fallback
+now compacts failed environments on device. Read [the report](docs/GPU_THROUGHPUT_20261025.md),
+[the complete evidence packet](evidence/20261025-gpu-throughput-v1/README.md)
+and [GOAL.md](GOAL.md) for configuration recommendations and limitations.
+The candidate ledger includes actual GPU response/precision/screening controls,
+continuous few-mesh/common-mother prototypes, sustained history, cached Kq,
+rotation and exact condensation results. Negative outcomes are retained.
+FP64/q16/history-off remains recommended. The heterogeneous volume bank retains
+its baseline pressure-fit rejection; shell cycles pass. Native curved atlas
+mapping and continuum local contact peaks remain unqualified.
 
 ## Delivered: native thin-shell DPR integration (2026-10-24)
 

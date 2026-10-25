@@ -5,6 +5,10 @@ The 2026-10-25 GPU throughput follow-up uses
 Fresh baseline timings, profiles, candidate results, source inventories and
 Slurm logs stay there. Frozen source variants remain in workspace. The prior
 native-shell campaign, environments and unrelated unfinished files are preserved.
+The compact publication packet is `research/rigid_stress/evidence/20261025-gpu-throughput-v1`;
+its artifact manifest references raw files by data path, size and SHA256.
+Only small reports, receipts, summaries and condition fixtures are tracked.
+No data migration or environment relocation was performed.
 
 Native thin-shell DPR integration uses
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/`.

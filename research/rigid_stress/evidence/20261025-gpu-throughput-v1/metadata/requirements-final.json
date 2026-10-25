@@ -1,0 +1,129 @@
+{
+  "goal_revision": "cb9ae667f938c07ca9097458184f1198b82fe8ff",
+  "engine_revision": "5c44042a4",
+  "goal_complete": true,
+  "requirements": [
+    {
+      "id": "device_load_batch",
+      "status": "integrated",
+      "conclusion": "Face-list reuse, fixed Q4 projection; existing grouped surface loads and multi-RHS response retained.",
+      "evidence": [
+        "pressure-paired-v1",
+        "final-profile-v1",
+        "final-validation-v1",
+        "pressure-capacity-v2"
+      ]
+    },
+    {
+      "id": "few_feature_meshes",
+      "status": "prototype_and_native_inapplicability",
+      "conclusion": "3/5 libraries, widths, transitions and finite footprint fallback tested. Native nonnested offset surfaces and different lumped inertia relief lack a validated common mapping.",
+      "evidence": [
+        "atlas-v2",
+        "atlas-v3",
+        "atlas-gpu-v1",
+        "atlas-gpu-v2"
+      ]
+    },
+    {
+      "id": "shared_recovery_fusion",
+      "status": "prototype_win_and_reverted_loss",
+      "conclusion": "GPU common-mother identity wins in nested planar fixture, including inactive-mesh skipping; extra native output transforms had no measured gain and were reverted.",
+      "evidence": [
+        "atlas-gpu-v2",
+        "output-fusion-profile-v1",
+        "output-fusion-contacts-v1"
+      ]
+    },
+    {
+      "id": "complete_response_precision",
+      "status": "measured_candidates_defaults_retained",
+      "conclusion": "Quadrants H contains all boundary force/moment and six spin channels, relief once. Dense/sparse tiles and independent storage/accumulation measured. No production default change; unsupported interior body-force channels are outside this surface-load prototype.",
+      "evidence": [
+        "response-v1",
+        "response-v2",
+        "packed-precision-v1"
+      ]
+    },
+    {
+      "id": "global_max_screening",
+      "status": "prototype_only",
+      "conclusion": "Full sample-block coverage and component-rounding allowance; small batches lose, large H-only screening wins but does not replace required q/residual work.",
+      "evidence": [
+        "response-v2"
+      ]
+    },
+    {
+      "id": "history_compaction",
+      "status": "integrated_exact_compaction_other_candidates_retained",
+      "conclusion": "Full sustained field/peak checks with accepted two-frame predictions feeding history; 4-column peak budget fails. Large-batch exact compaction integrated; fresh Kq cache and rotation lose.",
+      "evidence": [
+        "validation-v1",
+        "audit-second-v1",
+        "two-frame-v1",
+        "two-frame-timing-v1",
+        "maintenance-v1",
+        "compact-native-history-v1",
+        "final-validation-v1"
+      ]
+    },
+    {
+      "id": "condensation_reduction",
+      "status": "cpu_controls_and_justified_no_pod",
+      "conclusion": "Both exact hierarchical Schur directions reproduce coupled solution, cost more in bounded CPU control. No improved POD basis or need to reopen it.",
+      "evidence": [
+        "atlas-v3"
+      ]
+    },
+    {
+      "id": "module_and_scene_measurement",
+      "status": "validated_and_measured",
+      "conclusion": "Graph-enabled complete-cycle and frozen module latency across B4/64/1024/8192; paired heterogeneous B64/1024; failed volume trajectory retained.",
+      "evidence": [
+        "final-timing-v1",
+        "heterogeneous-timing-v1",
+        "heterogeneous-volume-audit-v1"
+      ]
+    },
+    {
+      "id": "memory_and_launches",
+      "status": "measured",
+      "conclusion": "Native shared/per-environment buffer inventory, cold preparation/JIT, sampled whole-device memory and separate loaded traces.",
+      "evidence": [
+        "final-memory-v1",
+        "final-trace-v1",
+        "final-profile-v1"
+      ]
+    },
+    {
+      "id": "numerics_lifecycle",
+      "status": "validated_and_measured",
+      "conclusion": "Original residual and load assertions retained. Exact full fields, N/M/Q, side/nonconvex controls, poisoned failed environments, reset/manual/history/checkpoint lifecycle regressions.",
+      "evidence": [
+        "final-audit-v1",
+        "final-validation-v1",
+        "validation-v1",
+        "projection-contacts-v1"
+      ]
+    },
+    {
+      "id": "preservation_storage",
+      "status": "verified_final",
+      "conclusion": "All new runtime outputs under data, private node caches, 12 unrelated files and 142 original worktree heads preserved.",
+      "evidence": [
+        "meta/preservation-final.json"
+      ]
+    }
+  ],
+  "pytest_final": {
+    "shell_passed": 9,
+    "volume_history_lifecycle_passed": 31
+  },
+  "runtime_data_root": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput",
+  "limitations": [
+    "No admitted heterogeneous full-cycle volume rate: unchanged frame-221 sampled pressure-fit failure.",
+    "Native arbitrary curved feature meshes lack a validated common physical mapping and common discrete inertia relief.",
+    "Shell in-plane samples do not certify local 3D or continuum sharp-edge contact peaks.",
+    "TF32 was not executed; GPU memory maxima are sampled, not instantaneous upper bounds."
+  ]
+}

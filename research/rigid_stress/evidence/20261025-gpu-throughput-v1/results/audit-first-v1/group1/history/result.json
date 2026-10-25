@@ -1,0 +1,121 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-187",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "749475",
+      "SLURM_ARRAY_JOB_ID": "749473",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "kind": "history",
+  "load_budget": 1e-10,
+  "field_budget": 1e-05,
+  "complete": false,
+  "passed": false,
+  "rows": [
+    {
+      "file": "field-0002.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group4/cycle/field-0002.npz",
+        "bytes": 510871,
+        "sha256": "ccc48d7fd7ed0d93db126fea352bcb1c7aff3b9b6e82263032173a5caf56c3ad"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group5/cycle/field-0002.npz",
+        "bytes": 510888,
+        "sha256": "5fcc46882277ced0d978853a83912ecf919f09c695c4781100bf7ea2fc29c231"
+      },
+      "errors": {
+        "nodal_force": [
+          0.0,
+          1.5140465696781913e-16,
+          1.4472108832905669e-16,
+          2.8787460651886913e-16
+        ],
+        "stress_tensor": [
+          0.0,
+          4.041096563007441e-16,
+          4.090014359864479e-16,
+          4.896603436602553e-16
+        ],
+        "shell_membrane": [
+          0.0,
+          4.440045585146106e-16,
+          4.47198615198769e-16,
+          5.112436749015196e-16
+        ],
+        "shell_bending": [
+          0.0,
+          2.394727509005841e-16,
+          2.237680220278973e-16,
+          3.3099561865471857e-16
+        ],
+        "shell_transverse": [
+          0.0,
+          3.2216187689885753e-15,
+          3.2880187980611597e-15,
+          3.056070464855725e-15
+        ]
+      },
+      "passed": true
+    },
+    {
+      "file": "field-0110.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group4/cycle/field-0110.npz",
+        "bytes": 687612,
+        "sha256": "bb0328e2a5a74a993782bfe1203f50389bcfc996938e4275460b97a6277c95fe"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group5/cycle/field-0110.npz",
+        "bytes": 687575,
+        "sha256": "82550925d97e83408e1cc39b9bc7b1dbc68e999b1c73d0d08f1422e77ae00af7"
+      },
+      "errors": {
+        "nodal_force": [
+          2.244093913449416e-17,
+          2.1750647616191153e-16,
+          2.1750632058934596e-16,
+          4.350127708226408e-16
+        ],
+        "stress_tensor": [
+          2.346195053166417e-16,
+          4.7616468465389494e-15,
+          7.283846342242973e-15,
+          6.1542275469902916e-15
+        ],
+        "shell_membrane": [
+          2.862078448437654e-16,
+          1.9853293239818397e-15,
+          2.6494627152768016e-15,
+          2.4441327942710042e-15
+        ],
+        "shell_bending": [
+          7.843541720164553e-17,
+          9.890931032076562e-15,
+          1.5412781761262176e-14,
+          1.2894654270219474e-14
+        ],
+        "shell_transverse": [
+          1.4156564544685167e-15,
+          9.978504313438507e-15,
+          1.1876516288254426e-14,
+          9.506198454463003e-15
+        ]
+      },
+      "passed": true
+    }
+  ],
+  "accepted_frames": 600,
+  "peak_budget_passed": false,
+  "peak_max_scaled_error": 4.548180440457721e-05,
+  "peak_max_absolute_Pa": 0.0011461908579804003
+}

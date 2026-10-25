@@ -1,0 +1,23 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-1%2",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=gpu:1",
+    "--cpus-per-task=1",
+    "--mem=24G",
+    "--time=25",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/output-fusion-profile-v1/logs/%A_%a.log",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/output-fusion-profile-v1/job.sh"
+  ],
+  "job": "749463",
+  "dependency": null,
+  "exclude_nodes": null,
+  "node_local_cache": true,
+  "kernel_profiler": true,
+  "disable_cuda_graphs": true,
+  "allow_home_output": false
+}

@@ -1,0 +1,58 @@
+[
+  [
+    {
+      "name": "exact",
+      "module": "research.rigid_stress.qipc_comparison.audit_gpu_candidates",
+      "args": [
+        "--before",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v7/group0/cycle",
+        "--after",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group4/cycle",
+        "--kind",
+        "exact"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "history",
+      "module": "research.rigid_stress.qipc_comparison.audit_gpu_candidates",
+      "args": [
+        "--before",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group4/cycle",
+        "--after",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group5/cycle",
+        "--kind",
+        "history"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "q12",
+      "module": "research.rigid_stress.qipc_comparison.audit_gpu_candidates",
+      "args": [
+        "--before",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group4/cycle",
+        "--after",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/extended-scenes-v1/group1/q12",
+        "--kind",
+        "quadrature"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "heterogeneous",
+      "module": "research.rigid_stress.qipc_comparison.audit_gpu_candidates",
+      "args": [
+        "--before",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/extended-scenes-v1/group2/heterogeneous-v0",
+        "--after",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/extended-scenes-v1/group3/heterogeneous-v2",
+        "--kind",
+        "exact"
+      ]
+    }
+  ]
+]

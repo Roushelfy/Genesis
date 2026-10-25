@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "direction": "eliminate_local",
+      "retained": 294,
+      "eliminated": 432,
+      "preparation_seconds": 0.01044063997687772,
+      "solve_seconds": [
+        0.00607559597119689,
+        0.0002628170186653733,
+        0.0002267259988002479,
+        0.00021375901997089386,
+        0.00019888498354703188
+      ],
+      "harmonic_bytes": 1016064,
+      "schur_bytes": 691488,
+      "displacement_relative": 1.1527742360138066e-12,
+      "residual_relative": 5.131800084688046e-13
+    },
+    {
+      "direction": "eliminate_coarse",
+      "retained": 432,
+      "eliminated": 294,
+      "preparation_seconds": 0.01380934298504144,
+      "solve_seconds": [
+        0.00035348301753401756,
+        0.00031497504096478224,
+        0.00027003203285858035,
+        0.00025259796530008316,
+        0.00024240300990641117
+      ],
+      "harmonic_bytes": 1016064,
+      "schur_bytes": 1492992,
+      "displacement_relative": 1.2562058347437635e-12,
+      "residual_relative": 5.232728615278721e-13
+    }
+  ],
+  "scope": "Exact hierarchical coarse/local Schur coupling, all distributed load terms retained."
+}

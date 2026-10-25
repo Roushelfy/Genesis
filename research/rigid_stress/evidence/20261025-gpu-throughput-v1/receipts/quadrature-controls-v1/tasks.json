@@ -1,0 +1,56 @@
+[
+  [
+    {
+      "name": "q8",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_contacts",
+      "args": [
+        "--backend",
+        "gpu",
+        "--geometries",
+        "flat",
+        "warped",
+        "egg",
+        "valley",
+        "--reuse-moments",
+        "--quadrature",
+        "8"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "q12",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_contacts",
+      "args": [
+        "--backend",
+        "gpu",
+        "--geometries",
+        "flat",
+        "warped",
+        "egg",
+        "valley",
+        "--reuse-moments",
+        "--quadrature",
+        "12"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "q16",
+      "module": "research.rigid_stress.qipc_comparison.check_native_shell_contacts",
+      "args": [
+        "--backend",
+        "gpu",
+        "--geometries",
+        "flat",
+        "warped",
+        "egg",
+        "valley",
+        "--reuse-moments",
+        "--quadrature",
+        "16"
+      ]
+    }
+  ]
+]

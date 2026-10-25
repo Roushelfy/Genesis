@@ -45,7 +45,13 @@ class CSR:
 
 @qd.kernel
 def kernel_weights(
-    overlap: float, halfwidth: float, anchors: qd.Tensor, contacts: qd.Tensor, weights: qd.Tensor, mode: qd.template()
+    overlap: float,
+    halfwidth: float,
+    anchors: qd.Tensor,
+    contacts: qd.Tensor,
+    weights: qd.Tensor,
+    active: qd.Tensor,
+    mode: qd.template(),
 ):
     for i_c, i_b in qd.ndrange(contacts.shape[0], weights.shape[2]):
         x, y, radius = contacts[i_c, 0], contacts[i_c, 1], contacts[i_c, 2]
@@ -74,6 +80,11 @@ def kernel_weights(
         for i_m in range(anchors.shape[0]):
             weights[i_m, i_c, i_b] = weights[i_m, i_c, i_b] / total if covered else 0.0
         weights[anchors.shape[0], i_c, i_b] = 0.0 if covered else 1.0
+    for i_m, i_b in qd.ndrange(active.shape[0], active.shape[1]):
+        has_load = False
+        for i_c in range(contacts.shape[0]):
+            has_load = has_load or weights[i_m, i_c, i_b] > 0.0
+        active[i_m, i_b] = has_load
 
 
 @qd.kernel
@@ -89,12 +100,26 @@ def kernel_group(bank: qd.Tensor, owner: qd.Tensor, weights: qd.Tensor, grouped:
 
 
 @qd.kernel
-def kernel_product(start: qd.Tensor, columns: qd.Tensor, values: qd.Tensor, vector: qd.Tensor, output: qd.Tensor):
+def kernel_product(
+    start: qd.Tensor,
+    columns: qd.Tensor,
+    values: qd.Tensor,
+    vector: qd.Tensor,
+    output: qd.Tensor,
+    owner: qd.Tensor,
+    active: qd.Tensor,
+    skip: qd.template(),
+):
     for row, i_b in qd.ndrange(output.shape[0], output.shape[1]):
         value = 0.0
         for entry in range(start[row], start[row + 1]):
             column = columns[entry]
-            value += values[entry] * vector[column, i_b]
+            enabled = True
+            if qd.static(skip):
+                model = owner[column]
+                enabled = active[model, i_b]
+            if enabled:
+                value += values[entry] * vector[column, i_b]
         output[row, i_b] = value
 
 
@@ -108,13 +133,15 @@ def kernel_peak(tensor: qd.Tensor, peak: qd.Tensor):
         qd.atomic_max(peak[i_b], vm)
 
 
-def recover(common, transform, independent, mother_operator, grouped, mother_q, output, peak):
+def recover(common, skip, transform, independent, mother_operator, grouped, mother_q, output, peak, owner, active):
     if common:
-        kernel_product(transform.start, transform.columns, transform.values, grouped, mother_q)
+        kernel_product(transform.start, transform.columns, transform.values, grouped, mother_q, owner, active, skip)
         operator, vector = mother_operator, mother_q
     else:
         operator, vector = independent, grouped
-    kernel_product(operator.start, operator.columns, operator.values, vector, output)
+    kernel_product(
+        operator.start, operator.columns, operator.values, vector, output, owner, active, skip and not common
+    )
     kernel_peak(output, peak)
 
 
@@ -174,6 +201,7 @@ def main():
     contact = V(dtype=gs.qd_float, shape=points.shape)
     contact.from_numpy(points)
     weights = V(dtype=gs.qd_float, shape=(len(models) + 1, len(contacts), args.envs))
+    active = V(dtype=gs.qd_bool, shape=(len(models) + 1, args.envs))
     grouped = V(dtype=gs.qd_float, shape=(len(owners), args.envs))
     mother_q = V(dtype=gs.qd_float, shape=(mother.m.ndof, args.envs))
     output = V(dtype=gs.qd_float, shape=(mother.S.shape[0], args.envs))
@@ -181,13 +209,24 @@ def main():
     result["operator_bytes"] = [m.data.nbytes + m.indices.nbytes + m.indptr.nbytes for m in maps]
     result["mother_workspace_bytes"] = mother.m.ndof * args.envs * 8
     for mode in ["nearest", "overlap", "blend"]:
-        selection = partial(kernel_weights, 0.002, width, anchor, contact, weights, mode)
+        selection = partial(kernel_weights, 0.002, width, anchor, contact, weights, active, mode)
         select_times = timings(selection, 5, 30)
         grouping_times = timings(partial(kernel_group, bank, owner, weights, grouped), 5, 30)
         prior = None
-        for common in [False, True]:
+        for common, skip in [(False, False), (True, False), (False, True), (True, True)]:
             operation = partial(
-                recover, common, transform, independent, mother_operator, grouped, mother_q, output, peak
+                recover,
+                common,
+                skip,
+                transform,
+                independent,
+                mother_operator,
+                grouped,
+                mother_q,
+                output,
+                peak,
+                owner,
+                active,
             )
             samples = timings(operation, 5, 30)
             field = qd_to_numpy(output, transpose=True)
@@ -199,6 +238,7 @@ def main():
                 dict(
                     mode=mode,
                     common_mother=common,
+                    skip_inactive=skip,
                     selection_seconds=select_times,
                     grouping_seconds=grouping_times,
                     recovery_seconds=samples,

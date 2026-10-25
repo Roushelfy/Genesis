@@ -1,6 +1,14 @@
 # Native rigid stress recovery: GPU throughput follow-up
 
-**Active user goal, 2026-10-25:** implement and evaluate the applicable GPU
+**Completed, 2026-10-25:** the applicable candidates, integrated pressure and
+exact-fallback improvements, focused regressions, paired module/scene timings,
+memory and negative results are delivered. Read [the report](docs/GPU_THROUGHPUT_20261025.md)
+and [the requirement audit](evidence/20261025-gpu-throughput-v1/metadata/requirements-final.json).
+The heterogeneous volume bank retains the same frame-221 pressure-fit rejection
+before and after optimization; no successful rate is claimed for that workload.
+Curved-mesh atlas mapping and continuum contact peaks remain unqualified.
+
+**Delivered specification, 2026-10-25:** implement and evaluate the applicable GPU
 optimizations in [the follow-up goal](docs/GPU_THROUGHPUT_FOLLOWUP_GOAL_20261025.md).
 Maximize useful multi-environment throughput in the existing rigid solver,
 with production numerical preparation and runtime entirely in Quadrants.

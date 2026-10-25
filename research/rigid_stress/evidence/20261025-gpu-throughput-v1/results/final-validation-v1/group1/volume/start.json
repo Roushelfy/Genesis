@@ -1,0 +1,41 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-231",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "749547",
+      "SLURM_ARRAY_JOB_ID": "749542",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-367b75be-f0bd-32ea-8bf8-547e3d36be50, 00000000:C0:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "engine_import": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/gpu-throughput-v6/genesis/__init__.py",
+  "tests": [
+    {
+      "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/gpu-throughput-v6/tests/rigid/test_stress.py",
+      "bytes": 69012,
+      "sha256": "7b95377b04094361f9fab0403b3fe10d72460f9eb9615439d3de3071b574a5e9"
+    }
+  ],
+  "pytest_arguments": [
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/gpu-throughput-v6/tests/rigid/test_stress.py",
+    "-k",
+    "native_finite_pressure_matches_independent_cpu or native_constrained_pressure_and_invalid_inputs or native_surface_inverse_preserves_history_hits or native_history_reuse_abrupt_load_and_reset or native_rigid_lifecycle_and_partial_reset",
+    "--backend",
+    "gpu",
+    "-n",
+    "0",
+    "-v",
+    "--import-mode=importlib",
+    "-p",
+    "no:cacheprovider",
+    "--junitxml=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/final-validation-v1/group1/volume/junit.xml",
+    "--basetemp=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/final-validation-v1/group1/volume/pytest"
+  ]
+}

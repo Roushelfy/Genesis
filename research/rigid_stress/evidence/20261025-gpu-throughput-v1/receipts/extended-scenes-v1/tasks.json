@@ -1,0 +1,128 @@
+[
+  [
+    {
+      "name": "q8",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--mode",
+        "hertz",
+        "--quadrature",
+        "8",
+        "--box-edge-policy",
+        "planar",
+        "--stress-backend",
+        "shell",
+        "--steps",
+        "600",
+        "--field-steps",
+        "2",
+        "110",
+        "129",
+        "179",
+        "299",
+        "449",
+        "599",
+        "--contact-moment-reuse",
+        "auto"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "q12",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--mode",
+        "hertz",
+        "--quadrature",
+        "12",
+        "--box-edge-policy",
+        "planar",
+        "--stress-backend",
+        "shell",
+        "--steps",
+        "600",
+        "--field-steps",
+        "2",
+        "110",
+        "129",
+        "179",
+        "299",
+        "449",
+        "599",
+        "--contact-moment-reuse",
+        "auto"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "heterogeneous-v0",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/meta/heterogeneous-conditions.npz",
+        "--mode",
+        "hertz",
+        "--quadrature",
+        "16",
+        "--box-edge-policy",
+        "planar",
+        "--stress-backend",
+        "shell",
+        "--steps",
+        "600",
+        "--field-steps",
+        "2",
+        "110",
+        "129",
+        "179",
+        "299",
+        "449",
+        "599",
+        "--contact-moment-reuse",
+        "auto",
+        "--batch",
+        "64"
+      ],
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/gpu-throughput-v0"
+    }
+  ],
+  [
+    {
+      "name": "heterogeneous-v2",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/meta/heterogeneous-conditions.npz",
+        "--mode",
+        "hertz",
+        "--quadrature",
+        "16",
+        "--box-edge-policy",
+        "planar",
+        "--stress-backend",
+        "shell",
+        "--steps",
+        "600",
+        "--field-steps",
+        "2",
+        "110",
+        "129",
+        "179",
+        "299",
+        "449",
+        "599",
+        "--contact-moment-reuse",
+        "auto",
+        "--batch",
+        "64"
+      ],
+      "source": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/gpu-throughput-v2"
+    }
+  ]
+]

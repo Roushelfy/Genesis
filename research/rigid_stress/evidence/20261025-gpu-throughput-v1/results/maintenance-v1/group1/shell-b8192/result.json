@@ -1,0 +1,74 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-067",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "749493",
+      "SLURM_ARRAY_JOB_ID": "749491",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-c76298f5-14a5-a899-a833-a3a917a745f8, 00000000:21:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "complete": true,
+  "rows": [],
+  "fresh_residual_seconds": [
+    0.0011042523570358753,
+    0.0011019060388207436,
+    0.0011040581576526164,
+    0.0011072815209627151,
+    0.0011098515009507538
+  ],
+  "cached_residual_seconds": [
+    0.00022829425986856222,
+    0.00022729821968823672,
+    0.00022757175844162703,
+    0.00022691963706165553,
+    0.00022689115721732377
+  ],
+  "cached_vs_fresh_absolute_residual_N": 0.0,
+  "cache_refresh_seconds": [
+    0.0010312851192429663,
+    0.0010311348363757134,
+    0.0010309755988419057,
+    0.0010375804593786596,
+    0.0010377505607903003
+  ],
+  "refresh_and_gate_seconds": [
+    0.0012601612182334065,
+    0.0012607504799962044,
+    0.0012611108971759676,
+    0.0012595623405650257,
+    0.0012597360368818045
+  ],
+  "cached_kq_bytes": 95158272,
+  "cached_kq_scope": "Actual CSR operator product, frozen displacement. A changed accepted displacement requires refresh. No stale cache is admitted or used in production.",
+  "rotation_seconds": [
+    0.00041779168881475923,
+    0.0004193596006371081,
+    0.0004192699398845434,
+    0.00041952153900638224,
+    0.00041946315905079247
+  ],
+  "copy_seconds": [
+    0.00036133874906226995,
+    0.00036007669055834415,
+    0.0003602707898244262,
+    0.0003606637613847852,
+    0.00036014760145917533
+  ],
+  "precision_api_probe": {
+    "quadrants_file": "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/__init__.py",
+    "python_source_hits": [],
+    "tested_accumulations": [
+      "FP64",
+      "FP32"
+    ],
+    "tf32_executed": false
+  }
+}

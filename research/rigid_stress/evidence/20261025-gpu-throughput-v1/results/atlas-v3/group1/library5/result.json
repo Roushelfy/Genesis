@@ -1,0 +1,2005 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-187",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "749471",
+      "SLURM_ARRAY_JOB_ID": "749471",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "complete": true,
+  "rows": [
+    {
+      "halfwidth": 0.006,
+      "case": 0,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 249225.3832581167,
+        "reference_peak_vm_Pa": 249225.3832581167,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 0,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 249225.3832581167,
+        "reference_peak_vm_Pa": 249225.3832581167,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 0,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 249225.3832581167,
+        "reference_peak_vm_Pa": 249225.3832581167,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 0,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 249225.3832581167,
+        "reference_peak_vm_Pa": 249225.3832581167,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 0,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 249225.3832581167,
+        "reference_peak_vm_Pa": 249225.3832581167,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 1,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 280373.8956151403,
+        "reference_peak_vm_Pa": 280373.8956151403,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 1,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 280373.8956151403,
+        "reference_peak_vm_Pa": 280373.8956151403,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 1,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 280373.8956151403,
+        "reference_peak_vm_Pa": 280373.8956151403,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 1,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 280373.8956151403,
+        "reference_peak_vm_Pa": 280373.8956151403,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 1,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 280373.8956151403,
+        "reference_peak_vm_Pa": 280373.8956151403,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 2,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 284497.2508757501,
+        "reference_peak_vm_Pa": 284497.2508757501,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 2,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 284497.2508757501,
+        "reference_peak_vm_Pa": 284497.2508757501,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 2,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 284497.2508757501,
+        "reference_peak_vm_Pa": 284497.2508757501,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 2,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 284497.2508757501,
+        "reference_peak_vm_Pa": 284497.2508757501,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 2,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 284497.2508757501,
+        "reference_peak_vm_Pa": 284497.2508757501,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 3,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 278628.9558922655,
+        "reference_peak_vm_Pa": 278628.9558922655,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 3,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 278628.9558922655,
+        "reference_peak_vm_Pa": 278628.9558922655,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 3,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 278628.9558922655,
+        "reference_peak_vm_Pa": 278628.9558922655,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 3,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 278628.9558922655,
+        "reference_peak_vm_Pa": 278628.9558922655,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 3,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 278628.9558922655,
+        "reference_peak_vm_Pa": 278628.9558922655,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 4,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 250602.55846277814,
+        "reference_peak_vm_Pa": 250602.55846277814,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 4,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 250602.55846277814,
+        "reference_peak_vm_Pa": 250602.55846277814,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 4,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 250602.55846277814,
+        "reference_peak_vm_Pa": 250602.55846277814,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 4,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 250602.55846277814,
+        "reference_peak_vm_Pa": 250602.55846277814,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 4,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 250602.55846277814,
+        "reference_peak_vm_Pa": 250602.55846277814,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 5,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ],
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 2,
+      "common_mother_relative": 8.389684101334418e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 370152.0649796425,
+        "reference_peak_vm_Pa": 370152.0649796425,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 5,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          0
+        ],
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 8.561306627002355e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.040871681983074754,
+        "peak_vm_Pa": 368806.83273777115,
+        "reference_peak_vm_Pa": 370152.0649796425,
+        "peak_vm_relative": 0.0036342691805470377
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 5,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ],
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 2,
+      "common_mother_relative": 8.389684101334418e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 370152.0649796425,
+        "reference_peak_vm_Pa": 370152.0649796425,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 5,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          0
+        ],
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 8.561306627002355e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.040871681983074754,
+        "peak_vm_Pa": 368806.83273777115,
+        "reference_peak_vm_Pa": 370152.0649796425,
+        "peak_vm_relative": 0.0036342691805470377
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 5,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          0
+        ],
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 8.561306627002355e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.040871681983074754,
+        "peak_vm_Pa": 368806.83273777115,
+        "reference_peak_vm_Pa": 370152.0649796425,
+        "peak_vm_relative": 0.0036342691805470377
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 6,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 240373.0558956664,
+        "reference_peak_vm_Pa": 240373.0558956664,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 6,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 240373.0558956664,
+        "reference_peak_vm_Pa": 240373.0558956664,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 6,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 240373.0558956664,
+        "reference_peak_vm_Pa": 240373.0558956664,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 6,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 240373.0558956664,
+        "reference_peak_vm_Pa": 240373.0558956664,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 6,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 240373.0558956664,
+        "reference_peak_vm_Pa": 240373.0558956664,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 7,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 149860.3744752014,
+        "reference_peak_vm_Pa": 149860.3744752014,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 7,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 149860.3744752014,
+        "reference_peak_vm_Pa": 149860.3744752014,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 7,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 149860.3744752014,
+        "reference_peak_vm_Pa": 149860.3744752014,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 7,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 149860.3744752014,
+        "reference_peak_vm_Pa": 149860.3744752014,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.006,
+      "case": 7,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 149860.3744752014,
+        "reference_peak_vm_Pa": 149860.3744752014,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 0,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 246191.4554138925,
+        "reference_peak_vm_Pa": 246191.4554138925,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 0,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          0
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 7.416929841264769e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.15732024325333843,
+        "peak_vm_Pa": 237353.2670671564,
+        "reference_peak_vm_Pa": 246191.4554138925,
+        "peak_vm_relative": 0.035899655135786405
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 0,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          0,
+          3
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 7.544457170146396e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.09542637612989154,
+        "peak_vm_Pa": 233870.13528326797,
+        "reference_peak_vm_Pa": 246191.4554138925,
+        "peak_vm_relative": 0.05004771635924628
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 0,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          0
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 7.416929841264769e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.15732024325333843,
+        "peak_vm_Pa": 237353.2670671564,
+        "reference_peak_vm_Pa": 246191.4554138925,
+        "peak_vm_relative": 0.035899655135786405
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 0,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          0,
+          3
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.124740721898995e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.12948635597737224,
+        "peak_vm_Pa": 235999.138488938,
+        "reference_peak_vm_Pa": 246191.4554138925,
+        "peak_vm_relative": 0.04139996210599324
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 1,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 277009.12600745563,
+        "reference_peak_vm_Pa": 277009.12600745563,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 1,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          0
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.378626773944467e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.12384222516113044,
+        "peak_vm_Pa": 259944.64557368707,
+        "reference_peak_vm_Pa": 277009.12600745563,
+        "peak_vm_relative": 0.06160259295323461
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 1,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          0,
+          3
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.537200205712251e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.09499546871988286,
+        "peak_vm_Pa": 264495.87714117276,
+        "reference_peak_vm_Pa": 277009.12600745563,
+        "peak_vm_relative": 0.04517269537880163
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 1,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          0
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.378626773944467e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.12384222516113044,
+        "peak_vm_Pa": 259944.64557368707,
+        "reference_peak_vm_Pa": 277009.12600745563,
+        "peak_vm_relative": 0.06160259295323461
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 1,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          0
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.378626773944467e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.12384222516113044,
+        "peak_vm_Pa": 259944.64557368707,
+        "reference_peak_vm_Pa": 277009.12600745563,
+        "peak_vm_relative": 0.06160259295323461
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 2,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 281042.71893045394,
+        "reference_peak_vm_Pa": 281042.71893045394,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 2,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          2
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.268301769477867e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.11276740425610927,
+        "peak_vm_Pa": 272254.332703004,
+        "reference_peak_vm_Pa": 281042.71893045394,
+        "peak_vm_relative": 0.0312706419184077
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 2,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          0,
+          2
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.334372290753988e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.10913803262820886,
+        "peak_vm_Pa": 275054.41213394154,
+        "reference_peak_vm_Pa": 281042.71893045394,
+        "peak_vm_relative": 0.021307461083858364
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 2,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          2
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.268301769477867e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.11276740425610927,
+        "peak_vm_Pa": 272254.332703004,
+        "reference_peak_vm_Pa": 281042.71893045394,
+        "peak_vm_relative": 0.0312706419184077
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 2,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          0,
+          1,
+          2
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.534329794923802e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.10892443954289038,
+        "peak_vm_Pa": 275790.02908014035,
+        "reference_peak_vm_Pa": 281042.71893045394,
+        "peak_vm_relative": 0.018690005100660177
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 3,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 275384.9858462378,
+        "reference_peak_vm_Pa": 275384.9858462378,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 3,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          1
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.200599436734056e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.12344345910584997,
+        "peak_vm_Pa": 257200.9742656827,
+        "reference_peak_vm_Pa": 275384.9858462378,
+        "peak_vm_relative": 0.06603123813986078
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 3,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          1,
+          4
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 7.801720158374737e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.09406437418208861,
+        "peak_vm_Pa": 262975.3461252514,
+        "reference_peak_vm_Pa": 275384.9858462378,
+        "peak_vm_relative": 0.045062876913396395
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 3,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          1
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.200599436734056e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.12344345910584997,
+        "peak_vm_Pa": 257200.9742656827,
+        "reference_peak_vm_Pa": 275384.9858462378,
+        "peak_vm_relative": 0.06603123813986078
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 3,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          1
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.200599436734056e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.12344345910584997,
+        "peak_vm_Pa": 257200.9742656827,
+        "reference_peak_vm_Pa": 275384.9858462378,
+        "peak_vm_relative": 0.06603123813986078
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 4,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 247468.03942721654,
+        "reference_peak_vm_Pa": 247468.03942721654,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 4,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          1
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 7.109042514939749e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.15915250537242706,
+        "peak_vm_Pa": 237304.41654757803,
+        "reference_peak_vm_Pa": 247468.03942721654,
+        "peak_vm_relative": 0.041070446523773264
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 4,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          1,
+          4
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 7.878130127316366e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.09590960236598123,
+        "peak_vm_Pa": 234987.74991290685,
+        "reference_peak_vm_Pa": 247468.03942721654,
+        "peak_vm_relative": 0.050431924636394544
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 4,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          1
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 7.109042514939749e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.15915250537242706,
+        "peak_vm_Pa": 237304.41654757803,
+        "reference_peak_vm_Pa": 247468.03942721654,
+        "peak_vm_relative": 0.041070446523773264
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 4,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          1,
+          4
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.017765617520119e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.1308580043783755,
+        "peak_vm_Pa": 236235.89631324718,
+        "reference_peak_vm_Pa": 247468.03942721654,
+        "peak_vm_relative": 0.04538825757042001
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 5,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ],
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 2,
+      "common_mother_relative": 8.529174607882628e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 376635.3594861534,
+        "reference_peak_vm_Pa": 376635.3594861534,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 5,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          0
+        ],
+        [
+          1
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.244201801170762e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.13935628081671458,
+        "peak_vm_Pa": 354745.4464950459,
+        "reference_peak_vm_Pa": 376635.3594861534,
+        "peak_vm_relative": 0.05811964394679268
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 5,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ],
+        [
+          1,
+          4
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 8.235866914827953e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.06868941983292652,
+        "peak_vm_Pa": 354061.7744516032,
+        "reference_peak_vm_Pa": 376635.3594861534,
+        "peak_vm_relative": 0.05993485334289257
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 5,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          0
+        ],
+        [
+          1,
+          4
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.633861365058142e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.1344445009731134,
+        "peak_vm_Pa": 353676.3572583021,
+        "reference_peak_vm_Pa": 376635.3594861534,
+        "peak_vm_relative": 0.060958169883928194
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 5,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          0
+        ],
+        [
+          1,
+          4
+        ]
+      ],
+      "fallback_contacts": 0,
+      "common_mother_relative": 8.30207488320594e-16,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.10822621249422665,
+        "peak_vm_Pa": 353011.76699338946,
+        "reference_peak_vm_Pa": 376635.3594861534,
+        "peak_vm_relative": 0.06272271548001705
+      },
+      "budget_passed": false
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 6,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 237592.9449447988,
+        "reference_peak_vm_Pa": 237592.9449447988,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 6,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 237592.9449447988,
+        "reference_peak_vm_Pa": 237592.9449447988,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 6,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 237592.9449447988,
+        "reference_peak_vm_Pa": 237592.9449447988,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 6,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 237592.9449447988,
+        "reference_peak_vm_Pa": 237592.9449447988,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 6,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 237592.9449447988,
+        "reference_peak_vm_Pa": 237592.9449447988,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 7,
+      "mode": "blend",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 146679.21960570762,
+        "reference_peak_vm_Pa": 146679.21960570762,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 7,
+      "mode": "nearest",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 146679.21960570762,
+        "reference_peak_vm_Pa": 146679.21960570762,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 7,
+      "mode": "top_two",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 146679.21960570762,
+        "reference_peak_vm_Pa": 146679.21960570762,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 7,
+      "mode": "overlap",
+      "overlap": 0.0005,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 146679.21960570762,
+        "reference_peak_vm_Pa": 146679.21960570762,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    },
+    {
+      "halfwidth": 0.009,
+      "case": 7,
+      "mode": "overlap",
+      "overlap": 0.002,
+      "contributors": [
+        [
+          "mother"
+        ]
+      ],
+      "fallback_contacts": 1,
+      "common_mother_relative": 0.0,
+      "metrics": {
+        "tensor_Frobenius_relative": 0.0,
+        "peak_vm_Pa": 146679.21960570762,
+        "reference_peak_vm_Pa": 146679.21960570762,
+        "peak_vm_relative": 0.0
+      },
+      "budget_passed": true
+    }
+  ],
+  "switches": [
+    {
+      "halfwidth": 0.006,
+      "mode": "blend",
+      "delta_m": 2e-08,
+      "selector_jump": 2.090486944618207e-06,
+      "physical_change": 2.9101545383292537e-06,
+      "contributors": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      ]
+    },
+    {
+      "halfwidth": 0.006,
+      "mode": "nearest",
+      "delta_m": 2e-08,
+      "selector_jump": 0.18878629243386605,
+      "physical_change": 2.9101545383292537e-06,
+      "contributors": [
+        [
+          0
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    {
+      "halfwidth": 0.006,
+      "mode": "top_two",
+      "delta_m": 2e-08,
+      "selector_jump": 0.0941073058162569,
+      "physical_change": 2.9101545383292537e-06,
+      "contributors": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "halfwidth": 0.006,
+      "mode": "overlap",
+      "delta_m": 2e-08,
+      "selector_jump": 2.065210329869947e-06,
+      "physical_change": 2.9101545383292537e-06,
+      "contributors": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "halfwidth": 0.009,
+      "mode": "blend",
+      "delta_m": 2e-08,
+      "selector_jump": 2.614331582924762e-06,
+      "physical_change": 2.8103386080548923e-06,
+      "contributors": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      ]
+    },
+    {
+      "halfwidth": 0.009,
+      "mode": "nearest",
+      "delta_m": 2e-08,
+      "selector_jump": 0.08934394365535533,
+      "physical_change": 2.8103386080548923e-06,
+      "contributors": [
+        [
+          0
+        ],
+        [
+          1
+        ]
+      ]
+    },
+    {
+      "halfwidth": 0.009,
+      "mode": "top_two",
+      "delta_m": 2e-08,
+      "selector_jump": 0.04490943924989307,
+      "physical_change": 2.8103386080548923e-06,
+      "contributors": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "halfwidth": 0.009,
+      "mode": "overlap",
+      "delta_m": 2e-08,
+      "selector_jump": 2.8303766866158632e-06,
+      "physical_change": 2.8103386080548923e-06,
+      "contributors": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          1,
+          2
+        ]
+      ]
+    }
+  ],
+  "mother_identity": [],
+  "library_size": 5,
+  "libraries": [
+    {
+      "halfwidth": 0.006,
+      "models": [
+        {
+          "name": "feature0",
+          "quads": 195,
+          "dofs": 1344,
+          "assembly_s": 1.1553099239245057,
+          "factor_s": 0.004180745920166373,
+          "lu_bytes": 830264,
+          "lu_nnz": 68516,
+          "nx": 13,
+          "ny": 15
+        },
+        {
+          "name": "feature1",
+          "quads": 195,
+          "dofs": 1344,
+          "assembly_s": 1.1543716189917177,
+          "factor_s": 0.0036740871146321297,
+          "lu_bytes": 839360,
+          "lu_nnz": 69274,
+          "nx": 13,
+          "ny": 15
+        },
+        {
+          "name": "feature2",
+          "quads": 210,
+          "dofs": 1440,
+          "assembly_s": 1.262711409945041,
+          "factor_s": 0.0038898750208318233,
+          "lu_bytes": 965156,
+          "lu_nnz": 79701,
+          "nx": 14,
+          "ny": 15
+        },
+        {
+          "name": "feature3",
+          "quads": 182,
+          "dofs": 1260,
+          "assembly_s": 1.1512545479927212,
+          "factor_s": 0.0035994311328977346,
+          "lu_bytes": 729032,
+          "lu_nnz": 60128,
+          "nx": 14,
+          "ny": 13
+        },
+        {
+          "name": "feature4",
+          "quads": 182,
+          "dofs": 1260,
+          "assembly_s": 1.0990999459754676,
+          "factor_s": 0.0037138578481972218,
+          "lu_bytes": 774896,
+          "lu_nnz": 63950,
+          "nx": 14,
+          "ny": 13
+        }
+      ],
+      "mother": {
+        "name": "mother",
+        "quads": 810,
+        "dofs": 5208,
+        "assembly_s": 4.949135632952675,
+        "factor_s": 0.03651404590345919,
+        "lu_bytes": 6430208,
+        "lu_nnz": 532834,
+        "nx": 30,
+        "ny": 27
+      },
+      "embedding_bytes": 1354100
+    },
+    {
+      "halfwidth": 0.009,
+      "models": [
+        {
+          "name": "feature0",
+          "quads": 288,
+          "dofs": 1938,
+          "assembly_s": 1.7589877480641007,
+          "factor_s": 0.006269525038078427,
+          "lu_bytes": 1527356,
+          "lu_nnz": 126259,
+          "nx": 16,
+          "ny": 18
+        },
+        {
+          "name": "feature1",
+          "quads": 288,
+          "dofs": 1938,
+          "assembly_s": 1.8159322780556977,
+          "factor_s": 0.006133483024314046,
+          "lu_bytes": 1504904,
+          "lu_nnz": 124388,
+          "nx": 16,
+          "ny": 18
+        },
+        {
+          "name": "feature2",
+          "quads": 288,
+          "dofs": 1938,
+          "assembly_s": 1.7568317321129143,
+          "factor_s": 0.007245087064802647,
+          "lu_bytes": 1798976,
+          "lu_nnz": 148894,
+          "nx": 16,
+          "ny": 18
+        },
+        {
+          "name": "feature3",
+          "quads": 256,
+          "dofs": 1734,
+          "assembly_s": 1.566211984027177,
+          "factor_s": 0.005850574001669884,
+          "lu_bytes": 1249544,
+          "lu_nnz": 103228,
+          "nx": 16,
+          "ny": 16
+        },
+        {
+          "name": "feature4",
+          "quads": 256,
+          "dofs": 1734,
+          "assembly_s": 1.5732406568713486,
+          "factor_s": 0.0047855619341135025,
+          "lu_bytes": 1263800,
+          "lu_nnz": 104416,
+          "nx": 16,
+          "ny": 16
+        }
+      ],
+      "mother": {
+        "name": "mother",
+        "quads": 1224,
+        "dofs": 7770,
+        "assembly_s": 7.554162061074749,
+        "factor_s": 0.07483256002888083,
+        "lu_bytes": 11226260,
+        "lu_nnz": 930901,
+        "nx": 34,
+        "ny": 36
+      },
+      "embedding_bytes": 2020220
+    }
+  ],
+  "recovery_timings": [
+    {
+      "halfwidth": 0.006,
+      "independent_fields": [
+        0.0003949320991523564,
+        0.0003520819009281695,
+        0.00035556789953261614,
+        0.00035338230663910507,
+        0.0003537783049978316,
+        0.0003573239897377789,
+        0.0003955515567213297
+      ],
+      "common_mother": [
+        0.00016244479920715093,
+        0.0001531869522295892,
+        0.00017805639654397965,
+        0.00014710695249959828,
+        0.00014964744914323092,
+        0.00016396424034610392,
+        0.00015079430304467678
+      ]
+    },
+    {
+      "halfwidth": 0.009,
+      "independent_fields": [
+        0.00040249170269817113,
+        0.0004290162934921682,
+        0.0003557453048415482,
+        0.0003541194018907845,
+        0.0003544147009961307,
+        0.0003779675462283194,
+        0.0003567809471860528
+      ],
+      "common_mother": [
+        0.00021081850863993167,
+        0.00019001540495082735,
+        0.00018149520037695764,
+        0.00022281755227595567,
+        0.00018325115088373422,
+        0.00018213059520348905,
+        0.00018422799184918403
+      ]
+    }
+  ]
+}

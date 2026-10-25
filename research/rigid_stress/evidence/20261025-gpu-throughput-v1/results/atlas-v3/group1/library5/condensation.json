@@ -1,0 +1,58 @@
+{
+  "passed": true,
+  "direct_solve_seconds": [
+    0.00010597310028970242,
+    0.00010034092701971531,
+    0.00011465814895927906,
+    9.508198127150536e-05,
+    0.00010983319953083992
+  ],
+  "direct": {
+    "name": "mother_condensation",
+    "quads": 144,
+    "dofs": 1014,
+    "assembly_s": 0.9055556650273502,
+    "factor_s": 0.002620697021484375,
+    "lu_bytes": 526832,
+    "lu_nnz": 43418,
+    "nx": 12,
+    "ny": 12
+  },
+  "rows": [
+    {
+      "direction": "eliminate_local",
+      "retained": 294,
+      "eliminated": 432,
+      "preparation_seconds": 0.0090098618529737,
+      "solve_seconds": [
+        0.00041039101779460907,
+        0.0003089350648224354,
+        0.0002148328348994255,
+        0.00022036791779100895,
+        0.00021264678798615932
+      ],
+      "harmonic_bytes": 1016064,
+      "schur_bytes": 691488,
+      "displacement_relative": 1.1527742360138066e-12,
+      "residual_relative": 5.131800084688046e-13
+    },
+    {
+      "direction": "eliminate_coarse",
+      "retained": 432,
+      "eliminated": 294,
+      "preparation_seconds": 0.014000250957906246,
+      "solve_seconds": [
+        0.0004551380407065153,
+        0.0003413220401853323,
+        0.00025672605261206627,
+        0.0002555311657488346,
+        0.00023517408408224583
+      ],
+      "harmonic_bytes": 1016064,
+      "schur_bytes": 1492992,
+      "displacement_relative": 1.2562058347437635e-12,
+      "residual_relative": 5.232728615278721e-13
+    }
+  ],
+  "scope": "Exact hierarchical coarse/local Schur coupling, all distributed load terms retained."
+}

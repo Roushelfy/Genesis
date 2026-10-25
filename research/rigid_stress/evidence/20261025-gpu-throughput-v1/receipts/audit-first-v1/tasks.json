@@ -1,0 +1,64 @@
+[
+  [
+    {
+      "name": "exact",
+      "module": "research.rigid_stress.qipc_comparison.audit_gpu_candidates",
+      "args": [
+        "--before",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/scene-v7/group0/cycle",
+        "--after",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group4/cycle",
+        "--kind",
+        "exact"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "history",
+      "module": "research.rigid_stress.qipc_comparison.audit_gpu_candidates",
+      "args": [
+        "--before",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group4/cycle",
+        "--after",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group5/cycle",
+        "--kind",
+        "history"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "contacts0",
+      "module": "research.rigid_stress.qipc_comparison.audit_native_shell_contacts",
+      "args": [
+        "--before",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/contacts-v8/group0/gpu",
+        "--after",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/projection-contacts-v1/group0/gpu",
+        "--cases",
+        "flat",
+        "warped",
+        "egg",
+        "valley"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "contacts1",
+      "module": "research.rigid_stress.qipc_comparison.audit_native_shell_contacts",
+      "args": [
+        "--before",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/contacts-v8/group1/gpu-moments",
+        "--after",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/projection-contacts-v1/group1/gpu-moments",
+        "--cases",
+        "flat",
+        "warped",
+        "egg",
+        "valley"
+      ]
+    }
+  ]
+]

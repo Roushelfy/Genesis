@@ -1,0 +1,40 @@
+[
+  [
+    {
+      "name": "rigid-varied-b64",
+      "module": "examples.speed_benchmark.rigid_stress",
+      "args": [
+        "--radius-model",
+        "hertz",
+        "--pressure-profile",
+        "hertz",
+        "--box-edge-policy",
+        "planar",
+        "--quadrature",
+        "16",
+        "--compact-log",
+        "--source-revision",
+        "d3a79d7f5",
+        "--minimum-seconds",
+        "0",
+        "--scope",
+        "rigid",
+        "--stress-backend",
+        "volume",
+        "--output-mode",
+        "max",
+        "--envs",
+        "64",
+        "--warmup",
+        "600",
+        "--steps",
+        "600",
+        "--repetitions",
+        "3",
+        "--varied",
+        "--save-conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/meta/heterogeneous-conditions.npz"
+      ]
+    }
+  ]
+]

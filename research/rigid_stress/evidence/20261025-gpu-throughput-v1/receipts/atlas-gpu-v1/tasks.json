@@ -1,0 +1,50 @@
+[
+  [
+    {
+      "name": "library3-b64",
+      "module": "research.rigid_stress.qipc_comparison.check_atlas_gpu",
+      "args": [
+        "--envs",
+        "64",
+        "--library-size",
+        "3"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "library3-b1024",
+      "module": "research.rigid_stress.qipc_comparison.check_atlas_gpu",
+      "args": [
+        "--envs",
+        "1024",
+        "--library-size",
+        "3"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "library5-b64",
+      "module": "research.rigid_stress.qipc_comparison.check_atlas_gpu",
+      "args": [
+        "--envs",
+        "64",
+        "--library-size",
+        "5"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "library5-b1024",
+      "module": "research.rigid_stress.qipc_comparison.check_atlas_gpu",
+      "args": [
+        "--envs",
+        "1024",
+        "--library-size",
+        "5"
+      ]
+    }
+  ]
+]

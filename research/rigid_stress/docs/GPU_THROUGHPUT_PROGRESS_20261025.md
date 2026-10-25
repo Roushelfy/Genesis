@@ -161,3 +161,35 @@ are not native curved-egg end-to-end claims. Native nonnested offset surfaces
 lack a validated common embedding; independently refined models also change
 lumped inertia relief. The clamped planar identity does not authorize changing
 those production semantics. Retain the promising prototype and its limitation.
+
+## Final validation checkpoint
+
+The final v6 engine passes nine shell regressions and 31 selected volume,
+history, surface-response and lifecycle regressions. The B1024 packed fallback
+regression exercises the production compact route; separate B8192 controls
+poison failed displacements and verify exact full fields and untouched states
+at five failure fractions. The final 600-step exact audit passes with maximum
+peak difference 2.113e-15. A 256-candidate-face overflow case on both material
+sides passes against v0, relative load difference 2.828e-16.
+
+The heterogeneous volume audit locates an unchanged baseline rejection at frame
+221, environment 1, contact 0, status 3 (nonnegative sampled pressure fit),
+radius 3.09950899e-5 m and friction 0.424854643. Both v0 and v6 accept exactly
+221 frames before the same rejection; neither full-cycle volume rate is
+qualified on this bank. Shell heterogeneous cycles pass.
+
+All 40 submitted campaigns, including failed attempts, are being collected in
+the compact publication packet. Raw arrays, traces and logs remain on data.
+The final standalone large-batch timing is still finishing at this checkpoint.
+
+## Completion
+
+All 201 tasks across 40 submitted campaigns have terminal receipts. Fifteen
+failed attempts or rejected configurations remain explicitly retained; none
+is converted into a successful timing. All 36 final timing tasks and all
+40 final focused pytest cases pass. The final artifact manifest covers
+1,772 raw files (5,315,570,965 bytes) under data. The compact publication packet
+tracks only small summaries, receipts, audit results and condition fixtures.
+All twelve original files and 142 original worktree heads pass final preservation.
+See [the final report](GPU_THROUGHPUT_20261025.md) and
+[requirement audit](../evidence/20261025-gpu-throughput-v1/metadata/requirements-final.json).

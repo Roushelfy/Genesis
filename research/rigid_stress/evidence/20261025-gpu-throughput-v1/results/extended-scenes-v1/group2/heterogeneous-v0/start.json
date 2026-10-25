@@ -1,0 +1,47 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-255",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "749470",
+      "SLURM_ARRAY_JOB_ID": "749466",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-4a7941c5-492a-28be-caba-7124cc629aa5, 00000000:20:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "conditions": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/meta/heterogeneous-conditions.npz",
+    "bytes": 25834,
+    "sha256": "db60d16e02b41f8850bf255052939831ef25cd2a07f07c1fb052eb8efe4f1310"
+  },
+  "mode": "hertz",
+  "batch": 64,
+  "steps": 600,
+  "quadrature": 16,
+  "stress_backend": "shell",
+  "shell_gauge": "translation",
+  "method": "auto",
+  "inverse_precision": "64",
+  "surface_inverse": true,
+  "history": 0,
+  "box_edge_policy": "planar",
+  "unfused": false,
+  "contact_moment_reuse": "auto",
+  "partial_reset_at": null,
+  "field_steps": [
+    2,
+    110,
+    129,
+    179,
+    299,
+    449,
+    599
+  ],
+  "scope": "Actual public DPR path, original elastic mesh and rigid dynamics. Automatic radius and pressure profile are separate controls. Every environment/frame remains in the audit. Preparation and diagnostic reads are not throughput measurements. No analytic enrichment or physical accuracy claim."
+}

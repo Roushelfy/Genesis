@@ -1,0 +1,192 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-210-023",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "749561",
+      "SLURM_ARRAY_JOB_ID": "749544",
+      "SLURM_ARRAY_TASK_ID": "1",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-5be56406-45bd-50ce-e9ae-d10e52cb77c1, 00000000:20:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "complete": true,
+  "envs": 1024,
+  "library_size": 3,
+  "scope": "GPU common-mother recovery control on a validated nested planar fixture.\n\nCPU reference operators/solutions are fixture inputs, never a native production\npreparation path. Timings cover GPU contact grouping and recovery only, excluding\npressure preparation and solves. Native curved-surface mapping is not assumed.\n",
+  "rows": [
+    {
+      "mode": "nearest",
+      "common_mother": false,
+      "selection_seconds": [
+        5.138626632591089e-05,
+        4.3618896355231604e-05,
+        4.477516437570254e-05,
+        4.3478926333288355e-05,
+        4.303026168296735e-05
+      ],
+      "grouping_seconds": [
+        0.00016471953131258488,
+        0.00016254350387801726,
+        0.00016142486905058225,
+        0.0001611154992133379,
+        0.00016133286990225316
+      ],
+      "recovery_seconds": [
+        0.000990914871605734,
+        0.00098975560006996,
+        0.0009867419333507617,
+        0.0009868563385680318,
+        0.0009865391999483108
+      ],
+      "tensor_relative": 0.0,
+      "fallback_contacts": 0.0
+    },
+    {
+      "mode": "nearest",
+      "common_mother": true,
+      "selection_seconds": [
+        5.138626632591089e-05,
+        4.3618896355231604e-05,
+        4.477516437570254e-05,
+        4.3478926333288355e-05,
+        4.303026168296735e-05
+      ],
+      "grouping_seconds": [
+        0.00016471953131258488,
+        0.00016254350387801726,
+        0.00016142486905058225,
+        0.0001611154992133379,
+        0.00016133286990225316
+      ],
+      "recovery_seconds": [
+        0.0005484616616740823,
+        0.0005446097037444512,
+        0.0005427803378552198,
+        0.0005464053712785244,
+        0.0005442905006930232
+      ],
+      "tensor_relative": 5.795740514748152e-16,
+      "fallback_contacts": 0.0
+    },
+    {
+      "mode": "overlap",
+      "common_mother": false,
+      "selection_seconds": [
+        5.2100761483112974e-05,
+        4.30395050595204e-05,
+        4.228506392488877e-05,
+        4.336110626657804e-05,
+        4.180203347156445e-05
+      ],
+      "grouping_seconds": [
+        0.00016200706207503875,
+        0.00016251226576666038,
+        0.00016237196978181602,
+        0.00016148687185098728,
+        0.0001614171313121915
+      ],
+      "recovery_seconds": [
+        0.000982548133470118,
+        0.0009843603319798907,
+        0.000985188929674526,
+        0.0009889167655880253,
+        0.0009817327993611495
+      ],
+      "tensor_relative": 0.0,
+      "fallback_contacts": 0.0
+    },
+    {
+      "mode": "overlap",
+      "common_mother": true,
+      "selection_seconds": [
+        5.2100761483112974e-05,
+        4.30395050595204e-05,
+        4.228506392488877e-05,
+        4.336110626657804e-05,
+        4.180203347156445e-05
+      ],
+      "grouping_seconds": [
+        0.00016200706207503875,
+        0.00016251226576666038,
+        0.00016237196978181602,
+        0.00016148687185098728,
+        0.0001614171313121915
+      ],
+      "recovery_seconds": [
+        0.0005450223029280703,
+        0.0005458845368896922,
+        0.0005466630294298133,
+        0.0005424436026563247,
+        0.0005449918331578374
+      ],
+      "tensor_relative": 6.135693234041427e-16,
+      "fallback_contacts": 0.0
+    },
+    {
+      "mode": "blend",
+      "common_mother": false,
+      "selection_seconds": [
+        4.401543022443851e-05,
+        3.964593634009361e-05,
+        3.8968600953618686e-05,
+        3.886853810399771e-05,
+        3.939999733120203e-05
+      ],
+      "grouping_seconds": [
+        0.0001618614342684547,
+        0.0001613522646948695,
+        0.00016076583415269852,
+        0.00016059530122826496,
+        0.00016028110403567552
+      ],
+      "recovery_seconds": [
+        0.0009821652978037794,
+        0.0009880208022271593,
+        0.000981935167995592,
+        0.0009846922320624193,
+        0.0009829812295114
+      ],
+      "tensor_relative": 0.0,
+      "fallback_contacts": 2.0
+    },
+    {
+      "mode": "blend",
+      "common_mother": true,
+      "selection_seconds": [
+        4.401543022443851e-05,
+        3.964593634009361e-05,
+        3.8968600953618686e-05,
+        3.886853810399771e-05,
+        3.939999733120203e-05
+      ],
+      "grouping_seconds": [
+        0.0001618614342684547,
+        0.0001613522646948695,
+        0.00016076583415269852,
+        0.00016059530122826496,
+        0.00016028110403567552
+      ],
+      "recovery_seconds": [
+        0.0005590607722600301,
+        0.0005428881306822101,
+        0.0005413552358125647,
+        0.0005398038309067487,
+        0.000538652203977108
+      ],
+      "tensor_relative": 5.569220765693786e-16,
+      "fallback_contacts": 2.0
+    }
+  ],
+  "operator_bytes": [
+    5833180,
+    584644,
+    1473436
+  ],
+  "mother_workspace_bytes": 29933568
+}

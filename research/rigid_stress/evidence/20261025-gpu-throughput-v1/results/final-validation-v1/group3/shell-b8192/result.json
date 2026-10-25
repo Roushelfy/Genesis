@@ -1,0 +1,102 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-187",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "749549",
+      "SLURM_ARRAY_JOB_ID": "749542",
+      "SLURM_ARRAY_TASK_ID": "3",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": "name, uuid, pci.bus_id, driver_version, memory.total [MiB]\nNVIDIA RTX PRO 6000 Blackwell Server Edition, GPU-faa7fd4c-51ec-a6d2-afe1-8bfbb15d37b4, 00000000:AE:00.0, 595.71.05, 97887 MiB\n",
+    "gpu_inventory_required": true,
+    "gpu_inventory_error": null
+  },
+  "complete": true,
+  "rows": [
+    {
+      "native": true,
+      "failure_count": 0,
+      "fraction": 0.0,
+      "seconds": [
+        0.0001549006983016928,
+        0.00014384673753132423,
+        0.00014391633837173383,
+        0.00014456616869817178,
+        0.00014339950090895096
+      ],
+      "displacement_relative": 0.0,
+      "field_relative": 0.0,
+      "untouched_environments_equal": true,
+      "failed_displacements_poisoned": true
+    },
+    {
+      "native": true,
+      "failure_count": 81,
+      "fraction": 0.0098876953125,
+      "seconds": [
+        0.0006731294328346848,
+        0.0006724365676442783,
+        0.0006723679058874646,
+        0.0006729994667693973,
+        0.0006718510296195746
+      ],
+      "displacement_relative": 0.0,
+      "field_relative": 0.0,
+      "untouched_environments_equal": true,
+      "failed_displacements_poisoned": true
+    },
+    {
+      "native": true,
+      "failure_count": 819,
+      "fraction": 0.0999755859375,
+      "seconds": [
+        0.0012621881673112513,
+        0.0012604495355238517,
+        0.0012592344001556436,
+        0.0012586580046142141,
+        0.0012609292985871433
+      ],
+      "displacement_relative": 0.0,
+      "field_relative": 0.0,
+      "untouched_environments_equal": true,
+      "failed_displacements_poisoned": true
+    },
+    {
+      "native": true,
+      "failure_count": 4096,
+      "fraction": 0.5,
+      "seconds": [
+        0.003364862765495976,
+        0.0033770426331708827,
+        0.003379671236810585,
+        0.003374321999338766,
+        0.003386630661164721
+      ],
+      "displacement_relative": 0.0,
+      "field_relative": 0.0,
+      "untouched_environments_equal": true,
+      "failed_displacements_poisoned": true
+    },
+    {
+      "native": true,
+      "failure_count": 8192,
+      "fraction": 1.0,
+      "seconds": [
+        0.005297034971105555,
+        0.0053035927393163245,
+        0.005310416469971339,
+        0.005305238603614271,
+        0.005306215700693428
+      ],
+      "displacement_relative": 0.0,
+      "field_relative": 0.0,
+      "untouched_environments_equal": true,
+      "failed_displacements_poisoned": true
+    }
+  ],
+  "workspace_bytes": 32772
+}

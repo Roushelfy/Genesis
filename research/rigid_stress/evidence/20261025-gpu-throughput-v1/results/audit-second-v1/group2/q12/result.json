@@ -1,0 +1,369 @@
+{
+  "identity": {
+    "python_executable": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python",
+    "python_version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "hostname": "rtx-209-235",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "environment": {
+      "SLURM_JOB_ID": "749484",
+      "SLURM_ARRAY_JOB_ID": "749481",
+      "SLURM_ARRAY_TASK_ID": "2",
+      "CUDA_VISIBLE_DEVICES": null,
+      "GENESIS_IMAGE_VER": "1_26"
+    },
+    "nvidia_smi_visible_inventory": null,
+    "gpu_inventory_required": false,
+    "gpu_inventory_error": "Command '['nvidia-smi', '--query-gpu=name,uuid,pci.bus_id,driver_version,memory.total', '--format=csv']' returned non-zero exit status 6."
+  },
+  "kind": "quadrature",
+  "load_budget": 1e-06,
+  "field_budget": 0.0001,
+  "complete": true,
+  "passed": false,
+  "rows": [
+    {
+      "file": "field-0002.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group4/cycle/field-0002.npz",
+        "bytes": 510871,
+        "sha256": "ccc48d7fd7ed0d93db126fea352bcb1c7aff3b9b6e82263032173a5caf56c3ad"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/extended-scenes-v1/group1/q12/field-0002.npz",
+        "bytes": 510893,
+        "sha256": "f5d61451c039b026e001fadbd9035f3a5e8ce76e1c310e5655bdfe3f516603ca"
+      },
+      "errors": {
+        "nodal_force": [
+          0.0,
+          3.321107913784027e-16,
+          1.241746654104716e-16,
+          4.512564456801519e-16
+        ],
+        "stress_tensor": [
+          0.0,
+          6.90044936445298e-16,
+          5.720127613542753e-16,
+          7.39561508823837e-16
+        ],
+        "shell_membrane": [
+          0.0,
+          7.559736473051185e-16,
+          6.147828060823465e-16,
+          7.971141781285406e-16
+        ],
+        "shell_bending": [
+          0.0,
+          4.166919860047884e-16,
+          3.0830477265378836e-16,
+          4.989718688670775e-16
+        ],
+        "shell_transverse": [
+          0.0,
+          5.100259134196958e-15,
+          5.087138165259248e-15,
+          5.094823508155368e-15
+        ]
+      },
+      "radius_bitwise_equal": true,
+      "radius_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "file": "field-0110.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group4/cycle/field-0110.npz",
+        "bytes": 687612,
+        "sha256": "bb0328e2a5a74a993782bfe1203f50389bcfc996938e4275460b97a6277c95fe"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/extended-scenes-v1/group1/q12/field-0110.npz",
+        "bytes": 687518,
+        "sha256": "6423cef2b13ec5cb5ca533578af9c7815a749c52267194255760027424609fb2"
+      },
+      "errors": {
+        "nodal_force": [
+          0.00016753409204654963,
+          2.340834617931561e-16,
+          2.342797836783428e-16,
+          2.3537535327852514e-16
+        ],
+        "stress_tensor": [
+          0.00023506970119029175,
+          5.717228003064838e-16,
+          6.160630780269042e-16,
+          7.113541251605679e-16
+        ],
+        "shell_membrane": [
+          0.00014226897515665546,
+          5.993641783170128e-16,
+          6.666386044542955e-16,
+          7.711993099085003e-16
+        ],
+        "shell_bending": [
+          0.0003344032384824925,
+          3.687603004021853e-16,
+          3.0139703697448627e-16,
+          3.233608934955637e-16
+        ],
+        "shell_transverse": [
+          0.000352256800354891,
+          5.162607550252322e-15,
+          4.321115971925981e-15,
+          5.190007487817739e-15
+        ]
+      },
+      "radius_bitwise_equal": true,
+      "radius_max_relative": 0.0,
+      "passed": false
+    },
+    {
+      "file": "field-0129.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group4/cycle/field-0129.npz",
+        "bytes": 683462,
+        "sha256": "69fc28702c5a965695e0cb837c1639ccbbc9550797f38315e90aa0e40670dc17"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/extended-scenes-v1/group1/q12/field-0129.npz",
+        "bytes": 683779,
+        "sha256": "8a1092c5a3aa53d483b83cdb0c96981aef180ccef3e0831ceb35506c632a9b6b"
+      },
+      "errors": {
+        "nodal_force": [
+          0.0008477848291216859,
+          2.3455695486431525e-16,
+          2.336562251515807e-16,
+          4.4328714746846427e-16
+        ],
+        "stress_tensor": [
+          0.0008440751375701422,
+          6.257339477734901e-16,
+          6.850661999734528e-16,
+          6.741216239314875e-16
+        ],
+        "shell_membrane": [
+          0.0004188326373473631,
+          6.60398623879081e-16,
+          7.36351488346094e-16,
+          7.027411673918396e-16
+        ],
+        "shell_bending": [
+          0.0012334123677549106,
+          3.7990714212104603e-16,
+          3.8889781251640916e-16,
+          5.314649066738017e-16
+        ],
+        "shell_transverse": [
+          0.0012594377912104654,
+          4.737760509076158e-15,
+          7.289885870906863e-15,
+          6.1188116765356055e-15
+        ]
+      },
+      "radius_bitwise_equal": true,
+      "radius_max_relative": 0.0,
+      "passed": false
+    },
+    {
+      "file": "field-0179.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group4/cycle/field-0179.npz",
+        "bytes": 769158,
+        "sha256": "8cd56765e678b9aa5421c7f1bfad57f77933518cc8606bc5cd9bc909ef9f35fd"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/extended-scenes-v1/group1/q12/field-0179.npz",
+        "bytes": 768931,
+        "sha256": "93dcb85c508c36d0fecbea53b6b976f578430a114f16ab1ae68e91f55fc90662"
+      },
+      "errors": {
+        "nodal_force": [
+          0.0008009198503338229,
+          0.0005610926392135739,
+          8.808482651491447e-17,
+          6.583685393707374e-16
+        ],
+        "stress_tensor": [
+          0.0007950293287300639,
+          0.0005987836549193901,
+          5.355419637867897e-16,
+          9.06945716935363e-16
+        ],
+        "shell_membrane": [
+          0.0003838323829556995,
+          0.0003734266924284768,
+          5.799362351091723e-16,
+          9.507137406892313e-16
+        ],
+        "shell_bending": [
+          0.001163602609987722,
+          0.0008247172682739606,
+          2.935967916716598e-16,
+          7.266081227591612e-16
+        ],
+        "shell_transverse": [
+          0.0011905921022917338,
+          0.0009640873788317484,
+          4.886816329962479e-15,
+          5.6241154781614e-15
+        ]
+      },
+      "radius_bitwise_equal": false,
+      "radius_max_relative": 1.2729081177744122e-16,
+      "passed": false
+    },
+    {
+      "file": "field-0299.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group4/cycle/field-0299.npz",
+        "bytes": 916644,
+        "sha256": "39e519569a4cf8b8274ae431c88145f4f161bef1309cb7df57a331ecc38168a4"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/extended-scenes-v1/group1/q12/field-0299.npz",
+        "bytes": 916677,
+        "sha256": "d4264a9f16db02808b0e4bdab794d8e25c1dd274f57ae6170e2f28525eb50c8d"
+      },
+      "errors": {
+        "nodal_force": [
+          0.00013625386477348348,
+          0.0005740484583821452,
+          0.0002823815374358517,
+          0.00035241330601900526
+        ],
+        "stress_tensor": [
+          0.00010751748161145573,
+          0.0005267472501431272,
+          0.0002691209987821003,
+          0.0004163722398151388
+        ],
+        "shell_membrane": [
+          6.536189695724776e-05,
+          0.0003453387318036693,
+          0.00014198355917540367,
+          0.00019129371277370975
+        ],
+        "shell_bending": [
+          0.0001474500165299186,
+          0.000712480385230597,
+          0.00038494093495729725,
+          0.0006093757276291798
+        ],
+        "shell_transverse": [
+          0.0001586551345973152,
+          0.0008938254902646188,
+          0.0004380143429365617,
+          0.0005548747244846752
+        ]
+      },
+      "radius_bitwise_equal": false,
+      "radius_max_relative": 1.233764956527505e-16,
+      "passed": false
+    },
+    {
+      "file": "field-0449.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group4/cycle/field-0449.npz",
+        "bytes": 915598,
+        "sha256": "1af8cba3c77a99753f131aed1e3a52f4c67d6537801f9c20f9b3f50b54f21762"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/extended-scenes-v1/group1/q12/field-0449.npz",
+        "bytes": 915688,
+        "sha256": "9b72051373da922ea4312c0a2f7201dabae09b856f8bbe3ead1c6bfc660dfbbc"
+      },
+      "errors": {
+        "nodal_force": [
+          5.599872598059238e-05,
+          0.0005172844035593644,
+          0.00023491087714809817,
+          0.0005920979982336843
+        ],
+        "stress_tensor": [
+          6.687512581141056e-05,
+          0.0004771390369820414,
+          0.00021293241630570076,
+          0.0006478006749065355
+        ],
+        "shell_membrane": [
+          2.0519769142948816e-05,
+          0.00031137519958070127,
+          0.0001223192963722791,
+          0.00032148868718948656
+        ],
+        "shell_bending": [
+          0.00010321952334927038,
+          0.0006461225558426954,
+          0.0003000829340435267,
+          0.0009339459484961237
+        ],
+        "shell_transverse": [
+          6.955933835052502e-05,
+          0.0008058916101764241,
+          0.00036237840935226504,
+          0.0009193068245364971
+        ]
+      },
+      "radius_bitwise_equal": true,
+      "radius_max_relative": 0.0,
+      "passed": false
+    },
+    {
+      "file": "field-0599.npz",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/validation-v1/group4/cycle/field-0599.npz",
+        "bytes": 913204,
+        "sha256": "e37197c843193f8cb3a9f95f5d9b3d0fe19dbfcd7cd7d3350aebada506be0c0a"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/extended-scenes-v1/group1/q12/field-0599.npz",
+        "bytes": 913130,
+        "sha256": "b3bb29111c4d5ce83b291f30d144709d5a20ccc612f533a21908c2855071f7a6"
+      },
+      "errors": {
+        "nodal_force": [
+          0.00030654422077475764,
+          1.389519468151317e-05,
+          0.00017547259389315062,
+          0.0002726536443047322
+        ],
+        "stress_tensor": [
+          0.00020950394241853754,
+          1.8851062559388374e-05,
+          0.0002364347771060818,
+          0.00024851397250611243
+        ],
+        "shell_membrane": [
+          0.00018682897434695018,
+          9.053617623734707e-06,
+          0.00014249591196978864,
+          0.00016845234357813868
+        ],
+        "shell_bending": [
+          0.0002361221740119906,
+          2.878349031977653e-05,
+          0.0003534131825397716,
+          0.0003371303874958255
+        ],
+        "shell_transverse": [
+          0.00042873171798653997,
+          3.1162546644936996e-05,
+          0.0003960772583753967,
+          0.0005120676093356695
+        ]
+      },
+      "radius_bitwise_equal": true,
+      "radius_max_relative": 0.0,
+      "passed": false
+    }
+  ],
+  "accepted_frames": 600,
+  "peak_budget_passed": false,
+  "peak_max_scaled_error": 0.0006900631625702059,
+  "peak_max_absolute_Pa": 107.38299759337679,
+  "peak_worst_frame_env": [
+    476,
+    1
+  ]
+}

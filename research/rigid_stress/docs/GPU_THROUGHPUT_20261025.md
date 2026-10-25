@@ -1,8 +1,15 @@
 # Native DPR GPU throughput follow-up, 2026-10-25
 
 This report accompanies the [active specification](GPU_THROUGHPUT_FOLLOWUP_GOAL_20261025.md)
-and [execution record](GPU_THROUGHPUT_PROGRESS_20261025.md). Final receipts are
-still being collected; this draft does not mark the goal complete.
+and [execution record](GPU_THROUGHPUT_PROGRESS_20261025.md). The follow-up is complete within the numerical and performance scope below.
+The [requirement audit](../evidence/20261025-gpu-throughput-v1/metadata/requirements-final.json)
+and [evidence packet](../evidence/20261025-gpu-throughput-v1/README.md) retain all
+40 campaigns, 201 task outcomes and 15 failed attempts/rejected configurations.
+
+Measurements use NVIDIA RTX PRO 6000 Blackwell Server Edition GPUs (about
+95 GiB), Quadrants 1.3.3, PyTorch 2.8.0, Python 3.10.12 and the established
+Slurm image `1_26`. GPU identity, source hashes and job settings are retained
+per run. Hardware peak specifications are not used as performance evidence.
 
 ## Integrated changes and recommended configuration
 
@@ -23,6 +30,8 @@ Use FP64, quadrature 16, automatic native response selection and history_size=0
 for the measured default path. Choose `output_mode="max"` before scene build
 when only a sampled maximum is needed, or `"full"` for tensor/resultant output.
 Both volume and shell remain available. These optimizations add no public knob.
+For direct API use, initialize Genesis with `precision="64"`; setting only
+`inverse_precision="64"` does not turn the entire simulation into FP64.
 Shell output remains in-plane membrane/bending stress on its top/bottom sample
 surfaces; it does not certify the local three-dimensional contact peak.
 
@@ -186,3 +195,91 @@ volume 9.450 versus 11.808 ms. This is a module-only, per-frame synchronized
 comparison with the first three compilation frames excluded, not a claimed
 complete-scene improvement. The small-batch difference does not justify a new
 public predictor path while useful large-batch throughput regresses.
+
+The heterogeneous volume trajectory is **not admitted**: both the original v0
+and final v6 reject frame 221, environment 1, contact 0, status 3. The
+nonnegative sampled pressure fit remains unresolved at radius 3.09950899e-5 m
+and friction coefficient 0.424854643. Both retain 221 accepted frames and the
+same failing contact. This does not establish physical infeasibility. Frozen
+module measurements at frame 130 remain useful within that input scope, but
+must not be reported as a successful heterogeneous full-cycle volume rate.
+The paired shell heterogeneous cycles complete with no invalid steps.
+
+A second common-mother GPU control explicitly skips inactive mesh contributions
+on both sides of the comparison. The B1024 nearest-case recovery changes from
+0.891 to 0.501 ms for three meshes, and 1.192 to 0.668 ms for five meshes.
+At B64 the extra indirect activity checks can cost more than the zero work
+removed. The shared-recovery benefit survives the active-only comparison; it
+remains conditional on the validated planar embedding and excluded solve/load
+work. These results are retained separately from the first regular scan.
+
+The separate cold-to-steady memory pass samples the entire visible allocated
+GPU. At B8192 its maxima are 11,973/13,733 MiB for shell max/full and
+12,229/13,093 MiB for volume max/full. Initial device-used memory is zero in
+these allocations. Observed maximum sample gaps are 0.279–0.419 s, so these are
+sampled peaks, not certified instantaneous upper bounds. They include context,
+allocator and rigid-scene memory. PyTorch peak allocation alone excludes
+Quadrants and must not substitute for these measurements. These instrumented
+runs are excluded from headline latency measurements.
+
+
+## Final engine throughput and allocation inventory
+
+Final v6 results use FP64/q16/history-off and the same tiled four-condition bank.
+Independent allocations produce the table below; use the paired incremental
+table above for causal speedup claims. Complete scene includes approach,
+closure, frictional motion and release. All 36 final timing tasks pass with
+zero invalid environment-steps. Full repeat distributions remain in the packet.
+
+| B | Rigid | Volume max | Volume full | Shell max | Shell full |
+|---:|---:|---:|---:|---:|---:|
+| 4 | 2.280 | 4.901 | 5.034 | 6.271 | 6.355 |
+| 64 | 2.342 | 5.164 | 5.320 | 6.496 | 6.493 |
+| 1024 | 2.929 | 9.440 | 9.301 | 13.072 | 13.536 |
+| 8192 | 9.600 | 46.385 | 46.510 | 69.879 | 72.272 |
+
+Latencies are ms/batch-step. Final B8192 admitted environment-steps/s is volume/max 176,609, volume/full 176,135, shell/max 117,231, shell/full 113,350.
+
+Frozen loaded module, ms/batch-step:
+
+| B | Volume max | Volume full | Shell max | Shell full |
+|---:|---:|---:|---:|---:|
+| 4 | 1.037 | 1.077 | 3.852 | 3.843 |
+| 64 | 1.030 | 1.067 | 3.846 | 3.853 |
+| 1024 | 3.667 | 3.708 | 8.926 | 9.017 |
+| 8192 | 22.806 | 23.130 | 53.744 | 55.850 |
+
+The 64 distinct heterogeneous conditions vary pose, friction and phase.
+B1024 repeats that bank 16 times, rather than claiming 1024 unique conditions.
+Paired shell complete scene / frozen module, ms/batch-step:
+
+| B / output | v0 scene | v6 scene | v0 module | v6 module |
+|---|---:|---:|---:|---:|
+| 64 / max | 11.511 | 8.808 | 7.202 | 4.486 |
+| 64 / full | 11.488 | 8.954 | 7.284 | 4.486 |
+| 1024 / max | 17.849 | 14.210 | 11.543 | 8.397 |
+| 1024 / full | 18.146 | 14.617 | 11.666 | 8.497 |
+
+DPR-owned persistent allocation at B8192 (aliases counted once):
+
+| Backend/output | Shared MiB | Other bytes per environment, KiB | Total GiB |
+|---|---:|---:|---:|
+| volume/max | 64.557 | 224.507 | 1.817 |
+| volume/full | 64.557 | 329.507 | 2.637 |
+| shell/max | 42.212 | 195.202 | 1.566 |
+| shell/full | 42.212 | 412.702 | 3.265 |
+
+Shared corresponds to immutable native buffers; per-environment totals include
+mutable load, recovery, acceptance and requested output storage. This inventory
+is for the stress feature, not the entire rigid scene. The separate sampled
+device peaks above include the whole process/context and temporary preparation.
+
+Cold B64/full scene construction including build JIT was volume 146.45 s, shell 103.98 s.
+The native operator/factor/response breakdown is recorded separately from
+first-step warmup and steady-state timing. No cold preparation cost is hidden
+inside or amortized into the headline steady-state rates.
+
+B64 is useful for lower batch latency; B1024 and B8192 increase aggregate
+throughput at higher memory and latency. B8192 is the largest batch tested,
+not a claim of a global hardware optimum. Backend timings are not an accuracy
+ranking between shell in-plane and volume stress.

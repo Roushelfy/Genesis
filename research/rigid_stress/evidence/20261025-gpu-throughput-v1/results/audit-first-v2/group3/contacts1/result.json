@@ -1,0 +1,74 @@
+{
+  "passed": true,
+  "complete": true,
+  "rows": [
+    {
+      "name": "flat",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/contacts-v8/group1/gpu-moments/flat-fields.npz",
+        "bytes": 24666,
+        "sha256": "80a202f2a469a368823fddc5eab2c8372a04077aa469ed73efac96e3bca8b5a5"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/projection-contacts-v1/group1/gpu-moments/flat-fields.npz",
+        "bytes": 24666,
+        "sha256": "c9ab2f3a273c4235ccf26b87f3922b50e7ff50214255fb4eae0936467a33635a"
+      },
+      "errors": {
+        "actual_load": 6.339065395818771e-20,
+        "actual_field": 0.0
+      }
+    },
+    {
+      "name": "warped",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/contacts-v8/group1/gpu-moments/warped-fields.npz",
+        "bytes": 24666,
+        "sha256": "6dbcdfbff1366b2d81dd322bf3066ffeb4108ae2a2ab73e6f6acff14c31cc2a9"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/projection-contacts-v1/group1/gpu-moments/warped-fields.npz",
+        "bytes": 24666,
+        "sha256": "e3de03eeddf5446a8c53f9ca51b2bb3a9f237149e78aee8adf12b07d71d042a5"
+      },
+      "errors": {
+        "actual_load": 2.5383083596003004e-16,
+        "actual_field": 6.899055677385573e-16
+      }
+    },
+    {
+      "name": "egg",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/contacts-v8/group1/gpu-moments/egg-fields.npz",
+        "bytes": 126618,
+        "sha256": "0fdcc530fef605e08fa028bdc56134599e76fa124ab451c0945e61e068625351"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/projection-contacts-v1/group1/gpu-moments/egg-fields.npz",
+        "bytes": 126618,
+        "sha256": "d61d098dd3afbb5fd533fd176557e8c585698a9161e9a0fed4adc9072ccf8959"
+      },
+      "errors": {
+        "actual_load": 1.2539272408125194e-16,
+        "actual_field": 9.413373576623635e-16
+      }
+    },
+    {
+      "name": "valley",
+      "before": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261024-native-shell-dpr/contacts-v8/group1/gpu-moments/valley-fields.npz",
+        "bytes": 24666,
+        "sha256": "7a8df4debab6627d4731c019cb8e6e5c8dd177e48549d113f5830eed78a17606"
+      },
+      "after": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/projection-contacts-v1/group1/gpu-moments/valley-fields.npz",
+        "bytes": 24666,
+        "sha256": "87ce607af39efbd7310bb2fd43d8dcc710efd0dc4605ea2e94fd0f2891a216dd"
+      },
+      "errors": {
+        "actual_load": 1.9829880494350728e-21,
+        "actual_field": 0.0
+      }
+    }
+  ]
+}
