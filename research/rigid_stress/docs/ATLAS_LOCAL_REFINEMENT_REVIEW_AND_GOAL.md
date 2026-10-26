@@ -6,6 +6,34 @@ The previous response-partition experiments remain valid evidence for their
 implemented scope. Their negative timings do not close this spatial
 approximation route.
 
+## Primary executable CPU reference
+
+Use the new [cpu_repro implementation](../atlas_study/cpu_repro/README.md)
+and its [measured report](../atlas_study/cpu_repro/REPORT_ZH.md) as the primary
+algorithm and discrete numerical reference for this follow-up. The source
+snapshot is commit
+[`a10c5abe`](https://github.com/Roushelfy/Genesis/tree/a10c5abe3b5bc3c5caa57d3d4d9dadab2b277ade/research/rigid_stress/atlas_study/cpu_repro).
+The new executable reconstruction is named `cpu_repro`; it reconstructs the
+old `cpu_next` report, whose original source remains unavailable.
+
+Start with [model.py](../atlas_study/cpu_repro/model.py) for the genuine
+`T_i=[P,B_i]` feature spaces and smaller `K_i`,
+[selection.py](../atlas_study/cpu_repro/selection.py) for source-wise nearest
+and narrow-transition selection, and
+[pipeline.py](../atlas_study/cpu_repro/pipeline.py) for same-feature RHS
+aggregation, batched solves and merged displacement/stress recovery.
+The earlier independent-mesh examples in the
+[reference guide](ATLAS_CPU_REFERENCE_GUIDE.md) are supplementary controls.
+
+This reconstruction qualifies a 5,196-DOF shell CPU model with prescribed
+material-cap loads. It does not already qualify volume FEM, arbitrary
+nonconvex mapping or native GPU throughput. Adapt its construction to both
+native backends while preserving the existing pressure/radius/friction
+semantics. Use the new measured evidence, including the conditional/negative
+history results, rather than treating the old timing claims as guaranteed
+gains. Start with focused low-model numerical controls; rerunning the whole
+CPU study or a physical-convergence campaign is not a prerequisite.
+
 ## Review judgment
 
 Review of delivery `2d70f353466a9a31888c6254bd3e5d7ba9e0716e` confirms
@@ -165,7 +193,8 @@ both backends and numerical plus tuned end-to-end accuracy/cost decisions.
 A measured negative result is acceptable after testing this actual mechanism.
 The previous full-response partition's negative result cannot substitute for it.
 
-Use the [CPU reference guide](ATLAS_CPU_REFERENCE_GUIDE.md) for existing
-source and the distinction between published independent meshes and the
-later common-mother construction. Preserve all earlier positive/negative
+Start from [cpu_repro](../atlas_study/cpu_repro/README.md) and its
+[new measured results](../atlas_study/cpu_repro/REPORT_ZH.md). Use the
+[CPU reference guide](ATLAS_CPU_REFERENCE_GUIDE.md) for the earlier
+supplementary controls and provenance. Preserve all earlier positive/negative
 evidence, source identities and storage policies.

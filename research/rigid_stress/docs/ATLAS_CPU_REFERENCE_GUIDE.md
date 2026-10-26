@@ -1,11 +1,19 @@
 # CPU source reference for the local-refinement atlas
 
-The earlier CPU code is already present in
-[`atlas_study/`](../atlas_study/README.md). This guide links the actual source
-rather than duplicating a second implementation. It supports the
-[active review/goal](ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md).
+The primary executable reference for the
+[active review/goal](ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md) is the new
+[cpu_repro reconstruction](../atlas_study/cpu_repro/README.md), pinned at
+[`a10c5abe`](https://github.com/Roushelfy/Genesis/tree/a10c5abe3b5bc3c5caa57d3d4d9dadab2b277ade/research/rigid_stress/atlas_study/cpu_repro).
+Read its [measured report](../atlas_study/cpu_repro/REPORT_ZH.md) first.
+It implements the shared-coarse/local-enrichment construction on the
+5,196-DOF shell CPU model. The directory is named `cpu_repro`; the original
+`cpu_next` source was not recovered. Native shell/volume adaptation and GPU
+accuracy/cost decisions remain part of the active goal.
 
-## Published reference implementations
+The older [`atlas_study/`](../atlas_study/README.md) implementations below
+provide supplementary geometry, refinement and numerical controls.
+
+## Earlier supplementary reference implementations
 
 | Source | What is implemented | Migration boundary |
 | --- | --- | --- |
