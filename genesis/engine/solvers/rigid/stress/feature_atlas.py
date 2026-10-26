@@ -89,6 +89,12 @@ class FeatureAtlasMetadata:
     response_bytes: int = 0
     space_kind: Literal["local", "coarse"] = "local"
     shell_bending: bool = False
+    center_mode: str = "farthest_point"
+    selection: str = "legacy"
+    narrow_fraction: float = 0.12
+    construction: str = "native_material_graph_control"
+    reduced_feature_groups: int = 0
+    full_size_feature_groups: int = 0
     parent_residual_norm_space: Literal["source_spaces"] = "source_spaces"
 
 
@@ -131,6 +137,9 @@ class FeatureAtlas:
             options.atlas_transition,
             options.atlas_core_scale,
             options.atlas_halo,
+            center_mode=options.atlas_center_mode,
+            selection=options.atlas_selection,
+            narrow_fraction=options.atlas_narrow_fraction,
         )
         if options.atlas_space == "coarse":
             if options.atlas_regions != 1:
@@ -273,6 +282,14 @@ class FeatureAtlas:
             response_bytes=response_bytes,
             space_kind=options.atlas_space,
             shell_bending=options.atlas_shell_bending,
+            center_mode=options.atlas_center_mode,
+            selection=options.atlas_selection,
+            narrow_fraction=options.atlas_narrow_fraction,
+            construction="native_icosahedral_graph_adaptation"
+            if options.atlas_center_mode == "icosahedral"
+            else "native_farthest_point_control",
+            reduced_feature_groups=sum(group.blocks < n_nodes for group in group_metadata[1:]),
+            full_size_feature_groups=sum(group.blocks == n_nodes for group in group_metadata[1:]),
         )
         self.inventory = FeatureAtlasInventory(
             blocks=V(dtype=gs.qd_int, shape=(n_groups,)),

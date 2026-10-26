@@ -1,4 +1,10 @@
-"""Material-graph feature selection and complete finite-footprint coverage."""
+"""Native material-graph adaptation with complete finite-DPR coverage.
+
+The fixed twelve directions seed this native graph after a QD bbox-centered,
+axis-radius-scaled mapping. Graph distances, native coarse/local spaces, DPR
+loads and coverage differ from the CPU material-cap construction. The legacy
+farthest-point/cubic selector remains an explicit historical control.
+"""
 
 from dataclasses import dataclass
 from typing import ClassVar
@@ -23,10 +29,16 @@ class FeatureRegionInfo:
     starts: qd.Tensor
     neighbors: qd.Tensor
     positions: qd.Tensor
+    directions: qd.Tensor
+    centers: qd.Tensor
+    mapping_center: qd.Tensor
+    mapping_radius: qd.Tensor
+    boundary_mask: qd.Tensor
     elements: qd.Tensor
     distances: qd.Tensor
     seeds: qd.Tensor
     radii: qd.Tensor
+    support_radii: qd.Tensor
     coverage: qd.Tensor
     face_coverage: qd.Tensor
     force_rows: qd.Tensor
@@ -44,8 +56,31 @@ class FeatureRegionState:
 
 class FeatureRegions:
     def __init__(
-        self, model, basis, contacts: StressContactState, n_features: int, width: float, core_scale: float, halo: int
+        self,
+        model,
+        basis,
+        contacts: StressContactState,
+        n_features: int,
+        width: float,
+        core_scale: float,
+        halo: int,
+        *,
+        center_mode: str = "farthest_point",
+        selection: str = "legacy",
+        narrow_fraction: float = 0.12,
     ):
+        if center_mode not in ("farthest_point", "icosahedral"):
+            gs.raise_exception("Native atlas center_mode must be farthest_point or icosahedral.")
+        if selection not in ("legacy", "continuous", "nearest", "narrow") or not 0 < narrow_fraction <= 1:
+            gs.raise_exception("Native atlas selection and narrow_fraction are invalid.")
+        if center_mode == "icosahedral" and (n_features != 12 or selection == "legacy"):
+            gs.raise_exception(
+                "The fixed native adaptation requires twelve centers and continuous/nearest/narrow selection."
+            )
+        self.center_mode = center_mode
+        self.selection = selection
+        self.selection_code = ("legacy", "continuous", "nearest", "narrow").index(selection)
+        self.narrow_fraction = narrow_fraction
         n_physical = len(basis.parent_nodes)
         elements = qd_to_numpy(model.shell.quads if model.n_shell_elements else model.info.elements)
         pairs = np.stack(np.broadcast_arrays(elements[:, :, None], elements[:, None, :]), axis=-1)
@@ -63,10 +98,16 @@ class FeatureRegions:
             starts=V(dtype=gs.qd_int, shape=(n_physical + 1,)),
             neighbors=V(dtype=gs.qd_int, shape=(len(pairs),)),
             positions=V_VEC(3, dtype=gs.qd_float, shape=(n_physical,)),
+            directions=V_VEC(3, dtype=gs.qd_float, shape=(n_physical,)),
+            centers=V_VEC(3, dtype=gs.qd_float, shape=(n_features,)),
+            mapping_center=V_VEC(3, dtype=gs.qd_float, shape=()),
+            mapping_radius=V_VEC(3, dtype=gs.qd_float, shape=()),
+            boundary_mask=V(dtype=gs.qd_int, shape=(n_physical,)),
             elements=V(dtype=gs.qd_int, shape=elements.shape),
             distances=V(dtype=gs.qd_float, shape=(n_features, n_physical)),
             seeds=V(dtype=gs.qd_int, shape=(n_features,)),
             radii=V(dtype=gs.qd_float, shape=(n_features,)),
+            support_radii=V(dtype=gs.qd_float, shape=(n_features,)),
             coverage=V(dtype=gs.qd_bool, shape=(n_features, n_physical)),
             face_coverage=V(dtype=gs.qd_bool, shape=(n_features, model.load_info.surface_nodes.shape[0])),
             force_rows=V(dtype=gs.qd_int, shape=(model.info.vertices.shape[0],)),
@@ -82,8 +123,14 @@ class FeatureRegions:
         coarse = V(dtype=gs.qd_int, shape=(n_physical,))
         coarse.from_numpy((basis.coarse_index >= 0).astype(gs.np_int))
         kernel_region_geometry(model.info, self.info, basis.blocks_per_node)
-        kernel_region_distances(self.info, visited)
-        kernel_region_elements(width, core_scale, self.info, active)
+        kernel_region_mapping(self.info)
+        if center_mode == "icosahedral":
+            kernel_region_icosahedron(self.info)
+        kernel_region_distances(self.info, visited, center_mode == "icosahedral")
+        seeds = qd_to_numpy(self.info.seeds)
+        if (seeds < 0).any() or len(np.unique(seeds)) != n_features:
+            gs.raise_exception("Native feature centers did not map to distinct connected graph seeds.")
+        kernel_region_elements(width, core_scale, self.info, active, selection != "legacy")
         for _ in range(halo):
             kernel_region_halo_nodes(self.info, active, support)
             kernel_region_halo_elements(self.info, active, support)
@@ -111,31 +158,101 @@ class FeatureRegions:
         cooperative: bool = True,
     ):
         """Select complete footprints with cooperative CUDA or scalar comparison scheduling."""
-        kernel_select(width, contacts, load_info, surface, self.info, self.state, self.info.seeds.shape[0], cooperative)
+        kernel_select(
+            width,
+            contacts,
+            load_info,
+            surface,
+            self.info,
+            self.state,
+            self.info.seeds.shape[0],
+            cooperative,
+            self.selection_code,
+            self.narrow_fraction,
+        )
 
 
 @qd.kernel
 def kernel_region_geometry(mother: StressInfo, regions: FeatureRegionInfo, blocks_per_node: int):
     for i_n in range(regions.positions.shape[0]):
         regions.positions[i_n] = mother.vertices[blocks_per_node * i_n]
+        regions.boundary_mask[i_n] = 0
     for i_n in range(regions.force_rows.shape[0]):
         regions.force_rows[i_n] = -1
     for j_n in range(regions.boundary_nodes.shape[0]):
         i_n = regions.boundary_nodes[j_n]
         regions.force_rows[i_n] = j_n
+        qd.atomic_max(regions.boundary_mask[i_n // blocks_per_node], 1)
 
 
 @qd.kernel
-def kernel_region_distances(regions: FeatureRegionInfo, visited: qd.Tensor):
+def kernel_region_mapping(regions: FeatureRegionInfo):
+    """Map actual load-boundary bbox positions to directions, entirely in QD."""
+    for _ in range(1):
+        low, high = qd.Vector([1e30, 1e30, 1e30]), qd.Vector([-1e30, -1e30, -1e30])
+        for node in range(regions.positions.shape[0]):
+            if regions.boundary_mask[node]:
+                low = qd.min(low, regions.positions[node])
+                high = qd.max(high, regions.positions[node])
+        regions.mapping_center[None] = 0.5 * (low + high)
+        regions.mapping_radius[None] = qd.max(0.5 * (high - low), 1e-12)
+    for node in range(regions.positions.shape[0]):
+        vector = (regions.positions[node] - regions.mapping_center[None]) / regions.mapping_radius[None]
+        regions.directions[node] = vector / qd.max(vector.norm(), 1e-30)
+
+
+@qd.kernel
+def kernel_region_icosahedron(regions: FeatureRegionInfo):
+    """CPU-order twelve direction identities; their native spaces remain distinct."""
+    for index in range(regions.centers.shape[0]):
+        golden = 0.5 * (1.0 + qd.sqrt(5.0))
+        sign = qd.cast(2 * (index % 2) - 1, gs.qd_float)
+        center = qd.Vector.zero(gs.qd_float, 3)
+        if index < 2:
+            center = qd.Vector([-golden, 0.0, sign])
+        elif index < 4:
+            center = qd.Vector([-1.0, sign * golden, 0.0])
+        elif index < 6:
+            center = qd.Vector([0.0, -1.0, sign * golden])
+        elif index < 8:
+            center = qd.Vector([0.0, 1.0, sign * golden])
+        elif index < 10:
+            center = qd.Vector([1.0, sign * golden, 0.0])
+        else:
+            center = qd.Vector([golden, 0.0, sign])
+        regions.centers[index] = center / qd.sqrt(1.0 + golden * golden)
+
+
+@qd.kernel
+def kernel_region_distances(regions: FeatureRegionInfo, visited: qd.Tensor, fixed_centers: qd.template() = False):
     for _ in range(1):
         for i_f in range(regions.seeds.shape[0]):
             seed, farthest = -1, gs.qd_float(-1.0)
-            for i_n in range(regions.positions.shape[0]):
-                nearest = gs.qd_float(1e30)
-                for previous in range(i_f):
-                    nearest = qd.min(nearest, regions.distances[previous, i_n])
-                if regions.starts[i_n + 1] > regions.starts[i_n] and nearest > farthest:
-                    seed, farthest = i_n, nearest
+            if qd.static(fixed_centers):
+                # Prefer physical load-boundary nodes and retain graph topology:
+                # nearby points on another nonconvex sheet do not create edges.
+                farthest = -2.0
+                for i_n in range(regions.positions.shape[0]):
+                    used = False
+                    for previous in range(i_f):
+                        used = used or regions.seeds[previous] == i_n
+                    score = regions.centers[i_f].dot(regions.directions[i_n])
+                    if (
+                        regions.boundary_mask[i_n]
+                        and regions.starts[i_n + 1] > regions.starts[i_n]
+                        and not used
+                        and score > farthest
+                    ):
+                        seed, farthest = i_n, score
+            else:
+                for i_n in range(regions.positions.shape[0]):
+                    nearest = gs.qd_float(1e30)
+                    for previous in range(i_f):
+                        nearest = qd.min(nearest, regions.distances[previous, i_n])
+                    if regions.starts[i_n + 1] > regions.starts[i_n] and nearest > farthest:
+                        seed, farthest = i_n, nearest
+                if seed >= 0:
+                    regions.centers[i_f] = regions.directions[seed]
             regions.seeds[i_f] = seed
             for i_n in range(regions.positions.shape[0]):
                 regions.distances[i_f, i_n] = qd.select(i_n == seed, 0.0, 1e30)
@@ -154,7 +271,13 @@ def kernel_region_distances(regions: FeatureRegionInfo, visited: qd.Tensor):
 
 
 @qd.kernel
-def kernel_region_elements(width: float, scale: float, regions: FeatureRegionInfo, active: qd.Tensor):
+def kernel_region_elements(
+    width: float,
+    scale: float,
+    regions: FeatureRegionInfo,
+    active: qd.Tensor,
+    compact_support: qd.template() = False,
+):
     for i_f in range(regions.seeds.shape[0]):
         radius, longest = gs.qd_float(0.0), gs.qd_float(0.0)
         for i_n in range(regions.positions.shape[0]):
@@ -167,7 +290,11 @@ def kernel_region_elements(width: float, scale: float, regions: FeatureRegionInf
             for i_e in range(regions.starts[i_n], regions.starts[i_n + 1]):
                 other = regions.neighbors[i_e]
                 longest = qd.max(longest, (regions.positions[other] - regions.positions[i_n]).norm())
-        regions.radii[i_f] = scale * radius + 2.0 * width + longest
+        regions.support_radii[i_f] = 1.2 * qd.max(radius, 1e-12)
+        core_radius = radius
+        if qd.static(compact_support):
+            core_radius = regions.support_radii[i_f]
+        regions.radii[i_f] = scale * core_radius + 2.0 * width + longest
     for i_f, i_e in qd.ndrange(active.shape[0], active.shape[1]):
         inside = True
         for i_a in range(regions.elements.shape[1]):
@@ -255,6 +382,8 @@ def kernel_select(
     state: FeatureRegionState,
     n_features: qd.template(),
     cooperative: qd.template(),
+    selection: int = 0,
+    narrow_fraction: float = 0.12,
 ):
     for i_n, i_g, i_b in qd.ndrange(state.force.shape[0], state.force.shape[1], state.force.shape[2]):
         state.force[i_n, i_g, i_b] = qd.Vector.zero(gs.qd_float, 3)
@@ -266,6 +395,8 @@ def kernel_select(
         i_c, i_b = i_pair // contacts.valid.shape[1], i_pair % contacts.valid.shape[1]
         if lane == 0:
             state.fallback[i_c, i_b] = False
+            for i_g in range(n_features + 1):
+                state.weights[i_g, i_c, i_b] = 0.0
         if contacts.valid[i_c, i_b] and contacts.status[i_c, i_b] == 0:
             weights = qd.Vector.zero(gs.qd_float, n_features)
             i_f = contacts.anchor_face[i_c, i_b]
@@ -287,7 +418,7 @@ def kernel_select(
                     local = surface.face_dual[i_f] @ (contacts.center[i_c, i_b] - surface.face_origin[i_f])
                     shape = qd.Vector([1.0 - local[0] - local[1], local[0], local[1], 0.0])
                     regular = shape.min() >= -2e-12
-            nearest = gs.qd_float(1e30)
+            nearest, nearest_index = gs.qd_float(1e30), 0
             for i_feature in range(atlas.seeds.shape[0]):
                 distance = gs.qd_float(0.0)
                 if regular:
@@ -296,14 +427,25 @@ def kernel_select(
                 else:
                     distance = 1e30
                 weights[i_feature] = distance
-                nearest = qd.min(nearest, distance)
+                if distance < nearest:
+                    nearest, nearest_index = distance, i_feature
             total = gs.qd_float(0.0)
             for i_feature in range(atlas.seeds.shape[0]):
                 distance = weights[i_feature]
-                taper = qd.select(distance <= nearest, 1.0, 0.0)
-                if width > 0.0:
-                    taper = qd.max(0.0, 1.0 - (distance - nearest) / width)
-                weight = qd.select(distance < 1e29, taper * taper * (3.0 - 2.0 * taper), 0.0)
+                weight = gs.qd_float(0.0)
+                if selection == 0:
+                    taper = qd.select(distance <= nearest, 1.0, 0.0)
+                    if width > 0.0:
+                        taper = qd.max(0.0, 1.0 - (distance - nearest) / width)
+                    weight = qd.select(distance < 1e29, taper * taper * (3.0 - 2.0 * taper), 0.0)
+                elif selection == 2:
+                    weight = qd.cast(i_feature == nearest_index and distance < 1e29, gs.qd_float)
+                else:
+                    weight = func_region_wendland(distance / atlas.support_radii[i_feature])
+                    if selection == 3:
+                        weight *= func_region_wendland(
+                            (distance - nearest) / (narrow_fraction * atlas.support_radii[i_feature])
+                        )
                 weights[i_feature] = weight
                 total += weight
             clearance = qd.Vector.zero(gs.qd_float, n_features)
@@ -349,3 +491,9 @@ def kernel_select(
                 mother_weight = qd.select(fully_covered, 0.0, qd.max(0.0, 1.0 - weight_sum))
                 state.weights[0, i_c, i_b] = mother_weight
                 state.fallback[i_c, i_b] = mother_weight > 0.0
+
+
+@qd.func
+def func_region_wendland(distance: float):
+    remainder = qd.max(1.0 - distance, 0.0)
+    return remainder**4 * (1.0 + 4.0 * distance)

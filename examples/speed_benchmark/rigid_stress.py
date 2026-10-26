@@ -503,6 +503,9 @@ def main() -> None:
     parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
     parser.add_argument("--atlas-regions", type=int, default=0)
     parser.add_argument("--atlas-basis", type=Path)
+    parser.add_argument("--atlas-center-mode", choices=("farthest_point", "icosahedral"), default="farthest_point")
+    parser.add_argument("--atlas-selection", choices=("legacy", "continuous", "nearest", "narrow"), default="legacy")
+    parser.add_argument("--atlas-narrow-fraction", type=float, default=0.12)
     parser.add_argument("--atlas-core-scale", type=float, default=1.0)
     parser.add_argument("--atlas-halo", type=int, default=1)
     parser.add_argument("--atlas-transition", type=float, default=0.003)
@@ -535,6 +538,14 @@ def main() -> None:
     )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    if (
+        args.atlas_regions
+        and args.atlas_center_mode == "icosahedral"
+        and (args.atlas_regions != 12 or args.atlas_selection == "legacy")
+    ):
+        parser.error("The fixed native adaptation needs 12 regions and continuous/nearest/narrow selection.")
+    if not 0 < args.atlas_narrow_fraction <= 1:
+        parser.error("atlas-narrow-fraction must lie in (0,1].")
     if args.trace and args.trace_steps <= 0:
         parser.error("Trace steps must be positive.")
     if args.trajectory_metrics and args.scope in ("profile", "recovery"):
@@ -595,6 +606,9 @@ def main() -> None:
         public_defaults=args.public_default_stress,
         atlas_regions=args.atlas_regions,
         atlas_basis=args.atlas_basis,
+        atlas_center_mode=args.atlas_center_mode,
+        atlas_selection=args.atlas_selection,
+        atlas_narrow_fraction=args.atlas_narrow_fraction,
         atlas_core_scale=args.atlas_core_scale,
         atlas_halo=args.atlas_halo,
         atlas_transition=args.atlas_transition,
@@ -719,6 +733,9 @@ def main() -> None:
             "pressure_quadrature": args.pressure_quadrature,
             "atlas_regions": args.atlas_regions,
             "atlas_basis": str(args.atlas_basis) if args.atlas_basis is not None else None,
+            "atlas_center_mode": args.atlas_center_mode,
+            "atlas_selection": args.atlas_selection,
+            "atlas_narrow_fraction": args.atlas_narrow_fraction,
             "atlas_core_scale": args.atlas_core_scale,
             "atlas_halo": args.atlas_halo,
             "atlas_transition": args.atlas_transition,

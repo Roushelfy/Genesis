@@ -15,6 +15,12 @@ from genesis.utils.misc import qd_to_numpy
 from .artifacts import file_id, runtime_identity, write_json
 from .check_local_feature_spaces import block_matrix, source_parents
 from .check_native_atlas import NativeLifecycle
+from .native_adaptation_options import (
+    add_native_atlas_arguments,
+    native_atlas_options,
+    validate_native_atlas_arguments,
+    weighted_resultant_error,
+)
 
 
 @qd.kernel
@@ -45,7 +51,7 @@ def main():
     parser.add_argument("--envs", type=int, default=4)
     parser.add_argument("--level", type=int, choices=(1, 2), default=1)
     parser.add_argument("--steps", type=int, default=600)
-    parser.add_argument("--regions", type=int, default=3)
+    parser.add_argument("--regions", type=int, default=12)
     parser.add_argument("--core-scale", type=float, default=1.0)
     parser.add_argument("--halo", type=int, default=0)
     parser.add_argument("--transition", type=float, default=0.003)
@@ -57,7 +63,9 @@ def main():
     parser.add_argument("--lifecycle", action="store_true")
     parser.add_argument("--field-steps", nargs="*", type=int, default=(129, 221, 400, 599))
     parser.add_argument("--output", type=Path, required=True)
+    add_native_atlas_arguments(parser)
     args = parser.parse_args()
+    validate_native_atlas_arguments(parser, args, args.regions)
     args.output.mkdir(parents=True, exist_ok=False)
     gs.init(backend=gs.cuda, precision="64", logging_level="warning")
     result = dict(
@@ -104,6 +112,7 @@ def main():
         atlas_space=args.space,
         atlas_shell_bending=args.shell_bending,
         inverse_max_bytes=512 * 1024 * 1024,
+        **native_atlas_options(args),
     )
     entry = workload.scene.rigid_solver.stress_recovery.links[0]
     atlas = entry.feature_atlas
@@ -172,11 +181,20 @@ def main():
                 value = relative_per_environment(actual, wanted)
                 per_errors[name] = value.tolist()
                 errors[name] = float(value.max())
+                weighted = weighted_resultant_error(
+                    np, actual, wanted, qd_to_numpy(entry.model.shell.weights), tensor=name != "transverse_resultant"
+                )
+                per_errors[f"weighted_{name}"] = weighted.tolist()
+                errors[f"weighted_{name}"] = float(weighted.max())
         accepted = errors["stress_tensor"] <= 0.10 and errors["peak"] <= 0.05 and errors["grouped_load"] <= 1e-10
         if args.stress_backend == "shell":
             accepted = (
                 accepted
-                and max(errors[name] for name in ("membrane_resultant", "bending_resultant", "transverse_resultant"))
+                and max(
+                    errors[prefix + name]
+                    for name in ("membrane_resultant", "bending_resultant", "transverse_resultant")
+                    for prefix in ("", "weighted_")
+                )
                 <= 0.10
             )
         all_passed = all_passed and accepted
@@ -193,6 +211,7 @@ def main():
             mother_spatial_residual=mother_relative.tolist(),
             feature_numerical_residual_norm=np.sqrt(qd_to_numpy(atlas.state.residual_norm_squared)).tolist(),
             loaded=int(loaded.sum()),
+            loaded_environments=loaded.any(axis=1).tolist(),
             coverage_fallbacks=int((loaded & fallback).sum()),
             active_groups=int(active[1:].sum()),
             active_reduced_groups=int(active[1:][reduced].sum()),
@@ -223,9 +242,25 @@ def main():
         and result["covered_contacts"] > 0
         and result["active_reduced_groups"] > 0
     )
-    result.update(complete=True, passed=bool(all_passed))
+    field_observations = [
+        value
+        for row in result["rows"]
+        for value, loaded in zip(
+            row["per_environment_errors"]["stress_tensor"], row["loaded_environments"], strict=True
+        )
+        if loaded
+    ]
+    mean_field = float(np.mean(field_observations)) if field_observations else 0.0
+    result.update(
+        complete=True,
+        passed=bool(all_passed and mean_field <= 0.05),
+        mean_loaded_field_error=mean_field,
+        mean_field_budget=0.05,
+        mean_population="loaded environment-frames; releases excluded",
+        resultant_metric="Original Euclidean gates plus area-weighted Frobenius N/M and vector Q; both retain the 10% limit.",
+    )
     write_json(args.output / "result.json", result)
-    assert all_passed, (
+    assert result["passed"], (
         "Combined fields exceed the predeclared spatial/load budgets; preserve this rejected configuration."
     )
 

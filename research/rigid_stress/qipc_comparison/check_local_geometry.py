@@ -27,6 +27,12 @@ from genesis.utils.array_class import V_VEC
 from genesis.utils.misc import qd_to_numpy
 
 from .artifacts import file_id, runtime_identity, write_json
+from .native_adaptation_options import (
+    add_native_atlas_arguments,
+    native_atlas_options,
+    validate_native_atlas_arguments,
+    weighted_resultant_error,
+)
 from .check_local_feature_spaces import source_parents
 from .voxel_mesh import voxel_mesh
 
@@ -227,6 +233,7 @@ class GeometryControl:
         self.reference_options = atlas.options.model_copy(update={"atlas_regions": 0})
         self.boundary = qd_to_numpy(atlas.regions.info.boundary_nodes, copy=True)
         self.base_radius = qd_to_numpy(contacts.radius, copy=True)
+        self.support_radii = qd_to_numpy(atlas.regions.info.support_radii, copy=True)
         if model.n_shell_elements:
             self.sample_weights = np.repeat(qd_to_numpy(model.shell.weights), 2, axis=0) / 2
             # Match shell_operators.func_gauss and the output i_q index exactly.
@@ -256,6 +263,27 @@ class GeometryControl:
                 ("bending_resultant", self.state.bending_resultant, self.reference.bending_resultant),
                 ("transverse_resultant", self.state.transverse_resultant, self.reference.transverse_resultant),
             )
+
+    def nominal_weights(self, distances):
+        """Untimed probe oracle for the declared native graph selector."""
+        minimum = distances.min()
+        selection = self.atlas.options.atlas_selection
+        if selection == "nearest":
+            weights = np.zeros_like(distances)
+            weights[np.argmin(distances)] = 1.0
+            return weights
+        if selection == "legacy":
+            width = self.atlas.options.atlas_transition
+            taper = (distances == minimum).astype(float)
+            if width > 0:
+                taper = np.maximum(0.0, 1.0 - (distances - minimum) / width)
+            return taper * taper * (3.0 - 2.0 * taper)
+        scaled = distances / self.support_radii
+        weights = np.maximum(1.0 - scaled, 0.0) ** 4 * (1.0 + 4.0 * scaled)
+        if selection == "narrow":
+            gap = (distances - minimum) / (self.atlas.options.atlas_narrow_fraction * self.support_radii)
+            weights *= np.maximum(1.0 - gap, 0.0) ** 4 * (1.0 + 4.0 * gap)
+        return weights
 
     def inputs(self, sites, *, sign=1, valid=None, omega=None, balanced=False):
         n_contacts, n_envs = self.contacts.valid.shape
@@ -321,6 +349,15 @@ class GeometryControl:
             actual["stress_tensor"], expected["stress_tensor"], self.sample_weights
         ).tolist()
         errors["grouped_load"] = load_error.tolist()
+        if self.model.n_shell_elements:
+            for field, _, _ in self.field_bindings[3:]:
+                errors[f"weighted_{field}"] = weighted_resultant_error(
+                    np,
+                    actual[field],
+                    expected[field],
+                    qd_to_numpy(self.model.shell.weights),
+                    tensor=field != "transverse_resultant",
+                ).tolist()
         group_checks = []
         active = qd_to_numpy(self.atlas.state.active, copy=True).astype(bool)
         for i_g, group in enumerate([None, *self.atlas.groups]):
@@ -385,7 +422,11 @@ class GeometryControl:
         )
         spatial = max(errors["stress_tensor"]) <= 0.10 and max(errors["peak"]) <= 0.05
         if self.model.n_shell_elements:
-            spatial = spatial and all(max(errors[name]) <= 0.10 for name, _, _ in self.field_bindings[3:])
+            spatial = spatial and all(
+                max(errors[prefix + name]) <= 0.10
+                for name, _, _ in self.field_bindings[3:]
+                for prefix in ("", "weighted_")
+            )
         row = dict(
             name=name,
             category=category,
@@ -399,6 +440,7 @@ class GeometryControl:
             source_numerical_checks=group_checks,
             mother_spatial_residual_relative=mother_relative.tolist(),
             loaded=int(loaded.sum()),
+            loaded_environments=loaded.any(axis=0).tolist(),
             fine_contributors=int(np.count_nonzero(selected[1:] > 1e-14, axis=0).max()),
             fine_contributors_per_contact=np.count_nonzero(selected[1:] > 1e-14, axis=0).tolist(),
             mother_weight_per_contact=(weights[0] * loaded).tolist(),
@@ -512,7 +554,7 @@ class GeometryControl:
                         local = shape[1:]
                     point, _, _, shape = surface_point(self.vertices, face, local)
                     d = distances[:, nodes[i_f]] @ shape
-                    nominal = self.atlas.options.atlas_transition > d[feature] - d.min() or d[feature] == d.min()
+                    nominal = self.nominal_weights(d)[feature] > 0
                     if nominal and np.linalg.norm(point - self.vertices[vertex]) < 0.5 * radius:
                         footprint = (i_f, local.copy())
                         self.result["partial_footprint_probe"] = dict(
@@ -539,12 +581,15 @@ class GeometryControl:
             junction, footprint, best_gap, distances, coverage, nodes, coordinates
         )
         uncovered = np.flatnonzero(~coverage.any(axis=0))
+        _point, _normal, _scale, junction_shape = surface_point(self.vertices, self.faces[junction[0]], junction[1])
+        junction_distances = distances[:, nodes[junction[0]]] @ junction_shape
         self.result["junction_probe"] = dict(
             face=int(junction[0]),
             local=junction[1].tolist(),
             third_minus_first_distance_m=best_gap,
             transition_m=self.atlas.options.atlas_transition,
-            nominal_three_locatable=bool(best_gap is not None and best_gap < self.atlas.options.atlas_transition),
+            nominal_three_locatable=bool(np.count_nonzero(self.nominal_weights(junction_distances) > 0) >= 3),
+            selection=self.atlas.options.atlas_selection,
         )
         return junction, aggregation, footprint, uncovered
 
@@ -576,7 +621,7 @@ class GeometryControl:
             for local in coordinates:
                 point, _, _, shape = surface_point(self.vertices, face, local)
                 d = distances[:, nodes[i_f]] @ shape
-                nominal = (d - d.min() < self.atlas.options.atlas_transition) | (d == d.min())
+                nominal = self.nominal_weights(d) > 0
                 if np.count_nonzero(nominal & coverage[:, i_f]) >= 3:
                     ordered = np.sort(d)
                     junction_candidates.append(
@@ -777,6 +822,17 @@ class GeometryControl:
                 group.blocks < self.atlas.metadata().mother_blocks for group in self.atlas.metadata().groups[1:]
             ),
         )
+        observations = [
+            value
+            for row in rows
+            if row["category"] == "qualification"
+            for value, loaded in zip(row["errors"]["stress_tensor"], row["loaded_environments"], strict=True)
+            if loaded
+        ]
+        self.result["mean_qualification_field_error"] = float(np.mean(observations)) if observations else 0.0
+        self.result["mean_field_budget"] = 0.05
+        self.result["mean_population"] = "loaded qualification environment-fields; releases excluded"
+        checks["mean_field"] = self.result["mean_qualification_field_error"] <= 0.05
         if self.args.geometry == "neck":
             checks["remote_neck_witness"] = any(row.get("neck_witness", {}).get("passed", False) for row in rows)
         self.result.update(complete=True, qualification_checks=checks, passed=bool(all(checks.values())))
@@ -895,7 +951,7 @@ def main():
     parser.add_argument("--stress-backend", choices=("shell", "volume"), required=True)
     parser.add_argument("--geometry", choices=("egg", "neck"), default="egg")
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--regions", type=int, default=6)
+    parser.add_argument("--regions", type=int, default=12)
     parser.add_argument("--core-scale", type=float, default=1.0)
     parser.add_argument("--halo", type=int, default=0)
     parser.add_argument("--transition", type=float, default=None)
@@ -906,7 +962,9 @@ def main():
     parser.add_argument("--envs", type=int, default=2)
     parser.add_argument("--quadrature", type=int, default=32)
     parser.add_argument("--radius", type=float, default=None)
+    add_native_atlas_arguments(parser)
     args = parser.parse_args()
+    validate_native_atlas_arguments(parser, args, args.regions)
     if args.fixed_neck and args.geometry != "neck":
         parser.error("--fixed-neck requires --geometry neck")
     if args.envs < 2 or args.regions < 1:
@@ -948,6 +1006,7 @@ def main():
         pressure_profile="hertz",
         quadrature=args.quadrature,
         atlas_regions=args.regions,
+        **native_atlas_options(args),
         atlas_core_scale=args.core_scale,
         atlas_halo=args.halo,
         atlas_transition=transition,

@@ -143,6 +143,9 @@ def main():
         options.atlas_transition,
         options.atlas_core_scale,
         options.atlas_halo,
+        center_mode=options.atlas_center_mode,
+        selection=options.atlas_selection,
+        narrow_fraction=options.atlas_narrow_fraction,
     )
     assert model.info.vertices.shape[0] == native["atlas"]["mother_blocks"]
     assert regions.info.positions.shape[0] == native["atlas"]["physical_nodes"]
@@ -210,6 +213,8 @@ def main():
                         state,
                         options.atlas_regions,
                         cooperative,
+                        regions.selection_code,
+                        regions.narrow_fraction,
                     )
             qd.sync()
             scalar_seconds, cooperative_seconds = [], []
@@ -227,6 +232,8 @@ def main():
                             state,
                             options.atlas_regions,
                             cooperative,
+                            regions.selection_code,
+                            regions.narrow_fraction,
                         )
                     qd.sync()
                     seconds = time.perf_counter() - started

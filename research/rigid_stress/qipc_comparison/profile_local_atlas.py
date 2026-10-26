@@ -28,6 +28,7 @@ from genesis.utils.misc import qd_to_numpy, qd_to_torch
 from ..shell_comparison.memory import ProcessMemory
 from .artifacts import file_id, runtime_identity, write_json
 from .check_local_feature_spaces import source_parents
+from .native_adaptation_options import add_native_atlas_arguments, native_atlas_options, validate_native_atlas_arguments
 
 
 KERNEL_CATEGORIES = (
@@ -140,7 +141,7 @@ def main():
     cli.add_argument("--output-mode", choices=("max", "full"), default="full")
     cli.add_argument("--warmup", type=int, default=130)
     cli.add_argument("--steps", type=int, default=10)
-    cli.add_argument("--atlas-regions", type=int, default=3)
+    cli.add_argument("--atlas-regions", type=int, default=12)
     cli.add_argument("--atlas-basis", type=Path)
     cli.add_argument("--atlas-core-scale", type=float, default=1.0)
     cli.add_argument("--atlas-halo", type=int, default=0)
@@ -154,7 +155,9 @@ def main():
     cli.add_argument("--synchronize-calls", action="store_true")
     cli.add_argument("--sample-memory", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
+    add_native_atlas_arguments(cli)
     args = cli.parse_args()
+    validate_native_atlas_arguments(cli, args, args.atlas_regions)
     if min(args.envs, args.warmup, args.steps) < 1:
         cli.error("envs, warmup and steps must be positive")
     assert os.environ.get("SLURM_JOB_ID"), "Scientific execution requires a Slurm job."
@@ -208,6 +211,7 @@ def main():
             atlas_space=args.atlas_space,
             atlas_shell_bending=args.atlas_shell_bending,
             inverse_max_bytes=args.inverse_max_bytes,
+            **native_atlas_options(args),
         )
         qd.sync()
         result["setup_seconds_including_JIT"] = time.perf_counter() - started

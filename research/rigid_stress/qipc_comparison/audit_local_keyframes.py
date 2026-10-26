@@ -720,6 +720,9 @@ def audit(args, result):
         options.atlas_transition,
         options.atlas_core_scale,
         options.atlas_halo,
+        center_mode=options.atlas_center_mode,
+        selection=options.atlas_selection,
+        narrow_fraction=options.atlas_narrow_fraction,
     )
     boundary = qd_to_numpy(regions.info.boundary_nodes)
     n_blocks = mother.info.vertices.shape[0]

@@ -18,8 +18,10 @@ from scipy.sparse.linalg import splu
 
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.data import create_stress_state
+from genesis.engine.solvers.rigid.stress.contact import create_contacts
 from genesis.engine.solvers.rigid.stress.feature_basis import FeatureBasis
 from genesis.engine.solvers.rigid.stress.feature_operator import FeatureOperator
+from genesis.engine.solvers.rigid.stress.feature_regions import FeatureRegions
 from genesis.engine.solvers.rigid.stress.model import StressModel
 from genesis.engine.solvers.rigid.stress.shell_model import ShellModel
 from genesis.engine.solvers.rigid.stress.solve import kernel_direct_init, kernel_full_residual
@@ -27,6 +29,7 @@ from genesis.utils.array_class import V_VEC
 from genesis.utils.misc import qd_to_numpy
 
 from .artifacts import file_id, runtime_identity, write_json
+from .native_adaptation_options import add_native_atlas_arguments, native_atlas_options, validate_native_atlas_arguments
 
 
 def relative(actual, expected):
@@ -251,7 +254,16 @@ def main():
     parser.add_argument("--stress-backend", choices=("shell", "volume"), required=True)
     parser.add_argument("--backend", choices=("cpu", "gpu"), default="gpu")
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--regions", type=int, default=12)
+    parser.add_argument("--core-scale", type=float, default=1.0)
+    parser.add_argument("--halo", type=int, default=0)
+    parser.add_argument("--transition", type=float, default=0.003)
+    parser.add_argument("--feature-index", type=int, default=0)
+    add_native_atlas_arguments(parser)
     args = parser.parse_args()
+    validate_native_atlas_arguments(parser, args, args.regions)
+    if not 0 <= args.feature_index < args.regions:
+        parser.error("feature-index must identify a prepared feature.")
     args.output.mkdir(parents=True, exist_ok=False)
     result = {
         "passed": False,
@@ -273,6 +285,11 @@ def main():
         surface_inverse=False,
         output_mode="full",
         factor_scaling=True,
+        atlas_regions=args.regions,
+        atlas_core_scale=args.core_scale,
+        atlas_halo=args.halo,
+        atlas_transition=args.transition,
+        **native_atlas_options(args),
     )
     assert options.tolerance == 1e-8 and options.absolute_tolerance == 1e-11
     mother = ShellModel(options) if is_shell else StressModel(options)
@@ -317,10 +334,22 @@ def main():
     }
     assert max(mother_checks.values()) < 1e-8, mother_checks
     bubbles = np.flatnonzero(basis.coarse_index < 0)
-    seed = xyz[np.argmax(xyz[:, 0])]
-    count = min(32, max(1, len(bubbles) // 8))
-    distance = np.linalg.norm(xyz[bubbles] - seed, axis=1)
-    local = np.sort(bubbles[np.argsort(distance, kind="stable")[:count]])
+    regions = FeatureRegions(
+        mother,
+        basis,
+        create_contacts(1, n_envs, options.contact_radius),
+        args.regions,
+        args.transition,
+        args.core_scale,
+        args.halo,
+        center_mode=args.atlas_center_mode,
+        selection=args.atlas_selection,
+        narrow_fraction=args.atlas_narrow_fraction,
+    )
+    local = regions.local_nodes[args.feature_index]
+    local = np.sort(local[basis.coarse_index[local] < 0])
+    seeds = qd_to_numpy(regions.info.seeds)
+    seed = qd_to_numpy(regions.info.positions)[seeds[args.feature_index]]
     assert 0 < len(local) < len(bubbles)
     modes = rigid_modes(xyz, bpn)
     coarse_modes = modes.reshape((-1, bpn * 3, 6))[basis.coarse_nodes].reshape((-1, 6))
@@ -333,6 +362,10 @@ def main():
             "mother_free_dofs": int(mother_free.sum()),
             "mother_pins": pins.tolist(),
             "coarse_physical_nodes": len(basis.coarse_nodes),
+            "options": options.model_dump(mode="json"),
+            "tested_feature_index": args.feature_index,
+            "native_graph_seeds": seeds.tolist(),
+            "construction": "native_material_graph_adaptation; CPU shell spaces are not used",
             "shared_mother_geometry_mass_gauge_relief": True,
             "load": "arbitrary nodal forces, two nonzero spins, tiny-load and zero controls",
             "local_seed_m": seed.tolist(),
@@ -398,7 +431,9 @@ def main():
         checks["balanced_rhs_projection"] = relative(reduced_rhs, transform.T @ rhs)
         kernel_direct_init(reduced)
         operator.factor.solve(options.young, reduced, operator.info)
-        kernel_full_residual(options.young, options.tolerance, options.absolute_tolerance, reduced, operator.info, False)
+        kernel_full_residual(
+            options.young, options.tolerance, options.absolute_tolerance, reduced, operator.info, False
+        )
         operator.residual(options.young, reduced.rhs, reduced.displacement, reduced.residual)
         z = vector_columns(reduced.displacement)
         residual = vector_columns(reduced.residual)

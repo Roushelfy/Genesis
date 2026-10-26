@@ -30,6 +30,11 @@ class RigidStressOptions(Options):
     against the complete mother. ``atlas_basis`` supplies shell parent-node
     topology and optional fixed enrichment. Volume uses its native P1/P2
     hierarchy. The physical mother geometry, mass and load law are preserved.
+    ``atlas_center_mode="icosahedral"`` maps twelve fixed directions to load-boundary graph seeds using a
+    bbox-centered, axis-radius-scaled native mapping. It requires ``atlas_regions=12`` and
+    ``atlas_selection="continuous"``, ``"nearest"`` or ``"narrow"``. Wendland support uses 1.2 times each native
+    graph Voronoi cell radius; narrow retains every positive contributor. This is a native graph/DPR adaptation,
+    not the CPU material-cap shell space. ``farthest_point``/``legacy`` preserves the original graph control.
     The original three-dimensional support-ball DPR pressure fit acts on that actual physical boundary, including
     inner and outer faces inside the support. Consistent generalized loads retain eccentric friction moments.
     Shell output is in-plane membrane-plus-bending stress at four Gauss points and both wall surfaces;
@@ -224,6 +229,9 @@ class RigidStressOptions(Options):
     backend: Literal["volume", "shell"] = "volume"
     atlas_regions: Annotated[int, Field(ge=0, le=32)] = 0
     atlas_basis: PathType | None = None
+    atlas_center_mode: Literal["farthest_point", "icosahedral"] = "farthest_point"
+    atlas_selection: Literal["legacy", "continuous", "nearest", "narrow"] = "legacy"
+    atlas_narrow_fraction: Annotated[ValidFloat, Field(gt=0, le=1)] = 0.12
     atlas_core_scale: PositiveFloat = 1.0
     atlas_halo: Annotated[int, Field(ge=0, le=8)] = 1
     atlas_transition: Annotated[ValidFloat, Field(ge=0)] = 0.003
