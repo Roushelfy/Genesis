@@ -35,6 +35,9 @@ class RigidStressOptions(Options):
     ``atlas_selection="continuous"``, ``"nearest"`` or ``"narrow"``. Wendland support uses 1.2 times each native
     graph Voronoi cell radius; narrow retains every positive contributor. This is a native graph/DPR adaptation,
     not the CPU material-cap shell space. ``farthest_point``/``legacy`` preserves the original graph control.
+    ``atlas_solver="packed"`` can reduce overhead when many features contribute together, at the cost of extra
+    prepared copies and workspace. It requires CUDA and 64-bit precision with at most 6144 coordinates per feature;
+    unsupported configurations retain the factor solver and record the reason in the recovery metadata.
     The original three-dimensional support-ball DPR pressure fit acts on that actual physical boundary, including
     inner and outer faces inside the support. Consistent generalized loads retain eccentric friction moments.
     Shell output is in-plane membrane-plus-bending stress at four Gauss points and both wall surfaces;
@@ -235,7 +238,7 @@ class RigidStressOptions(Options):
     atlas_core_scale: PositiveFloat = 1.0
     atlas_halo: Annotated[int, Field(ge=0, le=8)] = 1
     atlas_transition: Annotated[ValidFloat, Field(ge=0)] = 0.003
-    atlas_solver: Literal["factor", "inverse", "response"] = "factor"
+    atlas_solver: Literal["factor", "inverse", "response", "packed"] = "factor"
     atlas_space: Literal["local", "coarse"] = "local"
     atlas_shell_bending: bool = False
     shell_thickness: PositiveFloat = 0.0005

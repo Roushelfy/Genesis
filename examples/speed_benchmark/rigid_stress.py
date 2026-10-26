@@ -509,7 +509,7 @@ def main() -> None:
     parser.add_argument("--atlas-core-scale", type=float, default=1.0)
     parser.add_argument("--atlas-halo", type=int, default=1)
     parser.add_argument("--atlas-transition", type=float, default=0.003)
-    parser.add_argument("--atlas-solver", choices=("factor", "inverse", "response"), default="factor")
+    parser.add_argument("--atlas-solver", choices=("factor", "inverse", "response", "packed"), default="factor")
     parser.add_argument("--atlas-space", choices=("local", "coarse"), default="local")
     parser.add_argument("--atlas-shell-bending", action="store_true")
     parser.add_argument("--inverse-max-bytes", type=int, default=64 * 1024 * 1024)

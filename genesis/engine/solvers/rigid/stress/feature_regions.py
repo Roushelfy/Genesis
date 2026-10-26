@@ -67,7 +67,7 @@ class FeatureRegions:
         *,
         center_mode: str = "farthest_point",
         selection: str = "legacy",
-        narrow_fraction: float,
+        narrow_fraction: float = 0.12,
     ):
         if center_mode not in ("farthest_point", "icosahedral"):
             gs.raise_exception("Native atlas center_mode must be farthest_point or icosahedral.")

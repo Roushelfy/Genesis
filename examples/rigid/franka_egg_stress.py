@@ -2,6 +2,7 @@
 
 import argparse
 from pathlib import Path
+from typing import Literal
 
 import numpy as np
 import torch
@@ -76,7 +77,7 @@ class FrankaEgg:
         atlas_core_scale: float = 1.0,
         atlas_halo: int = 1,
         atlas_transition: float = 0.003,
-        atlas_solver: str = "factor",
+        atlas_solver: Literal["factor", "inverse", "response", "packed"] = "factor",
         atlas_space: str = "local",
         atlas_shell_bending: bool = False,
         inverse_max_bytes: int = 64 * 1024 * 1024,

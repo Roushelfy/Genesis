@@ -20,6 +20,7 @@ from .feature_regions import FeatureRegionInfo, FeatureRegions, FeatureRegionSta
 from .feature_response import FeatureBoundaryResponse
 from .inverse import StressInverse
 from .model import StressModel
+from .packed_factor import PackedFactorMemory, PackedStressFactor
 from .solve import kernel_balance, kernel_direct_init, kernel_full_residual
 from .surface import StressSurfaceInfo
 
@@ -96,6 +97,15 @@ class FeatureAtlasMetadata:
     reduced_feature_groups: int = 0
     full_size_feature_groups: int = 0
     parent_residual_norm_space: Literal["source_spaces"] = "source_spaces"
+    solver_requested: Literal["factor", "inverse", "response", "packed"] = "factor"
+    solver_actual: Literal["factor", "inverse", "response", "packed"] = "factor"
+    packed_requested: bool = False
+    packed_supported: bool = False
+    packed_used: bool = False
+    packed_fallback_to_factor: bool = False
+    packed_fallback_reason: str | None = None
+    packed_bucket: int = 0
+    packed_memory: PackedFactorMemory | None = None
 
 
 @dataclass(frozen=True)
@@ -272,6 +282,14 @@ class FeatureAtlas:
                 self.groups[i_g] = FeatureGroup(
                     group.operator, group.info, group.state, inverse=None, response=response
                 )
+        self.packed = (
+            PackedStressFactor(
+                tuple(group.operator for group in self.groups), tuple(group.state for group in self.groups)
+            )
+            if options.atlas_solver == "packed"
+            else None
+        )
+        self.packed_used = self.packed is not None and self.packed.supported
         self._metadata = FeatureAtlasMetadata(
             mother_blocks=n_nodes,
             physical_nodes=len(self.basis.parent_nodes),
@@ -290,6 +308,21 @@ class FeatureAtlas:
             else "native_farthest_point_control",
             reduced_feature_groups=sum(group.blocks < n_nodes for group in group_metadata[1:]),
             full_size_feature_groups=sum(group.blocks == n_nodes for group in group_metadata[1:]),
+            solver_requested=options.atlas_solver,
+            solver_actual="packed"
+            if self.packed_used
+            else "factor"
+            if self.packed is not None
+            else options.atlas_solver,
+            packed_requested=self.packed is not None,
+            packed_supported=self.packed_used,
+            packed_used=self.packed_used,
+            packed_fallback_to_factor=self.packed is not None and not self.packed_used,
+            packed_fallback_reason=self.packed.unsupported_reason
+            if self.packed is not None and not self.packed_used
+            else None,
+            packed_bucket=self.packed.bucket if self.packed is not None else 0,
+            packed_memory=self.packed.memory_inventory() if self.packed is not None else None,
         )
         self.inventory = FeatureAtlasInventory(
             blocks=V(dtype=gs.qd_int, shape=(n_groups,)),
@@ -340,17 +373,8 @@ class FeatureAtlas:
         for i_g in range(len(self.groups) + 1):
             if i_g == 0:
                 state = self.fallback_state
-                info = self.model.info
-                factor = self.model.factor
-                inverse = self.model.inverse
-                response = None
             else:
-                group = self.groups[i_g - 1]
-                state = group.state
-                info = group.operator.info
-                factor = group.operator.factor
-                inverse = group.inverse
-                response = group.response
+                state = self.groups[i_g - 1].state
             kernel_group_wrench(i_g, state, self.state, self.model.info, self.regions.info, self.regions.state)
             if i_g == 0:
                 kernel_fallback_rhs(state, self.model.info, self.regions.info, self.regions.state)
@@ -365,7 +389,25 @@ class FeatureAtlas:
                 )
             kernel_direct_init(state)
             kernel_group_begin(i_g, state, self.state)
-            if response is not None:
+        for i_g in range(len(self.groups) + 1):
+            if i_g == 0:
+                state = self.fallback_state
+                info = self.model.info
+                factor = self.model.factor
+                inverse = self.model.inverse
+                response = None
+            else:
+                group = self.groups[i_g - 1]
+                state = group.state
+                info = group.operator.info
+                factor = group.operator.factor
+                inverse = group.inverse
+                response = group.response
+            if i_g == 1 and self.packed_used:
+                self.packed.solve(options.young)
+            if i_g > 0 and self.packed_used:
+                kernel_primary_factor_done(state)
+            elif response is not None:
                 response.apply(options.young, i_g, self.regions.state.force, state)
             elif inverse is None:
                 factor.solve(options.young, state, info, options.cooperative_solve, only_failed=True)
@@ -432,6 +474,9 @@ class FeatureAtlas:
         yield from iter_data(self.regions.info, f"{prefix}.regions.info")
         yield from iter_data(self.regions.state, f"{prefix}.regions.state")
         yield from iter_data(self.fallback_state, f"{prefix}.fallback.state")
+        if self.packed is not None:
+            yield from self.packed.iter_info_data(f"{prefix}.packed.info")
+            yield from self.packed.iter_state_data(f"{prefix}.packed.state")
         for i_g, group in enumerate(self.groups, start=1):
             yield from iter_data(group.operator.info, f"{prefix}.groups.{i_g}.operator")
             yield from iter_data(group.operator.factor.info, f"{prefix}.groups.{i_g}.factor")
