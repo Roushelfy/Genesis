@@ -1,0 +1,30 @@
+[
+  [
+    {
+      "name": "volume",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-candidates-maintained-v1/tests/rigid/test_stress.py",
+        "--select",
+        "full_field_same_state or batched_recovery_against or history_reuse_abrupt or surface_inverse_preserves_history_hits or pcg_iteration_limit or finite_pressure_matches_independent_cpu or native_shared_operator_contact_moments",
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-candidates-maintained-v1"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shell",
+      "module": "research.rigid_stress.qipc_comparison.run_focused_tests",
+      "args": [
+        "--tests",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-candidates-maintained-v1/tests/rigid/test_stress_shell.py",
+        "--select",
+        "native_shell",
+        "--engine-root",
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/native-candidates-maintained-v1"
+      ]
+    }
+  ]
+]

@@ -1,6 +1,19 @@
 # Native rigid stress recovery: native candidate integration and tuning
 
-**Active user goal, 2026-10-25:** take all seven GPU candidates through
+**Completed, 2026-10-26:** all fourteen native candidate/backend decisions are
+delivered. Native integration, numerical controls, targeted tuning, module and
+complete Franka comparisons, memory and production cleanup are complete.
+None of the seven incremental candidates provides a reproducible useful gain
+in the measured regimes; their runnable native code and negative evidence are
+retained. The maintained engine preserves the prior pressure/fallback winners
+and adds the independently qualified optional angular/q128 pressure repair.
+Read [the final report](docs/NATIVE_CANDIDATE_RESULTS_20261025.md),
+[the seven-by-two ledger](docs/NATIVE_CANDIDATE_PROGRESS_20261025.md) and
+[the requirement audit](evidence/20261025-native-candidates-v1/metadata/requirements-final.json).
+Same-model checks do not qualify continuum sharp-edge peaks; broad physical
+convergence remains outside this delivered integration/throughput goal.
+
+**Delivered specification, 2026-10-25:** take all seven GPU candidates through
 real native integration, targeted tuning and matched end-to-end measurement
 for both midsurface shell and three-dimensional volume FEM. Track the seven
 candidates separately for each backend; neither backend's result closes the

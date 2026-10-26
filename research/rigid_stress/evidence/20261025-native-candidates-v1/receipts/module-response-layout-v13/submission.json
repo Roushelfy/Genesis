@@ -1,0 +1,24 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-5%4",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=gpu:1",
+    "--cpus-per-task=1",
+    "--mem=32G",
+    "--time=55",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-native-candidate-integration/module-response-layout-v13/logs/%A_%a.log",
+    "--dependency=afterok:750204",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-native-candidate-integration/module-response-layout-v13/job.sh"
+  ],
+  "job": "750205",
+  "dependency": "afterok:750204",
+  "exclude_nodes": null,
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "disable_cuda_graphs": false,
+  "allow_home_output": false
+}

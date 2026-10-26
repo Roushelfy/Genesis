@@ -1,0 +1,23 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-1",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=gpu:1",
+    "--cpus-per-task=1",
+    "--mem=24G",
+    "--time=30",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-native-candidate-integration/atlas-geometry-v9/logs/%A_%a.log",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-native-candidate-integration/atlas-geometry-v9/job.sh"
+  ],
+  "job": "749830",
+  "dependency": null,
+  "exclude_nodes": null,
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "disable_cuda_graphs": false,
+  "allow_home_output": false
+}

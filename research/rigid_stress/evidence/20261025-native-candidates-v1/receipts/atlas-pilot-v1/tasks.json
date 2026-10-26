@@ -1,0 +1,38 @@
+[
+  [
+    {
+      "name": "shell",
+      "module": "research.rigid_stress.qipc_comparison.check_native_atlas",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "2",
+        "--steps",
+        "140",
+        "--atlas-regions",
+        "6"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume",
+      "module": "research.rigid_stress.qipc_comparison.check_native_atlas",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "2",
+        "--steps",
+        "140",
+        "--atlas-regions",
+        "6"
+      ]
+    }
+  ]
+]

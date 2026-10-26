@@ -1,0 +1,42 @@
+[
+  [
+    {
+      "name": "shell-atlas3",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "7bbfa4faa",
+        "--atlas-regions",
+        "3"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-atlas3",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "7bbfa4faa",
+        "--atlas-regions",
+        "3"
+      ]
+    }
+  ]
+]

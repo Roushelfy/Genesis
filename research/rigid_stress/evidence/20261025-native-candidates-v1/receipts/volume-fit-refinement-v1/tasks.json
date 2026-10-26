@@ -1,0 +1,38 @@
+[
+  [
+    {
+      "name": "q16",
+      "module": "research.rigid_stress.qipc_comparison.inspect_volume_fit",
+      "args": [
+        "--failure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/heterogeneous-volume-audit-v1/group1/volume-v6/failure.npz",
+        "--quadrature",
+        "16"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "q32",
+      "module": "research.rigid_stress.qipc_comparison.inspect_volume_fit",
+      "args": [
+        "--failure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/heterogeneous-volume-audit-v1/group1/volume-v6/failure.npz",
+        "--quadrature",
+        "32"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "q64",
+      "module": "research.rigid_stress.qipc_comparison.inspect_volume_fit",
+      "args": [
+        "--failure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/heterogeneous-volume-audit-v1/group1/volume-v6/failure.npz",
+        "--quadrature",
+        "64"
+      ]
+    }
+  ]
+]

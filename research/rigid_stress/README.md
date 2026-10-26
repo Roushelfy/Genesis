@@ -9,18 +9,22 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
-## Active: native candidate integration and tuning (2026-10-25)
+## Delivered: native candidate integration and tuning (2026-10-26)
 
-Follow [GOAL.md](GOAL.md) and
-[the native integration requirements](docs/NATIVE_CANDIDATE_INTEGRATION_GOAL_20261025.md).
-Take all seven GPU candidates through real native integration and targeted
-tuning in both midsurface shell and three-dimensional volume FEM. Record a
-separate decision for each candidate/backend, then retain useful winners and
-preserve reproducible negative results.
-The curved atlas mapping and common inertia relief are now implementation
-work; simplified prototypes alone cannot complete the task. Prioritize
-low-resolution numerical consistency and complete Franka throughput in
-Quadrants, keeping existing load/acceptance/lifecycle behavior.
+All seven candidates were integrated and tuned separately for midsurface shell
+and three-dimensional volume FEM. The fourteen native decisions are negative
+on the measured workloads; unhelpful production paths and their extra options
+are removed, with runnable native source pins and all failed trials retained.
+Read [the final report](docs/NATIVE_CANDIDATE_RESULTS_20261025.md),
+[the ledger](docs/NATIVE_CANDIDATE_PROGRESS_20261025.md) and
+[the evidence packet](evidence/20261025-native-candidates-v1/README.md).
+
+The earlier pressure/fallback optimizations remain. Optional
+`pressure_quadrature="angle", quadrature=128` qualifies the full heterogeneous
+volume trajectory against fixed-fan q256 field references, at substantial
+integration cost. Edge/q16 remains the measured four-condition recommendation,
+with FP64 and history off. All 32 focused regressions pass. Sharp-edge
+continuum peaks and high-resolution contact convergence remain unqualified.
 
 ## Delivered: GPU throughput follow-up (2026-10-25)
 

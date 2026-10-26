@@ -1,0 +1,24 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-3%4",
+    "--partition=rtx-mid",
+    "--no-requeue",
+    "--gres=gpu:1",
+    "--cpus-per-task=1",
+    "--mem=40G",
+    "--time=60",
+    "--job-name=shell22-compare",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-native-candidate-integration/scene-heterogeneous-volume128-v12/logs/%A_%a.log",
+    "--dependency=afterok:750093",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-native-candidate-integration/scene-heterogeneous-volume128-v12/job.sh"
+  ],
+  "job": "750152",
+  "dependency": "afterok:750093",
+  "exclude_nodes": null,
+  "node_local_cache": true,
+  "kernel_profiler": false,
+  "disable_cuda_graphs": false,
+  "allow_home_output": false
+}

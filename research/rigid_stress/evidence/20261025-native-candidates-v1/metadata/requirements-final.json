@@ -1,0 +1,585 @@
+{
+  "goal_revision": "b8e63b1953df6a5171990644fbb60d80f11ae8db",
+  "goal_complete": true,
+  "baseline_revision": "5c44042a4d659e73d5668db10f3e1e049538868a",
+  "candidate_backend_decisions": [
+    {
+      "candidate": "curved_feature_atlas",
+      "backend": "shell",
+      "status": "reverted_native_tuned_negative",
+      "native_implementation": "Connected curved-surface graph selection, complete-footprint coverage, smooth junction weights and globally extended common-gauge response spaces.",
+      "evidence_name_filter": "shell-",
+      "numerical_campaigns": [
+        "atlas-geometry-v11",
+        "lifecycle-guards-v12"
+      ],
+      "tuning_campaigns": [
+        "module-atlas-v10",
+        "module-final-tune-v11",
+        "module-full-v11"
+      ],
+      "complete_scene_campaigns": [
+        "scene-atlas-v10",
+        "scene-atlas-direct-v11",
+        "scene-heterogeneous-shell-v12"
+      ],
+      "memory_campaigns": [
+        "memory-v10",
+        "memory-atlas-direct-v11"
+      ],
+      "runnable_candidate_revision": "d5641351a127f674b4a19bf3d921cc3be0200789",
+      "production_decision": "3/6/12-region, compact and direct native layouts lose in complete scenes.",
+      "maintained_revision": "e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a",
+      "native_integration_complete": true,
+      "tuning_complete": true,
+      "production_cleanup_complete": true
+    },
+    {
+      "candidate": "curved_feature_atlas",
+      "backend": "volume",
+      "status": "reverted_native_tuned_negative",
+      "native_implementation": "Connected curved-surface graph selection, complete-footprint coverage, smooth junction weights and globally extended common-gauge response spaces.",
+      "evidence_name_filter": "volume-",
+      "numerical_campaigns": [
+        "atlas-geometry-v11",
+        "lifecycle-guards-v12",
+        "heterogeneous-numerics128-v12"
+      ],
+      "tuning_campaigns": [
+        "module-atlas-v10",
+        "module-final-tune-v11",
+        "module-full-v11"
+      ],
+      "complete_scene_campaigns": [
+        "scene-atlas-v10",
+        "scene-atlas-direct-v11",
+        "scene-heterogeneous-volume128-v12"
+      ],
+      "memory_campaigns": [
+        "memory-v10",
+        "memory-atlas-direct-v11"
+      ],
+      "runnable_candidate_revision": "d5641351a127f674b4a19bf3d921cc3be0200789",
+      "production_decision": "Direct atlas3 has a small frozen-module gain, but loses in max/full complete scenes and adds memory.",
+      "maintained_revision": "e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a",
+      "native_integration_complete": true,
+      "tuning_complete": true,
+      "production_cleanup_complete": true
+    },
+    {
+      "candidate": "same_mesh_aggregation",
+      "backend": "shell",
+      "status": "reverted_native_tuned_negative",
+      "native_implementation": "Compact native boundary loads and device grouping by region/environment, with shared multi-RHS responses and retained one-mesh baseline.",
+      "evidence_name_filter": "shell-",
+      "numerical_campaigns": [
+        "native-kernels-v11",
+        "lifecycle-guards-v12"
+      ],
+      "tuning_campaigns": [
+        "module-atlas-v10",
+        "module-final-tune-v11",
+        "module-full-v11"
+      ],
+      "complete_scene_campaigns": [
+        "scene-atlas-v10",
+        "scene-atlas-direct-v11",
+        "scene-heterogeneous-shell-v12"
+      ],
+      "memory_campaigns": [
+        "memory-v10",
+        "memory-atlas-direct-v11"
+      ],
+      "runnable_candidate_revision": "d5641351a127f674b4a19bf3d921cc3be0200789",
+      "production_decision": "Additional regional scatter/grouping and shared RHS scheduling do not improve the optimized one-mesh baseline.",
+      "maintained_revision": "e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a",
+      "native_integration_complete": true,
+      "tuning_complete": true,
+      "production_cleanup_complete": true
+    },
+    {
+      "candidate": "same_mesh_aggregation",
+      "backend": "volume",
+      "status": "reverted_native_tuned_negative",
+      "native_implementation": "Compact native boundary loads and device grouping by region/environment, with shared multi-RHS responses and retained one-mesh baseline.",
+      "evidence_name_filter": "volume-",
+      "numerical_campaigns": [
+        "native-kernels-v11",
+        "lifecycle-guards-v12",
+        "heterogeneous-numerics128-v12"
+      ],
+      "tuning_campaigns": [
+        "module-atlas-v10",
+        "module-final-tune-v11",
+        "module-full-v11"
+      ],
+      "complete_scene_campaigns": [
+        "scene-atlas-v10",
+        "scene-atlas-direct-v11",
+        "scene-heterogeneous-volume128-v12"
+      ],
+      "memory_campaigns": [
+        "memory-v10",
+        "memory-atlas-direct-v11"
+      ],
+      "runnable_candidate_revision": "d5641351a127f674b4a19bf3d921cc3be0200789",
+      "production_decision": "Additional regional scatter/grouping and shared RHS scheduling do not improve the optimized one-mesh baseline.",
+      "maintained_revision": "e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a",
+      "native_integration_complete": true,
+      "tuning_complete": true,
+      "production_cleanup_complete": true
+    },
+    {
+      "candidate": "merged_displacement_recovery",
+      "backend": "shell",
+      "status": "reverted_native_tuned_negative",
+      "native_implementation": "Direct common displacement accumulation and one recovery, compared with independent tensors/resultants and an 18-direction Galerkin coarse/local split.",
+      "evidence_name_filter": "shell-",
+      "numerical_campaigns": [
+        "native-kernels-v11",
+        "lifecycle-guards-v12"
+      ],
+      "tuning_campaigns": [
+        "module-atlas-v10",
+        "module-final-tune-v11",
+        "module-full-v11"
+      ],
+      "complete_scene_campaigns": [
+        "scene-atlas-v10",
+        "scene-atlas-direct-v11",
+        "scene-heterogeneous-shell-v12"
+      ],
+      "memory_campaigns": [
+        "memory-v10",
+        "memory-atlas-direct-v11"
+      ],
+      "runnable_candidate_revision": "d5641351a127f674b4a19bf3d921cc3be0200789",
+      "production_decision": "Direct common-displacement merge is best among atlas alternatives, but still loses to baseline; independent/coarse controls cost more.",
+      "maintained_revision": "e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a",
+      "native_integration_complete": true,
+      "tuning_complete": true,
+      "production_cleanup_complete": true
+    },
+    {
+      "candidate": "merged_displacement_recovery",
+      "backend": "volume",
+      "status": "reverted_native_tuned_negative",
+      "native_implementation": "Direct common displacement accumulation and one recovery, compared with independent tensors/resultants and an 18-direction Galerkin coarse/local split.",
+      "evidence_name_filter": "volume-",
+      "numerical_campaigns": [
+        "native-kernels-v11",
+        "lifecycle-guards-v12",
+        "heterogeneous-numerics128-v12"
+      ],
+      "tuning_campaigns": [
+        "module-atlas-v10",
+        "module-final-tune-v11",
+        "module-full-v11"
+      ],
+      "complete_scene_campaigns": [
+        "scene-atlas-v10",
+        "scene-atlas-direct-v11",
+        "scene-heterogeneous-volume128-v12"
+      ],
+      "memory_campaigns": [
+        "memory-v10",
+        "memory-atlas-direct-v11"
+      ],
+      "runnable_candidate_revision": "d5641351a127f674b4a19bf3d921cc3be0200789",
+      "production_decision": "Direct common-displacement merge is best among atlas alternatives, but still loses to baseline; independent/coarse controls cost more.",
+      "maintained_revision": "e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a",
+      "native_integration_complete": true,
+      "tuning_complete": true,
+      "production_cleanup_complete": true
+    },
+    {
+      "candidate": "complete_stress_response",
+      "backend": "shell",
+      "status": "reverted_native_tuned_negative",
+      "native_implementation": "Native force/rotational/spin input packing, complete stress/resultants, original FP64 displacement, residual, correction and fallback.",
+      "evidence_name_filter": "shell-",
+      "numerical_campaigns": [
+        "native-kernels-v13",
+        "complete-response-v13"
+      ],
+      "tuning_campaigns": [
+        "module-response-scheduling-v10",
+        "module-response-tiles-v10",
+        "module-full-v11",
+        "module-response-layout-v13"
+      ],
+      "complete_scene_campaigns": [
+        "scene-response-history-v11",
+        "scene-response-layout-v13",
+        "scene-heterogeneous-shell-v12"
+      ],
+      "memory_campaigns": [
+        "memory-v10"
+      ],
+      "runnable_candidate_revision": "d5641351a127f674b4a19bf3d921cc3be0200789",
+      "production_decision": "Dense/sparse/hybrid, tile/block and both-layout trials remain unfavorable with required displacement/acceptance work.",
+      "maintained_revision": "e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a",
+      "native_integration_complete": true,
+      "tuning_complete": true,
+      "production_cleanup_complete": true
+    },
+    {
+      "candidate": "complete_stress_response",
+      "backend": "volume",
+      "status": "reverted_native_tuned_negative",
+      "native_implementation": "Native force/rotational/spin input packing, complete stress/resultants, original FP64 displacement, residual, correction and fallback.",
+      "evidence_name_filter": "volume-",
+      "numerical_campaigns": [
+        "native-kernels-v13",
+        "complete-response-v13",
+        "heterogeneous-numerics128-v12"
+      ],
+      "tuning_campaigns": [
+        "module-response-scheduling-v10",
+        "module-response-tiles-v10",
+        "module-full-v11",
+        "module-response-layout-v13"
+      ],
+      "complete_scene_campaigns": [
+        "scene-response-history-v11",
+        "scene-response-layout-v13",
+        "scene-heterogeneous-volume128-v12"
+      ],
+      "memory_campaigns": [
+        "memory-v10"
+      ],
+      "runnable_candidate_revision": "d5641351a127f674b4a19bf3d921cc3be0200789",
+      "production_decision": "Complete H remains unfavorable with required displacement, original residual, correction and fallback.",
+      "maintained_revision": "e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a",
+      "native_integration_complete": true,
+      "tuning_complete": true,
+      "production_cleanup_complete": true
+    },
+    {
+      "candidate": "fp32_storage_accumulation",
+      "backend": "shell",
+      "status": "reverted_native_tuned_negative",
+      "native_implementation": "FP32 storage and accumulation independently validated against complete FP64 fields, with unchanged original-operator acceptance and correction.",
+      "evidence_name_filter": "shell-",
+      "numerical_campaigns": [
+        "native-kernels-v13",
+        "complete-response-v13"
+      ],
+      "tuning_campaigns": [
+        "module-response-scheduling-v10",
+        "module-response-tiles-v10",
+        "module-final-tune-v11",
+        "module-full-v11",
+        "module-response-layout-v13"
+      ],
+      "complete_scene_campaigns": [
+        "scene-response-history-v11",
+        "scene-response-layout-v13",
+        "scene-heterogeneous-shell-v12"
+      ],
+      "memory_campaigns": [
+        "memory-v10"
+      ],
+      "runnable_candidate_revision": "d5641351a127f674b4a19bf3d921cc3be0200789",
+      "production_decision": "Independent storage/accumulation validation passes; halving H inventory does not beat baseline memory or scene time.",
+      "maintained_revision": "e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a",
+      "native_integration_complete": true,
+      "tuning_complete": true,
+      "production_cleanup_complete": true
+    },
+    {
+      "candidate": "fp32_storage_accumulation",
+      "backend": "volume",
+      "status": "reverted_native_tuned_negative",
+      "native_implementation": "FP32 storage and accumulation independently validated against complete FP64 fields, with unchanged original-operator acceptance and correction.",
+      "evidence_name_filter": "volume-",
+      "numerical_campaigns": [
+        "native-kernels-v13",
+        "complete-response-v13",
+        "heterogeneous-numerics128-v12"
+      ],
+      "tuning_campaigns": [
+        "module-response-scheduling-v10",
+        "module-response-tiles-v10",
+        "module-final-tune-v11",
+        "module-full-v11",
+        "module-response-layout-v13"
+      ],
+      "complete_scene_campaigns": [
+        "scene-response-history-v11",
+        "scene-response-layout-v13",
+        "scene-heterogeneous-volume128-v12"
+      ],
+      "memory_campaigns": [
+        "memory-v10"
+      ],
+      "runnable_candidate_revision": "d5641351a127f674b4a19bf3d921cc3be0200789",
+      "production_decision": "Independent storage/accumulation validation passes; smaller H remains additional inventory and does not improve scene time.",
+      "maintained_revision": "e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a",
+      "native_integration_complete": true,
+      "tuning_complete": true,
+      "production_cleanup_complete": true
+    },
+    {
+      "candidate": "global_max_screening",
+      "backend": "shell",
+      "status": "reverted_native_tuned_negative",
+      "native_implementation": "Conservative complete-contribution bounds and roundoff margins over all samples; bound/order/candidate costs included; exhaustive full-output control.",
+      "evidence_name_filter": "shell-",
+      "numerical_campaigns": [
+        "atlas-geometry-v11",
+        "complete-response-v13"
+      ],
+      "tuning_campaigns": [
+        "module-history-screen-v10",
+        "module-full-v11",
+        "module-response-layout-v13"
+      ],
+      "complete_scene_campaigns": [
+        "scene-response-history-v11",
+        "scene-response-layout-v13",
+        "scene-heterogeneous-shell-v12"
+      ],
+      "memory_campaigns": [
+        "memory-v10"
+      ],
+      "runnable_candidate_revision": "d5641351a127f674b4a19bf3d921cc3be0200789",
+      "production_decision": "Input-major block32 gives a small snapshot gain but loses in complete B8192/max and heterogeneous scenes; full output costs more.",
+      "maintained_revision": "e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a",
+      "native_integration_complete": true,
+      "tuning_complete": true,
+      "production_cleanup_complete": true
+    },
+    {
+      "candidate": "global_max_screening",
+      "backend": "volume",
+      "status": "reverted_native_tuned_negative",
+      "native_implementation": "Conservative complete-contribution bounds and roundoff margins over all samples; bound/order/candidate costs included; exhaustive full-output control.",
+      "evidence_name_filter": "volume-",
+      "numerical_campaigns": [
+        "atlas-geometry-v11",
+        "complete-response-v13",
+        "heterogeneous-numerics128-v12"
+      ],
+      "tuning_campaigns": [
+        "module-history-screen-v10",
+        "module-full-v11",
+        "module-response-layout-v13"
+      ],
+      "complete_scene_campaigns": [
+        "scene-response-history-v11",
+        "scene-response-layout-v13",
+        "scene-heterogeneous-volume128-v12"
+      ],
+      "memory_campaigns": [
+        "memory-v10"
+      ],
+      "runnable_candidate_revision": "d5641351a127f674b4a19bf3d921cc3be0200789",
+      "production_decision": "Conservative global bounds pass, but max/full module and complete-scene costs remain unfavorable after tuning.",
+      "maintained_revision": "e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a",
+      "native_integration_complete": true,
+      "tuning_complete": true,
+      "production_cleanup_complete": true
+    },
+    {
+      "candidate": "sustained_history_compaction",
+      "backend": "shell",
+      "status": "reverted_native_tuned_negative",
+      "native_implementation": "Two-frame accepted prediction feedback, buffer rotation, stricter preacceptance guard and compact exact misses; original acceptance and lifecycle retained.",
+      "evidence_name_filter": "shell-",
+      "numerical_campaigns": [
+        "lifecycle-guards-v12",
+        "history-guard-uniform-v13"
+      ],
+      "tuning_campaigns": [
+        "module-history-screen-v10",
+        "module-full-v11"
+      ],
+      "complete_scene_campaigns": [
+        "scene-response-history-v11",
+        "scene-heterogeneous-shell-v12"
+      ],
+      "memory_campaigns": [
+        "memory-v10"
+      ],
+      "runnable_candidate_revision": "d5641351a127f674b4a19bf3d921cc3be0200789",
+      "production_decision": "Stricter two-frame guard passes sustained state/output budgets; history maintenance and gating outweigh exact-work savings.",
+      "maintained_revision": "e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a",
+      "native_integration_complete": true,
+      "tuning_complete": true,
+      "production_cleanup_complete": true
+    },
+    {
+      "candidate": "sustained_history_compaction",
+      "backend": "volume",
+      "status": "reverted_native_tuned_negative",
+      "native_implementation": "Two-frame accepted prediction feedback, buffer rotation, stricter preacceptance guard and compact exact misses; original acceptance and lifecycle retained.",
+      "evidence_name_filter": "volume-",
+      "numerical_campaigns": [
+        "lifecycle-guards-v12",
+        "history-guard-uniform-v13",
+        "heterogeneous-numerics128-v12"
+      ],
+      "tuning_campaigns": [
+        "module-history-screen-v10",
+        "module-full-v11"
+      ],
+      "complete_scene_campaigns": [
+        "scene-response-history-v11",
+        "scene-heterogeneous-volume128-v12"
+      ],
+      "memory_campaigns": [
+        "memory-v10"
+      ],
+      "runnable_candidate_revision": "d5641351a127f674b4a19bf3d921cc3be0200789",
+      "production_decision": "Stricter two-frame guard passes sustained state/output budgets; history maintenance and gating outweigh exact-work savings.",
+      "maintained_revision": "e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a",
+      "native_integration_complete": true,
+      "tuning_complete": true,
+      "production_cleanup_complete": true
+    }
+  ],
+  "remaining_campaigns": [],
+  "pressure_repair": {
+    "mode": "angle",
+    "quadrature": 128,
+    "campaigns": [
+      "heterogeneous-bank128-v12",
+      "heterogeneous-bank128-audit-v12",
+      "bank64-quadrature-v12",
+      "pressure-repair-cost-v12"
+    ],
+    "retained_failures": [
+      "volume-fit-compare-v6",
+      "heterogeneous-bank64-v12",
+      "heterogeneous-numerics-v12",
+      "heterogeneous-angle-audit-v12"
+    ],
+    "note": "Separate robustness repair; preserve radius, pressure law, mechanical inputs and original acceptance; q32/q64 complete-bank field accuracy is unqualified."
+  },
+  "physical_scope": "Discrete same-model numerical consistency; continuum sharp-edge peaks and high-resolution contact convergence remain outside this phase.",
+  "storage": "All new runtime arrays, traces, logs, captured sources and summary files reside under this data-side run; only compact publication receipts are packaged in Git.",
+  "validation_completed": {
+    "focused_regressions": {
+      "campaign": "focused-tests-maintained-v1",
+      "shell_passed": 9,
+      "volume_passed": 23,
+      "failed": 0,
+      "skipped": 0
+    },
+    "maintained_heterogeneous_trajectory": {
+      "campaign": "heterogeneous-maintained-v1",
+      "conditions": 64,
+      "steps": 600,
+      "passed": true
+    },
+    "maintained_fixed_fan_reference": {
+      "campaign": "heterogeneous-maintained-audit-v1",
+      "frames": [
+        129,
+        221,
+        400,
+        599
+      ],
+      "passed": true
+    },
+    "maintained_scene_bookends": {
+      "campaign": "scene-maintained-guard-v1",
+      "cases": 12,
+      "runtime_invalid_environment_steps": 0,
+      "precision_note": "Keep raw repeats. Volume B8192 late baseline accelerates during its three repeats; no exact default-path speedup or zero-overhead claim."
+    },
+    "final_layout_scene": {
+      "campaign": "scene-response-layout-v13",
+      "cases": 48,
+      "runtime_invalid_environment_steps": 0,
+      "all_complete": true
+    }
+  },
+  "original_volume_frame221": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/heterogeneous-volume-audit-v1/group1/volume-v6/failure.npz",
+    "bytes": 108741,
+    "sha256": "aeccaef2f7679bdca55367db96c5698ede0c940fdd03d01dc635503bf8f3bfee"
+  },
+  "declared_budgets": {
+    "exact_generalized_load": 1e-10,
+    "exact_tensor_and_sampled_criteria": 1e-08,
+    "fp32_output": 0.0001,
+    "history_displacement_and_output": 1e-05,
+    "original_relative_residual": 1e-08,
+    "original_absolute_residual": 1e-11,
+    "pressure_quadrature_load": 1e-06,
+    "pressure_quadrature_field": 0.0001,
+    "field_metric": "Per-environment flattened L2 difference / reference L2 norm (floor 1e-30); maximum across environments/frames. Sampled peaks and shell resultants are checked separately."
+  },
+  "unqualified_timing_controls": [
+    {
+      "campaign": "pressure-repair-cost-v12",
+      "quadrature": [
+        32,
+        64
+      ],
+      "reason": "Runtime admission is not independent complete-bank load accuracy."
+    },
+    {
+      "selector": "Existing history=4 timing controls",
+      "reason": "Retains the prior independent complete-state/output budget failure; not recommended."
+    }
+  ],
+  "completed_utc": "2026-10-26T00:04:27.561400+00:00",
+  "maintained_engine_revision": "e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a",
+  "required_task_exit_success": {
+    "native-kernels-v13": 12,
+    "atlas-geometry-v11": 5,
+    "lifecycle-guards-v12": 12,
+    "heterogeneous-numerics128-v12": 4,
+    "complete-response-v13": 8,
+    "history-guard-uniform-v13": 2,
+    "scene-response-layout-v13": 48,
+    "focused-tests-maintained-v1": 2,
+    "heterogeneous-maintained-v1": 1,
+    "heterogeneous-maintained-audit-v1": 1,
+    "scene-maintained-guard-v1": 12
+  },
+  "preservation": {
+    "passed": true,
+    "protected_files": 12,
+    "frozen_engines": 15,
+    "journal": "preservation-final.json"
+  },
+  "retained_baseline_optimizations": [
+    "Shared shell pressure face preparation",
+    "Fixed Q4 projection reuse",
+    "Large-batch exact failed-environment compaction"
+  ],
+  "scope_of_negative_results": "These integrated/tuned variants, coarse models, declared condition banks and NVIDIA RTX PRO 6000 Blackwell Server Edition. Exact response-space atlas results do not rule out other approximate local discretizations or other hardware.",
+  "recommended_configuration": {
+    "four_condition_fixture": {
+      "scene_precision": "64",
+      "quadrature": 16,
+      "pressure_quadrature": "edge",
+      "history_size": 0
+    },
+    "heterogeneous_volume_bank64": {
+      "scene_precision": "64",
+      "quadrature": 128,
+      "pressure_quadrature": "angle",
+      "history_size": 0
+    },
+    "general_api_defaults_changed": false
+  },
+  "focused_test_receipts": [
+    {
+      "backend": "volume",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-native-candidate-integration/focused-tests-maintained-v1/group0/volume/junit.xml",
+      "bytes": 3344,
+      "sha256": "b56602a86abd0eb0dc6e3045977669ee431bcea284e0c3b3f89addc13836aa04"
+    },
+    {
+      "backend": "shell",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-native-candidate-integration/focused-tests-maintained-v1/group1/shell/junit.xml",
+      "bytes": 1422,
+      "sha256": "c902af338298759a29f28b530eb2ebb348ac42bc843b7edada100c1ee9a72beb"
+    }
+  ]
+}

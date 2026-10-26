@@ -1,9 +1,15 @@
 # Native candidate integration and tuning, 2026-10-25
 
 This report implements the [native integration goal](NATIVE_CANDIDATE_INTEGRATION_GOAL_20261025.md).
-**Work in progress:** the final response-layout comparison and production-path
-decisions remain open. The [execution ledger](NATIVE_CANDIDATE_PROGRESS_20261025.md)
-preserves the successive trials and rejected numerical configurations.
+**Completed, 2026-10-26:** all fourteen candidate/backend decisions have native
+integration, numerical, tuning, complete-scene and memory evidence. None of the
+seven incremental candidates provides a reproducible useful gain on the measured
+workloads. Their production paths are removed; the previously delivered engine
+and optional angular quadrature repair remain. The
+[execution ledger](NATIVE_CANDIDATE_PROGRESS_20261025.md) preserves the successive
+trials and rejected configurations, and the
+[requirement audit](../evidence/20261025-native-candidates-v1/metadata/requirements-final.json)
+links the fourteen separate decisions to their receipts.
 
 The baseline is the previously delivered engine `5c44042a4`. Measurements use
 NVIDIA RTX PRO 6000 Blackwell Server Edition GPUs, the established Slurm image
@@ -11,6 +17,36 @@ NVIDIA RTX PRO 6000 Blackwell Server Edition GPUs, the established Slurm image
 backend is compared with its own mother model and outputs. Shell in-plane
 sampled stress and volume three-dimensional sampled stress are different
 physical quantities; their values are not ranked against one another.
+
+## Decisions and recommended configuration
+
+Every cell below is a **native integrated and tuned negative result**, with
+its runnable implementation retained in Git. The maintained engine source is
+`e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a`; the complete experimental source is
+`d5641351a127f674b4a19bf3d921cc3be0200789`. No history is rewritten.
+
+| Candidate | Shell decision | Volume decision |
+|---|---|---|
+| Continuous curved feature atlas | Remove: 3/6/12-region and direct layouts do not improve complete scenes | Remove: the small module gain disappears in the complete scene |
+| Same-mesh aggregation / multiple RHS | Remove additional regional grouping: costs exceed the optimized one-mesh baseline | Remove additional regional grouping: no complete-scene or memory benefit |
+| Common displacement before recovery | Remove atlas-specific merge: best direct merge still loses; independent/coarse controls cost more | Remove atlas-specific merge: best direct merge still loses; independent/coarse controls cost more |
+| Complete H with state/acceptance | Remove: dense/sparse/hybrid and both layouts retain extra work beyond the required displacement gate | Remove: both layouts lose with required displacement, residual and correction included |
+| FP32 H storage / accumulation | Remove: smaller H inventory does not improve time or memory over baseline | Remove: smaller H inventory remains additional to baseline and does not improve scene time |
+| Conservative global max screening | Remove: snapshot gain does not survive the moving scene; full output costs more | Remove: max and full remain slower after block/layout tuning |
+| Sustained prediction / exact compaction | Remove new two-frame path: stronger guard passes, but scene time loses | Remove new two-frame path: stronger guard passes, but scene time loses |
+
+The earlier shared pressure preparation, fixed Q4 projection reuse and exact
+failed-environment compaction remain in production. Removing the additional
+regional/predictive candidates does not remove those baseline optimizations.
+
+For the measured four-condition fixture, retain FP64 scene arithmetic,
+`quadrature=16`, `pressure_quadrature="edge"` and `history_size=0`; choose shell
+or volume for the intended model and output. The API's general defaults are
+unchanged. For the qualified 64-condition heterogeneous volume trajectory,
+use `pressure_quadrature="angle", quadrature=128`; its extra integration cost
+is necessary for the declared load budget on this bank, not a universal
+minimum degree for other geometry. The only new maintained public option is
+that angular integration choice; the supported degree limit becomes 128.
 
 ## Native implementation and scope
 
@@ -72,6 +108,11 @@ history. History controls additionally enforce the same budget on complete
 displacement. Shell N/M/Q are compared separately; mixed units cannot hide a
 failed channel. Original relative/absolute residual tolerances are `1e-8`
 and `1e-11`, and are not treated as stress-error certificates.
+For complete-field trajectory controls, the error is the per-environment
+flattened L2 difference divided by the reference L2 norm (floor `1e-30`);
+reported values are the worst environment and frame. Sampled maxima are
+checked separately. This is not a relative-error guarantee for every nearly
+zero individual tensor component.
 
 Small independent SciPy/FP64 controls check gauged K, displacement, selected
 response columns, work and rigid-mode relief. Native geometry controls cover
@@ -98,6 +139,22 @@ atlas tensor error `6.2412e-13`, H FP32/FP32 sampled-peak error `6.4985e-7`,
 screened-peak error `4.2762e-13`, and guarded-history tensor error `3.5067e-6`.
 All required correction and lifecycle paths retain independent controls.
 
+V13's eight response controls also pass all 600 frames. The FP64 case includes
+deliberate response perturbation to force original-operator correction and
+recovery from the corrected displacement. FP32/FP32 and screening use the full
+heterogeneous bank; all eight cases include lifecycle operations.
+
+| Response control | Shell worst tensor/criterion/resultant error | Volume worst tensor/criterion error |
+|---|---:|---:|
+| FP64, including correction probe | 1.226e-12 | 3.328e-11 |
+| FP32 storage, FP64 accumulation | 3.464e-8 | 3.847e-8 |
+| FP32 storage and accumulation | 9.969e-7 | 6.499e-7 |
+| Screened sampled maximum | 7.736e-15 | 4.282e-13 |
+
+For the heterogeneous screen controls, mean evaluated block counts are
+4.65/7.14 (shell/volume), with a maximum of all 60 blocks. The method includes
+that exhaustive case; it does not assume a cheap or local maximum.
+
 ## Profile-guided tuning
 
 The native pilot includes pressure fitting, scatter, state, acceptance and
@@ -122,6 +179,15 @@ FP64-accumulation tile 4 cost more. Block64/128/256 differences are small.
 The tile4 product trace reports 80 registers/thread and 50% estimated
 occupancy; it does not establish register spilling.
 
+Input-major H reduces the measured moving-step screening kernel from the
+v6 pilot's 4.352/8.834 ms to 2.263/4.781 ms (shell/volume), including bound
+evaluation, ordering and exact candidates. Native load packing still costs
+0.454/0.157 ms. V13's shell B8192/max module is 52.334 ms against bookends
+52.619/52.715 ms; volume is 26.641 ms against 22.845/22.841 ms. This identifies
+a small shell snapshot opportunity and a remaining volume loss. Full output
+retains the expensive exhaustive product. These intrusive kernel observations
+are not added together or substituted for complete-scene wall time.
+
 Direct atlas3 gives a small volume module improvement at B8192 (22.568 ms
 against 22.775–22.786 ms), but the complete scene takes 47.429 ms against
 46.186–46.200 ms. The corresponding full-output scene takes 48.017 ms against
@@ -129,6 +195,72 @@ against 22.775–22.786 ms), but the complete scene takes 47.429 ms against
 69.993–70.117 ms; full 74.881 ms against 71.590–71.593 ms. Independent and
 coarse recovery incur more work and memory. These are complete moving-contact
 cycles, rather than conclusions drawn from the frozen module alone.
+
+The complete B8192 v11 comparison below uses output-major H and the stricter
+two-frame guard. Values are median milliseconds per evolving batch step;
+baseline ranges show the two bookend medians, not statistical confidence
+intervals. Every row preserves runtime acceptance and every-step outputs.
+
+| Path | Shell max | Shell full | Volume max | Volume full |
+|---|---:|---:|---:|---:|
+| Baseline bookends | 70.559–70.661 | 70.349–70.495 | 45.975–46.037 | 46.713–46.777 |
+| H64, tile1 | 87.991 | 113.787 | 58.381 | 58.704 |
+| H32 storage, FP64 accumulation, tile1 | 110.153 | 169.073 | 72.834 | 73.351 |
+| H32 storage/accumulation, tile4 | 72.132 | 76.773 | 47.788 | 48.448 |
+| Screen32; exhaustive H for full | 74.151 | 113.728 | 53.890 | 58.690 |
+| Guarded two-frame history | 72.032 | 71.859 | 49.336 | 50.083 |
+| Existing four-column history, timing control | 82.766 | 82.668 | 67.562 | 68.381 |
+
+The four-column predictor retains its earlier independent error-budget failure;
+its runtime-valid timing is not an accuracy-qualified recommendation. The
+input-major H/screen comparison remains separate from this fixed-source table.
+
+The 64-condition bank also loses with the output-major candidates. At B1024,
+the complete moving-scene medians are:
+
+| Path | Shell max | Shell full | Volume max, angle/q128 | Volume full, angle/q128 |
+|---|---:|---:|---:|---:|
+| Baseline bookends | 13.997–14.017 | 14.618–14.629 | 64.768–65.148 | 64.313–64.358 |
+| Direct atlas3 | 15.390 | 16.065 | 65.573 | 65.510 |
+| H32 storage/accumulation, tile4 | 15.063 | 16.865 | 66.486 | 66.004 |
+| Screen32; exhaustive H for full | 15.331 | 22.657 | 67.261 | 67.395 |
+| Guarded two-frame history | 14.380 | 15.126 | 66.307 | 65.815 |
+
+The B64 heterogeneous comparisons show the same direction. In particular,
+the stronger history guard passes its accuracy budget but does not recover
+its added maintenance/gating cost in either backend. Raw repeat distributions
+and runtime admission counts are retained in the compact benchmark receipts.
+
+## Final input-major response comparison
+
+All 48 final complete-scene tasks pass runtime acceptance. The final paired
+comparison below uses input-major H, FP32 storage/accumulation with tile4,
+and FP64 conservative screening with block32. Values are median ms per
+evolving batch step; both baseline bookends are shown. The four-condition
+bank is tiled at B64/B8192; the 64-condition bank is tiled at B1024, with
+angle/q128 used for its volume rows. Numerical qualification is supplied by
+the separate complete-field controls, not inferred from runtime admission.
+
+| Backend | Bank / B | Output | Baseline before | H32/32 | Screen32 | Baseline after |
+|---|---|---|---:|---:|---:|---:|
+| Shell | 4 conditions / 8192 | max | 69.506 | 71.143 | 69.865 | 69.392 |
+| Shell | 4 conditions / 8192 | full | 70.855 | 78.232 | 115.400 | 70.842 |
+| Volume | 4 conditions / 8192 | max | 46.375 | 48.505 | 49.857 | 46.306 |
+| Volume | 4 conditions / 8192 | full | 47.468 | 49.406 | 59.455 | 47.404 |
+| Shell | 4 conditions / 64 | max | 6.471 | 6.978 | 7.500 | 6.464 |
+| Shell | 4 conditions / 64 | full | 6.529 | 7.060 | 7.331 | 6.505 |
+| Volume | 4 conditions / 64 | max | 5.153 | 5.908 | 6.663 | 5.148 |
+| Volume | 4 conditions / 64 | full | 5.232 | 5.925 | 5.983 | 5.223 |
+| Shell | 64 conditions / 1024 | max | 13.754 | 15.180 | 14.796 | 13.721 |
+| Shell | 64 conditions / 1024 | full | 14.374 | 17.686 | 23.162 | 14.349 |
+| Volume | 64 conditions / 1024 | max | 64.745 | 66.904 | 67.308 | 64.743 |
+| Volume | 64 conditions / 1024 | full | 64.784 | 66.848 | 68.283 | 64.786 |
+
+The shell B8192/max module gain of roughly 0.5–0.7% becomes a complete-scene
+loss: screening is 69.865 ms against 69.392/69.506 ms. It is not retained as
+a specialized winner. The final heterogeneous comparisons also lose in both
+backends. All repeat latencies and attempted/runtime-admitted rates remain in
+the [benchmark receipts](../evidence/20261025-native-candidates-v1/metadata/benchmarks.json).
 
 ## Measurement contracts and memory
 
@@ -151,6 +283,18 @@ outputs. At B8192/full, the direct atlas3 adds about 617/335 MiB of scratch
 321/43.5 MiB of constant inventory; H32 approximately halves that additional
 inventory, but retains the required FP64 displacement and factors. Its input
 and scheduling workspaces remain additional to baseline.
+
+The complete H inventory has the following measured dimensions; each output
+entry is a six-component vector, with transverse resultants padded to six.
+Input-major storage changes ordering, not this inventory size.
+
+| Backend | Input channels | Output vectors | H64 bytes | H32 bytes | FP64 bounds, block32 |
+|---|---:|---:|---:|---:|---:|
+| Shell | 1458 | 4800 | 335923200 | 167961600 | 699840 |
+| Volume | 492 | 1920 | 45342720 | 22671360 | 236160 |
+
+Thus H storage is `inputs × output vectors × 6 × bytes/component`, plus bounds.
+Its cost cannot be inferred from displacement DOFs or the backend label alone.
 
 Sampled GPU peaks (200 ms sampling, including driver/context and reset state)
 are lower bounds on instantaneous peaks. Shell baseline/direct-atlas3/H64/H32/
@@ -187,7 +331,36 @@ for unqualified q32/q64. These cheaper rates are attempted timing evidence,
 not qualified equivalent-accuracy alternatives. Heterogeneous volume candidate
 comparisons all use the same q128 repair and unchanged load/state gates.
 
+## Maintained-path validation
+
+The adopted engine `e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a` restores the
+previous production engine and retains optional angular integration. All 32
+focused regressions pass (23 volume, 9 shell, no skips). Its complete
+64-condition volume trajectory passes all 600 frames, and its four saved
+fields pass the same independent fixed-fan q256 audit.
+
+The default edge/q16 full-output checks compare the original engine,
+the maintained engine and the original engine again in each allocation:
+
+| Backend / B | Original before, ms | Maintained, ms | Original after, ms |
+|---|---:|---:|---:|
+| Shell / 64 | 6.370 | 6.334 | 6.317 |
+| Volume / 64 | 5.213 | 5.265 | 5.193 |
+| Shell / 8192 | 70.715 | 70.870 | 71.125 |
+| Volume / 8192 | 46.782 | 46.894 | 45.248 |
+
+These results do not establish zero overhead from the optional quadrature
+branch: the small volume case adds about 0.06 ms. The late large-volume
+baseline changes during its own repeats (46.735, 45.099, 45.248 ms), so a
+precise overhead estimate from that bookend would confound runtime drift.
+The complete repeats are retained; no default-path speedup is claimed.
+
 ## Physical limitations
+
+The performance conclusions apply to these tuned native implementations,
+coarse discretizations, condition banks and GPU. In particular, the atlas
+result concerns exact condensed feature spaces on a shared mother model;
+it does not rule out other approximate local refinements or different hardware.
 
 The gripper box retains the user-selected ideal sharp edges and existing
 planar Hertz surrogate. These controls certify numerical consistency of the

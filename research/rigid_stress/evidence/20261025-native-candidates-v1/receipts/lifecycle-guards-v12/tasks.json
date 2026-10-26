@@ -1,0 +1,226 @@
+[
+  [
+    {
+      "name": "shell-atlas3",
+      "module": "research.rigid_stress.qipc_comparison.check_native_atlas",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "4",
+        "--steps",
+        "600",
+        "--lifecycle",
+        "--atlas-regions",
+        "3"
+      ]
+    },
+    {
+      "name": "shell-independent",
+      "module": "research.rigid_stress.qipc_comparison.check_native_atlas",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "4",
+        "--steps",
+        "600",
+        "--lifecycle",
+        "--atlas-output",
+        "independent"
+      ]
+    },
+    {
+      "name": "shell-coarse",
+      "module": "research.rigid_stress.qipc_comparison.check_native_atlas",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "4",
+        "--steps",
+        "600",
+        "--lifecycle",
+        "--atlas-partition",
+        "coarse_local"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shell-H32",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "4",
+        "--steps",
+        "600",
+        "--lifecycle",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32",
+        "--response-output-tile",
+        "4"
+      ]
+    },
+    {
+      "name": "shell-screen",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "4",
+        "--steps",
+        "600",
+        "--lifecycle",
+        "--stress-response",
+        "screen"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shell-history-guard",
+      "module": "research.rigid_stress.qipc_comparison.check_native_history",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/meta/heterogeneous-conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "64",
+        "--steps",
+        "600",
+        "--lifecycle"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-atlas3",
+      "module": "research.rigid_stress.qipc_comparison.check_native_atlas",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "4",
+        "--steps",
+        "600",
+        "--lifecycle",
+        "--atlas-regions",
+        "3"
+      ]
+    },
+    {
+      "name": "volume-independent",
+      "module": "research.rigid_stress.qipc_comparison.check_native_atlas",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "4",
+        "--steps",
+        "600",
+        "--lifecycle",
+        "--atlas-output",
+        "independent"
+      ]
+    },
+    {
+      "name": "volume-coarse",
+      "module": "research.rigid_stress.qipc_comparison.check_native_atlas",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "4",
+        "--steps",
+        "600",
+        "--lifecycle",
+        "--atlas-partition",
+        "coarse_local"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-H32",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "4",
+        "--steps",
+        "600",
+        "--lifecycle",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32",
+        "--response-output-tile",
+        "4"
+      ]
+    },
+    {
+      "name": "volume-screen",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "4",
+        "--steps",
+        "600",
+        "--lifecycle",
+        "--stress-response",
+        "screen"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-history-guard",
+      "module": "research.rigid_stress.qipc_comparison.check_native_history",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/meta/heterogeneous-conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "64",
+        "--steps",
+        "600",
+        "--lifecycle",
+        "--pressure-quadrature",
+        "angle",
+        "--quadrature",
+        "64"
+      ]
+    }
+  ]
+]

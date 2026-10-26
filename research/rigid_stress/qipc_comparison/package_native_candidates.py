@@ -14,12 +14,21 @@ def main():
     parser.add_argument("--run", type=Path, required=True)
     parser.add_argument("--summary", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--require-complete", action="store_true")
     args = parser.parse_args()
     summary = json.loads(args.summary.read_text())
     assert Path(summary["run"]).resolve() == args.run.resolve()
+    if args.require_complete:
+        submitted = {path.parent.name for path in args.run.glob("*/submission.json")}
+        assert submitted == {row["name"] for row in summary["campaigns"]}, "Regenerate the summary for all submissions."
     metadata = args.output / "metadata"
     metadata.mkdir(parents=True, exist_ok=True)
     artifacts = {str(args.summary): file_id(args.summary)}
+    collected_results = {
+        row["source"]["path"]
+        for section in ("benchmarks", "numerics", "memory", "profiles")
+        for row in summary[section]
+    }
     outcomes, source_pins = [], []
     cancellations = args.run / "meta" / "cancelled-groups.json"
     cancelled = (
@@ -64,6 +73,21 @@ def main():
                 outcome = "passed" if code == 0 else "failed" if code is not None else "missing_receipt"
                 if cancellation is not None:
                     outcome = "cancelled"
+                if args.require_complete and code == 0:
+                    result = source / f"group{group_index}" / task["name"]
+                    if result.is_dir():
+                        result = result / "result.json"
+                    if result.is_file():
+                        assert str(result) in collected_results, f"Regenerate the summary to include {result}."
+                log = source / f"group{group_index}" / f"{task['name']}.log"
+                junit = source / f"group{group_index}" / task["name"] / "junit.xml"
+                for path in (log, junit):
+                    if path.is_file():
+                        artifacts[str(path)] = file_id(path)
+                if junit.is_file():
+                    target = destination / f"group{group_index}" / f"{task['name']}.junit.xml"
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(junit, target)
                 outcomes.append(
                     dict(
                         campaign=name,
@@ -73,13 +97,15 @@ def main():
                         returncode=code,
                         outcome=outcome,
                         receipt=file_id(receipt) if receipt.is_file() else None,
+                        log=file_id(log) if log.is_file() else None,
+                        junit=file_id(junit) if junit.is_file() else None,
                         cancellation=cancellation,
                     )
                 )
     for section in ("benchmarks", "numerics", "memory", "profiles", "traces"):
         write_json(metadata / f"{section}.json", summary[section])
         for row in summary[section]:
-            for key in ("source", "benchmark"):
+            for key in ("source", "input_source", "benchmark"):
                 artifact = row.get(key)
                 if isinstance(artifact, dict) and "sha256" in artifact:
                     artifacts[artifact["path"]] = artifact
@@ -90,6 +116,7 @@ def main():
             or "stop" in path.name
             or "cancel" in path.name
             or "omission" in path.name
+            or "amendment" in path.name
         ):
             shutil.copy2(path, metadata / path.name)
             artifacts[str(path)] = file_id(path)
@@ -97,6 +124,8 @@ def main():
     write_json(metadata / "task-outcomes.json", outcomes)
     write_json(metadata / "artifacts.json", list(artifacts.values()))
     counts = dict(Counter(row["outcome"] for row in outcomes))
+    if args.require_complete:
+        assert counts.get("missing_receipt", 0) == 0, "Outstanding task receipts remain."
     write_json(
         metadata / "collection.json",
         dict(

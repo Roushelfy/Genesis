@@ -1,0 +1,68 @@
+[
+  [
+    {
+      "name": "shell-direct",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--direct-merge"
+      ]
+    },
+    {
+      "name": "shell-coarse-direct",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--direct-merge",
+        "--atlas-partition",
+        "coarse_local"
+      ]
+    },
+    {
+      "name": "shell-packed-history",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--without-atlas",
+        "--envs",
+        "1024"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-direct",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--direct-merge"
+      ]
+    },
+    {
+      "name": "volume-coarse-direct",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--direct-merge",
+        "--atlas-partition",
+        "coarse_local"
+      ]
+    },
+    {
+      "name": "volume-packed-history",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--without-atlas",
+        "--envs",
+        "1024"
+      ]
+    }
+  ]
+]

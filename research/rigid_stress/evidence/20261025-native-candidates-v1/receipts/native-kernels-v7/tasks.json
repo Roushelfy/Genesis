@@ -1,0 +1,46 @@
+[
+  [
+    {
+      "name": "shell-independent",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--atlas-output",
+        "independent"
+      ]
+    },
+    {
+      "name": "shell-coarse",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--atlas-partition",
+        "coarse_local"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-independent",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--atlas-output",
+        "independent"
+      ]
+    },
+    {
+      "name": "volume-coarse",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--atlas-partition",
+        "coarse_local"
+      ]
+    }
+  ]
+]

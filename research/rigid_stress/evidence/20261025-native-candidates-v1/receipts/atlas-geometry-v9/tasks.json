@@ -1,0 +1,55 @@
+[
+  [
+    {
+      "name": "shell-egg",
+      "module": "research.rigid_stress.qipc_comparison.check_native_atlas_geometry",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--geometry",
+        "egg"
+      ]
+    },
+    {
+      "name": "shell-nonconvex",
+      "module": "research.rigid_stress.qipc_comparison.check_native_atlas_geometry",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--geometry",
+        "nonconvex"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-egg",
+      "module": "research.rigid_stress.qipc_comparison.check_native_atlas_geometry",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--geometry",
+        "egg"
+      ]
+    },
+    {
+      "name": "volume-nonconvex",
+      "module": "research.rigid_stress.qipc_comparison.check_native_atlas_geometry",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--geometry",
+        "nonconvex"
+      ]
+    },
+    {
+      "name": "volume-complete-boundary",
+      "module": "research.rigid_stress.qipc_comparison.check_native_atlas_geometry",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--complete-boundary"
+      ]
+    }
+  ]
+]

@@ -1,0 +1,280 @@
+[
+  [
+    {
+      "name": "shell-H64-tile4",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "2",
+        "--steps",
+        "600",
+        "--response-output-tile",
+        "4",
+        "--correction-probe"
+      ]
+    },
+    {
+      "name": "shell-H32-64-tile4",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "2",
+        "--steps",
+        "600",
+        "--response-output-tile",
+        "4",
+        "--response-precision",
+        "32"
+      ]
+    },
+    {
+      "name": "shell-H32-32-tile4",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "2",
+        "--steps",
+        "600",
+        "--response-output-tile",
+        "4",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shell-screen64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "2",
+        "--steps",
+        "600",
+        "--stress-response",
+        "screen",
+        "--response-screen-block",
+        "64"
+      ]
+    },
+    {
+      "name": "shell-screen128",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "2",
+        "--steps",
+        "600",
+        "--stress-response",
+        "screen",
+        "--response-screen-block",
+        "128"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shell-heterogeneous-H32",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/meta/heterogeneous-conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "64",
+        "--steps",
+        "600",
+        "--response-output-tile",
+        "4",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32"
+      ]
+    },
+    {
+      "name": "shell-heterogeneous-screen64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/meta/heterogeneous-conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "64",
+        "--steps",
+        "600",
+        "--stress-response",
+        "screen",
+        "--response-screen-block",
+        "64"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-H64-tile4",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "2",
+        "--steps",
+        "600",
+        "--response-output-tile",
+        "4",
+        "--correction-probe"
+      ]
+    },
+    {
+      "name": "volume-H32-64-tile4",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "2",
+        "--steps",
+        "600",
+        "--response-output-tile",
+        "4",
+        "--response-precision",
+        "32"
+      ]
+    },
+    {
+      "name": "volume-H32-32-tile4",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "2",
+        "--steps",
+        "600",
+        "--response-output-tile",
+        "4",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-screen64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "2",
+        "--steps",
+        "600",
+        "--stress-response",
+        "screen",
+        "--response-screen-block",
+        "64"
+      ]
+    },
+    {
+      "name": "volume-screen128",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "2",
+        "--steps",
+        "600",
+        "--stress-response",
+        "screen",
+        "--response-screen-block",
+        "128"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-heterogeneous-H32",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/meta/heterogeneous-conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "64",
+        "--steps",
+        "600",
+        "--pressure-quadrature",
+        "angle",
+        "--quadrature",
+        "32",
+        "--response-output-tile",
+        "4",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32"
+      ]
+    },
+    {
+      "name": "volume-heterogeneous-screen64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/meta/heterogeneous-conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "64",
+        "--steps",
+        "600",
+        "--pressure-quadrature",
+        "angle",
+        "--quadrature",
+        "32",
+        "--stress-response",
+        "screen",
+        "--response-screen-block",
+        "64"
+      ]
+    }
+  ]
+]

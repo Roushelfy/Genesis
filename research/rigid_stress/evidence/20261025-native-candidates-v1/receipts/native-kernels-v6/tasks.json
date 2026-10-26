@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "name": "shell",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "shell"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "volume"
+      ]
+    }
+  ]
+]

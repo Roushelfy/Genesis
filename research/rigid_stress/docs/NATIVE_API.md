@@ -17,6 +17,16 @@ for units, frames and lifecycle, and the [measured report](SHELL_DPR_NATIVE_2026
 for configuration recommendations and physical limits. The volume-specific
 load-route qualifications below do not establish a shell contact-peak reference.
 
+For small finite-pressure footprints near a face edge, the optional
+`pressure_quadrature="angle"` uses angular fan integration while preserving
+the physical radius, pressure profile and original acceptance checks.
+`quadrature=128` passes the retained 64-condition heterogeneous volume bank;
+lower degrees do not satisfy that bank's independent load-error budget.
+The default `"edge"` mode remains unchanged. See the
+[native candidate report](NATIVE_CANDIDATE_RESULTS_20261025.md) for accuracy,
+cost and the preserved failed configurations. This is a quadrature repair,
+not a change to the declared pressure model or its physical qualifications.
+
 The [practical application report](PRACTICAL_APPLICATION_RESULTS_20261016.md)
 gives measured settings, costs and operating limits. Prefer the intrinsic
 source-prior configuration below when requiring local friction-admissible

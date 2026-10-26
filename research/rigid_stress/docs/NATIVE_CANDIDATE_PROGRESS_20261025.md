@@ -1,19 +1,19 @@
 # Native candidate integration ledger
 
-Active specification: [native integration and tuning](NATIVE_CANDIDATE_INTEGRATION_GOAL_20261025.md),
+Completed specification: [native integration and tuning](NATIVE_CANDIDATE_INTEGRATION_GOAL_20261025.md),
 revision `b8e63b195`. Baseline engine: `5c44042a4`, delivered in `f8a98971f`.
 All seven candidates require independent shell and volume native decisions.
 Previous prototype timings are supporting evidence only.
 
 | Candidate | Shell | Volume |
 | --- | --- | --- |
-| Curved feature atlas with continuous selection | Geometry, 600-frame, module/scene and memory measured; native tuned loss, cleanup pending | Inner/outer/nonconvex and 600-frame controls pass; module gain loses in scene, cleanup pending |
-| Same-mesh contact aggregation / multiple RHS | Native grouping and compact/direct layout measured; scene loss, cleanup pending | Native grouping and compact/direct layout measured; scene loss, cleanup pending |
-| Common displacement then one stress recovery | Merged/independent/coarse controls and full comparisons measured; cleanup pending | Merged/independent/coarse controls and full comparisons measured; cleanup pending |
-| Complete H including state and acceptance | FP64/correction and 600-frame controls pass; final input-major layout trial running | FP64/correction and 600-frame controls pass; final input-major layout trial running |
-| FP32 storage and accumulation | Both precisions validated and tiled/module/memory measured; final layout trial running | Both precisions validated and tiled/module/memory measured; final layout trial running |
-| Conservative global maximum screening | 600-frame/distant-peak controls and block tuning complete; final layout trial running | 600-frame/distant-peak controls and block tuning complete; final layout trial running |
-| Sustained prediction and compact fallback | Stricter guard passes both 600-frame lifecycle banks; final scene bookend pending | Stricter guard passes both 600-frame lifecycle banks; final scene bookends pending |
+| Curved feature atlas with continuous selection | Native validated/tuned negative; production path removed | Native validated/tuned negative; production path removed |
+| Same-mesh contact aggregation / multiple RHS | Native validated/tuned negative; production path removed | Native validated/tuned negative; production path removed |
+| Common displacement then one stress recovery | Native validated/tuned negative; production path removed | Native validated/tuned negative; production path removed |
+| Complete H including state and acceptance | Native validated/tuned negative; production path removed | Native validated/tuned negative; production path removed |
+| FP32 storage and accumulation | Native validated/tuned negative; production path removed | Native validated/tuned negative; production path removed |
+| Conservative global maximum screening | Native validated/tuned negative; production path removed | Native validated/tuned negative; production path removed |
+| Sustained prediction and compact fallback | Native validated/tuned negative; production path removed | Native validated/tuned negative; production path removed |
 
 ## Numerical budgets declared before selection
 
@@ -286,3 +286,49 @@ screening and tiled evaluation. Numerical formulas, input order, FP64 state,
 original-operator gates and correction fallback are unchanged. Small native
 controls precede matched layout timings. All fourteen retention decisions
 remain open pending complete evidence and final production-path cleanup.
+
+
+## Final layout and maintained-path checks
+
+V13's twelve small kernel controls all pass. Its shell B8192/max screened
+module takes `52.334 ms` against baseline bookends `52.619 / 52.715 ms`;
+screen block64 takes `53.481 ms`. This small block32 advantage still requires
+the complete evolving-scene comparison. FP32/FP32 tile4 remains slower in
+this module (`55.624 ms`). The selected final scene campaign compares
+FP32/FP32 tile4 and screen32 at B64/B8192 in max/full, plus the heterogeneous
+B1024 max/full cases. It reuses unchanged pure-rigid and inventory controls.
+
+Both V13 guarded-history tiled four-condition lifecycle controls pass all
+600 frames, with worst displacement `2.2859e-7` (shell) and `2.2741e-7`
+(volume). The complete-bank heterogeneous guards already pass at q16 shell
+and angle/q128 volume. These controls match the stricter predictor used in
+the complete scene timings.
+
+An isolated maintained-path proposal `e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a`
+removes candidate hot paths while retaining the previously delivered engine
+and optional angular integration. It is frozen in
+`native-candidates-maintained-v1`; it has not replaced the task branch while
+final retention decisions remain open. Existing focused regressions, a full
+64-condition angle/q128 trajectory and its fixed-fan audit, and paired
+complete-scene comparisons against `5c44042a4` check this proposal. The final
+branch will incorporate only a configuration supported by the completed
+measurements. All experiment pins remain available and unchanged.
+
+## Final delivery, 2026-10-26
+
+All 48 final input-major complete-scene tasks pass, with no useful gain over
+matched baselines. All fourteen native candidate/backend decisions are tuned
+negative results. The task branch adopts `e67a86c18` and retains the earlier
+production optimizations plus optional angular quadrature. The candidate
+paths and their extra public options are removed from production; all pinned
+native experiments and failed trials remain reproducible.
+
+The adopted source passes 32 focused regressions (23 volume, 9 shell), the
+full 64-condition angle/q128 trajectory, its four fixed-fan q256 field audits,
+and 12 default-path complete-scene controls. Raw repeat drift and the small
+volume overhead remain explicit in the final report. The original acceptance
+budgets and 12 protected files are unchanged. Earlier entries above are a
+chronological execution record, not current open tasks.
+
+Read the [final report](NATIVE_CANDIDATE_RESULTS_20261025.md) and
+[requirement audit](../evidence/20261025-native-candidates-v1/metadata/requirements-final.json).

@@ -3,8 +3,14 @@
 Read the [result report](../../docs/NATIVE_CANDIDATE_RESULTS_20261025.md),
 [integration goal](../../docs/NATIVE_CANDIDATE_INTEGRATION_GOAL_20261025.md)
 and [execution ledger](../../docs/NATIVE_CANDIDATE_PROGRESS_20261025.md).
-This packet is being assembled while the final comparisons finish; an absent
-task receipt is not a pass or a completed retention decision.
+All fourteen candidate/backend decisions are complete as native tuned negative
+results. The [requirement audit](metadata/requirements-final.json) links each
+decision to its numerical, tuning, complete-scene and memory evidence. The
+maintained engine is `e67a86c18f7cf11db28ccc2df22a3ba3a5ddf03a`: prior production
+optimizations plus the optional angular quadrature repair. All 32 focused
+regressions, the maintained heterogeneous trajectory/reference checks and the
+final 48 candidate scene tasks pass. Historical failed/cancelled experiments
+remain explicitly classified rather than counted as successful qualification.
 
 Raw arrays, full fields, traces, job logs and captured analysis sources stay in:
 
@@ -18,9 +24,13 @@ displacement failures are retained. A successful runtime fit does not imply
 passing the separate complete-field accuracy budget.
 
 `receipts/` preserves task lists and Slurm submissions. `metadata/` contains
-source pins and external artifact hashes, numerical summaries, repeated
+source pins and external artifact/log hashes, numerical summaries, repeated
 latencies, preparation and memory inventories, profiles and preservation
-checks. Large payloads are referenced rather than copied into Git. The small
+checks. Compact JUnit receipts are retained under the corresponding campaign.
+Numerical rows use `source` for the result receipt and `input_source` for a
+worker's input snapshot when present; both artifact identities are preserved.
+Job walltime/concurrency amendments are recorded separately from the original
+submission receipts; they changed no numerical task or repeat count. Large payloads are referenced rather than copied into Git. The small
 [four-condition bank](../20261025-gpu-throughput-v1/conditions/tiled-four.npz)
 and [64-condition bank](../20261025-gpu-throughput-v1/conditions/heterogeneous-64.npz)
 are reused from the preceding packet. Tiling these banks to larger batches
@@ -75,9 +85,11 @@ python3 -m research.rigid_stress.qipc_comparison.collect_gpu_throughput \
   --run "$RUN" --output "$RUN/meta/summary.json"
 python3 -m research.rigid_stress.qipc_comparison.package_native_candidates \
   --run "$RUN" --summary "$RUN/meta/summary.json" \
-  --output research/rigid_stress/evidence/20261025-native-candidates-v1
+  --output research/rigid_stress/evidence/20261025-native-candidates-v1 --require-complete
 ```
 
-The final requirement audit is separate from collection: it links all fourteen
+The final requirement audit is separate from collection. Collection requires
+every submitted task to have a receipt or a retained cancellation record and
+every successful result to appear in the summary. The audit links all fourteen
 candidate/backend decisions to native numerical, tuning, complete-scene and
 memory evidence and to the resulting maintained production code.

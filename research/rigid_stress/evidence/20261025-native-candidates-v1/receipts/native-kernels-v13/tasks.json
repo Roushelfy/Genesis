@@ -1,0 +1,170 @@
+[
+  [
+    {
+      "name": "shell-tile1-64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--direct-merge"
+      ]
+    },
+    {
+      "name": "shell-tile4-64-screen64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--direct-merge",
+        "--response-output-tile",
+        "4",
+        "--response-screen-block",
+        "64"
+      ]
+    },
+    {
+      "name": "shell-tile1-32-64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--direct-merge",
+        "--response-precision",
+        "32"
+      ]
+    },
+    {
+      "name": "shell-tile4-32-32",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--direct-merge",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32",
+        "--response-output-tile",
+        "4"
+      ]
+    },
+    {
+      "name": "shell-tile4-dense32",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--direct-merge",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32",
+        "--response-output-tile",
+        "4",
+        "--stress-response",
+        "dense"
+      ]
+    },
+    {
+      "name": "shell-tile4-hybrid32",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--direct-merge",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32",
+        "--response-output-tile",
+        "4",
+        "--stress-response",
+        "hybrid"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-tile1-64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--direct-merge"
+      ]
+    },
+    {
+      "name": "volume-tile4-64-screen64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--direct-merge",
+        "--response-output-tile",
+        "4",
+        "--response-screen-block",
+        "64"
+      ]
+    },
+    {
+      "name": "volume-tile1-32-64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--direct-merge",
+        "--response-precision",
+        "32"
+      ]
+    },
+    {
+      "name": "volume-tile4-32-32",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--direct-merge",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32",
+        "--response-output-tile",
+        "4"
+      ]
+    },
+    {
+      "name": "volume-tile4-dense32",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--direct-merge",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32",
+        "--response-output-tile",
+        "4",
+        "--stress-response",
+        "dense"
+      ]
+    },
+    {
+      "name": "volume-tile4-hybrid32",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--direct-merge",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32",
+        "--response-output-tile",
+        "4",
+        "--stress-response",
+        "hybrid"
+      ]
+    }
+  ]
+]

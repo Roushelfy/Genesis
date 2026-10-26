@@ -5,7 +5,19 @@ all regression tests remain active. Superseded research lives in the existing
 Git history, rather than a second large directory in the checkout.
 Historical instructions are records and do not override [AGENTS.md](../AGENTS.md).
 
-The [sharp-edge scene integration packet](../evidence/20261019-qualified-ranking/hard-native-hard-scene-v1/README.md) retains exact executed sources, the admitted first sharp-contact frame, failed moving-frame quadrature, and all diagnostic failures. The active goal remains open; failed frames are excluded from useful throughput.
+The [sharp-edge scene integration packet](../evidence/20261019-qualified-ranking/hard-native-hard-scene-v1/README.md) retains exact executed sources, the admitted first sharp-contact frame, failed moving-frame quadrature, and all diagnostic failures. These are historical results; [GOAL.md](../GOAL.md) records the current task. Failed frames are excluded from useful throughput.
+
+## Native candidate integration experiments
+
+The [native candidate packet](../evidence/20261025-native-candidates-v1/README.md)
+links the seven-by-two decisions, measured tuning and complete-scene evidence.
+The complete native experimental engine is retained at
+`d5641351a127f674b4a19bf3d921cc3be0200789` (input-major H, continuous curved
+atlas, grouped/common recovery, precision, screening and sustained history).
+`7bbfa4faa8295f21ea9ce17c8c3ef7391042aab5` retains the output-major comparison.
+Use the packet's source pins and task receipts to reconstruct each earlier
+variant; captured analysis sources on data remain authoritative. Removing an
+unhelpful production path does not remove its runnable implementation from Git.
 
 ## Find an original
 

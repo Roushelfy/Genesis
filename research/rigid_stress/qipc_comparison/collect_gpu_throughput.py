@@ -157,8 +157,10 @@ def main():
                 # A still-running worker may be replacing its progress receipt.
                 continue
             item = dict(campaign=campaign.name, name=path.parent.name, source=identity(path))
+            if "source" in data:
+                item["input_source"] = data["source"]
             if "sampled_peak_MiB" in data:
-                item.update({key: value for key, value in data.items() if key != "rows"})
+                item.update({key: value for key, value in data.items() if key not in ("rows", "source")})
                 benchmark = path.parent / "benchmark.json"
                 if benchmark.is_file():
                     measured = json.loads(benchmark.read_text())
@@ -179,7 +181,7 @@ def main():
                 for key in ("load_error", "grouped_error", "grouped_load_relative", "force_error", "moment_error"):
                     if key in row:
                         errors[key] = max(errors[key], row[key])
-            item.update({key: value for key, value in data.items() if key not in ("rows", "comparisons")})
+            item.update({key: value for key, value in data.items() if key not in ("rows", "comparisons", "source")})
             item["observation_count"] = len(rows)
             item["worst_errors"] = dict(errors)
             loaded = sum(row.get("loaded", 0) for row in rows)

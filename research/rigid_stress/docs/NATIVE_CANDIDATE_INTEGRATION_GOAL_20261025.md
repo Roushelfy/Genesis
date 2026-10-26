@@ -1,6 +1,10 @@
 # Native integration and tuning of stress recovery candidates
 
-**Active user goal, 2026-10-25.** Take all seven GPU optimization candidates
+**Delivered, 2026-10-26:** see the [final report](NATIVE_CANDIDATE_RESULTS_20261025.md)
+and [fourteen-cell audit](../evidence/20261025-native-candidates-v1/metadata/requirements-final.json).
+The original specification below is preserved.
+
+**User goal, 2026-10-25.** Take all seven GPU optimization candidates
 through real native integration, targeted tuning and matched measurement.
 Keep the paths that improve useful throughput or the measured
 accuracy/resource tradeoff. Revert production paths that remain unfavorable

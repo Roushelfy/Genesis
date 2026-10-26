@@ -1,0 +1,31 @@
+[
+  [
+    {
+      "name": "volume-angle32",
+      "module": "research.rigid_stress.qipc_comparison.check_automatic_dpr_scene",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/meta/heterogeneous-conditions.npz",
+        "--mode",
+        "hertz",
+        "--batch",
+        "4",
+        "--steps",
+        "600",
+        "--quadrature",
+        "32",
+        "--pressure-quadrature",
+        "angle",
+        "--stress-backend",
+        "volume",
+        "--box-edge-policy",
+        "planar",
+        "--field-steps",
+        "129",
+        "221",
+        "400",
+        "599"
+      ]
+    }
+  ]
+]

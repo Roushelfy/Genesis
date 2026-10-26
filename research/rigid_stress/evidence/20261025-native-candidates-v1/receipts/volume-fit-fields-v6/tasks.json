@@ -1,0 +1,82 @@
+[
+  [
+    {
+      "name": "angle16",
+      "module": "research.rigid_stress.qipc_comparison.inspect_volume_fit",
+      "args": [
+        "--failure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/heterogeneous-volume-audit-v1/group1/volume-v6/failure.npz",
+        "--backend",
+        "cpu",
+        "--quadrature",
+        "16",
+        "--angular"
+      ]
+    },
+    {
+      "name": "angle32",
+      "module": "research.rigid_stress.qipc_comparison.inspect_volume_fit",
+      "args": [
+        "--failure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/heterogeneous-volume-audit-v1/group1/volume-v6/failure.npz",
+        "--backend",
+        "cpu",
+        "--quadrature",
+        "32",
+        "--angular"
+      ]
+    },
+    {
+      "name": "angle64",
+      "module": "research.rigid_stress.qipc_comparison.inspect_volume_fit",
+      "args": [
+        "--failure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/heterogeneous-volume-audit-v1/group1/volume-v6/failure.npz",
+        "--backend",
+        "cpu",
+        "--quadrature",
+        "64",
+        "--angular"
+      ]
+    },
+    {
+      "name": "angle128",
+      "module": "research.rigid_stress.qipc_comparison.inspect_volume_fit",
+      "args": [
+        "--failure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/heterogeneous-volume-audit-v1/group1/volume-v6/failure.npz",
+        "--backend",
+        "cpu",
+        "--quadrature",
+        "128",
+        "--angular"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "edge64",
+      "module": "research.rigid_stress.qipc_comparison.inspect_volume_fit",
+      "args": [
+        "--failure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/heterogeneous-volume-audit-v1/group1/volume-v6/failure.npz",
+        "--backend",
+        "cpu",
+        "--quadrature",
+        "64"
+      ]
+    },
+    {
+      "name": "edge128",
+      "module": "research.rigid_stress.qipc_comparison.inspect_volume_fit",
+      "args": [
+        "--failure",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-gpu-throughput/heterogeneous-volume-audit-v1/group1/volume-v6/failure.npz",
+        "--backend",
+        "cpu",
+        "--quadrature",
+        "128"
+      ]
+    }
+  ]
+]

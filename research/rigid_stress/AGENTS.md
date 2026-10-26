@@ -1,22 +1,23 @@
 # Working on native rigid stress recovery
 
-**Active user goal, 2026-10-25:** follow [GOAL.md](GOAL.md) and
-[the native integration/tuning goal](docs/NATIVE_CANDIDATE_INTEGRATION_GOAL_20261025.md).
-All seven candidates now require real native trials and targeted tuning in
-both midsurface shell and three-dimensional volume FEM before separate
-retention/reversion decisions. Keep a seven-by-two completion matrix and each
-backend's own mother space, gauge/relief, H, output and numerical baseline. Curved atlas mapping and common
-gauge/inertia relief are implementation tasks. Earlier standalone planar,
-H-only or recovery-only evidence and "mapping not implemented" cannot close
-this stage. Preserve and reuse prior evidence; measure the costs and
-interactions that native integration changes.
+**Latest delivery, 2026-10-26:** the native candidate integration/tuning goal
+is complete for both shell and volume. Read [GOAL.md](GOAL.md),
+[the final report](docs/NATIVE_CANDIDATE_RESULTS_20261025.md) and
+[the fourteen-cell requirement audit](evidence/20261025-native-candidates-v1/metadata/requirements-final.json).
+All seven candidates have native numerical, tuning, module/complete-scene and
+memory evidence in each backend. Their incremental production paths were
+removed after tuned negative results; runnable source pins remain in Git.
+Preserve the earlier shared pressure preparation, Q4 projection reuse and
+exact fallback compaction. Optional angular/q128 integration now admits and
+passes independent field checks for the retained 64-condition volume bank;
+its cost and lower-degree failures remain separate from scheduling results.
 
-Keep numerical preparation/runtime in Quadrants and preserve the existing
-load, acceptance, output and lifecycle contracts. Prioritize low-resolution
-numerics, profiling and complete Franka throughput. Keep useful winners and
-reproducible native negative results with a small public configuration.
-This explicit user goal supersedes prior completion/no-reopening language
-for these candidates. Earlier deliveries and standing policies follow.
+Keep FP64/history-off recommendations, original residual/load/lifecycle
+contracts and the small maintained public configuration. The measured
+four-condition fixture uses edge/q16; the heterogeneous volume qualification
+uses angle/q128. These numerical controls do not qualify continuum sharp-edge
+peaks or reopen high-resolution physical convergence. Follow the standing
+storage, source-preservation and engineering policies below.
 
 ## Previous deliveries
 

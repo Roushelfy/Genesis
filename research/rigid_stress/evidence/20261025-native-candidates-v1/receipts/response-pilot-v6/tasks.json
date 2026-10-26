@@ -1,0 +1,140 @@
+[
+  [
+    {
+      "name": "shell-sparse-64-64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--stress-response",
+        "sparse",
+        "--response-precision",
+        "64",
+        "--response-accumulation",
+        "64",
+        "--correction-probe"
+      ]
+    },
+    {
+      "name": "volume-sparse-64-64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--stress-response",
+        "sparse",
+        "--response-precision",
+        "64",
+        "--response-accumulation",
+        "64",
+        "--correction-probe"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shell-sparse-32-64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--stress-response",
+        "sparse",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "64"
+      ]
+    },
+    {
+      "name": "volume-sparse-32-64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--stress-response",
+        "sparse",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "64"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shell-sparse-32-32",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--stress-response",
+        "sparse",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32"
+      ]
+    },
+    {
+      "name": "volume-sparse-32-32",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--stress-response",
+        "sparse",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shell-screen-64-64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "shell",
+        "--stress-response",
+        "screen",
+        "--response-precision",
+        "64",
+        "--response-accumulation",
+        "64"
+      ]
+    },
+    {
+      "name": "volume-screen-64-64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_response",
+      "args": [
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--stress-backend",
+        "volume",
+        "--stress-response",
+        "screen",
+        "--response-precision",
+        "64",
+        "--response-accumulation",
+        "64"
+      ]
+    }
+  ]
+]

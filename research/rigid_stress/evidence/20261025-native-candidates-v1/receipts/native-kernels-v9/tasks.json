@@ -1,0 +1,66 @@
+[
+  [
+    {
+      "name": "shell-64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "shell"
+      ]
+    },
+    {
+      "name": "shell-32-64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--response-precision",
+        "32"
+      ]
+    },
+    {
+      "name": "shell-32-32",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "volume"
+      ]
+    },
+    {
+      "name": "volume-32-64",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--response-precision",
+        "32"
+      ]
+    },
+    {
+      "name": "volume-32-32",
+      "module": "research.rigid_stress.qipc_comparison.check_native_candidate_kernels",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32"
+      ]
+    }
+  ]
+]

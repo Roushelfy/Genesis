@@ -1,0 +1,286 @@
+[
+  [
+    {
+      "name": "shell-baseline",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "8956740bf"
+      ]
+    },
+    {
+      "name": "shell-atlas6",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "8956740bf",
+        "--atlas-regions",
+        "6"
+      ]
+    },
+    {
+      "name": "shell-H64",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "8956740bf",
+        "--stress-response",
+        "sparse",
+        "--response-output-tile",
+        "4"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "shell-H32-64",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "8956740bf",
+        "--stress-response",
+        "sparse",
+        "--response-output-tile",
+        "4",
+        "--response-precision",
+        "32"
+      ]
+    },
+    {
+      "name": "shell-H32-32",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "8956740bf",
+        "--stress-response",
+        "sparse",
+        "--response-output-tile",
+        "4",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32"
+      ]
+    },
+    {
+      "name": "shell-screen64",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "8956740bf",
+        "--stress-response",
+        "screen",
+        "--response-screen-block",
+        "64"
+      ]
+    },
+    {
+      "name": "shell-history2",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "shell",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "8956740bf",
+        "--history",
+        "2"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-baseline",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "8956740bf"
+      ]
+    },
+    {
+      "name": "volume-atlas6",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "8956740bf",
+        "--atlas-regions",
+        "6"
+      ]
+    },
+    {
+      "name": "volume-H64",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "8956740bf",
+        "--stress-response",
+        "sparse",
+        "--response-output-tile",
+        "4"
+      ]
+    }
+  ],
+  [
+    {
+      "name": "volume-H32-64",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "8956740bf",
+        "--stress-response",
+        "sparse",
+        "--response-output-tile",
+        "4",
+        "--response-precision",
+        "32"
+      ]
+    },
+    {
+      "name": "volume-H32-32",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "8956740bf",
+        "--stress-response",
+        "sparse",
+        "--response-output-tile",
+        "4",
+        "--response-precision",
+        "32",
+        "--response-accumulation",
+        "32"
+      ]
+    },
+    {
+      "name": "volume-screen64",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "8956740bf",
+        "--stress-response",
+        "screen",
+        "--response-screen-block",
+        "64"
+      ]
+    },
+    {
+      "name": "volume-history2",
+      "module": "research.rigid_stress.qipc_comparison.measure_gpu_memory",
+      "args": [
+        "--stress-backend",
+        "volume",
+        "--envs",
+        "8192",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261019-qualified-ranking/hard-finite-edge-franka-boundary-v2/group0/franka/conditions.npz",
+        "--output-mode",
+        "full",
+        "--source-revision",
+        "8956740bf",
+        "--history",
+        "2"
+      ]
+    }
+  ]
+]
