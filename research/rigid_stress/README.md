@@ -9,28 +9,33 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
-## Active: true local-refinement atlas follow-up
+## Delivered: true local-refinement atlas (2026-10-26)
 
-The [current review and goal](docs/ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md)
-keeps the original local-fine/coarse-far-field route open in both backends.
-The prior exact same-mother response partition does not test its spatial
-accuracy/cost mechanism. Start from the [CPU source guide](docs/ATLAS_CPU_REFERENCE_GUIDE.md)
-and preserve the accepted H/FP32/screen/history negative evidence.
-See [GOAL.md](GOAL.md) for current integration and completion priorities.
+Real `T_i=[P,B_i]` and smaller `K_i` now have native shell/volume controls,
+combined field/peak checks, bounded tuning and matched complete Franka evidence.
+The measured full path remains slower than the optimized mother; sufficiently
+small libraries fail the declared spatial budgets. Source aggregation and one
+global recovery give useful internal gains, but their atlas dependency is not
+retained in production. Twenty cleanup regressions pass.
+Read [the report](docs/LOCAL_REFINEMENT_RESULTS_20261026.md),
+[the six-cell packet](evidence/20261026-local-refinement-v1/README.md),
+[the delivered review/specification](docs/ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md)
+and [GOAL.md](GOAL.md). Runnable native experiments remain at `822ad2854`.
 
 The [reconstructed 5,196-DOF CPU reference](atlas_study/cpu_repro/README.md)
 now supplies genuine shared-coarse/local-enrichment spaces, source-wise
 selection, batched solves, complete responses, history and condensation
 experiments. Its [new measured report](atlas_study/cpu_repro/REPORT_ZH.md)
 separates the retained historical claims from newly frozen cases and timings.
-This supplementary CPU implementation does not close the native migration goal.
+This CPU implementation remains the algorithm reference; the native follow-up
+has its own numerical, accuracy/cost and memory evidence above.
 
 ## Delivered: native candidate integration and tuning (2026-10-26)
 
 The seven measured candidate implementations were integrated and tuned for
 midsurface shell and volume FEM. Their fourteen measured decisions are negative
 on those workloads. The atlas is the exact response-partition special case;
-the current review keeps genuine local-refinement integration open. Unhelpful
+the subsequent follow-up above tests genuine local refinement separately. Unhelpful
 production paths were removed with runnable experiment pins and failures retained.
 Read [the final report](docs/NATIVE_CANDIDATE_RESULTS_20261025.md),
 [the ledger](docs/NATIVE_CANDIDATE_PROGRESS_20261025.md) and

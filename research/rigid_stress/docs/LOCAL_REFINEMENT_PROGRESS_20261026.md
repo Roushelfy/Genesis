@@ -10,14 +10,17 @@ The previous complete-response partition remains a scoped historical experiment.
 
 | Candidate family | Shell | Volume |
 |---|---|---|
-| Genuine coarse plus local feature spaces | Open: native construction and independent controls | Open: native construction and independent controls |
-| Per-feature contact aggregation and multiple RHS | Open | Open |
-| Common displacement then one full-domain recovery | Open | Open |
+| Genuine coarse plus local feature spaces | Complete: native/numerical proof; tuned spatial/cost result unretained | Complete: low/moderate native/numerical proof; tuned result unretained |
+| Per-feature contact aggregation and multiple RHS | Complete: beneficial internal component; atlas dependency removed | Complete: beneficial internal component; atlas dependency removed |
+| Common displacement then one full-domain recovery | Complete: beneficial internal component; atlas dependency removed | Complete: beneficial internal component; atlas dependency removed |
 
 Completion requires actual smaller independent coordinates/operators, numerical
 and spatial qualification, targeted tuning, paired module and complete Franka
 max/full timing, and setup/shared/per-environment/peak memory for each backend.
 Preserve the earlier H/FP32/screen/history results without unchanged reruns.
+These requirements are now evaluated in the [results](LOCAL_REFINEMENT_RESULTS_20261026.md)
+and [six-cell audit](../evidence/20261026-local-refinement-v1/metadata/requirements-final.json).
+The dated entries below preserve intermediate decisions, including their then-open work.
 
 ## Budgets declared before selection
 
@@ -208,3 +211,33 @@ runtime validation remain pending. A separate four-path component replay
 isolates source aggregation at fixed one-stress output and merged recovery
 at fixed grouped solves. Its optional signed raw-load cancellation control
 is an algebra diagnostic, not physical contact qualification.
+
+## Completed delivery
+
+The cooperative selector (`selector-v7`, 751327) passes all 80 scalar/warp
+comparisons with identical weights and fallback flags. `postwarp-full-v7`
+(751340) passes normal/lifecycle/heterogeneous 600-frame trajectories for the
+qualified wide libraries in both backends. The moderate volume mother has
+3210 blocks and genuine feature sizes 2446/2405/2200; its 140-frame pass does
+not survive 600 frames (15.6672% tensor error). Its independent keyframe
+coarse/local/joint/mother audit and matched replay timing pass (751371).
+
+`components-v8` (751351) completes nine four-path controls. Source aggregation
+and merged recovery have useful separate internal gains with factor and
+boundary-response solves. The signed volume load control has a tensor
+cancellation ratio about 0.014; its total-field spatial error remains rejected
+despite a small source-normalized error. It is not physical-contact evidence.
+
+Both final paired banks (`postwarp-paired-v7`, 751335;
+`heterogeneous-paired-v7`, 751355) remain slower than the optimized mother for
+max/full, small/large batches. Final actual-path profiling and memory
+(`final-profile-v7`, 751364) complete in all ten cases. All 136 benchmark
+outputs across the tuning/final campaigns retain 552 raw repeats.
+
+Production cleanup `36f887350` restores `genesis`/`examples` byte-for-byte to
+`4bc4ada25`; complete runnable native research remains at `822ad2854`.
+Cleanup regressions (751411) pass 9 shell and 11 volume tests, without skips.
+Twelve original files, fifteen original frozen revisions and all twenty-three
+frozen engines pass preservation checks. Runtime arrays/logs/caches stay under
+the established data-side run root; the compact publication packet includes
+small SHA-identical reproduction input banks.

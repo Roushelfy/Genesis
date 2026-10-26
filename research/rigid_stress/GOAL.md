@@ -1,29 +1,28 @@
 # Native rigid stress recovery: local-refinement atlas follow-up
 
-**Active user goal:** complete real locally refined feature meshes/spaces,
-per-feature batching and merged recovery in both shell and volume.
-Read [the review and remaining goal](docs/ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md)
-and [the CPU source guide](docs/ATLAS_CPU_REFERENCE_GUIDE.md).
+**Completed, 2026-10-26:** genuine shared-coarse/local Galerkin spaces,
+per-feature source aggregation and merged recovery have native implementation,
+numerical controls and separate shell/volume decisions. Read
+[the measured report](docs/LOCAL_REFINEMENT_RESULTS_20261026.md),
+[the execution ledger](docs/LOCAL_REFINEMENT_PROGRESS_20261026.md) and
+[the six-cell evidence packet](evidence/20261026-local-refinement-v1/README.md).
 
-The previous atlas trial partitions the exact response of one complete model.
-Its negative timing does not test local fine enrichment with coarse far-field
-coordinates. Those first three candidate families remain open under the
-original spatial-approximation intent. Preserve the native H/FP32/screen/history
-negative evidence and the maintained pressure/fallback/optional angular path.
+Smaller feature operators pass original numerical, common-mother, rank and
+virtual-work controls. Bounded spatial tuning, complete Franka max/full
+accuracy/cost, heterogeneous/lifecycle controls, profiling and memory show no
+useful complete-path gain on the measured models. Aggregation and one recovery
+have useful internal gains, but depend on the unretained atlas. Experimental
+code remains runnable at `822ad2854`; production code matches `4bc4ada25`.
+Twenty cleanup regressions pass. Earlier pressure/fallback/angular winners
+and the scoped H/FP32/screen/history negatives remain preserved.
 
-Use actual smaller feature discretizations or validated reduced spaces with
-common physical geometry, load maps and mother-defined mass/gauge/relief.
-Separate feature solve residual from spatial approximation against the mother;
-an unconditional full mother correction must not erase the intended reduction.
-Keep existing exact-mode assertions and qualify an explicit approximate mode
-with combined full-field/peak error budgets.
-
-Prioritize low-resolution numerical consistency, detailed profiling and matched
-accuracy/time/memory comparisons, including complete Franka workflows.
-Native numerical preparation/runtime stay in Quadrants. Retain useful winners
-or a reproducible tuned negative for this actual local-refinement mechanism.
-Missing feature spaces or unchanged complete-response partitioning cannot close
-the task. Follow the detailed review for scope and completion.
+The [review and delivered specification](docs/ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md)
+and [CPU source guide](docs/ATLAS_CPU_REFERENCE_GUIDE.md) explain this follow-up.
+Its real smaller spaces, separate numerical/spatial gates and tuned negative
+results close the three reopened families in both backends. This does not
+qualify arbitrary nonconvex spatial surrogates or continuum sharp-edge peaks,
+and does not rule out other reduced-space constructions. Avoid unchanged reruns
+unless a new user goal supplies new scope.
 
 ## Historical candidate delivery, scoped by the current review
 

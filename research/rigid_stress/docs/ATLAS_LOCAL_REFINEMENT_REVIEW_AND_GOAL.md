@@ -1,5 +1,13 @@
 # Local-refinement atlas: review and remaining native goal
 
+**Follow-up delivered, 2026-10-26:** the required real reduced spaces and six
+backend/family decisions are complete. Read [the native results](LOCAL_REFINEMENT_RESULTS_20261026.md)
+and [the evidence packet](../evidence/20261026-local-refinement-v1/README.md).
+The measured local path is not retained; useful internal aggregation/recovery
+increments and all runnable experimental sources remain recorded. The text
+below preserves the delivered specification and its correction of the earlier
+exact-partition experiment; it is not an unfinished implementation request.
+
 **Active user direction, 2026-10-25.** Complete the original locally refined
 feature-mesh route for both midsurface shell and three-dimensional volume FEM.
 The previous response-partition experiments remain valid evidence for their

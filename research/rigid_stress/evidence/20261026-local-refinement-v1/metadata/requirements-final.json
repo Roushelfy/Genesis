@@ -1,0 +1,376 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-26T12:17:03.567026+00:00",
+  "objective": "Complete the real native local-refinement atlas follow-up for both shell and volume",
+  "status": "complete",
+  "decision_scope": "Measured discrete native implementations and workloads; no universal reduced-space or continuum sharp-edge accuracy claim",
+  "production_retention": "restore_exact_maintained_path",
+  "production_engine_pin": "36f8873501d530e0baabf3c87b68ad320cafb54e",
+  "production_matches": "4bc4ada25cefc70616b082011c4660ea84038f8e",
+  "experimental_engine_pin": "a971d61d127148401cff2de0d0552daa60e77105",
+  "experimental_research_pin": "822ad285497f79d3a24f3ce2f0dd7a58ec6cd699",
+  "numerical_tolerances": {
+    "relative": 1e-08,
+    "absolute": 1e-11,
+    "space": "each_unscaled_declared_operator"
+  },
+  "spatial_budgets": {
+    "weighted_complete_tensor": 0.1,
+    "whole_object_sampled_peak": 0.05,
+    "shell_resultants": 0.1,
+    "mean_tensor_target": 0.05
+  },
+  "cells": [
+    {
+      "family": "genuine_coarse_plus_local_spaces",
+      "backend": "shell",
+      "status": "complete",
+      "decision": "tested_not_retained",
+      "numerical": "pass_original_tolerances",
+      "spatial": "smaller_libraries_fail_selected_combined_budgets; admitted_low_model_corner_has_two_full_size_features",
+      "runtime": "no_useful_full_path_gain_in_matched_measured_regimes",
+      "evidence": [
+        "accuracy.json",
+        "geometry.json",
+        "joint.json",
+        "benchmarks.json",
+        "profiles.json"
+      ]
+    },
+    {
+      "family": "per_feature_source_aggregation_and_multiple_rhs",
+      "backend": "shell",
+      "status": "complete",
+      "decision": "beneficial_internal_component_dependency_not_retained",
+      "numerical": "four_path_full_field_equivalence_pass",
+      "scope": "same_native_feature_operators_and_saved_native_loads; not_complete_scene_speedup",
+      "evidence": [
+        "components.json",
+        "benchmarks.json"
+      ]
+    },
+    {
+      "family": "common_displacement_then_one_full_recovery",
+      "backend": "shell",
+      "status": "complete",
+      "decision": "beneficial_internal_component_dependency_not_retained",
+      "numerical": "four_path_full_field_equivalence_pass",
+      "scope": "same_native_feature_operators_and_saved_native_loads; not_complete_scene_speedup",
+      "evidence": [
+        "components.json",
+        "benchmarks.json"
+      ]
+    },
+    {
+      "family": "genuine_coarse_plus_local_spaces",
+      "backend": "volume",
+      "status": "complete",
+      "decision": "tested_not_retained",
+      "numerical": "pass_original_tolerances",
+      "spatial": "smaller_libraries_fail_selected_combined_budgets; admitted_low_model_corner_has_two_full_size_features",
+      "runtime": "no_useful_full_path_gain_in_matched_measured_regimes",
+      "evidence": [
+        "accuracy.json",
+        "geometry.json",
+        "joint.json",
+        "benchmarks.json",
+        "profiles.json"
+      ]
+    },
+    {
+      "family": "per_feature_source_aggregation_and_multiple_rhs",
+      "backend": "volume",
+      "status": "complete",
+      "decision": "beneficial_internal_component_dependency_not_retained",
+      "numerical": "four_path_full_field_equivalence_pass",
+      "scope": "same_native_feature_operators_and_saved_native_loads; not_complete_scene_speedup",
+      "evidence": [
+        "components.json",
+        "benchmarks.json"
+      ]
+    },
+    {
+      "family": "common_displacement_then_one_full_recovery",
+      "backend": "volume",
+      "status": "complete",
+      "decision": "beneficial_internal_component_dependency_not_retained",
+      "numerical": "four_path_full_field_equivalence_pass",
+      "scope": "same_native_feature_operators_and_saved_native_loads; not_complete_scene_speedup",
+      "evidence": [
+        "components.json",
+        "benchmarks.json"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "real_spaces_and_common_mother",
+      "status": "complete",
+      "outcome": "native_smaller_coordinates_and_operators_pass_rank_rigid_work_galerkin_relief_all_bubbles",
+      "evidence": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-local-refinement-atlas/space-controls-v1c/group0/shell/result.json",
+          "bytes": 9516,
+          "sha256": "561889070a0b4ee1692c2bd613d7b7ddeba387a7de3f33e3b6aea7b425ad9f94"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-local-refinement-atlas/space-controls-v1c/group1/volume/result.json",
+          "bytes": 8864,
+          "sha256": "90846ad8b1278c4ea7be7ab86eb9468e59433dd8a76f9b94c8dc7caa83647bb6"
+        }
+      ]
+    },
+    {
+      "id": "numerical_vs_spatial_acceptance",
+      "status": "complete",
+      "outcome": "original_unscaled_feature_and_exact_fallback_gates_preserved; mother_residual_is_spatial_diagnostic",
+      "evidence": [
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/accuracy.json",
+          "bytes": 191623,
+          "sha256": "1bc62e4b3f132ae655160fe9e1d3c65779f4b05fc5ba3aa2b41c26bc604ce5b7"
+        },
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/joint.json",
+          "bytes": 213259,
+          "sha256": "cc4021c12073d3c7dbfe62f5ba81a8053d21f1f27b670b4945dd91b249dfda38"
+        }
+      ]
+    },
+    {
+      "id": "whole_finite_footprint_and_continuity",
+      "status": "complete",
+      "outcome": "actual_partial_footprints_mixed_mother_weights_load_sum_and_decreasing_perturbation_controls_pass",
+      "evidence": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-local-refinement-atlas/remaining-controls-v6/group0/shell-footprint/result.json",
+          "bytes": 267688,
+          "sha256": "15983ac999c5bddee3f2a87c1cd134308ee783e791f0d1f1e31ef993fb4cf955"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-local-refinement-atlas/remaining-controls-v6/group1/volume-footprint/result.json",
+          "bytes": 257201,
+          "sha256": "56c5aa1a12cd81fd683bc4d979d9d621c01435f093a85a5724cacdf87a620f8e"
+        }
+      ]
+    },
+    {
+      "id": "curved_egg_nonconvex_sides_and_remote_maximum",
+      "status": "complete",
+      "outcome": "mapping_wrench_and_remote_peak_witnesses_pass; local_neck_spatial_surrogate_rejected",
+      "evidence": [
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/geometry.json",
+          "bytes": 181975,
+          "sha256": "4c9f9de401acad64d0acb3fb8ce6e789d1b6c082934e5aa3586f24751ad499e8"
+        }
+      ]
+    },
+    {
+      "id": "combined_sources_joint_and_cancellation",
+      "status": "complete",
+      "outcome": "source_sum_reconstructed_and_compared_with_joint_union; signed_raw_algebra_control_observes_0.014_tensor_cancellation_ratio; no_physical_contact_claim",
+      "evidence": [
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/joint.json",
+          "bytes": 213259,
+          "sha256": "cc4021c12073d3c7dbfe62f5ba81a8053d21f1f27b670b4945dd91b249dfda38"
+        },
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/components.json",
+          "bytes": 239529,
+          "sha256": "7f4080ca269698e632eba6092e282443b87fe0edf1d69ea61a1e634298053f08"
+        }
+      ]
+    },
+    {
+      "id": "low_and_moderate_models",
+      "status": "complete",
+      "outcome": "shell_levels_1_2_and_volume_levels_1_2_evaluated; moderate_volume_600_frames_rejected_at_15.6672_percent_tensor_error",
+      "evidence": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-local-refinement-atlas/postwarp-full-v7/group6/volume-level2/result.json",
+          "bytes": 815075,
+          "sha256": "df1e015a87788dccc87de72fc89872cdad65242a42c781b109b0ef64cd905cfd"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-local-refinement-atlas/moderate-audit-v7/group0/volume-level2/result.json",
+          "bytes": 84268,
+          "sha256": "39bc3a90f65c9b8c0b93c7c239141fbb236fa52c7deafc653e77b58214f72bc6"
+        }
+      ]
+    },
+    {
+      "id": "bounded_tuning",
+      "status": "complete",
+      "outcome": "core_halo_library_transition_factor_response_and_bending_coarse_alternative; existing_H_FP32_screen_history_results_preserved",
+      "evidence": [
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/accuracy.json",
+          "bytes": 191623,
+          "sha256": "1bc62e4b3f132ae655160fe9e1d3c65779f4b05fc5ba3aa2b41c26bc604ce5b7"
+        },
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/controls.json",
+          "bytes": 21682,
+          "sha256": "ede8f28cd275318f338a500ceebfbe2986cb69ba5490bec7f27eee40eaad40cd"
+        }
+      ]
+    },
+    {
+      "id": "selector_bottleneck_optimization",
+      "status": "complete",
+      "outcome": "scalar_and_warp_FP64_weights_identical_in_80_cases; final_full_trajectories_preserve_qualification",
+      "evidence": [
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/selector.json",
+          "bytes": 95949,
+          "sha256": "df1e1a3efaae5b83b2b98ba18494bf0de9d1443cfcacc9c6ad68432717f80abb"
+        },
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/profiles.json",
+          "bytes": 131441,
+          "sha256": "f479ee01f3f3541301b2913bd450d3ab294e5f23a116efe4d6385d01c6a39916"
+        }
+      ]
+    },
+    {
+      "id": "grouping_and_merged_recovery_increments",
+      "status": "complete",
+      "outcome": "four_equivalent_native_paths_separate_RHS_grouping_from_once_only_recovery; useful_internal_gains",
+      "evidence": [
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/components.json",
+          "bytes": 239529,
+          "sha256": "7f4080ca269698e632eba6092e282443b87fe0edf1d69ea61a1e634298053f08"
+        }
+      ]
+    },
+    {
+      "id": "paired_module_and_complete_scene",
+      "status": "complete",
+      "outcome": "max_full_small_large_two_condition_banks; all_final_native_atlas_workflows_slower_than_optimized_mother",
+      "evidence": [
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/benchmarks.json",
+          "bytes": 398291,
+          "sha256": "660045e06e2b294c253904dfaf96628638924abe2680adc498102823733f757b"
+        }
+      ]
+    },
+    {
+      "id": "setup_shared_per_environment_and_peak_memory",
+      "status": "complete",
+      "outcome": "native_unique_buffer_inventory_setup_times_RSS_Torch_and_independently_sampled_GPU_peaks_have_separate_scopes",
+      "evidence": [
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/profiles.json",
+          "bytes": 131441,
+          "sha256": "f479ee01f3f3541301b2913bd450d3ab294e5f23a116efe4d6385d01c6a39916"
+        },
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/components.json",
+          "bytes": 239529,
+          "sha256": "7f4080ca269698e632eba6092e282443b87fe0edf1d69ea61a1e634298053f08"
+        }
+      ]
+    },
+    {
+      "id": "lifecycle_and_batch_isolation",
+      "status": "complete",
+      "outcome": "normal_partial_reset_checkpoint_release_restore_and_64_condition_600_frame_controls_pass_at_qualified_wide_library",
+      "evidence": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-local-refinement-atlas/postwarp-full-v7/group0/shell-normal/result.json",
+          "bytes": 1254060,
+          "sha256": "18233dc702443d0e1d14474052c67a57fee37ebb93d6233390c183b7571cdbb8"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-local-refinement-atlas/postwarp-full-v7/group1/shell-lifecycle/result.json",
+          "bytes": 1257088,
+          "sha256": "ebd510eced8d9136bde5fd12a1e9fdd3ae4e65cbd313c55fc7b271af71deca68"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-local-refinement-atlas/postwarp-full-v7/group2/shell-heterogeneous/result.json",
+          "bytes": 11563838,
+          "sha256": "33a7c8412b6f1c2645e3ae67168d3413f55c29fe88e3b43b24ebc25f7990179e"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-local-refinement-atlas/postwarp-full-v7/group3/volume-normal/result.json",
+          "bytes": 823933,
+          "sha256": "7d1e225a8518bdfc9dbeb374843d9946f402f5a399a9b753e2a19739a173cecc"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-local-refinement-atlas/postwarp-full-v7/group4/volume-lifecycle/result.json",
+          "bytes": 816929,
+          "sha256": "4c307beb3868e147e9fa0697ea90f30c4a7053fa56e559735c7c07552ab63137"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-local-refinement-atlas/postwarp-full-v7/group5/volume-heterogeneous/result.json",
+          "bytes": 7179524,
+          "sha256": "bfbf01b7228e9e1772934fab3fec0fa2b04b6aa2c00f7cf526035ea5460bdb9f"
+        }
+      ]
+    },
+    {
+      "id": "production_cleanup_and_regressions",
+      "status": "complete",
+      "outcome": "genesis_examples_byte_identical_to_4bc4ada25; 20_GPU_tests_pass_without_skips",
+      "evidence": [
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/production-regressions.json",
+          "bytes": 810,
+          "sha256": "846fec0492b38e63d29d9f65d756483285839c5fb940d8a374c5f5494bc7580e"
+        },
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/preservation-final.json",
+          "bytes": 11772,
+          "sha256": "a529782597e06adbd337036563d1a329dfadcb1f62551e4ca09323faa313c62a"
+        }
+      ]
+    },
+    {
+      "id": "storage_source_and_artifact_preservation",
+      "status": "complete",
+      "outcome": "12_original_files_and_15_original_frozen_revisions_unchanged; 23_frozen_engines_clean; runtime_data_on_data_mount",
+      "evidence": [
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/preservation-final.json",
+          "bytes": 11772,
+          "sha256": "a529782597e06adbd337036563d1a329dfadcb1f62551e4ca09323faa313c62a"
+        },
+        {
+          "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/DATA_LOCATION.md",
+          "bytes": 100370,
+          "sha256": "4bf245a0a6a00ce4d5a0f3d367522f32af2a02a56266a162e688f70a11526d9d"
+        }
+      ]
+    }
+  ],
+  "summary_index": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/metadata/index.json",
+    "bytes": 5085,
+    "sha256": "40fdee9085c2831e5bc2370fae0f837a9b7c94424bd36374d8ee956abdbbbd8c"
+  },
+  "report": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/docs/LOCAL_REFINEMENT_RESULTS_20261026.md",
+    "bytes": 25104,
+    "sha256": "caab0dd6a25e391e5484967372df32dc1d87cc162af6acfe6cb380cb8bc332a7"
+  },
+  "regressions": {
+    "job_id": 751411,
+    "backend": "gpu",
+    "image": "1_26",
+    "partition": "rtx-mid",
+    "passed": 20,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "inputs": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261026-local-refinement-v1/inputs/manifest.json",
+    "bytes": 627,
+    "sha256": "e4fad0ad6f8a3c7c6c79749aeb7fc4f8c3424eb8e32af06e8cda04133a54323b"
+  },
+  "delivery_note": "The runtime meta/delivery-push.json records the final commit and verified remote ref after publication; no self-referential Git hash is embedded here."
+}

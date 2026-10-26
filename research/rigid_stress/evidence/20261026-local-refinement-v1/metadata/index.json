@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-local-refinement-atlas",
+  "started_utc": "2026-10-26T12:11:31.564952+00:00",
+  "finished_utc": "2026-10-26T12:11:42.534029+00:00",
+  "summarizer": {
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/qipc_comparison/summarize_local_atlas.py",
+    "sha256": "c73ca26ed322494b1e1be7c84b7bea40f3abc0cd32a607d292aa7ad298606e05"
+  },
+  "counts": {
+    "accuracy": 40,
+    "geometry": 27,
+    "benchmarks": 136,
+    "profiles": 15,
+    "joint": 4,
+    "components": 12,
+    "selector": 4,
+    "controls": 7,
+    "unknown": 23
+  },
+  "campaign_count": 32,
+  "read_error_count": 0,
+  "files": [
+    {
+      "name": "accuracy.csv",
+      "bytes": 38906,
+      "sha256": "3c8499bde4684b6cbe467aac9a85adef4287a13d2a72d4eb98c3594d35c3a130"
+    },
+    {
+      "name": "accuracy.json",
+      "bytes": 191623,
+      "sha256": "1bc62e4b3f132ae655160fe9e1d3c65779f4b05fc5ba3aa2b41c26bc604ce5b7"
+    },
+    {
+      "name": "benchmarks.csv",
+      "bytes": 144311,
+      "sha256": "675b538899885ca2fc42fc8174603115c3aa2fbb10dfe07724852fa1e51a509e"
+    },
+    {
+      "name": "benchmarks.json",
+      "bytes": 398291,
+      "sha256": "660045e06e2b294c253904dfaf96628638924abe2680adc498102823733f757b"
+    },
+    {
+      "name": "campaigns.json",
+      "bytes": 116636,
+      "sha256": "a17bd7b9cc26a1e76f083f538790544c777e669d497608fcefbd01f3c2eda42f"
+    },
+    {
+      "name": "components.csv",
+      "bytes": 8985,
+      "sha256": "0d18b51edf56be0bfec9e4a4d392daec4ce7a8d2cab30d47a65663d2e71c1798"
+    },
+    {
+      "name": "components.json",
+      "bytes": 239529,
+      "sha256": "7f4080ca269698e632eba6092e282443b87fe0edf1d69ea61a1e634298053f08"
+    },
+    {
+      "name": "controls.json",
+      "bytes": 21682,
+      "sha256": "ede8f28cd275318f338a500ceebfbe2986cb69ba5490bec7f27eee40eaad40cd"
+    },
+    {
+      "name": "geometry.csv",
+      "bytes": 21728,
+      "sha256": "f0c3dc564f0bf1473aad30bcc002baa6fbb0973df7a60ed42d88491708b97e6f"
+    },
+    {
+      "name": "geometry.json",
+      "bytes": 181975,
+      "sha256": "4c9f9de401acad64d0acb3fb8ce6e789d1b6c082934e5aa3586f24751ad499e8"
+    },
+    {
+      "name": "joint.csv",
+      "bytes": 22608,
+      "sha256": "153584efef0020c9b447b80b2f2f7341f25b5e05525bd68d1b28cc0b05d0fcc3"
+    },
+    {
+      "name": "joint.json",
+      "bytes": 213259,
+      "sha256": "cc4021c12073d3c7dbfe62f5ba81a8053d21f1f27b670b4945dd91b249dfda38"
+    },
+    {
+      "name": "metadata.json",
+      "bytes": 5125,
+      "sha256": "b26a6548d29def318541b65a288aabe924024e38ca9d3ff1bc38dc42ce45e352"
+    },
+    {
+      "name": "profiles.csv",
+      "bytes": 14471,
+      "sha256": "6f64a6969415b3b89e4d4185f69b07f238982223d9bf308f1fc9fdb201157b28"
+    },
+    {
+      "name": "profiles.json",
+      "bytes": 131441,
+      "sha256": "f479ee01f3f3541301b2913bd450d3ab294e5f23a116efe4d6385d01c6a39916"
+    },
+    {
+      "name": "read_errors.json",
+      "bytes": 5,
+      "sha256": "2ba33ca0557f1bb5b7ba88d67f9d0093c7185a36ec51fe2b7bd9372d3e001d6d"
+    },
+    {
+      "name": "selector.csv",
+      "bytes": 14708,
+      "sha256": "09813a6598778d717e1012873324fe5fc3b80d5c173e510c7af65b49bba230ba"
+    },
+    {
+      "name": "selector.json",
+      "bytes": 95949,
+      "sha256": "df1e1a3efaae5b83b2b98ba18494bf0de9d1443cfcacc9c6ad68432717f80abb"
+    },
+    {
+      "name": "shared.json",
+      "bytes": 145378,
+      "sha256": "04c93aae4c2f1a4f71ad5524a3c3d0a1c047724d1718a33ea7df6b939550af76"
+    },
+    {
+      "name": "unknown.json",
+      "bytes": 11349,
+      "sha256": "dbce456e19b8d68593abb5ff9937827dac472c852b4f97f535ab80ce2580189e"
+    }
+  ],
+  "payload_bytes_before_index": 2017959,
+  "interpretation": [
+    "No retention or six-cell completion decision is inferred.",
+    "Reported passed, numerical, spatial, complete and returncode are separate evidence fields.",
+    "A complete spatial rejection can return 1; an incomplete record is not a final negative result.",
+    "All means specify their observation population; zero unloaded outputs remain included.",
+    "Mother residual is a spatial diagnostic for reduced answers; signed raw loads are not physical-contact qualification.",
+    "Source/analysis manifests are referenced, never replaced by a benchmark's unrecorded revision.",
+    "JSON inputs may be live snapshots. Each SHA identifies exactly the bytes read; regenerate a new frozen packet after jobs finish."
+  ],
+  "excluded": [
+    "Scientific array files",
+    "captured analysis-source trees",
+    "sample/trace/poll payloads",
+    "per-buffer/per-field inventories"
+  ],
+  "reference_paths": "File-record paths resolve relative to run; absolute paths already recorded by original results are preserved.",
+  "shared_metadata": "A $shared value resolves by id in shared.json; repeated options/configurations remain lossless.",
+  "csv_provenance": "Join each CSV case to the same file.path in its category JSON for the original SHA and run-relative source path."
+}

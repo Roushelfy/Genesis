@@ -9,6 +9,14 @@ The [sharp-edge scene integration packet](../evidence/20261019-qualified-ranking
 
 ## Native candidate integration experiments
 
+The [real local-refinement packet](../evidence/20261026-local-refinement-v1/README.md)
+contains the subsequent three-by-two decisions on genuine smaller Galerkin
+spaces, source aggregation and merged recovery. Complete native research code
+is retained at `822ad285497f79d3a24f3ce2f0dd7a58ec6cd699`; the final experimental
+engine is `a971d61d127148401cff2de0d0552daa60e77105`. Both include the actual
+coarse/local construction, with separate numerical and spatial qualification.
+Production cleanup restores `4bc4ada25` without rewriting this history.
+
 The [native candidate packet](../evidence/20261025-native-candidates-v1/README.md)
 links the seven-by-two decisions, measured tuning and complete-scene evidence.
 The complete native experimental engine is retained at

@@ -1,27 +1,28 @@
 # Working on native rigid stress recovery
 
-**Active user direction:** follow [GOAL.md](GOAL.md),
-[the local-refinement review/goal](docs/ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md)
-and [the CPU source guide](docs/ATLAS_CPU_REFERENCE_GUIDE.md).
+**Latest delivery, 2026-10-26:** the real local-refinement follow-up is complete.
+Read [GOAL.md](GOAL.md), [the measured report](docs/LOCAL_REFINEMENT_RESULTS_20261026.md)
+and [the six-cell packet](evidence/20261026-local-refinement-v1/README.md).
+Both backends have actual smaller `T_i=[P,B_i]`/`K_i`, native numerical controls,
+combined spatial qualification, bounded tuning, component increments, complete
+Franka max/full timing, heterogeneous/lifecycle checks and memory evidence.
 
-The prior exact response-partition implementation is a tested special case.
-Real locally fine/coarsely represented far-field feature spaces remain to be
-implemented and evaluated for both shell and volume. The first three candidate
-families are open for that mechanism. Preserve the four other native candidate
-families' scoped negative results; avoid unchanged reruns.
+The local-space implementation has no recommended full-path regime in the
+measured fixtures. Source aggregation and one recovery are beneficial internal
+components; their atlas dependency was removed from production. Runnable code
+is pinned at `822ad2854`, including the validated cooperative selector.
+Production `genesis`/`examples` match `4bc4ada25`; twenty focused cleanup
+regressions pass. Preserve twelve original unfinished files, frozen sources,
+prior pressure/fallback/angular improvements and H/FP32/screen/history results.
 
-Within each backend share mother geometry/mass/gauge/relief before projection.
-Keep exact-mode checks. In an explicit spatial approximation, check numerical
-solve residual in the declared feature space and qualify combined field/peak
-error separately; the full mother residual is a spatial-error diagnostic.
-Do not force every approximate result through a complete mother correction and
-then reject the method for retaining mother cost.
-
-Keep preparation/runtime in Quadrants. Use the existing CPU real-refinement
-sources as references with their stated limitations, not as an already native
-or common-mother implementation. Prioritize low/moderate-model correctness,
-profile-driven tuning and full Franka accuracy/cost evidence. This explicit
-follow-up supersedes the prior blanket completion language for local refinement.
+The [review/specification](docs/ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md) and
+[CPU source guide](docs/ATLAS_CPU_REFERENCE_GUIDE.md) remain provenance for the
+delivered goal. Its first three families are closed for this tested mechanism;
+avoid unchanged reruns or restarting it without a new user goal. Numerical
+acceptance in a declared reduced space remains separate from spatial error.
+The full mother residual is a spatial diagnostic for an approximate result.
+The result does not qualify arbitrary nonconvex surrogates, continuum sharp-edge
+peaks or every possible reduced-space construction. Standing policies below apply.
 
 ## Historical candidate delivery and standing policies
 
