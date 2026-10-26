@@ -102,8 +102,16 @@ class FeatureRegions:
         self.state.fallback.fill(False)
         self.scatter = StressAtlasScatter(self.state.weights, self.state.force, self.info.force_rows)
 
-    def prepare(self, contacts: StressContactState, load_info: StressInfo, surface: StressSurfaceInfo, width: float):
-        kernel_select(width, contacts, load_info, surface, self.info, self.state, self.info.seeds.shape[0])
+    def prepare(
+        self,
+        contacts: StressContactState,
+        load_info: StressInfo,
+        surface: StressSurfaceInfo,
+        width: float,
+        cooperative: bool = True,
+    ):
+        """Select complete footprints with cooperative CUDA or scalar comparison scheduling."""
+        kernel_select(width, contacts, load_info, surface, self.info, self.state, self.info.seeds.shape[0], cooperative)
 
 
 @qd.kernel
@@ -246,14 +254,20 @@ def kernel_select(
     atlas: FeatureRegionInfo,
     state: FeatureRegionState,
     n_features: qd.template(),
+    cooperative: qd.template(),
 ):
     for i_n, i_g, i_b in qd.ndrange(state.force.shape[0], state.force.shape[1], state.force.shape[2]):
         state.force[i_n, i_g, i_b] = qd.Vector.zero(gs.qd_float, 3)
-    for i_c, i_b in qd.ndrange(contacts.valid.shape[0], contacts.valid.shape[1]):
-        state.fallback[i_c, i_b] = False
+    lanes = qd.static(32 if cooperative and gs.backend == gs.cuda else 1)
+    qd.loop_config(block_dim=128)
+    for i_thread in range(contacts.valid.shape[0] * contacts.valid.shape[1] * lanes):
+        lane = i_thread % lanes
+        i_pair = i_thread // lanes
+        i_c, i_b = i_pair // contacts.valid.shape[1], i_pair % contacts.valid.shape[1]
+        if lane == 0:
+            state.fallback[i_c, i_b] = False
         if contacts.valid[i_c, i_b] and contacts.status[i_c, i_b] == 0:
-            for i_g in range(state.weights.shape[0]):
-                state.weights[i_g, i_c, i_b] = 0.0
+            weights = qd.Vector.zero(gs.qd_float, n_features)
             i_f = contacts.anchor_face[i_c, i_b]
             shape = qd.Vector.zero(gs.qd_float, 4)
             regular = i_f >= 0
@@ -281,50 +295,57 @@ def kernel_select(
                         distance += qd.max(0.0, shape[a]) * func_region_distance(i_feature, i_f, a, load_info, atlas)
                 else:
                     distance = 1e30
-                state.weights[i_feature + 1, i_c, i_b] = distance
+                weights[i_feature] = distance
                 nearest = qd.min(nearest, distance)
             total = gs.qd_float(0.0)
             for i_feature in range(atlas.seeds.shape[0]):
-                distance = state.weights[i_feature + 1, i_c, i_b]
+                distance = weights[i_feature]
                 taper = qd.select(distance <= nearest, 1.0, 0.0)
                 if width > 0.0:
                     taper = qd.max(0.0, 1.0 - (distance - nearest) / width)
                 weight = qd.select(distance < 1e29, taper * taper * (3.0 - 2.0 * taper), 0.0)
-                state.weights[i_feature + 1, i_c, i_b] = weight
+                weights[i_feature] = weight
                 total += weight
             clearance = qd.Vector.zero(gs.qd_float, n_features)
             for i_feature in qd.static(range(n_features)):
                 clearance[i_feature] = 1e30
             # Lower bounds on distance to every unsupported face certify the whole
             # finite footprint. Fade to the mother before unsupported support is reached.
-            for j_f in range(surface.face_origin.shape[0]):
-                center, radius = contacts.center[i_c, i_b], contacts.radius[i_c, i_b]
-                delta = qd.max(surface.face_bounds_low[j_f] - center, 0.0)
-                delta += qd.max(center - surface.face_bounds_high[j_f], 0.0)
-                normal, origin = surface.face_normal[j_f], surface.face_origin[j_f]
-                warp = gs.qd_float(0.0)
-                if surface.quad_vertices.shape[0] > 0:
-                    for a in qd.static(range(4)):
-                        warp = qd.max(warp, qd.abs((surface.quad_vertices[j_f][a, :] - origin).dot(normal)))
-                epsilon = 1.1920928955078125e-7 if qd.static(gs.qd_float == qd.f32) else 2.220446049250313e-16
-                margin = 16.0 * epsilon * (center.norm() + origin.norm() + radius + warp)
-                slab = qd.max(0.0, qd.abs((center - origin).dot(normal)) - warp - margin)
-                lower = qd.max(delta.norm(), slab) - radius - margin
-                for i_feature in qd.static(range(n_features)):
-                    if state.weights[i_feature + 1, i_c, i_b] > 0.0 and not atlas.face_coverage[i_feature, j_f]:
-                        clearance[i_feature] = qd.min(clearance[i_feature], lower)
-            weight_sum = gs.qd_float(0.0)
-            fully_covered = total > 0.0
+            for i_chunk in range((surface.face_origin.shape[0] + lanes - 1) // lanes):
+                j_f = i_chunk * lanes + lane
+                if j_f < surface.face_origin.shape[0]:
+                    center, radius = contacts.center[i_c, i_b], contacts.radius[i_c, i_b]
+                    delta = qd.max(surface.face_bounds_low[j_f] - center, 0.0)
+                    delta += qd.max(center - surface.face_bounds_high[j_f], 0.0)
+                    normal, origin = surface.face_normal[j_f], surface.face_origin[j_f]
+                    warp = gs.qd_float(0.0)
+                    if surface.quad_vertices.shape[0] > 0:
+                        for a in qd.static(range(4)):
+                            warp = qd.max(warp, qd.abs((surface.quad_vertices[j_f][a, :] - origin).dot(normal)))
+                    epsilon = 1.1920928955078125e-7 if qd.static(gs.qd_float == qd.f32) else 2.220446049250313e-16
+                    margin = 16.0 * epsilon * (center.norm() + origin.norm() + radius + warp)
+                    slab = qd.max(0.0, qd.abs((center - origin).dot(normal)) - warp - margin)
+                    lower = qd.max(delta.norm(), slab) - radius - margin
+                    for i_feature in qd.static(range(n_features)):
+                        if weights[i_feature] > 0.0 and not atlas.face_coverage[i_feature, j_f]:
+                            clearance[i_feature] = qd.min(clearance[i_feature], lower)
+            # All lanes share the contact gate and reach each reduction after the face loop reconverges.
             for i_feature in qd.static(range(n_features)):
-                guard = qd.max(width, 1e-6 * atlas.radii[i_feature])
-                taper = qd.min(1.0, qd.max(0.0, clearance[i_feature] / guard))
-                availability = taper * taper * (3.0 - 2.0 * taper)
-                nominal = state.weights[i_feature + 1, i_c, i_b]
-                if nominal > 0.0 and availability < 1.0:
-                    fully_covered = False
-                weight = nominal * availability / qd.max(total, 1e-30)
-                state.weights[i_feature + 1, i_c, i_b] = weight
-                weight_sum += weight
-            mother_weight = qd.select(fully_covered, 0.0, qd.max(0.0, 1.0 - weight_sum))
-            state.weights[0, i_c, i_b] = mother_weight
-            state.fallback[i_c, i_b] = mother_weight > 0.0
+                if qd.static(lanes > 1):
+                    clearance[i_feature] = qd.simt.subgroup.reduce_all_min(clearance[i_feature])
+            if lane == 0:
+                weight_sum = gs.qd_float(0.0)
+                fully_covered = total > 0.0
+                for i_feature in qd.static(range(n_features)):
+                    guard = qd.max(width, 1e-6 * atlas.radii[i_feature])
+                    taper = qd.min(1.0, qd.max(0.0, clearance[i_feature] / guard))
+                    availability = taper * taper * (3.0 - 2.0 * taper)
+                    nominal = weights[i_feature]
+                    if nominal > 0.0 and availability < 1.0:
+                        fully_covered = False
+                    weight = nominal * availability / qd.max(total, 1e-30)
+                    state.weights[i_feature + 1, i_c, i_b] = weight
+                    weight_sum += weight
+                mother_weight = qd.select(fully_covered, 0.0, qd.max(0.0, 1.0 - weight_sum))
+                state.weights[0, i_c, i_b] = mother_weight
+                state.fallback[i_c, i_b] = mother_weight > 0.0
