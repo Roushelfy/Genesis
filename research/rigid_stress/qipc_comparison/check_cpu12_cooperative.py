@@ -44,16 +44,27 @@ def _native_api():
     qd, gs = api.qd, api.gs
 
     @qd.kernel
-    def kernel_boundary_matrix(stiffness: qd.Tensor):
-        for block in range(stiffness.shape[0]):
+    def kernel_boundary_matrix(row_start: qd.Tensor, columns: qd.Tensor, stiffness: qd.Tensor):
+        for block in range(row_start.shape[0] - 1):
             a = 1.0 + qd.cast(block % 17, gs.qd_float) / 32.0
             b = 1.5 + qd.cast(block % 7, gs.qd_float) / 16.0
             c = 2.0 + qd.cast(block % 11, gs.qd_float) / 32.0
             lower = qd.Matrix([[a, 0.0, 0.0], [0.125, b, 0.0], [-0.25, 0.0625, c]])
-            stiffness[block] = lower @ lower.transpose()
+            for entry in range(row_start[block], row_start[block + 1]):
+                value = 0.02 * qd.Matrix.identity(gs.qd_float, 3)
+                if columns[entry] == block:
+                    value = lower @ lower.transpose()
+                stiffness[entry] = value
 
     @qd.kernel
-    def kernel_boundary_rhs(stiffness: qd.Tensor, rhs: qd.Tensor, exact_q: qd.Tensor, young: float):
+    def kernel_boundary_rhs(
+        row_start: qd.Tensor,
+        columns: qd.Tensor,
+        stiffness: qd.Tensor,
+        rhs: qd.Tensor,
+        exact_q: qd.Tensor,
+        young: float,
+    ):
         for block, environment in qd.ndrange(rhs.shape[0], rhs.shape[1]):
             value = qd.Vector.zero(gs.qd_float, 3)
             if environment < rhs.shape[1] - 1:
@@ -66,7 +77,12 @@ def _native_api():
                     ]
                 )
             exact_q[block, environment] = value
-            rhs[block, environment] = young * stiffness[block] @ value
+        for block, environment in qd.ndrange(rhs.shape[0], rhs.shape[1]):
+            value = qd.Vector.zero(gs.qd_float, 3)
+            for entry in range(row_start[block], row_start[block + 1]):
+                other = columns[entry]
+                value += stiffness[entry] @ exact_q[other, environment]
+            rhs[block, environment] = young * value
 
     return SimpleNamespace(**locals())
 
@@ -212,24 +228,36 @@ def _run_boundary(native, writer, checks, hardware, args):
         "compile_launch_status": "not_attempted",
         "cooperative_compile_launch_supported": False,
         "physical_qualification": False,
-        "construction": "Host identity CSR only; QD K=L@L.T and QD rhs=young*K@known_q, final RHS column zero.",
+        "construction": "Host chain CSR only; QD SPD diagonal blocks L@L.T, weak native neighbor couplings, QD rhs=young*K@known_q, final RHS column zero.",
         "only_failed": False,
     }
     writer.json(f"{prefix}/launch.json", metadata)
     if metadata["default_shared_limit"] is None or shared_bytes > metadata["default_shared_limit"]:
         raise RuntimeError(f"Default shared-memory limit does not admit the declared {shared_bytes}-byte boundary.")
     options = SimpleNamespace(young=7.0, tolerance=1e-10, absolute_tolerance=1e-12)
-    info = native.allocate_stress_info(n_blocks, 0, 0, n_blocks, 0)
+    nodes = np.arange(n_blocks, dtype=api.gs.np_int)
+    pairs = np.unique(
+        np.concatenate(
+            (
+                np.column_stack((nodes, nodes)),
+                np.column_stack((nodes[:-1], nodes[1:])),
+                np.column_stack((nodes[1:], nodes[:-1])),
+            )
+        ),
+        axis=0,
+    )
+    row_start = np.r_[0, np.cumsum(np.bincount(pairs[:, 0], minlength=n_blocks))]
+    info = native.allocate_stress_info(n_blocks, 0, 0, len(pairs), 0)
     info.vertices.fill(0)
     info.pins.fill(-1)
     info.is_free.fill(1)
-    info.row_start.from_numpy(np.arange(n_blocks + 1, dtype=api.gs.np_int))
-    info.columns.from_numpy(np.arange(n_blocks, dtype=api.gs.np_int))
-    native.kernel_boundary_matrix(info.stiffness)
+    info.row_start.from_numpy(row_start.astype(api.gs.np_int, copy=False))
+    info.columns.from_numpy(pairs[:, 1])
+    native.kernel_boundary_matrix(info.row_start, info.columns, info.stiffness)
     factor = native.StressFactor(info, scaling=True)
     state = native.create_stress_state(n_blocks, n_envs)
     exact_q = api.V_VEC(3, dtype=api.gs.qd_float, shape=(n_blocks, n_envs))
-    native.kernel_boundary_rhs(info.stiffness, state.rhs, exact_q, options.young)
+    native.kernel_boundary_rhs(info.row_start, info.columns, info.stiffness, state.rhs, exact_q, options.young)
     system = System(prefix, info, factor, state, None, matrix=_matrix(api, info, young=options.young))
     expected_q = _scalar_vectors(api, exact_q)
     writer.matrix(f"{prefix}/native_original_K.npz", system.matrix)
@@ -238,7 +266,7 @@ def _run_boundary(native, writer, checks, hardware, args):
     start_check = len(checks.rows)
     baseline = None
     for method in ("default", "cooperative"):
-        native.kernel_boundary_rhs(info.stiffness, state.rhs, exact_q, options.young)
+        native.kernel_boundary_rhs(info.row_start, info.columns, info.stiffness, state.rhs, exact_q, options.young)
         native.kernel_direct_init(state)
         api.qd.sync()
         begin = time.perf_counter()
@@ -275,7 +303,7 @@ def _run_boundary(native, writer, checks, hardware, args):
         released = _boundary_snapshot(native, system, options)
         writer.arrays(f"{prefix}/{method}/released_rhs.npz", **released)
         _check_snapshot(api, checks, f"{prefix}/{method}/release", released, options, zero=True)
-        native.kernel_boundary_rhs(info.stiffness, state.rhs, exact_q, options.young)
+        native.kernel_boundary_rhs(info.row_start, info.columns, info.stiffness, state.rhs, exact_q, options.young)
         native.kernel_direct_init(state)
         _dispatch(native, system, method, options.young)
         restored = _boundary_snapshot(native, system, options)

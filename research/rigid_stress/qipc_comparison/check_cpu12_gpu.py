@@ -5,8 +5,6 @@ only after native construction, for untimed independent comparisons. No CPU
 operator, force, selector or solution is uploaded to native execution.
 """
 
-from __future__ import annotations
-
 import argparse
 import hashlib
 import json
@@ -44,6 +42,7 @@ def _api():
     from genesis.engine.solvers.rigid.stress.atlas_coverage import AtlasCoverage
     from genesis.engine.solvers.rigid.stress.atlas_selection import AtlasSelection
     from genesis.engine.solvers.rigid.stress.bilinear_basis import BilinearBasis
+    from genesis.engine.solvers.rigid.stress.data import StressState
     from genesis.engine.solvers.rigid.stress.feature_library import FeatureLibrary
     from genesis.engine.solvers.rigid.stress.feature_operator import FeatureOperator
     from genesis.engine.solvers.rigid.stress.material_cap import (
@@ -253,9 +252,10 @@ def _stress_operator(api, writer, checks, reference, model, model_input):
     indexing and compares native outputs; CPU coefficients are never uploaded.
     """
     np, qd, gs, func_constitutive = api.np, api.qd, api.gs, api.func_constitutive
+    shell_type, state_type = type(model.shell), api.StressState
 
     @qd.kernel
-    def kernel_coefficients(young: float, poisson: float, thickness: float, shell: qd.template(), values: qd.Tensor):
+    def kernel_coefficients(young: float, poisson: float, thickness: float, shell: shell_type, values: qd.Tensor):
         for side, element, point, dof in qd.ndrange(2, shell.quads.shape[0], 4, 24):
             constitutive = young * func_constitutive(poisson)
             membrane = constitutive @ shell.membrane[element, point, dof]
@@ -263,7 +263,7 @@ def _stress_operator(api, writer, checks, reference, model, model_input):
             values[side, element, point, dof] = membrane + qd.select(side == 0, 0.5, -0.5) * thickness * bending
 
     @qd.kernel
-    def kernel_probe_displacement(state: qd.template()):
+    def kernel_probe_displacement(state: state_type):
         for block, batch in qd.ndrange(state.displacement.shape[0], state.displacement.shape[1]):
             value = qd.Vector.zero(gs.qd_float, 3)
             amplitude = qd.select(block % 2 == 0, 1e-7, 1e-5)

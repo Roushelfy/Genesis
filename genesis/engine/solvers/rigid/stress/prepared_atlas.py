@@ -15,6 +15,7 @@ from .bilinear_basis import FeatureMap
 from .data import StressInfo, StressState, create_stress_state
 from .feature_operator import FeatureOperator, FeatureTransformInfo
 from .model import StressModel
+from .packed_factor import PackedStressFactor
 from .solve import kernel_balance, kernel_direct_init, kernel_full_residual
 
 
@@ -30,6 +31,7 @@ class PreparedAtlasTimings:
     operators_and_factors: float
     relief_projection: float
     buffers: float
+    factor_pack: float = 0.0
 
 
 class PreparedAtlas:
@@ -50,6 +52,8 @@ class PreparedAtlas:
         maps: Sequence[FeatureMap],
         n_envs: int,
         options: RigidStressOptions | None = None,
+        *,
+        packed_solve: bool = False,
     ):
         if not maps or n_envs < 1:
             gs.raise_exception("Prepared Atlas requires nonempty feature maps and at least one environment.")
@@ -72,8 +76,17 @@ class PreparedAtlas:
         self.states = tuple(create_stress_state(operator.info.vertices.shape[0], n_envs) for operator in self.operators)
         self.omega = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,))
         self.omega.fill(0)
+        buffers_done = time.perf_counter()
+        self.packed = PackedStressFactor(self.operators, self.states) if packed_solve else None
+        if self.packed is not None and not self.packed.supported:
+            gs.raise_exception(self.packed.unsupported_reason)
+        if self.packed is not None:
+            qd.sync()
         self.build_timings = PreparedAtlasTimings(
-            operators_done - started, relief_done - operators_done, time.perf_counter() - relief_done
+            operators_done - started,
+            relief_done - operators_done,
+            buffers_done - relief_done,
+            time.perf_counter() - buffers_done,
         )
 
     def iter_info_data(self, prefix: str) -> Iterator[DataItem]:
@@ -83,9 +96,15 @@ class PreparedAtlas:
             yield from iter_data(operator.factor.info, f"{prefix}.operators.{i_f}.factor")
             yield from iter_data(feature, f"{prefix}.features.{i_f}")
 
+        if self.packed is not None:
+            yield from self.packed.iter_info_data(f"{prefix}.packed")
+
     def iter_state_data(self, prefix: str) -> Iterator[DataItem]:
         for i_f, state in enumerate(self.states):
             yield from iter_data(state, f"{prefix}.states.{i_f}")
+
+        if self.packed is not None:
+            yield from self.packed.iter_state_data(f"{prefix}.packed")
 
     def recover(
         self, grouped_force: qd.Tensor, parent_state: StressState, valid_environments: qd.Tensor | None = None
@@ -120,7 +139,11 @@ class PreparedAtlas:
             kernel_project_group(i_f, grouped_force, state, feature, operator.transform)
             kernel_direct_init(state)
             kernel_prepare_group_solve(state)
-            operator.factor.solve(self.options.young, state, operator.info, self.options.cooperative_solve, True)
+        if self.packed is not None:
+            self.packed.solve(self.options.young)
+        for operator, state in zip(self.operators, self.states):
+            if self.packed is None:
+                operator.factor.solve(self.options.young, state, operator.info, self.options.cooperative_solve, True)
             kernel_full_residual(
                 self.options.young,
                 self.options.tolerance,

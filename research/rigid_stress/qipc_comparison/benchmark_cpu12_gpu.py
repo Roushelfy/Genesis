@@ -199,6 +199,7 @@ def main():
     parser.add_argument(
         "--profile", action="store_true", help="Run intrusive stage fences, separately from wall timing."
     )
+    parser.add_argument("--packed-solve", action="store_true")
     args = parser.parse_args()
     if not os.environ.get("SLURM_JOB_ID") or os.environ.get("SLURM_JOB_PARTITION", "rtx-mid") != "rtx-mid":
         parser.error("Use Slurm rtx-mid with image 1_26.")
@@ -276,7 +277,7 @@ def main():
     )
     selector = api.AtlasSelection(n_sources, n_envs, space.model.info.vertices.shape[0])
     coverage = timing_api.AtlasCoverage(space.basis.coarse_index, space.library.info.local_mask, n_sources, n_envs)
-    prepared = api.PreparedAtlas(space.model, space.library.maps, n_envs)
+    prepared = api.PreparedAtlas(space.model, space.library.maps, n_envs, packed_solve=args.packed_solve)
     mother_state, atlas_state = (
         space.model.create_state(n_envs, args.output_mode),
         space.model.create_state(n_envs, args.output_mode),
@@ -303,6 +304,8 @@ def main():
         "seconds": setup_seconds,
         "model_timings": asdict(space.model.build_timings),
         "atlas_timings": asdict(prepared.build_timings),
+        "packed_solve": args.packed_solve,
+        "packed_extra_storage": asdict(prepared.packed.memory_inventory()) if prepared.packed is not None else None,
         "environments": n_envs,
         "sources": n_sources,
         "mother_raw_dofs": 5196,
@@ -442,6 +445,7 @@ def main():
         "first_execution_including_JIT_seconds": first_execution,
         "after_measurements_memory": _memory_snapshot(),
         "profile_is_intrusive": args.profile,
+        "packed_solve": args.packed_solve,
         "files": writer.inventory,
     }
     (output / "result.json").write_text(json.dumps(result, indent=2, sort_keys=True, allow_nan=False) + "\n")
