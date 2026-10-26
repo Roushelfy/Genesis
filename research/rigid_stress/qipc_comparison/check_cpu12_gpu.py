@@ -14,6 +14,7 @@ import os
 import subprocess
 import time
 import traceback
+from dataclasses import dataclass
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -22,12 +23,24 @@ BANKS = ("published43", "boundary18", "static16", "static64")
 SOURCE = Path(__file__).resolve().parents[3]
 
 
+@dataclass(frozen=True)
+class NativeSpace:
+    """Share one matched mother and its twelve maps across numerical and timing drivers."""
+
+    model: object
+    basis: object
+    library: object
+    model_input: dict
+    selection_input: dict
+
+
 def _api():
     import numpy as np
     import quadrants as qd
     from scipy import sparse
 
     import genesis as gs
+    from genesis.engine.solvers.rigid.stress.atlas_coverage import AtlasCoverage
     from genesis.engine.solvers.rigid.stress.atlas_selection import AtlasSelection
     from genesis.engine.solvers.rigid.stress.bilinear_basis import BilinearBasis
     from genesis.engine.solvers.rigid.stress.feature_library import FeatureLibrary
@@ -137,6 +150,65 @@ def _integer(api, values):
     tensor = api.V(dtype=api.gs.qd_int, shape=values.shape)
     tensor.from_numpy(values.astype(api.gs.np_int, copy=False))
     return tensor
+
+
+def build_native_space(api, reference, output, *, output_mode="full"):
+    """Build only from frozen physical inputs and integer topology; never read CPU operators."""
+    model_input = _load(api.np, reference / "inputs/model.npz")
+    selection_input = _load(api.np, reference / "inputs/selection.npz")
+    asset = output / "native-shell-input.npz"
+    api.np.savez_compressed(
+        asset,
+        vertices=model_input["vertices"],
+        quads=model_input["quads"],
+        directors=model_input["directors"],
+        gauge_dofs=model_input["fixed"],
+    )
+    options = api.gs.options.RigidStressOptions.dpr(
+        mesh=asset,
+        backend="shell",
+        method="direct",
+        output_mode=output_mode,
+        factor_scaling=True,
+        young=float(model_input["young"]),
+        poisson=float(model_input["poisson"]),
+        density=float(model_input["density"]),
+        shell_thickness=float(model_input["thickness"]),
+        shell_drilling_factor=float(model_input["drilling_factor"]),
+        shell_gauge="translation",
+        tolerance=1e-8,
+        absolute_tolerance=1e-11,
+        fused_pipeline=False,
+        history_size=0,
+    )
+    model = api.ShellModel(options)
+    basis = api.BilinearBasis(
+        model,
+        model_input["coarse_nodes"],
+        model_input["parent_corners"],
+        model_input["parent_ij"],
+        int(model_input["subdiv"]),
+    )
+    library = api.FeatureLibrary(
+        basis,
+        _vector(api, model_input["directions"]),
+        _vector(api, model_input["coarse_directions"]),
+        model_input["macro_quads"],
+        model_input["node_macro_indptr"],
+        model_input["node_macro_indices"],
+        model_input["macro_neighbor_indptr"],
+        model_input["macro_neighbor_indices"],
+        core_angle=float(selection_input["core_angle"]),
+        support_angle=float(selection_input["support_angle"]),
+        halo=1,
+    )
+    assert len(model_input["vertices"]) == 866 and len(model_input["quads"]) == 864
+    assert model.info.vertices.shape[0] * 3 == 5196 and len(model_input["fixed"]) == 6
+    assert len(library.maps) == 12, "Matched CPU12 construction requires exactly twelve maps."
+    for index, mapping in enumerate(library.maps):
+        assert mapping.n_reduced_blocks * 3 == 3522 and mapping.reduced_free.sum() == 3516, index
+        assert len(library.local_nodes[index]) == 531 and len(library.active_macros[index]) == 37, index
+    return NativeSpace(model, basis, library, model_input, selection_input)
 
 
 def _scalar_vectors(api, tensor):
@@ -371,6 +443,10 @@ def _loads(api, writer, checks, reference, bank, model, library, model_input, se
     )
     selection = api.AtlasSelection(n_sources, n_envs, model.info.vertices.shape[0])
     checks.flush(writer)
+    if not native["valid"].all() or not native["sample_valid"].all() or native["failed_samples"].any():
+        raise ArithmeticError(f"Native material cap rejected source/sample inputs for {bank}; no partial load solve.")
+    if not api.qd_to_numpy(cap.rule.valid).all():
+        raise ArithmeticError(f"Native material-cap quadrature rule is invalid for {bank}.")
     return cases, sources, cap, selection
 
 
@@ -437,7 +513,7 @@ def _selection_reference(api, reference, bank, strategy):
     return selected, oracle_bank, case_indices
 
 
-def _check_output(api, writer, checks, reference, bank, strategy, model, state, cases):
+def _check_output(api, writer, checks, reference, bank, strategy, model, state, cases, output_prefix=None):
     np = api.np
     actual = _outputs(api, model, state)
     if strategy == "mother":
@@ -453,7 +529,7 @@ def _check_output(api, writer, checks, reference, bank, strategy, model, state, 
             maximum=float(actual["unscaled_residual"].max()),
             tolerance=1e-8,
         )
-    writer.arrays(f"{bank}/{strategy}/output.npz", **actual)
+    writer.arrays(f"{output_prefix or f'{bank}/{strategy}'}/output.npz", **actual)
     for key in ("q", "stress_local", "stress_full9", "peak", "N", "M", "Q"):
         expected = _reference_array(api, reference, bank, f"{strategy}/output.npz", key)
         checks.close(f"{bank}/{strategy}/{key}", actual[key], expected, rtol=1e-8, atol=1e-13)
@@ -476,6 +552,9 @@ def _bank(
     omega = _vector(api, np.zeros((n_envs, 3)))
     if stage == "all" and prepared is None:
         prepared = api.PreparedAtlas(model, library.maps, n_envs)
+    coarse_index = api.np.full(len(model_input["vertices"]), -1, dtype=api.gs.np_int)
+    coarse_index[model_input["coarse_nodes"]] = api.np.arange(len(model_input["coarse_nodes"]))
+    coverage = api.AtlasCoverage(coarse_index, library.info.local_mask, len(cases["radius"]), n_envs)
     axes_weights = _load(np, reference / "oracles/operators/mother/numerics.npz")["field_weights"]
     for strategy in STRATEGIES:
         selected = selector.run(
@@ -489,6 +568,9 @@ def _bank(
         )
         expected, oracle_bank, case_indices = _selection_reference(api, reference, bank, strategy)
         weights = api.qd_to_numpy(selected.weights).T
+        source_valid = api.qd_to_numpy(selected.source_valid)
+        environment_valid = api.qd_to_numpy(selected.environment_valid)
+        invalid_source_count = api.qd_to_numpy(selected.invalid_source_count)
         active_groups = api.qd_to_numpy(selected.active_groups)
         group_counts = active_groups.sum(axis=0)
         contributions = np.zeros(n_envs, dtype=int)
@@ -500,12 +582,36 @@ def _bank(
             grouped_force=api.qd_to_numpy(selected.grouped_force),
             groups_per_case=group_counts,
             contributions_per_case=contributions,
-            source_valid=api.qd_to_numpy(selected.source_valid),
+            source_valid=source_valid,
+            environment_valid=environment_valid,
+            invalid_source_count=invalid_source_count,
         )
         checks.close(f"{bank}/{strategy}/weights", weights, expected["weights"], atol=1e-13)
         checks.exact(f"{bank}/{strategy}/groups", group_counts, expected["groups_per_case"])
         checks.exact(f"{bank}/{strategy}/contributions", contributions, expected["contributions_per_case"])
-        checks.condition(f"{bank}/{strategy}/sources_valid", api.qd_to_numpy(selected.source_valid).all())
+        checks.condition(f"{bank}/{strategy}/sources_valid", source_valid.all())
+        checks.condition(f"{bank}/{strategy}/environments_valid", environment_valid.all())
+        checks.exact(f"{bank}/{strategy}/invalid_source_count", invalid_source_count, 0)
+        checks.flush(writer)
+        if not source_valid.all() or not environment_valid.all() or invalid_source_count != 0:
+            raise ArithmeticError(f"Native selector rejected {bank}/{strategy}; refusing a partial-load solve.")
+        covered = coverage.check(sources, cap.state, selected)
+        source_covered = api.qd_to_numpy(covered.source_covered)
+        environment_covered = api.qd_to_numpy(covered.environment_covered)
+        coverage_failures = api.qd_to_numpy(covered.coverage_failures)
+        writer.arrays(
+            f"{bank}/{strategy}/coverage.npz",
+            source_covered=source_covered,
+            environment_covered=environment_covered,
+            coverage_failures=coverage_failures,
+            source_failure_count=api.qd_to_numpy(covered.source_failure_count),
+        )
+        checks.condition(f"{bank}/{strategy}/source_coverage", source_covered.all())
+        checks.condition(f"{bank}/{strategy}/environment_coverage", environment_covered.all())
+        checks.exact(f"{bank}/{strategy}/coverage_failures", coverage_failures, 0)
+        checks.flush(writer)
+        if not source_covered.all() or not environment_covered.all() or coverage_failures != 0:
+            raise ArithmeticError(f"Native coverage rejected {bank}/{strategy}; no approximate solve admitted.")
         api.kernel_sum_feature_forces(selected.grouped_force, state)
         api.kernel_balance(omega, state, model.info, model.options.cooperative_balance)
         native_raw, native_balanced = _scalar_vectors(api, state.force), _scalar_vectors(api, state.rhs)
@@ -517,7 +623,7 @@ def _bank(
         if stage != "all":
             checks.flush(writer)
             continue
-        prepared.recover(selected.grouped_force, state)
+        prepared.recover(selected.grouped_force, state, covered.environment_covered)
         atlas_output = _check_output(api, writer, checks, reference, bank, strategy, model, state, cases)
         for index, (mapping, feature_state) in enumerate(zip(library.maps, prepared.states, strict=True)):
             cpu = _load(np, reference / f"oracles/{oracle_bank}/{strategy}/groups/feature-{index:02d}.npz")
@@ -556,7 +662,18 @@ def _bank(
         # Use exactly the native raw force already summed by PreparedAtlas.
         # Its merged approximate displacement is recorded before the mother solve.
         model.recover(omega, state)
-        mother_output = _check_output(api, writer, checks, reference, bank, "mother", model, state, cases)
+        mother_output = _check_output(
+            api,
+            writer,
+            checks,
+            reference,
+            bank,
+            "mother",
+            model,
+            state,
+            cases,
+            output_prefix=f"{bank}/{strategy}/mother",
+        )
         checks.close(
             f"{bank}/{strategy}/same_raw_mother_atlas",
             mother_output["force"],
@@ -621,54 +738,9 @@ def main():
     writer.json("start.json", identity)
     try:
         api.gs.init(backend=api.gs.cuda, precision="64", logging_level="warning")
-        model_input = _load(api.np, reference / "inputs/model.npz")
-        selection_input = _load(api.np, reference / "inputs/selection.npz")
-        asset = output / "native-shell-input.npz"
-        api.np.savez_compressed(
-            asset,
-            vertices=model_input["vertices"],
-            quads=model_input["quads"],
-            directors=model_input["directors"],
-            gauge_dofs=model_input["fixed"],
-        )
-        options = api.gs.options.RigidStressOptions.dpr(
-            mesh=asset,
-            backend="shell",
-            method="direct",
-            output_mode="full",
-            factor_scaling=True,
-            young=float(model_input["young"]),
-            poisson=float(model_input["poisson"]),
-            density=float(model_input["density"]),
-            shell_thickness=float(model_input["thickness"]),
-            shell_drilling_factor=float(model_input["drilling_factor"]),
-            shell_gauge="translation",
-            tolerance=1e-8,
-            absolute_tolerance=1e-11,
-            fused_pipeline=False,
-            history_size=0,
-        )
-        model = api.ShellModel(options)
-        basis = api.BilinearBasis(
-            model,
-            model_input["coarse_nodes"],
-            model_input["parent_corners"],
-            model_input["parent_ij"],
-            int(model_input["subdiv"]),
-        )
-        library = api.FeatureLibrary(
-            basis,
-            _vector(api, model_input["directions"]),
-            _vector(api, model_input["coarse_directions"]),
-            model_input["macro_quads"],
-            model_input["node_macro_indptr"],
-            model_input["node_macro_indices"],
-            model_input["macro_neighbor_indptr"],
-            model_input["macro_neighbor_indices"],
-            core_angle=float(selection_input["core_angle"]),
-            support_angle=float(selection_input["support_angle"]),
-            halo=1,
-        )
+        space = build_native_space(api, reference, output)
+        model, basis, library = space.model, space.basis, space.library
+        model_input, selection_input = space.model_input, space.selection_input
         prepared = None
         if args.stage == "all":
             n_envs = len(_load(api.np, reference / f"cases/{banks[0]}.npz")["case_names"])
