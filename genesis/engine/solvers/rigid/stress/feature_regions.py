@@ -67,7 +67,7 @@ class FeatureRegions:
         *,
         center_mode: str = "farthest_point",
         selection: str = "legacy",
-        narrow_fraction: float = 0.12,
+        narrow_fraction: float,
     ):
         if center_mode not in ("farthest_point", "icosahedral"):
             gs.raise_exception("Native atlas center_mode must be farthest_point or icosahedral.")
@@ -224,7 +224,7 @@ def kernel_region_icosahedron(regions: FeatureRegionInfo):
 
 
 @qd.kernel
-def kernel_region_distances(regions: FeatureRegionInfo, visited: qd.Tensor, fixed_centers: qd.template() = False):
+def kernel_region_distances(regions: FeatureRegionInfo, visited: qd.Tensor, fixed_centers: qd.template()):
     for _ in range(1):
         for i_f in range(regions.seeds.shape[0]):
             seed, farthest = -1, gs.qd_float(-1.0)
@@ -276,7 +276,7 @@ def kernel_region_elements(
     scale: float,
     regions: FeatureRegionInfo,
     active: qd.Tensor,
-    compact_support: qd.template() = False,
+    compact_support: qd.template(),
 ):
     for i_f in range(regions.seeds.shape[0]):
         radius, longest = gs.qd_float(0.0), gs.qd_float(0.0)
@@ -382,8 +382,8 @@ def kernel_select(
     state: FeatureRegionState,
     n_features: qd.template(),
     cooperative: qd.template(),
-    selection: int = 0,
-    narrow_fraction: float = 0.12,
+    selection: int,
+    narrow_fraction: float,
 ):
     for i_n, i_g, i_b in qd.ndrange(state.force.shape[0], state.force.shape[1], state.force.shape[2]):
         state.force[i_n, i_g, i_b] = qd.Vector.zero(gs.qd_float, 3)
