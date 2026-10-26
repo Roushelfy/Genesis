@@ -1,4 +1,20 @@
-# Native rigid stress recovery: local-refinement atlas follow-up
+# Native rigid stress recovery: matched CPU Atlas GPU follow-up
+
+**Active goal, 2026-10-26:** first validate the published CPU 12-feature shell
+construction in Quadrants with matching mother mesh, coarse space, enrichment,
+loads and outputs. Then adapt and tune promising constructions in both native
+shell and volume FEM, and decide by accuracy, complete Franka throughput and
+memory. Follow [the new goal](docs/ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md).
+The primary source is [cpu_repro at a10c5abe](atlas_study/cpu_repro/README.md).
+
+The previous native 3/6-feature campaign remains a scoped negative result.
+Its different spaces and workloads do not close this new matched comparison.
+Preserve useful internal grouping/single-recovery results and earlier native
+positive/negative evidence. Low-model consistency and profiling come first.
+A tuned negative result is acceptable, with the matched milestone and each
+backend decision stated separately.
+
+## Previous delivery: native local-refinement atlas
 
 **Completed, 2026-10-26:** genuine shared-coarse/local Galerkin spaces,
 per-feature source aggregation and merged recovery have native implementation,

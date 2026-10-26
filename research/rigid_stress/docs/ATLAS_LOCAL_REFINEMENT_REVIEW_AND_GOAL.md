@@ -1,4 +1,13 @@
-# Local-refinement atlas: review and remaining native goal
+# Local-refinement atlas: review and goals
+
+**New active goal, 2026-10-26:** follow
+[the matched CPU 12-feature GPU goal](ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md).
+First establish Quadrants parity with the published CPU mother/coarse/local
+spaces, loads and outputs, then make separate native shell/volume accuracy,
+complete-scene throughput and memory decisions. The previous 3/6-feature
+campaign has different spaces and preserves its scoped negative conclusions.
+Its useful internal grouping/single-recovery results remain positive evidence.
+The delivered specification below is historical context for this new scope.
 
 **Follow-up delivered, 2026-10-26:** the required real reduced spaces and six
 backend/family decisions are complete. Read [the native results](LOCAL_REFINEMENT_RESULTS_20261026.md)
@@ -8,7 +17,7 @@ increments and all runnable experimental sources remain recorded. The text
 below preserves the delivered specification and its correction of the earlier
 exact-partition experiment; it is not an unfinished implementation request.
 
-**Active user direction, 2026-10-25.** Complete the original locally refined
+**Historical user direction, 2026-10-25.** Complete the original locally refined
 feature-mesh route for both midsurface shell and three-dimensional volume FEM.
 The previous response-partition experiments remain valid evidence for their
 implemented scope. Their negative timings do not close this spatial

@@ -1,6 +1,21 @@
 # Working on native rigid stress recovery
 
-**Latest delivery, 2026-10-26:** the real local-refinement follow-up is complete.
+**Active user goal, 2026-10-26:** execute
+[the matched CPU 12-feature GPU goal](docs/ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md)
+and [GOAL.md](GOAL.md). First establish Quadrants parity with cpu_repro at
+`a10c5abe`, matching the mother, coarse/local spaces, twelve features,
+loads and output. Then adapt and tune native shell and volume separately.
+Judge by spatial accuracy, complete Franka throughput and memory.
+
+This new user direction opens a matched construction that the previous
+3/6-feature native campaign did not evaluate. Preserve that campaign's scoped
+negative evidence and internal grouping/single-recovery gains. Keep prior
+production improvements, H/FP32/screen/history findings and standing policies.
+Low-model numerical consistency and profiling take priority over new physical
+convergence campaigns. The earlier completed-phase language below describes
+historical scope and does not close this new goal.
+
+**Previous delivery, 2026-10-26:** the real local-refinement follow-up is complete.
 Read [GOAL.md](GOAL.md), [the measured report](docs/LOCAL_REFINEMENT_RESULTS_20261026.md)
 and [the six-cell packet](evidence/20261026-local-refinement-v1/README.md).
 Both backends have actual smaller `T_i=[P,B_i]`/`K_i`, native numerical controls,

@@ -9,6 +9,15 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
+## Active: matched CPU 12-feature Atlas GPU follow-up (2026-10-26)
+
+Follow [the new goal](docs/ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md).
+First match the published CPU shell construction in Quadrants, including its
+mother mesh, coarse/local spaces, twelve features, loads and outputs.
+Then evaluate native shell and volume adaptations by spatial accuracy,
+complete Franka throughput and memory. The earlier 3/6-feature negatives
+remain scoped to their measured constructions. See [GOAL.md](GOAL.md).
+
 ## Delivered: true local-refinement atlas (2026-10-26)
 
 Real `T_i=[P,B_i]` and smaller `K_i` now have native shell/volume controls,
