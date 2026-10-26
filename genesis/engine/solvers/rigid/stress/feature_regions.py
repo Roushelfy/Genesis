@@ -28,6 +28,7 @@ class FeatureRegionInfo:
     seeds: qd.Tensor
     radii: qd.Tensor
     coverage: qd.Tensor
+    face_coverage: qd.Tensor
     force_rows: qd.Tensor
     boundary_nodes: qd.Tensor
 
@@ -67,6 +68,7 @@ class FeatureRegions:
             seeds=V(dtype=gs.qd_int, shape=(n_features,)),
             radii=V(dtype=gs.qd_float, shape=(n_features,)),
             coverage=V(dtype=gs.qd_bool, shape=(n_features, n_physical)),
+            face_coverage=V(dtype=gs.qd_bool, shape=(n_features, model.load_info.surface_nodes.shape[0])),
             force_rows=V(dtype=gs.qd_int, shape=(model.info.vertices.shape[0],)),
             boundary_nodes=V(dtype=gs.qd_int, shape=(len(boundary),)),
         )
@@ -89,6 +91,7 @@ class FeatureRegions:
         local = qd_to_numpy(support)
         self.local_nodes = [np.flatnonzero(row).astype(gs.np_int) for row in local]
         kernel_region_coverage(self.info, support, coarse)
+        kernel_region_face_coverage(model.load_info, self.info)
         n_contacts, n_envs = contacts.valid.shape
         self.state = FeatureRegionState(
             weights=V(dtype=gs.qd_float, shape=(n_features + 1, n_contacts, n_envs)),
@@ -100,7 +103,7 @@ class FeatureRegions:
         self.scatter = StressAtlasScatter(self.state.weights, self.state.force, self.info.force_rows)
 
     def prepare(self, contacts: StressContactState, load_info: StressInfo, surface: StressSurfaceInfo, width: float):
-        kernel_select(width, contacts, load_info, surface, self.info, self.state)
+        kernel_select(width, contacts, load_info, surface, self.info, self.state, self.info.seeds.shape[0])
 
 
 @qd.kernel
@@ -203,6 +206,19 @@ def kernel_region_coverage(regions: FeatureRegionInfo, support: qd.Tensor, coars
         regions.coverage[i_f, i_n] = support[i_f, i_n] != 0 or coarse[i_n] != 0
 
 
+@qd.kernel
+def kernel_region_face_coverage(load_info: StressInfo, regions: FeatureRegionInfo):
+    for i_f, i_face in qd.ndrange(regions.coverage.shape[0], load_info.surface_nodes.shape[0]):
+        covered = True
+        for i_a in range(qd.select(load_info.load_nodes.shape[0] > 0, 4, 6)):
+            i_n = load_info.surface_nodes[i_face, i_a]
+            if load_info.load_nodes.shape[0] > 0:
+                i_load = i_n
+                i_n = load_info.load_nodes[i_load][0]
+            covered = covered and regions.coverage[i_f, i_n]
+        regions.face_coverage[i_f, i_face] = covered
+
+
 @qd.func
 def func_region_distance(i_feature: int, i_face: int, i_local: int, load_info: StressInfo, regions: FeatureRegionInfo):
     i_n = load_info.surface_nodes[i_face, i_local]
@@ -229,6 +245,7 @@ def kernel_select(
     surface: StressSurfaceInfo,
     atlas: FeatureRegionInfo,
     state: FeatureRegionState,
+    n_features: qd.template(),
 ):
     for i_n, i_g, i_b in qd.ndrange(state.force.shape[0], state.force.shape[1], state.force.shape[2]):
         state.force[i_n, i_g, i_b] = qd.Vector.zero(gs.qd_float, 3)
@@ -275,9 +292,11 @@ def kernel_select(
                 weight = qd.select(distance < 1e29, taper * taper * (3.0 - 2.0 * taper), 0.0)
                 state.weights[i_feature + 1, i_c, i_b] = weight
                 total += weight
-            covered = total > 0.0
-            # AABB overlap is conservative for the entire finite support ball. This may
-            # fall back unnecessarily, but can never omit an intersecting physical face.
+            clearance = qd.Vector.zero(gs.qd_float, n_features)
+            for i_feature in qd.static(range(n_features)):
+                clearance[i_feature] = 1e30
+            # Lower bounds on distance to every unsupported face certify the whole
+            # finite footprint. Fade to the mother before unsupported support is reached.
             for j_f in range(surface.face_origin.shape[0]):
                 center, radius = contacts.center[i_c, i_b], contacts.radius[i_c, i_b]
                 delta = qd.max(surface.face_bounds_low[j_f] - center, 0.0)
@@ -287,20 +306,25 @@ def kernel_select(
                 if surface.quad_vertices.shape[0] > 0:
                     for a in qd.static(range(4)):
                         warp = qd.max(warp, qd.abs((surface.quad_vertices[j_f][a, :] - origin).dot(normal)))
-                # A bilinear Q4 lies in its vertex convex hull. This slab test
-                # safely excludes nearby opposite sheets whose AABBs overlap.
-                intersects = delta.norm_sqr() < radius * radius
                 epsilon = 1.1920928955078125e-7 if qd.static(gs.qd_float == qd.f32) else 2.220446049250313e-16
                 margin = 16.0 * epsilon * (center.norm() + origin.norm() + radius + warp)
-                intersects = intersects and qd.abs((center - origin).dot(normal)) <= radius + warp + margin
-                if intersects:
-                    for i_feature in range(atlas.seeds.shape[0]):
-                        if state.weights[i_feature + 1, i_c, i_b] > 0.0:
-                            for a in range(qd.select(surface.quad_vertices.shape[0] > 0, 4, 6)):
-                                covered = covered and func_region_covered(i_feature, j_f, a, load_info, atlas)
-            for i_feature in range(atlas.seeds.shape[0]):
-                state.weights[i_feature + 1, i_c, i_b] = qd.select(
-                    covered, state.weights[i_feature + 1, i_c, i_b] / qd.max(total, 1e-30), 0.0
-                )
-            state.weights[0, i_c, i_b] = qd.select(covered, 0.0, 1.0)
-            state.fallback[i_c, i_b] = not covered
+                slab = qd.max(0.0, qd.abs((center - origin).dot(normal)) - warp - margin)
+                lower = qd.max(delta.norm(), slab) - radius - margin
+                for i_feature in qd.static(range(n_features)):
+                    if state.weights[i_feature + 1, i_c, i_b] > 0.0 and not atlas.face_coverage[i_feature, j_f]:
+                        clearance[i_feature] = qd.min(clearance[i_feature], lower)
+            weight_sum = gs.qd_float(0.0)
+            fully_covered = total > 0.0
+            for i_feature in qd.static(range(n_features)):
+                guard = qd.max(width, 1e-6 * atlas.radii[i_feature])
+                taper = qd.min(1.0, qd.max(0.0, clearance[i_feature] / guard))
+                availability = taper * taper * (3.0 - 2.0 * taper)
+                nominal = state.weights[i_feature + 1, i_c, i_b]
+                if nominal > 0.0 and availability < 1.0:
+                    fully_covered = False
+                weight = nominal * availability / qd.max(total, 1e-30)
+                state.weights[i_feature + 1, i_c, i_b] = weight
+                weight_sum += weight
+            mother_weight = qd.select(fully_covered, 0.0, qd.max(0.0, 1.0 - weight_sum))
+            state.weights[0, i_c, i_b] = mother_weight
+            state.fallback[i_c, i_b] = mother_weight > 0.0

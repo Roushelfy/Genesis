@@ -10,13 +10,14 @@ import quadrants as qd
 
 import genesis as gs
 from genesis.options.rigid_stress import RigidStressOptions
-from genesis.utils.array_class import V_MAT, DataItem, DataKind, V, iter_data
+from genesis.utils.array_class import V_MAT, DataItem, DataKind, V, iter_data, maybe_shape
 
 from .contact import StressContactState
 from .data import StressAtlasScatter, StressInfo, StressState, create_stress_state
 from .feature_basis import FeatureBasis
 from .feature_operator import FeatureOperator, FeatureTransformInfo
 from .feature_regions import FeatureRegionInfo, FeatureRegions, FeatureRegionState
+from .feature_response import FeatureBoundaryResponse
 from .inverse import StressInverse
 from .model import StressModel
 from .solve import kernel_balance, kernel_direct_init, kernel_full_residual
@@ -62,6 +63,7 @@ class FeatureAtlasInventory:
     transform_entries: qd.Tensor
     factor_entries: qd.Tensor
     inverse_bytes: qd.Tensor
+    response_bytes: qd.Tensor
 
 
 @dataclass(frozen=True)
@@ -73,6 +75,7 @@ class FeatureGroupMetadata:
     transform_entries: int
     factor_entries: int
     inverse_bytes: int
+    response_bytes: int = 0
 
 
 @dataclass(frozen=True)
@@ -83,6 +86,8 @@ class FeatureAtlasMetadata:
     boundary_blocks: int
     inverse_bytes: int
     groups: tuple[FeatureGroupMetadata, ...]
+    response_bytes: int = 0
+    space_kind: Literal["local", "coarse"] = "local"
     parent_residual_norm_space: Literal["source_spaces"] = "source_spaces"
 
 
@@ -92,6 +97,7 @@ class FeatureGroup:
     info: FeatureLoadInfo
     state: StressState
     inverse: StressInverse | None
+    response: FeatureBoundaryResponse | None = None
 
 
 class FeatureAtlas:
@@ -125,6 +131,10 @@ class FeatureAtlas:
             options.atlas_core_scale,
             options.atlas_halo,
         )
+        if options.atlas_space == "coarse":
+            if options.atlas_regions != 1:
+                gs.raise_exception("The coarse-space control requires atlas_regions=1.")
+            self.regions.local_nodes = [np.empty(0, dtype=gs.np_int)]
         n_nodes = model.info.vertices.shape[0]
         n_envs = contacts.valid.shape[1]
         n_groups = options.atlas_regions + 1
@@ -186,12 +196,22 @@ class FeatureAtlas:
             reduced_nodes = operator.info.vertices.shape[0]
             load_info = FeatureLoadInfo(
                 relief=V_MAT(3, 6, dtype=gs.qd_float, shape=(reduced_nodes,)),
-                local_nodes=V(dtype=gs.qd_int, shape=(len(local_nodes),)),
+                local_nodes=V(dtype=gs.qd_int, shape=maybe_shape((len(local_nodes),), len(local_nodes) > 0)),
             )
-            load_info.local_nodes.from_numpy(local_nodes)
+            if len(local_nodes):
+                load_info.local_nodes.from_numpy(local_nodes)
             kernel_project_relief(model.info, operator.transform, load_info)
             self.groups.append(
-                FeatureGroup(operator, load_info, create_stress_state(reduced_nodes, n_envs), inverse=None)
+                FeatureGroup(
+                    operator,
+                    load_info,
+                    create_stress_state(
+                        reduced_nodes,
+                        n_envs,
+                        self.regions.info.boundary_nodes.shape[0] if options.atlas_solver == "response" else 0,
+                    ),
+                    inverse=None,
+                )
             )
             inverse_bytes = reduced_nodes * reduced_nodes * 9 * 8 if options.atlas_solver == "inverse" else 0
             group_metadata.append(
@@ -203,9 +223,17 @@ class FeatureAtlas:
                     transform_entries=operator.n_transform_entries,
                     factor_entries=operator.factor.info.lower.shape[0],
                     inverse_bytes=inverse_bytes,
+                    response_bytes=(
+                        reduced_nodes * self.regions.info.boundary_nodes.shape[0] * 9 * 8
+                        if options.atlas_solver == "response"
+                        else 0
+                    ),
                 )
             )
         inverse_bytes = sum(group.inverse_bytes for group in group_metadata)
+        response_bytes = sum(group.response_bytes for group in group_metadata)
+        if inverse_bytes + response_bytes > options.inverse_max_bytes:
+            gs.raise_exception("The complete feature response inventory exceeds inverse_max_bytes.")
         if options.atlas_solver == "inverse":
             if inverse_bytes > options.inverse_max_bytes:
                 gs.raise_exception(
@@ -222,6 +250,18 @@ class FeatureAtlas:
                     precision="64",
                 )
                 self.groups[i_g] = FeatureGroup(group.operator, group.info, group.state, inverse)
+        elif options.atlas_solver == "response":
+            for i_g, group in enumerate(self.groups):
+                response = FeatureBoundaryResponse(
+                    group.operator,
+                    model.info,
+                    self.regions.info.boundary_nodes,
+                    group.info.relief,
+                    group_metadata[i_g + 1].response_bytes,
+                )
+                self.groups[i_g] = FeatureGroup(
+                    group.operator, group.info, group.state, inverse=None, response=response
+                )
         self._metadata = FeatureAtlasMetadata(
             mother_blocks=n_nodes,
             physical_nodes=len(self.basis.parent_nodes),
@@ -229,6 +269,8 @@ class FeatureAtlas:
             boundary_blocks=self.regions.info.boundary_nodes.shape[0],
             inverse_bytes=inverse_bytes,
             groups=tuple(group_metadata),
+            response_bytes=response_bytes,
+            space_kind=options.atlas_space,
         )
         self.inventory = FeatureAtlasInventory(
             blocks=V(dtype=gs.qd_int, shape=(n_groups,)),
@@ -237,6 +279,7 @@ class FeatureAtlas:
             transform_entries=V(dtype=gs.qd_int, shape=(n_groups,)),
             factor_entries=V(dtype=gs.qd_int, shape=(n_groups,)),
             inverse_bytes=V(dtype=qd.i64, shape=(n_groups,)),
+            response_bytes=V(dtype=qd.i64, shape=(n_groups,)),
         )
         self.inventory.blocks.from_numpy(np.array([group.blocks for group in group_metadata], dtype=gs.np_int))
         self.inventory.local_nodes.from_numpy(
@@ -254,13 +297,19 @@ class FeatureAtlas:
         self.inventory.inverse_bytes.from_numpy(
             np.array([group.inverse_bytes for group in group_metadata], dtype=np.int64)
         )
+        self.inventory.response_bytes.from_numpy(
+            np.array([group.response_bytes for group in group_metadata], dtype=np.int64)
+        )
 
     @property
     def scatter(self) -> StressAtlasScatter:
         return self.regions.scatter
 
     def prepare(self, contacts: StressContactState, load_info: StressInfo, surface_info: StressSurfaceInfo) -> None:
-        self.regions.prepare(contacts, load_info, surface_info, self.options.atlas_transition)
+        if self.options.atlas_space == "coarse":
+            kernel_coarse_feature_select(contacts, self.regions.state)
+        else:
+            self.regions.prepare(contacts, load_info, surface_info, self.options.atlas_transition)
 
     def recover(self, omega: qd.Tensor, parent_state: StressState, options: RigidStressOptions) -> None:
         kernel_balance(omega, parent_state, self.model.info, options.cooperative_balance)
@@ -275,12 +324,14 @@ class FeatureAtlas:
                 info = self.model.info
                 factor = self.model.factor
                 inverse = self.model.inverse
+                response = None
             else:
                 group = self.groups[i_g - 1]
                 state = group.state
                 info = group.operator.info
                 factor = group.operator.factor
                 inverse = group.inverse
+                response = group.response
             kernel_group_wrench(i_g, state, self.state, self.model.info, self.regions.info, self.regions.state)
             if i_g == 0:
                 kernel_fallback_rhs(state, self.model.info, self.regions.info, self.regions.state)
@@ -295,7 +346,9 @@ class FeatureAtlas:
                 )
             kernel_direct_init(state)
             kernel_group_begin(i_g, state, self.state)
-            if inverse is None:
+            if response is not None:
+                response.apply(options.young, i_g, self.regions.state.force, state)
+            elif inverse is None:
                 factor.solve(options.young, state, info, options.cooperative_solve, only_failed=True)
                 kernel_primary_factor_done(state)
             else:
@@ -321,6 +374,17 @@ class FeatureAtlas:
                         only_active=True,
                         coalesced=coalesced,
                     )
+                factor.solve(options.young, state, info, options.cooperative_solve, only_failed=True)
+                kernel_full_residual(
+                    options.young,
+                    options.tolerance,
+                    options.absolute_tolerance,
+                    state,
+                    info,
+                    only_active=True,
+                    coalesced=coalesced,
+                )
+            elif response is not None:
                 factor.solve(options.young, state, info, options.cooperative_solve, only_failed=True)
                 kernel_full_residual(
                     options.young,
@@ -357,6 +421,8 @@ class FeatureAtlas:
             yield from iter_data(group.state, f"{prefix}.groups.{i_g}.state")
             if group.inverse is not None:
                 yield from iter_data(group.inverse.info, f"{prefix}.groups.{i_g}.inverse")
+            if group.response is not None:
+                yield from iter_data(group.response.info, f"{prefix}.groups.{i_g}.response")
 
 
 @dataclass(frozen=True)
@@ -550,3 +616,13 @@ def kernel_group_diagnostics(i_g: int, parent: StressState, state: StressState, 
             atlas.rhs_norm_squared[i_b] += state.rhs_norm_squared[i_b]
             atlas.residual_norm_squared[i_b] += state.residual_norm_squared[i_b]
             atlas.numerical_fallbacks[i_b] += state.fallbacks[i_b]
+
+
+@qd.kernel(graph=True)
+def kernel_coarse_feature_select(contacts: StressContactState, regions: FeatureRegionState):
+    for i_n, i_g, i_b in qd.ndrange(regions.force.shape[0], regions.force.shape[1], regions.force.shape[2]):
+        regions.force[i_n, i_g, i_b] = qd.Vector.zero(gs.qd_float, 3)
+    for i_c, i_b in qd.ndrange(contacts.valid.shape[0], contacts.valid.shape[1]):
+        regions.weights[0, i_c, i_b] = 0.0
+        regions.weights[1, i_c, i_b] = qd.select(contacts.valid[i_c, i_b] and contacts.status[i_c, i_b] == 0, 1.0, 0.0)
+        regions.fallback[i_c, i_b] = False

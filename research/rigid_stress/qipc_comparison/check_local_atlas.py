@@ -43,12 +43,14 @@ def main():
     parser.add_argument("--stress-backend", choices=("shell", "volume"), required=True)
     parser.add_argument("--conditions", type=Path, required=True)
     parser.add_argument("--envs", type=int, default=4)
+    parser.add_argument("--level", type=int, choices=(1, 2), default=1)
     parser.add_argument("--steps", type=int, default=600)
     parser.add_argument("--regions", type=int, default=3)
     parser.add_argument("--core-scale", type=float, default=1.0)
     parser.add_argument("--halo", type=int, default=0)
     parser.add_argument("--transition", type=float, default=0.003)
-    parser.add_argument("--solver", choices=("factor", "inverse"), default="factor")
+    parser.add_argument("--solver", choices=("factor", "inverse", "response"), default="factor")
+    parser.add_argument("--space", choices=("local", "coarse"), default="local")
     parser.add_argument("--quadrature", type=int, default=16)
     parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
     parser.add_argument("--lifecycle", action="store_true")
@@ -60,6 +62,7 @@ def main():
     result = dict(
         identity=runtime_identity(),
         stress_backend=args.stress_backend,
+        level=args.level,
         conditions=file_id(args.conditions),
         complete=False,
         passed=False,
@@ -71,7 +74,7 @@ def main():
         rows=[],
     )
     write_json(args.output / "result.json", result)
-    assets = Path(gs.__file__).resolve().parent.parent / "examples/rigid/assets/hollow_egg/level1"
+    assets = Path(gs.__file__).resolve().parent.parent / f"examples/rigid/assets/hollow_egg/level{args.level}"
     basis_path = None
     if args.stress_backend == "shell":
         parents, _xyz, provenance = source_parents(assets, True)
@@ -81,6 +84,7 @@ def main():
         result["basis"] = file_id(basis_path)
     workload = FrankaEgg(
         args.envs,
+        level=args.level,
         conditions=args.conditions,
         output_mode="full",
         egg_geometry="mesh64",
@@ -96,6 +100,7 @@ def main():
         atlas_halo=args.halo,
         atlas_transition=args.transition,
         atlas_solver=args.solver,
+        atlas_space=args.space,
         inverse_max_bytes=512 * 1024 * 1024,
     )
     entry = workload.scene.rigid_solver.stress_recovery.links[0]
@@ -106,6 +111,7 @@ def main():
         group.blocks < atlas.metadata().mother_blocks for group in atlas.metadata().groups
     )
     result["covered_contacts"] = 0
+    result["active_reduced_groups"] = 0
     result["options"] = entry.options.model_dump(mode="json")
     reference_options = entry.options.model_copy(update={"atlas_regions": 0})
     reference = entry.model.create_state(args.envs, "full")
@@ -176,6 +182,8 @@ def main():
             np.linalg.norm(qd_to_numpy(entry.contacts.force, transpose=True), axis=-1) > 0
         )
         fallback = qd_to_numpy(atlas.regions.state.fallback, transpose=True)
+        active = qd_to_numpy(atlas.state.active)
+        reduced = np.array([group.blocks < atlas.metadata().mother_blocks for group in atlas.metadata().groups[1:]])
         row = dict(
             step=step,
             errors=errors,
@@ -184,11 +192,13 @@ def main():
             feature_numerical_residual_norm=np.sqrt(qd_to_numpy(atlas.state.residual_norm_squared)).tolist(),
             loaded=int(loaded.sum()),
             coverage_fallbacks=int((loaded & fallback).sum()),
-            active_groups=int(qd_to_numpy(atlas.state.active)[1:].sum()),
+            active_groups=int(active[1:].sum()),
+            active_reduced_groups=int(active[1:][reduced].sum()),
             spatial_passed=bool(accepted),
         )
         result["rows"].append(row)
         result["covered_contacts"] += row["loaded"] - row["coverage_fallbacks"]
+        result["active_reduced_groups"] += row["active_reduced_groups"]
         if step in args.field_steps:
             np.savez_compressed(
                 args.output / f"field-{step:04d}.npz",
@@ -198,10 +208,19 @@ def main():
                 q_reference=q_reference,
                 peak=peak,
                 peak_reference=peak_reference,
+                force=qd_to_numpy(entry.state.force, transpose=True),
+                omega=qd_to_numpy(entry.omega, transpose=True),
+                grouped_force=qd_to_numpy(atlas.regions.state.force, transpose=True),
+                active_groups=qd_to_numpy(atlas.state.active, transpose=True),
             )
         if step % 10 == 0 or step + 1 == args.steps:
             write_json(args.output / "result.json", result)
-    all_passed = all_passed and result["genuine_reduction"] and result["covered_contacts"] > 0
+    all_passed = (
+        all_passed
+        and result["genuine_reduction"]
+        and result["covered_contacts"] > 0
+        and result["active_reduced_groups"] > 0
+    )
     result.update(complete=True, passed=bool(all_passed))
     write_json(args.output / "result.json", result)
     assert all_passed, (

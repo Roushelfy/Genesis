@@ -89,3 +89,27 @@ new shared state factory; the second exposed a missing explicit activity
 argument in the control worker. Both failed records remain retained, together
 with preflight rejections before any Slurm submission. Neither is counted as
 a passed numerical control. Frozen experiment trees are not hot-edited.
+
+## First moving-contact spatial pilot
+
+Frozen source `1eaa439d0`, campaign `atlas-pilot-v3` (job 751094), completes
+all 140 frames in both backends with the original numerical/load gates.
+Each backend has 730 loaded contacts and zero coverage fallbacks. Volume
+maximum weighted field/peak errors are 4.9939%/0.0981%, within the declared
+budgets. Shell maximum field/peak errors are 22.4337%/5.7135%; its separate
+membrane/bending/shear errors also reject this configuration. Shell feature
+sizes are 1110/1080/966 scalar coordinates versus the 1452-coordinate mother.
+These are spatial results, not a reason to relax reduced solve tolerances.
+Full trajectories, lifecycle, geometry controls and timing remain open.
+
+The first runtime integration attempt (`atlas-pilot-v2`, job 751065) failed
+during compilation because a scatter template was flattened as a dataclass.
+The opaque scatter container in `1eaa439d0` resolves that interface failure;
+both records are retained.
+
+The next bounded tuning varies shell core/halo and coarse resolution, and
+tests sparse boundary responses of actual smaller feature operators. Coverage
+selection now fades each feature conservatively before its complete pressure
+footprint reaches an unsupported face; the remaining weight goes to the exact
+mother. This preserves load and avoids a hard spatial-model switch. Its
+continuity and fallback costs require the new geometry controls.

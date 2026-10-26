@@ -74,6 +74,7 @@ class FrankaEgg:
         atlas_halo: int = 1,
         atlas_transition: float = 0.003,
         atlas_solver: str = "factor",
+        atlas_space: str = "local",
         inverse_max_bytes: int = 64 * 1024 * 1024,
     ):
         self.n_envs = n_envs
@@ -132,6 +133,7 @@ class FrankaEgg:
                 atlas_halo=atlas_halo,
                 atlas_transition=atlas_transition,
                 atlas_solver=atlas_solver,
+                atlas_space=atlas_space,
                 shell_gauge=shell_gauge,
                 factor_scaling=factor_scaling,
                 factor_ordering=factor_ordering,

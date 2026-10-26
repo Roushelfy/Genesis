@@ -227,7 +227,8 @@ class RigidStressOptions(Options):
     atlas_core_scale: PositiveFloat = 1.0
     atlas_halo: Annotated[int, Field(ge=0, le=8)] = 1
     atlas_transition: Annotated[ValidFloat, Field(ge=0)] = 0.003
-    atlas_solver: Literal["factor", "inverse"] = "factor"
+    atlas_solver: Literal["factor", "inverse", "response"] = "factor"
+    atlas_space: Literal["local", "coarse"] = "local"
     shell_thickness: PositiveFloat = 0.0005
     shell_drilling_factor: PositiveFloat = 1e-3
     shell_gauge: Literal["translation", "legacy"] = "translation"
