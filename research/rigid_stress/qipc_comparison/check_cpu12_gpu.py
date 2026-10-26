@@ -58,6 +58,7 @@ def _api():
         kernel_sum_feature_forces,
     )
     from genesis.engine.solvers.rigid.stress.shell_model import ShellModel
+    from genesis.engine.solvers.rigid.stress.shell_operators import func_constitutive
     from genesis.engine.solvers.rigid.stress.solve import kernel_balance
     from genesis.utils.array_class import V_MAT, V_VEC, V
     from genesis.utils.misc import qd_to_numpy, qd_to_torch
@@ -243,11 +244,81 @@ def _reference_array(api, reference, bank, relative, key, *, source=False):
     return _load(api.np, reference / "oracles" / bank / relative)[key]
 
 
+def _stress_operator(api, writer, checks, reference, model, model_input):
+    """Build every stress coefficient in QD and independently check actual func_peak output.
+
+    Kernel definitions are local so scientific imports remain behind the Slurm
+    guard. Quadrants captures their qd/material-helper closure without injecting
+    modules or mutating external objects. Host work below constructs integer CSR
+    indexing and compares native outputs; CPU coefficients are never uploaded.
+    """
+    np, qd, gs, func_constitutive = api.np, api.qd, api.gs, api.func_constitutive
+
+    @qd.kernel
+    def kernel_coefficients(young: float, poisson: float, thickness: float, shell: qd.template(), values: qd.Tensor):
+        for side, element, point, dof in qd.ndrange(2, shell.quads.shape[0], 4, 24):
+            constitutive = young * func_constitutive(poisson)
+            membrane = constitutive @ shell.membrane[element, point, dof]
+            bending = constitutive @ shell.bending[element, point, dof]
+            values[side, element, point, dof] = membrane + qd.select(side == 0, 0.5, -0.5) * thickness * bending
+
+    @qd.kernel
+    def kernel_probe_displacement(state: qd.template()):
+        for block, batch in qd.ndrange(state.displacement.shape[0], state.displacement.shape[1]):
+            value = qd.Vector.zero(gs.qd_float, 3)
+            amplitude = qd.select(block % 2 == 0, 1e-7, 1e-5)
+            for component in qd.static(range(3)):
+                value[component] = amplitude * qd.sin(0.0137 * (3 * block + component + 1) * (batch + 1))
+            state.displacement[block, batch] = value
+
+    values = api.V_VEC(3, dtype=gs.qd_float, shape=(2, model.n_shell_elements, 4, 24))
+    kernel_coefficients(model.options.young, model.options.poisson, model.options.shell_thickness, model.shell, values)
+    coefficients = api.qd_to_numpy(values).transpose(0, 1, 2, 4, 3)
+    element_dofs = (6 * model_input["quads"][:, :, None] + np.arange(6)).reshape((-1, 24))
+    row_count = 2 * model.n_shell_elements * 4 * 3
+    rows = np.repeat(np.arange(row_count), 24)
+    columns = np.broadcast_to(element_dofs[None, :, None, None, :], coefficients.shape).reshape(-1)
+    stress = api.sparse.coo_matrix(
+        (coefficients.reshape(-1), (rows, columns)), shape=(row_count, model.info.vertices.shape[0] * 3)
+    ).tocsr()
+    writer.matrix("operators/mother_S.npz", stress)
+    writer.arrays("operators/stress_coefficients.npz", coefficients=coefficients, element_dofs=element_dofs)
+    checks.close(
+        "operators/mother_S", stress, api.sparse.load_npz(reference / "oracles/operators/mother/S.npz"), atol=1e-10
+    )
+    probe_state = model.create_state(3, "full")
+    probe_state.valid.fill(True)
+    kernel_probe_displacement(probe_state)
+    model.evaluate_stress(model.options, probe_state)
+    probe = _outputs(api, model, probe_state)
+    mapped = stress @ probe["q"]
+    writer.arrays(
+        "operators/stress_probe.npz",
+        q=probe["q"],
+        stress_from_native_S=mapped,
+        stress_from_func_peak=probe["stress_local"],
+        body_tensor_from_func_peak=probe["stress_full9"],
+        peak_from_func_peak=probe["peak"],
+    )
+    checks.close("operators/native_S_vs_actual_func_peak", mapped, probe["stress_local"], atol=1e-10)
+    writer.json(
+        "operators/stress_operator_scope.json",
+        {
+            "coefficients": "QD uses the same native func_constitutive, E, h and membrane/bending fields as func_peak.",
+            "row_order": "side-major, element, Gauss, local component (xx,yy,xy)",
+            "actual_recovery_probe": "Three displacement columns generated in QD, evaluated by native evaluate_stress/func_peak.",
+            "host_work": "Integer COO/CSR graph plus untimed oracle checks and S_native times native T; no CPU numeric uploads.",
+        },
+    )
+    return stress
+
+
 def _operators(api, writer, checks, reference, model, basis, library, operators, prepared=None):
     np = api.np
     cpu = _load(np, reference / "oracles/operators/mother/numerics.npz")
     model_input = _load(np, reference / "inputs/model.npz")
     selection_input = _load(np, reference / "inputs/selection.npz")
+    native_s = _stress_operator(api, writer, checks, reference, model, model_input)
     native_k = _matrix(api, model.info, young=model.options.young)
     writer.matrix("operators/mother_K.npz", native_k)
     checks.close(
@@ -311,8 +382,11 @@ def _operators(api, writer, checks, reference, model, basis, library, operators,
         stiffness = _matrix(api, operator.info, young=model.options.young)[free][:, free]
         writer.matrix(f"operators/feature-{index:02d}/T.npz", transform)
         writer.matrix(f"operators/feature-{index:02d}/K.npz", stiffness)
+        stress = native_s @ transform
+        writer.matrix(f"operators/feature-{index:02d}/S.npz", stress)
         checks.close(f"feature-{index:02d}/T", transform, api.sparse.load_npz(prefix / "T.npz"))
         checks.close(f"feature-{index:02d}/K", stiffness, api.sparse.load_npz(prefix / "K.npz"), atol=1e-10)
+        checks.close(f"feature-{index:02d}/S", stress, api.sparse.load_npz(prefix / "S.npz"), atol=1e-10)
         checks.exact(f"feature-{index:02d}/local_nodes", library.local_nodes[index], cpu_space["local_nodes"])
         checks.exact(
             f"feature-{index:02d}/active_macros",

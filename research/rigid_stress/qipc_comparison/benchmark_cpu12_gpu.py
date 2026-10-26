@@ -318,9 +318,23 @@ def main():
     # Preflight outputs are independently verified before warmup and before any
     # timed sample. These tensors and CPU arrays never enter timed preparation.
     checks = Checks(api)
+    first_execution = {}
     for method in ("mother", "atlas"):
+        api.qd.sync()
+        first_started = time.perf_counter()
         routes.run(method)
         api.qd.sync()
+        first_execution[method] = time.perf_counter() - first_started
+        writer.json(
+            "first_execution_including_JIT.json",
+            {
+                "seconds": first_execution,
+                "order": ["mother", "atlas"],
+                "scope": "First full route call plus device completion, before validity readback and CPU oracle work.",
+                "sharing": "Mother first compiles shared cap/material/recovery kernels; Atlas first records its remaining JIT.",
+                "separate_from_steady_state_samples": True,
+            },
+        )
         state = mother_state if method == "mother" else atlas_state
         snapshot = routes.snapshot(method)
         writer.json(f"preflight/{method}/validity.json", snapshot)
@@ -355,6 +369,9 @@ def main():
             f"preflight/{method}/raw", actual["force"], np.concatenate([expected_raw] * args.tile, axis=-1), atol=1e-14
         )
     checks.flush(writer)
+    setup["first_execution_including_JIT_seconds"] = first_execution
+    setup["setup_plus_first_execution_seconds"] = setup_seconds + sum(first_execution.values())
+    writer.json("setup.json", setup)
     if not all(row["passed"] for row in checks.rows):
         raise ArithmeticError("Independent preflight failed; no performance samples are admitted.")
     for iteration in range(args.warmup):
@@ -422,6 +439,7 @@ def main():
         "source_unchanged": source_unchanged,
         "summary": summary,
         "setup_seconds": setup_seconds,
+        "first_execution_including_JIT_seconds": first_execution,
         "after_measurements_memory": _memory_snapshot(),
         "profile_is_intrusive": args.profile,
         "files": writer.inventory,

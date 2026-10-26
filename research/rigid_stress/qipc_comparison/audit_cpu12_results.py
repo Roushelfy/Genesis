@@ -678,7 +678,7 @@ def main():
         schema="genesis.cpu12-results-audit.v1",
         complete=False,
         passed=False,
-        identity=runtime_identity(),
+        identity=runtime_identity(require_gpu_inventory=False),
         worker=file_id(Path(__file__)),
         reference_manifest=file_id(args.reference / "manifest.json"),
         native_result=file_id(args.native / "result.json"),
