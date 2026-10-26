@@ -121,6 +121,65 @@ def allocate_stress_info(
     )
 
 
+def create_stress_state(
+    n_nodes: int,
+    n_envs: int,
+    n_boundary_nodes: int = 0,
+    n_output_elements: int = 0,
+    n_shell_elements: int = 0,
+    n_krylov_nodes: int = 0,
+) -> StressState:
+    """Allocate shared batched solver state, optionally including full-domain output buffers."""
+    state = StressState(
+        force=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+        rhs=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+        displacement=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+        residual=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+        direction=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
+        product=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
+        preconditioned=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
+        boundary_columns=V(dtype=gs.qd_int, shape=maybe_shape((n_boundary_nodes, n_envs), n_boundary_nodes > 0)),
+        boundary_count=V(dtype=gs.qd_int, shape=(n_envs,)),
+        failed_environments=V(dtype=gs.qd_int, shape=(n_envs,)),
+        failed_count=V(dtype=gs.qd_int, shape=()),
+        wrench=V_VEC(6, dtype=gs.qd_float, shape=(n_envs,)),
+        rhs_norm_squared=V(dtype=gs.qd_float, shape=(n_envs,)),
+        residual_norm_squared=V(dtype=gs.qd_float, shape=(n_envs,)),
+        residual_preconditioned=V(dtype=gs.qd_float, shape=(n_envs,)),
+        next_residual_preconditioned=V(dtype=gs.qd_float, shape=(n_envs,)),
+        direction_product=V(dtype=gs.qd_float, shape=(n_envs,)),
+        active=V(dtype=gs.qd_int, shape=(n_envs,)),
+        iterations=V(dtype=gs.qd_int, shape=(n_envs,)),
+        peak=V(dtype=gs.qd_float, shape=(n_envs,)),
+        step_peak=V(dtype=gs.qd_float, shape=(n_envs,)),
+        step_valid=V(dtype=gs.qd_bool, shape=(n_envs,)),
+        stress_tensor=V_VEC(6, dtype=gs.qd_float, shape=(n_output_elements, 4, n_envs)),
+        von_mises=V_VEC(1, dtype=gs.qd_float, shape=(n_output_elements, 4, n_envs)),
+        membrane_resultant=V_VEC(6, dtype=gs.qd_float, shape=(n_shell_elements, 4, n_envs)),
+        bending_resultant=V_VEC(6, dtype=gs.qd_float, shape=(n_shell_elements, 4, n_envs)),
+        transverse_resultant=V_VEC(3, dtype=gs.qd_float, shape=(n_shell_elements, 4, n_envs)),
+        valid=V(dtype=gs.qd_bool, shape=(n_envs,)),
+        corrections=V(dtype=gs.qd_int, shape=(n_envs,)),
+        fallbacks=V(dtype=gs.qd_int, shape=(n_envs,)),
+        invalid_steps=V(dtype=qd.i64, shape=(n_envs,)),
+        invalid_reported=V(dtype=gs.qd_bool, shape=(n_envs,)),
+    )
+    state.displacement.fill(0)
+    state.step_peak.fill(0)
+    state.valid.fill(True)
+    state.step_valid.fill(True)
+    state.invalid_steps.fill(0)
+    state.invalid_reported.fill(False)
+    if n_output_elements:
+        state.stress_tensor.fill(float("nan"))
+        state.von_mises.fill(float("nan"))
+    if n_shell_elements:
+        state.membrane_resultant.fill(float("nan"))
+        state.bending_resultant.fill(float("nan"))
+        state.transverse_resultant.fill(float("nan"))
+    return state
+
+
 @qd.func
 def func_scatter_load(
     i_n: int, i_b: int, force: qd.types.vector(3), stress_state: StressState, stress_info: StressInfo

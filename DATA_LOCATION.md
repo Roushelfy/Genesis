@@ -1382,3 +1382,12 @@ remain under data. The isolated binding/recovery/stability sources are frozen
 at58c18847e/edcffa58b/8324e7d53. All33 frozen heads and12 original unfinished
 files are preserved. Slurm `rtx-mid`, image `1_26`, the existing data-side Python
 environment and private node caches remain in use. There are no data migrations.
+
+Matched CPU twelve-feature GPU parity work uses `20261026-cpu12-gpu-parity`
+under the established rigid-stress-recovery data run directory. Frozen physical
+inputs, independent CPU numerical oracles, complete GPU fields and paired timing
+logs remain there; only source, schemas and concise evidence enter Git. The
+initial receipt verifies the original twelve unfinished files and twenty-three
+prior frozen experimental engines. Scientific execution uses Slurm `rtx-mid`,
+image `1_26`, the existing data-side environment and private node caches. No
+existing data, environment or compatibility link is migrated.

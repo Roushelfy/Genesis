@@ -332,6 +332,35 @@ def kernel_gauge(stress_info: StressInfo, shell_info: ShellInfo, translation_onl
                 shell_info.is_valid[None] = False
 
 
+@qd.kernel
+def kernel_explicit_gauge(gauge_dofs: qd.types.ndarray(), stress_info: StressInfo, shell_info: ShellInfo):
+    """Apply supplied scalar pins after checking that they remove all six rigid modes."""
+    for i_n in range(stress_info.is_free.shape[0]):
+        stress_info.is_free[i_n] = qd.Vector([1, 1, 1])
+    for _ in range(1):
+        length_squared = gs.qd_float(0.0)
+        com = qd.Vector([stress_info.mass_properties[a + 1] for a in qd.static(range(3))])
+        com /= stress_info.mass_properties[0]
+        for i_n in range(shell_info.directors.shape[0]):
+            length_squared += shell_info.nodal_mass[i_n] * (stress_info.vertices[2 * i_n] - com).norm_sqr()
+        length = qd.sqrt(length_squared / stress_info.mass_properties[0])
+        basis = qd.Matrix.zero(gs.qd_float, 6, 6)
+        for i_pin in range(6):
+            i_dof = gauge_dofs[i_pin]
+            vector = stress_info.modes[i_dof // 3][i_dof % 3, :]
+            for b in range(3, 6):
+                vector[b] /= length
+            for j in range(i_pin):
+                vector -= basis[j, :] * basis[j, :].dot(vector)
+            norm = vector.norm_sqr()
+            if norm > 1e-24:
+                stress_info.pins[i_pin] = i_dof
+                stress_info.is_free[i_dof // 3][i_dof % 3] = 0
+                basis[i_pin, :] = vector / qd.sqrt(norm)
+            else:
+                shell_info.is_valid[None] = False
+
+
 @qd.func
 def func_tensor_components(local: qd.types.vector(3), axes: qd.types.matrix(3, 3)):
     first, second = axes[:, 0], axes[:, 1]

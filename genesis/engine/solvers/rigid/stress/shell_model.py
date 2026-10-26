@@ -34,7 +34,8 @@ class ShellModel(StressModel):
         self.options = options.model_copy(deep=True)
         with np.load(Path(options.mesh), allow_pickle=False) as asset:
             vertices, quads = asset["vertices"], asset["quads"]
-            directors = asset["directors"] if "directors" in asset else None
+            directors = asset.get("directors")
+            gauge_dofs = asset.get("gauge_dofs")
         if vertices.ndim != 2 or vertices.shape[1] != 3 or not np.isfinite(vertices).all():
             gs.raise_exception("Shell midsurface vertices must be a finite (n, 3) array.")
         if quads.ndim != 2 or quads.shape[1] != 4 or not len(quads):
@@ -45,6 +46,14 @@ class ShellModel(StressModel):
             gs.raise_exception("Every shell vertex must belong to a quadrilateral.")
         if directors is not None and (directors.shape != vertices.shape or not np.isfinite(directors).all()):
             gs.raise_exception("Shell directors must match the finite midsurface coordinates.")
+        if gauge_dofs is not None and (
+            gauge_dofs.shape != (6,)
+            or not np.issubdtype(gauge_dofs.dtype, np.integer)
+            or (gauge_dofs < 0).any()
+            or (gauge_dofs >= 6 * len(vertices)).any()
+            or len(np.unique(gauge_dofs)) != 6
+        ):
+            gs.raise_exception("Shell gauge_dofs must contain six distinct in-range integer scalar DOF indices.")
         n_nodes, n_elements = len(vertices), len(quads)
         self.recovery_capacity = next((size for size in (128, 256, 512, 1024) if 2 * n_nodes <= size), 0)
         # Each node contributes adjacent translation and rotation triplets to the shared block solver.
@@ -96,7 +105,10 @@ class ShellModel(StressModel):
         kernel_gram_inverse(self.info)
         kernel_relief_projection(self.info)
         kernel_centrifugal_wrench(self.info)
-        shell_operators.kernel_gauge(self.info, self.shell, translation_only=options.shell_gauge == "translation")
+        if gauge_dofs is None:
+            shell_operators.kernel_gauge(self.info, self.shell, translation_only=options.shell_gauge == "translation")
+        else:
+            shell_operators.kernel_explicit_gauge(gauge_dofs.astype(gs.np_int, copy=False), self.info, self.shell)
         if not qd_to_numpy(self.shell.is_valid):
             gs.raise_exception("Shell gauge must span all six rigid modes.")
         kernel_diagonal(self.info)
