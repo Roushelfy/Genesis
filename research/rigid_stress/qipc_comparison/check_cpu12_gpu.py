@@ -153,7 +153,9 @@ def _integer(api, values):
     return tensor
 
 
-def build_native_mother(api, reference, output, *, output_mode="full"):
+def build_native_mother(
+    api, reference, output, *, output_mode="full", mother_method="direct", inverse_max_bytes=512 * 1024 * 1024
+):
     """Prepare the matched mother alone, without feature maps, operators or factors."""
     model_input = _load(api.np, reference / "inputs/model.npz")
     selection_input = _load(api.np, reference / "inputs/selection.npz")
@@ -168,7 +170,8 @@ def build_native_mother(api, reference, output, *, output_mode="full"):
     options = api.gs.options.RigidStressOptions.dpr(
         mesh=asset,
         backend="shell",
-        method="direct",
+        method=mother_method,
+        inverse_max_bytes=inverse_max_bytes,
         output_mode=output_mode,
         factor_scaling=True,
         young=float(model_input["young"]),
@@ -188,9 +191,18 @@ def build_native_mother(api, reference, output, *, output_mode="full"):
     return model_input, selection_input, model
 
 
-def build_native_space(api, reference, output, *, output_mode="full"):
+def build_native_space(
+    api, reference, output, *, output_mode="full", mother_method="direct", inverse_max_bytes=512 * 1024 * 1024
+):
     """Build only from frozen physical inputs and integer topology; never read CPU operators."""
-    model_input, selection_input, model = build_native_mother(api, reference, output, output_mode=output_mode)
+    model_input, selection_input, model = build_native_mother(
+        api,
+        reference,
+        output,
+        output_mode=output_mode,
+        mother_method=mother_method,
+        inverse_max_bytes=inverse_max_bytes,
+    )
     basis = api.BilinearBasis(
         model,
         model_input["coarse_nodes"],

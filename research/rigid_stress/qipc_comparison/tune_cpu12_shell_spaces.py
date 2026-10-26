@@ -1,7 +1,8 @@
 """Bounded material-cap shell adaptation after exact CPU12 GPU reproduction.
 
-Compare the matched P3 baseline with four genuinely reduced P6 spaces. All
-candidates share the frozen mother, original cap law, pins and mass relief.
+Compare bounded P6 spaces with the matched P3 baseline. The default two
+controls retain P3's native local support, isolating coarse quality from local
+space shrinkage. All candidates share the mother, cap law, pins and relief.
 Run only in Slurm rtx-mid/image 1_26. This is not native DPR/Franka qualification.
 """
 
@@ -33,6 +34,16 @@ from .check_cpu12_gpu import (
 
 STRATEGIES = ("continuous", "nearest", "narrow")
 BUDGETS = {"field": 0.10, "peak": 0.05, "N": 0.10, "M": 0.10, "Q": 0.10, "mean_field": 0.05}
+HELD_CONFIGS = ("P6-heldP3-support", "P6-heldP3-support+oneP6halo")
+CONFIGURATIONS = (
+    ("P3-matched", 3, 1, 1.0),
+    ("P6-h0-c1.00", 6, 0, 1.0),
+    ("P6-h0-c1.15", 6, 0, 1.15),
+    ("P6-h1-c1.00", 6, 1, 1.0),
+    ("P6-h1-c1.15", 6, 1, 1.15),
+    (HELD_CONFIGS[0], 6, 0, 1.0),
+    (HELD_CONFIGS[1], 6, 1, 1.0),
+)
 
 
 @dataclass(frozen=True)
@@ -45,6 +56,73 @@ class Topology:
     node_macro_indices: object
     macro_neighbor_indptr: object
     macro_neighbor_indices: object
+
+
+@dataclass(frozen=True)
+class FixedSupportLibrary:
+    """Hold native P6 maps over explicitly controlled integer active/local masks."""
+
+    maps: tuple
+    local_nodes: tuple
+    active_macros: tuple
+    info: object
+
+
+def _held_support(api, writer, checks, name, baseline, basis, native_template, topology, halo):
+    """Transport actual native P3 support to children, with one optional integer halo."""
+    np = api.np
+    original = api.qd_to_numpy(baseline.library.info.active_macros)
+    assert original.shape == (12, 54)
+    child = np.arange(216)
+    parent = (child // 36) * 9 + ((child % 36) // 6 // 2) * 3 + (child % 6) // 2
+    assert np.array_equal(np.bincount(parent, minlength=54), np.full(54, 4))
+    active = original[:, parent].astype(api.gs.np_int, copy=True)
+    initial = active.copy()
+    for _ in range(halo):
+        expanded = active.copy()
+        for feature, row in enumerate(active):
+            for macro in np.flatnonzero(row):
+                first, last = topology.macro_neighbor_indptr[macro : macro + 2]
+                expanded[feature, topology.macro_neighbor_indices[first:last]] = 1
+        active = expanded
+    local = np.zeros((12, 866), dtype=api.gs.np_int)
+    for feature in range(12):
+        for node in range(866):
+            first, last = topology.node_macro_indptr[node : node + 2]
+            incident = topology.node_macro_indices[first:last]
+            local[feature, node] = basis.coarse_index[node] < 0 and np.all(active[feature, incident] != 0)
+        if halo == 0:
+            held = baseline.library.local_nodes[feature]
+            held = held[basis.coarse_index[held] < 0]
+            checks.exact(f"{name}/feature-{feature:02d}/held_P3_local_nodes", np.flatnonzero(local[feature]), held)
+    nodes = tuple(np.flatnonzero(row).astype(api.gs.np_int, copy=False) for row in local)
+    active_macros = tuple(np.flatnonzero(row).astype(api.gs.np_int, copy=False) for row in active)
+    info = replace(
+        native_template.info,
+        centers=baseline.library.info.centers,
+        active_macros=_integer(api, active),
+        local_mask=_integer(api, local),
+    )
+    writer.arrays(
+        f"{name}/held_support.npz",
+        P3_active_macros=original,
+        child_to_P3_macro=parent,
+        initial_P6_active_macros=initial,
+        active_macros=active,
+        local_mask=local,
+    )
+    writer.json(
+        f"{name}/held_support.json",
+        {
+            "origin": "Actual native P3 active mask; each P3 macro has four P6 child macros.",
+            "extra_P6_halo": halo,
+            "centers": "The original P3 native QD center tensor is shared unchanged.",
+            "local_rule": "Every incident P6 macro active, excluding new P6 coarse nodes.",
+            "no_halo_control": "Old P3 bubble nodes filtered by the new P6 coarse set, independently checked.",
+            "floating_preparation": "Native BilinearBasis and FeatureLibrary; host work copies integer masks/topology only.",
+        },
+    )
+    return FixedSupportLibrary(tuple(basis.feature(row) for row in nodes), nodes, active_macros, info)
 
 
 def _p6_topology(np, face_tables, n_nodes):
@@ -96,7 +174,7 @@ def _p6_topology(np, face_tables, n_nodes):
     )
 
 
-def _inventory(api, writer, checks, name, space, prepared):
+def _inventory(api, writer, checks, name, space, prepared, parent_maps=None):
     """Audit actual native maps, rank witnesses, work and projected common relief."""
     np = api.np
     model, basis, library = space.model, space.basis, space.library
@@ -144,6 +222,25 @@ def _inventory(api, writer, checks, name, space, prepared):
         checks.condition(
             f"{name}/feature-{index:02d}/common_gauge_zero", transform[space.model_input["fixed"]].count_nonzero() == 0
         )
+        containment = None
+        if parent_maps is not None:
+            parent_map = parent_maps[index]
+            parent_free = np.flatnonzero(parent_map.reduced_free.reshape(-1))
+            parent_transform = _transform(api, parent_map, model.info.vertices.shape[0])[:, parent_free]
+            coarse_coefficients = parent_transform[coarse_rows]
+            bubble_coefficients = (
+                parent_transform[bubble_rows] - transform[bubble_rows, :n_coarse_free] @ coarse_coefficients
+            )
+            embedding = api.sparse.vstack((coarse_coefficients, bubble_coefficients), format="csr")
+            checks.close(
+                f"{name}/feature-{index:02d}/contains_P3_space",
+                transform @ embedding,
+                parent_transform,
+                rtol=1e-12,
+                atol=1e-15,
+            )
+            containment = checks.rows[-1]["passed"]
+            writer.matrix(f"{name}/operators/feature-{index:02d}/P3_embedding.npz", embedding)
         projected_relief = api.qd_to_numpy(feature.projected_relief).reshape((-1, 6))[free]
         checks.close(f"{name}/feature-{index:02d}/common_relief", projected_relief, transform.T @ relief)
         checks.exact(
@@ -177,6 +274,7 @@ def _inventory(api, writer, checks, name, space, prepared):
                 "transform_entries": operator.n_transform_entries,
                 "assembly_terms": operator.n_assembly_terms,
                 "reduced_to_mother_free_ratio": len(free) / 5190,
+                "P3_space_containment_passed": containment,
             }
         )
     writer.json(f"{name}/operators/inventory.json", rows)
@@ -197,6 +295,13 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--git-source", type=Path, default=Path.cwd())
     parser.add_argument("--pilot-repeats", type=int, choices=(0, 3), default=0)
+    parser.add_argument(
+        "--configs",
+        nargs="+",
+        choices=tuple(row[0] for row in CONFIGURATIONS),
+        default=list(HELD_CONFIGS),
+        help="Default: only the two new held-P3-support controls.",
+    )
     args = parser.parse_args()
     if (
         not os.environ.get("SLURM_JOB_ID")
@@ -237,6 +342,7 @@ def main():
         "bank": "published43",
         "budgets": BUDGETS,
         "pilot_repeats": args.pilot_repeats,
+        "configurations": args.configs,
         "scope": "Prescribed material-cap shell adaptation; native DPR, volume and complete Franka remain separate.",
         "baseline": "Matched P3 with twelve centers; P6 changes only coarse interpolation and macro-local supports.",
     }
@@ -312,13 +418,7 @@ def main():
             "original_pins_are_P6_coarse": True,
         },
     )
-    configurations = [
-        ("P3-matched", 3, 1, 1.0),
-        ("P6-h0-c1.00", 6, 0, 1.0),
-        ("P6-h0-c1.15", 6, 0, 1.15),
-        ("P6-h1-c1.00", 6, 1, 1.0),
-        ("P6-h1-c1.15", 6, 1, 1.15),
-    ]
+    configurations = [row for row in CONFIGURATIONS if row[0] in args.configs]
     decisions = []
     for name, coarse_count, halo, multiplier in configurations:
         candidate_started = time.perf_counter()
@@ -339,8 +439,10 @@ def main():
                 topology.macro_neighbor_indices,
                 core_angle=float(baseline.selection_input["core_angle"]) * multiplier,
                 support_angle=float(baseline.selection_input["support_angle"]),
-                halo=halo,
+                halo=0 if name in HELD_CONFIGS else halo,
             )
+            if name in HELD_CONFIGS:
+                library = _held_support(api, writer, checks, name, baseline, basis, library, topology, halo)
             space = replace(baseline, basis=basis, library=library)
         assert len(space.library.maps) == 12
         if any(mapping.reduced_free.sum() >= 5190 for mapping in space.library.maps):
@@ -353,7 +455,9 @@ def main():
             )
             continue
         prepared = api.PreparedAtlas(space.model, space.library.maps, n_envs)
-        inventory, matrices, free_indices = _inventory(api, writer, checks, name, space, prepared)
+        inventory, matrices, free_indices = _inventory(
+            api, writer, checks, name, space, prepared, baseline.library.maps if name in HELD_CONFIGS else None
+        )
         selector = api.AtlasSelection(n_sources, n_envs, space.model.info.vertices.shape[0])
         coverage = timing_api.AtlasCoverage(space.basis.coarse_index, space.library.info.local_mask, n_sources, n_envs)
         state = space.model.create_state(n_envs, "full")
@@ -367,6 +471,7 @@ def main():
                 "core_multiplier": multiplier,
                 "coarse_nodes": len(space.basis.coarse_nodes),
                 "support_angle_unchanged": True,
+                "support_construction": "held_P3_native_support" if name in HELD_CONFIGS else "native_P6_angular_core",
             },
         )
         for strategy in STRATEGIES:

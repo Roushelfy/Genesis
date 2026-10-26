@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import resource
 import subprocess
@@ -84,6 +85,7 @@ class Routes:
     mother_valid: object
     omega: object
     strategy: str
+    mother_surface_load: bool = False
 
     def run(self, method, *, profile=False):
         api = self.timing_api.api
@@ -100,7 +102,7 @@ class Routes:
                 api.qd.sync()
                 stages["source_aggregation_admission"] = time.perf_counter() - begin
                 begin = time.perf_counter()
-            self.space.model.recover(self.omega, self.mother_state)
+            self.space.model.recover(self.omega, self.mother_state, surface_load=self.mother_surface_load)
             self.timing_api.admit(self.mother_valid, self.mother_state)
         else:
             config = self.space.selection_input
@@ -148,6 +150,22 @@ class Routes:
             groups = int(np.count_nonzero(api.qd_to_numpy(state.rhs_norm_squared)))
             invalid_sources = int(np.count_nonzero(~cap_valid))
             fallbacks = int(api.qd_to_numpy(state.fallbacks).sum())
+        corrections = api.qd_to_numpy(state.corrections)
+        packed_load_counts = None
+        if (
+            method == "mother"
+            and self.mother_surface_load
+            and self.space.model.surface_inverse is not None
+            and self.space.model.options.packed_surface_loads
+        ):
+            counts = api.qd_to_numpy(state.boundary_count)
+            block_size = self.space.model.options.packed_block_size
+            packed_load_counts = {
+                "minimum": int(counts.min()),
+                "maximum": int(counts.max()),
+                "total": int(counts.sum()),
+                "effective_block_size": block_size if block_size is not None else (512 if len(valid) >= 8192 else 0),
+            }
         return {
             "valid_environments": int(np.count_nonzero(valid)),
             "environments": len(valid),
@@ -158,7 +176,57 @@ class Routes:
             "source_feature_contributions": contributions,
             "coverage_failures": coverage_failures,
             "fallback_environments": fallbacks,
+            "correction_environments": int(np.count_nonzero(corrections)),
+            "correction_applications": int(corrections.sum()),
+            "maximum_corrections_per_environment": int(corrections.max()),
+            "packed_boundary_load_counts": packed_load_counts,
         }
+
+
+def mother_recovery_metadata(api, model, surface_load):
+    """Describe actual native selection and resident inverse caches, outside timings."""
+    inverse_bytes = 0
+    if model.inverse is not None:
+        inverse_bytes = (
+            math.prod(model.inverse.info.blocks.shape) * 9 * (8 if model.options.inverse_precision == "64" else 4)
+        )
+    surface_bytes = 0
+    if model.surface_inverse is not None:
+        info = model.surface_inverse.info
+        surface_bytes = (
+            math.prod(info.force_blocks.shape) * 9 + math.prod(info.centrifugal.shape) * 18
+        ) * api.np.dtype(api.gs.np_float).itemsize
+        surface_bytes += math.prod(info.nodes.shape) * api.np.dtype(api.gs.np_int).itemsize
+    path = (
+        "surface_inverse"
+        if surface_load and model.surface_inverse is not None
+        else ("inverse" if model.inverse is not None else "direct")
+    )
+    return {
+        "requested_method": model.options.method,
+        "selected_method": model.selected_method,
+        "surface_load_requested": surface_load,
+        "surface_inverse_available": model.surface_inverse is not None,
+        "full_inverse_available": model.inverse is not None,
+        "surface_request_fell_back": surface_load and model.surface_inverse is None,
+        "surface_load_effective": surface_load and model.surface_inverse is not None,
+        "actual_recovery_path": path,
+        "unavailable_surface_request_policy": "Native solve uses its full inverse or original sparse factor when a surface inverse is unavailable.",
+        "inverse_max_bytes": model.options.inverse_max_bytes,
+        "inverse_precision": model.options.inverse_precision,
+        "resident_full_inverse_bytes": inverse_bytes,
+        "resident_surface_inverse_bytes": surface_bytes,
+        "resident_inverse_cache_total_bytes": inverse_bytes + surface_bytes,
+        "resident_cache_scope": "Mother caches retained in this process, including paired Atlas measurements; not Atlas-only storage.",
+        "inverse_corrections": model.options.inverse_corrections,
+        "tolerance": model.options.tolerance,
+        "absolute_tolerance": model.options.absolute_tolerance,
+        "packed_surface_loads": model.options.packed_surface_loads,
+        "packed_block_size": model.options.packed_block_size,
+        "cooperative_solve": model.options.cooperative_solve,
+        "factor_scaling": model.options.factor_scaling,
+        "numerical_gate": "Original unscaled complete residual, configured inverse corrections and original factor fallback retained.",
+    }
 
 
 def _memory_snapshot():
@@ -200,11 +268,16 @@ def main():
         "--profile", action="store_true", help="Run intrusive stage fences, separately from wall timing."
     )
     parser.add_argument("--packed-solve", action="store_true")
+    parser.add_argument("--mother-method", choices=("direct", "inverse", "auto"), default="direct")
+    parser.add_argument("--mother-surface-load", action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument("--inverse-max-bytes", type=int, default=512 * 1024 * 1024)
     args = parser.parse_args()
     if not os.environ.get("SLURM_JOB_ID") or os.environ.get("SLURM_JOB_PARTITION", "rtx-mid") != "rtx-mid":
         parser.error("Use Slurm rtx-mid with image 1_26.")
     if min(args.tile, args.warmup, args.repeats) < 1:
         parser.error("tile, warmup and repeats must be positive.")
+    if args.inverse_max_bytes < 1:
+        parser.error("inverse-max-bytes must be positive.")
     output, reference = args.output.expanduser().resolve(), args.reference.expanduser().resolve()
     if output.is_relative_to(Path(__file__).resolve().parents[3]) or (output.exists() and any(output.iterdir())):
         parser.error("Use a new/empty data-side output directory outside the source checkout.")
@@ -234,6 +307,9 @@ def main():
         "warmup": args.warmup,
         "repeats": args.repeats,
         "precision": "64",
+        "mother_method_requested": args.mother_method,
+        "mother_surface_load_requested": args.mother_surface_load,
+        "inverse_max_bytes": args.inverse_max_bytes,
         "source_files": source_files,
         "native_package": str(api.gs.__file__),
         "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
@@ -252,7 +328,14 @@ def main():
     api.gs.init(backend=api.gs.cuda, precision="64", logging_level="warning")
     before_memory = _memory_snapshot()
     setup_started = time.perf_counter()
-    space = build_native_space(api, reference, output, output_mode=args.output_mode)
+    space = build_native_space(
+        api,
+        reference,
+        output,
+        output_mode=args.output_mode,
+        mother_method=args.mother_method,
+        inverse_max_bytes=args.inverse_max_bytes,
+    )
     cases = _tiled_cases(np, _load(np, reference / f"cases/{args.bank}.npz"), args.tile)
     writer.arrays("cases.npz", **cases)
     n_envs, n_sources = len(cases["case_names"]), len(cases["radius"])
@@ -297,12 +380,15 @@ def main():
         valid,
         _vector(api, np.zeros((n_envs, 3))),
         args.strategy,
+        args.mother_surface_load,
     )
     api.qd.sync()
     setup_seconds = time.perf_counter() - setup_started
     setup = {
         "seconds": setup_seconds,
         "model_timings": asdict(space.model.build_timings),
+        "mother_recovery": mother_recovery_metadata(api, space.model, args.mother_surface_load),
+        "feature_method": "packed_factor" if args.packed_solve else "factor",
         "atlas_timings": asdict(prepared.build_timings),
         "packed_solve": args.packed_solve,
         "packed_extra_storage": asdict(prepared.packed.memory_inventory()) if prepared.packed is not None else None,
@@ -442,6 +528,7 @@ def main():
         "source_unchanged": source_unchanged,
         "summary": summary,
         "setup_seconds": setup_seconds,
+        "mother_recovery": setup["mother_recovery"],
         "first_execution_including_JIT_seconds": first_execution,
         "after_measurements_memory": _memory_snapshot(),
         "profile_is_intrusive": args.profile,

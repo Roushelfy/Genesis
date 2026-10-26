@@ -25,7 +25,7 @@ from pathlib import Path
 
 def _pid_mapping():
     pid = os.getpid()
-    mapping = dict(container_pid=pid, nspid=[], candidates=[pid], preferred_pid=pid, status_error=None)
+    mapping = {"container_pid": pid, "nspid": [], "candidates": [pid], "preferred_pid": pid, "status_error": None}
     try:
         status = Path("/proc/self/status").read_text()
         line = next((line for line in status.splitlines() if line.startswith("NSpid:")), None)
@@ -38,7 +38,7 @@ def _pid_mapping():
     except (OSError, ValueError) as error:
         mapping["status_error"] = str(error)
     mapping["policy"] = (
-        "Prefer the outermost NSpid; otherwise accept a unique matching candidate. Ambiguous/unmatched samples remain unavailable."
+        "Accept only the preferred outermost NSpid/current PID; other namespace-number candidates are diagnostic. Unmatched samples remain unavailable."
     )
     return mapping
 
@@ -62,23 +62,27 @@ def _collector_main():
     signal.signal(signal.SIGINT, stop)
     print(
         json.dumps(
-            dict(
-                event="ready",
-                pid=os.getpid(),
-                target_parent_pid=args.parent_pid,
-                scientific_modules_loaded=[
+            {
+                "event": "ready",
+                "pid": os.getpid(),
+                "target_parent_pid": args.parent_pid,
+                "scientific_modules_loaded": [
                     name for name in ("numpy", "torch", "quadrants", "genesis", "scipy") if name in sys.modules
                 ],
-            )
+            }
         ),
         flush=True,
     )
     command = ["nvidia-smi", "--query-compute-apps=pid,gpu_uuid,used_gpu_memory", "--format=csv,noheader,nounits"]
     while not stopping and os.getppid() == args.parent_pid:
         before = time.perf_counter()
-        record = dict(
-            event="poll", started_seconds=before - args.started, command=command, matches=[], selected_pid=None
-        )
+        record = {
+            "event": "poll",
+            "started_seconds": before - args.started,
+            "command": command,
+            "matches": [],
+            "selected_pid": None,
+        }
         try:
             completed = subprocess.run(command, text=True, capture_output=True, timeout=10, check=False)
             record.update(returncode=completed.returncode, stdout=completed.stdout, stderr=completed.stderr)
@@ -88,15 +92,10 @@ def _collector_main():
                     continue
                 pid, memory = row[0].strip(), row[2].strip()
                 if pid.isdecimal() and int(pid) in candidates and memory.isdecimal():
-                    matches.append(dict(pid=int(pid), gpu_uuid=row[1].strip(), bytes=int(memory) * 1024 * 1024))
+                    matches.append({"pid": int(pid), "gpu_uuid": row[1].strip(), "bytes": int(memory) * 1024 * 1024})
             matched_pids = {row["pid"] for row in matches}
-            selected = (
-                args.preferred_pid
-                if args.preferred_pid in matched_pids
-                else next(iter(matched_pids))
-                if len(matched_pids) == 1
-                else None
-            )
+            # Other namespace numbers alone do not establish host-process ownership.
+            selected = args.preferred_pid if args.preferred_pid in matched_pids else None
             record.update(
                 candidate_matches=matches,
                 selected_pid=selected,
@@ -110,7 +109,7 @@ def _collector_main():
                 else "ambiguous_or_unmatched",
             )
         except (OSError, subprocess.TimeoutExpired) as error:
-            record.update(returncode=None, error=dict(type=type(error).__name__, message=str(error)))
+            record.update(returncode=None, error={"type": type(error).__name__, "message": str(error)})
         record["seconds"] = time.perf_counter() - args.started
         print(json.dumps(record), flush=True)
         remaining = 0.05 - (time.perf_counter() - before)
@@ -128,7 +127,7 @@ class ProcessSampler:
         self.error_path = output / "memory-collector.stderr.log"
 
     def start(self):
-        self.records = self.raw_path.open("w", encoding="utf-8")
+        self.records = self.raw_path.open("w+", encoding="utf-8")
         self.errors = self.error_path.open("w", encoding="utf-8")
         try:
             self.process = subprocess.Popen(
@@ -161,7 +160,7 @@ class ProcessSampler:
                 time.sleep(0.01)
             raise RuntimeError("Memory collector did not report ready within5s.")
         except (OSError, ValueError, RuntimeError) as error:
-            self.start_error = dict(type=type(error).__name__, message=str(error))
+            self.start_error = {"type": type(error).__name__, "message": str(error)}
 
     def finish(self):
         if self.process is not None and self.process.poll() is None:
@@ -181,40 +180,40 @@ class ProcessSampler:
                 try:
                     rows.append(json.loads(line))
                 except json.JSONDecodeError as error:
-                    errors.append(dict(line=line_number, error=str(error)))
+                    errors.append({"line": line_number, "error": str(error)})
         polls = [row for row in rows if row["event"] == "poll"]
         matched = [row for row in polls if row["matches"]]
         per_device = {}
         for row in matched:
             for device in row["matches"]:
                 per_device[device["gpu_uuid"]] = max(per_device.get(device["gpu_uuid"], 0), device["bytes"])
-        return dict(
-            available=bool(matched),
-            sampled_peak_device_bytes=max(
+        return {
+            "available": bool(matched),
+            "sampled_peak_device_bytes": max(
                 (sum(device["bytes"] for device in row["matches"]) for row in matched), default=None
             ),
-            sampled_peak_bytes_by_gpu=per_device,
-            requested_interval_seconds=0.05,
-            observed_poll_count=len(polls),
-            matched_poll_count=len(matched),
-            unmatched_poll_count=len(polls) - len(matched),
-            first_matching_seconds=matched[0]["seconds"] if matched else None,
-            last_matching_seconds=matched[-1]["seconds"] if matched else None,
-            ready=self.ready,
-            start_error=self.start_error,
-            parse_errors=errors,
-            collector_returncode=self.process.returncode if self.process is not None else None,
-            pid_mapping=self.mapping,
-            raw_log=str(self.raw_path),
-            collector_stderr=str(self.error_path),
-            scope="Sampled own-process NVIDIA memory, including CUDA/JIT/allocator residency; not a guaranteed allocator or hardware peak. Sampling cadence includes nvidia-smi command latency.",
-        )
+            "sampled_peak_bytes_by_gpu": per_device,
+            "requested_interval_seconds": 0.05,
+            "observed_poll_count": len(polls),
+            "matched_poll_count": len(matched),
+            "unmatched_poll_count": len(polls) - len(matched),
+            "first_matching_seconds": matched[0]["seconds"] if matched else None,
+            "last_matching_seconds": matched[-1]["seconds"] if matched else None,
+            "ready": self.ready,
+            "start_error": self.start_error,
+            "parse_errors": errors,
+            "collector_returncode": self.process.returncode if self.process is not None else None,
+            "pid_mapping": self.mapping,
+            "raw_log": str(self.raw_path),
+            "collector_stderr": str(self.error_path),
+            "scope": "Sampled own-process NVIDIA memory, including CUDA/JIT/allocator residency; not a guaranteed allocator or hardware peak. Sampling cadence includes nvidia-smi command latency.",
+        }
 
 
 def _api():
     from genesis.utils.array_class import DataItem, DataKind, iter_data
 
-    from .benchmark_cpu12_gpu import Routes, _tiled_cases, _timing_api
+    from .benchmark_cpu12_gpu import Routes, _tiled_cases, _timing_api, mother_recovery_metadata
     from .check_cpu12_gpu import (
         NativeSpace,
         _hash,
@@ -227,23 +226,24 @@ def _api():
     )
 
     timing_api = _timing_api()
-    return dict(
-        timing=timing_api,
-        api=timing_api.api,
-        Routes=Routes,
-        tiled_cases=_tiled_cases,
-        NativeSpace=NativeSpace,
-        hash=_hash,
-        integer=_integer,
-        load=_load,
-        source_inputs=_source_inputs,
-        vector=_vector,
-        build_mother=build_native_mother,
-        build_space=build_native_space,
-        DataItem=DataItem,
-        DataKind=DataKind,
-        iter_data=iter_data,
-    )
+    return {
+        "timing": timing_api,
+        "api": timing_api.api,
+        "Routes": Routes,
+        "mother_recovery_metadata": mother_recovery_metadata,
+        "tiled_cases": _tiled_cases,
+        "NativeSpace": NativeSpace,
+        "hash": _hash,
+        "integer": _integer,
+        "load": _load,
+        "source_inputs": _source_inputs,
+        "vector": _vector,
+        "build_mother": build_native_mother,
+        "build_space": build_native_space,
+        "DataItem": DataItem,
+        "DataKind": DataKind,
+        "iter_data": iter_data,
+    }
 
 
 def _items(context, routes, method):
@@ -289,14 +289,14 @@ def _inventory(context, routes, method, n_environments):
             continue
         if math.prod(item.value.shape) == 0:
             buffers.append(
-                dict(
-                    name=item.name,
-                    kind=item.kind.name,
-                    shape=list(item.value.shape),
-                    logical_bytes=0,
-                    storage_bytes=0,
-                    alias_of=None,
-                )
+                {
+                    "name": item.name,
+                    "kind": item.kind.name,
+                    "shape": list(item.value.shape),
+                    "logical_bytes": 0,
+                    "storage_bytes": 0,
+                    "alias_of": None,
+                }
             )
             continue
         view = api.qd_to_torch(item.value, copy=False)
@@ -305,53 +305,53 @@ def _inventory(context, routes, method, n_environments):
         key = (str(view.device), pointer)
         alias_of = allocations[key]["first_name"] if key in allocations else None
         if key not in allocations:
-            allocations[key] = dict(
-                first_name=item.name,
-                device=str(view.device),
-                storage_pointer=pointer,
-                storage_bytes=storage_bytes,
-                aliases=[],
-                kinds=[],
-            )
+            allocations[key] = {
+                "first_name": item.name,
+                "device": str(view.device),
+                "storage_pointer": pointer,
+                "storage_bytes": storage_bytes,
+                "aliases": [],
+                "kinds": [],
+            }
         allocation = allocations[key]
         allocation["storage_bytes"] = max(allocation["storage_bytes"], storage_bytes)
         allocation["aliases"].append(item.name)
         if item.kind.name not in allocation["kinds"]:
             allocation["kinds"].append(item.kind.name)
         buffers.append(
-            dict(
-                name=item.name,
-                kind=item.kind.name,
-                shape=list(view.shape),
-                strides=list(view.stride()),
-                dtype=str(view.dtype),
-                device=str(view.device),
-                data_pointer=int(view.data_ptr()),
-                storage_pointer=pointer,
-                logical_bytes=int(view.numel() * view.element_size()),
-                storage_bytes=storage_bytes,
-                alias_of=alias_of,
-            )
+            {
+                "name": item.name,
+                "kind": item.kind.name,
+                "shape": list(view.shape),
+                "strides": list(view.stride()),
+                "dtype": str(view.dtype),
+                "device": str(view.device),
+                "data_pointer": int(view.data_ptr()),
+                "storage_pointer": pointer,
+                "logical_bytes": int(view.numel() * view.element_size()),
+                "storage_bytes": storage_bytes,
+                "alias_of": alias_of,
+            }
         )
     unique = list(allocations.values())
     for item in unique:
         item["classification"] = "CONSTANT" if item["kinds"] == ["CONSTANT"] else "NONCONSTANT"
     constant = sum(item["storage_bytes"] for item in unique if item["classification"] == "CONSTANT")
     nonconstant = sum(item["storage_bytes"] for item in unique if item["classification"] == "NONCONSTANT")
-    summary = dict(
-        unique_native_bytes=constant + nonconstant,
-        shared_constant_bytes=constant,
-        nonconstant_bytes=nonconstant,
-        nonconstant_bytes_per_environment=nonconstant / n_environments,
-        environments=n_environments,
-        unique_allocation_count=len(unique),
-        exposed_buffer_count=len(buffers),
-        logical_buffer_bytes_before_alias_dedup=sum(item["logical_bytes"] for item in buffers),
-        constant_nonconstant_alias_conflicts=[
+    summary = {
+        "unique_native_bytes": constant + nonconstant,
+        "shared_constant_bytes": constant,
+        "nonconstant_bytes": nonconstant,
+        "nonconstant_bytes_per_environment": nonconstant / n_environments,
+        "environments": n_environments,
+        "unique_allocation_count": len(unique),
+        "exposed_buffer_count": len(buffers),
+        "logical_buffer_bytes_before_alias_dedup": sum(item["logical_bytes"] for item in buffers),
+        "constant_nonconstant_alias_conflicts": [
             item["first_name"] for item in unique if "CONSTANT" in item["kinds"] and len(item["kinds"]) > 1
         ],
-        definition="Resident exposed QD buffers, deduplicated by device and zero-copy Torch storage pointer. Per-environment division includes fixed scratch and per-source buffers; compiler, allocator pools and CUDA context memory are outside this inventory.",
-    )
+        "definition": "Resident exposed QD buffers, deduplicated by device and zero-copy Torch storage pointer. Per-environment division includes fixed scratch and per-source buffers; compiler, allocator pools and CUDA context memory are outside this inventory.",
+    }
     return summary, buffers, unique
 
 
@@ -367,11 +367,23 @@ def _experiment(context, args, manifest, result, phase):
     phase("after_genesis_init")
     if args.method == "mother":
         model_input, selection_input, model = context["build_mother"](
-            api, args.reference, args.output, output_mode=args.output_mode
+            api,
+            args.reference,
+            args.output,
+            output_mode=args.output_mode,
+            mother_method=args.mother_method,
+            inverse_max_bytes=args.inverse_max_bytes,
         )
         space = context["NativeSpace"](model, None, None, model_input, selection_input)
     else:
-        space = context["build_space"](api, args.reference, args.output, output_mode=args.output_mode)
+        space = context["build_space"](
+            api,
+            args.reference,
+            args.output,
+            output_mode=args.output_mode,
+            mother_method=args.mother_method,
+            inverse_max_bytes=args.inverse_max_bytes,
+        )
     phase("after_space_preparation")
     cases = context["tiled_cases"](np, context["load"](np, args.reference / f"cases/{args.bank}.npz"), args.tile)
     np.savez_compressed(args.output / "cases.npz", **cases)
@@ -420,6 +432,7 @@ def _experiment(context, args, manifest, result, phase):
         mother_valid,
         context["vector"](api, np.zeros((n_envs, 3))),
         args.strategy,
+        args.mother_surface_load,
     )
     api.qd.sync()
     phase("after_load_and_recovery_preparation")
@@ -439,6 +452,7 @@ def _experiment(context, args, manifest, result, phase):
         (args.output / name).write_text(json.dumps(payload, indent=2, allow_nan=False) + "\n")
     result.update(
         model_options=space.model.options.model_dump(mode="json"),
+        mother_recovery=context["mother_recovery_metadata"](api, space.model, args.mother_surface_load),
         environments=n_envs,
         sources=n_sources,
         released_environments=int(np.count_nonzero(np.diff(cases["case_offsets"]) == 0)),
@@ -489,6 +503,9 @@ def _main():
     parser.add_argument("--reference", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--git-source", type=Path, default=Path.cwd())
+    parser.add_argument("--mother-method", choices=("direct", "inverse", "auto"), default="direct")
+    parser.add_argument("--mother-surface-load", action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument("--inverse-max-bytes", type=int, default=512 * 1024 * 1024)
     args = parser.parse_args()
     if (
         not os.environ.get("SLURM_JOB_ID")
@@ -498,6 +515,8 @@ def _main():
         parser.error("Use Slurm rtx-mid with GENESIS_IMAGE_VER=1_26.")
     if args.tile < 1:
         parser.error("tile must be positive.")
+    if args.inverse_max_bytes < 1:
+        parser.error("inverse-max-bytes must be positive.")
     args.reference, args.output, args.git_source = (
         path.expanduser().resolve() for path in (args.reference, args.output, args.git_source)
     )
@@ -522,31 +541,34 @@ def _main():
     events = []
 
     def phase(name):
-        events.append(dict(name=name, seconds=time.perf_counter() - sampler.started))
+        events.append({"name": name, "seconds": time.perf_counter() - sampler.started})
 
     phase("before_scientific_imports")
-    result = dict(
-        schema="genesis.cpu12-process-memory.v1",
-        complete=False,
-        passed=False,
-        method=args.method,
-        bank=args.bank,
-        tile=args.tile,
-        output_mode=args.output_mode,
-        strategy=args.strategy,
-        process_id=os.getpid(),
-        identity=runtime_identity(),
-        worker=file_id(Path(__file__)),
-        reference_manifest=file_id(args.reference / "manifest.json"),
-        production_inputs=production_inputs,
-        precision="64",
-        isolated_method_process=True,
-        performance_measurement=False,
-        passed_semantics="Native current-load admission and unchanged source/input identities; GPU peak sampling availability is independent and may be unavailable.",
-        scope="One process/configuration: preparation and JIT, then three fresh current-load calls. No CPU numerical oracle, throughput or latency claim.",
-        comparison_policy="Mother-only never constructs P/B maps or twelve feature factors. Atlas/packed retain their actual mother and feature inventories; their sampled peaks are not independent-mother peaks.",
-        spatial_qualification="Memory/admission observations do not qualify approximation errors or applicable resultant budgets.",
-    )
+    result = {
+        "schema": "genesis.cpu12-process-memory.v1",
+        "complete": False,
+        "passed": False,
+        "method": args.method,
+        "bank": args.bank,
+        "tile": args.tile,
+        "output_mode": args.output_mode,
+        "strategy": args.strategy,
+        "mother_method_requested": args.mother_method,
+        "mother_surface_load_requested": args.mother_surface_load,
+        "inverse_max_bytes": args.inverse_max_bytes,
+        "process_id": os.getpid(),
+        "identity": runtime_identity(),
+        "worker": file_id(Path(__file__)),
+        "reference_manifest": file_id(args.reference / "manifest.json"),
+        "production_inputs": production_inputs,
+        "precision": "64",
+        "isolated_method_process": True,
+        "performance_measurement": False,
+        "passed_semantics": "Native current-load admission and unchanged source/input identities; GPU peak sampling availability is independent and may be unavailable.",
+        "scope": "One process/configuration: preparation and JIT, then three fresh current-load calls. No CPU numerical oracle, throughput or latency claim.",
+        "comparison_policy": "Mother-only never constructs P/B maps or twelve feature factors. Atlas/packed retain their actual mother and feature inventories; their sampled peaks are not independent-mother peaks.",
+        "spatial_qualification": "Memory/admission observations do not qualify approximation errors or applicable resultant budgets.",
+    }
     write_json(args.output / "result.json", result)
     try:
         context = _api()
@@ -582,16 +604,16 @@ def _main():
             and result["reference_manifest_unchanged"],
         )
     except Exception as error:
-        result["error"] = dict(type=type(error).__name__, message=str(error), traceback=traceback.format_exc())
+        result["error"] = {"type": type(error).__name__, "message": str(error), "traceback": traceback.format_exc()}
         raise
     finally:
         phase("before_sampler_stop")
         result["process_gpu_sampling"] = sampler.finish()
-        result["memory_metric_availability"] = dict(
-            sampled_own_gpu_peak=result["process_gpu_sampling"]["available"],
-            process_peak_rss=True,
-            torch_peak="torch_peak_allocated_bytes" in result,
-        )
+        result["memory_metric_availability"] = {
+            "sampled_own_gpu_peak": result["process_gpu_sampling"]["available"],
+            "process_peak_rss": True,
+            "torch_peak": "torch_peak_allocated_bytes" in result,
+        }
         result["stage_events"] = events
         result["peak_process_rss_bytes"] = int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss) * 1024
         result["peak_process_rss_scope"] = (
