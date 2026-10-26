@@ -121,11 +121,15 @@ def allocate_stress_info(
     )
 
 
-@dataclass(frozen=True)
 class StressAtlasScatter:
     weights: qd.Tensor
     force: qd.Tensor
     rows: qd.Tensor
+
+    def __init__(self, weights: qd.Tensor, force: qd.Tensor, rows: qd.Tensor):
+        self.weights = weights
+        self.force = force
+        self.rows = rows
 
 
 @qd.func
