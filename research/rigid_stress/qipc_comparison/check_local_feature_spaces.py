@@ -398,7 +398,7 @@ def main():
         checks["balanced_rhs_projection"] = relative(reduced_rhs, transform.T @ rhs)
         kernel_direct_init(reduced)
         operator.factor.solve(options.young, reduced, operator.info)
-        kernel_full_residual(options.young, options.tolerance, options.absolute_tolerance, reduced, operator.info)
+        kernel_full_residual(options.young, options.tolerance, options.absolute_tolerance, reduced, operator.info, False)
         operator.residual(options.young, reduced.rhs, reduced.displacement, reduced.residual)
         z = vector_columns(reduced.displacement)
         residual = vector_columns(reduced.residual)
