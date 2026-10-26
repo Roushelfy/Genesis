@@ -182,7 +182,7 @@ def create_stress_state(
         direction=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
         product=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
         preconditioned=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
-        boundary_columns=V(dtype=gs.qd_int, shape=(n_boundary_nodes, n_envs)),
+        boundary_columns=V(dtype=gs.qd_int, shape=maybe_shape((n_boundary_nodes, n_envs), n_boundary_nodes > 0)),
         boundary_count=V(dtype=gs.qd_int, shape=(n_envs,)),
         failed_environments=V(dtype=gs.qd_int, shape=(n_envs,)),
         failed_count=V(dtype=gs.qd_int, shape=()),
