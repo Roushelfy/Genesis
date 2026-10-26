@@ -13,6 +13,7 @@ import hashlib
 import json
 import math
 import os
+import subprocess
 import time
 import traceback
 from pathlib import Path
@@ -63,6 +64,19 @@ def _load(np, path):
 def _number(value):
     value = float(value)
     return value if math.isfinite(value) else None
+
+
+def _git_identity(source):
+    """Git metadata belongs to the requested checkout, not the analysis copy."""
+    command = ["git", "-C", str(source)]
+    try:
+        revision = subprocess.check_output([*command, "rev-parse", "HEAD"], text=True, stderr=subprocess.STDOUT).strip()
+        root = subprocess.check_output(
+            [*command, "rev-parse", "--show-toplevel"], text=True, stderr=subprocess.STDOUT
+        ).strip()
+    except (OSError, subprocess.CalledProcessError) as error:
+        return dict(source=str(source), available=False, error=str(error))
+    return dict(source=str(source), available=True, revision=revision, root=root)
 
 
 class Checks:
@@ -631,6 +645,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reference", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--git-source", type=Path, default=Path.cwd(), help="Checkout for Git provenance; defaults to cwd."
+    )
     parser.add_argument("--orders", nargs="+", type=int, default=(8, 16, 24))
     parser.add_argument("--strategies", "--selectors", nargs="+", choices=STRATEGIES, default=STRATEGIES)
     parser.add_argument(
@@ -648,6 +665,7 @@ def main():
     if min(args.orders) < 1 or len(set(args.orders)) != len(args.orders):
         parser.error("Use distinct positive quadrature orders.")
     args.reference, args.output = args.reference.expanduser().resolve(), args.output.expanduser().resolve()
+    args.git_source = args.git_source.expanduser().resolve()
     if args.output.is_relative_to(REPOSITORY):
         parser.error("Keep runtime arrays outside the source checkout, under the project's data directory.")
     if args.output.exists() and any(args.output.iterdir()):
@@ -659,6 +677,8 @@ def main():
         complete=False,
         passed=False,
         identity=runtime_identity(),
+        git=_git_identity(args.git_source),
+        analysis_source=str(REPOSITORY),
         worker=file_id(Path(__file__)),
         reference=file_id(args.reference / "manifest.json"),
         scope="Untimed load/rule/selector consistency only; no ShellModel, stiffness, factors, stress solves or throughput claims.",
@@ -671,8 +691,6 @@ def main():
         source_files=[
             file_id(REPOSITORY / relative)
             for relative in (
-                "genesis/engine/solvers/rigid/stress/material_cap.py",
-                "genesis/engine/solvers/rigid/stress/atlas_selection.py",
                 "research/rigid_stress/atlas_study/cpu_repro/geometry.py",
                 "research/rigid_stress/atlas_study/cpu_repro/loads.py",
                 "research/rigid_stress/atlas_study/cpu_repro/selection.py",
@@ -693,6 +711,15 @@ def main():
     started = time.perf_counter()
     try:
         api = _api()
+        engine_source = Path(api.gs.__file__).resolve().parent.parent
+        result["engine_source"] = str(engine_source)
+        result["source_files"].extend(
+            file_id(engine_source / relative)
+            for relative in (
+                "genesis/engine/solvers/rigid/stress/material_cap.py",
+                "genesis/engine/solvers/rigid/stress/atlas_selection.py",
+            )
+        )
         result["versions"] = dict(numpy=api.np.__version__, scipy=api.scipy.__version__)
         with api.threadpool_limits(limits=1):
             run(api, args, result)

@@ -100,7 +100,7 @@ def kernel_atlas_selection_reset(state: AtlasSelectionState):
 def kernel_atlas_selection_weights(
     sources: MaterialCapSources,
     loads: MaterialCapState,
-    centers: qd.template(),
+    centers: qd.Tensor,
     state: AtlasSelectionState,
     strategy: int,
     support_angle: float,
