@@ -88,11 +88,15 @@ def func_atlas_wendland(distance: float):
 
 @qd.kernel
 def kernel_atlas_selection_reset(state: AtlasSelectionState):
-    for block, feature, environment in state.grouped_force:
+    # Explicit descriptor bounds also exercise repeated, differently shaped
+    # workspace allocations; do not bind this reset to a tensor struct-for.
+    for block, feature, environment in qd.ndrange(
+        state.grouped_force.shape[0], state.grouped_force.shape[1], state.grouped_force.shape[2]
+    ):
         state.grouped_force[block, feature, environment] = qd.Vector.zero(gs.qd_float, 3)
-    for feature, environment in state.active_groups:
+    for feature, environment in qd.ndrange(state.active_groups.shape[0], state.active_groups.shape[1]):
         state.active_groups[feature, environment] = False
-    for environment in state.environment_valid:
+    for environment in range(state.environment_valid.shape[0]):
         state.environment_valid[environment] = True
 
 

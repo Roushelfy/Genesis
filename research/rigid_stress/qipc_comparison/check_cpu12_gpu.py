@@ -37,6 +37,7 @@ class NativeSpace:
 def _api():
     import numpy as np
     import quadrants as qd
+    import torch
     from scipy import sparse
 
     import genesis as gs
@@ -59,7 +60,7 @@ def _api():
     from genesis.engine.solvers.rigid.stress.shell_model import ShellModel
     from genesis.engine.solvers.rigid.stress.solve import kernel_balance
     from genesis.utils.array_class import V_MAT, V_VEC, V
-    from genesis.utils.misc import qd_to_numpy
+    from genesis.utils.misc import qd_to_numpy, qd_to_torch
 
     from .export_cpu12_reference import Writer
 
@@ -691,6 +692,176 @@ def _bank(
         checks.close(f"{bank}/{strategy}/spatial_field", spatial_field, expected["relative_field_error"], rtol=1e-8)
         checks.close(f"{bank}/{strategy}/spatial_peak", spatial_peak, expected["relative_peak_error"], rtol=1e-8)
         checks.flush(writer)
+    if stage == "all":
+        _lifecycle(
+            api,
+            writer,
+            checks,
+            bank,
+            model,
+            library,
+            state,
+            prepared,
+            selector,
+            coverage,
+            sources,
+            cap,
+            selection_input,
+            selected,
+            covered,
+            atlas_output,
+        )
+
+
+def _lifecycle(
+    api,
+    writer,
+    checks,
+    bank,
+    model,
+    library,
+    state,
+    prepared,
+    selector,
+    coverage,
+    sources,
+    cap,
+    config,
+    selected,
+    covered,
+    last_atlas,
+):
+    """Exercise loaded-to-zero-to-loaded grouped RHS in the same environments and buffers."""
+    np = api.np
+    prefix = f"{bank}/lifecycle"
+    prepared.recover(selected.grouped_force, state, covered.environment_covered)
+    loaded = _outputs(api, model, state)
+    writer.arrays(f"{prefix}/loaded/output.npz", **loaded)
+    output_keys = ("force", "rhs", "q", "stress_local", "stress_full9", "peak", "N", "M", "Q")
+    for key in output_keys:
+        checks.close(f"{prefix}/loaded/{key}", loaded[key], last_atlas[key], rtol=1e-10, atol=1e-14)
+    checks.condition(f"{prefix}/loaded/valid", loaded["valid"].all())
+    checks.condition(f"{prefix}/loaded/env0_has_load", np.count_nonzero(loaded["force"][:, 0]) > 0)
+    feature_loaded = []
+    for index, feature in enumerate(prepared.states):
+        baseline = {
+            "q": _scalar_vectors(api, feature.displacement),
+            "rhs": _scalar_vectors(api, feature.rhs),
+            "residual": _scalar_vectors(api, feature.residual),
+            "valid": api.qd_to_numpy(feature.valid),
+        }
+        writer.arrays(f"{prefix}/loaded/feature-{index:02d}.npz", **baseline)
+        feature_loaded.append(baseline)
+    mutation = ""
+    for phase in ("release_all", "reload_all", "release_env0", "reload_env0"):
+        if phase == "release_all":
+            selected.grouped_force.fill(0)
+        elif phase == "release_env0":
+            if api.gs.use_zerocopy:
+                api.qd.sync()
+                grouped_t = api.qd_to_torch(selected.grouped_force, transpose=True, copy=False)
+                assert grouped_t.shape[0] == state.active.shape[0]
+                grouped_t[0].zero_()
+                api.torch.cuda.synchronize()
+                mutation = "Torch device view, environment zeroed in-place; no host floating computation."
+            else:
+                grouped = api.qd_to_numpy(selected.grouped_force)
+                grouped[:, :, 0, :] = 0
+                selected.grouped_force.from_numpy(grouped)
+                mutation = "Native grouped-force array copied, environment zeroed, copied back; no oracle values."
+        else:
+            selected = selector.run(
+                sources,
+                cap.state,
+                library.info.centers,
+                strategy="narrow",
+                support_angle=float(config["support_angle"]),
+                narrow_fraction=float(config["narrow_fraction"]),
+                maximum_radius=float(config["maximum_radius"]),
+            )
+            source_valid = api.qd_to_numpy(selected.source_valid)
+            environment_valid = api.qd_to_numpy(selected.environment_valid)
+            invalid = api.qd_to_numpy(selected.invalid_source_count)
+            covered = coverage.check(sources, cap.state, selected)
+            environment_covered = api.qd_to_numpy(covered.environment_covered)
+            failures = api.qd_to_numpy(covered.coverage_failures)
+            checks.condition(
+                f"{prefix}/{phase}/input_admission",
+                source_valid.all()
+                and environment_valid.all()
+                and invalid == 0
+                and environment_covered.all()
+                and failures == 0,
+            )
+            checks.flush(writer)
+            if (
+                not source_valid.all()
+                or not environment_valid.all()
+                or invalid != 0
+                or not environment_covered.all()
+                or failures != 0
+            ):
+                raise ArithmeticError(f"Native lifecycle reload inputs rejected for {bank}/{phase}.")
+        prepared.recover(selected.grouped_force, state, covered.environment_covered)
+        actual = _outputs(api, model, state)
+        writer.arrays(f"{prefix}/{phase}/output.npz", **actual)
+        checks.condition(f"{prefix}/{phase}/valid", actual["valid"].all())
+        zero_environment = slice(None) if phase == "release_all" else slice(0, 1)
+        if phase.startswith("release_"):
+            for key in output_keys:
+                checks.condition(
+                    f"{prefix}/{phase}/exact_zero/{key}", np.count_nonzero(actual[key][..., zero_environment]) == 0
+                )
+        if phase != "release_all":
+            keep_environment = slice(1, None) if phase == "release_env0" else slice(None)
+            for key in output_keys:
+                checks.close(
+                    f"{prefix}/{phase}/retained/{key}",
+                    actual[key][..., keep_environment],
+                    loaded[key][..., keep_environment],
+                    rtol=1e-10,
+                    atol=1e-14,
+                )
+        for index, (feature, baseline) in enumerate(zip(prepared.states, feature_loaded, strict=True)):
+            feature_output = {
+                "q": _scalar_vectors(api, feature.displacement),
+                "rhs": _scalar_vectors(api, feature.rhs),
+                "residual": _scalar_vectors(api, feature.residual),
+                "residual_norm_squared": api.qd_to_numpy(feature.residual_norm_squared),
+                "valid": api.qd_to_numpy(feature.valid),
+            }
+            writer.arrays(f"{prefix}/{phase}/feature-{index:02d}.npz", **feature_output)
+            checks.condition(f"{prefix}/{phase}/feature-{index:02d}/valid", feature_output["valid"].all())
+            if phase.startswith("release_"):
+                for key in ("q", "rhs", "residual", "residual_norm_squared"):
+                    checks.condition(
+                        f"{prefix}/{phase}/feature-{index:02d}/exact_zero/{key}",
+                        np.count_nonzero(feature_output[key][..., zero_environment]) == 0,
+                    )
+            if phase != "release_all":
+                for key in ("q", "rhs"):
+                    checks.close(
+                        f"{prefix}/{phase}/feature-{index:02d}/retained/{key}",
+                        feature_output[key][..., keep_environment],
+                        baseline[key][..., keep_environment],
+                        rtol=1e-10,
+                        atol=1e-14,
+                    )
+        checks.flush(writer)
+    writer.json(
+        f"{prefix}/scope.json",
+        {
+            "kind": "same_environment_loaded_release_reload_grouped_rhs",
+            "strategy": "narrow",
+            "phases": ["loaded", "release_all", "reload_all", "release_env0", "reload_env0"],
+            "partial_release_mutation": mutation,
+            "input_provenance": "Reload recomputes selector/grouping from the same native sources and native cap loads.",
+            "qualified_scope": "Current-load algebra, same-environment isolation, exact-zero release and deterministic reload.",
+            "scene_partial_reset_checkpoint_contract_tested": False,
+            "peak_scope": "state.peak is the current recovery maximum; the scene step envelope is a separate lifecycle.",
+            "approximate_residual_scope": "Only feature residuals are exported; no parent mother residual is claimed.",
+        },
+    )
 
 
 def main():

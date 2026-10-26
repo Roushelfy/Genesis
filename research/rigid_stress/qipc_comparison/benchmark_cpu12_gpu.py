@@ -243,6 +243,9 @@ def main():
         "timed": "Fresh cap.assemble, native aggregation/selection/coverage, relief, solve, recovery and device validity gates.",
         "outside_timing": "CPU oracle checks, exports, device synchronization before start, validity readback, memory queries.",
         "fallback_policy": "No mother correction or approximation fallback; failed admission is reported as rejected work.",
+        "passed_semantics": "Independent numerical equivalence, native admission and unchanged source identity.",
+        "spatial_qualification": "Requires a separate source-matched all-bank spatial audit and declared tensor/peak/resultant budgets.",
+        "scene_throughput_qualification": "Complete-module measurements do not establish complete-scene accuracy or throughput gains.",
     }
     writer.json("start.json", identity)
     api.gs.init(backend=api.gs.cuda, precision="64", logging_level="warning")
@@ -412,6 +415,10 @@ def main():
     result = {
         **identity,
         "passed": passed and source_unchanged,
+        "numerical_equivalence_passed": all(row["passed"] for row in checks.rows),
+        "native_admission_passed": passed,
+        "spatial_qualification_established_by_this_benchmark": False,
+        "complete_scene_benefit_established_by_this_benchmark": False,
         "source_unchanged": source_unchanged,
         "summary": summary,
         "setup_seconds": setup_seconds,
