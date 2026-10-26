@@ -7,7 +7,7 @@ Every executed frame is retained, including rejected spatial approximations.
 """
 
 import argparse
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 import os
 from pathlib import Path
 
@@ -29,6 +29,18 @@ from genesis.utils.misc import qd_to_numpy
 from .artifacts import file_id, runtime_identity, write_json
 from .check_local_feature_spaces import source_parents
 from .voxel_mesh import voxel_mesh
+
+
+@dataclass(frozen=True)
+class SelectionProbe:
+    face: int
+    local: np.ndarray
+    radius: float
+    feature: int = -1
+    unsupported_face: int = -1
+    unsupported_vertex: int = -1
+    unsupported_vertex_distance: float = 0.0
+    nominal_gap: float = 0.0
 
 
 @qd.kernel
@@ -57,6 +69,11 @@ def tensor_error(actual, expected, weights):
     return np.sqrt(
         np.sum(numerator * weights, axis=(1, 2)) / np.maximum(np.sum(denominator * weights, axis=(1, 2)), 1e-60)
     )
+
+
+def tensor_norm(tensor, weights):
+    multiplicity = np.array([1, 1, 1, 2, 2, 2])
+    return np.sqrt(np.sum(np.sum(tensor**2 * multiplicity, axis=-1) * weights, axis=(1, 2)))
 
 
 def tensor_peak(tensor):
@@ -209,9 +226,11 @@ class GeometryControl:
         self.center_local = np.array([0.0, 0.0]) if model.n_shell_elements else np.array([1 / 3, 1 / 3])
         self.reference_options = atlas.options.model_copy(update={"atlas_regions": 0})
         self.boundary = qd_to_numpy(atlas.regions.info.boundary_nodes, copy=True)
+        self.base_radius = qd_to_numpy(contacts.radius, copy=True)
         if model.n_shell_elements:
             self.sample_weights = np.repeat(qd_to_numpy(model.shell.weights), 2, axis=0) / 2
-            gauss = np.array([[-1, -1], [1, -1], [-1, 1], [1, 1]]) / np.sqrt(3.0)
+            # Match shell_operators.func_gauss and the output i_q index exactly.
+            gauss = np.array([[-1, -1], [1, -1], [1, 1], [-1, 1]]) / np.sqrt(3.0)
             corners = np.array([[-1, -1], [1, -1], [1, 1], [-1, 1]])
             shape = 0.25 * np.prod(1 + gauss[:, None] * corners[None], axis=-1)
             mids = np.einsum(
@@ -219,14 +238,24 @@ class GeometryControl:
             )
             offset = 0.5 * atlas.options.shell_thickness * qd_to_numpy(model.shell.interpolated_director)
             self.sample_positions = np.stack((mids + offset, mids - offset), axis=1).reshape((-1, 4, 3))
+            self.result["sample_layout"] = "native shell: (2 * element + side, Gauss index); (--),(+-),(++),(-+)"
         else:
             self.sample_weights = np.broadcast_to(
                 qd_to_numpy(model.info.volumes)[:, None] / 4, (model.n_output_elements, 4)
             )
             self.sample_positions = qd_to_numpy(model.info.vertices)[qd_to_numpy(model.info.elements)[:, :4]]
-        self.fields = ("displacement", "stress_tensor", "peak")
+            self.result["sample_layout"] = "native volume solve.func_peak_impl: tetrahedron corners 0,1,2,3"
+        self.field_bindings = (
+            ("displacement", self.state.displacement, self.reference.displacement),
+            ("stress_tensor", self.state.stress_tensor, self.reference.stress_tensor),
+            ("peak", self.state.peak, self.reference.peak),
+        )
         if model.n_shell_elements:
-            self.fields += ("membrane_resultant", "bending_resultant", "transverse_resultant")
+            self.field_bindings += (
+                ("membrane_resultant", self.state.membrane_resultant, self.reference.membrane_resultant),
+                ("bending_resultant", self.state.bending_resultant, self.reference.bending_resultant),
+                ("transverse_resultant", self.state.transverse_resultant, self.reference.transverse_resultant),
+            )
 
     def inputs(self, sites, *, sign=1, valid=None, omega=None, balanced=False):
         n_contacts, n_envs = self.contacts.valid.shape
@@ -245,11 +274,21 @@ class GeometryControl:
             valid = np.ones((n_contacts, n_envs), dtype=bool)
         if omega is None:
             omega = np.array([[1.3, -0.7, 2.1], [-2.4, 0.9, 1.1]])[np.arange(n_envs) % 2]
-        return dict(position=positions, force=forces, normal=inward, valid=valid.copy(), omega=np.asarray(omega).copy())
+        return dict(
+            position=positions,
+            force=forces,
+            normal=inward,
+            valid=valid.copy(),
+            omega=np.asarray(omega).copy(),
+            radius=self.base_radius.copy(),
+        )
 
     def execute(self, name, inputs, *, category="qualification"):
-        for key in ("position", "force", "normal", "valid"):
-            getattr(self.contacts, key).from_numpy(np.ascontiguousarray(inputs[key]))
+        self.contacts.position.from_numpy(np.ascontiguousarray(inputs["position"]))
+        self.contacts.force.from_numpy(np.ascontiguousarray(inputs["force"]))
+        self.contacts.normal.from_numpy(np.ascontiguousarray(inputs["normal"]))
+        self.contacts.valid.from_numpy(np.ascontiguousarray(inputs["valid"]))
+        self.contacts.radius.from_numpy(np.ascontiguousarray(inputs["radius"]))
         self.contacts.friction.fill(0.5)
         self.omega.from_numpy(np.ascontiguousarray(inputs["omega"]))
         kernel_anchor(float(np.finfo(float).eps), self.contacts, self.surface.info)
@@ -269,17 +308,15 @@ class GeometryControl:
         kernel_copy_force(self.state, self.reference)
         self.model.recover(self.omega, self.reference, self.reference_options, surface_load=True)
         self.atlas.recover(self.omega, self.state, self.atlas.options)
-        actual = {field: qd_to_numpy(getattr(self.state, field), transpose=True, copy=True) for field in self.fields}
-        expected = {
-            field: qd_to_numpy(getattr(self.reference, field), transpose=True, copy=True) for field in self.fields
-        }
+        actual = {name: qd_to_numpy(field, transpose=True, copy=True) for name, field, _ in self.field_bindings}
+        expected = {name: qd_to_numpy(field, transpose=True, copy=True) for name, _, field in self.field_bindings}
         raw = qd_to_numpy(self.state.force, transpose=True, copy=True)
         grouped = qd_to_numpy(self.atlas.regions.state.force, copy=True)
         weights = qd_to_numpy(self.atlas.regions.state.weights, copy=True)
         loaded = inputs["valid"] & (np.linalg.norm(inputs["force"], axis=-1) > 1e-30)
         selected = weights * loaded[None]
         load_error = relative(grouped.sum(axis=1).transpose(1, 0, 2), raw[:, self.boundary])
-        errors = {field: relative(actual[field], expected[field]).tolist() for field in self.fields}
+        errors = {name: relative(actual[name], expected[name]).tolist() for name, _, _ in self.field_bindings}
         errors["stress_tensor"] = tensor_error(
             actual["stress_tensor"], expected["stress_tensor"], self.sample_weights
         ).tolist()
@@ -295,9 +332,11 @@ class GeometryControl:
                 )
             else:
                 residual = np.sqrt(qd_to_numpy(state.residual_norm_squared))
+            rhs_norm = np.linalg.norm(qd_to_numpy(state.rhs, transpose=True).reshape((self.args.envs, -1)), axis=1)
+            native_rhs_norm = np.sqrt(qd_to_numpy(state.rhs_norm_squared))
             budget = np.maximum(
                 self.atlas.options.absolute_tolerance,
-                self.atlas.options.tolerance * np.sqrt(qd_to_numpy(state.rhs_norm_squared)),
+                self.atlas.options.tolerance * rhs_norm,
             )
             valid = qd_to_numpy(state.valid).astype(bool)
             group_checks.append(
@@ -305,6 +344,8 @@ class GeometryControl:
                     group=i_g,
                     active=active[i_g].tolist(),
                     unscaled_residual_norm=residual.tolist(),
+                    independently_read_rhs_norm=rhs_norm.tolist(),
+                    native_rhs_norm=native_rhs_norm.tolist(),
                     original_budget=budget.tolist(),
                     valid=valid.tolist(),
                     passed=bool(np.all(~active[i_g] | ((residual <= budget) & valid))),
@@ -325,33 +366,47 @@ class GeometryControl:
         status = qd_to_numpy(self.contacts.status, copy=True)
         force_error = qd_to_numpy(self.contacts.force_error, copy=True)
         moment_error = qd_to_numpy(self.contacts.moment_error, copy=True)
+        magnitude = np.linalg.norm(inputs["force"], axis=-1)
+        radius = qd_to_numpy(self.contacts.radius, copy=True)
+        force_budget, moment_budget = 1e-8 * magnitude, 1e-8 * magnitude * radius
+        relative_force_error = np.divide(force_error, magnitude, out=np.zeros_like(force_error), where=loaded)
+        relative_moment_error = np.divide(
+            moment_error, magnitude * radius, out=np.zeros_like(moment_error), where=loaded
+        )
         numerical = bool(
             all(row["passed"] for row in group_checks)
             and qd_to_numpy(self.state.valid).all()
             and qd_to_numpy(self.reference.valid).all()
             and np.all(status[loaded] == 0)
-            and np.all(force_error[loaded] <= 1e-8)
-            and np.all(moment_error[loaded] <= 1e-8)
+            and np.all(force_error[loaded] <= force_budget[loaded])
+            and np.all(moment_error[loaded] <= moment_budget[loaded])
             and np.all(load_error <= 1e-10)
             and np.isfinite(actual["stress_tensor"]).all()
         )
         spatial = max(errors["stress_tensor"]) <= 0.10 and max(errors["peak"]) <= 0.05
         if self.model.n_shell_elements:
-            spatial = spatial and all(max(errors[field]) <= 0.10 for field in self.fields[3:])
+            spatial = spatial and all(max(errors[name]) <= 0.10 for name, _, _ in self.field_bindings[3:])
         row = dict(
             name=name,
             category=category,
             errors=errors,
+            tensor_error_norm=tensor_norm(
+                actual["stress_tensor"] - expected["stress_tensor"], self.sample_weights
+            ).tolist(),
+            reference_tensor_norm=tensor_norm(expected["stress_tensor"], self.sample_weights).tolist(),
             numerical_passed=numerical,
             spatial_passed=bool(spatial),
             source_numerical_checks=group_checks,
             mother_spatial_residual_relative=mother_relative.tolist(),
             loaded=int(loaded.sum()),
             fine_contributors=int(np.count_nonzero(selected[1:] > 1e-14, axis=0).max()),
+            fine_contributors_per_contact=np.count_nonzero(selected[1:] > 1e-14, axis=0).tolist(),
             mother_weight_per_contact=(weights[0] * loaded).tolist(),
             coverage_fallbacks=int((qd_to_numpy(self.atlas.regions.state.fallback) & loaded).sum()),
             maximum_force_error=float(force_error.max()),
             maximum_moment_error=float(moment_error.max()),
+            maximum_relative_force_error=float(relative_force_error.max()),
+            maximum_relative_moment_error=float(relative_moment_error.max()),
             numerical_fallbacks=qd_to_numpy(self.atlas.state.numerical_fallbacks).tolist(),
         )
         if name.startswith("remote_neck"):
@@ -379,6 +434,10 @@ class GeometryControl:
             contact_status=status,
             contact_force_error=force_error,
             contact_moment_error=moment_error,
+            contact_force_budget=force_budget,
+            contact_moment_budget=moment_budget,
+            contact_relative_force_error=relative_force_error,
+            contact_relative_moment_error=relative_moment_error,
             anchor_face=qd_to_numpy(self.contacts.anchor_face),
             centers=qd_to_numpy(self.contacts.center),
             sample_positions=self.sample_positions,
@@ -476,6 +535,9 @@ class GeometryControl:
                 locatable=False, reason="No supported/unsupported adjacent face boundary with active nominal feature."
             )
             footprint = aggregation
+        junction, footprint, best_gap = self.targeted_selection_probes(
+            junction, footprint, best_gap, distances, coverage, nodes, coordinates
+        )
         uncovered = np.flatnonzero(~coverage.any(axis=0))
         self.result["junction_probe"] = dict(
             face=int(junction[0]),
@@ -485,6 +547,136 @@ class GeometryControl:
             nominal_three_locatable=bool(best_gap is not None and best_gap < self.atlas.options.atlas_transition),
         )
         return junction, aggregation, footprint, uncovered
+
+    def targeted_selection_probes(self, junction, footprint, best_gap, distances, coverage, nodes, coordinates):
+        """Search actual native whole-footprint selection, without elastic solves.
+
+        Nominal nearest-feature distance alone does not certify availability.
+        A separate finite-radius probe also looks beyond shared face vertices;
+        fixed coarse neck nodes can remove the old boundary witness entirely.
+        """
+        radius = float(self.base_radius[0, 0])
+        if self.model.n_shell_elements:
+            coordinates = [
+                np.array([x, y]) for x in (-0.98, -0.5, 0.0, 0.5, 0.98) for y in (-0.98, -0.5, 0.0, 0.5, 0.98)
+            ]
+        else:
+            coordinates = [self.center_local] + [
+                np.array([i / 12, j / 12]) for i in range(1, 12) for j in range(1, 12 - i)
+            ]
+        unsupported_vertices = []
+        unsupported_face_ids = []
+        for feature in range(len(coverage)):
+            face_ids = np.flatnonzero(~coverage[feature])
+            vertices, first = np.unique(self.faces[face_ids], return_index=True)
+            unsupported_vertices.append(vertices)
+            unsupported_face_ids.append(face_ids[first // self.faces.shape[1]])
+        junction_candidates, partial_candidates = [], []
+        for i_f, face in enumerate(self.faces):
+            for local in coordinates:
+                point, _, _, shape = surface_point(self.vertices, face, local)
+                d = distances[:, nodes[i_f]] @ shape
+                nominal = (d - d.min() < self.atlas.options.atlas_transition) | (d == d.min())
+                if np.count_nonzero(nominal & coverage[:, i_f]) >= 3:
+                    ordered = np.sort(d)
+                    junction_candidates.append(
+                        SelectionProbe(i_f, local, radius, nominal_gap=float(ordered[2] - ordered[0]))
+                    )
+                for feature in np.flatnonzero(nominal & coverage[:, i_f]):
+                    vertices = unsupported_vertices[feature]
+                    if len(vertices):
+                        distance = np.linalg.norm(self.vertices[vertices] - point, axis=1)
+                        nearest = np.argmin(distance)
+                        if distance[nearest] < 8 * radius:
+                            partial_candidates.append(
+                                SelectionProbe(
+                                    i_f,
+                                    local,
+                                    max(radius, float(1.05 * distance[nearest])),
+                                    int(feature),
+                                    int(unsupported_face_ids[feature][nearest]),
+                                    int(vertices[nearest]),
+                                    float(distance[nearest]),
+                                )
+                            )
+        # Keep a bounded set of the smallest physical footprints. This changes
+        # test inputs, never the feature coverage mask or the pressure tolerance.
+        partial_candidates.sort(key=lambda probe: probe.radius)
+        nominal_candidate_count = len(junction_candidates)
+        if len(junction_candidates) > 640:
+            closest = sorted(junction_candidates, key=lambda probe: probe.nominal_gap)[:128]
+            indices = np.linspace(0, len(junction_candidates) - 1, 512, dtype=int)
+            junction_candidates = closest + [junction_candidates[index] for index in indices]
+        candidates = junction_candidates + partial_candidates[:64]
+        observed_weights, observed_status = [], []
+        selected_junction, selected_partial = None, None
+        junction_score = -1.0
+        for begin in range(0, len(candidates), 4):
+            batch = candidates[begin : begin + 4]
+            padded = batch + [batch[-1]] * (4 - len(batch))
+            inputs = self.inputs([(probe.face, probe.local) for probe in padded])
+            self.contacts.position.from_numpy(np.ascontiguousarray(inputs["position"]))
+            self.contacts.force.from_numpy(np.ascontiguousarray(inputs["force"]))
+            self.contacts.normal.from_numpy(np.ascontiguousarray(inputs["normal"]))
+            self.contacts.valid.from_numpy(np.ascontiguousarray(inputs["valid"]))
+            self.contacts.friction.fill(0.5)
+            self.contacts.radius.from_numpy(np.array([[probe.radius] * self.args.envs for probe in padded]))
+            kernel_anchor(float(np.finfo(float).eps), self.contacts, self.surface.info)
+            self.atlas.prepare(self.contacts, self.model.load_info, self.surface.info)
+            weights = qd_to_numpy(self.atlas.regions.state.weights, copy=True)
+            status = qd_to_numpy(self.contacts.status, copy=True)
+            for slot, probe in enumerate(batch):
+                value = weights[:, slot, 0]
+                observed_weights.append(value.copy())
+                observed_status.append(int(status[slot, 0]))
+                if status[slot, 0] == 0:
+                    contributors = np.count_nonzero(value[1:] > 1e-14)
+                    if probe.feature < 0 and contributors >= 3:
+                        score = np.sort(value[1:])[-3]
+                        if score > junction_score:
+                            selected_junction, junction_score = probe, score
+                    if probe.feature >= 0 and value[0] > 0 and selected_partial is None:
+                        selected_partial = probe
+        self.contacts.radius.from_numpy(self.base_radius)
+        artifact = self.directory / "selection-probes.npz"
+        np.savez_compressed(
+            artifact,
+            faces=np.array([probe.face for probe in candidates]),
+            local=np.array([probe.local for probe in candidates]),
+            radius=np.array([probe.radius for probe in candidates]),
+            partial_feature=np.array([probe.feature for probe in candidates]),
+            weights=np.array(observed_weights),
+            status=np.array(observed_status),
+        )
+        self.result["targeted_selection_search"] = dict(
+            probe_count=len(candidates),
+            nominal_junction_candidates=nominal_candidate_count,
+            executed_junction_candidates=len(junction_candidates),
+            partial_candidates=len(partial_candidates[:64]),
+            maximum_radius_multiplier=8.0,
+            native_three_locatable=selected_junction is not None,
+            native_partial_locatable=selected_partial is not None,
+            artifact=file_id(artifact),
+        )
+        if selected_junction is not None:
+            junction = (selected_junction.face, selected_junction.local.copy())
+            *_, shape = surface_point(self.vertices, self.faces[junction[0]], junction[1])
+            ordered = np.sort(distances[:, nodes[junction[0]]] @ shape)
+            best_gap = float(ordered[2] - ordered[0])
+        if selected_partial is not None:
+            footprint = (selected_partial.face, selected_partial.local.copy())
+            self.result["partial_footprint_probe"] = dict(
+                face=selected_partial.face,
+                feature=selected_partial.feature + 1,
+                unsupported_neighbor_face=selected_partial.unsupported_face,
+                unsupported_physical_vertex=selected_partial.unsupported_vertex,
+                anchor_face_covered=True,
+                distance_to_unsupported_vertex_m=selected_partial.unsupported_vertex_distance,
+                radius_m=selected_partial.radius,
+                locatable=True,
+                source="native targeted finite-footprint input search",
+            )
+        return junction, footprint, best_gap
 
     def suite(self):
         junction, aggregation, footprint, uncovered = self.probes()
@@ -517,7 +709,10 @@ class GeometryControl:
         row["permutation_peak_error"] = relative(actual["peak"], baseline["peak"]).tolist()
         row["permutation_passed"] = max(row["permutation_tensor_error"] + row["permutation_peak_error"]) < 1e-8
         footprint_sites = [footprint, *sites[1:]]
-        _, footprint_row = self.execute("partial_footprint", self.inputs(footprint_sites))
+        footprint_inputs = self.inputs(footprint_sites)
+        if self.result["partial_footprint_probe"]["locatable"]:
+            footprint_inputs["radius"][0] = self.result["partial_footprint_probe"]["radius_m"]
+        _, footprint_row = self.execute("partial_footprint", footprint_inputs)
         self.result["partial_footprint_probe"]["observed_mother_weight"] = footprint_row["mother_weight_per_contact"][0]
         valid = np.ones(self.contacts.valid.shape, dtype=bool)
         valid[:, -1] = False
@@ -535,6 +730,12 @@ class GeometryControl:
             restored["stress_tensor"], baseline["stress_tensor"], self.sample_weights
         ).tolist()
         self.result["aggregation"] = self.aggregation(aggregation)
+        distant = self.inputs([sites[1], sites[1], sites[2], sites[3]], omega=zero_spin, balanced=True)
+        distant["valid"][1] = False
+        distant["valid"][3] = False
+        self.result["opposed_distant_sources"] = self.aggregation(
+            aggregation, inputs=distant, label="opposed_distant_sources", require_shared=False
+        )
         self.result["continuity"] = [
             self.continuity("junction", junction, sites),
             self.continuity("coverage", footprint, sites),
@@ -554,7 +755,8 @@ class GeometryControl:
         if self.args.geometry == "neck":
             self.remote_neck(centers)
         rows = self.result["rows"]
-        self.result["junction_observed_three"] = any(row["fine_contributors"] >= 3 for row in rows)
+        junction_contributors = row_value(rows, "moving_asymmetric_1", "fine_contributors_per_contact")[0]
+        self.result["junction_observed_three"] = max(junction_contributors) >= 3
         checks = dict(
             numerical=all(row["numerical_passed"] for row in rows),
             spatial=all(row["spatial_passed"] for row in rows if row["category"] == "qualification"),
@@ -563,6 +765,7 @@ class GeometryControl:
             and row_value(rows, "partial_environment_release", "released_environment_exact_zero"),
             restore=max(row_value(rows, "restore_after_release", "restore_tensor_error")) < 1e-8,
             aggregation=self.result["aggregation"]["passed"],
+            opposed_distant_source_sum=self.result["opposed_distant_sources"]["passed"],
             continuity=all(row["passed"] for row in self.result["continuity"]),
             partial_footprint=bool(
                 self.result["partial_footprint_probe"]["locatable"]
@@ -579,25 +782,33 @@ class GeometryControl:
         self.result.update(complete=True, qualification_checks=checks, passed=bool(all(checks.values())))
         write_json(self.directory / "result.json", self.result)
 
-    def aggregation(self, site):
-        sites = [(site[0], site[1] + np.array([offset, 0.0])) for offset in (-0.01, -0.003, 0.004, 0.012)]
-        inputs = self.inputs(sites)
-        combined, row = self.execute("same_feature_aggregation", inputs)
+    def aggregation(self, site, *, inputs=None, label="same_feature_aggregation", require_shared=True):
+        if inputs is None:
+            sites = [(site[0], site[1] + np.array([offset, 0.0])) for offset in (-0.01, -0.003, 0.004, 0.012)]
+            inputs = self.inputs(sites)
+        combined, row = self.execute(label, inputs)
         group_weights = qd_to_numpy(self.atlas.regions.state.weights, copy=True)[1:]
-        shared = np.all(group_weights > 1e-14, axis=1)
+        shared = np.all((group_weights > 1e-14) | ~inputs["valid"][None], axis=1)
         shared_groups = [(np.flatnonzero(shared[:, env]) + 1).tolist() for env in range(self.args.envs)]
         summed = {key: np.zeros_like(value) for key, value in combined.items() if key != "peak"}
+        source_norm = np.zeros(self.args.envs)
+        source_count = 0
         for i_c in range(4):
+            if not inputs["valid"][i_c].any():
+                continue
             one = {key: value.copy() for key, value in inputs.items()}
             one["valid"][:] = False
-            one["valid"][i_c] = True
+            one["valid"][i_c] = inputs["valid"][i_c]
             one["omega"][:] = 0
-            fields, _ = self.execute(f"separate_source_{i_c}", one, category="aggregation_diagnostic")
+            fields, source_row = self.execute(f"{label}_separate_source_{i_c}", one, category="aggregation_diagnostic")
+            source_norm += np.array(source_row["reference_tensor_norm"])
+            source_count += 1
             for key in summed:
                 summed[key] += fields[key]
         spin = {key: value.copy() for key, value in inputs.items()}
         spin["valid"][:] = False
-        fields, _ = self.execute("separate_spin", spin, category="aggregation_diagnostic")
+        fields, spin_row = self.execute(f"{label}_separate_spin", spin, category="aggregation_diagnostic")
+        source_norm += np.array(spin_row["reference_tensor_norm"])
         for key in summed:
             summed[key] += fields[key]
         errors = {key: relative(summed[key], combined[key]).tolist() for key in summed}
@@ -607,11 +818,21 @@ class GeometryControl:
         ).tolist()
         return dict(
             errors=errors,
-            passed=bool(max(max(values) for values in errors.values()) < 1e-8 and shared.any(axis=0).all()),
+            passed=bool(
+                max(max(values) for values in errors.values()) < 1e-8
+                and (not require_shared or shared.any(axis=0).all())
+            ),
             spin_added_once=True,
-            source_count=4,
+            source_count=source_count,
             fine_contributors=row["fine_contributors"],
             shared_fine_groups_per_environment=shared_groups,
+            combined_tensor_error_norm=row["tensor_error_norm"],
+            reference_source_tensor_norm_sum=source_norm.tolist(),
+            source_norm_normalized_tensor_error=(
+                np.array(row["tensor_error_norm"]) / np.maximum(source_norm, 1e-30)
+            ).tolist(),
+            cancellation_ratio=(np.array(row["reference_tensor_norm"]) / np.maximum(source_norm, 1e-30)).tolist(),
+            near_cancellation_observed=bool(np.any(np.array(row["reference_tensor_norm"]) < 0.25 * source_norm)),
             rule="Native independently recovered source tensors/displacements sum to native grouped recovery; peak follows the tensor sum.",
         )
 
@@ -621,7 +842,10 @@ class GeometryControl:
             pair = []
             for sign in (-1, 1):
                 perturbed = [(site[0], site[1] + np.array([sign * delta, 0.0])), *sites[1:]]
-                actual, row = self.execute(f"continuity_{label}_{delta:g}_{sign:+d}", self.inputs(perturbed))
+                inputs = self.inputs(perturbed)
+                if label == "coverage" and self.result["partial_footprint_probe"]["locatable"]:
+                    inputs["radius"][0] = self.result["partial_footprint_probe"]["radius_m"]
+                actual, row = self.execute(f"continuity_{label}_{delta:g}_{sign:+d}", inputs)
                 pair.append((actual, row))
             jump = tensor_error(pair[1][0]["stress_tensor"], pair[0][0]["stress_tensor"], self.sample_weights)
             rows.append(

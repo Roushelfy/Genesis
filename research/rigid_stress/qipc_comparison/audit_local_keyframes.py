@@ -13,6 +13,7 @@ import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
+from statistics import median
 
 import numpy as np
 import quadrants as qd
@@ -21,7 +22,8 @@ from scipy.sparse.linalg import splu
 
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.contact import create_contacts
-from genesis.engine.solvers.rigid.stress.data import StressInfo, create_stress_state
+from genesis.engine.solvers.rigid.stress.data import StressInfo, StressState, create_stress_state
+from genesis.engine.solvers.rigid.stress.feature_atlas import kernel_spin_loads
 from genesis.engine.solvers.rigid.stress.feature_basis import FeatureBasis
 from genesis.engine.solvers.rigid.stress.feature_operator import FeatureOperator
 from genesis.engine.solvers.rigid.stress.feature_regions import FeatureRegions
@@ -29,7 +31,7 @@ from genesis.engine.solvers.rigid.stress.model import StressModel
 from genesis.engine.solvers.rigid.stress.shell_model import ShellModel
 from genesis.engine.solvers.rigid.stress.solve import kernel_balance, kernel_direct_init, kernel_full_residual
 from genesis.options.rigid_stress import RigidStressOptions
-from genesis.utils.array_class import V_VEC
+from genesis.utils.array_class import V_VEC, V
 from genesis.utils.misc import qd_to_numpy
 
 from .artifacts import file_id, runtime_identity, write_json
@@ -90,6 +92,46 @@ def kernel_mother_residual(
         for i_e in range(info.row_start[i_n], info.row_start[i_n + 1]):
             value += young * info.stiffness[i_e] @ displacement[info.columns[i_e], i_b]
         residual[i_n, i_b] = value
+
+
+@qd.kernel
+def kernel_timing_initialize(young: float, omega: qd.Tensor, spin: qd.Tensor, state: StressState):
+    for i_b in range(state.valid.shape[0]):
+        state.valid[i_b] = True
+    for i_n, i_b in qd.ndrange(state.displacement.shape[0], state.valid.shape[0]):
+        w = omega[i_b]
+        terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
+        value = qd.Vector.zero(gs.qd_float, 3)
+        for i_c in qd.static(range(6)):
+            value += spin[i_n, i_c] * terms[i_c]
+        value /= young
+        state.displacement[i_n, i_b] = value
+        for a in qd.static(range(3)):
+            if qd.math.isnan(value[a]) or qd.math.isinf(value[a]):
+                state.valid[i_b] = False
+
+
+@qd.kernel
+def kernel_timing_select(state: StressState, selected: qd.Tensor):
+    for i_b in range(state.valid.shape[0]):
+        state.active[i_b] = selected[i_b]
+        state.valid[i_b] = not selected[i_b]
+
+
+@qd.kernel
+def kernel_timing_merge(source: qd.Tensor, source_valid: qd.Tensor, target: StressState, selected: qd.Tensor):
+    for i_n, i_b in qd.ndrange(target.displacement.shape[0], target.valid.shape[0]):
+        if selected[i_b]:
+            target.displacement[i_n, i_b] += source[i_n, i_b]
+    for i_b in range(target.valid.shape[0]):
+        if selected[i_b]:
+            target.valid[i_b] = target.valid[i_b] and source_valid[i_b]
+
+
+@qd.kernel
+def kernel_timing_retain_valid(state: StressState, retained: qd.Tensor):
+    for i_b in range(state.valid.shape[0]):
+        retained[i_b] = retained[i_b] and state.valid[i_b]
 
 
 def relative(actual, expected):
@@ -166,6 +208,196 @@ class AuditOperator:
     free: np.ndarray
     state: object
     metadata: dict
+
+
+def prepare_timing_spin(mother, options):
+    """Prepare the same six exact mother spin controls used by the atlas."""
+    started = time.perf_counter()
+    spin = create_stress_state(mother.info.vertices.shape[0], 6)
+    kernel_spin_loads(spin, mother.info)
+    kernel_direct_init(spin)
+    mother.factor.solve(1.0, spin, mother.info, options.cooperative_solve)
+    kernel_full_residual(1.0, options.tolerance, options.absolute_tolerance, spin, mother.info, only_active=False)
+    qd.sync()
+    seconds = time.perf_counter() - started
+    assert qd_to_numpy(spin.valid).all(), "Timing spin preparation failed the original mother numerical gate."
+    return spin, {
+        "native_preparation_seconds": seconds,
+        "rhs_norm": np.sqrt(qd_to_numpy(spin.rhs_norm_squared)).tolist(),
+        "residual_norm": np.sqrt(qd_to_numpy(spin.residual_norm_squared)).tolist(),
+        "valid": qd_to_numpy(spin.valid).tolist(),
+    }
+
+
+def time_keyframe(
+    args,
+    mother,
+    options,
+    spin,
+    raw_force,
+    omega,
+    zero_omega,
+    grouped,
+    boundary,
+    active,
+    tuples,
+    coarse,
+    sources,
+    joint_cache,
+    expected_fields,
+    weights,
+    progress,
+):
+    """Time native replay only; setup, validation and reporting surround the timer."""
+    started = time.perf_counter()
+    n_envs = raw_force.shape[1]
+    n_blocks = mother.info.vertices.shape[0]
+    coalesced = options.coalesced_residual
+    if coalesced is None:
+        coalesced = n_envs >= 8192
+
+    def make_mask(values):
+        mask = V(dtype=gs.qd_int, shape=(n_envs,))
+        mask.from_numpy(np.asarray(values, dtype=gs.np_int))
+        return mask
+
+    group_masks = [make_mask(active[:, i]) for i in range(active.shape[1])]
+    covered_mask = make_mask(np.any(active[:, 1:], axis=1))
+    joint_schedule = [
+        (joint_cache[key], make_mask([value == key for value in tuples])) for key in sorted(set(tuples)) if key
+    ]
+    fallback = create_stress_state(n_blocks, n_envs)
+    balanced = create_stress_state(n_blocks, n_envs)
+    lifted = create_stress_state(n_blocks, n_envs)
+    outputs = {name: mother.create_state(n_envs, "full") for name in ("coarse", "local", "joint", "mother")}
+    retained = {name: V(dtype=gs.qd_bool, shape=(n_envs,)) for name in outputs}
+    qd.sync()
+    setup_seconds = time.perf_counter() - started
+
+    def solve_reduced(bundle, selected, output):
+        operator, state = bundle.operator, bundle.state
+        operator.project(balanced.rhs, state.rhs)
+        kernel_direct_init(state)
+        kernel_timing_select(state, selected)
+        operator.factor.solve(options.young, state, operator.info, options.cooperative_solve, only_failed=True)
+        kernel_full_residual(
+            options.young,
+            options.tolerance,
+            options.absolute_tolerance,
+            state,
+            operator.info,
+            only_active=True,
+            coalesced=coalesced,
+        )
+        operator.lift(state.displacement, lifted.displacement)
+        kernel_timing_merge(lifted.displacement, state.valid, output, selected)
+
+    def begin_approximate(output):
+        kernel_copy_vector(raw_force, output.force)
+        kernel_timing_initialize(options.young, omega, spin.displacement, output)
+        kernel_expand_group(grouped, boundary, 0, fallback.force)
+        kernel_balance(zero_omega, fallback, mother.info, options.cooperative_balance)
+        kernel_direct_init(fallback)
+        kernel_timing_select(fallback, group_masks[0])
+        mother.factor.solve(options.young, fallback, mother.info, options.cooperative_solve, only_failed=True)
+        kernel_full_residual(
+            options.young,
+            options.tolerance,
+            options.absolute_tolerance,
+            fallback,
+            mother.info,
+            only_active=True,
+            coalesced=coalesced,
+        )
+        kernel_timing_merge(fallback.displacement, fallback.valid, output, group_masks[0])
+
+    def replay(name):
+        output = outputs[name]
+        if name == "mother":
+            kernel_copy_vector(raw_force, output.force)
+            mother.recover(omega, output)
+        else:
+            begin_approximate(output)
+            if name == "local":
+                for i_group, bundle in enumerate(sources, start=1):
+                    kernel_expand_group(grouped, boundary, i_group, balanced.force)
+                    kernel_balance(zero_omega, balanced, mother.info, options.cooperative_balance)
+                    solve_reduced(bundle, group_masks[i_group], output)
+            else:
+                kernel_difference(output.force, fallback.force, balanced.force)
+                kernel_balance(zero_omega, balanced, mother.info, options.cooperative_balance)
+                if name == "coarse":
+                    solve_reduced(coarse, covered_mask, output)
+                else:
+                    for bundle, selected in joint_schedule:
+                        solve_reduced(bundle, selected, output)
+            mother.evaluate_stress(options, output)
+        kernel_timing_retain_valid(output, retained[name])
+
+    warmup_iterations = min(10, args.timing_iterations)
+    names = tuple(outputs)
+    timing = {
+        "complete": False,
+        "passed": False,
+        "iterations_per_repetition": args.timing_iterations,
+        "repetitions": args.timing_repetitions,
+        "warmup_iterations_per_path": warmup_iterations,
+        "state_and_schedule_setup_seconds": setup_seconds,
+        "paths": {name: {"repetitions": []} for name in names},
+        "source_operators": [bundle.name for bundle in sources],
+        "joint_operators": [bundle.name for bundle, _selected in joint_schedule],
+        "source_active_environments": active[:, 1:].sum(axis=0).tolist(),
+        "fallback_active_environments": int(active[:, 0].sum()),
+    }
+    progress(timing)
+    for name in names:
+        retained[name].fill(True)
+        for _ in range(warmup_iterations):
+            replay(name)
+        qd.sync()
+        assert qd_to_numpy(retained[name]).all(), f"Timing warmup failed native numerical acceptance: {name}."
+        errors = field_errors(read_fields(outputs[name]), expected_fields[name], weights)
+        assert exact_fields_pass(errors), ("Timing warmup changed the audited field", name, errors)
+        timing["paths"][name]["warmup_field_errors"] = errors
+        progress(timing)
+    for repetition in range(args.timing_repetitions):
+        # Rotate path order to spread sequential GPU warm-state effects.
+        order = names[repetition % len(names) :] + names[: repetition % len(names)]
+        for name in order:
+            retained[name].fill(True)
+            qd.sync()
+            started = time.perf_counter()
+            for _ in range(args.timing_iterations):
+                replay(name)
+            qd.sync()
+            elapsed = time.perf_counter() - started
+            # Every readback/oracle comparison follows the completed interval.
+            valid = qd_to_numpy(retained[name]).astype(bool)
+            errors = field_errors(read_fields(outputs[name]), expected_fields[name], weights)
+            timing["paths"][name]["repetitions"].append(
+                {
+                    "index": repetition,
+                    "order": list(order),
+                    "seconds": elapsed,
+                    "seconds_per_iteration": elapsed / args.timing_iterations,
+                    "native_valid_across_iterations": valid.tolist(),
+                    "field_errors_against_audited_control": errors,
+                    "passed": bool(valid.all() and exact_fields_pass(errors)),
+                }
+            )
+            progress(timing)
+    for measurements in timing["paths"].values():
+        durations = [row["seconds_per_iteration"] for row in measurements["repetitions"]]
+        measurements.update(
+            median_seconds_per_iteration=median(durations),
+            minimum_seconds_per_iteration=min(durations),
+            maximum_seconds_per_iteration=max(durations),
+            median_environment_fields_per_second=n_envs / median(durations),
+            passed=all(row["passed"] for row in measurements["repetitions"]),
+        )
+    timing.update(complete=True, passed=all(value["passed"] for value in timing["paths"].values()))
+    progress(timing)
+    return timing
 
 
 def make_operator(name, local_nodes, mother, basis, mother_matrix, n_envs, options, output):
@@ -496,6 +728,10 @@ def audit(args, result):
     joint_covered = create_stress_state(n_blocks, n_envs)
     rhs_sum = create_stress_state(n_blocks, n_envs)
     fields = {name: mother.create_state(n_envs, "full") for name in ("coarse", "local", "joint")}
+    timing_spin = None
+    if args.timing_iterations:
+        timing_spin, spin_details = prepare_timing_spin(mother, options)
+        result["timing"]["spin_preparation"] = spin_details
     write_json(args.output / "result.json", result)
     for path in paths:
         frame = first if path == paths[0] else load_frame(path)
@@ -680,6 +916,32 @@ def audit(args, result):
         result["joint_cache"] = [
             {"active_groups": list(key), "operator": value.name} for key, value in sorted(joint_cache.items())
         ]
+        if args.timing_iterations:
+
+            def record_timing(value, current_row=row):
+                current_row["timing"] = value
+                write_json(args.output / "result.json", result)
+
+            timing = time_keyframe(
+                args,
+                mother,
+                options,
+                timing_spin,
+                reference.force,
+                omega,
+                zero_omega,
+                grouped,
+                regions.info.boundary_nodes,
+                active,
+                tuples,
+                coarse,
+                sources,
+                joint_cache,
+                {**actual, "mother": fresh},
+                weights,
+                record_timing,
+            )
+            row["numerical_passed"] = bool(row["numerical_passed"] and timing["passed"])
         np.testing.assert_array_equal(qd_to_numpy(mother.info.is_free).reshape(-1), mother_free)
         np.testing.assert_array_equal(qd_to_numpy(mother.info.pins), pins)
         write_json(args.output / "result.json", result)
@@ -699,7 +961,16 @@ def main():
     )
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--frames", type=int, nargs="+", help="Saved frame numbers; default: first four available.")
+    parser.add_argument(
+        "--timing-iterations",
+        type=int,
+        default=0,
+        help="Native same-operator replay iterations per repetition; zero disables timing.",
+    )
+    parser.add_argument("--timing-repetitions", type=int, default=5)
     args = parser.parse_args()
+    if args.timing_iterations < 0 or args.timing_repetitions < 1:
+        parser.error("--timing-iterations must be nonnegative and --timing-repetitions must be positive.")
     assert os.environ.get("SLURM_JOB_ID"), "Run this scientific audit inside a scheduled Slurm job."
     assert os.environ.get("SLURM_JOB_PARTITION") == "rtx-mid", "Use the established rtx-mid partition."
     assert os.environ.get("GENESIS_IMAGE_VER") == "1_26", "Use the captured image 1_26 environment."
@@ -720,6 +991,27 @@ def main():
         "fallback_control": "Exact mother recovery of group zero plus the saved spin, added to every approximate control.",
         "independent_source_sum_is_not_automatically_joint": True,
         "preparation_scope": "Native fixed operators cached by active-group tuple for this bounded offline audit; no online-factorization performance claim.",
+        "timing": {
+            "enabled": args.timing_iterations > 0,
+            "iterations_per_repetition": args.timing_iterations,
+            "repetitions": args.timing_repetitions,
+            "scope": "Same prepared native factor operators and full mother sample points on each saved raw load; this is not an optimized full-module or full-scene baseline.",
+            "solver": "Prepared native FP64 factors for all four controls, regardless of the saved production atlas solver.",
+            "included": [
+                "Native copy of the same saved total nodal load for each path.",
+                "Mother inertia relief and T-transpose RHS projection for each declared source or joint space.",
+                "Prepared factor application with the original relative 1e-8 / absolute 1e-11 numerical gate.",
+                "Lift and merge, then exactly one complete stress/peak scan at identical mother samples.",
+                "For approximate paths, native application of a prepared six-column exact spin basis and active group-zero mother recovery, without a second stress scan.",
+                "Per-iteration native validity accumulation over all solved environments.",
+            ],
+            "excluded": [
+                "All operator/factor construction, state allocation, spin preparation and saved active-tuple schedule preparation.",
+                "Warmup, SciPy/NumPy oracles, host readbacks, field comparisons, hashing and array/JSON exports.",
+                "Collision, pressure/radius preparation, feature selection, raw-load grouping and rigid scene stepping.",
+            ],
+            "protocol": "Prewarm every path, synchronize before and after each timed repetition, rotate path order, and validate fields outside the timed interval.",
+        },
     }
     write_json(args.output / "result.json", result)
     try:

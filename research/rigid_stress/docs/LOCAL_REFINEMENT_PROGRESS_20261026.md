@@ -113,3 +113,42 @@ selection now fades each feature conservatively before its complete pressure
 footprint reaches an unsupported face; the remaining weight goes to the exact
 mother. This preserves load and avoids a hard spatial-model switch. Its
 continuity and fallback costs require the new geometry controls.
+
+## Bounded tuning and complete trajectories
+
+Source `a17fc82b7`, `atlas-tuning-v4` (751224), passes moving-contact numerical
+and grouped-load checks. Increasing shell core from 1.0 to 1.2 or adding one
+halo still fails spatial accuracy. Core 1.4 passes 140 frames (3.7055% tensor,
+0.3172% peak), while retaining 1236--1428 scalar coordinates per feature
+against the 1452-coordinate mother. Level-2 core 1.0 reduces features to
+3708--4152 versus 5772 mother coordinates and passes tensor/peak budgets,
+but fails the separate transverse-resultant budget (13.5694%).
+The coarse-only control is strongly inaccurate. Volume response/three-region
+fields match the factor pilot and pass 140 frames; six narrower regions fail
+(20.5437% tensor). These are targeted local-space trials, not repeated old H
+or history campaigns.
+
+`atlas-full-v4` (751239) demonstrates why the short pilot cannot qualify the
+method: shell core 1.4 fails the complete 600-frame trajectory at 12.0542%
+tensor and 5.1857% peak; volume core 1.0 fails at 17.3490% tensor. Shell
+resultants also reject the partial-reset and 64-condition trajectories.
+All frames and rejected configurations remain retained. Further bounded
+core/transition tuning and matched module/scene timing are running.
+
+The first curved-egg and true U-neck controls (`atlas-geometry-v4`, 751226)
+pass source numerical/load, permutation, release/restore, grouped versus
+separate-source plus once-only spin, and decreasing-perturbation continuity
+checks in both backends. Their spatial errors reject these narrow libraries,
+including the fixed-neck enrichment. The volume junction/partial-footprint
+probe limitations are recorded separately. A shell Gauss-position ordering
+error in the research witness and dimensional wrench-reporting thresholds
+were found after this run; corrected native-directed probes and output
+positions are captured for the next control. Prior raw results are preserved.
+
+The independent shell keyframe audit (`joint-audit-v4`, 751238) passes complete
+mother reconstruction, projected load/operator checks and saved source-sum
+reconstruction. Joint-union and coarse controls remain explicitly distinct
+from the independent source sum. Optional matched native keyframe timing and
+an actual full-recovery CUDA profiler are now available. The first profiler
+run exposed a research-only weight-axis readback error; the corrected worker
+retains the original runtime gates and the failed record.
