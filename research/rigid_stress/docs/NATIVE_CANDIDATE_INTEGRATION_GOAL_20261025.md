@@ -1,5 +1,11 @@
 # Native integration and tuning of stress recovery candidates
 
+**Current scope correction:** the measured atlas is an exact same-mother
+response partition. Real locally refined/coarsened feature spaces remain open
+under [the new review and goal](ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md).
+Preserve the numerical/timing evidence below for its actual implemented scope;
+its completion labels do not close the original spatial-approximation route.
+
 **Delivered, 2026-10-26:** see the [final report](NATIVE_CANDIDATE_RESULTS_20261025.md)
 and [fourteen-cell audit](../evidence/20261025-native-candidates-v1/metadata/requirements-final.json).
 The original specification below is preserved.

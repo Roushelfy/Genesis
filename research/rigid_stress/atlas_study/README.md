@@ -1,5 +1,12 @@
 # Feature-mesh atlas: theory and CPU validation
 
+**Active native migration:** read
+[the current review/goal](../docs/ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md)
+and [the CPU reference guide](../docs/ATLAS_CPU_REFERENCE_GUIDE.md).
+The source here includes actual local mesh refinement. Its independently
+assembled models are references for the open native spatial-approximation
+route; they are not the later unavailable common-mother cpu_next source.
+
 Research requested on 2026-10-24: precompute meshes with local refinement at
 representative surface regions, then select/combine their responses online.
 This package contains theory, executable CPU experiments and retained failures.

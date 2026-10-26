@@ -1,5 +1,30 @@
 # Working on native rigid stress recovery
 
+**Active user direction:** follow [GOAL.md](GOAL.md),
+[the local-refinement review/goal](docs/ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md)
+and [the CPU source guide](docs/ATLAS_CPU_REFERENCE_GUIDE.md).
+
+The prior exact response-partition implementation is a tested special case.
+Real locally fine/coarsely represented far-field feature spaces remain to be
+implemented and evaluated for both shell and volume. The first three candidate
+families are open for that mechanism. Preserve the four other native candidate
+families' scoped negative results; avoid unchanged reruns.
+
+Within each backend share mother geometry/mass/gauge/relief before projection.
+Keep exact-mode checks. In an explicit spatial approximation, check numerical
+solve residual in the declared feature space and qualify combined field/peak
+error separately; the full mother residual is a spatial-error diagnostic.
+Do not force every approximate result through a complete mother correction and
+then reject the method for retaining mother cost.
+
+Keep preparation/runtime in Quadrants. Use the existing CPU real-refinement
+sources as references with their stated limitations, not as an already native
+or common-mother implementation. Prioritize low/moderate-model correctness,
+profile-driven tuning and full Franka accuracy/cost evidence. This explicit
+follow-up supersedes the prior blanket completion language for local refinement.
+
+## Historical candidate delivery and standing policies
+
 **Latest delivery, 2026-10-26:** the native candidate integration/tuning goal
 is complete for both shell and volume. Read [GOAL.md](GOAL.md),
 [the final report](docs/NATIVE_CANDIDATE_RESULTS_20261025.md) and

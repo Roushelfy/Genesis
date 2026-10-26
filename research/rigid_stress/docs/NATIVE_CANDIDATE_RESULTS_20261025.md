@@ -1,5 +1,11 @@
 # Native candidate integration and tuning, 2026-10-25
 
+**Current scope correction:** the measured atlas is an exact same-mother
+response partition. Real locally refined/coarsened feature spaces remain open
+under [the new review and goal](ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md).
+Preserve the numerical/timing evidence below for its actual implemented scope;
+its completion labels do not close the original spatial-approximation route.
+
 This report implements the [native integration goal](NATIVE_CANDIDATE_INTEGRATION_GOAL_20261025.md).
 **Completed, 2026-10-26:** all fourteen candidate/backend decisions have native
 integration, numerical, tuning, complete-scene and memory evidence. None of the

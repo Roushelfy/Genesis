@@ -1,5 +1,11 @@
 # Native candidate integration ledger
 
+**Current scope correction:** the measured atlas is an exact same-mother
+response partition. Real locally refined/coarsened feature spaces remain open
+under [the new review and goal](ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md).
+Preserve the numerical/timing evidence below for its actual implemented scope;
+its completion labels do not close the original spatial-approximation route.
+
 Completed specification: [native integration and tuning](NATIVE_CANDIDATE_INTEGRATION_GOAL_20261025.md),
 revision `b8e63b195`. Baseline engine: `5c44042a4`, delivered in `f8a98971f`.
 All seven candidates require independent shell and volume native decisions.

@@ -1,4 +1,31 @@
-# Native rigid stress recovery: native candidate integration and tuning
+# Native rigid stress recovery: local-refinement atlas follow-up
+
+**Active user goal:** complete real locally refined feature meshes/spaces,
+per-feature batching and merged recovery in both shell and volume.
+Read [the review and remaining goal](docs/ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md)
+and [the CPU source guide](docs/ATLAS_CPU_REFERENCE_GUIDE.md).
+
+The previous atlas trial partitions the exact response of one complete model.
+Its negative timing does not test local fine enrichment with coarse far-field
+coordinates. Those first three candidate families remain open under the
+original spatial-approximation intent. Preserve the native H/FP32/screen/history
+negative evidence and the maintained pressure/fallback/optional angular path.
+
+Use actual smaller feature discretizations or validated reduced spaces with
+common physical geometry, load maps and mother-defined mass/gauge/relief.
+Separate feature solve residual from spatial approximation against the mother;
+an unconditional full mother correction must not erase the intended reduction.
+Keep existing exact-mode assertions and qualify an explicit approximate mode
+with combined full-field/peak error budgets.
+
+Prioritize low-resolution numerical consistency, detailed profiling and matched
+accuracy/time/memory comparisons, including complete Franka workflows.
+Native numerical preparation/runtime stay in Quadrants. Retain useful winners
+or a reproducible tuned negative for this actual local-refinement mechanism.
+Missing feature spaces or unchanged complete-response partitioning cannot close
+the task. Follow the detailed review for scope and completion.
+
+## Historical candidate delivery, scoped by the current review
 
 **Completed, 2026-10-26:** all fourteen native candidate/backend decisions are
 delivered. Native integration, numerical controls, targeted tuning, module and

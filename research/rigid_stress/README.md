@@ -9,12 +9,22 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
+## Active: true local-refinement atlas follow-up
+
+The [current review and goal](docs/ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md)
+keeps the original local-fine/coarse-far-field route open in both backends.
+The prior exact same-mother response partition does not test its spatial
+accuracy/cost mechanism. Start from the [CPU source guide](docs/ATLAS_CPU_REFERENCE_GUIDE.md)
+and preserve the accepted H/FP32/screen/history negative evidence.
+See [GOAL.md](GOAL.md) for current integration and completion priorities.
+
 ## Delivered: native candidate integration and tuning (2026-10-26)
 
-All seven candidates were integrated and tuned separately for midsurface shell
-and three-dimensional volume FEM. The fourteen native decisions are negative
-on the measured workloads; unhelpful production paths and their extra options
-are removed, with runnable native source pins and all failed trials retained.
+The seven measured candidate implementations were integrated and tuned for
+midsurface shell and volume FEM. Their fourteen measured decisions are negative
+on those workloads. The atlas is the exact response-partition special case;
+the current review keeps genuine local-refinement integration open. Unhelpful
+production paths were removed with runnable experiment pins and failures retained.
 Read [the final report](docs/NATIVE_CANDIDATE_RESULTS_20261025.md),
 [the ledger](docs/NATIVE_CANDIDATE_PROGRESS_20261025.md) and
 [the evidence packet](evidence/20261025-native-candidates-v1/README.md).
