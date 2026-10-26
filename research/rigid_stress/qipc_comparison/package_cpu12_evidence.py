@@ -502,28 +502,27 @@ def _task(packet, campaign, group_index, task, source, analysis, cancellations):
     record["input_artifacts"] = _input_receipts(packet, task_id, arguments)
     results, configs = [], {}
     folder = group / name
-    if folder.is_dir():
-        for path in _walk_task(folder):
-            packet.collect_file(path, task_id)
-            if path.name in ("result.json", "start.json", "manifest.json", "setup.json"):
-                document = _read_json(path)
-                if isinstance(document, dict):
-                    relative = str(path.relative_to(folder))
-                    if relative in ("result.json", "manifest.json"):
-                        results.append(
-                            {"path": str(path), "header": _header(document), "semantics": _semantics(document)}
-                        )
-                    if relative in ("result.json", "start.json", "manifest.json"):
-                        configs[relative] = {key: _compact(document[key]) for key in CONFIG_KEYS if key in document}
-                        record.setdefault("recorded_input_hashes", {})[relative] = {
-                            key: _compact(value)
-                            for key, value in document.items()
-                            if "sha256" in key
-                            or "input" in key
-                            or key in ("conditions", "asset", "basis", "mesh", "reference_manifest")
-                        }
-                    if relative == "start.json":
-                        record["actual_checkout_commit"] = document.get("checkout_commit")
+    record["output_kind"] = "directory" if folder.is_dir() else "file" if folder.is_file() else "missing"
+    paths = _walk_task(folder) if folder.is_dir() else (folder,) if folder.is_file() else ()
+    for path in paths:
+        packet.collect_file(path, task_id)
+        if path.name in ("result.json", "start.json", "manifest.json", "setup.json") or path == folder:
+            document = _read_json(path)
+            if isinstance(document, dict):
+                relative = "result.json" if path == folder else str(path.relative_to(folder))
+                if relative in ("result.json", "manifest.json"):
+                    results.append({"path": str(path), "header": _header(document), "semantics": _semantics(document)})
+                if relative in ("result.json", "start.json", "manifest.json"):
+                    configs[relative] = {key: _compact(document[key]) for key in CONFIG_KEYS if key in document}
+                    record.setdefault("recorded_input_hashes", {})[relative] = {
+                        key: _compact(value)
+                        for key, value in document.items()
+                        if "sha256" in key
+                        or "input" in key
+                        or key in ("conditions", "asset", "basis", "mesh", "reference_manifest")
+                    }
+                if relative == "start.json":
+                    record["actual_checkout_commit"] = document.get("checkout_commit")
     record["result_documents"] = results
     record["actual_configuration"] = configs
     for log in (group / f"{name}.log", group / f"{name}.stdout", group / f"{name}.stderr"):
