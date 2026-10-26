@@ -178,3 +178,33 @@ rows, constant rotations and the existing curved rigid-motion correction.
 Planar analytic kinematics and the all-bubbles mother solution must pass
 before interpreting curved-egg spatial results. The independent oracle uses
 parent pairs, distinct from native per-parent coefficient assembly.
+
+The planar bending proof (`bending-proof-v6`, 751300) passes horizontal and
+inclined patches, including rigid/quadratic kinematics, virtual work and the
+all-bubbles solution. Four full curved-egg trajectories (`bending-full-v6`,
+751311) all reject spatial accuracy. Level-1 core 1.0/core 1.2/six-region
+maximum tensor errors are 26.3744%/18.2499%/29.4144%; level 2 has 7.3138%
+tensor and 0.8028% peak but 19.6479% transverse-resultant error. This bounded
+mechanics-based alternative does not rescue curved-shell qualification.
+
+The wider accuracy corner passes both lifecycle and 64-condition 600-frame
+controls (`qualified-full-v4`, 751303), with the documented two-full-size
+features in each library. All 32 matched module/scene outputs and 128 repeats
+in `qualified-paired-v4` (751291) pass runtime acceptance and remain slower
+than the optimized mother. Their spatial/dimension qualifications are bound
+to these same configurations.
+
+Corrected narrow-library controls (`remaining-controls-v6`, 751316) now
+observe real partial footprints in both backends, complete grouped-load
+preservation and continuous mixed mother weights. Shell's selected footprint
+has mother share 0.02739; volume's intersecting footprint fully falls back,
+while other real frames have mixed shares 0.32984--0.37647. Fixed-neck shell
+bending improves the peak but still fails full-field/resultant budgets.
+
+Source `a971d61d1` changes only selector scheduling: a CUDA warp shares each
+contact's complete unsupported-face scan and reduces FP64 clearances. The
+same-source scalar comparison is retained; numerical/whole-field and actual
+runtime validation remain pending. A separate four-path component replay
+isolates source aggregation at fixed one-stress output and merged recovery
+at fixed grouped solves. Its optional signed raw-load cancellation control
+is an algebra diagnostic, not physical contact qualification.
