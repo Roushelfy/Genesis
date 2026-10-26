@@ -41,7 +41,6 @@ def _api():
     )
     from genesis.utils.array_class import V_VEC, V
     from genesis.utils.misc import qd_to_numpy
-
     from research.rigid_stress.atlas_study.cpu_repro.fixtures import cases_manifest, make_cases
     from research.rigid_stress.atlas_study.cpu_repro.geometry import _ray_inverse, authored_egg, make_geometry
     from research.rigid_stress.atlas_study.cpu_repro.loads import (
@@ -75,8 +74,8 @@ def _git_identity(source):
             [*command, "rev-parse", "--show-toplevel"], text=True, stderr=subprocess.STDOUT
         ).strip()
     except (OSError, subprocess.CalledProcessError) as error:
-        return dict(source=str(source), available=False, error=str(error))
-    return dict(source=str(source), available=True, revision=revision, root=root)
+        return {"source": str(source), "available": False, "error": str(error)}
+    return {"source": str(source), "available": True, "revision": revision, "root": root}
 
 
 class Checks:
@@ -147,11 +146,11 @@ class Output:
         self.inventory[relative] = dict(
             **file_id(path),
             arrays={
-                key: dict(
-                    shape=list(array.shape),
-                    dtype=array.dtype.str,
-                    sha256=hashlib.sha256(np.ascontiguousarray(array).tobytes()).hexdigest(),
-                )
+                key: {
+                    "shape": list(array.shape),
+                    "dtype": array.dtype.str,
+                    "sha256": hashlib.sha256(np.ascontiguousarray(array).tobytes()).hexdigest(),
+                }
                 for key, array in arrays.items()
             },
         )
@@ -228,25 +227,25 @@ def _cpu_loads(api, mother, sources, order):
         .sum(axis=0)
         .T
     )
-    return dict(
-        raw=raw,
-        source_force=forces,
-        cap_directions=sample_directions,
-        location_nodes=nodes,
-        location_weights=shape,
-        location_positions=positions,
-        location_normals=location.normals.reshape((n_sources, n_samples, 3)),
-        location_macro_ids=location.macro_ids.reshape((n_sources, n_samples)),
-        location_element_ids=location.element_ids.reshape((n_sources, n_samples)),
-        location_local=location.local.reshape((n_sources, n_samples, 2)),
-        physical_positions=physical,
-        expected_moment=np.einsum("sqj,q->sj", np.cross(physical, forces[:, None]), weights),
-        recovered_force=resultant_force,
-        recovered_moment=resultant_moment,
-        radial=radial,
-        angular=angular,
-        cap_weights=weights,
-    )
+    return {
+        "raw": raw,
+        "source_force": forces,
+        "cap_directions": sample_directions,
+        "location_nodes": nodes,
+        "location_weights": shape,
+        "location_positions": positions,
+        "location_normals": location.normals.reshape((n_sources, n_samples, 3)),
+        "location_macro_ids": location.macro_ids.reshape((n_sources, n_samples)),
+        "location_element_ids": location.element_ids.reshape((n_sources, n_samples)),
+        "location_local": location.local.reshape((n_sources, n_samples, 2)),
+        "physical_positions": physical,
+        "expected_moment": np.einsum("sqj,q->sj", np.cross(physical, forces[:, None]), weights),
+        "recovered_force": resultant_force,
+        "recovered_moment": resultant_moment,
+        "radial": radial,
+        "angular": angular,
+        "cap_weights": weights,
+    }
 
 
 def _native_loads(api, cap, geometry, sources, model_input, cases):
@@ -259,26 +258,26 @@ def _native_loads(api, cap, geometry, sources, model_input, cases):
     physical = positions + 0.5 * float(model_input["thickness"]) * cases["side"][:, None, None] * np.einsum(
         "sqi,sqij->sqj", shape, model_input["directors"][nodes]
     )
-    return dict(
-        raw=raw_blocks.transpose((0, 2, 1)).reshape((-1, len(cases["radius"]))),
-        raw_blocks=raw_blocks,
-        source_force=read(state.force),
-        cap_directions=read(state.sample_directions),
-        location_nodes=nodes,
-        location_weights=shape,
-        location_positions=positions,
-        location_macro_ids=read(state.sample_macro),
-        location_element_ids=read(state.sample_element),
-        location_local=read(state.sample_local),
-        physical_positions=physical,
-        expected_moment=read(state.expected_moment),
-        recovered_force=read(state.resultant_force),
-        recovered_moment=read(state.resultant_moment),
-        valid=read(state.valid),
-        sample_valid=read(state.sample_valid),
-        failed_samples=read(state.failed_samples),
-        scanned_samples=read(state.scanned_samples),
-    )
+    return {
+        "raw": raw_blocks.transpose((0, 2, 1)).reshape((-1, len(cases["radius"]))),
+        "raw_blocks": raw_blocks,
+        "source_force": read(state.force),
+        "cap_directions": read(state.sample_directions),
+        "location_nodes": nodes,
+        "location_weights": shape,
+        "location_positions": positions,
+        "location_macro_ids": read(state.sample_macro),
+        "location_element_ids": read(state.sample_element),
+        "location_local": read(state.sample_local),
+        "physical_positions": physical,
+        "expected_moment": read(state.expected_moment),
+        "recovered_force": read(state.resultant_force),
+        "recovered_moment": read(state.resultant_moment),
+        "valid": read(state.valid),
+        "sample_valid": read(state.sample_valid),
+        "failed_samples": read(state.failed_samples),
+        "scanned_samples": read(state.scanned_samples),
+    }
 
 
 def _location_checks(api, output, checks, prefix, native, cpu, cpu_geometry):
@@ -337,17 +336,19 @@ def _location_checks(api, output, checks, prefix, native, cpu, cpu_geometry):
         native_chart_cpu_local=admissible_local.reshape(native["location_local"].shape),
         native_chart_local_error=local_error,
     )
-    return dict(
-        macro_id_differing_samples=int(macro_difference.sum()),
-        element_id_differing_samples=int(element_difference.sum()),
-        node_id_differing_samples=int(node_difference.sum()),
-        fine_cell_alias_samples=int((element_difference & ~macro_difference).sum()),
-        strict_identity_passed=bool(not (macro_difference.any() or element_difference.any() or node_difference.any())),
-        maximum_node_mapped_shape_error=_number(nodal_error.max()),
-        maximum_position_error_m=_number(position_error.max()),
-        independently_admissible_native_charts=bool(admissible.all()),
-        acceptance="IDs are diagnostic and retained verbatim; physical/node-mapped/raw-force checks are separate explicit gates.",
-    )
+    return {
+        "macro_id_differing_samples": int(macro_difference.sum()),
+        "element_id_differing_samples": int(element_difference.sum()),
+        "node_id_differing_samples": int(node_difference.sum()),
+        "fine_cell_alias_samples": int((element_difference & ~macro_difference).sum()),
+        "strict_identity_passed": bool(
+            not (macro_difference.any() or element_difference.any() or node_difference.any())
+        ),
+        "maximum_node_mapped_shape_error": _number(nodal_error.max()),
+        "maximum_position_error_m": _number(position_error.max()),
+        "independently_admissible_native_charts": bool(admissible.all()),
+        "acceptance": "IDs are diagnostic and retained verbatim; physical/node-mapped/raw-force checks are separate explicit gates.",
+    }
 
 
 def _rule(api, output, checks, cap, order):
@@ -355,11 +356,11 @@ def _rule(api, output, checks, cap, order):
     roots, weights = api.roots_jacobi(order, 0.5, 0.0)
     weights /= weights.sum()
     radial, angular, cap_weights = api.cap_rule(order)
-    native = dict(
-        nodes=api.qd_to_numpy(cap.rule.nodes),
-        radial=api.qd_to_numpy(cap.rule.radial),
-        weights=api.qd_to_numpy(cap.rule.weights),
-    )
+    native = {
+        "nodes": api.qd_to_numpy(cap.rule.nodes),
+        "radial": api.qd_to_numpy(cap.rule.radial),
+        "weights": api.qd_to_numpy(cap.rule.weights),
+    }
     output.arrays(
         f"q{order}/rule.npz",
         **native,
@@ -451,29 +452,29 @@ def _selectors(api, output, checks, prefix, selector, sources, cap, centers, sel
         )
         released = np.diff(cases["case_offsets"]) == 0
         checks.condition(f"{prefix}/{strategy}/release_exact_zero", np.count_nonzero(grouped[:, :, released]) == 0)
-        rows.append(dict(strategy=strategy, groups=group_count, contributions=contribution_count))
+        rows.append({"strategy": strategy, "groups": group_count, "contributions": contribution_count})
     return rows
 
 
 def _inner_controls(api, published):
     np = api.np
-    return dict(
-        direction=published["direction"][[0, 4]].copy(),
-        radius=np.array([0.001, 0.003]),
-        force=np.array([[0.0, 0.0, 0.0], [0.07, -0.015, 0.023]]),
-        has_force=np.array([False, True]),
-        normal_force=np.array([0.1, 0.1]),
-        friction=np.array([0.6, 0.3]),
-        tangent=np.zeros((2, 3)),
-        cap_tangent=np.zeros((2, 3)),
-        has_tangent=np.zeros(2, dtype=bool),
-        has_cap_tangent=np.zeros(2, dtype=bool),
-        side=-np.ones(2, dtype=np.int64),
-        source_environment=np.arange(2, dtype=np.int64),
-        case_offsets=np.arange(3, dtype=np.int64),
-        case_names=np.array(["inner-implicit-friction", "inner-explicit-force"]),
-        source_names=np.array(["inner-implicit-friction", "inner-explicit-force"]),
-    )
+    return {
+        "direction": published["direction"][[0, 4]].copy(),
+        "radius": np.array([0.001, 0.003]),
+        "force": np.array([[0.0, 0.0, 0.0], [0.07, -0.015, 0.023]]),
+        "has_force": np.array([False, True]),
+        "normal_force": np.array([0.1, 0.1]),
+        "friction": np.array([0.6, 0.3]),
+        "tangent": np.zeros((2, 3)),
+        "cap_tangent": np.zeros((2, 3)),
+        "has_tangent": np.zeros(2, dtype=bool),
+        "has_cap_tangent": np.zeros(2, dtype=bool),
+        "side": -np.ones(2, dtype=np.int64),
+        "source_environment": np.arange(2, dtype=np.int64),
+        "case_offsets": np.arange(3, dtype=np.int64),
+        "case_names": np.array(["inner-implicit-friction", "inner-explicit-force"]),
+        "source_names": np.array(["inner-implicit-friction", "inner-explicit-force"]),
+    }
 
 
 def run(api, args, result):
@@ -522,19 +523,19 @@ def run(api, args, result):
         "geometry/qd_macro_coefficients", coefficients, cpu_geometry.macro_coefficients, rtol=1e-13, atol=1e-15
     )
     centers = _vector(api, selection_input["centers"])
-    selection = dict(
-        centers=selection_input["centers"],
-        support_angle=float(selection_input["support_angle"]),
-        narrow_fraction=float(selection_input["narrow_fraction"]),
-        maximum_radius=float(selection_input["maximum_radius"]),
-        strategies=args.strategies,
-    )
+    selection = {
+        "centers": selection_input["centers"],
+        "support_angle": float(selection_input["support_angle"]),
+        "narrow_fraction": float(selection_input["narrow_fraction"]),
+        "maximum_radius": float(selection_input["maximum_radius"]),
+        "strategies": args.strategies,
+    }
     banks = [("published43", published)]
     if args.side_controls:
         banks.append(("inner-side-controls", _inner_controls(api, published)))
     result["orders"] = []
     for order in args.orders:
-        order_result = dict(order=order, banks=[])
+        order_result = {"order": order, "banks": []}
         for bank_name, cases in banks:
             prefix = f"q{order}/{bank_name}"
             sources, cpu_sources = _source_inputs(api, cases), _cpu_sources(api, cases)
@@ -611,14 +612,14 @@ def run(api, args, result):
                 api, output, checks, prefix, selector, sources, cap, centers, selection, cases, cpu_sources, cpu
             )
             order_result["banks"].append(
-                dict(
-                    name=bank_name,
-                    published=bank_name == "published43",
-                    sources=len(cpu_sources),
-                    cases=len(cases["case_names"]),
-                    location=location,
-                    selectors=rows,
-                )
+                {
+                    "name": bank_name,
+                    "published": bank_name == "published43",
+                    "sources": len(cpu_sources),
+                    "cases": len(cases["case_names"]),
+                    "location": location,
+                    "selectors": rows,
+                }
             )
             result.update(checks=checks.rows, passed=checks.passed(), artifacts=output.inventory)
             write_json(args.output / "checks.json", checks.rows)
@@ -672,23 +673,23 @@ def main():
         parser.error("Use a fresh output directory; previous evidence is never overwritten.")
     args.output.mkdir(parents=True, exist_ok=True)
     os.environ.setdefault("GS_CACHE_FILE_PATH", str(args.output / "cache/genesis"))
-    result = dict(
-        schema="genesis.material-cap-gpu-check.v1",
-        complete=False,
-        passed=False,
-        identity=runtime_identity(),
-        git=_git_identity(args.git_source),
-        analysis_source=str(REPOSITORY),
-        worker=file_id(Path(__file__)),
-        reference=file_id(args.reference / "manifest.json"),
-        scope="Untimed load/rule/selector consistency only; no ShellModel, stiffness, factors, stress solves or throughput claims.",
-        native_input_policy="Only physical vertices/directors, integer face tables, physical sources and selector centers/parameters are uploaded. CPU-derived rules, coefficients, locations, shape functions and loads are oracle-only.",
-        strict_identity_policy="Strict macro/element/node failures remain non-gating diagnostic rows; independent chart admissibility, physical positions, node-mapped shape and assembled loads all have explicit gates.",
-        precision="64",
-        orders_requested=list(args.orders),
-        strategies=list(args.strategies),
-        inner_side_controls=args.side_controls,
-        source_files=[
+    result = {
+        "schema": "genesis.material-cap-gpu-check.v1",
+        "complete": False,
+        "passed": False,
+        "identity": runtime_identity(),
+        "git": _git_identity(args.git_source),
+        "analysis_source": str(REPOSITORY),
+        "worker": file_id(Path(__file__)),
+        "reference": file_id(args.reference / "manifest.json"),
+        "scope": "Untimed load/rule/selector consistency only; no ShellModel, stiffness, factors, stress solves or throughput claims.",
+        "native_input_policy": "Only physical vertices/directors, integer face tables, physical sources and selector centers/parameters are uploaded. CPU-derived rules, coefficients, locations, shape functions and loads are oracle-only.",
+        "strict_identity_policy": "Strict macro/element/node failures remain non-gating diagnostic rows; independent chart admissibility, physical positions, node-mapped shape and assembled loads all have explicit gates.",
+        "precision": "64",
+        "orders_requested": list(args.orders),
+        "strategies": list(args.strategies),
+        "inner_side_controls": args.side_controls,
+        "source_files": [
             file_id(REPOSITORY / relative)
             for relative in (
                 "research/rigid_stress/atlas_study/cpu_repro/geometry.py",
@@ -697,7 +698,7 @@ def main():
                 "research/rigid_stress/atlas_study/cpu_repro/fixtures.py",
             )
         ],
-        input_files=[
+        "input_files": [
             file_id(args.reference / relative)
             for relative in (
                 "inputs/model.npz",
@@ -706,7 +707,7 @@ def main():
                 "cases/published43.json",
             )
         ],
-    )
+    }
     write_json(args.output / "result.json", result)
     started = time.perf_counter()
     try:
@@ -720,11 +721,11 @@ def main():
                 "genesis/engine/solvers/rigid/stress/atlas_selection.py",
             )
         )
-        result["versions"] = dict(numpy=api.np.__version__, scipy=api.scipy.__version__)
+        result["versions"] = {"numpy": api.np.__version__, "scipy": api.scipy.__version__}
         with api.threadpool_limits(limits=1):
             run(api, args, result)
     except Exception as error:
-        result["error"] = dict(type=type(error).__name__, message=str(error), traceback=traceback.format_exc())
+        result["error"] = {"type": type(error).__name__, "message": str(error), "traceback": traceback.format_exc()}
         raise
     finally:
         result["elapsed_seconds_including_jit_oracle_and_exports"] = time.perf_counter() - started

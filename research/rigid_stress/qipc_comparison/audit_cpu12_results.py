@@ -22,7 +22,7 @@ from .artifacts import file_id, runtime_identity, write_json
 STRATEGIES = ("continuous", "nearest", "narrow")
 BANKS = ("published43", "boundary18", "static16", "static64")
 REPOSITORY = Path(__file__).resolve().parents[3]
-BUDGETS = dict(field=0.10, peak=0.05, N=0.10, M=0.10, Q=0.10, mean_loaded_field=0.05)
+BUDGETS = {"field": 0.10, "peak": 0.05, "N": 0.10, "M": 0.10, "Q": 0.10, "mean_loaded_field": 0.05}
 
 
 def _api():
@@ -203,15 +203,15 @@ def _layouts(np, output, n_elements, n_cases):
 def _summary(np, metrics, loaded):
     maximum = {key: float(values[loaded].max(initial=0.0)) for key, values in metrics.items()}
     mean_field = float(metrics["field"][loaded].mean()) if loaded.any() else 0.0
-    return dict(
-        loaded_cases=int(loaded.sum()),
-        total_cases=len(loaded),
-        maximum_errors=maximum,
-        mean_loaded_field_error=mean_field,
-        casewise_budget_passed=all(maximum[key] <= BUDGETS[key] for key in metrics),
-        mean_field_budget_passed=mean_field <= BUDGETS["mean_loaded_field"],
-        passed=all(maximum[key] <= BUDGETS[key] for key in metrics) and mean_field <= BUDGETS["mean_loaded_field"],
-    )
+    return {
+        "loaded_cases": int(loaded.sum()),
+        "total_cases": len(loaded),
+        "maximum_errors": maximum,
+        "mean_loaded_field_error": mean_field,
+        "casewise_budget_passed": all(maximum[key] <= BUDGETS[key] for key in metrics),
+        "mean_field_budget_passed": mean_field <= BUDGETS["mean_loaded_field"],
+        "passed": all(maximum[key] <= BUDGETS[key] for key in metrics) and mean_field <= BUDGETS["mean_loaded_field"],
+    }
 
 
 def _numerical_equivalence(np, checks, prefix, actual, expected, weights):
@@ -311,21 +311,21 @@ def _bank_strategy(api, reference, native, output, checks, bank, strategy, weigh
         maximum=float(mother_residual_relative.max(initial=0.0)),
         tolerance=1e-8,
     )
-    summary = dict(
-        bank=bank,
-        strategy=strategy,
-        native=_summary(np, gpu_error, loaded),
-        cpu=_summary(np, cpu_error, loaded),
-        mean_loaded_groups=float(native_selection["groups_per_case"][loaded].mean()) if loaded.any() else 0.0,
-        mean_contributions_per_source=float(
+    summary = {
+        "bank": bank,
+        "strategy": strategy,
+        "native": _summary(np, gpu_error, loaded),
+        "cpu": _summary(np, cpu_error, loaded),
+        "mean_loaded_groups": float(native_selection["groups_per_case"][loaded].mean()) if loaded.any() else 0.0,
+        "mean_contributions_per_source": float(
             (native_selection["contributions_per_case"][loaded] / np.diff(cases["case_offsets"])[loaded]).mean()
         )
         if loaded.any()
         else 0.0,
-        maximum_mother_spatial_residual=float(residual_relative.max(initial=0.0)),
-        maximum_cpu_mother_spatial_residual=float(cpu_residual_relative.max(initial=0.0)),
-        maximum_matching_mother_numerical_residual=float(mother_residual_relative.max(initial=0.0)),
-    )
+        "maximum_mother_spatial_residual": float(residual_relative.max(initial=0.0)),
+        "maximum_cpu_mother_spatial_residual": float(cpu_residual_relative.max(initial=0.0)),
+        "maximum_matching_mother_numerical_residual": float(mother_residual_relative.max(initial=0.0)),
+    }
     checks.add(
         f"{prefix}/spatial_budgets_native",
         summary["native"]["passed"],
@@ -341,21 +341,21 @@ def _bank_strategy(api, reference, native, output, checks, bank, strategy, weigh
         summary=summary["cpu"],
     )
     rows = []
-    arrays = dict(
-        case_names=cases["case_names"],
-        case_families=cases["case_families"],
-        source_counts=np.diff(cases["case_offsets"]),
-        loaded=loaded,
-        groups_per_case=native_selection["groups_per_case"],
-        contributions_per_case=native_selection["contributions_per_case"],
-        mother_residual_free=residual,
-        cpu_mother_residual_free=cpu_residual,
-        mother_spatial_residual_norm=residual_norm,
-        mother_spatial_rhs_norm=rhs_norm,
-        mother_spatial_residual_relative=residual_relative,
-        cpu_mother_spatial_residual_relative=cpu_residual_relative,
-        matching_mother_numerical_residual_relative=mother_residual_relative,
-    )
+    arrays = {
+        "case_names": cases["case_names"],
+        "case_families": cases["case_families"],
+        "source_counts": np.diff(cases["case_offsets"]),
+        "loaded": loaded,
+        "groups_per_case": native_selection["groups_per_case"],
+        "contributions_per_case": native_selection["contributions_per_case"],
+        "mother_residual_free": residual,
+        "cpu_mother_residual_free": cpu_residual,
+        "mother_spatial_residual_norm": residual_norm,
+        "mother_spatial_rhs_norm": rhs_norm,
+        "mother_spatial_residual_relative": residual_relative,
+        "cpu_mother_spatial_residual_relative": cpu_residual_relative,
+        "matching_mother_numerical_residual_relative": mother_residual_relative,
+    }
     for key in gpu_error:
         arrays.update(
             {
@@ -375,23 +375,23 @@ def _bank_strategy(api, reference, native, output, checks, bank, strategy, weigh
         native_values = {key: float(value[index]) for key, value in gpu_error.items()}
         cpu_values = {key: float(value[index]) for key, value in cpu_error.items()}
         rows.append(
-            dict(
-                index=index,
-                case=str(cases["case_names"][index]),
-                family=str(cases["case_families"][index]),
-                loaded=bool(loaded[index]),
-                sources=int(np.diff(cases["case_offsets"])[index]),
-                native_errors=native_values,
-                cpu_errors=cpu_values,
-                groups=int(native_selection["groups_per_case"][index]),
-                contributions=int(native_selection["contributions_per_case"][index]),
-                native_budget_passed={key: value <= BUDGETS[key] for key, value in native_values.items()},
-                cpu_budget_passed={key: value <= BUDGETS[key] for key, value in cpu_values.items()},
-                cpu_gpu_relative_errors={key: float(value[index]) for key, value in equivalence.items()},
-                mother_spatial_residual=float(residual_relative[index]),
-                cpu_mother_spatial_residual=float(cpu_residual_relative[index]),
-                matching_mother_numerical_residual=float(mother_residual_relative[index]),
-            )
+            {
+                "index": index,
+                "case": str(cases["case_names"][index]),
+                "family": str(cases["case_families"][index]),
+                "loaded": bool(loaded[index]),
+                "sources": int(np.diff(cases["case_offsets"])[index]),
+                "native_errors": native_values,
+                "cpu_errors": cpu_values,
+                "groups": int(native_selection["groups_per_case"][index]),
+                "contributions": int(native_selection["contributions_per_case"][index]),
+                "native_budget_passed": {key: value <= BUDGETS[key] for key, value in native_values.items()},
+                "cpu_budget_passed": {key: value <= BUDGETS[key] for key, value in cpu_values.items()},
+                "cpu_gpu_relative_errors": {key: float(value[index]) for key, value in equivalence.items()},
+                "mother_spatial_residual": float(residual_relative[index]),
+                "cpu_mother_spatial_residual": float(cpu_residual_relative[index]),
+                "matching_mother_numerical_residual": float(mother_residual_relative[index]),
+            }
         )
     for key in ("q", "stress_local", "stress_full9", "peak", "N", "M", "Q"):
         checks.add(
@@ -402,7 +402,7 @@ def _bank_strategy(api, reference, native, output, checks, bank, strategy, weigh
     output.json(f"{prefix}/summary.json", summary)
     boundary = None
     if bank == "boundary18":
-        boundary = dict(cases=cases, native=actual, mother=mother, cpu=cpu, cpu_mother=cpu_mother)
+        boundary = {"cases": cases, "native": actual, "mother": mother, "cpu": cpu, "cpu_mother": cpu_mother}
     return summary, boundary
 
 
@@ -441,12 +441,12 @@ def _boundary(api, reference, output, checks, saved, weights):
                     weights["field"],
                 )
                 scale = max(float((mother["peak"][left] + mother["peak"][right]) / 2.0), 1e-30)
-                fields[label] = dict(
-                    relative_field_jump=float(field_jump[0]),
-                    relative_sampled_peak_jump=float(abs(field["peak"][right] - field["peak"][left]) / scale),
-                    reference_relative_field_change=float(mother_jump[0]),
-                    reference_relative_peak_change=float(abs(mother["peak"][right] - mother["peak"][left]) / scale),
-                )
+                fields[label] = {
+                    "relative_field_jump": float(field_jump[0]),
+                    "relative_sampled_peak_jump": float(abs(field["peak"][right] - field["peak"][left]) / scale),
+                    "reference_relative_field_change": float(mother_jump[0]),
+                    "reference_relative_peak_change": float(abs(mother["peak"][right] - mother["peak"][left]) / scale),
+                }
             matches = [
                 row
                 for row in published
@@ -499,17 +499,17 @@ def _boundary(api, reference, output, checks, saved, weights):
             preserved = (
                 nearest_boundary and native_jumps[-1] > 0.5 * native_jumps[0] and native_jumps[-1] > 0.5 * cpu_jumps[-1]
             )
-            row = dict(
-                boundary=family,
-                strategy=strategy,
-                epsilon_rad=eps,
-                native_field_jump=native_jumps,
-                cpu_field_jump=cpu_jumps,
-                observed_field_orders=orders,
-                field_decreases=decreases,
-                nearest_jump_preserved=preserved if nearest_boundary else None,
-                note="Nearest pair/triple nonzero limiting jumps are retained; no continuity requirement is imposed on nearest.",
-            )
+            row = {
+                "boundary": family,
+                "strategy": strategy,
+                "epsilon_rad": eps,
+                "native_field_jump": native_jumps,
+                "cpu_field_jump": cpu_jumps,
+                "observed_field_orders": orders,
+                "field_decreases": decreases,
+                "nearest_jump_preserved": preserved if nearest_boundary else None,
+                "note": "Nearest pair/triple nonzero limiting jumps are retained; no continuity requirement is imposed on nearest.",
+            }
             if strategy in ("continuous", "narrow"):
                 checks.add(
                     f"boundary18/decreasing_field/{strategy}/{family}",
@@ -595,12 +595,12 @@ def audit(api, args, result):
     if area.ndim != 2 or area.shape[1] != 4:
         raise ValueError(f"Expected gauss_weights[element,4], got {area.shape}.")
     n_elements = len(area)
-    weights = dict(
-        field=numerics["field_weights"],
-        N=np.sqrt(area[..., None] * np.array([1.0, 1.0, 2.0])),
-        M=np.sqrt(area[..., None] * np.array([1.0, 1.0, 2.0])),
-        Q=np.sqrt(np.broadcast_to(area[..., None], (*area.shape, 2))),
-    )
+    weights = {
+        "field": numerics["field_weights"],
+        "N": np.sqrt(area[..., None] * np.array([1.0, 1.0, 2.0])),
+        "M": np.sqrt(area[..., None] * np.array([1.0, 1.0, 2.0])),
+        "Q": np.sqrt(np.broadcast_to(area[..., None], (*area.shape, 2))),
+    }
     matrix = reference.matrix("oracles/operators/mother/K.npz")
     free = numerics["free"]
     summaries, boundary = [], {}
@@ -645,7 +645,7 @@ def audit(api, args, result):
         failed_spatial_checks=[
             row["name"] for row in checks.rows if row["category"] == "spatial" and not row["passed"]
         ],
-        inputs=dict(reference=reference.consumed, native=native.consumed),
+        inputs={"reference": reference.consumed, "native": native.consumed},
         files=output.files,
     )
 
@@ -674,35 +674,35 @@ def main():
     if args.output.exists() and any(args.output.iterdir()):
         parser.error("Use a fresh output directory; existing measurements are immutable.")
     args.output.mkdir(parents=True, exist_ok=True)
-    result = dict(
-        schema="genesis.cpu12-results-audit.v1",
-        complete=False,
-        passed=False,
-        identity=runtime_identity(require_gpu_inventory=False),
-        worker=file_id(Path(__file__)),
-        reference_manifest=file_id(args.reference / "manifest.json"),
-        native_result=file_id(args.native / "result.json"),
-        budgets=BUDGETS,
-        numerical_tolerances=dict(rtol=1e-8, absolute_l2_floor=1e-13),
-        norm_definitions=dict(
-            field="Original CPU field_weights: both faces, all four Gauss points, (xx,yy,2*xy) squared multiplicity.",
-            N_M="sqrt(sum(GaussArea*(dxx^2+dyy^2+2*dxy^2)))/max(reference weighted L2,1e-30). Layout [element,Gauss,component,case].",
-            Q="sqrt(sum(GaussArea*(dQ1^2+dQ2^2)))/max(reference weighted L2,1e-30). Layout [element,Gauss,component,case].",
-            mean="Arithmetic mean over loaded cases separately in each bank; static repetitions are not independent trajectories.",
-            boundary="Right-minus-left weighted field norm / left field norm; peak jump / mean of the matching mother peaks.",
-            mother_residual="(CPU K @ saved approximate q - saved native common balanced force)[CPU free]; spatial diagnostic, never a correction or reduced-solve gate.",
-        ),
-        interpretation="Same-space CPU/GPU equivalence and spatial approximation budgets are separate. CPU12 resultant spatial failures are valid negative findings and do not invalidate numerical equivalence.",
-    )
+    result = {
+        "schema": "genesis.cpu12-results-audit.v1",
+        "complete": False,
+        "passed": False,
+        "identity": runtime_identity(require_gpu_inventory=False),
+        "worker": file_id(Path(__file__)),
+        "reference_manifest": file_id(args.reference / "manifest.json"),
+        "native_result": file_id(args.native / "result.json"),
+        "budgets": BUDGETS,
+        "numerical_tolerances": {"rtol": 1e-8, "absolute_l2_floor": 1e-13},
+        "norm_definitions": {
+            "field": "Original CPU field_weights: both faces, all four Gauss points, (xx,yy,2*xy) squared multiplicity.",
+            "N_M": "sqrt(sum(GaussArea*(dxx^2+dyy^2+2*dxy^2)))/max(reference weighted L2,1e-30). Layout [element,Gauss,component,case].",
+            "Q": "sqrt(sum(GaussArea*(dQ1^2+dQ2^2)))/max(reference weighted L2,1e-30). Layout [element,Gauss,component,case].",
+            "mean": "Arithmetic mean over loaded cases separately in each bank; static repetitions are not independent trajectories.",
+            "boundary": "Right-minus-left weighted field norm / left field norm; peak jump / mean of the matching mother peaks.",
+            "mother_residual": "(CPU K @ saved approximate q - saved native common balanced force)[CPU free]; spatial diagnostic, never a correction or reduced-solve gate.",
+        },
+        "interpretation": "Same-space CPU/GPU equivalence and spatial approximation budgets are separate. CPU12 resultant spatial failures are valid negative findings and do not invalidate numerical equivalence.",
+    }
     write_json(args.output / "result.json", result)
     started = time.perf_counter()
     try:
         api = _api()
-        result["versions"] = dict(numpy=api.np.__version__, scipy=api.scipy.__version__)
+        result["versions"] = {"numpy": api.np.__version__, "scipy": api.scipy.__version__}
         with api.threadpool_limits(limits=1):
             audit(api, args, result)
     except Exception as error:
-        result["error"] = dict(type=type(error).__name__, message=str(error), traceback=traceback.format_exc())
+        result["error"] = {"type": type(error).__name__, "message": str(error), "traceback": traceback.format_exc()}
         raise
     finally:
         result["seconds_including_readback_and_exports"] = time.perf_counter() - started
