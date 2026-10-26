@@ -144,6 +144,10 @@ def kernel_atlas_selection_weights(
         state.source_valid[source], state.source_contributions[source] = valid, count
         if environment_valid and not valid:
             qd.atomic_and(state.environment_valid[environment], 0)
+        if not environment_valid:
+            # An unowned source cannot be silently omitted from a supposedly valid batch.
+            for i_b in range(state.environment_valid.shape[0]):
+                qd.atomic_and(state.environment_valid[i_b], 0)
 
 
 @qd.kernel

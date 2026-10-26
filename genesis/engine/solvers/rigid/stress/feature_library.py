@@ -143,8 +143,12 @@ class FeatureLibrary:
         active = qd_to_numpy(self.info.active_macros, transpose=True, copy=True)
         local = qd_to_numpy(self.info.local_mask, transpose=True, copy=True)
         # Only integer selection masks cross to the host; B's symbolic columns follow those masks.
-        self.active_macros = tuple(np.flatnonzero(row).astype(gs.np_int, copy=False) for row in active)
-        self.local_nodes = tuple(np.flatnonzero(row).astype(gs.np_int, copy=False) for row in local)
+        self.active_macros = tuple(
+            np.flatnonzero(active[:, i_f]).astype(gs.np_int, copy=False) for i_f in range(n_features)
+        )
+        self.local_nodes = tuple(
+            np.flatnonzero(local[:, i_f]).astype(gs.np_int, copy=False) for i_f in range(n_features)
+        )
         self.maps = tuple(basis.feature(nodes) for nodes in self.local_nodes)
 
 

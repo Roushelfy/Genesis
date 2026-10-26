@@ -87,8 +87,16 @@ class PreparedAtlas:
         for i_f, state in enumerate(self.states):
             yield from iter_data(state, f"{prefix}.states.{i_f}")
 
-    def recover(self, grouped_force: qd.Tensor, parent_state: StressState) -> None:
-        """Recover fresh zero-spin loads shaped (mother blocks, features, environments)."""
+    def recover(
+        self, grouped_force: qd.Tensor, parent_state: StressState, valid_environments: qd.Tensor | None = None
+    ) -> None:
+        """Recover fresh zero-spin loads shaped (mother blocks, features, environments).
+
+        Load adapters must propagate their admission and coverage through
+        ``valid_environments``. Omitting it declares externally validated raw
+        inputs. Original reduced residuals live in ``states``; the parent
+        mother residual is not evaluated by this approximate recovery.
+        """
         if (
             grouped_force.shape
             != (
@@ -99,10 +107,14 @@ class PreparedAtlas:
             or parent_state.active.shape != self.omega.shape
         ):
             gs.raise_exception("Grouped forces must match the Prepared Atlas mother, feature and environment counts.")
+        if valid_environments is not None and valid_environments.shape != parent_state.valid.shape:
+            gs.raise_exception("Atlas load admission must have one validity value per environment.")
         kernel_sum_feature_forces(grouped_force, parent_state)
         kernel_balance(self.omega, parent_state, self.model.info, self.options.cooperative_balance)
         kernel_direct_init(parent_state)
         parent_state.displacement.fill(0)
+        # This field describes a mother residual. A reduced solve does not produce it.
+        parent_state.residual_norm_squared.fill(float("nan"))
         for i_f, (operator, feature, state) in enumerate(zip(self.operators, self.features, self.states)):
             kernel_group_wrench(i_f, grouped_force, state, self.model.info)
             kernel_project_group(i_f, grouped_force, state, feature, operator.transform)
@@ -120,6 +132,8 @@ class PreparedAtlas:
             )
             operator.lift(state.displacement, parent_state.displacement, add=True)
             kernel_merge_group_acceptance(state, parent_state)
+        if valid_environments is not None:
+            kernel_admit_environments(valid_environments, parent_state)
         self.model.evaluate_stress(self.options, parent_state)
 
 
@@ -187,3 +201,9 @@ def kernel_merge_group_acceptance(state: StressState, parent_state: StressState)
         # only_failed skips zero groups; those skips are scheduling, not fallbacks.
         state.fallbacks[i_b] = 0
         parent_state.valid[i_b] = parent_state.valid[i_b] and state.valid[i_b]
+
+
+@qd.kernel(graph=True)
+def kernel_admit_environments(valid_environments: qd.Tensor, parent_state: StressState):
+    for i_b in range(parent_state.valid.shape[0]):
+        parent_state.valid[i_b] = parent_state.valid[i_b] and valid_environments[i_b] != 0

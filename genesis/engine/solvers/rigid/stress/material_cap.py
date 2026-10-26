@@ -15,6 +15,7 @@ import quadrants as qd
 import genesis as gs
 from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
 
+from .data import StressState
 from .quadrilateral import func_quad_shape
 
 
@@ -516,3 +517,37 @@ def kernel_material_cap_resultants(geometry: MaterialCapGeometry, state: Materia
             moment += geometry.vertices[vertex_stride * node].cross(nodal) + state.raw_force[2 * node + 1, source]
         state.resultant_force[source], state.resultant_moment[source] = force, moment
         state.valid[source] = state.valid[source] and state.failed_samples[source] == 0
+
+
+@qd.kernel
+def kernel_material_cap_aggregate(
+    sources: MaterialCapSources,
+    cap_state: MaterialCapState,
+    parent_state: StressState,
+    environment_valid: qd.Tensor,
+):
+    """Sum current raw source loads, explicitly propagating every invalid source.
+
+    The caller supplies int32 ``environment_valid[n_envs]`` and must combine
+    this gate with the mother's numerical acceptance after ``model.recover``.
+    Sources with valid environment ownership invalidate only that environment;
+    unowned/out-of-range sources invalidate the whole batch. No partially
+    assembled invalid-source load is admitted to the mother solve.
+    """
+    for block, environment in parent_state.force:
+        parent_state.force[block, environment] = qd.Vector.zero(gs.qd_float, 3)
+    for environment in environment_valid:
+        environment_valid[environment] = 1
+    for source in range(cap_state.valid.shape[0]):
+        environment = sources.environment[source]
+        owned = environment >= 0 and environment < environment_valid.shape[0]
+        if not owned:
+            for other in range(environment_valid.shape[0]):
+                qd.atomic_and(environment_valid[other], 0)
+        elif not cap_state.valid[source]:
+            qd.atomic_and(environment_valid[environment], 0)
+    for block, source in cap_state.raw_force:
+        environment = sources.environment[source]
+        owned = environment >= 0 and environment < environment_valid.shape[0]
+        if owned and cap_state.valid[source]:
+            parent_state.force[block, environment] += cap_state.raw_force[block, source]
