@@ -147,6 +147,7 @@ def main():
     cli.add_argument("--atlas-transition", type=float, default=0.003)
     cli.add_argument("--atlas-solver", choices=("factor", "inverse", "response"), default="factor")
     cli.add_argument("--atlas-space", choices=("local", "coarse"), default="local")
+    cli.add_argument("--atlas-shell-bending", action="store_true")
     cli.add_argument("--inverse-max-bytes", type=int, default=512 * 1024 * 1024)
     cli.add_argument("--quadrature", type=int, default=16)
     cli.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
@@ -205,6 +206,7 @@ def main():
             atlas_transition=args.atlas_transition,
             atlas_solver=args.atlas_solver,
             atlas_space=args.atlas_space,
+            atlas_shell_bending=args.atlas_shell_bending,
             inverse_max_bytes=args.inverse_max_bytes,
         )
         qd.sync()

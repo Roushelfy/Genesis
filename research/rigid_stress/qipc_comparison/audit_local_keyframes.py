@@ -36,7 +36,12 @@ from genesis.utils.misc import qd_to_numpy
 
 from .artifacts import file_id, runtime_identity, write_json
 from .check_local_atlas import relative_per_environment, weighted_field_error
-from .check_local_feature_spaces import block_matrix, independent_map, independent_stress, vector_columns
+from .check_local_feature_spaces import (
+    block_matrix,
+    independent_map as linear_independent_map,
+    independent_stress,
+    vector_columns,
+)
 
 
 @qd.kernel
@@ -196,6 +201,62 @@ def stress_oracle(model, state, actual):
         "stress_tensor": relative_per_environment(actual["tensor"], tensor).tolist(),
         "peak": relative_per_environment(actual["peak"], peak).tolist(),
     }
+
+
+def independent_map(
+    parents, xyz, coarse, local, blocks_per_node, geometric_correction=True, shell_bending=False, directors=None
+):
+    """Build the reference map, adding bending through independent parent pairs.
+
+    With w(x)=c+g.x+x.T H x/2 and theta=(w_y,-w_x,0), the normal
+    component of (theta_a-theta_b) cross (x_b-x_a) is -d.T H d.
+    Mean parent w minus centroid w is sum_pairs(d.T H d)/(2*p**2).
+    Their difference therefore supplies the missing centroid deflection:
+    +sum_pairs((theta_a-theta_b) cross d)/(2*p**2), giving 1/8 at
+    an edge midpoint and 1/18 at a triangle centroid. Project onto the
+    unchanged mother director with N=n n.T. Collecting each parent's
+    columns gives -N cross(sum_{b!=a}(x_b-x_a))/(2*p**2); the parent
+    coefficients sum to zero, preserving constant rotation/rigid modes.
+
+    This flat constant-curvature identity supplies the experimental curved
+    shell correction; it does not claim quadratic exactness on a curved
+    shell. The original delta rigid-motion term and local identity columns
+    remain in the base map. Cardinal/fixed/pin physical rows are untouched;
+    the caller applies the original scalar constraints afterwards.
+    """
+    raw = linear_independent_map(parents, xyz, coarse, local, blocks_per_node, geometric_correction)
+    if not shell_bending:
+        return raw
+    assert blocks_per_node == 2, "The shell bending map requires shell translation/rotation block pairs."
+    assert directors is not None and directors.shape == xyz.shape and np.isfinite(directors).all()
+    coarse_index = {int(node): i for i, node in enumerate(coarse)}
+    rows, columns, values = [], [], []
+    for node, parent_row in enumerate(parents):
+        if node in coarse_index:
+            continue
+        ancestors = parent_row[parent_row >= 0]
+        n_parents = len(ancestors)
+        projection = np.outer(directors[node], directors[node])
+        for first in range(n_parents):
+            for second in range(first + 1, n_parents):
+                parent_a, parent_b = ancestors[first], ancestors[second]
+                delta = xyz[parent_b] - xyz[parent_a]
+                # This matrix maps theta to theta cross delta, i.e. -cross(delta).
+                theta_cross_delta = np.array(
+                    [[0.0, delta[2], -delta[1]], [-delta[2], 0.0, delta[0]], [delta[1], -delta[0], 0.0]]
+                )
+                coefficient = projection @ theta_cross_delta / (2 * n_parents**2)
+                for parent, sign in ((parent_a, 1.0), (parent_b, -1.0)):
+                    rotation_block = 2 * coarse_index[int(parent)] + 1
+                    for a in range(3):
+                        for b in range(3):
+                            value = sign * coefficient[a, b]
+                            if value != 0.0:
+                                rows.append(6 * node + a)
+                                columns.append(3 * rotation_block + b)
+                                values.append(value)
+    correction = sparse.coo_matrix((values, (rows, columns)), shape=raw.shape).tocsr()
+    return (raw + correction).tocsr()
 
 
 @dataclass
@@ -411,7 +472,15 @@ def make_operator(name, local_nodes, mother, basis, mother_matrix, n_envs, optio
     xyz = qd_to_numpy(mother.info.vertices)[::bpn]
     mother_free = basis.mother_free.reshape(-1).astype(bool)
     free = fmap.reduced_free.reshape(-1).astype(bool)
-    raw = independent_map(basis.parent_nodes, xyz, basis.coarse_nodes, local_nodes, bpn)
+    raw = independent_map(
+        basis.parent_nodes,
+        xyz,
+        basis.coarse_nodes,
+        local_nodes,
+        bpn,
+        shell_bending=options.atlas_shell_bending,
+        directors=qd_to_numpy(mother.shell.directors) if options.atlas_shell_bending else None,
+    )
     transform = (sparse.diags(mother_free.astype(float)) @ raw @ sparse.diags(free.astype(float))).tocsr()
     native_transform = sparse.bsr_matrix(
         (qd_to_numpy(operator.transform.values), fmap.columns, fmap.row_start), shape=transform.shape
@@ -444,6 +513,7 @@ def make_operator(name, local_nodes, mother, basis, mother_matrix, n_envs, optio
         "scalar_dofs": 3 * blocks,
         "free_scalar_dofs": int(free.sum()),
         "local_physical_nodes": len(local_nodes),
+        "shell_bending": options.atlas_shell_bending,
         "map_rank": int(free.sum()),
         "rank_check": "Nonsingular free cardinal submatrix of the independently constructed constrained map.",
         "minimum_cardinal_pivot": float(pivots.min()),
@@ -638,7 +708,7 @@ def audit(args, result):
             parent_nodes = asset["parent_nodes"].copy() if "parent_nodes" in asset else None
             fixed_nodes = asset["fixed_nodes"].copy() if "fixed_nodes" in asset else None
         result["basis"] = file_id(options.atlas_basis)
-    basis = FeatureBasis(mother, parent_nodes, fixed_nodes)
+    basis = FeatureBasis(mother, parent_nodes, fixed_nodes, shell_bending=options.atlas_shell_bending)
     # Selection is deliberately not rerun. Only its deterministic material
     # geometry/library construction is needed to interpret saved group loads.
     contacts = create_contacts(1, n_envs, options.contact_radius)

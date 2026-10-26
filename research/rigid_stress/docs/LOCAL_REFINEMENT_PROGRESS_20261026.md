@@ -152,3 +152,29 @@ from the independent source sum. Optional matched native keyframe timing and
 an actual full-recovery CUDA profiler are now available. The first profiler
 run exposed a research-only weight-axis readback error; the corrected worker
 retains the original runtime gates and the failed record.
+
+## Accuracy frontier and profiling-directed follow-up
+
+`atlas-wide-v4` (751260) obtains complete 600-frame accuracy at shell core 1.6
+and volume core 1.4. However, their block dimensions are respectively
+484/484/452 versus mother 484, and 810/810/736 versus mother 810: two of
+three features have reached the complete mother dimension. This is a
+degenerating accuracy/cost frontier, not a claim that every feature remains
+smaller. Narrower transition does not repair the rejected configurations.
+Matched timing of this accuracy corner, heterogeneous and lifecycle checks
+is separate from timing of the earlier spatially rejected libraries.
+
+Actual-recovery traces (`profile-v5`, 751280) pass original runtime gates.
+Shell/1024 selection costs about 1.86 ms in intrusive device task sums,
+including 1.80 ms in the serial per-contact footprint-face scan. Shared lift
+is only about 0.075 ms, and volume/1024 lift about 0.116 ms; optimizing shared
+coarse lifting first is not supported by this profile. These diagnostic
+device sums are distinct from uninstrumented module/scene latency.
+
+A bounded shell coarse-space alternative adds a director-normal quadratic
+bending correction: midpoint coefficient 1/8 and triangle-centroid coefficient
+1/18 on rotation differences crossed with parent edges. It preserves cardinal
+rows, constant rotations and the existing curved rigid-motion correction.
+Planar analytic kinematics and the all-bubbles mother solution must pass
+before interpreting curved-egg spatial results. The independent oracle uses
+parent pairs, distinct from native per-parent coefficient assembly.

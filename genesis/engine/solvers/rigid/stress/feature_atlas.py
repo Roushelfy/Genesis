@@ -88,6 +88,7 @@ class FeatureAtlasMetadata:
     groups: tuple[FeatureGroupMetadata, ...]
     response_bytes: int = 0
     space_kind: Literal["local", "coarse"] = "local"
+    shell_bending: bool = False
     parent_residual_norm_space: Literal["source_spaces"] = "source_spaces"
 
 
@@ -121,7 +122,7 @@ class FeatureAtlas:
                     parent_nodes = asset["parent_nodes"]
                 if "fixed_nodes" in asset:
                     fixed_nodes = asset["fixed_nodes"]
-        self.basis = FeatureBasis(model, parent_nodes, fixed_nodes)
+        self.basis = FeatureBasis(model, parent_nodes, fixed_nodes, shell_bending=options.atlas_shell_bending)
         self.regions = FeatureRegions(
             model,
             self.basis,
@@ -271,6 +272,7 @@ class FeatureAtlas:
             groups=tuple(group_metadata),
             response_bytes=response_bytes,
             space_kind=options.atlas_space,
+            shell_bending=options.atlas_shell_bending,
         )
         self.inventory = FeatureAtlasInventory(
             blocks=V(dtype=gs.qd_int, shape=(n_groups,)),

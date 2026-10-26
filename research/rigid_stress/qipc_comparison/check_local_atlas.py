@@ -51,6 +51,7 @@ def main():
     parser.add_argument("--transition", type=float, default=0.003)
     parser.add_argument("--solver", choices=("factor", "inverse", "response"), default="factor")
     parser.add_argument("--space", choices=("local", "coarse"), default="local")
+    parser.add_argument("--shell-bending", action="store_true")
     parser.add_argument("--quadrature", type=int, default=16)
     parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
     parser.add_argument("--lifecycle", action="store_true")
@@ -101,6 +102,7 @@ def main():
         atlas_transition=args.transition,
         atlas_solver=args.solver,
         atlas_space=args.space,
+        atlas_shell_bending=args.shell_bending,
         inverse_max_bytes=512 * 1024 * 1024,
     )
     entry = workload.scene.rigid_solver.stress_recovery.links[0]

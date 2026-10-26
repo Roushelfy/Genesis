@@ -900,6 +900,7 @@ def main():
     parser.add_argument("--halo", type=int, default=0)
     parser.add_argument("--transition", type=float, default=None)
     parser.add_argument("--solver", choices=("factor", "inverse", "response"), default="factor")
+    parser.add_argument("--shell-bending", action="store_true")
     parser.add_argument("--fixed-neck", action="store_true")
     parser.add_argument("--level", type=int, choices=(1, 2), default=1)
     parser.add_argument("--envs", type=int, default=2)
@@ -951,6 +952,7 @@ def main():
         atlas_halo=args.halo,
         atlas_transition=transition,
         atlas_solver=args.solver,
+        atlas_shell_bending=args.shell_bending,
         inverse_max_bytes=512 * 1024 * 1024,
     )
     assert options.tolerance == 1e-8 and options.absolute_tolerance == 1e-11

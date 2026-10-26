@@ -11,6 +11,7 @@ from genesis.utils.misc import qd_to_numpy
 
 from .data import StressInfo
 from .model import StressModel
+from .shell_operators import ShellInfo
 
 
 class FeatureMap(NamedTuple):
@@ -29,7 +30,8 @@ class FeatureBasis:
     ``shell_parents`` gives up to three physical mother parent nodes per shell node, padded with -1. Cardinal
     self-parent rows identify the original coarse nodes. Parents receive equal weights. Volume parents come from
     the mother quadratic tetrahedra. ``fixed_nodes`` promotes additional physical nodes into the shared coarse set.
-    The mother's scalar constraints remain identical in every feature.
+    The mother's scalar constraints remain identical in every feature. ``shell_bending`` adds an experimental
+    normal displacement correction that reproduces constant-curvature bending on planar triangle macroelements.
     """
 
     def __init__(
@@ -37,9 +39,12 @@ class FeatureBasis:
         model: StressModel,
         shell_parents: np.ndarray | None = None,
         fixed_nodes: np.ndarray | None = None,
+        shell_bending: bool = False,
     ):
         self.mother_info = model.info
         self.blocks_per_node = 2 if model.n_shell_elements else 1
+        if shell_bending and self.blocks_per_node != 2:
+            gs.raise_exception("The shell bending feature correction requires a shell mother model.")
         n_blocks = self.mother_info.vertices.shape[0]
         n_nodes = n_blocks // self.blocks_per_node
         assert n_nodes > 0 and n_blocks == self.blocks_per_node * n_nodes
@@ -112,8 +117,9 @@ class FeatureBasis:
         parent_rows, parent_slots = np.nonzero(self.parent_nodes >= 0)
         parent_columns = self.coarse_index[self.parent_nodes[parent_rows, parent_slots]]
         if self.blocks_per_node == 2:
-            offset_rows = parent_rows[self.coarse_index[parent_rows] < 0]
-            offset_columns = parent_columns[self.coarse_index[parent_rows] < 0]
+            has_offset = self.coarse_index[parent_rows] < 0
+            offset_rows = parent_rows[has_offset]
+            offset_columns = parent_columns[has_offset]
             rows = np.concatenate((2 * parent_rows, 2 * parent_rows + 1, 2 * offset_rows))
             columns = np.concatenate((2 * parent_columns, 2 * parent_columns + 1, 2 * offset_columns + 1))
             is_offset = np.concatenate(
@@ -136,6 +142,12 @@ class FeatureBasis:
             self.mother_info,
             self.blocks_per_node,
         )
+        if shell_bending:
+            entry_parents = np.full(len(rows), -1, dtype=gs.np_int)
+            entry_parents[2 * len(parent_rows) :] = self.parent_nodes[parent_rows[has_offset], parent_slots[has_offset]]
+            kernel_shell_bending_values(
+                self.parent_nodes, self.rows, entry_parents[order], values, self.mother_info, model.shell
+            )
         self.transform = FeatureMap(
             row_start, columns, values, len(self.coarse_blocks), self.mother_free[self.coarse_blocks].copy()
         )
@@ -212,6 +224,53 @@ def kernel_coarse_values(
                 ]
             )
         values[i_e] = value
+
+
+@qd.kernel
+def kernel_shell_bending_values(
+    parent_nodes: qd.types.ndarray(),
+    rows: qd.types.ndarray(),
+    entry_parents: qd.types.ndarray(),
+    values: qd.Tensor,
+    stress_info: StressInfo,
+    shell_info: ShellInfo,
+):
+    for i_e in range(values.shape[0]):
+        i_parent = entry_parents[i_e]
+        if i_parent >= 0:
+            i_n = rows[i_e] // 2
+            parents = qd.Vector([parent_nodes.shape[0], parent_nodes.shape[0], parent_nodes.shape[0]])
+            n_parents = 0
+            for i_p in qd.static(range(3)):
+                i_a = parent_nodes[i_n, i_p]
+                if i_a >= 0:
+                    parents[n_parents] = i_a
+                    n_parents += 1
+            for a, b in qd.static(((0, 1), (1, 2), (0, 1))):
+                if parents[a] > parents[b]:
+                    i_swap = parents[a]
+                    parents[a] = parents[b]
+                    parents[b] = i_swap
+            if n_parents > 1:
+                i_a, i_b = parents[0], parents[1]
+                x_a, x_b = stress_info.vertices[2 * i_a], stress_info.vertices[2 * i_b]
+                normal = shell_info.directors[i_n]
+                # Normal projection removes tangential displacement from drilling rotation gradients.
+                # Quadratic midpoint and centroid interpolation errors require edge pair weights 1/8 and 1/18.
+                first = normal.outer_product((x_b - x_a).cross(normal)) / 8.0
+                second = -first
+                if n_parents == 3:
+                    i_c = parents[2]
+                    x_c = stress_info.vertices[2 * i_c]
+                    first = normal.outer_product(((x_b - x_a) + (x_c - x_a)).cross(normal)) / 18.0
+                    second = normal.outer_product(((x_a - x_b) + (x_c - x_b)).cross(normal)) / 18.0
+                # Parent columns follow physical-node order. Their negative sum cancels constant rotations.
+                correction = -(first + second)
+                if i_parent == i_a:
+                    correction = first
+                elif i_parent == i_b:
+                    correction = second
+                values[i_e] += correction
 
 
 @qd.kernel

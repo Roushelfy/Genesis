@@ -80,6 +80,8 @@ class RigidStressRecovery:
             for link in entity.links:
                 options = link.stress_options
                 if options is not None:
+                    if options.atlas_shell_bending and (not options.atlas_regions or options.backend != "shell"):
+                        gs.raise_exception("Shell bending prolongation requires an active shell feature atlas.")
                     if options.atlas_space == "coarse" and options.atlas_regions != 1:
                         gs.raise_exception("The coarse-space control requires atlas_regions=1.")
                     if options.atlas_regions and (

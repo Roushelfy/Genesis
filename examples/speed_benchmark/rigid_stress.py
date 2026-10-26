@@ -508,6 +508,7 @@ def main() -> None:
     parser.add_argument("--atlas-transition", type=float, default=0.003)
     parser.add_argument("--atlas-solver", choices=("factor", "inverse", "response"), default="factor")
     parser.add_argument("--atlas-space", choices=("local", "coarse"), default="local")
+    parser.add_argument("--atlas-shell-bending", action="store_true")
     parser.add_argument("--inverse-max-bytes", type=int, default=64 * 1024 * 1024)
     parser.add_argument("--history", type=int, choices=(0, 4), default=0)
     parser.add_argument("--unfused-pipeline", action="store_true", help="Compare separate native recovery passes.")
@@ -599,6 +600,7 @@ def main() -> None:
         atlas_transition=args.atlas_transition,
         atlas_solver=args.atlas_solver,
         atlas_space=args.atlas_space,
+        atlas_shell_bending=args.atlas_shell_bending,
         inverse_max_bytes=args.inverse_max_bytes,
     )
     solver = workload.scene.rigid_solver
@@ -722,6 +724,7 @@ def main() -> None:
             "atlas_transition": args.atlas_transition,
             "atlas_solver": args.atlas_solver,
             "atlas_space": args.atlas_space,
+            "atlas_shell_bending": args.atlas_shell_bending,
             "dt": 0.01,
             "substeps": 1,
             "varied": args.varied,
