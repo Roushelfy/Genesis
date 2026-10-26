@@ -106,8 +106,6 @@ class ShellModel(StressModel):
         self.selected_method = options.method
         if options.method == "auto":
             self.selected_method = "inverse" if inverse_bytes <= options.inverse_max_bytes else "direct"
-            if options.atlas_regions:
-                self.selected_method = "direct"
         self.factor = (
             StressFactor(self.info, options.factor_scaling, options.factor_ordering)
             if self.selected_method != "pcg"

@@ -28,7 +28,6 @@ from .automatic_radius import StressRadiusInfo, StressRadiusStatus
 from .curvature import StressCurvature
 from .contact import StressContactState, create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
 from .data import StressState
-from .feature_atlas import FeatureAtlas
 from .history import StressHistory
 from .intrinsic import IntrinsicContacts
 from .lifecycle import func_accept, func_begin_step
@@ -63,7 +62,6 @@ class StressLink:
     fused_pipeline: bool
     coalesced_residual: bool
     reuse_contact_moments: bool
-    feature_atlas: FeatureAtlas | None = None
     intrinsic: IntrinsicContacts | None = None
     resolved: ResolvedContacts | None = None
     requested_step: int = -1
@@ -80,19 +78,6 @@ class RigidStressRecovery:
             for link in entity.links:
                 options = link.stress_options
                 if options is not None:
-                    if options.atlas_shell_bending and (not options.atlas_regions or options.backend != "shell"):
-                        gs.raise_exception("Shell bending prolongation requires an active shell feature atlas.")
-                    if options.atlas_space == "coarse" and options.atlas_regions != 1:
-                        gs.raise_exception("The coarse-space control requires atlas_regions=1.")
-                    if options.atlas_regions and (
-                        options.contact_model != "pressure"
-                        or options.load_transfer != "patch"
-                        or options.history_size
-                        or options.method == "pcg"
-                    ):
-                        gs.raise_exception(
-                            "Spatial feature recovery requires DPR patches and history-off direct/inverse solves."
-                        )
                     if options.backend == "shell" and (
                         options.contact_model != "pressure" or options.load_transfer != "patch"
                     ):
@@ -126,7 +111,6 @@ class RigidStressRecovery:
                             and previous.inverse_precision == options.inverse_precision
                             and previous.inverse_max_bytes == options.inverse_max_bytes
                             and previous.surface_inverse == options.surface_inverse
-                            and bool(previous.atlas_regions) == bool(options.atlas_regions)
                         ):
                             model = existing.model
                             if (
@@ -212,10 +196,6 @@ class RigidStressRecovery:
                             reuse_contact_moments,
                         )
                     )
-                    if options.atlas_regions:
-                        entry = self.links[-1]
-                        entry.feature_atlas = FeatureAtlas(model, entry.contacts, options)
-                        entry.fused_pipeline = False
         for entry in self.links:
             if entry.options.radius_model == "hertz":
                 if self.curvature is None:
@@ -399,9 +379,6 @@ class RigidStressRecovery:
                     )
                 else:
                     kernel_pressure(entry.contacts, entry.surface.info, options.cooperative_pressure)
-                if entry.feature_atlas is not None:
-                    entry.feature_atlas.prepare(entry.contacts, entry.model.load_info, entry.surface.info)
-                atlas_scatter = entry.feature_atlas.scatter if entry.feature_atlas is not None else None
                 if entry.scatter.tasks.shape[0] and options.cooperative_scatter:
                     kernel_scatter_faces(
                         entry.contacts,
@@ -411,7 +388,6 @@ class RigidStressRecovery:
                         entry.scatter,
                         options.cached_face_bounds,
                         entry.reuse_contact_moments,
-                        atlas_scatter,
                     )
                 else:
                     kernel_scatter(
@@ -421,14 +397,8 @@ class RigidStressRecovery:
                         entry.surface.info,
                         options.cooperative_scatter,
                         options.cached_face_bounds,
-                        atlas_scatter,
                     )
-            if entry.feature_atlas is None:
-                entry.model.recover(
-                    entry.omega, entry.state, entry.link.stress_options, entry.history, surface_load=True
-                )
-            else:
-                entry.feature_atlas.recover(entry.omega, entry.state, options)
+            entry.model.recover(entry.omega, entry.state, entry.link.stress_options, entry.history, surface_load=True)
             kernel_accept(entry.state, entry.contacts, solver._errno)
             if entry.history is not None:
                 entry.history.append(entry.state)
@@ -570,8 +540,6 @@ class RigidStressRecovery:
                 yield from entry.intrinsic.data(f"stress.{i}.intrinsic")
             if entry.history is not None:
                 yield from iter_data(entry.history.state, f"stress.{i}.history")
-            if entry.feature_atlas is not None:
-                yield from entry.feature_atlas.data(f"stress.{i}.features")
             if entry.resolved is not None:
                 yield from iter_data(entry.resolved.raw_sources, f"stress.{i}.resolved.sources")
                 if entry.resolved.vertices.info is not None:
