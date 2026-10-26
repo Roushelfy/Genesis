@@ -33,6 +33,7 @@ from .native_adaptation_options import (
     validate_native_atlas_arguments,
     weighted_resultant_error,
 )
+from .native_global_enrichment import add_global_enrichment_argument, actual_enrichment_space, write_global_basis
 from .check_local_feature_spaces import source_parents
 from .voxel_mesh import voxel_mesh
 
@@ -955,7 +956,7 @@ def main():
     parser.add_argument("--core-scale", type=float, default=1.0)
     parser.add_argument("--halo", type=int, default=0)
     parser.add_argument("--transition", type=float, default=None)
-    parser.add_argument("--solver", choices=("factor", "inverse", "response"), default="factor")
+    parser.add_argument("--solver", choices=("factor", "inverse", "response", "packed"), default="factor")
     parser.add_argument("--shell-bending", action="store_true")
     parser.add_argument("--fixed-neck", action="store_true")
     parser.add_argument("--level", type=int, choices=(1, 2), default=1)
@@ -963,6 +964,7 @@ def main():
     parser.add_argument("--quadrature", type=int, default=32)
     parser.add_argument("--radius", type=float, default=None)
     add_native_atlas_arguments(parser)
+    add_global_enrichment_argument(parser)
     args = parser.parse_args()
     validate_native_atlas_arguments(parser, args, args.regions)
     if args.fixed_neck and args.geometry != "neck":
@@ -979,6 +981,7 @@ def main():
         identity=runtime_identity(),
         stress_backend=args.stress_backend,
         geometry=args.geometry,
+        global_enrichment_requested=args.global_enrichment,
         variants=[],
         tensor_budget=0.10,
         peak_budget=0.05,
@@ -1033,11 +1036,16 @@ def main():
         variants.append(("fixed_neck", fixed))
     for name, selected in variants:
         basis_path = args.output / f"basis-{name}.npz"
-        np.savez(basis_path, parent_nodes=parents, fixed_nodes=selected)
-        # Volume parentage is derived natively; atlas_basis may still carry the
-        # geometric fixed-node list. Do not pass shell parent rows to volume.
-        if not model.n_shell_elements:
-            np.savez(basis_path, fixed_nodes=selected)
+        enrichment = write_global_basis(
+            np,
+            basis_path,
+            backend=args.stress_backend,
+            mesh=asset,
+            mode=args.global_enrichment,
+            parent_nodes=parents if model.n_shell_elements else None,
+            fixed_nodes=selected,
+        )
+        selected = np.array(enrichment["fixed_nodes"], dtype=np.int64)
         current_options = options.model_copy(update={"atlas_basis": basis_path})
         atlas = FeatureAtlas(model, contacts, current_options)
         current = dict(
@@ -1050,6 +1058,8 @@ def main():
             basis=file_id(basis_path),
             basis_provenance=provenance,
             fixed_physical_nodes=selected.tolist(),
+            global_enrichment=enrichment,
+            global_enrichment_actual=actual_enrichment_space(atlas),
         )
         # Preserve explicit 1/2/3 parent provenance even for volume assets whose
         # public atlas loader derives that parentage from its tetrahedra.

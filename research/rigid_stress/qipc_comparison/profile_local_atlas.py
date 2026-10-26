@@ -29,6 +29,12 @@ from ..shell_comparison.memory import ProcessMemory
 from .artifacts import file_id, runtime_identity, write_json
 from .check_local_feature_spaces import source_parents
 from .native_adaptation_options import add_native_atlas_arguments, native_atlas_options, validate_native_atlas_arguments
+from .native_global_enrichment import (
+    add_global_enrichment_argument,
+    actual_enrichment_space,
+    existing_basis_enrichment,
+    write_global_basis,
+)
 
 
 KERNEL_CATEGORIES = (
@@ -37,7 +43,17 @@ KERNEL_CATEGORIES = (
     ("grouping", ("kernel_group_wrench",)),
     ("projection", ("kernel_group_rhs",)),
     ("fallback_load_and_add", ("kernel_fallback_rhs", "kernel_fallback_add")),
-    ("solve_and_response", ("kernel_solve", "kernel_apply_inverse", "kernel_feature_boundary_apply")),
+    (
+        "solve_and_response",
+        (
+            "kernel_solve",
+            "kernel_apply_inverse",
+            "kernel_feature_boundary_apply",
+            "kernel_packed_solve",
+            "kernel_packed_gather",
+            "kernel_packed_scatter",
+        ),
+    ),
     ("response_load_packing", ("kernel_feature_boundary_pack",)),
     ("lift", ("kernel_group_lift",)),
     ("spin_and_balance", ("kernel_atlas_begin", "kernel_balance_impl")),
@@ -146,7 +162,7 @@ def main():
     cli.add_argument("--atlas-core-scale", type=float, default=1.0)
     cli.add_argument("--atlas-halo", type=int, default=0)
     cli.add_argument("--atlas-transition", type=float, default=0.003)
-    cli.add_argument("--atlas-solver", choices=("factor", "inverse", "response"), default="factor")
+    cli.add_argument("--atlas-solver", choices=("factor", "inverse", "response", "packed"), default="factor")
     cli.add_argument("--atlas-space", choices=("local", "coarse"), default="local")
     cli.add_argument("--atlas-shell-bending", action="store_true")
     cli.add_argument("--inverse-max-bytes", type=int, default=512 * 1024 * 1024)
@@ -156,6 +172,7 @@ def main():
     cli.add_argument("--sample-memory", action="store_true")
     cli.add_argument("--output", type=Path, required=True)
     add_native_atlas_arguments(cli)
+    add_global_enrichment_argument(cli)
     args = cli.parse_args()
     validate_native_atlas_arguments(cli, args, args.atlas_regions)
     if min(args.envs, args.warmup, args.steps) < 1:
@@ -183,12 +200,33 @@ def main():
         started = time.perf_counter()
         gs.init(backend=gs.cuda, precision="64", logging_level="warning")
         basis_path = args.atlas_basis
+        parents = None
         if args.stress_backend == "shell" and args.atlas_regions and basis_path is None:
             assets = Path(gs.__file__).resolve().parent.parent / f"examples/rigid/assets/hollow_egg/level{args.level}"
             parents, _xyz, provenance = source_parents(assets, True)
-            basis_path = args.output / "basis.npz"
-            np.savez(basis_path, parent_nodes=parents)
             result["basis_provenance"] = provenance
+        if args.atlas_regions and (
+            args.global_enrichment != "none" or (args.stress_backend == "shell" and basis_path is None)
+        ):
+            assets = Path(gs.__file__).resolve().parent.parent / f"examples/rigid/assets/hollow_egg/level{args.level}"
+            enriched_path = args.output / "basis.npz"
+            result["global_enrichment"] = write_global_basis(
+                np,
+                enriched_path,
+                backend=args.stress_backend,
+                mesh=assets / ("shell.npz" if args.stress_backend == "shell" else "elastic.npz"),
+                mode=args.global_enrichment,
+                parent_nodes=parents,
+                existing_basis=basis_path,
+            )
+            basis_path = enriched_path
+        else:
+            result["global_enrichment"] = (
+                existing_basis_enrichment(np, basis_path)
+                if basis_path is not None
+                else dict(mode=args.global_enrichment)
+            )
+        result["global_enrichment"]["applied"] = bool(args.atlas_regions and basis_path is not None)
         result["basis"] = file_id(basis_path) if basis_path is not None else None
         workload = FrankaEgg(
             args.envs,
@@ -219,6 +257,9 @@ def main():
         entry = solver.stress_recovery.links[0]
         result["options"] = entry.options.model_dump(mode="json")
         result["atlas"] = asdict(entry.feature_atlas.metadata()) if entry.feature_atlas is not None else None
+        result["global_enrichment_actual"] = (
+            actual_enrichment_space(entry.feature_atlas) if entry.feature_atlas is not None else None
+        )
         result["mother_build_timings_including_JIT"] = asdict(entry.model.build_timings)
         geometry = None
         with torch.inference_mode():

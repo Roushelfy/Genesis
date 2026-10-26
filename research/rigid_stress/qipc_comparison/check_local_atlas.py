@@ -21,6 +21,7 @@ from .native_adaptation_options import (
     validate_native_atlas_arguments,
     weighted_resultant_error,
 )
+from .native_global_enrichment import add_global_enrichment_argument, actual_enrichment_space, write_global_basis
 
 
 @qd.kernel
@@ -55,7 +56,7 @@ def main():
     parser.add_argument("--core-scale", type=float, default=1.0)
     parser.add_argument("--halo", type=int, default=0)
     parser.add_argument("--transition", type=float, default=0.003)
-    parser.add_argument("--solver", choices=("factor", "inverse", "response"), default="factor")
+    parser.add_argument("--solver", choices=("factor", "inverse", "response", "packed"), default="factor")
     parser.add_argument("--space", choices=("local", "coarse"), default="local")
     parser.add_argument("--shell-bending", action="store_true")
     parser.add_argument("--quadrature", type=int, default=16)
@@ -64,6 +65,7 @@ def main():
     parser.add_argument("--field-steps", nargs="*", type=int, default=(129, 221, 400, 599))
     parser.add_argument("--output", type=Path, required=True)
     add_native_atlas_arguments(parser)
+    add_global_enrichment_argument(parser)
     args = parser.parse_args()
     validate_native_atlas_arguments(parser, args, args.regions)
     args.output.mkdir(parents=True, exist_ok=False)
@@ -80,17 +82,30 @@ def main():
         load_budget=1e-10,
         field_metric="Area/volume-weighted native sample tensor Frobenius norm; symmetric shears count twice.",
         lifecycle=args.lifecycle,
+        global_enrichment_requested=args.global_enrichment,
         rows=[],
     )
     write_json(args.output / "result.json", result)
     assets = Path(gs.__file__).resolve().parent.parent / f"examples/rigid/assets/hollow_egg/level{args.level}"
     basis_path = None
+    parents = None
     if args.stress_backend == "shell":
         parents, _xyz, provenance = source_parents(assets, True)
         basis_path = args.output / "basis.npz"
-        np.savez(basis_path, parent_nodes=parents)
         result["basis_provenance"] = provenance
+    if args.stress_backend == "shell" or args.global_enrichment != "none":
+        basis_path = args.output / "basis.npz"
+        result["global_enrichment"] = write_global_basis(
+            np,
+            basis_path,
+            backend=args.stress_backend,
+            mesh=assets / ("shell.npz" if args.stress_backend == "shell" else "elastic.npz"),
+            mode=args.global_enrichment,
+            parent_nodes=parents,
+        )
         result["basis"] = file_id(basis_path)
+    else:
+        result["global_enrichment"] = dict(mode="none")
     workload = FrankaEgg(
         args.envs,
         level=args.level,
@@ -118,6 +133,7 @@ def main():
     atlas = entry.feature_atlas
     assert atlas is not None
     result["atlas"] = asdict(atlas.metadata())
+    result["global_enrichment_actual"] = actual_enrichment_space(atlas)
     result["genuine_reduction"] = any(
         group.blocks < atlas.metadata().mother_blocks for group in atlas.metadata().groups
     )
@@ -258,6 +274,7 @@ def main():
         mean_field_budget=0.05,
         mean_population="loaded environment-frames; releases excluded",
         resultant_metric="Original Euclidean gates plus area-weighted Frobenius N/M and vector Q; both retain the 10% limit.",
+        spatial_passed=bool(all(row["spatial_passed"] for row in result["rows"]) and mean_field <= 0.05),
     )
     write_json(args.output / "result.json", result)
     assert result["passed"], (
