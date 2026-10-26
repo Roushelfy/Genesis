@@ -1,5 +1,13 @@
 # Rigid-stress data and artifact locations
 
+The local-refinement atlas follow-up from revision `4bc4ada25` uses
+`/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-local-refinement-atlas/`.
+New control assets, operators/fields, profiles, job logs and source receipts
+stay there. Existing source checkouts, compact reports, frozen experiments
+and data-side environments are reused. Numerical execution uses Slurm
+`rtx-mid`, image `1_26`, with explicit output and private cache paths.
+No data or environment migration is performed.
+
 The native candidate integration goal from revision `b8e63b195` uses
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261025-native-candidate-integration/`.
 All generated numerical arrays, profiles, execution logs and source receipts

@@ -121,9 +121,22 @@ def allocate_stress_info(
     )
 
 
+@dataclass(frozen=True)
+class StressAtlasScatter:
+    weights: qd.Tensor
+    force: qd.Tensor
+    rows: qd.Tensor
+
+
 @qd.func
 def func_scatter_load(
-    i_n: int, i_b: int, force: qd.types.vector(3), stress_state: StressState, stress_info: StressInfo
+    i_n: int,
+    i_b: int,
+    force: qd.types.vector(3),
+    stress_state: StressState,
+    stress_info: StressInfo,
+    atlas: qd.template() = None,
+    i_c: int = 0,
 ):
     if stress_info.load_nodes.shape[0] > 0:
         # Consistent virtual work on the physical surface retains both surface eccentricity and supplied wrench.
@@ -132,6 +145,80 @@ def func_scatter_load(
         for a in qd.static(range(3)):
             qd.atomic_add(stress_state.force[2 * j_n, i_b][a], force[a])
             qd.atomic_add(stress_state.force[2 * j_n + 1, i_b][a], moment[a])
+        if qd.static(isinstance(atlas, StressAtlasScatter)):
+            translation_row = atlas.rows[2 * j_n]
+            rotation_row = atlas.rows[2 * j_n + 1]
+            for i_g in range(atlas.weights.shape[0]):
+                weight = atlas.weights[i_g, i_c, i_b]
+                if weight > 0.0:
+                    for a in qd.static(range(3)):
+                        qd.atomic_add(atlas.force[translation_row, i_g, i_b][a], weight * force[a])
+                        qd.atomic_add(atlas.force[rotation_row, i_g, i_b][a], weight * moment[a])
     else:
         for a in qd.static(range(3)):
             qd.atomic_add(stress_state.force[i_n, i_b][a], force[a])
+        if qd.static(isinstance(atlas, StressAtlasScatter)):
+            row = atlas.rows[i_n]
+            for i_g in range(atlas.weights.shape[0]):
+                weight = atlas.weights[i_g, i_c, i_b]
+                if weight > 0.0:
+                    for a in qd.static(range(3)):
+                        qd.atomic_add(atlas.force[row, i_g, i_b][a], weight * force[a])
+
+
+def create_stress_state(
+    n_nodes: int,
+    n_envs: int,
+    n_boundary_nodes: int = 0,
+    n_output_elements: int = 0,
+    n_shell_elements: int = 0,
+    n_krylov_nodes: int = 0,
+) -> StressState:
+    state = StressState(
+        force=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+        rhs=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+        displacement=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+        residual=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+        direction=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
+        product=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
+        preconditioned=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
+        boundary_columns=V(dtype=gs.qd_int, shape=(n_boundary_nodes, n_envs)),
+        boundary_count=V(dtype=gs.qd_int, shape=(n_envs,)),
+        failed_environments=V(dtype=gs.qd_int, shape=(n_envs,)),
+        failed_count=V(dtype=gs.qd_int, shape=()),
+        wrench=V_VEC(6, dtype=gs.qd_float, shape=(n_envs,)),
+        rhs_norm_squared=V(dtype=gs.qd_float, shape=(n_envs,)),
+        residual_norm_squared=V(dtype=gs.qd_float, shape=(n_envs,)),
+        residual_preconditioned=V(dtype=gs.qd_float, shape=(n_envs,)),
+        next_residual_preconditioned=V(dtype=gs.qd_float, shape=(n_envs,)),
+        direction_product=V(dtype=gs.qd_float, shape=(n_envs,)),
+        active=V(dtype=gs.qd_int, shape=(n_envs,)),
+        iterations=V(dtype=gs.qd_int, shape=(n_envs,)),
+        peak=V(dtype=gs.qd_float, shape=(n_envs,)),
+        step_peak=V(dtype=gs.qd_float, shape=(n_envs,)),
+        step_valid=V(dtype=gs.qd_bool, shape=(n_envs,)),
+        stress_tensor=V_VEC(6, dtype=gs.qd_float, shape=(n_output_elements, 4, n_envs)),
+        von_mises=V_VEC(1, dtype=gs.qd_float, shape=(n_output_elements, 4, n_envs)),
+        membrane_resultant=V_VEC(6, dtype=gs.qd_float, shape=(n_shell_elements, 4, n_envs)),
+        bending_resultant=V_VEC(6, dtype=gs.qd_float, shape=(n_shell_elements, 4, n_envs)),
+        transverse_resultant=V_VEC(3, dtype=gs.qd_float, shape=(n_shell_elements, 4, n_envs)),
+        valid=V(dtype=gs.qd_bool, shape=(n_envs,)),
+        corrections=V(dtype=gs.qd_int, shape=(n_envs,)),
+        fallbacks=V(dtype=gs.qd_int, shape=(n_envs,)),
+        invalid_steps=V(dtype=qd.i64, shape=(n_envs,)),
+        invalid_reported=V(dtype=gs.qd_bool, shape=(n_envs,)),
+    )
+    state.displacement.fill(0)
+    state.step_peak.fill(0)
+    state.valid.fill(True)
+    state.step_valid.fill(True)
+    state.invalid_steps.fill(0)
+    state.invalid_reported.fill(False)
+    if n_output_elements:
+        state.stress_tensor.fill(float("nan"))
+        state.von_mises.fill(float("nan"))
+    if n_shell_elements:
+        state.membrane_resultant.fill(float("nan"))
+        state.bending_resultant.fill(float("nan"))
+        state.transverse_resultant.fill(float("nan"))
+    return state
