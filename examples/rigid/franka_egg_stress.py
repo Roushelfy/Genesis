@@ -68,6 +68,13 @@ class FrankaEgg:
         shell_gauge: str = "translation",
         factor_scaling: bool = False,
         factor_ordering: str = "minimum_degree",
+        atlas_regions: int = 0,
+        atlas_basis: Path | None = None,
+        atlas_core_scale: float = 1.0,
+        atlas_halo: int = 1,
+        atlas_transition: float = 0.003,
+        atlas_solver: str = "factor",
+        inverse_max_bytes: int = 64 * 1024 * 1024,
     ):
         self.n_envs = n_envs
         self.radius_model = radius_model
@@ -119,6 +126,12 @@ class FrankaEgg:
             options = gs.options.RigidStressOptions(
                 mesh=stress_mesh,
                 backend=stress_backend,
+                atlas_regions=atlas_regions,
+                atlas_basis=atlas_basis,
+                atlas_core_scale=atlas_core_scale,
+                atlas_halo=atlas_halo,
+                atlas_transition=atlas_transition,
+                atlas_solver=atlas_solver,
                 shell_gauge=shell_gauge,
                 factor_scaling=factor_scaling,
                 factor_ordering=factor_ordering,
@@ -137,6 +150,7 @@ class FrankaEgg:
                 cooperative_solve=cooperative_solve,
                 method=method,
                 inverse_precision=inverse_precision,
+                inverse_max_bytes=inverse_max_bytes,
                 history_size=history_size,
                 cooperative_pressure=cooperative_pressure,
                 surface_inverse=surface_inverse,

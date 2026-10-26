@@ -501,6 +501,13 @@ def main() -> None:
         "--dense-surface-loads", action="store_true", help="Apply all boundary columns without packing."
     )
     parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
+    parser.add_argument("--atlas-regions", type=int, default=0)
+    parser.add_argument("--atlas-basis", type=Path)
+    parser.add_argument("--atlas-core-scale", type=float, default=1.0)
+    parser.add_argument("--atlas-halo", type=int, default=1)
+    parser.add_argument("--atlas-transition", type=float, default=0.003)
+    parser.add_argument("--atlas-solver", choices=("factor", "inverse"), default="factor")
+    parser.add_argument("--inverse-max-bytes", type=int, default=64 * 1024 * 1024)
     parser.add_argument("--history", type=int, choices=(0, 4), default=0)
     parser.add_argument("--unfused-pipeline", action="store_true", help="Compare separate native recovery passes.")
     parser.add_argument("--policy-precision", choices=("64", "32"), default="32")
@@ -584,6 +591,13 @@ def main() -> None:
         cooperative_tractions=not args.serial_tractions,
         warm_start_tractions=not args.cold_tractions,
         public_defaults=args.public_default_stress,
+        atlas_regions=args.atlas_regions,
+        atlas_basis=args.atlas_basis,
+        atlas_core_scale=args.atlas_core_scale,
+        atlas_halo=args.atlas_halo,
+        atlas_transition=args.atlas_transition,
+        atlas_solver=args.atlas_solver,
+        inverse_max_bytes=args.inverse_max_bytes,
     )
     solver = workload.scene.rigid_solver
     metrics = RolloutMetrics(workload) if args.trajectory_metrics else None
@@ -699,6 +713,12 @@ def main() -> None:
             "precision": "64",
             "quadrature": args.quadrature,
             "pressure_quadrature": args.pressure_quadrature,
+            "atlas_regions": args.atlas_regions,
+            "atlas_basis": str(args.atlas_basis) if args.atlas_basis is not None else None,
+            "atlas_core_scale": args.atlas_core_scale,
+            "atlas_halo": args.atlas_halo,
+            "atlas_transition": args.atlas_transition,
+            "atlas_solver": args.atlas_solver,
             "dt": 0.01,
             "substeps": 1,
             "varied": args.varied,

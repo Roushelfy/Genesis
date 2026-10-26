@@ -23,6 +23,13 @@ class RigidStressOptions(Options):
     ``shell_drilling_factor`` scales that stabilization. ``shell_gauge="translation"`` selects six distributed
     translational constraints for rigid-mode ambiguity; ``"legacy"`` permits rotational gauge rows for comparison.
     The contact boundary uses each bilinear offset Q4 on both material sides, with its consistent shape functions.
+
+    ``atlas_regions>0`` enables experimental spatially reduced coarse-plus-local
+    Galerkin feature spaces. Their numerical residual is checked in each
+    declared feature space; spatial field error must be qualified separately
+    against the complete mother. ``atlas_basis`` supplies shell parent-node
+    topology and optional fixed enrichment. Volume uses its native P1/P2
+    hierarchy. The physical mother geometry, mass and load law are preserved.
     The original three-dimensional support-ball DPR pressure fit acts on that actual physical boundary, including
     inner and outer faces inside the support. Consistent generalized loads retain eccentric friction moments.
     Shell output is in-plane membrane-plus-bending stress at four Gauss points and both wall surfaces;
@@ -215,6 +222,12 @@ class RigidStressOptions(Options):
 
     mesh: PathType
     backend: Literal["volume", "shell"] = "volume"
+    atlas_regions: Annotated[int, Field(ge=0, le=32)] = 0
+    atlas_basis: PathType | None = None
+    atlas_core_scale: PositiveFloat = 1.0
+    atlas_halo: Annotated[int, Field(ge=0, le=8)] = 1
+    atlas_transition: Annotated[ValidFloat, Field(ge=0)] = 0.003
+    atlas_solver: Literal["factor", "inverse"] = "factor"
     shell_thickness: PositiveFloat = 0.0005
     shell_drilling_factor: PositiveFloat = 1e-3
     shell_gauge: Literal["translation", "legacy"] = "translation"

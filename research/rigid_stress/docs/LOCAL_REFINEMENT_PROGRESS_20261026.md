@@ -72,3 +72,20 @@ Runtime artifacts and stdout/stderr use
 The start receipt preserves twelve original unfinished files and the prior
 frozen sources. Higher-resolution continuum sharp-edge peaks remain outside
 this integration/throughput phase.
+
+## First native feature-space controls
+
+Source `7cad6e363` and the corrected captured worker pass both scheduled GPU
+controls (`space-controls-v1c`, job 751053). Shell coarse/local/all-fine
+coordinate counts are 252/402/1452; volume counts are 378/474/2430, before
+removing the common six pins. Independent sparse controls pass cardinal/rank,
+rigid-mode reproduction, Galerkin K/RHS, virtual work and original unscaled
+residual checks. The all-bubbles solution/complete fields recover the mother.
+These prove genuine coordinate reduction; moving-contact combined spatial
+qualification and complete-scene cost decisions remain open.
+
+The first attempt exposed an empty scalar boundary-buffer allocation in the
+new shared state factory; the second exposed a missing explicit activity
+argument in the control worker. Both failed records remain retained, together
+with preflight rejections before any Slurm submission. Neither is counted as
+a passed numerical control. Frozen experiment trees are not hot-edited.
