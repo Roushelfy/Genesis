@@ -477,7 +477,7 @@ def kernel_select(
                     clearance[i_feature] = qd.simt.subgroup.reduce_all_min(clearance[i_feature])
             if lane == 0:
                 weight_sum = gs.qd_float(0.0)
-                fully_covered = total > 0.0
+                fully_covered = func_region_total_valid(total)
                 for i_feature in qd.static(range(n_features)):
                     guard = qd.max(width, 1e-6 * atlas.radii[i_feature])
                     taper = qd.min(1.0, qd.max(0.0, clearance[i_feature] / guard))
@@ -485,7 +485,7 @@ def kernel_select(
                     nominal = weights[i_feature]
                     if nominal > 0.0 and availability < 1.0:
                         fully_covered = False
-                    weight = nominal * availability / qd.max(total, 1e-30)
+                    weight = func_region_available_weight(nominal, total, availability)
                     state.weights[i_feature + 1, i_c, i_b] = weight
                     weight_sum += weight
                 mother_weight = qd.select(fully_covered, 0.0, qd.max(0.0, 1.0 - weight_sum))
@@ -497,3 +497,17 @@ def kernel_select(
 def func_region_wendland(distance: float):
     remainder = qd.max(1.0 - distance, 0.0)
     return remainder**4 * (1.0 + 4.0 * distance)
+
+
+@qd.func
+def func_region_total_valid(total: float):
+    return total > 0.0 and total < qd.math.inf
+
+
+@qd.func
+def func_region_available_weight(nominal: float, total: float, availability: float):
+    """Normalize positive support before fading; no positive total is truncated."""
+    weight = gs.qd_float(0.0)
+    if func_region_total_valid(total):
+        weight = (nominal / total) * availability
+    return weight

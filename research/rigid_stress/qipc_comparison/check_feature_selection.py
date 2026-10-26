@@ -19,7 +19,13 @@ import quadrants as qd
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.contact import create_contacts, kernel_anchor, kernel_pressure
 from genesis.engine.solvers.rigid.stress.feature_basis import FeatureBasis
-from genesis.engine.solvers.rigid.stress.feature_regions import FeatureRegions, FeatureRegionState, kernel_select
+from genesis.engine.solvers.rigid.stress.feature_regions import (
+    FeatureRegions,
+    FeatureRegionState,
+    func_region_available_weight,
+    func_region_total_valid,
+    kernel_select,
+)
 from genesis.engine.solvers.rigid.stress.model import StressModel
 from genesis.engine.solvers.rigid.stress.shell_model import ShellModel
 from genesis.engine.solvers.rigid.stress.surface import StressSurface
@@ -36,6 +42,67 @@ class SelectionInputs:
     normal: np.ndarray
     valid: np.ndarray
     radius: np.ndarray
+
+
+@qd.kernel
+def kernel_nominal_normalization_control(weights: qd.Tensor):
+    """Isolated partition algebra; no physical coverage mask is fabricated."""
+    for case in range(6):
+        scale = gs.qd_float(1.0)
+        if case == 2 or case == 3:
+            scale = 1e-100
+        if case == 4:
+            scale = 0.0
+        first, second = 0.25 * scale, 0.75 * scale
+        total = first + second
+        if case == 5:
+            total = qd.math.inf
+        a, b = gs.qd_float(1.0), gs.qd_float(1.0)
+        if case == 1 or case == 3:
+            a, b = 0.5, 0.25
+        first_weight = func_region_available_weight(first, total, a)
+        second_weight = func_region_available_weight(second, total, b)
+        fully_covered = func_region_total_valid(total) and a == 1.0 and b == 1.0
+        mother = qd.select(fully_covered, 0.0, qd.max(0.0, 1.0 - first_weight - second_weight))
+        weights[case, 0], weights[case, 1], weights[case, 2] = mother, first_weight, second_weight
+
+
+def nominal_normalization_control(output):
+    weights = V(dtype=gs.qd_float, shape=(6, 3))
+    kernel_nominal_normalization_control(weights)
+    actual = qd_to_numpy(weights, copy=True)
+    expected = np.array(
+        [
+            [0.0, 0.25, 0.75],
+            [0.6875, 0.125, 0.1875],
+            [0.0, 0.25, 0.75],
+            [0.6875, 0.125, 0.1875],
+            [1.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0],
+        ]
+    )
+    passed = bool(
+        np.allclose(actual, expected, rtol=1e-14, atol=1e-14)
+        and np.allclose(actual.sum(axis=1), 1.0, rtol=0, atol=1e-14)
+    )
+    path = output / "nominal-normalization.npz"
+    np.savez_compressed(path, actual=actual, expected=expected)
+    result = dict(
+        passed=passed,
+        arrays=file_id(path),
+        cases=[
+            "unit_total_full",
+            "unit_total_partial",
+            "tiny_total_full",
+            "tiny_total_partial",
+            "zero_total",
+            "infinite_total",
+        ],
+        columns=["mother", "feature1", "feature2"],
+        scope="Untimed algebra regression for nominal total 1e-100, availability and fallback; not physical source qualification.",
+    )
+    assert passed, "Positive nominal totals must preserve partition of unity, including totals below 1e-30."
+    return result
 
 
 def read_inputs(path: Path) -> SelectionInputs:
@@ -122,6 +189,8 @@ def main():
     }
     write_json(args.output / "result.json", result)
     gs.init(backend=gs.cuda, precision="64", logging_level="warning")
+    result["nominal_normalization_control"] = nominal_normalization_control(args.output)
+    write_json(args.output / "result.json", result)
     model = ShellModel(options) if options.backend == "shell" else StressModel(options)
     parents, fixed_nodes = None, None
     if options.atlas_basis is not None:
