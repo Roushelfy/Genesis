@@ -530,7 +530,7 @@ def csv_cell(value):
 def write_csv(path, rows):
     fields = list(dict.fromkeys(key for row in rows for key in row)) or ["case"]
     with path.open("w", encoding="utf-8", newline="") as stream:
-        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer = csv.DictWriter(stream, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         writer.writerows({key: csv_cell(value) for key, value in row.items()} for row in rows)
 
