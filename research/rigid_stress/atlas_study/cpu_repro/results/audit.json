@@ -1,0 +1,71 @@
+{
+  "kind": "reconstructed_common_mother_audit",
+  "passed": true,
+  "checks": {
+    "mother_dofs": 5196,
+    "mother_nodes": 866,
+    "mother_quads": 864,
+    "coarse_dofs": 336,
+    "common_stress_rows": 20736,
+    "edge_incidence_minmax": [
+      2,
+      2
+    ],
+    "euler_characteristic": 2,
+    "prolongation_partition_error": 0.0,
+    "prolongation_geometry_relative": 0.0,
+    "prolongation_rigid_relative": 8.1032900909778985e-19,
+    "stiffness_rigid_scaled": 1.4577113835347684e-18,
+    "stress_rigid_scaled": 1.747567888893098e-18,
+    "relieved_rigid_virtual_work_scaled": 1.0196318684399012e-15,
+    "sparse_stress_vs_constitutive_relative": 1.3454771224853343e-15,
+    "body_tensor_vs_constitutive_relative": 1.3520375248010093e-15,
+    "plane_vm_vs_body_vm_relative": 0.0,
+    "mother_free_relative_residual": 4.2085263320362e-14,
+    "full_shape_support_coverage_contributions": 88,
+    "feature_residual_maximum": 2.1440409721225133e-14,
+    "projected_relief_vs_full_relief_maximum": 2.861550442924683e-16,
+    "rhs_group_merge_vs_source_superposition_maximum": 5.608810624222939e-14,
+    "pipeline_lift_vs_independent_stress": 1.083942750867142e-15,
+    "pipeline_projected_vs_balanced_rhs": 1.59109899204286e-15,
+    "pipeline_release_exact_zero": true,
+    "feature_dofs": [
+      3516,
+      3516,
+      3516,
+      3516,
+      3516,
+      3516,
+      3516,
+      3516,
+      3516,
+      3516,
+      3516,
+      3516
+    ],
+    "feature_reduced_to_mother_free_ratio": [
+      0.6774566473988439,
+      0.6774566473988439,
+      0.6774566473988439,
+      0.6774566473988439,
+      0.6774566473988439,
+      0.6774566473988439,
+      0.6774566473988439,
+      0.6774566473988439,
+      0.6774566473988439,
+      0.6774566473988439,
+      0.6774566473988439,
+      0.6774566473988439
+    ]
+  },
+  "geometry_convention": "authored egg coordinates define the frozen coarse midsurface",
+  "source_hashes": {
+    "geometry.py": "893373a0768dac8c12a822bf7278e48d84926aa48d03d673d4629d63aff00b6c",
+    "model.py": "d69f16919827c3f558858588363a57c54ef20428245f90525fa56e01df0e130f",
+    "loads.py": "4cc29791f85ff5b8759cb24282cbb0e5e73f7875bb1a93bae52c6ae8e7cd9d70",
+    "audit.py": "e2d75f128fc6a677fe06d2a07e83d85ea994f89ebd082558fcb4191ba0dcaec3",
+    "pipeline.py": "00c1daf4dd8e5ceb9953ba1341eb8dfd00a1ecca40f4cf4abdbf00678ba5f288",
+    "selection.py": "9003315cd34d352c8ebca7b91d0ae2e54099fbd077de46e885272e3e6245f69d",
+    "fixtures.py": "267436dec08dc25551fffc88b8bf687f115ef4ec5c6b4ae965359a8c5c73b35d"
+  }
+}

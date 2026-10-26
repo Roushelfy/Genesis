@@ -18,6 +18,13 @@ accuracy/cost mechanism. Start from the [CPU source guide](docs/ATLAS_CPU_REFERE
 and preserve the accepted H/FP32/screen/history negative evidence.
 See [GOAL.md](GOAL.md) for current integration and completion priorities.
 
+The [reconstructed 5,196-DOF CPU reference](atlas_study/cpu_repro/README.md)
+now supplies genuine shared-coarse/local-enrichment spaces, source-wise
+selection, batched solves, complete responses, history and condensation
+experiments. Its [new measured report](atlas_study/cpu_repro/REPORT_ZH.md)
+separates the retained historical claims from newly frozen cases and timings.
+This supplementary CPU implementation does not close the native migration goal.
+
 ## Delivered: native candidate integration and tuning (2026-10-26)
 
 The seven measured candidate implementations were integrated and tuned for

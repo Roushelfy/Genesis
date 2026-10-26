@@ -1,0 +1,374 @@
+{
+  "model": {
+    "ndof": 5196,
+    "elements": 864,
+    "coarse_free": 330
+  },
+  "scope": "exact algebra within identical common-mother Galerkin spaces, not independent spatial accuracy or a GPU benchmark",
+  "runtime": {
+    "python": "3.12.14",
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+    "threads": [
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 1,
+        "prefix": "libscipy_openblas",
+        "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-fdde5778.so",
+        "version": "0.3.30",
+        "threading_layer": "pthreads",
+        "architecture": "SkylakeX"
+      },
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 1,
+        "prefix": "libscipy_openblas",
+        "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/scipy.libs/libscipy_openblas-6cdc3b4a.so",
+        "version": "0.3.30",
+        "threading_layer": "pthreads",
+        "architecture": "SkylakeX"
+      }
+    ]
+  },
+  "source_sha256": {
+    "condensation.py": "a2085f3cc75faa5e60df5620aa196a69aad3c7841316f5350e0dd27685222da2",
+    "condensation_study.py": "afb7e0f221ed4126119f5460fc87ac2fe9cdebc3a6c4c8000ebcd3f2fda71fcc",
+    "geometry.py": "893373a0768dac8c12a822bf7278e48d84926aa48d03d673d4629d63aff00b6c",
+    "model.py": "d69f16919827c3f558858588363a57c54ef20428245f90525fa56e01df0e130f",
+    "loads.py": "4cc29791f85ff5b8759cb24282cbb0e5e73f7875bb1a93bae52c6ae8e7cd9d70"
+  },
+  "finite_cap_order": 8,
+  "numerics": {
+    "passed": true,
+    "rows": [
+      {
+        "case": "single_patch",
+        "source_directions": [
+          [
+            0.0,
+            0.5257311121191336,
+            0.85065080835204
+          ]
+        ],
+        "coarse_dof": 330,
+        "local_dof": 3186,
+        "total_dof": 3516,
+        "active_macros": 37,
+        "rhs_count": 4,
+        "rhs_columns": [
+          "physical_finite_caps",
+          "distributed_0",
+          "distributed_1",
+          "distributed_2"
+        ],
+        "direct_payload_bytes": 10942688,
+        "direct_construction_seconds_diagnostic": 0.05154602300899569,
+        "methods": [
+          {
+            "direction": "coarse_first",
+            "coordinate_relative": 1.5802609345363228e-12,
+            "complete_weighted_tensor_relative": 2.0150761430453803e-13,
+            "complete_weighted_tensor_relative_by_rhs": [
+              2.063475227495801e-14,
+              1.9646928187371257e-13,
+              2.2448771845079178e-13,
+              1.8139442658398017e-13
+            ],
+            "projected_residual_relative_max": 7.997460699574279e-14,
+            "projected_residual_by_rhs": [
+              3.306005811632383e-14,
+              7.997460699574279e-14,
+              7.554745993977002e-14,
+              6.898305871944853e-14
+            ],
+            "payload_bytes": 98951664,
+            "construction_seconds_diagnostic": 0.7965767639980186
+          },
+          {
+            "direction": "local_first",
+            "coordinate_relative": 1.8542637180017975e-12,
+            "complete_weighted_tensor_relative": 2.749581990393518e-13,
+            "complete_weighted_tensor_relative_by_rhs": [
+              1.263935636164154e-14,
+              2.8757406463667647e-13,
+              3.0091492782982066e-13,
+              2.318460133840955e-13
+            ],
+            "projected_residual_relative_max": 7.27771428955102e-14,
+            "projected_residual_by_rhs": [
+              2.2844362457442766e-14,
+              7.23517123889821e-14,
+              7.27771428955102e-14,
+              6.000482865967939e-14
+            ],
+            "payload_bytes": 24552380,
+            "construction_seconds_diagnostic": 0.17359972999838647
+          }
+        ],
+        "drop_cross_patch_negative": null
+      },
+      {
+        "case": "two_far",
+        "source_directions": [
+          [
+            0.0,
+            0.5257311121191336,
+            0.85065080835204
+          ],
+          [
+            -0.0,
+            -0.5257311121191336,
+            -0.85065080835204
+          ]
+        ],
+        "coarse_dof": 330,
+        "local_dof": 4860,
+        "total_dof": 5190,
+        "active_macros": 54,
+        "rhs_count": 4,
+        "rhs_columns": [
+          "physical_finite_caps",
+          "distributed_0",
+          "distributed_1",
+          "distributed_2"
+        ],
+        "direct_payload_bytes": 19722500,
+        "direct_construction_seconds_diagnostic": 0.10191916600160766,
+        "methods": [
+          {
+            "direction": "coarse_first",
+            "coordinate_relative": 1.810289892087462e-12,
+            "complete_weighted_tensor_relative": 2.3763813338808287e-13,
+            "complete_weighted_tensor_relative_by_rhs": [
+              1.9905491030095203e-14,
+              2.1500779637945096e-13,
+              3.0243351902750235e-13,
+              1.7890392891512613e-13
+            ],
+            "projected_residual_relative_max": 1.0305638122414954e-13,
+            "projected_residual_by_rhs": [
+              5.720975260438303e-14,
+              7.779162998903285e-14,
+              1.0305638122414954e-13,
+              8.086369131929027e-14
+            ],
+            "payload_bytes": 215569200,
+            "construction_seconds_diagnostic": 3.7355894630018156
+          },
+          {
+            "direction": "local_first",
+            "coordinate_relative": 2.0872032059260112e-12,
+            "complete_weighted_tensor_relative": 2.6635052544394095e-13,
+            "complete_weighted_tensor_relative_by_rhs": [
+              1.181386490520921e-14,
+              2.6358651440518956e-13,
+              3.16002881782037e-13,
+              2.09059456134943e-13
+            ],
+            "projected_residual_relative_max": 1.1302871994370873e-13,
+            "projected_residual_by_rhs": [
+              2.4488717277537904e-14,
+              8.621349380575814e-14,
+              1.1302871994370873e-13,
+              6.382490448627844e-14
+            ],
+            "payload_bytes": 40101392,
+            "construction_seconds_diagnostic": 0.4597237620037049
+          }
+        ],
+        "drop_cross_patch_negative": {
+          "groups": 2,
+          "removed_schur_norm_relative": 0.14659214900193915,
+          "coordinate_relative": 0.38644930400598815,
+          "complete_weighted_tensor_relative": 0.34201234692120097,
+          "complete_weighted_tensor_relative_by_rhs": [
+            0.014360975054895739,
+            0.326266639170255,
+            0.36321545314034465,
+            0.3357150924488816
+          ],
+          "physical_cap_tensor_relative": 0.014360975054895739,
+          "projected_residual_relative": 0.38374053760824534,
+          "is_exact_control": false
+        }
+      },
+      {
+        "case": "two_near",
+        "source_directions": [
+          [
+            0.0,
+            0.5257311121191336,
+            0.85065080835204
+          ],
+          [
+            0.2614017631888116,
+            0.4702628486800143,
+            0.8429246534258791
+          ]
+        ],
+        "coarse_dof": 330,
+        "local_dof": 3366,
+        "total_dof": 3696,
+        "active_macros": 39,
+        "rhs_count": 4,
+        "rhs_columns": [
+          "physical_finite_caps",
+          "distributed_0",
+          "distributed_1",
+          "distributed_2"
+        ],
+        "direct_payload_bytes": 11853296,
+        "direct_construction_seconds_diagnostic": 0.10419132000242826,
+        "methods": [
+          {
+            "direction": "coarse_first",
+            "coordinate_relative": 1.3434027871322852e-12,
+            "complete_weighted_tensor_relative": 2.019543989491355e-13,
+            "complete_weighted_tensor_relative_by_rhs": [
+              1.0214526731679255e-14,
+              1.814001367609843e-13,
+              2.4665162219970943e-13,
+              1.7017146682151558e-13
+            ],
+            "projected_residual_relative_max": 9.375682868069862e-14,
+            "projected_residual_by_rhs": [
+              1.9905892641279316e-14,
+              7.934785830832402e-14,
+              9.375682868069862e-14,
+              7.362893215313702e-14
+            ],
+            "payload_bytes": 109339824,
+            "construction_seconds_diagnostic": 1.3677109580021352
+          },
+          {
+            "direction": "local_first",
+            "coordinate_relative": 1.8961820439926885e-12,
+            "complete_weighted_tensor_relative": 3.309527937702666e-13,
+            "complete_weighted_tensor_relative_by_rhs": [
+              1.1660933682854747e-14,
+              2.8359885010198794e-13,
+              4.165690939146239e-13,
+              2.7530087901831084e-13
+            ],
+            "projected_residual_relative_max": 8.136102922060768e-14,
+            "projected_residual_by_rhs": [
+              1.6567004774263e-14,
+              8.136102922060768e-14,
+              7.82265061603485e-14,
+              6.346777473378481e-14
+            ],
+            "payload_bytes": 26001644,
+            "construction_seconds_diagnostic": 0.5196209360001376
+          }
+        ],
+        "drop_cross_patch_negative": {
+          "groups": 2,
+          "removed_schur_norm_relative": 0.12847428284046958,
+          "coordinate_relative": 0.36180566380855683,
+          "complete_weighted_tensor_relative": 0.24989164289347104,
+          "complete_weighted_tensor_relative_by_rhs": [
+            0.7356733564992027,
+            0.22102943923520613,
+            0.28893958940531406,
+            0.23532236234748138
+          ],
+          "physical_cap_tensor_relative": 0.7356733564992027,
+          "projected_residual_relative": 0.3059344262099133,
+          "is_exact_control": false
+        }
+      },
+      {
+        "case": "three_asymmetric",
+        "source_directions": [
+          [
+            0.0,
+            0.5257311121191336,
+            0.85065080835204
+          ],
+          [
+            -0.0,
+            -0.5257311121191336,
+            -0.85065080835204
+          ],
+          [
+            0.932910509720565,
+            -0.21456941723572995,
+            0.2892022580133751
+          ]
+        ],
+        "coarse_dof": 330,
+        "local_dof": 4860,
+        "total_dof": 5190,
+        "active_macros": 54,
+        "rhs_count": 4,
+        "rhs_columns": [
+          "physical_finite_caps",
+          "distributed_0",
+          "distributed_1",
+          "distributed_2"
+        ],
+        "direct_payload_bytes": 19722500,
+        "direct_construction_seconds_diagnostic": 0.14540478700655513,
+        "methods": [
+          {
+            "direction": "coarse_first",
+            "coordinate_relative": 1.810289889573398e-12,
+            "complete_weighted_tensor_relative": 2.376372577169037e-13,
+            "complete_weighted_tensor_relative_by_rhs": [
+              1.9820525652818508e-14,
+              2.1500779637945096e-13,
+              3.0243351902750235e-13,
+              1.7890392891512613e-13
+            ],
+            "projected_residual_relative_max": 1.0305638122414954e-13,
+            "projected_residual_by_rhs": [
+              3.754592856471996e-14,
+              7.779162998903285e-14,
+              1.0305638122414954e-13,
+              8.086369131929027e-14
+            ],
+            "payload_bytes": 215569200,
+            "construction_seconds_diagnostic": 2.5352384629950393
+          },
+          {
+            "direction": "local_first",
+            "coordinate_relative": 2.087203193400529e-12,
+            "complete_weighted_tensor_relative": 2.6634953962435224e-13,
+            "complete_weighted_tensor_relative_by_rhs": [
+              1.184155934462239e-14,
+              2.6358651440518956e-13,
+              3.16002881782037e-13,
+              2.09059456134943e-13
+            ],
+            "projected_residual_relative_max": 1.1302871994370873e-13,
+            "projected_residual_by_rhs": [
+              2.43290650057566e-14,
+              8.621349380575814e-14,
+              1.1302871994370873e-13,
+              6.382490448627844e-14
+            ],
+            "payload_bytes": 40101392,
+            "construction_seconds_diagnostic": 0.4552934609964723
+          }
+        ],
+        "drop_cross_patch_negative": {
+          "groups": 3,
+          "removed_schur_norm_relative": 0.18486652362570313,
+          "coordinate_relative": 0.4775871201182991,
+          "complete_weighted_tensor_relative": 0.42455052566171647,
+          "complete_weighted_tensor_relative_by_rhs": [
+            0.060086250110159944,
+            0.4543518321220699,
+            0.3954848194240948,
+            0.4214999636563878
+          ],
+          "physical_cap_tensor_relative": 0.060086250110159944,
+          "projected_residual_relative": 0.4646245669999387,
+          "is_exact_control": false
+        }
+      }
+    ]
+  },
+  "source_unchanged": true
+}

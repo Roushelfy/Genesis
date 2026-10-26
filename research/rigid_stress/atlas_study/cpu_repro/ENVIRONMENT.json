@@ -1,0 +1,28 @@
+{
+  "kind": "cpu_reconstruction",
+  "baseline_commit": "f91260e3d99346a222c72fdb89a9d88e7ae55a40",
+  "historical_local_commit_unavailable": "3ac2e3a66203c9287de2dff428bb9ef4e8be506f",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "numpy": "2.3.5",
+  "scipy": "1.17.0",
+  "affinity_count": 9,
+  "memory_limit_bytes": 8589934592,
+  "cpu_limit": "800000 100000",
+  "blas": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 9,
+      "prefix": "libscipy_openblas",
+      "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-fdde5778.so",
+      "version": "0.3.30",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    }
+  ],
+  "cpuinfo_model": [
+    "INTEL(R) XEON(R) PLATINUM 8573C"
+  ],
+  "scope": "5,196 DOF curved MITC4 shell CPU module, new deterministic fixtures. No GPU or whole RL throughput claim."
+}

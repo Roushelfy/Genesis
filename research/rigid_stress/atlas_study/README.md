@@ -3,9 +3,10 @@
 **Active native migration:** read
 [the current review/goal](../docs/ATLAS_LOCAL_REFINEMENT_REVIEW_AND_GOAL.md)
 and [the CPU reference guide](../docs/ATLAS_CPU_REFERENCE_GUIDE.md).
-The source here includes actual local mesh refinement. Its independently
-assembled models are references for the open native spatial-approximation
-route; they are not the later unavailable common-mother cpu_next source.
+The source here includes actual local mesh refinement. The older independently
+assembled models and the new [common-mother CPU reconstruction](cpu_repro/README.md)
+are references for the open native spatial-approximation route. The new source
+reconstructs the retained cpu_next report; it is not the recovered original.
 
 Research requested on 2026-10-24: precompute meshes with local refinement at
 representative surface regions, then select/combine their responses online.

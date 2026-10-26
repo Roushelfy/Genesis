@@ -1,0 +1,220 @@
+{
+  "reconstruction": true,
+  "speed": 0.25,
+  "speed_definition": "Smooth contact direction, force, friction and radius use time=speed*frame; release/reset/shock event frames remain fixed. Different speeds cover different total smooth paths in 80 frames, rather than the same path in different times.",
+  "timing_scope": "CPU complete local-three-component shell field, not global-nine-component export",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+    "processor": "x86_64",
+    "affinity_cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "threadpools": [
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 1,
+        "prefix": "libscipy_openblas",
+        "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-fdde5778.so",
+        "version": "0.3.30",
+        "threading_layer": "pthreads",
+        "architecture": "SkylakeX"
+      },
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 1,
+        "prefix": "libscipy_openblas",
+        "filepath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/scipy.libs/libscipy_openblas-6cdc3b4a.so",
+        "version": "0.3.30",
+        "threading_layer": "pthreads",
+        "architecture": "SkylakeX"
+      }
+    ]
+  },
+  "source_hashes": {
+    "rigid_stress/atlas_study/cpu_repro/history_scaled_trajectory.py": "898ca3e547f184a02d57908a4db74029c76a4b279f24409d0c2042632dd77517",
+    "rigid_stress/atlas_study/cpu_repro/__init__.py": "fe42ab174f44d777fe08f323b96a61bb74d2268e7f68b8c87fd16a39f407ae2c",
+    "rigid_stress/atlas_study/cpu_repro/model.py": "d69f16919827c3f558858588363a57c54ef20428245f90525fa56e01df0e130f",
+    "rigid_stress/atlas_study/cpu_repro/selection.py": "9003315cd34d352c8ebca7b91d0ae2e54099fbd077de46e885272e3e6245f69d",
+    "rigid_stress/atlas_study/cpu_repro/audit.py": "e2d75f128fc6a677fe06d2a07e83d85ea994f89ebd082558fcb4191ba0dcaec3",
+    "rigid_stress/atlas_study/cpu_repro/geometry_check.py": "becd118604ccda8829423be6a550fa66827112f3ef3f5af1dca6306b964f1e46",
+    "rigid_stress/atlas_study/cpu_repro/pipeline.py": "00c1daf4dd8e5ceb9953ba1341eb8dfd00a1ecca40f4cf4abdbf00678ba5f288",
+    "rigid_stress/atlas_study/cpu_repro/history.py": "b81da794a0fb949d387456b2ad3daf57d404653061e2aa93b6822ed0b09e3e5a",
+    "rigid_stress/atlas_study/cpu_repro/response.py": "ea33b9e89e23893dde9c3af5375b9bdfdd18b968c3ecbceac855c0e481cacff0",
+    "rigid_stress/atlas_study/cpu_repro/fixtures.py": "267436dec08dc25551fffc88b8bf687f115ef4ec5c6b4ae965359a8c5c73b35d",
+    "rigid_stress/atlas_study/cpu_repro/condensation_study.py": "afb7e0f221ed4126119f5460fc87ac2fe9cdebc3a6c4c8000ebcd3f2fda71fcc",
+    "rigid_stress/atlas_study/cpu_repro/benchmark.py": "1512c8a75279dec586ce11df081eea6062955beb954356fc87c1447a41f8beac",
+    "rigid_stress/atlas_study/cpu_repro/geometry.py": "893373a0768dac8c12a822bf7278e48d84926aa48d03d673d4629d63aff00b6c",
+    "rigid_stress/atlas_study/cpu_repro/boundary_study.py": "33d11b289951f74e29d643570fc40ffbc3d61783e07b3ae513293de8da74781c",
+    "rigid_stress/atlas_study/cpu_repro/history_study.py": "eb7e7320827e090caf735892db1747b4676ac6dbc2937e66daa539674c4d8d29",
+    "rigid_stress/atlas_study/cpu_repro/loads.py": "4cc29791f85ff5b8759cb24282cbb0e5e73f7875bb1a93bae52c6ae8e7cd9d70",
+    "rigid_stress/atlas_study/cpu_repro/history_slow_study.py": "61e06cabe9b0fd5f05ea083eda2a14b7f911ab27f312e54cb72d9779223d6194",
+    "rigid_stress/atlas_study/cpu_repro/response_study.py": "ad76e9174ab076020803992d05eb0ab84a239b9426c81eedd300eadb2290e770",
+    "rigid_stress/atlas_study/cpu_repro/selection_study.py": "7b7efca4843fd5b7301901c8801d8328fa6eca61d32d3df5afe339a8640b832a",
+    "rigid_stress/atlas_study/cpu_repro/history_benchmark.py": "dd659b9c10494c9bfaa531ada1bfd3e09b5ad0b8e8a6d17e6795829f0788082b",
+    "rigid_stress/atlas_study/cpu_repro/condensation.py": "a2085f3cc75faa5e60df5620aa196a69aad3c7841316f5350e0dd27685222da2",
+    "rigid_stress/atlas_study/cpu_repro/history_speed_study.py": "95c72a5f5a9a6b398465ee94985c6c1e2cac0598d585827014e26718a4e3354b",
+    "rigid_stress/atlas_study/cpu_repro/plot_stress.py": "37ac054f9065525ff9a28c118cce1b12353fe4ef4c6cd856ea31c53a3b5411a8",
+    "rigid_stress/atlas_study/cpu_repro/history_controls.py": "618b7f730bb0733eee58a426e3183a55e93ec70acb02f838fa9f7e0e7e2bb620",
+    "rigid_stress/shell_cpu/core.py": "4e2c6a2400f851433a8f9b5c52017a7f79346381d29365a1ca6e43e8d5918b9f"
+  },
+  "rows": [
+    {
+      "batch": 64,
+      "frames": 80,
+      "order": 8,
+      "speed": 0.25,
+      "scope": "complete",
+      "method": "full",
+      "force_sha256": "6e5a56ff7c56101ce9a25fe03237be280f2f79baf3b6d188e44cc409990f99cb",
+      "load_preparation_seconds": 17.94559717598895,
+      "wall_median_ms": 291.8203151624766,
+      "wall_min_ms": 280.96553036248224,
+      "wall_max_ms": 344.61177136254264,
+      "cpu_median_ms": 291.7975540625001,
+      "samples": [
+        {
+          "wall_seconds": 27.56894170900341,
+          "cpu_seconds": 27.563623087,
+          "wall_ms_per_frame": 344.61177136254264,
+          "cpu_ms_per_frame": 344.5452885875,
+          "last_checksum_outside_timing": 93844921.46607755,
+          "accepted_predictions": 0,
+          "failed_columns": 5056,
+          "mutable_state_bytes": 13274176,
+          "repeat": 0
+        },
+        {
+          "wall_seconds": 22.47724242899858,
+          "cpu_seconds": 22.462297524999997,
+          "wall_ms_per_frame": 280.96553036248224,
+          "cpu_ms_per_frame": 280.7787190625,
+          "last_checksum_outside_timing": 93844921.46607755,
+          "accepted_predictions": 0,
+          "failed_columns": 5056,
+          "mutable_state_bytes": 13274176,
+          "repeat": 1
+        },
+        {
+          "wall_seconds": 23.34562521299813,
+          "cpu_seconds": 23.343804325000008,
+          "wall_ms_per_frame": 291.8203151624766,
+          "cpu_ms_per_frame": 291.7975540625001,
+          "last_checksum_outside_timing": 93844921.46607755,
+          "accepted_predictions": 0,
+          "failed_columns": 5056,
+          "mutable_state_bytes": 13274176,
+          "repeat": 2
+        }
+      ]
+    },
+    {
+      "batch": 64,
+      "frames": 80,
+      "order": 8,
+      "speed": 0.25,
+      "scope": "complete",
+      "method": "rotate_0.01",
+      "force_sha256": "6e5a56ff7c56101ce9a25fe03237be280f2f79baf3b6d188e44cc409990f99cb",
+      "load_preparation_seconds": 17.94559717598895,
+      "wall_median_ms": 255.1094075999572,
+      "wall_min_ms": 238.74154342502152,
+      "wall_max_ms": 257.38672203751776,
+      "cpu_median_ms": 255.1062702625,
+      "samples": [
+        {
+          "wall_seconds": 19.09932347400172,
+          "cpu_seconds": 19.096642321000004,
+          "wall_ms_per_frame": 238.74154342502152,
+          "cpu_ms_per_frame": 238.70802901250005,
+          "last_checksum_outside_timing": 93853806.67021711,
+          "accepted_predictions": 2663,
+          "failed_columns": 2393,
+          "mutable_state_bytes": 39822400,
+          "repeat": 0
+        },
+        {
+          "wall_seconds": 20.408752607996576,
+          "cpu_seconds": 20.408501621,
+          "wall_ms_per_frame": 255.1094075999572,
+          "cpu_ms_per_frame": 255.1062702625,
+          "last_checksum_outside_timing": 93853806.67021711,
+          "accepted_predictions": 2663,
+          "failed_columns": 2393,
+          "mutable_state_bytes": 39822400,
+          "repeat": 1
+        },
+        {
+          "wall_seconds": 20.59093776300142,
+          "cpu_seconds": 20.580367696000025,
+          "wall_ms_per_frame": 257.38672203751776,
+          "cpu_ms_per_frame": 257.25459620000026,
+          "last_checksum_outside_timing": 93853806.67021711,
+          "accepted_predictions": 2663,
+          "failed_columns": 2393,
+          "mutable_state_bytes": 39822400,
+          "repeat": 2
+        }
+      ]
+    },
+    {
+      "batch": 64,
+      "frames": 80,
+      "order": 8,
+      "speed": 0.25,
+      "scope": "complete",
+      "method": "cached_rotate_0.01",
+      "force_sha256": "6e5a56ff7c56101ce9a25fe03237be280f2f79baf3b6d188e44cc409990f99cb",
+      "load_preparation_seconds": 17.94559717598895,
+      "wall_median_ms": 258.6934889375698,
+      "wall_min_ms": 232.6230696249695,
+      "wall_max_ms": 265.40926368743385,
+      "cpu_median_ms": 258.69135275,
+      "samples": [
+        {
+          "wall_seconds": 18.60984556999756,
+          "cpu_seconds": 18.599378771999994,
+          "wall_ms_per_frame": 232.6230696249695,
+          "cpu_ms_per_frame": 232.49223464999992,
+          "last_checksum_outside_timing": 93853806.67021711,
+          "accepted_predictions": 2663,
+          "failed_columns": 2393,
+          "mutable_state_bytes": 47794240,
+          "repeat": 0
+        },
+        {
+          "wall_seconds": 20.695479115005583,
+          "cpu_seconds": 20.69530822,
+          "wall_ms_per_frame": 258.6934889375698,
+          "cpu_ms_per_frame": 258.69135275,
+          "last_checksum_outside_timing": 93853806.67021711,
+          "accepted_predictions": 2663,
+          "failed_columns": 2393,
+          "mutable_state_bytes": 47794240,
+          "repeat": 1
+        },
+        {
+          "wall_seconds": 21.232741094994708,
+          "cpu_seconds": 21.230890027000015,
+          "wall_ms_per_frame": 265.40926368743385,
+          "cpu_ms_per_frame": 265.3861253375002,
+          "last_checksum_outside_timing": 93853806.67021711,
+          "accepted_predictions": 2663,
+          "failed_columns": 2393,
+          "mutable_state_bytes": 47794240,
+          "repeat": 2
+        }
+      ]
+    }
+  ]
+}

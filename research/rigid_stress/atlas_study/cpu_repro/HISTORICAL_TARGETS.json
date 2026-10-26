@@ -1,0 +1,56 @@
+{
+  "kind": "historical_targets_from_retained_report_and_user_quote",
+  "historical_source_commit_unavailable": "3ac2e3a66203c9287de2dff428bb9ef4e8be506f",
+  "retained_report_name": "cpu_atlas_optimization_report.html",
+  "retained_report_size_bytes": 3773916,
+  "retained_report_created_utc": "2026-10-25T06:39:32.791086Z",
+  "reconstruction_contract": "Compare newly measured quantities. Do not tune fixtures to fit these targets or claim exact historical source identity.",
+  "mother": {
+    "nodes": 866,
+    "quads": 864,
+    "total_dofs": 5196,
+    "coarse_nodes": 56,
+    "coarse_dofs": 336,
+    "gauss_two_side_stress_points": 6912,
+    "stress_scalar_rows": 20736,
+    "top_force_input_columns": 2598
+  },
+  "selection_42_loaded_cases_library_12": {
+    "all_positive": {"mean_field_relative": 0.04024, "mean_rhs_groups": 1.905},
+    "nearest": {"mean_field_relative": 0.04144, "mean_rhs_groups": 1.071},
+    "narrow": {"mean_field_relative": 0.04082, "mean_rhs_groups": 1.333}
+  },
+  "continuity_epsilon_radians": 0.000001,
+  "continuity_pair_library_12": {
+    "nearest_field_jump_relative": 0.0472248,
+    "nearest_sampled_peak_jump_relative": 0.0002464
+  },
+  "static_b64_q8_full9_ms": {
+    "mother": 301.89,
+    "nearest_projected_lift": 274.22,
+    "narrow_lift": 292.72,
+    "H64": 235.24,
+    "H32": 228.63
+  },
+  "response_inventory": {
+    "H64_bytes": 430977024,
+    "H32_bytes": 215488512,
+    "H64_worst_same_order_field_relative": 5.32e-15,
+    "H32_worst_same_order_field_relative": 1.79e-7
+  },
+  "history_b64_80_frames_tolerance_0_01": {
+    "field_worst_relative": 0.00960,
+    "peak_worst_relative": 0.00941,
+    "accepted_fraction": 0.55877,
+    "complete_local3_full_ms": 236.11,
+    "complete_local3_history_rotate_ms": 195.67,
+    "complete_local3_history_cached_rotate_ms": 193.29,
+    "recovery_local3_full_ms": 97.2375,
+    "recovery_local3_history_rotate_ms": 50.3378
+  },
+  "timing_scope": {
+    "static": "Current source generation, common relief, grouped solves/response, full body-frame 3x3 tensors. Fifteen loaded cases and one release, tiled four times at B64.",
+    "history": "A different sustained two-contact bank. Local3 outputs, no additional body-frame 3x3 tensor export. Includes gates, compact fallback and updates.",
+    "machine": "Intel Xeon Platinum 8573C, one BLAS/OMP thread. Absolute time and CPU runtime state are not identical across sessions."
+  }
+}

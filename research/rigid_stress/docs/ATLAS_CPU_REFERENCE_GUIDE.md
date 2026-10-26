@@ -76,6 +76,13 @@ or inherit its measured errors/timings.
 
 The transferable construction from that report is:
 
+**New executable reconstruction:** [cpu_repro/](../atlas_study/cpu_repro/README.md)
+now implements this common-mother construction on the 5,196-DOF shell model,
+with explicit new fixtures and independent numerical controls. Read its
+[measured comparison](../atlas_study/cpu_repro/REPORT_ZH.md) before using the
+historical numbers. The original cpu_next source remains unrecovered; the
+new reconstruction does not establish identical historical inputs or timings.
+
 ```python
 # Algorithm sketch, not a recovered executable from the missing experiment.
 # All maps are defined on the same physical mother model within one backend.
@@ -117,5 +124,6 @@ nonconvex identity, remote peaks and continuous selector junctions.
 4. Validate actual source and combined fields, then measure the complete
    accuracy/time/memory tradeoff. CPU module results remain CPU evidence.
 
-This guide is a source/algorithm handoff; it reports no newly executed CPU
-performance or physical-convergence experiment.
+The older modules and their evidence remain unchanged. New CPU experiments
+are reported separately in cpu_repro; this guide does not claim native GPU
+completion or new physical-contact convergence.

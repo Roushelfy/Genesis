@@ -1,0 +1,1514 @@
+{
+  "field_jump_denominator": "Area/Frobenius norm of the left field",
+  "force_policy": "One fixed global force and safe cap tangent on both sides of each crossing",
+  "kind": "reconstructed_boundary_numerics",
+  "library_size": 12,
+  "locations": [
+    {
+      "crossing_tangent": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "direction": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "expected_ties": [
+        0,
+        1
+      ],
+      "force": [
+        0.1,
+        -0.025,
+        -0.0
+      ],
+      "name": "nearest_pair_boundary",
+      "sorted_center_angles": [
+        0.5535743588970451,
+        0.5535743588970451,
+        1.0172219678978514,
+        1.0172219678978514,
+        1.5707963267948966,
+        1.5707963267948966,
+        1.5707963267948966,
+        1.5707963267948966,
+        2.124370685691942,
+        2.124370685691942,
+        2.5880182946927484,
+        2.5880182946927484
+      ]
+    },
+    {
+      "crossing_tangent": [
+        -0.3090169943749475,
+        0.8090169943749475,
+        0.5
+      ],
+      "direction": [
+        -0.9455636096486039,
+        -0.3177693751896385,
+        -0.07022879964722263
+      ],
+      "expected_ties": [
+        1,
+        2
+      ],
+      "force": [
+        0.09200465108521882,
+        0.04413902995421003,
+        -0.014556449202621405
+      ],
+      "name": "second_third_exchange",
+      "sorted_center_angles": [
+        0.5711757632682561,
+        0.6959843225974465,
+        0.6959843225974465,
+        1.3420040560095685,
+        1.3420040560095687,
+        1.4632681725274461,
+        1.678324481062347,
+        1.7995885975802246,
+        1.7995885975802246,
+        2.445608330992347,
+        2.445608330992347,
+        2.570416890321537
+      ]
+    },
+    {
+      "crossing_tangent": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "direction": [
+        -0.9341723589627157,
+        -0.35682208977309,
+        0.0
+      ],
+      "expected_ties": [
+        0,
+        1,
+        2
+      ],
+      "force": [
+        0.10233778814059882,
+        0.012327900003241105,
+        0.0
+      ],
+      "name": "triple_junction",
+      "sorted_center_angles": [
+        0.6523581397843681,
+        0.6523581397843682,
+        0.6523581397843682,
+        1.3820857960113346,
+        1.3820857960113346,
+        1.3820857960113346,
+        1.7595068575784585,
+        1.7595068575784587,
+        1.7595068575784587,
+        2.489234513805425,
+        2.489234513805425,
+        2.4892345138054255
+      ]
+    }
+  ],
+  "peak_jump_denominator": "Mean mother sampled peak across the crossing",
+  "quadrature_order": 8,
+  "radius_m": 0.002,
+  "rows": [
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.4991943417602432,
+            0.5008056582397569
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.5008056582397569,
+            0.4991943417602432
+          ]
+        }
+      ],
+      "boundary": "nearest_pair_boundary",
+      "epsilon_rad": 0.0001,
+      "field_errors": [
+        0.02066910680787085,
+        0.020671822253398846
+      ],
+      "reference_relative_field_change": 0.0006733846620229098,
+      "reference_relative_peak_change": 0.0003379289860225679,
+      "relative_field_jump": 0.0006755350406105393,
+      "relative_sampled_peak_jump": 0.000337887665574404,
+      "sampled_peaks_pa": [
+        232553.21250141482,
+        232474.64493940014
+      ],
+      "strategy": "continuous"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            1
+          ],
+          "weights": [
+            1.0
+          ]
+        },
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        }
+      ],
+      "boundary": "nearest_pair_boundary",
+      "epsilon_rad": 0.0001,
+      "field_errors": [
+        0.02435045648550578,
+        0.02615187850366769
+      ],
+      "reference_relative_field_change": 0.0006733846620229098,
+      "reference_relative_peak_change": 0.0003379289860225679,
+      "relative_field_jump": 0.02909391204586708,
+      "relative_sampled_peak_jump": 0.00034091005039041015,
+      "sampled_peaks_pa": [
+        232553.56330109906,
+        232474.29295697465
+      ],
+      "strategy": "nearest"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.4991943417602432,
+            0.5008056582397569
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.5008056582397569,
+            0.4991943417602432
+          ]
+        }
+      ],
+      "boundary": "nearest_pair_boundary",
+      "epsilon_rad": 0.0001,
+      "field_errors": [
+        0.02066910680787085,
+        0.020671822253398846
+      ],
+      "reference_relative_field_change": 0.0006733846620229098,
+      "reference_relative_peak_change": 0.0003379289860225679,
+      "relative_field_jump": 0.0006755350406105393,
+      "relative_sampled_peak_jump": 0.000337887665574404,
+      "sampled_peaks_pa": [
+        232553.21250141482,
+        232474.64493940014
+      ],
+      "strategy": "top2"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.4991830578072787,
+            0.5008169421927212
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.5008169421927212,
+            0.4991830578072787
+          ]
+        }
+      ],
+      "boundary": "nearest_pair_boundary",
+      "epsilon_rad": 0.0001,
+      "field_errors": [
+        0.02066908226624523,
+        0.02067184740750286
+      ],
+      "reference_relative_field_change": 0.0006733846620229098,
+      "reference_relative_peak_change": 0.0003379289860225679,
+      "relative_field_jump": 0.0006755841461810676,
+      "relative_sampled_peak_jump": 0.0003378877338932612,
+      "sampled_peaks_pa": [
+        232553.21250934116,
+        232474.6449314406
+      ],
+      "strategy": "narrow"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.49991943411243445,
+            0.5000805658875656
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.5000805658875656,
+            0.49991943411243445
+          ]
+        }
+      ],
+      "boundary": "nearest_pair_boundary",
+      "epsilon_rad": 1e-05,
+      "field_errors": [
+        0.02067032135103557,
+        0.0206705928961188
+      ],
+      "reference_relative_field_change": 6.733812850766879e-05,
+      "reference_relative_peak_change": 3.3792899715255536e-05,
+      "relative_field_jump": 6.755316720950768e-05,
+      "relative_sampled_peak_jump": 3.3788767671268244e-05,
+      "sampled_peaks_pa": [
+        232517.85304227012,
+        232509.99628594672
+      ],
+      "strategy": "continuous"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            1
+          ],
+          "weights": [
+            1.0
+          ]
+        },
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        }
+      ],
+      "boundary": "nearest_pair_boundary",
+      "epsilon_rad": 1e-05,
+      "field_errors": [
+        0.024352160303078015,
+        0.02615448123138775
+      ],
+      "reference_relative_field_change": 6.733812850766879e-05,
+      "reference_relative_peak_change": 3.3792899715255536e-05,
+      "relative_field_jump": 0.029083040504363954,
+      "relative_sampled_peak_jump": 3.681554980236964e-05,
+      "sampled_peaks_pa": [
+        232518.20501186218,
+        232509.64445095262
+      ],
+      "strategy": "nearest"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.49991943411243445,
+            0.5000805658875656
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.5000805658875656,
+            0.49991943411243445
+          ]
+        }
+      ],
+      "boundary": "nearest_pair_boundary",
+      "epsilon_rad": 1e-05,
+      "field_errors": [
+        0.02067032135103557,
+        0.0206705928961188
+      ],
+      "reference_relative_field_change": 6.733812850766879e-05,
+      "reference_relative_peak_change": 3.3792899715255536e-05,
+      "relative_field_jump": 6.755316720950768e-05,
+      "relative_sampled_peak_jump": 3.3788767671268244e-05,
+      "sampled_peaks_pa": [
+        232517.85304227012,
+        232509.99628594672
+      ],
+      "strategy": "top2"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.49991932084162694,
+            0.5000806791583731
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.5000806791583731,
+            0.49991932084162694
+          ]
+        }
+      ],
+      "boundary": "nearest_pair_boundary",
+      "epsilon_rad": 1e-05,
+      "field_errors": [
+        0.020670321101911648,
+        0.02067059314585278
+      ],
+      "reference_relative_field_change": 6.733812850766879e-05,
+      "reference_relative_peak_change": 3.3792899715255536e-05,
+      "relative_field_jump": 6.755365728047653e-05,
+      "relative_sampled_peak_jump": 3.378876835704146e-05,
+      "sampled_peaks_pa": [
+        232517.8530423498,
+        232509.99628586695
+      ],
+      "strategy": "narrow"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.4999919434111804,
+            0.5000080565888196
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.5000080565888196,
+            0.4999919434111804
+          ]
+        }
+      ],
+      "boundary": "nearest_pair_boundary",
+      "epsilon_rad": 1e-06,
+      "field_errors": [
+        0.020670443472251925,
+        0.02067047062676088
+      ],
+      "reference_relative_field_change": 6.733809442117436e-06,
+      "reference_relative_peak_change": 3.379289974893728e-06,
+      "relative_field_jump": 6.755313318134264e-06,
+      "relative_sampled_peak_jump": 3.378876768805213e-06,
+      "sampled_peaks_pa": [
+        232514.31746136158,
+        232513.531785729
+      ],
+      "strategy": "continuous"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            1
+          ],
+          "weights": [
+            1.0
+          ]
+        },
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        }
+      ],
+      "boundary": "nearest_pair_boundary",
+      "epsilon_rad": 1e-06,
+      "field_errors": [
+        0.02435233057198099,
+        0.02615474138564823
+      ],
+      "reference_relative_field_change": 6.733809442117436e-06,
+      "reference_relative_peak_change": 3.379289974893728e-06,
+      "relative_field_jump": 0.029082648010996685,
+      "relative_sampled_peak_jump": 6.406098049503039e-06,
+      "sampled_peaks_pa": [
+        232514.66954798257,
+        232513.17996565037
+      ],
+      "strategy": "nearest"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.4999919434111804,
+            0.5000080565888196
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.5000080565888196,
+            0.4999919434111804
+          ]
+        }
+      ],
+      "boundary": "nearest_pair_boundary",
+      "epsilon_rad": 1e-06,
+      "field_errors": [
+        0.020670443472251925,
+        0.02067047062676088
+      ],
+      "reference_relative_field_change": 6.733809442117436e-06,
+      "reference_relative_peak_change": 3.379289974893728e-06,
+      "relative_field_jump": 6.755313318134264e-06,
+      "relative_sampled_peak_jump": 3.378876768805213e-06,
+      "sampled_peaks_pa": [
+        232514.31746136158,
+        232513.531785729
+      ],
+      "strategy": "top2"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.49999194227803834,
+            0.5000080577219618
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.5000080577219618,
+            0.49999194227803834
+          ]
+        }
+      ],
+      "boundary": "nearest_pair_boundary",
+      "epsilon_rad": 1e-06,
+      "field_errors": [
+        0.02067044346975704,
+        0.020670470629256418
+      ],
+      "reference_relative_field_change": 6.733809442117436e-06,
+      "reference_relative_peak_change": 3.379289974893728e-06,
+      "relative_field_jump": 6.755318217820097e-06,
+      "relative_sampled_peak_jump": 3.37887677568923e-06,
+      "sampled_peaks_pa": [
+        232514.31746136243,
+        232513.53178572824
+      ],
+      "strategy": "narrow"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.9381590151097191,
+            0.03080655610365705,
+            0.03103442878662378
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.9381590151097194,
+            0.031034428786623595,
+            0.030806556103656995
+          ]
+        }
+      ],
+      "boundary": "second_third_exchange",
+      "epsilon_rad": 0.0001,
+      "field_errors": [
+        0.05571952388493434,
+        0.05571737874215925
+      ],
+      "reference_relative_field_change": 0.002004269142106614,
+      "reference_relative_peak_change": 0.0004549477955131467,
+      "relative_field_jump": 0.0020101072096866974,
+      "relative_sampled_peak_jump": 0.00045507638520476056,
+      "sampled_peaks_pa": [
+        104804.55552905815,
+        104756.8496838818
+      ],
+      "strategy": "continuous"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        },
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        }
+      ],
+      "boundary": "second_third_exchange",
+      "epsilon_rad": 0.0001,
+      "field_errors": [
+        0.057890361899800305,
+        0.05788827448908235
+      ],
+      "reference_relative_field_change": 0.002004269142106614,
+      "reference_relative_peak_change": 0.0004549477955131467,
+      "relative_field_jump": 0.002009221892913472,
+      "relative_sampled_peak_jump": 0.0004550746361001672,
+      "sampled_peaks_pa": [
+        104806.71453333666,
+        104759.00887151966
+      ],
+      "strategy": "nearest"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            2
+          ],
+          "weights": [
+            0.9679791181192275,
+            0.03202088188077237
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.9679791181192279,
+            0.03202088188077218
+          ]
+        }
+      ],
+      "boundary": "second_third_exchange",
+      "epsilon_rad": 0.0001,
+      "field_errors": [
+        0.05673610953383207,
+        0.05678043989685175
+      ],
+      "reference_relative_field_change": 0.002004269142106614,
+      "reference_relative_peak_change": 0.0004549477955131467,
+      "relative_field_jump": 0.003568197214337121,
+      "relative_sampled_peak_jump": 0.0004563746317037646,
+      "sampled_peaks_pa": [
+        104805.66429088771,
+        104757.82234999535
+      ],
+      "strategy": "top2"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        },
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        }
+      ],
+      "boundary": "second_third_exchange",
+      "epsilon_rad": 0.0001,
+      "field_errors": [
+        0.057890361899800305,
+        0.05788827448908235
+      ],
+      "reference_relative_field_change": 0.002004269142106614,
+      "reference_relative_peak_change": 0.0004549477955131467,
+      "relative_field_jump": 0.002009221892913472,
+      "relative_sampled_peak_jump": 0.0004550746361001672,
+      "sampled_peaks_pa": [
+        104806.71453333666,
+        104759.00887151966
+      ],
+      "strategy": "narrow"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.938159305193483,
+            0.03090895377516766,
+            0.030931741031349335
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.9381593051934836,
+            0.030931741031349057,
+            0.030908953775167374
+          ]
+        }
+      ],
+      "boundary": "second_third_exchange",
+      "epsilon_rad": 1e-05,
+      "field_errors": [
+        0.05571859431535166,
+        0.055718379800686675
+      ],
+      "reference_relative_field_change": 0.00020040850760624277,
+      "reference_relative_peak_change": 4.549477933846504e-05,
+      "relative_field_jump": 0.00020099226722751574,
+      "relative_sampled_peak_jump": 4.5507638324606554e-05,
+      "sampled_peaks_pa": [
+        104783.09161566565,
+        104778.32103099978
+      ],
+      "strategy": "continuous"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        },
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        }
+      ],
+      "boundary": "second_third_exchange",
+      "epsilon_rad": 1e-05,
+      "field_errors": [
+        0.05788945028026586,
+        0.05788924153859852
+      ],
+      "reference_relative_field_change": 0.00020040850760624277,
+      "reference_relative_peak_change": 4.549477933846504e-05,
+      "relative_field_jump": 0.00020090374185134126,
+      "relative_sampled_peak_jump": 4.5507463399702884e-05,
+      "sampled_peaks_pa": [
+        104785.25068738397,
+        104780.48012105556
+      ],
+      "strategy": "nearest"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            2
+          ],
+          "weights": [
+            0.9680816976363095,
+            0.03191830236369047
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.9680816976363098,
+            0.03191830236369017
+          ]
+        }
+      ],
+      "boundary": "second_third_exchange",
+      "epsilon_rad": 1e-05,
+      "field_errors": [
+        0.056738687439980194,
+        0.05678492839659451
+      ],
+      "reference_relative_field_change": 0.00020040850760624277,
+      "reference_relative_peak_change": 4.549477933846504e-05,
+      "relative_field_jump": 0.002903750148538017,
+      "relative_sampled_peak_jump": 4.680680929829135e-05,
+      "sampled_peaks_pa": [
+        104784.20435608663,
+        104779.29757878688
+      ],
+      "strategy": "top2"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        },
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        }
+      ],
+      "boundary": "second_third_exchange",
+      "epsilon_rad": 1e-05,
+      "field_errors": [
+        0.05788945028026586,
+        0.05788924153859852
+      ],
+      "reference_relative_field_change": 0.00020040850760624277,
+      "reference_relative_peak_change": 4.549477933846504e-05,
+      "relative_field_jump": 0.00020090374185134126,
+      "relative_sampled_peak_jump": 4.5507463399702884e-05,
+      "sampled_peaks_pa": [
+        104785.25068738397,
+        104780.48012105556
+      ],
+      "strategy": "narrow"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.9381593080943207,
+            0.03091920659003652,
+            0.030921485315642663
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.9381593080943216,
+            0.030921485315642334,
+            0.030919206590036188
+          ]
+        }
+      ],
+      "boundary": "second_third_exchange",
+      "epsilon_rad": 1e-06,
+      "field_errors": [
+        0.055718498141197594,
+        0.05571847668973089
+      ],
+      "reference_relative_field_change": 2.0040665833095776e-05,
+      "reference_relative_peak_change": 4.549477932875642e-06,
+      "relative_field_jump": 2.0099041316954065e-05,
+      "relative_sampled_peak_jump": 4.550763830115081e-06,
+      "sampled_peaks_pa": [
+        104780.94488973463,
+        104780.46783126812
+      ],
+      "strategy": "continuous"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        },
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        }
+      ],
+      "boundary": "second_third_exchange",
+      "epsilon_rad": 1e-06,
+      "field_errors": [
+        0.05788935662366563,
+        0.05788933574949863
+      ],
+      "reference_relative_field_change": 2.0040665833095776e-05,
+      "reference_relative_peak_change": 4.549477932875642e-06,
+      "relative_field_jump": 2.00901888420537e-05,
+      "relative_sampled_peak_jump": 4.550746338457603e-06,
+      "sampled_peaks_pa": [
+        104783.10396955426,
+        104782.6269129214
+      ],
+      "strategy": "nearest"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            2
+          ],
+          "weights": [
+            0.968091942874198,
+            0.031908057125802025
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "weights": [
+            0.9680919428741984,
+            0.03190805712580167
+          ]
+        }
+      ],
+      "boundary": "second_third_exchange",
+      "epsilon_rad": 1e-06,
+      "field_errors": [
+        0.056738942417118576,
+        0.056785374382918266
+      ],
+      "reference_relative_field_change": 2.0040665833095776e-05,
+      "reference_relative_peak_change": 4.549477932875642e-06,
+      "relative_field_jump": 0.0028916437566166857,
+      "relative_sampled_peak_jump": 5.8500249801584005e-06,
+      "sampled_peaks_pa": [
+        104782.05802858225,
+        104781.44476802858
+      ],
+      "strategy": "top2"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        },
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        }
+      ],
+      "boundary": "second_third_exchange",
+      "epsilon_rad": 1e-06,
+      "field_errors": [
+        0.05788935662366563,
+        0.05788933574949863
+      ],
+      "reference_relative_field_change": 2.0040665833095776e-05,
+      "reference_relative_peak_change": 4.549477932875642e-06,
+      "relative_field_jump": 2.00901888420537e-05,
+      "relative_sampled_peak_jump": 4.550746338457603e-06,
+      "sampled_peaks_pa": [
+        104783.10396955426,
+        104782.6269129214
+      ],
+      "strategy": "narrow"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.33248263284008245,
+            0.33418459317767446,
+            0.3333327739822431
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.33418459317767446,
+            0.33248263284008245,
+            0.3333327739822431
+          ]
+        }
+      ],
+      "boundary": "triple_junction",
+      "epsilon_rad": 0.0001,
+      "field_errors": [
+        0.04207920551004804,
+        0.042084150755834555
+      ],
+      "reference_relative_field_change": 0.0006758340977210035,
+      "reference_relative_peak_change": 0.00015221002199185626,
+      "relative_field_jump": 0.00068971543431719,
+      "relative_sampled_peak_jump": 0.00015238795214875053,
+      "sampled_peaks_pa": [
+        133039.76610000886,
+        133019.48276359643
+      ],
+      "strategy": "continuous"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            1
+          ],
+          "weights": [
+            1.0
+          ]
+        },
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        }
+      ],
+      "boundary": "triple_junction",
+      "epsilon_rad": 0.0001,
+      "field_errors": [
+        0.05528966348543135,
+        0.05894845059674136
+      ],
+      "reference_relative_field_change": 0.0006758340977210035,
+      "reference_relative_peak_change": 0.00015221002199185626,
+      "relative_field_jump": 0.06577298415373865,
+      "relative_sampled_peak_jump": 0.0003401440649102396,
+      "sampled_peaks_pa": [
+        133058.32150729882,
+        133013.0472162543
+      ],
+      "strategy": "nearest"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            1,
+            2
+          ],
+          "weights": [
+            0.5006380502121283,
+            0.49936194978787174
+          ]
+        },
+        {
+          "indices": [
+            0,
+            2
+          ],
+          "weights": [
+            0.5006380502121283,
+            0.49936194978787174
+          ]
+        }
+      ],
+      "boundary": "triple_junction",
+      "epsilon_rad": 0.0001,
+      "field_errors": [
+        0.04553868272531671,
+        0.04667097473769853
+      ],
+      "reference_relative_field_change": 0.0006758340977210035,
+      "reference_relative_peak_change": 0.00015221002199185626,
+      "relative_field_jump": 0.032947611648566404,
+      "relative_sampled_peak_jump": 0.0002461469225754571,
+      "sampled_peaks_pa": [
+        133042.99855471874,
+        133010.23559172146
+      ],
+      "strategy": "top2"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.3324760558789591,
+            0.33418930171478567,
+            0.33333464240625527
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.33418930171478567,
+            0.3324760558789591,
+            0.33333464240625527
+          ]
+        }
+      ],
+      "boundary": "triple_junction",
+      "epsilon_rad": 0.0001,
+      "field_errors": [
+        0.04207918562861071,
+        0.04208416818347258
+      ],
+      "reference_relative_field_change": 0.0006758340977210035,
+      "reference_relative_peak_change": 0.00015221002199185626,
+      "relative_field_jump": 0.0006898564536628076,
+      "relative_sampled_peak_jump": 0.00015239007339922452,
+      "sampled_peaks_pa": [
+        133039.7662073759,
+        133019.4825886181
+      ],
+      "strategy": "narrow"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.33324823801461645,
+            0.33341843424556755,
+            0.33333332773981594
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.33341843424556755,
+            0.33324823801461645,
+            0.33333332773981594
+          ]
+        }
+      ],
+      "boundary": "triple_junction",
+      "epsilon_rad": 1e-05,
+      "field_errors": [
+        0.04208140559174954,
+        0.04208190011723968
+      ],
+      "reference_relative_field_change": 6.758356170558697e-05,
+      "reference_relative_peak_change": 1.5221003004332994e-05,
+      "relative_field_jump": 6.897171443360036e-05,
+      "relative_sampled_peak_jump": 1.5238796053177258e-05,
+      "sampled_peaks_pa": [
+        133030.63492417178,
+        133028.60659047455
+      ],
+      "strategy": "continuous"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            1
+          ],
+          "weights": [
+            1.0
+          ]
+        },
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        }
+      ],
+      "boundary": "triple_junction",
+      "epsilon_rad": 1e-05,
+      "field_errors": [
+        0.055294514004232104,
+        0.058954554839943794
+      ],
+      "reference_relative_field_change": 6.758356170558697e-05,
+      "reference_relative_peak_change": 1.5221003004332994e-05,
+      "relative_field_jump": 0.0657557798132828,
+      "relative_sampled_peak_jump": 0.0002032392253439963,
+      "sampled_peaks_pa": [
+        133049.19903361972,
+        133022.1472266445
+      ],
+      "strategy": "nearest"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            1,
+            2
+          ],
+          "weights": [
+            0.5000638217329177,
+            0.49993617826708237
+          ]
+        },
+        {
+          "indices": [
+            0,
+            2
+          ],
+          "weights": [
+            0.5000638217329177,
+            0.49993617826708237
+          ]
+        }
+      ],
+      "boundary": "triple_junction",
+      "epsilon_rad": 1e-05,
+      "field_errors": [
+        0.0455417377956092,
+        0.046672051974287095
+      ],
+      "reference_relative_field_change": 6.758356170558697e-05,
+      "reference_relative_peak_change": 1.5221003004332994e-05,
+      "relative_field_jump": 0.03288479664069482,
+      "relative_sampled_peak_jump": 0.0001091994958939369,
+      "sampled_peaks_pa": [
+        133033.86661541043,
+        133019.3318046242
+      ],
+      "strategy": "top2"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.3332481719452919,
+            0.3334184814486837,
+            0.3333333466060244
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.3334184814486837,
+            0.3332481719452919,
+            0.3333333466060244
+          ]
+        }
+      ],
+      "boundary": "triple_junction",
+      "epsilon_rad": 1e-05,
+      "field_errors": [
+        0.0420814053881831,
+        0.04208190028826727
+      ],
+      "reference_relative_field_change": 6.758356170558697e-05,
+      "reference_relative_peak_change": 1.5221003004332994e-05,
+      "relative_field_jump": 6.897312636462042e-05,
+      "relative_sampled_peak_jump": 1.5238817346117376e-05,
+      "sampled_peaks_pa": [
+        133030.63492524668,
+        133028.60658871528
+      ],
+      "strategy": "narrow"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.33332482354965537,
+            0.3333418431729462,
+            0.3333333332773985
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.3333418431729462,
+            0.33332482354965537,
+            0.3333333332773985
+          ]
+        }
+      ],
+      "boundary": "triple_junction",
+      "epsilon_rad": 1e-06,
+      "field_errors": [
+        0.04208162787543455,
+        0.04208167732798421
+      ],
+      "reference_relative_field_change": 6.758357657743679e-06,
+      "reference_relative_peak_change": 1.5221002995166377e-06,
+      "relative_field_jump": 6.897173096382814e-06,
+      "relative_sampled_peak_jump": 1.5238796074846015e-06,
+      "sampled_peaks_pa": [
+        133029.72213726342,
+        133029.51930389347
+      ],
+      "strategy": "continuous"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            1
+          ],
+          "weights": [
+            1.0
+          ]
+        },
+        {
+          "indices": [
+            0
+          ],
+          "weights": [
+            1.0
+          ]
+        }
+      ],
+      "boundary": "triple_junction",
+      "epsilon_rad": 1e-06,
+      "field_errors": [
+        0.05529499880313598,
+        0.058955164994358225
+      ],
+      "reference_relative_field_change": 6.758357657743679e-06,
+      "reference_relative_peak_change": 1.5221002995166377e-06,
+      "relative_field_jump": 0.06575436939891315,
+      "relative_sampled_peak_jump": 0.0001895487393053311,
+      "sampled_peaks_pa": [
+        133048.2871146419,
+        133023.05755623357
+      ],
+      "strategy": "nearest"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            1,
+            2
+          ],
+          "weights": [
+            0.5000063823401922,
+            0.4999936176598077
+          ]
+        },
+        {
+          "indices": [
+            0,
+            2
+          ],
+          "weights": [
+            0.5000063823401922,
+            0.4999936176598077
+          ]
+        }
+      ],
+      "boundary": "triple_junction",
+      "epsilon_rad": 1e-06,
+      "field_errors": [
+        0.0455420445049544,
+        0.04667216086889304
+      ],
+      "reference_relative_field_change": 6.758357657743679e-06,
+      "reference_relative_peak_change": 1.5221002995166377e-06,
+      "relative_field_jump": 0.03287913282875661,
+      "relative_sampled_peak_jump": 9.550475694817778e-05,
+      "sampled_peaks_pa": [
+        133032.95375049626,
+        133020.24175434938
+      ],
+      "strategy": "top2"
+    },
+    {
+      "assignments": [
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.3333248228886611,
+            0.33334184364509556,
+            0.3333333334662433
+          ]
+        },
+        {
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "weights": [
+            0.33334184364509556,
+            0.3333248228886611,
+            0.3333333334662433
+          ]
+        }
+      ],
+      "boundary": "triple_junction",
+      "epsilon_rad": 1e-06,
+      "field_errors": [
+        0.042081627873393965,
+        0.04208167732969119
+      ],
+      "reference_relative_field_change": 6.758357657743679e-06,
+      "reference_relative_peak_change": 1.5221002995166377e-06,
+      "relative_field_jump": 6.897187217399488e-06,
+      "relative_sampled_peak_jump": 1.5238798197995795e-06,
+      "sampled_peaks_pa": [
+        133029.72213727405,
+        133029.51930387583
+      ],
+      "strategy": "narrow"
+    }
+  ]
+}

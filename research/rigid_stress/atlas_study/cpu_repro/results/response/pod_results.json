@@ -1,0 +1,42 @@
+{
+  "scope": "global energy POD with current-force Galerkin coefficients",
+  "training_snapshots": 216,
+  "training_seconds": 1.1327327559993137,
+  "training_phase": 0.0,
+  "heldout_phase": 0.371,
+  "rows": [
+    {
+      "requested_rank": 32,
+      "actual_rank": 32,
+      "loaded_field_mean": 0.9174643288312363,
+      "field_worst": 0.9988335153675417,
+      "sampled_peak_worst": 0.9395825682819918,
+      "inventory_bytes": 7976960
+    },
+    {
+      "requested_rank": 64,
+      "actual_rank": 64,
+      "loaded_field_mean": 0.8751955570914852,
+      "field_worst": 0.9826706698415438,
+      "sampled_peak_worst": 0.9163863112386154,
+      "inventory_bytes": 15970304
+    },
+    {
+      "requested_rank": 128,
+      "actual_rank": 128,
+      "loaded_field_mean": 0.7916465533069629,
+      "field_worst": 0.9509289124474265,
+      "sampled_peak_worst": 0.8866439004394179,
+      "inventory_bytes": 32006144
+    },
+    {
+      "requested_rank": 192,
+      "actual_rank": 192,
+      "loaded_field_mean": 0.7463101215624793,
+      "field_worst": 0.9290741527074952,
+      "sampled_peak_worst": 0.8949017261276985,
+      "inventory_bytes": 48107520
+    }
+  ],
+  "note": "Low-rank errors are measured outcomes; no accuracy target was fitted to the historical table."
+}

@@ -1,0 +1,52 @@
+{
+  "geometry_rows": [
+    {
+      "ncoarse": 2,
+      "subdiv": 3,
+      "queries": 4810,
+      "canonical_macro_id_differences": 170,
+      "all_fast_charts_independently_admissible": true,
+      "maximum_local_difference": 1.1102230246251565e-15,
+      "maximum_position_difference_m": 1.0408340855860843e-17,
+      "shape_partition_error": 2.220446049250313e-16,
+      "passed": true
+    },
+    {
+      "ncoarse": 3,
+      "subdiv": 4,
+      "queries": 5080,
+      "canonical_macro_id_differences": 40,
+      "all_fast_charts_independently_admissible": true,
+      "maximum_local_difference": 9.992007221626409e-16,
+      "maximum_position_difference_m": 1.0408340855860843e-17,
+      "shape_partition_error": 1.1102230246251565e-16,
+      "passed": true
+    },
+    {
+      "ncoarse": 4,
+      "subdiv": 2,
+      "queries": 5350,
+      "canonical_macro_id_differences": 334,
+      "all_fast_charts_independently_admissible": true,
+      "maximum_local_difference": 1.6653345369377348e-15,
+      "maximum_position_difference_m": 6.938893903907228e-18,
+      "shape_partition_error": 2.220446049250313e-16,
+      "passed": true
+    }
+  ],
+  "source_load_relative_errors": [
+    1.0473370364202928e-16,
+    2.5004195730606526e-16,
+    2.6292800821632493e-16
+  ],
+  "source_field_relative_errors": [
+    1.3283426522672286e-15,
+    2.5271244418433722e-15,
+    2.7601891074234096e-15
+  ],
+  "explicit_force_shortcut_max_absolute_difference": 0.0,
+  "position_convention": "authored egg coordinates define the frozen coarse midsurface",
+  "geometry_source_sha256": "893373a0768dac8c12a822bf7278e48d84926aa48d03d673d4629d63aff00b6c",
+  "boundary_contract": "All CF charts must be independently Newton-admissible. Same-chart local values use the same domain clip. Canonical chart IDs may differ when tolerance admits adjacent macros. Initial strict-ID failures are preserved.",
+  "passed": true
+}

@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/scratch/f920717c57eb/genesis-repro/research/rigid_stress/atlas_study/cpu_repro/geometry_check.py", line 155, in <module>
+    result = run(args.output, args.random_count)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/f920717c57eb/genesis-repro/research/rigid_stress/atlas_study/cpu_repro/geometry_check.py", line 112, in run
+    macro, local = newton_oracle(geometry, current)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/f920717c57eb/genesis-repro/research/rigid_stress/atlas_study/cpu_repro/geometry_check.py", line 39, in newton_oracle
+    delta[stable] = np.linalg.solve(jacobian[stable], residual[stable])
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/numpy/linalg/_linalg.py", line 471, in solve
+    r = gufunc(a, b, signature=signature)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: solve: Input operand 1 has a mismatch in its core dimension 0, with gufunc signature (m,m),(m,n)->(m,n) (size 1536 is different from 3)

@@ -1,0 +1,87 @@
+[
+  {
+    "name": "static_timing",
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "-m",
+      "research.rigid_stress.atlas_study.cpu_repro.benchmark",
+      "--output",
+      "/workspace/scratch/f920717c57eb/genesis-repro/research/rigid_stress/atlas_study/cpu_repro/formal/benchmark.json",
+      "--orders",
+      "4",
+      "8",
+      "--batches",
+      "1",
+      "16",
+      "64",
+      "--repetitions",
+      "5",
+      "--include-response",
+      "--independent-control"
+    ],
+    "returncode": 0,
+    "wall_seconds": 88.55034767300822,
+    "log": "/workspace/scratch/f920717c57eb/genesis-repro/research/rigid_stress/atlas_study/cpu_repro/formal/static_timing.log"
+  },
+  {
+    "name": "history_timing",
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "-m",
+      "research.rigid_stress.atlas_study.cpu_repro.history_benchmark",
+      "--output",
+      "/workspace/scratch/f920717c57eb/genesis-repro/research/rigid_stress/atlas_study/cpu_repro/formal/history_timings.json",
+      "--batches",
+      "16",
+      "64",
+      "--frames",
+      "80",
+      "--repeats",
+      "3"
+    ],
+    "returncode": 0,
+    "wall_seconds": 506.116177392003,
+    "log": "/workspace/scratch/f920717c57eb/genesis-repro/research/rigid_stress/atlas_study/cpu_repro/formal/history_timing.log"
+  },
+  {
+    "name": "history_slow_timing",
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "-m",
+      "research.rigid_stress.atlas_study.cpu_repro.history_benchmark",
+      "--output",
+      "/workspace/scratch/f920717c57eb/genesis-repro/research/rigid_stress/atlas_study/cpu_repro/formal/history_slow_timings.json",
+      "--batches",
+      "64",
+      "--frames",
+      "80",
+      "--order",
+      "8",
+      "--speed",
+      "0.25",
+      "--scopes",
+      "complete",
+      "--repeats",
+      "3"
+    ],
+    "returncode": 0,
+    "wall_seconds": 221.8918415060034,
+    "log": "/workspace/scratch/f920717c57eb/genesis-repro/research/rigid_stress/atlas_study/cpu_repro/formal/history_slow_timing.log"
+  },
+  {
+    "name": "condensation_timing",
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "-m",
+      "research.rigid_stress.atlas_study.cpu_repro.condensation_study",
+      "--output",
+      "/workspace/scratch/f920717c57eb/genesis-repro/research/rigid_stress/atlas_study/cpu_repro/formal/condensation",
+      "--timing",
+      "--repeats",
+      "5"
+    ],
+    "returncode": 0,
+    "wall_seconds": 24.718065836001188,
+    "log": "/workspace/scratch/f920717c57eb/genesis-repro/research/rigid_stress/atlas_study/cpu_repro/formal/condensation_timing.log"
+  }
+]

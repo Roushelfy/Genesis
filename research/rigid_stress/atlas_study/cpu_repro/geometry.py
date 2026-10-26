@@ -1,0 +1,241 @@
+"""Frozen bilinear egg geometry and conforming coarse interpolation."""
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+import numpy as np
+from scipy import sparse
+
+from research.rigid_stress.shell_cpu.core import quad_shape
+from research.rigid_stress.shell_cpu.geometry import egg_geometry
+
+
+FRAMES = np.array([
+    [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+    [[-1, 0, 0], [0, -1, 0], [0, 0, 1]],
+    [[0, 1, 0], [-1, 0, 0], [0, 0, 1]],
+    [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+    [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+    [[0, 0, -1], [-1, 0, 0], [0, 1, 0]],
+], dtype=float)
+AXES = np.array([0.022, 0.022, 0.030])
+BETA = -0.18
+THICKNESS = 0.0005
+POSITION_CONVENTION = "authored egg coordinates define the frozen coarse midsurface"
+
+
+def normalize(values: np.ndarray) -> np.ndarray:
+    values = np.asarray(values, dtype=float)
+    length = np.linalg.norm(values, axis=-1, keepdims=True)
+    if np.any(length <= 1e-30):
+        raise ValueError("A material direction must be nonzero.")
+    return values / length
+
+
+def authored_egg(directions: np.ndarray) -> np.ndarray:
+    directions = normalize(directions)
+    scale = 1.0 + BETA * directions[..., 2]
+    factors = np.stack([scale, scale, np.ones_like(scale)], axis=-1)
+    return directions * AXES * factors
+
+
+@dataclass(frozen=True)
+class Location:
+    nodes: np.ndarray
+    weights: np.ndarray
+    positions: np.ndarray
+    normals: np.ndarray
+    macro_ids: np.ndarray
+    element_ids: np.ndarray
+    local: np.ndarray
+
+
+@dataclass(frozen=True)
+class Geometry:
+    vertices: np.ndarray
+    quads: np.ndarray
+    directors: np.ndarray
+    directions: np.ndarray
+    coarse_vertices: np.ndarray
+    coarse_directions: np.ndarray
+    coarse_nodes: np.ndarray
+    macro_quads: np.ndarray
+    macro_centers: np.ndarray
+    macro_radii: np.ndarray
+    macro_neighbors: tuple[np.ndarray, ...]
+    node_macros: tuple[np.ndarray, ...]
+    P_nodes: sparse.csr_matrix
+    macro_coefficients: np.ndarray
+    face_tables: np.ndarray
+    ncoarse: int
+    subdiv: int
+    position_convention: str = POSITION_CONVENTION
+
+    def locate(self, directions: np.ndarray) -> Location:
+        """Intersect authored material rays with the frozen physical midsurface."""
+        directions = normalize(np.atleast_2d(directions))
+        ray = authored_egg(directions)
+        dominant = np.argmax(np.abs(directions), axis=1)
+        face = 2 * dominant + (directions[np.arange(len(directions)), dominant] < 0)
+        denominator = np.einsum("ni,ni->n", directions, FRAMES[face, 0])
+        uv = np.column_stack([
+            np.einsum("ni,ni->n", directions, FRAMES[face, 1]) / denominator,
+            np.einsum("ni,ni->n", directions, FRAMES[face, 2]) / denominator,
+        ])
+        cell = np.clip(np.floor((uv + 1.0) * self.ncoarse / 2).astype(int), 0, self.ncoarse - 1)
+        macro = face * self.ncoarse**2 + cell[:, 1] * self.ncoarse + cell[:, 0]
+        local, valid = _ray_inverse(self.macro_coefficients[macro], ray)
+        # Exact chart seams have two valid faces. Canonical oracle selection is
+        # used for both seams and rays displaced from a chart by geometry offsets.
+        seam = np.any(np.abs(np.abs(uv) - 1.0) < 1e-11, axis=1)
+        pending = np.flatnonzero(~valid | seam)
+        for i_sample in pending:
+            rays = np.broadcast_to(ray[i_sample], (len(self.macro_quads), 3))
+            candidates, accepted = _ray_inverse(self.macro_coefficients, rays)
+            choices = np.flatnonzero(accepted)
+            if not len(choices):
+                raise ValueError("Material ray misses the frozen midsurface.")
+            macro[i_sample] = choices[0]
+            local[i_sample] = candidates[choices[0]]
+        fine = np.clip(np.floor((local + 1.0) * self.subdiv / 2).astype(int), 0, self.subdiv - 1)
+        face = macro // self.ncoarse**2
+        macro_cell = macro % self.ncoarse**2
+        ix = (macro_cell % self.ncoarse) * self.subdiv + fine[:, 0]
+        iy = (macro_cell // self.ncoarse) * self.subdiv + fine[:, 1]
+        n = self.ncoarse * self.subdiv
+        elements = face * n * n + iy * n + ix
+        nodes = self.quads[elements]
+        sublocal = (local + 1.0) * self.subdiv - 2 * fine - 1.0
+        xi, eta = sublocal[:, 0], sublocal[:, 1]
+        weights = 0.25 * np.column_stack([
+            (1 - xi) * (1 - eta), (1 + xi) * (1 - eta),
+            (1 + xi) * (1 + eta), (1 - xi) * (1 + eta),
+        ])
+        coefficients = self.macro_coefficients[macro]
+        positions = (coefficients[:, 0] + coefficients[:, 1] * local[:, :1]
+                     + coefficients[:, 2] * local[:, 1:]
+                     + coefficients[:, 3] * np.prod(local, axis=1)[:, None])
+        tangent_x = coefficients[:, 1] + coefficients[:, 3] * local[:, 1:]
+        tangent_y = coefficients[:, 2] + coefficients[:, 3] * local[:, :1]
+        normals = normalize(np.cross(tangent_x, tangent_y))
+        return Location(nodes, weights, positions, normals, macro, elements, local)
+
+
+def _ray_inverse(coefficients: np.ndarray, rays: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Solve ray/bilinear intersections with stable scalar quadratics."""
+    count = len(rays)
+    dominant = np.argmax(np.abs(rays), axis=1)
+    remaining = np.array([[1, 2], [0, 2], [0, 1]])[dominant]
+    row = np.arange(count)
+    ratios = rays[row[:, None], remaining] / rays[row, dominant][:, None]
+    projected = coefficients[row[:, None, None], np.arange(4)[None, :, None], remaining[:, None, :]]
+    projected = projected - coefficients[row[:, None], np.arange(4)[None, :], dominant[:, None]][:, :, None] * ratios[:, None, :]
+    a, b, c, d = (projected[:, i] for i in range(4))
+    qa = b[:, 0] * d[:, 1] - b[:, 1] * d[:, 0]
+    qb = a[:, 0] * d[:, 1] + b[:, 0] * c[:, 1] - a[:, 1] * d[:, 0] - b[:, 1] * c[:, 0]
+    qc = a[:, 0] * c[:, 1] - a[:, 1] * c[:, 0]
+    scale = np.max(np.abs(np.column_stack([qa, qb, qc])), axis=1)
+    linear = np.abs(qa) <= 1e-13 * np.maximum(scale, 1e-30)
+    roots = np.full((count, 2), np.nan)
+    linear_ok = linear & (np.abs(qb) > 1e-15 * np.maximum(scale, 1e-30))
+    roots[linear_ok, 0] = -qc[linear_ok] / qb[linear_ok]
+    quadratic = ~linear
+    discriminant = qb * qb - 4 * qa * qc
+    real = quadratic & (discriminant >= -1e-13 * np.maximum(scale * scale, 1e-60))
+    radical = np.sqrt(np.maximum(discriminant[real], 0.0))
+    qstable = -0.5 * (qb[real] + np.copysign(radical, qb[real]))
+    roots[real, 0] = qstable / qa[real]
+    regular_q = np.abs(qstable) > 1e-30
+    second = np.full(np.count_nonzero(real), np.nan)
+    second[regular_q] = qc[real][regular_q] / qstable[regular_q]
+    roots[real, 1] = second
+    output = np.zeros((count, 2))
+    valid = np.zeros(count, dtype=bool)
+    for i_root in range(2):
+        xi = roots[:, i_root]
+        numerator = -(a + b * xi[:, None])
+        denominator = c + d * xi[:, None]
+        component = np.argmax(np.abs(denominator), axis=1)
+        denom = denominator[row, component]
+        eta = np.divide(numerator[row, component], denom, out=np.full(count, np.nan), where=np.abs(denom) > 1e-30)
+        residual = a + b * xi[:, None] + c * eta[:, None] + d * (xi * eta)[:, None]
+        physical = (coefficients[:, 0] + coefficients[:, 1] * xi[:, None]
+                    + coefficients[:, 2] * eta[:, None] + coefficients[:, 3] * (xi * eta)[:, None])
+        tangent_x = coefficients[:, 1] + coefficients[:, 3] * eta[:, None]
+        tangent_y = coefficients[:, 2] + coefficients[:, 3] * xi[:, None]
+        orientation = np.einsum("ni,ni->n", np.cross(tangent_x, tangent_y), rays)
+        accept = (np.isfinite(xi) & np.isfinite(eta) & (np.abs(xi) <= 1 + 2e-10)
+                  & (np.abs(eta) <= 1 + 2e-10) & (np.linalg.norm(residual, axis=1) < 1e-11)
+                  & (np.einsum("ni,ni->n", physical, rays) > 0) & (orientation > 0) & ~valid)
+        output[accept] = np.column_stack([xi[accept], eta[accept]])
+        valid[accept] = True
+    return np.clip(output, -1, 1), valid
+
+
+def make_geometry(ncoarse: int = 3, subdiv: int = 4) -> Geometry:
+    """Subdivide frozen coarse bilinear geometry without resampling its position."""
+    if ncoarse < 1 or subdiv < 1:
+        raise ValueError("Positive coarse and subdivision counts are required.")
+    n = ncoarse * subdiv
+    index: dict[tuple[int, int, int], int] = {}
+    keys: list[tuple[int, int, int]] = []
+    face_tables = []
+    for normal, first, second in FRAMES.astype(int):
+        table = np.empty((n + 1, n + 1), dtype=int)
+        for j in range(n + 1):
+            for i in range(n + 1):
+                key = tuple(n * normal + (2 * i - n) * first + (2 * j - n) * second)
+                if key not in index:
+                    index[key] = len(keys)
+                    keys.append(key)
+                table[j, i] = index[key]
+        face_tables.append(table)
+    tables = np.stack(face_tables)
+    coarse_nodes = np.unique(tables[:, ::subdiv, ::subdiv])
+    coarse_index = {node: i for i, node in enumerate(coarse_nodes)}
+    directions = normalize(np.array(keys))
+    coarse_directions = directions[coarse_nodes]
+    coarse_vertices = authored_egg(coarse_directions)
+    p_rows, p_cols, p_values = [], [], []
+    registered = np.zeros(len(keys), dtype=bool)
+    macro_quads, quads, node_macros = [], [], [set() for _ in keys]
+    for i_face, table in enumerate(tables):
+        for j in range(ncoarse):
+            for i in range(ncoarse):
+                ids = [table[j * subdiv, i * subdiv], table[j * subdiv, (i + 1) * subdiv],
+                       table[(j + 1) * subdiv, (i + 1) * subdiv], table[(j + 1) * subdiv, i * subdiv]]
+                coarse_ids = np.array([coarse_index[node] for node in ids])
+                i_macro = len(macro_quads)
+                macro_quads.append(coarse_ids)
+                for sj in range(subdiv + 1):
+                    for si in range(subdiv + 1):
+                        node = table[j * subdiv + sj, i * subdiv + si]
+                        node_macros[node].add(i_macro)
+                        if not registered[node]:
+                            weights = quad_shape(2 * si / subdiv - 1, 2 * sj / subdiv - 1)[0]
+                            p_rows.extend([node] * 4)
+                            p_cols.extend(coarse_ids)
+                            p_values.extend(weights)
+                            registered[node] = True
+        for j in range(n):
+            for i in range(n):
+                quads.append([table[j, i], table[j, i + 1], table[j + 1, i + 1], table[j + 1, i]])
+    p_nodes = sparse.coo_matrix((p_values, (p_rows, p_cols)), shape=(len(keys), len(coarse_nodes))).tocsr()
+    p_nodes.eliminate_zeros()
+    vertices = p_nodes @ coarse_vertices
+    smooth = authored_egg(directions)
+    directors = egg_geometry(smooth, axes=AXES, asym=BETA)[0]
+    macros = np.array(macro_quads)
+    macro_centers = normalize(coarse_directions[macros].mean(axis=1))
+    macro_radii = np.max(np.arccos(np.clip(np.einsum("mki,mi->mk", coarse_directions[macros], macro_centers), -1, 1)), axis=1)
+    macro_neighbors = []
+    for i_macro, ids in enumerate(macros):
+        macro_neighbors.append(np.flatnonzero(np.any(np.isin(macros, ids), axis=1)))
+    x = coarse_vertices[macros]
+    coefficients = np.stack([x.mean(axis=1), (-x[:, 0] + x[:, 1] + x[:, 2] - x[:, 3]) / 4,
+                             (-x[:, 0] - x[:, 1] + x[:, 2] + x[:, 3]) / 4,
+                             (x[:, 0] - x[:, 1] + x[:, 2] - x[:, 3]) / 4], axis=1)
+    return Geometry(vertices, np.array(quads), directors, directions, coarse_vertices, coarse_directions,
+                    coarse_nodes, macros, macro_centers, macro_radii, tuple(macro_neighbors),
+                    tuple(np.array(sorted(ids)) for ids in node_macros), p_nodes, coefficients,
+                    tables, ncoarse, subdiv)
