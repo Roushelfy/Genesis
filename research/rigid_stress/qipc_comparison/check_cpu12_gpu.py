@@ -153,8 +153,8 @@ def _integer(api, values):
     return tensor
 
 
-def build_native_space(api, reference, output, *, output_mode="full"):
-    """Build only from frozen physical inputs and integer topology; never read CPU operators."""
+def build_native_mother(api, reference, output, *, output_mode="full"):
+    """Prepare the matched mother alone, without feature maps, operators or factors."""
     model_input = _load(api.np, reference / "inputs/model.npz")
     selection_input = _load(api.np, reference / "inputs/selection.npz")
     asset = output / "native-shell-input.npz"
@@ -183,6 +183,14 @@ def build_native_space(api, reference, output, *, output_mode="full"):
         history_size=0,
     )
     model = api.ShellModel(options)
+    assert len(model_input["vertices"]) == 866 and len(model_input["quads"]) == 864
+    assert model.info.vertices.shape[0] * 3 == 5196 and len(model_input["fixed"]) == 6
+    return model_input, selection_input, model
+
+
+def build_native_space(api, reference, output, *, output_mode="full"):
+    """Build only from frozen physical inputs and integer topology; never read CPU operators."""
+    model_input, selection_input, model = build_native_mother(api, reference, output, output_mode=output_mode)
     basis = api.BilinearBasis(
         model,
         model_input["coarse_nodes"],

@@ -177,7 +177,7 @@ def kernel_pack_factor(i_f: int, stress_info: StressInfo, factor_info: StressFac
         packed.diagonal_inverse[i_packed] = factor_info.diagonal_inverse[i]
         packed.is_free[i_packed] = stress_info.is_free[i_node]
         scale = qd.Vector([1.0, 1.0, 1.0])
-        if qd.static(factor_info.scales.shape[0] > 0):
+        if factor_info.scales.shape[0] > 0:
             scale = factor_info.scales[i_node]
         packed.scales[i_packed] = scale
     for i_entry in range(factor_info.lower.shape[0]):

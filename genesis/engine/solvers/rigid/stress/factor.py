@@ -118,7 +118,7 @@ class StressFactor:
         cooperative: bool = True,
         only_failed: bool = False,
     ) -> None:
-        if cooperative and gs.backend == gs.cuda and self.info.order.shape[0] <= 1024:
+        if cooperative and gs.backend == gs.cuda and self.info.order.shape[0] <= 2048:
             kernel_solve_cooperative(young, state, stress_info, self.info, self.info.order.shape[0], only_failed)
         else:
             kernel_solve(young, state, stress_info, self.info, only_failed)
