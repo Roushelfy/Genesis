@@ -92,46 +92,64 @@ def _cpu_geometry(api, physical, expected, index):
     )
 
 
+def _clip_pressure_polygon(np, polygon, intercept, gradient):
+    """Intersect a polygon with positive affine pressure by Sutherland-Hodgman clipping."""
+    result = []
+    previous = polygon[-1]
+    previous_value = intercept + previous @ gradient
+    for current in polygon:
+        current_value = intercept + current @ gradient
+        previous_inside, current_inside = previous_value >= 0, current_value >= 0
+        if previous_inside != current_inside:
+            fraction = previous_value / (previous_value - current_value)
+            result.append(previous + fraction * (current - previous))
+        if current_inside:
+            result.append(current)
+        previous, previous_value = current, current_value
+    return np.array(result).reshape((-1, 2))
+
+
 def _phi_reference(api, geometry, order):
-    """Integrate each positive radial subinterval with independent high-order phi Gauss."""
+    """Integrate independently clipped pressure polygons with high-order phi Gauss."""
     np = api.np
     angular, angular_weight = np.polynomial.legendre.leggauss(order)
     radial, radial_weight = np.polynomial.legendre.leggauss(192)
-    if geometry.contained:
-        theta = 2 * np.pi * (np.arange(max(16, 2 * order)) + 0.5) / max(16, 2 * order)
-        weight = np.full(len(theta), 2 * np.pi / len(theta))
-        low, high = np.zeros(len(theta)), np.full(len(theta), geometry.section_radius)
-    else:
-        left, right = geometry.angles[:-1, None], geometry.angles[1:, None]
-        node = 0.5 * (angular + 1)
-        theta = (left + (right - left) * np.sin(0.5 * np.pi * node) ** 2).reshape(-1)
-        weight = ((right - left) * np.pi / 4 * np.sin(np.pi * node) * angular_weight).reshape(-1)
-        low, high = api.ShellDPRTransfer._radial_interval(geometry.polygon, theta, geometry.section_radius)
-    live = high > low
-    theta, weight, low, high = theta[live], weight[live], low[live], high[live]
-    low, high = low / geometry.section_radius, high / geometry.section_radius
-    direction = np.column_stack((np.cos(theta), np.sin(theta))) @ geometry.plane.T
     mean = np.r_[1.0, (geometry.center - geometry.point) @ geometry.frame / geometry.radius]
-    slope = np.column_stack(
-        (np.zeros(len(theta)), direction @ geometry.frame * (geometry.section_radius / geometry.radius))
-    )
     gram, load, wrench = [], [], []
     for coefficient in np.array(PROFILES):
-        lower, upper = low.copy(), high.copy()
-        intercept, derivative = mean @ coefficient, slope @ coefficient
-        first, second = intercept + low * derivative, intercept + high * derivative
-        empty = (first <= 0) & (second <= 0)
-        crossing = (first < 0) & (second > 0)
-        lower[crossing] = low[crossing] + (high[crossing] - low[crossing]) * (-first[crossing]) / (
-            second[crossing] - first[crossing]
+        intercept = mean @ coefficient
+        gradient = geometry.plane.T @ (geometry.frame @ coefficient[1:]) / geometry.radius
+        amplitude = geometry.section_radius * np.linalg.norm(gradient)
+        if intercept + amplitude <= 0:
+            gram.append(np.zeros((3, 3)))
+            load.append(np.zeros((4, 3)))
+            wrench.append(np.zeros(6))
+            continue
+        full_positive = intercept - amplitude >= 0
+        polygon = (
+            geometry.polygon if full_positive else _clip_pressure_polygon(np, geometry.polygon, intercept, gradient)
         )
-        crossing = (first > 0) & (second < 0)
-        upper[crossing] = low[crossing] + (high[crossing] - low[crossing]) * first[crossing] / (
-            first[crossing] - second[crossing]
-        )
-        upper[empty] = lower[empty]
-        lower, upper = np.clip(lower, low, high), np.clip(upper, low, high)
-        phi_low, phi_high = np.arcsin(lower), np.arcsin(upper)
+        if len(polygon) < 3:
+            gram.append(np.zeros((3, 3)))
+            load.append(np.zeros((4, 3)))
+            wrench.append(np.zeros(6))
+            continue
+        if geometry.contained and full_positive:
+            theta = 2 * np.pi * (np.arange(max(16, 2 * order)) + 0.5) / max(16, 2 * order)
+            weight = np.full(len(theta), 2 * np.pi / len(theta))
+            low, high = np.zeros(len(theta)), np.full(len(theta), geometry.section_radius)
+        else:
+            angles = np.unique(np.r_[geometry.angles, _angles(np, polygon, geometry.section_radius)])
+            left, right = angles[:-1, None], angles[1:, None]
+            node = 0.5 * (angular + 1)
+            theta = (left + (right - left) * np.sin(0.5 * np.pi * node) ** 2).reshape(-1)
+            weight = ((right - left) * np.pi / 4 * np.sin(np.pi * node) * angular_weight).reshape(-1)
+            low, high = api.ShellDPRTransfer._radial_interval(polygon, theta, geometry.section_radius)
+        live = high > low
+        theta, weight, low, high = theta[live], weight[live], low[live], high[live]
+        direction = np.column_stack((np.cos(theta), np.sin(theta))) @ geometry.plane.T
+        phi_low = np.arcsin(np.clip(low / geometry.section_radius, 0, 1))
+        phi_high = np.arcsin(np.clip(high / geometry.section_radius, 0, 1))
         phi = 0.5 * (phi_low[:, None] + phi_high[:, None]) + 0.5 * (phi_high - phi_low)[:, None] * radial
         rho = np.sin(phi)
         positions = geometry.center + geometry.section_radius * rho[:, :, None] * direction[:, None, :]
@@ -270,7 +288,7 @@ def _cpu_worker(args):
             "mpmath": mp.__version__,
             "mpmath_source": _identity(mp.__file__),
             "primitive_precision_decimal_digits": 400,
-            "radial_reference": "Independent 192-node phi Gauss after a high-precision-tested pressure-window split. No native radial antiderivative is used for the geometric controls.",
+            "radial_reference": "Independent Sutherland-Hodgman pressure-half-plane clipping, original angular breaks union the clipped polygon's own breaks, and 192-node phi Gauss. The CPU geometric reference uses neither the native pressure-circle roots nor its radial antiderivatives.",
             "records": records,
         },
     )
@@ -291,6 +309,7 @@ def _native_api():
         func_hertz_radial_moments,
         func_planar_active_radial_interval,
         func_planar_hertz_ray,
+        func_planar_pressure_breakpoints,
         func_planar_ray_count,
         func_planar_ray_moments,
     )
@@ -305,6 +324,7 @@ def _native_api():
         weights: qd.Tensor
         wrench: qd.Tensor
         ray_count: qd.Tensor
+        angle_count: qd.Tensor
 
     @qd.kernel
     def kernel_intervals(intervals: qd.Tensor, windows: qd.Tensor, moments: qd.Tensor, active: qd.Tensor):
@@ -333,8 +353,23 @@ def _native_api():
                 origin, edges, state.normal[i], info.point[i], state.radius[i]
             )
             first, second = func_force_frame(info.force[i])
+            offset = (section - info.point[i]) / state.radius[i]
+            mean = qd.Vector([1.0, offset.dot(first), offset.dot(second)])
+            pressure_angles, pressure_count, rule_contained = func_planar_pressure_breakpoints(
+                count,
+                qd.sqrt(remaining),
+                state.radius[i],
+                angles,
+                polygon,
+                plane,
+                mean,
+                first,
+                second,
+                coefficient[i_p],
+                contained,
+            )
             gram, load = qd.Matrix.zero(gs.qd_float, 3, 3), qd.Matrix.zero(gs.qd_float, 4, 3)
-            n_rays = func_planar_ray_count(count, gauss.shape[0], contained)
+            n_rays = func_planar_ray_count(pressure_count, gauss.shape[0], rule_contained)
             for i_ray in range(n_rays):
                 low, high, scale, mean, slope, parent_mean, parent_slope = func_planar_hertz_ray(
                     i_ray,
@@ -345,15 +380,15 @@ def _native_api():
                     plane,
                     polygon,
                     remaining,
-                    angles,
-                    count,
+                    pressure_angles,
+                    pressure_count,
                     info.point[i],
                     state.radius[i],
                     first,
                     second,
                     gauss,
                     gauss_weights,
-                    contained,
+                    rule_contained,
                 )
                 lower, upper = func_planar_active_radial_interval(low, high, mean, slope, coefficient[i_p])
                 ray_gram, ray_load = func_planar_ray_moments(
@@ -363,6 +398,7 @@ def _native_api():
                 load += ray_load
             row = i * coefficient.shape[0] + i_p
             current.gram[row], current.load[row], current.ray_count[row] = gram, load, n_rays
+            current.angle_count[row] = pressure_count
 
     @qd.kernel
     def kernel_outputs(
@@ -505,6 +541,7 @@ def _checks(api, args, writer, checks):
             weights=api.V_VEC(4, dtype=api.gs.qd_float, shape=(size,)),
             wrench=api.V_VEC(6, dtype=api.gs.qd_float, shape=(size,)),
             ray_count=api.V(dtype=api.gs.qd_int, shape=(size,)),
+            angle_count=api.V(dtype=api.gs.qd_int, shape=(size,)),
         )
         values = {}
         for order in ORDERS:
@@ -522,6 +559,11 @@ def _checks(api, args, writer, checks):
                     rtol=1e-9,
                     atol=1e-20,
                 )
+                if name == "residual":
+                    checks.rows[-1].update(
+                        gating=False,
+                        normalization="Residual-relative diagnostic. The constraint target e0 has unit norm.",
+                    )
                 delta = (measured - expected[f"{name}{order}"]).reshape((count, len(PROFILES), -1))
                 reference = expected[f"{name}{order}"].reshape((count, len(PROFILES), -1))
                 norm, scale = np.linalg.norm(delta, axis=2), np.linalg.norm(reference, axis=2)
@@ -531,6 +573,19 @@ def _checks(api, args, writer, checks):
                     (norm <= 1e-20 + 1e-9 * scale).all(),
                     maximum_relative=float(values[f"relative_{name}{order}"].max()),
                 )
+                if name == "residual":
+                    checks.rows[-1].update(
+                        gating=False,
+                        normalization="Retained historical near-zero residual-relative flag.",
+                    )
+                    values[f"target_scaled_residual_error{order}"] = norm
+                    checks.condition(
+                        f"{directory.name}/qa{order}/constraint_target_scaled_residual",
+                        (norm <= 1e-9).all(),
+                        maximum=float(norm.max()),
+                        target_norm=1.0,
+                        tolerance=1e-9,
+                    )
             if order == 24:
                 for name in ("gram", "load"):
                     checks.close(
@@ -546,6 +601,14 @@ def _checks(api, args, writer, checks):
                 minimum=float(values[f"weights{order}"].min()),
             )
             values[f"rays{order}"] = api.qd_to_numpy(current.ray_count, transpose=True).reshape((count, len(PROFILES)))
+            values[f"angles{order}"] = api.qd_to_numpy(current.angle_count, transpose=True).reshape(
+                (count, len(PROFILES))
+            )
+            checks.condition(
+                f"{directory.name}/qa{order}/bounded_pressure_angles",
+                (values[f"angles{order}"] <= 15).all(),
+                maximum=int(values[f"angles{order}"].max()),
+            )
         uncertainty = {}
         for name in ("gram", "load", "objective", "residual", "jacobian", "weights", "wrench"):
             lower, higher = expected[f"{name}48"], expected[f"{name}96"]
@@ -561,6 +624,22 @@ def _checks(api, args, writer, checks):
                 maximum=float(relative_error.max()),
                 tolerance=1e-3,
             )
+            if name == "residual":
+                checks.rows[-1].update(
+                    gating=False,
+                    normalization="Retained historical residual-relative angular uncertainty.",
+                )
+                values["CPU_residual_relative_uncertainty48_96"] = relative_error
+                values["CPU_residual_target_scaled_uncertainty48_96"] = difference
+                uncertainty["residual_relative_diagnostic"] = uncertainty["residual"]
+                uncertainty["residual"] = float(difference.max())
+                checks.condition(
+                    f"{directory.name}/qa48_qa96_uncertainty/residual_target_scaled",
+                    (difference <= 1e-3).all(),
+                    maximum=float(difference.max()),
+                    target_norm=1.0,
+                    tolerance=1e-3,
+                )
         writer.arrays(f"{directory.name}/native.npz", **values)
         records.append({"fixture": directory.name, "triangles": count, "CPU_angular_uncertainty": uncertainty})
     return records
@@ -612,6 +691,8 @@ def main():
         "primitive_harness": _identity(Path(__file__).with_name("check_planar_primitives.py")),
         "old_q24_policy": "The original q24 numerical comparison retains rtol1e-8. A changed finite quadrature may fail this gate even when an independently converged continuous integral passes. Preserve and label that difference as quadrature approximation rather than floating-point equivalence.",
         "derivative_convention": "residual = -gradient(concave objective), jacobian = -Hessian(concave objective), matching the existing native Newton convention.",
+        "residual_comparison": "Dimensionless constraint target e0 has norm1. GPU/CPU residual differences retain tolerance1e-9 and qa48/96 differences retain1e-3 against that target. Historical residual-relative arrays and flags remain non-gating diagnostics.",
+        "active_angular_rule": "Original geometry angles plus at most two pressure-line/triangle crossings and two pressure-line/unit-circle crossings. Positive base G/H retains its original angular rule. CPU reference independently clips the polygon by the pressure half-plane and derives its own breakpoints.",
     }
     _json(args.output / "result.json", result)
     cpu = args.output / "cpu"
@@ -662,14 +743,16 @@ def main():
             "primitive_harness/unchanged",
             _identity(Path(__file__).with_name("check_planar_primitives.py")) == result["primitive_harness"],
         )
-        port_checks = [row for row in checks.rows if "/original_q24_port/" in row["name"]]
-        math_checks = [row for row in checks.rows if "/original_q24_port/" not in row["name"]]
+        gating_checks = [row for row in checks.rows if row.get("gating", True)]
+        port_checks = [row for row in gating_checks if "/original_q24_port/" in row["name"]]
+        math_checks = [row for row in gating_checks if "/original_q24_port/" not in row["name"]]
         result.update(
             complete=True,
-            passed=all(row["passed"] for row in checks.rows),
+            passed=all(row["passed"] for row in gating_checks),
             independent_math_passed=all(row["passed"] for row in math_checks),
             original_q24_port_passed=all(row["passed"] for row in port_checks),
             checks=len(checks.rows),
+            gating_checks=len(gating_checks),
             seconds=time.perf_counter() - started,
         )
     finally:

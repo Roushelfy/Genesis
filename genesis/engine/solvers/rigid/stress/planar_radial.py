@@ -10,7 +10,7 @@ import quadrants as qd
 
 import genesis as gs
 
-from .planar_moments import _func_planar_radial_interval
+from .planar_moments import _func_planar_angle, _func_planar_radial_interval
 
 _SINC_DIFFERENCE_COEFFICIENTS = tuple((-1.0) ** (k + 1) / math.factorial(2 * k + 1) for k in range(1, 15))
 
@@ -99,6 +99,87 @@ def func_planar_ray_count(n_angles: int, n_angular: int, is_contained: bool):
 
 
 @qd.func
+def func_planar_pressure_breakpoints(
+    n_angles: int,
+    section_radius: float,
+    radius: float,
+    base_angles: qd.types.vector(11),
+    polygon: qd.types.matrix(3, 2),
+    plane: qd.types.matrix(2, 3),
+    mean: qd.types.vector(3),
+    first: qd.types.vector(3),
+    second: qd.types.vector(3),
+    coefficient: qd.types.vector(3),
+    is_contained: bool,
+):
+    """Add critical angles where a pressure half-plane crosses a prepared triangle or circle."""
+    angles = qd.Vector.zero(gs.qd_float, 15)
+    for i in qd.static(range(11)):
+        angles[i] = base_angles[i]
+    count = n_angles
+    split = False
+    if section_radius > 0.0 and radius > 0.0:
+        pressure_direction = coefficient[1] * first + coefficient[2] * second
+        gradient = (plane @ pressure_direction) / radius
+        intercept = mean.dot(coefficient)
+        magnitude = gradient.norm()
+        split = qd.abs(intercept) < section_radius * magnitude
+        if split:
+            candidates = qd.Matrix.zero(gs.qd_float, 4, 2)
+            n_candidates = 0
+            # A line crosses at most two edges of a convex triangle.
+            for i in qd.static(range(3)):
+                j = (i + 1) % 3
+                start, end = polygon[i, :], polygon[j, :]
+                start_value, end_value = intercept + gradient.dot(start), intercept + gradient.dot(end)
+                crosses = (start_value < 0.0 and end_value > 0.0) or (start_value > 0.0 and end_value < 0.0)
+                if crosses:
+                    fraction = start_value / (start_value - end_value)
+                    candidates[n_candidates, :] = start + fraction * (end - start)
+                    n_candidates += 1
+            unit = gradient / magnitude
+            distance = -intercept / (section_radius * magnitude)
+            tangent = qd.sqrt((1.0 - qd.abs(distance)) * (1.0 + qd.abs(distance)))
+            perpendicular = qd.Vector([-unit[1], unit[0]])
+            for i_root in qd.static(range(2)):
+                sign = qd.select(i_root == 0, -1.0, 1.0)
+                point = section_radius * (distance * unit + sign * tangent * perpendicular)
+                inside = True
+                for i in qd.static(range(3)):
+                    j = (i + 1) % 3
+                    edge, offset = polygon[j, :] - polygon[i, :], point - polygon[i, :]
+                    inside = inside and edge[0] * offset[1] - edge[1] * offset[0] >= 0.0
+                if inside:
+                    candidates[n_candidates, :] = point
+                    n_candidates += 1
+            for i in range(n_candidates):
+                point = candidates[i, :]
+                if point.norm_sqr() > 0.0:
+                    angles[count] = _func_planar_angle(point)
+                    count += 1
+            for i in range(1, count):
+                angle = angles[i]
+                moving = True
+                for j_ in range(i):
+                    j = i - j_ - 1
+                    if moving and angle < angles[j]:
+                        angles[j + 1] = angles[j]
+                        angles[j] = angle
+                    else:
+                        moving = False
+            unique_count = 0
+            previous = gs.qd_float(-float("inf"))
+            for i in range(count):
+                angle = angles[i]
+                if qd.abs(angle - previous) > 0.5e-14:
+                    angles[unique_count] = angle
+                    unique_count += 1
+                    previous = angle
+            count = unique_count
+    return angles, count, is_contained and not split
+
+
+@qd.func
 def func_planar_hertz_ray(
     i_ray: int,
     origin: qd.types.vector(3),
@@ -108,7 +189,7 @@ def func_planar_hertz_ray(
     plane: qd.types.matrix(2, 3),
     polygon: qd.types.matrix(3, 2),
     remaining: float,
-    angles: qd.types.vector(11),
+    angles: qd.types.vector(15),
     n_angles: int,
     original_position: qd.types.vector(3),
     radius: float,
