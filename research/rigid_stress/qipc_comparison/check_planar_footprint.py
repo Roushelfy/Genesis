@@ -624,6 +624,7 @@ def _book_mode(api, args, writer, checks, native, expected24, expected48, proxy4
         )
         queried = api.unbatched_array(api, loading.material_state.queried)
         material_status = api.unbatched_array(api, loading.material_state.status)
+        contact_status = api.unbatched_array(api, contacts.status)
         fallback = api.unbatched_array(api, loading.state.fallback)
         reason = api.unbatched_array(api, loading.state.reason)
         expected_hits, expected_selected = expected24["hits"][:, :, order], expected24["selected"][:, :, order]
@@ -635,6 +636,11 @@ def _book_mode(api, args, writer, checks, native, expected24, expected48, proxy4
         )
         checks.exact(f"{label}/material_query_current_fallback", queried, fallback & current_valid)
         checks.condition(f"{label}/material_success", not material_status[queried].any())
+        checks.condition(
+            f"{label}/loaded_contacts_accepted",
+            not contact_status[current_valid].any(),
+            status=contact_status[current_valid].tolist(),
+        )
         checks.exact(f"{label}/fallback_positive_parents", hits[:, queried], expected_hits[:, queried])
         checks.exact(f"{label}/fallback_selected_parents", selected[:, queried], expected_selected[:, queried])
         tips = np.array([case["category"] in ("tip", "multiple") for case in cases])[order]
@@ -709,7 +715,9 @@ def _book_mode(api, args, writer, checks, native, expected24, expected48, proxy4
             force_error=force_error,
             moment_error=moment_error,
             center=centers,
-            contact_status=api.unbatched_array(api, contacts.status),
+            contact_status=contact_status,
+            contact_evaluations=api.unbatched_array(api, contacts.evaluations),
+            candidate_count=api.unbatched_array(api, contacts.candidate_count),
             radius_status=api.unbatched_array(api, contacts.radius_status),
             state_valid=api.qd_to_numpy(state.valid, transpose=True),
             step_valid=api.qd_to_numpy(state.step_valid, transpose=True),

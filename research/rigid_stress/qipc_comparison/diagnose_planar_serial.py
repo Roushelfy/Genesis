@@ -217,7 +217,24 @@ def main():
         _stage(api, output, events, "original_recover", model.recover, omega, state)
         actual = api.native_outputs(api, model, state)
         api.np.savez_compressed(output / "outputs.npz", **actual)
-        result.update(complete=True, passed=bool(actual["valid"].all()), stages=events)
+        current = api.unbatched_array(api, contacts.valid) & (
+            api.np.linalg.norm(api.unbatched_array(api, contacts.force), axis=-1) > 1e-30
+        )
+        status = api.unbatched_array(api, contacts.status)
+        result.update(
+            complete=True,
+            passed=bool(actual["valid"].all() and not status[current].any()),
+            stages=events,
+            loaded_contact_status=status[current].tolist(),
+        )
+        api.np.savez_compressed(
+            output / "pressure.npz",
+            status=status,
+            coefficient=api.unbatched_array(api, contacts.coefficient),
+            weight_sum=api.unbatched_array(api, contacts.weight_sum),
+            evaluations=api.unbatched_array(api, contacts.evaluations),
+            candidate_count=api.unbatched_array(api, contacts.candidate_count),
+        )
     except Exception:
         (output / "failure.txt").write_text(traceback.format_exc())
         raise
