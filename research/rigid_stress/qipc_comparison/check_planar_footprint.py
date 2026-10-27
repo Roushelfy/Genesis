@@ -254,6 +254,7 @@ def _cpu_worker(args):
         rigid_modes=model.rigid_modes,
         mass_gram=model.mass_gram,
         gauss_weights=model.gauss_weights,
+        gauge_dofs=model.gauge_dofs,
     )
     methods = []
     with api.threadpool_limits(limits=1):
@@ -281,15 +282,29 @@ def _cpu_worker(args):
                     hits[record["hit_parents"], i_c, i_b] = True
                     selected[record["selected_parents"], i_c, i_b] = True
                     rows.append({"environment": i_b, "slot": i_c, "case": case["name"], **record})
+            fields = support["_cpu_fields"](np, model, raw)
+            free = model.factorize().free_dofs
+            residual_norm = np.linalg.norm((model.K @ fields["q"] - fields["balanced"])[free], axis=0)
+            rhs_norm = np.linalg.norm(fields["balanced"][free], axis=0)
             np.savez_compressed(
                 oracle / f"{label}.npz",
-                **support["_cpu_fields"](np, model, raw),
+                **fields,
                 source_raw=source_raw,
                 hits=hits,
                 selected=selected,
+                original_K_residual_norm=residual_norm,
+                original_rhs_norm=rhs_norm,
             )
             _json(oracle / f"{label}.json", rows)
-            methods.append({"method": label, "sources": len(rows)})
+            methods.append(
+                {
+                    "method": label,
+                    "sources": len(rows),
+                    "original_K_residual_absolute": residual_norm.tolist(),
+                    "original_K_residual_relative": (residual_norm / np.maximum(rhs_norm, 1e-30)).tolist(),
+                    "original_K_gate_passed": (residual_norm <= np.maximum(1e-11, 1e-8 * rhs_norm)).tolist(),
+                }
+            )
     after = hashlib.sha256(model.K.data.tobytes() + model.K.indices.tobytes() + model.K.indptr.tobytes()).hexdigest()
     if (
         before != after
@@ -297,6 +312,11 @@ def _cpu_worker(args):
         or _identity(support_path) != support_identity
     ):
         raise RuntimeError("The frozen CPU source or original book stiffness changed.")
+    free = model.factorize().free_dofs
+    free_matrix = model.K[free][:, free].toarray()
+    diagonal = np.sqrt(np.diag(free_matrix))
+    condition = np.linalg.cond(free_matrix)
+    scaled_condition = np.linalg.cond(free_matrix / diagonal[:, None] / diagonal[None, :])
     _json(
         args.output / "cpu-source.json",
         {
@@ -305,6 +325,10 @@ def _cpu_worker(args):
             "research_support": support_identity,
             "stiffness_sha256": before,
             "methods": methods,
+            "gauge_dofs": model.gauge_dofs.tolist(),
+            "free_K_condition_2": float(condition),
+            "diagonally_scaled_free_K_condition_2": float(scaled_condition),
+            "hinge_director_dot_panel_normal": [float(directors[0] @ model.axes[parent, 0, :, 2]) for parent in (0, 1)],
             "scope": "Original global book Q4 elasticity. Independent physical edge segment-ball component selection; authored tip and hinge labels are checked separately. Both sides share one source pressure fit.",
         },
     )
@@ -820,6 +844,21 @@ def main():
                 shape=oracle_k.shape,
             ).tocsr()
             checks.close("book/original_global_K", actual_k, oracle_k, rtol=1e-10, atol=1e-8)
+            api.sparse.save_npz(args.output / "book/native-K.npz", actual_k)
+            native_free = api.unbatched_array(api, model.info.is_free).reshape(-1).astype(bool)
+            writer.json(
+                "book/gauge-comparison.json",
+                {
+                    "CPU_fixed_dofs": numerics["gauge_dofs"].tolist(),
+                    "native_fixed_dofs": api.np.flatnonzero(~native_free).tolist(),
+                    "both_gauges": "translation",
+                    "young": model.options.young,
+                    "thickness": model.options.shell_thickness,
+                    "drilling_factor": model.options.shell_drilling_factor,
+                    "tolerance": model.options.tolerance,
+                    "absolute_tolerance": model.options.absolute_tolerance,
+                },
+            )
             checks.close(
                 "book/original_global_mass_modes",
                 api.unbatched_array(api, model.info.mass_modes).reshape((-1, 6)),
