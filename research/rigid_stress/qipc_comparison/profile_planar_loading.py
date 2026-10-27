@@ -135,7 +135,7 @@ def main():
     parser.add_argument("--envs", type=int, default=64)
     parser.add_argument("--scope", choices=("module", "scene"), default="module")
     parser.add_argument("--shell-loading", choices=("q4", "planar"), default="planar")
-    parser.add_argument("--loading-subdivisions", type=int, choices=(4, 8, 16), default=8)
+    parser.add_argument("--loading-subdivisions", type=int, choices=(4, 8, 16, 32), default=8)
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--quadrature", type=int, default=16)
     parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")

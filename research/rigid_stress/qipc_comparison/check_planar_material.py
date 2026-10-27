@@ -666,7 +666,7 @@ def main():
     parser.add_argument("--reference", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--git-source", type=Path, default=Path.cwd())
-    parser.add_argument("--refinement", type=int, choices=(8, 16), default=8)
+    parser.add_argument("--refinement", type=int, choices=(8, 16, 32), default=8)
     parser.add_argument("--quadrature", type=int, choices=(16, 24, 48), default=48)
     parser.add_argument("--modes", nargs="+", choices=MODES, default=MODES)
     parser.add_argument("--_cpu-worker", action="store_true", help=argparse.SUPPRESS)

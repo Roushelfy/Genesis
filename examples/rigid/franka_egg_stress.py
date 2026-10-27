@@ -325,7 +325,7 @@ def main() -> None:
     parser.add_argument("--stress-mesh", type=Path, help="Override the backend mesh asset.")
     parser.add_argument("--shell-gauge", choices=("translation", "legacy"), default="translation")
     parser.add_argument("--shell-loading", choices=("q4", "planar"), default="q4")
-    parser.add_argument("--loading-subdivisions", type=int, choices=(4, 8, 16), default=8)
+    parser.add_argument("--loading-subdivisions", type=int, choices=(4, 8, 16, 32), default=8)
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--radius-model", choices=("manual", "hertz"), default="manual")
     parser.add_argument("--pressure-profile", choices=("dpr", "hertz"), default="dpr")

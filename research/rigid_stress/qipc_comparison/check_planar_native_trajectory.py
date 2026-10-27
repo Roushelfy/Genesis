@@ -655,7 +655,7 @@ def main():
     parser.add_argument("--envs", type=int, default=4)
     parser.add_argument("--steps", type=int, default=600)
     parser.add_argument("--level", type=int, choices=(1, 2), default=1)
-    parser.add_argument("--subdivisions", type=int, choices=(4, 8, 16), default=8)
+    parser.add_argument("--subdivisions", type=int, choices=(4, 8, 16, 32), default=8)
     parser.add_argument("--quadrature", type=int, choices=(10, 16, 24, 48), default=16)
     parser.add_argument("--production-reference-quadrature", type=int, default=None)
     parser.add_argument("--reference-quadrature", type=int, default=48)
@@ -797,14 +797,18 @@ def main():
             original_limits["Q"],
         ]
     )
-    target_applicable = args.subdivisions in (8, 16)
-    target = budgets["CPU_demonstrated_fidelity_targets"][f"k{args.subdivisions}"] if target_applicable else None
+    target_applicable = args.subdivisions in (8, 16, 32)
+    target_reference_key = "k16" if args.subdivisions == 32 else f"k{args.subdivisions}"
+    target = budgets["CPU_demonstrated_fidelity_targets"][target_reference_key] if target_applicable else None
     fidelity_limits = (
         np.array([target["worst_field"], target["worst_peak"], target["N"], target["M"], target["Q"]])
         if target_applicable
         else None
     )
     result["CPU_fidelity_target_status"] = "applicable" if target_applicable else "not_applicable"
+    result["CPU_fidelity_target_reference_key"] = target_reference_key if target_applicable else None
+    result["CPU_fidelity_target_inherited"] = args.subdivisions == 32
+    result["CPU_fidelity_target_limits"] = target
     try:
         for step in range(args.steps):
             counts_before = _route_counts(api, entry.planar.state)

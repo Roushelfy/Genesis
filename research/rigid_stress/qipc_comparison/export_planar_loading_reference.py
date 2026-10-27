@@ -447,7 +447,21 @@ def _worker(args):
             if row["method"].endswith("q48"):
                 continue
             label = "Q4" if row["method"] == "Q4-q24" else row["method"].removesuffix("-q24")
-            original = next(value for value in expected if value["method"] == label)
+            original = next((value for value in expected if value["method"] == label), None)
+            if original is None:
+                if label != "tri-k32":
+                    raise ArithmeticError(f"The pinned publication is missing its existing method: {label}.")
+                comparisons.append(
+                    {
+                        "method": label,
+                        "publication_status": "unpublished_derived",
+                        "reproduction_status": "not_applicable",
+                        "passed": None,
+                        "gating": False,
+                        "reason": "k32 is derived by the unchanged pinned CPU implementation; the primary has no published k32 statistic.",
+                    }
+                )
+                continue
             difference = {
                 key: abs(row[key] - original[key])
                 for key in ("mean_field", "max_field", "max_peak", "max_N", "max_M", "max_Q")
@@ -460,7 +474,7 @@ def _worker(args):
             {
                 "comparisons": comparisons,
                 "absolute_tolerance": 1e-8,
-                "passed": all(row["passed"] for row in comparisons),
+                "passed": all(row["passed"] for row in comparisons if row.get("gating", True)),
             },
         )
     for row in snapshot["files"]:
@@ -481,7 +495,7 @@ def _worker(args):
     }
     if not all(Path(path).is_relative_to(args.reference_root) for path in imports.values()):
         raise ArithmeticError("A CPU reference module was imported outside the frozen primary tree.")
-    passed = independent["passed"] and all(row["passed"] for row in comparisons)
+    passed = independent["passed"] and all(row["passed"] for row in comparisons if row.get("gating", True))
     manifest = {
         "schema": SCHEMA,
         "primary_commit": PRIMARY,
@@ -546,7 +560,7 @@ def main():
         "--refinements",
         type=int,
         nargs="+",
-        choices=(1, 2, 4, 8, 16),
+        choices=(1, 2, 4, 8, 16, 32),
         default=[8, 16],
         help="Proxy subdivisions to export; e.g. --refinements 4 exports a separate k4 candidate bank.",
     )

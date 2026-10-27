@@ -41,11 +41,11 @@ class PlanarLoadingInfo:
 def build_planar_geometry(surface: StressSurfaceInfo, load_info: StressInfo, subdivisions: int) -> PlanarLoadingInfo:
     """Refine both physical shell sides while retaining the original nodal displacement maps.
 
-    Refinement uses four, eight or sixteen segments along each original quadrilateral edge. Shared local shape
+    Refinement uses four, eight, sixteen or thirty-two segments along each original quadrilateral edge. Shared local shape
     tables and per-face grid positions determine every planar triangle. Parent adjacency follows authored mesh edges.
     """
-    if subdivisions not in (4, 8, 16):
-        gs.raise_exception("Planar shell loading subdivisions must be 4, 8 or 16.")
+    if subdivisions not in (4, 8, 16, 32):
+        gs.raise_exception("Planar shell loading subdivisions must be 4, 8, 16 or 32.")
     n_faces = surface.quad_vertices.shape[0]
     if n_faces == 0 or n_faces % 2 or load_info.surface_nodes.shape[0] != n_faces:
         gs.raise_exception("Planar shell loading requires both physical quadrilateral surface sides.")

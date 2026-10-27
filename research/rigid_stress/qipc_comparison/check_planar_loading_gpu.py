@@ -411,8 +411,9 @@ def check_loading(api, writer, checks, reference, native, refinement, quadrature
         and maxima["peak"] <= original_budget["worst_sampled_peak"]
         and all(maxima[key] <= original_budget[key] for key in ("N", "M", "Q"))
     )
-    target_applicable = refinement in (8, 16)
-    target = budgets["CPU_demonstrated_fidelity_targets"].get(f"k{refinement}") if target_applicable else None
+    target_applicable = refinement in (8, 16, 32)
+    target_reference_key = "k16" if refinement == 32 else f"k{refinement}"
+    target = budgets["CPU_demonstrated_fidelity_targets"].get(target_reference_key) if target_applicable else None
     target_passed = (
         bool(
             target is not None
@@ -430,6 +431,8 @@ def check_loading(api, writer, checks, reference, native, refinement, quadrature
             "original_budget_passed": bool(original_passed),
             "CPU_fidelity_target_passed": target_passed,
             "CPU_fidelity_target_status": target_status,
+            "CPU_fidelity_target_reference_key": target_reference_key if target_applicable else None,
+            "CPU_fidelity_target_inherited": refinement == 32,
             "mean_loaded_field_error": mean_field,
             "maximum_loaded_errors": maxima,
             "rows": [
@@ -448,7 +451,15 @@ def check_loading(api, writer, checks, reference, native, refinement, quadrature
         f"{label}/original_spatial_budgets", original_passed, maxima=maxima, mean_loaded_field_error=mean_field
     )
     if target_applicable:
-        checks.condition(f"{label}/CPU_fidelity_targets", target_passed, target=target, maxima=maxima)
+        checks.condition(
+            f"{label}/CPU_fidelity_targets",
+            target_passed,
+            target=target,
+            maxima=maxima,
+            target_reference_key=target_reference_key,
+            requested_refinement=refinement,
+            inherited_target=refinement == 32,
+        )
     else:
         checks.rows.append(
             {
@@ -533,6 +544,8 @@ def check_loading(api, writer, checks, reference, native, refinement, quadrature
         "original_spatial_budgets_passed": bool(original_passed),
         "CPU_fidelity_targets_passed": target_passed,
         "CPU_fidelity_targets_status": target_status,
+        "CPU_fidelity_target_reference_key": target_reference_key if target_applicable else None,
+        "CPU_fidelity_target_inherited": refinement == 32,
         "mean_loaded_field_error": mean_field,
         "maximum_loaded_errors": maxima,
         "fallback_contacts": int(routing["fallback"].sum()),
@@ -550,7 +563,7 @@ def main():
     parser.add_argument("--method", choices=("direct", "inverse", "auto"), default="direct")
     parser.add_argument("--stage", choices=("operators", "loads", "all"), default="operators")
     parser.add_argument("--quadrature", type=int, choices=(24, 48), default=24)
-    parser.add_argument("--subdivisions", type=int, nargs="+", choices=(4, 8, 16), default=[8, 16])
+    parser.add_argument("--subdivisions", type=int, nargs="+", choices=(4, 8, 16, 32), default=[8, 16])
     parser.add_argument("--tasks-per-env", type=int, default=2000)
     parser.add_argument("--budgets", type=Path)
     args = parser.parse_args()

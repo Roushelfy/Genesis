@@ -212,7 +212,7 @@ class RigidStressOptions(Options):
     ``request_stress_update()`` before each scene step to observe. Getters retain the latest sampled values between
     requests, so callers must track their sample times. State changes invalidate observations as usual.
     ``shell_loading="planar"`` uses refined planar loading triangles with the unchanged Q4 shell elasticity.
-    ``loading_subdivisions`` selects four, eight or sixteen divisions per original edge; eight is the initial
+    ``loading_subdivisions`` selects four, eight, sixteen or thirty-two divisions per original edge; eight is the initial
     accuracy candidate. The path requires shell DPR with the Hertz profile. Original geometry still determines
     anchors and automatic contact radii. Unsupported geometry, pressure fits or bounded-workspace overflow use
     the original Q4 loading path. Planar sections use split-angle integration; ``pressure_quadrature`` continues
@@ -226,7 +226,7 @@ class RigidStressOptions(Options):
     shell_drilling_factor: PositiveFloat = 1e-3
     shell_gauge: Literal["translation", "legacy"] = "translation"
     shell_loading: Literal["q4", "planar"] = "q4"
-    loading_subdivisions: Literal[4, 8, 16] = 8
+    loading_subdivisions: Literal[4, 8, 16, 32] = 8
     output_mode: Literal["max", "full"] = "max"
     update_mode: Literal["every_step", "manual"] = "every_step"
     young: PositiveFloat = 1e10

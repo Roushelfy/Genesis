@@ -464,7 +464,7 @@ def _surface(api, physical, order):
 def _geometry_checks(api, args, checks, surface, load_info):
     np = api.np
     results = []
-    for refinement in (8, 16):
+    for refinement in args.subdivisions:
         info = api.build_planar_geometry(surface.info, load_info, refinement)
         count = info.grid_positions.shape[0] * info.triangle_nodes.shape[1]
         vertices = api.V_MAT(3, 3, dtype=api.gs.qd_float, shape=(count,))
@@ -583,6 +583,14 @@ def main():
     parser.add_argument("--reference", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--git-source", type=Path, default=Path.cwd())
+    parser.add_argument(
+        "--subdivisions",
+        type=int,
+        nargs="+",
+        choices=(8, 16, 32),
+        default=[8, 16],
+        help="Fixed-geometry refinements to compare; original pressure/source primitive fixtures stay unchanged.",
+    )
     parser.add_argument("--_cpu-worker", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
     if (
@@ -615,7 +623,7 @@ def main():
             raise RuntimeError(f"The frozen primary source changed: {row['snapshot_path']}")
     verified_inputs = []
     for relative, record in manifest["files"].items():
-        if relative.startswith(("inputs/", "oracles/egg75/proxy-k8/", "oracles/egg75/proxy-k16/")):
+        if relative.startswith(("inputs/", *(f"oracles/egg75/proxy-k{k}/" for k in args.subdivisions))):
             identity = _identity(args.reference / relative)
             if identity["sha256"] != record["sha256"] or identity["bytes"] != record["bytes"]:
                 raise RuntimeError(f"The frozen primitive input or oracle changed: {relative}")
@@ -632,6 +640,7 @@ def main():
         ).strip(),
         "primary": PRIMARY,
         "verified_reference_files": verified_inputs,
+        "geometry_subdivisions": args.subdivisions,
         "scope": "Untimed geometry, interpolation and pressure-integration primitives. No complete stress or throughput qualification.",
         "native_input_policy": "Physical vertices/directors/material/source vectors and integer triangle fixtures only. CPU geometry, maps and moments remain readback oracles.",
     }
@@ -656,6 +665,8 @@ def main():
             str(args.reference),
             "--output",
             str(cpu),
+            "--subdivisions",
+            *map(str, args.subdivisions),
         ]
         with (args.output / "cpu-fixtures.log").open("w") as log:
             subprocess.run(

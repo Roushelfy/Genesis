@@ -557,7 +557,7 @@ def main() -> None:
     parser.add_argument("--stress-mesh", type=Path)
     parser.add_argument("--shell-gauge", choices=("translation", "legacy"), default="translation")
     parser.add_argument("--shell-loading", choices=("q4", "planar"), default="q4")
-    parser.add_argument("--loading-subdivisions", type=int, choices=(4, 8, 16), default=8)
+    parser.add_argument("--loading-subdivisions", type=int, choices=(4, 8, 16, 32), default=8)
     parser.add_argument("--factor-scaling", action="store_true")
     parser.add_argument("--factor-ordering", choices=("minimum_degree", "natural"), default="minimum_degree")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")

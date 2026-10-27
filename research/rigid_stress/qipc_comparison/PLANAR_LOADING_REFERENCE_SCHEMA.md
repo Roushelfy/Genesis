@@ -16,6 +16,12 @@ shell elasticity, pressure fitter and asset. A fresh interpreter receives only
 that tree on `PYTHONPATH`; its imported reference paths and unchanged hashes are
 checked. The current native implementation cannot supply the CPU oracle.
 
+The default export retains k8/k16. A separate `--refinements 32` export uses
+the unchanged pinned CPU implementation with finer loading geometry and the
+same Q4 elastic DOF, source anchors and pressure law. Use a fresh `oracle-k32`
+output; the predeclared campaign `meta/k32-plan.json` records its qualification
+scope before testing. Existing exports remain preserved.
+
 ## Physical inputs and integer topology
 
 Native preparation/runtime may read `inputs/`:
@@ -57,10 +63,10 @@ Each elastic bank (`egg75`, `torus8`) contains:
 - `operators/{K.npz,K_free.npz,S.npz,numerics.npz}`: original physical stiffness,
   translation gauge, mass/rigid modes, relief ingredients, stress operators and
   Gauss samples. Sparse matrices use SciPy CSR NPZ format.
-- `proxy-k{8,16}/{outer.npz,inner.npz}`: independently derived triangle vertices,
+- `proxy-k{k}/{outer.npz,inner.npz}` for each requested refinement: independently derived triangle vertices,
   parent Q4 shapes/faces, normals, duals and bounds. These test native floating
   preparation; they cannot be uploaded as its implementation.
-- `Q4-q{24,48}/` and `tri-k{8,16}-q{24,48}/`: raw source and grouped loads,
+- `Q4-q{24,48}/` and `tri-k{k}-q{24,48}/`: raw source and grouped loads,
   balanced RHS, relief acceleration, original-gauge displacements, whole-object
   tensor fields, sampled peaks and N/M/Q. `Q4-q48` is the spatial reference;
   matched proxy/order results test numerical equivalence separately.
@@ -80,6 +86,11 @@ export's candidate paths.
 with the primary publication at absolute tolerance `1e-8`. Published physical
 source bytes are used exactly; the regenerated case family and physical vectors
 are independently checked to `rtol=1e-13`, `atol=1e-15` first.
+The primary has no published k32 statistic. Its k32 comparison row explicitly
+records `publication_status=unpublished_derived`,
+`reproduction_status=not_applicable`, `passed=null` and `gating=false`.
+Q4 and every requested existing published method still pass their unchanged
+reproduction check; this exception cannot hide a missing existing method.
 
 ## Array ordering and acceptance
 
@@ -100,6 +111,13 @@ resultant and original residual comparisons remain independent checks. Exact
 numerical acceptance stays unscaled `rtol=1e-8`, `atol=1e-11`. The task freezes
 existing spatial budgets separately from stricter k8/k16 fidelity targets in
 the campaign's `meta/error-budgets.json`.
+Native k32 qualification explicitly uses `target_reference_key=k16` and the
+unchanged k16 limits: field 0.5%, sampled peak 0.3%, N 0.15%, M 0.75% and
+Q 0.4%. This inherited target is mandatory, separately from publication
+reproduction; a missing k16 target fails. Existing k8/k16 gates and defaults
+remain unchanged, while k4 retains the original spatial budgets and an
+explicitly inapplicable extra fidelity target. Export success alone does not
+qualify k32 accuracy or cost.
 
 `manifest.json` inventories every file with bytes/SHA256 and NPZ array hashes
 where exported. It records source isolation, versions, all 75/8 cases, both

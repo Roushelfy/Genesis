@@ -577,7 +577,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--git-source", type=Path, default=Path.cwd())
     parser.add_argument("--stage", choices=("all", "warped", "tie"), default="all")
-    parser.add_argument("--subdivisions", nargs="+", type=int, choices=(4, 8, 16), default=(4, 8, 16))
+    parser.add_argument("--subdivisions", nargs="+", type=int, choices=(4, 8, 16, 32), default=(4, 8, 16))
     parser.add_argument("--_cpu-worker", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
     if (
