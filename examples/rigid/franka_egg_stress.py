@@ -66,6 +66,8 @@ class FrankaEgg:
         stress_backend: str = "volume",
         stress_mesh: Path | None = None,
         shell_gauge: str = "translation",
+        shell_loading: str = "q4",
+        loading_subdivisions: int = 8,
         factor_scaling: bool = False,
         factor_ordering: str = "minimum_degree",
     ):
@@ -120,6 +122,8 @@ class FrankaEgg:
                 mesh=stress_mesh,
                 backend=stress_backend,
                 shell_gauge=shell_gauge,
+                shell_loading=shell_loading,
+                loading_subdivisions=loading_subdivisions,
                 factor_scaling=factor_scaling,
                 factor_ordering=factor_ordering,
                 contact_model=contact_model,
@@ -320,6 +324,8 @@ def main() -> None:
     parser.add_argument("--stress-backend", choices=("volume", "shell"), default="volume")
     parser.add_argument("--stress-mesh", type=Path, help="Override the backend mesh asset.")
     parser.add_argument("--shell-gauge", choices=("translation", "legacy"), default="translation")
+    parser.add_argument("--shell-loading", choices=("q4", "planar"), default="q4")
+    parser.add_argument("--loading-subdivisions", type=int, choices=(4, 8, 16), default=8)
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--radius-model", choices=("manual", "hertz"), default="manual")
     parser.add_argument("--pressure-profile", choices=("dpr", "hertz"), default="dpr")
@@ -357,6 +363,8 @@ def main() -> None:
         stress_backend=args.stress_backend,
         stress_mesh=args.stress_mesh,
         shell_gauge=args.shell_gauge,
+        shell_loading=args.shell_loading,
+        loading_subdivisions=args.loading_subdivisions,
         saved_reset=not args.legacy_reset,
         native_controller=not args.torch_controller,
         resident_reset_indices=not args.host_reset_indices,

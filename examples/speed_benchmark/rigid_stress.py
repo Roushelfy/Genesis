@@ -507,6 +507,8 @@ def main() -> None:
     parser.add_argument("--stress-backend", choices=("volume", "shell"), default="volume")
     parser.add_argument("--stress-mesh", type=Path)
     parser.add_argument("--shell-gauge", choices=("translation", "legacy"), default="translation")
+    parser.add_argument("--shell-loading", choices=("q4", "planar"), default="q4")
+    parser.add_argument("--loading-subdivisions", type=int, choices=(4, 8, 16), default=8)
     parser.add_argument("--factor-scaling", action="store_true")
     parser.add_argument("--factor-ordering", choices=("minimum_degree", "natural"), default="minimum_degree")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
@@ -552,6 +554,8 @@ def main() -> None:
         stress_backend=args.stress_backend,
         stress_mesh=args.stress_mesh,
         shell_gauge=args.shell_gauge,
+        shell_loading=args.shell_loading,
+        loading_subdivisions=args.loading_subdivisions,
         factor_scaling=args.factor_scaling,
         factor_ordering=args.factor_ordering,
         saved_reset=not args.legacy_reset,
@@ -699,6 +703,8 @@ def main() -> None:
             "precision": "64",
             "quadrature": args.quadrature,
             "pressure_quadrature": args.pressure_quadrature,
+            "shell_loading": args.shell_loading,
+            "loading_subdivisions": args.loading_subdivisions,
             "dt": 0.01,
             "substeps": 1,
             "varied": args.varied,

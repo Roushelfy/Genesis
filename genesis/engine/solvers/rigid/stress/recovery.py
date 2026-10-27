@@ -25,14 +25,15 @@ from genesis.utils.misc import (
 
 from .association import kernel_associate
 from .automatic_radius import StressRadiusInfo, StressRadiusStatus
-from .curvature import StressCurvature
 from .contact import StressContactState, create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
+from .curvature import StressCurvature
 from .data import StressState
 from .history import StressHistory
 from .intrinsic import IntrinsicContacts
 from .lifecycle import func_accept, func_begin_step
 from .model import StressModel
 from .pipeline import kernel_pipeline
+from .planar_loading import PlanarLoading
 from .post import create_post_kernel
 from .provenance import kernel_capture_rigid_sources
 from .resolved import ResolvedContacts
@@ -66,6 +67,7 @@ class StressLink:
     resolved: ResolvedContacts | None = None
     requested_step: int = -1
     automatic_radius: StressRadiusInfo | None = None
+    planar: PlanarLoading | None = None
 
 
 class RigidStressRecovery:
@@ -78,6 +80,13 @@ class RigidStressRecovery:
             for link in entity.links:
                 options = link.stress_options
                 if options is not None:
+                    if options.shell_loading == "planar" and (
+                        options.backend != "shell"
+                        or options.contact_model != "pressure"
+                        or options.load_transfer != "patch"
+                        or options.pressure_profile != "hertz"
+                    ):
+                        gs.raise_exception("Planar loading requires shell Hertz DPR patch transfer.")
                     if options.backend == "shell" and (
                         options.contact_model != "pressure" or options.load_transfer != "patch"
                     ):
@@ -197,6 +206,24 @@ class RigidStressRecovery:
                         )
                     )
         for entry in self.links:
+            if entry.options.shell_loading == "planar":
+                geometry = None
+                for previous in self.links:
+                    if (
+                        previous.planar is not None
+                        and previous.surface is entry.surface
+                        and previous.options.loading_subdivisions == entry.options.loading_subdivisions
+                    ):
+                        geometry = previous.planar.info
+                        break
+                entry.planar = PlanarLoading(
+                    entry.surface.info,
+                    entry.model.load_info,
+                    entry.contacts,
+                    entry.options.loading_subdivisions,
+                    geometry,
+                    tasks_per_env=entry.options.scatter_tasks_per_env,
+                )
             if entry.options.radius_model == "hertz":
                 if self.curvature is None:
                     self.curvature = StressCurvature(solver.dyn_info, self.source_epsilon)
@@ -368,7 +395,16 @@ class RigidStressRecovery:
                 )
             else:
                 kernel_anchor(self.source_epsilon, entry.contacts, entry.surface.info)
-                if entry.reuse_contact_moments:
+                if entry.planar is not None:
+                    entry.planar.scatter(
+                        entry.state,
+                        entry.model.load_info,
+                        entry.surface.info,
+                        options,
+                        entry.scatter,
+                        entry.reuse_contact_moments,
+                    )
+                elif entry.reuse_contact_moments:
                     kernel_pressure_moments(
                         entry.contacts,
                         entry.state,
@@ -379,7 +415,7 @@ class RigidStressRecovery:
                     )
                 else:
                     kernel_pressure(entry.contacts, entry.surface.info, options.cooperative_pressure)
-                if entry.scatter.tasks.shape[0] and options.cooperative_scatter:
+                if entry.planar is None and entry.scatter.tasks.shape[0] and options.cooperative_scatter:
                     kernel_scatter_faces(
                         entry.contacts,
                         entry.state,
@@ -389,7 +425,7 @@ class RigidStressRecovery:
                         options.cached_face_bounds,
                         entry.reuse_contact_moments,
                     )
-                else:
+                elif entry.planar is None:
                     kernel_scatter(
                         entry.contacts,
                         entry.state,
@@ -415,6 +451,8 @@ class RigidStressRecovery:
         for affected in self.links if entry is None else (entry,):
             affected.requested_step = -1
             kernel_reset(envs_idx, affected.state)
+            if affected.planar is not None:
+                affected.planar.reset(envs_idx)
             if affected.history is not None:
                 affected.history.reset(envs_idx)
 
@@ -533,6 +571,8 @@ class RigidStressRecovery:
             for item in iter_data(entry.scatter, f"stress.{i}.scatter"):
                 if 0 not in item.value.shape:
                     yield item
+            if entry.planar is not None:
+                yield from entry.planar.data(f"stress.{i}.planar")
             if entry.intrinsic is not None:
                 if id(entry.intrinsic.paths) not in seen_paths:
                     yield from iter_data(entry.intrinsic.paths.info, f"stress.{i}.intrinsic.paths")
