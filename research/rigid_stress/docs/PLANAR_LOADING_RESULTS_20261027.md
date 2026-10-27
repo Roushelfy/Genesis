@@ -62,8 +62,9 @@ Hertz 半径继续取原几何与曲率，原 source point、anchor、法向力�
 保留原 surface-ball 的平方根压力律。径向积分解析化，角向仍作分段求积；
 非负压力拟合保留 active-pressure 边界。有限 footprint 不按空间距离跨接相邻材料片。
 共同边必须在开球内实际连通；单 Q4 的充分连通证书不成立时保守拒绝。
-unsupported、warped miss、压力失败和容量溢出均通过原路径处理整个受影响环境，
-避免只累加部分代理载荷。
+能确定原材料分量时，proxy unsupported、warped miss、压力失败和容量溢出通过原路径
+处理整个受影响环境，避免只累加部分代理载荷。若原contact-ball连通性本身无法获得
+证书，则保留MATERIAL拒绝（contact status10／errno128），不制造一个通过的fallback。
 
 ## 准确性与原门限
 
@@ -125,6 +126,7 @@ open30 的独立 CPU q48 使用同一 K、同一 LU 最多三次残差修正，�
 冻结计划 `R/meta/primary-pairing-plan-v3.json` 包含168个新进程、16个cohort与48个
 配对 block。B=4/1024/8192/32768，module/policy与max/full各自比较；每个进程
 warmup730，计时600步、1个repeat、minimum-seconds0，三个新进程配对重复。
+该固定600步计时窗口与准确性用的711／1192步延迟完整周期分别记录，不互换步数范围。
 module每block使用Q4/planar/volume三种顺序；policy另含pure rigid，采用预先固定的
 三行部分Latin顺序，不能称为四位置完全平衡。每block在同一独占GPU分配内顺序执行。
 
@@ -133,7 +135,11 @@ k32/q10配置；volume使用已通过该策略 warmup 的angle/q128 fused路径�
 正式benchmark的`cuda_graphs_enabled`记录进程环境；GraphOff由captured helper在导入前
 设置0及固定Quadrants的导入语义共同证明，该字段没有直接读回库内部常量。
 有界graph wrapper对照另有导入后常量的直接读回，两个证据来源分别保留。
+`shell_recovery_graph_selected`表示共同恢复调用路径；在GraphOff时仍可为true，
+不表示该进程实际执行了CUDA graph launch。
 计时保留实际原运行时检查，研究 oracle 导出、内存采样与 profiler均另跑。
+策略计时包含任务指标的device收集kernels与public position getter；指标的边界host导出
+在计时结束后执行。该范围与纯inference算子速度或无指标的裸simulator速度不同。
 表中速度比来自同block的墙钟时间，报告三个配对比的中位数和范围，不把它当作置信区间。
 
 module使用真实脚本运行到730步后恢复的冻结接触，Q4/planar/volume的每环境
@@ -144,6 +150,14 @@ Pure rigid无stress配置，max/full标签不赋予其应力输出语义。
 
 预先冻结的实用平台规则是8192→32768的valid env/s增长≤10%；若超过该值且估计
 65536 full内存低于设备90%，最多追加一个有界probe。有限批量范围不能证明全局最大吞吐量。
+
+该内存条件已独立完成筛选：8192与32768的已终态full测量作两点affine外推，
+`M65536=(7*M32768-4*M8192)/3`，Q4／planar预计process NVIDIA峰为
+90.9375／103.4421GiB；对应设备容量94.9724GiB，90%阈值85.4752GiB。
+两者均不满足预先规定的内存条件，因此不追加65536实验。Native stress库存自身的预测
+25.8351／38.2660GiB是另一个范围，不能与process峰相加。实测采样峰是下界，但含负系数
+的外推对目标值既不是严格上界也不是严格下界；这里只作为容量规划screen，不能证明OOM。
+原始点、匹配GPU/PID与假设见 `R/meta/practical-batch-memory-projection-v19.json`。
 
 ## 内存与准备时间
 
