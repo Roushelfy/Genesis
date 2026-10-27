@@ -28,6 +28,8 @@ class PlanarLoadingInfo:
     cell_nodes: qd.Tensor
     cell_bounds_low: qd.Tensor
     cell_bounds_high: qd.Tensor
+    cell_block_bounds_low: qd.Tensor
+    cell_block_bounds_high: qd.Tensor
     face_bounds_low: qd.Tensor
     face_bounds_high: qd.Tensor
     parent_face: qd.Tensor
@@ -92,6 +94,8 @@ def build_planar_geometry(surface: StressSurfaceInfo, load_info: StressInfo, sub
         cell_nodes=V_VEC(4, dtype=gs.qd_int, shape=(len(cells),)),
         cell_bounds_low=V_VEC(3, dtype=gs.qd_float, shape=(n_faces, len(cells))),
         cell_bounds_high=V_VEC(3, dtype=gs.qd_float, shape=(n_faces, len(cells))),
+        cell_block_bounds_low=V_VEC(3, dtype=gs.qd_float, shape=(n_faces, (subdivisions // 4) ** 2)),
+        cell_block_bounds_high=V_VEC(3, dtype=gs.qd_float, shape=(n_faces, (subdivisions // 4) ** 2)),
         face_bounds_low=surface.face_bounds_low,
         face_bounds_high=surface.face_bounds_high,
         parent_face=V(dtype=gs.qd_int, shape=(n_faces,)),
@@ -155,6 +159,18 @@ def kernel_planar_geometry(surface: StressSurfaceInfo, info: PlanarLoadingInfo):
         c, d = info.grid_positions[i_f, i_c], info.grid_positions[i_f, i_d]
         info.cell_bounds_low[i_f, i_cell] = qd.min(a, b, c, d)
         info.cell_bounds_high[i_f, i_cell] = qd.max(a, b, c, d)
+    for i_f, i_cell_block in qd.ndrange(info.cell_block_bounds_low.shape[0], info.cell_block_bounds_low.shape[1]):
+        k = info.subdivisions[None]
+        n_blocks_axis = k // 4
+        i_first = (i_cell_block // n_blocks_axis * 4) * k + i_cell_block % n_blocks_axis * 4
+        low = info.cell_bounds_low[i_f, i_first]
+        high = info.cell_bounds_high[i_f, i_first]
+        for i_local in range(16):
+            i_cell = i_first + i_local // 4 * k + i_local % 4
+            low = qd.min(low, info.cell_bounds_low[i_f, i_cell])
+            high = qd.max(high, info.cell_bounds_high[i_f, i_cell])
+        info.cell_block_bounds_low[i_f, i_cell_block] = low
+        info.cell_block_bounds_high[i_f, i_cell_block] = high
     for i_f, i_t in qd.ndrange(info.grid_positions.shape[0], info.triangle_nodes.shape[1]):
         i_side = info.side_index[i_f]
         nodes = info.triangle_nodes[i_side, i_t]
@@ -205,6 +221,16 @@ def func_cell_overlap(i_face: int, i_cell: int, center: qd.types.vector(3), radi
     """Bound a sphere against the two planar triangles of one material tile."""
     separation = qd.max(info.cell_bounds_low[i_face, i_cell] - center, 0.0)
     separation += qd.max(center - info.cell_bounds_high[i_face, i_cell], 0.0)
+    return separation.norm_sqr() <= radius * radius
+
+
+@qd.func
+def func_cell_block_overlap(
+    i_face: int, i_block: int, center: qd.types.vector(3), radius: float, info: PlanarLoadingInfo
+):
+    """Bound a sphere against the exact corner hull of a four-by-four block of original material tiles."""
+    separation = qd.max(info.cell_block_bounds_low[i_face, i_block] - center, 0.0)
+    separation += qd.max(center - info.cell_block_bounds_high[i_face, i_block], 0.0)
     return separation.norm_sqr() <= radius * radius
 
 

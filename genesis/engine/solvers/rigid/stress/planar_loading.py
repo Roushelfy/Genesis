@@ -22,6 +22,7 @@ from .data import StressInfo, StressState, func_scatter_load
 from .planar_geometry import (
     PlanarLoadingInfo,
     build_planar_geometry,
+    func_cell_block_overlap,
     func_cell_overlap,
     func_face_overlap,
     func_parent_ball_connected,
@@ -123,6 +124,7 @@ class PlanarLoading:
         *,
         tasks_per_env: int = 32,
         exact_radial: bool = True,
+        hierarchical_query: bool = False,
     ):
         if tasks_per_env < 1:
             gs.raise_exception("Planar loading requires a positive per-environment task capacity.")
@@ -184,6 +186,7 @@ class PlanarLoading:
         self.source_epsilon = float(np.finfo(gs.np_float).eps)
         self.contacts = contacts
         self.exact_radial: bool = exact_radial
+        self.hierarchical_query: bool = hierarchical_query
 
     @property
     def sample_count_unit(self) -> str:
@@ -194,7 +197,7 @@ class PlanarLoading:
         """Fit current proxy loads, recover unsupported contacts on the original route and add accepted contributions."""
         exact_radial = self.exact_radial
         if options.cooperative_pressure and gs.backend == gs.cuda:
-            kernel_planar_query_warp(self.contacts, self.info, self.state)
+            kernel_planar_query_warp(self.contacts, self.info, self.state, self.hierarchical_query)
             kernel_planar_prepare_moments(self.contacts, self.state)
             kernel_planar_moments_warp(self.contacts, self.state, surface_info, exact_radial)
         else:
@@ -399,7 +402,12 @@ def func_planar_query_component(
 
 
 @qd.kernel
-def kernel_planar_query_warp(contacts: StressContactState, info: PlanarLoadingInfo, state: PlanarLoadingState):
+def kernel_planar_query_warp(
+    contacts: StressContactState,
+    info: PlanarLoadingInfo,
+    state: PlanarLoadingState,
+    hierarchical_query: qd.template() = False,
+):
     for i_b in range(contacts.valid.shape[1]):
         state.task_count[i_b], state.parent_count[i_b], state.fallback_count[i_b], state.source_count[i_b] = 0, 0, 0, 0
         state.overflow[i_b] = False
@@ -420,6 +428,8 @@ def kernel_planar_query_warp(contacts: StressContactState, info: PlanarLoadingIn
         lane, i_b = i_thread % 32, i_thread // 32
         sh_faces = qd.simt.block.SharedArray((32,), gs.qd_int)
         sh_count = qd.simt.block.SharedArray((1,), gs.qd_int)
+        sh_cell_blocks = qd.simt.block.SharedArray((32,), gs.qd_int)
+        sh_cell_block_count = qd.simt.block.SharedArray((1,), gs.qd_int)
         for i_source in range(state.source_count[i_b]):
             i_c = state.source_slots[i_source, i_b]
             if lane == 0:
@@ -464,36 +474,69 @@ def kernel_planar_query_warp(contacts: StressContactState, info: PlanarLoadingIn
                                 if not state.overflow[i_b]:
                                     i_face = sh_faces[i_candidate]
                                     found, overflowed = 0, 0
-                                    for i_cell_chunk in range((info.cell_nodes.shape[0] + 31) // 32):
-                                        i_cell = i_cell_chunk * 32 + lane
-                                        if i_cell < info.cell_nodes.shape[0]:  # noqa: SIM102 - bound the geometry index first
-                                            if func_cell_overlap(i_face, i_cell, center, radius, info):
-                                                for i_half in range(2):
-                                                    i_triangle = 2 * i_cell + i_half
-                                                    vertices, dual, normal, parent_shapes = func_triangle_geometry(
-                                                        i_face, i_triangle, info
-                                                    )
-                                                    edges = qd.Matrix.rows(
-                                                        [
-                                                            vertices[1, :] - vertices[0, :],
-                                                            vertices[2, :] - vertices[0, :],
-                                                        ]
-                                                    )
-                                                    _section, _remaining, _contained, intersects = func_planar_section(
-                                                        vertices[0, :], edges, dual, normal, center, radius
-                                                    )
-                                                    if intersects:
-                                                        i_t = qd.atomic_add(state.task_count[i_b], 1)
-                                                        if i_t < state.tasks.shape[0]:
-                                                            state.tasks[i_t, i_b] = qd.Vector([i_face, i_triangle, i_c])
-                                                            state.origin[i_t, i_b] = vertices[0, :]
-                                                            state.edges[i_t, i_b] = edges
-                                                            state.dual[i_t, i_b] = dual
-                                                            state.normal[i_t, i_b] = normal
-                                                            state.parent_shapes[i_t, i_b] = parent_shapes
-                                                        else:
-                                                            overflowed = 1
-                                                        found += 1
+                                    n_block_chunks = 1
+                                    if qd.static(hierarchical_query):
+                                        n_block_chunks = (info.cell_block_bounds_low.shape[1] + 31) // 32
+                                    for i_block_chunk in range(n_block_chunks):
+                                        n_cell_chunks = (info.cell_nodes.shape[0] + 31) // 32
+                                        if qd.static(hierarchical_query):
+                                            if lane == 0:
+                                                sh_cell_block_count[0] = 0
+                                            qd.simt.block.sync()
+                                            i_block = i_block_chunk * 32 + lane
+                                            if i_block < info.cell_block_bounds_low.shape[1]:  # noqa: SIM102
+                                                if func_cell_block_overlap(i_face, i_block, center, radius, info):
+                                                    i_selected = qd.atomic_add(sh_cell_block_count[0], 1)
+                                                    sh_cell_blocks[i_selected] = i_block
+                                            qd.simt.block.sync()
+                                            n_cell_chunks = (sh_cell_block_count[0] * 16 + 31) // 32
+                                        for i_cell_chunk in range(n_cell_chunks):
+                                            i_cell = i_cell_chunk * 32 + lane
+                                            if qd.static(hierarchical_query):
+                                                i_entry = i_cell
+                                                i_cell = info.cell_nodes.shape[0]
+                                                if i_entry < sh_cell_block_count[0] * 16:
+                                                    i_selected = i_entry // 16
+                                                    i_block = sh_cell_blocks[i_selected]
+                                                    i_local = i_entry % 16
+                                                    k = info.subdivisions[None]
+                                                    n_blocks_axis = k // 4
+                                                    i_cell = (i_block // n_blocks_axis * 4 + i_local // 4) * k
+                                                    i_cell += i_block % n_blocks_axis * 4 + i_local % 4
+                                            if i_cell < info.cell_nodes.shape[0]:  # noqa: SIM102 - bound the geometry index first
+                                                if func_cell_overlap(i_face, i_cell, center, radius, info):
+                                                    for i_half in range(2):
+                                                        i_triangle = 2 * i_cell + i_half
+                                                        vertices, dual, normal, parent_shapes = func_triangle_geometry(
+                                                            i_face, i_triangle, info
+                                                        )
+                                                        edges = qd.Matrix.rows(
+                                                            [
+                                                                vertices[1, :] - vertices[0, :],
+                                                                vertices[2, :] - vertices[0, :],
+                                                            ]
+                                                        )
+                                                        _section, _remaining, _contained, intersects = (
+                                                            func_planar_section(
+                                                                vertices[0, :], edges, dual, normal, center, radius
+                                                            )
+                                                        )
+                                                        if intersects:
+                                                            i_t = qd.atomic_add(state.task_count[i_b], 1)
+                                                            if i_t < state.tasks.shape[0]:
+                                                                state.tasks[i_t, i_b] = qd.Vector(
+                                                                    [i_face, i_triangle, i_c]
+                                                                )
+                                                                state.origin[i_t, i_b] = vertices[0, :]
+                                                                state.edges[i_t, i_b] = edges
+                                                                state.dual[i_t, i_b] = dual
+                                                                state.normal[i_t, i_b] = normal
+                                                                state.parent_shapes[i_t, i_b] = parent_shapes
+                                                            else:
+                                                                overflowed = 1
+                                                            found += 1
+                                        if qd.static(hierarchical_query):
+                                            qd.simt.block.sync()
                                     found = qd.simt.subgroup.reduce_all_add(found)
                                     overflowed = qd.simt.subgroup.reduce_all_add(overflowed)
                                     if lane == 0:
