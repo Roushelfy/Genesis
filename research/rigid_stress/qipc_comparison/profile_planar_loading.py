@@ -124,7 +124,7 @@ def _task_work(api, workload):
         "total_tasks": int(tasks.sum()),
         "positive_samples": int(samples.sum()),
         "eligible_sources": int(eligible.sum()),
-        "source_reason_counts": dict(Counter(map(int, reasons.reshape(-1)))),
+        "source_reason_counts": dict(Counter(map(int, reasons.flat))),
     }
 
 
