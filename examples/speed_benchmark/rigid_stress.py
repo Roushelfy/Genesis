@@ -763,6 +763,13 @@ def main() -> None:
     policy_dtype = torch.float32 if args.policy_precision == "32" else torch.float64
     policy_reference = copy.deepcopy(policy) if args.policy_precision == "32" else None
     policy = policy.to(dtype=policy_dtype)
+    policy_digest = hashlib.sha256()
+    for name, tensor in policy.state_dict().items():
+        value = tensor_to_array(tensor)
+        policy_digest.update(name.encode())
+        policy_digest.update(value.dtype.str.encode())
+        policy_digest.update(str(value.shape).encode())
+        policy_digest.update(value.tobytes())
     policy_error_rad = 0.0
     with torch.inference_mode():
         quality = []
@@ -990,6 +997,7 @@ def main() -> None:
             "policy": {
                 "layers": [26, 128, 128, 7],
                 "seed": 99173,
+                "weights_sha256": policy_digest.hexdigest(),
                 "dtype": "float32" if args.policy_precision == "32" else "float64",
                 "residual_scale_rad": 1e-4,
                 "scope": "inference rollout",
