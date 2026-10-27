@@ -1,6 +1,6 @@
 # Planar loading DPR：原生实现与测量，2026-10-27
 
-**审阅稿：B32768正式性能配对仍在运行，目标尚未关闭。**
+**已完成：原生实现、准确性、完整优化与168项正式性能资格均已交付。**
 本文对应 [远端目标](PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md)。已经合格的配置为
 shell planar k32、radial q10、cell blocks、每环境128个任务、FP64、history0，
 并在本任务进程内设置 `QD_GRAPH=0`。它保留原 Q4 弹性模型，新增加载细分不增加弹性自由度。
@@ -55,8 +55,9 @@ options = gs.options.RigidStressOptions(
 原 Q4 K、质量、gauge、inertia relief、位移响应与全物体 stress recovery 不变，
 总弹性自由度为1452，原生平移 gauge 后为1446。QD 生成内外表面的三角加载面与稀疏
 Q4 位移映射，以 `u=Jq`、`f=Jᵀg` 传递载荷。固定 cell 几何与层次包围盒共享；
-每环境仅保留有界接触／任务 workspace。CPU 只提供独立 oracle 和整数拓扑准备，
-生产浮点准备与运行仍在现有 rigid stress feature 内的 Quadrants 中执行。
+每环境仅保留有界接触／任务 workspace。Host负责原始输入读取、整数拓扑、配置及
+dtype epsilon/tiny常量；物理几何、插值、曲率、包围盒等浮点准备和运行在现有rigid
+stress feature内的Quadrants中执行，CPU独立实现作为oracle。
 
 Hertz 半径继续取原几何与曲率，原 source point、anchor、法向力、摩擦及偏心力矩不变。
 保留原 surface-ball 的平方根压力律。径向积分解析化，角向仍作分段求积；
@@ -120,7 +121,41 @@ open30 的独立 CPU q48 使用同一 K、同一 LU 最多三次残差修正，�
 ## 正式配对性能
 
 <!-- PRIMARY_RESULTS_START -->
-正式 campaign `primary-paired-v19` 尚未全部终态，当前不发布最终总表或全局资格。
+全部168个worker自然终态、RC0，48个配对block与16个cohort通过严格身份和运行门。
+完整汇总为 `R/meta/primary-summary-v19.json.gz`；紧凑摘要绑定完整原文件SHA256，
+下表使用原始600步墙钟，ms/batch为三个新进程的中位数。
+
+### 冻结接触完整模块
+
+| B | 输出 | Q4 ms/batch | planar ms/batch | volume ms/batch | planar env recoveries/s | Q4/planar，配对中位[范围] |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| 4 | max | 1.746 | 1.905 | 7.341 | 2,100 | 0.916 [0.915, 0.916] |
+| 4 | full | 1.760 | 1.920 | 7.274 | 2,084 | 0.917 [0.917, 0.917] |
+| 1024 | max | 7.957 | 4.537 | 64.676 | 225,685 | 1.754 [1.753, 1.757] |
+| 1024 | full | 8.096 | 4.789 | 64.677 | 213,808 | 1.690 [1.690, 1.693] |
+| 8192 | max | 53.141 | 26.435 | 480.030 | 309,892 | 2.010 [2.009, 2.011] |
+| 8192 | full | 54.243 | 27.723 | 476.637 | 295,494 | 1.957 [1.956, 1.957] |
+| 32768 | max | 201.912 | 101.248 | 1869.089 | 323,641 | 1.994 [1.994, 1.994] |
+| 32768 | full | 208.016 | 107.187 | 1868.965 | 305,707 | 1.940 [1.940, 1.941] |
+
+### 完整策略 inference workflow
+
+| B | 输出 | Q4 ms/batch | planar ms/batch | volume ms/batch | pure rigid ms/batch | planar valid env transitions/s | Q4/planar，配对中位[范围] |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 4 | max | 4.859 | 4.466 | 9.989 | 3.068 | 896 | 1.091 [1.087, 1.091] |
+| 4 | full | 4.875 | 4.458 | 9.997 | 3.086 | 897 | 1.093 [1.087, 1.100] |
+| 1024 | max | 11.948 | 7.559 | 71.027 | 3.742 | 135,461 | 1.581 [1.576, 1.583] |
+| 1024 | full | 12.437 | 7.961 | 72.605 | 3.968 | 128,631 | 1.562 [1.562, 1.578] |
+| 8192 | max | 67.705 | 34.477 | 506.117 | 10.076 | 237,609 | 1.964 [1.961, 1.965] |
+| 8192 | full | 69.216 | 35.765 | 506.954 | 10.037 | 229,052 | 1.934 [1.931, 1.935] |
+| 32768 | max | 254.720 | 125.316 | 2020.295 | 29.708 | 261,484 | 2.033 [2.032, 2.033] |
+| 32768 | full | 263.243 | 132.392 | 2044.781 | 29.965 | 247,507 | 1.987 [1.987, 1.989] |
+
+
+B32768时，冻结模块max/full的Q4/planar配对速度比为1.994/1.940，完整策略为
+2.033/1.987。相同四项的volume/planar比为18.460/17.436/16.120/15.446；
+volume属于独立弹性模型，这些只是运行成本比较。B4冻结模块约慢9%，完整策略约快9%；
+不能将大批量收益泛化为小批量模块收益。所有正式进程invalid和overflow均为0。
 <!-- PRIMARY_RESULTS_END -->
 
 冻结计划 `R/meta/primary-pairing-plan-v3.json` 包含168个新进程、16个cohort与48个
@@ -158,6 +193,56 @@ Pure rigid无stress配置，max/full标签不赋予其应力输出语义。
 25.8351／38.2660GiB是另一个范围，不能与process峰相加。实测采样峰是下界，但含负系数
 的外推对目标值既不是严格上界也不是严格下界；这里只作为容量规划screen，不能证明OOM。
 原始点、匹配GPU/PID与假设见 `R/meta/practical-batch-memory-projection-v19.json`。
+
+## 批量扩展与实际路由
+
+8192→32768的scaling有14个唯一条目：recovery/policy×max/full×Q4/planar/volume共12项，另有policy的pure rigid两项。每个rate先按 `(B*600-invalid)/elapsed` 在各新进程计算，再取3个rate的中位数；growth是两批量中位rate之比减一。recovery为env recoveries/s，policy为valid env transitions/s。
+
+| scope | 输出 | variant | B8192 中位有效rate/s | B32768 中位有效rate/s | 增长 | ≤10% |
+| --- | --- | --- | ---: | ---: | ---: | --- |
+| recovery | max | Q4 | 154,157.037 | 162,288.159 | 5.275% | True |
+| recovery | max | planar32 | 309,891.507 | 323,640.511 | 4.437% | True |
+| recovery | max | volume | 17,065.601 | 17,531.531 | 2.730% | True |
+| recovery | full | Q4 | 151,023.962 | 157,526.652 | 4.306% | True |
+| recovery | full | planar32 | 295,493.675 | 305,707.317 | 3.456% | True |
+| recovery | full | volume | 17,187.068 | 17,532.698 | 2.011% | True |
+| policy | max | Q4 | 120,995.495 | 128,643.468 | 6.321% | True |
+| policy | max | planar32 | 237,609.029 | 261,483.962 | 10.0479906723% | False |
+| policy | max | volume | 16,185.994 | 16,219.410 | 0.206% | True |
+| policy | max | pureRigid | 812,989.037 | 1,103,020.347 | 35.675% | False |
+| policy | full | Q4 | 118,354.977 | 124,478.120 | 5.174% | True |
+| policy | full | planar32 | 229,052.115 | 247,506.918 | 8.057% | True |
+| policy | full | volume | 16,159.271 | 16,025.190 | -0.830% | True |
+| policy | full | pureRigid | 816,171.156 | 1,093,531.383 | 33.983% | False |
+
+policy planar max的精确增长为 **10.0479906723%，≤10%判定为False**；full为8.057%，判定True。Pure rigid仍增长33.983%/35.675%（full/max），其max/full标签没有应力输出含义。因此只能逐项报告预声明的近似实用平台标准，不能称所有路径已经平台化。不同batch来自不同allocation；该scaling不是跨batch同GPU配对加速比，也不证明全局最大吞吐量。
+
+预声明的65536 full进程内存模型分别为Q4 **90.9375 GiB**、planar **103.4420572917 GiB**，均超过捕获设备容量90%的 **85.4751708984 GiB**；matched memory screen为False，未追加65536 probe。该外推保留原26/28内存快照及冻结准则，最终28/28内存资格另行绑定；它是有不确定性的实用筛选，不能作为严格OOM证明。
+
+下表给出16个candidate cohort的原生route汇总，每行累加3个完整600步新进程。全部 `full_interval=True` 且计时区间内reset为0；工作负载的累计reset字段不当作区间reset。每行attempted与proxy逐值相等，fallback、overflow_steps、material_queries及material_rejections均为0；fallback频率按fallback/attempted计算，所有本表分母均大于0。
+
+| scope | B | 输出 | attempted = proxy | analytic_sections（绝对数） | fallback |
+| --- | ---: | --- | ---: | ---: | ---: |
+| recovery | 4 | max | 18,000 | 0 | 0 |
+| recovery | 4 | full | 18,000 | 0 | 0 |
+| recovery | 1024 | max | 4,608,000 | 0 | 0 |
+| recovery | 1024 | full | 4,608,000 | 0 | 0 |
+| recovery | 8192 | max | 36,864,000 | 0 | 0 |
+| recovery | 8192 | full | 36,864,000 | 0 | 0 |
+| recovery | 32768 | max | 147,456,000 | 0 | 0 |
+| recovery | 32768 | full | 147,456,000 | 0 | 0 |
+| policy | 4 | max | 27,675 | 126 | 0 |
+| policy | 4 | full | 27,675 | 126 | 0 |
+| policy | 1024 | max | 7,084,800 | 32,256 | 0 |
+| policy | 1024 | full | 7,084,800 | 32,256 | 0 |
+| policy | 8192 | max | 56,678,400 | 264,192 | 0 |
+| policy | 8192 | full | 56,678,400 | 264,192 | 0 |
+| policy | 32768 | max | 226,713,600 | 1,056,768 | 0 |
+| policy | 32768 | full | 226,713,600 | 1,056,768 | 0 |
+
+16行合计 **958,900,950 attempted = 958,900,950 proxy**、fallback与overflow均为0；`analytic_sections=2,706,684`是解析section的绝对调用计数，不能解释为contact概率。物理fallback、容量溢出和material拒绝的独立负控制保留在各自资格回执中；本表的零计数只描述正式primary窗口。
+
+上述三个表仅作已资格化primary的标量/计数派生，不建立新的物理或目标资格。完整raw向量仍由完整JSON、无损gzip与原始worker JSON保留。
 
 ## 内存与准备时间
 
@@ -312,6 +397,68 @@ on/off混用作为最终速度比。
   不证明相同应力场。夹爪继续理想锐边，本文不声称连续体接触峰值或任意非凸几何收敛。
 
 <!-- DELIVERY_RESULTS_START -->
-完整requirements ledger、紧凑可运行证据包、最终保存审计和远端完成状态将在所有正式
-任务终态并核验后写入；本审阅稿不关闭目标。
+## 证据与复现
+
+[证据包](../evidence/20261027-planar-loading-v1/README.md)在10MiB限制内，
+`requirements-ledger.json`逐条记录29项要求、14个优化族、保留的失败及适用边界。
+`index.json`是带压缩／解压字节数和SHA256的小型引用；`index.json.gz`无损保留完整540条任务索引与全部字段。
+原168份repeat及每环境向量无损保留，完整primary／memory／profile汇总以原始gzip保存；
+大型场数组与日志按数据路径、字节数和SHA256保留在外部清单。
+独立核验从原始计时重算48个block、16个cohort及其全部配对比值，
+并检查实际权重、GraphOff身份、模块冻结接触与原始输入。
+`--check-originals`还逐字节检查168份外部worker JSON与包内原始记录。
+核验保留此前科学资格，不在此重新计算应力场或将退出码当成空间精度证明。
+
+完整primary原文件为1,164,302,888字节，SHA256为
+`96c1a03855499c7690f070789b207d0d4b05c77805d2420a7dbf3d980428c30c`；
+原无损gzip为4,305,257字节。核验器按task流式读取，避免一次展开全部大文件。
+Memory与profile各有28／14个合格worker，完整无损摘要分别保留。
+[最终包核验回执](../evidence/20261027-planar-loading-v1-verification.json)绑定实际包的
+index与SHA256SUMS身份；该回执位于包外，避免自引用hash。
+
+以下只需Python标准库，可独立核验包内原始记录。`PLANAR_AUDIT_DIR`须为新的data目录。
+
+```sh
+export PLANAR_PACKET="$(git rev-parse --show-toplevel)/research/rigid_stress/evidence/20261027-planar-loading-v1"
+export PLANAR_AUDIT_DIR=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/audits/planar-v1-replay
+python3 - <<'PY'
+import gzip, hashlib, json, os, subprocess, sys
+from pathlib import Path
+packet = Path(os.environ['PLANAR_PACKET']).resolve()
+out = Path(os.environ['PLANAR_AUDIT_DIR']).resolve()
+assert not out.is_relative_to(packet)
+out.mkdir(parents=True, exist_ok=False)
+for line in (packet/'SHA256SUMS').read_text().splitlines():
+    digest, name = line.split('  ', 1)
+    path = (packet/name).resolve()
+    assert path.is_relative_to(packet)
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == digest
+inventory = [json.loads(line) for line in gzip.decompress((packet/'external-artifacts.jsonl.gz').read_bytes()).splitlines()]
+rows = [r for r in inventory if r['path'].endswith('/meta/verify-planar-delivery-packet-v19.py')]
+assert len(rows) == 1 and len(rows[0]['retained_payloads']) == 1
+row = rows[0]
+code = gzip.decompress((packet/row['retained_payloads'][0]).read_bytes())
+assert len(code) == row['bytes'] and hashlib.sha256(code).hexdigest() == row['sha256']
+verifier = out/'verify.py'
+verifier.write_bytes(code)
+subprocess.run([sys.executable, str(verifier), '--packet', str(packet), '--output', str(out/'verification.json')], check=True)
+PY
+```
+
+科学重跑使用index中每task实际module／参数、captured worker SHA与对应engine pin；
+在Slurm `rtx-mid` / image `1_26`中选择新的data输出和私有cache，保留原条件fixture。
+包内包含两份精确输入：small4 3,754字节和heterogeneous64 25,834字节。
+完整worker capture与外部场数组仍在R中，不在login node执行科学模块。
+原始packager可从提交 `628a169c298689d2f9913797d22bcb3628e0dda9`
+恢复；在交付checkout根目录调用该版本打包器，测量engine worktree使用独立的F19 pin。
+最终文档提交的HEAD与测量引擎pin分别记录。
+
+540条归档任务的执行状态为503个RC0、32个历史非零退出、2个有取消记录但无task RC，
+另3个仍保留原始“缺少task RC”标签：anchor-contract-v1的两项在提交前被setup检查拦下，
+radial-math-v3因任务／源码身份不匹配取消。其原始原因与修复后的v2／v4资格分别保留，
+这些旧尝试不充作通过证据，也不改写成终态成功。正式168项全部有RC0与独立资格。
+
+保存检查覆盖12份原有未完成文件、33份旧与31份本阶段冻结源码及36份本任务Python源码，
+原内容与冻结身份均保留。未改动无关任务，取消的旧book任务只记录真实取消状态。
+原Q4仍为公开默认；完整异质策略推荐显式选择本文k32配置。
 <!-- DELIVERY_RESULTS_END -->

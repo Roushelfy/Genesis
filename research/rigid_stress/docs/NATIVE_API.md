@@ -17,6 +17,24 @@ for units, frames and lifecycle, and the [measured report](SHELL_DPR_NATIVE_2026
 for configuration recommendations and physical limits. The volume-specific
 load-route qualifications below do not establish a shell contact-peak reference.
 
+Shell DPR can use `shell_loading="planar"` with
+`loading_subdivisions=4`, `8`, `16` or `32`. These triangles refine the loading
+surface and its consistent displacement/load map; the original Q4 elasticity,
+mass, gauge, response and stress sampling remain unchanged. This route requires
+the Hertz pressure profile and patch transfer. Original geometry determines
+anchors and automatic radii, and the original-point force/friction moment
+contract remains active. Unsupported proxy work uses the qualified original
+material-component route; uncertified original connectivity remains a rejection.
+
+The public loading default is `"q4"`. The opt-in subdivision8/capacity32 defaults
+are separate from the complete four/64-condition Franka accuracy configuration:
+subdivision32, `quadrature=10`, `scatter_tasks_per_env=128`, FP64 simulation and
+inverse, and `history_size=0`. That configuration uses process-local
+`QD_GRAPH=0` set before importing Quadrants/Genesis. See the
+[planar loading report](PLANAR_LOADING_RESULTS_20261027.md) for the full recipe,
+accuracy, throughput, preparation and memory decisions. Qualification compares
+the same discrete Q4 elastic model; it does not establish continuum contact peaks.
+
 For small finite-pressure footprints near a face edge, the optional
 `pressure_quadrature="angle"` uses angular fan integration while preserving
 the physical radius, pressure profile and original acceptance checks.

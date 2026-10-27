@@ -1,0 +1,1609 @@
+{
+  "CPU_source": "797203553f246ca155bbef909c1bb33e7cd7b90c",
+  "completion_review": {
+    "cohorts_recomputed": 16,
+    "final_verification_location": "Sibling evidence files outside the hashed packet; they bind the actual final packet index and SHA256SUMS.",
+    "optimization_families_recorded": 14,
+    "paired_blocks_recomputed": 48,
+    "paired_ratio_summaries_recomputed": 144,
+    "preflight_originals_checked": 168,
+    "preflight_packet_bytes": 10482980,
+    "requirements_ready": 29
+  },
+  "created_utc": "2026-10-27T23:19:53.246840+00:00",
+  "delivery_gate": "All requested scientific/optimization requirements and concrete preflight proof passed. The published packet has separate external hash/raw-identity verification receipts; final remote Git publication is recorded outside this hashed packet.",
+  "draft": false,
+  "evidence": {
+    "accuracy_final": {
+      "artifact": {
+        "bytes": 117761,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/final-accuracy-config-handoff-v19.json",
+        "sha256": "d7393e545169a437d848c7245e13e08bc7cc54bd494b27ec83d24f1eadbdf2a8"
+      },
+      "gate_passed": true,
+      "recorded_gate": null
+    },
+    "anchor_strict": {
+      "all_terminal_passed": true,
+      "records": [
+        {
+          "artifact": {
+            "bytes": 106273,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-contract-v2/group0/strict-anchor-cuda/result.json",
+            "sha256": "49b9a1b9671d8c9c104857f8d29300481a2944aa06147b06a22a9f771b4d35b7"
+          },
+          "checks": 1037,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 106274,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-contract-v2/group1/strict-anchor-cpu/result.json",
+            "sha256": "852946427fdaa8918b04093c5ff017455a2520c79a0a97e1139f2eb4548c7542"
+          },
+          "checks": 995,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 1507,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-downstream-v13/group0/egg75-k32-radial-q24-cooperative-anchor/result.json",
+            "sha256": "896266d3393b84824969a06eb7734121c1b94286519f6975db77bfe4ce8f411a"
+          },
+          "checks": 103,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 2383,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-downstream-v13/group0/egg75-k8-16-radial-q24-cooperative-anchor/result.json",
+            "sha256": "5f0e050e22efef9ab7985fb80adbda56905a71cafd4ab1e3ca0f16a052f13d81"
+          },
+          "checks": 170,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 1506,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-downstream-v13/group1/torus8-k32-radial-q24-cooperative-anchor/result.json",
+            "sha256": "01be1eecc27cc806510716f6e5ed3a99c51d3a8ba88ed4c8aa1030ac6e974c9d"
+          },
+          "checks": 103,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 2382,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-downstream-v13/group1/torus8-k8-16-radial-q24-cooperative-anchor/result.json",
+            "sha256": "296bb0b5ef6bcac4c900f03c7c9e826af71a456b4e84f8dc5aa270b2425f95f3"
+          },
+          "checks": 170,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 1326846,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-downstream-v13/group2/B4-k32-q10-low16-full-initial-cycles-cap512-cooperative-anchor/result.json",
+            "sha256": "379216efbdc9983f2301176b7ea22e3faf50eb39ecdc3af06c7abd4a182cb6c8"
+          },
+          "checks": null,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 2203848,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-completion-v13/group0/B64-k32-q10-low16-full-initial-cycles-cap512-cooperative-anchor/result.json",
+            "sha256": "383a0adf0f344a129d2506e4518b731a732881d43e170779186d3ed26122f72b"
+          },
+          "checks": null,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 106636,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-completion-v13/group1/signed-anchor-cuda/result.json",
+            "sha256": "2eda8bf43fc0b40d9d0b657a6164c0436e3ac592c6004380b515e69b84516f94"
+          },
+          "checks": 1069,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 106628,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-completion-v13/group2/signed-anchor-cpu/result.json",
+            "sha256": "2dc4e5000cf20dc671c5c96e00cf06b9fb54755127f33ffd25edbff427f71297"
+          },
+          "checks": 1027,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        }
+      ],
+      "scope": "Ten strict fixed-original/shared-serial/cooperative/signed-tie and downstream bank/trajectory controls; byte equivalence, original anchors and downstream gates."
+    },
+    "batch_memory_projection": {
+      "artifact": {
+        "bytes": 51290,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/practical-batch-memory-projection-v19.json",
+        "sha256": "46d3563938ae3e2ff2696cef066c1ff60f2dbcea2b33b95f00305aecb9d26aeb"
+      },
+      "gate_passed": true,
+      "recorded_gate": null
+    },
+    "cpu_reference": {
+      "all_terminal_passed": true,
+      "records": [
+        {
+          "artifact": {
+            "bytes": 95780,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/oracle-v1/group0/reference/manifest.json",
+            "sha256": "3c3ca065218e40b6c068bbbf05cda6dadfc3b6b4e6cf434ecd5e6f9ab696a5f9"
+          },
+          "checks": null,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        }
+      ],
+      "scope": "Pinned independent79720355 CPU source; successful frozen export, source/readme and all original CPU checks retained."
+    },
+    "d1_banks": {
+      "all_terminal_passed": true,
+      "records": [
+        {
+          "artifact": {
+            "bytes": 1352,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group0/egg75-k32-radial-q24/result.json",
+            "sha256": "cc79053281df19e71bae3a79fc0f5a9d9d7900c610e9f6f62050f052606cab8b"
+          },
+          "checks": 103,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 2145,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group0/egg75-k8-16-radial-q24/result.json",
+            "sha256": "a01ed7e6af827fd3399d40d7b7d90207c755799a08f85e6ec5d3c27f96e4d0a6"
+          },
+          "checks": 170,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 1377,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group1/egg75-k32-gauss-q24/result.json",
+            "sha256": "25c92f910ef291597a06d61c4e77decc9f142e9284200abe7039644f45855a28"
+          },
+          "checks": 103,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 2185,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group1/egg75-k8-16-gauss-q24/result.json",
+            "sha256": "c1e1fee129f498d35e10667ea763bcedd97bf24a29aa471b61e27ff92067bc91"
+          },
+          "checks": 170,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 1350,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group2/torus8-k32-radial-q24/result.json",
+            "sha256": "2b6e5ec239083854cf456a4c488270b39c040fb84eb77a17482df2d18236948f"
+          },
+          "checks": 103,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 2148,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group2/torus8-k8-16-radial-q24/result.json",
+            "sha256": "e95cf82097f2f0c543a42b0fe4bbdd851367ee86764aaef4ec582b47e416026a"
+          },
+          "checks": 170,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 1376,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group3/torus8-k32-gauss-q24/result.json",
+            "sha256": "81936369605ab3511f9fb64fa9d2c39cf39f2373c9c9ab518cd5588b253e4ab8"
+          },
+          "checks": 103,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 2187,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group3/torus8-k8-16-gauss-q24/result.json",
+            "sha256": "de95b60d395e6a63a80eedb822911315dd7df87fd219c0f499e7f79fd91341a7"
+          },
+          "checks": 170,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        }
+      ],
+      "scope": "Egg75/torus8 k8/16/32 radial/retainedGauss q24;1092 checks, original K/load/full tensor/peak/NMQ gates; explicitly CPU-selected side."
+    },
+    "derived_ledger_gates_software": {
+      "artifact": {
+        "bytes": 4431,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-derived-gates-software-v19/result.json",
+        "sha256": "58ba8b2c4b91dbe726952bec859e4cf83c9d654538d84bea93081c35891faca3"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "exact_retained_ledger_receipts": {
+      "artifact": {
+        "bytes": 7847,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/retained-ledger-receipts-v19.json",
+        "sha256": "3ada6a3a123fe609fa88454bb619cf92715dc02443ebe6c5b57f12bf2c74d0a1"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "focused_shell15": {
+      "artifact": {
+        "bytes": 39,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/final-focused-v18/group0/shell-public-and-focused15/result.json",
+        "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "focused_volume11": {
+      "artifact": {
+        "bytes": 39,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/final-focused-v18/group1/volume-focused11/result.json",
+        "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "graph_family": {
+      "artifact": {
+        "bytes": 3892,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/planar-graph-family-closure-v18.json",
+        "sha256": "755cc2511d6cc3dcdbbc59159da7d7f712b659f6aeb9c53b4133747677e1f149"
+      },
+      "gate_passed": true,
+      "recorded_gate": null
+    },
+    "hierarchy_coverage": {
+      "all_terminal_passed": true,
+      "records": [
+        {
+          "artifact": {
+            "bytes": 332,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/hierarchical-query-coverage-v3/group0/query-coverage/result.json",
+            "sha256": "c4b0b1715075a0007a6178cb95ad4de59aaf2c1773dc455040b36ed3789b62e3"
+          },
+          "checks": 8300,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        }
+      ],
+      "scope": "8300 query-only checks: independent physical triangles, exact min/max, original input bytes, cells/blocks/serial task sets, seed/components, overflow, short book/saddle. No load/field qualification by itself."
+    },
+    "historical_execution_scope": {
+      "artifact": {
+        "bytes": 1868,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/historical-receipt-scope-v19.json",
+        "sha256": "f43ac1588545348f170b1c70278da1e876c933cfae4e0dec5dd93c85be6c4fed"
+      },
+      "gate_passed": true,
+      "recorded_gate": "missing_RC_not_promoted_and_replacements_recorded"
+    },
+    "huge_primary_ledger_software": {
+      "artifact": {
+        "bytes": 18695,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-huge-primary-software-v19/result.json",
+        "sha256": "7e3d958cb1c82c412b29c5ff5c30f47366e034bf05d62500506e283a91b2f11d"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "index_gzip_packet_software": {
+      "artifact": {
+        "bytes": 4328,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/packet-index-gzip-software-v19/result.json",
+        "sha256": "c50727c9c226dca1461b7f8d26d5c0b1769223f7d4024ef1d0aaf0c871bd005e"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "index_packager_source": {
+      "artifact": {
+        "bytes": 45990,
+        "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/qipc_comparison/package_cpu12_evidence.py",
+        "sha256": "64a5abaf8fe97607c0de354c0b891b3faf36a7c35b06fa857f40b5b1edd200de"
+      },
+      "gate_passed": true,
+      "git_revision": "628a169c298689d2f9913797d22bcb3628e0dda9",
+      "recorded_gate": "exact_git_blob_and_tested_source_hash"
+    },
+    "mandatory_packet_metadata": {
+      "artifact": {
+        "bytes": 3291,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/package-mandatory-metadata-software-v1/result.json",
+        "sha256": "b7eb530058127c9ab8477a7258ac8b315dacdc220e82f08354b241940f0a3318"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "material_U": {
+      "all_terminal_passed": true,
+      "records": [
+        {
+          "artifact": {
+            "bytes": 26339,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/footprint-v11/group4/material-U-k32-q48/result.json",
+            "sha256": "0753cbb11281f8759388875c374886908972e0b54de75baeb50321e20abb92b5"
+          },
+          "checks": 1060,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        }
+      ],
+      "scope": "1060 original-global-U elasticity/material-component fallback checks, both sides/friction, raw remote-load zero, q48 strict agreement, four fallback paths and lifecycle."
+    },
+    "material_final": {
+      "artifact": {
+        "bytes": 59324,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/footprint-material-qualification-v1/qualification.json",
+        "sha256": "418a780ca1a2dcc33b618da28414eba12c5d092f7869a34c703e20dd11ef2da8"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "memory_final": {
+      "artifact": {
+        "bytes": 27420857,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/final-memory-summary-v19.json",
+        "sha256": "b82f9d4d6a5800218196a1e160b7a4b3a697b71e258aeaf76f0efbf7cb715d77"
+      },
+      "gate_passed": true,
+      "recorded_gate": "overall_qualified"
+    },
+    "memory_terminal": {
+      "artifact": {
+        "bytes": 35284,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/final-memory-terminal-audit-v19.json",
+        "sha256": "2fc221e14ab31868f90d97f2b5094fb28e3513cb61ed50a3cc1bfa1dcab67433"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "original_operators": {
+      "all_terminal_passed": true,
+      "records": [
+        {
+          "artifact": {
+            "bytes": 348,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/operators-v0/group0/operators-egg75/result.json",
+            "sha256": "45bb8dc08f0d6887676a50ab19f720aeb3678c09e68d29a7589ad06a597ebcba"
+          },
+          "checks": 36,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 348,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/operators-v0/group1/operators-torus8/result.json",
+            "sha256": "9bfe8a508c4cce262efbdaf15907e7fd5ffcffbb427431382ed00d540165e517"
+          },
+          "checks": 36,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        }
+      ],
+      "scope": "Original Q4 K/mass/operators and native-gauge independent solve, egg and torus;36 checks per bank."
+    },
+    "owned_source_delivery": {
+      "artifact": {
+        "bytes": 38067,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/owned-source-hash-delivery-v19.json",
+        "sha256": "6ffd1807264a1b6396f69d116eddf5e332dd354d73e855044226566ab2f12daa"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "packet_preflight_audit": {
+      "artifact": {
+        "bytes": 1926,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/packet-preflight-verification-v19.json",
+        "sha256": "a5a13cf73e44f6c040816eb047d02882f33c497fc980a51a70b20baf92cae8fa"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "packet_preflight_retention": {
+      "artifact": {
+        "bytes": 36686,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/packet-preflight-retention-v19.json",
+        "sha256": "364a55ab4b8e671dd86f67190c5b82589b5cb19c122d161e5bd0fbee7c0c725e"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "policy_blocks128_v17": {
+      "all_terminal_passed": true,
+      "records": [
+        {
+          "artifact": {
+            "bytes": 1401827,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/policy-blocks-cap128-v17/group0/B4-policy-k32-q10-low24-full-711-blocks-cap128-cooperative/result.json",
+            "sha256": "1392e3c48298e9b815dddd91a8c094b2759837dd6e4966f75a38c1b1e09eae28"
+          },
+          "checks": null,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 2334506,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/policy-blocks-cap128-v17/group1/B64-policy-k32-q10-low16-full-1192-blocks-cap128-cooperative/result.json",
+            "sha256": "0a4b79327d624410f863a56040de7173b1149b9070c301b9c23d4470b3123eb3"
+          },
+          "checks": null,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        }
+      ],
+      "scope": "Actual stress-feedback inference B4/711 and B64/1192, k32q10 blocks cap128 coops, low24/16 resolved48; original numerical/spatial/source/lifecycle gates and inherited k16 targets."
+    },
+    "policy_graphs_off": {
+      "artifact": {
+        "bytes": 4056617,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/policy-blocks-cap128-graphs-off-qualification-v19.json",
+        "sha256": "894647e53e5dead772c1379be2c033bf13ff6bdbc5876135e19c855e90f56d2f"
+      },
+      "gate_passed": true,
+      "recorded_gate": "all_terminal_passed"
+    },
+    "policy_v15": {
+      "all_terminal_passed": true,
+      "records": [
+        {
+          "artifact": {
+            "bytes": 1332487,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/policy-trajectory-v15/group0/B4-policy-k32-q10-low24-full-711-cap512-cooperative/result.json",
+            "sha256": "18e81e2911d237817a8b17fe5f1e72c3e0f3ad30a9036d9d291a999e7761ece5"
+          },
+          "checks": null,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 2217658,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/policy-trajectory-v15/group1/B64-policy-k32-q10-low16-full-1192-cap512-cooperative/result.json",
+            "sha256": "ee13323ec93806af57ded2f8d6c1d6e0b408cd0425967f350a89a75036127672"
+          },
+          "checks": null,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        }
+      ],
+      "scope": "Actual seeded random-MLP stress-feedback inference; B4/711 lowQ4q24 and B64/1192 lowQ4q16, both resolvedq48, k32q10 cap512 coops. Not training."
+    },
+    "preservation_delivery": {
+      "artifact": {
+        "bytes": 49490,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/preservation-delivery-review-v19.json",
+        "sha256": "5815b357d826fec245b7bc087cddbe0e18e51e2e6df225a29c0c61253c7071d6"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "preservation_delivery_index": {
+      "artifact": {
+        "bytes": 68998,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/preservation-delivery-index-v19.json",
+        "sha256": "40f45c30cd4c496335acf2762588052f735341f5ff1a71b9e1cbb79b0f5857d1"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "preservation_final": {
+      "artifact": {
+        "bytes": 181281,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/preservation-final-v19.json",
+        "sha256": "da93cd3fd0e0d8cbef23282e64d71f5f97f2b4b36de8d81cddbd0aec8721042c"
+      },
+      "gate_passed": true,
+      "recorded_gate": "preservation_passed"
+    },
+    "preservation_refresh": {
+      "artifact": {
+        "bytes": 27176,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/preservation-refresh-v19.json",
+        "sha256": "b7684dfee6cbcd936d0374c605557432a6861e28ccae498dd37d83127a809d18"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "primary_final": {
+      "artifact": {
+        "bytes": 1164302888,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/primary-summary-v19.json",
+        "sha256": "96c1a03855499c7690f070789b207d0d4b05c77805d2420a7dbf3d980428c30c"
+      },
+      "gate_passed": true,
+      "read_verification": {
+        "compact_artifact": {
+          "bytes": 733508,
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/primary-summary-compact-v19.json",
+          "sha256": "a6e60e89cedf790fb28389bb697e3167708246e116a9cb50e6d092f42606cf70"
+        },
+        "compact_bound_to_full_identity": true,
+        "full_blocks_and_cohorts_read_directly": true,
+        "full_bytes_hashed": 1164302888,
+        "full_payload_materialized": false,
+        "full_root_flags_read_directly": true,
+        "matrix": {
+          "blocks": 48,
+          "cohorts": 16,
+          "tasks": 168
+        },
+        "mode": "fixed_full_stream_hash_and_bounded_root_with_authenticated_compact",
+        "root_prefix_limit_bytes": 65536,
+        "root_suffix_limit_bytes": 2097152,
+        "scope": "The entire omitted tasks body matches the fixed already-qualified full SHA; this is bounded metadata assembly, not a new scientific qualification."
+      },
+      "recorded_gate": "primary_qualified"
+    },
+    "primary_routes": {
+      "artifact": {
+        "bytes": 121143,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/primary-route-summary-v19.json",
+        "sha256": "f906fa0f30bec48ef055cfbb396d3e5c8b2633ad74073d8ce7b40bd78db76f14"
+      },
+      "gate_passed": true,
+      "recorded_gate": [
+        "complete",
+        "passed",
+        "primary_qualified"
+      ]
+    },
+    "primary_scaling": {
+      "artifact": {
+        "bytes": 268989,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/primary-scaling-v19.json",
+        "sha256": "0a1e80aac9ddd749d2c222c17db8dc6c16defdc7507b20d38249ab4968175c11"
+      },
+      "gate_passed": true,
+      "recorded_gate": [
+        "complete",
+        "passed",
+        "primary_qualified"
+      ]
+    },
+    "primitives": {
+      "all_terminal_passed": true,
+      "records": [
+        {
+          "artifact": {
+            "bytes": 11868,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/primitives-v2/group0/primitives/result.json",
+            "sha256": "a948d3a87b66266a6a4d6ec4ea03bf020b60cbfd48f20523d62bd46f60b65e64"
+          },
+          "checks": 77,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        }
+      ],
+      "scope": "77 geometry, exact contained/clipped controls, virtual-work and rigid-motion checks; no full-scene throughput claim."
+    },
+    "profile_final": {
+      "artifact": {
+        "bytes": 7176541,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/final-profile-summary-v19.json",
+        "sha256": "4453fde71de2b0006bea05de8246d5cbbb57542da4f0decea42a758c7698c033"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "public_api": {
+      "all_terminal_passed": true,
+      "records": [
+        {
+          "artifact": {
+            "bytes": 39,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/public-planar-v1/group0/public-shell-loading/result.json",
+            "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+          },
+          "checks": null,
+          "complete": null,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        }
+      ],
+      "scope": "Twelve earlier public Q4/planar API tests, direct/inverse, max/full, cadence, release/reset/checkpoint; requalification needed on final source/default."
+    },
+    "radial_math": {
+      "all_terminal_passed": true,
+      "records": [
+        {
+          "artifact": {
+            "bytes": 6786,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/radial-math-v4/group0/radial-math/result.json",
+            "sha256": "a06c43365417b7423ce249aa65a8f5762c56d1b16f42bd54d10b71c0d4eac01d"
+          },
+          "checks": 267,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        }
+      ],
+      "scope": "267 independently high-precision primitive/radial/active-angular checks plus original q24 numerical port; earlier failures retained."
+    },
+    "raw_packet_software": {
+      "artifact": {
+        "bytes": 5935,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/package-primary-raw-software-v1/result.json",
+        "sha256": "26d8c73379b0bfe1c037842b566cb9422f81c39954b695dc9d7adc6df9ec1b98"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "remote_source_archive": {
+      "artifact": {
+        "bytes": 11780,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/frozen-source-archive-verified-v19.json",
+        "sha256": "33701a0f1e7a3fef167db4119762fce0dbaa93a36076b0aaf3e9579ea9d7e7a1"
+      },
+      "gate_passed": true,
+      "recorded_gate": null
+    },
+    "reproduction_inputs": {
+      "artifact": {
+        "bytes": 1339,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/reproduction-inputs-v19.json",
+        "sha256": "1a33841bb0b022dd2f69989dcc170d0a25059666399cfbe9dfaabe4a081c8900"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "scripted_k32": {
+      "all_terminal_passed": true,
+      "records": [
+        {
+          "artifact": {
+            "bytes": 1326735,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/k32-trajectory-v11/group0/B4-k32-q10-low16-full-initial-cycles-cap512/result.json",
+            "sha256": "cf772caec0bffb84e154587ea4d9e9745366825828b3f0155c243e5d46a40d6f"
+          },
+          "checks": null,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 2203663,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/k32-trajectory-v11/group1/B64-k32-q10-low16-full-initial-cycles-cap512/result.json",
+            "sha256": "5d2d2de6a734a5c8eab7c63d69d0872c6c813615d8ed2b77b19581079b1609ea"
+          },
+          "checks": null,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        }
+      ],
+      "scope": "Actual production both-side scripted B4/711 and B64/1192, k32q10 cap512 with lowQ4q16/resolvedq48; all original and inherited k16 gates."
+    },
+    "source_inheritance": {
+      "artifact": {
+        "bytes": 1866,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/final-v19-source-inheritance.json",
+        "sha256": "b6257ad5334a8669d5f7b605efedfb9dff563672f264d388f11513d913f3a007"
+      },
+      "gate_passed": true,
+      "recorded_gate": "v18_to_v19_genesis_and_tests_byte_identical"
+    },
+    "static_final": {
+      "artifact": {
+        "bytes": 44380,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/final-owned-static-check-v19.json",
+        "sha256": "61d8331e19b98aa181d8f5f9f5315a24914a2c23c70bfc0ac3b83d27a65bc09d"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "static_index_final": {
+      "artifact": {
+        "bytes": 46657,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/final-owned-static-check-index-v19.json",
+        "sha256": "2bf6aa1b2061c367c2657ad0ece815ab349e98b15dad11ca2319a22db09d469c"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "stream_verifier_software": {
+      "artifact": {
+        "bytes": 3573,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/verify-primary-stream-software-v19/result.json",
+        "sha256": "5a3b26f6783235711e85826b6cb60d62fda51c84f72b3cfaef2a1bec5a938a4f"
+      },
+      "gate_passed": true,
+      "recorded_gate": "passed"
+    },
+    "temporal_fusion": {
+      "artifact": {
+        "bytes": 11340,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/planar-temporal-fusion-assessment-v1.json",
+        "sha256": "f2fa0bc09cc3b8272809063cce235d6e187af476e031b3ee05ec5d9d19cbc90f"
+      },
+      "gate_passed": true,
+      "recorded_gate": null
+    },
+    "volume_control": {
+      "all_terminal_passed": true,
+      "records": [
+        {
+          "artifact": {
+            "bytes": 53594,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/volume-baseline-controls/group0/angle-q128-policy730/result.json",
+            "sha256": "c235ca14036ba1306914c880df620b79ee56cd3c4d31174123d7785b30babcba"
+          },
+          "checks": null,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 53589,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/volume-baseline-controls/group1/edge-q16-scripted730/result.json",
+            "sha256": "77bd2706d34fcf3da3ee1ab7b0f2ede067d68128bcf6f82b00f760caa0c3dcb9"
+          },
+          "checks": null,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        }
+      ],
+      "scope": "Volume angle/q128 policy730 and original edge/q16 scripted730 retained; edge/q16 policy tick606 rejection is a separate preserved negative."
+    },
+    "volume_fields": {
+      "artifact": {
+        "bytes": 179377,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/volume-q128-scheduling-fields-qualification-v18.json",
+        "sha256": "979ec265a32ec3e6ae4f67f2b788c341770dbc833c2017a35c52acc13f3696c8"
+      },
+      "gate_passed": true,
+      "recorded_gate": "all_terminal_passed"
+    },
+    "volume_scheduling": {
+      "artifact": {
+        "bytes": 24332,
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/volume-q128-scheduling-summary-v18.json",
+        "sha256": "8768f4f9ebcd0610a5f0f8cdee40724f3030e68410f751fece4c47646a9dc061"
+      },
+      "gate_passed": true,
+      "recorded_gate": "all_eight_zero_invalid_and_overflow"
+    },
+    "warped_tie": {
+      "all_terminal_passed": true,
+      "records": [
+        {
+          "artifact": {
+            "bytes": 18536,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/footprint-v11/group1/guards-k4-k8-k16-k32-q48/result.json",
+            "sha256": "7e2fc81b2750c7a6ec5619dc40d851474c87b44e71d732c67682ed1de75ca38c"
+          },
+          "checks": 892,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 9191,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/footprint-v11/group2/guards-k32-q10/result.json",
+            "sha256": "d7c00e3f9e83b46d90ed9ddb22950f0032b424d0a5c618734388933c21ef6d4a"
+          },
+          "checks": 213,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        },
+        {
+          "artifact": {
+            "bytes": 9197,
+            "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/footprint-v11/group3/guards-k32-q16/result.json",
+            "sha256": "cdb3a09958bb6fe7f1373bacaaa6a9b6be3025a9411ba133c8b377d27fb024c2"
+          },
+          "checks": 213,
+          "complete": true,
+          "passed": true,
+          "returncode": 0,
+          "terminal_passed": true
+        }
+      ],
+      "scope": "Warped miss/normal-error .005R and tie guards;892 q48 checks at k4/8/16/32 and213 each k32 q10/q16. Guard-only tie is not an elastic solve."
+    }
+  },
+  "goal": {
+    "bytes": 7222,
+    "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/docs/PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md",
+    "sha256": "3ae5e4bb2062789fa4d4e2197d0d9844616e3c6162aff76e50ce67b55a3a98e7"
+  },
+  "goal_complete": true,
+  "maintained_source": "6dedc79579ac0d113e4baac26eb538bcf51ca57d",
+  "optimization_families": [
+    {
+      "decision": "retain",
+      "evidence": [
+        "primitives",
+        "d1_banks",
+        "memory_final"
+      ],
+      "family": "fixed_geometry_compact_maps_offline_refinement",
+      "pending_evidence": [],
+      "reason": "Compact native QD geometry/maps;1452/1446 elastic DOF unchanged."
+    },
+    {
+      "decision": "retain_for_k16_k32",
+      "evidence": [
+        "material_U",
+        "warped_tie",
+        "hierarchy_coverage",
+        "material_final",
+        "primary_final"
+      ],
+      "family": "material_candidate_query_hierarchy",
+      "pending_evidence": [],
+      "reason": "4x4 conservative blocks qualify exact8300 query checks and1092 bank checks; k8 has no useful measured benefit."
+    },
+    {
+      "decision": "no_new_cross_step_cache",
+      "evidence": [
+        "anchor_strict",
+        "policy_blocks128_v17",
+        "temporal_fusion"
+      ],
+      "family": "temporal_witness_support_reuse",
+      "pending_evidence": [],
+      "reason": "Five actual moving input snapshots differ; retain within-step G/H and clip reuse. No invented cache hit rate or universal negative."
+    },
+    {
+      "decision": "retain",
+      "evidence": [
+        "primitives",
+        "radial_math",
+        "d1_banks",
+        "primary_final"
+      ],
+      "family": "contained_analytic_pressure_positivity",
+      "pending_evidence": [],
+      "reason": "Qualified contained moment and actual-section positivity path; actual analytic counts remain separate from whole-path benefit."
+    },
+    {
+      "decision": "retain",
+      "evidence": [
+        "radial_math",
+        "d1_banks",
+        "primary_final"
+      ],
+      "family": "clipped_boundary_exact_radial_nonnegative_fit",
+      "pending_evidence": [],
+      "reason": "Law-preserving exact radial primitive, angular active splits and nonnegative pressure fit; Gauss control retained."
+    },
+    {
+      "decision": "retain",
+      "evidence": [
+        "primitives",
+        "radial_math",
+        "hierarchy_coverage",
+        "profile_final"
+      ],
+      "family": "empty_zero_and_fit_scatter_reuse",
+      "pending_evidence": [],
+      "reason": "Existing zero filters and once-per-task clipping/GH preparation; original pressure/support semantics remain."
+    },
+    {
+      "decision": "retain",
+      "evidence": [
+        "d1_banks",
+        "hierarchy_coverage",
+        "policy_blocks128_v17",
+        "primary_final",
+        "memory_final"
+      ],
+      "family": "packing_layout_work_grouping",
+      "pending_evidence": [],
+      "reason": "Packed sources, contiguous task layout and per-environment cooperative work; no unsafe cross-contact pressure aggregation."
+    },
+    {
+      "decision": "archived_negative",
+      "evidence": [],
+      "family": "fixed_smaller_launch_grid",
+      "pending_evidence": [],
+      "reason": "W512/2048/4096 all numerical positive but slowerB1024; production removed, sourcea26cc3e93 retained."
+    },
+    {
+      "decision": "retain",
+      "evidence": [
+        "anchor_strict",
+        "policy_v15",
+        "policy_blocks128_v17",
+        "primary_final"
+      ],
+      "family": "cooperative_anchor",
+      "pending_evidence": [],
+      "reason": "Strict bit-exact serial/cooperative anchor; useful shared whole-module gain; CPU/no-pool and volume inline remain serial."
+    },
+    {
+      "decision": "retain_existing_fusion",
+      "evidence": [
+        "original_operators",
+        "d1_banks",
+        "public_api",
+        "primary_final",
+        "profile_final"
+      ],
+      "family": "batched_response_solve_stress_max_full_fusion",
+      "pending_evidence": [],
+      "reason": "Same Q4 inverse response, full/global sampled max and acceptance retained; trace joint stages are explicitly inseparable."
+    },
+    {
+      "decision": "select_job_local_graphs_off",
+      "evidence": [
+        "policy_blocks128_v17",
+        "graph_family",
+        "primary_final"
+      ],
+      "family": "graphs_device_scheduling_avoided_copies",
+      "pending_evidence": [],
+      "reason": "Bounded actual graph on/off controls favor off for this workload; every final primary has environment/import-order receipt; screen wrapper separately reads the imported constant. No new persistent graph claimed."
+    },
+    {
+      "decision": "select_cap128",
+      "evidence": [
+        "material_U",
+        "warped_tie",
+        "policy_blocks128_v17",
+        "primary_final",
+        "memory_final"
+      ],
+      "family": "capacity_fallback_buffers_memory_and_scaling",
+      "pending_evidence": [],
+      "reason": "Actual full-policy task peaks50/63; cap256 has no useful gain and larger memory; cap1 nested fallback remains worst-case auxiliary. Scaling follows frozen practical-range rule."
+    },
+    {
+      "decision": "preserve_prior_scope",
+      "evidence": [],
+      "family": "prior_Atlas_H_FP32_screen_history",
+      "pending_evidence": [],
+      "reason": "Prior Atlas/H/FP32/screen/history negatives retained with committed reports/pins; no unchanged expensive rerun."
+    },
+    {
+      "decision": "retain_fused",
+      "evidence": [
+        "volume_scheduling",
+        "volume_fields"
+      ],
+      "family": "volume_q128_fused_or_separate_scheduling",
+      "pending_evidence": [],
+      "reason": "Bounded8worker screen plus same-frozen-input full-field gates; B4 and policy favor fused, B1024module0.24% single-repeat difference is not useful gain."
+    }
+  ],
+  "pending_evidence": [],
+  "qualification_receipts_complete": true,
+  "requirements": [
+    {
+      "goal_lines": [
+        10,
+        18
+      ],
+      "id": "R01",
+      "pending_evidence": [],
+      "remaining_or_limit": "Independent CPU797 source/export remains immutable; k8/k16/k32 egg/torus controls and final blocks banks pass.",
+      "required_clause": "Use independent CPU79720355 reference and first match k8/k16 controls.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "cpu_reference",
+        "d1_banks",
+        "source_inheritance"
+      ]
+    },
+    {
+      "goal_lines": [
+        19,
+        28
+      ],
+      "id": "R02",
+      "pending_evidence": [],
+      "remaining_or_limit": "Original Q4 K/mass/gauge/relief/response/full-stress remain;1452 raw/1446 free DOF. F18/F19 native/tests bytes equal; final26 focused regressions pass.",
+      "required_clause": "Keep original Q4 stiffness, mass, gauge, inertia relief, response, stress space and elastic DOF.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "original_operators",
+        "d1_banks",
+        "public_api",
+        "source_inheritance",
+        "focused_shell15",
+        "focused_volume11"
+      ]
+    },
+    {
+      "goal_lines": [
+        27,
+        34
+      ],
+      "id": "R03",
+      "pending_evidence": [],
+      "remaining_or_limit": "Native inner/outer triangles with consistent J/J-transpose pass work/rigid/source controls; final memory inventories label shared and per-environment storage separately.",
+      "required_clause": "Prepare inner/outer physical triangles and consistent J maps offline; f=J^Tg preserves virtual work and rigid motion.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "primitives",
+        "d1_banks",
+        "material_U",
+        "memory_final"
+      ]
+    },
+    {
+      "goal_lines": [
+        35,
+        40
+      ],
+      "id": "R04",
+      "pending_evidence": [],
+      "remaining_or_limit": "Original curvature/radius/point/anchor/F/friction and surface-ball Hertz pressure law retained; exact source input identities qualified separately from elasticity.",
+      "required_clause": "Keep original geometry/curvature Hertz sizing, source positions/forces/friction and sphere-ball pressure law.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "primitives",
+        "radial_math",
+        "scripted_k32",
+        "policy_v15",
+        "policy_blocks128_v17",
+        "policy_graphs_off"
+      ]
+    },
+    {
+      "goal_lines": [
+        44,
+        46
+      ],
+      "id": "R05",
+      "pending_evidence": [],
+      "remaining_or_limit": "Native floating construction/runtime in Quadrants; independent CPU remains oracle. No host floating preparation substituted into production.",
+      "required_clause": "Floating preparation/runtime stay native Quadrants in existing rigid feature; CPU remains oracle.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "primitives",
+        "d1_banks",
+        "hierarchy_coverage"
+      ]
+    },
+    {
+      "goal_lines": [
+        48,
+        51
+      ],
+      "id": "R06",
+      "pending_evidence": [],
+      "remaining_or_limit": "Contained analytic moments use actual section affine-pressure positivity; no assumed universal contained-frequency gain.",
+      "required_clause": "Exact contained-section G/H path with actual-section affine-pressure positivity.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "primitives",
+        "radial_math",
+        "d1_banks"
+      ]
+    },
+    {
+      "goal_lines": [
+        48,
+        51
+      ],
+      "id": "R07",
+      "pending_evidence": [],
+      "remaining_or_limit": "Radial analytical primitive plus angular/active-pressure splits and nonnegative fit qualify against Gauss/CPU/resolvedQ4. CPU one-side and production both-side scopes remain distinct.",
+      "required_clause": "Accurate clipped/multiface integration and nonnegative fitting with consistent load map on both sides.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "radial_math",
+        "d1_banks",
+        "scripted_k32",
+        "policy_blocks128_v17",
+        "policy_graphs_off"
+      ]
+    },
+    {
+      "goal_lines": [
+        53,
+        58
+      ],
+      "id": "R08",
+      "pending_evidence": [],
+      "remaining_or_limit": "Actual moving stress-feedback inference and scripted histories pass original1e-8 application-point source gates. Legacy origin diagnostic2/9 failures retained with exact same-fit/raw witnesses.",
+      "required_clause": "Moving/asymmetric normal/friction contacts, original application-point moments and continuous histories.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "scripted_k32",
+        "anchor_strict",
+        "policy_v15",
+        "policy_blocks128_v17",
+        "policy_graphs_off"
+      ]
+    },
+    {
+      "goal_lines": [
+        55,
+        58
+      ],
+      "id": "R09",
+      "pending_evidence": [],
+      "remaining_or_limit": "U and open30 book qualify full loads/fields/NMQ and lifecycle. Actual shared edge must lie in open ball; uncertain parent connectivity is rejected. Extreme closed-book original-K negative remains unqualified.",
+      "required_clause": "Respect connected material sheets despite close spatial surfaces and shared authored parent adjacency.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "material_U",
+        "warped_tie",
+        "hierarchy_coverage",
+        "material_final"
+      ]
+    },
+    {
+      "goal_lines": [
+        56,
+        58
+      ],
+      "id": "R10",
+      "pending_evidence": [],
+      "remaining_or_limit": "Bounded seam/edge/junction/slot/recontact/heterogeneous histories pass. Sufficient topology certificate does not guarantee all arbitrary nonconvex stress fields.",
+      "required_clause": "Triangle seams/Q4 edges/junctions, slot changes, release/recontact and heterogeneous contacts.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "primitives",
+        "material_U",
+        "warped_tie",
+        "hierarchy_coverage",
+        "policy_blocks128_v17",
+        "material_final"
+      ]
+    },
+    {
+      "goal_lines": [
+        57,
+        58
+      ],
+      "id": "R11",
+      "pending_evidence": [],
+      "remaining_or_limit": "Partial reset/checkpoint/release/restore isolate environments; final focused26 regressions and material56phase coverage pass.",
+      "required_clause": "Partial reset and checkpoint restore isolate selected environments and invalidate derived outputs.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "material_U",
+        "public_api",
+        "scripted_k32",
+        "policy_blocks128_v17",
+        "material_final",
+        "source_inheritance",
+        "focused_shell15",
+        "focused_volume11"
+      ]
+    },
+    {
+      "goal_lines": [
+        60,
+        64
+      ],
+      "id": "R12",
+      "pending_evidence": [],
+      "remaining_or_limit": "Warped normal guard .005R and unsupported proxy cases with certified original material components take original whole-environment fallback; uncertified original connectivity remains MATERIAL rejection, not a passing fallback; final timed route counts include fallback work. cap1 also restricts original face workspace and is only a worst-case nested-overflow control.",
+      "required_clause": "Required warped miss/unsupported geometry uses qualified original fallback; report route frequency and cost.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "warped_tie",
+        "material_U",
+        "hierarchy_coverage",
+        "material_final",
+        "primary_final",
+        "primary_routes"
+      ]
+    },
+    {
+      "goal_lines": [
+        66,
+        68
+      ],
+      "id": "R13",
+      "pending_evidence": [],
+      "remaining_or_limit": "Original unscaled K1e-8/1e-11, CPU operator1e-10 and loads/fields1e-8 remain separate from loading approximation. No source-force-only field certificate.",
+      "required_clause": "Same-space K/load/residual gates remain separate from proxy spatial errors.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "original_operators",
+        "d1_banks",
+        "scripted_k32",
+        "policy_blocks128_v17"
+      ]
+    },
+    {
+      "goal_lines": [
+        67,
+        69
+      ],
+      "id": "R14",
+      "pending_evidence": [],
+      "remaining_or_limit": "Full tensor/global sampled peak/NMQ compare against resolvedQ4q48; lowQ4q24(B4)/q16(B64) integration uncertainty and planar/lowQ4 also recorded.",
+      "required_clause": "Compare full tensors/global sampled peaks/NMQ against original Q4 with independently resolved integration.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "d1_banks",
+        "scripted_k32",
+        "policy_v15",
+        "policy_blocks128_v17",
+        "policy_graphs_off"
+      ]
+    },
+    {
+      "goal_lines": [
+        69,
+        74
+      ],
+      "id": "R15",
+      "pending_evidence": [],
+      "remaining_or_limit": "Original budgets frozen; k32 inherits k16 field.005/peak.003/N.0015/M.0075/Q.004. Retain k8/k16 trajectory negatives, originalQ4q10 errno128 and old warped .01R failure.",
+      "required_clause": "Frozen original spatial budgets and inherited CPU fidelity targets; retain every rejection and uncertainty.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "d1_banks",
+        "scripted_k32",
+        "policy_v15",
+        "policy_blocks128_v17",
+        "policy_graphs_off"
+      ]
+    },
+    {
+      "goal_lines": [
+        70,
+        74
+      ],
+      "id": "R16",
+      "pending_evidence": [],
+      "remaining_or_limit": "Egg/torus/U/open30 include remote material/hotspot controls. Closed-fold ill-conditioned original-K negative retained. Same-Q4 discrete qualification is not continuum/sharp-edge convergence.",
+      "required_clause": "Egg plus bounded convex/nonconvex/remote-hotspot controls; prior continuum-convergence scope preserved.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "d1_banks",
+        "material_U",
+        "warped_tie",
+        "hierarchy_coverage",
+        "material_final"
+      ]
+    },
+    {
+      "goal_lines": [
+        78,
+        99
+      ],
+      "id": "R17",
+      "pending_evidence": [],
+      "remaining_or_limit": "Initial integrated profiles motivated coops/radial/blocks; bounded A/B and final14 intrusive profiles retain combined bottlenecks and stage-fusion limits.",
+      "required_clause": "Profile actual integrated stages before optimizing, combine winners and assess every applicable family.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "d1_banks",
+        "radial_math",
+        "anchor_strict",
+        "hierarchy_coverage",
+        "profile_final",
+        "primary_final"
+      ]
+    },
+    {
+      "goal_lines": [
+        84,
+        86
+      ],
+      "id": "R18",
+      "pending_evidence": [],
+      "remaining_or_limit": "Compact geometry/J, conservative blocks and exact material witness retained; coverage8300 and blocks banks1092 pass. Cross-step cache explicitly not adopted without useful invariant evidence.",
+      "required_clause": "Compact fixed geometry/maps, offline refinement, bounds and material-aware candidate queries/witness reuse.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "primitives",
+        "material_U",
+        "hierarchy_coverage",
+        "temporal_fusion",
+        "memory_final"
+      ]
+    },
+    {
+      "goal_lines": [
+        86,
+        88
+      ],
+      "id": "R19",
+      "pending_evidence": [],
+      "remaining_or_limit": "Contained/empty/clip/GH reuse and exact radial retained; actual final route frequencies and wall/memory cost are recorded without conflating analytic count with whole-path speedup.",
+      "required_clause": "Contained moments, zero-work removal, clip/fit/scatter reuse and efficient clipped integration.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "primitives",
+        "radial_math",
+        "d1_banks",
+        "primary_final",
+        "primary_routes"
+      ]
+    },
+    {
+      "goal_lines": [
+        88,
+        90
+      ],
+      "id": "R20",
+      "pending_evidence": [],
+      "remaining_or_limit": "Packing/continuous ranges/coops and original batched response retained. Fixed smaller launch grid is a measured negative archived at a26cc3e93. Final batches4/1024/8192/32768 use matched repeats.",
+      "required_clause": "Packing/grouping/batched response/cooperative execution/layout/batch scaling.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "d1_banks",
+        "anchor_strict",
+        "hierarchy_coverage",
+        "policy_blocks128_v17",
+        "primary_final",
+        "memory_final"
+      ]
+    },
+    {
+      "goal_lines": [
+        90,
+        94
+      ],
+      "id": "R21",
+      "pending_evidence": [],
+      "remaining_or_limit": "FinalGraphOff uses pre-import helper/environment receipts plus fixed import semantics; benchmark field is environment-derived, not a direct library constant readback. Fused/anchor/query actual modes checked per receipt. Shell recovery and volume post fusion have joint trace categories. No dropped support semantics, host oracle or profiler inside primary timer.",
+      "required_clause": "Fusion, graphs, device scheduling, avoided copies/sync, max/full and fallback buffers preserve support semantics.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "material_U",
+        "public_api",
+        "policy_blocks128_v17",
+        "graph_family",
+        "volume_scheduling",
+        "profile_final",
+        "primary_final"
+      ]
+    },
+    {
+      "goal_lines": [
+        96,
+        100
+      ],
+      "id": "R22",
+      "pending_evidence": [],
+      "remaining_or_limit": "Prior Atlas/H/FP32/screen/history reports and restoration pins retained; changed query workload justifies only new hierarchy tuning, not unchanged broad reruns.",
+      "required_clause": "Reuse current winners and retain scoped Atlas/H/FP32/screen/history negatives unless new profile warrants reopening.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "radial_math",
+        "anchor_strict"
+      ]
+    },
+    {
+      "goal_lines": [
+        104,
+        108
+      ],
+      "id": "R23",
+      "pending_evidence": [],
+      "remaining_or_limit": "Formal168 fresh workers/16cohorts/48blocks, three paired repeats of600steps, four batches,max/full,module/policy. Plateau decision follows frozen8192-to32768 rule, not a global throughput-maximum claim.",
+      "required_clause": "Matched Q4/planar/volume/pureRigid frozen modules and full Franka inference across small/large/plateau max/full.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "primary_final",
+        "primary_scaling",
+        "batch_memory_projection"
+      ]
+    },
+    {
+      "goal_lines": [
+        108,
+        114
+      ],
+      "id": "R24",
+      "pending_evidence": [],
+      "remaining_or_limit": "Strict identities include source/task/args/PID/output/GPU/allocation, exact actual MLP weights and module physical sources, all zero-invalid/full-interval route gates. Original repeats and per-environment arrays enter mandatory lossless compact raw receipts.",
+      "required_clause": "Complete identities, paired repeats, original runtime validity, fallback counts; primary wall separate from intrusive exports.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "primary_final",
+        "raw_packet_software",
+        "mandatory_packet_metadata",
+        "derived_ledger_gates_software",
+        "stream_verifier_software",
+        "huge_primary_ledger_software",
+        "index_gzip_packet_software",
+        "index_packager_source",
+        "packet_preflight_audit",
+        "packet_preflight_retention"
+      ]
+    },
+    {
+      "goal_lines": [
+        111,
+        114
+      ],
+      "id": "R25",
+      "pending_evidence": [],
+      "remaining_or_limit": "Final14 profile workers retain query/integration-fit/scatter/joint-response-output/check/scheduling categories and kernel counts. Device sums may overlap; fused stages not fabricated by subtraction.",
+      "required_clause": "Report query/integration-fit/scatter/response/stress/output/acceptance/scheduling profiles with preparation.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "profile_final"
+      ]
+    },
+    {
+      "goal_lines": [
+        113,
+        114
+      ],
+      "id": "R26",
+      "pending_evidence": [],
+      "remaining_or_limit": "Final28 own-PID memory workers separate native groups/equal-pointer dedup, sampled NVIDIA lowerbound and process RSS highwater. Whole-constructor/JIT setup is measured; isolated proxy preparation is not claimed.",
+      "required_clause": "Measure preparation, shared/per-env storage and sampled own-process/device memory with honest scope.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "memory_final",
+        "memory_terminal",
+        "batch_memory_projection"
+      ]
+    },
+    {
+      "goal_lines": [
+        116,
+        119
+      ],
+      "id": "R27",
+      "pending_evidence": [],
+      "remaining_or_limit": "Qualified explicitk32/q10/radial/blocks/cap128/FP64/history0/GraphOff. Concrete <=10MiB preflight passes full original168 raw/vector identities,48blocks/16cohorts/144ratio summaries, full summary gzip and input checks. B4module slowdown and greater planar memory remain. Final published packet hashes are independently verified by external sidecars.",
+      "required_clause": "Deliver recommended qualified small public configuration, runnable evidence and final accuracy/time/memory decisions.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "accuracy_final",
+        "primary_final",
+        "memory_final",
+        "profile_final",
+        "reproduction_inputs",
+        "exact_retained_ledger_receipts",
+        "packet_preflight_audit",
+        "packet_preflight_retention"
+      ]
+    },
+    {
+      "goal_lines": [
+        116,
+        119
+      ],
+      "id": "R28",
+      "pending_evidence": [],
+      "remaining_or_limit": "Original12/33old/31new source identities and36owned files preserved; only metadata packager subsequently changes as tested/pinned. All failed/negative evidence and three missing historical task RCs remain explicit; replacements qualified. af7abc source has remote archive tag. Actual publication is recorded outside the hashed packet.",
+      "required_clause": "Preserve original unfinished work and immutable evidence, retain useful changes and archive unhelpful increments with pins.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "preservation_final",
+        "preservation_refresh",
+        "preservation_delivery",
+        "static_final",
+        "raw_packet_software",
+        "mandatory_packet_metadata",
+        "remote_source_archive",
+        "exact_retained_ledger_receipts",
+        "static_index_final",
+        "owned_source_delivery",
+        "preservation_delivery_index",
+        "historical_execution_scope"
+      ]
+    },
+    {
+      "goal_lines": [
+        23,
+        25
+      ],
+      "id": "R29",
+      "pending_evidence": [],
+      "remaining_or_limit": "Volume remains independent model: angle/q128 fused baseline valid, shared coops benefit separately measured. Same-frozen-input scheduling field gates pass. Original edge/q16 policy rejection retained; no inherited shell field certificate.",
+      "required_clause": "Keep volume FEM available as a matched reference and apply useful shared native optimizations without inheriting shell-specific stress certificates.",
+      "status": "delivered_with_recorded_scope",
+      "terminal_evidence_ids": [
+        "volume_control",
+        "anchor_strict",
+        "volume_fields",
+        "volume_scheduling",
+        "primary_final",
+        "memory_final"
+      ]
+    }
+  ],
+  "schema": "genesis.planar-delivery-review.v1",
+  "scope": "Discrete loading/native engineering delivery; inference not training; no continuum sharp-edge or arbitrary nonconvex certificate."
+}

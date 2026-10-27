@@ -1,6 +1,6 @@
 # Rigid-stress data and artifact locations
 
-The active planar-loading DPR goal from `f8fad8ba6` uses
+The completed planar-loading DPR phase from `f8fad8ba6` uses
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/`.
 Frozen CPU-oracle exports, native operator/load/field controls, trajectory
 arrays, profiles, job logs and source receipts stay there. Small source and
@@ -8,7 +8,10 @@ project reports remain in the existing workspace; frozen engine worktrees
 remain immutable. Scientific execution reuses Slurm `rtx-mid`, image `1_26`,
 the existing data-side physical environment and private node-local caches.
 The start inventory preserves twelve original unfinished files and thirty-three
-prior unique frozen engines. No data, environment or compatibility link moved.
+prior unique frozen engines. No data, environment or compatibility link moved. The publication packet is
+`research/rigid_stress/evidence/20261027-planar-loading-v1` (at most10MiB);
+all large runtime records remain on data. Its independent verification receipts
+are siblings of the packet. The31 new frozen sources also remain preserved.
 
 The local-refinement atlas follow-up from revision `4bc4ada25` uses
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-local-refinement-atlas/`.

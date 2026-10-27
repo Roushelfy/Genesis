@@ -1,0 +1,853 @@
+{
+  "schema": "genesis.planar-ledger-artifact-retention-audit.v19",
+  "passed": true,
+  "packet_index_sha256": "dcce0e5c7c0d06aeb28e1790ad12069a53dddc6f96b2812ad7e222aa8d767923",
+  "packet_SHA256SUMS_sha256": "1d03f7fce055d0a37a57caaf4307a5899cb9a09871d57f62cfef03cd5d5322a8",
+  "index_encoding": "gzip",
+  "verifier_sha256": "4ae6d3e1d324e68f3f65ebbebb33742c8f04124ad3e350b616ba4e89d3a5af1f",
+  "ledger_artifact_identities_checked": 76,
+  "exact_small_receipts_retained": 11,
+  "copies": [
+    {
+      "evidence_id": "material_final",
+      "original": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/footprint-material-qualification-v1/qualification.json",
+        "bytes": 59324,
+        "sha256": "418a780ca1a2dcc33b618da28414eba12c5d092f7869a34c703e20dd11ef2da8"
+      },
+      "copy": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-copy-material_final.json",
+        "bytes": 59324,
+        "sha256": "418a780ca1a2dcc33b618da28414eba12c5d092f7869a34c703e20dd11ef2da8"
+      },
+      "byte_exact": true
+    },
+    {
+      "evidence_id": "raw_packet_software",
+      "original": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/package-primary-raw-software-v1/result.json",
+        "bytes": 5935,
+        "sha256": "26d8c73379b0bfe1c037842b566cb9422f81c39954b695dc9d7adc6df9ec1b98"
+      },
+      "copy": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-copy-raw_packet_software.json",
+        "bytes": 5935,
+        "sha256": "26d8c73379b0bfe1c037842b566cb9422f81c39954b695dc9d7adc6df9ec1b98"
+      },
+      "byte_exact": true
+    },
+    {
+      "evidence_id": "mandatory_packet_metadata",
+      "original": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/package-mandatory-metadata-software-v1/result.json",
+        "bytes": 3291,
+        "sha256": "b7eb530058127c9ab8477a7258ac8b315dacdc220e82f08354b241940f0a3318"
+      },
+      "copy": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-copy-mandatory_packet_metadata.json",
+        "bytes": 3291,
+        "sha256": "b7eb530058127c9ab8477a7258ac8b315dacdc220e82f08354b241940f0a3318"
+      },
+      "byte_exact": true
+    },
+    {
+      "evidence_id": "derived_ledger_gates_software",
+      "original": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-derived-gates-software-v19/result.json",
+        "bytes": 4431,
+        "sha256": "58ba8b2c4b91dbe726952bec859e4cf83c9d654538d84bea93081c35891faca3"
+      },
+      "copy": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-copy-derived_ledger_gates_software.json",
+        "bytes": 4431,
+        "sha256": "58ba8b2c4b91dbe726952bec859e4cf83c9d654538d84bea93081c35891faca3"
+      },
+      "byte_exact": true
+    },
+    {
+      "evidence_id": "stream_verifier_software",
+      "original": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/verify-primary-stream-software-v19/result.json",
+        "bytes": 3573,
+        "sha256": "5a3b26f6783235711e85826b6cb60d62fda51c84f72b3cfaef2a1bec5a938a4f"
+      },
+      "copy": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-copy-stream_verifier_software.json",
+        "bytes": 3573,
+        "sha256": "5a3b26f6783235711e85826b6cb60d62fda51c84f72b3cfaef2a1bec5a938a4f"
+      },
+      "byte_exact": true
+    },
+    {
+      "evidence_id": "huge_primary_ledger_software",
+      "original": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-huge-primary-software-v19/result.json",
+        "bytes": 18695,
+        "sha256": "7e3d958cb1c82c412b29c5ff5c30f47366e034bf05d62500506e283a91b2f11d"
+      },
+      "copy": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-copy-huge_primary_ledger_software.json",
+        "bytes": 18695,
+        "sha256": "7e3d958cb1c82c412b29c5ff5c30f47366e034bf05d62500506e283a91b2f11d"
+      },
+      "byte_exact": true
+    },
+    {
+      "evidence_id": "index_gzip_packet_software",
+      "original": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/packet-index-gzip-software-v19/result.json",
+        "bytes": 4328,
+        "sha256": "c50727c9c226dca1461b7f8d26d5c0b1769223f7d4024ef1d0aaf0c871bd005e"
+      },
+      "copy": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-copy-index_gzip_packet_software.json",
+        "bytes": 4328,
+        "sha256": "c50727c9c226dca1461b7f8d26d5c0b1769223f7d4024ef1d0aaf0c871bd005e"
+      },
+      "byte_exact": true
+    },
+    {
+      "evidence_id": "goal_specification",
+      "original": {
+        "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/docs/PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md",
+        "bytes": 7222,
+        "sha256": "3ae5e4bb2062789fa4d4e2197d0d9844616e3c6162aff76e50ce67b55a3a98e7"
+      },
+      "copy": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-copy-goal_specification.md",
+        "bytes": 7222,
+        "sha256": "3ae5e4bb2062789fa4d4e2197d0d9844616e3c6162aff76e50ce67b55a3a98e7"
+      },
+      "byte_exact": true
+    },
+    {
+      "evidence_id": "current_index_packager_source",
+      "original": {
+        "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/qipc_comparison/package_cpu12_evidence.py",
+        "bytes": 45990,
+        "sha256": "64a5abaf8fe97607c0de354c0b891b3faf36a7c35b06fa857f40b5b1edd200de"
+      },
+      "copy": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-copy-current_index_packager_source.py",
+        "bytes": 45990,
+        "sha256": "64a5abaf8fe97607c0de354c0b891b3faf36a7c35b06fa857f40b5b1edd200de"
+      },
+      "byte_exact": true
+    },
+    {
+      "evidence_id": "historical_anchor_preflight",
+      "original": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-contract-v1/preflight-failure.json",
+        "bytes": 390,
+        "sha256": "6798b9943aee6decb7a271bb14e6c097eed8a1829763e5185ea6d38a6f80e0e7"
+      },
+      "copy": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-copy-historical_anchor_preflight.json",
+        "bytes": 390,
+        "sha256": "6798b9943aee6decb7a271bb14e6c097eed8a1829763e5185ea6d38a6f80e0e7"
+      },
+      "byte_exact": true
+    },
+    {
+      "evidence_id": "historical_radial_source_mismatch",
+      "original": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/radial-math-v3-source-mismatch.json",
+        "bytes": 401,
+        "sha256": "712e68d92d1be4ce124240acd1fad6b681792ec16103b36232c32661e26bcd8a"
+      },
+      "copy": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-copy-historical_radial_source_mismatch.json",
+        "bytes": 401,
+        "sha256": "712e68d92d1be4ce124240acd1fad6b681792ec16103b36232c32661e26bcd8a"
+      },
+      "byte_exact": true
+    }
+  ],
+  "checks": [
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/final-accuracy-config-handoff-v19.json",
+        "bytes": 117761,
+        "sha256": "d7393e545169a437d848c7245e13e08bc7cc54bd494b27ec83d24f1eadbdf2a8"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-contract-v2/group0/strict-anchor-cuda/result.json",
+        "bytes": 106273,
+        "sha256": "49b9a1b9671d8c9c104857f8d29300481a2944aa06147b06a22a9f771b4d35b7"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-contract-v2/group1/strict-anchor-cpu/result.json",
+        "bytes": 106274,
+        "sha256": "852946427fdaa8918b04093c5ff017455a2520c79a0a97e1139f2eb4548c7542"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-downstream-v13/group0/egg75-k32-radial-q24-cooperative-anchor/result.json",
+        "bytes": 1507,
+        "sha256": "896266d3393b84824969a06eb7734121c1b94286519f6975db77bfe4ce8f411a"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-downstream-v13/group0/egg75-k8-16-radial-q24-cooperative-anchor/result.json",
+        "bytes": 2383,
+        "sha256": "5f0e050e22efef9ab7985fb80adbda56905a71cafd4ab1e3ca0f16a052f13d81"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-downstream-v13/group1/torus8-k32-radial-q24-cooperative-anchor/result.json",
+        "bytes": 1506,
+        "sha256": "01be1eecc27cc806510716f6e5ed3a99c51d3a8ba88ed4c8aa1030ac6e974c9d"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-downstream-v13/group1/torus8-k8-16-radial-q24-cooperative-anchor/result.json",
+        "bytes": 2382,
+        "sha256": "296bb0b5ef6bcac4c900f03c7c9e826af71a456b4e84f8dc5aa270b2425f95f3"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-downstream-v13/group2/B4-k32-q10-low16-full-initial-cycles-cap512-cooperative-anchor/result.json",
+        "bytes": 1326846,
+        "sha256": "379216efbdc9983f2301176b7ea22e3faf50eb39ecdc3af06c7abd4a182cb6c8"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-completion-v13/group0/B64-k32-q10-low16-full-initial-cycles-cap512-cooperative-anchor/result.json",
+        "bytes": 2203848,
+        "sha256": "383a0adf0f344a129d2506e4518b731a732881d43e170779186d3ed26122f72b"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-completion-v13/group1/signed-anchor-cuda/result.json",
+        "bytes": 106636,
+        "sha256": "2eda8bf43fc0b40d9d0b657a6164c0436e3ac592c6004380b515e69b84516f94"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/anchor-completion-v13/group2/signed-anchor-cpu/result.json",
+        "bytes": 106628,
+        "sha256": "2dc4e5000cf20dc671c5c96e00cf06b9fb54755127f33ffd25edbff427f71297"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/practical-batch-memory-projection-v19.json",
+        "bytes": 51290,
+        "sha256": "46d3563938ae3e2ff2696cef066c1ff60f2dbcea2b33b95f00305aecb9d26aeb"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/oracle-v1/group0/reference/manifest.json",
+        "bytes": 95780,
+        "sha256": "3c3ca065218e40b6c068bbbf05cda6dadfc3b6b4e6cf434ecd5e6f9ab696a5f9"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group0/egg75-k32-radial-q24/result.json",
+        "bytes": 1352,
+        "sha256": "cc79053281df19e71bae3a79fc0f5a9d9d7900c610e9f6f62050f052606cab8b"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group0/egg75-k8-16-radial-q24/result.json",
+        "bytes": 2145,
+        "sha256": "a01ed7e6af827fd3399d40d7b7d90207c755799a08f85e6ec5d3c27f96e4d0a6"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group1/egg75-k32-gauss-q24/result.json",
+        "bytes": 1377,
+        "sha256": "25c92f910ef291597a06d61c4e77decc9f142e9284200abe7039644f45855a28"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group1/egg75-k8-16-gauss-q24/result.json",
+        "bytes": 2185,
+        "sha256": "c1e1fee129f498d35e10667ea763bcedd97bf24a29aa471b61e27ff92067bc91"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group2/torus8-k32-radial-q24/result.json",
+        "bytes": 1350,
+        "sha256": "2b6e5ec239083854cf456a4c488270b39c040fb84eb77a17482df2d18236948f"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group2/torus8-k8-16-radial-q24/result.json",
+        "bytes": 2148,
+        "sha256": "e95cf82097f2f0c543a42b0fe4bbdd851367ee86764aaef4ec582b47e416026a"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group3/torus8-k32-gauss-q24/result.json",
+        "bytes": 1376,
+        "sha256": "81936369605ab3511f9fb64fa9d2c39cf39f2373c9c9ab518cd5588b253e4ab8"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/d1-banks-v11/group3/torus8-k8-16-gauss-q24/result.json",
+        "bytes": 2187,
+        "sha256": "de95b60d395e6a63a80eedb822911315dd7df87fd219c0f499e7f79fd91341a7"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-derived-gates-software-v19/result.json",
+        "bytes": 4431,
+        "sha256": "58ba8b2c4b91dbe726952bec859e4cf83c9d654538d84bea93081c35891faca3"
+      },
+      "recorded_in_external_inventory": false,
+      "exact_copy_retained": true
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/retained-ledger-receipts-v19.json",
+        "bytes": 7847,
+        "sha256": "3ada6a3a123fe609fa88454bb619cf92715dc02443ebe6c5b57f12bf2c74d0a1"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/final-focused-v18/group0/shell-public-and-focused15/result.json",
+        "bytes": 39,
+        "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/final-focused-v18/group1/volume-focused11/result.json",
+        "bytes": 39,
+        "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/planar-graph-family-closure-v18.json",
+        "bytes": 3892,
+        "sha256": "755cc2511d6cc3dcdbbc59159da7d7f712b659f6aeb9c53b4133747677e1f149"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/hierarchical-query-coverage-v3/group0/query-coverage/result.json",
+        "bytes": 332,
+        "sha256": "c4b0b1715075a0007a6178cb95ad4de59aaf2c1773dc455040b36ed3789b62e3"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/historical-receipt-scope-v19.json",
+        "bytes": 1868,
+        "sha256": "f43ac1588545348f170b1c70278da1e876c933cfae4e0dec5dd93c85be6c4fed"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/ledger-huge-primary-software-v19/result.json",
+        "bytes": 18695,
+        "sha256": "7e3d958cb1c82c412b29c5ff5c30f47366e034bf05d62500506e283a91b2f11d"
+      },
+      "recorded_in_external_inventory": false,
+      "exact_copy_retained": true
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/packet-index-gzip-software-v19/result.json",
+        "bytes": 4328,
+        "sha256": "c50727c9c226dca1461b7f8d26d5c0b1769223f7d4024ef1d0aaf0c871bd005e"
+      },
+      "recorded_in_external_inventory": false,
+      "exact_copy_retained": true
+    },
+    {
+      "identity": {
+        "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/qipc_comparison/package_cpu12_evidence.py",
+        "bytes": 45990,
+        "sha256": "64a5abaf8fe97607c0de354c0b891b3faf36a7c35b06fa857f40b5b1edd200de"
+      },
+      "recorded_in_external_inventory": false,
+      "exact_copy_retained": true
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/package-mandatory-metadata-software-v1/result.json",
+        "bytes": 3291,
+        "sha256": "b7eb530058127c9ab8477a7258ac8b315dacdc220e82f08354b241940f0a3318"
+      },
+      "recorded_in_external_inventory": false,
+      "exact_copy_retained": true
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/footprint-v11/group4/material-U-k32-q48/result.json",
+        "bytes": 26339,
+        "sha256": "0753cbb11281f8759388875c374886908972e0b54de75baeb50321e20abb92b5"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/footprint-material-qualification-v1/qualification.json",
+        "bytes": 59324,
+        "sha256": "418a780ca1a2dcc33b618da28414eba12c5d092f7869a34c703e20dd11ef2da8"
+      },
+      "recorded_in_external_inventory": false,
+      "exact_copy_retained": true
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/final-memory-summary-v19.json",
+        "bytes": 27420857,
+        "sha256": "b82f9d4d6a5800218196a1e160b7a4b3a697b71e258aeaf76f0efbf7cb715d77"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/final-memory-terminal-audit-v19.json",
+        "bytes": 35284,
+        "sha256": "2fc221e14ab31868f90d97f2b5094fb28e3513cb61ed50a3cc1bfa1dcab67433"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/operators-v0/group0/operators-egg75/result.json",
+        "bytes": 348,
+        "sha256": "45bb8dc08f0d6887676a50ab19f720aeb3678c09e68d29a7589ad06a597ebcba"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/operators-v0/group1/operators-torus8/result.json",
+        "bytes": 348,
+        "sha256": "9bfe8a508c4cce262efbdaf15907e7fd5ffcffbb427431382ed00d540165e517"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/owned-source-hash-delivery-v19.json",
+        "bytes": 38067,
+        "sha256": "6ffd1807264a1b6396f69d116eddf5e332dd354d73e855044226566ab2f12daa"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/packet-preflight-verification-v19.json",
+        "bytes": 1926,
+        "sha256": "a5a13cf73e44f6c040816eb047d02882f33c497fc980a51a70b20baf92cae8fa"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/packet-preflight-retention-v19.json",
+        "bytes": 36686,
+        "sha256": "364a55ab4b8e671dd86f67190c5b82589b5cb19c122d161e5bd0fbee7c0c725e"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/policy-blocks-cap128-v17/group0/B4-policy-k32-q10-low24-full-711-blocks-cap128-cooperative/result.json",
+        "bytes": 1401827,
+        "sha256": "1392e3c48298e9b815dddd91a8c094b2759837dd6e4966f75a38c1b1e09eae28"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/policy-blocks-cap128-v17/group1/B64-policy-k32-q10-low16-full-1192-blocks-cap128-cooperative/result.json",
+        "bytes": 2334506,
+        "sha256": "0a4b79327d624410f863a56040de7173b1149b9070c301b9c23d4470b3123eb3"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/policy-blocks-cap128-graphs-off-qualification-v19.json",
+        "bytes": 4056617,
+        "sha256": "894647e53e5dead772c1379be2c033bf13ff6bdbc5876135e19c855e90f56d2f"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/policy-trajectory-v15/group0/B4-policy-k32-q10-low24-full-711-cap512-cooperative/result.json",
+        "bytes": 1332487,
+        "sha256": "18e81e2911d237817a8b17fe5f1e72c3e0f3ad30a9036d9d291a999e7761ece5"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/policy-trajectory-v15/group1/B64-policy-k32-q10-low16-full-1192-cap512-cooperative/result.json",
+        "bytes": 2217658,
+        "sha256": "ee13323ec93806af57ded2f8d6c1d6e0b408cd0425967f350a89a75036127672"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/preservation-delivery-review-v19.json",
+        "bytes": 49490,
+        "sha256": "5815b357d826fec245b7bc087cddbe0e18e51e2e6df225a29c0c61253c7071d6"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/preservation-delivery-index-v19.json",
+        "bytes": 68998,
+        "sha256": "40f45c30cd4c496335acf2762588052f735341f5ff1a71b9e1cbb79b0f5857d1"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/preservation-final-v19.json",
+        "bytes": 181281,
+        "sha256": "da93cd3fd0e0d8cbef23282e64d71f5f97f2b4b36de8d81cddbd0aec8721042c"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/preservation-refresh-v19.json",
+        "bytes": 27176,
+        "sha256": "b7684dfee6cbcd936d0374c605557432a6861e28ccae498dd37d83127a809d18"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/primary-summary-v19.json",
+        "bytes": 1164302888,
+        "sha256": "96c1a03855499c7690f070789b207d0d4b05c77805d2420a7dbf3d980428c30c"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/primary-summary-compact-v19.json",
+        "bytes": 733508,
+        "sha256": "a6e60e89cedf790fb28389bb697e3167708246e116a9cb50e6d092f42606cf70"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/primary-route-summary-v19.json",
+        "bytes": 121143,
+        "sha256": "f906fa0f30bec48ef055cfbb396d3e5c8b2633ad74073d8ce7b40bd78db76f14"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/primary-scaling-v19.json",
+        "bytes": 268989,
+        "sha256": "0a1e80aac9ddd749d2c222c17db8dc6c16defdc7507b20d38249ab4968175c11"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/primitives-v2/group0/primitives/result.json",
+        "bytes": 11868,
+        "sha256": "a948d3a87b66266a6a4d6ec4ea03bf020b60cbfd48f20523d62bd46f60b65e64"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/final-profile-summary-v19.json",
+        "bytes": 7176541,
+        "sha256": "4453fde71de2b0006bea05de8246d5cbbb57542da4f0decea42a758c7698c033"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/public-planar-v1/group0/public-shell-loading/result.json",
+        "bytes": 39,
+        "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/radial-math-v4/group0/radial-math/result.json",
+        "bytes": 6786,
+        "sha256": "a06c43365417b7423ce249aa65a8f5762c56d1b16f42bd54d10b71c0d4eac01d"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/package-primary-raw-software-v1/result.json",
+        "bytes": 5935,
+        "sha256": "26d8c73379b0bfe1c037842b566cb9422f81c39954b695dc9d7adc6df9ec1b98"
+      },
+      "recorded_in_external_inventory": false,
+      "exact_copy_retained": true
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/frozen-source-archive-verified-v19.json",
+        "bytes": 11780,
+        "sha256": "33701a0f1e7a3fef167db4119762fce0dbaa93a36076b0aaf3e9579ea9d7e7a1"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/reproduction-inputs-v19.json",
+        "bytes": 1339,
+        "sha256": "1a33841bb0b022dd2f69989dcc170d0a25059666399cfbe9dfaabe4a081c8900"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/k32-trajectory-v11/group0/B4-k32-q10-low16-full-initial-cycles-cap512/result.json",
+        "bytes": 1326735,
+        "sha256": "cf772caec0bffb84e154587ea4d9e9745366825828b3f0155c243e5d46a40d6f"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/k32-trajectory-v11/group1/B64-k32-q10-low16-full-initial-cycles-cap512/result.json",
+        "bytes": 2203663,
+        "sha256": "5d2d2de6a734a5c8eab7c63d69d0872c6c813615d8ed2b77b19581079b1609ea"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/final-v19-source-inheritance.json",
+        "bytes": 1866,
+        "sha256": "b6257ad5334a8669d5f7b605efedfb9dff563672f264d388f11513d913f3a007"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/final-owned-static-check-v19.json",
+        "bytes": 44380,
+        "sha256": "61d8331e19b98aa181d8f5f9f5315a24914a2c23c70bfc0ac3b83d27a65bc09d"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/final-owned-static-check-index-v19.json",
+        "bytes": 46657,
+        "sha256": "2bf6aa1b2061c367c2657ad0ece815ab349e98b15dad11ca2319a22db09d469c"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/verify-primary-stream-software-v19/result.json",
+        "bytes": 3573,
+        "sha256": "5a3b26f6783235711e85826b6cb60d62fda51c84f72b3cfaef2a1bec5a938a4f"
+      },
+      "recorded_in_external_inventory": false,
+      "exact_copy_retained": true
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/planar-temporal-fusion-assessment-v1.json",
+        "bytes": 11340,
+        "sha256": "f2fa0bc09cc3b8272809063cce235d6e187af476e031b3ee05ec5d9d19cbc90f"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/volume-baseline-controls/group0/angle-q128-policy730/result.json",
+        "bytes": 53594,
+        "sha256": "c235ca14036ba1306914c880df620b79ee56cd3c4d31174123d7785b30babcba"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/volume-baseline-controls/group1/edge-q16-scripted730/result.json",
+        "bytes": 53589,
+        "sha256": "77bd2706d34fcf3da3ee1ab7b0f2ede067d68128bcf6f82b00f760caa0c3dcb9"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/volume-q128-scheduling-fields-qualification-v18.json",
+        "bytes": 179377,
+        "sha256": "979ec265a32ec3e6ae4f67f2b788c341770dbc833c2017a35c52acc13f3696c8"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/meta/volume-q128-scheduling-summary-v18.json",
+        "bytes": 24332,
+        "sha256": "8768f4f9ebcd0610a5f0f8cdee40724f3030e68410f751fece4c47646a9dc061"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/footprint-v11/group1/guards-k4-k8-k16-k32-q48/result.json",
+        "bytes": 18536,
+        "sha256": "7e2fc81b2750c7a6ec5619dc40d851474c87b44e71d732c67682ed1de75ca38c"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/footprint-v11/group2/guards-k32-q10/result.json",
+        "bytes": 9191,
+        "sha256": "d7c00e3f9e83b46d90ed9ddb22950f0032b424d0a5c618734388933c21ef6d4a"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/footprint-v11/group3/guards-k32-q16/result.json",
+        "bytes": 9197,
+        "sha256": "cdb3a09958bb6fe7f1373bacaaa6a9b6be3025a9411ba133c8b377d27fb024c2"
+      },
+      "recorded_in_external_inventory": true,
+      "exact_copy_retained": false
+    },
+    {
+      "identity": {
+        "path": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/docs/PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md",
+        "bytes": 7222,
+        "sha256": "3ae5e4bb2062789fa4d4e2197d0d9844616e3c6162aff76e50ce67b55a3a98e7"
+      },
+      "recorded_in_external_inventory": false,
+      "exact_copy_retained": true
+    }
+  ],
+  "scope": "Identity/retention only. Full primary/memory/profile gzip and raw timing checks are performed by the separate independent packet verifier. Other large scientific data remain externally hashed as declared."
+}

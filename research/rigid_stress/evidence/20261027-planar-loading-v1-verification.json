@@ -1,0 +1,37 @@
+{
+  "schema": "genesis.planar-final-packet-independent-audit.v1",
+  "created_utc": "2026-10-27T23:22:49.980379+00:00",
+  "packet": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/artifacts/20261027-planar-loading-v1",
+  "passed": true,
+  "packet_bytes": 10454900,
+  "packet_index_sha256": "dcce0e5c7c0d06aeb28e1790ad12069a53dddc6f96b2812ad7e222aa8d767923",
+  "packet_index_encoding": {
+    "encoding": "gzip",
+    "path": "index.json.gz",
+    "reference_bytes": 393,
+    "reference_sha256": "dcce0e5c7c0d06aeb28e1790ad12069a53dddc6f96b2812ad7e222aa8d767923",
+    "compressed_bytes": 3471974,
+    "compressed_sha256": "5c3a21cbb72464598026a2cadd152637b578f0b3c6cd67123a301c2eb9893baa",
+    "decompressed_bytes": 26255588,
+    "decompressed_sha256": "5d38029e17a3c4fd40b502c462e1f385e32ba0c01f71d809caf3ecef33776084"
+  },
+  "packet_SHA256SUMS_sha256": "1d03f7fce055d0a37a57caaf4307a5899cb9a09871d57f62cfef03cd5d5322a8",
+  "hashed_files": 433,
+  "original_primary_rows_retained_losslessly": 168,
+  "blocks_recomputed_from_raw_rows": 48,
+  "cohorts_recomputed_from_raw_rows": 16,
+  "paired_ratio_summaries_recomputed": 144,
+  "external_originals_additionally_checked": 168,
+  "compressed_full_primary_memory_profile_summaries_exact": true,
+  "full_primary_streaming": {
+    "bytes": 1164302888,
+    "sha256": "96c1a03855499c7690f070789b207d0d4b05c77805d2420a7dbf3d980428c30c",
+    "tasks": 168,
+    "max_task_bytes": 46717325,
+    "root_metadata_bytes": 218332,
+    "bounded_task_limit_bytes": 268435456
+  },
+  "exact_reproduction_condition_inputs_retained": 2,
+  "scope": "Offline packet/hash/raw-timing identity and ratio audit. Prior scientific qualification is retained, not recomputed. Device sampled peaks use recorded summaries; full external NVIDIA polling logs are not required inside this packet.",
+  "verifier_sha256": "d49d3d639e926f4cd61aaafd0642d1d24213f6c51600242cafef0c2d9b6a930d"
+}

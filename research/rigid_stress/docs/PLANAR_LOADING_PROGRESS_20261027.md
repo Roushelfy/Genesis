@@ -1,7 +1,7 @@
 # Planar loading DPR: execution ledger
 
-The active goal is [native planar loading](PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md)
-at `f8fad8ba6`; it remains incomplete. CPU source `79720355` is the independent
+The completed goal is [native planar loading](PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md)
+at `f8fad8ba6`; native implementation, qualification, optimization and final evidence delivery are complete. CPU source `79720355` is the independent
 reference. Runtime artifacts live under the data-side `20261027-planar-loading-dpr`
 run directory recorded in `DATA_LOCATION.md`. Its `meta/error-budgets.json` and
 `meta/guard-budgets.json` were frozen before tuning.
@@ -126,8 +126,8 @@ original anchor, loading, response, stress and acceptance paths.
 | Increment | B4 component | B1024 component | Decision |
 | --- | --- | --- | --- |
 | Serial baseline `profile-v1` | moments263,060us; query46,800us | moments289,628us; query55,101us | Initial actual bottlenecks |
-| Warp moment integration `profile-v2` | moments7,173us | moments86,427us | Numerical banks pass; retained pending complete-path timing |
-| Warp query `profile-v3` | query5,002us | query6,071us | Numerical banks pass; retained pending complete-path timing |
+| Warp moment integration `profile-v2` | moments7,173us | moments86,427us | Numerical banks pass; this early component screen is superseded by the final combined-path timing in the measured report |
+| Warp query `profile-v3` | query5,002us | query6,071us | Numerical banks pass; this early component screen is superseded by the final combined-path timing in the measured report |
 | Once-per-task clip preparation `profile-v4` | preparation335us + moments7,118us | preparation503us + moments75,028us | Both numerical banks pass; large-batch integration cost reduced, small-batch sum nearly unchanged |
 
 The v3 large-batch moment kernel still costs 85,129us per ten calls and uses
@@ -191,31 +191,36 @@ the external Quadrants library or shared cluster configuration.
 | --- | --- |
 | Fixed geometry and compact J maps | Native QD preparation and compact fixed grid/J retained. All28 final memory workers pass; the measured report separates named shared/per-env arrays, equal-pointer aliases, process peaks and whole-constructor/JIT scope. |
 | Material-aware queries and witness reuse | Physical-edge/single-Q4 connectivity guards and open30/U full-field controls pass. Keep step-local G/H reuse; a new cross-step support cache lacks useful invariant evidence and is not selected. |
-| Contained moments, clipping and fitting reuse | Exact analytic moments, positivity checks, once-per-task geometry publication, shared G/H and exact radial integration validated in their stated banks. Whole-path gains pending. |
-| Packing, grouping, layout and cooperative work | Loaded sources packed; original-anchor warp and bounded per-environment tasks qualified. Cap128 passes the complete measured policy banks with true peaks50/63. Final batch/plateau and paired timing pending. |
-| Response, max/full and fusion | Original optimized Q4 response and acceptance retained. Volume q128 fused/separate scheduling and same-frozen-input full-field controls pass; retain fused baseline. Final paired max/full wall timing is pending. |
+| Contained moments, clipping and fitting reuse | Exact analytic moments, positivity checks, once-per-task geometry publication, shared G/H and exact radial integration validated in their stated banks. The final168-worker paired campaign qualifies the whole-path timings in the measured report. |
+| Packing, grouping, layout and cooperative work | Loaded sources packed; original-anchor warp and bounded per-environment tasks qualified. Cap128 passes the complete measured policy banks with true peaks50/63. Final paired4/1024/8192/32768 measurements pass. The policy-max10.04799% growth remains above the frozen10% plateau threshold; memory screening rules out the optional65536 probe. |
+| Response, max/full and fusion | Original optimized Q4 response and acceptance retained. Volume q128 fused/separate scheduling and same-frozen-input full-field controls pass; retain fused baseline. Final paired max/full wall timings pass; B32768 planar gains are1.994/1.940 for the module and2.033/1.987 for policy inference. |
 | Graphs, device scheduling and copies | Bounded actual on/off measurements favor process-local GraphOff for this workload; final all-variant paired workers use that mode. No oracle export inside primary timing. |
 | Fallback buffers and cost | Independent material-mask controls pass; record all routes in production timing. Capacity32 is not assumed optimal. |
 | Prior Atlas/H/FP32/screen/history evidence | Preserved with its previous scope; no unchanged expensive sweep reopened. |
 
-## Remaining completion work
+## Final measurement and delivery closure
 
 Numerical/contact/lifecycle qualification is complete in the stated scopes,
 including full small/heterogeneous histories, original gates, independently
-resolved integration and26 final focused regressions. Complete the formal
-paired frozen-module and full Franka inference workflows against optimized Q4,
-volume DPR and pure rigid, final useful-large/plateau max/full measurements,
-preservation audit, compact runnable evidence and recommendations. Final14
-profile workers and all28 preparation/native/shared/per-environment/process/device
-memory workers now pass their scoped audits; their full lossless summaries are
-retained for the final packet.
-The inference workflow uses a seeded random MLP with the scripted controller;
-it does not measure policy training. Source `6dedc7957` binds actual MLP weights,
-process IDs, physical assets and canonical frozen-source hashes. The final
-campaign has168 fresh processes in16 groups, three paired blocks at each
-scope/batch/output, with B4/1024/8192/32768. B4/1024/8192 are terminal;
-B32768 remains running. All28 memory and14 final trace workers have finished. The
-[result review](PLANAR_LOADING_RESULTS_20261027.md) retains its incomplete label
-until all formal measurements and final packet checks pass. A complete
-fresh-process result, final memory/requirements packet and recommendation remain
-required for closure.
+resolved integration and26 final focused regressions. The formal campaign is
+terminal:168 fresh processes,48 paired blocks and16 cohorts all qualify.
+All28 memory and14 intrusive profile workers pass. Source `6dedc7957` binds
+actual MLP weights, process IDs, physical assets and canonical frozen sources.
+The workflow measures seeded MLP inference with the scripted controller.
+
+Read [the final measured tables](PLANAR_LOADING_RESULTS_20261027.md) for all
+four batches and max/full outputs. B4 frozen-module slowdown and increased
+planar memory remain explicit. The policy-max8192-to32768 gain is10.0479906723%,
+above the declared10% criterion; pure rigid still grows about34–36%.
+Full-memory projection fails the predeclared optional-probe condition, so no
+65536 run is submitted and no universal/global throughput plateau is claimed.
+
+The data-side `meta/requirements-final.json` and
+[tracked evidence packet](../evidence/20261027-planar-loading-v1/README.md)
+record29 clauses and14 optimization families. Independent packet audit verifies
+all168 original repeat/vector records,48 blocks,16 cohorts, exact input fixtures
+and full-summary gzip identities. The separate retention audit checks nested
+qualification/software receipts by original hash. Twelve original files,
+33 old/31 new frozen sources and36 owned Python files remain unchanged from
+their preserved identities. Final verification receipts accompany the packet;
+large arrays/logs/caches remain under data. The requested goal is closed.

@@ -9,15 +9,19 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
-## Active: planar loading DPR integration and optimization (2026-10-27)
+## Delivered: planar loading DPR integration and optimization (2026-10-27)
 
-Follow [the new goal](docs/PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md)
-and [GOAL.md](GOAL.md). Integrate planar triangular loading surfaces in
-Quadrants while retaining automatic-radius DPR and the existing Q4 elasticity.
-Use the [CPU reference](triangular_load_cpu/README.md) and
-[measured report](triangular_load_cpu/REPORT_ZH.md), then qualify contact/error
-and optimize the full native path. Deliver complete Franka max/full throughput,
-accuracy and memory comparisons. The CPU study is not a native speedup claim.
+Native triangular loading retains original Q4 elasticity and adds no elastic
+DOF. The qualified complete-workflow recipe is planar k32/q10/blocks/cap128,
+FP64/history0 and process-local GraphOff; Q4 remains public default. All168
+primary workers,28 memory workers,14 profiles and26 focused regressions pass.
+At B32768, max/full module gains over tuned Q4 are1.994/1.940 and policy-inference
+gains are2.033/1.987. B4 frozen module is slower and planar uses more memory.
+Read [the measured report](docs/PLANAR_LOADING_RESULTS_20261027.md),
+[the execution ledger](docs/PLANAR_LOADING_PROGRESS_20261027.md),
+[the 29-clause/14-family evidence packet](evidence/20261027-planar-loading-v1/README.md)
+and [GOAL.md](GOAL.md) for accuracy, practical-scaling boundaries and sharp-edge
+scope. Source `6dedc7957` is the measured engine; CPU `79720355` is independent.
 
 ## Delivered: matched CPU12 GPU comparison (2026-10-27)
 

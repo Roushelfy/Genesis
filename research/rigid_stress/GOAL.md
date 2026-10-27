@@ -1,21 +1,34 @@
 # Native rigid stress recovery: planar loading DPR optimization
 
-**Active goal, 2026-10-27:** implement planar triangular loading surfaces in
-the existing rigid stress feature, entirely in Quadrants. Preserve mature
-automatic Hertz radius/DPR and the existing Q4 elastic model and response.
-Follow [the new integration and optimization goal](docs/PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md).
+**Completed, 2026-10-27:** the [native planar loading goal](docs/PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md)
+has integrated code, independent accuracy/contact/lifecycle controls and a
+29-clause/14-family delivery ledger. Read [the measured report](docs/PLANAR_LOADING_RESULTS_20261027.md),
+[the execution ledger](docs/PLANAR_LOADING_PROGRESS_20261027.md) and
+[the compact evidence packet](evidence/20261027-planar-loading-v1/README.md).
 
-Start from the [CPU reference and measured results](triangular_load_cpu/README.md)
-at `79720355`. Qualify the actual proxy error and finite-footprint robustness,
-then complete detailed profiling and all applicable throughput optimization.
-Deliver max/full module and complete Franka measurements, accuracy, memory and
-recommended configurations. Keep arbitrary moving/asymmetric convex/nonconvex
-contacts, friction, original acceptance and lifecycle behavior.
+The original Q4 elasticity and1452/1446 elastic DOF remain unchanged. Native
+Quadrants preparation/runtime preserve original Hertz sizing, source points,
+friction, material identity, pressure law and original acceptance. Independent
+CPU source is `797203553f246ca155bbef909c1bb33e7cd7b90c`; measured native source
+is `6dedc79579ac0d113e4baac26eb538bcf51ca57d`. Later delivery commits are not
+measurement-engine identities.
 
-This changes the loading surface, with offline refinement independent of
-elastic DOF. Keep physical curvature/radius estimation on the original geometry.
-Low-model consistency and complete-path performance are the priority.
-Prior CPU12/Atlas and other scoped negative evidence remain historical.
+Keep Q4 as public default. The complete measured-workflow opt-in recipe is
+planar k32/q10/radial/blocks/cap128, FP64 simulation/inverse, history0 and
+process-local GraphOff. All168 fresh timing processes,48 paired blocks and16
+cohorts qualify. At B32768, max/full module gains over tuned Q4 are1.994/1.940,
+and complete policy-inference gains are2.033/1.987. B4 frozen module is about9%
+slower; planar uses more memory. Full-field error on the measured64-condition
+trajectory is at most0.0828008% against resolved Q4 integration.
+
+All28 memory and14 profile workers pass;26 focused regressions pass. The
+policy-max8192-to32768 gain10.0479906723% exceeds the frozen10% plateau
+criterion. Full-memory screening rejects the optional65536 probe, so no
+universal or global maximum is claimed. Original negatives, twelve unfinished
+files and33 old/31 new frozen sources remain preserved. This closes the
+requested discrete native/throughput comparison; ideal sharp edges, continuum
+peaks and arbitrary nonconvex field certification retain their stated limits.
+The workflow measures seeded MLP inference, not training.
 
 ## Previous delivery: matched CPU12 GPU comparison
 

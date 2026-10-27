@@ -1,23 +1,31 @@
 # Working on native rigid stress recovery
 
-**Active user goal, 2026-10-27:** implement and fully optimize
-[planar loading DPR](docs/PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md) under
-[GOAL.md](GOAL.md). Use the CPU `triangular_load_cpu` reference at `79720355`.
-Keep the existing Q4 elastic model and precomputed response. The change is a
-planar loading proxy, with native floating preparation/runtime in Quadrants.
+**Completed user goal, 2026-10-27:** native [planar loading DPR](docs/PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md).
+Read [GOAL.md](GOAL.md), [the final report](docs/PLANAR_LOADING_RESULTS_20261027.md),
+[the execution ledger](docs/PLANAR_LOADING_PROGRESS_20261027.md) and
+[the 29-clause packet](evidence/20261027-planar-loading-v1/README.md).
 
-Preserve cheap automatic Hertz sizing from the original geometry, DPR pressure
-semantics, source anchors, friction/offset moments, material identity,
-max/full output and lifecycle. Qualify loading approximation separately from
-exact numerical residuals. Guard warped/missed footprints with a validated
-path and include fallback in timing. Complete profiling, applicable native
-optimization and full Franka throughput/accuracy/memory decisions.
+Preserve the original Q4 elastic model, original-geometry Hertz sizing,
+source/friction moments, surface-ball pressure law, material identity, original
+acceptance and lifecycle. Native floating preparation/runtime stay in Quadrants;
+CPU79720355 remains independent. Measured engine is6dedc7957. Q4 remains the
+public default; the complete measured-workflow planar recipe explicitly selects
+k32/q10/radial/blocks/cap128/FP64/history0 and process-local QD_GRAPH=0 before
+imports. The opt-in k8/cap32 defaults have a separate fidelity scope.
 
-The new goal takes priority over the completed-phase descriptions below.
-Previous pressure/fallback/angular winners and scoped Atlas/H/FP32/screen/history
-findings remain preserved. Reopen an old optimization only for a changed
-workload or a concrete profile reason. Keep low-model consistency and
-throughput ahead of expensive physical-convergence campaigns.
+All168 primary processes/48 blocks/16 cohorts,28 memory workers,14 profiles and26
+focused regressions pass. B32768 complete policy max/full gains are2.033/1.987;
+B4 frozen-module slowdown, greater planar memory, prior negatives and sharp-edge
+continuum limits remain explicit. Policy-max growth10.0479906723% fails the
+frozen10% plateau criterion; the optional65536 memory condition fails, so no
+probe or universal throughput maximum is claimed. The packet's independent
+audit preserves all168 original repeats/vectors and recomputes paired timings.
+
+The requested goal is closed. Retain useful production changes and restoration
+pins for removed experiments. Do not reopen unchanged prior Atlas/H/FP32/screen/
+history or expensive continuum campaigns without new user scope or a concrete
+changed-workload/profile reason. All original twelve unfinished files and33 old/
+31 new frozen sources remain preserved; standing policies below still apply.
 
 **Previous delivery, 2026-10-27:** the matched CPU12 GPU follow-up is complete.
 Read [GOAL.md](GOAL.md), [the specification](docs/ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md),
