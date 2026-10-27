@@ -124,7 +124,7 @@ def kernel_planar_material(
                                         geometry.parent_neighbor_start[parent],
                                         geometry.parent_neighbor_start[parent + 1],
                                     ):
-                                        other = geometry.parent_neighbor_faces[i_n]
+                                        other = geometry.parent_neighbor_faces[i_n][0]
                                         i_other_word, i_other_bit = other // 32, other % 32
                                         other_selected = state.mask[i_other_word, i_c, i_b]
                                         connected = connected or (other_selected[0] & (1 << i_other_bit)) != 0

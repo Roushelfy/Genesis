@@ -90,7 +90,7 @@ def build_planar_geometry(surface: StressSurfaceInfo, load_info: StressInfo, sub
         side=V(dtype=gs.qd_int, shape=(n_faces,)),
         side_index=V(dtype=gs.qd_int, shape=(n_faces,)),
         parent_neighbor_start=V(dtype=gs.qd_int, shape=(len(starts),)),
-        parent_neighbor_faces=V(dtype=gs.qd_int, shape=(len(neighbors),)),
+        parent_neighbor_faces=V_VEC(1, dtype=gs.qd_int, shape=(len(neighbors),)),
         geometry_error=V(dtype=gs.qd_float, shape=(n_faces,)),
         normal_error=V(dtype=gs.qd_float, shape=(n_faces,)),
         face_valid=V(dtype=gs.qd_bool, shape=(n_faces,)),
@@ -100,7 +100,7 @@ def build_planar_geometry(surface: StressSurfaceInfo, load_info: StressInfo, sub
     info.cell_nodes.from_numpy(np.array(cells, dtype=gs.np_int))
     info.parent_neighbor_start.from_numpy(np.array(starts, dtype=gs.np_int))
     if neighbors:
-        info.parent_neighbor_faces.from_numpy(np.array(neighbors, dtype=gs.np_int))
+        info.parent_neighbor_faces.from_numpy(np.array(neighbors, dtype=gs.np_int)[:, None])
     kernel_planar_geometry(surface, info)
     return info
 
@@ -192,5 +192,5 @@ def func_parent_adjacent(i_first_parent: int, i_second_parent: int, info: Planar
     """Test material adjacency by original quadrilateral edge identity."""
     adjacent = i_first_parent == i_second_parent
     for i_n in range(info.parent_neighbor_start[i_first_parent], info.parent_neighbor_start[i_first_parent + 1]):
-        adjacent = adjacent or info.parent_neighbor_faces[i_n] == i_second_parent
+        adjacent = adjacent or info.parent_neighbor_faces[i_n][0] == i_second_parent
     return adjacent
