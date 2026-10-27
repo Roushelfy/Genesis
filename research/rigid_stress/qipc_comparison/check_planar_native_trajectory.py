@@ -658,6 +658,7 @@ def main():
     parser.add_argument("--level", type=int, choices=(1, 2), default=1)
     parser.add_argument("--subdivisions", type=int, choices=(4, 8, 16, 32), default=8)
     parser.add_argument("--planar-integration", choices=("radial", "gauss"), default="radial")
+    parser.add_argument("--cooperative-anchor", action="store_true")
     parser.add_argument("--quadrature", type=int, choices=(10, 16, 24, 48), default=16)
     parser.add_argument("--production-reference-quadrature", type=int, default=None)
     parser.add_argument("--reference-quadrature", type=int, default=48)
@@ -760,6 +761,18 @@ def main():
     if not isinstance(entry.planar.exact_radial, bool):
         raise TypeError("PlanarLoading.exact_radial must be declared as a production boolean.")
     entry.planar.exact_radial = args.planar_integration == "radial"
+    if not isinstance(entry.cooperative_anchor, bool):
+        raise TypeError("StressLink.cooperative_anchor must be declared as a production boolean.")
+    entry.cooperative_anchor = args.cooperative_anchor
+    anchor_mode = (
+        "unused"
+        if entry.intrinsic is not None or entry.resolved is not None
+        else "fused_volume_serial"
+        if entry.fused_pipeline
+        else "separate_warp"
+        if entry.cooperative_anchor and api.gs.backend == api.gs.cuda and entry.contacts.active_pairs.shape[0] > 0
+        else "separate_serial"
+    )
     low = OriginalRoute(
         api, entry, production_reference_quadrature, recovery.source_epsilon, args.reference_tasks_per_env
     )
@@ -788,6 +801,9 @@ def main():
         planar_integration_requested=args.planar_integration,
         planar_integration="radial" if entry.planar.exact_radial else "gauss",
         sample_count_unit=entry.planar.sample_count_unit,
+        cooperative_anchor_requested=args.cooperative_anchor,
+        anchor_mode=anchor_mode,
+        original_reference_anchor_mode="separate_serial",
     )
     error_history, loaded_history, valid_history, route_history = [], [], [], []
     residual_history, wrench_history, input_history, errno_history = [], [], [], []

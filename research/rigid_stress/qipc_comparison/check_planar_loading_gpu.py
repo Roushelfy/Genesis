@@ -303,7 +303,17 @@ def check_operators(api, writer, checks, reference, native):
 
 
 def check_loading(
-    api, writer, checks, reference, native, refinement, quadrature, capacity, budgets, planar_integration="radial"
+    api,
+    writer,
+    checks,
+    reference,
+    native,
+    refinement,
+    quadrature,
+    capacity,
+    budgets,
+    planar_integration="radial",
+    cooperative_anchor=False,
 ):
     """Check primary single-side CPU equivalence, whole-object error and current-load lifecycle."""
     from genesis.engine.solvers.rigid.stress.planar_loading import PlanarLoading
@@ -322,6 +332,11 @@ def check_loading(
         exact_radial=planar_integration == "radial",
     )
     actual_planar_integration = "radial" if loading.exact_radial else "gauss"
+    anchor_mode = (
+        "separate_warp"
+        if cooperative_anchor and api.gs.backend == api.gs.cuda and contacts.active_pairs.shape[0] > 0
+        else "separate_serial"
+    )
     loading.state.side_filter.from_numpy(sides.astype(api.gs.np_int))
     state = model.create_state(len(cases), "full")
     workspace = api.create_scatter_workspace(len(cases), model.options.scatter_tasks_per_env, False)
@@ -336,7 +351,7 @@ def check_loading(
     free = unbatched_array(api, model.info.is_free).reshape(-1).astype(bool)
     expected_q = np.zeros_like(cpu_output["q"])
     expected_q[free] = api.splu(oracle_k[free][:, free].tocsc()).solve(np.asfortranarray(cpu_load["balanced"][free]))
-    api.kernel_anchor(float(np.finfo(np.float64).eps), contacts, surface.info)
+    api.kernel_anchor(float(np.finfo(np.float64).eps), contacts, surface.info, cooperative_anchor)
     loading.scatter(state, model.load_info, surface.info, model.options, workspace, False)
     model.recover(omega, state)
     actual = native_outputs(api, model, state)
@@ -446,6 +461,8 @@ def check_loading(
             "planar_integration": actual_planar_integration,
             "planar_integration_requested": planar_integration,
             "sample_count_unit": loading.sample_count_unit,
+            "cooperative_anchor_requested": cooperative_anchor,
+            "anchor_mode": anchor_mode,
             "mean_loaded_field_error": mean_field,
             "maximum_loaded_errors": maxima,
             "rows": [
@@ -528,7 +545,7 @@ def check_loading(
             contacts.valid.from_numpy(current_valid)
         else:
             contacts.valid.from_numpy(original_valid)
-        api.kernel_anchor(float(np.finfo(np.float64).eps), contacts, surface.info)
+        api.kernel_anchor(float(np.finfo(np.float64).eps), contacts, surface.info, cooperative_anchor)
         loading.scatter(state, model.load_info, surface.info, model.options, workspace, False)
         model.recover(omega, state)
         current = native_outputs(api, model, state)
@@ -562,6 +579,8 @@ def check_loading(
         "planar_integration": actual_planar_integration,
         "planar_integration_requested": planar_integration,
         "sample_count_unit": loading.sample_count_unit,
+        "cooperative_anchor_requested": cooperative_anchor,
+        "anchor_mode": anchor_mode,
         "mean_loaded_field_error": mean_field,
         "maximum_loaded_errors": maxima,
         "fallback_contacts": int(routing["fallback"].sum()),
@@ -581,6 +600,7 @@ def main():
     parser.add_argument("--quadrature", type=int, choices=(24, 48), default=24)
     parser.add_argument("--subdivisions", type=int, nargs="+", choices=(4, 8, 16, 32), default=[8, 16])
     parser.add_argument("--planar-integration", choices=("radial", "gauss"), default="radial")
+    parser.add_argument("--cooperative-anchor", action="store_true")
     parser.add_argument("--tasks-per-env", type=int, default=2000)
     parser.add_argument("--budgets", type=Path)
     args = parser.parse_args()
@@ -635,6 +655,7 @@ def main():
                 args.tasks_per_env,
                 budgets,
                 planar_integration=args.planar_integration,
+                cooperative_anchor=args.cooperative_anchor,
             )
             for count in args.subdivisions
         ]
@@ -651,6 +672,8 @@ def main():
             "planar_integration_requested": args.planar_integration,
             "planar_integration": summaries[0]["planar_integration"] if summaries else None,
             "sample_count_unit": summaries[0]["sample_count_unit"] if summaries else None,
+            "cooperative_anchor_requested": args.cooperative_anchor,
+            "anchor_mode": summaries[0]["anchor_mode"] if summaries else "unused",
             "checks": len(checks.rows),
             "gating_checks": len(gating_checks),
             "loading_summaries": summaries,
