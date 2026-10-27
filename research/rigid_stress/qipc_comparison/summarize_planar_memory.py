@@ -483,6 +483,7 @@ def audit_task(campaign, group, task, manifest, analysis, revision, weights):
         source_revision=benchmark.get("source_revision"),
         policy_weights_sha256=policy.get("weights_sha256"),
         cuda_graphs_enabled=benchmark.get("cuda_graphs_enabled"),
+        cuda_graph_mode_provenance="Benchmark process-environment receipt. The frozen helper exports QD_GRAPH=0 before scientific imports; frozen Quadrants import-time environment semantics establish GraphOff. This field does not directly read the imported _GRAPH_ENABLED constant; bounded graph-control screens carry that separate evidence.",
         actual_fused_pipeline=benchmark.get("effective_fused_pipeline"),
         actual_anchor_modes=benchmark.get("effective_anchor_modes"),
         actual_query_modes=benchmark.get("effective_planar_query_modes"),
@@ -579,6 +580,7 @@ def summarize(campaigns, revision, weights, accuracy_receipts=()):
         "process_peak_scope": "RSS is resource.ru_maxrss high-water bytes. NVIDIA own-process peak is a polling lower bound including CUDA/JIT/allocator residency; requested and observed poll intervals retained.",
         "preparation_scope": "setup_seconds ends after qd.sync and covers whole scene/model/proxy constructor work after Genesis initialization. Component build timers include elastic model JIT; surface timer describes the original surface. Proxy preparation is not separately isolated. First-use runtime JIT during warmup remains inside process memory sampling.",
         "timing_scope": "All repeated rates/seconds are intrusive diagnostics; excluded from primary speedup headlines. Pure rigid max/full flags carry no stress-output meaning.",
+        "graph_mode_provenance": "Benchmark cuda_graphs_enabled records process environment, not a direct imported Quadrants constant readback. GraphOff follows the pre-import helper export and frozen dependency import semantics. Dedicated bounded graph screens independently read the imported constant.",
     }
 
 
