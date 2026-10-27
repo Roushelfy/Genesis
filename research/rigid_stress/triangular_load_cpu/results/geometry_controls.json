@@ -1,0 +1,1650 @@
+{
+  "scope": "Bounded same-Q4-mother nonconvex loading diagnostic. Prescribed 0.5/1mm radii, not a concave Hertz contact reference or arbitrary nonconvex qualification.",
+  "geometry": {
+    "name": "torus",
+    "major_radius_m": 0.025,
+    "minor_radius_m": 0.008,
+    "vertices": 128,
+    "quads": 128,
+    "raw_dofs": 768,
+    "thickness_m": 0.0005
+  },
+  "quadrature": {
+    "reference": 48,
+    "candidate": 24,
+    "reference_uncertainty": "Q4 q24 vs q48"
+  },
+  "source_center": "Original actual Q4 physical surface point, unchanged for all candidates.",
+  "common_model": "Exactly the same K, mass, inertia relief, translation gauge and stress samples.",
+  "cases": [
+    {
+      "name": "inner-outside-normal",
+      "face": 65,
+      "coordinate": [
+        0.23,
+        -0.17
+      ],
+      "side": 1,
+      "radius_m": 0.0005,
+      "point": [
+        0.014034724326329902,
+        0.01033574349318062,
+        -0.0024209568420874416
+      ],
+      "force": [
+        0.038516378974249275,
+        0.02573582164059739,
+        0.01881903385393012
+      ],
+      "normal": [
+        -0.7703275794849854,
+        -0.5147164328119478,
+        -0.37638067707860234
+      ]
+    },
+    {
+      "name": "inner-outside-friction",
+      "face": 65,
+      "coordinate": [
+        0.23,
+        -0.17
+      ],
+      "side": 1,
+      "radius_m": 0.001,
+      "point": [
+        0.014034724326329902,
+        0.01033574349318062,
+        -0.0024209568420874416
+      ],
+      "force": [
+        0.030182825478955247,
+        0.03820786582513557,
+        0.01881903385393012
+      ],
+      "normal": [
+        -0.7703275794849854,
+        -0.5147164328119478,
+        -0.37638067707860234
+      ]
+    },
+    {
+      "name": "inner-inside-friction",
+      "face": 70,
+      "coordinate": [
+        -0.31,
+        0.23
+      ],
+      "side": -1,
+      "radius_m": 0.001,
+      "point": [
+        -0.014579185772433712,
+        0.011097741185468623,
+        -0.0033702476958303814
+      ],
+      "force": [
+        0.03157175106150423,
+        -0.03612919179437921,
+        -0.01881903385393013
+      ],
+      "normal": [
+        -0.7703275794849851,
+        0.514716432811948,
+        0.37638067707860257
+      ]
+    },
+    {
+      "name": "inner-material-edge",
+      "face": 73,
+      "coordinate": [
+        1.0,
+        0.07
+      ],
+      "side": 1,
+      "radius_m": 0.0005,
+      "point": [
+        -0.0127581561403368,
+        -0.012758156140336794,
+        -0.003120992555462124
+      ],
+      "force": [
+        -0.03296067664405326,
+        -0.03405051776362284,
+        0.018819033853930116
+      ],
+      "normal": [
+        0.7703275794849855,
+        0.5147164328119477,
+        -0.3763806770786023
+      ]
+    },
+    {
+      "name": "inner-triangle-seam",
+      "face": 76,
+      "coordinate": [
+        0.07,
+        0.07
+      ],
+      "side": 1,
+      "radius_m": 0.001,
+      "point": [
+        0.0036939954262904945,
+        -0.017307976069204804,
+        -0.0031209925554621237
+      ],
+      "force": [
+        0.009037218757968713,
+        -0.04160633243726562,
+        0.028057829179043002
+      ],
+      "normal": [
+        -0.18074437515937425,
+        0.9086633352183304,
+        -0.37638067707860257
+      ]
+    },
+    {
+      "name": "outer-outside-friction",
+      "face": 2,
+      "coordinate": [
+        0.19,
+        -0.27
+      ],
+      "side": 1,
+      "radius_m": 0.0005,
+      "point": [
+        0.016639588998873835,
+        0.02706247118898192,
+        0.002129275294847991
+      ],
+      "force": [
+        -0.013263777456059223,
+        -0.046849932469543304,
+        -0.018819033853930116
+      ],
+      "normal": [
+        0.514716432811948,
+        0.7703275794849853,
+        0.3763806770786023
+      ]
+    },
+    {
+      "name": "outer-inside-friction",
+      "face": 8,
+      "coordinate": [
+        -0.31,
+        0.23
+      ],
+      "side": -1,
+      "radius_m": 0.001,
+      "point": [
+        -0.030530592763855294,
+        -0.004139536132529579,
+        0.003370247695830382
+      ],
+      "force": [
+        -0.03969291527544019,
+        -0.009037218757968686,
+        0.03267722684159943
+      ],
+      "normal": [
+        0.9086633352183306,
+        0.1807443751593737,
+        -0.37638067707860257
+      ]
+    },
+    {
+      "name": "top-friction",
+      "face": 36,
+      "coordinate": [
+        0.13,
+        -0.29
+      ],
+      "side": 1,
+      "radius_m": 0.001,
+      "point": [
+        -0.0049576330500362455,
+        0.02194292648801756,
+        0.007392188985400102
+      ],
+      "force": [
+        -0.003795044394023622,
+        0.009840181231332899,
+        -0.04988755828242062
+      ],
+      "normal": [
+        0.07590088788047243,
+        -0.38157953112891535,
+        0.9212144791753943
+      ]
+    }
+  ],
+  "summary": [
+    {
+      "subdivisions": 4,
+      "cases": 8,
+      "valid": 8,
+      "rejected": 0,
+      "maximum_field_error": 0.02708223796529529,
+      "maximum_peak_error": 0.01382534636375719,
+      "maximum_Q_error": 0.035032868937370065,
+      "maximum_force_error": 2.8655294384970724e-15,
+      "maximum_moment_error": 5.416035174492975e-14
+    },
+    {
+      "subdivisions": 8,
+      "cases": 8,
+      "valid": 8,
+      "rejected": 0,
+      "maximum_field_error": 0.0030618193761816396,
+      "maximum_peak_error": 0.0015698717450938493,
+      "maximum_Q_error": 0.00507580573858431,
+      "maximum_force_error": 4.090921615523356e-15,
+      "maximum_moment_error": 9.204097973086379e-14
+    },
+    {
+      "subdivisions": 16,
+      "cases": 8,
+      "valid": 8,
+      "rejected": 0,
+      "maximum_field_error": 0.0008490866495038473,
+      "maximum_peak_error": 0.00043552015884446265,
+      "maximum_Q_error": 0.0012921535882157071,
+      "maximum_force_error": 9.851041363040638e-15,
+      "maximum_moment_error": 1.499424633426545e-13
+    }
+  ],
+  "rows": [
+    {
+      "case": "inner-outside-normal",
+      "method": "Q4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.0005,
+        "samples": 2304,
+        "n_samples": 2304,
+        "force_error": 3.3773243989337778e-15,
+        "moment_error": 5.119473807579217e-15,
+        "candidate_faces": 5,
+        "hit_faces": 1,
+        "analytic_count": 0,
+        "base_mass": 0.9999999999999993,
+        "inverse_method": "closed",
+        "pressure_fit_evaluations": 1,
+        "stages": {
+          "query": 0.0005019710006308742,
+          "integration": 0.005507733003469184,
+          "fit": 0.0004276209947420284,
+          "scatter": 0.00017391700384905562,
+          "total": 0.006611242002691142
+        }
+      },
+      "integration_uncertainty": {
+        "field": 1.6553426821297274e-12,
+        "peak": 1.3486817553689956e-13,
+        "reference_peak_pa": 19367.569651575774,
+        "N": 2.75232337154556e-12,
+        "M": 6.824249151669008e-13,
+        "Q": 1.5214106566778007e-11
+      },
+      "nodal_load_q24_vs_q48": 3.341694853956495e-15,
+      "residual": 6.548498821834005e-13
+    },
+    {
+      "case": "inner-outside-normal",
+      "method": "triangle-k4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.0005,
+        "method": "clipped_triangle_quadrature",
+        "samples": 2592,
+        "n_candidates": 18,
+        "n_triangles": 2,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 5.051591013050331e-16,
+        "moment_error": 1.9158499707551717e-14,
+        "original_center_m": [
+          0.014034724326329902,
+          0.01033574349318062,
+          -0.0024209568420874416
+        ],
+        "support_center_m": [
+          0.014034724326329902,
+          0.01033574349318062,
+          -0.0024209568420874416
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.0017905230051837862,
+        "integration_seconds": 0.002594788995338604,
+        "fit_seconds": 0.0004592280020006001,
+        "scatter_seconds": 0.00048410399904241785,
+        "total_seconds": 0.0057712380003067665
+      },
+      "errors": {
+        "field": 0.01479176862684315,
+        "peak": 0.00025341072834843964,
+        "reference_peak_pa": 19367.569651575774,
+        "N": 0.013308671181195872,
+        "M": 0.015440232396848485,
+        "Q": 0.03466980685944154
+      },
+      "nodal_load_relative": 0.03448631801037364,
+      "residual": 5.253358263768099e-13
+    },
+    {
+      "case": "inner-outside-normal",
+      "method": "triangle-k8",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.0005,
+        "method": "clipped_triangle_quadrature",
+        "samples": 7488,
+        "n_candidates": 24,
+        "n_triangles": 7,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 7.376145397762941e-16,
+        "moment_error": 2.8418974073879546e-14,
+        "original_center_m": [
+          0.014034724326329902,
+          0.01033574349318062,
+          -0.0024209568420874416
+        ],
+        "support_center_m": [
+          0.014034724326329902,
+          0.01033574349318062,
+          -0.0024209568420874416
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.0025791060033952817,
+        "integration_seconds": 0.006283832997723948,
+        "fit_seconds": 0.0009052960012922995,
+        "scatter_seconds": 0.0005443429981824011,
+        "total_seconds": 0.01038247199903708
+      },
+      "errors": {
+        "field": 0.002121326599345854,
+        "peak": 3.632002581603868e-05,
+        "reference_peak_pa": 19367.569651575774,
+        "N": 0.0019086316782612144,
+        "M": 0.0022143245009959575,
+        "Q": 0.0049720885540492105
+      },
+      "nodal_load_relative": 0.004945773933919826,
+      "residual": 4.5046630896419107e-13
+    },
+    {
+      "case": "inner-outside-normal",
+      "method": "triangle-k16",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.0005,
+        "method": "clipped_triangle_quadrature",
+        "samples": 14400,
+        "n_candidates": 42,
+        "n_triangles": 16,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 8.940139411221185e-16,
+        "moment_error": 2.353149607726257e-14,
+        "original_center_m": [
+          0.014034724326329902,
+          0.01033574349318062,
+          -0.0024209568420874416
+        ],
+        "support_center_m": [
+          0.014034724326329902,
+          0.01033574349318062,
+          -0.0024209568420874416
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.003986123003414832,
+        "integration_seconds": 0.012278329995751847,
+        "fit_seconds": 0.0017966610030271113,
+        "scatter_seconds": 0.0010621379988151602,
+        "total_seconds": 0.01919408600224415
+      },
+      "errors": {
+        "field": 0.000551293434885532,
+        "peak": 9.43818327693905e-06,
+        "reference_peak_pa": 19367.569651575774,
+        "N": 0.0004960179701846767,
+        "M": 0.0005754618645025252,
+        "Q": 0.0012921535882157071
+      },
+      "nodal_load_relative": 0.0012853149069245303,
+      "residual": 4.4846662792270737e-13
+    },
+    {
+      "case": "inner-outside-friction",
+      "method": "Q4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "samples": 2304,
+        "n_samples": 2304,
+        "force_error": 3.4954499343462004e-15,
+        "moment_error": 3.347048827493613e-15,
+        "candidate_faces": 6,
+        "hit_faces": 1,
+        "analytic_count": 0,
+        "base_mass": 0.9999999999999993,
+        "inverse_method": "closed",
+        "pressure_fit_evaluations": 1,
+        "stages": {
+          "query": 0.00034826400224119425,
+          "integration": 0.004446482002094854,
+          "fit": 0.0005225319982855581,
+          "scatter": 0.00017345599917462096,
+          "total": 0.005490734001796227
+        }
+      },
+      "integration_uncertainty": {
+        "field": 7.947962314972745e-13,
+        "peak": 1.9061625834341254e-13,
+        "reference_peak_pa": 19944.19514080354,
+        "N": 1.0485067482184433e-12,
+        "M": 6.402669185469521e-13,
+        "Q": 1.6364655776826075e-11
+      },
+      "nodal_load_q24_vs_q48": 2.961144269777061e-15,
+      "residual": 3.5397715107569365e-13
+    },
+    {
+      "case": "inner-outside-friction",
+      "method": "triangle-k4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "method": "clipped_triangle_quadrature",
+        "samples": 8352,
+        "n_candidates": 24,
+        "n_triangles": 8,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 2.4761202463397604e-15,
+        "moment_error": 1.9323772471836816e-14,
+        "original_center_m": [
+          0.014034724326329902,
+          0.01033574349318062,
+          -0.0024209568420874416
+        ],
+        "support_center_m": [
+          0.014034724326329902,
+          0.01033574349318062,
+          -0.0024209568420874416
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.0019158470022375695,
+        "integration_seconds": 0.007802674997947179,
+        "fit_seconds": 0.0011154160019941628,
+        "scatter_seconds": 0.000808233002317138,
+        "total_seconds": 0.011714087006112095
+      },
+      "errors": {
+        "field": 0.009597333962456548,
+        "peak": 0.0005670616588763014,
+        "reference_peak_pa": 19944.19514080354,
+        "N": 0.008650025812357963,
+        "M": 0.010015260065585684,
+        "Q": 0.022353372931828874
+      },
+      "nodal_load_relative": 0.02273504787868768,
+      "residual": 7.723466024909037e-13
+    },
+    {
+      "case": "inner-outside-friction",
+      "method": "triangle-k8",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "method": "clipped_triangle_quadrature",
+        "samples": 17568,
+        "n_candidates": 43,
+        "n_triangles": 20,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 9.677093308973102e-16,
+        "moment_error": 1.439892927165979e-14,
+        "original_center_m": [
+          0.014034724326329902,
+          0.01033574349318062,
+          -0.0024209568420874416
+        ],
+        "support_center_m": [
+          0.014034724326329902,
+          0.01033574349318062,
+          -0.0024209568420874416
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.0035639699999592267,
+        "integration_seconds": 0.01678168600483332,
+        "fit_seconds": 0.0020468699949560687,
+        "scatter_seconds": 0.0012176270029158331,
+        "total_seconds": 0.02368362199922558
+      },
+      "errors": {
+        "field": 0.002179277505490445,
+        "peak": 0.00012891323817424818,
+        "reference_peak_pa": 19944.19514080354,
+        "N": 0.001964171169620188,
+        "M": 0.00227417645964564,
+        "Q": 0.00507580573858431
+      },
+      "nodal_load_relative": 0.005162473101592624,
+      "residual": 6.808633358248523e-13
+    },
+    {
+      "case": "inner-outside-friction",
+      "method": "triangle-k16",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "method": "clipped_triangle_quadrature",
+        "samples": 42624,
+        "n_candidates": 89,
+        "n_triangles": 56,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 9.851041363040638e-15,
+        "moment_error": 1.0490291811378487e-13,
+        "original_center_m": [
+          0.014034724326329902,
+          0.01033574349318062,
+          -0.0024209568420874416
+        ],
+        "support_center_m": [
+          0.014034724326329902,
+          0.01033574349318062,
+          -0.0024209568420874416
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.008035389000724535,
+        "integration_seconds": 0.04168916399794398,
+        "fit_seconds": 0.0049634550014161505,
+        "scatter_seconds": 0.00333754500024952,
+        "total_seconds": 0.05818922400067095
+      },
+      "errors": {
+        "field": 0.0005371029454247766,
+        "peak": 3.178002547379997e-05,
+        "reference_peak_pa": 19944.19514080354,
+        "N": 0.0004840880144125263,
+        "M": 0.000560491663786843,
+        "Q": 0.0012509789166185985
+      },
+      "nodal_load_relative": 0.001272338883706766,
+      "residual": 4.507226750636134e-13
+    },
+    {
+      "case": "inner-inside-friction",
+      "method": "Q4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "samples": 2304,
+        "n_samples": 2304,
+        "force_error": 4.23402988680327e-15,
+        "moment_error": 3.3158029157867198e-15,
+        "candidate_faces": 4,
+        "hit_faces": 1,
+        "analytic_count": 0,
+        "base_mass": 0.9999999999999991,
+        "inverse_method": "closed",
+        "pressure_fit_evaluations": 1,
+        "stages": {
+          "query": 0.0003782380008487962,
+          "integration": 0.003112762999080587,
+          "fit": 0.0004381769977044314,
+          "scatter": 0.00016250000044237822,
+          "total": 0.004091677998076193
+        }
+      },
+      "integration_uncertainty": {
+        "field": 1.1598528503396301e-12,
+        "peak": 8.273574080069655e-14,
+        "reference_peak_pa": 24228.057950629456,
+        "N": 1.3151958284749249e-12,
+        "M": 1.0951143148432803e-12,
+        "Q": 1.928454972064288e-11
+      },
+      "nodal_load_q24_vs_q48": 3.8082004400167765e-15,
+      "residual": 7.641329312507704e-13
+    },
+    {
+      "case": "inner-inside-friction",
+      "method": "triangle-k4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "method": "clipped_triangle_quadrature",
+        "samples": 6912,
+        "n_candidates": 26,
+        "n_triangles": 7,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 2.8655294384970724e-15,
+        "moment_error": 3.509475021645946e-14,
+        "original_center_m": [
+          -0.014579185772433712,
+          0.011097741185468623,
+          -0.0033702476958303814
+        ],
+        "support_center_m": [
+          -0.014579185772433712,
+          0.011097741185468623,
+          -0.0033702476958303814
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.0020266709980205633,
+        "integration_seconds": 0.0059785830017062835,
+        "fit_seconds": 0.0008841649978421628,
+        "scatter_seconds": 0.00045406000572256744,
+        "total_seconds": 0.009406602002854925
+      },
+      "errors": {
+        "field": 0.007863620072164953,
+        "peak": 4.4132592848283295e-06,
+        "reference_peak_pa": 24228.057950629456,
+        "N": 0.007655842596413361,
+        "M": 0.007941079521266086,
+        "Q": 0.020086590947854085
+      },
+      "nodal_load_relative": 0.02046982979699702,
+      "residual": 4.3883319054902473e-13
+    },
+    {
+      "case": "inner-inside-friction",
+      "method": "triangle-k8",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "method": "clipped_triangle_quadrature",
+        "samples": 16704,
+        "n_candidates": 44,
+        "n_triangles": 19,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 1.866761982517753e-15,
+        "moment_error": 2.7327360765444356e-14,
+        "original_center_m": [
+          -0.014579185772433712,
+          0.011097741185468623,
+          -0.0033702476958303814
+        ],
+        "support_center_m": [
+          -0.014579185772433712,
+          0.011097741185468623,
+          -0.0033702476958303814
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.004258524000761099,
+        "integration_seconds": 0.014977664999605622,
+        "fit_seconds": 0.0018875349996960722,
+        "scatter_seconds": 0.001306969003053382,
+        "total_seconds": 0.022584990001632832
+      },
+      "errors": {
+        "field": 0.00181332157790859,
+        "peak": 1.0246546090255216e-06,
+        "reference_peak_pa": 24228.057950629456,
+        "N": 0.0017654088637866431,
+        "M": 0.0018311834391490712,
+        "Q": 0.0046318932571853145
+      },
+      "nodal_load_relative": 0.004720266712570689,
+      "residual": 4.591916691646992e-13
+    },
+    {
+      "case": "inner-inside-friction",
+      "method": "triangle-k16",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "method": "clipped_triangle_quadrature",
+        "samples": 41184,
+        "n_candidates": 92,
+        "n_triangles": 53,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 1.4562928066705999e-15,
+        "moment_error": 3.2847610576750055e-14,
+        "original_center_m": [
+          -0.014579185772433712,
+          0.011097741185468623,
+          -0.0033702476958303814
+        ],
+        "support_center_m": [
+          -0.014579185772433712,
+          0.011097741185468623,
+          -0.0033702476958303814
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.009483905996603426,
+        "integration_seconds": 0.036917362005624454,
+        "fit_seconds": 0.0037006809943704866,
+        "scatter_seconds": 0.0025868880038615316,
+        "total_seconds": 0.052769064997846726
+      },
+      "errors": {
+        "field": 0.0004581040197642457,
+        "peak": 2.5925565893089194e-07,
+        "reference_peak_pa": 24228.057950629456,
+        "N": 0.0004459997094974502,
+        "M": 0.0004626165069891794,
+        "Q": 0.0011701669169033773
+      },
+      "nodal_load_relative": 0.001192492926562694,
+      "residual": 3.848991920940855e-13
+    },
+    {
+      "case": "inner-material-edge",
+      "method": "Q4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.0005,
+        "samples": 7597,
+        "n_samples": 7597,
+        "force_error": 1.3743699756878044e-15,
+        "moment_error": 4.282667128026434e-15,
+        "candidate_faces": 6,
+        "hit_faces": 2,
+        "analytic_count": 0,
+        "base_mass": 0.9997939543545806,
+        "inverse_method": "closed",
+        "pressure_fit_evaluations": 1,
+        "stages": {
+          "query": 0.00037942999915685505,
+          "integration": 0.009274315998482052,
+          "fit": 0.0008504249999532476,
+          "scatter": 0.0003616540052462369,
+          "total": 0.010865825002838392
+        }
+      },
+      "integration_uncertainty": {
+        "field": 1.1909702040078627e-05,
+        "peak": 1.240624535239606e-05,
+        "reference_peak_pa": 23381.515877140537,
+        "N": 1.3961014905934133e-05,
+        "M": 1.0840059952899571e-05,
+        "Q": 2.059862941912491e-05
+      },
+      "nodal_load_q24_vs_q48": 2.9583719049342483e-05,
+      "residual": 4.737669121570559e-13
+    },
+    {
+      "case": "inner-material-edge",
+      "method": "triangle-k4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.0005,
+        "method": "clipped_triangle_quadrature",
+        "samples": 5064,
+        "n_candidates": 18,
+        "n_triangles": 6,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 2.073869547451221e-15,
+        "moment_error": 3.78466488606269e-14,
+        "original_center_m": [
+          -0.0127581561403368,
+          -0.012758156140336794,
+          -0.003120992555462124
+        ],
+        "support_center_m": [
+          -0.0127581561403368,
+          -0.012758156140336794,
+          -0.003120992555462124
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.001523248000012245,
+        "integration_seconds": 0.004368187001091428,
+        "fit_seconds": 0.0006842500006314367,
+        "scatter_seconds": 0.0004628929964383133,
+        "total_seconds": 0.007104445998265874
+      },
+      "errors": {
+        "field": 0.002803913995909079,
+        "peak": 0.0001408649489079272,
+        "reference_peak_pa": 23381.515877140537,
+        "N": 0.0023850518543131697,
+        "M": 0.002976331212955883,
+        "Q": 0.004887902612076526
+      },
+      "nodal_load_relative": 0.004308849697911088,
+      "residual": 4.916027161476268e-13
+    },
+    {
+      "case": "inner-material-edge",
+      "method": "triangle-k8",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.0005,
+        "method": "clipped_triangle_quadrature",
+        "samples": 6276,
+        "n_candidates": 25,
+        "n_triangles": 7,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 3.4298561827496603e-15,
+        "moment_error": 6.482970937913595e-14,
+        "original_center_m": [
+          -0.0127581561403368,
+          -0.012758156140336794,
+          -0.003120992555462124
+        ],
+        "support_center_m": [
+          -0.0127581561403368,
+          -0.012758156140336794,
+          -0.003120992555462124
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.002802695998980198,
+        "integration_seconds": 0.005924493001657538,
+        "fit_seconds": 0.0008229239974753,
+        "scatter_seconds": 0.0007503680026275106,
+        "total_seconds": 0.010372466997068841
+      },
+      "errors": {
+        "field": 0.0012940307403315236,
+        "peak": 9.049554463752466e-05,
+        "reference_peak_pa": 23381.515877140537,
+        "N": 0.0010705770795660468,
+        "M": 0.0013844846657689535,
+        "Q": 0.0019978072602334367
+      },
+      "nodal_load_relative": 0.0017556354360148123,
+      "residual": 5.918914608000354e-13
+    },
+    {
+      "case": "inner-material-edge",
+      "method": "triangle-k16",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.0005,
+        "method": "clipped_triangle_quadrature",
+        "samples": 14328,
+        "n_candidates": 39,
+        "n_triangles": 18,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 2.9478522598986404e-15,
+        "moment_error": 7.60921843546456e-14,
+        "original_center_m": [
+          -0.0127581561403368,
+          -0.012758156140336794,
+          -0.003120992555462124
+        ],
+        "support_center_m": [
+          -0.0127581561403368,
+          -0.012758156140336794,
+          -0.003120992555462124
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.003744796005776152,
+        "integration_seconds": 0.013830089999828488,
+        "fit_seconds": 0.0014827489940216765,
+        "scatter_seconds": 0.0011064920036005788,
+        "total_seconds": 0.020240630001353566
+      },
+      "errors": {
+        "field": 0.00035413325477741826,
+        "peak": 2.1801196292057665e-05,
+        "reference_peak_pa": 23381.515877140537,
+        "N": 0.00029300723199931795,
+        "M": 0.0003788783336005234,
+        "Q": 0.0005466792957014592
+      },
+      "nodal_load_relative": 0.0004806395901589461,
+      "residual": 3.1706481611921004e-13
+    },
+    {
+      "case": "inner-triangle-seam",
+      "method": "Q4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "samples": 2304,
+        "n_samples": 2304,
+        "force_error": 5.2670633214212996e-15,
+        "moment_error": 3.642123883137201e-15,
+        "candidate_faces": 5,
+        "hit_faces": 1,
+        "analytic_count": 0,
+        "base_mass": 0.9999999999999991,
+        "inverse_method": "closed",
+        "pressure_fit_evaluations": 1,
+        "stages": {
+          "query": 0.0003987579984823242,
+          "integration": 0.005634225002722815,
+          "fit": 0.0005153609963599592,
+          "scatter": 0.00016724700253689662,
+          "total": 0.006715591000101995
+        }
+      },
+      "integration_uncertainty": {
+        "field": 2.789694783503908e-12,
+        "peak": 2.1811294872889562e-14,
+        "reference_peak_pa": 20515.581302257626,
+        "N": 1.4259092464105643e-12,
+        "M": 3.1914158155890044e-12,
+        "Q": 2.2071174393356183e-11
+      },
+      "nodal_load_q24_vs_q48": 5.243922095924083e-15,
+      "residual": 8.893301410726535e-13
+    },
+    {
+      "case": "inner-triangle-seam",
+      "method": "triangle-k4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "method": "clipped_triangle_quadrature",
+        "samples": 5760,
+        "n_candidates": 24,
+        "n_triangles": 6,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 1.2322831196282392e-15,
+        "moment_error": 6.533234616028751e-15,
+        "original_center_m": [
+          0.0036939954262904945,
+          -0.017307976069204804,
+          -0.0031209925554621237
+        ],
+        "support_center_m": [
+          0.0036939954262904945,
+          -0.017307976069204804,
+          -0.0031209925554621237
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.003235044001485221,
+        "integration_seconds": 0.006297934000031091,
+        "fit_seconds": 0.0007033280053292401,
+        "scatter_seconds": 0.00039503299922216684,
+        "total_seconds": 0.010720420003053732
+      },
+      "errors": {
+        "field": 0.006837400621406682,
+        "peak": 0.0008253465299837034,
+        "reference_peak_pa": 20515.581302257626,
+        "N": 0.006377605323242221,
+        "M": 0.007020644432304272,
+        "Q": 0.015951028982748073
+      },
+      "nodal_load_relative": 0.017416748200066674,
+      "residual": 9.774686791237107e-13
+    },
+    {
+      "case": "inner-triangle-seam",
+      "method": "triangle-k8",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "method": "clipped_triangle_quadrature",
+        "samples": 14400,
+        "n_candidates": 42,
+        "n_triangles": 16,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 1.3193727194434256e-15,
+        "moment_error": 2.2194855643999583e-14,
+        "original_center_m": [
+          0.0036939954262904945,
+          -0.017307976069204804,
+          -0.0031209925554621237
+        ],
+        "support_center_m": [
+          0.0036939954262904945,
+          -0.017307976069204804,
+          -0.0031209925554621237
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.0039088990015443414,
+        "integration_seconds": 0.014230380002118181,
+        "fit_seconds": 0.0015076749987201765,
+        "scatter_seconds": 0.0010702799991122447,
+        "total_seconds": 0.020790832000784576
+      },
+      "errors": {
+        "field": 0.002037429378164755,
+        "peak": 0.0002458909538252494,
+        "reference_peak_pa": 20515.581302257626,
+        "N": 0.0019004181804627525,
+        "M": 0.002092032924792853,
+        "Q": 0.0047531360029356455
+      },
+      "nodal_load_relative": 0.005189895461513453,
+      "residual": 1.0931419612769644e-12
+    },
+    {
+      "case": "inner-triangle-seam",
+      "method": "triangle-k16",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "method": "clipped_triangle_quadrature",
+        "samples": 41184,
+        "n_candidates": 89,
+        "n_triangles": 53,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 8.371656763905481e-15,
+        "moment_error": 1.0087881236609928e-13,
+        "original_center_m": [
+          0.0036939954262904945,
+          -0.017307976069204804,
+          -0.0031209925554621237
+        ],
+        "support_center_m": [
+          0.0036939954262904945,
+          -0.017307976069204804,
+          -0.0031209925554621237
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.007279452998773195,
+        "integration_seconds": 0.038347743000485934,
+        "fit_seconds": 0.004099871002836153,
+        "scatter_seconds": 0.0030894989977241494,
+        "total_seconds": 0.052962742003728636
+      },
+      "errors": {
+        "field": 0.0005132766957259286,
+        "peak": 6.194188521306712e-05,
+        "reference_peak_pa": 20515.581302257626,
+        "N": 0.00047876033131092504,
+        "M": 0.0005270326218495628,
+        "Q": 0.0011974274880447325
+      },
+      "nodal_load_relative": 0.001307457535579666,
+      "residual": 9.069899561371757e-13
+    },
+    {
+      "case": "outer-outside-friction",
+      "method": "Q4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.0005,
+        "samples": 2304,
+        "n_samples": 2304,
+        "force_error": 2.7939973724065213e-15,
+        "moment_error": 1.1933204224793335e-14,
+        "candidate_faces": 3,
+        "hit_faces": 1,
+        "analytic_count": 0,
+        "base_mass": 0.9999999999999991,
+        "inverse_method": "closed",
+        "pressure_fit_evaluations": 1,
+        "stages": {
+          "query": 0.0008015429993974976,
+          "integration": 0.0026240119987051003,
+          "fit": 0.00046646800183225423,
+          "scatter": 0.00016071699792519212,
+          "total": 0.004052739997860044
+        }
+      },
+      "integration_uncertainty": {
+        "field": 1.503252966274175e-12,
+        "peak": 7.410729938494608e-14,
+        "reference_peak_pa": 7019.969338132338,
+        "N": 8.057203375666631e-13,
+        "M": 2.3552766737666702e-12,
+        "Q": 1.191797777404753e-11
+      },
+      "nodal_load_q24_vs_q48": 3.5151030897249886e-15,
+      "residual": 3.8948479737052285e-13
+    },
+    {
+      "case": "outer-outside-friction",
+      "method": "triangle-k4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.0005,
+        "method": "clipped_triangle_quadrature",
+        "samples": 2304,
+        "n_candidates": 9,
+        "n_triangles": 2,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 1.7659538451903645e-15,
+        "moment_error": 5.416035174492975e-14,
+        "original_center_m": [
+          0.016639588998873835,
+          0.02706247118898192,
+          0.002129275294847991
+        ],
+        "support_center_m": [
+          0.016639588998873835,
+          0.02706247118898192,
+          0.002129275294847991
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.001060385002347175,
+        "integration_seconds": 0.0019367179993423633,
+        "fit_seconds": 0.0006205559984664433,
+        "scatter_seconds": 0.0002466239966452122,
+        "total_seconds": 0.004094752999662887
+      },
+      "errors": {
+        "field": 0.02708223796529529,
+        "peak": 0.01382534636375719,
+        "reference_peak_pa": 7019.969338132338,
+        "N": 0.02424883204192871,
+        "M": 0.0320987044158934,
+        "Q": 0.035032868937370065
+      },
+      "nodal_load_relative": 0.04057997372625178,
+      "residual": 3.3387638613435876e-13
+    },
+    {
+      "case": "outer-outside-friction",
+      "method": "triangle-k8",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.0005,
+        "method": "clipped_triangle_quadrature",
+        "samples": 5760,
+        "n_candidates": 14,
+        "n_triangles": 6,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 1.0763034852990411e-15,
+        "moment_error": 3.204169620037429e-14,
+        "original_center_m": [
+          0.016639588998873835,
+          0.02706247118898192,
+          0.002129275294847991
+        ],
+        "support_center_m": [
+          0.016639588998873835,
+          0.02706247118898192,
+          0.002129275294847991
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.0021139200034667738,
+        "integration_seconds": 0.005940727001870982,
+        "fit_seconds": 0.0007097380002960563,
+        "scatter_seconds": 0.00044247299956623465,
+        "total_seconds": 0.009272334005800076
+      },
+      "errors": {
+        "field": 0.0030618193761816396,
+        "peak": 0.0015698717450938493,
+        "reference_peak_pa": 7019.969338132338,
+        "N": 0.0027414848023938525,
+        "M": 0.003628962837393049,
+        "Q": 0.003960688812106144
+      },
+      "nodal_load_relative": 0.0045878243149182416,
+      "residual": 4.1816196462009984e-13
+    },
+    {
+      "case": "outer-outside-friction",
+      "method": "triangle-k16",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.0005,
+        "method": "clipped_triangle_quadrature",
+        "samples": 12960,
+        "n_candidates": 24,
+        "n_triangles": 13,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 2.9318950222523595e-15,
+        "moment_error": 1.0525058770629149e-13,
+        "original_center_m": [
+          0.016639588998873835,
+          0.02706247118898192,
+          0.002129275294847991
+        ],
+        "support_center_m": [
+          0.016639588998873835,
+          0.02706247118898192,
+          0.002129275294847991
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.002199975999246817,
+        "integration_seconds": 0.012462282000342384,
+        "fit_seconds": 0.0022332609951263294,
+        "scatter_seconds": 0.0010416370059829205,
+        "total_seconds": 0.01801130599778844
+      },
+      "errors": {
+        "field": 0.0008490866495038473,
+        "peak": 0.00043552015884446265,
+        "reference_peak_pa": 7019.969338132338,
+        "N": 0.000760253254533447,
+        "M": 0.0010063637067351942,
+        "Q": 0.0010983561015534317
+      },
+      "nodal_load_relative": 0.001272269816567278,
+      "residual": 3.3364045818131364e-13
+    },
+    {
+      "case": "outer-inside-friction",
+      "method": "Q4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "samples": 2304,
+        "n_samples": 2304,
+        "force_error": 3.966789872278417e-15,
+        "moment_error": 3.823830829534106e-15,
+        "candidate_faces": 3,
+        "hit_faces": 1,
+        "analytic_count": 0,
+        "base_mass": 0.9999999999999991,
+        "inverse_method": "closed",
+        "pressure_fit_evaluations": 1,
+        "stages": {
+          "query": 0.000670730005367659,
+          "integration": 0.0025658559970906936,
+          "fit": 0.0003746130023500882,
+          "scatter": 0.0002751459978753701,
+          "total": 0.003886345002683811
+        }
+      },
+      "integration_uncertainty": {
+        "field": 1.5960130717376608e-12,
+        "peak": 5.127153278533742e-13,
+        "reference_peak_pa": 9458.320214760748,
+        "N": 7.448135001068993e-13,
+        "M": 2.1899507864888263e-12,
+        "Q": 1.2057057452246499e-11
+      },
+      "nodal_load_q24_vs_q48": 3.531110197721704e-15,
+      "residual": 4.643508248813114e-13
+    },
+    {
+      "case": "outer-inside-friction",
+      "method": "triangle-k4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "method": "clipped_triangle_quadrature",
+        "samples": 4608,
+        "n_candidates": 15,
+        "n_triangles": 4,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 1.6147117146016931e-15,
+        "moment_error": 4.577847935193573e-14,
+        "original_center_m": [
+          -0.030530592763855294,
+          -0.004139536132529579,
+          0.003370247695830382
+        ],
+        "support_center_m": [
+          -0.030530592763855294,
+          -0.004139536132529579,
+          0.003370247695830382
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.001559581003675703,
+        "integration_seconds": 0.004168111001490615,
+        "fit_seconds": 0.0006280269954004325,
+        "scatter_seconds": 0.00041060600051423535,
+        "total_seconds": 0.00690833500266308
+      },
+      "errors": {
+        "field": 0.012171031778175922,
+        "peak": 0.004259688684706818,
+        "reference_peak_pa": 9458.320214760748,
+        "N": 0.012333992250568564,
+        "M": 0.011984464470776153,
+        "Q": 0.018763464068895924
+      },
+      "nodal_load_relative": 0.025263737137946527,
+      "residual": 6.032299897754954e-13
+    },
+    {
+      "case": "outer-inside-friction",
+      "method": "triangle-k8",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "method": "clipped_triangle_quadrature",
+        "samples": 12960,
+        "n_candidates": 24,
+        "n_triangles": 14,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 3.218462265873777e-15,
+        "moment_error": 2.1699579772868077e-14,
+        "original_center_m": [
+          -0.030530592763855294,
+          -0.004139536132529579,
+          0.003370247695830382
+        ],
+        "support_center_m": [
+          -0.030530592763855294,
+          -0.004139536132529579,
+          0.003370247695830382
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.0023535840009571984,
+        "integration_seconds": 0.012743626000883523,
+        "fit_seconds": 0.0016084439994301647,
+        "scatter_seconds": 0.001004110999929253,
+        "total_seconds": 0.017844815003627446
+      },
+      "errors": {
+        "field": 0.0023451542587241874,
+        "peak": 0.0008174929717833513,
+        "reference_peak_pa": 9458.320214760748,
+        "N": 0.0023765540161697113,
+        "M": 0.0023092058590075152,
+        "Q": 0.0036154057003094054
+      },
+      "nodal_load_relative": 0.004867899601381472,
+      "residual": 5.318248028026869e-13
+    },
+    {
+      "case": "outer-inside-friction",
+      "method": "triangle-k16",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "method": "clipped_triangle_quadrature",
+        "samples": 28224,
+        "n_candidates": 54,
+        "n_triangles": 34,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 3.2614088059113798e-15,
+        "moment_error": 3.703194757449292e-14,
+        "original_center_m": [
+          -0.030530592763855294,
+          -0.004139536132529579,
+          0.003370247695830382
+        ],
+        "support_center_m": [
+          -0.030530592763855294,
+          -0.004139536132529579,
+          0.003370247695830382
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.006364303000736982,
+        "integration_seconds": 0.027697204997821245,
+        "fit_seconds": 0.0029575649969046935,
+        "scatter_seconds": 0.0021169340034248307,
+        "total_seconds": 0.03923679600120522
+      },
+      "errors": {
+        "field": 0.0005967432941734096,
+        "peak": 0.00020786862532892194,
+        "reference_peak_pa": 9458.320214760748,
+        "N": 0.0006047332140968739,
+        "M": 0.0005875959357703985,
+        "Q": 0.0009199689528474323
+      },
+      "nodal_load_relative": 0.0012386760628729687,
+      "residual": 4.4526672213334905e-13
+    },
+    {
+      "case": "top-friction",
+      "method": "Q4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "samples": 2304,
+        "n_samples": 2304,
+        "force_error": 4.03185978091909e-15,
+        "moment_error": 2.380757608720836e-15,
+        "candidate_faces": 4,
+        "hit_faces": 1,
+        "analytic_count": 0,
+        "base_mass": 0.9999999999999991,
+        "inverse_method": "closed",
+        "pressure_fit_evaluations": 1,
+        "stages": {
+          "query": 0.0005186150010558777,
+          "integration": 0.003418414999032393,
+          "fit": 0.0005165219990885817,
+          "scatter": 0.00016700600099284202,
+          "total": 0.004620558000169694
+        }
+      },
+      "integration_uncertainty": {
+        "field": 2.0568723697469258e-12,
+        "peak": 5.846677302105249e-13,
+        "reference_peak_pa": 13972.177681814166,
+        "N": 1.5125094171549557e-12,
+        "M": 2.3742562842952025e-12,
+        "Q": 2.1588436286847775e-11
+      },
+      "nodal_load_q24_vs_q48": 3.948384542067216e-15,
+      "residual": 5.478198070739817e-13
+    },
+    {
+      "case": "top-friction",
+      "method": "triangle-k4",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "method": "clipped_triangle_quadrature",
+        "samples": 6912,
+        "n_candidates": 21,
+        "n_triangles": 7,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 5.456589381647187e-16,
+        "moment_error": 1.3167187260113092e-14,
+        "original_center_m": [
+          -0.0049576330500362455,
+          0.02194292648801756,
+          0.007392188985400102
+        ],
+        "support_center_m": [
+          -0.0049576330500362455,
+          0.02194292648801756,
+          0.007392188985400102
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.0021445749953272752,
+        "integration_seconds": 0.006706798005325254,
+        "fit_seconds": 0.0012511759996414185,
+        "scatter_seconds": 0.0007302480007638223,
+        "total_seconds": 0.0110044300017762
+      },
+      "errors": {
+        "field": 0.012016383606767758,
+        "peak": 0.0008093082991156254,
+        "reference_peak_pa": 13972.177681814166,
+        "N": 0.008714216689952389,
+        "M": 0.01392624300353283,
+        "Q": 0.019655278583811973
+      },
+      "nodal_load_relative": 0.020030558796814986,
+      "residual": 6.087928429879471e-13
+    },
+    {
+      "case": "top-friction",
+      "method": "triangle-k8",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "method": "clipped_triangle_quadrature",
+        "samples": 14976,
+        "n_candidates": 31,
+        "n_triangles": 17,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 4.090921615523356e-15,
+        "moment_error": 9.204097973086379e-14,
+        "original_center_m": [
+          -0.0049576330500362455,
+          0.02194292648801756,
+          0.007392188985400102
+        ],
+        "support_center_m": [
+          -0.0049576330500362455,
+          0.02194292648801756,
+          0.007392188985400102
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.0035929130026488565,
+        "integration_seconds": 0.01583338099590037,
+        "fit_seconds": 0.0018645520030986518,
+        "scatter_seconds": 0.0012813810026273131,
+        "total_seconds": 0.02264889999787556
+      },
+      "errors": {
+        "field": 0.002712395092664846,
+        "peak": 0.00018287216371575292,
+        "reference_peak_pa": 13972.177681814166,
+        "N": 0.0019670143164983124,
+        "M": 0.003143497612742866,
+        "Q": 0.004436682692947945
+      },
+      "nodal_load_relative": 0.004521392722214258,
+      "residual": 6.342048743013813e-13
+    },
+    {
+      "case": "top-friction",
+      "method": "triangle-k16",
+      "status": "valid",
+      "diagnostics": {
+        "valid": true,
+        "radius_m": 0.001,
+        "method": "clipped_triangle_quadrature",
+        "samples": 33696,
+        "n_candidates": 72,
+        "n_triangles": 41,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 6.4150497771575385e-15,
+        "moment_error": 1.499424633426545e-13,
+        "original_center_m": [
+          -0.0049576330500362455,
+          0.02194292648801756,
+          0.007392188985400102
+        ],
+        "support_center_m": [
+          -0.0049576330500362455,
+          0.02194292648801756,
+          0.007392188985400102
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.006927454000106081,
+        "integration_seconds": 0.03115521799918497,
+        "fit_seconds": 0.003189176000887528,
+        "scatter_seconds": 0.0020127300012973137,
+        "total_seconds": 0.043373619999329094
+      },
+      "errors": {
+        "field": 0.0007287562489086655,
+        "peak": 4.914436205201858e-05,
+        "reference_peak_pa": 13972.177681814166,
+        "N": 0.0005284901077904163,
+        "M": 0.0008445832743495068,
+        "Q": 0.0011920314433068475
+      },
+      "nodal_load_relative": 0.0012147910196992897,
+      "residual": 7.309386312666e-13
+    }
+  ]
+}

@@ -1,0 +1,1222 @@
+{
+  "schema": "triangular_load_cpu.independent_checks.v1",
+  "passed": true,
+  "checks": 17,
+  "rows": [
+    {
+      "name": "work_rigid_wrench_side_-1",
+      "passed": true,
+      "virtual_work_relative": 5.047770399148738e-18,
+      "rigid_reproduction_relative": 1.0495954402746817e-16,
+      "total_force_relative": 1.8227745495296347e-16,
+      "total_moment_relative": 2.482750845994047e-16,
+      "triangle_rigid_reproduction_relative": 1.4253711660622555e-16,
+      "partition_unity_error": 0.0
+    },
+    {
+      "name": "work_rigid_wrench_side_1",
+      "passed": true,
+      "virtual_work_relative": 1.0095540798297476e-17,
+      "rigid_reproduction_relative": 1.047690697516015e-16,
+      "total_force_relative": 1.8227745495296347e-16,
+      "total_moment_relative": 1.981754932998367e-16,
+      "triangle_rigid_reproduction_relative": 1.4229985639955453e-16,
+      "partition_unity_error": 0.0
+    },
+    {
+      "name": "affine_Q4_closed_disk_side_-1",
+      "passed": true,
+      "load_relative": 5.80639890803666e-15,
+      "force_relative": 5.889268399462838e-15,
+      "normalized_original_point_moment": 5.852791763120491e-15,
+      "covariance_xi_eta": -0.0038602413099683985,
+      "info": {
+        "valid": true,
+        "radius_m": 0.0025,
+        "samples": 1024,
+        "n_samples": 1024,
+        "force_error": 5.889268399462838e-15,
+        "moment_error": 5.852791763120456e-15,
+        "candidate_faces": 1,
+        "hit_faces": 1,
+        "analytic_count": 0,
+        "base_mass": 1.0000000000000004,
+        "inverse_method": "closed",
+        "pressure_fit_evaluations": 1,
+        "stages": {
+          "query": 0.0005563979939324781,
+          "integration": 0.0018235770039609633,
+          "fit": 0.0005094730004202574,
+          "scatter": 0.0001279400021303445,
+          "total": 0.0030173880004440434
+        }
+      }
+    },
+    {
+      "name": "proxy_analytic_vs_own_numerical_side_-1",
+      "passed": true,
+      "load_relative": 3.870035688355791e-15,
+      "analytic_info": {
+        "valid": true,
+        "radius_m": 0.0025,
+        "method": "analytic_contained_triangle",
+        "samples": 0,
+        "n_candidates": 2,
+        "n_triangles": 1,
+        "analytic_count": 1,
+        "pressure_fit_evaluations": 0,
+        "minimum_affine_pressure": 1.0,
+        "force_error": 0.0,
+        "moment_error": 2.1126625882447094e-15,
+        "original_center_m": [
+          0.001659999999999997,
+          -0.0038800000000000006,
+          -0.00025
+        ],
+        "support_center_m": [
+          0.001659999999999997,
+          -0.0038800000000000006,
+          -0.00025
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.0004558440050459467,
+        "integration_seconds": 0.000443256001744885,
+        "fit_seconds": 0.0,
+        "scatter_seconds": 2.6999623514711857e-07,
+        "total_seconds": 0.0009533700067549944
+      },
+      "numerical_info": {
+        "valid": true,
+        "radius_m": 0.0025,
+        "method": "clipped_triangle_quadrature",
+        "samples": 2304,
+        "n_candidates": 2,
+        "n_triangles": 1,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 3.861604003390654e-15,
+        "moment_error": 7.9412880979662e-15,
+        "original_center_m": [
+          0.001659999999999997,
+          -0.0038800000000000006,
+          -0.00025
+        ],
+        "support_center_m": [
+          0.001659999999999997,
+          -0.0038800000000000006,
+          -0.00025
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.00024922900047386065,
+        "integration_seconds": 0.0003054109984077513,
+        "fit_seconds": 0.0005845049963681959,
+        "scatter_seconds": 0.00020113700156798586,
+        "total_seconds": 0.0013938909978605807
+      },
+      "original_Q4_vs_proxy_relative": 0.4980338222493302,
+      "comparison_note": "Proxy consistency is separate from original Q4 load equivalence."
+    },
+    {
+      "name": "zero_release_side_-1",
+      "passed": true
+    },
+    {
+      "name": "explicit_zero_friction_rejects_shear_Q4_side_-1",
+      "passed": true,
+      "rejection": "The complete rigid force violates its supplied pad friction cone beyond source roundoff"
+    },
+    {
+      "name": "explicit_zero_friction_rejects_shear_triangle_side_-1",
+      "passed": true,
+      "rejection": "The complete contact force violates its supplied normal/friction cone."
+    },
+    {
+      "name": "affine_Q4_closed_disk_side_1",
+      "passed": true,
+      "load_relative": 5.907236225748047e-15,
+      "force_relative": 6.045764075750697e-15,
+      "normalized_original_point_moment": 5.0666875365663196e-15,
+      "covariance_xi_eta": -0.0038602413099683985,
+      "info": {
+        "valid": true,
+        "radius_m": 0.0025,
+        "samples": 1024,
+        "n_samples": 1024,
+        "force_error": 6.045764075750697e-15,
+        "moment_error": 5.066687536566289e-15,
+        "candidate_faces": 1,
+        "hit_faces": 1,
+        "analytic_count": 0,
+        "base_mass": 1.0000000000000004,
+        "inverse_method": "closed",
+        "pressure_fit_evaluations": 1,
+        "stages": {
+          "query": 0.00042611999379005283,
+          "integration": 0.0008873719998518936,
+          "fit": 0.0002598450009827502,
+          "scatter": 0.00010708800255088136,
+          "total": 0.001680424997175578
+        }
+      }
+    },
+    {
+      "name": "proxy_analytic_vs_own_numerical_side_1",
+      "passed": true,
+      "load_relative": 4.164065846338257e-15,
+      "analytic_info": {
+        "valid": true,
+        "radius_m": 0.0025,
+        "method": "analytic_contained_triangle",
+        "samples": 0,
+        "n_candidates": 2,
+        "n_triangles": 1,
+        "analytic_count": 1,
+        "pressure_fit_evaluations": 0,
+        "minimum_affine_pressure": 1.0,
+        "force_error": 0.0,
+        "moment_error": 1.3552527156068803e-15,
+        "original_center_m": [
+          0.001659999999999997,
+          -0.0038800000000000006,
+          0.00025
+        ],
+        "support_center_m": [
+          0.001659999999999997,
+          -0.0038800000000000006,
+          0.00025
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.0002305109956068918,
+        "integration_seconds": 0.00023965400032466277,
+        "fit_seconds": 0.0,
+        "scatter_seconds": 1.00000761449337e-07,
+        "total_seconds": 0.0005207599970162846
+      },
+      "numerical_info": {
+        "valid": true,
+        "radius_m": 0.0025,
+        "method": "clipped_triangle_quadrature",
+        "samples": 2304,
+        "n_candidates": 2,
+        "n_triangles": 1,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 4.094101319262489e-15,
+        "moment_error": 8.106512670180193e-15,
+        "original_center_m": [
+          0.001659999999999997,
+          -0.0038800000000000006,
+          0.00025
+        ],
+        "support_center_m": [
+          0.001659999999999997,
+          -0.0038800000000000006,
+          0.00025
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.00037351199716795236,
+        "integration_seconds": 0.00023745100043015555,
+        "fit_seconds": 0.0003451610027696006,
+        "scatter_seconds": 0.0003268829968874343,
+        "total_seconds": 0.0013443079951684922
+      },
+      "original_Q4_vs_proxy_relative": 0.49803382224933024,
+      "comparison_note": "Proxy consistency is separate from original Q4 load equivalence."
+    },
+    {
+      "name": "zero_release_side_1",
+      "passed": true
+    },
+    {
+      "name": "explicit_zero_friction_rejects_shear_Q4_side_1",
+      "passed": true,
+      "rejection": "The complete rigid force violates its supplied pad friction cone beyond source roundoff"
+    },
+    {
+      "name": "explicit_zero_friction_rejects_shear_triangle_side_1",
+      "passed": true,
+      "rejection": "The complete contact force violates its supplied normal/friction cone."
+    },
+    {
+      "name": "tilted_triangle_offplane_center_affine_pressure",
+      "passed": true,
+      "load_relative": 5.853567708489154e-15,
+      "analytic_info": {
+        "valid": true,
+        "radius_m": 0.002,
+        "method": "analytic_contained_triangle",
+        "samples": 0,
+        "n_candidates": 2,
+        "n_triangles": 1,
+        "analytic_count": 1,
+        "pressure_fit_evaluations": 0,
+        "minimum_affine_pressure": 0.6877161494384325,
+        "force_error": 0.0,
+        "moment_error": 9.602290738286248e-16,
+        "original_center_m": [
+          0.003999999999999999,
+          -0.0035,
+          0.00011000000000000003
+        ],
+        "support_center_m": [
+          0.003999999999999999,
+          -0.0035,
+          0.00011000000000000003
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.0003851590008707717,
+        "integration_seconds": 0.0004494949971558526,
+        "fit_seconds": 0.0,
+        "scatter_seconds": 1.2999953469261527e-07,
+        "total_seconds": 0.001012426997476723
+      },
+      "numerical_info": {
+        "valid": true,
+        "radius_m": 0.002,
+        "method": "clipped_triangle_quadrature",
+        "samples": 2304,
+        "n_candidates": 2,
+        "n_triangles": 1,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 5.5547768474667275e-15,
+        "moment_error": 1.9597630133369984e-14,
+        "original_center_m": [
+          0.003999999999999999,
+          -0.0035,
+          0.00011000000000000003
+        ],
+        "support_center_m": [
+          0.003999999999999999,
+          -0.0035,
+          0.00011000000000000003
+        ],
+        "anchor_mode": "fixed",
+        "anchor_shift_m": 0.0,
+        "anchor_shift_over_radius": 0.0,
+        "query_seconds": 0.0006100919999880716,
+        "integration_seconds": 0.0002845109993359074,
+        "fit_seconds": 0.0003549449975253083,
+        "scatter_seconds": 0.0002689770044526085,
+        "total_seconds": 0.0015803670030436479
+      },
+      "meaning": "Independent numerical integration exercises nonconstant positive affine pressure and eccentric friction."
+    },
+    {
+      "name": "warped_Q4_real_support_coarse_triangle_miss",
+      "passed": true,
+      "original_support_valid": true,
+      "radius_m": 0.0002,
+      "diagonal_normal_gap_m": 0.002,
+      "fixed_proxy_rejected": true,
+      "rejection": "The fixed surface-ball footprint misses the triangle proxy.",
+      "force_line_diagnostic": {
+        "valid": true,
+        "radius_m": 0.0002,
+        "method": "clipped_triangle_quadrature",
+        "samples": 5760,
+        "n_candidates": 2,
+        "n_triangles": 2,
+        "analytic_count": 0,
+        "pressure_fit_evaluations": 1,
+        "minimum_affine_pressure": null,
+        "force_error": 6.938893903907228e-16,
+        "moment_error": 1.303854223326287e-13,
+        "original_center_m": [
+          0.0,
+          0.0,
+          0.00025
+        ],
+        "support_center_m": [
+          0.0,
+          0.0,
+          0.0022500000000000003
+        ],
+        "anchor_mode": "force_line",
+        "anchor_shift_m": 0.002,
+        "anchor_shift_over_radius": 10.0,
+        "query_seconds": 0.00037623700336553156,
+        "integration_seconds": 0.0015204779992927797,
+        "fit_seconds": 0.0007455930026480928,
+        "scatter_seconds": 0.0004398099990794435,
+        "total_seconds": 0.0031764080049470067
+      },
+      "force_line_wrench_error": 1.303854223326287e-13,
+      "meaning": "A retained counterexample for coarse fixed facet geometry, not a numerical solve failure."
+    },
+    {
+      "name": "original_K_gauge_relief_stress_recovery_unchanged",
+      "passed": true,
+      "stiffness_sha256": "ccfe8a3396295957963b045c7af6816160e84c4326ef770b756a2c003e0499f7",
+      "solve_residuals": [
+        4.789437419100643e-13,
+        4.680087574965133e-13
+      ],
+      "load_relative": 0.020843592434964676,
+      "stress_tensor_relative": 0.01968108897049431,
+      "M_relative": 0.02521000254447618,
+      "Q_relative": 0.020412032946146522,
+      "comparison_note": "Spatial/load differences are reported without being hidden in numerical acceptance."
+    },
+    {
+      "name": "closed_inverse_vs_old_Newton_20000_points",
+      "passed": true,
+      "seed": 419703,
+      "charts": 100,
+      "points_per_chart": 200,
+      "queries": 20000,
+      "input_sha256": "2b0a93ef161bd152ba368d0a017ec5ce0865f0e3c3873509f8f90684f95f2bc8",
+      "all_closed_valid": true,
+      "all_Newton_valid": true,
+      "maximum_shape_absolute_difference": 1.5543122344752192e-15,
+      "maximum_material_coordinate_absolute_difference": 2.915695125165248e-15,
+      "maximum_forward_reconstruction_over_chart_radius": 3.0333714952977768e-15,
+      "maximum_Newton_forward_reconstruction_over_chart_radius": 3.0333714952977768e-15,
+      "minimum_convex_oriented_corner_area_m2": 6.214330895574932e-05,
+      "tolerance": 2e-12
+    },
+    {
+      "name": "native_proxy_k8_order24_vs48_triangle_and_material_edges",
+      "passed": true,
+      "contacts": 12,
+      "proxy_subdivisions": 8,
+      "integration_relative_tolerance": 0.001,
+      "maximum_load_relative": 6.22226637211628e-09,
+      "maximum_field_relative": 4.983066949656547e-09,
+      "maximum_peak_relative": 3.009352266414284e-09,
+      "rows": [
+        {
+          "name": "triangle_diagonal_s-1_offset-0.0001",
+          "load_relative": 5.8974248649697245e-09,
+          "order24": {
+            "valid": true,
+            "radius_m": 3.845685834427141e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 2304,
+            "n_candidates": 27,
+            "n_triangles": 2,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 4.225286559479654e-16,
+            "moment_error": 3.5240858820927596e-14,
+            "original_center_m": [
+              -0.0049111986690805794,
+              -0.005196622350167698,
+              0.025458004367981922
+            ],
+            "support_center_m": [
+              -0.0049111986690805794,
+              -0.005196622350167698,
+              0.025458004367981922
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.0026914909976767376,
+            "integration_seconds": 0.0017003440007101744,
+            "fit_seconds": 0.0005251170005067252,
+            "scatter_seconds": 0.00021031100186519325,
+            "total_seconds": 0.0051975370006402954
+          },
+          "order48": {
+            "valid": true,
+            "radius_m": 3.845685834427141e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 9216,
+            "n_candidates": 27,
+            "n_triangles": 2,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 1.521453135885623e-16,
+            "moment_error": 1.5031086706408572e-13,
+            "original_center_m": [
+              -0.0049111986690805794,
+              -0.005196622350167698,
+              0.025458004367981922
+            ],
+            "support_center_m": [
+              -0.0049111986690805794,
+              -0.005196622350167698,
+              0.025458004367981922
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.002110801993694622,
+            "integration_seconds": 0.0024890910062822513,
+            "fit_seconds": 0.0011494789941934869,
+            "scatter_seconds": 0.000581470005272422,
+            "total_seconds": 0.006401446997188032
+          },
+          "full_tensor_relative": 4.23128680728428e-09,
+          "sampled_peak_relative": 2.1749708229954815e-09
+        },
+        {
+          "name": "triangle_diagonal_s-1_offset0",
+          "load_relative": 3.7937206012966836e-09,
+          "order24": {
+            "valid": true,
+            "radius_m": 3.845685840490592e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 2304,
+            "n_candidates": 27,
+            "n_triangles": 2,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 3.9086838775980456e-16,
+            "moment_error": 1.2382613720191282e-13,
+            "original_center_m": [
+              -0.004911056719124958,
+              -0.005196490079980856,
+              0.02545811028978112
+            ],
+            "support_center_m": [
+              -0.004911056719124958,
+              -0.005196490079980856,
+              0.02545811028978112
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.0027863610011991113,
+            "integration_seconds": 0.0016809150038170628,
+            "fit_seconds": 0.0003535429932526313,
+            "scatter_seconds": 0.0002580820000730455,
+            "total_seconds": 0.005147262003447395
+          },
+          "order48": {
+            "valid": true,
+            "radius_m": 3.845685840490592e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 9216,
+            "n_candidates": 27,
+            "n_triangles": 2,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 9.795370042660833e-16,
+            "moment_error": 4.442628163071396e-13,
+            "original_center_m": [
+              -0.004911056719124958,
+              -0.005196490079980856,
+              0.02545811028978112
+            ],
+            "support_center_m": [
+              -0.004911056719124958,
+              -0.005196490079980856,
+              0.02545811028978112
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.002659982994373422,
+            "integration_seconds": 0.0021080680016893893,
+            "fit_seconds": 0.000851438999234233,
+            "scatter_seconds": 0.0005957310058875009,
+            "total_seconds": 0.006283491995418444
+          },
+          "full_tensor_relative": 2.7206377724226764e-09,
+          "sampled_peak_relative": 1.3949448706352918e-09
+        },
+        {
+          "name": "triangle_diagonal_s-1_offset0.0001",
+          "load_relative": 3.841362762987849e-14,
+          "order24": {
+            "valid": true,
+            "radius_m": 3.845685846554367e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 2592,
+            "n_candidates": 27,
+            "n_triangles": 2,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 1.4822459968818526e-15,
+            "moment_error": 1.5220561617340525e-13,
+            "original_center_m": [
+              -0.004910914769169337,
+              -0.005196357809794015,
+              0.02545821621158032
+            ],
+            "support_center_m": [
+              -0.004910914769169337,
+              -0.005196357809794015,
+              0.02545821621158032
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.002290757001901511,
+            "integration_seconds": 0.002211770995927509,
+            "fit_seconds": 0.0003952249971916899,
+            "scatter_seconds": 0.0002098300028592348,
+            "total_seconds": 0.0051745519958785735
+          },
+          "order48": {
+            "valid": true,
+            "radius_m": 3.845685846554367e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 10368,
+            "n_candidates": 27,
+            "n_triangles": 2,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 2.2928682399040395e-15,
+            "moment_error": 1.1228046102006528e-12,
+            "original_center_m": [
+              -0.004910914769169337,
+              -0.005196357809794015,
+              0.02545821621158032
+            ],
+            "support_center_m": [
+              -0.004910914769169337,
+              -0.005196357809794015,
+              0.02545821621158032
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.00294701899838401,
+            "integration_seconds": 0.0031809540014364757,
+            "fit_seconds": 0.001393910999468062,
+            "scatter_seconds": 0.0009239770006388426,
+            "total_seconds": 0.008527762001904193
+          },
+          "full_tensor_relative": 7.345142174567405e-11,
+          "sampled_peak_relative": 4.543037661231982e-12
+        },
+        {
+          "name": "material_edge_s-1_offset-0.0005",
+          "load_relative": 1.448923799945131e-10,
+          "order24": {
+            "valid": true,
+            "radius_m": 3.822168285402391e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 7200,
+            "n_candidates": 19,
+            "n_triangles": 6,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 4.591555360274712e-16,
+            "moment_error": 1.9922130496579582e-13,
+            "original_center_m": [
+              -0.006810357395473247,
+              -0.0065668842729553764,
+              0.024223417048929694
+            ],
+            "support_center_m": [
+              -0.006810357395473247,
+              -0.0065668842729553764,
+              0.024223417048929694
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.00218690399924526,
+            "integration_seconds": 0.005965662996459287,
+            "fit_seconds": 0.0009516970021650195,
+            "scatter_seconds": 0.0009325490027549677,
+            "total_seconds": 0.010182027996052057
+          },
+          "order48": {
+            "valid": true,
+            "radius_m": 3.822168285402391e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 28800,
+            "n_candidates": 19,
+            "n_triangles": 6,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 3.410431379323813e-15,
+            "moment_error": 9.74285866162595e-13,
+            "original_center_m": [
+              -0.006810357395473247,
+              -0.0065668842729553764,
+              0.024223417048929694
+            ],
+            "support_center_m": [
+              -0.006810357395473247,
+              -0.0065668842729553764,
+              0.024223417048929694
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.0017933519993675873,
+            "integration_seconds": 0.007319143995118793,
+            "fit_seconds": 0.0028414020052878186,
+            "scatter_seconds": 0.0019372050010133535,
+            "total_seconds": 0.01397018999705324
+          },
+          "full_tensor_relative": 1.9909405417352283e-10,
+          "sampled_peak_relative": 5.0171644197665734e-11
+        },
+        {
+          "name": "material_edge_s-1_offset0",
+          "load_relative": 7.585449896046964e-16,
+          "order24": {
+            "valid": true,
+            "radius_m": 3.822168269683672e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 2016,
+            "n_candidates": 19,
+            "n_triangles": 6,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 1.4433381685118488e-15,
+            "moment_error": 4.291537994814418e-13,
+            "original_center_m": [
+              -0.006811116585159122,
+              -0.006567550558912439,
+              0.024222869325343614
+            ],
+            "support_center_m": [
+              -0.006811116585159122,
+              -0.006567550558912439,
+              0.024222869325343614
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.0017242499961866997,
+            "integration_seconds": 0.0025586340052541345,
+            "fit_seconds": 0.0004810309983440675,
+            "scatter_seconds": 0.00021781199757242575,
+            "total_seconds": 0.005047714999818709
+          },
+          "order48": {
+            "valid": true,
+            "radius_m": 3.822168269683672e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 8064,
+            "n_candidates": 19,
+            "n_triangles": 6,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 1.1409937690706865e-15,
+            "moment_error": 6.134623412554977e-13,
+            "original_center_m": [
+              -0.006811116585159122,
+              -0.006567550558912439,
+              0.024222869325343614
+            ],
+            "support_center_m": [
+              -0.006811116585159122,
+              -0.006567550558912439,
+              0.024222869325343614
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.0015681389995734207,
+            "integration_seconds": 0.0031143249943852425,
+            "fit_seconds": 0.0009618930052965879,
+            "scatter_seconds": 0.0006422999940696172,
+            "total_seconds": 0.006357420999847818
+          },
+          "full_tensor_relative": 1.387174449572725e-10,
+          "sampled_peak_relative": 5.012715550205097e-12
+        },
+        {
+          "name": "material_edge_s-1_offset0.0005",
+          "load_relative": 3.798594229477336e-10,
+          "order24": {
+            "valid": true,
+            "radius_m": 3.822232806412507e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 5760,
+            "n_candidates": 19,
+            "n_triangles": 6,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 2.8459525056482534e-16,
+            "moment_error": 1.6407587120689495e-13,
+            "original_center_m": [
+              -0.00681098568750611,
+              -0.006568527020457093,
+              0.024221889291669744
+            ],
+            "support_center_m": [
+              -0.00681098568750611,
+              -0.006568527020457093,
+              0.024221889291669744
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.0018040579961962067,
+            "integration_seconds": 0.004945413005771115,
+            "fit_seconds": 0.0006653939999523573,
+            "scatter_seconds": 0.00043432199890958145,
+            "total_seconds": 0.007916506998299155
+          },
+          "order48": {
+            "valid": true,
+            "radius_m": 3.822232806412507e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 23040,
+            "n_candidates": 19,
+            "n_triangles": 6,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 3.0144424656132787e-15,
+            "moment_error": 1.8659086807116827e-12,
+            "original_center_m": [
+              -0.00681098568750611,
+              -0.006568527020457093,
+              0.024221889291669744
+            ],
+            "support_center_m": [
+              -0.00681098568750611,
+              -0.006568527020457093,
+              0.024221889291669744
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.00225461400259519,
+            "integration_seconds": 0.0060582799997064285,
+            "fit_seconds": 0.002123029000358656,
+            "scatter_seconds": 0.0017651309972279705,
+            "total_seconds": 0.012282764000701718
+          },
+          "full_tensor_relative": 3.8071844810939007e-10,
+          "sampled_peak_relative": 3.320712493336666e-10
+        },
+        {
+          "name": "triangle_diagonal_s1_offset-0.0001",
+          "load_relative": 8.394514575370166e-12,
+          "order24": {
+            "valid": true,
+            "radius_m": 3.845685840490591e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 2592,
+            "n_candidates": 25,
+            "n_triangles": 2,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 2.0412435818522875e-16,
+            "moment_error": 1.232945884028433e-13,
+            "original_center_m": [
+              -0.005088381206839464,
+              -0.0053908185407338,
+              0.02587054147606068
+            ],
+            "support_center_m": [
+              -0.005088381206839464,
+              -0.0053908185407338,
+              0.02587054147606068
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.002711119996092748,
+            "integration_seconds": 0.002500888003851287,
+            "fit_seconds": 0.0007439600012730807,
+            "scatter_seconds": 0.0002764289965853095,
+            "total_seconds": 0.006304112997895572
+          },
+          "order48": {
+            "valid": true,
+            "radius_m": 3.845685840490591e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 10368,
+            "n_candidates": 25,
+            "n_triangles": 2,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 2.329612555123756e-15,
+            "moment_error": 6.313540627343992e-13,
+            "original_center_m": [
+              -0.005088381206839464,
+              -0.0053908185407338,
+              0.02587054147606068
+            ],
+            "support_center_m": [
+              -0.005088381206839464,
+              -0.0053908185407338,
+              0.02587054147606068
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.002118963995599188,
+            "integration_seconds": 0.0025919930048985407,
+            "fit_seconds": 0.0010857550005312078,
+            "scatter_seconds": 0.0007392939951387234,
+            "total_seconds": 0.006661520994384773
+          },
+          "full_tensor_relative": 7.752171374033776e-11,
+          "sampled_peak_relative": 3.3520388522119024e-12
+        },
+        {
+          "name": "triangle_diagonal_s1_offset0",
+          "load_relative": 2.3371602727269413e-15,
+          "order24": {
+            "valid": true,
+            "radius_m": 3.845685840490591e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 2748,
+            "n_candidates": 25,
+            "n_triangles": 2,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 2.178389375577104e-16,
+            "moment_error": 1.9252656821449984e-13,
+            "original_center_m": [
+              -0.005088234752392158,
+              -0.005390681908224018,
+              0.025870651856189125
+            ],
+            "support_center_m": [
+              -0.005088234752392158,
+              -0.005390681908224018,
+              0.025870651856189125
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.0026078859955305234,
+            "integration_seconds": 0.0019072709983447567,
+            "fit_seconds": 0.00041771800169954076,
+            "scatter_seconds": 0.00021829199977219105,
+            "total_seconds": 0.005218386999331415
+          },
+          "order48": {
+            "valid": true,
+            "radius_m": 3.845685840490591e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 11040,
+            "n_candidates": 25,
+            "n_triangles": 2,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 8.050773257985442e-16,
+            "moment_error": 2.967838520192159e-13,
+            "original_center_m": [
+              -0.005088234752392158,
+              -0.005390681908224018,
+              0.025870651856189125
+            ],
+            "support_center_m": [
+              -0.005088234752392158,
+              -0.005390681908224018,
+              0.025870651856189125
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.001924074997077696,
+            "integration_seconds": 0.0026139359979424626,
+            "fit_seconds": 0.001150800999312196,
+            "scatter_seconds": 0.0006859350032755174,
+            "total_seconds": 0.00644496099994285
+          },
+          "full_tensor_relative": 3.3356461323845456e-11,
+          "sampled_peak_relative": 6.683307987395046e-13
+        },
+        {
+          "name": "triangle_diagonal_s1_offset0.0001",
+          "load_relative": 6.22226637211628e-09,
+          "order24": {
+            "valid": true,
+            "radius_m": 3.845685840490591e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 2304,
+            "n_candidates": 25,
+            "n_triangles": 2,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 8.773126762229563e-16,
+            "moment_error": 4.244827464449779e-13,
+            "original_center_m": [
+              -0.005088088297944853,
+              -0.005390545275714238,
+              0.025870762236317575
+            ],
+            "support_center_m": [
+              -0.005088088297944853,
+              -0.005390545275714238,
+              0.025870762236317575
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.0023466800048481673,
+            "integration_seconds": 0.0014871999956085347,
+            "fit_seconds": 0.0004035860038129613,
+            "scatter_seconds": 0.00019988600251963362,
+            "total_seconds": 0.004503560005105101
+          },
+          "order48": {
+            "valid": true,
+            "radius_m": 3.845685840490591e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 9216,
+            "n_candidates": 25,
+            "n_triangles": 2,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 2.080834002366416e-15,
+            "moment_error": 3.34038271848708e-13,
+            "original_center_m": [
+              -0.005088088297944853,
+              -0.005390545275714238,
+              0.025870762236317575
+            ],
+            "support_center_m": [
+              -0.005088088297944853,
+              -0.005390545275714238,
+              0.025870762236317575
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.002102128004480619,
+            "integration_seconds": 0.002429953994578682,
+            "fit_seconds": 0.0010947590053547174,
+            "scatter_seconds": 0.0007394529966404662,
+            "total_seconds": 0.006443949001550209
+          },
+          "full_tensor_relative": 4.983066949656547e-09,
+          "sampled_peak_relative": 3.009352266414284e-09
+        },
+        {
+          "name": "material_edge_s1_offset-0.0005",
+          "load_relative": 2.9168270800095354e-10,
+          "order24": {
+            "valid": true,
+            "radius_m": 3.8226434117561095e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 5352,
+            "n_candidates": 17,
+            "n_triangles": 6,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 1.7475774585551472e-15,
+            "moment_error": 7.247003984269629e-13,
+            "original_center_m": [
+              -0.00704782658449061,
+              -0.006804371968169129,
+              0.024583334236835456
+            ],
+            "support_center_m": [
+              -0.00704782658449061,
+              -0.006804371968169129,
+              0.024583334236835456
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.002095618998282589,
+            "integration_seconds": 0.004892405006103218,
+            "fit_seconds": 0.0007180819957284257,
+            "scatter_seconds": 0.00041886899998644367,
+            "total_seconds": 0.008192804998543579
+          },
+          "order48": {
+            "valid": true,
+            "radius_m": 3.8226434117561095e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 21408,
+            "n_candidates": 17,
+            "n_triangles": 6,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 4.405189795595769e-15,
+            "moment_error": 7.911937021555669e-13,
+            "original_center_m": [
+              -0.00704782658449061,
+              -0.006804371968169129,
+              0.024583334236835456
+            ],
+            "support_center_m": [
+              -0.00704782658449061,
+              -0.006804371968169129,
+              0.024583334236835456
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.0020035430061398074,
+            "integration_seconds": 0.006368026995914988,
+            "fit_seconds": 0.0021310919983079657,
+            "scatter_seconds": 0.0014578059999621473,
+            "total_seconds": 0.012058222004270647
+          },
+          "full_tensor_relative": 3.2712981513521057e-10,
+          "sampled_peak_relative": 8.247089795348082e-11
+        },
+        {
+          "name": "material_edge_s1_offset0",
+          "load_relative": 3.7280521555968134e-15,
+          "order24": {
+            "valid": true,
+            "radius_m": 3.8226434117561095e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 2016,
+            "n_candidates": 17,
+            "n_triangles": 6,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 1.2308949204463117e-15,
+            "moment_error": 4.089195958206853e-13,
+            "original_center_m": [
+              -0.0070486097633532035,
+              -0.006805060064296908,
+              0.024582763436076613
+            ],
+            "support_center_m": [
+              -0.0070486097633532035,
+              -0.006805060064296908,
+              0.024582763436076613
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.0014086230003158562,
+            "integration_seconds": 0.0023641869993298315,
+            "fit_seconds": 0.0005074800064903684,
+            "scatter_seconds": 0.00021473800006788224,
+            "total_seconds": 0.004561025001748931
+          },
+          "order48": {
+            "valid": true,
+            "radius_m": 3.8226434117561095e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 8064,
+            "n_candidates": 17,
+            "n_triangles": 6,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 2.123014633552768e-15,
+            "moment_error": 1.1187278756639205e-12,
+            "original_center_m": [
+              -0.0070486097633532035,
+              -0.006805060064296908,
+              0.024582763436076613
+            ],
+            "support_center_m": [
+              -0.0070486097633532035,
+              -0.006805060064296908,
+              0.024582763436076613
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.001734644996759016,
+            "integration_seconds": 0.0030650530025013722,
+            "fit_seconds": 0.0011107030004495755,
+            "scatter_seconds": 0.0008654289995320141,
+            "total_seconds": 0.006918772000062745
+          },
+          "full_tensor_relative": 1.0559412611313953e-10,
+          "sampled_peak_relative": 1.2777449909833462e-11
+        },
+        {
+          "name": "material_edge_s1_offset0.0005",
+          "load_relative": 3.0573899727671847e-10,
+          "order24": {
+            "valid": true,
+            "radius_m": 3.822705214716722e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 5976,
+            "n_candidates": 17,
+            "n_triangles": 6,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 1.2462817042879735e-15,
+            "moment_error": 9.034441451039042e-13,
+            "original_center_m": [
+              -0.0070484710136809615,
+              -0.006806059105692815,
+              0.024581771736835456
+            ],
+            "support_center_m": [
+              -0.0070484710136809615,
+              -0.006806059105692815,
+              0.024581771736835456
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.0015633319999324158,
+            "integration_seconds": 0.004547224001726136,
+            "fit_seconds": 0.0006760300020687282,
+            "scatter_seconds": 0.00044594999781111255,
+            "total_seconds": 0.00730072599981213
+          },
+          "order48": {
+            "valid": true,
+            "radius_m": 3.822705214716722e-05,
+            "method": "clipped_triangle_quadrature",
+            "samples": 23904,
+            "n_candidates": 17,
+            "n_triangles": 6,
+            "analytic_count": 0,
+            "pressure_fit_evaluations": 1,
+            "minimum_affine_pressure": null,
+            "force_error": 1.977784632373844e-15,
+            "moment_error": 3.6584149677978743e-13,
+            "original_center_m": [
+              -0.0070484710136809615,
+              -0.006806059105692815,
+              0.024581771736835456
+            ],
+            "support_center_m": [
+              -0.0070484710136809615,
+              -0.006806059105692815,
+              0.024581771736835456
+            ],
+            "anchor_mode": "fixed",
+            "anchor_shift_m": 0.0,
+            "anchor_shift_over_radius": 0.0,
+            "query_seconds": 0.0015320660022553056,
+            "integration_seconds": 0.005861828998604324,
+            "fit_seconds": 0.002132293004251551,
+            "scatter_seconds": 0.0018545019993325695,
+            "total_seconds": 0.011458305001724511
+          },
+          "full_tensor_relative": 3.0963233050233586e-10,
+          "sampled_peak_relative": 2.476776911720368e-10
+        }
+      ],
+      "meaning": "Integration uncertainty is separate from proxy-vs-Q4 spatial error."
+    }
+  ],
+  "scope": "CPU load approximation controls on unchanged Q4 elasticity."
+}
