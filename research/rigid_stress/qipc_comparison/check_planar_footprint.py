@@ -844,7 +844,7 @@ def main():
                 shape=oracle_k.shape,
             ).tocsr()
             checks.close("book/original_global_K", actual_k, oracle_k, rtol=1e-10, atol=1e-8)
-            api.sparse.save_npz(args.output / "book/native-K.npz", actual_k)
+            api.sparse.save_npz(writer.path("book/native-K.npz"), actual_k)
             native_free = api.unbatched_array(api, model.info.is_free).reshape(-1).astype(bool)
             writer.json(
                 "book/gauge-comparison.json",
