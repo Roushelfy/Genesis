@@ -316,18 +316,19 @@ def kernel_planar_query(contacts: StressContactState, info: PlanarLoadingInfo, s
                     seed = info.parent_face[i_anchor]
                 for i_p in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
                     state.parent_connected[i_p, i_b] = state.parent_faces[i_p, i_b] == seed
+                active = True
                 for _ in range(state.parent_end[i_c, i_b] - state.parent_start[i_c, i_b]):
-                    changed = False
-                    for i_p in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
-                        if not state.parent_connected[i_p, i_b]:
-                            parent = state.parent_faces[i_p, i_b]
-                            for i_other in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
-                                if state.parent_connected[i_other, i_b]:
-                                    other = state.parent_faces[i_other, i_b]
-                                    if func_parent_adjacent(parent, other, info):
-                                        state.parent_connected[i_p, i_b], changed = True, True
-                    if not changed:
-                        break
+                    if active:
+                        changed = False
+                        for i_p in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
+                            if not state.parent_connected[i_p, i_b]:
+                                parent = state.parent_faces[i_p, i_b]
+                                for i_other in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
+                                    if state.parent_connected[i_other, i_b]:
+                                        other = state.parent_faces[i_other, i_b]
+                                        if func_parent_adjacent(parent, other, info):
+                                            state.parent_connected[i_p, i_b], changed = True, True
+                        active = changed
                 for i_p in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
                     connected = connected and state.parent_connected[i_p, i_b]
                 if not connected:
@@ -468,7 +469,10 @@ def kernel_planar_fit(contacts: StressContactState, state: PlanarLoadingState, s
             for i_t in range(state.task_start[i_c, i_b], state.task_end[i_c, i_b]):
                 gram += state.gram[i_t, i_b]
             coefficient, weight_sum, status = func_pressure_initial(gram)
-            accepted = status != 3
+            accepted = False
+            if status != 3:
+                residual = (gram / weight_sum) @ (coefficient * weight_sum) - qd.Vector([1.0, 0.0, 0.0])
+                accepted = residual.norm() <= 1e-9
             first, second = func_force_frame(contacts.force[i_c, i_b])
             if accepted:
                 for i_t in range(state.task_start[i_c, i_b], state.task_end[i_c, i_b]):
@@ -490,33 +494,34 @@ def kernel_planar_fit(contacts: StressContactState, state: PlanarLoadingState, s
                 iterations, line_evaluations = 0, 0
                 fraction, reference_objective, slope = gs.qd_float(1.0), gs.qd_float(0.0), gs.qd_float(0.0)
                 step = qd.Vector.zero(gs.qd_float, 3)
+                active = True
                 for _ in range(80 * 41):
-                    if accepted or (not line and iterations >= 80):
-                        break
-                    current = candidate
-                    if line:
-                        current = candidate - fraction * step
-                    objective, gradient, hessian = func_planar_pressure_evaluate(
-                        i_c, i_b, current, weight_sum, not line, contacts, state, surface
-                    )
-                    if not line:
-                        iterations += 1
-                        accepted = gradient.norm() <= 1e-9
-                        proposed, nonsingular = func_pressure_step(hessian, gradient)
-                        if not accepted:
-                            if nonsingular:
-                                step, slope, reference_objective = proposed, gradient.dot(proposed), objective
-                                fraction, line, line_evaluations = 1.0, True, 0
-                            else:
-                                break
-                    else:
-                        line_evaluations += 1
-                        if objective >= reference_objective + 1e-4 * fraction * slope - 1e-15:
-                            candidate, line = current, False
+                    active = active and not accepted and (line or iterations < 80)
+                    if active:
+                        current = candidate
+                        if line:
+                            current = candidate - fraction * step
+                        objective, gradient, hessian = func_planar_pressure_evaluate(
+                            i_c, i_b, current, weight_sum, not line, contacts, state, surface
+                        )
+                        if not line:
+                            iterations += 1
+                            accepted = gradient.norm() <= 1e-9
+                            proposed, nonsingular = func_pressure_step(hessian, gradient)
+                            if not accepted:
+                                if nonsingular:
+                                    step, slope, reference_objective = proposed, gradient.dot(proposed), objective
+                                    fraction, line, line_evaluations = 1.0, True, 0
+                                else:
+                                    active = False
                         else:
-                            fraction *= 0.5
-                            if line_evaluations == 40:
-                                break
+                            line_evaluations += 1
+                            if objective >= reference_objective + 1e-4 * fraction * slope - 1e-15:
+                                candidate, line = current, False
+                            else:
+                                fraction *= 0.5
+                                if line_evaluations == 40:
+                                    active = False
                 coefficient = candidate / weight_sum
                 state.fit_evaluations[i_c, i_b] = iterations
             if accepted:
