@@ -1044,7 +1044,9 @@ def main():
     try:
         if args.stage != "saddle":
             cpu = args.output / "cpu"
-            native = api.build_native_mother(api, cpu, args.output, "book", method=args.method, quadrature=args.quadrature)
+            native = api.build_native_mother(
+                api, cpu, args.output, "book", method=args.method, quadrature=args.quadrature
+            )
             expected24, expected48 = _load(api.np, cpu / "oracles/q24.npz"), _load(api.np, cpu / "oracles/q48.npz")
             proxy24, proxy48 = (
                 _load(api.np, cpu / "oracles/proxy-q24.npz"),
