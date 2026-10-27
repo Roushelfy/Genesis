@@ -273,6 +273,48 @@ def _proxy_source_load(api, model, source, proxy, order, selected):
     }
 
 
+def _cpu_fields(np, model, raw, refinements):
+    """Refine the independent original-LU solve against the unchanged unscaled matrix."""
+    balanced, acceleration = model.balance_load(raw)
+    q = model.solve(raw)
+    factor = model.factorize()
+    free = factor.free_dofs
+    residual = model.K @ q - balanced
+    best_norm = np.linalg.norm(residual[free], axis=0)
+    best_q, selected = q.copy(), np.zeros(raw.shape[-1], dtype=int)
+    history = [best_norm.copy()]
+    for correction in range(refinements):
+        delta = factor.lu.solve(np.asfortranarray(-residual[free]))
+        q[free] += delta
+        residual = model.K @ q - balanced
+        norm = np.linalg.norm(residual[free], axis=0)
+        history.append(norm)
+        improved = norm < best_norm
+        best_q[:, improved], best_norm[improved], selected[improved] = q[:, improved], norm[improved], correction + 1
+    fields = model.stress(best_q)
+    local = np.stack((fields["local_top"], fields["local_bottom"]))
+    xx, yy, xy = local[:, :, :, 0], local[:, :, :, 1], local[:, :, :, 2]
+    peak = np.sqrt(np.maximum(0, xx * xx + yy * yy - xx * yy + 3 * xy * xy)).max(axis=(0, 1, 2))
+    return (
+        {
+            "raw": raw,
+            "balanced": balanced,
+            "relief_acceleration": acceleration,
+            "q": best_q,
+            "stress_local": local,
+            "stress_full9": np.stack((fields["sigma_top"], fields["sigma_bottom"])).reshape(
+                (2, len(model.quads), 4, 9, raw.shape[-1])
+            ),
+            "peak": peak,
+            "N": fields["N"],
+            "M": fields["M"],
+            "Q": fields["Q"],
+        },
+        np.stack(history),
+        selected,
+    )
+
+
 def _cpu_worker(args):
     # Loading this helper as a standalone file leaves the research package unbound until the frozen import.
     support_path = Path(__file__).with_name("check_planar_material.py")
@@ -363,7 +405,7 @@ def _cpu_worker(args):
                     hits[record["hit_parents"], i_c, i_b] = True
                     selected[record["selected_parents"], i_c, i_b] = True
                     rows.append({"environment": i_b, "slot": i_c, "case": case["name"], **record})
-            fields = support["_cpu_fields"](np, model, raw)
+            fields, refinement_history, selected_correction = _cpu_fields(np, model, raw, args.cpu_refinements)
             free = model.factorize().free_dofs
             residual_norm = np.linalg.norm((model.K @ fields["q"] - fields["balanced"])[free], axis=0)
             rhs_norm = np.linalg.norm(fields["balanced"][free], axis=0)
@@ -375,6 +417,8 @@ def _cpu_worker(args):
                 selected=selected,
                 original_K_residual_norm=residual_norm,
                 original_rhs_norm=rhs_norm,
+                original_K_refinement_residual_norm=refinement_history,
+                selected_correction=selected_correction,
             )
             _json(oracle / f"{label}.json", rows)
             methods.append(
@@ -384,6 +428,11 @@ def _cpu_worker(args):
                     "original_K_residual_absolute": residual_norm.tolist(),
                     "original_K_residual_relative": (residual_norm / np.maximum(rhs_norm, 1e-30)).tolist(),
                     "original_K_gate_passed": (residual_norm <= np.maximum(1e-11, 1e-8 * rhs_norm)).tolist(),
+                    "original_K_refinement_residual_absolute": refinement_history.tolist(),
+                    "original_K_refinement_residual_relative": (
+                        refinement_history / np.maximum(rhs_norm[None], 1e-30)
+                    ).tolist(),
+                    "selected_correction": selected_correction.tolist(),
                 }
             )
     after = hashlib.sha256(model.K.data.tobytes() + model.K.indices.tobytes() + model.K.indptr.tobytes()).hexdigest()
@@ -403,6 +452,7 @@ def _cpu_worker(args):
         {
             "primary": PRIMARY,
             "fixture": args.fixture,
+            "cpu_refinements": args.cpu_refinements,
             "imports": api.imports,
             "research_support": support_identity,
             "stiffness_sha256": before,
@@ -891,6 +941,7 @@ def main():
     parser.add_argument("--git-source", type=Path, default=Path.cwd())
     parser.add_argument("--stage", choices=("all", "book", "saddle"), default="all")
     parser.add_argument("--fixture", choices=("closed", "open30"), default="closed")
+    parser.add_argument("--cpu-refinements", choices=(0, 3), type=int, default=0)
     parser.add_argument("--refinement", type=int, choices=(8, 16, 32), default=16)
     parser.add_argument("--quadrature", type=int, choices=(24, 48), default=48)
     parser.add_argument("--modes", nargs="+", choices=MODES, default=MODES)
@@ -921,6 +972,7 @@ def main():
         ).strip(),
         "stage": args.stage,
         "fixture": args.fixture,
+        "cpu_refinements": args.cpu_refinements,
         "original_wrench_tolerance": 1e-8,
         "original_K_residual": {"relative": 1e-8, "absolute": 1e-11},
         "strict_Q4_reference_tolerance": TOLERANCE,
@@ -958,6 +1010,8 @@ def main():
                     args.fixture,
                     "--refinement",
                     str(args.refinement),
+                    "--cpu-refinements",
+                    str(args.cpu_refinements),
                 ],
                 cwd=args.reference / "reference-source",
                 env=environment,
