@@ -318,6 +318,19 @@ def audit_task(specification: TaskSpec, task: dict | None, campaign: Path, sourc
             audit.issues.append(f"Cannot verify frozen condition file: {error}")
     source_hashes = canonical_hashes(result.get("source_sha256", {}), COMMON_SOURCES, audit.issues, "common source")
     assets = canonical_hashes(result.get("physical_assets", {}), ASSET_NAMES, audit.issues, "physical asset")
+    execution_fields = (
+        "effective_anchor_modes",
+        "effective_planar_query_modes",
+        "effective_contact_moment_reuse",
+        "effective_contact_wrench_reuse",
+        "effective_packed_block_sizes",
+        "effective_rigid_post_fusion",
+    )
+    if specification.variant != "pureRigid":
+        execution_fields += ("method_selected", "surface_inverse_selected", "shell_recovery_graph_selected")
+    effective_execution = {name: result.get(name) for name in execution_fields}
+    if any(value is None for value in effective_execution.values()):
+        audit.issues.append("Actual native scheduling/response execution receipt is incomplete")
     policy = result.get("policy", {})
     policy_signature = {name: policy.get(name) for name in POLICY_FIELDS}
     if any(value is None for value in policy_signature.values()):
@@ -396,6 +409,7 @@ def audit_task(specification: TaskSpec, task: dict | None, campaign: Path, sourc
         "task_source": task.get("source", source.get("source")),
         "explicit_task_arguments": arguments,
         "arguments_signature": {name: value for name, value in actual_arguments.items() if name != "output"},
+        "effective_execution": effective_execution,
         "common": common,
         "common_source_sha256": source_hashes,
         "physical_assets": assets,
@@ -551,7 +565,7 @@ def summarize(plan_path: Path, campaign: Path, is_diagnostic: bool) -> dict:
                 cohort_issues.append(f"Group receipts differ across blocks: {name}")
         for variant in {audit.specification.variant for audit in group_audits}:
             variant_audits = [audit for audit in group_audits if audit.specification.variant == variant]
-            for name in ("source_revision", "task_source", "arguments_signature", "material"):
+            for name in ("source_revision", "task_source", "arguments_signature", "effective_execution", "material"):
                 values = [audit.receipt.get(name) for audit in variant_audits]
                 if any(value is None for value in values) or any(value != values[0] for value in values):
                     cohort_issues.append(f"Variant {variant} differs across blocks: {name}")
