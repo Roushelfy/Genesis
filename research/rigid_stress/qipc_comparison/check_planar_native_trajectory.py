@@ -342,7 +342,7 @@ def main():
     parser.add_argument("--steps", type=int, default=600)
     parser.add_argument("--level", type=int, choices=(1, 2), default=1)
     parser.add_argument("--subdivisions", type=int, choices=(8, 16), default=8)
-    parser.add_argument("--quadrature", type=int, choices=(16, 24, 48), default=16)
+    parser.add_argument("--quadrature", type=int, choices=(10, 16, 24, 48), default=16)
     parser.add_argument("--reference-quadrature", type=int, default=48)
     parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
     parser.add_argument("--tasks-per-env", type=int, default=32)
