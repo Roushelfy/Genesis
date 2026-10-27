@@ -189,7 +189,7 @@ the external Quadrants library or shared cluster configuration.
 
 | Required family | Current status / remaining evidence |
 | --- | --- |
-| Fixed geometry and compact J maps | Native QD preparation; compact refined grid plus integer topology and original-parent CSR; shared geometry supported. Preparation/memory measurements pending. |
+| Fixed geometry and compact J maps | Native QD preparation and compact fixed grid/J retained. All28 final memory workers pass; the measured report separates named shared/per-env arrays, equal-pointer aliases, process peaks and whole-constructor/JIT scope. |
 | Material-aware queries and witness reuse | Physical-edge/single-Q4 connectivity guards and open30/U full-field controls pass. Keep step-local G/H reuse; a new cross-step support cache lacks useful invariant evidence and is not selected. |
 | Contained moments, clipping and fitting reuse | Exact analytic moments, positivity checks, once-per-task geometry publication, shared G/H and exact radial integration validated in their stated banks. Whole-path gains pending. |
 | Packing, grouping, layout and cooperative work | Loaded sources packed; original-anchor warp and bounded per-environment tasks qualified. Cap128 passes the complete measured policy banks with true peaks50/63. Final batch/plateau and paired timing pending. |
@@ -204,15 +204,17 @@ Numerical/contact/lifecycle qualification is complete in the stated scopes,
 including full small/heterogeneous histories, original gates, independently
 resolved integration and26 final focused regressions. Complete the formal
 paired frozen-module and full Franka inference workflows against optimized Q4,
-volume DPR and pure rigid, useful-large/plateau max/full measurements,
-preparation/native/shared/per-environment/process/device memory, final profile
-reduction, preservation audit, compact runnable evidence and recommendations.
+volume DPR and pure rigid, final useful-large/plateau max/full measurements,
+preservation audit, compact runnable evidence and recommendations. Final14
+profile workers and all28 preparation/native/shared/per-environment/process/device
+memory workers now pass their scoped audits; their full lossless summaries are
+retained for the final packet.
 The inference workflow uses a seeded random MLP with the scripted controller;
 it does not measure policy training. Source `6dedc7957` binds actual MLP weights,
 process IDs, physical assets and canonical frozen-source hashes. The final
 campaign has168 fresh processes in16 groups, three paired blocks at each
-scope/batch/output, with B4/1024/8192/32768. It is running alongside separate
-intrusive memory campaigns; all14 final trace workers have finished. The
+scope/batch/output, with B4/1024/8192/32768. B4/1024/8192 are terminal;
+B32768 remains running. All28 memory and14 final trace workers have finished. The
 [result review](PLANAR_LOADING_RESULTS_20261027.md) retains its incomplete label
 until all formal measurements and final packet checks pass. A complete
 fresh-process result, final memory/requirements packet and recommendation remain

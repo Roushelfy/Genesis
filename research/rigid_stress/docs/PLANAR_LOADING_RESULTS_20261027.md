@@ -1,6 +1,6 @@
 # Planar loading DPR：原生实现与测量，2026-10-27
 
-**审阅稿：正式性能与内存 campaign 尚未全部终态，目标仍未关闭。**
+**审阅稿：B32768正式性能配对仍在运行，目标尚未关闭。**
 本文对应 [远端目标](PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md)。已经合格的配置为
 shell planar k32、radial q10、cell blocks、每环境128个任务、FP64、history0，
 并在本任务进程内设置 `QD_GRAPH=0`。它保留原 Q4 弹性模型，新增加载细分不增加弹性自由度。
@@ -162,7 +162,52 @@ Pure rigid无stress配置，max/full标签不赋予其应力输出语义。
 ## 内存与准备时间
 
 <!-- MEMORY_RESULTS_START -->
-独立内存 campaign 仍待全部28个worker终态，当前不发布最终内存资格与总表。
+28个内存worker全部终态并通过默认严格审计，独立解压与CSV身份校验通过；完整内容保留在 `R/meta/final-memory-summary-v19.json.gz`。以下数字使用GiB／MiB／KiB（2的幂），进程采样峰值为下界。
+
+| B | 输出 | native Q4 GiB | native planar GiB | native volume GiB | planar sampled NVIDIA峰 GiB | planar process RSS峰 GiB |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| 4 | max | 0.0471 | 0.0754 | 0.1079 | 2.271 | 2.584 |
+| 4 | full | 0.0480 | 0.0762 | 0.1083 | 2.271 | 2.503 |
+| 1024 | max | 0.2318 | 0.4582 | 0.3263 | 3.621 | 2.729 |
+| 1024 | full | 0.4443 | 0.6706 | 0.4288 | 3.840 | 2.709 |
+| 8192 | max | 1.5662 | 3.1487 | 1.8610 | 13.197 | 3.340 |
+| 8192 | full | 3.2655 | 4.8479 | 2.6813 | 14.885 | 3.265 |
+| 32768 | max | 6.1413 | 12.3731 | 7.1229 | 46.025 | 4.870 |
+| 32768 | full | 12.9382 | 19.1700 | 10.4041 | 52.838 | 4.805 |
+
+以下是B8192的实际调优配置：Q4 q16/cap32，planar q10/cap128。per-env列为该组总字节/B，包含固定标量counter。原surface组同时包含求积网格，因此两条路径的该组字节不同。
+
+| 具名每环境组，KiB/env | Q4 max | Q4 full | planar max | planar full |
+| --- | ---: | ---: | ---: | ---: |
+| Response/output | 47.425 | 264.925 | 47.425 | 264.925 |
+| Original contacts | 139.215 | 139.215 | 139.215 | 139.215 |
+| Original fallback scatter | 8.563 | 8.563 | 34.250 | 34.250 |
+| Planar source/tasks | 0.000 | 0.000 | 116.280 | 116.280 |
+| Material bitmap/diagnostics | 0.000 | 0.000 | 56.404 | 56.404 |
+
+| 固定具名组，MiB | Q4 max | planar max | 分类范围 |
+| --- | ---: | ---: | --- |
+| Original surface/curvature | 5.514 | 2.936 | 具名共享几何 |
+| Planar geometry/J | 0.000 | 36.028 | 具名共享几何，已处理相等指针alias |
+| Other geometry/operators | 36.697 | 36.697 | 未完成sharing分类，不作全共享声明 |
+
+| 构造观测（含部分JIT） | worker数 | setup中位s | setup范围s |
+| --- | ---: | ---: | ---: |
+| Q4 | 8 | 68.877 | [18.916, 124.193] |
+| planar | 8 | 26.303 | [22.238, 30.448] |
+| volume | 8 | 102.341 | [53.537, 154.704] |
+| pure_rigid | 4 | 44.387 | [42.418, 46.600] |
+
+setup在科学库导入和Genesis初始化之后计时；process采样则从导入之前开始。上述setup包含不同编译／缓存状态，不作为独立proxy准备时间或其加速比。弹性factor/inverse/operators与原surface分项timer完整保存在lossless内存汇总。
+
+| Pure rigid control | sampled NVIDIA峰 GiB | process RSS峰 GiB |
+| --- | ---: | ---: |
+| B4 | 2.162 | 2.571 |
+| B1024 | 3.043 | 2.725 |
+| B8192 | 9.150 | 3.279 |
+| B32768 | 30.135 | 4.673 |
+
+代理路径增加了具名共享几何和每环境workspace，完整大批量也使用更多进程显存。这里的收益需要结合正式墙钟吞吐量评估；该路径不是内存赢家。Volume来自独立memory campaign，不把跨campaign的GPU样本称为同GPU配对内存测量。
 <!-- MEMORY_RESULTS_END -->
 
 内存使用独立新进程，覆盖同四个batch的Q4/planar/volume max/full与pure rigid control。
