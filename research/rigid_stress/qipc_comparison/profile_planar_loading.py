@@ -136,6 +136,7 @@ def main():
     parser.add_argument("--scope", choices=("module", "scene"), default="module")
     parser.add_argument("--shell-loading", choices=("q4", "planar"), default="planar")
     parser.add_argument("--loading-subdivisions", type=int, choices=(4, 8, 16), default=8)
+    parser.add_argument("--planar-work-warps", type=int, choices=(512, 2048, 4096), default=2048)
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--quadrature", type=int, default=16)
     parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
@@ -164,6 +165,9 @@ def main():
         pressure_quadrature=args.pressure_quadrature,
         scatter_tasks_per_env=args.tasks_per_env,
     )
+    entry = workload.scene.rigid_solver.stress_recovery.links[0]
+    if entry.planar is not None:
+        entry.planar.work_warps = args.planar_work_warps
     setup_seconds = time.perf_counter() - started
     geometry = None
     for tick in range(args.warmup):
