@@ -107,6 +107,27 @@ def _routes(api, workload):
     }
 
 
+def _task_work(api, workload):
+    entry = workload.scene.rigid_solver.stress_recovery.links[0]
+    if entry.planar is None:
+        return None
+    state = entry.planar.state
+    tasks = api.qd_to_numpy(state.task_count, transpose=True)
+    samples = api.qd_to_numpy(state.sample_count, transpose=True)
+    eligible = api.qd_to_numpy(state.eligible, transpose=True)
+    reasons = api.qd_to_numpy(state.reason, transpose=True)
+    return {
+        "scope": "Untimed terminal workload diagnostics; task capacity is allocated per environment, samples count positive clipped samples in the last call.",
+        "task_capacity_per_environment": state.tasks.shape[0],
+        "tasks_per_environment": tasks.tolist(),
+        "maximum_tasks_per_environment": int(tasks.max(initial=0)),
+        "total_tasks": int(tasks.sum()),
+        "positive_samples": int(samples.sum()),
+        "eligible_sources": int(eligible.sum()),
+        "source_reason_counts": dict(Counter(map(int, reasons.reshape(-1)))),
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--conditions", type=Path, required=True)
@@ -198,6 +219,7 @@ def main():
         "after_checks": after,
         "routes_before": routes_before,
         "routes_after": routes_after,
+        "terminal_task_work": _task_work(api, workload),
         "actual_method": entry.model.selected_method,
         "surface_inverse_available": entry.model.surface_inverse is not None,
         "device_categories": [{"category": name, "sum_duration_us": value} for name, value in sorted(groups.items())],
