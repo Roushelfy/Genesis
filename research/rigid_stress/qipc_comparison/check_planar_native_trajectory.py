@@ -692,6 +692,7 @@ def main():
     parser.add_argument("--level", type=int, choices=(1, 2), default=1)
     parser.add_argument("--subdivisions", type=int, choices=(4, 8, 16, 32), default=8)
     parser.add_argument("--planar-integration", choices=("radial", "gauss"), default="radial")
+    parser.add_argument("--planar-query", choices=("cells", "blocks"), default="cells")
     parser.add_argument("--cooperative-anchor", action="store_true")
     parser.add_argument("--policy-inference", action="store_true")
     parser.add_argument("--policy-warmup", type=int, default=730)
@@ -807,6 +808,16 @@ def main():
     if not isinstance(entry.planar.exact_radial, bool):
         raise TypeError("PlanarLoading.exact_radial must be declared as a production boolean.")
     entry.planar.exact_radial = args.planar_integration == "radial"
+    if not isinstance(entry.planar.hierarchical_query, bool):
+        raise TypeError("PlanarLoading.hierarchical_query must be declared as a production boolean.")
+    entry.planar.hierarchical_query = args.planar_query == "blocks"
+    cooperative_query = entry.options.cooperative_pressure and api.gs.backend == api.gs.cuda
+    actual_planar_query = "blocks" if cooperative_query and entry.planar.hierarchical_query else "cells"
+    query_mode = (
+        "cooperative_cuda_" + ("blocks4" if entry.planar.hierarchical_query else "cells")
+        if cooperative_query
+        else "serial_cells"
+    )
     if not isinstance(entry.cooperative_anchor, bool):
         raise TypeError("StressLink.cooperative_anchor must be declared as a production boolean.")
     entry.cooperative_anchor = args.cooperative_anchor
@@ -847,6 +858,9 @@ def main():
         planar_integration_requested=args.planar_integration,
         planar_integration="radial" if entry.planar.exact_radial else "gauss",
         sample_count_unit=entry.planar.sample_count_unit,
+        planar_query_requested=args.planar_query,
+        planar_query=actual_planar_query,
+        planar_query_mode=query_mode,
         cooperative_anchor_requested=args.cooperative_anchor,
         anchor_mode=anchor_mode,
         original_reference_anchor_mode="separate_serial",
