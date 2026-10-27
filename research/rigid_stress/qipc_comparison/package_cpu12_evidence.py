@@ -23,6 +23,14 @@ from pathlib import Path
 LIMIT = 10 * 1024 * 1024
 SMALL_BINARY = 256 * 1024
 JSON_LIMIT = 16 * 1024 * 1024
+PRIMARY_JSON_LIMIT = 128 * 1024 * 1024
+PRIMARY_EXTERNAL_FIELDS = {
+    "warmup_quality",
+    "trajectory_metrics",
+    "native_buffers",
+    "egg_position_m",
+    "maximum_stress_Pa",
+}
 PRUNE = {"analysis-source", "cache", ".cache", "__pycache__", ".git", "node-local-scratch"}
 CONFIG_KEYS = (
     "arguments",
@@ -206,8 +214,9 @@ class Candidate:
 
 
 class Packet:
-    def __init__(self, run_root):
+    def __init__(self, run_root, study="cpu12"):
         self.run_root = run_root
+        self.study = study
         self.artifacts = {}
         self.candidates = {}
         self.associations = {}
@@ -265,7 +274,68 @@ class Packet:
             )
         return self.payload(content, path.suffix or ".bin", category, priority, source=key, required=required)
 
+    def primary_measurements(self, path, task, marker, marker_before, code):
+        """Retain original repeat rows and benchmark identity from a terminal primary output."""
+        size = path.stat().st_size
+        if size > PRIMARY_JSON_LIMIT:
+            raise ValueError(
+                f"Primary benchmark JSON exceeds the explicit {PRIMARY_JSON_LIMIT}-byte read limit "
+                f"({size} bytes): {path}. Preserve the original externally and review its payload size."
+            )
+        key = self.artifact(path, task=task)
+        content = _stable_bytes(path)
+        if hashlib.sha256(content).hexdigest() != self.artifacts[key]["sha256"]:
+            raise RuntimeError(f"Primary benchmark changed after its recorded hash: {path}")
+        try:
+            document = json.loads(content)
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise ValueError(f"Invalid terminal primary benchmark JSON: {path}") from error
+        if not isinstance(document, dict) or not isinstance(document.get("repeats"), list):
+            raise TypeError(f"Expected original benchmark repeats in terminal primary JSON: {path}")
+        payload = {
+            "schema": "genesis.planar-primary-benchmark-rows.v1",
+            "kind": "original_benchmark_measurement_rows",
+            "qualification_assessed": False,
+            "task_id": task,
+            "terminal_returncode": code,
+            "source": self.artifacts[key],
+            "repeats": document["repeats"],
+            "benchmark_metadata": {
+                name: value
+                for name, value in document.items()
+                if name != "repeats" and name not in PRIMARY_EXTERNAL_FIELDS
+            },
+            "excluded_top_level_fields_retained_externally": sorted(PRIMARY_EXTERNAL_FIELDS & document.keys()),
+            "nonfinite_encoding": "Original NaN/Infinity/-Infinity values retain Python JSON tokens without replacement.",
+        }
+        raw = (json.dumps(payload, sort_keys=True, allow_nan=True) + "\n").encode()
+        digest = self.payload(
+            gzip.compress(raw, compresslevel=9, mtime=0),
+            ".json.gz",
+            "primary-raw-measurements",
+            0,
+            source=key,
+            required=True,
+        )
+        self.artifacts[key]["primary_raw_measurements"] = {
+            "payload_sha256": digest,
+            "repeats": len(document["repeats"]),
+        }
+        if _signature(marker) != marker_before:
+            raise RuntimeError(f"Primary task returncode changed during packaging: {marker}")
+        return key
+
     def collect_file(self, path, task):
+        if (
+            self.study == "planar"
+            and task.split("/", 1)[0].startswith("primary-paired-")
+            and path == self.run_root / task
+            and path.suffix == ".json"
+        ):
+            marker, code = _returncode(path.parent, path.name)
+            if code is None:
+                raise RuntimeError(f"Primary raw measurements require a task-specific terminal returncode: {path}")
+            return self.primary_measurements(path, task, marker, _signature(marker), code)
         key = self.artifact(path, task=task)
         size, name = self.artifacts[key]["bytes"], path.name.lower()
         if name in ("measurements.json", "measurements.npz", "pilot_timings.json", "paired.json", "paired.npz"):
@@ -633,7 +703,7 @@ def main():
     maintained = subprocess.check_output(
         ["git", "-C", str(args.git_source), "rev-parse", f"{args.maintained_source}^{{commit}}"], text=True
     ).strip()
-    packet, meta, tasks, campaigns = Packet(run_root), run_root / "meta", [], []
+    packet, meta, tasks, campaigns = Packet(run_root, study=args.study), run_root / "meta", [], []
     metadata_documents = {}
     if meta.is_dir():
         for path in sorted(meta.iterdir()):
@@ -703,6 +773,19 @@ def main():
     )
     counts = dict(Counter(task["execution_status"] for task in tasks))
     created = datetime.now(timezone.utc).isoformat()
+    primary_policy = (
+        "For planar primary-paired-* terminal benchmark tasks, mandatory gzip payloads preserve every original "
+        "repeat field and vector plus unabridged identity/configuration metadata. Other large diagnostics remain "
+        "externally hashed. These are original measurements with no new qualification assessment.\n\n"
+        if args.study == "planar"
+        else ""
+    )
+    missing_receipts = (
+        "Missing receipts remain pending unless a separate cancellation journal records the stopped campaign. "
+        "Recorded cancellations have their own index status and task list."
+        if args.study == "planar"
+        else "Missing receipts remain pending, including stopped jobs with a\nseparate cancellation journal."
+    )
     readme = f"""# {title} compact evidence packet
 
 Generated {created}. Run root: `{run_root}`. Maintained source: `{maintained}`.
@@ -719,9 +802,9 @@ Gzip JSON preserves exact raw paired rows/source receipts where labelled raw;
 derived summaries are labelled separately. Large600-row result histories remain
 external. The packet is capped at10MiB; optional omissions are explicit.
 
+{primary_policy}\
 Only task-specific `.returncode.txt`/`.returncode` receipts permit task output
-collection. Missing receipts remain pending, including stopped jobs with a
-separate cancellation journal. Their potentially live output trees are not
+collection. {missing_receipts} Their potentially live output trees are not
 read. A task RC0 is execution success, not numerical/spatial qualification.
 Caches and complete analysis-source trees are excluded. Actual small worker
 files may be retained individually; full engine code is reproduced by Git pin.
@@ -769,6 +852,13 @@ payload hashes and never promotes a pending task or historical result to a pass.
         "collection_policy": "Only task-specific terminal returncodes permit task payload collection; metadata snapshots remain labelled.",
         "packager": _identity(Path(__file__).resolve()),
     }
+    if args.study == "planar":
+        index_base["cancelled_tasks"] = [
+            task["id"] for task in tasks if task["execution_status"] == "cancellation_recorded_without_task_returncode"
+        ]
+        index_base["pending_tasks"] = [
+            task["id"] for task in tasks if task["execution_status"] == "pending_no_task_returncode"
+        ]
     payloads, total = _plan(packet, tasks, index_base, preservation, ledger, readme)
     output.mkdir(parents=True, exist_ok=True)
     for relative, content in sorted(payloads.items()):
