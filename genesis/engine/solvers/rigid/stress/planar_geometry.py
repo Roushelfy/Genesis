@@ -21,6 +21,7 @@ class PlanarLoadingInfo:
 
     subdivisions: qd.Tensor
     epsilon: qd.Tensor
+    minimum_normal: qd.Tensor
     grid_positions: qd.Tensor
     grid_shapes: qd.Tensor
     triangle_nodes: qd.Tensor
@@ -84,6 +85,7 @@ def build_planar_geometry(surface: StressSurfaceInfo, load_info: StressInfo, sub
     info = PlanarLoadingInfo(
         subdivisions=V(dtype=gs.qd_int, shape=()),
         epsilon=V(dtype=gs.qd_float, shape=()),
+        minimum_normal=V(dtype=gs.qd_float, shape=()),
         grid_positions=V_VEC(3, dtype=gs.qd_float, shape=(n_faces, n_grid)),
         grid_shapes=V_VEC(4, dtype=gs.qd_float, shape=(2, n_grid)),
         triangle_nodes=V_VEC(3, dtype=gs.qd_int, shape=triangles.shape[:2]),
@@ -105,6 +107,7 @@ def build_planar_geometry(surface: StressSurfaceInfo, load_info: StressInfo, sub
     )
     info.subdivisions.fill(subdivisions)
     info.epsilon.fill(float(np.finfo(gs.np_float).eps))
+    info.minimum_normal.fill(float(np.finfo(gs.np_float).tiny))
     info.triangle_nodes.from_numpy(triangles)
     info.cell_nodes.from_numpy(np.array(cells, dtype=gs.np_int))
     info.parent_neighbor_start.from_numpy(np.array(starts, dtype=gs.np_int))
@@ -137,6 +140,7 @@ def kernel_planar_geometry(surface: StressSurfaceInfo, info: PlanarLoadingInfo):
             coefficients[2, :],
             coefficients[3, :],
             info.epsilon[None],
+            info.minimum_normal[None],
         )
         info.geometry_error[i_f] = surface.quad_coefficients[i_f][3, :].norm() / (
             info.subdivisions[None] * info.subdivisions[None]
@@ -206,7 +210,11 @@ def func_cell_overlap(i_face: int, i_cell: int, center: qd.types.vector(3), radi
 
 @qd.func
 def func_quad_graph_curvature(
-    first: qd.types.vector(3), second: qd.types.vector(3), mixed: qd.types.vector(3), epsilon: float
+    first: qd.types.vector(3),
+    second: qd.types.vector(3),
+    mixed: qd.types.vector(3),
+    epsilon: float,
+    minimum_normal: float,
 ):
     """Bound graph-height Hessians on a globally invertible convex Q4 projection.
 
@@ -215,44 +223,63 @@ def func_quad_graph_curvature(
     bound and singular-value bounds control the inverse chart and height Hessian.
     """
     curvature = gs.qd_float(float("inf"))
-    first_norm, second_norm, mixed_norm = first.norm(), second.norm(), mixed.norm()
-    cross = first.cross(second)
-    area = cross.norm()
-    if (
-        area > 0.0
-        and first_norm > 0.0
-        and second_norm > 0.0
-        and area < float("inf")
-        and first_norm < float("inf")
-        and second_norm < float("inf")
-        and mixed_norm < float("inf")
-    ):
-        # The extra chart-conditioning factor covers normalization of the cross product.
-        margin = 128.0 * epsilon * (1.0 + first_norm * second_norm / area)
-        normal = cross / area
-        height = normal.dot(mixed)
-        height_upper = qd.abs(height) + margin * mixed_norm
-        tangent_upper = (mixed - height * normal).norm() + margin * mixed_norm
-        determinant_lower = area - qd.abs(normal.dot(first.cross(mixed)))
-        determinant_lower -= qd.abs(normal.dot(mixed.cross(second)))
-        determinant_lower -= margin * (first_norm * second_norm + first_norm * mixed_norm + mixed_norm * second_norm)
-        area_lower = area - margin * first_norm * second_norm
-        trace = first.norm_sqr() + second.norm_sqr()
-        discriminant = (first.norm_sqr() - second.norm_sqr()) ** 2 + 4.0 * first.dot(second) ** 2
-        largest_upper = qd.sqrt(0.5 * (trace + qd.sqrt(qd.max(0.0, discriminant))))
-        largest_upper += margin * (first_norm + second_norm)
-        if margin < 0.25 and determinant_lower > 0.0 and area_lower > 0.0 and largest_upper > 0.0:
-            origin_sigma_lower = area_lower / largest_upper
-            weyl_lower = qd.max(0.0, origin_sigma_lower - qd.sqrt(2.0) * tangent_upper)
-            frobenius_upper = qd.sqrt(
-                (first_norm * (1.0 + margin) + tangent_upper) ** 2 + (second_norm * (1.0 + margin) + tangent_upper) ** 2
+    scale = qd.max(qd.abs(first).max(), qd.abs(second).max(), qd.abs(mixed).max())
+    if scale > 0.0 and scale < float("inf"):
+        # Rescaling avoids physical-length powers entering the subnormal range. An extreme aspect ratio remains uncertified.
+        first_scaled, second_scaled, mixed_scaled = first / scale, second / scale, mixed / scale
+        first_squared, second_squared, mixed_squared = (
+            first_scaled.norm_sqr(),
+            second_scaled.norm_sqr(),
+            mixed_scaled.norm_sqr(),
+        )
+        cross = first_scaled.cross(second_scaled)
+        area_squared = cross.norm_sqr()
+        mixed_regular = mixed_squared >= minimum_normal or qd.abs(mixed).max() == 0.0
+        if (
+            first_squared >= minimum_normal
+            and second_squared >= minimum_normal
+            and area_squared >= minimum_normal
+            and mixed_regular
+        ):
+            first_norm, second_norm, mixed_norm = (
+                qd.sqrt(first_squared),
+                qd.sqrt(second_squared),
+                qd.sqrt(mixed_squared),
             )
-            frobenius_upper *= 1.0 + margin
-            sigma_lower = qd.max(weyl_lower, determinant_lower / frobenius_upper)
-            sigma_lower *= 1.0 - margin
-            if sigma_lower > 0.0:
-                curvature = height_upper * (1.0 + qd.sqrt(2.0) * tangent_upper / sigma_lower)
-                curvature *= (1.0 + margin) / (sigma_lower * sigma_lower)
+            area = qd.sqrt(area_squared)
+            # The extra chart-conditioning factor covers normalization of the cross product.
+            margin = 128.0 * epsilon * (1.0 + first_norm * second_norm / area)
+            normal = cross / area
+            height = normal.dot(mixed_scaled)
+            height_upper = qd.abs(height) + margin * mixed_norm
+            tangent_upper = (mixed_scaled - height * normal).norm() + margin * mixed_norm
+            determinant_lower = area - qd.abs(normal.dot(first_scaled.cross(mixed_scaled)))
+            determinant_lower -= qd.abs(normal.dot(mixed_scaled.cross(second_scaled)))
+            determinant_lower -= margin * (
+                first_norm * second_norm + first_norm * mixed_norm + mixed_norm * second_norm
+            )
+            area_lower = area - margin * first_norm * second_norm
+            trace = first_squared + second_squared
+            discriminant = (first_squared - second_squared) ** 2 + 4.0 * first_scaled.dot(second_scaled) ** 2
+            largest_upper = qd.sqrt(0.5 * (trace + qd.sqrt(qd.max(0.0, discriminant))))
+            largest_upper += margin * (first_norm + second_norm)
+            if margin < 0.25 and determinant_lower > 0.0 and area_lower > 0.0 and largest_upper > 0.0:
+                origin_sigma_lower = area_lower / largest_upper
+                weyl_lower = qd.max(0.0, origin_sigma_lower - qd.sqrt(2.0) * tangent_upper)
+                frobenius_upper = qd.sqrt(
+                    (first_norm * (1.0 + margin) + tangent_upper) ** 2
+                    + (second_norm * (1.0 + margin) + tangent_upper) ** 2
+                )
+                frobenius_upper *= 1.0 + margin
+                sigma_lower = qd.max(weyl_lower, determinant_lower / frobenius_upper)
+                sigma_lower *= 1.0 - margin
+                sigma_squared = sigma_lower * sigma_lower
+                if sigma_lower > 0.0 and sigma_squared >= minimum_normal:
+                    normalized = height_upper * (1.0 + qd.sqrt(2.0) * tangent_upper / sigma_lower)
+                    normalized *= (1.0 + margin) / sigma_squared
+                    candidate = normalized / scale
+                    if candidate < float("inf") and (candidate >= minimum_normal or normalized == 0.0):
+                        curvature = candidate
     return curvature
 
 
@@ -265,15 +292,20 @@ def func_parent_ball_connected(i_face: int, radius: float, info: PlanarLoadingIn
 
 @qd.func
 def func_segment_ball(
-    first: qd.types.vector(3), second: qd.types.vector(3), center: qd.types.vector(3), radius: float, epsilon: float
+    first: qd.types.vector(3),
+    second: qd.types.vector(3),
+    center: qd.types.vector(3),
+    radius: float,
+    epsilon: float,
+    minimum_normal: float,
 ):
     """Return an open-ball intersection witness and whether its classification is resolved."""
     inside, certain = False, False
-    if radius > 0.0 and radius < float("inf"):
+    if radius >= minimum_normal and radius < float("inf"):
         relative = (first - center) / radius
         edge = (second - first) / radius
         length_squared = edge.norm_sqr()
-        scale = 1.0 + (first.norm() + second.norm() + 2.0 * center.norm()) / radius
+        scale = 1.0 + (qd.abs(first).sum() + qd.abs(second).sum() + 2.0 * qd.abs(center).sum()) / radius
         margin = 128.0 * epsilon * scale
         if length_squared > margin * margin and length_squared < float("inf") and margin < 0.25:
             fraction = qd.min(1.0, qd.max(0.0, -relative.dot(edge) / length_squared))
@@ -308,6 +340,7 @@ def func_parent_edge_ball(
                 center,
                 radius,
                 info.epsilon[None],
+                info.minimum_normal[None],
             )
             inside = inside or side_inside
             uncertain = uncertain or not side_certain
