@@ -10,7 +10,7 @@ import genesis as gs
 from genesis.utils.array_class import V_VEC, DataKind, V, of_kind
 
 from .contact import StressContactState, func_contact_sample, func_contact_section, func_force_frame
-from .planar_geometry import PlanarLoadingInfo
+from .planar_geometry import PlanarLoadingInfo, func_parent_ball_connected, func_parent_edge_ball
 from .quadrilateral import func_quad_inverse
 from .surface import StressSurfaceInfo
 
@@ -21,6 +21,7 @@ class PlanarMaterialStatus(IntEnum):
     UNRESOLVED_SEED = 2
     AMBIGUOUS_ANCHOR = 3
     NONFINITE_FOOTPRINT = 4
+    UNRESOLVED_FOOTPRINT = 5
 
 
 @dataclass(frozen=True)
@@ -81,6 +82,9 @@ def kernel_planar_material(
                 separation = qd.max(surface.face_bounds_low[i_face] - center, 0.0)
                 separation += qd.max(center - surface.face_bounds_high[i_face], 0.0)
                 if separation.norm_sqr() < radius * radius:
+                    # A parent bit represents one connected footprint, including on the original fallback route.
+                    if not func_parent_ball_connected(i_face, radius, geometry):
+                        state.status[i_c, i_b] = PlanarMaterialStatus.UNRESOLVED_FOOTPRINT
                     _closest, remaining, contained = func_contact_section(i_face, center, radius, surface)
                     if remaining > 0.0:
                         positive = False
@@ -113,13 +117,13 @@ def kernel_planar_material(
                     active = True
                     for _ in range(geometry.parent_neighbor_start.shape[0] - 1):
                         if active:
-                            changed = False
+                            changed, unresolved = False, False
                             for parent in range(geometry.parent_neighbor_start.shape[0] - 1):
                                 i_parent_word, i_parent_bit = parent // 32, parent % 32
                                 hit = state.hits[i_parent_word, i_c, i_b]
                                 selected = state.mask[i_parent_word, i_c, i_b]
                                 if (hit[0] & (1 << i_parent_bit)) != 0 and (selected[0] & (1 << i_parent_bit)) == 0:
-                                    connected = False
+                                    connected, uncertain = False, False
                                     for i_n in range(
                                         geometry.parent_neighbor_start[parent],
                                         geometry.parent_neighbor_start[parent + 1],
@@ -127,11 +131,20 @@ def kernel_planar_material(
                                         other = geometry.parent_neighbor_faces[i_n][0]
                                         i_other_word, i_other_bit = other // 32, other % 32
                                         other_selected = state.mask[i_other_word, i_c, i_b]
-                                        connected = connected or (other_selected[0] & (1 << i_other_bit)) != 0
+                                        if (other_selected[0] & (1 << i_other_bit)) != 0:
+                                            edge_connected, certain = func_parent_edge_ball(
+                                                parent, i_n, center=center, radius=radius, info=geometry, side_filter=0
+                                            )
+                                            connected = connected or edge_connected
+                                            uncertain = uncertain or not certain
                                     if connected:
                                         selected[0] = selected[0] | (1 << i_parent_bit)
                                         state.mask[i_parent_word, i_c, i_b] = selected
                                         changed = True
+                                    elif uncertain:
+                                        unresolved = True
+                            if not changed and unresolved:
+                                state.status[i_c, i_b] = PlanarMaterialStatus.UNRESOLVED_FOOTPRINT
                             active = changed
                     for parent in range(geometry.parent_neighbor_start.shape[0] - 1):
                         i_parent_word, i_parent_bit = parent // 32, parent % 32

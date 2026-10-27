@@ -205,15 +205,6 @@ def func_cell_overlap(i_face: int, i_cell: int, center: qd.types.vector(3), radi
 
 
 @qd.func
-def func_parent_adjacent(i_first_parent: int, i_second_parent: int, info: PlanarLoadingInfo):
-    """Test material adjacency by original quadrilateral edge identity."""
-    adjacent = i_first_parent == i_second_parent
-    for i_n in range(info.parent_neighbor_start[i_first_parent], info.parent_neighbor_start[i_first_parent + 1]):
-        adjacent = adjacent or info.parent_neighbor_faces[i_n][0] == i_second_parent
-    return adjacent
-
-
-@qd.func
 def func_quad_graph_curvature(
     first: qd.types.vector(3), second: qd.types.vector(3), mixed: qd.types.vector(3), epsilon: float
 ):

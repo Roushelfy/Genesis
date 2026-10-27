@@ -24,7 +24,8 @@ from .planar_geometry import (
     build_planar_geometry,
     func_cell_overlap,
     func_face_overlap,
-    func_parent_adjacent,
+    func_parent_ball_connected,
+    func_parents_ball_connected,
     func_triangle_geometry,
 )
 from .planar_material import create_planar_material, kernel_planar_material, kernel_planar_material_reset
@@ -294,7 +295,11 @@ def kernel_planar_query(contacts: StressContactState, info: PlanarLoadingInfo, s
                         side = state.side_filter[i_c, i_b]
                         admitted_side = side == 0 or side == info.side[i_f]
                         if state.eligible[i_c, i_b] and admitted_side and func_face_overlap(i_f, center, radius, info):
-                            if not info.face_valid[i_f] or info.normal_error[i_f] > 0.01 * radius:
+                            if (
+                                not info.face_valid[i_f]
+                                or info.normal_error[i_f] > 0.01 * radius
+                                or not func_parent_ball_connected(i_f, radius, info)
+                            ):
                                 state.eligible[i_c, i_b] = False
                                 state.reason[i_c, i_b] = PlanarFallback.GEOMETRY
                             else:
@@ -372,7 +377,15 @@ def func_planar_query_component(
                         for i_other in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
                             if state.parent_connected[i_other, i_b]:
                                 other = state.parent_faces[i_other, i_b]
-                                if func_parent_adjacent(parent, other, info):
+                                edge_connected, _certain = func_parents_ball_connected(
+                                    parent,
+                                    other,
+                                    state.side_filter[i_c, i_b],
+                                    contacts.center[i_c, i_b],
+                                    contacts.radius[i_c, i_b],
+                                    info,
+                                )
+                                if edge_connected:
                                     state.parent_connected[i_p, i_b], changed = True, True
                 active = changed
         for i_p in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
@@ -430,7 +443,11 @@ def kernel_planar_query_warp(contacts: StressContactState, info: PlanarLoadingIn
                         if i_face < info.face_valid.shape[0]:
                             admitted_side = side == 0 or side == info.side[i_face]
                             if admitted_side and func_face_overlap(i_face, center, radius, info):
-                                if not info.face_valid[i_face] or info.normal_error[i_face] > 0.01 * radius:
+                                if (
+                                    not info.face_valid[i_face]
+                                    or info.normal_error[i_face] > 0.01 * radius
+                                    or not func_parent_ball_connected(i_face, radius, info)
+                                ):
                                     invalid = 1
                                 else:
                                     i_candidate = qd.atomic_add(sh_count[0], 1)
