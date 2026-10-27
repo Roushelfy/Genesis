@@ -88,10 +88,14 @@ def _cpu_worker(args):
         for name in ("affine-side--1", "affine-side-1", "tilted-affine"):
             directory = args.reference / "inputs/controls" / name
             raw = _load(np, directory / "model.npz")
-            control_model = SurfaceGeometry(raw["vertices"], raw["quads"], raw["directors"])
-            control_model.h = float(raw["thickness"])
-            control_model.E = float(raw["young"])
-            control_model.nu = float(raw["poisson"])
+            control_model = SurfaceGeometry(
+                raw["vertices"],
+                raw["quads"],
+                raw["directors"],
+                h=float(raw["thickness"]),
+                E=float(raw["young"]),
+                nu=float(raw["poisson"]),
+            )
             cases = json.loads((directory / "cases.json").read_text())
             source = cases[0]["contacts"][0]
             contact = checks.Contact(
