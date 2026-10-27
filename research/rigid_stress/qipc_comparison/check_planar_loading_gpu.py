@@ -30,9 +30,12 @@ def _api():
     from scipy.sparse.linalg import splu
 
     import genesis as gs
+    from genesis.engine.solvers.rigid.stress.contact import StressContactState, create_contacts, kernel_anchor
     from genesis.engine.solvers.rigid.stress.data import StressState
+    from genesis.engine.solvers.rigid.stress.scatter import create_scatter_workspace
     from genesis.engine.solvers.rigid.stress.shell_model import ShellModel
-    from genesis.utils.array_class import V_VEC
+    from genesis.engine.solvers.rigid.stress.surface import StressSurface
+    from genesis.utils.array_class import V_VEC, V
     from genesis.utils.misc import qd_to_numpy
 
     from .artifacts import runtime_identity
@@ -62,7 +65,7 @@ def unbatched_array(api, field):
     return value
 
 
-def build_native_mother(api, reference, output, bank, *, method="direct", output_mode="full"):
+def build_native_mother(api, reference, output, bank, *, method="direct", output_mode="full", quadrature=24):
     """Prepare the original shell from physical inputs, preserving its native translation gauge."""
     inputs = _load(api.np, reference / f"inputs/{bank}/model.npz")
     asset = output / f"{bank}-native-shell.npz"
@@ -78,6 +81,8 @@ def build_native_mother(api, reference, output, bank, *, method="direct", output
         shell_thickness=float(inputs["thickness"]),
         shell_drilling_factor=float(inputs["drilling_factor"]),
         shell_gauge="translation",
+        quadrature=quadrature,
+        pressure_profile="hertz",
         tolerance=1e-8,
         absolute_tolerance=1e-11,
         inverse_precision="64",
@@ -86,6 +91,57 @@ def build_native_mother(api, reference, output, bank, *, method="direct", output
         history_size=0,
     )
     return NativeMother(api.ShellModel(options), inputs, bank, asset)
+
+
+def prepare_physical_contacts(api, reference, bank, young, poisson):
+    """Load original physical sources and evaluate supplied-curvature Hertz sizes in Quadrants."""
+    np = api.np
+    rows = json.loads((reference / f"inputs/{bank}/cases.json").read_text())
+    n_envs, n_contacts = len(rows), max(len(row["contacts"]) for row in rows)
+    positions, forces, normals = (np.zeros((n_contacts, n_envs, 3)) for _ in range(3))
+    curves = np.zeros((n_contacts, n_envs, 2))
+    radius = np.zeros((n_contacts, n_envs))
+    friction = np.ones((n_contacts, n_envs))
+    valid = np.zeros((n_contacts, n_envs), dtype=bool)
+    manual = np.zeros_like(valid)
+    sides = np.zeros((n_contacts, n_envs), dtype=np.int32)
+    for i_b, row in enumerate(rows):
+        for i_c, source in enumerate(row["contacts"]):
+            positions[i_c, i_b], forces[i_c, i_b], normals[i_c, i_b] = (
+                source["point"],
+                source["force"],
+                -np.array(source["normal"]),
+            )
+            curves[i_c, i_b] = source["curvatures"]
+            radius[i_c, i_b] = source["radius"] if source["radius"] is not None else 0.0
+            friction[i_c, i_b] = source["friction"] if source["friction"] is not None else 1.0
+            valid[i_c, i_b], manual[i_c, i_b], sides[i_c, i_b] = True, source["radius"] is not None, source["side"]
+    contacts = api.create_contacts(n_contacts, n_envs, 1e-4, hertz_profile=True)
+    contacts.position.from_numpy(positions.astype(api.gs.np_float))
+    contacts.force.from_numpy(forces.astype(api.gs.np_float))
+    contacts.normal.from_numpy(normals.astype(api.gs.np_float))
+    contacts.friction.from_numpy(friction.astype(api.gs.np_float))
+    contacts.radius.from_numpy(radius.astype(api.gs.np_float))
+    contacts.valid.from_numpy(valid)
+    curvature = api.V_VEC(2, dtype=api.gs.qd_float, shape=(n_contacts, n_envs))
+    curvature.from_numpy(curves.astype(api.gs.np_float))
+    given = api.V(dtype=api.gs.qd_bool, shape=(n_contacts, n_envs))
+    given.from_numpy(manual)
+    qd, contact_type = api.qd, api.StressContactState
+
+    @qd.kernel
+    def kernel_radius(young: float, poisson: float, current: contact_type, curvatures: qd.Tensor, supplied: qd.Tensor):
+        for i_c, i_b in qd.ndrange(current.valid.shape[0], current.valid.shape[1]):
+            if current.valid[i_c, i_b] and not supplied[i_c, i_b]:
+                load = current.force[i_c, i_b].dot(current.normal[i_c, i_b].normalized())
+                average = 0.5 * (curvatures[i_c, i_b][0] + curvatures[i_c, i_b][1])
+                modulus = young / (1.0 - poisson * poisson)
+                current.radius[i_c, i_b] = (3.0 * load / (4.0 * modulus * average)) ** (1.0 / 3.0)
+                current.radius_status[i_c, i_b] = 1
+
+    kernel_radius(float(young), float(poisson), contacts, curvature, given)
+    api.qd.sync()
+    return contacts, rows, valid, sides
 
 
 def _tensor(api, components):
@@ -184,6 +240,7 @@ def check_operators(api, writer, checks, reference, native):
             "comparison": "Original native gauge retained; independent CPU K is solved with these same native integer pins for coordinate comparison.",
         },
     )
+
     state = model.create_state(4, "full")
     omega = api.V_VEC(3, dtype=api.gs.qd_float, shape=(4,))
     omega.fill(0.0)
@@ -245,19 +302,244 @@ def check_operators(api, writer, checks, reference, native):
     )
 
 
+def check_loading(api, writer, checks, reference, native, refinement, quadrature, capacity, budgets):
+    """Check primary single-side CPU equivalence, whole-object error and current-load lifecycle."""
+    from genesis.engine.solvers.rigid.stress.planar_loading import PlanarLoading
+
+    np, model = api.np, native.model
+    surface = api.StressSurface(quadrature, model.load_info)
+    contacts, cases, original_valid, sides = prepare_physical_contacts(
+        api, reference, native.bank, model.options.young, model.options.poisson
+    )
+    loading = PlanarLoading(surface.info, model.load_info, contacts, refinement, tasks_per_env=capacity)
+    loading.state.side_filter.from_numpy(sides.astype(api.gs.np_int))
+    state = model.create_state(len(cases), "full")
+    workspace = api.create_scatter_workspace(len(cases), model.options.scatter_tasks_per_env, False)
+    omega = api.V_VEC(3, dtype=api.gs.qd_float, shape=(len(cases),))
+    omega.fill(0.0)
+    label = f"tri-k{refinement}-q{quadrature}"
+    cpu_load = _load(np, reference / f"oracles/{native.bank}/{label}/loads.npz")
+    cpu_output = _load(np, reference / f"oracles/{native.bank}/{label}/output.npz")
+    original_output = _load(np, reference / f"oracles/{native.bank}/Q4-q48/output.npz")
+    oracle = _load(np, reference / f"oracles/{native.bank}/operators/numerics.npz")
+    oracle_k = api.sparse.load_npz(reference / f"oracles/{native.bank}/operators/K.npz")
+    free = unbatched_array(api, model.info.is_free).reshape(-1).astype(bool)
+    expected_q = np.zeros_like(cpu_output["q"])
+    expected_q[free] = api.splu(oracle_k[free][:, free].tocsc()).solve(np.asfortranarray(cpu_load["balanced"][free]))
+    api.kernel_anchor(float(np.finfo(np.float64).eps), contacts, surface.info)
+    loading.scatter(state, model.load_info, surface.info, model.options, workspace, False)
+    model.recover(omega, state)
+    actual = native_outputs(api, model, state)
+    routing = {
+        name: api.qd_to_numpy(field, transpose=True)
+        for name, field in (
+            ("eligible", loading.state.eligible),
+            ("fallback", loading.state.fallback),
+            ("reason", loading.state.reason),
+            ("analytic_count", loading.state.analytic_count),
+            ("sample_count", loading.state.sample_count),
+            ("fit_evaluations", loading.state.fit_evaluations),
+            ("fallback_count", loading.state.fallback_count),
+            ("overflow", loading.state.overflow),
+            ("task_count", loading.state.task_count),
+        )
+    }
+    writer.arrays(f"{label}/output.npz", **actual, expected_q_in_native_gauge=expected_q)
+    writer.arrays(f"{label}/routing.npz", **routing)
+    checks.condition(f"{label}/native_admission", actual["valid"].all())
+    checks.condition(
+        f"{label}/CPU_primary_complete_proxy_port",
+        not routing["fallback"].any(),
+        fallback_contacts=int(routing["fallback"].sum()),
+        scope="Primary parity uses the explicitly selected CPU side. General production defaults retain both sides; fallback controls are separate.",
+    )
+    checks.condition(
+        f"{label}/capacity",
+        not routing["overflow"].any(),
+        capacity_per_environment=capacity,
+        maximum_actual_tasks=int(routing["task_count"].max(initial=0)),
+    )
+    checks.close(
+        f"{label}/original_anchors",
+        api.qd_to_numpy(contacts.center, transpose=True)[original_valid.T],
+        api.qd_to_numpy(contacts.position, transpose=True)[original_valid.T],
+        rtol=1e-10,
+        atol=1e-13,
+    )
+    checks.close(f"{label}/raw_generalized_load", actual["force"], cpu_load["raw"], rtol=1e-8, atol=1e-13)
+    checks.close(f"{label}/common_relief", actual["rhs"], cpu_load["balanced"], rtol=1e-8, atol=1e-13)
+    checks.close(f"{label}/original_K_displacement", actual["q"], expected_q, rtol=1e-8, atol=1e-13)
+    for key in ("stress_local", "stress_full9", "peak", "N", "M", "Q"):
+        checks.close(
+            f"{label}/CPU_native/{key}",
+            actual[key],
+            cpu_output[key],
+            rtol=1e-8,
+            atol=1e-10 if key.startswith("stress") or key == "peak" else 1e-13,
+        )
+    residual = (oracle_k @ actual["q"] - actual["rhs"])[free]
+    residual_norm, rhs_norm = np.linalg.norm(residual, axis=0), np.linalg.norm(actual["rhs"][free], axis=0)
+    checks.condition(
+        f"{label}/original_unscaled_residual",
+        np.all(residual_norm <= np.maximum(1e-11, 1e-8 * rhs_norm)),
+        absolute_norms=residual_norm.tolist(),
+        relative_norms=(residual_norm / np.maximum(rhs_norm, 1e-30)).tolist(),
+    )
+    weights, multiplicity = oracle["gauss_weights"], np.array([1.0, 1.0, 2.0])
+    errors = {}
+    for key in ("stress_local", "N", "M", "Q"):
+        expected, delta = original_output[key], actual[key] - original_output[key]
+        if key == "stress_local":
+            squared = np.einsum("segcb,segcb,eg,c->b", delta, delta, weights, multiplicity)
+            reference_squared = np.einsum("segcb,segcb,eg,c->b", expected, expected, weights, multiplicity)
+            key = "field"
+        elif key in ("N", "M"):
+            squared = np.einsum("egcb,egcb,eg,c->b", delta, delta, weights, multiplicity)
+            reference_squared = np.einsum("egcb,egcb,eg,c->b", expected, expected, weights, multiplicity)
+        else:
+            squared = np.einsum("egcb,egcb,eg->b", delta, delta, weights)
+            reference_squared = np.einsum("egcb,egcb,eg->b", expected, expected, weights)
+        errors[key] = np.sqrt(squared) / np.maximum(np.sqrt(reference_squared), 1e-30)
+    errors["peak"] = np.abs(actual["peak"] - original_output["peak"]) / np.maximum(original_output["peak"], 1e-30)
+    loaded = original_valid.any(axis=0)
+    mean_field = float(errors["field"][loaded].mean())
+    maxima = {key: float(value[loaded].max(initial=0)) for key, value in errors.items()}
+    original_budget = budgets["original_budgets"]
+    original_passed = (
+        mean_field <= original_budget["mean_weighted_tensor_field"]
+        and maxima["field"] <= original_budget["worst_weighted_tensor_field"]
+        and maxima["peak"] <= original_budget["worst_sampled_peak"]
+        and all(maxima[key] <= original_budget[key] for key in ("N", "M", "Q"))
+    )
+    target = budgets["CPU_demonstrated_fidelity_targets"].get(f"k{refinement}")
+    target_passed = (
+        target is not None
+        and maxima["field"] <= target["worst_field"]
+        and maxima["peak"] <= target["worst_peak"]
+        and all(maxima[key] <= target[key] for key in ("N", "M", "Q"))
+    )
+    writer.json(
+        f"{label}/spatial.json",
+        {
+            "original_budget_passed": bool(original_passed),
+            "CPU_fidelity_target_passed": bool(target_passed),
+            "mean_loaded_field_error": mean_field,
+            "maximum_loaded_errors": maxima,
+            "rows": [
+                {
+                    "name": row["name"],
+                    "category": row["category"],
+                    "loaded": bool(loaded[i]),
+                    **{key: float(value[i]) for key, value in errors.items()},
+                }
+                for i, row in enumerate(cases)
+            ],
+            "scope": "CPU primary single-side prescribed-source fixture, matching the original Q4 q48 same-elasticity reference.",
+        },
+    )
+    checks.condition(
+        f"{label}/original_spatial_budgets", original_passed, maxima=maxima, mean_loaded_field_error=mean_field
+    )
+    checks.condition(f"{label}/CPU_fidelity_targets", target_passed, target=target, maxima=maxima)
+    qd, contact_type = api.qd, api.StressContactState
+
+    @qd.kernel
+    def kernel_reverse(current: contact_type, side_filter: qd.Tensor):
+        for i_b in range(current.valid.shape[1]):
+            for i_c in range(current.valid.shape[0] // 2):
+                j_c = current.valid.shape[0] - i_c - 1
+                position, force, normal = current.position[i_c, i_b], current.force[i_c, i_b], current.normal[i_c, i_b]
+                radius, friction, valid = current.radius[i_c, i_b], current.friction[i_c, i_b], current.valid[i_c, i_b]
+                radius_status, side = current.radius_status[i_c, i_b], side_filter[i_c, i_b]
+                current.position[i_c, i_b], current.force[i_c, i_b], current.normal[i_c, i_b] = (
+                    current.position[j_c, i_b],
+                    current.force[j_c, i_b],
+                    current.normal[j_c, i_b],
+                )
+                current.radius[i_c, i_b], current.friction[i_c, i_b], current.valid[i_c, i_b] = (
+                    current.radius[j_c, i_b],
+                    current.friction[j_c, i_b],
+                    current.valid[j_c, i_b],
+                )
+                current.radius_status[i_c, i_b], side_filter[i_c, i_b] = (
+                    current.radius_status[j_c, i_b],
+                    side_filter[j_c, i_b],
+                )
+                current.position[j_c, i_b], current.force[j_c, i_b], current.normal[j_c, i_b] = position, force, normal
+                current.radius[j_c, i_b], current.friction[j_c, i_b], current.valid[j_c, i_b] = radius, friction, valid
+                current.radius_status[j_c, i_b], side_filter[j_c, i_b] = radius_status, side
+
+    phases = ("slot_reverse", "release_all", "reload", "release_env0", "reload_env0")
+    for phase in phases:
+        if phase == "slot_reverse":
+            kernel_reverse(contacts, loading.state.side_filter)
+        elif phase == "release_all":
+            contacts.valid.fill(False)
+        elif phase == "reload":
+            kernel_reverse(contacts, loading.state.side_filter)
+            contacts.valid.from_numpy(original_valid)
+        elif phase == "release_env0":
+            current_valid = original_valid.copy()
+            current_valid[:, 0] = False
+            contacts.valid.from_numpy(current_valid)
+        else:
+            contacts.valid.from_numpy(original_valid)
+        api.kernel_anchor(float(np.finfo(np.float64).eps), contacts, surface.info)
+        loading.scatter(state, model.load_info, surface.info, model.options, workspace, False)
+        model.recover(omega, state)
+        current = native_outputs(api, model, state)
+        for key in ("force", "rhs", "q", "stress_local", "stress_full9", "peak", "N", "M", "Q"):
+            expected = actual[key].copy()
+            if phase == "release_all":
+                expected.fill(0)
+            elif phase == "release_env0":
+                expected[..., 0] = 0
+            checks.close(
+                f"{label}/{phase}/{key}",
+                current[key],
+                expected,
+                rtol=1e-9,
+                atol=1e-10 if key.startswith("stress") or key == "peak" else 1e-13,
+            )
+        checks.condition(f"{label}/{phase}/native_admission", current["valid"].all())
+        if phase == "release_all":
+            checks.condition(
+                f"{label}/{phase}/query_clear",
+                not api.qd_to_numpy(loading.state.eligible, transpose=True).any()
+                and not api.qd_to_numpy(loading.state.fallback, transpose=True).any(),
+            )
+    return {
+        "method": label,
+        "original_spatial_budgets_passed": bool(original_passed),
+        "CPU_fidelity_targets_passed": bool(target_passed),
+        "mean_loaded_field_error": mean_field,
+        "maximum_loaded_errors": maxima,
+        "fallback_contacts": int(routing["fallback"].sum()),
+        "maximum_tasks": int(routing["task_count"].max(initial=0)),
+        "analytic_contact_sections": int(routing["analytic_count"].sum()),
+        "samples": int(routing["sample_count"].sum()),
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reference", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--bank", choices=("egg75", "torus8"), default="egg75")
     parser.add_argument("--method", choices=("direct", "inverse", "auto"), default="direct")
-    parser.add_argument("--stage", choices=("operators",), default="operators")
+    parser.add_argument("--stage", choices=("operators", "loads", "all"), default="operators")
+    parser.add_argument("--quadrature", type=int, choices=(24, 48), default=24)
+    parser.add_argument("--subdivisions", type=int, nargs="+", choices=(8, 16), default=[8, 16])
+    parser.add_argument("--tasks-per-env", type=int, default=2000)
+    parser.add_argument("--budgets", type=Path)
     args = parser.parse_args()
     if not os.environ.get("SLURM_JOB_ID") or os.environ.get("SLURM_JOB_PARTITION", "rtx-mid") != "rtx-mid":
         parser.error("Scientific execution requires Slurm rtx-mid/image 1_26.")
     args.output = args.output.expanduser().resolve()
     if not args.output.is_relative_to(Path("/mnt/data/zhaofeng")):
         parser.error("Choose a fresh project data output under /mnt/data/zhaofeng.")
+    if args.stage != "operators" and (args.budgets is None or args.tasks_per_env < 1):
+        parser.error("Load qualification requires --budgets and a positive --tasks-per-env.")
     args.output.mkdir(parents=True, exist_ok=False)
     manifest_path = args.reference / "manifest.json"
     manifest = json.loads(manifest_path.read_text())
@@ -279,8 +561,23 @@ def main():
             "native_package": api.gs.__file__,
         },
     )
-    native = build_native_mother(api, args.reference, args.output, args.bank, method=args.method)
-    check_operators(api, writer, checks, args.reference, native)
+    native = build_native_mother(
+        api, args.reference, args.output, args.bank, method=args.method, quadrature=args.quadrature
+    )
+    if args.stage in ("operators", "all"):
+        check_operators(api, writer, checks, args.reference, native)
+    summaries = []
+    if args.stage in ("loads", "all"):
+        budgets = json.loads(args.budgets.read_text())
+        if not budgets["frozen_before_native_tuning"]:
+            raise ValueError("Use the task's budgets frozen before native tuning.")
+        writer.json("budgets.json", {"input_sha256": _hash(args.budgets), "budgets": budgets})
+        summaries = [
+            check_loading(
+                api, writer, checks, args.reference, native, count, args.quadrature, args.tasks_per_env, budgets
+            )
+            for count in args.subdivisions
+        ]
     checks.flush(writer)
     passed = all(row["passed"] for row in checks.rows)
     writer.json(
@@ -291,9 +588,10 @@ def main():
             "stage": args.stage,
             "bank": args.bank,
             "checks": len(checks.rows),
+            "loading_summaries": summaries,
             "failed_checks": [row["name"] for row in checks.rows if not row["passed"]],
             "seconds_including_native_preparation": time.perf_counter() - started,
-            "scope": "Unchanged Q4 elasticity, common relief, original native gauge, stress recovery and zero/reload controls; planar current loading is a separate stage.",
+            "scope": "Original Q4 elasticity and numerical gates; explicitly selected CPU side for primary planar-loading parity. Production both-side/actual collision qualification is separate.",
         },
     )
     if not passed:
