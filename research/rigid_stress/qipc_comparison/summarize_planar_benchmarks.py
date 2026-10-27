@@ -66,7 +66,7 @@ MATERIAL_FIELDS = (
     "tolerance",
     "absolute_tolerance",
 )
-POLICY_FIELDS = ("layers", "seed", "dtype", "residual_scale_rad", "control_error_budget_rad")
+POLICY_FIELDS = ("layers", "seed", "dtype", "residual_scale_rad", "control_error_budget_rad", "weights_sha256")
 ROUTE_FIELDS = (
     "attempted_loaded_contacts",
     "proxy_contacts",
@@ -252,6 +252,10 @@ def audit_task(specification: TaskSpec, task: dict | None, campaign: Path, sourc
         audit.issues.append("GPU UUID receipt is missing")
     if not result.get("host"):
         audit.issues.append("Host receipt is missing")
+    if not isinstance(result.get("slurm_job_id"), str) or not result["slurm_job_id"]:
+        audit.issues.append("Slurm job identity receipt is missing")
+    if type(result.get("pid")) is not int or result["pid"] <= 0:
+        audit.issues.append("Positive process ID receipt is missing")
     if actual_arguments.get("steps") != 600 or actual_arguments.get("repetitions") != 1:
         audit.issues.append("Primary task requires exactly 600 steps and one repetition")
     if actual_arguments.get("minimum_seconds") != 0:
@@ -318,6 +322,8 @@ def audit_task(specification: TaskSpec, task: dict | None, campaign: Path, sourc
     policy_signature = {name: policy.get(name) for name in POLICY_FIELDS}
     if any(value is None for value in policy_signature.values()):
         audit.issues.append("Policy architecture/seed/precision/control receipt is incomplete")
+    if re.fullmatch("[0-9a-f]{64}", str(policy.get("weights_sha256"))) is None:
+        audit.issues.append("Explicit policy weight-byte SHA256 is missing or invalid; seeds are not hash receipts")
     policy_error = policy.get("warmup_reference_max_error_rad")
     policy_budget = policy.get("control_error_budget_rad")
     if type(policy_error) not in (int, float) or type(policy_budget) not in (int, float):
@@ -385,6 +391,7 @@ def audit_task(specification: TaskSpec, task: dict | None, campaign: Path, sourc
         "gpu_uuid": result.get("gpu_uuid"),
         "gpu": result.get("gpu"),
         "slurm_job_id": result.get("slurm_job_id"),
+        "pid": result.get("pid"),
         "source_revision": result.get("source_revision"),
         "task_source": task.get("source", source.get("source")),
         "explicit_task_arguments": arguments,
@@ -426,6 +433,12 @@ def summarize(plan_path: Path, campaign: Path, is_diagnostic: bool) -> dict:
         for specification in specifications
     ]
     issues = []
+    expected_policy_hash = plan.get("policy_weights_sha256")
+    if re.fullmatch("[0-9a-f]{64}", str(expected_policy_hash)) is None:
+        issues.append("Plan lacks an explicit policy_weights_sha256 bound to the qualified inference network")
+    for audit in audits:
+        if audit.receipt.get("policy", {}).get("weights_sha256") != expected_policy_hash:
+            audit.issues.append("Actual policy weight-byte SHA256 differs from the qualified plan network")
     if len(task_map) != sum(len(group) for group in tasks):
         issues.append("Captured campaign repeats a task identity")
     identities = [(specification.group, specification.name) for specification in specifications]
@@ -439,6 +452,12 @@ def summarize(plan_path: Path, campaign: Path, is_diagnostic: bool) -> dict:
     cohorts = []
     for group in sorted({specification.group for specification in specifications}):
         allocation_audits = [audit for audit in audits if audit.specification.group == group]
+        process_identities = [
+            (audit.receipt.get("host"), audit.receipt.get("slurm_job_id"), audit.receipt.get("pid"))
+            for audit in allocation_audits
+        ]
+        if len(process_identities) != len(set(process_identities)):
+            issues.append(f"Allocation group {group} repeats a host/Slurm-job/process identity")
         for name in ("host", "gpu_uuid", "common_source_sha256", "physical_assets", "policy"):
             values = [audit.receipt.get(name) for audit in allocation_audits]
             if any(value is None for value in values) or any(value != values[0] for value in values):
@@ -593,6 +612,7 @@ def summarize(plan_path: Path, campaign: Path, is_diagnostic: bool) -> dict:
         "campaign": str(campaign),
         "captured_tasks": file_identity(campaign / "tasks.json"),
         "captured_source": file_identity(campaign / "source.json"),
+        "qualified_policy_weights_sha256": expected_policy_hash,
         "issues": issues,
         "tasks": [asdict(audit) for audit in audits],
         "blocks": blocks,
@@ -601,7 +621,7 @@ def summarize(plan_path: Path, campaign: Path, is_diagnostic: bool) -> dict:
             "ratios": "Elapsed numerator/denominator for the same 600-step batch. Q4/planar32 is the planar speedup relative to original Q4. Ratios of unqualified blocks are diagnostic only.",
             "repeats": "Primary estimates use exactly three fresh-process blocks. Median and observed range describe these three pairs; no confidence interval is inferred. Failed pairs remain in raw_blocks_including_failures and prevent a qualified aggregate.",
             "module": "Identical sorted physical source SHA256, shape, dtype and columns are mandatory. Contact-slot and original-anchor hashes are retained in each snapshot and are not required to match independently anchored volume elasticity.",
-            "policy": "Initial condition bytes, rigid/controller code, assets, material, seed and multilayer perceptron architecture/seed/precision match. Stress feedback may change later actions and contacts, so policy rates describe initial-condition-matched closed-loop workflows; their future physical sources need not be identical.",
+            "policy": "Initial condition bytes, rigid/controller code, assets, material, seed and multilayer perceptron architecture/precision/actual weight-byte SHA256 match the qualified plan network. Stress feedback may change later actions and contacts, so policy rates describe initial-condition-matched closed-loop workflows; their future physical sources need not be identical.",
             "acceptance": "Successful process exit retains the benchmark's native errno, original unscaled residual and source-point acceptance. This metadata tool does not replace independent spatial qualification. Fallback and overflow counts are reported and their work remains inside elapsed time.",
         },
     }
